@@ -47,10 +47,7 @@ bool QgsMapClippingRegion::appliesToLayer( const QgsMapLayer *layer ) const
   if ( mRestrictToLayersList.empty() )
     return false;
 
-  const auto it = std::find_if( mRestrictToLayersList.begin(), mRestrictToLayersList.end(), [layer]( const QgsWeakMapLayerPointer & item ) -> bool
-  {
-    return item == layer;
-  } );
+  const auto it = std::find_if( mRestrictToLayersList.begin(), mRestrictToLayersList.end(), [layer]( const QgsWeakMapLayerPointer &item ) -> bool { return item == layer; } );
   return it != mRestrictToLayersList.end();
 }
 
@@ -63,5 +60,3 @@ void QgsMapClippingRegion::setRestrictToLayers( bool enabled )
 {
   mRestrictToLayers = enabled;
 }
-
-

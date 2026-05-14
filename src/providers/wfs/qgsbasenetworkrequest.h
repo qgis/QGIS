@@ -35,10 +35,19 @@ class QgsBaseNetworkRequest : public QObject
     ~QgsBaseNetworkRequest() override;
 
     //! \brief proceed to sending a GET request
-    bool sendGET( const QUrl &url, const QString &acceptHeader, bool synchronous, bool forceRefresh = false, bool cache = true, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
+    bool sendGET(
+      const QUrl &url,
+      const QString &acceptHeader,
+      bool synchronous,
+      bool forceRefresh = false,
+      bool cache = true,
+      const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>()
+    );
 
     //! \brief proceed to sending a synchronous POST request
-    bool sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
+    bool sendPOST(
+      const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>()
+    );
 
     //! \brief proceed to sending a synchronous PUT request
     bool sendPUT( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
@@ -158,7 +167,14 @@ class QgsBaseNetworkRequest : public QObject
     void logMessageIfEnabled();
 
     //! \brief proceed to sending a synchronous POST, PUT or PATCH request
-    bool sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
+    bool sendPOSTOrPUTOrPATCH(
+      const QUrl &url,
+      const QByteArray &verb,
+      const QString &contentTypeHeader,
+      const QByteArray &data,
+      bool synchronous,
+      const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>()
+    );
 
     bool issueRequest( QNetworkRequest &request, const QByteArray &verb, const QByteArray *data, bool synchronous );
 
@@ -178,13 +194,9 @@ class _DownloaderThread : public QThread
     _DownloaderThread( std::function<void()> function, QObject *parent = nullptr )
       : QThread( parent )
       , mFunction( std::move( function ) )
-    {
-    }
+    {}
 
-    void run() override
-    {
-      mFunction();
-    }
+    void run() override { mFunction(); }
 
   private:
     std::function<void()> mFunction;

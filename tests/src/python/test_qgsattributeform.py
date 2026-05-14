@@ -14,7 +14,8 @@ __author__ = "Alessandro Pasotti"
 __date__ = "2019-06-06"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsDefaultValue,
@@ -22,8 +23,8 @@ from qgis.core import (
     QgsEditorWidgetSetup,
     QgsExpressionContext,
     QgsFeature,
-    QgsGeometry,
     QgsField,
+    QgsGeometry,
     QgsVectorLayer,
 )
 from qgis.gui import (
@@ -33,14 +34,13 @@ from qgis.gui import (
     QgsGui,
     QgsMapCanvas,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 
 QGISAPP = start_app()
 
 
 class TestQgsAttributeForm(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

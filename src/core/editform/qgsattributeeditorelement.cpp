@@ -27,6 +27,10 @@
 #include "qgscolorutils.h"
 #include "qgsfontutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( typeIdentifier() );
@@ -59,7 +63,9 @@ void QgsAttributeEditorElement::setLabelStyle( const QgsAttributeEditorElement::
   mLabelStyle = labelStyle;
 }
 
-QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent )
+QgsAttributeEditorElement *QgsAttributeEditorElement::create(
+  const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent
+)
 {
   QgsAttributeEditorElement *newElement = nullptr;
 
@@ -67,8 +73,7 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
 
   if ( element.tagName() == "attributeEditorContainer"_L1 )
   {
-    newElement = new QgsAttributeEditorContainer( context.projectTranslator()->translate( u"project:layers:%1:formcontainers"_s.arg( layerId ),
-        name ), parent );
+    newElement = new QgsAttributeEditorContainer( context.projectTranslator()->translate( u"project:layers:%1:formcontainers"_s.arg( layerId ), name ), parent );
   }
   else if ( element.tagName() == "attributeEditorField"_L1 )
   {
@@ -128,9 +133,8 @@ void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
 {
   QDomElement element { node.firstChildElement( u"labelStyle"_s ) };
 
-  if ( ! element.isNull() )
+  if ( !element.isNull() )
   {
-
     // Label font and color
     if ( element.hasAttribute( u"labelColor"_s ) )
     {
@@ -156,7 +160,7 @@ void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
 
 QDomElement QgsAttributeEditorElement::LabelStyle::writeXml( QDomDocument &document ) const
 {
-  QDomElement elem {  document.createElement( u"labelStyle"_s ) };
+  QDomElement elem { document.createElement( u"labelStyle"_s ) };
   elem.setAttribute( u"labelColor"_s, QgsColorUtils::colorToString( color ) );
   elem.appendChild( QgsFontUtils::toXmlElement( font, document, u"labelFont"_s ) );
   elem.setAttribute( u"overrideLabelColor"_s, overrideColor ? QChar( '1' ) : QChar( '0' ) );

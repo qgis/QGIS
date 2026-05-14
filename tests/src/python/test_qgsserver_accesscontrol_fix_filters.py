@@ -17,12 +17,10 @@ import urllib.parse
 import urllib.request
 
 from qgis.testing import unittest
-
 from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlFixFilters(TestQgsServerAccessControl):
-
     def test_wfs_getfeature_fix_feature_filters(self):
         wfs_query_string = "&".join(
             [

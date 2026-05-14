@@ -19,8 +19,7 @@
 
 QgsQuickUtils::QgsQuickUtils( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsPoint QgsQuickUtils::toQgsPoint( const QPointF &point )
 {

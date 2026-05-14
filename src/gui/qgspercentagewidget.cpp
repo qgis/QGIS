@@ -53,13 +53,20 @@ QgsPercentageWidget::QgsPercentageWidget( QWidget *parent )
   setFocusProxy( mSpinBox );
 
   connect( mSlider, &QSlider::valueChanged, this, [this]( int value ) { mSpinBox->setValue( value / 10.0 ); } );
-  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) { whileBlocking( mSlider )->setValue( static_cast<int>( std::lround( value * 10 ) ) ); } );
+  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) {
+    whileBlocking( mSlider )->setValue( static_cast<int>( std::lround( value * 10 ) ) );
+  } );
   connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPercentageWidget::spinChanged );
 }
 
 double QgsPercentageWidget::value() const
 {
   return mSpinBox->value() / 100.0;
+}
+
+QgsDoubleSpinBox *QgsPercentageWidget::spinBox()
+{
+  return mSpinBox;
 }
 
 void QgsPercentageWidget::setValue( double value )

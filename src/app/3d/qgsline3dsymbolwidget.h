@@ -18,8 +18,6 @@
 
 #include "ui_line3dsymbolwidget.h"
 
-#include <memory>
-
 #include "qgs3dsymbolwidget.h"
 
 class QgsLine3DSymbol;
@@ -36,6 +34,7 @@ class QgsLine3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Line3DSymbol
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
     QgsAbstract3DSymbol *symbol() override;
     QString symbolType() const override;
+    Qgis::MaterialRenderingTechnique renderingTechnique() const override;
 
   private slots:
     void updateGuiState();

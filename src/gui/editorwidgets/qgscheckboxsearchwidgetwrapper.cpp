@@ -21,14 +21,16 @@
 
 #include <QCheckBox>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgscheckboxsearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
 
-{
-}
+{}
 
 bool QgsCheckboxSearchWidgetWrapper::applyDirectly()
 {
@@ -157,8 +159,7 @@ void QgsCheckboxSearchWidgetWrapper::setExpression( const QString &expression )
       break;
 
     default:
-      str = u"%1 = '%2'"_s
-              .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
+      str = u"%1 = '%2'"_s.arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
       break;
   }
   mExpression = str;

@@ -19,8 +19,11 @@
 
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 
 #include "moc_qgsexpressionaddfunctionfiledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool enableProjectFunctions, QWidget *parent )
   : QDialog( parent )
@@ -38,9 +41,7 @@ QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool ena
 
   connect( cboFileOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsExpressionAddFunctionFileDialog::cboFileOptions_currentIndexChanged );
   connect( txtNewFileName, &QLineEdit::textChanged, this, [this]( const QString & ) { updateOkButtonStatus(); } );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"expressions/expression.html#function-editor"_s );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"expressions/expression.html#function-editor"_s ); } );
 
   updateOkButtonStatus();
 }

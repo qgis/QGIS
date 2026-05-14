@@ -187,9 +187,7 @@ class OARecSearch(SearchBase):
 
         if "/collections/" in self.url:  # catalog is a collection
             log_message("OARec endpoint is a collection", Qgis.MessageLevel.Info)
-            self.base_url, self.record_collection = self.url.split(
-                "/collections/"
-            )  # noqa
+            self.base_url, self.record_collection = self.url.split("/collections/")  # noqa
             self.conn = Records(self.base_url, timeout=self.timeout, auth=self.auth)
             c = self.conn.collection(self.record_collection)
             try:

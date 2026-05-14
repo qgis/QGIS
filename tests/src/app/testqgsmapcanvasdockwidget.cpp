@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the app map canvas dock widgets.
@@ -55,11 +57,6 @@ TestQgsMapCanvasDockWidget::TestQgsMapCanvasDockWidget() = default;
 //runs before all tests
 void TestQgsMapCanvasDockWidget::initTestCase()
 {
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::init();
   QgsApplication::initQgis();
 }

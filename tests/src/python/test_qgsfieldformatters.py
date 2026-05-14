@@ -12,17 +12,10 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QDate,
-    QDateTime,
-    QLocale,
-    Qt,
-    QTime,
-    QVariant,
-)
 from qgis.core import (
+    NULL,
     QgsApplication,
     QgsCheckBoxFieldFormatter,
     QgsDateTimeFieldFormatter,
@@ -39,12 +32,18 @@ from qgis.core import (
     QgsValueRelationFieldFormatter,
     QgsVectorFileWriter,
     QgsVectorLayer,
-    NULL,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QLocale,
+    Qt,
+    QTime,
+    QVariant,
+)
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
 from utilities import writeShape
 
 start_app()
@@ -54,7 +53,7 @@ class TestQgsValueMapFieldFormatter(QgisTestCase):
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
     def test_representValue(self):
-        QgsSettings().setValue("qgis/nullValue", "NULL")
+        QgsApplication.setNullRepresentation("NULL")
         layer = QgsVectorLayer(
             "none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
             "layer",
@@ -152,7 +151,6 @@ class TestQgsValueMapFieldFormatter(QgisTestCase):
 
 
 class TestQgsValueRelationFieldFormatter(QgisTestCase):
-
     def test_representValue(self):
         first_layer = QgsVectorLayer(
             "none?field=foreign_key:integer", "first_layer", "memory"
@@ -348,7 +346,6 @@ class TestQgsValueRelationFieldFormatter(QgisTestCase):
 
 
 class TestQgsRelationReferenceFieldFormatter(QgisTestCase):
-
     def test_representValue(self):
         first_layer = QgsVectorLayer(
             "none?field=foreign_key:integer", "first_layer", "memory"
@@ -459,15 +456,10 @@ class TestQgsRelationReferenceFieldFormatter(QgisTestCase):
 
 
 class TestQgsRangeFieldFormatter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
@@ -700,17 +692,10 @@ class TestQgsRangeFieldFormatter(QgisTestCase):
 
 
 class TestQgsCheckBoxFieldFormatter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(
-            "QGIS_TestPyQgsCheckBoxFieldFormatter.com"
-        )
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsCheckBoxFieldFormatter")
-        QgsSettings().clear()
         start_app()
 
     def test_representValue(self):
@@ -811,15 +796,10 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
 
 
 class TestQgsFallbackFieldFormatter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsFieldFormatter.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsFieldFormatter")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
@@ -1159,15 +1139,10 @@ class TestQgsFallbackFieldFormatter(QgisTestCase):
 
 
 class TestQgsDateTimeFieldFormatter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsDateTimeFieldFormatter.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsDateTimeFieldFormatter")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 

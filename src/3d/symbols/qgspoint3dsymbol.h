@@ -18,7 +18,6 @@
 
 #include "qgis.h"
 #include "qgis_3d.h"
-#include "qgs3dtypes.h"
 #include "qgsabstract3dsymbol.h"
 
 #include <QMatrix4x4>
@@ -65,14 +64,14 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns material settings used for shading of the symbol
-    QgsAbstractMaterialSettings *materialSettings() const;
+    QgsAbstractMaterialSettings *materialSettings() const override;
 
     /**
      * Sets the \a material settings used for shading of the symbol.
      *
      * Ownership of \a material is transferred to the symbol.
      */
-    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER );
+    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER ) override;
 
     //! Returns shape enum value from a string
     static Qgis::Point3DShape shapeFromString( const QString &shape );
@@ -148,6 +147,8 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
      * ### Models (Qgis.Point3DShape.Model)
      *
      * - \a model (path to model file)
+     * - \a upAxis (up axis for model, either "x", "y", "z" or "-x", "-y", "-z")
+     * - \a forwardAxis (forward axis for model, either "x", "y", "z" or "-x", "-y", "-z")
      *
      * \see shapeProperty()
      */

@@ -18,7 +18,6 @@ A renderer which draws points as a live heatmap.
 #include "qgsheatmaprenderer.h"
 %End
   public:
-
     QgsHeatmapRenderer();
     ~QgsHeatmapRenderer();
 

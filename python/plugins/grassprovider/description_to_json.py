@@ -24,7 +24,6 @@ def main(description_folder: str, output_file: str):
     algorithms = []
     folder = Path(description_folder)
     for description_file in folder.glob("*.txt"):
-
         description = ParsedDescription.parse_description_file(
             description_file, translate=False
         )

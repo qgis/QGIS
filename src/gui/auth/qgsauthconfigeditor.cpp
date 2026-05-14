@@ -27,8 +27,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSqlTableModel>
+#include <QString>
 
 #include "moc_qgsauthconfigeditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )
@@ -330,10 +333,17 @@ void QgsAuthConfigEditor::btnRemoveConfig_clicked()
   {
     const QString name = index.sibling( index.row(), 1 ).data().toString();
 
-    if ( QMessageBox::warning( this, tr( "Remove Configuration" ), tr( "Are you sure you want to remove '%1'?\n\n"
-                                                                       "Operation can NOT be undone!" )
-                                                                     .arg( name ),
-                               QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel )
+    if ( QMessageBox::warning(
+           this,
+           tr( "Remove Configuration" ),
+           tr(
+             "Are you sure you want to remove '%1'?\n\n"
+             "Operation can NOT be undone!"
+           )
+             .arg( name ),
+           QMessageBox::Ok | QMessageBox::Cancel,
+           QMessageBox::Cancel
+         )
          == QMessageBox::Ok )
     {
       mConfigModel->removeRow( index.row() );

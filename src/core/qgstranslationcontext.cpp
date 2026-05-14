@@ -20,7 +20,10 @@
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsProject *QgsTranslationContext::project() const
 {

@@ -26,8 +26,11 @@
 #include <QEventLoop>
 #include <QFutureWatcher>
 #include <QObject>
+#include <QString>
 #include <QTemporaryFile>
 #include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsConnectionPool : public QObject
 {
@@ -42,7 +45,8 @@ class TestQgsConnectionPool : public QObject
     struct ReadJob
     {
         explicit ReadJob( QgsVectorLayer *_layer )
-          : source( std::make_shared<QgsVectorLayerFeatureSource>( _layer ) ) {}
+          : source( std::make_shared<QgsVectorLayerFeatureSource>( _layer ) )
+        {}
         std::shared_ptr<QgsVectorLayerFeatureSource> source;
         QList<QgsFeature> features;
     };

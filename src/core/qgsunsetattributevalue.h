@@ -24,6 +24,8 @@
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Represents a default, "not-specified" value for a feature attribute.
@@ -33,7 +35,6 @@
 class CORE_EXPORT QgsUnsetAttributeValue
 {
   public:
-
     QgsUnsetAttributeValue() = default;
 
     /**
@@ -57,6 +58,7 @@ class CORE_EXPORT QgsUnsetAttributeValue
     inline bool operator!=( const QgsUnsetAttributeValue & ) const { return false; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
@@ -66,29 +68,27 @@ class CORE_EXPORT QgsUnsetAttributeValue
       str = u"<QgsUnsetAttributeValue>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    //! Allows direct construction of QVariants from unset values.
-    operator QVariant() const
+      //! Allows direct construction of QVariants from unset values.
+      operator QVariant() const
     {
       return QVariant::fromValue( *this );
     }
 
   private:
-
     QString mDefaultValueClause;
-
 };
 
 Q_DECLARE_METATYPE( QgsUnsetAttributeValue )
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
-#elif defined(_MSC_VER)
-__pragma( warning( push ) )
-__pragma( warning( disable: 4273 ) )
+#elif defined( _MSC_VER )
+__pragma( warning( push ) ) __pragma( warning( disable : 4273 ) )
 #endif
 #endif
 
@@ -98,9 +98,9 @@ inline bool CORE_EXPORT operator==( const QgsUnsetAttributeValue &value, const Q
 }
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
+#elif defined( _MSC_VER )
 __pragma( warning( pop ) )
 #endif
 #endif
@@ -123,5 +123,3 @@ inline bool operator!=( const QString &other, const QgsUnsetAttributeValue &valu
 #endif
 
 #endif // QGSUNSETATTRIBUTEVALUE_H
-
-

@@ -11,12 +11,9 @@ __date__ = "2020-06"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
-
-from qgis.PyQt.QtCore import QDir, QSize
-from qgis.PyQt.QtGui import QColor
+import unittest
 
 from qgis.core import (
-    edit,
     Qgis,
     QgsCategorizedSymbolRenderer,
     QgsCentroidFillSymbolLayer,
@@ -32,16 +29,17 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsPointXY,
     QgsRectangle,
+    QgsRenderContext,
     QgsRendererCategory,
     QgsRuleBasedRenderer,
     QgsSingleSymbolRenderer,
     QgsSymbol,
-    QgsRenderContext,
     QgsVectorLayer,
+    edit,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -51,7 +49,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsVectorLayerRenderer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "vectorlayerrenderer"
@@ -334,7 +331,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         # add secondary renderer, for rendering below
         class Gen1(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen1"
 
@@ -366,7 +362,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         # add secondary renderer, for rendering below
         class Gen2(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen2"
 
@@ -459,7 +454,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         # add secondary renderer, for rendering below
         class Gen1(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen1"
 
@@ -492,7 +486,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         # add secondary renderer, for rendering below
         class Gen2(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen2"
 
@@ -569,7 +562,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         # add secondary renderer, for rendering below
         class Gen1(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen1"
 
@@ -602,7 +594,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         # add secondary renderer, for rendering below
         class Gen2(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen2"
 
@@ -636,7 +627,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
         # add secondary renderer, for rendering below
 
         class Gen1b(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen1b"
 
@@ -668,7 +658,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         # add secondary renderer, for rendering below
         class Gen2b(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen2b"
 
@@ -749,7 +738,6 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         # add secondary renderer, for rendering below
         class Gen1(QgsFeatureRendererGenerator):
-
             def id(self):
                 return "Gen1"
 

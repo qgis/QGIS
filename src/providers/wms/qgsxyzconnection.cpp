@@ -20,6 +20,10 @@
 #include "qgsowsconnection.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsXyzConnection::encodedUri() const
 {
   QgsDataSourceUri uri;

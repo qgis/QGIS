@@ -4,8 +4,7 @@ description=GRASS GIS Processing provider
 about=Exposes selected GRASS GIS algorithms and tools for use within the QGIS Processing framework.
 category=Analysis
 version=2.12.99
-qgisMinimumVersion=3.0
-supportsQt6=yes
+qgisMinimumVersion=4.0
 
 icon=:/images/themes/default/providerGrass.svg
 

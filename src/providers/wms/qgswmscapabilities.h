@@ -29,8 +29,11 @@
 #include <QMap>
 #include <QNetworkRequest>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QNetworkReply;
 
@@ -209,7 +212,14 @@ struct QgsWmsDimensionProperty
 
     bool operator==( const QgsWmsDimensionProperty &other ) const
     {
-      return name == other.name && units == other.units && unitSymbol == other.unitSymbol && defaultValue == other.defaultValue && extent == other.extent && multipleValues == other.multipleValues && nearestValue == other.nearestValue && current == other.current;
+      return name == other.name
+             && units == other.units
+             && unitSymbol == other.unitSymbol
+             && defaultValue == other.defaultValue
+             && extent == other.extent
+             && multipleValues == other.multipleValues
+             && nearestValue == other.nearestValue
+             && current == other.current;
     }
 };
 
@@ -402,18 +412,10 @@ struct QgsWmsLayerProperty
  */
 struct QgsWmstDates
 {
-    QgsWmstDates( QList<QDateTime> dates )
-    {
-      dateTimes = dates;
-    }
-    QgsWmstDates()
-    {
-    }
+    QgsWmstDates( QList<QDateTime> dates ) { dateTimes = dates; }
+    QgsWmstDates() {}
 
-    bool operator==( const QgsWmstDates &other ) const
-    {
-      return dateTimes == other.dateTimes;
-    }
+    bool operator==( const QgsWmstDates &other ) const { return dateTimes == other.dateTimes; }
 
     QList<QDateTime> dateTimes;
 };
@@ -423,20 +425,14 @@ struct QgsWmstDates
  */
 struct QgsWmstExtentPair
 {
-    QgsWmstExtentPair()
-    {
-    }
+    QgsWmstExtentPair() {}
 
     QgsWmstExtentPair( QgsWmstDates dates, QgsTimeDuration resolution )
       : dates( dates )
       , resolution( resolution )
-    {
-    }
+    {}
 
-    bool operator==( const QgsWmstExtentPair &other ) const
-    {
-      return dates == other.dates && resolution == other.resolution;
-    }
+    bool operator==( const QgsWmstExtentPair &other ) const { return dates == other.dates && resolution == other.resolution; }
 
     QgsWmstDates dates;
     QgsTimeDuration resolution;
@@ -664,7 +660,8 @@ enum QgsWmsTileAttribute
   TileIndex = QNetworkRequest::User + 1,
   TileRect = QNetworkRequest::User + 2,
   TileRetry = QNetworkRequest::User + 3,
-  TileUrl = QNetworkRequest::User + 4, //!< Original requested tile URL, before any redirects are applied
+  TileUrl = QNetworkRequest::User + 4,           //!< Original requested tile URL, before any redirects are applied
+  TileRendererUsage = QNetworkRequest::User + 5, //!< Renderer usage
 };
 
 enum QgsWmsDpiMode
@@ -706,6 +703,14 @@ class QgsWmsSettings
      * \since QGIS 3.14
      */
     QgsWmstDimensionExtent parseTemporalExtent( const QString &extent );
+
+    /**
+     * Parses a temporal format string from WMS-T dimension capabilities and returns
+     * the appropriate format string for formatting datetime values.
+     *
+     * \since QGIS 4.0
+     */
+    QString parseTemporalFormat( const QString &format ) const;
 
     /**
      * Sets the dimension extent property
@@ -771,6 +776,9 @@ class QgsWmsSettings
     //! Temporal extent from dimension property in WMS-T
     QString mTemporalExtent;
 
+    //! Whether time dimension is enabled for the layer
+    QString mEnableTime = u"true"_s;
+
     //! Fixed temporal range for the data provider
     QgsDateTimeRange mFixedRange;
 
@@ -784,6 +792,8 @@ class QgsWmsSettings
 
     //! Stores WMS-T time dimension extent dates
     QgsWmstDimensionExtent mTimeDimensionExtent;
+
+    QString mTimeFormat;
 
     //! Stores WMS-T reference dimension extent dates
     QgsWmstDimensionExtent mReferenceTimeDimensionExtent;

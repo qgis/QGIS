@@ -22,6 +22,10 @@
 #include <cstring>
 #include <limits>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // Changed #include <qapp.h> to <qapplication.h>. Apparently some
 // debian distros do not include the qapp.h wrapper and the compilation
 // fails. [gsherman]
@@ -193,8 +197,7 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     return false;
 
   // add all the features
-  for ( QgsFeatureList::iterator iter = flist.begin();
-        iter != flist.end(); ++iter )
+  for ( QgsFeatureList::iterator iter = flist.begin(); iter != flist.end(); ++iter )
   {
     if ( !addFeature( *iter, flags ) )
       return false;
@@ -560,8 +563,7 @@ QVariantMap QgsGPXProvider::decodeUri( const QString &uri )
 
 QgsGpxProviderMetadata::QgsGpxProviderMetadata()
   : QgsProviderMetadata( GPX_KEY, GPX_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsGpxProviderMetadata::icon() const
 {

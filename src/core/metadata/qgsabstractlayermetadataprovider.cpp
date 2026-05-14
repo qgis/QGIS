@@ -43,9 +43,7 @@ void QgsLayerMetadataSearchResults::addError( const QString &error )
 
 QgsLayerMetadataProviderResult::QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata )
   : QgsLayerMetadata( metadata )
-{
-
-}
+{}
 
 const QgsPolygon &QgsLayerMetadataProviderResult::geographicExtent() const
 {
@@ -116,5 +114,3 @@ void QgsLayerMetadataProviderResult::setStandardUri( const QString &standardUri 
 {
   mStandardUri = standardUri;
 }
-
-

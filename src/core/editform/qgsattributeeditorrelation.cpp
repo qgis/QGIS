@@ -18,7 +18,11 @@
 #include "qgsrelationmanager.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
 #include "moc_qgsattributeeditorrelation.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool QgsAttributeEditorRelation::init( QgsRelationManager *relationManager )
 {
@@ -67,7 +71,7 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
     config = relationEditorConfiguration();
 
   // pre QGIS 3.18 compatibility
-  if ( ! config.contains( u"buttons"_s ) )
+  if ( !config.contains( u"buttons"_s ) )
   {
     if ( element.hasAttribute( "buttons" ) )
     {

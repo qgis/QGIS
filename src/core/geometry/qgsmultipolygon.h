@@ -20,6 +20,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsmultisurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPolygon;
 
 /**
@@ -27,14 +31,15 @@ class QgsPolygon;
  * \class QgsMultiPolygon
  * \brief Multi polygon geometry collection.
  */
-class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
+class CORE_EXPORT QgsMultiPolygon : public QgsMultiSurface
 {
   public:
-
+    // clang-format off
     /**
      * Constructor for an empty multipolygon geometry.
      */
     QgsMultiPolygon() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructor for a multipolygon containing the specified \a polygons.
@@ -63,6 +68,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      */
     QgsPolygon *polygonN( int index );
 #else
+// clang-format off
 
     /**
      * Returns the polygon with the specified \a index.
@@ -83,6 +89,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
       return sipConvertFromType( sipCpp->polygonN( a0 ), sipType_QgsPolygon, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -152,6 +159,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
     QgsMultiPolygon *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -160,6 +168,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
     QString str = u"<QgsMultiPolygon: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

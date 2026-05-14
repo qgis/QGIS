@@ -15,14 +15,15 @@
 #include "qgsprojectgpssettings.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojectgpssettings.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsProjectGpsSettings::QgsProjectGpsSettings( QObject *parent )
   : QObject( parent )
-{
-
-}
+{}
 
 void QgsProjectGpsSettings::resolveReferences( const QgsProject *project )
 {
@@ -75,7 +76,7 @@ bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWr
     {
       const QString layerId = layerElement.attribute( u"destinationLayer"_s );
       const QString field = layerElement.attribute( u"field"_s );
-      mDestinationTimestampFields[ layerId ] = field;
+      mDestinationTimestampFields[layerId] = field;
       layerElement = layerElement.nextSiblingElement();
     }
   }
@@ -92,9 +93,9 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
 {
   QDomElement element = doc.createElement( u"ProjectGpsSettings"_s );
 
-  element.setAttribute( u"autoAddTrackVertices"_s,  mAutoAddTrackVertices ? 1 : 0 );
-  element.setAttribute( u"autoCommitFeatures"_s,  mAutoCommitFeatures ? 1 : 0 );
-  element.setAttribute( u"destinationFollowsActiveLayer"_s,  mDestinationFollowsActiveLayer ? 1 : 0 );
+  element.setAttribute( u"autoAddTrackVertices"_s, mAutoAddTrackVertices ? 1 : 0 );
+  element.setAttribute( u"autoCommitFeatures"_s, mAutoCommitFeatures ? 1 : 0 );
+  element.setAttribute( u"destinationFollowsActiveLayer"_s, mDestinationFollowsActiveLayer ? 1 : 0 );
 
   if ( mDestinationLayer )
   {

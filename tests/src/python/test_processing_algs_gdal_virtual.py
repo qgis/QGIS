@@ -14,24 +14,23 @@ __copyright__ = "Copyright 2025, Alexander Bruy"
 
 import os
 import tempfile
+import unittest
 
 from processing.core.Processing import Processing
-from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.core import (
     Qgis,
-    QgsProject,
-    QgsSettings,
-    QgsFeature,
     QgsApplication,
-    QgsVectorLayer,
+    QgsFeature,
     QgsProcessing,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsProcessingUtils,
+    QgsProject,
+    QgsSettings,
+    QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QUrl
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -44,15 +43,10 @@ def to_percent_encoding(s: str) -> bytes:
 
 
 class TestGdalProviderVirtualLayers(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestGdalProviderVirtualLayers.com")
-        QCoreApplication.setApplicationName("TestGdalProviderVirtualLayers")
-        QgsSettings().clear()
         Processing.initialize()
         cls.registry = QgsApplication.instance().processingRegistry()
 

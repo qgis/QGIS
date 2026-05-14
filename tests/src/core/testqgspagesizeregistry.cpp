@@ -21,6 +21,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsPageSizeRegistry : public QObject
 {
@@ -44,20 +47,16 @@ class TestQgsPageSizeRegistry : public QObject
 };
 
 void TestQgsPageSizeRegistry::initTestCase()
-{
-}
+{}
 
 void TestQgsPageSizeRegistry::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsPageSizeRegistry::init()
-{
-}
+{}
 
 void TestQgsPageSizeRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsPageSizeRegistry::pageSizeEquality()
 {

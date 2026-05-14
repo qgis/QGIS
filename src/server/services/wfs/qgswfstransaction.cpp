@@ -40,6 +40,9 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWfs
 {
@@ -300,15 +303,12 @@ namespace QgsWfs
         throw QgsRequestNotWellFormedException( u"No capabilities to do WFS changes on layer '%1'"_s.arg( name ) );
       }
 
-      if ( !wfstUpdateLayerIds.contains( vlayer->id() )
-           && !wfstDeleteLayerIds.contains( vlayer->id() )
-           && !wfstInsertLayerIds.contains( vlayer->id() ) )
+      if ( !wfstUpdateLayerIds.contains( vlayer->id() ) && !wfstDeleteLayerIds.contains( vlayer->id() ) && !wfstInsertLayerIds.contains( vlayer->id() ) )
       {
         throw QgsSecurityAccessException( u"No permissions to do WFS changes on layer '%1'"_s.arg( name ) );
       }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      if ( accessControl && !accessControl->layerUpdatePermission( vlayer )
-           && !accessControl->layerDeletePermission( vlayer ) && !accessControl->layerInsertPermission( vlayer ) )
+      if ( accessControl && !accessControl->layerUpdatePermission( vlayer ) && !accessControl->layerDeletePermission( vlayer ) && !accessControl->layerInsertPermission( vlayer ) )
       {
         throw QgsSecurityAccessException( u"No permissions to do WFS changes on layer '%1'"_s.arg( name ) );
       }
@@ -373,9 +373,7 @@ namespace QgsWfs
 
       // expression context
       QgsExpressionContext expressionContext;
-      expressionContext << QgsExpressionContextUtils::globalScope()
-                        << QgsExpressionContextUtils::projectScope( project )
-                        << QgsExpressionContextUtils::layerScope( vlayer );
+      expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( project ) << QgsExpressionContextUtils::layerScope( vlayer );
       featureRequest.setExpressionContext( expressionContext );
 
       // verifying feature ids list
@@ -592,9 +590,7 @@ namespace QgsWfs
 
       // expression context
       QgsExpressionContext expressionContext;
-      expressionContext << QgsExpressionContextUtils::globalScope()
-                        << QgsExpressionContextUtils::projectScope( project )
-                        << QgsExpressionContextUtils::layerScope( vlayer );
+      expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( project ) << QgsExpressionContextUtils::layerScope( vlayer );
       featureRequest.setExpressionContext( expressionContext );
 
       // verifying feature ids list
@@ -869,8 +865,7 @@ namespace QgsWfs
     }
 
     // Verifying parameters mutually exclusive
-    if ( ( parameters.contains( u"FEATUREID"_s )
-           && ( parameters.contains( u"FILTER"_s ) || parameters.contains( u"BBOX"_s ) ) )
+    if ( ( parameters.contains( u"FEATUREID"_s ) && ( parameters.contains( u"FILTER"_s ) || parameters.contains( u"BBOX"_s ) ) )
          || ( parameters.contains( u"FILTER"_s ) && ( parameters.contains( u"FEATUREID"_s ) || parameters.contains( u"BBOX"_s ) ) )
          || ( parameters.contains( u"BBOX"_s ) && ( parameters.contains( u"FEATUREID"_s ) || parameters.contains( u"FILTER"_s ) ) ) )
     {

@@ -22,8 +22,7 @@
 QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 QString QgsUuidWidgetWrapper::createUiid( int maxLength )
 {

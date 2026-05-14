@@ -28,7 +28,6 @@ A user profile is all settings and anything that used to be found in
 #include "qgsuserprofile.h"
 %End
   public:
-
     QgsUserProfile( const QString &folder );
 %Docstring
 Reference to an existing user profile folder. Profile folder should be

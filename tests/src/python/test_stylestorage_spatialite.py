@@ -1,4 +1,4 @@
-""""Style storage tests for Spatialite
+""" "Style storage tests for Spatialite
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,10 +14,9 @@ __copyright__ = "Copyright 2022, ItOpen"
 import os
 import shutil
 
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import QgsDataSourceUri, QgsProviderRegistry
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
-
 from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
 from utilities import unitTestDataPath
 
@@ -25,7 +24,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
-
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = "spatialite"
 

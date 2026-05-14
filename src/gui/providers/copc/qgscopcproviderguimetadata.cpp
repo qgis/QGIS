@@ -19,11 +19,14 @@
 
 #include "qgsapplication.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsCopcProviderGuiMetadata::QgsCopcProviderGuiMetadata()
   : QgsProviderGuiMetadata( u"copc"_s )
-{
-}
+{}
 
 ///@endcond

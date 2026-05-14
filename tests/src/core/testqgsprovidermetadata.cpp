@@ -19,6 +19,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProviderMetadata : public QObject
 {
@@ -59,8 +62,7 @@ void TestQgsProviderMetadata::init()
 }
 
 void TestQgsProviderMetadata::cleanup()
-{
-}
+{}
 
 void TestQgsProviderMetadata::cleanupTestCase()
 {
@@ -76,7 +78,8 @@ void TestQgsProviderMetadata::checkBoolParameterSetting()
   QgsProviderMetadata::setBoolParameter( uri, u"testFour"_s, u"true"_s );
   QgsProviderMetadata::setBoolParameter( uri, u"testFive"_s, true );
 
-  QVariantMap expected = { { u"testOne"_s, QVariant( true ) }, { u"testTwo"_s, QVariant( true ) }, { u"testThree"_s, QVariant( true ) }, { u"testFour"_s, QVariant( true ) }, { u"testFive"_s, QVariant( true ) } };
+  QVariantMap expected
+    = { { u"testOne"_s, QVariant( true ) }, { u"testTwo"_s, QVariant( true ) }, { u"testThree"_s, QVariant( true ) }, { u"testFour"_s, QVariant( true ) }, { u"testFive"_s, QVariant( true ) } };
 
   QCOMPARE( uri, expected );
 

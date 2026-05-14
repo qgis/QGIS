@@ -21,7 +21,11 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
+
 #include "moc_qgsauthapiheadermethod.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthapiheaderedit.h"
@@ -42,8 +46,13 @@ QgsAuthApiHeaderMethod::QgsAuthApiHeaderMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList() << u"ows"_s << u"wfs"_s // convert to lowercase
-                                  << u"wcs"_s << u"wms"_s );
+  setDataProviders(
+    QStringList()
+    << u"ows"_s
+    << u"wfs"_s // convert to lowercase
+    << u"wcs"_s
+    << u"wms"_s
+  );
 }
 
 QString QgsAuthApiHeaderMethod::key() const

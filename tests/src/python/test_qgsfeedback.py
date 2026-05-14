@@ -10,13 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "12/02/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsFeedback
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import unittest
 
 
 class TestQgsFeedback(unittest.TestCase):
-
     def testCancel(self):
         f = QgsFeedback()
         self.assertFalse(f.isCanceled())

@@ -17,10 +17,11 @@
 #define QGSLAYOUTQPTDROPHANDLER_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgslayoutcustomdrophandler.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup gui

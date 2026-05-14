@@ -1,0 +1,65 @@
+{
+  "name": "equals_topological",
+  "type": "function",
+  "groups": [
+    "GeometryGroup"
+  ],
+  "description": "Tests whether two geometries are topologically equal. Returns TRUE if geometry1 is topologically equal to geometry2, i.e. opposite data direction and duplicated data are valid.",
+  "arguments": [
+    {
+      "arg": "geometry1",
+      "description": "a geometry"
+    },
+    {
+      "arg": "geometry2",
+      "description": "a geometry"
+    },
+    {
+      "arg": "backend",
+      "optional": true,
+      "default": "'GEOS'",
+      "description": "Available geometry backend implementations: 'GEOS'. 'GEOS' works only on 2D components, Z or M components are ignored."
+    }
+  ],
+  "examples": [
+    {
+      "expression": "equals_topological( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0 0 )' ) )",
+      "returns": "TRUE"
+    },
+    {
+      "expression": "equals_topological( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( ( 1 0 ) )' ) )",
+      "returns": "FALSE"
+    },
+    {
+      "expression": "equals_topological( geom_from_wkt( 'POINTZ( 0 0 -10 )' ), geom_from_wkt( 'POINTZ( 0 0 5 )' ) )",
+      "returns": "TRUE",
+      "note": "Z coordinates are ignored, so it passes"
+    },
+    {
+      "expression": "equals_topological( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ), 'GEOS' )",
+      "returns": "TRUE"
+    },
+    {
+      "expression": "equals_topological( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'LINESTRING( 1 1, 0 0 )' ) )",
+      "returns": "TRUE",
+      "note": "Opposite direction are valid"
+    },
+    {
+      "expression": "equals_topological( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'MULTILINESTRING(( 0 0, 1 1 ), ( 0 0, 1 1 ))' ) )",
+      "returns": "TRUE",
+      "note": "Duplicated data are valid"
+    },
+    {
+      "expression": "equals_topological( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'MULTILINESTRING(( 0 0, 1 1 ), ( 1 1, 0 0 ))' ) )",
+      "returns": "TRUE",
+      "note": "Duplicated data and opposite direction are valid"
+    }
+  ],
+  "tags": [
+    "tests",
+    "equal",
+    "equals",
+    "topologically",
+    "equals_topological"
+  ]
+}

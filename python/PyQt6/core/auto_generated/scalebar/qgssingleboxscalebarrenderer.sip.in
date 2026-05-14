@@ -9,7 +9,7 @@
 
 
 
-class QgsSingleBoxScaleBarRenderer: QgsScaleBarRenderer
+class QgsSingleBoxScaleBarRenderer : QgsScaleBarRenderer
 {
 %Docstring(signature="appended")
 Scalebar style that draws a single box with alternating color for the
@@ -20,7 +20,6 @@ segments.
 #include "qgssingleboxscalebarrenderer.h"
 %End
   public:
-
     QgsSingleBoxScaleBarRenderer();
 
     virtual QString id() const;
@@ -34,9 +33,8 @@ segments.
     virtual QgsSingleBoxScaleBarRenderer *clone() const /Factory/;
 
 
-     virtual void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
-               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+    virtual void draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+
 
     virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
 

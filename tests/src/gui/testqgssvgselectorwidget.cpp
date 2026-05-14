@@ -17,7 +17,10 @@
 #include "qgstest.h"
 
 #include <QPixmapCache>
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsSvgSelectorWidget : public QgsTest
 {
@@ -25,7 +28,8 @@ class TestQgsSvgSelectorWidget : public QgsTest
 
   public:
     TestQgsSvgSelectorWidget()
-      : QgsTest( u"SVG Selector Widget Tests"_s ) {}
+      : QgsTest( u"SVG Selector Widget Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -47,12 +51,10 @@ void TestQgsSvgSelectorWidget::cleanupTestCase()
 }
 
 void TestQgsSvgSelectorWidget::init()
-{
-}
+{}
 
 void TestQgsSvgSelectorWidget::cleanup()
-{
-}
+{}
 
 void TestQgsSvgSelectorWidget::testPixmapCache()
 {

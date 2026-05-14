@@ -15,14 +15,13 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import (
-    QVariant,
-)
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
+    QgsDefaultValue,
     QgsFeature,
     QgsField,
     QgsFields,
@@ -30,16 +29,17 @@ from qgis.core import (
     QgsLineString,
     QgsPoint,
     QgsPointXY,
+    QgsUnsetAttributeValue,
     QgsVectorFileWriter,
     QgsVectorLayer,
     QgsVectorLayerEditUtils,
-    QgsWkbTypes,
-    QgsDefaultValue,
     QgsVectorLayerUtils,
-    QgsUnsetAttributeValue,
+    QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import (
+    QVariant,
+)
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -59,7 +59,6 @@ def createEmptyMultiPolygonLayer():
 
 
 class TestQgsVectorLayerEditUtils(QgisTestCase):
-
     def testAddRing(self):
         # test adding ring to a vector layer
         layer = createEmptyPolygonLayer()

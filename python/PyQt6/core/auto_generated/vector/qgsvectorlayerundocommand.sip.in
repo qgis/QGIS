@@ -23,7 +23,6 @@ Base class for undo commands within a
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-
     QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer *buffer /Transfer/ );
 %Docstring
 Constructor for QgsVectorLayerUndoCommand
@@ -54,7 +53,6 @@ Undo command for adding a feature to a vector layer.
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-
     QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeature &f );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandAddFeature
@@ -82,7 +80,6 @@ Undo command for deleting a feature from a vector layer.
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-
     QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandDeleteFeature
@@ -110,7 +107,6 @@ layer.
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-
     QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, const QgsGeometry &newGeom );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandChangeGeometry
@@ -143,7 +139,6 @@ layer.
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-
     QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandChangeAttribute
@@ -172,7 +167,6 @@ Undo command for adding a new attribute to a vector layer.
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-
     QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, const QgsField &field );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandAddAttribute
@@ -199,7 +193,6 @@ Undo command for removing an existing attribute from a vector layer.
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-
     QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int fieldIndex );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandDeleteAttribute
@@ -227,7 +220,6 @@ Undo command for renaming an existing attribute of a vector layer.
 #include "qgsvectorlayerundocommand.h"
 %End
   public:
-
     QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int fieldIndex, const QString &newName );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandRenameAttribute

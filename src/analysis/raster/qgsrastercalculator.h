@@ -79,14 +79,15 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     //! Result of the calculation
     enum class Result SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterCalculator, Result ) : int
     {
-      Success = 0,           //!< Calculation successful
-      CreateOutputError = 1, //!< Error creating output data file
-      InputLayerError = 2,   //!< Error reading input layer
-      Canceled = 3,          //!< User canceled calculation
-      ParserError = 4,       //!< Error parsing formula
-      MemoryError = 5,       //!< Error allocating memory for result
-      BandError = 6,         //!< Invalid band number for input
-      CalculationError = 7,  //!< Error occurred while performing calculation
+      Success = 0,               //!< Calculation successful
+      CreateOutputError = 1,     //!< Error creating output data file
+      InputLayerError = 2,       //!< Error reading input layer
+      Canceled = 3,              //!< User canceled calculation
+      ParserError = 4,           //!< Error parsing formula
+      MemoryError = 5,           //!< Error allocating memory for result
+      BandError = 6,             //!< Invalid band number for input
+      CalculationError = 7,      //!< Error occurred while performing calculation
+      OpenCLKernelBuildError = 8 //!< Error building OpenCL kernel. \since QGIS 4.0
     };
 
 
@@ -103,7 +104,17 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \param transformContext coordinate transformation context
      * \since QGIS 3.8
      */
-    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext );
+    QgsRasterCalculator(
+      const QString &formulaString,
+      const QString &outputFile,
+      const QString &outputFormat,
+      const QgsRectangle &outputExtent,
+      const QgsCoordinateReferenceSystem &outputCrs,
+      int nOutputColumns,
+      int nOutputRows,
+      const QVector<QgsRasterCalculatorEntry> &rasterEntries,
+      const QgsCoordinateTransformContext &transformContext
+    );
 
     /**
      * QgsRasterCalculator constructor.
@@ -117,7 +128,16 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \param transformContext coordinate transformation context
      * \since QGIS 3.8
      */
-    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext );
+    QgsRasterCalculator(
+      const QString &formulaString,
+      const QString &outputFile,
+      const QString &outputFormat,
+      const QgsRectangle &outputExtent,
+      int nOutputColumns,
+      int nOutputRows,
+      const QVector<QgsRasterCalculatorEntry> &rasterEntries,
+      const QgsCoordinateTransformContext &transformContext
+    );
 
     /**
      * QgsRasterCalculator constructor.
@@ -131,7 +151,16 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \param rasterEntries list of referenced raster layers
      * \deprecated QGIS 3.8. Use the version with transformContext instead.
      */
-    Q_DECL_DEPRECATED QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsRasterCalculator(
+      const QString &formulaString,
+      const QString &outputFile,
+      const QString &outputFormat,
+      const QgsRectangle &outputExtent,
+      const QgsCoordinateReferenceSystem &outputCrs,
+      int nOutputColumns,
+      int nOutputRows,
+      const QVector<QgsRasterCalculatorEntry> &rasterEntries
+    ) SIP_DEPRECATED;
 
     /**
     * QgsRasterCalculator constructor.
@@ -144,7 +173,9 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     * \param rasterEntries list of referenced raster layers
     * \deprecated QGIS 3.8. Use the version with transformContext instead.
     */
-    Q_DECL_DEPRECATED QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsRasterCalculator(
+      const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries
+    ) SIP_DEPRECATED;
 
     /**
      * Starts the calculation and writes a new raster.

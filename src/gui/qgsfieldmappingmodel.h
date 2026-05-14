@@ -80,7 +80,9 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
      * field name to the corresponding expression. A \a parent object
      * can be also specified.
      */
-    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>(), QObject *parent = nullptr );
+    QgsFieldMappingModel(
+      const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>(), QObject *parent = nullptr
+    );
 
     /**
      * Sets the list of \a nativeTypes supported by a data provider.

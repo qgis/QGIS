@@ -23,7 +23,11 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsmapthemecollection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
   : mProject( project )
@@ -103,7 +107,7 @@ void QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *pare
 QgsMapThemeCollection::MapThemeRecord QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *root, QgsLayerTreeModel *model )
 {
   QgsMapThemeCollection::MapThemeRecord rec;
-  rec.setHasExpandedStateInfo( true );  // all newly created theme records have expanded state info
+  rec.setHasExpandedStateInfo( true ); // all newly created theme records have expanded state info
   rec.setHasCheckedStateInfo( true );  // all newly created theme records have checked state info
   createThemeFromCurrentState( root, model, rec );
   return rec;
@@ -155,8 +159,7 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
     {
       QString ruleKey = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
       Qt::CheckState shouldHaveState = layerRec.checkedLegendItems.contains( ruleKey ) ? Qt::Checked : Qt::Unchecked;
-      if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
-           legendNode->data( Qt::CheckStateRole ).toInt() != shouldHaveState )
+      if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) && legendNode->data( Qt::CheckStateRole ).toInt() != shouldHaveState )
         legendNode->setData( shouldHaveState, Qt::CheckStateRole );
     }
   }
@@ -166,8 +169,7 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
     const QList<QgsLayerTreeModelLegendNode *> constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
-      if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
-           legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
+      if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) && legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
         legendNode->setData( Qt::Checked, Qt::CheckStateRole );
     }
   }
@@ -281,7 +283,7 @@ void QgsMapThemeCollection::update( const QString &name, const MapThemeRecord &s
   emit mapThemesChanged();
 }
 
-bool QgsMapThemeCollection::renameMapTheme( const QString &name,  const QString &newName )
+bool QgsMapThemeCollection::renameMapTheme( const QString &name, const QString &newName )
 {
   if ( !mMapThemes.contains( name ) || mMapThemes.contains( newName ) )
     return false;
@@ -389,7 +391,7 @@ QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverrides( const QStr
   if ( !mMapThemes.contains( presetName ) )
     return styleOverrides;
 
-  const QList<MapThemeLayerRecord> records {mMapThemes.value( presetName ).mLayerRecords};
+  const QList<MapThemeLayerRecord> records { mMapThemes.value( presetName ).mLayerRecords };
   for ( const MapThemeLayerRecord &layerRec : records )
   {
     if ( !layerRec.layer() )

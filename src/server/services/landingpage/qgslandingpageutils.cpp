@@ -34,6 +34,9 @@
 #include <QCryptographicHash>
 #include <QDomDocument>
 #include <QFileSystemWatcher>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { u"/(?<projectHash>[a-f0-9]{32})"_s };
 QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;
@@ -192,8 +195,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
             { "city", a.city.toStdString() },
             { "country", a.country.toStdString() },
             { "postalCode", a.postalCode.toStdString() },
-            { "administrativeArea", a.administrativeArea.toStdString() }
-          }
+            { "administrativeArea", a.administrativeArea.toStdString() } }
         );
       }
       jContacts.push_back( jContact );
@@ -212,8 +214,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
           { "type", l.type.toStdString() },
           { "mimeType", l.mimeType.toStdString() },
           { "format", l.format.toStdString() },
-          { "size", l.size.toStdString() }
-        }
+          { "size", l.size.toStdString() } }
       );
     }
     return jLinks;
@@ -232,8 +233,9 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     if ( viewSettings && !viewSettings->defaultViewExtent().isEmpty() )
     {
       QgsRectangle extent { viewSettings->defaultViewExtent() };
-      // Need conversion?
-      if ( viewSettings->defaultViewExtent().crs().authid() != "EPSG:4326"_L1 )
+      // Only transform to EPSG:4326 for Earth-based CRS
+      const QgsCoordinateReferenceSystem viewCrs { viewSettings->defaultViewExtent().crs() };
+      if ( viewCrs.authid() != "EPSG:4326"_L1 && viewCrs.isEarthCrs() )
       {
         QgsCoordinateTransform ct { p->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
         extent = ct.transform( extent );
@@ -250,7 +252,11 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         if ( !canvasElements.isEmpty() )
         {
           const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( u"extent"_s ) };
-          if ( !canvasElement.isNull() && !canvasElement.firstChildElement( u"xmin"_s ).isNull() && !canvasElement.firstChildElement( u"ymin"_s ).isNull() && !canvasElement.firstChildElement( u"xmax"_s ).isNull() && !canvasElement.firstChildElement( u"ymax"_s ).isNull() )
+          if ( !canvasElement.isNull()
+               && !canvasElement.firstChildElement( u"xmin"_s ).isNull()
+               && !canvasElement.firstChildElement( u"ymin"_s ).isNull()
+               && !canvasElement.firstChildElement( u"xmax"_s ).isNull()
+               && !canvasElement.firstChildElement( u"ymax"_s ).isNull() )
           {
             QgsRectangle extent {
               canvasElement.firstChildElement( u"xmin"_s ).text().toDouble(),
@@ -258,8 +264,8 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
               canvasElement.firstChildElement( u"xmax"_s ).text().toDouble(),
               canvasElement.firstChildElement( u"ymax"_s ).text().toDouble(),
             };
-            // Need conversion?
-            if ( temporaryProject.crs().authid() != "EPSG:4326"_L1 )
+            // Only transform to EPSG:4326 for Earth-based CRS
+            if ( temporaryProject.crs().authid() != "EPSG:4326"_L1 && temporaryProject.crs().isEarthCrs() )
             {
               QgsCoordinateTransform ct { temporaryProject.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), temporaryProject.transformContext() };
               extent = ct.transform( extent );
@@ -269,10 +275,15 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         }
       } );
 
-      QgsMessageLog::logMessage( QStringLiteral( "The project '%1' was saved with a version of QGIS which does not contain initial extent information. "
-                                                 "For better performances consider re-saving the project with the latest version of QGIS." )
-                                   .arg( projectUri ),
-                                 u"Landing Page"_s, Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage(
+        QStringLiteral(
+          "The project '%1' was saved with a version of QGIS which does not contain initial extent information. "
+          "For better performances consider re-saving the project with the latest version of QGIS."
+        )
+          .arg( projectUri ),
+        u"Landing Page"_s,
+        Qgis::MessageLevel::Warning
+      );
       temporaryProject.read( projectUri );
     }
 
@@ -288,7 +299,14 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     info["description"] = description.toStdString();
     // CRS
     const QStringList wmsOutputCrsList { QgsServerProjectUtils::wmsOutputCrsList( *p ) };
-    const QString crs = wmsOutputCrsList.contains( u"EPSG:4326"_s ) || wmsOutputCrsList.isEmpty() ? u"EPSG:4326"_s : wmsOutputCrsList.first();
+    // Prefer EPSG:4326 for Earth-based projects; for non-Earth use the first available CRS or project CRS
+    QString crs;
+    if ( p->crs().isEarthCrs() && ( wmsOutputCrsList.contains( u"EPSG:4326"_s ) || wmsOutputCrsList.isEmpty() ) )
+      crs = u"EPSG:4326"_s;
+    else if ( !wmsOutputCrsList.isEmpty() )
+      crs = wmsOutputCrsList.first();
+    else
+      crs = p->crs().authid();
     info["crs"] = crs.toStdString();
     // Typenames for WMS
     const bool useIds { QgsServerProjectUtils::wmsUseLayerIds( *p ) };
@@ -339,13 +357,17 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
       }
     }
     info["extent"] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
-    QgsRectangle geographicExtent { extent };
-    if ( targetCrs.authid() != "EPSG:4326"_L1 )
+    // geographic_extent is only meaningful for Earth-based projects (EPSG:4326 is Earth-specific)
+    if ( targetCrs.isEarthCrs() )
     {
-      QgsCoordinateTransform ct { targetCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
-      geographicExtent = ct.transform( geographicExtent );
+      QgsRectangle geographicExtent { extent };
+      if ( targetCrs.authid() != "EPSG:4326"_L1 )
+      {
+        QgsCoordinateTransform ct { targetCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
+        geographicExtent = ct.transform( geographicExtent );
+      }
+      info["geographic_extent"] = json::array( { geographicExtent.xMinimum(), geographicExtent.yMinimum(), geographicExtent.xMaximum(), geographicExtent.yMaximum() } );
     }
-    info["geographic_extent"] = json::array( { geographicExtent.xMinimum(), geographicExtent.yMinimum(), geographicExtent.xMaximum(), geographicExtent.yMaximum() } );
 
     // Metadata
     json metadata;
@@ -454,9 +476,13 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
               continue;
             }
             const QgsFieldConstraints::Constraints constraints { field.constraints().constraints() };
-            const bool notNull = constraints & QgsFieldConstraints::Constraint::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
-            const bool unique = constraints & QgsFieldConstraints::Constraint::ConstraintUnique && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
-            const bool hasExpression = constraints & QgsFieldConstraints::Constraint::ConstraintExpression && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool notNull = constraints & QgsFieldConstraints::Constraint::ConstraintNotNull
+                                 && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool unique = constraints & QgsFieldConstraints::Constraint::ConstraintUnique
+                                && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool hasExpression = constraints & QgsFieldConstraints::Constraint::ConstraintExpression
+                                       && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression )
+                                            == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
             const QString defaultValue = vl->dataProvider()->defaultValueClause( fieldIdx );
             const bool isReadOnly = notNull && unique && !defaultValue.isEmpty();
             fieldsData[field.name().toStdString()] = {
@@ -526,12 +552,10 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         json constraints = json::array();
         for ( const auto &c : cConstraints )
         {
-          constraints.push_back(
-            {
-              { "type", c.type.toStdString() },
-              { "constraint", c.constraint.toStdString() },
-            }
-          );
+          constraints.push_back( {
+            { "type", c.type.toStdString() },
+            { "constraint", c.constraint.toStdString() },
+          } );
         }
         layerMetadata["constraints"] = constraints;
         wmsLayer["metadata"] = layerMetadata;
@@ -572,8 +596,7 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsLayerTreeLayer *l { static_cast<const QgsLayerTreeLayer *>( node ) };
-      if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster )
-           && !wmsRestrictedLayers.contains( l->name() ) )
+      if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster ) && !wmsRestrictedLayers.contains( l->name() ) )
       {
         rec["id"] = l->layerId().toStdString();
         nodeIdentifier = l->layerId();

@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMAPPROXIMATEMEDIALAXIS_H
 #define QGSALGORITHMAPPROXIMATEMEDIALAXIS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -48,8 +49,14 @@ class QgsApproximateMedialAxisAlgorithm : public QgsProcessingFeatureBasedAlgori
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
+    void initParameters( const QVariantMap & ) override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+#ifdef WITH_SFCGAL
+  private:
+    bool mExtendToEdges = false;
+#endif
 };
 
 ///@endcond PRIVATE

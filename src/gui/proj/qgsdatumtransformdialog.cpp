@@ -31,8 +31,11 @@
 
 #include <QDir>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdatumtransformdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent, QgsMapCanvas *mapCanvas, const QString &windowTitle )
 {
@@ -74,7 +77,19 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
   }
 }
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sCrs, const QgsCoordinateReferenceSystem &dCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice, QPair<int, int> selectedDatumTransforms, QWidget *parent, Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas, bool allowFallback )
+QgsDatumTransformDialog::QgsDatumTransformDialog(
+  const QgsCoordinateReferenceSystem &sCrs,
+  const QgsCoordinateReferenceSystem &dCrs,
+  const bool allowCrsChanges,
+  const bool showMakeDefault,
+  const bool forceChoice,
+  QPair<int, int> selectedDatumTransforms,
+  QWidget *parent,
+  Qt::WindowFlags f,
+  const QString &selectedProj,
+  QgsMapCanvas *mapCanvas,
+  bool allowFallback
+)
   : QDialog( parent, f )
   , mPreviousCursorOverride( std::make_unique<QgsTemporaryCursorRestoreOverride>() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
@@ -126,9 +141,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   mCoordinateOperationsWidget->setSourceCrs( sourceCrs );
   mCoordinateOperationsWidget->setDestinationCrs( destinationCrs );
 
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"working_with_projections/working_with_projections.html"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_projections/working_with_projections.html"_s ); } );
 
   connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationChanged, this, &QgsDatumTransformDialog::operationChanged );
   QgsCoordinateOperationWidget::OperationDetails deets;
@@ -139,15 +152,15 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   mCoordinateOperationsWidget->setSelectedOperation( deets );
 
   connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationDoubleClicked, this, [this] {
-    if ( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid()
-         && mCoordinateOperationsWidget->selectedOperation().isAvailable )
+    if ( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid() && mCoordinateOperationsWidget->selectedOperation().isAvailable )
       accept();
   } );
 }
 
 void QgsDatumTransformDialog::setOKButtonEnabled()
 {
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid() && mCoordinateOperationsWidget->selectedOperation().isAvailable );
+  mButtonBox->button( QDialogButtonBox::Ok )
+    ->setEnabled( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid() && mCoordinateOperationsWidget->selectedOperation().isAvailable );
 }
 
 void QgsDatumTransformDialog::accept()

@@ -28,7 +28,6 @@ calculated by specifying the statistic in the constructor or via
 #include "qgsstringstatisticalsummary.h"
 %End
   public:
-
     QgsStringStatisticalSummary( Qgis::StringStatistics stats = Qgis::StringStatistic::All );
 %Docstring
 Constructor for :py:class:`QgsStringStatistics`

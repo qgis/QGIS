@@ -8,6 +8,7 @@
 
 
 
+
 class QgsFeatureFilterModel : QgsFeaturePickerModelBase
 {
 %Docstring(signature="appended")

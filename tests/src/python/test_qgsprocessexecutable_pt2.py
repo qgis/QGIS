@@ -20,7 +20,6 @@ import sys
 import tempfile
 
 from qgis.testing import QgisTestCase, unittest
-
 from utilities import unitTestDataPath
 
 print("CTEST_FULL_OUTPUT")
@@ -29,7 +28,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProcessExecutablePt2(QgisTestCase):
-
     TMP_DIR = ""
 
     @classmethod

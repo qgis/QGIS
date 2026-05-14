@@ -20,6 +20,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgsphongmaterialsettings.h"
@@ -30,6 +31,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgs3DCameraController : public QgsTest
 {
@@ -1350,7 +1355,7 @@ void TestQgs3DCameraController::testOrthographic()
   QMouseEvent mouseReleaseEvent3( QEvent::MouseButtonRelease, midPos + movement3, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent3 ) );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, -193, 403 ), 5 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, 502, 137 ), 5 );
 
   delete scene;
   mapSettings->setLayers( {} );

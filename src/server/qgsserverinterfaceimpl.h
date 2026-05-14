@@ -19,12 +19,12 @@
 #ifndef QGSSERVERINTERFACEIMPL_H
 #define QGSSERVERINTERFACEIMPL_H
 
-#define SIP_NO_FILE
-
 
 #include "qgscapabilitiescache.h"
 #include "qgsservercachemanager.h"
 #include "qgsserverinterface.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup server

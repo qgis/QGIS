@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsAttributeEditorSpacerElement : public QgsAttributeEditorElement
 {
   public:
-
     /**
      * Creates a new element which represents a spacer
      *

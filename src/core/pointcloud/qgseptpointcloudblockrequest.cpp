@@ -24,7 +24,11 @@
 #include "qgssetrequestinitiator_p.h"
 #include "qgstiledownloadmanager.h"
 
+#include <QString>
+
 #include "moc_qgseptpointcloudblockrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsEptPointCloudBlockRequest
@@ -32,12 +36,20 @@
 
 ///@cond PRIVATE
 
-QgsEptPointCloudBlockRequest::QgsEptPointCloudBlockRequest( const QgsPointCloudNodeId &node, const QString &uri, const QString &dataType,
-    const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect,
-    const QString &authcfg )
-  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect ),
-    mDataType( dataType )
+QgsEptPointCloudBlockRequest::QgsEptPointCloudBlockRequest(
+  QgsPointCloudNodeId node,
+  const QString &uri,
+  const QString &dataType,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QgsPointCloudAttributeCollection &requestedAttributes,
+  const QgsVector3D &scale,
+  const QgsVector3D &offset,
+  const QgsPointCloudExpression &filterExpression,
+  const QgsRectangle &filterRect,
+  const QString &authcfg
+)
+  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect )
+  , mDataType( dataType )
 {
   QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
   QgsSetRequestInitiatorClass( nr, u"QgsEptPointCloudBlockRequest"_s );

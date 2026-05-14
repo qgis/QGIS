@@ -13,29 +13,26 @@ __author__ = "Nyall Dawson"
 __date__ = "03/06/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
+import unittest
+
+from qgis.core import QgsField, QgsFields
+from qgis.gui import QgsAggregateMappingModel, QgsAggregateMappingWidget
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QItemSelectionModel,
     QModelIndex,
-    QVariant,
     Qt,
+    QVariant,
 )
-from qgis.core import QgsField, QgsFields
-from qgis.gui import QgsAggregateMappingModel, QgsAggregateMappingWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestPyQgsAggregateMappingModel(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
     def setUp(self):

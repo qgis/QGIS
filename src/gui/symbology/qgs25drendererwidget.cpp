@@ -20,7 +20,11 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgs25drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
@@ -34,10 +38,14 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   {
     //setup blank dialog
     QGridLayout *layout = new QGridLayout( this );
-    QLabel *label = new QLabel( tr( "The 2.5D renderer only can be used with polygon layers. \n"
-                                    "'%1' is not a polygon layer and cannot be rendered in 2.5D." )
-                                  .arg( layer->name() ),
-                                this );
+    QLabel *label = new QLabel(
+      tr(
+        "The 2.5D renderer only can be used with polygon layers. \n"
+        "'%1' is not a polygon layer and cannot be rendered in 2.5D."
+      )
+        .arg( layer->name() ),
+      this
+    );
     layout->addWidget( label );
     return;
   }

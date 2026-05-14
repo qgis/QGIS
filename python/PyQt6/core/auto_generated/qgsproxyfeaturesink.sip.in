@@ -28,7 +28,6 @@ destination sink.
 #include "qgsproxyfeaturesink.h"
 %End
   public:
-
     QgsProxyFeatureSink( QgsFeatureSink *sink );
 %Docstring
 Constructs a new QgsProxyFeatureSink which forwards features onto a
@@ -54,12 +53,7 @@ forward features to.
 %End
 
   protected:
-
 };
-
-
-
-
 
 
 /************************************************************************

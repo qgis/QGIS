@@ -32,12 +32,11 @@ class QgsLayoutItemMap;
  * \ingroup core
  * \brief A layout item subclass for scale bars.
  */
-class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemScaleBar : public QgsLayoutItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemScaleBar, with the specified parent \a layout.
      */
@@ -91,7 +90,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * \see setNumberOfSubdivisions()
      * \since QGIS 3.14
      */
-    int numberOfSubdivisions()  const { return mSettings.numberOfSubdivisions(); }
+    int numberOfSubdivisions() const { return mSettings.numberOfSubdivisions(); }
 
     /**
      * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
@@ -208,7 +207,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Sets the \a label for units.
      * \see unitLabel()
      */
-    void setUnitLabel( const QString &label ) { mSettings.setUnitLabel( label );}
+    void setUnitLabel( const QString &label ) { mSettings.setUnitLabel( label ); }
 
     /**
      * Returns the text format used for drawing text in the scalebar.
@@ -485,7 +484,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Sets the spacing (in millimeters) between labels and the scalebar.
      * \see labelBarSpace()
      */
-    void setLabelBarSpace( double space ) {mSettings.setLabelBarSpace( space );}
+    void setLabelBarSpace( double space ) { mSettings.setLabelBarSpace( space ); }
 
     /**
      * Returns the spacing (margin) between the scalebar box and content in millimeters.
@@ -676,7 +675,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     ExportLayerBehavior exportLayerBehavior() const override;
 
   protected:
-
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
@@ -686,7 +684,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void disconnectCurrentMap();
 
   private:
-
     //! Linked map
     QgsLayoutItemMap *mMap = nullptr;
     QString mMapUuid;
@@ -742,5 +739,3 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 };
 
 #endif //QGSLAYOUTITEMSCALEBAR_H
-
-

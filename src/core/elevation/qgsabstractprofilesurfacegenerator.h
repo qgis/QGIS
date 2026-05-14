@@ -17,17 +17,28 @@
 #ifndef QGSABSTRACTPROFILESURFACEGENERATOR_H
 #define QGSABSTRACTPROFILESURFACEGENERATOR_H
 
+#include <limits>
 #include <memory>
 
+#include "qgis.h"
 #include "qgis_core.h"
-#include "qgis_sip.h"
+#include "qgsabstractgeometry.h"
 #include "qgsabstractprofilegenerator.h"
+#include "qgscurve.h"
 #include "qgsfillsymbol.h"
+#include "qgsgeometry.h"
 #include "qgslinesymbol.h"
+#include "qgsprofilesnapping.h"
+#include "qgsrange.h"
+
+#include <QMap>
+#include <QString>
+#include <QVector>
+
+#define SIP_NO_FILE
 
 class QgsProfileRequest;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Abstract base class for storage of elevation profiles which represent a continuous surface (e.g. mesh layers and raster layers).
@@ -39,7 +50,6 @@ class QgsProfileRequest;
 class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileResults
 {
   public:
-
     ~QgsAbstractProfileSurfaceResults() override;
 
     QString mId;
@@ -59,7 +69,7 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
     QgsPointSequence sampledPoints() const override;
     QgsDoubleRange zRange() const override;
     QVector< QgsGeometry > asGeometries() const override;
-    QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
+    QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     using QgsAbstractProfileResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
@@ -77,7 +87,6 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
 class CORE_EXPORT QgsAbstractProfileSurfaceGenerator : public QgsAbstractProfileGenerator
 {
   public:
-
     /**
      * Constructor for QgsAbstractProfileSurfaceGenerator.
      */
@@ -125,7 +134,6 @@ class CORE_EXPORT QgsAbstractProfileSurfaceGenerator : public QgsAbstractProfile
     void setElevationLimit( double limit );
 
   protected:
-
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
@@ -134,7 +142,6 @@ class CORE_EXPORT QgsAbstractProfileSurfaceGenerator : public QgsAbstractProfile
     std::unique_ptr< QgsCurve > mProfileCurve;
 
     friend class QgsAbstractProfileSurfaceResults;
-
 };
 
 

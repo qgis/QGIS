@@ -10,21 +10,21 @@ __author__ = "Nyall Dawson"
 __date__ = "10/11/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QBuffer, QCoreApplication, QDateTime
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     NULL,
     Qgis,
     QgsGpsLogger,
     QgsNmeaConnection,
-    QgsSettings,
+    QgsSettingsTree,
     QgsVectorLayer,
     QgsVectorLayerGpsLogger,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QBuffer, QDateTime, Qt
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -33,7 +33,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class GpsReplay(QgsNmeaConnection):
-
     def __init__(self):
         self.buffer = QBuffer()
         self.buffer.open(QBuffer.OpenModeFlag.ReadWrite)
@@ -54,23 +53,20 @@ class GpsReplay(QgsNmeaConnection):
 
 
 class TestQgsGpsLogger(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestQgsGpsLogger.com")
-        QCoreApplication.setApplicationName("TestQgsGpsLogger")
-        QgsSettings().clear()
-
         start_app()
+        cls.settings_node = QgsSettingsTree.node("gps")
 
-        settings = QgsSettings()
-        settings.setValue("/gps/leap-seconds", 48)
-        settings.setValue("/gps/timestamp-offset-from-utc", 3000)
-        settings.setValue("/gps/timestamp-time-spec", "OffsetFromUTC")
+        cls.settings_node.childSetting("leap-seconds").setVariantValue(48)
+        cls.settings_node.childSetting("timestamp-offset-from-utc").setVariantValue(
+            3000
+        )
+        cls.settings_node.childSetting("timestamp-time-spec").setVariantValue(
+            Qt.TimeSpec.OffsetFromUTC
+        )
 
     def test_setters(self):
         logger = QgsVectorLayerGpsLogger(None)
@@ -484,8 +480,12 @@ class TestQgsGpsLogger(QgisTestCase):
         self.assertTrue(points_layer.isValid())
         self.assertEqual(points_layer.crs().authid(), "EPSG:28355")
 
-        QgsSettings().setValue("gps/store-attribute-in-m-values", True)
-        QgsSettings().setValue("gps/m-value-attribute", "Timestamp")
+        self.settings_node.childSetting("store-attribute-in-m-values").setVariantValue(
+            True
+        )
+        self.settings_node.childSetting("m-value-attribute").setVariantValue(
+            "Timestamp"
+        )
 
         gps_connection = GpsReplay()
 
@@ -537,7 +537,9 @@ class TestQgsGpsLogger(QgisTestCase):
         self.assertEqual(
             f.geometry().asWkt(-3), "Point M (-1296000 21435000 1579682477000)"
         )
-        QgsSettings().setValue("gps/store-attribute-in-m-values", False)
+        self.settings_node.childSetting("store-attribute-in-m-values").setVariantValue(
+            False
+        )
 
     def test_point_recording_m_value_altitude(self):
         points_layer = QgsVectorLayer(
@@ -549,8 +551,10 @@ class TestQgsGpsLogger(QgisTestCase):
         self.assertEqual(points_layer.crs().authid(), "EPSG:28355")
         self.assertEqual(points_layer.wkbType(), QgsWkbTypes.Type.PointZM)
 
-        QgsSettings().setValue("gps/store-attribute-in-m-values", True)
-        QgsSettings().setValue("gps/m-value-attribute", "Altitude")
+        self.settings_node.childSetting("store-attribute-in-m-values").setVariantValue(
+            True
+        )
+        self.settings_node.childSetting("m-value-attribute").setVariantValue("Altitude")
 
         gps_connection = GpsReplay()
 
@@ -585,7 +589,9 @@ class TestQgsGpsLogger(QgisTestCase):
         self.assertEqual(
             f.geometry().asWkt(-3), "Point ZM (-1297000 21435000 3000 3000)"
         )
-        QgsSettings().setValue("gps/store-attribute-in-m-values", False)
+        self.settings_node.childSetting("store-attribute-in-m-values").setVariantValue(
+            False
+        )
 
     def test_track_recording(self):
         line_layer = QgsVectorLayer(
@@ -728,8 +734,12 @@ class TestQgsGpsLogger(QgisTestCase):
         self.assertTrue(line_layer.isValid())
         self.assertEqual(line_layer.crs().authid(), "EPSG:28355")
 
-        QgsSettings().setValue("gps/store-attribute-in-m-values", True)
-        QgsSettings().setValue("gps/m-value-attribute", "Timestamp")
+        self.settings_node.childSetting("store-attribute-in-m-values").setVariantValue(
+            True
+        )
+        self.settings_node.childSetting("m-value-attribute").setVariantValue(
+            "Timestamp"
+        )
 
         gps_connection = GpsReplay()
 

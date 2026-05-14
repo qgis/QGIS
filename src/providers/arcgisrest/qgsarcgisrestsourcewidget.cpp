@@ -19,7 +19,11 @@
 
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
 #include "moc_qgsarcgisrestsourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsArcGisRestSourceWidget::QgsArcGisRestSourceWidget( const QString &providerKey, QWidget *parent )
   : QgsProviderSourceWidget( parent )

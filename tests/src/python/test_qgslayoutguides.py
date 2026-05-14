@@ -10,10 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "05/07/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QModelIndex, Qt
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsLayout,
     QgsLayoutGuide,
@@ -25,14 +23,16 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QModelIndex, Qt
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLayoutGuide(QgisTestCase):
-
     def testGuideGettersSetters(self):
         p = QgsProject()
         l = QgsLayout(p)

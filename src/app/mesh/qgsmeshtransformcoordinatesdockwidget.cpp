@@ -109,8 +109,7 @@ void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const
       if ( mInputVertices.count() == 0 )
         mLabelInformation->setText( tr( "No vertex selected for mesh \"%1\"" ).arg( mInputLayer->name() ) );
       else
-        mLabelInformation->setText( tr( "%n vertices of mesh layer \"%1\" to transform", nullptr, mInputVertices.count() )
-                                      .arg( mInputLayer->name() ) );
+        mLabelInformation->setText( tr( "%n vertices of mesh layer \"%1\" to transform", nullptr, mInputVertices.count() ).arg( mInputLayer->name() ) );
     }
   }
 
@@ -127,7 +126,11 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
   mTransformVertices.clear();
   mTransformVertices.setInputVertices( mInputVertices );
-  mTransformVertices.setExpressions( mCheckBoxX->isChecked() ? mExpressionEditX->expression() : QString(), mCheckBoxY->isChecked() ? mExpressionEditY->expression() : QString(), mCheckBoxZ->isChecked() ? mExpressionEditZ->expression() : QString() );
+  mTransformVertices.setExpressions(
+    mCheckBoxX->isChecked() ? mExpressionEditX->expression() : QString(),
+    mCheckBoxY->isChecked() ? mExpressionEditY->expression() : QString(),
+    mCheckBoxZ->isChecked() ? mExpressionEditZ->expression() : QString()
+  );
 
   mTransformVertices.setZFromTerrain( mCheckBoxZFromProjectTerrain->isChecked() );
 

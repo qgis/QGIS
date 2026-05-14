@@ -41,7 +41,6 @@ class QgsPropertyCollection;
 class CORE_EXPORT QgsTextBufferSettings
 {
   public:
-
     QgsTextBufferSettings();
 
     QgsTextBufferSettings( const QgsTextBufferSettings &other );
@@ -230,9 +229,7 @@ class CORE_EXPORT QgsTextBufferSettings
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
   private:
-
     QSharedDataPointer<QgsTextBufferSettingsPrivate> d;
-
 };
 
 #endif // QGSTEXTBUFFERSETTINGS_H

@@ -12,6 +12,7 @@
 
 
 
+
 class QgsPointXY
 {
 %Docstring(signature="appended")
@@ -53,7 +54,6 @@ include:
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsPointXY();
 
     QgsPointXY( const QgsPointXY &p ) /HoldGIL/;

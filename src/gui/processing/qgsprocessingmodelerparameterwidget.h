@@ -77,7 +77,9 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * to resolve parameter values which are context dependent. The context must
      * last for the lifetime of the widget.
      */
-    QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingModelerParameterWidget(
+      QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     ~QgsProcessingModelerParameterWidget() override;
 
@@ -179,11 +181,11 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     virtual QVariant value() const;
 
     /**
-     * Sets the parent \a dialog in which the widget is shown.
+     * Sets the parent \a dialog (or widget) in which the widget is shown.
      *
      * \since QGIS 3.8
      */
-    void setDialog( QDialog *dialog );
+    void setDialog( QWidget *dialog );
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -193,6 +195,15 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * \since QGIS 3.24
      */
     void setSourceType( Qgis::ProcessingModelChildParameterSource type );
+
+  signals:
+
+    /**
+     * Emitted whenever the definition of the parameter is changed in the widget.
+     *
+     * \since QGIS 4.0
+     */
+    void changed();
 
   private slots:
 

@@ -14,21 +14,21 @@ struct QgsRasterViewPort
 %TypeHeaderCode
 #include "qgsrasterviewport.h"
 %End
-  QgsPointXY mTopLeftPoint;
+    QgsPointXY mTopLeftPoint;
 
-  QgsPointXY mBottomRightPoint;
+    QgsPointXY mBottomRightPoint;
 
-  qgssize mWidth;
+    qgssize mWidth;
 
-  qgssize mHeight;
+    qgssize mHeight;
 
-  QgsRectangle mDrawnExtent;
+    QgsRectangle mDrawnExtent;
 
-  QgsCoordinateReferenceSystem mSrcCRS;
+    QgsCoordinateReferenceSystem mSrcCRS;
 
-  QgsCoordinateReferenceSystem mDestCRS;
+    QgsCoordinateReferenceSystem mDestCRS;
 
-  QgsCoordinateTransformContext mTransformContext;
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 /************************************************************************

@@ -27,7 +27,11 @@
 #include "qgspolygon.h"
 #include "qgsvector3d.h"
 
+#include <QFileInfo>
 #include <QMatrix4x4>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
@@ -78,7 +82,9 @@ QgsGltfToVectorFeaturesAlgorithm *QgsGltfToVectorFeaturesAlgorithm::createInstan
 
 void QgsGltfToVectorFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input GLTF" ), Qgis::ProcessingFileParameterBehavior::File, u"gltf"_s, QVariant(), false, u"GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)"_s ) );
+  addParameter(
+    new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input GLTF" ), Qgis::ProcessingFileParameterBehavior::File, u"gltf"_s, QVariant(), false, u"GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)"_s )
+  );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_POLYGONS"_s, QObject::tr( "Output polygons" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_LINES"_s, QObject::tr( "Output lines" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
@@ -104,14 +110,7 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
   QVector<double> x;
   QVector<double> y;
   QVector<double> z;
-  QgsGltfUtils::accessorToMapCoordinates(
-    model, positionAccessorIndex, QgsMatrix4x4(),
-    &ecefTransform,
-    tileTranslationEcef,
-    gltfLocalTransform,
-    Qgis::Axis::Y,
-    x, y, z
-  );
+  QgsGltfUtils::accessorToMapCoordinates( model, positionAccessorIndex, QgsMatrix4x4(), &ecefTransform, tileTranslationEcef, gltfLocalTransform, Qgis::Axis::Y, x, y, z );
 
   auto mp = std::make_unique<QgsMultiPolygon>();
 
@@ -122,7 +121,9 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
     mp->reserve( x.size() );
     for ( int i = 0; i < x.size(); i += 3 )
     {
-      mp->addGeometry( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( x[i], y[i], z[i] ), QgsPoint( x[i + 1], y[i + 1], z[i + 1] ), QgsPoint( x[i + 2], y[i + 2], z[i + 2] ), QgsPoint( x[i], y[i], z[i] ) } ) ) );
+      mp->addGeometry( new QgsPolygon(
+        new QgsLineString( QVector<QgsPoint> { QgsPoint( x[i], y[i], z[i] ), QgsPoint( x[i + 1], y[i + 1], z[i + 1] ), QgsPoint( x[i + 2], y[i + 2], z[i + 2] ), QgsPoint( x[i], y[i], z[i] ) } )
+      ) );
     }
   }
   else
@@ -131,7 +132,12 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
     const tinygltf::BufferView &bvPrimitive = model.bufferViews[primitiveAccessor.bufferView];
     const tinygltf::Buffer &bPrimitive = model.buffers[bvPrimitive.buffer];
 
-    Q_ASSERT( ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE ) && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR );
+    Q_ASSERT(
+      ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
+      && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR
+    );
 
     const char *primitivePtr = reinterpret_cast<const char *>( bPrimitive.data.data() ) + bvPrimitive.byteOffset + primitiveAccessor.byteOffset;
 
@@ -179,7 +185,9 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
         index3 = uintPtrPrimitive[2];
       }
 
-      mp->addGeometry( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( x[index1], y[index1], z[index1] ), QgsPoint( x[index2], y[index2], z[index2] ), QgsPoint( x[index3], y[index3], z[index3] ), QgsPoint( x[index1], y[index1], z[index1] ) } ) ) );
+      mp->addGeometry( new QgsPolygon( new QgsLineString(
+        QVector<QgsPoint> { QgsPoint( x[index1], y[index1], z[index1] ), QgsPoint( x[index2], y[index2], z[index2] ), QgsPoint( x[index3], y[index3], z[index3] ), QgsPoint( x[index1], y[index1], z[index1] ) }
+      ) ) );
     }
   }
   return mp;
@@ -205,14 +213,7 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
   QVector<double> x;
   QVector<double> y;
   QVector<double> z;
-  QgsGltfUtils::accessorToMapCoordinates(
-    model, positionAccessorIndex, QgsMatrix4x4(),
-    &ecefTransform,
-    tileTranslationEcef,
-    gltfLocalTransform,
-    Qgis::Axis::Y,
-    x, y, z
-  );
+  QgsGltfUtils::accessorToMapCoordinates( model, positionAccessorIndex, QgsMatrix4x4(), &ecefTransform, tileTranslationEcef, gltfLocalTransform, Qgis::Axis::Y, x, y, z );
 
   auto ml = std::make_unique<QgsMultiLineString>();
 
@@ -232,7 +233,12 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
     const tinygltf::BufferView &bvPrimitive = model.bufferViews[primitiveAccessor.bufferView];
     const tinygltf::Buffer &bPrimitive = model.buffers[bvPrimitive.buffer];
 
-    Q_ASSERT( ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE ) && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR );
+    Q_ASSERT(
+      ( primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT
+        || primitiveAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE )
+      && primitiveAccessor.type == TINYGLTF_TYPE_SCALAR
+    );
 
     const char *primitivePtr = reinterpret_cast<const char *>( bPrimitive.data.data() ) + bvPrimitive.byteOffset + primitiveAccessor.byteOffset;
 
@@ -314,7 +320,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
   tinygltf::Model model;
   QString errors;
   QString warnings;
-  if ( !QgsGltfUtils::loadGltfModel( fileContent, model, &errors, &warnings ) )
+  if ( !QgsGltfUtils::loadGltfModel( fileContent, model, &errors, &warnings, QFileInfo( path ).absolutePath() ) )
   {
     throw QgsProcessingException( QObject::tr( "Error loading GLTF model: %1" ).arg( errors ) );
   }

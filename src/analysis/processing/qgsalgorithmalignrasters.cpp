@@ -21,6 +21,10 @@
 #include "qgsalignrasterdata.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 Qgis::ProcessingAlgorithmFlags QgsAlignRastersAlgorithm::flags() const
@@ -167,7 +171,8 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
   struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
   {
       explicit QgsAlignRasterProgress( QgsFeedback *feedback )
-        : mFeedback( feedback ) {}
+        : mFeedback( feedback )
+      {}
       bool progress( double complete ) override
       {
         mFeedback->setProgress( complete * 100 );

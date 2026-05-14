@@ -18,6 +18,9 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgsvectorlayer.h>
@@ -63,11 +66,6 @@ void TestQgsFieldExpressionWidget::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   // Create memory layers
   // LAYER A //
   mLayerA = new QgsVectorLayer( u"Point?field=id_a:integer"_s, u"A"_s, u"memory"_s );
@@ -86,12 +84,10 @@ void TestQgsFieldExpressionWidget::initTestCase()
 }
 
 void TestQgsFieldExpressionWidget::init()
-{
-}
+{}
 
 void TestQgsFieldExpressionWidget::cleanup()
-{
-}
+{}
 
 void TestQgsFieldExpressionWidget::cleanupTestCase()
 {
@@ -284,7 +280,8 @@ void TestQgsFieldExpressionWidget::testIsValid()
 
 void TestQgsFieldExpressionWidget::testFilters()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( u"point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean"_s, u"x"_s, u"memory"_s );
+  QgsVectorLayer *layer
+    = new QgsVectorLayer( u"point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean"_s, u"x"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( layer );
 
   auto widget = std::make_unique<QgsFieldExpressionWidget>();

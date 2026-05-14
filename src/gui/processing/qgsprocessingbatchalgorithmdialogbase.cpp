@@ -24,11 +24,15 @@
 #include "qgsprocessingbatch.h"
 #include "qgsproxyprogresstask.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingbatchalgorithmdialogbase.cpp"
 
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
-QgsProcessingBatchAlgorithmDialogBase::QgsProcessingBatchAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags )
-  : QgsProcessingAlgorithmDialogBase( parent, flags, QgsProcessingAlgorithmDialogBase::DialogMode::Batch )
+QgsProcessingBatchAlgorithmDialogBase::QgsProcessingBatchAlgorithmDialogBase( QWidget *parent )
+  : QgsProcessingAlgorithmWidgetBase( parent, QgsProcessingAlgorithmWidgetBase::WidgetMode::Batch )
 {
   mButtonRunSingle = new QPushButton( tr( "Run as Single Process…" ) );
   connect( mButtonRunSingle, &QPushButton::clicked, this, &QgsProcessingBatchAlgorithmDialogBase::runAsSingle );
@@ -136,7 +140,7 @@ void QgsProcessingBatchAlgorithmDialogBase::executeNext()
 void QgsProcessingBatchAlgorithmDialogBase::algExecuted( bool successful, const QVariantMap &results )
 {
   // parent class cleanup first!
-  QgsProcessingAlgorithmDialogBase::algExecuted( successful, results );
+  QgsProcessingAlgorithmWidgetBase::algExecuted( successful, results );
   onTaskComplete( successful, results );
 }
 
@@ -151,11 +155,7 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     pushCommandInfo( QString::fromStdString( QgsJsonUtils::jsonFromVariant( results ).dump() ) );
     pushInfo( QString() );
 
-    mResults.append( QVariantMap(
-      { { u"parameters"_s, mCurrentParameters },
-        { u"results"_s, results }
-      }
-    ) );
+    mResults.append( QVariantMap( { { u"parameters"_s, mCurrentParameters }, { u"results"_s, results } } ) );
 
     handleAlgorithmResults( algorithm(), *mTaskContext, mBatchFeedback.get(), mCurrentParameters );
     executeNext();
@@ -172,11 +172,7 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     setInfo( tr( "Algorithm %1 failed…" ).arg( algorithm()->displayName() ), false, false );
     reportError( tr( "Execution failed after %1 seconds" ).arg( mCurrentStepTimer.elapsed() / 1000.0, 2 ), false );
 
-    mErrors.append( QVariantMap(
-      { { u"parameters"_s, mCurrentParameters },
-        { u"errors"_s, taskErrors }
-      }
-    ) );
+    mErrors.append( QVariantMap( { { u"parameters"_s, mCurrentParameters }, { u"errors"_s, taskErrors } } ) );
     executeNext();
   }
 }

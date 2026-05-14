@@ -20,8 +20,7 @@
 
 QgsClassificationWidgetWrapperFactory::QgsClassificationWidgetWrapperFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 
 QgsEditorWidgetWrapper *QgsClassificationWidgetWrapperFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const

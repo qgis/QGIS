@@ -29,6 +29,9 @@
 #include <QItemDelegate>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsProjectionSelectionDialog;
 class QgsWfsGetCapabilitiesRequest;
@@ -40,7 +43,8 @@ class QgsWFSItemDelegate : public QItemDelegate
 
   public:
     explicit QgsWFSItemDelegate( QObject *parent = nullptr )
-      : QItemDelegate( parent ) {}
+      : QItemDelegate( parent )
+    {}
 
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };

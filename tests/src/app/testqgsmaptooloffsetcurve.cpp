@@ -23,6 +23,10 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
@@ -59,11 +63,6 @@ void TestQgsMapToolOffsetCurve::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
@@ -142,7 +141,9 @@ void TestQgsMapToolOffsetCurve::testOffsetCurveDefault()
   utils.mouseMove( 1.25, 1.25 );
   utils.mouseClick( 1.25, 1.25, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt1 = "Polygon ((0 -0.35, -0.07 -0.35, -0.14 -0.33, -0.2 -0.29, -0.25 -0.25, -0.29 -0.2, -0.33 -0.14, -0.35 -0.07, -0.35 0, -0.35 1, -0.35 1.07, -0.33 1.14, -0.29 1.2, -0.25 1.25, -0.2 1.29, -0.14 1.33, -0.07 1.35, 0 1.35, 1 1.35, 1.07 1.35, 1.14 1.33, 1.2 1.29, 1.25 1.25, 1.29 1.2, 1.33 1.14, 1.35 1.07, 1.35 1, 1.35 0, 1.35 -0.07, 1.33 -0.14, 1.29 -0.2, 1.25 -0.25, 1.2 -0.29, 1.14 -0.33, 1.07 -0.35, 1 -0.35, 0 -0.35))";
+  const QString wkt1 = "Polygon ((0 -0.35, -0.07 -0.35, -0.14 -0.33, -0.2 -0.29, -0.25 -0.25, -0.29 -0.2, -0.33 -0.14, -0.35 -0.07, -0.35 0, -0.35 1, -0.35 1.07, -0.33 1.14, -0.29 1.2, -0.25 1.25, "
+                       "-0.2 1.29, -0.14 1.33, -0.07 1.35, 0 1.35, 1 1.35, 1.07 1.35, 1.14 1.33, 1.2 1.29, 1.25 1.25, 1.29 1.2, 1.33 1.14, 1.35 1.07, 1.35 1, 1.35 0, 1.35 -0.07, 1.33 -0.14, 1.29 "
+                       "-0.2, 1.25 -0.25, 1.2 -0.29, 1.14 -0.33, 1.07 -0.35, 1 -0.35, 0 -0.35))";
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1 );
 
   mLayerBase->undoStack()->undo();

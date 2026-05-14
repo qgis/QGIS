@@ -25,7 +25,9 @@ set(TESTS
   testqgs3dmapscene.cpp
   testqgs3dmaterial.cpp
   testqgs3drendering.cpp
+  testqgs3dshadows.cpp
   testqgs3dsymbolregistry.cpp
+  testqgs3dsymbolutils.cpp
   testqgs3dutils.cpp
   testqgsaabb.cpp
   testqgschunkedentity.cpp

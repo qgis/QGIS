@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMPDALBUILDVPC_H
 #define QGSALGORITHMPDALBUILDVPC_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgspdalalgorithmbase.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -43,6 +44,13 @@ class QgsPdalBuildVpcAlgorithm : public QgsPdalAlgorithmBase
     QgsPdalBuildVpcAlgorithm *createInstance() const override SIP_FACTORY;
 
     QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    bool mConvertToCopc = false;
+    QString mTemporaryVpcFile;
+    QString mConvertToCopcFile;
 
     friend class TestQgsProcessingPdalAlgs;
 };

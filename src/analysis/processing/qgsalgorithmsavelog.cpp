@@ -17,7 +17,10 @@
 
 #include "qgsalgorithmsavelog.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -53,8 +56,10 @@ QString QgsSaveLogToFileAlgorithm::groupId() const
 
 QString QgsSaveLogToFileAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm saves the model's execution log to a file.\n"
-                      "Optionally, the log can be saved in a HTML formatted version." );
+  return QObject::tr(
+    "This algorithm saves the model's execution log to a file.\n"
+    "Optionally, the log can be saved in a HTML formatted version."
+  );
 }
 
 QString QgsSaveLogToFileAlgorithm::shortDescription() const

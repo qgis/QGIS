@@ -45,7 +45,6 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     Q_PROPERTY( int extraIdentifierValueIndex READ extraIdentifierValueIndex NOTIFY extraIdentifierValueIndexChanged )
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -56,11 +55,11 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeaturePickerModelBase, Role ) : int
     {
-      IdentifierValue SIP_MONKEYPATCH_COMPAT_NAME(IdentifierValueRole) = Qt::UserRole, //!< Used to retrieve the identifier value (primary key) of a feature. \deprecated QGIS 3.40. Use IdentifierValuesRole instead.
-      IdentifierValues SIP_MONKEYPATCH_COMPAT_NAME(IdentifierValuesRole), //!< Used to retrieve the identifierValues (primary keys) of a feature.
-      Value SIP_MONKEYPATCH_COMPAT_NAME(ValueRole), //!< Used to retrieve the displayExpression of a feature.
-      Feature SIP_MONKEYPATCH_COMPAT_NAME(FeatureRole), //!< Used to retrieve the feature, it might be incomplete if the request doesn't fetch all attributes or geometry.
-      FeatureId SIP_MONKEYPATCH_COMPAT_NAME(FeatureIdRole) //!< Used to retrieve the id of a feature.
+      IdentifierValue SIP_MONKEYPATCH_COMPAT_NAME( IdentifierValueRole ) = Qt::UserRole, //!< Used to retrieve the identifier value (primary key) of a feature. \deprecated QGIS 3.40. Use IdentifierValuesRole instead.
+      IdentifierValues SIP_MONKEYPATCH_COMPAT_NAME( IdentifierValuesRole ), //!< Used to retrieve the identifierValues (primary keys) of a feature.
+      Value SIP_MONKEYPATCH_COMPAT_NAME( ValueRole ),                       //!< Used to retrieve the displayExpression of a feature.
+      Feature SIP_MONKEYPATCH_COMPAT_NAME( FeatureRole ),                   //!< Used to retrieve the feature, it might be incomplete if the request doesn't fetch all attributes or geometry.
+      FeatureId SIP_MONKEYPATCH_COMPAT_NAME( FeatureIdRole )                //!< Used to retrieve the id of a feature.
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -353,7 +352,6 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     void scheduledReload();
 
   protected:
-
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
      * still be available in the model.
@@ -378,7 +376,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      * Returns the attributes to be fetched in the request.
      * Returns an empty set if all attributes should be fetched.
      */
-    virtual QSet<QString> requestedAttributes() const {return {};}
+    virtual QSet<QString> requestedAttributes() const { return {}; }
 
     //! Creates the value gatherer
     virtual QgsFeatureExpressionValuesGatherer *createValuesGatherer( const QgsFeatureRequest &request ) const = 0;

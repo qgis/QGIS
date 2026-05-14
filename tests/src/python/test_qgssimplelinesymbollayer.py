@@ -20,10 +20,8 @@ __date__ = "November 2018"
 __copyright__ = "(C) 2018, Nyall Dawson"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QSize, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsFeature,
     QgsFillSymbol,
@@ -44,9 +42,10 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -54,7 +53,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSimpleLineSymbolLayer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_simpleline"

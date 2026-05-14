@@ -47,6 +47,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -97,7 +99,8 @@ class TestQgsPaintEffect : public QgsTest
 
   public:
     TestQgsPaintEffect()
-      : QgsTest( u"Paint Effect Tests"_s ) {}
+      : QgsTest( u"Paint Effect Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -174,9 +177,7 @@ void TestQgsPaintEffect::saveRestore()
   DummyPaintEffect *effect = new DummyPaintEffect( u"a"_s, u"b"_s );
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   //test writing with no node
@@ -231,9 +232,7 @@ void TestQgsPaintEffect::stackSaveRestore()
   stack->setEnabled( false );
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   //test writing with no node

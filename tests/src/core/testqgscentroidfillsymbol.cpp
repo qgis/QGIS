@@ -22,6 +22,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
@@ -44,7 +46,8 @@ class TestQgsCentroidFillSymbol : public QgsTest
 
   public:
     TestQgsCentroidFillSymbol()
-      : QgsTest( u"Centroid Fill Symbol Tests"_s, u"symbol_centroidfill"_s ) {}
+      : QgsTest( u"Centroid Fill Symbol Tests"_s, u"symbol_centroidfill"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsmessagebar.h"
 #include "qgspanelwidget.h"
 
 #include <QDialog>
@@ -80,6 +81,7 @@ class GUI_EXPORT QgsProcessingHistoryDialog : public QDialog
   private:
     QgsProcessingHistoryWidget *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 };
 
 #endif // QGSPROCESSINGHISTORYWIDGET_H

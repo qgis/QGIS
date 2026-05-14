@@ -15,6 +15,8 @@
 
 #include "qgs3dmodelsourcelineedit.h"
 
+#include <QString>
+
 #include "moc_qgs3dmodelsourcelineedit.cpp"
 
 using namespace Qt::StringLiterals;
@@ -25,7 +27,7 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-QString Qgs3DModelSourceLineEdit::fileFilter() const
+QString Qgs3DModelSourceLineEdit::fileFilter( bool ) const
 {
   return tr( "All files" ) + " (*.*)";
 }

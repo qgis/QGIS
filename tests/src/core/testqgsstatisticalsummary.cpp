@@ -21,6 +21,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsStatisticSummary : public QObject
 {
     Q_OBJECT
@@ -42,20 +44,16 @@ class TestQgsStatisticSummary : public QObject
 };
 
 void TestQgsStatisticSummary::initTestCase()
-{
-}
+{}
 
 void TestQgsStatisticSummary::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsStatisticSummary::init()
-{
-}
+{}
 
 void TestQgsStatisticSummary::cleanup()
-{
-}
+{}
 
 void TestQgsStatisticSummary::stats()
 {

@@ -20,7 +20,6 @@ Delivers features from the cache.
 #include "qgscachedfeatureiterator.h"
 %End
   public:
-
     QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 %Docstring
 This constructor creates a feature iterator, that delivers all cached
@@ -49,7 +48,6 @@ Close this iterator. No further features will be available.
 %End
 
   protected:
-
     virtual bool fetchFeature( QgsFeature &f );
 
 %Docstring
@@ -84,7 +82,6 @@ Uses another iterator as backend and writes features to the cache.
 #include "qgscachedfeatureiterator.h"
 %End
   public:
-
     QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 %Docstring
 This constructor creates a feature iterator, which queries the backend
@@ -111,7 +108,6 @@ Close this iterator. No further features will be available.
 %End
 
   protected:
-
     virtual bool fetchFeature( QgsFeature &f );
 
 %Docstring

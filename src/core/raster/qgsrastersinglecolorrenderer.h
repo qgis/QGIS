@@ -31,10 +31,9 @@ class QDomElement;
   * \brief Raster renderer which renders all data pixels using a single color.
   * \since QGIS 3.38
   */
-class CORE_EXPORT QgsRasterSingleColorRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsRasterSingleColorRenderer : public QgsRasterRenderer
 {
   public:
-
     //! Creates a single \a color renderer
     QgsRasterSingleColorRenderer( QgsRasterInterface *input, int band, const QColor &color );
 

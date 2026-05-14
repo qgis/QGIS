@@ -14,7 +14,9 @@
 
 #include <pdal/PipelineManager.hpp>
 #include <mutex>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 using namespace pdal;
 
 // tiling scheme containing tileCountX x tileCountY square tiles of tileSize x tileSize,
@@ -244,6 +246,11 @@ inline bool ends_with(std::string const & value, std::string const & ending)
     return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
 }
 
+inline bool isVpcFilename(const std::string& filename)
+{
+    return ends_with(filename, ".vpc") || ends_with(filename, ".vpz");
+}
+
 
 inline std::string join_strings(const std::vector<std::string>& list, char delimiter)
 {
@@ -275,3 +282,7 @@ pdal::Stage &makeWriter(pdal::PipelineManager *manager, const std::string &outpu
  */
 void buildOutput(std::string outputFile, std::vector<std::string> &tileOutputFiles);
 
+/**
+ * Generate tile output file name based on outputFile and outputFormat.
+ */
+std::string tileOutputFileName(const std::string &outputFile, const std::string &outputFormat, const fs::path &outputSubdir, const std::string &tileFilename);

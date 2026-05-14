@@ -38,7 +38,6 @@ symbology bounding box of all features rendered on a map.
 
     struct RenderedFeatureContext
     {
-
         RenderedFeatureContext( const QgsRenderContext &renderContext );
 %Docstring
 Constructor for RenderedFeatureContext.

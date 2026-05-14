@@ -20,10 +20,13 @@
 
 #include <QAction>
 #include <QHBoxLayout>
+#include <QString>
 #include <QTreeView>
 #include <QVBoxLayout>
 
 #include "moc_qgssettingstreewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsTreeWidget::QgsSettingsTreeWidget( QWidget *parent )
   : QWidget( parent )

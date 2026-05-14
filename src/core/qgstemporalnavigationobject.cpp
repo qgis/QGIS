@@ -21,15 +21,18 @@
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
 #include "moc_qgstemporalnavigationobject.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
   : QgsTemporalController( parent )
 {
   mNewFrameTimer = new QTimer( this );
 
-  connect( mNewFrameTimer, &QTimer::timeout,
-           this, &QgsTemporalNavigationObject::timerTimeout );
+  connect( mNewFrameTimer, &QTimer::timeout, this, &QgsTemporalNavigationObject::timerTimeout );
 }
 
 void QgsTemporalNavigationObject::timerTimeout()
@@ -197,7 +200,6 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
     case Qgis::TemporalNavigationMode::Movie:
       break;
   }
-
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
@@ -302,7 +304,7 @@ void QgsTemporalNavigationObject::pause()
 
 void QgsTemporalNavigationObject::playForward()
 {
-  if ( mPlayBackMode == Qgis::AnimationState::Idle &&  mCurrentFrameNumber >= totalFrameCount() - 1 )
+  if ( mPlayBackMode == Qgis::AnimationState::Idle && mCurrentFrameNumber >= totalFrameCount() - 1 )
   {
     // if we are paused at the end of the video, and the user hits play, we automatically rewind and play again
     rewindToStart();
@@ -314,7 +316,7 @@ void QgsTemporalNavigationObject::playForward()
 
 void QgsTemporalNavigationObject::playBackward()
 {
-  if ( mPlayBackMode == Qgis::AnimationState::Idle &&  mCurrentFrameNumber <= 0 )
+  if ( mPlayBackMode == Qgis::AnimationState::Idle && mCurrentFrameNumber <= 0 )
   {
     // if we are paused at the start of the video, and the user hits play, we automatically skip to end and play in reverse again
     skipToEnd();
@@ -399,7 +401,10 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
     long long roughFrameEnd = totalFrameCount();
     // For the smaller step frames we calculate an educated guess, to prevent the loop becoming too
     // large, freezing the ui (eg having a mTemporalExtents of several months and the user selects milliseconds)
-    if ( mFrameDuration.originalUnit() != Qgis::TemporalUnit::Months && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Years && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Decades && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Centuries )
+    if ( mFrameDuration.originalUnit() != Qgis::TemporalUnit::Months
+         && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Years
+         && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Decades
+         && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Centuries )
     {
       // Only if we receive a valid frameStart, that is within current mTemporalExtents
       // We tend to receive a framestart of 'now()' upon startup for example

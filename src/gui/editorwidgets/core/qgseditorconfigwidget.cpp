@@ -25,8 +25,7 @@ QgsEditorConfigWidget::QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, 
   , mLayer( vl )
   , mField( fieldIdx )
 
-{
-}
+{}
 
 int QgsEditorConfigWidget::field()
 {

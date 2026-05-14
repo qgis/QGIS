@@ -11,6 +11,7 @@ __date__ = "06/10/2012"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import (
     NULL,
@@ -23,18 +24,14 @@ from qgis.core import (
     QgsUnsetAttributeValue,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from qgis.PyQt.QtCore import QVariant, QDate, QTime, QDateTime
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsFeature(QgisTestCase):
-
     def test_CreateFeature(self):
         feat = QgsFeature(0)
         feat.initAttributes(1)

@@ -28,8 +28,11 @@
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsnewmeshlayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -71,9 +74,7 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   connect( mMeshFromFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshProjectComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsNewMeshLayerDialog::updateDialog );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"managing_data_source/create_layers.html#creating-a-new-mesh-layer"_s );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"managing_data_source/create_layers.html#creating-a-new-mesh-layer"_s ); } );
 
   updateDialog();
 }

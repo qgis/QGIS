@@ -22,12 +22,15 @@
 #include "qgslayertreeview.h"
 #include "qgsmaplayertemporalproperties.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewtemporalindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewTemporalIndicatorProvider::QgsLayerTreeViewTemporalIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewTemporalIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {

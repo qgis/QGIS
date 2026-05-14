@@ -20,8 +20,11 @@
 
 #include <QCloseEvent>
 #include <QSizeF>
+#include <QString>
 
 #include "moc_qgsgeorefconfigdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
   : QDialog( parent )

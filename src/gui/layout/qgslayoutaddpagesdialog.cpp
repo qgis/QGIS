@@ -23,7 +23,11 @@
 #include "qgspagesizeregistry.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgslayoutaddpagesdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

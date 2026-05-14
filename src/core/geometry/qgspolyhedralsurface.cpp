@@ -36,6 +36,9 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPolyhedralSurface::QgsPolyhedralSurface()
 {
@@ -153,13 +156,13 @@ bool QgsPolyhedralSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatPolygonType = QgsWkbTypes::flatType( polygonType );
     if ( flatPolygonType == Qgis::WkbType::Polygon )
     {
-      currentPatch = std::make_unique<QgsPolygon>( );
+      currentPatch = std::make_unique<QgsPolygon>();
     }
     else
     {
       return false;
     }
-    currentPatch->fromWkb( wkbPtr );  // also updates wkbPtr
+    currentPatch->fromWkb( wkbPtr ); // also updates wkbPtr
     mPatches.append( currentPatch.release() );
   }
 
@@ -179,8 +182,7 @@ bool QgsPolyhedralSurface::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defaultChildWkbType = u"Polygon%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
@@ -339,10 +341,7 @@ void QgsPolyhedralSurface::normalize()
       }
 
       // sort rings
-      std::sort( interiorRings.begin(), interiorRings.end(), []( const QgsCurve * a, const QgsCurve * b )
-      {
-        return a->compareTo( b ) > 0;
-      } );
+      std::sort( interiorRings.begin(), interiorRings.end(), []( const QgsCurve *a, const QgsCurve *b ) { return a->compareTo( b ) > 0; } );
 
       patch->removeInteriorRings();
       for ( QgsCurve *curve : interiorRings )
@@ -656,7 +655,7 @@ bool QgsPolyhedralSurface::isEmpty() const
 double QgsPolyhedralSurface::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   QVector<QgsPolygon *> segmentList = mPatches;
-  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Part, pt, segmentPt,  vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Part, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
 bool QgsPolyhedralSurface::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
@@ -986,7 +985,7 @@ QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
   return multiPolygon.release();
 }
 
-void QgsPolyhedralSurface::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+void QgsPolyhedralSurface::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   for ( QgsPolygon *patch : std::as_const( mPatches ) )
   {

@@ -26,10 +26,10 @@ import pyclbr
 import re
 import sys
 import tempfile
-from typing import Optional, TYPE_CHECKING
 from functools import partial
 from operator import itemgetter
 from pathlib import Path
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsSettings
 from qgis.gui import (
@@ -39,10 +39,8 @@ from qgis.gui import (
     QgsMessageBar,
     QgsShortcutsManager,
 )
-
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import (
-    pyqtSignal,
     QByteArray,
     QCoreApplication,
     QDir,
@@ -52,8 +50,9 @@ from qgis.PyQt.QtCore import (
     QSize,
     Qt,
     QUrl,
+    pyqtSignal,
 )
-from qgis.PyQt.QtGui import QKeySequence, QColor, QPalette
+from qgis.PyQt.QtGui import QColor, QKeySequence, QPalette
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
     QAction,
@@ -79,7 +78,6 @@ if TYPE_CHECKING:
 
 
 class Editor(QgsCodeEditorPython):
-
     trigger_find = pyqtSignal()
 
     def __init__(
@@ -359,10 +357,12 @@ class Editor(QgsCodeEditorPython):
         self.console_widget.show_editor_action.setChecked(False)
 
     def createTempFile(self):
-        name = tempfile.NamedTemporaryFile(delete=False).name
         # Need to use newline='' to avoid adding extra \r characters on Windows
-        with open(name, "w", encoding="utf-8", newline="") as f:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", newline="", delete=False
+        ) as f:
             f.write(self.text())
+            name = f.name
         return name
 
     def runScriptCode(self):
@@ -561,7 +561,6 @@ class Editor(QgsCodeEditorPython):
 
 
 class EditorTab(QWidget):
-
     search_bar_toggled = pyqtSignal(bool)
 
     def __init__(
@@ -646,7 +645,6 @@ class EditorTab(QWidget):
 
 
 class EditorTabWidget(QTabWidget):
-
     search_bar_toggled = pyqtSignal(bool)
 
     def __init__(self, console_widget: PythonConsoleWidget):

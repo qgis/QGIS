@@ -80,10 +80,7 @@ void QgsLinuxNative::showFileProperties( const QString &path )
 
 void QgsLinuxNative::showUndefinedApplicationProgress()
 {
-  const QVariantMap properties {
-    { u"progress-visible"_s, true },
-    { u"progress"_s, 0.0 }
-  };
+  const QVariantMap properties { { u"progress-visible"_s, true }, { u"progress"_s, 0.0 } };
 
   QDBusMessage message = QDBusMessage::createSignal( u"/org/qgis/UnityLauncher"_s, u"com.canonical.Unity.LauncherEntry"_s, u"Update"_s );
   message.setArguments( { mDesktopFile, properties } );
@@ -92,10 +89,7 @@ void QgsLinuxNative::showUndefinedApplicationProgress()
 
 void QgsLinuxNative::setApplicationProgress( double progress )
 {
-  const QVariantMap properties {
-    { u"progress-visible"_s, true },
-    { u"progress"_s, progress / 100.0 }
-  };
+  const QVariantMap properties { { u"progress-visible"_s, true }, { u"progress"_s, progress / 100.0 } };
 
   QDBusMessage message = QDBusMessage::createSignal( u"/org/qgis/UnityLauncher"_s, u"com.canonical.Unity.LauncherEntry"_s, u"Update"_s );
   message.setArguments( { mDesktopFile, properties } );
@@ -116,10 +110,7 @@ void QgsLinuxNative::hideApplicationProgress()
 void QgsLinuxNative::setApplicationBadgeCount( int count )
 {
   // the badge will only be shown when the count is greater than one
-  const QVariantMap properties {
-    { u"count-visible"_s, count > 1 },
-    { u"count"_s, static_cast<long long>( count ) }
-  };
+  const QVariantMap properties { { u"count-visible"_s, count > 1 }, { u"count"_s, static_cast<long long>( count ) } };
 
   QDBusMessage message = QDBusMessage::createSignal( u"/org/qgis/UnityLauncher"_s, u"com.canonical.Unity.LauncherEntry"_s, u"Update"_s );
   message.setArguments( { mDesktopFile, properties } );
@@ -149,8 +140,7 @@ bool QgsLinuxNative::openTerminalAtPath( const QString &path )
   }
 
   QStringList arguments;
-  arguments << u"--working-directory"_s
-            << path;
+  arguments << u"--working-directory"_s << path;
   return QProcess::startDetached( term, QStringList(), path );
 }
 

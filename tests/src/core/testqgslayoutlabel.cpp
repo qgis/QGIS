@@ -32,6 +32,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutLabel : public QgsTest
 {
@@ -39,7 +42,8 @@ class TestQgsLayoutLabel : public QgsTest
 
   public:
     TestQgsLayoutLabel()
-      : QgsTest( u"Layout Label Tests"_s, u"composer_label"_s ) {}
+      : QgsTest( u"Layout Label Tests"_s, u"composer_label"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

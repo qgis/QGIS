@@ -19,31 +19,30 @@ email                : brush.tyler@gmail.com
 """
 
 # this will disable the dbplugin if the connector raise an ImportError
-from .connector import PostGisDBConnector
+import re
 
-from qgis.PyQt.QtCore import Qt, QRegularExpression, QCoreApplication
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtCore import QCoreApplication, QRegularExpression, Qt
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
 from ..plugin import (
     ConnectionError,
-    InvalidDataException,
-    DBPlugin,
     Database,
+    DBPlugin,
+    InvalidDataException,
+    RasterTable,
     Schema,
     Table,
-    VectorTable,
-    RasterTable,
-    TableField,
     TableConstraint,
+    TableField,
     TableIndex,
-    TableTrigger,
     TableRule,
+    TableTrigger,
+    VectorTable,
 )
-
-import re
+from .connector import PostGisDBConnector
 
 
 def classFactory():
@@ -51,7 +50,6 @@ def classFactory():
 
 
 class PostGisDBPlugin(DBPlugin):
-
     @classmethod
     def icon(self):
         return QgsApplication.getThemeIcon("/mIconPostgis.svg")
@@ -99,8 +97,9 @@ class PostGisDBPlugin(DBPlugin):
             "username",
             "password",
             "authcfg",
+            "session_role",
         ]
-        service, host, port, database, username, password, authcfg = (
+        service, host, port, database, username, password, authcfg, session_role = (
             settings.value(x, "", type=str) for x in settingsList
         )
 
@@ -123,6 +122,8 @@ class PostGisDBPlugin(DBPlugin):
             )
 
         uri.setUseEstimatedMetadata(useEstimatedMetadata)
+        if session_role:
+            uri.setParam("session_role", session_role)
 
         try:
             return self.connectToUri(uri)
@@ -131,7 +132,6 @@ class PostGisDBPlugin(DBPlugin):
 
 
 class PGDatabase(Database):
-
     def __init__(self, connection, uri):
         Database.__init__(self, connection, uri)
 
@@ -224,14 +224,12 @@ class PGDatabase(Database):
 
 
 class PGSchema(Schema):
-
     def __init__(self, row, db):
         Schema.__init__(self, db)
         self.oid, self.name, self.owner, self.perms, self.comment = row
 
 
 class PGTable(Table):
-
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, schema)
         (
@@ -348,7 +346,6 @@ class PGTable(Table):
 
 
 class PGVectorTable(PGTable, VectorTable):
-
     def __init__(self, row, db, schema=None):
         PGTable.__init__(self, row[:-4], db, schema)
         VectorTable.__init__(self, db, schema)
@@ -384,7 +381,6 @@ class PGVectorTable(PGTable, VectorTable):
 
 
 class PGRasterTable(PGTable, RasterTable):
-
     def __init__(self, row, db, schema=None):
         PGTable.__init__(self, row[:-6], db, schema)
         RasterTable.__init__(self, db, schema)
@@ -432,16 +428,7 @@ class PGRasterTable(PGTable, RasterTable):
                 col = "column='%s'" % fld.name
                 break
 
-        uri = "{} {} {} {} {} {} {} table={}".format(
-            service,
-            dbname,
-            host,
-            user,
-            passw,
-            port,
-            col,
-            table,
-        )
+        uri = f"{service} {dbname} {host} {user} {passw} {port} {col} table={table}"
 
         return uri
 
@@ -453,10 +440,10 @@ class PGRasterTable(PGTable, RasterTable):
 
     def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import (
-            QgsRasterLayer,
             QgsContrastEnhancement,
-            QgsDataSourceUri,
             QgsCredentials,
+            QgsDataSourceUri,
+            QgsRasterLayer,
         )
 
         rl = QgsRasterLayer(self.uri(), self.name, "postgresraster")
@@ -486,7 +473,6 @@ class PGRasterTable(PGTable, RasterTable):
 
 
 class PGTableField(TableField):
-
     def __init__(self, row, table):
         TableField.__init__(self, table)
         (
@@ -521,13 +507,9 @@ class PGTableField(TableField):
         """Returns the comment for a field"""
         tab = self.table()
         # SQL Query checking if a comment exists for the field
-        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '{}' and attname = '{}' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum".format(
-            tab.name, self.name
-        )
+        sql_cpt = f"Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '{tab.name}' and attname = '{self.name}' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum"
         # SQL Query that return the comment of the field
-        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '{}' and attname = '{}' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum".format(
-            tab.name, self.name
-        )
+        sql = f"Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '{tab.name}' and attname = '{self.name}' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum"
         c = tab.database().connector._execute(None, sql_cpt)  # Execute Check query
         res = tab.database().connector._fetchone(c)[0]  # Store result
         if res == 1:
@@ -541,7 +523,6 @@ class PGTableField(TableField):
 
 
 class PGTableConstraint(TableConstraint):
-
     def __init__(self, row, table):
         TableConstraint.__init__(self, table)
         self.name, constr_type_str, self.isDefferable, self.isDeffered, columns = row[
@@ -565,7 +546,6 @@ class PGTableConstraint(TableConstraint):
 
 
 class PGTableIndex(TableIndex):
-
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         self.name, columns, self.isUnique = row
@@ -573,14 +553,12 @@ class PGTableIndex(TableIndex):
 
 
 class PGTableTrigger(TableTrigger):
-
     def __init__(self, row, table):
         TableTrigger.__init__(self, table)
         self.name, self.function, self.type, self.enabled = row
 
 
 class PGTableRule(TableRule):
-
     def __init__(self, row, table):
         TableRule.__init__(self, table)
         self.name, self.definition = row

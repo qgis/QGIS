@@ -39,13 +39,17 @@
 #include "qgstest.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayout : public QgsTest
 {
     Q_OBJECT
   public:
     TestQgsLayout()
-      : QgsTest( u"Layout Tests"_s ) {}
+      : QgsTest( u"Layout Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -200,9 +204,7 @@ void TestQgsLayout::writeRetrieveCustomProperties()
 
   //test writing composition with custom properties
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   const QDomElement layoutNode = layout.writeXml( doc, QgsReadWriteContext() );
   QVERIFY( !layoutNode.isNull() );
@@ -974,7 +976,7 @@ void TestQgsLayout::legendRestoredFromTemplate()
   // add a legend
   QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &c );
   c.addLayoutItem( legend );
-  legend->setAutoUpdateModel( false );
+  legend->setSyncMode( Qgis::LegendSyncMode::Manual );
 
   QgsLegendModel *model = legend->model();
   QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );
@@ -1050,7 +1052,7 @@ void TestQgsLayout::legendRestoredFromTemplateAutoUpdate()
   // add a legend
   QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &c );
   c.addLayoutItem( legend );
-  legend->setAutoUpdateModel( true );
+  legend->setSyncMode( Qgis::LegendSyncMode::AllProjectLayers );
 
   QgsLegendModel *model = legend->model();
   QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );

@@ -20,8 +20,11 @@
 #include "qgsunittypes.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgstabpositionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTabPositionWidget::QgsTabPositionWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -64,9 +67,7 @@ QList<QgsTextFormat::Tab> QgsTabPositionWidget::positions() const
     }
   }
 
-  std::sort( result.begin(), result.end(), []( const QgsTextFormat::Tab &a, const QgsTextFormat::Tab &b ) {
-    return a.position() < b.position();
-  } );
+  std::sort( result.begin(), result.end(), []( const QgsTextFormat::Tab &a, const QgsTextFormat::Tab &b ) { return a.position() < b.position(); } );
 
   return result;
 }

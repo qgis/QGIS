@@ -20,9 +20,12 @@
 #include "qgsdatabasetablemodel.h"
 
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsdatabasetablecombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatabaseTableComboBox::QgsDatabaseTableComboBox( const QString &provider, const QString &connection, const QString &schema, QWidget *parent )
   : QWidget( parent )
@@ -107,7 +110,8 @@ void QgsDatabaseTableComboBox::setTable( const QString &table, const QString &sc
   const QModelIndexList idxs = mSortModel->match( mSortModel->index( 0, 0 ), static_cast<int>( QgsDatabaseTableModel::CustomRole::TableName ), table, -1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
   for ( const QModelIndex &proxyIdx : idxs )
   {
-    if ( proxyIdx.isValid() && proxyIdx.data( static_cast<int>( QgsDatabaseTableModel::CustomRole::TableName ) ).toString() == table
+    if ( proxyIdx.isValid()
+         && proxyIdx.data( static_cast<int>( QgsDatabaseTableModel::CustomRole::TableName ) ).toString() == table
          && ( schema.isEmpty() || proxyIdx.data( static_cast<int>( QgsDatabaseTableModel::CustomRole::Schema ) ).toString() == schema ) )
     {
       mComboBox->setCurrentIndex( proxyIdx.row() );
@@ -218,8 +222,7 @@ void QgsDatabaseTableComboBox::rowsChanged()
 ///@cond PRIVATE
 QgsDatabaseTableComboBoxSortModel::QgsDatabaseTableComboBoxSortModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-{
-}
+{}
 
 bool QgsDatabaseTableComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {

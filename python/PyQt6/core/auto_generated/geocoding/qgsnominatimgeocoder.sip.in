@@ -29,7 +29,6 @@ strings.
 #include "qgsnominatimgeocoder.h"
 %End
   public:
-
     QgsNominatimGeocoder( const QString &countryCodes = QString(), const QString &endpoint = QString() );
 %Docstring
 Constructor for QgsNominatimGeocoder.

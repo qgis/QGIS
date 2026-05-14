@@ -22,7 +22,6 @@ Handles logging of incoming GPS data to a vector layer.
 #include "qgsvectorlayergpslogger.h"
 %End
   public:
-
     QgsVectorLayerGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsVectorLayerGpsLogger with the specified ``parent``

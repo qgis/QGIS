@@ -30,7 +30,6 @@ class QgsMarkerSymbolLayer;
 class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 {
   public:
-
     /**
      * Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
      * This is a convenience method for easier creation of marker symbols.
@@ -214,9 +213,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     QgsMarkerSymbol *clone() const override SIP_FACTORY;
 
   private:
-
     void renderPointUsingLayer( QgsMarkerSymbolLayer *layer, QPointF point, QgsSymbolRenderContext &context );
-
 };
 
 

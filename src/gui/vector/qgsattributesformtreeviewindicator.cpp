@@ -19,8 +19,7 @@
 
 QgsAttributesFormTreeViewIndicator::QgsAttributesFormTreeViewIndicator( QObject *parent )
   : QObject { parent }
-{
-}
+{}
 
 QIcon QgsAttributesFormTreeViewIndicator::icon() const
 {

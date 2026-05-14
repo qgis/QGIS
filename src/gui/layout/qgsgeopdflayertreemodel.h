@@ -16,13 +16,14 @@
 #define QGSGEOPDFLAYERTREEMODEL_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsmaplayermodel.h"
 
 #include <QItemDelegate>
 #include <QSortFilterProxyModel>
+
+#define SIP_NO_FILE
 
 class QgsMapCanvas;
 class QgsProject;

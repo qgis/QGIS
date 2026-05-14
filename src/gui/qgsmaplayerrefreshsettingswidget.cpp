@@ -19,7 +19,11 @@
 
 #include "qgsmaplayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaplayerrefreshsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerRefreshSettingsWidget::QgsMapLayerRefreshSettingsWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )
@@ -89,7 +93,10 @@ void QgsMapLayerRefreshSettingsWidget::updateHelp()
 
     case Qgis::AutoRefreshMode::RedrawOnly:
       title = tr( "The layer will be redrawn only." );
-      help = tr( "This mode is useful for animation or when the layer's style will be updated at regular intervals. Canvas updates are deferred in order to avoid refreshing multiple times if more than one layer has an auto update interval set." );
+      help = tr(
+        "This mode is useful for animation or when the layer's style will be updated at regular intervals. Canvas updates are deferred in order to avoid refreshing multiple times if more than one "
+        "layer has an auto update interval set."
+      );
       break;
   }
 

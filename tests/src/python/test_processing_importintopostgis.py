@@ -10,9 +10,10 @@ __author__ = "Alessandro Pasotti"
 __date__ = "2018-09"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
+import unittest
+
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmExecutor import execute
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
@@ -21,9 +22,7 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -38,15 +37,10 @@ class ConsoleFeedBack(QgsProcessingFeedback):
 
 
 class TestExportToPostGis(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsExportToPostgis.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsExportToPostgis")
-        QgsSettings().clear()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()

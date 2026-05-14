@@ -11,6 +11,7 @@
 
 
 
+
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
 %ModuleCode
@@ -23,8 +24,7 @@
 %End
 
 
-
-class QgsClassificationRange
+  class QgsClassificationRange
 {
 %Docstring(signature="appended")
 Contains the information about a classification range.
@@ -63,7 +63,6 @@ Returns the lower bound
 };
 
 
-
 class QgsClassificationMethod /Abstract/
 {
 %Docstring(signature="appended")
@@ -94,7 +93,6 @@ An abstract class for implementations of classification methods.
       sipType = 0;
 %End
   public:
-
     enum MethodProperty /BaseType=IntEnum/
     {
       NoFlag,
@@ -361,7 +359,6 @@ actual value of a parameter.
     static const int MIN_PRECISION;
 
   protected:
-
     void copyBase( QgsClassificationMethod *c ) const;
 %Docstring
 Copy the parameters (shall be used in clone implementation)

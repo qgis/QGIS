@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMCONDITIONALBRANCH_H
 #define QGSALGORITHMCONDITIONALBRANCH_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 class QgsProcessingModelAlgorithm;
 class QTableWidget;

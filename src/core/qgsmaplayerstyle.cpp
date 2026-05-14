@@ -21,12 +21,14 @@
 #include "qgsreadwritecontext.h"
 
 #include <QDomElement>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
   : mXmlData( xmlData )
-{
-}
+{}
 
 bool QgsMapLayerStyle::isValid() const
 {

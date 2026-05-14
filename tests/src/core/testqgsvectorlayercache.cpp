@@ -17,7 +17,10 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include "qgsfeatureiterator.h"

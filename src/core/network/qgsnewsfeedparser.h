@@ -22,7 +22,10 @@
 #include <QDateTime>
 #include <QObject>
 #include <QPixmap>
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 class QgsNetworkContentFetcher;
 class QgsSettingsEntryBool;
@@ -43,10 +46,14 @@ class QgsSettingsEntryVariant;
 class CORE_EXPORT QgsNewsFeedParser : public QObject
 {
     Q_OBJECT
-  public:
 
+    Q_PROPERTY( bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged );
+    Q_PROPERTY( bool isFetching READ isFetching NOTIFY isFetchingChanged );
+
+  public:
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeNewsFeed = QgsSettingsTree::sTreeApp->createNamedListNode( u"news-feed"_s );
+    static const QgsSettingsEntryBool *settingsFeedDisabled;
     static const QgsSettingsEntryInteger64 *settingsFeedLastFetchTime;
     static const QgsSettingsEntryString *settingsFeedLanguage;
     static const QgsSettingsEntryDouble *settingsFeedLatitude;
@@ -58,6 +65,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     static const QgsSettingsEntryString *settingsFeedEntryContent;
     static const QgsSettingsEntryString *settingsFeedEntryLink;
     static const QgsSettingsEntryBool *settingsFeedEntrySticky;
+    static const QgsSettingsEntryVariant *settingsFeedEntryPublished;
     static const QgsSettingsEntryVariant *settingsFeedEntryExpiry;
 #endif
 
@@ -69,7 +77,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     class Entry
     {
       public:
-
         //! Unique entry identifier
         int key = 0;
 
@@ -91,6 +98,9 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
         //! TRUE if entry is "sticky" and should always be shown at the top
         bool sticky = false;
 
+        //! Entry publication date
+        QDateTime published;
+
         //! Optional auto-expiry time for entry
         QDateTime expiry;
     };
@@ -104,6 +114,27 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg = QString(), QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
+     * Returns TRUE if the feed URL associated with the news parser is enabled.
+     *
+     * \since QGIS 4.0
+     */
+    bool enabled() const SIP_SKIP { return mEnabled; }
+
+    /**
+     * Sets whether the feed URL associated with the news parser is enabled.
+     *
+     * \since QGIS 4.0
+     */
+    void setEnabled( bool enabled ) SIP_SKIP;
+
+    /**
+     * Returns TRUE if the news parser is fetching items.
+     *
+     * \since QGIS 4.0
+     */
+    bool isFetching() const { return mIsFetching; }
+
+    /**
      * Returns a list of existing entries in the feed.
      */
     QList< QgsNewsFeedParser::Entry > entries() const;
@@ -115,13 +146,13 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      *
      * \see dismissAll()
      */
-    void dismissEntry( int key );
+    Q_INVOKABLE void dismissEntry( int key );
 
     /**
      * Dismisses all current news items.
      * \see dismissEntry()
      */
-    void dismissAll();
+    Q_INVOKABLE void dismissAll();
 
     /**
      * Returns the authentication configuration for the parser.
@@ -182,12 +213,23 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      */
     void imageFetched( int key, const QPixmap &pixmap );
 
+    /**
+     * Emitted when the enabled/disabled state of the feed URL associated to the news parser changes.
+     * \since QGIS 4.0
+     */
+    void enabledChanged();
+
+    /**
+     * Emitted when the news parser's fetching state changes.
+     * \since QGIS 4.0
+     */
+    void isFetchingChanged();
+
   private slots:
 
     void onFetch( const QString &content );
 
   private:
-
     QString mBaseUrl;
     QUrl mFeedUrl;
     QString mAuthCfg;
@@ -197,13 +239,15 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     QList< Entry > mEntries;
     bool mBlockSignals = false;
 
+    bool mEnabled = true;
+    bool mIsFetching = false;
+
     void readStoredEntries();
     Entry readEntryFromSettings( int key );
     void storeEntryInSettings( const Entry &entry );
     void fetchImageForEntry( const Entry &entry );
 
     friend class TestQgsNewsFeedParser;
-
 };
 
 #endif // QGSNEWSFEEDPARSER_H

@@ -25,8 +25,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemshape.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -44,8 +47,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
   refreshSymbol( false );
 
-  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this] {
     updateBoundingRect();
     update();
     emit clipPathChanged();

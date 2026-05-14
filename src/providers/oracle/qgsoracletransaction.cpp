@@ -17,7 +17,11 @@
 
 #include "qgsoracletransaction.h"
 
+#include <QString>
+
 #include "moc_qgsoracletransaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -30,8 +34,7 @@
 QgsOracleTransaction::QgsOracleTransaction( const QString &connString )
   : QgsTransaction( connString )
 
-{
-}
+{}
 
 QgsOracleTransaction::~QgsOracleTransaction()
 {

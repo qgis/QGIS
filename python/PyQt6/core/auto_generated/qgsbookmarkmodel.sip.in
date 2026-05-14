@@ -10,7 +10,7 @@
 
 
 
-class QgsBookmarkManagerModel: QAbstractTableModel
+class QgsBookmarkManagerModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
 Implements a model for the contents of :py:class:`QgsBookmarkManager`
@@ -31,7 +31,6 @@ both managers.
 #include "qgsbookmarkmodel.h"
 %End
   public:
-
 
     enum class CustomRole /BaseType=IntEnum/
     {
@@ -95,7 +94,6 @@ A QSortFilterProxyModel subclass for sorting the entries in a
 #include "qgsbookmarkmodel.h"
 %End
   public:
-
     QgsBookmarkManagerProxyModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager = 0, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBookmarkManagerProxyModel, associated with a main

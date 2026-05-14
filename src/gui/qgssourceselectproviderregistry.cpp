@@ -37,9 +37,7 @@ QList<QgsSourceSelectProvider *> QgsSourceSelectProviderRegistry::providers()
 void QgsSourceSelectProviderRegistry::addProvider( QgsSourceSelectProvider *provider )
 {
   mProviders.append( provider );
-  std::sort( mProviders.begin(), mProviders.end(), []( const QgsSourceSelectProvider *first, const QgsSourceSelectProvider *second ) -> bool {
-    return first->ordering() < second->ordering();
-  } );
+  std::sort( mProviders.begin(), mProviders.end(), []( const QgsSourceSelectProvider *first, const QgsSourceSelectProvider *second ) -> bool { return first->ordering() < second->ordering(); } );
 
   emit providerAdded( provider->name() );
 }
@@ -102,12 +100,7 @@ QList<QgsSourceSelectProvider *> QgsSourceSelectProviderRegistry::providersByKey
   return result;
 }
 
-QgsAbstractDataSourceWidget *QgsSourceSelectProviderRegistry::createSelectionWidget(
-  const QString &name,
-  QWidget *parent,
-  Qt::WindowFlags fl,
-  QgsProviderRegistry::WidgetMode widgetMode
-)
+QgsAbstractDataSourceWidget *QgsSourceSelectProviderRegistry::createSelectionWidget( const QString &name, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   QgsSourceSelectProvider *provider = providerByName( name );
   if ( !provider )

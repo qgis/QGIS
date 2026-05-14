@@ -23,6 +23,10 @@
 #include "qgsimageoperation.h"
 #include "qgsrendercontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 {
   QgsColorEffect *newEffect = new QgsColorEffect();
@@ -32,9 +36,7 @@ QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 
 QgsColorEffect::QgsColorEffect()
   : mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-{
-
-}
+{}
 
 Qgis::PaintEffectFlags QgsColorEffect::flags() const
 {

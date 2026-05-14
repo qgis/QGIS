@@ -19,7 +19,6 @@
 #include "qgsdoublevalidator.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattributebyramprenderer.h"
-#include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -29,7 +28,11 @@
 #include "qgsstackedwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
 
+#include <QString>
+
 #include "moc_qgspointcloud3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -140,26 +143,38 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
 
   mPointSizeSpinBox->setToolTip( tr( "The size of each point in pixels" ) );
-  mMaxScreenErrorSpinBox->setToolTip( tr( "The distance in pixels between the points of the smallest chunk to be rendered.\nRaising this value will result in a less detailed scene which can improve performance" ) );
-  mPointBudgetSpinBox->setToolTip( tr( "The maximum number of points that will be rendered simultaneously.\nRaising this value may allow missing chunks to be rendered while lowering it may improve performance" ) );
+  mMaxScreenErrorSpinBox->setToolTip(
+    tr( "The distance in pixels between the points of the smallest chunk to be rendered.\nRaising this value will result in a less detailed scene which can improve performance" )
+  );
+  mPointBudgetSpinBox->setToolTip(
+    tr( "The maximum number of points that will be rendered simultaneously.\nRaising this value may allow missing chunks to be rendered while lowering it may improve performance" )
+  );
 
   if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
   {
     mZoomOutOptions->addItem( tr( "Show Extents Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderExtents ) );
     if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() ) )
     {
-      if ( vpcProvider->overview() )
+      if ( !vpcProvider->overviews().isEmpty() )
       {
         mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
         mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
       }
+
+      for ( auto it = mOverviewSwitchingScaleMap.constBegin(); it != mOverviewSwitchingScaleMap.constEnd(); ++it )
+      {
+        mOverviewSwitchingScale->addItem( it.value(), it.key() );
+      }
+      setOverviewSwitchingScale( 1.0 );
     }
     else
     {
       mZoomOutOptions->setEnabled( false );
+      mOverviewSwitchingScale->setEnabled( false );
     }
 
     connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+    connect( mOverviewSwitchingScale, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   }
   else
   {
@@ -377,21 +392,15 @@ void QgsPointCloud3DSymbolWidget::setCustomMinMaxValues( QgsRgbPointCloud3DSymbo
 
   if ( redEnhancement )
   {
-    redEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    redEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>( ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   if ( greenEnhancement )
   {
-    greenEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    greenEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>( ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   if ( blueEnhancement )
   {
-    blueEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    blueEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>( ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   symbol->setRedContrastEnhancement( redEnhancement );
   symbol->setGreenContrastEnhancement( greenEnhancement );
@@ -402,11 +411,9 @@ void QgsPointCloud3DSymbolWidget::minMaxModified()
 {
   if ( !mDisableMinMaxWidgetRefresh )
   {
-    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
+    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm ) ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
     {
-      mContrastEnhancementAlgorithmComboBox->setCurrentIndex(
-        mContrastEnhancementAlgorithmComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum )
-      );
+      mContrastEnhancementAlgorithmComboBox->setCurrentIndex( mContrastEnhancementAlgorithmComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
     }
     emitChangedSignal();
   }
@@ -431,9 +438,7 @@ void QgsPointCloud3DSymbolWidget::setMinMaxValue( const QgsContrastEnhancement *
 
   // QgsMultiBandColorRenderer is using individual contrast enhancements for each
   // band, but this widget GUI has one for all
-  mContrastEnhancementAlgorithmComboBox->setCurrentIndex( mContrastEnhancementAlgorithmComboBox->findData(
-    static_cast<int>( ce->contrastEnhancementAlgorithm() )
-  ) );
+  mContrastEnhancementAlgorithmComboBox->setCurrentIndex( mContrastEnhancementAlgorithmComboBox->findData( static_cast<int>( ce->contrastEnhancementAlgorithm() ) ) );
 }
 
 void QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax()
@@ -698,6 +703,16 @@ void QgsPointCloud3DSymbolWidget::setZoomOutBehavior( const Qgis::PointCloudZoom
 Qgis::PointCloudZoomOutRenderBehavior QgsPointCloud3DSymbolWidget::zoomOutBehavior() const
 {
   return mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>();
+}
+
+void QgsPointCloud3DSymbolWidget::setOverviewSwitchingScale( double scale )
+{
+  mOverviewSwitchingScale->setCurrentIndex( mOverviewSwitchingScale->findData( scale ) );
+}
+
+double QgsPointCloud3DSymbolWidget::overviewSwitchingScale() const
+{
+  return mOverviewSwitchingScaleMap.key( mOverviewSwitchingScale->currentText() );
 }
 
 void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )

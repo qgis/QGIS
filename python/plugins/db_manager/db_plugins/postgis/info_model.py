@@ -20,18 +20,17 @@ email                : brush.tyler@gmail.com
 
 from qgis.PyQt.QtWidgets import QApplication
 
-from ..info_model import TableInfo, VectorTableInfo, RasterTableInfo, DatabaseInfo
 from ..html_elems import (
-    HtmlSection,
     HtmlParagraph,
+    HtmlSection,
     HtmlTable,
-    HtmlTableHeader,
     HtmlTableCol,
+    HtmlTableHeader,
 )
+from ..info_model import DatabaseInfo, RasterTableInfo, TableInfo, VectorTableInfo
 
 
 class PGDatabaseInfo(DatabaseInfo):
-
     def connectionDetails(self):
         tbl = [
             (
@@ -51,7 +50,6 @@ class PGDatabaseInfo(DatabaseInfo):
 
 
 class PGTableInfo(TableInfo):
-
     def __init__(self, table):
         super().__init__(table)
         self.table = table
@@ -329,9 +327,7 @@ class PGTableInfo(TableInfo):
                 if trig.enabled
                 else (QApplication.translate("DBManagerPlugin", "No"), "enable")
             )
-            txt_enabled = '{enabled} (<a href="action:trigger/{name}/{action}">{action}</a>)'.format(
-                name=trig.name, action=action, enabled=enabled
-            )
+            txt_enabled = f'{enabled} (<a href="action:trigger/{trig.name}/{action}">{action}</a>)'
 
             tbl.append((name, trig.function, trig.type2String(), txt_enabled))
 
@@ -386,7 +382,6 @@ class PGTableInfo(TableInfo):
 
 
 class PGVectorTableInfo(PGTableInfo, VectorTableInfo):
-
     def __init__(self, table):
         VectorTableInfo.__init__(self, table)
         PGTableInfo.__init__(self, table)
@@ -396,7 +391,6 @@ class PGVectorTableInfo(PGTableInfo, VectorTableInfo):
 
 
 class PGRasterTableInfo(PGTableInfo, RasterTableInfo):
-
     def __init__(self, table):
         RasterTableInfo.__init__(self, table)
         PGTableInfo.__init__(self, table)

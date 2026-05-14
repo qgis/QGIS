@@ -29,7 +29,8 @@ SIP_NO_FILE
  * \brief Configuration widget for unique value widgets.
  * \note not available in Python bindings
  */
-class GUI_EXPORT QgsUniqueValuesConfigDlg : public QgsEditorConfigWidget, private Ui::QgsUniqueValuesConfigDlgBase
+class GUI_EXPORT QgsUniqueValuesConfigDlg : public QgsEditorConfigWidget,
+                                            private Ui::QgsUniqueValuesConfigDlgBase
 {
     Q_OBJECT
 

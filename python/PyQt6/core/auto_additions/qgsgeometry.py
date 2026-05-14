@@ -12,6 +12,7 @@ try:
     QgsGeometry.fromRect = staticmethod(QgsGeometry.fromRect)
     QgsGeometry.fromBox3D = staticmethod(QgsGeometry.fromBox3D)
     QgsGeometry.collectGeometry = staticmethod(QgsGeometry.collectGeometry)
+    QgsGeometry.collectTinPatches = staticmethod(QgsGeometry.collectTinPatches)
     QgsGeometry.createWedgeBuffer = staticmethod(QgsGeometry.createWedgeBuffer)
     QgsGeometry.createWedgeBufferFromAngles = staticmethod(QgsGeometry.createWedgeBufferFromAngles)
     QgsGeometry.unaryUnion = staticmethod(QgsGeometry.unaryUnion)

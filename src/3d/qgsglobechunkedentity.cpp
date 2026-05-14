@@ -25,6 +25,7 @@
 #include "qgseventtracing.h"
 #include "qgsgeotransform.h"
 #include "qgsglobematerial.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
@@ -33,6 +34,7 @@
 
 #include <QByteArray>
 #include <QImage>
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
@@ -43,9 +45,22 @@
 
 #include "moc_qgsglobechunkedentity.cpp"
 
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
-static Qt3DCore::QEntity *makeGlobeMesh( double lonMin, double lonMax, double latMin, double latMax, int lonSliceCount, int latSliceCount, const QgsCoordinateTransform &globeCrsToLatLon, QImage textureQImage, QString textureDebugText )
+static Qt3DCore::QEntity *makeGlobeMesh(
+  double lonMin,
+  double lonMax,
+  double latMin,
+  double latMax,
+  int lonSliceCount,
+  int latSliceCount,
+  const QgsCoordinateTransform &globeCrsToLatLon,
+  QImage textureQImage,
+  QString textureDebugText,
+  const QgsMaterialContext &context
+)
 {
   double lonRange = lonMax - lonMin;
   double latRange = latMax - latMin;
@@ -184,9 +199,9 @@ static Qt3DCore::QEntity *makeGlobeMesh( double lonMin, double lonMax, double la
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( textureQImage, QgsRectangle( lonMin, latMin, lonMax, latMax ), textureDebugText, entity );
 
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
+  Qgs3DUtils::setTextureFiltering( texture, context );
   texture->addTextureImage( textureImage );
-  texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+  texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
   QgsGlobeMaterial *material = new QgsGlobeMaterial( entity );
   material->setTexture( texture );
@@ -258,12 +273,12 @@ static QgsBox3D globeNodeIdToBox3D( QgsChunkNodeId n, const QgsCoordinateTransfo
 // ---------------
 
 
-QgsGlobeChunkLoader::QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon )
+QgsGlobeChunkLoader::QgsGlobeChunkLoader( QgsChunkNode *node, const Qgs3DRenderContext &context, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon )
   : QgsChunkLoader( node )
+  , mRenderContext( context )
   , mTextureGenerator( textureGenerator )
   , mGlobeCrsToLatLon( globeCrsToLatLon )
-{
-}
+{}
 
 void QgsGlobeChunkLoader::start()
 {
@@ -306,7 +321,9 @@ Qt3DCore::QEntity *QgsGlobeChunkLoader::createEntity( Qt3DCore::QEntity *parent 
   else
     slices = 2;
 
-  Qt3DCore::QEntity *e = makeGlobeMesh( lonMin, lonMax, latMin, latMax, slices, slices, mGlobeCrsToLatLon, mTexture, mNode->tileId().text() );
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( mRenderContext );
+
+  Qt3DCore::QEntity *e = makeGlobeMesh( lonMin, lonMax, latMin, latMax, slices, slices, mGlobeCrsToLatLon, mTexture, mNode->tileId().text(), materialContext );
   e->setParent( parent );
   return e;
 }
@@ -337,7 +354,7 @@ QgsGlobeChunkLoaderFactory::~QgsGlobeChunkLoaderFactory()
 
 QgsChunkLoader *QgsGlobeChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsGlobeChunkLoader( node, mTextureGenerator, mGlobeCrsToLatLon );
+  return new QgsGlobeChunkLoader( node, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mTextureGenerator, mGlobeCrsToLatLon );
 }
 
 QgsChunkNode *QgsGlobeChunkLoaderFactory::createRootNode() const
@@ -380,10 +397,11 @@ QVector<QgsChunkNode *> QgsGlobeChunkLoaderFactory::createChildren( QgsChunkNode
     double d2 = mDistanceArea.measureLine( QgsPointXY( lonMin, latMin ), QgsPointXY( lonMin, latMin + ( latMax - latMin ) / 2 ) );
     float error = static_cast<float>( std::max( d1, d2 ) ) / static_cast<float>( mMapSettings->terrainSettings()->mapTileResolution() );
 
-    children << new QgsChunkNode( cid1, globeNodeIdToBox3D( cid1, mGlobeCrsToLatLon ), error, node )
-             << new QgsChunkNode( cid2, globeNodeIdToBox3D( cid2, mGlobeCrsToLatLon ), error, node )
-             << new QgsChunkNode( cid3, globeNodeIdToBox3D( cid3, mGlobeCrsToLatLon ), error, node )
-             << new QgsChunkNode( cid4, globeNodeIdToBox3D( cid4, mGlobeCrsToLatLon ), error, node );
+    children
+      << new QgsChunkNode( cid1, globeNodeIdToBox3D( cid1, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid2, globeNodeIdToBox3D( cid2, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid3, globeNodeIdToBox3D( cid3, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid4, globeNodeIdToBox3D( cid4, mGlobeCrsToLatLon ), error, node );
   }
 
   return children;
@@ -395,8 +413,7 @@ QVector<QgsChunkNode *> QgsGlobeChunkLoaderFactory::createChildren( QgsChunkNode
 QgsGlobeMapUpdateJob::QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node )
   : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
-{
-}
+{}
 
 void QgsGlobeMapUpdateJob::start()
 {
@@ -435,15 +452,9 @@ void QgsGlobeMapUpdateJob::cancel()
 class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
 {
   public:
-    explicit QgsGlobeMapUpdateJobFactory( Qgs3DMapSettings *mapSettings )
-    {
-      mTextureGenerator = new QgsTerrainTextureGenerator( *mapSettings );
-    }
+    explicit QgsGlobeMapUpdateJobFactory( Qgs3DMapSettings *mapSettings ) { mTextureGenerator = new QgsTerrainTextureGenerator( *mapSettings ); }
 
-    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
-    {
-      return new QgsGlobeMapUpdateJob( mTextureGenerator, chunk );
-    }
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override { return new QgsGlobeMapUpdateJob( mTextureGenerator, chunk ); }
 
   private:
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
@@ -456,9 +467,7 @@ class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
 QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
   : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoaderFactory( mapSettings ), true )
 {
-  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [this, mapSettings] {
-    setShowBoundingBoxes( mapSettings->showTerrainBoundingBoxes() );
-  } );
+  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [this, mapSettings] { setShowBoundingBoxes( mapSettings->showTerrainBoundingBoxes() ); } );
   connect( mapSettings, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::showLabelsChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsGlobeEntity::onLayersChanged );

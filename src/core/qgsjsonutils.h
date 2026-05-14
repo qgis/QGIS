@@ -44,7 +44,6 @@ class QTextCodec;
 class CORE_EXPORT QgsJsonExporter
 {
   public:
-
     /**
      * Constructor for QgsJsonExporter.
      * \param vectorLayer associated vector layer (required for related attribute export)
@@ -220,14 +219,12 @@ class CORE_EXPORT QgsJsonExporter
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
      * \param indent number of indentation spaces for generated JSON (defaults to none)
+     * \param featureType optional feature type to pass, like the layer name. If omitted, it is not written (since QGIS 4.2)
      * \returns GeoJSON string
      * \see exportFeatures()
      * \see exportFeatureToJsonObject()
      */
-    QString exportFeature( const QgsFeature &feature,
-                           const QVariantMap &extraProperties = QVariantMap(),
-                           const QVariant &id = QVariant(),
-                           int indent = -1 ) const;
+    QString exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), int indent = -1, const QString &featureType = QString() ) const;
 
     /**
      * Returns a QJsonObject representation of a feature.
@@ -235,12 +232,12 @@ class CORE_EXPORT QgsJsonExporter
      * \param extraProperties map of extra attributes to include in feature's properties
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
+     * \param featureType optional feature type to pass, like the layer name. If omitted, it is not written (since QGIS 4.2)
      * \returns json object
      * \see exportFeatures()
      */
-    json exportFeatureToJsonObject( const QgsFeature &feature,
-                                    const QVariantMap &extraProperties = QVariantMap(),
-                                    const QVariant &id = QVariant() ) const SIP_SKIP;
+    json exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), const QString &featureType = QString() ) const
+      SIP_SKIP;
 
 
     /**
@@ -273,7 +270,6 @@ class CORE_EXPORT QgsJsonExporter
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
-
     //! Maximum number of decimal places for geometry coordinates
     int mPrecision;
 
@@ -322,7 +318,6 @@ class CORE_EXPORT QgsJsonUtils
     Q_GADGET
 
   public:
-
     /**
      * Attempts to parse a GeoJSON \a string to a collection of features.
      * It is possible to specify \a fields to parse specific fields, if not provided, no fields will be included.
@@ -358,8 +353,7 @@ class CORE_EXPORT QgsJsonUtils
      * \param attributeWidgetCaches optional widget configuration cache. Can be used
      * to speed up exporting the attributes for multiple features from the same layer.
      */
-    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
-                                     const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
+    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = nullptr, const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 
     /**
      * Exports all attributes from a QgsFeature as a json object.
@@ -372,8 +366,8 @@ class CORE_EXPORT QgsJsonUtils
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
-        const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>(), bool useFieldFormatters = true ) SIP_SKIP;
+    static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr, const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>(), bool useFieldFormatters = true )
+      SIP_SKIP;
 
     /**
      * Parse a simple array (depth=1)
@@ -460,7 +454,6 @@ class CORE_EXPORT QgsJsonUtils
      * adds this information in the JSON output
      */
     static void addCrsInfo( json &value, const QgsCoordinateReferenceSystem &crs ) SIP_SKIP;
-
 };
 
 #endif // QGSJSONUTILS_H

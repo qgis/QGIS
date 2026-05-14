@@ -36,11 +36,9 @@ class QgsFeatureFilterProvider;
  */
 class CORE_EXPORT QgsLayoutRenderContext : public QObject
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutRenderContext.
      */
@@ -208,7 +206,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setCurrentExportLayer()
      * \deprecated QGIS 3.40. Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
      */
-    Q_DECL_DEPRECATED int currentExportLayer() const SIP_DEPRECATED  { return mCurrentExportLayer; }
+    Q_DECL_DEPRECATED int currentExportLayer() const SIP_DEPRECATED { return mCurrentExportLayer; }
 
     /**
      * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
@@ -216,10 +214,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    Qgis::TextRenderFormat textRenderFormat() const
-    {
-      return mTextRenderFormat;
-    }
+    Qgis::TextRenderFormat textRenderFormat() const { return mTextRenderFormat; }
 
     /**
      * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
@@ -227,10 +222,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see textRenderFormat()
      * \since QGIS 3.4.3
      */
-    void setTextRenderFormat( Qgis::TextRenderFormat format )
-    {
-      mTextRenderFormat = format;
-    }
+    void setTextRenderFormat( Qgis::TextRenderFormat format ) { mTextRenderFormat = format; }
 
     /**
      * Sets the simplification setting to use when rendering vector layers.
@@ -370,7 +362,6 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     void predefinedScalesChanged();
 
   private:
-
     void matchRasterizedRenderingPolicyToFlags();
 
     Qgis::LayoutRenderFlags mFlags;
@@ -406,11 +397,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     friend class LayoutContextPreviewSettingRestorer;
     friend class TestQgsLayoutMap;
     friend class TestQgsLayoutLabel;
-
 };
 
 
 #endif //QGSLAYOUTRENDERCONTEXT_H
-
-
-

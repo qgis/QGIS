@@ -25,6 +25,9 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLabelPropertyDialog : public QObject
 {
@@ -49,10 +52,7 @@ class TestQgsLabelPropertyDialog : public QObject
       mTestDataDir = myDataDir + '/';
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void test()
     {

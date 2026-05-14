@@ -22,19 +22,17 @@ The content of this file is based on
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog, QApplication
+from qgis.PyQt.QtWidgets import QApplication, QDialog
 from qgis.utils import OverrideCursor
 
-from .db_plugins.plugin import DbError
+from .db_plugins.plugin import DbError, TableConstraint
 from .dlg_db_error import DlgDbError
-from .db_plugins.plugin import TableConstraint
 from .gui_utils import GuiUtils
 
 Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgCreateConstraint.ui"))
 
 
 class DlgCreateConstraint(QDialog, Ui_Dialog):
-
     def __init__(self, parent=None, table=None, db=None):
         QDialog.__init__(self, parent)
         self.table = table

@@ -414,8 +414,6 @@ bool QgsLayerCapabilitiesModel::nodeShown( QgsLayerTreeNode *node ) const
   else
   {
     QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-    return layer
-           && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
-           && ( !mShowSpatialLayersOnly || layer->isSpatial() );
+    return layer && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) ) && ( !mShowSpatialLayersOnly || layer->isSpatial() );
   }
 }

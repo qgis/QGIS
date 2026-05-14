@@ -20,8 +20,11 @@
 #include <QColorDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdecorationscalebardialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, Qgis::DistanceUnit units, QWidget *parent )
   : QDialog( parent )
@@ -74,12 +77,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   spnHorizontal->setClearValue( 0 );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::Percentage,
-      Qgis::RenderUnit::Pixels
-    }
-  );
+  wgtUnitSelection->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::Percentage, Qgis::RenderUnit::Pixels } );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   grpEnable->setChecked( mDeco.enabled() );

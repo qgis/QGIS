@@ -23,8 +23,7 @@
 
 QgsMapToolEmitPoint::QgsMapToolEmitPoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-{
-}
+{}
 
 void QgsMapToolEmitPoint::canvasMoveEvent( QgsMapMouseEvent *e )
 {

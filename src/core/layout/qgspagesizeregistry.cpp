@@ -19,6 +19,10 @@
 #include "qgis.h"
 #include "qgslayoutmeasurementconverter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsPageSizeRegistry
 //
@@ -126,21 +130,17 @@ bool QgsPageSizeRegistry::decodePageSize( const QString &pageSizeName, QgsPageSi
 
 QgsPageSize::QgsPageSize()
   : size( QgsLayoutSize( 0.0, 0.0 ) )
-{
-}
+{}
 
 QgsPageSize::QgsPageSize( const QString &pageName, const QgsLayoutSize &pageSize, const QString &displayName )
   : name( pageName )
   , size( pageSize )
   , displayName( displayName )
-{
-}
+{}
 
 QgsPageSize::QgsPageSize( const QgsLayoutSize &pageSize )
-  :  size( pageSize )
-{
-
-}
+  : size( pageSize )
+{}
 
 bool QgsPageSize::operator==( const QgsPageSize &other ) const
 {
@@ -149,5 +149,5 @@ bool QgsPageSize::operator==( const QgsPageSize &other ) const
 
 bool QgsPageSize::operator!=( const QgsPageSize &other ) const
 {
-  return ( ! operator==( other ) );
+  return ( !operator==( other ) );
 }

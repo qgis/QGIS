@@ -11,13 +11,12 @@ __date__ = "20/08/2012"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
 import os
-
-from qgis.core import QgsVectorLayer
-from qgis.gui import QgsGui
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
 from featuresourcetestbase import FeatureSourceTestCase
+from qgis.core import QgsVectorLayer
+from qgis.gui import QgsGui
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

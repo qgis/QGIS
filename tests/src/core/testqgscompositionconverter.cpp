@@ -38,6 +38,9 @@
 #include "qgstest.h"
 
 #include <QDebug>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // Debug output for dom nodes
 QDebug operator<<( QDebug dbg, const QDomNode &node )
@@ -55,7 +58,8 @@ class TestQgsCompositionConverter : public QgsTest
 
   public:
     TestQgsCompositionConverter()
-      : QgsTest( u"Composition Converter Tests"_s, u"compositionconverter"_s ) {}
+      : QgsTest( u"Composition Converter Tests"_s, u"compositionconverter"_s )
+    {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -159,12 +163,10 @@ void TestQgsCompositionConverter::initTestCase()
 }
 
 void TestQgsCompositionConverter::init()
-{
-}
+{}
 
 void TestQgsCompositionConverter::cleanup()
-{
-}
+{}
 
 
 void TestQgsCompositionConverter::importComposerTemplateLabel()
@@ -431,7 +433,7 @@ void TestQgsCompositionConverter::importComposerTemplateLegend()
 
   QgsLayoutItemLegend *item = items.at( 0 );
   QVERIFY( item->isVisible() );
-  QVERIFY( !item->autoUpdateModel() );
+  QCOMPARE( item->syncMode(), Qgis::LegendSyncMode::Manual );
 
   QGSVERIFYLAYOUTCHECK( "importComposerTemplateLegend_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 

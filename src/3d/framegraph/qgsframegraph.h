@@ -18,9 +18,11 @@
 
 #include <map>
 
-#include "qgspointlightsettings.h"
+#include "qgis_3d.h"
+#include "qgsabstractrenderview.h"
 
 #include <QWindow>
+#include <Qt3DRender/QBlitFramebuffer>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
@@ -33,6 +35,7 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QRenderTarget>
@@ -40,20 +43,24 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
 
-class QgsDirectionalLightSettings;
-class QgsCameraController;
-class QgsRectangle;
-class QgsPostprocessingEntity;
-class QgsAbstractRenderView;
-class QgsForwardRenderView;
-class QgsShadowRenderView;
-class QgsDepthRenderView;
-class QgsShadowSettings;
-class QgsDebugTextureEntity;
+#define SIP_NO_FILE
+
+class Qgs3DMapSettings;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
+class QgsCameraController;
+class QgsDepthRenderView;
+class QgsDirectionalLightSettings;
+class QgsForwardRenderView;
+class QgsHighlightsRenderView;
+class QgsLightSource;
+class QgsOverlayTextureEntity;
+class QgsOverlayTextureRenderView;
+class QgsPostprocessingEntity;
+class QgsRectangle;
+class QgsShadowRenderView;
+class QgsShadowSettings;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d
@@ -65,7 +72,7 @@ class QgsAmbientOcclusionSettings;
  *
  * \since QGIS 3.16
  */
-class QgsFrameGraph : public Qt3DCore::QEntity
+class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
@@ -91,6 +98,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns the render capture object used to take an image of the depth buffer of the scene
     Qt3DRender::QRenderCapture *depthRenderCapture();
 
+    //! Adds additional global \a parameters to the graph
+    void addGlobalParameters( const QList<Qt3DRender::QParameter *> &parameters );
+
     //! Sets whether frustum culling is enabled
     void setFrustumCullingEnabled( bool enabled );
 
@@ -111,6 +121,18 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.26
      */
     void setDebugOverlayEnabled( bool enabled );
+
+    /**
+     * Sets whether multisample anti-aliasing (MSAA) is enabled
+     * \since QGIS 4.2
+     */
+    void setMsaaEnabled( bool enabled );
+
+    /**
+     * Returns whether multisample anti-aliasing (MSAA) is enabled
+     * \since QGIS 4.2
+     */
+    bool msaaEnabled() const { return mMsaaEnabled; }
 
     //! Dumps frame graph as string
     QString dumpFrameGraph() const;
@@ -193,16 +215,22 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     QgsAmbientOcclusionRenderView &ambientOcclusionRenderView();
 
     /**
+     * Returns overlay texture renderview
+     * \since QGIS 4.0
+     */
+    QgsOverlayTextureRenderView &overlayTextureRenderView();
+
+    /**
+     * Returns the highlights renderview, used for rendering highlight overlays of identified features
+     * \since QGIS 4.0
+     */
+    QgsHighlightsRenderView &highlightsRenderView();
+
+    /**
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
      * \since QGIS 3.44
      */
     void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources );
-
-    /**
-     * Updates settings for shadows debug map
-     * \since QGIS 3.44
-     */
-    void updateDebugShadowMapSettings( const Qgs3DMapSettings &settings );
 
     /**
      * Updates settings for depth debug map
@@ -226,15 +254,22 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     static const QString SHADOW_RENDERVIEW;
     static const QString AXIS3D_RENDERVIEW;
     static const QString DEPTH_RENDERVIEW;
-    static const QString DEBUG_RENDERVIEW;
+    static const QString OVERLAY_RENDERVIEW;
     //! Ambient occlusion render view name
     static const QString AMBIENT_OCCLUSION_RENDERVIEW;
+    static const QString HIGHLIGHTS_RENDERVIEW;
 
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
 
     Qt3DRender::QCamera *mMainCamera = nullptr;
+
+    // Storage for global parameters
+    // QRenderPassFilter has dual usage -- one for storage of filtering keys,
+    // the other for storage of parameters for use in shaders. Here we are
+    // using it for storage of parameters only, not for filtering!
+    Qt3DRender::QRenderPassFilter *mGlobalParamsStorage = nullptr;
 
     // Post processing pass branch nodes:
     Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
@@ -261,23 +296,27 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
-    //! shadow texture debugging
-    QgsDebugTextureEntity *mShadowTextureDebugging = nullptr;
     //! depth texture debugging
-    QgsDebugTextureEntity *mDepthTextureDebugging = nullptr;
+    QgsOverlayTextureEntity *mDepthTextureDebugging = nullptr;
 
     void constructShadowRenderPass();
     void constructForwardRenderPass();
-    void constructDebugTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
+    void constructHighlightsPass();
+    void constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();
     Qt3DRender::QFrameGraphNode *constructRubberBandsPass();
+    void constructMsaaBlitNodes();
 
     Qt3DRender::QFrameGraphNode *constructSubPostPassForProcessing();
     Qt3DRender::QFrameGraphNode *constructSubPostPassForRenderCapture();
 
     bool mRenderCaptureEnabled = false;
+    bool mMsaaEnabled = false;
+    bool mMsaaBlitConfigured = false;
+    Qt3DRender::QBlitFramebuffer *mMsaaBlitNode = nullptr;
+    Qt3DRender::QBlitFramebuffer *mMsaaDepthBlitNode = nullptr;
 
     // holds renderviews according to their name
     std::map<QString, std::unique_ptr<QgsAbstractRenderView>> mRenderViewMap;

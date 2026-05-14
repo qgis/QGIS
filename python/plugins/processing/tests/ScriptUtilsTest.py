@@ -22,10 +22,10 @@ __copyright__ = "(C) 2019, Luigi Pirelli"
 import os
 import shutil
 import tempfile
+import unittest
 
 from qgis.core import NULL, QgsApplication
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 from processing.script import ScriptUtils
 
@@ -35,7 +35,6 @@ start_app()
 
 
 class ScriptUtilsTest(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.cleanup_paths = []

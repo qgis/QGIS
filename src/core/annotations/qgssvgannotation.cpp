@@ -23,14 +23,15 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgssvgannotation.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
   : QgsAnnotation( parent )
-{
-
-}
+{}
 
 QgsSvgAnnotation *QgsSvgAnnotation::clone() const
 {
@@ -87,8 +88,7 @@ void QgsSvgAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size 
       renderWidth = viewBox.width() * heightRatio;
     }
 
-    mSvgRenderer.render( painter, QRectF( 0, 0, renderWidth,
-                                          renderHeight ) );
+    mSvgRenderer.render( painter, QRectF( 0, 0, renderWidth, renderHeight ) );
   }
 }
 

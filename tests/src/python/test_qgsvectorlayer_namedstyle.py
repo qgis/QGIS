@@ -11,13 +11,12 @@ __author__ = "Alessandro Pasotti"
 __date__ = "22/01/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import QgsMapLayer, QgsReadWriteContext, QgsVectorLayer
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import unittest
 
 
 class TestPyQgsVectorLayerNamedStyle(unittest.TestCase):
-
     def testLoadWriteRenderingScaleVisibility(self):
         """Test write and load scale visibility, see GH #33840"""
 

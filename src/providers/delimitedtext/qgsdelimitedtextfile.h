@@ -107,10 +107,7 @@ class QgsDelimitedTextFile : public QObject
      * Returns the filename
      * \returns filename  the name of the file
      */
-    QString fileName() const
-    {
-      return mFileName;
-    }
+    QString fileName() const { return mFileName; }
 
     /**
      * Set the file encoding (defuault is UTF-8)
@@ -172,10 +169,7 @@ class QgsDelimitedTextFile : public QObject
      * Returns the number of header lines to skip
      * \returns skiplines The maximum lines to skip
      */
-    int skipLines() const
-    {
-      return mSkipLines;
-    }
+    int skipLines() const { return mSkipLines; }
 
     /**
      * Set reading field names from the first record
@@ -187,10 +181,7 @@ class QgsDelimitedTextFile : public QObject
      * Returns the option for reading field names from the first record
      * \returns useheaders Field names will be read if true
      */
-    bool useHeader() const
-    {
-      return mUseHeader;
-    }
+    bool useHeader() const { return mUseHeader; }
 
     /**
      * Set the option for discarding empty fields
@@ -202,10 +193,7 @@ class QgsDelimitedTextFile : public QObject
      * Returns the option for discarding empty fields
      * \returns useheaders Empty fields will be discarded if true
      */
-    bool discardEmptyFields() const
-    {
-      return mDiscardEmptyFields;
-    }
+    bool discardEmptyFields() const { return mDiscardEmptyFields; }
 
     /**
      * Set the option for trimming whitespace from fields
@@ -217,10 +205,7 @@ class QgsDelimitedTextFile : public QObject
      * Returns the option for trimming empty fields
      * \returns useheaders Empty fields will be trimmed if true
      */
-    bool trimFields() const
-    {
-      return mTrimFields;
-    }
+    bool trimFields() const { return mTrimFields; }
 
     /**
      * Set the maximum number of fields that will be read from a record
@@ -278,10 +263,7 @@ class QgsDelimitedTextFile : public QObject
      * Returns the line number of the start of the last record read
      *  \returns linenumber  The line number of the start of the record
      */
-    int recordId() const
-    {
-      return mRecordLineNumber;
-    }
+    int recordId() const { return mRecordLineNumber; }
 
     /**
      * Set the index of the next record to return.

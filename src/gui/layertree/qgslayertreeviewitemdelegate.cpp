@@ -32,8 +32,7 @@
 QgsLayerTreeViewProxyStyle::QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeView )
   : QgsProxyStyle( treeView )
   , mLayerTreeView( treeView )
-{
-}
+{}
 
 
 QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, const QStyleOption *option, const QWidget *widget ) const

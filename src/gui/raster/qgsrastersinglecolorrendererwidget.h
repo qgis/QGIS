@@ -18,12 +18,13 @@
 #ifndef QGSRASTERSINGLECOLORRENDERERWIDGET_H
 #define QGSRASTERSINGLECOLORRENDERERWIDGET_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsrastersinglecolorrendererwidgetbase.h"
 
 #include "qgis_gui.h"
 #include "qgsrasterrendererwidget.h"
+
+#define SIP_NO_FILE
 
 /**
  * \brief Renderer widget for the single color renderer.

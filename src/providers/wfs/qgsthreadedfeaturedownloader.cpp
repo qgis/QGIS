@@ -27,8 +27,7 @@
 QgsThreadedFeatureDownloader::QgsThreadedFeatureDownloader( QgsBackgroundCachedSharedData *shared )
   : mShared( shared )
   , mRequestMadeFromMainThread( QThread::currentThread() == QApplication::instance()->thread() )
-{
-}
+{}
 
 QgsThreadedFeatureDownloader::~QgsThreadedFeatureDownloader()
 {
@@ -66,6 +65,8 @@ void QgsThreadedFeatureDownloader::run()
     QMutexLocker locker( &mWaitMutex );
     mWaitCond.wakeOne();
   }
-  mDownloader->run( true, /* serialize features */
-                    mShared->requestLimit() /* user max features */ );
+  mDownloader->run(
+    true,                   /* serialize features */
+    mShared->requestLimit() /* user max features */
+  );
 }

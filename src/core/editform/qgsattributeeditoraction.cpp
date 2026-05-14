@@ -18,6 +18,10 @@
 #include "qgsactionmanager.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAttributeEditorAction::QgsAttributeEditorAction( const QgsAction &action, QgsAttributeEditorElement *parent )
   : QgsAttributeEditorElement( Qgis::AttributeEditorType::Action, action.id().toString(), parent )
   , mAction( action )
@@ -40,7 +44,7 @@ QgsAttributeEditorElement *QgsAttributeEditorAction::clone( QgsAttributeEditorEl
 const QgsAction &QgsAttributeEditorAction::action( const QgsVectorLayer *layer ) const
 {
   // Lazy loading
-  if ( ! mAction.isValid() && ! mUuid.isNull() && layer )
+  if ( !mAction.isValid() && !mUuid.isNull() && layer )
   {
     mAction = layer->actions()->action( mUuid );
   }

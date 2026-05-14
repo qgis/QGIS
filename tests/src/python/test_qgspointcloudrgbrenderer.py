@@ -10,9 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDir, QSize
-from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsContrastEnhancement,
@@ -33,16 +32,16 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVector3D,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsPointCloudRgbRenderer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "pointcloudrenderer"

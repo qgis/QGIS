@@ -20,6 +20,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsJsonUtils : public QObject
 {
   public:
@@ -226,12 +230,13 @@ void TestQgsJsonUtils::testExportFeatureJson()
   feature.setAttributes( QgsAttributes() << u"a value"_s << 1 << 2.0 );
 
   const QgsJsonExporter exporter { &vl };
-
-  const auto expectedJson { QStringLiteral( "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":"
-                                            "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
-                                            "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
-                                            ",\"id\":null,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
-                                            ",\"type\":\"Feature\"}" ) };
+  const auto expectedJson { QStringLiteral(
+    "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":"
+    "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+    ",\"id\":null,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+    ",\"type\":\"Feature\"}"
+  ) };
 
   const auto j( exporter.exportFeatureToJsonObject( feature ) );
   QCOMPARE( QString::fromStdString( j.dump() ), expectedJson );
@@ -239,19 +244,37 @@ void TestQgsJsonUtils::testExportFeatureJson()
   QCOMPARE( json, expectedJson );
 
   const QgsJsonExporter exporterPrecision { &vl, 1 };
-
-
-  const auto expectedJsonPrecision { QStringLiteral( "{\"bbox\":[1.1,1.1,5.5,5.3],\"geometry\":{\"coordinates\":"
-                                                     "[[[1.1,1.3],[5.5,1.1],[5.3,5.3],[1.6,5.2],[1.1,1.3]],"
-                                                     "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
-                                                     ",\"id\":123,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
-                                                     ",\"type\":\"Feature\"}" ) };
+  const auto expectedJsonPrecision { QStringLiteral(
+    "{\"bbox\":[1.1,1.1,5.5,5.3],\"geometry\":{\"coordinates\":"
+    "[[[1.1,1.3],[5.5,1.1],[5.3,5.3],[1.6,5.2],[1.1,1.3]],"
+    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+    ",\"id\":123,\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+    ",\"type\":\"Feature\"}"
+  ) };
 
   feature.setId( 123 );
   const auto jPrecision( exporterPrecision.exportFeatureToJsonObject( feature ) );
   QCOMPARE( QString::fromStdString( jPrecision.dump() ), expectedJsonPrecision );
   const auto jsonPrecision { exporterPrecision.exportFeature( feature ) };
   QCOMPARE( jsonPrecision, expectedJsonPrecision );
+
+  const QgsJsonExporter exporterFeatureTypeAndIdAndExtraProperties { &vl };
+  const auto expectedJsonFeatureTypeAndIdAndExtraProperties { QStringLiteral(
+    "{\"bbox\":[1.12,1.12,5.45,5.33],\"featureType\":\"theForestLayer\",\"geometry\":{\"coordinates\":"
+    "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+    ",\"id\":\"theForestLayer-1337\",\"properties\":{\"andAnExtraProperty\":1337,\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+    ",\"type\":\"Feature\"}"
+  ) };
+  QString layerName( u"theForestLayer"_s );
+  QString genericFeatureId( u"theForestLayer-1337"_s );
+  QVariantMap extraProperties;
+  extraProperties.insert( u"andAnExtraProperty"_s, 1337 );
+
+  const auto jFeatureType( exporter.exportFeatureToJsonObject( feature, extraProperties, genericFeatureId, layerName ) );
+  QCOMPARE( QString::fromStdString( jFeatureType.dump() ), expectedJsonFeatureTypeAndIdAndExtraProperties );
+  const auto jsonFeatureType = exporter.exportFeature( feature, extraProperties, genericFeatureId, -1, layerName );
+  QCOMPARE( jsonFeatureType, expectedJsonFeatureTypeAndIdAndExtraProperties );
 }
 
 void TestQgsJsonUtils::testExportFeatureJsonCrs()
@@ -265,11 +288,13 @@ void TestQgsJsonUtils::testExportFeatureJsonCrs()
   exporterPrecision.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
 
 
-  const auto expectedJsonPrecision { QStringLiteral( "{\"bbox\":[124677.8,124685.8,606691.2,594190.5],\"geometry\":"
-                                                     "{\"coordinates\":[[[124677.8,149181.7],[606691.2,124685.8],[594446.1,594190.5],[173658.4,579657.7],"
-                                                     "[124677.8,149181.7]],[[222639.0,222684.2],[333958.5,222684.2],[333958.5,334111.2],[222639.0,334111.2],"
-                                                     "[222639.0,222684.2]]],\"type\":\"Polygon\"},\"id\":123,\"properties\":{\"flddbl\":2.0,\"fldint\":1,"
-                                                     "\"fldtxt\":\"a value\"},\"type\":\"Feature\"}" ) };
+  const auto expectedJsonPrecision { QStringLiteral(
+    "{\"bbox\":[124677.8,124685.8,606691.2,594190.5],\"geometry\":"
+    "{\"coordinates\":[[[124677.8,149181.7],[606691.2,124685.8],[594446.1,594190.5],[173658.4,579657.7],"
+    "[124677.8,149181.7]],[[222639.0,222684.2],[333958.5,222684.2],[333958.5,334111.2],[222639.0,334111.2],"
+    "[222639.0,222684.2]]],\"type\":\"Polygon\"},\"id\":123,\"properties\":{\"flddbl\":2.0,\"fldint\":1,"
+    "\"fldtxt\":\"a value\"},\"type\":\"Feature\"}"
+  ) };
 
   feature.setId( 123 );
   const auto jPrecision( exporterPrecision.exportFeatureToJsonObject( feature ) );
@@ -281,27 +306,25 @@ void TestQgsJsonUtils::testExportFeatureJsonCrs()
 
 void TestQgsJsonUtils::testExportGeomToJson()
 {
-  const QMap<QString, QString> testWkts {
-    {
-      { u"LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)"_s,
-        QStringLiteral( R"json({"coordinates":[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],"type":"LineString"})json" )
-      },
-      { u"MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932), (-70 43.56, -67 44.68))"_s,
-        QStringLiteral( R"json({"coordinates":[[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],[[-70.0,43.56],[-67.0,44.68]]],"type":"MultiLineString"})json" )
-      },
-      { u"POINT(-71.064544 42.28787)"_s, QStringLiteral( R"json({"coordinates":[-71.065,42.288],"type":"Point"})json" ) },
-      { u"MULTIPOINT(-71.064544 42.28787, -71.1776585052917 42.3902909739571)"_s, QStringLiteral( R"json({"coordinates":[[-71.065,42.288],[-71.178,42.39]],"type":"MultiPoint"})json" ) },
-      { QStringLiteral( "POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,"
-                        "-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))" ),
-        QStringLiteral( R"json({"coordinates":[[[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39]]],"type":"Polygon"})json" )
-      },
-      { u"MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))"_s,
-        QStringLiteral( R"json({"coordinates":[[[[1.0,1.0],[5.0,1.0],[5.0,5.0],[1.0,5.0],[1.0,1.0]],[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],[[[3.0,3.0],[6.0,2.0],[6.0,4.0],[3.0,3.0]]]],"type":"MultiPolygon"})json" )
-      },
-      // Note: CIRCULARSTRING json is very long, we will check first three vertices only
-      { u"CIRCULARSTRING(220268 150415,220227 150505,220227 150406)"_s, QStringLiteral( R"json({"coordinates":[[220268.0,150415.0],[220268.7,150415.535],[220269.391,150416.081])json" ) },
-    }
-  };
+  const QMap<QString, QString> testWkts { {
+    { u"LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)"_s,
+      QStringLiteral( R"json({"coordinates":[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],"type":"LineString"})json" ) },
+    { u"MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932), (-70 43.56, -67 44.68))"_s,
+      QStringLiteral( R"json({"coordinates":[[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],[[-70.0,43.56],[-67.0,44.68]]],"type":"MultiLineString"})json" ) },
+    { u"POINT(-71.064544 42.28787)"_s, QStringLiteral( R"json({"coordinates":[-71.065,42.288],"type":"Point"})json" ) },
+    { u"MULTIPOINT(-71.064544 42.28787, -71.1776585052917 42.3902909739571)"_s, QStringLiteral( R"json({"coordinates":[[-71.065,42.288],[-71.178,42.39]],"type":"MultiPoint"})json" ) },
+    { QStringLiteral(
+        "POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,"
+        "-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))"
+      ),
+      QStringLiteral( R"json({"coordinates":[[[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39]]],"type":"Polygon"})json" ) },
+    { u"MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))"_s,
+      QStringLiteral(
+        R"json({"coordinates":[[[[1.0,1.0],[5.0,1.0],[5.0,5.0],[1.0,5.0],[1.0,1.0]],[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],[[[3.0,3.0],[6.0,2.0],[6.0,4.0],[3.0,3.0]]]],"type":"MultiPolygon"})json"
+      ) },
+    // Note: CIRCULARSTRING json is very long, we will check first three vertices only
+    { u"CIRCULARSTRING(220268 150415,220227 150505,220227 150406)"_s, QStringLiteral( R"json({"coordinates":[[220268.0,150415.0],[220268.7,150415.535],[220269.391,150416.081])json" ) },
+  } };
 
   for ( const auto &w : testWkts.toStdMap() )
   {

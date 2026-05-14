@@ -19,7 +19,6 @@ An attribute editor widget that will represent arbitrary QML code.
 #include "qgsattributeeditorqmlelement.h"
 %End
   public:
-
     QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent );
 %Docstring
 Creates a new element which can display QML

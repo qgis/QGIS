@@ -19,6 +19,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
@@ -69,6 +71,7 @@ class TestQgsMapSettings : public QObject
     void testLayersWithGroupLayers();
     void testMaskRenderSettings();
     void testDeprecatedFlagsRasterizePolicy();
+    void testSelectiveMaskSourceSets();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -421,9 +424,7 @@ void TestQgsMapSettings::testXmlReadWrite()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement element = doc.createElement( u"s"_s );
 
@@ -629,6 +630,24 @@ void TestQgsMapSettings::testExpressionContext()
   e = QgsExpression( u"@frame_number"_s );
   r = e.evaluate( &c );
   QCOMPARE( r.toLongLong(), 5LL );
+
+  // if ellipsoid is set explicitly, use precise ellipsoid-based scale calculation instead of the rough approximation
+  QgsCoordinateReferenceSystem crs( u"EPSG:4326"_s );
+
+  QgsMapSettings ms1;
+  QgsExpressionContext c1;
+
+  ms1.setDestinationCrs( crs );
+  ms1.setEllipsoid( crs.ellipsoidAcronym() );
+  ms1.setOutputSize( QSize( 5000, 5000 ) );
+  ms1.setExtent( QgsRectangle( -1, 0, 2, 2 ) );
+  ms1.setRotation( -32 );
+
+  c1 << QgsExpressionContextUtils::mapSettingsScope( ms1 );
+
+  e = QgsExpression( u"$scale"_s );
+  r = e.evaluate( &c1 );
+  QGSCOMPARENEAR( r.toDouble(), 247965, 10.0 );
 }
 
 void TestQgsMapSettings::testRenderedFeatureHandlers()
@@ -837,6 +856,23 @@ void TestQgsMapSettings::testDeprecatedFlagsRasterizePolicy()
   settings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
   settings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, false );
   QCOMPARE( settings.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::ForceVector );
+}
+
+void TestQgsMapSettings::testSelectiveMaskSourceSets()
+{
+  QgsMapSettings settings;
+  QCOMPARE( settings.selectiveMaskingSourceSets().size(), 0 );
+
+  QgsSelectiveMaskingSourceSet set1;
+  set1.setName( u"set1"_s );
+
+  QgsSelectiveMaskingSourceSet set2;
+  set2.setName( u"set2"_s );
+
+  settings.setSelectiveMaskingSourceSets( { set1, set2 } );
+  QCOMPARE( settings.selectiveMaskingSourceSets().size(), 2 );
+  QCOMPARE( settings.selectiveMaskingSourceSets().value( set1.id() ).name(), u"set1"_s );
+  QCOMPARE( settings.selectiveMaskingSourceSets().value( set2.id() ).name(), u"set2"_s );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

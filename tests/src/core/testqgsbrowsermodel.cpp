@@ -18,6 +18,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsdataitem.h"
 #include "qgsvectorlayer.h"
@@ -54,11 +56,6 @@ void TestQgsBrowserModel::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsBrowserModel::cleanupTestCase()

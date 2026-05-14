@@ -29,6 +29,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutPage : public QgsTest
 {
@@ -36,7 +39,8 @@ class TestQgsLayoutPage : public QgsTest
 
   public:
     TestQgsLayoutPage()
-      : QgsTest( u"Layout Page Tests"_s, u"composer_paper"_s ) {}
+      : QgsTest( u"Layout Page Tests"_s, u"composer_paper"_s )
+    {}
 
   private slots:
     void cleanupTestCase();

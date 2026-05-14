@@ -19,8 +19,6 @@
 #ifndef QGSSERVICENATIVELOADER_H
 #define QGSSERVICENATIVELOADER_H
 
-#define SIP_NO_FILE
-
 
 class QgsServiceModule;
 class QgsServiceRegistry;
@@ -32,6 +30,8 @@ class QgsServerInterface;
 #include "qgis_server.h"
 
 #include <QHash>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup server

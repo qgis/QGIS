@@ -39,6 +39,9 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <QBuffer>
 #include <QCoreApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * Create metadata tables if needed
@@ -136,10 +139,7 @@ struct VTable
       init_();
     }
 
-    ~VTable()
-    {
-      delete mProvider;
-    }
+    ~VTable() { delete mProvider; }
 
     QgsVectorDataProvider *provider() { return mProvider; }
 
@@ -239,7 +239,20 @@ struct VTable
       QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
       if ( pkAttributeIndexes.size() == 1 )
       {
-        mPkColumn = pkAttributeIndexes.at( 0 );
+        // Only use integer columns as primary key cloumn
+        // since sqlite3_value_int() is used
+        const int pkIdx = pkAttributeIndexes.at( 0 );
+        switch ( mFields.at( pkIdx ).type() )
+        {
+          case QMetaType::Type::Int:
+          case QMetaType::Type::UInt:
+          case QMetaType::Type::LongLong:
+          case QMetaType::Type::ULongLong:
+            mPkColumn = pkIdx;
+            break;
+          default:
+            break;
+        }
       }
 
       mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( ','_L1 ) + ")";
@@ -552,7 +565,8 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
     }
 
     // request for rtree filtering
-    if ( ( indexInfo->aConstraint[i].usable ) &&
+    if ( ( indexInfo->aConstraint[i].usable )
+         &&
          // request on _search_frame_ column
          ( vtab->fields().count() + 1 == indexInfo->aConstraint[i].iColumn ) && ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {

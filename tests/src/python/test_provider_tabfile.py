@@ -13,18 +13,17 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 import os
 import shutil
 import tempfile
+import unittest
 
 import osgeo.gdal  # NOQA
-from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant
 from qgis.core import (
     QgsFeatureRequest,
     QgsField,
     QgsVectorDataProvider,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -35,7 +34,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsTabfileProvider(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

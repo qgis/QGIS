@@ -22,12 +22,10 @@ Contains utility functions for working with metadata.
 #include "qgsmetadatautils.h"
 %End
   public:
-
     static QgsLayerMetadata convertFromEsri( const QDomDocument &document );
 %Docstring
 Converts ESRI layer metadata to :py:class:`QgsLayerMetadata`.
 %End
-
 };
 
 /************************************************************************

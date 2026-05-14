@@ -19,7 +19,6 @@ from qgis._core import QgsTask
 
 
 class QgsTaskWrapper(QgsTask):
-
     def __init__(self, description, flags, function, on_finished, *args, **kwargs):
         QgsTask.__init__(self, description, flags)
         self.args = args

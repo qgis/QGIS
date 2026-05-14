@@ -23,21 +23,22 @@
 #include "qgsrelationmanager.h"
 #include "qgsrelationwidgetregistry.h"
 
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgsrelationwidgetwrapper.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
   : QgsRelationWidgetWrapper( u"relation_editor"_s, vl, relation, editor, parent )
-{
-}
+{}
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( const QString &relationEditorName, QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
   , mRelation( relation )
   , mRelationEditorId( relationEditorName )
-{
-}
+{}
 
 QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
 {
@@ -78,14 +79,19 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
-  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer() == mRelation.referencedLayer() || ( mNmRelation.isValid() && mNmRelation.referencedLayer() == mRelation.referencedLayer() ) )
+  if ( !mRelation.isValid()
+       || !widget()
+       || !widget()->isVisible()
+       || mRelation.referencingLayer() == mRelation.referencedLayer()
+       || ( mNmRelation.isValid() && mNmRelation.referencedLayer() == mRelation.referencedLayer() ) )
     return;
 
   // If the layer is already saved before, return
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
-    if ( ctx->relation().isValid() && ( ctx->relation().referencedLayer() == mRelation.referencingLayer() || ( mNmRelation.isValid() && ctx->relation().referencedLayer() == mNmRelation.referencedLayer() ) ) )
+    if ( ctx->relation().isValid()
+         && ( ctx->relation().referencedLayer() == mRelation.referencingLayer() || ( mNmRelation.isValid() && ctx->relation().referencedLayer() == mNmRelation.referencedLayer() ) ) )
     {
       return;
     }
@@ -195,8 +201,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
-    if ( ( ctx->relation().id() == mRelation.id() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-         || ( mNmRelation.isValid() && ctx->relation().id() == mNmRelation.id() ) )
+    if ( ( ctx->relation().id() == mRelation.id() && ctx->formMode() == QgsAttributeEditorContext::Embed ) || ( mNmRelation.isValid() && ctx->relation().id() == mNmRelation.id() ) )
     {
       w->setVisible( false );
       break;
@@ -279,8 +284,7 @@ void QgsRelationWidgetWrapper::setNmRelationId( const QVariant &nmRelationId )
     const QgsAttributeEditorContext *ctx = &context();
     while ( ctx && ctx->relation().isValid() )
     {
-      if ( ( ctx->relation().id() == mRelation.id() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-           || ( mNmRelation.isValid() && ctx->relation().id() == mNmRelation.id() ) )
+      if ( ( ctx->relation().id() == mRelation.id() && ctx->formMode() == QgsAttributeEditorContext::Embed ) || ( mNmRelation.isValid() && ctx->relation().id() == mNmRelation.id() ) )
       {
         mWidget->setVisible( false );
         break;

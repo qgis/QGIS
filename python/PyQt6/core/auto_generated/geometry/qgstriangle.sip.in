@@ -19,7 +19,6 @@ Triangle geometry type.
 #include "qgstriangle.h"
 %End
   public:
-
     QgsTriangle() /HoldGIL/;
 %Docstring
 Constructor for an empty triangle geometry.

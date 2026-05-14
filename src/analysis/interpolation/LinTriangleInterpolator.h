@@ -55,8 +55,7 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 
 inline LinTriangleInterpolator::LinTriangleInterpolator( QgsDualEdgeTriangulation *tin )
   : mTIN( tin )
-{
-}
+{}
 
 inline QgsDualEdgeTriangulation *LinTriangleInterpolator::getTriangulation() const
 {

@@ -20,6 +20,10 @@
 #include "qgsmessagebaritem.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsMessageBar : public QObject
 {
     Q_OBJECT
@@ -34,20 +38,16 @@ class TestQgsMessageBar : public QObject
 };
 
 void TestQgsMessageBar::initTestCase()
-{
-}
+{}
 
 void TestQgsMessageBar::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsMessageBar::init()
-{
-}
+{}
 
 void TestQgsMessageBar::cleanup()
-{
-}
+{}
 
 void TestQgsMessageBar::dismiss()
 {

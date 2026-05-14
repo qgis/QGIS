@@ -14,22 +14,25 @@ import http.server
 import os
 import socketserver
 import threading
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QRectF
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsCoordinateReferenceSystem,
+    QgsFillSymbol,
     QgsLayout,
     QgsLayoutItemMap,
     QgsLayoutItemPicture,
+    QgsLayoutItemShape,
+    QgsLayoutMeasurement,
     QgsProject,
     QgsReadWriteContext,
     QgsRectangle,
+    QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QRectF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -38,7 +41,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "composer_picture"
@@ -256,6 +258,33 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
         picture.setPicturePath("invalid_path", QgsLayoutItemPicture.Format.FormatRaster)
         self.assertEqual(picture.isMissingImage(), True)
         self.assertEqual(picture.mode(), QgsLayoutItemPicture.Format.FormatRaster)
+
+    def testClipping(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        picture = QgsLayoutItemPicture(self.layout)
+        picture.setPicturePath(TEST_DATA_DIR + "/sample_image.png")
+        picture.attemptSetSceneRect(QRectF(50, 50, 100, 100))
+        picture.setFrameEnabled(True)
+        picture.setFrameStrokeWidth(
+            QgsLayoutMeasurement(4.0, QgsUnitTypes.LayoutUnit.LayoutMillimeters)
+        )
+        layout.addLayoutItem(picture)
+
+        shape = QgsLayoutItemShape(layout)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(70, 70, 80, 80))
+        fillSymbol = QgsFillSymbol.createSimple(
+            {"color": "255,0,0", "outline_style": "yes"}
+        )
+        shape.setSymbol(fillSymbol)
+        layout.addLayoutItem(shape)
+
+        picture.setClippingItem(shape)
+        picture.setClipToItem(True)
+
+        self.assertTrue(self.render_layout_check("composerpicture_clipping", layout))
 
 
 if __name__ == "__main__":

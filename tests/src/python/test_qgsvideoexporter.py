@@ -8,24 +8,23 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QSize, QUrl, QT_VERSION
+from qgis.core import QgsFeedback, QgsVideoExporter
+from qgis.PyQt.QtCore import QT_VERSION, QSize, QUrl
 from qgis.PyQt.QtMultimedia import (
     QMediaFormat,
     QMediaPlayer,
-    QVideoSink,
     QMediaRecorder,
+    QVideoSink,
 )
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import QgsVideoExporter, QgsFeedback
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsVideoExporter(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "video"

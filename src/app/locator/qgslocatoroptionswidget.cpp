@@ -24,9 +24,12 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgslocatoroptionswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent )
   : QTreeView( parent )

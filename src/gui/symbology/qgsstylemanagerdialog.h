@@ -27,6 +27,9 @@
 #include <QDialog>
 #include <QMenu>
 #include <QStandardItem>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;
@@ -399,7 +402,17 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     /**
      * Returns count of items copied, excluding skipped items.
      */
-    static int copyItems( const QList<ItemDetails> &items, QgsStyle *src, QgsStyle *dst, QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride, bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
+    static int copyItems(
+      const QList<ItemDetails> &items,
+      QgsStyle *src,
+      QgsStyle *dst,
+      QWidget *parentWidget,
+      std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
+      bool isImport,
+      const QStringList &importTags,
+      bool addToFavorites,
+      bool ignoreSourceTags
+    );
 
     QgsMessageBar *mMessageBar = nullptr;
 
@@ -473,6 +486,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     bool addSymbol3D( const QString &type );
     bool editSymbol3D();
+
+    bool addMaterialSettings();
+    bool editMaterialSettings();
 
     void addStyleDatabase( bool createNew );
 

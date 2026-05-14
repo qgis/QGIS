@@ -6,17 +6,17 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime
-from qgis.core import Qgis, QgsMagneticModel, QgsExpression
-from qgis.testing import start_app, QgisTestCase
 import unittest
+
+from qgis.core import Qgis, QgsExpression, QgsMagneticModel
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 @unittest.skipIf(not Qgis.hasGeographicLib(), "GeographicLib is not available")
 class TestQgsMagneticModel(QgisTestCase):
-
     def test_invalid_model(self):
         model = QgsMagneticModel("xxxx")
         self.assertFalse(model.isValid())

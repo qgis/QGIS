@@ -15,12 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgs3d.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy symbol for testing
 class Dummy3DSymbol : public QgsAbstract3DSymbol
@@ -31,6 +35,7 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
     QgsAbstract3DSymbol *clone() const override { return new Dummy3DSymbol(); }
     void writeXml( QDomElement &, const QgsReadWriteContext & ) const override {}
     void readXml( const QDomElement &, const QgsReadWriteContext & ) override {}
+    void setMaterialSettings( QgsAbstractMaterialSettings * ) override {};
 
     static QgsAbstract3DSymbol *create() { return new Dummy3DSymbol(); }
 };
@@ -71,12 +76,10 @@ void TestQgs3DSymbolRegistry::cleanupTestCase()
 }
 
 void TestQgs3DSymbolRegistry::init()
-{
-}
+{}
 
 void TestQgs3DSymbolRegistry::cleanup()
-{
-}
+{}
 
 void TestQgs3DSymbolRegistry::metadata()
 {

@@ -24,12 +24,15 @@
 #include "qgsstringutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewfilterindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {

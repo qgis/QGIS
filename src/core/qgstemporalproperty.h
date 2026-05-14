@@ -37,13 +37,12 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Flags attached to the temporal property.
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when temporal range context is modified.
+      FlagDontInvalidateCachedRendersWhenRangeChanges = 1 //!< Any cached rendering will not be invalidated when temporal range context is modified.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -81,10 +80,8 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
     void changed();
 
   private:
-
     //! Active status of the properties
     bool mActive = false;
-
 };
 
 #endif // QGSTEMPORALPROPERTY_H

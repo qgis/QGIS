@@ -20,8 +20,11 @@
 #include "qgssetrequestinitiator_p.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsabstractcontentcache.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractContentCacheEntry
@@ -29,8 +32,7 @@
 
 QgsAbstractContentCacheEntry::QgsAbstractContentCacheEntry( const QString &path )
   : path( path )
-{
-}
+{}
 
 //
 // QgsAbstractContentCacheBase
@@ -47,9 +49,7 @@ bool QgsAbstractContentCacheBase::invalidateCacheEntry( const QString &path )
 }
 
 void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool )
-{
-
-}
+{}
 
 bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QString *mimeType, QString *data )
 {
@@ -97,6 +97,5 @@ bool QgsAbstractContentCacheBase::parseEmbeddedStringData( const QString &path, 
 
 bool QgsAbstractContentCacheBase::isBase64Data( const QString &path )
 {
-  return path.startsWith( "base64:"_L1 )
-         || parseBase64DataUrl( path );
+  return path.startsWith( "base64:"_L1 ) || parseBase64DataUrl( path );
 }

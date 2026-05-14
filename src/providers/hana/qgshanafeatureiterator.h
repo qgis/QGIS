@@ -59,11 +59,7 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
 class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHanaFeatureSource>
 {
   public:
-    QgsHanaFeatureIterator(
-      QgsHanaFeatureSource *source,
-      bool ownSource,
-      const QgsFeatureRequest &request
-    );
+    QgsHanaFeatureIterator( QgsHanaFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsHanaFeatureIterator() override;
 

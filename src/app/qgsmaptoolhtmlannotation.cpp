@@ -28,8 +28,7 @@
 
 QgsMapToolHtmlAnnotation::QgsMapToolHtmlAnnotation( QgsMapCanvas *canvas )
   : QgsMapToolAnnotation( canvas )
-{
-}
+{}
 
 QgsAnnotation *QgsMapToolHtmlAnnotation::createItem() const
 {

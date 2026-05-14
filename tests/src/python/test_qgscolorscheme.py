@@ -10,23 +10,21 @@ __author__ = "Nyall Dawson"
 __date__ = "25/07/2014"
 __copyright__ = "Copyright 2014, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QColor
+import unittest
+
 from qgis.core import (
     QgsColorScheme,
     QgsRecentColorScheme,
     QgsSettings,
     QgsUserColorScheme,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 
 # Make a dummy color scheme for testing
 
 
 class DummyColorScheme(QgsColorScheme):
-
     def __init__(self, parent=None):
         QgsColorScheme.__init__(self)
 
@@ -46,15 +44,10 @@ class DummyColorScheme(QgsColorScheme):
 
 
 class TestQgsColorScheme(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
-        QgsSettings().clear()
         start_app()
 
     def testCreateScheme(self):

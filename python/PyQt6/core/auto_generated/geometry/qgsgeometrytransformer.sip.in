@@ -22,10 +22,9 @@ transforming input points to output points.
 #include "qgsgeometrytransformer.h"
 %End
   public:
-
     virtual ~QgsAbstractGeometryTransformer();
 
-    virtual bool transformPoint( double &x /In,Out/, double &y /In,Out/, double &z /In,Out/, double &m  /In,Out/ ) = 0;
+    virtual bool transformPoint( double &x /In,Out/, double &y /In,Out/, double &z /In,Out/, double &m /In,Out/ ) = 0;
 %Docstring
 Transforms the point defined by the coordinates (``x``, ``y``, ``z``)
 and the specified ``m`` value.
@@ -53,7 +52,6 @@ coordinate:
            # returns a tuple of True to indicate success, then the modified x/y/z/m values
            return True, x*3, y+10, z, m
 %End
-
 };
 
 /************************************************************************

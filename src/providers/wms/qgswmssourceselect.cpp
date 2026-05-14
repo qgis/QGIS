@@ -53,10 +53,13 @@
 #include <QNetworkRequest>
 #include <QPicture>
 #include <QRadioButton>
+#include <QString>
 #include <QUrl>
 #include <QValidator>
 
 #include "moc_qgswmssourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
@@ -185,7 +188,7 @@ void QgsWMSSourceSelect::updateFormatButtons( const QStringList &availableFormat
 void QgsWMSSourceSelect::refresh()
 {
   // Reload WMS connections and update the GUI
-  QgsDebugMsgLevel( u"Refreshing WMS connections ..."_s, 2 );
+  QgsDebugMsgLevel( u"Refreshing WMS connections..."_s, 2 );
   populateConnectionList();
 }
 
@@ -206,7 +209,7 @@ void QgsWMSSourceSelect::populateConnectionList()
 
 void QgsWMSSourceSelect::btnNew_clicked()
 {
-  auto nc = new QgsWmsNewConnection( this );
+  auto nc = new QgsWmsNewConnection( this, QString(), QgsNewHttpConnection::FlagShowHttpSettings );
   nc->setAttribute( Qt::WA_DeleteOnClose );
 
   // For testability, do not use exec()
@@ -219,7 +222,7 @@ void QgsWMSSourceSelect::btnNew_clicked()
 
 void QgsWMSSourceSelect::btnEdit_clicked()
 {
-  auto nc = std::make_unique<QgsWmsNewConnection>( this, cmbConnections->currentText() );
+  auto nc = std::make_unique<QgsWmsNewConnection>( this, cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc->exec() )
   {
@@ -230,8 +233,7 @@ void QgsWMSSourceSelect::btnEdit_clicked()
 
 void QgsWMSSourceSelect::btnDelete_clicked()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                  .arg( cmbConnections->currentText() );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
@@ -263,12 +265,7 @@ void QgsWMSSourceSelect::btnLoad_clicked()
 }
 
 QgsTreeWidgetItem *QgsWMSSourceSelect::createItem(
-  int id,
-  const QStringList &names,
-  QMap<int, QgsTreeWidgetItem *> &items,
-  int &layerAndStyleCount,
-  const QMap<int, int> &layerParents,
-  const QMap<int, QStringList> &layerParentNames
+  int id, const QStringList &names, QMap<int, QgsTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames
 )
 {
   if ( items.contains( id ) )
@@ -496,11 +493,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
   QgsWmsSettings wmsSettings;
   if ( !wmsSettings.parseUri( mUri.encodedUri() ) )
   {
-    QMessageBox::warning(
-      this,
-      tr( "WMS Provider" ),
-      tr( "Failed to parse WMS URI" )
-    );
+    QMessageBox::warning( this, tr( "WMS Provider" ), tr( "Failed to parse WMS URI" ) );
     return;
   }
 
@@ -515,11 +508,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
   {
     if ( !property( "hideDialogs" ).toBool() )
     {
-      QMessageBox::warning(
-        this,
-        tr( "WMS Provider" ),
-        capDownload.lastError()
-      );
+      QMessageBox::warning( this, tr( "WMS Provider" ), capDownload.lastError() );
     }
     else // just log for testing
     {
@@ -618,9 +607,7 @@ void QgsWMSSourceSelect::addButtonClicked()
       QString dimString;
       QString delim;
 
-      for ( QHash<QString, QString>::const_iterator it = dims.constBegin();
-            it != dims.constEnd();
-            ++it )
+      for ( QHash<QString, QString>::const_iterator it = dims.constBegin(); it != dims.constEnd(); ++it )
       {
         dimString += delim + it.key() + '=' + it.value();
         delim = ';';
@@ -1112,7 +1099,10 @@ void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUr
       if ( uri.param( "type"_L1 ) == "wmst"_L1 )
       {
         uri.setParam( "temporalSource"_L1, "provider"_L1 );
-        uri.setParam( "allowTemporalUpdates"_L1, "true"_L1 );
+        if ( uri.param( "allowTemporalUpdates"_L1 ) != "true"_L1 )
+        {
+          uri.setParam( "allowTemporalUpdates"_L1, "true"_L1 );
+        }
       }
     }
   }

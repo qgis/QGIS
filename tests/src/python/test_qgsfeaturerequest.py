@@ -10,10 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "12/06/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsExpressionContext,
     QgsExpressionContextScope,
@@ -23,11 +25,9 @@ from qgis.core import (
     QgsGeometry,
     QgsRectangle,
     QgsSimplifyMethod,
-    QgsCoordinateTransform,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -35,7 +35,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsFeatureRequest(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)

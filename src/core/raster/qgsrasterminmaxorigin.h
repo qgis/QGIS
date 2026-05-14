@@ -25,6 +25,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 
+class QgsSettingsEntryDouble;
+
 /**
  * \ingroup core
  * \brief Describes the origin of minimum and maximum values in a raster.
@@ -33,9 +35,7 @@
  */
 class CORE_EXPORT QgsRasterMinMaxOrigin
 {
-
   public:
-
     //! \brief Default cumulative cut lower limit
     static constexpr double CUMULATIVE_CUT_LOWER = 0.02;
 
@@ -47,7 +47,7 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
 
     QgsRasterMinMaxOrigin();
 
-    bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
+    bool operator==( const QgsRasterMinMaxOrigin &other ) const;
 
     //////// Getter methods /////////////////////
 
@@ -117,8 +117,13 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //! \brief Deserialize StatAccuracy
     static Qgis::RasterRangeAccuracy statAccuracyFromString( const QString &accuracy );
 
-  private:
+#ifndef SIP_RUN
+    static const QgsSettingsEntryDouble *settingsCumulativeCutLower SIP_SKIP;
 
+    static const QgsSettingsEntryDouble *settingsCumulativeCutUpper SIP_SKIP;
+#endif
+
+  private:
     Qgis::RasterRangeLimit mLimits = Qgis::RasterRangeLimit::NotSet;
     Qgis::RasterRangeExtent mExtent = Qgis::RasterRangeExtent::WholeRaster;
     Qgis::RasterRangeAccuracy mAccuracy = Qgis::RasterRangeAccuracy::Estimated;

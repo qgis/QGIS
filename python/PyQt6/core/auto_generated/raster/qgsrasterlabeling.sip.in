@@ -13,7 +13,6 @@
 
 
 
-
 class QgsAbstractRasterLayerLabeling /Abstract/
 {
 %Docstring(signature="appended")
@@ -26,7 +25,6 @@ Abstract base class for labeling settings for raster layers.
 #include "qgsrasterlabeling.h"
 %End
   public:
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == "simple" )
       sipType = sipType_QgsRasterLayerSimpleLabeling;
@@ -136,7 +134,6 @@ Basic implementation of the labeling interface for raster layers.
 #include "qgsrasterlabeling.h"
 %End
   public:
-
     explicit QgsRasterLayerSimpleLabeling();
     ~QgsRasterLayerSimpleLabeling();
 
@@ -419,7 +416,6 @@ are showing values resampled over neighboring pixels.
 %End
 
 };
-
 
 
 /************************************************************************

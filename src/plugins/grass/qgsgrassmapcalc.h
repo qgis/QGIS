@@ -38,11 +38,7 @@ class QgsGrassMapcalc : public QMainWindow, private Ui::QgsGrassMapcalcBase, pub
 
   public:
     //! Constructor
-    QgsGrassMapcalc(
-      QgsGrassTools *tools, QgsGrassModule *module,
-      QgisInterface *iface,
-      QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags()
-    );
+    QgsGrassMapcalc( QgsGrassTools *tools, QgsGrassModule *module, QgisInterface *iface, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     // Current tool
     enum Tool

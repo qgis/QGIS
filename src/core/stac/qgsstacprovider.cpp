@@ -20,8 +20,7 @@ QgsStacProvider::QgsStacProvider( const QString &name, const QString &descriptio
   , mDescription( description )
   , mRoles( roles )
   , mUrl( url )
-{
-}
+{}
 
 QString QgsStacProvider::name() const
 {

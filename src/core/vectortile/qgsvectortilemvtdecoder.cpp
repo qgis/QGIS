@@ -26,9 +26,13 @@
 #include "qgsvectortileloader.h"
 #include "qgsvectortilemvtutils.h"
 #include "qgsvectortileutils.h"
+#include "qgsziputils.h"
 
 #include <QNetworkRequest>
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &structure )
   : mStructure( structure )
@@ -40,35 +44,48 @@ bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
 {
   mLayerNameToIndex.clear();
 
-  QMap<QString, QByteArray>::const_iterator it = rawTileData.data.constBegin();
-  for ( ; it != rawTileData.data.constEnd(); ++it )
+  for ( auto it = rawTileData.data.constBegin(); it != rawTileData.data.constEnd(); ++it )
   {
-    QString sourceId = it.key();
+    const QString sourceId = it.key();
+    const QByteArray &raw = it.value();
+
+    QByteArray pbf;
+    const bool isGzip = raw.size() >= 2 && static_cast<uchar>( raw[0] ) == 0x1f && static_cast<uchar>( raw[1] ) == 0x8b;
+
+    if ( isGzip )
+    {
+      if ( !QgsZipUtils::decodeGzip( raw, pbf ) )
+      {
+        QgsDebugMsgLevel( u"Failed to gunzip tile data"_s, 2 );
+        return false;
+      }
+    }
+    else
+    {
+      pbf = raw;
+    }
 
     vector_tile::Tile tile;
-    if ( !tile.ParseFromArray( it.value().constData(), it.value().count() ) )
+    if ( !tile.ParseFromArray( pbf.constData(), static_cast<int>( pbf.size() ) ) )
       return false;
 
-    for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
+    for ( int layerNum = 0; layerNum < tile.layers_size(); ++layerNum )
     {
       const ::vector_tile::Tile_Layer &layer = tile.layers( layerNum );
-      const QString layerName = layer.name().c_str();
-      mLayerNameToIndex[sourceId][layerName] = layerNum;
+      mLayerNameToIndex[sourceId][QString::fromStdString( layer.name() )] = layerNum;
     }
 
     tiles[sourceId] = std::move( tile );
-
   }
 
   mTileID = rawTileData.tileGeometryId;
-
   return true;
 }
 
 QStringList QgsVectorTileMVTDecoder::layers() const
 {
   QStringList layerNames;
-  const int layerSize = std::accumulate( tiles.constBegin(), tiles.constEnd(), 0, []( int count, const vector_tile::Tile & tile ) {return count + tile.layers_size();} );
+  const int layerSize = std::accumulate( tiles.constBegin(), tiles.constEnd(), 0, []( int count, const vector_tile::Tile &tile ) { return count + tile.layers_size(); } );
   layerNames.reserve( layerSize );
 
   QMap<QString, vector_tile::Tile>::const_iterator it = tiles.constBegin();
@@ -224,12 +241,12 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         const int extent = static_cast<int>( layer.extent() );
         int cursorx = 0, cursory = 0;
 
-        QVector<QgsPoint *> outputPoints; // for point/multi-point
-        QVector<QgsLineString *> outputLinestrings;  // for linestring/multi-linestring
+        QVector<QgsPoint *> outputPoints;           // for point/multi-point
+        QVector<QgsLineString *> outputLinestrings; // for linestring/multi-linestring
         QVector<QgsPolygon *> outputPolygons;
         QVector<QgsPoint> tmpPoints;
 
-        for ( int i = 0; i < feature.geometry_size(); i ++ )
+        for ( int i = 0; i < feature.geometry_size(); i++ )
         {
           const unsigned g = feature.geometry( i );
           const unsigned cmdId = g & 0x7;
@@ -305,7 +322,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           {
             if ( feature.type() == vector_tile::Tile_GeomType_POLYGON )
             {
-              tmpPoints.append( tmpPoints.first() );  // close the ring
+              tmpPoints.append( tmpPoints.first() ); // close the ring
 
               auto ring = std::make_unique<QgsLineString>( tmpPoints );
               tmpPoints.clear();
@@ -330,7 +347,6 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
                 }
               }
             }
-
           }
           else
           {

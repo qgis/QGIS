@@ -10,6 +10,7 @@
 
 
 
+
 class QgsXmlUtils
 {
 %Docstring(signature="appended")
@@ -20,7 +21,6 @@ Assorted helper methods for reading and writing chunks of XML.
 #include "qgsxmlutils.h"
 %End
   public:
-
 
     static Qgis::DistanceUnit readMapUnits( const QDomElement &element );
 %Docstring

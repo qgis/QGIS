@@ -20,6 +20,9 @@
 #include "qgssettingsentryimpl.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -137,8 +140,7 @@ QgsTiledSceneProviderConnection::QgsTiledSceneProviderConnection( const QString 
 QgsTiledSceneProviderConnection::QgsTiledSceneProviderConnection( const QString &uri, const QString &provider, const QVariantMap &configuration )
   : QgsAbstractProviderConnection( uri, configuration )
   , mProvider( provider )
-{
-}
+{}
 
 void QgsTiledSceneProviderConnection::store( const QString &name ) const
 {

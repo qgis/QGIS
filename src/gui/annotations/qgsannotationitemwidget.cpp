@@ -25,8 +25,7 @@
 
 QgsAnnotationItemBaseWidget::QgsAnnotationItemBaseWidget( QWidget *parent )
   : QgsPanelWidget( parent )
-{
-}
+{}
 
 bool QgsAnnotationItemBaseWidget::setItem( QgsAnnotationItem *item )
 {
@@ -64,8 +63,7 @@ QgsSymbolWidgetContext QgsAnnotationItemBaseWidget::context() const
 }
 
 void QgsAnnotationItemBaseWidget::focusDefaultWidget()
-{
-}
+{}
 
 bool QgsAnnotationItemBaseWidget::setNewItem( QgsAnnotationItem * )
 {

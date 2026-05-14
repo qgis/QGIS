@@ -15,6 +15,8 @@
 
 #include "qgs3dmapscene.h"
 
+#include <limits>
+
 #include "qgs3daxis.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgs3dmapsettings.h"
@@ -29,14 +31,18 @@
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgscategorized3drenderer.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
-#include "qgsdirectionallightsettings.h"
 #include "qgseventtracing.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
+#include "qgsgradientbackgroundentity.h"
+#include "qgshighlightsrenderview.h"
+#include "qgslightsource.h"
 #include "qgslinematerial_p.h"
 #include "qgslogger.h"
 #include "qgsmaplayerelevationproperties.h"
@@ -45,12 +51,15 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmessageoutput.h"
+#include "qgsmetalroughmaterial.h"
+#include "qgsoverlaytexturerenderview.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspostprocessingentity.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgsshadowrenderview.h"
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"
 #include "qgssourcecache.h"
@@ -64,6 +73,7 @@
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <QString>
 #include <QSurface>
 #include <QTimer>
 #include <QUrl>
@@ -86,6 +96,8 @@
 #include <QtMath>
 
 #include "moc_qgs3dmapscene.cpp"
+
+using namespace Qt::StringLiterals;
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
@@ -139,19 +151,20 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
-  connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapScene::onDebugShadowMapSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::msaaEnabledChanged, this, &Qgs3DMapScene::onMsaaEnabledChanged );
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
   connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
   connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
   connect( &map, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapScene::onStopUpdatesChanged );
+  connect( &map, &Qgs3DMapSettings::show2DMapOverlayChanged, this, &Qgs3DMapScene::onShowMapOverlayChanged );
+  connect( &map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapScene::onShowMapOverlayChanged );
 
   connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
 
@@ -197,17 +210,30 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
 
-  onSkyboxSettingsChanged();
+  connect( &map, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapScene::onBackgroundSettingsChanged );
+  onBackgroundSettingsChanged();
 
   // force initial update of chunked entities
   onCameraChanged();
   // force initial update of eye dome shading
   onEyeDomeShadingSettingsChanged();
   // force initial update of debugging setting of preview quads
-  onDebugShadowMapSettingsChanged();
   onDebugDepthMapSettingsChanged();
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
+  // force initial update of MSAA setting
+  onMsaaEnabledChanged();
+
+  // timer used to refresh the map overlay every 250 ms while the camera is moving.
+  // schedule2DMapOverlayUpdate() is called to schedule the update.
+  // At the end of the delay, applyPendingOverlayUpdate() performs the update.
+  mOverlayUpdateTimer = new QTimer( this );
+  mOverlayUpdateTimer->setSingleShot( true );
+  mOverlayUpdateTimer->setInterval( 250 );
+  connect( mOverlayUpdateTimer, &QTimer::timeout, this, &Qgs3DMapScene::applyPendingOverlayUpdate );
+
+  // force initial update of map overlay entity
+  onShowMapOverlayChanged();
 
   onCameraMovementSpeedChanged();
 
@@ -251,11 +277,13 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
     distance += zRange.upper();
 
   // subtract map origin so coordinates are relative to it
+  // clang-format off
   mCameraController->setViewFromTop(
     static_cast<float>( center.x() - origin.x() ),
     static_cast<float>( center.y() - origin.y() ),
     static_cast<float>( distance )
   );
+  // clang-format on
 }
 
 QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
@@ -312,21 +340,14 @@ double Qgs3DMapScene::worldSpaceError( double epsilon, double distance ) const
 
 void Qgs3DMapScene::onCameraChanged()
 {
-  if ( mMap.projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
-  {
-    QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
-    const float viewWidthFromCenter = mCameraController->distance();
-    const float viewHeightFromCenter = viewportRect.height() * viewWidthFromCenter / viewportRect.width();
-    mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mEngine->camera()->nearPlane(), mEngine->camera()->farPlane() );
-  }
-
   updateScene( true );
   updateCameraNearFarPlanes();
 
   onShadowSettingsChanged();
 
-  QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+  const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
   emit viewed2DExtentFrom3DChanged( extent2D );
+  schedule2DMapOverlayUpdate();
 
   // The magic to make things work better in large scenes (e.g. more than 50km across)
   // is here: we will simply move the origin of the scene, and update transforms
@@ -373,35 +394,27 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
     {
       float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
       float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
+      // clang-format off
       projMatrix = {
         fovCotan / camera->aspectRatio(), 0, 0, 0,
         0, fovCotan, 0, 0,
         0, 0, -1, -2,
         0, 0, -1, 0
       };
+      // clang-format on
       break;
     }
     case Qt3DRender::QCameraLens::OrthographicProjection:
     {
       Qt3DRender::QCameraLens *lens = camera->lens();
+      // clang-format off
       projMatrix = {
-        2.0f / ( lens->right() - lens->left() ),
-        0,
-        0,
-        0,
-        0,
-        2.0f / ( lens->top() - lens->bottom() ),
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        -( lens->left() + lens->right() ) / ( lens->right() - lens->left() ),
-        -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ),
-        -1.0f,
-        1.0f,
+        2.0f / ( lens->right() - lens->left() ), 0, 0, 0,
+        0, 2.0f / ( lens->top() - lens->bottom() ), 0, 0,
+        0, 0, 1, 0,
+        -( lens->left() + lens->right() ) / ( lens->right() - lens->left() ), -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ), -1.0f, 1.0f
       };
+      // clang-format on
       break;
     }
     default:
@@ -521,6 +534,63 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   }
 }
 
+void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints )
+{
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  QgsOverlayTextureRenderView &overlayRenderView = frameGraph->overlayTextureRenderView();
+
+  if ( !mMap.is2DMapOverlayEnabled() )
+  {
+    if ( mMapOverlayEntity )
+    {
+      mMapOverlayEntity.reset();
+    }
+    overlayRenderView.setEnabled( mMap.debugDepthMapEnabled() );
+    return;
+  }
+
+  if ( !mMapOverlayEntity )
+  {
+    QgsWindow3DEngine *engine = qobject_cast<QgsWindow3DEngine *>( mEngine );
+    mMapOverlayEntity.reset( new QgsMapOverlayEntity( engine, &overlayRenderView, &mMap, this ) );
+    mMapOverlayEntity->setEnabled( true );
+    overlayRenderView.setEnabled( true );
+  }
+
+
+  Qt3DRender::QCamera *camera = mEngine->camera();
+  const QgsVector3D extentCenter3D = mMap.worldToMapCoordinates( camera->position() );
+  const QgsPointXY extentCenter2D( extentCenter3D.x(), extentCenter3D.y() );
+
+  // Compute an extent that provides an overview around the camera position.
+  // When the view is from above (pitch near 0°), the scene's extent is reduced.
+  // As the pitch increases (up to 90°), a larger portion of the scene becomes visible.
+  // The smoothing factor allows reproducing the behavior of the maximum extent
+  // as the pitch changes. The calculated extent is bounded to prevent covering too large a scene.
+  double minHalfExtent = std::numeric_limits<double>::max();
+  double maxHalfExtent = 0.0;
+  for ( const QgsPointXY &extentPoint : extent2DAsPoints )
+  {
+    const double distance = extentCenter2D.distance( extentPoint );
+    minHalfExtent = std::min( minHalfExtent, distance );
+    maxHalfExtent = std::max( maxHalfExtent, distance );
+  }
+
+  const QgsRectangle fullExtent = sceneExtent();
+  const double sceneHalfExtent = 0.6 * std::max( fullExtent.width(), fullExtent.height() );
+
+  minHalfExtent = std::min( 50., minHalfExtent );
+  maxHalfExtent = std::min( 100., maxHalfExtent );
+  const double smoothFactor = std::sin( mCameraController->pitch() / 90.0 * M_PI_2 );
+
+  // Using the scene extent to prevent the image from becoming too wide when zooming out
+  const double adjustedHalfExtent = std::min( 3.0 * ( minHalfExtent + smoothFactor * maxHalfExtent ), sceneHalfExtent );
+
+  const QgsRectangle overviewExtent = QgsRectangle::fromCenterAndSize( extentCenter2D, adjustedHalfExtent, adjustedHalfExtent );
+  const bool showFrustum = mMap.viewFrustumVisualizationEnabled();
+  mMapOverlayEntity->update( overviewExtent, extent2DAsPoints, mCameraController->yaw(), showFrustum );
+}
+
 void Qgs3DMapScene::createTerrain()
 {
   if ( mTerrain )
@@ -576,6 +646,11 @@ void Qgs3DMapScene::createTerrainDeferred()
 
   if ( terrainOrGlobe )
   {
+    // The terrain is not added through addSceneEntity(), so we add the required QLayers here
+    QgsFrameGraph *frameGraph = mEngine->frameGraph();
+    terrainOrGlobe->addComponent( frameGraph->forwardRenderView().renderLayer() );
+    terrainOrGlobe->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
+
     terrainOrGlobe->setParent( this );
     terrainOrGlobe->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 
@@ -622,10 +697,13 @@ void Qgs3DMapScene::updateLights()
     entity->deleteLater();
   mLightEntities.clear();
 
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
   const QList<QgsLightSource *> newLights = mMap.lightSources();
   for ( const QgsLightSource *source : newLights )
   {
-    mLightEntities.append( source->createEntity( mMap, this ) );
+    Qt3DCore::QEntity *entity = source->createEntity( mMap, this );
+    entity->addComponent( frameGraph->forwardRenderView().renderLayer() );
+    mLightEntities.append( entity );
   }
 
   onShadowSettingsChanged();
@@ -735,7 +813,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer classes are not available.
-    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 ) )
+    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 || renderer->type() == "categorized"_L1 ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
       if ( renderer->type() == "vector"_L1 )
@@ -756,6 +834,19 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         for ( auto rule : rules )
         {
           const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
+          if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
+          {
+            mModelVectorLayers.append( layer );
+            break;
+          }
+        }
+      }
+      else if ( renderer->type() == "categorized"_L1 )
+      {
+        const Qgs3DCategoryList categories = static_cast<QgsCategorized3DRenderer *>( renderer )->categories();
+        for ( const Qgs3DRendererCategory &category : categories )
+        {
+          const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( category.symbol() );
           if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
@@ -889,9 +980,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
   const QList<QgsLineMaterial *> childLineMaterials = newEntity->findChildren<QgsLineMaterial *>();
   for ( QgsLineMaterial *lm : childLineMaterials )
   {
-    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this] {
-      lm->setViewportSize( mEngine->size() );
-    } );
+    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this] { lm->setViewportSize( mEngine->size() ); } );
 
     lm->setViewportSize( mEngine->size() );
   }
@@ -899,15 +988,24 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
   const QList<QgsPoint3DBillboardMaterial *> childBillboardMaterials = newEntity->findChildren<QgsPoint3DBillboardMaterial *>();
   for ( QgsPoint3DBillboardMaterial *bm : childBillboardMaterials )
   {
-    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this] {
-      bm->setViewportSize( mEngine->size() );
-    } );
+    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this] { bm->setViewportSize( mEngine->size() ); } );
 
     bm->setViewportSize( mEngine->size() );
   }
 
-  // Finalize adding the 3D transparent objects by adding the layer components to the entities
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
+
+  // Here we check if the entity should not be rendered in the forward render view
+  // For example highlight entities should only be rendered in the highlights render view, so we check for attached QLayers
+  const QVector<Qt3DRender::QLayer *> layers = newEntity->componentsOfType<Qt3DRender::QLayer>();
+  if ( layers.contains( frameGraph->highlightsRenderView().highlightsLayer() ) )
+    return;
+
+  // Add the required QLayers to the entity
+  newEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
+  newEntity->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
+
+  // Finalize adding the 3D transparent objects by adding the layer components to the entities
   Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView().transparentObjectLayer();
   const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
   for ( Qt3DRender::QMaterial *material : childMaterials )
@@ -1002,9 +1100,7 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
 
   Qt3DCore::QTransform *trCameraViewCenter = new Qt3DCore::QTransform;
   mEntityCameraViewCenter->addComponent( trCameraViewCenter );
-  connect( camera, &Qt3DRender::QCamera::viewCenterChanged, this, [trCameraViewCenter, camera] {
-    trCameraViewCenter->setTranslation( camera->viewCenter() );
-  } );
+  connect( camera, &Qt3DRender::QCamera::viewCenterChanged, this, [trCameraViewCenter, camera] { trCameraViewCenter->setTranslation( camera->viewCenter() ); } );
 
   Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
   materialCameraViewCenter->setAmbient( Qt::red );
@@ -1017,9 +1113,7 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
   mEntityCameraViewCenter->setParent( this );
 
-  connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this] {
-    mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
-  } );
+  connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this] { mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() ); } );
 }
 
 void Qgs3DMapScene::setSceneState( Qgs3DMapScene::SceneState state )
@@ -1050,35 +1144,34 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::onSkyboxSettingsChanged()
+void Qgs3DMapScene::onBackgroundSettingsChanged()
 {
-  QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
-  if ( mSkybox )
+  if ( mBackgroundEntity )
   {
-    mSkybox->deleteLater();
-    mSkybox = nullptr;
+    mBackgroundEntity->deleteLater();
+    mBackgroundEntity = nullptr;
   }
 
-  mEngine->setFrustumCullingEnabled( !mMap.isSkyboxEnabled() );
+  const QgsAbstract3DMapBackgroundSettings *settings = mMap.backgroundSettings();
+  if ( !settings )
+    return;
 
-  if ( mMap.isSkyboxEnabled() )
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+
+  if ( settings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox )
   {
-    QMap<QString, QString> faces;
-    switch ( skyboxSettings.skyboxType() )
-    {
-      case QgsSkyboxEntity::DistinctTexturesSkybox:
-        faces = skyboxSettings.cubeMapFacesPaths();
-        mSkybox = new QgsCubeFacesSkyboxEntity(
-          faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s],
-          faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s],
-          this
-        );
-        break;
-      case QgsSkyboxEntity::PanoramicSkybox:
-        mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
-        break;
-    }
+    const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( settings );
+    const QMap<QString, QString> faces = skyboxSettings->cubeMapFacesPaths();
+    mBackgroundEntity = new QgsCubeFacesSkyboxEntity( skyboxSettings->cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
   }
+  else if ( settings->type() == Qgis::Map3DBackgroundType::FixedGradientBackground )
+  {
+    const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( settings );
+    mBackgroundEntity = new QgsGradientBackgroundEntity( gradientSettings->topColor(), gradientSettings->bottomColor(), this );
+  }
+
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
 }
 
 void Qgs3DMapScene::onShadowSettingsChanged()
@@ -1089,11 +1182,6 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 {
   mEngine->frameGraph()->updateAmbientOcclusionSettings( mMap.ambientOcclusionSettings() );
-}
-
-void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
-{
-  mEngine->frameGraph()->updateDebugShadowMapSettings( mMap );
 }
 
 void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
@@ -1110,6 +1198,17 @@ void Qgs3DMapScene::onDebugOverlayEnabledChanged()
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
   mEngine->frameGraph()->updateEyeDomeSettings( mMap );
+}
+
+void Qgs3DMapScene::onMsaaEnabledChanged()
+{
+  mEngine->frameGraph()->setMsaaEnabled( mMap.isMsaaEnabled() );
+}
+
+void Qgs3DMapScene::onShowMapOverlayChanged()
+{
+  const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+  update2DMapOverlay( extent2D );
 }
 
 void Qgs3DMapScene::onCameraMovementSpeedChanged()
@@ -1133,6 +1232,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   exporter.setExportTextures( exportSettings.exportTextures() );
   exporter.setTerrainTextureResolution( exportSettings.terrainTextureResolution() );
   exporter.setScale( exportSettings.scale() );
+  exporter.setTerrainExportEnabled( exportSettings.terrainExportEnabled() );
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
   {
@@ -1161,7 +1261,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   if ( mTerrain )
     exporter.parseTerrain( mTerrain, "Terrain" );
 
-  const bool sceneSaved = exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
+  const bool sceneSaved = exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath(), exportSettings.exportFormat() );
   if ( !sceneSaved )
   {
     return false;
@@ -1172,7 +1272,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     QString message = tr( "The following layers were not exported:" ) + "\n";
     for ( const QString &layerName : notParsedLayers )
       message += layerName + "\n";
-    QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );
+    QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, Qgis::StringFormat::PlainText );
   }
 
   return true;
@@ -1280,13 +1380,9 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
   mEntityRotationCenter->setEnabled( false );
   mEntityRotationCenter->setParent( this );
 
-  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center ) {
-    trRotationCenter->setTranslation( center );
-  } );
+  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center ) { trRotationCenter->setTranslation( center ); } );
 
-  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this] {
-    mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
-  } );
+  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this] { mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() ); } );
 }
 
 void Qgs3DMapScene::on3DAxisSettingsChanged()
@@ -1417,4 +1513,22 @@ void Qgs3DMapScene::disableClipping()
 void Qgs3DMapScene::onStopUpdatesChanged()
 {
   mSceneUpdatesEnabled = !mMap.stopUpdates();
+}
+
+void Qgs3DMapScene::schedule2DMapOverlayUpdate()
+{
+  // Start the overlay update timer if overlay is active and not already running
+  if ( mMap.is2DMapOverlayEnabled() && mOverlayUpdateTimer && !mOverlayUpdateTimer->isActive() )
+  {
+    mOverlayUpdateTimer->start();
+  }
+}
+
+void Qgs3DMapScene::applyPendingOverlayUpdate()
+{
+  if ( mMap.is2DMapOverlayEnabled() )
+  {
+    const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+    update2DMapOverlay( extent2D );
+  }
 }

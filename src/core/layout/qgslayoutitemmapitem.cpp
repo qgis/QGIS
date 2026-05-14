@@ -20,18 +20,19 @@
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgslayoutitemmapitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemMapItem::QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutObject( map->layout() )
   , mName( name )
   , mMap( map )
   , mUuid( QUuid::createUuid().toString() )
-{
-
-}
+{}
 
 bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
@@ -76,8 +77,7 @@ bool QgsLayoutItemMapItem::readXml( const QDomElement &itemElem, const QDomDocum
 }
 
 void QgsLayoutItemMapItem::finalizeRestoreFromXml()
-{
-}
+{}
 
 void QgsLayoutItemMapItem::setMap( QgsLayoutItemMap *map )
 {
@@ -148,9 +148,7 @@ QgsMapLayer *QgsLayoutItemMapItem::mapLayer()
 
 QgsLayoutItemMapItemStack::QgsLayoutItemMapItemStack( QgsLayoutItemMap *map )
   : mMap( map )
-{
-
-}
+{}
 
 QgsLayoutItemMapItemStack::~QgsLayoutItemMapItemStack()
 {
@@ -286,7 +284,6 @@ void QgsLayoutItemMapItemStack::drawItems( QPainter *painter, bool ignoreStackin
       case QgsLayoutItemMapItem::StackAboveMapLabels:
         item->draw( painter );
         break;
-
     }
   }
 }
@@ -320,6 +317,3 @@ void QgsLayoutItemMapItemStack::removeItems()
   qDeleteAll( mItems );
   mItems.clear();
 }
-
-
-

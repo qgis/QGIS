@@ -22,7 +22,6 @@ Renders tiled scene layers using textures.
 #include "qgstiledscenetexturerenderer.h"
 %End
   public:
-
     QgsTiledSceneTextureRenderer();
 %Docstring
 Constructor for QgsTiledSceneTextureRenderer.

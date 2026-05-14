@@ -31,12 +31,15 @@
 #include "qgssourceselectproviderregistry.h"
 
 #include <QListWidgetItem>
+#include <QString>
 
 #include "moc_qgsdatasourcemanagerdialog.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( tr( "Data Source Manager" ), parent, fl )
-  , ui( new Ui::QgsDataSourceManagerDialog )
+  , ui( std::make_unique<Ui::QgsDataSourceManagerDialog>() )
   , mMapCanvas( canvas )
   , mBrowserModel( browserModel )
 {
@@ -67,9 +70,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   QDialogButtonBox *browserButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help, browserWidgetWrapper );
   browserWidgetWrapper->layout()->addWidget( browserButtonBox );
 
-  connect( browserButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"managing_data_source/opening_data.html#the-browser-panel"_s );
-  } );
+  connect( browserButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"managing_data_source/opening_data.html#the-browser-panel"_s ); } );
   connect( browserButtonBox, &QDialogButtonBox::rejected, this, &QgsDataSourceManagerDialog::reject );
 
   ui->mOptionsStackedWidget->addWidget( browserWidgetWrapper );
@@ -108,17 +109,13 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
     }
   } );
 
-  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerRemoved, this, [this]( const QString &name ) {
-    removeProviderDialog( name );
-  } );
+  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerRemoved, this, [this]( const QString &name ) { removeProviderDialog( name ); } );
 
   restoreOptionsBaseUi( tr( "Data Source Manager" ) );
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
-{
-  delete ui;
-}
+{}
 
 void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 {

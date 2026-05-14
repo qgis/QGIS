@@ -21,22 +21,21 @@ __date__ = "January 2015"
 __copyright__ = "(C) 2015, Arnaud Morvan"
 
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import (
-    QCheckBox,
-    QRadioButton,
-    QGridLayout,
+    QAction,
     QButtonGroup,
+    QCheckBox,
+    QGridLayout,
+    QMenu,
+    QRadioButton,
     QSizePolicy,
     QSpacerItem,
     QWidget,
-    QMenu,
-    QAction,
 )
-from qgis.PyQt.QtGui import QCursor
 
 
 class CheckboxesPanel(QWidget):
-
     def __init__(self, options, multiple, columns=2, parent=None):
         super().__init__(parent)
 

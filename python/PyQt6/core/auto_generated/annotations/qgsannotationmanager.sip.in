@@ -29,7 +29,6 @@ annotations contained in the manager.
 #include "qgsannotationmanager.h"
 %End
   public:
-
     explicit QgsAnnotationManager( QgsProject *project /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAnnotationManager. The project will become the parent

@@ -114,7 +114,8 @@ class SnappingLayerDelegateTypeMenu : public QMenu
 
   public:
     SnappingLayerDelegateTypeMenu( const QString &title, QWidget *parent = nullptr )
-      : QMenu( title, parent ) {}
+      : QMenu( title, parent )
+    {}
 
     void mouseReleaseEvent( QMouseEvent *e ) override
     {

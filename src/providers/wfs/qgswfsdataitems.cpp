@@ -31,8 +31,11 @@
 
 #include <QClipboard>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgswfsdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgswfssourceselect.h"
@@ -97,10 +100,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildrenOapif()
       {
         for ( const auto &collection : collectionsRequest.collections() )
         {
-          QgsWfsLayerItem *layer = new QgsWfsLayerItem(
-            this, mName, uri, collection.mId, collection.mTitle,
-            QString(), QgsOapifProvider::OAPIF_PROVIDER_KEY
-          );
+          QgsWfsLayerItem *layer = new QgsWfsLayerItem( this, mName, uri, collection.mId, collection.mTitle, QString(), QgsOapifProvider::OAPIF_PROVIDER_KEY );
           layers.append( layer );
         }
         url = collectionsRequest.nextUrl();
@@ -157,10 +157,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
             crs = featureType.crslist.first();
           }
         }
-        QgsWfsLayerItem *layer = new QgsWfsLayerItem(
-          this, mName, uri, featureType.name, featureType.title,
-          crs, QgsWFSProvider::WFS_PROVIDER_KEY
-        );
+        QgsWfsLayerItem *layer = new QgsWfsLayerItem( this, mName, uri, featureType.name, featureType.title, crs, QgsWFSProvider::WFS_PROVIDER_KEY );
         layers.append( layer );
       }
     }

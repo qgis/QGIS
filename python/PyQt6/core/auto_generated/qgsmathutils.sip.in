@@ -24,7 +24,6 @@ Contains utility functions for mathematical operations.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static void doubleToRational( double value, qlonglong &numerator /Out/, qlonglong &denominator /Out/, double tolerance = 1.0e-9, int maxIterations = 100 );
 %Docstring
 Converts a double ``value`` to a rational fraction.
@@ -39,7 +38,6 @@ Converts a double ``value`` to a rational fraction.
 :return: - numerator: calculated numerator
          - denominator: calculated denominator
 %End
-
 };
 
 /************************************************************************

@@ -25,7 +25,6 @@ corresponding geometry of the feature.
 #include "qgsgeocoder.h"
 %End
   public:
-
     enum class Flag
     {
       GeocodesStrings,
@@ -84,7 +83,6 @@ results will be returned.
 The optional ``feedback`` argument can be used to provider cancellation
 support.
 %End
-
 };
 
 /************************************************************************

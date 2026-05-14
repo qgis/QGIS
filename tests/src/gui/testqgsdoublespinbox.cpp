@@ -18,6 +18,9 @@
 #include "qgstest.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsDoubleSpinBox : public QObject
 {
@@ -37,20 +40,16 @@ class TestQgsDoubleSpinBox : public QObject
 };
 
 void TestQgsDoubleSpinBox::initTestCase()
-{
-}
+{}
 
 void TestQgsDoubleSpinBox::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsDoubleSpinBox::init()
-{
-}
+{}
 
 void TestQgsDoubleSpinBox::cleanup()
-{
-}
+{}
 
 void TestQgsDoubleSpinBox::clear()
 {

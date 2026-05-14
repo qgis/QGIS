@@ -21,7 +21,6 @@ A context for field formatter containing information like the project.
 #include "qgsfieldformatter.h"
 %End
   public:
-
     QgsFieldFormatterContext();
 
     QgsProject *project() const;
@@ -58,7 +57,6 @@ This is an abstract base class and will always need to be subclassed.
 #include "qgsfieldformatter.h"
 %End
   public:
-
     QgsFieldFormatter();
 
     virtual ~QgsFieldFormatter();

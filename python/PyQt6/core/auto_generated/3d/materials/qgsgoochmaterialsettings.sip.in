@@ -1,0 +1,205 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsgoochmaterialsettings.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGoochMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring(signature="appended")
+Basic shading material used for rendering based on the Phong shading
+model with three color components: ambient, diffuse and specular.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsgoochmaterialsettings.h"
+%End
+  public:
+    QgsGoochMaterialSettings();
+
+    virtual QString type() const;
+
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsGoochMaterialSettings.
+%End
+
+    static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the
+Gooch material.
+%End
+
+    virtual QgsGoochMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
+
+    QColor warm() const;
+%Docstring
+Returns warm color component
+%End
+
+    QColor cool() const;
+%Docstring
+Returns cool color component
+%End
+
+    QColor diffuse() const;
+%Docstring
+Returns diffuse color component
+%End
+    QColor specular() const;
+%Docstring
+Returns specular color component
+%End
+    double shininess() const;
+%Docstring
+Returns shininess of the surface
+%End
+
+    double alpha() const;
+%Docstring
+Returns the alpha value
+%End
+
+    double beta() const;
+%Docstring
+Returns the beta value
+%End
+
+    void setWarm( const QColor &warm );
+%Docstring
+Sets warm color component
+%End
+
+    void setCool( const QColor &cool );
+%Docstring
+Sets cool color component
+%End
+
+    void setDiffuse( const QColor &diffuse );
+%Docstring
+Sets diffuse color component
+%End
+    void setSpecular( const QColor &specular );
+%Docstring
+Sets specular color component
+%End
+    void setShininess( double shininess );
+%Docstring
+Sets shininess of the surface
+%End
+
+    void setAlpha( double alpha );
+%Docstring
+Sets alpha value
+%End
+
+    void setBeta( double beta );
+%Docstring
+Sets beta value
+%End
+
+    virtual QColor averageColor() const;
+
+%Docstring
+Returns an approximate color representing the blended material color.
+
+This function calculates a weighted average of the cool, warm, diffuse,
+and specular color components to produce a single representative color.
+
+.. seealso:: :py:func:`cool`
+
+.. seealso:: :py:func:`diffuse`
+
+.. seealso:: :py:func:`specular`
+
+.. seealso:: :py:func:`warm`
+
+.. versionadded:: 4.2
+%End
+
+    void setColorsFromBase( const QColor &baseColor, double alpha, double beta );
+%Docstring
+Decomposes an average color into Gooch material components, and sets the
+material colors accordingly.
+
+Sets warm, cool, diffuse and specular colors from the input color. It
+also sets the alpha and beta parameters
+
+:param baseColor: The color to decompose
+:param alpha: The alpha value
+:param beta: The beta value
+
+.. seealso:: :py:func:`setCool`
+
+.. seealso:: :py:func:`setDiffuse`
+
+.. seealso:: :py:func:`setSpecular`
+
+.. seealso:: :py:func:`setWarm`
+
+.. seealso:: :py:func:`setAlpha`
+
+.. seealso:: :py:func:`setBeta`
+
+.. versionadded:: 4.2
+%End
+
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+%Docstring
+Decomposes an average color into Gooch material components, and sets the
+material colors accordingly.
+
+Sets warm, cool, diffuse and specular colors from the input color. This
+is equivalent to calling setColorsFromBase with the existing alpha and
+beta parameters: setColorsFromBase(baseColor,
+:py:func:`~QgsGoochMaterialSettings.alpha`,
+:py:func:`~QgsGoochMaterialSettings.beta`).
+
+:param baseColor: The color to decompose
+
+.. seealso:: :py:func:`setCool`
+
+.. seealso:: :py:func:`setDiffuse`
+
+.. seealso:: :py:func:`setSpecular`
+
+.. seealso:: :py:func:`setWarm`
+
+.. versionadded:: 4.2
+%End
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+
+    bool operator==( const QgsGoochMaterialSettings &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsgoochmaterialsettings.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

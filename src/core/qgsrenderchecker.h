@@ -27,6 +27,8 @@
 #include <QRegularExpression>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QImage;
 
 #define DUMP_BASE64_IMAGES 0
@@ -42,7 +44,6 @@ class CORE_EXPORT QgsRenderChecker
     Q_GADGET
 
   public:
-
     /**
      * Constructor for QgsRenderChecker.
      */
@@ -104,11 +105,7 @@ class CORE_EXPORT QgsRenderChecker
     /**
      * Returns the percent of pixels which matched the control image.
      */
-    float matchPercent() const
-    {
-      return static_cast<float>( mMismatchCount ) /
-             static_cast<float>( mMatchTarget ) * 100;
-    }
+    float matchPercent() const { return static_cast<float>( mMismatchCount ) / static_cast<float>( mMatchTarget ) * 100; }
 
     /**
      * Returns the number of pixels which did not match the control image.
@@ -188,7 +185,11 @@ class CORE_EXPORT QgsRenderChecker
      * \param xTolerance x tolerance in pixels
      * \param yTolerance y tolerance in pixels
      */
-    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+    void setSizeTolerance( int xTolerance, int yTolerance )
+    {
+      mMaxSizeDifferenceX = xTolerance;
+      mMaxSizeDifferenceY = yTolerance;
+    }
 
     /**
      * Render checker flags.
@@ -198,7 +199,7 @@ class CORE_EXPORT QgsRenderChecker
     enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       AvoidExportingRenderedImage = 1 << 0, //!< Avoids exporting rendered images to reports
-      Silent = 1 << 1, //!< Don't output non-critical messages to console \since QGIS 3.40
+      Silent = 1 << 1,                      //!< Don't output non-critical messages to console \since QGIS 3.40
     };
     Q_ENUM( Flag )
 
@@ -244,7 +245,9 @@ class CORE_EXPORT QgsRenderChecker
      *
      * \since QGIS 3.18
      */
-    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
+    bool compareImages(
+      const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags()
+    );
 
     /**
      * Gets a list of all the anomalies. An anomaly is a rendered difference

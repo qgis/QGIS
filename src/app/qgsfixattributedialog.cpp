@@ -65,12 +65,8 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer, const QgsAttributeEdito
   {
     buttonBox->addButton( cancelAllBtn, QDialogButtonBox::ActionRole );
     buttonBox->addButton( cancelAllInvalidBtn, QDialogButtonBox::ActionRole );
-    connect( cancelAllBtn, &QAbstractButton::clicked, this, [this]() {
-      done( DiscardAll );
-    } );
-    connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [this]() {
-      done( PasteValid );
-    } );
+    connect( cancelAllBtn, &QAbstractButton::clicked, this, [this]() { done( DiscardAll ); } );
+    connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [this]() { done( PasteValid ); } );
     buttonBox->button( QDialogButtonBox::Cancel )->setText( tr( "Skip" ) );
   }
   else
@@ -78,9 +74,7 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer, const QgsAttributeEdito
     storeAllInvalidBtn->setText( tr( "Paste Anyway" ) );
   }
   buttonBox->addButton( storeAllInvalidBtn, QDialogButtonBox::ActionRole );
-  connect( storeAllInvalidBtn, &QAbstractButton::clicked, this, [this]() {
-    done( PasteAll );
-  } );
+  connect( storeAllInvalidBtn, &QAbstractButton::clicked, this, [this]() { done( PasteAll ); } );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsFixAttributeDialog::reject );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsFixAttributeDialog::accept );
   connect( layer, &QObject::destroyed, this, &QWidget::close );
@@ -90,7 +84,11 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer, const QgsAttributeEdito
 
 QString QgsFixAttributeDialog::descriptionText()
 {
-  return tr( "%1 of %2 features processed (%3 fixed, %4 skipped)" ).arg( mCurrentFeature - mFeatures.begin() ).arg( mFeatures.count() ).arg( mFixedFeatures.count() ).arg( mCurrentFeature - mFeatures.begin() - mFixedFeatures.count() );
+  return tr( "%1 of %2 features processed (%3 fixed, %4 skipped)" )
+    .arg( mCurrentFeature - mFeatures.begin() )
+    .arg( mFeatures.count() )
+    .arg( mFixedFeatures.count() )
+    .arg( mCurrentFeature - mFeatures.begin() - mFixedFeatures.count() );
 }
 
 void QgsFixAttributeDialog::accept()

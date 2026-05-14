@@ -24,6 +24,10 @@
 #include "qgsgpxprovider.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>( source, ownSource, request )
 {

@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class TestQgsRasterColorRampShader(unittest.TestCase):
-
     def testValid(self):
         self.assertFalse(QgsDefaultValue())
         self.assertTrue(QgsDefaultValue("test"))

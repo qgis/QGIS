@@ -21,6 +21,7 @@ __copyright__ = "(C) 2014, Nathan Woodrow"
 
 import sys
 from contextlib import contextmanager
+
 from qgis.core import QgsApplication
 
 

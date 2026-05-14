@@ -22,7 +22,6 @@ Configuration storage class for authentication method configurations.
 #include "qgsauthconfig.h"
 %End
   public:
-
     QgsAuthMethodConfig( const QString &method = QString(), int version = 0 );
 %Docstring
 Construct a configuration for an authentication method
@@ -233,10 +232,7 @@ chain.
 #include "qgsauthconfig.h"
 %End
   public:
-
-    QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(),
-                  const QSslKey &clientKey = QSslKey(),
-                  const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
+    QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(), const QSslKey &clientKey = QSslKey(), const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 %Docstring
 Construct a bundle from existing PKI components
 
@@ -245,10 +241,7 @@ Construct a bundle from existing PKI components
 :param caChain: Chain of Certificate Authorities for client certificate
 %End
 
-    static const QgsPkiBundle fromPemPaths( const QString &certPath,
-                                            const QString &keyPath,
-                                            const QString &keyPass = QString(),
-                                            const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
+    static const QgsPkiBundle fromPemPaths( const QString &certPath, const QString &keyPath, const QString &keyPass = QString(), const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 %Docstring
 Construct a bundle of PKI components from PEM-formatted file paths
 
@@ -258,8 +251,7 @@ Construct a bundle of PKI components from PEM-formatted file paths
 :param caChain: Chain of Certificate Authorities for client certificate
 %End
 
-    static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
-        const QString &bundlepass = QString() );
+    static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath, const QString &bundlepass = QString() );
 %Docstring
 Construct a bundle of PKI components from a PKCS#12 file path
 
@@ -323,11 +315,7 @@ authentication config.
 #include "qgsauthconfig.h"
 %End
   public:
-
-    QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
-                        const QSslCertificate &cert,
-                        const QSslKey &certkey,
-                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
+    QgsPkiConfigBundle( const QgsAuthMethodConfig &config, const QSslCertificate &cert, const QSslKey &certkey, const QList<QSslCertificate> &cachain = QList<QSslCertificate>() );
 %Docstring
 Construct a bundle from existing PKI components and authentication
 method configuration

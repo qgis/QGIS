@@ -15,22 +15,21 @@
 ***************************************************************************
 """
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsPointCloudLayer,
     QgsPointCloudNodeId,
     QgsProviderRegistry,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsPointCloudIndex(QgisTestCase):
-
     @unittest.skipIf(
         "ept" not in QgsProviderRegistry.instance().providerList(),
         "EPT provider not available",
@@ -51,6 +50,19 @@ class TestQgsPointCloudIndex(QgisTestCase):
 
         root = index.getNode(index.root())
         self.assertEqual(root.id(), QgsPointCloudNodeId(0, 0, 0, 0))
+
+    @unittest.skipIf(
+        "ept" not in QgsProviderRegistry.instance().providerList(),
+        "EPT provider not available",
+    )
+    def testPointCloudnodeId(self):
+        node = QgsPointCloudNodeId(0, 0, 0, 0)
+        children = node.childrenNodes()
+        self.assertEqual(len(set(children)), 8)
+
+        for child in children:
+            self.assertFalse(node == child)
+            self.assertTrue(child.parentNode() == node)
 
 
 if __name__ == "__main__":

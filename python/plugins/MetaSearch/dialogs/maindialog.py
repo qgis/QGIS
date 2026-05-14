@@ -28,18 +28,7 @@
 
 import json
 import os.path
-from urllib.request import build_opener, install_opener, ProxyHandler
-
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QComboBox,
-    QDialogButtonBox,
-    QMessageBox,
-    QTreeWidgetItem,
-    QWidget,
-)
-from qgis.PyQt.QtGui import QColor
+from urllib.request import ProxyHandler, build_opener, install_opener
 
 from qgis.core import (
     Qgis,
@@ -48,13 +37,23 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsGeometry,
     QgsPointXY,
-    QgsProviderRegistry,
-    QgsSettings,
     QgsProject,
+    QgsProviderRegistry,
     QgsRectangle,
+    QgsSettings,
     QgsSettingsTree,
 )
-from qgis.gui import QgsRubberBand, QgsGui
+from qgis.gui import QgsGui, QgsRubberBand
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import (
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QMessageBox,
+    QTreeWidgetItem,
+    QWidget,
+)
 from qgis.utils import OverrideCursor
 
 try:
@@ -63,21 +62,21 @@ except ImportError:
     pass
 
 from MetaSearch import link_types
+from MetaSearch.dialogs.apidialog import APIRequestResponseDialog
 from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog
 from MetaSearch.dialogs.newconnectiondialog import NewConnectionDialog
 from MetaSearch.dialogs.recorddialog import RecordDialog
-from MetaSearch.dialogs.apidialog import APIRequestResponseDialog
 from MetaSearch.search_backend import get_catalog_service
 from MetaSearch.util import (
+    StaticContext,
     clean_ows_url,
     get_connections_from_file,
-    get_ui_class,
     get_help_url,
+    get_ui_class,
     normalize_text,
     open_url,
     render_template,
     serialize_string,
-    StaticContext,
 )
 
 BASE_CLASS = get_ui_class("maindialog.ui")
@@ -1058,17 +1057,19 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def install_proxy(self):
         """set proxy if one is set in QGIS network settings"""
 
+        proxy_node = QgsSettingsTree.node("proxy")
+
         # initially support HTTP for now
-        if self.settings.value("/proxy/proxyEnabled") == "true":
-            if self.settings.value("/proxy/proxyType") == "HttpProxy":
+        if proxy_node.childSetting("proxy-enabled").valueAsVariant():
+            if proxy_node.childSetting("proxy-type").valueAsVariant() == "HttpProxy":
                 ptype = "http"
             else:
                 return
 
-            user = self.settings.value("/proxy/proxyUser")
-            password = self.settings.value("/proxy/proxyPassword")
-            host = self.settings.value("/proxy/proxyHost")
-            port = self.settings.value("/proxy/proxyPort")
+            user = proxy_node.childSetting("proxy-user").valueAsVariant() or ""
+            password = proxy_node.childSetting("proxy-password").valueAsVariant() or ""
+            host = proxy_node.childSetting("proxy-host").valueAsVariant() or ""
+            port = proxy_node.childSetting("proxy-port").valueAsVariant() or ""
 
             proxy_up = ""
             proxy_port = ""

@@ -34,6 +34,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for raster marker types.
@@ -44,7 +46,8 @@ class TestQgsRasterMarker : public QgsTest
 
   public:
     TestQgsRasterMarker()
-      : QgsTest( u"Raster Marker Renderer Tests"_s ) {}
+      : QgsTest( u"Raster Marker Renderer Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -99,9 +102,7 @@ void TestQgsRasterMarker::initTestCase()
   mPointLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), u"ogr"_s );
 
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mPointLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointLayer );
 
   //setup the raster marker symbol
   mRasterMarker = new QgsRasterMarkerSymbolLayer();
@@ -129,8 +130,7 @@ void TestQgsRasterMarker::init()
 }
 
 void TestQgsRasterMarker::cleanup()
-{
-}
+{}
 
 void TestQgsRasterMarker::rasterMarkerSymbol()
 {

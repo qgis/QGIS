@@ -9,13 +9,19 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   vcpkg-check:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
         with:
           fetch-depth: 30
+          persist-credentials: false
 
       - name: Generate diff report
         id: vcpkg_diff
@@ -23,7 +29,7 @@ jobs:
         with:
           vcpkg-manifest-dir: vcpkg
           triplet: x64-linux
-          features: auth,3d,bindings,gui,opencl,quick,server,exiv2,pdal,qtpositioning
+          features: 3d,auth,bindings,exiv2,gui,opencl,oracle,pdal,proj-data,qtpositioning,quick,recommended-features,server,sfcgal
 
       - name: Schedule report comment
         uses: ./.github/actions/post_sticky_comment

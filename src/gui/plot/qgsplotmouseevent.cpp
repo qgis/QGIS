@@ -20,15 +20,13 @@
 
 QgsPlotMouseEvent::QgsPlotMouseEvent( QgsPlotCanvas *canvas, QMouseEvent *event )
   : QgsPlotMouseEvent( canvas, event->type(), event->pos(), event->button(), event->buttons(), event->modifiers() )
-{
-}
+{}
 
 QgsPlotMouseEvent::QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
   : QMouseEvent( type, pos, button, buttons, modifiers )
   , mCanvas( canvas )
   , mMapPoint( mCanvas->toMapCoordinates( pos ) )
-{
-}
+{}
 
 QgsPoint QgsPlotMouseEvent::mapPoint() const
 {

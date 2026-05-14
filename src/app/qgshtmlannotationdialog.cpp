@@ -28,8 +28,11 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgshtmlannotationdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

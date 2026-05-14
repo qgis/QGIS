@@ -25,10 +25,13 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
     explicit FilterExcludePoint( const QgsPointXY &p )
-      : mPoint( p ) {}
+      : mPoint( p )
+    {}
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
 
@@ -93,10 +96,7 @@ class TestQgsPointLocator : public QObject
       QgsProject::instance()->addMapLayer( mVL );
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void testNearestVertex()
     {

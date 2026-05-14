@@ -59,7 +59,6 @@ typedef QPair<int, int> QgsMeshEdge;
 class CORE_EXPORT QgsMeshUtils
 {
   public:
-
     /**
      * Exports mesh layer's dataset values as raster block
      *
@@ -165,7 +164,7 @@ class CORE_EXPORT QgsMeshUtils
      * \note Not available in Python bindings
      * \since QGIS 3.12
     */
-    SIP_SKIP static bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face,  const QVector<QgsMeshVertex> &vertices );
+    SIP_SKIP static bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
 
     /**
      * Checks if the triangle is counter clockwise, if not sets it counter clockwise
@@ -173,7 +172,6 @@ class CORE_EXPORT QgsMeshUtils
      * \since QGIS 3.22
     */
     SIP_SKIP static void setCounterClockwise( QgsMeshFace &triangle, const QgsMeshVertex &v0, const QgsMeshVertex &v1, const QgsMeshVertex &v2 );
-
 };
 
 #endif // QGSMESHUTILS_H

@@ -20,6 +20,10 @@
 #include "qgsnumericformatregistry.h"
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTableCell::QgsTableCell( const QVariant &content )
   : mContent( content )
 {}
@@ -117,10 +121,7 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
 
   if ( properties.contains( u"format_type"_s ) )
   {
-
-    mFormat.reset( QgsApplication::numericFormatRegistry()->create( properties.value( u"format_type"_s ).toString(),
-                   properties.value( u"format"_s ).toMap(),
-                   context ) );
+    mFormat.reset( QgsApplication::numericFormatRegistry()->create( properties.value( u"format_type"_s ).toString(), properties.value( u"format"_s ).toMap(), context ) );
   }
   else
   {

@@ -46,8 +46,9 @@ class CORE_EXPORT QgsTessellator
      * \brief Creates tessellator with a specified origin point of the world (in map coordinates)
      * \deprecated QGIS 4.0. Use the default QgsTessellator() constructor and individual setters instead.
      */
-    Q_DECL_DEPRECATED QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsTessellator(
+      double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f
+    ) SIP_DEPRECATED;
 
     /**
      * Creates tessellator with a specified \a bounds of input geometry coordinates.
@@ -59,8 +60,9 @@ class CORE_EXPORT QgsTessellator
      * \since QGIS 3.10
      * \deprecated QGIS 4.0. Use the default QgsTessellator() constructor and individual setters instead.
      */
-    Q_DECL_DEPRECATED QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsTessellator(
+      const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f
+    ) SIP_DEPRECATED;
 
     /**
      * Sets the origin point of the map.
@@ -107,60 +109,92 @@ class CORE_EXPORT QgsTessellator
 
     /**
      * Sets the rotation of texture UV coordinates (in degrees).
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.2. Handled in shaders now. No longer has any effect on the texture coordinates.
      */
-    void setTextureRotation( float rotation );
+    Q_DECL_DEPRECATED void setTextureRotation( float rotation ) SIP_DEPRECATED;
 
     /**
      * Returns the rotation of texture UV coordinates (in degrees).
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.2. Handled in shaders now. No longer has any effect on the texture coordinates.
      */
-    float textureRotation() const { return mTextureRotation; }
+    Q_DECL_DEPRECATED float textureRotation() const SIP_DEPRECATED { return 0; }
 
     /**
-     * Sets whether texture UV coordinates should be added to the output data (TRUE) or not (FALSE).
+     * Sets whether texture UV coordinates should be added to the output data.
+     *
+     * \see hasTextureUVs()
      * \since QGIS 4.0
      */
     void setAddTextureUVs( bool addTextureUVs );
 
     /**
-     * Returns whether texture UV coordinates are being added to the output data (TRUE) or not (FALSE).
+     * Returns TRUE if texture UV coordinates are being added to the output data.
+     *
+     * \see setAddTextureUVs()
      * \since QGIS 4.0
      */
     bool hasTextureUVs() const { return mAddTextureCoords; }
 
     /**
-     * Sets whether normals should be added to the output data (TRUE) or not (FALSE).
+     * Sets whether normals should be added to the output data.
+     *
+     * \see hasNormals()
      * \since QGIS 4.0
      */
     void setAddNormals( bool addNormals );
 
     /**
-     * Returns whether normals are being added to the output data (TRUE) or not (FALSE).
+     * Returns TRUE if normals are being added to the output data.
+     *
+     * \see setAddNormals()
      * \since QGIS 4.0
      */
     bool hasNormals() const { return mAddNormals; }
 
     /**
-     * Sets whether back faces should be added to the output data (TRUE) or not (FALSE).
+     * Sets whether tangents should be added to the output data.
+     *
+     * \see hasTangents()
+     * \since QGIS 4.2
+     */
+    void setAddTangents( bool addTangents );
+
+    /**
+     * Returns TRUE if tangents are being added to the output data.
+     *
+     * \see setAddTangents()
+     * \since QGIS 4.2
+     */
+    bool hasTangents() const { return mAddTangents; }
+
+    /**
+     * Sets whether back faces should be added to the output data.
+     *
+     * \see hasBackFacesEnabled()
      * \since QGIS 4.0
      */
     void setBackFacesEnabled( bool addBackFaces );
 
     /**
-     * Returns whether back faces are being added to the output data (TRUE) or not (FALSE).
+     * Returns TRUE if back faces are being added to the output data.
+     *
+     * \see setBackFacesEnabled()
      * \since QGIS 4.0
      */
     bool hasBackFacesEnabled() const { return mAddBackFaces; }
 
     /**
-     * Sets whether normals should be inverted (TRUE) or not (FALSE).
+     * Sets whether normals should be inverted.
+     *
+     * \see hasInvertedNormals()
      * \since QGIS 4.0
      */
     void setInvertNormals( bool invertNormals );
 
     /**
-     * Returns whether normals are inverted (TRUE) or not (FALSE).
+     * Returns TRUE if normals are inverted.
+     *
+     * \see setInvertNormals()
      * \since QGIS 4.0
      */
     bool hasInvertedNormals() const { return mInvertNormals; }
@@ -181,17 +215,17 @@ class CORE_EXPORT QgsTessellator
      * Sets whether the "up" direction should be the Z axis on output (TRUE),
      * otherwise the "up" direction will be the Y axis (FALSE). The default
      * value is FALSE (to keep compatibility for existing tessellator use cases).
-     * \since QGIS 3.42
+     * \deprecated QGIS 4.2. Has no effect no, outputs are always z-up.
      */
-    void setOutputZUp( bool zUp ) { mOutputZUp = zUp; }
+    Q_DECL_DEPRECATED void setOutputZUp( bool zUp ) SIP_DEPRECATED;
 
     /**
      * Returns whether the "up" direction should be the Z axis on output (TRUE),
      * otherwise the "up" direction will be the Y axis (FALSE). The default
      * value is FALSE (to keep compatibility for existing tessellator use cases).
-     * \since QGIS 3.42
+     * \deprecated QGIS 4.2. Has no effect no, outputs are always z-up.
      */
-    bool isOutputZUp() const { return mOutputZUp; }
+    Q_DECL_DEPRECATED bool isOutputZUp() const SIP_DEPRECATED { return true; }
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
@@ -200,14 +234,34 @@ class CORE_EXPORT QgsTessellator
      * Returns array of triangle vertex data
      *
      * Vertice coordinates are stored as (x, z, -y)
+     *
+     * \deprecated QGIS 4.0. Use vertexBuffer() in combination with indexBuffer().
      */
-    QVector<float> data() const { return mData; }
+    Q_DECL_DEPRECATED QVector<float> data() const SIP_DEPRECATED;
+
+    /**
+     * Returns index buffer for the generated points.
+     * \since QGIS 4.0
+     */
+    QByteArray indexBuffer() const;
+
+    /**
+     * Returns vertex buffer for the generated points.
+     * \since QGIS 4.0
+     */
+    QByteArray vertexBuffer() const;
 
     //! Returns the number of vertices stored in the output data array
     int dataVerticesCount() const;
 
     //! Returns size of one vertex entry in bytes
     int stride() const { return mStride; }
+
+    /**
+     * Returns size of one index entry in bytes
+     * \since QGIS 4.0
+    */
+    int indexStride() const { return sizeof( uint32_t ); }
 
     /**
      * Returns the triangulation as a multipolygon geometry.
@@ -233,28 +287,61 @@ class CORE_EXPORT QgsTessellator
      */
     QString error() const { return mError; }
 
-  private:
-    void updateStride();
+    /**
+     * Returns unique vertex count.
+     * \since QGIS 4.0
+     */
+    int uniqueVertexCount() const;
 
+  private:
+    struct VertexPoint
+    {
+        QVector3D position;
+        QVector3D normal;
+        QVector4D tangent;
+
+        inline bool operator==( const VertexPoint &other ) const { return position == other.position && normal == other.normal && tangent == other.tangent; }
+    };
+
+    friend uint qHash( const VertexPoint &key, size_t seed )
+    {
+      return qHashMulti( seed, key.position.x(), key.position.y(), key.position.z(), key.normal.x(), key.normal.y(), key.normal.z(), key.tangent.x(), key.tangent.y(), key.tangent.z(), key.tangent.w() );
+    }
+
+    QVector<uint32_t> mIndexBuffer;
+
+    void updateStride();
     void setExtrusionFacesLegacy( int facade );
     void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const;
-    void addTriangleVertices( const std::array<QVector3D, 3> &points, QVector3D pNormal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool reverse );
-    void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2>*, float> *zHash );
+    QVector3D applyTransformWithExtrusion( const QVector3D point, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
+    void addVertex(
+      const QVector3D &point,
+      const QVector3D &normal,
+      const QVector4D &tangent,
+      float extrusionHeight,
+      QMatrix4x4 *transformMatrix,
+      const QgsPoint *originOffset,
+      QHash<VertexPoint, unsigned int> *vertexBuffer,
+      const size_t &vertexBufferOffset,
+      bool isFloor = false
+    );
+    void addVertex( const QVector3D &point, const QVector3D &normal, const QVector4D &tangent, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool isFloor = false );
+    void makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight );
+    void addExtrusionWallQuad( const QVector3D &pt1, const QVector3D &pt2, float height, float u1, float u2 );
     std::vector<QVector3D> generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew );
     std::vector<QVector3D> generateEarcutTriangles( const QgsPolygon *polygonNew );
 
     QgsVector3D mOrigin = QgsVector3D( 0, 0, 0 );
     bool mAddNormals = false;
+    bool mAddTangents = false;
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
     bool mAddTextureCoords = false;
-    bool mOutputZUp = false;
     QVector<float> mData;
     int mStride = 3 * sizeof( float );
     bool mInputZValueIgnored = false;
     Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
     Qgis::TriangulationAlgorithm mTriangulationAlgorithm = Qgis::TriangulationAlgorithm::ConstrainedDelaunay;
-    float mTextureRotation = 0.0f;
     float mScale = 1.0f;
     QString mError;
 

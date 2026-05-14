@@ -33,6 +33,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
@@ -70,11 +72,6 @@ TestQgisAppClipboard::TestQgisAppClipboard() = default;
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()
 {
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   qDebug() << "TestQgisAppClipboard::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -174,7 +171,15 @@ void TestQgisAppClipboard::copyToText()
   // HTML test
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
   result = mQgisApp->clipboard()->data( "text/html" );
-  QCOMPARE( result, QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkb_geom</td><td>int_field</td><td>double_field</td><td>string_field</td></tr><tr><td>010100000000000000000014400000000000001840</td><td>9</td><td>9.9</td><td>val</td></tr><tr><td>01010000000000000000001c400000000000002040</td><td>19</td><td>19.19</td><td>val2</td></tr><tr><td>010100000000000000000022400000000000002440</td><td></td><td></td><td></td></tr></table></body></html>" ) );
+  QCOMPARE(
+    result,
+    QString(
+      "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table "
+      "border=\"1\"><tr><td>wkb_geom</td><td>int_field</td><td>double_field</td><td>string_field</td></tr><tr><td>010100000000000000000014400000000000001840</td><td>9</td><td>9.9</td><td>val</td></"
+      "tr><tr><td>01010000000000000000001c400000000000002040</td><td>19</td><td>19.19</td><td>val2</td></tr><tr><td>010100000000000000000022400000000000002440</td><td></td><td></td><td></td></tr></"
+      "table></body></html>"
+    )
+  );
 
   // GeoJSON
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::GeoJSON );
@@ -288,14 +293,17 @@ void TestQgisAppClipboard::copyToTextNoFields()
   // GeoJSON
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::GeoJSON );
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  const QString expected = "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,\"properties\":null,\"type\":\"Feature\"},{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,\"properties\":null,\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}";
+  const QString expected = "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,\"properties\":null,\"type\":\"Feature\"},{\"geometry\":{\"coordinates\":[7.0,8.0],"
+                           "\"type\":\"Point\"},\"id\":6,\"properties\":null,\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}";
   QCOMPARE( result, expected );
 }
 
 void TestQgisAppClipboard::pasteWkt()
 {
   // test issue GH #44989
-  QgsFeatureList features = mQgisApp->clipboard()->stringToFeatureList( u"wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\""_s, QgsFields() );
+  QgsFeatureList features
+    = mQgisApp->clipboard()
+        ->stringToFeatureList( u"wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\""_s, QgsFields() );
   QCOMPARE( features.length(), 3 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
@@ -561,7 +569,9 @@ void TestQgisAppClipboard::testVectorTileLayer()
   auto layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
   QVERIFY( layer->isValid() );
 
-  QgsGeometry selectionGeometry = QgsGeometry::fromWkt( u"Polygon ((13934091.75684908032417297 -1102962.40819426625967026, 11360512.80439674854278564 -2500048.12523981928825378, 12316413.55816475301980972 -5661873.69539554417133331, 16948855.67257896065711975 -6617774.44916355609893799, 18125348.90798573195934296 -2058863.16196227818727493, 15257646.64668171107769012 -735308.27212964743375778, 13934091.75684908032417297 -1102962.40819426625967026))"_s );
+  QgsGeometry selectionGeometry = QgsGeometry::fromWkt(
+    u"Polygon ((13934091.75684908032417297 -1102962.40819426625967026, 11360512.80439674854278564 -2500048.12523981928825378, 12316413.55816475301980972 -5661873.69539554417133331, 16948855.67257896065711975 -6617774.44916355609893799, 18125348.90798573195934296 -2058863.16196227818727493, 15257646.64668171107769012 -735308.27212964743375778, 13934091.75684908032417297 -1102962.40819426625967026))"_s
+  );
   QgsSelectionContext context;
   context.setScale( 315220096 );
   layer->selectByGeometry( selectionGeometry, context, Qgis::SelectBehavior::SetSelection, Qgis::SelectGeometryRelationship::Intersect );

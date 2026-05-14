@@ -23,23 +23,23 @@ import operator
 import os
 import warnings
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication, pyqtSignal
-from qgis.PyQt.QtWidgets import QWidget, QToolButton, QMenu, QAction
-from qgis.utils import iface
 from qgis.core import (
-    QgsWkbTypes,
-    QgsMapLayerType,
     QgsApplication,
+    QgsMapLayerType,
     QgsProcessingAlgorithm,
+    QgsWkbTypes,
 )
-from qgis.gui import QgsGui, QgsDockWidget, QgsProcessingToolboxProxyModel
+from qgis.gui import QgsDockWidget, QgsGui, QgsProcessingToolboxProxyModel
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QCoreApplication, Qt, pyqtSignal
+from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton, QWidget
+from qgis.utils import iface
 
-from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui.MessageDialog import MessageDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
+from processing.gui.MessageDialog import MessageDialog
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProviderActions import ProviderActions, ProviderContextMenuActions
 from processing.tools import dataobjects
 
@@ -168,9 +168,11 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
             actions = ProviderActions.actions[provider.id()]
             menu = QMenu(provider.name(), self)
+            menu.setObjectName(provider.name() + "_menu")
             for action in actions:
                 action.setData(self)
                 act = QAction(action.name, menu)
+                act.setObjectName(action.name)
                 act.triggered.connect(action.execute)
                 menu.addAction(act)
             toolbarButton.setMenu(menu)

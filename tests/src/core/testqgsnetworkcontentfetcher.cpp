@@ -21,6 +21,9 @@
 
 #include <QNetworkReply>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsNetworkContentFetcher : public QObject
 {
@@ -55,12 +58,10 @@ void TestQgsNetworkContentFetcher::cleanupTestCase()
 }
 
 void TestQgsNetworkContentFetcher::init()
-{
-}
+{}
 
 void TestQgsNetworkContentFetcher::cleanup()
-{
-}
+{}
 
 void TestQgsNetworkContentFetcher::fetchEmptyUrl()
 {

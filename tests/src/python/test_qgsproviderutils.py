@@ -10,6 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "30/06/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsMapLayerType,
@@ -18,16 +20,13 @@ from qgis.core import (
     QgsProviderUtils,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
 
 
 class TestQgsProviderUtils(QgisTestCase):
-
     def test_sublayerDetailsAreIncomplete(self):
         """
         Test sublayerDetailsAreIncomplete

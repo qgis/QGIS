@@ -28,6 +28,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * Unit tests for stacked diagrams
@@ -39,7 +41,8 @@ class TestQgsStackedDiagram : public QgsTest
 
   public:
     TestQgsStackedDiagram()
-      : QgsTest( u"Stacked Diagram Tests"_s, u"stackeddiagrams"_s ) {}
+      : QgsTest( u"Stacked Diagram Tests"_s, u"stackeddiagrams"_s )
+    {}
 
   private:
     bool mTestHasError = false;
@@ -98,9 +101,7 @@ class TestQgsStackedDiagram : public QgsTest
     }
 
     // will be called after every testfunction.
-    void cleanup()
-    {
-    }
+    void cleanup() {}
 
     void testStackedHistograms()
     {

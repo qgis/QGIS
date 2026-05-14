@@ -68,7 +68,6 @@ Examples:
 #include "qgsfeaturerequest.h"
 %End
   public:
-
     class OrderByClause
     {
 %Docstring(signature="appended")
@@ -97,7 +96,6 @@ internally all features will be requested from the provider.
 %End
 
       public:
-
         OrderByClause( const QString &expression, bool ascending = true );
 %Docstring
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
@@ -201,7 +199,6 @@ the least important last.
 %End
 
       public:
-
         OrderBy();
 %Docstring
 Create a new empty order by
@@ -1055,7 +1052,6 @@ iterator to check if it should be canceled, if set.
 %End
 
   protected:
-
 
 
 

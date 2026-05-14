@@ -133,6 +133,15 @@ propagated further.
 .. versionadded:: 3.22
 %End
 
+    virtual bool shortcutEvent( QKeyEvent *e );
+%Docstring
+Shortcut events coming from the application for overriding. The default
+implementation does nothing. Returns whether the event was handled by
+the tool and should not be propagated further.
+
+.. versionadded:: 4.0
+%End
+
     void setAction( QAction *action );
 %Docstring
 Use this to associate a QAction to this maptool. Then when the
@@ -215,6 +224,7 @@ currently set in identify tool options (move somewhere else?) and
 defaults to :py:class:`Qgis`.DEFAULT_SEARCH_RADIUS_MM.
 %End
 
+
     static double searchRadiusMU( const QgsRenderContext &context );
 %Docstring
 Gets search radius in map units for given context. Used by identify, tip
@@ -277,6 +287,27 @@ The default implementation does nothing and returns false.
 %Docstring
 Transforms a ``point`` from screen coordinates to map coordinates.
 %End
+
+    enum class PropertyStatus
+    {
+      Valid,
+      DoesNotExist,
+      CurrentExpressionInvalid
+    };
+
+    QString dataDefinedColumnName( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *layer, PropertyStatus &status ) const;
+%Docstring
+Returns data defined property column name for the ``propertyKey`` from
+``properties`` associated to the ``layer`` ``status`` is updated with
+current property status
+%End
+
+    int dataDefinedColumnIndex( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *vlayer ) const;
+%Docstring
+Returns data defined property column index for the ``propertyKey`` from
+``properties`` associated to the ``layer``
+%End
+
 
   signals:
 

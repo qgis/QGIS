@@ -10,6 +10,7 @@
 
 
 
+
 class QgsBlurEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -21,7 +22,6 @@ blur methods.
 #include "qgsblureffect.h"
 %End
   public:
-
     enum BlurMethod /BaseType=IntEnum/
     {
       StackBlur,
@@ -203,14 +203,12 @@ Returns the blend mode for the effect
 %End
 
   protected:
-
     virtual void draw( QgsRenderContext &context );
 
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

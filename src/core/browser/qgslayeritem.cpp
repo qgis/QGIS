@@ -22,7 +22,11 @@
 #include "qgsmaplayerfactory.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayeritem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QIcon QgsLayerItem::iconForWkbType( Qgis::WkbType type )
 {
@@ -93,8 +97,7 @@ QIcon QgsLayerItem::iconDefault()
   return QgsIconUtils::iconDefaultLayer();
 }
 
-QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path,
-                            const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey )
+QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey )
   : QgsDataItem( Qgis::BrowserItemType::Layer, parent, name, path, providerKey )
   , mUri( uri )
   , mLayerType( layerType )
@@ -199,7 +202,7 @@ QString QgsLayerItem::iconName( Qgis::BrowserLayerType layerType )
       return u"/mIconLineLayer.svg"_s;
     case Qgis::BrowserLayerType::Polygon:
       return u"/mIconPolygonLayer.svg"_s;
-    case Qgis::BrowserLayerType::Vector :
+    case Qgis::BrowserLayerType::Vector:
       return u"/mIconGeometryCollectionLayer.svg"_s;
     case Qgis::BrowserLayerType::TableLayer:
     case Qgis::BrowserLayerType::Table:
@@ -302,4 +305,9 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
   }
 
   return { u };
+}
+
+QList<QgsLayerItem::LayerUriWithDetails> QgsLayerItem::layerUrisWithDetails() const
+{
+  return {};
 }

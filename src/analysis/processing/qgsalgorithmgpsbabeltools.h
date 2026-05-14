@@ -18,9 +18,10 @@
 #ifndef QGSALGORITHMGPSBABELTOOLS_H
 #define QGSALGORITHMGPSBABELTOOLS_H
 
-#define SIP_NO_FILE
 
 #include <QtGlobal>
+
+#define SIP_NO_FILE
 
 #if QT_CONFIG( process )
 
@@ -67,13 +68,7 @@ class ANALYSIS_EXPORT QgsConvertGpxFeatureTypeAlgorithm : public QgsProcessingAl
     /**
      * Builds the argument lists for the babel command
      */
-    static void createArgumentLists(
-      const QString &inputFile,
-      const QString &outputFile,
-      ConversionType conversion,
-      QStringList &processArgs,
-      QStringList &logArgs
-    );
+    static void createArgumentLists( const QString &inputFile, const QString &outputFile, ConversionType conversion, QStringList &processArgs, QStringList &logArgs );
 
     friend class TestQgsProcessingAlgsPt2;
 };

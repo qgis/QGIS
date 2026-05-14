@@ -45,6 +45,7 @@
 
 #include "qsql_ocispatial.h"
 
+#include <QString>
 #include <qsqldriverplugin.h>
 
 #include "moc_main.cpp"
@@ -52,8 +53,7 @@
 using namespace Qt::StringLiterals;
 
 QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
-{
-}
+{}
 
 QSqlDriver *QOCISpatialDriverPlugin::create( const QString &name )
 {

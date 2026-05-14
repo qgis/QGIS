@@ -23,7 +23,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QElapsedTimer>
+#include <QString>
 #include <QTreeWidget>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMaskingWidget : public QgsTest
 {
@@ -31,7 +34,8 @@ class TestQgsMaskingWidget : public QgsTest
 
   public:
     TestQgsMaskingWidget()
-      : QgsTest( u"Masking widget Tests"_s ) {}
+      : QgsTest( u"Masking widget Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -49,16 +53,13 @@ void TestQgsMaskingWidget::initTestCase()
 }
 
 void TestQgsMaskingWidget::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsMaskingWidget::init()
-{
-}
+{}
 
 void TestQgsMaskingWidget::cleanup()
-{
-}
+{}
 
 void TestQgsMaskingWidget::testTreeWidget()
 {

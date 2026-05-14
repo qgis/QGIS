@@ -27,13 +27,16 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsgeometrygapcheck.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
   , mGapThresholdMapUnits( configuration.value( u"gapThreshold"_s ).toDouble() )
-{
-}
+{}
 
 void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
 {
@@ -54,7 +57,9 @@ void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const
   }
 }
 
-QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   if ( feedback )
     feedback->setProgress( feedback->progress() + 1.0 );
@@ -78,7 +83,7 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
       }
 
       const QgsGeometry geom = feature.geometry();
-      const QgsGeometry gg = geom.buffer( mAllowedGapsBuffer, 20 );
+      const QgsGeometry gg = geom.buffer( mAllowedGapsBuffer, 20, feedback );
       allowedGaps.append( gg );
     }
 
@@ -86,7 +91,7 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
 
     // Create union of allowed gaps
     QString errMsg;
-    allowedGapsGeom.reset( allowedGapsEngine->combine( allowedGaps, &errMsg ) );
+    allowedGapsGeom.reset( allowedGapsEngine->combine( allowedGaps, &errMsg, QgsGeometryParameters(), feedback ) );
     allowedGapsGeomEngine.reset( QgsGeometry::createGeometryEngine( allowedGapsGeom.get(), mContext->tolerance ) );
     allowedGapsGeomEngine->prepareGeometry();
   }
@@ -118,7 +123,7 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
 
   // Create union of geometry
   QString errMsg;
-  const std::unique_ptr<QgsAbstractGeometry> unionGeom( geomEngine->combine( geomList, &errMsg ) );
+  const std::unique_ptr<QgsAbstractGeometry> unionGeom( geomEngine->combine( geomList, &errMsg, QgsGeometryParameters(), feedback ) );
   if ( !unionGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
@@ -138,13 +143,13 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
   // Buffer envelope
   geomEngine.reset( QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance ) );
   geomEngine->prepareGeometry();
-  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, Qgis::EndCapStyle::Square, Qgis::JoinStyle::Miter, 4. ); //#spellok  //#spellok
+  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, Qgis::EndCapStyle::Square, Qgis::JoinStyle::Miter, 4., nullptr, feedback ); //#spellok  //#spellok
   envelope.reset( bufEnvelope );
 
   // Compute difference between envelope and union to obtain gap polygons
   geomEngine.reset( QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance ) );
   geomEngine->prepareGeometry();
-  std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngine->difference( unionGeom.get(), &errMsg ) );
+  std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngine->difference( unionGeom.get(), &errMsg, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
@@ -449,9 +454,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
 
 QStringList QgsGeometryGapCheck::resolutionMethods() const
 {
-  QStringList methods = QStringList()
-                        << tr( "Add gap area to neighboring polygon with longest shared edge" )
-                        << tr( "No action" );
+  QStringList methods = QStringList() << tr( "Add gap area to neighboring polygon with longest shared edge" ) << tr( "No action" );
   if ( mAllowedGapsSource )
     methods << tr( "Add gap to allowed exceptions" );
 

@@ -21,6 +21,10 @@
 #include "qgsprocessingutils.h"
 #include "qgsrunprocess.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPdalTileAlgorithm::name() const
@@ -72,6 +76,8 @@ void QgsPdalTileAlgorithm::initAlgorithm( const QVariantMap & )
   paramCrs->setFlags( paramCrs->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramCrs.release() );
 
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT"_s, QObject::tr( "Output directory" ) ) );
 }
 
@@ -98,16 +104,15 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
 
   const QString tempDir = context.temporaryFolder().isEmpty() ? QgsProcessingUtils::tempFolder( &context ) : context.temporaryFolder();
 
-  args << u"tile"_s
-       << u"--length=%1"_s.arg( length )
-       << u"--output=%1"_s.arg( outputDir )
-       << u"--temp_dir=%1"_s.arg( tempDir );
+  args << u"tile"_s << u"--length=%1"_s.arg( length ) << u"--output=%1"_s.arg( outputDir ) << u"--temp_dir=%1"_s.arg( tempDir );
 
   if ( parameters.value( u"CRS"_s ).isValid() )
   {
     QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
     args << u"--a_srs=%1"_s.arg( crs.authid() );
   }
+
+  applyVpcOutputFormatParameter( outputDir, args, parameters, context, feedback );
 
   applyThreadsParameter( args, context );
 

@@ -41,7 +41,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 
+#include <QString>
 #include <qgsrasteranalysisutils.cpp>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProcessingAlgsPt2 : public QgsTest
 {
@@ -61,6 +64,16 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> featureBasedAlg( const QString &id );
 
     QgsFeature runForFeature( const std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> &alg, QgsFeature feature, const QString &layerType, QVariantMap parameters = QVariantMap() );
+
+    /**
+     * Helper struct and method to check outputs from Hypsometric Curves algorithm
+     */
+    struct HypsometryData
+    {
+        double area;
+        double elevation;
+    };
+    static QList<HypsometryData> loadHypsometryResults( const QString &filePath );
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -121,6 +134,8 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void defineProjection();
     void checkValidity();
 
+    void hypsometricCurves();
+
   private:
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -159,15 +174,43 @@ QgsFeature TestQgsProcessingAlgsPt2::runForFeature( const std::unique_ptr<QgsPro
   return result;
 }
 
+QList<TestQgsProcessingAlgsPt2::HypsometryData> TestQgsProcessingAlgsPt2::loadHypsometryResults( const QString &filePath )
+{
+  QList<HypsometryData> data;
+  QFile file( filePath );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    return data;
+
+  QTextStream stream( &file );
+  bool firstLine = true;
+  while ( !stream.atEnd() )
+  {
+    const QString line = stream.readLine().trimmed();
+    if ( line.isEmpty() )
+    {
+      continue;
+    }
+
+    if ( firstLine )
+    {
+      firstLine = false;
+      continue;
+    }
+
+    const QStringList parts = line.split( ',' );
+    if ( parts.size() != 2 )
+    {
+      return data;
+    }
+    data.append( { parts[0].toDouble(), parts[1].toDouble() } );
+  }
+  return data;
+}
+
 void TestQgsProcessingAlgsPt2::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 
@@ -179,9 +222,7 @@ void TestQgsProcessingAlgsPt2::initTestCase()
   mPointsLayer = new QgsVectorLayer( mPointLayerPath, u"points"_s, u"ogr"_s );
   QVERIFY( mPointsLayer->isValid() );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mPointsLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -190,9 +231,7 @@ void TestQgsProcessingAlgsPt2::initTestCase()
   const QFileInfo polyFileInfo( polysFileName );
   mPolygonLayer = new QgsVectorLayer( polyFileInfo.filePath(), u"polygons"_s, u"ogr"_s );
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mPolygonLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolygonLayer );
   QVERIFY( mPolygonLayer->isValid() );
 
   //add a mesh layer
@@ -788,12 +827,28 @@ void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
   QCOMPARE( resultLayer->featureCount(), 205l );
   QCOMPARE( resultLayer->fields().count(), 21 );
   QStringList fieldsName;
-  fieldsName << u"Bed Elevation"_s << u"temperature"_s << u"temperature/Maximums"_s
-             << u"temperature/Minimums"_s << u"temperature/Time at Maximums"_s << u"temperature/Time at Minimums"_s
-             << u"velocity_x"_s << u"velocity_y"_s << u"velocity_mag"_s << u"velocity_dir"_s
-             << u"velocity/Maximums_x"_s << u"velocity/Maximums_y"_s << u"velocity/Maximums_mag"_s << u"velocity/Maximums_dir"_s
-             << u"velocity/Minimums_x"_s << u"velocity/Minimums_y"_s << u"velocity/Minimums_mag"_s << u"velocity/Minimums_dir"_s
-             << u"velocity/Time at Maximums"_s << u"velocity/Time at Minimums"_s << u"water depth"_s;
+  fieldsName
+    << u"Bed Elevation"_s
+    << u"temperature"_s
+    << u"temperature/Maximums"_s
+    << u"temperature/Minimums"_s
+    << u"temperature/Time at Maximums"_s
+    << u"temperature/Time at Minimums"_s
+    << u"velocity_x"_s
+    << u"velocity_y"_s
+    << u"velocity_mag"_s
+    << u"velocity_dir"_s
+    << u"velocity/Maximums_x"_s
+    << u"velocity/Maximums_y"_s
+    << u"velocity/Maximums_mag"_s
+    << u"velocity/Maximums_dir"_s
+    << u"velocity/Minimums_x"_s
+    << u"velocity/Minimums_y"_s
+    << u"velocity/Minimums_mag"_s
+    << u"velocity/Minimums_dir"_s
+    << u"velocity/Time at Maximums"_s
+    << u"velocity/Time at Minimums"_s
+    << u"water depth"_s;
 
   for ( int i = 0; i < fieldsName.count(); ++i )
     QCOMPARE( fieldsName.at( i ), resultLayer->fields().at( i ).name() );
@@ -1094,35 +1149,36 @@ void TestQgsProcessingAlgsPt2::exportMeshCrossSection()
   QCOMPARE( header, u"fid,x,y,offset,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset"_s );
 
   QStringList expectedLines;
-  expectedLines << u"1,1500.00,2200.00,0.00,2.50,3.33,2.00"_s
-                << u"1,1600.00,2200.00,100.00,2.60,3.41,2.00"_s
-                << u"1,1700.00,2200.00,200.00,2.70,3.48,2.00"_s
-                << u"1,1800.00,2200.00,300.00,2.80,3.56,2.00"_s
-                << u"1,1900.00,2200.00,400.00,2.90,3.64,2.00"_s
-                << u"1,2000.00,2200.00,500.00,3.00,3.72,2.00"_s
-                << u"1,2100.00,2200.00,600.00,3.10,3.86,3.00"_s
-                << u"1,2200.00,2200.00,700.00,3.20,4.00,3.00"_s
-                << u"1,2300.00,2200.00,800.00,3.30,4.14,3.00"_s
-                << u"1,2400.00,2200.00,900.00,3.40,4.28,3.00"_s
-                << u"1,2500.00,2200.00,1000.00,3.50,4.42,3.00"_s
-                << u"2,1500.00,1500.00,0.00, , , "_s
-                << u"2,1500.00,1600.00,100.00, , , "_s
-                << u"2,1500.00,1700.00,200.00, , , "_s
-                << u"2,1500.00,1800.00,300.00, , , "_s
-                << u"2,1500.00,1900.00,400.00, , , "_s
-                << u"2,1500.00,2000.00,500.00,2.50,3.20,2.00"_s
-                << u"2,1500.00,2100.00,600.00,2.50,3.26,2.00"_s
-                << u"2,1500.00,2200.00,700.00,2.50,3.33,2.00"_s
-                << u"2,1500.00,2300.00,800.00,2.50,3.40,2.00"_s
-                << u"2,1500.00,2400.00,900.00,2.50,3.47,2.00"_s
-                << u"2,1500.00,2500.00,1000.00,2.50,3.54,2.00"_s
-                << u"2,1500.00,2600.00,1100.00,2.50,3.33,2.00"_s
-                << u"2,1500.00,2700.00,1200.00,2.50,3.14,2.00"_s
-                << u"2,1500.00,2800.00,1300.00,2.50,2.97,2.00"_s
-                << u"2,1500.00,2900.00,1400.00,2.50,2.82,2.00"_s
-                << u"2,1500.00,3000.00,1500.00,2.50,2.69,2.00"_s
-                << u"2,1500.00,3100.00,1600.00, , , "_s
-                << u"2,1500.00,3200.00,1700.00, , , "_s;
+  expectedLines
+    << u"1,1500.00,2200.00,0.00,2.50,3.33,2.00"_s
+    << u"1,1600.00,2200.00,100.00,2.60,3.41,2.00"_s
+    << u"1,1700.00,2200.00,200.00,2.70,3.48,2.00"_s
+    << u"1,1800.00,2200.00,300.00,2.80,3.56,2.00"_s
+    << u"1,1900.00,2200.00,400.00,2.90,3.64,2.00"_s
+    << u"1,2000.00,2200.00,500.00,3.00,3.72,2.00"_s
+    << u"1,2100.00,2200.00,600.00,3.10,3.86,3.00"_s
+    << u"1,2200.00,2200.00,700.00,3.20,4.00,3.00"_s
+    << u"1,2300.00,2200.00,800.00,3.30,4.14,3.00"_s
+    << u"1,2400.00,2200.00,900.00,3.40,4.28,3.00"_s
+    << u"1,2500.00,2200.00,1000.00,3.50,4.42,3.00"_s
+    << u"2,1500.00,1500.00,0.00, , , "_s
+    << u"2,1500.00,1600.00,100.00, , , "_s
+    << u"2,1500.00,1700.00,200.00, , , "_s
+    << u"2,1500.00,1800.00,300.00, , , "_s
+    << u"2,1500.00,1900.00,400.00, , , "_s
+    << u"2,1500.00,2000.00,500.00,2.50,3.20,2.00"_s
+    << u"2,1500.00,2100.00,600.00,2.50,3.26,2.00"_s
+    << u"2,1500.00,2200.00,700.00,2.50,3.33,2.00"_s
+    << u"2,1500.00,2300.00,800.00,2.50,3.40,2.00"_s
+    << u"2,1500.00,2400.00,900.00,2.50,3.47,2.00"_s
+    << u"2,1500.00,2500.00,1000.00,2.50,3.54,2.00"_s
+    << u"2,1500.00,2600.00,1100.00,2.50,3.33,2.00"_s
+    << u"2,1500.00,2700.00,1200.00,2.50,3.14,2.00"_s
+    << u"2,1500.00,2800.00,1300.00,2.50,2.97,2.00"_s
+    << u"2,1500.00,2900.00,1400.00,2.50,2.82,2.00"_s
+    << u"2,1500.00,3000.00,1500.00,2.50,2.69,2.00"_s
+    << u"2,1500.00,3100.00,1600.00, , , "_s
+    << u"2,1500.00,3200.00,1700.00, , , "_s;
   QString line = textStream.readLine();
   int i = 0;
   QVERIFY( !line.isEmpty() );
@@ -1251,10 +1307,7 @@ class TestProcessingFeedback : public QgsProcessingFeedback
 {
     Q_OBJECT
   public:
-    void reportError( const QString &error, bool ) override
-    {
-      errors << error;
-    }
+    void reportError( const QString &error, bool ) override { errors << error; }
 
     QStringList errors;
 };
@@ -1483,10 +1536,11 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
   QCOMPARE( header, u"fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset"_s );
 
   QStringList expectedLines;
-  expectedLines << u"1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00"_s;
+  expectedLines
+    << u"1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00"_s;
 
   QString line = textStream.readLine();
   int i = 0;
@@ -1510,28 +1564,29 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
   QCOMPARE( header, u"fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset"_s );
 
   expectedLines.clear();
-  expectedLines << u"1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:06:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:12:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:18:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:24:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:30:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:36:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:42:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:48:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 00:54:00,1.50,1.92,1.00"_s
-                << u"1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:06:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:12:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:18:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:24:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:30:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:36:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:42:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:48:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 00:54:00,2.50,2.97,2.00"_s
-                << u"3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00"_s;
+  expectedLines
+    << u"1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:06:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:12:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:18:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:24:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:30:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:36:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:42:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:48:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:54:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:06:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:12:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:18:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:24:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:30:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:36:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:42:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:48:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:54:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00"_s;
 
   line = textStream.readLine();
   i = 0;
@@ -1739,13 +1794,22 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
   auto polygonLayer1 = std::make_unique<QgsVectorLayer>( u"MultiPolygon?crs=epsg:4326"_s, u"p1"_s, u"memory"_s );
   QVERIFY( polygonLayer1->isValid() );
   p1_1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((25 41, 25 38, 18 38, 18 41, 25 41),(19 39, 24 39, 24 40, 19 40, 19 39)))" ) );
-  p1_2.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((18 37, 21 37, 21 35, 18 35, 18 37),(19.5 36.5, 19.5 35.5, 20.5 35.5, 20.5 36.5, 19.5 36.5)),((22 37, 25 37, 25 35, 22 35, 22 37),(24 36, 24 35.5, 24.5 35.5, 24.5 36, 24 36),(23.5 35.5, 23.5 36.5, 22.5 36.5, 22.5 35.5, 23.5 35.5)))" ) );
+  p1_2.setGeometry(
+    QgsGeometry::fromWkt(
+      "MultiPolygon (((18 37, 21 37, 21 35, 18 35, 18 37),(19.5 36.5, 19.5 35.5, 20.5 35.5, 20.5 36.5, 19.5 36.5)),((22 37, 25 37, 25 35, 22 35, 22 37),(24 36, 24 35.5, 24.5 35.5, 24.5 36, 24 "
+      "36),(23.5 35.5, 23.5 36.5, 22.5 36.5, 22.5 35.5, 23.5 35.5)))"
+    )
+  );
   polygonLayer1->dataProvider()->addFeature( p1_1 );
   polygonLayer1->dataProvider()->addFeature( p1_2 );
   auto polygonLayer2 = std::make_unique<QgsVectorLayer>( u"MultiPolygon?crs=epsg:4326"_s, u"p2"_s, u"memory"_s );
   QVERIFY( polygonLayer2->isValid() );
   p2_1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((23 42, 20 34, 20 42, 23 42),(20.5 38.5, 21 38.5, 21.5 40.5, 20.5 40.5, 20.5 38.5)))" ) );
-  p2_2.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((23 34, 23 42, 25 42, 23 34),(24 40.5, 23.5 40.5, 23.5 39.5, 24 40.5)),((19.5 34.5, 17.5 34.5, 17.5 42, 18.5 42, 19.5 34.5),(18.5 37.5, 18 37.5, 18.5 36.5, 18.5 37.5)))" ) );
+  p2_2.setGeometry(
+    QgsGeometry::fromWkt(
+      "MultiPolygon (((23 34, 23 42, 25 42, 23 34),(24 40.5, 23.5 40.5, 23.5 39.5, 24 40.5)),((19.5 34.5, 17.5 34.5, 17.5 42, 18.5 42, 19.5 34.5),(18.5 37.5, 18 37.5, 18.5 36.5, 18.5 37.5)))"
+    )
+  );
   polygonLayer2->dataProvider()->addFeature( p2_1 );
   polygonLayer2->dataProvider()->addFeature( p2_2 );
 
@@ -2418,6 +2482,134 @@ void TestQgsProcessingAlgsPt2::checkValidity()
   it = invalidLayer->getFeatures();
   it.nextFeature( f );
   QCOMPARE( f.attributes(), QgsAttributes() << 1 << u"Self-intersection"_s );
+}
+
+void TestQgsProcessingAlgsPt2::hypsometricCurves()
+{
+  auto boundaryLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:4326"_s, u"boundaries"_s, u"memory"_s );
+  QVERIFY( boundaryLayer->isValid() );
+
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((18.688 45.789, 18.698 45.789, 18.698 45.799, 18.688 45.799, 18.688 45.789))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((18.698 45.798, 18.702 45.798, 18.702 45.802, 18.698 45.802, 18.698 45.798))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  // polygon covering pixel centroids
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((18.6883279442 45.7984314376, 18.6885679442 45.7984314376, 18.6885679442 45.7986714376, 18.6883279442 45.7986714376, 18.6883279442 45.7984314376))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  // polygon does not cover pixel centroids
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((18.6913579442 45.7954614376, 18.6916379442 45.7954614376, 18.6916379442 45.7956414376, 18.6913579442 45.7956414376, 18.6913579442 45.7954614376))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  //polygon outside of the DEM extent
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((0.0 0.0, 1.0 0.0, 1.0 1.0, 0.0 1.0, 0.0 0.0))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  QCOMPARE( boundaryLayer->featureCount(), 5 );
+
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  const QString demPath( dataDir + u"/raster/dem.tif"_s );
+  auto demLayer = std::make_unique<QgsRasterLayer>( demPath, "dem", "gdal" );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:hypsometriccurves"_s ) );
+  QVERIFY( alg != nullptr );
+
+  QTemporaryDir tmpDir;
+  QVERIFY( tmpDir.isValid() );
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT_DEM"_s, demPath );
+  parameters.insert( u"BOUNDARY_LAYER"_s, QVariant::fromValue( boundaryLayer.get() ) );
+  parameters.insert( u"STEP"_s, 10.0 );
+  parameters.insert( u"USE_PERCENTAGE"_s, false );
+  parameters.insert( u"OUTPUT_DIRECTORY"_s, tmpDir.path() );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  const QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"OUTPUT_DIRECTORY"_s ).toString(), tmpDir.path() );
+
+  const QDir outDir( tmpDir.path() );
+  const QStringList csvFiles = outDir.entryList( { u"*.csv"_s }, QDir::Files );
+  // polygon outside of the DEM extent should be ignored
+  QCOMPARE( csvFiles.size(), 4 );
+
+  QList<HypsometryData> data = loadHypsometryResults( tmpDir.path() + u"/histogram_boundaries_1.csv"_s );
+  QCOMPARE( data.size(), 13 );
+
+  QList<HypsometryData> expected = {
+    { 4.1999999999994034e-07, 130.0 },
+    { 3.139999999999554e-06, 140.0 },
+    { 9.989999999998581e-06, 150.0 },
+    { 1.9179999999997275e-05, 160.0 },
+    { 2.9799999999995764e-05, 170.0 },
+    { 3.995999999999432e-05, 180.0 },
+    { 5.394999999999233e-05, 190.0 },
+    { 6.68199999999905e-05, 200.0 },
+    { 7.45499999999894e-05, 210.0 },
+    { 8.015999999998861e-05, 220.0 },
+    { 8.622999999998774e-05, 230.0 },
+    { 9.971999999998582e-05, 240.0 },
+    { 9.999999999998579e-05, 250.0 },
+  };
+  for ( int i = 0; i < expected.size(); ++i )
+  {
+    QGSCOMPARENEAR( data[i].elevation, expected[i].elevation, 1e-3 );
+    QGSCOMPARENEAR( data[i].area, expected[i].area, 1e-3 );
+  }
+
+  data = loadHypsometryResults( tmpDir.path() + u"/histogram_boundaries_2.csv"_s );
+  QCOMPARE( data.size(), 9 );
+
+  expected = {
+    { 1.5399999999997811e-06, 145.0 },
+    { 4.4199999999993715e-06, 155.0 },
+    { 7.089999999998992e-06, 165.0 },
+    { 9.689999999998621e-06, 175.0 },
+    { 1.1409999999998378e-05, 185.0 },
+    { 1.2819999999998178e-05, 195.0 },
+    { 1.4119999999997993e-05, 205.0 },
+    { 1.5519999999997795e-05, 215.0 },
+    { 1.5989999999997728e-05, 225.0 },
+  };
+  for ( int i = 0; i < expected.size(); ++i )
+  {
+    QGSCOMPARENEAR( data[i].elevation, expected[i].elevation, 1e-3 );
+    QGSCOMPARENEAR( data[i].area, expected[i].area, 1e-3 );
+  }
+
+  data = loadHypsometryResults( tmpDir.path() + u"/histogram_boundaries_3.csv"_s );
+  QCOMPARE( data.size(), 1 );
+  QGSCOMPARENEAR( data[0].elevation, 185.877, 1e-3 );
+  QGSCOMPARENEAR( data[0].area, 3.9999999999994316e-08, 1e-3 );
+
+  data = loadHypsometryResults( tmpDir.path() + u"/histogram_boundaries_4.csv"_s );
+  QCOMPARE( data.size(), 1 );
+  QGSCOMPARENEAR( data[0].elevation, 179.39601, 1e-3 );
+  QGSCOMPARENEAR( data[0].area, 1.9999999999997158e-08, 1e-3 );
+
+  QgsVectorLayer *hypsometryLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 3 ).name(), u"polygon_id"_s );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 2 ).name(), u"area"_s );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 1 ).name(), u"elevation"_s );
+  QCOMPARE( hypsometryLayer->featureCount(), 24 );
+  QgsFeatureIterator it = hypsometryLayer->getFeatures( QgsFeatureIds() << 24 );
+  it.nextFeature( f );
+  QCOMPARE( f.attribute( u"polygon_id"_s ), 4 );
+  QGSCOMPARENEAR( f.attribute( u"area"_s ).toDouble(), 1.9999999999997158e-08, 1e-3 );
+  QGSCOMPARENEAR( f.attribute( u"elevation"_s ).toDouble(), 179.39601, 1e-3 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

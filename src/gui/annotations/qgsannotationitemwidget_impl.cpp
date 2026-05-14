@@ -36,7 +36,11 @@
 #include "qgssymbolselectordialog.h"
 #include "qgstextformatwidget.h"
 
+#include <QString>
+
 #include "moc_qgsannotationitemwidget_impl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -327,9 +331,7 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
   connect( mTextFormatButton, &QgsFontButton::changed, this, [this] {
-    mTextEdit->setMode(
-      mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
-    );
+    mTextEdit->setMode( mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
 
     if ( !mBlockChangedSignal )
       emit itemChanged();
@@ -460,9 +462,7 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
   mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
 
   connect( mTextFormatButton, &QgsFontButton::changed, this, [this] {
-    mTextEdit->setMode(
-      mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
-    );
+    mTextEdit->setMode( mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
 
     if ( !mBlockChangedSignal )
       emit itemChanged();
@@ -477,7 +477,9 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
       emit itemChanged();
   } );
 
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mOffsetUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
   mSpinOffset->setClearValue( 0.0 );
   connect( mSpinOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     if ( !mBlockChangedSignal )
@@ -593,7 +595,9 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
   mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
 
-  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+  mSizeUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage
+  );
 
   mBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mBackgroundSymbolButton->setDialogTitle( tr( "Background" ) );
@@ -606,7 +610,9 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   mSpinTopMargin->setClearValue( 0 );
   mSpinRightMargin->setClearValue( 0 );
   mSpinLeftMargin->setClearValue( 0 );
-  mMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mMarginUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
 
   mTextFormatButton->setMode( QgsFontButton::ModeTextRenderer );
 
@@ -616,9 +622,7 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   mVerticalAlignmentComboBox->setAvailableAlignments( Qt::AlignTop | Qt::AlignVCenter | Qt::AlignBottom );
 
   connect( mTextFormatButton, &QgsFontButton::changed, this, [this] {
-    mTextEdit->setMode(
-      mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
-    );
+    mTextEdit->setMode( mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
 
     onWidgetChanged();
   } );
@@ -870,7 +874,9 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
   mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
 
-  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+  mSizeUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage
+  );
 
   mBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mBackgroundSymbolButton->setDialogTitle( tr( "Background" ) );

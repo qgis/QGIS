@@ -21,11 +21,17 @@
 #include "qgis_sip.h"
 #include "qgsdatasourceuri.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgssettingstreenode.h"
 
+#include <QString>
 #include <QStringList>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
+///@cond PRIVATE
 
 /*!
  * \brief  Generic OGR DB Connections management
@@ -35,8 +41,11 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     Q_OBJECT
 
   public:
+    static inline QgsSettingsTreeNode *sTreeOgrConnections = QgsSettingsTree::sTreeConnections->createChildNode( u"ogr"_s );
+    static inline QgsSettingsTreeNamedListNode *sTreeOgrDriverConnections = sTreeOgrConnections->createNamedListNode( u"driver"_s );
+    static inline QgsSettingsTreeNamedListNode *sTreeOgrConnectionItems = sTreeOgrDriverConnections->createNamedListNode( u"connection"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+
     static const QgsSettingsEntryString *settingsOgrConnectionPath;
-    static const QgsSettingsEntryString *settingsOgrConnectionSelected;
 
     //! Constructor
     explicit QgsOgrDbConnection( const QString &connName, const QString &settingsKey );
@@ -47,14 +56,13 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     static void setSelectedConnection( const QString &connName, const QString &settingsKey );
 
   public:
-
     /**
      * Returns the uri
      * \see QgsDataSourceUri
      */
     QgsDataSourceUri uri();
     //! Returns the path
-    QString path( ) const { return mPath; }
+    QString path() const { return mPath; }
     //! Returns the connection name
     QString name() const { return mConnName; }
     //! Sets the \a path for the connection
@@ -68,7 +76,6 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     QString mConnName;
     QString mPath;
     QString mSettingsKey;
-
 };
 
 ///@endcond

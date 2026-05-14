@@ -19,12 +19,13 @@
 #include "qgssymbollayerutils.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsClassificationPrettyBreaks::QgsClassificationPrettyBreaks()
   : QgsClassificationMethod( SymmetricModeAvailable )
-{
-
-}
+{}
 
 QString QgsClassificationPrettyBreaks::name() const
 {

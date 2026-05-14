@@ -23,7 +23,6 @@ Configuration of a single style within
 #include "qgsvectortilebasiclabeling.h"
 %End
   public:
-
     void setLabelSettings( const QgsPalLayerSettings &settings );
 %Docstring
 Sets labeling configuration of this style

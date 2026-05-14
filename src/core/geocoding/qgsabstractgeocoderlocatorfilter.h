@@ -41,7 +41,6 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractGeocoderLocatorFilter.
      *
@@ -61,10 +60,7 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
      * The \a boundingBox argument specifies the geographic bounding box, in WGS84, covered by the
      * filter.
      */
-    QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName,
-                                      const QString &prefix,
-                                      QgsGeocoderInterface *geocoder,
-                                      const QgsRectangle &boundingBox = QgsRectangle() );
+    QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, const QgsRectangle &boundingBox = QgsRectangle() );
 
     QString name() const override;
     QString displayName() const override;
@@ -97,7 +93,6 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
     QgsLocatorResult geocoderResultToLocatorResult( const QgsGeocoderResult &result );
 
   private:
-
     /**
      * Called when a geocode \a result was triggered by the filter.
      */
@@ -108,7 +103,6 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
     QString mPrefix;
     QgsGeocoderInterface *mGeocoder = nullptr;
     QgsRectangle mBoundingBox;
-
 };
 
 #endif // QGSABSTRACTGEOCODERLOCATORFILTER_H

@@ -18,14 +18,16 @@
 #include "qgsmessagelog.h"
 #include "qgswfsconstants.h"
 
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgswfsgetfeature.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
-{
-}
+{}
 
 bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, const QString &typeName, const QString &filter, bool hitsOnly, const QgsWfsCapabilities &caps )
 {

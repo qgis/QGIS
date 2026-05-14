@@ -2,7 +2,7 @@
   "name": "+",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Addition of two values. If one of the values is NULL the result will be NULL.",
+  "description": "Addition of two values or concatenation of two strings.<br><br>For numeric and datetime operations if either value is NULL the result will be NULL.<br><br>For string concatenation NULL values from fields are treated as empty strings. Use the || operator instead if NULL propagation for strings is required.<br><br>When used with two colors, performs component-wise addition on the color components (not alpha), clamping results to [0, 1]. The alpha channel of the left color is used. HSL and HSV colors are converted to RGB for the operation, and the result is an RGB color. CMYK colors produce a CMYK result.<br><br>When used with a color and a number (in any order), adds the number to each color component (excluding alpha), clamping results to [0, 1]. The alpha channel is preserved.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -17,11 +17,20 @@
     "expression": "5 + NULL",
     "returns": "NULL"
   }, {
+    "expression": "'5' + NULL",
+    "returns": "NULL"
+  }, {
+    "expression": "'5' + \"name\"",
+    "returns": "'5' (if value in \"name\" field is NULL) or a concatenation of the two strings"
+  }, {
     "expression": "'QGIS ' + 'ROCKS'",
     "returns": "'QGIS ROCKS'"
   }, {
     "expression": "to_datetime('2020-08-01 12:00:00') + '1 day 2 hours'",
     "returns": "2020-08-02T14:00:00"
+  }, {
+    "expression": "color_rgbf(0.2, 0.4, 0.6) + 0.1",
+    "returns": "RGBA: 0.30,0.50,0.70,1.00"
   }],
-  "tags": ["addition", "null", "result", "values"]
+  "tags": ["addition", "null", "result", "values", "color"]
 }

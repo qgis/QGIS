@@ -29,16 +29,18 @@
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 
 #include "moc_qgsbinarywidgetwrapper.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
   , mMessageBar( messageBar )
-{
-}
+{}
 
 
 QVariant QgsBinaryWidgetWrapper::value() const

@@ -19,16 +19,15 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
+from qgis.core import Qgis, QgsApplication, QgsProcessingAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication, QgsProcessingAlgorithm
+from qgis.utils import iface
+
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerDialog import ModelerDialog
-from qgis.core import Qgis
-from qgis.utils import iface
 
 
 class EditModelAction(ContextAction):
-
     def __init__(self):
         super().__init__()
         self.name = QCoreApplication.translate("EditModelAction", "Edit Model…")

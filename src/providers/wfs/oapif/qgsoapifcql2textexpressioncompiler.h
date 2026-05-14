@@ -32,11 +32,7 @@ class QgsOapifCql2TextExpressionCompiler
 {
   public:
     QgsOapifCql2TextExpressionCompiler(
-      const QMap<QString, QgsOapifQueryablesRequest::Queryable> &queryables,
-      bool supportsLikeBetweenIn,
-      bool supportsCaseI,
-      bool supportsBasicSpatialOperators,
-      bool invertAxisOrientation
+      const QMap<QString, QgsOapifQueryablesRequest::Queryable> &queryables, bool supportsLikeBetweenIn, bool supportsCaseI, bool supportsBasicSpatialOperators, bool invertAxisOrientation
     );
 
     //! Possible results from expression compilation

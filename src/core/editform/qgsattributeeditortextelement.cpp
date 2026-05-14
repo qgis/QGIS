@@ -16,6 +16,9 @@
 #include "qgsattributeeditortextelement.h"
 
 #include <QDomText>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeEditorElement *QgsAttributeEditorTextElement::clone( QgsAttributeEditorElement *parent ) const
 {
@@ -53,4 +56,3 @@ QString QgsAttributeEditorTextElement::typeIdentifier() const
 {
   return u"attributeEditorTextElement"_s;
 }
-

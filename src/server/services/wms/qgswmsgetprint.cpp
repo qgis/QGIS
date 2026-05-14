@@ -25,6 +25,10 @@
 #include "qgswmsserviceexception.h"
 #include "qgswmsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWms
 {
   void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )

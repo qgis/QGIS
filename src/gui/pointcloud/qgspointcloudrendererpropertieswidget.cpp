@@ -16,6 +16,9 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgselevationshadingrenderer.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfieldexpressionwidget.h"
 #include "qgsfontbutton.h"
 #include "qgslogger.h"
 #include "qgspointcloudattributebyramprendererwidget.h"
@@ -29,12 +32,17 @@
 #include "qgspointcloudrgbrendererwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+#include "qgsproperty.h"
 #include "qgsstyle.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgstextformatwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudrendererpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -100,7 +108,9 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
-  mPointSizeUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mPointSizeUnitWidget->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
 
   connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
@@ -109,11 +119,27 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   mDrawOrderComboBox->addItem( tr( "Bottom to Top" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::BottomToTop ) );
   mDrawOrderComboBox->addItem( tr( "Top to Bottom" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::TopToBottom ) );
 
-  mMaxErrorUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  connect( mDirectionalLightWidget, &QgsDirectionalLightWidget::directionChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  mEdlDistanceSpinBox->setClearValue( 0.5 );
+  mEdlStrengthSpinBox->setClearValue( 1000 );
+  connect( mEdlStrengthSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistanceSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistanceUnit, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  mHillshadingZFactorSpinBox->setClearValue( 1.0 );
+  connect( mHillshadingZFactorSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  mMaxErrorUnitWidget->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
   mMaxErrorSpinBox->setClearValue( 0.3 );
 
   mHorizontalTriangleThresholdSpinBox->setClearValue( 5.0 );
-  mHorizontalTriangleUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mHorizontalTriangleUnitWidget->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
 
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
@@ -121,11 +147,15 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mDrawOrderComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
+  connect( mEyeDomeLightingGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHillshadeGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
   connect( mTriangulateGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleCheckBox, &QCheckBox::clicked, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleThresholdSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
+  connect( mColorExpressionWidget, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPointCloudRendererPropertiesWidget::updateDataDefinedProperty );
   // show virtual point cloud options only when vpc layer is selected
   if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
   {
@@ -137,16 +167,25 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
     if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() ) )
     {
-      if ( vpcProvider->overview() )
+      if ( !vpcProvider->overviews().isEmpty() )
       {
         mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
         mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
       }
+
+      for ( auto it = mOverviewSwitchingScaleMap.constBegin(); it != mOverviewSwitchingScaleMap.constEnd(); ++it )
+      {
+        mOverviewSwitchingScale->addItem( it.value(), it.key() );
+      }
+      setOverviewSwitchingScale( 1.0 );
     }
     else
     {
       mZoomOutOptions->setEnabled( false );
+      mOverviewSwitchingScale->setEnabled( false );
     }
+
+    connect( mOverviewSwitchingScale, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
     connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
       switch ( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() )
@@ -173,6 +212,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
 void QgsPointCloudRendererPropertiesWidget::setContext( const QgsSymbolWidgetContext &context )
 {
+  mContext = context;
   mMapCanvas = context.mapCanvas();
   mMessageBar = context.messageBar();
   if ( mActiveWidget )
@@ -217,6 +257,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
+    setOverviewSwitchingScale( mLayer->renderer()->overviewSwitchingScale() );
 
     mTriangulateGroupBox->setChecked( mLayer->renderer()->renderAsTriangles() );
     mHorizontalTriangleCheckBox->setChecked( mLayer->renderer()->horizontalTriangleFilter() );
@@ -239,7 +280,32 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
           mLabelOptions->setEnabled( true );
       }
     }
+
+    QgsElevationShadingRenderer shadingRenderer = mLayer->renderer()->elevationShadingRenderer();
+
+    mEyeDomeLightingGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
+    mHillshadeGroupBox->setChecked( shadingRenderer.isActiveHillshading() );
+
+    mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
+    mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
+    mEdlDistanceUnit->setUnits(
+      { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+    );
+    mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
+    mHillshadingMultidirCheckBox->setChecked( shadingRenderer.isHillshadingMultidirectional() );
+    mHillshadingZFactorSpinBox->setValue( shadingRenderer.hillshadingZFactor() );
+
+    mDirectionalLightWidget->setAltitude( shadingRenderer.lightAltitude() );
+    mDirectionalLightWidget->setAzimuth( shadingRenderer.lightAzimuth() );
+    mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
   }
+
+  mColorExpressionWidget->setLayer( layer );
+  mColorExpressionWidget->registerExpressionContextGenerator( this );
+
+  mDataDefinedProperties = mLayer->renderer()->dataDefinedProperties();
+  const QgsProperty colorProperty = mDataDefinedProperties.property( QgsPointCloudRenderer::Property::Color );
+  mColorExpressionWidget->setExpression( colorProperty.expressionString() );
 
   mBlockChangedSignal = false;
 }
@@ -285,6 +351,25 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
   mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
   mLayer->renderer()->setZoomOutBehavior( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() );
+
+  mLayer->renderer()->setOverviewSwitchingScale( overviewSwitchingScale() );
+
+  QgsElevationShadingRenderer shadingRenderer;
+
+  shadingRenderer.setActiveEyeDomeLighting( mEyeDomeLightingGroupBox->isChecked() );
+  shadingRenderer.setActiveHillshading( mHillshadeGroupBox->isChecked() );
+  shadingRenderer.setActive( mEyeDomeLightingGroupBox->isChecked() || mHillshadeGroupBox->isChecked() );
+  shadingRenderer.setEyeDomeLightingStrength( mEdlStrengthSpinBox->value() );
+  shadingRenderer.setEyeDomeLightingDistance( mEdlDistanceSpinBox->value() );
+  shadingRenderer.setEyeDomeLightingDistanceUnit( mEdlDistanceUnit->unit() );
+  shadingRenderer.setHillshadingMultidirectional( mHillshadingMultidirCheckBox->isChecked() );
+  shadingRenderer.setHillshadingZFactor( mHillshadingZFactorSpinBox->value() );
+
+  shadingRenderer.setLightAltitude( mDirectionalLightWidget->altitude() );
+  shadingRenderer.setLightAzimuth( mDirectionalLightWidget->azimuth() );
+
+  mLayer->renderer()->setElevationShadingRenderer( shadingRenderer );
+  mLayer->renderer()->setDataDefinedProperties( mDataDefinedProperties );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
@@ -339,7 +424,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
       QgsSymbolWidgetContext context;
       context.setMapCanvas( mMapCanvas );
       context.setMessageBar( mMessageBar );
-      mActiveWidget->setContext( context );
+      mActiveWidget->setContext( mContext );
     }
 
     connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::widgetChanged );
@@ -358,4 +443,43 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
     emit widgetChanged();
+}
+
+void QgsPointCloudRendererPropertiesWidget::updateDataDefinedProperty()
+{
+  const QString expression = mColorExpressionWidget->expression();
+  if ( !expression.isEmpty() )
+    mDataDefinedProperties.setProperty( QgsPointCloudRenderer::Property::Color, QgsProperty::fromExpression( expression ) );
+  else
+    mDataDefinedProperties.setProperty( QgsPointCloudRenderer::Property::Color, QgsProperty() );
+  emitWidgetChanged();
+}
+
+
+void QgsPointCloudRendererPropertiesWidget::setOverviewSwitchingScale( double scale )
+{
+  mOverviewSwitchingScale->setCurrentIndex( mOverviewSwitchingScale->findData( scale ) );
+}
+
+double QgsPointCloudRendererPropertiesWidget::overviewSwitchingScale() const
+{
+  return mOverviewSwitchingScaleMap.key( mOverviewSwitchingScale->currentText() );
+}
+
+QgsExpressionContext QgsPointCloudRendererPropertiesWidget::createExpressionContext() const
+{
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
+
+  QgsExpressionContext context( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
+
+  auto pointCloudScope = std::make_unique<QgsExpressionContextScope>( tr( "Point Cloud" ) );
+  context.appendScope( pointCloudScope.release() );
+
+  for ( const QgsExpressionContextScope &scope : mContext.additionalExpressionContextScopes() )
+    context.appendScope( new QgsExpressionContextScope( scope ) );
+
+  context.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE );
+
+  return context;
 }

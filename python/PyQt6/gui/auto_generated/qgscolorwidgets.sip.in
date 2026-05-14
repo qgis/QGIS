@@ -693,6 +693,7 @@ representations of colors.
       Rgba
     };
 
+
     QgsColorTextWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color line edit widget.

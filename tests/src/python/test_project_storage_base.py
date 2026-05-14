@@ -12,16 +12,15 @@ __date__ = "2022-04-19"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import QDateTime
 from qgis.core import (
     QgsApplication,
     QgsProject,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QDateTime
 
 
 class TestPyQgsProjectStorageBase:
-
     def dropProjectsTable(self):
         """Drop existing project storage table"""
         pass

@@ -13,7 +13,38 @@ __date__ = "2018-02-16"
 __copyright__ = "Copyright 2018, Nyall Dawson"
 
 import tempfile
+import unittest
 
+from providertestbase import ProviderTestCase
+from qgis.core import (
+    NULL,
+    Qgis,
+    QgsApplication,
+    QgsBox3d,
+    QgsCategorizedSymbolRenderer,
+    QgsColorRampTransformer,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFieldConstraints,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsGradientColorRamp,
+    QgsGraduatedSymbolRenderer,
+    QgsLayerMetadata,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsRendererRange,
+    QgsSettings,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsUnsetAttributeValue,
+    QgsVectorDataProvider,
+    QgsVectorDataProviderTemporalCapabilities,
+    QgsVectorLayer,
+    QgsVectorLayerUtils,
+    QgsWkbTypes,
+)
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QDate,
@@ -22,43 +53,10 @@ from qgis.PyQt.QtCore import (
     Qt,
     QTime,
 )
-from qgis.core import (
-    Qgis,
-    NULL,
-    QgsApplication,
-    QgsBox3d,
-    QgsCategorizedSymbolRenderer,
-    QgsCoordinateReferenceSystem,
-    QgsFeature,
-    QgsFieldConstraints,
-    QgsGeometry,
-    QgsLayerMetadata,
-    QgsProviderRegistry,
-    QgsRectangle,
-    QgsSettings,
-    QgsVectorDataProvider,
-    QgsVectorDataProviderTemporalCapabilities,
-    QgsVectorLayer,
-    QgsWkbTypes,
-    QgsGraduatedSymbolRenderer,
-    QgsSymbol,
-    QgsRendererRange,
-    QgsSingleSymbolRenderer,
-    QgsFillSymbol,
-    QgsSymbolLayer,
-    QgsColorRampTransformer,
-    QgsGradientColorRamp,
-    QgsUnsetAttributeValue,
-    QgsVectorLayerUtils,
-)
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
-
     def treat_date_as_datetime(self):
         return True
 
@@ -70,10 +68,6 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsAFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsAFSProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is
@@ -250,7 +244,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             QgisTestCase.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=1,2,3,4,5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:
@@ -408,7 +402,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             QgisTestCase.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=3,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=2,3,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:
@@ -512,7 +506,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             QgisTestCase.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=3,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=2,3&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:
@@ -580,33 +574,6 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             "x": -68.2,
             "y": 70.8
            }
-          },
-          {
-           "attributes": {
-            "OBJECTID": 4,
-            "pk": 4,
-            "cnt": 400,
-            "name": "Honey",
-            "name2":"Honey",
-            "num_char":"4",
-            "dt": """
-                    + str(
-                        QDateTime(
-                            QDate(2021, 5, 4), QTime(13, 13, 14)
-                        ).toMSecsSinceEpoch()
-                    )
-                    + """,
-            "date": """
-                    + str(
-                        QDateTime(QDate(2021, 5, 4), QTime(0, 0, 0)).toMSecsSinceEpoch()
-                    )
-                    + """,
-            "time": "13:13:14"
-           },
-           "geometry": {
-            "x": -65.32,
-            "y": 78.3
-           }
           }
          ]
         }"""
@@ -616,7 +583,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             QgisTestCase.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects",
+                "/query?f=json&objectIds=1,2,3,4,5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects",
             ),
             "wb",
         ) as f:
@@ -1030,6 +997,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
                 | QgsVectorDataProvider.Capability.AddFeatures
             ),
         )
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.Point)
         # update capability
         endpoint = self.basetestpath + "/delete_fake_qgis_http_endpoint"
         with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
@@ -1074,7 +1042,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             f.write(
                 b"""
                     {"currentVersion":10.22,"id":1,"name":"QGIS Test","allowTrueCurvesUpdates":true,"type":"Feature Layer","description":
-                    "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                    "QGIS Provider Test Layer","geometryType":"esriGeometryPolyline","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
                     "minScale":72225,"maxScale":0,
                     "defaultVisibility":true,
                     "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
@@ -1093,6 +1061,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             "arcgisfeatureserver",
         )
         self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiCurve)
         self.assertEqual(
             vl.dataProvider().capabilities(),
             QgsVectorDataProvider.Capabilities(
@@ -1102,6 +1071,43 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
                 | QgsVectorDataProvider.Capability.ChangeAttributeValues
                 | QgsVectorDataProvider.Capability.ChangeFeatures
                 | QgsVectorDataProvider.Capability.CircularGeometries
+                | QgsVectorDataProvider.Capability.ChangeGeometries
+            ),
+        )
+
+        # polyline type, updates allowed, no curve support
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""
+                    {"currentVersion":10.22,"id":1,"name":"QGIS Test","allowTrueCurvesUpdates":false,"type":"Feature Layer","description":
+                    "QGIS Provider Test Layer","geometryType":"esriGeometryPolyline","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                    "minScale":72225,"maxScale":0,
+                    "defaultVisibility":true,
+                    "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                    "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                    "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                    "displayField":"LABEL","typeIdField":null,
+                    "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+                    "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                    "capabilities":"Map,Query,Data,Update","maxRecordCount":1000,"supportsStatistics":true,
+                    "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                    "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}"""
+            )
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' crs='epsg:4326'",
+            "test",
+            "arcgisfeatureserver",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiLineString)
+        self.assertEqual(
+            vl.dataProvider().capabilities(),
+            QgsVectorDataProvider.Capabilities(
+                QgsVectorDataProvider.Capability.SelectAtId
+                | QgsVectorDataProvider.Capability.ReadLayerMetadata
+                | QgsVectorDataProvider.Capability.ReloadData
+                | QgsVectorDataProvider.Capability.ChangeAttributeValues
+                | QgsVectorDataProvider.Capability.ChangeFeatures
                 | QgsVectorDataProvider.Capability.ChangeGeometries
             ),
         )
@@ -1226,7 +1232,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             self.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=1,2,3,4,5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:
@@ -1270,6 +1276,385 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
         f = vl.getFeature(0)
         self.assertTrue(f.isValid())
+
+    def testLineStringNoCurvedSupport(self):
+        """Test linestring features when service doesn't support curves"""
+
+        endpoint = self.basetestpath + "/ls_no_curve_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPolyline","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data,Update","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}"""
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "objectIdFieldName": "OBJECTID1",
+         "objectIds": [
+          5
+         ]
+        }
+        """
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint,
+                "/query?f=json&objectIds=5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "displayFieldName": "LABEL",
+         "geometryType": "esriGeometryPolyline",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID1","domain":null},
+          {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+          {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+          {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID1": 5,
+            "pk": 5,
+            "cnt": -200,
+            "name": null
+           },
+           "geometry": {
+           "paths": [[[-71.123,78.23],[-70.123, 75.23]]]
+           }
+          }
+         ]
+        }"""
+            )
+
+        # Create test layer
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' crs='epsg:4326'",
+            "test",
+            "arcgisfeatureserver",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiLineString)
+
+        f = vl.getFeature(0)
+        self.assertTrue(f.isValid())
+        self.assertEqual(
+            f.geometry().asWkt(3), "MultiLineString ((-71.123 78.23, -70.123 75.23))"
+        )
+
+    def testLineStringCurvedSupport(self):
+        """Test linestring features when service DOES support curves"""
+
+        endpoint = self.basetestpath + "/ls_curve_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","allowTrueCurvesUpdates":true,"type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPolyline","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data,Update","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}"""
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "objectIdFieldName": "OBJECTID1",
+         "objectIds": [
+          5
+         ]
+        }
+        """
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint,
+                "/query?f=json&objectIds=5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "displayFieldName": "LABEL",
+         "geometryType": "esriGeometryPolyline",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID1","domain":null},
+          {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+          {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+          {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID1": 5,
+            "pk": 5,
+            "cnt": -200,
+            "name": null
+           },
+           "geometry": {
+           "paths": [[[-71.123,78.23],[-70.123, 75.23]]]
+           }
+          }
+         ]
+        }"""
+            )
+
+        # Create test layer
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' crs='epsg:4326'",
+            "test",
+            "arcgisfeatureserver",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiCurve)
+
+        f = vl.getFeature(0)
+        self.assertTrue(f.isValid())
+        self.assertEqual(
+            f.geometry().asWkt(3),
+            "MultiCurve (CompoundCurve ((-71.123 78.23, -70.123 75.23)))",
+        )
+
+    def testLPolygonNoCurvedSupport(self):
+        """Test polygon features when service doesn't support curves"""
+
+        endpoint = self.basetestpath + "/poly_no_curve_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPolygon","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data,Update","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}"""
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "objectIdFieldName": "OBJECTID1",
+         "objectIds": [
+          5
+         ]
+        }
+        """
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint,
+                "/query?f=json&objectIds=5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "displayFieldName": "LABEL",
+         "geometryType": "esriGeometryPolygon",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID1","domain":null},
+          {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+          {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+          {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID1": 5,
+            "pk": 5,
+            "cnt": -200,
+            "name": null
+           },
+           "geometry": {
+           "rings": [
+                                     [[12,0],[13,0],[13,10],[12,10],[12,0]],
+                                     [[3,3],[9,3],[6,9],[3,3]],
+                                     [[0,0],[10,0],[10,10],[0,10],[0,0]]
+                                     ]
+           }
+          }
+         ]
+        }"""
+            )
+
+        # Create test layer
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' crs='epsg:4326'",
+            "test",
+            "arcgisfeatureserver",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPolygon)
+
+        f = vl.getFeature(0)
+        self.assertTrue(f.isValid())
+        self.assertEqual(
+            f.geometry().asWkt(3),
+            "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0),(3 3, 9 3, 6 9, 3 3)),((12 0, 13 0, 13 10, 12 10, 12 0)))",
+        )
+
+    def testLPolygonCurvedSupport(self):
+        """Test polygon features when service DOES support curves"""
+
+        endpoint = self.basetestpath + "/poly_curve_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","allowTrueCurvesUpdates":true,"type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPolygon","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data,Update","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}"""
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "objectIdFieldName": "OBJECTID1",
+         "objectIds": [
+          5
+         ]
+        }
+        """
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint,
+                "/query?f=json&objectIds=5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "displayFieldName": "LABEL",
+         "geometryType": "esriGeometryPolygon",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID1","domain":null},
+          {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+          {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+          {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID1": 5,
+            "pk": 5,
+            "cnt": -200,
+            "name": null
+           },
+           "geometry": {
+           "rings": [
+                                     [[12,0],[13,0],[13,10],[12,10],[12,0]],
+                                     [[3,3],[9,3],[6,9],[3,3]],
+                                     [[0,0],[10,0],[10,10],[0,10],[0,0]]
+                                     ]
+           }
+          }
+         ]
+        }"""
+            )
+
+        # Create test layer
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' crs='epsg:4326'",
+            "test",
+            "arcgisfeatureserver",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiSurface)
+
+        f = vl.getFeature(0)
+        self.assertTrue(f.isValid())
+        self.assertEqual(
+            f.geometry().asWkt(3),
+            "MultiSurface (CurvePolygon (CompoundCurve ((0 0, 10 0, 10 10, 0 10, 0 0)),CompoundCurve ((3 3, 9 3, 6 9, 3 3))),CurvePolygon (CompoundCurve ((12 0, 13 0, 13 10, 12 10, 12 0))))",
+        )
 
     def testNoCrs(self):
         """Test retrieval of features in their original service CRS"""
@@ -1319,7 +1704,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             self.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=5,3,1,2,4&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=1,2,3,4,5&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:

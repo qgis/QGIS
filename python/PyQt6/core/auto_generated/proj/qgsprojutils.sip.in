@@ -25,7 +25,6 @@ Utility functions for working with the proj library.
 #include "qgsprojutils.h"
 %End
   public:
-
     static int projVersionMajor();
 %Docstring
 Returns the proj library major version number.

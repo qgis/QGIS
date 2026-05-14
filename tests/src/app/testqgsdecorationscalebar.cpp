@@ -18,6 +18,10 @@
 #include "qgsmapsettings.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsDecorationScalebar : public QObject
 {
     Q_OBJECT
@@ -44,11 +48,6 @@ void TestQgsDecorationScalebar::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 

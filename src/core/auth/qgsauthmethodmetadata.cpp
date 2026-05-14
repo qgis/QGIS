@@ -37,5 +37,3 @@ QgsAuthMethod *QgsAuthMethodMetadata::createAuthMethod() const
 {
   return nullptr;
 }
-
-

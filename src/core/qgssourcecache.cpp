@@ -25,16 +25,18 @@
 
 #include <QBuffer>
 #include <QFile>
+#include <QString>
 #include <QTemporaryDir>
 
 #include "moc_qgssourcecache.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QgsSourceCacheEntry::QgsSourceCacheEntry( const QString &path )
   : QgsAbstractContentCacheEntry( path )
-{
-}
+{}
 
 bool QgsSourceCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
@@ -61,7 +63,7 @@ void QgsSourceCacheEntry::dump() const
 QgsSourceCache::QgsSourceCache( QObject *parent )
   : QgsAbstractContentCache< QgsSourceCacheEntry >( parent, QObject::tr( "Source" ) )
 {
-  temporaryDir = std::make_unique<QTemporaryDir>( );
+  temporaryDir = std::make_unique<QTemporaryDir>();
 
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsSourceCache::remoteSourceFetched );
 }

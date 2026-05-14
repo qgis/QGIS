@@ -14,5 +14,5 @@
     "expression": "geom_to_wkt(flip_coordinates(geom_from_wkt('LineString(0 2, 1 0, 1 6)')))",
     "returns": "'LineString (2 0, 0 1, 6 1)'"
   }],
-  "tags": ["latitude", "longitude", "reversed", "swapped", "coordinates", "repairing", "copy"]
+  "tags": ["latitude", "longitude", "reversed", "swapped", "coordinates", "repairing", "copy", "switch"]
 }

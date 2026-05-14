@@ -11,19 +11,17 @@ __date__ = "13/03/2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 import math
+import unittest
 
+from qgis.gui import QgsScaleComboBox, QgsScaleWidget
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QComboBox
-
-from qgis.gui import QgsScaleWidget, QgsScaleComboBox
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsScaleWidget(QgisTestCase):
-
     def testBasic(self):
         w = QgsScaleWidget()
         spy = QSignalSpy(w.scaleChanged)

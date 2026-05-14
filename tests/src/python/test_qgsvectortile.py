@@ -16,26 +16,25 @@ test_vectortile.py
 
 import shutil
 import tempfile
+import unittest
 from pathlib import Path
 
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtGui import QPainter
 from qgis.core import (
     Qgis,
     QgsDataSourceUri,
     QgsGeometry,
+    QgsMapSettings,
     QgsProviderRegistry,
+    QgsRenderContext,
     QgsSelectionContext,
     QgsTileXYZ,
     QgsVectorLayer,
     QgsVectorTileLayer,
     QgsVectorTileWriter,
-    QgsMapSettings,
-    QgsRenderContext,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_PATH = Path(unitTestDataPath())
@@ -44,7 +43,6 @@ start_app()
 
 
 class TestVectorTile(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

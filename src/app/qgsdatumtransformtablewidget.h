@@ -45,10 +45,7 @@ class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
-    QgsCoordinateTransformContext transformContext() const
-    {
-      return mTransformContext;
-    }
+    QgsCoordinateTransformContext transformContext() const { return mTransformContext; }
 
     /**
      * remove the transformation at given indexes
@@ -73,15 +70,9 @@ class APP_EXPORT QgsDatumTransformTableWidget : public QWidget, private Ui::QgsD
     explicit QgsDatumTransformTableWidget( QWidget *parent = nullptr );
     ~QgsDatumTransformTableWidget() override;
 
-    void setTransformContext( const QgsCoordinateTransformContext &context )
-    {
-      mModel->setTransformContext( context );
-    }
+    void setTransformContext( const QgsCoordinateTransformContext &context ) { mModel->setTransformContext( context ); }
 
-    QgsCoordinateTransformContext transformContext() const
-    {
-      return mModel->transformContext();
-    }
+    QgsCoordinateTransformContext transformContext() const { return mModel->transformContext(); }
 
   public slots:
     //! add a new datum transform

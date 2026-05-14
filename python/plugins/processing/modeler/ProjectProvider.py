@@ -22,19 +22,18 @@ __copyright__ = "(C) 2018, Nyall Dawson"
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsProcessingProvider,
     QgsMessageLog,
     QgsProcessingModelAlgorithm,
+    QgsProcessingProvider,
     QgsProject,
-    QgsXmlUtils,
     QgsRuntimeProfiler,
+    QgsXmlUtils,
 )
 
 PROJECT_PROVIDER_ID = "project"
 
 
 class ProjectProvider(QgsProcessingProvider):
-
     def __init__(self, project=None):
         super().__init__()
         if project is None:

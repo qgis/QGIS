@@ -24,7 +24,6 @@ Contains utility methods for working with temporal layers and projects.
 #include "qgstemporalutils.h"
 %End
   public:
-
     static QgsDateTimeRange calculateTemporalRangeForProject( QgsProject *project );
 %Docstring
 Calculates the temporal range for a ``project``.
@@ -50,22 +49,21 @@ ranges are sorted in ascending order.
 
     struct AnimationExportSettings
     {
-      QgsDateTimeRange animationRange;
+        QgsDateTimeRange animationRange;
 
-      QgsInterval frameDuration;
+        QgsInterval frameDuration;
 
-      bool temporalRangeCumulative;
+        bool temporalRangeCumulative;
 
-      QString outputDirectory;
+        QString outputDirectory;
 
-      QString fileNameTemplate;
+        QString fileNameTemplate;
 
-      QList<QgsMapDecoration *> decorations;
+        QList<QgsMapDecoration *> decorations;
 
-      QList<QgsDateTimeRange> availableTemporalRanges;
+        QList<QgsDateTimeRange> availableTemporalRanges;
 
-      double frameRate;
-
+        double frameRate;
     };
 
     static bool exportAnimation( const QgsMapSettings &mapSettings, const AnimationExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0 );
@@ -152,7 +150,6 @@ containing a duration (eg
 
 .. versionadded:: 3.20
 %End
-
 };
 
 

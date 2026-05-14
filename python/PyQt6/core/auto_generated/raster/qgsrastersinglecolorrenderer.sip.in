@@ -11,7 +11,7 @@
 
 
 
-class QgsRasterSingleColorRenderer: QgsRasterRenderer
+class QgsRasterSingleColorRenderer : QgsRasterRenderer
 {
 %Docstring(signature="appended")
 Raster renderer which renders all data pixels using a single color.
@@ -23,7 +23,6 @@ Raster renderer which renders all data pixels using a single color.
 #include "qgsrastersinglecolorrenderer.h"
 %End
   public:
-
     QgsRasterSingleColorRenderer( QgsRasterInterface *input, int band, const QColor &color );
 %Docstring
 Creates a single ``color`` renderer

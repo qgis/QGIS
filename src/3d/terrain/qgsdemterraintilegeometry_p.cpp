@@ -150,7 +150,10 @@ inline int ijToHeightMapIndex( int i, int j, int resX, int resZ )
 
 static bool hasNoData( int i, int j, const float *heightMap, int resX, int resZ )
 {
-  return std::isnan( heightMap[ijToHeightMapIndex( i, j, resX, resZ )] ) || std::isnan( heightMap[ijToHeightMapIndex( i + 1, j, resX, resZ )] ) || std::isnan( heightMap[ijToHeightMapIndex( i, j + 1, resX, resZ )] ) || std::isnan( heightMap[ijToHeightMapIndex( i + 1, j + 1, resX, resZ )] );
+  return std::isnan( heightMap[ijToHeightMapIndex( i, j, resX, resZ )] )
+         || std::isnan( heightMap[ijToHeightMapIndex( i + 1, j, resX, resZ )] )
+         || std::isnan( heightMap[ijToHeightMapIndex( i, j + 1, resX, resZ )] )
+         || std::isnan( heightMap[ijToHeightMapIndex( i + 1, j + 1, resX, resZ )] );
 }
 
 static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
@@ -218,21 +221,17 @@ class PlaneVertexBufferFunctor : public Qt3DCore::QAbstractFunctor
       , mHeightMap( heightMap )
     {}
 
-    QByteArray operator()()
-    {
-      return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap );
-    }
+    QByteArray operator()() { return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap ); }
 
-    qintptr id() const override
-    {
-      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneVertexBufferFunctor>::id );
-    }
+    qintptr id() const override { return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneVertexBufferFunctor>::id ); }
 
     bool operator==( const Qt3DCore::QAbstractFunctor &other ) const
     {
       const PlaneVertexBufferFunctor *otherFunctor = dynamic_cast<const PlaneVertexBufferFunctor *>( &other );
       if ( otherFunctor )
-        return ( otherFunctor->mResolution == mResolution && otherFunctor->mSide == mSide && otherFunctor->mVertScale == mVertScale && otherFunctor->mSkirtHeight == mSkirtHeight && otherFunctor->mHeightMap == mHeightMap );
+        return (
+          otherFunctor->mResolution == mResolution && otherFunctor->mSide == mSide && otherFunctor->mVertScale == mVertScale && otherFunctor->mSkirtHeight == mSkirtHeight && otherFunctor->mHeightMap == mHeightMap
+        );
       return false;
     }
 
@@ -253,15 +252,9 @@ class PlaneIndexBufferFunctor : public Qt3DCore::QAbstractFunctor
       , mHeightMap( heightMap )
     {}
 
-    QByteArray operator()()
-    {
-      return createPlaneIndexData( mResolution, mHeightMap );
-    }
+    QByteArray operator()() { return createPlaneIndexData( mResolution, mHeightMap ); }
 
-    qintptr id() const override
-    {
-      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneIndexBufferFunctor>::id );
-    }
+    qintptr id() const override { return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneIndexBufferFunctor>::id ); }
 
     bool operator==( const Qt3DCore::QAbstractFunctor &other ) const
     {

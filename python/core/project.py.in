@@ -1,7 +1,0 @@
-from qgis_sip_project import QgisProject, QgisBindings
-
-class QgisCoreBindings(QgisBindings):
-    name = "core"
-
-class QgisCoreProject(QgisProject):
-    bindings_factories = [QgisCoreBindings]

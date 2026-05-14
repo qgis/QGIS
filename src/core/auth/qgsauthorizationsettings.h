@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsAuthorizationSettings
 {
   public:
-
     //! Constructor for QgsAuthorizationSettings.
     QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() );
 

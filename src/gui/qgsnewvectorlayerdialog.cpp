@@ -37,8 +37,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsnewvectorlayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -366,7 +369,9 @@ void QgsNewVectorLayerDialog::accept()
 
     if ( !currentFound )
     {
-      if ( QMessageBox::question( this, windowTitle(), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      if ( QMessageBox::
+             question( this, windowTitle(), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel )
+           != QMessageBox::Ok )
       {
         return;
       }
@@ -375,7 +380,9 @@ void QgsNewVectorLayerDialog::accept()
 
   updateExtension();
 
-  if ( QFile::exists( filename() ) && QMessageBox::warning( this, tr( "New ShapeFile Layer" ), tr( "The layer already exists. Are you sure you want to overwrite the existing file?" ), QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Yes )
+  if ( QFile::exists( filename() )
+       && QMessageBox::warning( this, tr( "New ShapeFile Layer" ), tr( "The layer already exists. Are you sure you want to overwrite the existing file?" ), QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel )
+            != QMessageBox::Yes )
     return;
 
   QDialog::accept();

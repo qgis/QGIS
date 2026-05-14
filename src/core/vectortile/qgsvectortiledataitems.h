@@ -19,8 +19,9 @@
 #include "qgsdataitemprovider.h"
 #include "qgslayeritem.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 //! Root item for XYZ tile layers
 class CORE_EXPORT QgsVectorTileRootItem : public QgsConnectionsRootItem
@@ -32,7 +33,6 @@ class CORE_EXPORT QgsVectorTileRootItem : public QgsConnectionsRootItem
     QVector<QgsDataItem *> createChildren() override;
 
     QVariant sortKey() const override { return 8; }
-
 };
 
 //! Item implementation for XYZ tile layers
@@ -41,7 +41,6 @@ class CORE_EXPORT QgsVectorTileLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsVectorTileLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri );
-
 };
 
 

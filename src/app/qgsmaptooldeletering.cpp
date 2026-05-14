@@ -89,10 +89,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
   }
   else if ( vlayer->selectedFeatureCount() > 0 )
   {
-    emit messageEmitted(
-      tr( "If there are selected features, the delete ring tool only applies to those. Clear the selection and try again." ),
-      Qgis::MessageLevel::Warning
-    );
+    emit messageEmitted( tr( "If there are selected features, the delete ring tool only applies to those. Clear the selection and try again." ), Qgis::MessageLevel::Warning );
   }
 }
 

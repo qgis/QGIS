@@ -18,10 +18,9 @@
 
 #include "ui_phongtexturedmaterialwidgetbase.h"
 
-#include "qgsabstractmaterialsettings.h"
 #include "qgsmaterialsettingswidget.h"
 
-class QgsPhongMaterialSettings;
+class QgsAbstractMaterialSettings;
 
 
 //! Widget for configuration of textured Phong material settings
@@ -34,11 +33,13 @@ class QgsPhongTexturedMaterialWidget : public QgsMaterialSettingsWidget, private
     static QgsMaterialSettingsWidget *create();
 
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) final;
-    QgsAbstractMaterialSettings *settings() final;
-
+    std::unique_ptr< QgsAbstractMaterialSettings > settings() final;
+  public slots:
+    void setPreviewVisible( bool visible ) final;
   private slots:
 
     void updateWidgetState();
+    void updatePreview();
 };
 
 #endif // QGSPHONGTEXTUREDMATERIALWIDGET_H

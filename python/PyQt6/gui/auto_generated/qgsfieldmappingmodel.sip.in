@@ -47,7 +47,9 @@ fields, by default only the mapping expression is editable.
         QString expression;
     };
 
-    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>(), QObject *parent = 0 );
+    QgsFieldMappingModel(
+      const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>(), QObject *parent = 0
+    );
 %Docstring
 Constructs a QgsFieldMappingModel from a set of ``sourceFields`` and
 ``destinationFields``, initial values for the expressions can be

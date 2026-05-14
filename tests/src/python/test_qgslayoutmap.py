@@ -11,16 +11,8 @@ __date__ = "20/10/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QFileInfo,
-    QRectF,
-    QSizeF,
-)
-from qgis.PyQt.QtGui import QColor, QPainter, QImage
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsAnnotationPolygonItem,
@@ -42,22 +34,29 @@ from qgis.core import (
     QgsNullSymbolRenderer,
     QgsPalLayerSettings,
     QgsPoint,
+    QgsPrintLayout,
     QgsProject,
     QgsProperty,
-    QgsPrintLayout,
     QgsRasterLayer,
     QgsReadWriteContext,
     QgsRectangle,
+    QgsSimpleFillSymbolLayer,
     QgsSingleSymbolRenderer,
     QgsTextFormat,
     QgsUnitTypes,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
-    QgsSimpleFillSymbolLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QFileInfo,
+    QRectF,
+    QSizeF,
+    Qt,
+)
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -66,7 +65,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "composer_map"

@@ -10,13 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "11.04.2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
+from qgis.core import Qgis, QgsDateRange, QgsDoubleRange, QgsIntRange
 from qgis.PyQt.QtCore import QDate
-from qgis.core import QgsDateRange, QgsDoubleRange, QgsIntRange, Qgis
 from qgis.testing import unittest
 
 
 class TestQgsIntRange(unittest.TestCase):
-
     def testGetters(self):
         range = QgsIntRange(1, 11)
         self.assertEqual(range.lower(), 1)
@@ -276,7 +275,6 @@ class TestQgsIntRange(unittest.TestCase):
 
 
 class TestQgsDoubleRange(unittest.TestCase):
-
     def testGetters(self):
         range = QgsDoubleRange(1.0, 11.0)
         self.assertEqual(range.lower(), 1)
@@ -337,7 +335,6 @@ class TestQgsDoubleRange(unittest.TestCase):
 
 
 class TestQgsDateRange(unittest.TestCase):
-
     def testGetters(self):
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2))
         self.assertEqual(range.begin(), QDate(2010, 3, 1))

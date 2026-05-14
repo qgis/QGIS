@@ -22,6 +22,9 @@
 #include "qgsgdalutils.h"
 
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const
 {
@@ -49,4 +52,3 @@ int QgsCubicRasterResampler::tileBufferPixels() const
 {
   return 2;
 }
-

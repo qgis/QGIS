@@ -29,8 +29,11 @@
 #include "qgsgui.h"
 
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgsattributesformmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {
@@ -40,6 +43,7 @@ QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx 
   mAlias = layer->fields().at( idx ).alias();
   mDataDefinedProperties = layer->editFormConfig().dataDefinedFieldProperties( layer->fields().at( idx ).name() );
   mComment = layer->fields().at( idx ).comment();
+  mCustomComment = layer->fields().at( idx ).customComment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
   mReuseLastValuePolicy = layer->editFormConfig().reuseLastValuePolicy( idx );
@@ -183,7 +187,9 @@ QgsAttributesFormItem::QgsAttributesFormItem( QgsAttributesFormData::AttributesF
   , mParent( parent )
 {}
 
-QgsAttributesFormItem::QgsAttributesFormItem( QgsAttributesFormData::AttributesFormItemType itemType, const QgsAttributesFormData::AttributeFormItemData &data, const QString &name, const QString &displayName, QgsAttributesFormItem *parent )
+QgsAttributesFormItem::QgsAttributesFormItem(
+  QgsAttributesFormData::AttributesFormItemType itemType, const QgsAttributesFormData::AttributeFormItemData &data, const QString &name, const QString &displayName, QgsAttributesFormItem *parent
+)
   : mName( name )
   , mDisplayName( displayName )
   , mType( itemType )
@@ -246,9 +252,7 @@ int QgsAttributesFormItem::row() const
   if ( !mParent )
     return 0;
 
-  const auto it = std::find_if( mParent->mChildren.cbegin(), mParent->mChildren.cend(), [this]( const std::unique_ptr< QgsAttributesFormItem > &item ) {
-    return item.get() == this;
-  } );
+  const auto it = std::find_if( mParent->mChildren.cbegin(), mParent->mChildren.cend(), [this]( const std::unique_ptr< QgsAttributesFormItem > &item ) { return item.get() == this; } );
 
   if ( it != mParent->mChildren.cend() )
   {
@@ -372,8 +376,7 @@ QgsAttributesFormModel::QgsAttributesFormModel( QgsVectorLayer *layer, QgsProjec
   , mRootItem( std::make_unique< QgsAttributesFormItem >() )
   , mLayer( layer )
   , mProject( project )
-{
-}
+{}
 
 QgsAttributesFormModel::~QgsAttributesFormModel() = default;
 
@@ -457,9 +460,7 @@ QModelIndex QgsAttributesFormModel::parent( const QModelIndex &index ) const
   QgsAttributesFormItem *childItem = itemForIndex( index );
   QgsAttributesFormItem *parentItem = childItem ? childItem->parent() : nullptr;
 
-  return ( parentItem != mRootItem.get() && parentItem != nullptr )
-           ? createIndex( parentItem->row(), 0, parentItem )
-           : QModelIndex();
+  return ( parentItem != mRootItem.get() && parentItem != nullptr ) ? createIndex( parentItem->row(), 0, parentItem ) : QModelIndex();
 }
 
 QModelIndex QgsAttributesFormModel::firstTopMatchingModelIndex( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId ) const
@@ -523,8 +524,7 @@ void QgsAttributesFormModel::emitDataChangedRecursively( const QModelIndex &pare
 
 QgsAttributesAvailableWidgetsModel::QgsAttributesAvailableWidgetsModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent )
   : QgsAttributesFormModel( layer, project, parent )
-{
-}
+{}
 
 Qt::ItemFlags QgsAttributesAvailableWidgetsModel::flags( const QModelIndex &index ) const
 {
@@ -838,9 +838,7 @@ QMimeData *QgsAttributesAvailableWidgetsModel::mimeData( const QModelIndexList &
   // Sort indexes since their order reflects selection order
   QModelIndexList sortedIndexes = indexes;
 
-  std::sort( sortedIndexes.begin(), sortedIndexes.end(), [this]( const QModelIndex &a, const QModelIndex &b ) {
-    return indexLessThan( a, b );
-  } );
+  std::sort( sortedIndexes.begin(), sortedIndexes.end(), [this]( const QModelIndex &a, const QModelIndex &b ) { return indexLessThan( a, b ); } );
 
   for ( const QModelIndex &index : std::as_const( sortedIndexes ) )
   {
@@ -910,8 +908,7 @@ QModelIndex QgsAttributesAvailableWidgetsModel::fieldModelIndex( const QString &
 
 QgsAttributesFormLayoutModel::QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent )
   : QgsAttributesFormModel( layer, project, parent )
-{
-}
+{}
 
 QVariant QgsAttributesFormLayoutModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
@@ -1415,9 +1412,7 @@ QMimeData *QgsAttributesFormLayoutModel::mimeData( const QModelIndexList &indexe
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
   // Sort indexes since their order reflects selection order
-  std::sort( curatedIndexes.begin(), curatedIndexes.end(), [this]( const QModelIndex &a, const QModelIndex &b ) {
-    return indexLessThan( a, b );
-  } );
+  std::sort( curatedIndexes.begin(), curatedIndexes.end(), [this]( const QModelIndex &a, const QModelIndex &b ) { return indexLessThan( a, b ); } );
 
   for ( const QModelIndex &index : std::as_const( curatedIndexes ) )
   {
@@ -1742,8 +1737,7 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
 
 QgsAttributesFormProxyModel::QgsAttributesFormProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-{
-}
+{}
 
 void QgsAttributesFormProxyModel::setAttributesFormSourceModel( QgsAttributesFormModel *model )
 {
@@ -1781,14 +1775,16 @@ bool QgsAttributesFormProxyModel::filterAcceptsRow( int sourceRow, const QModelI
     return false;
 
   // If name or alias match, accept it before any other checks
-  if ( sourceIndex.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) || sourceIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+  if ( sourceIndex.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive )
+       || sourceIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
     return true;
 
   // Child is accepted if any of its parents is accepted
   QModelIndex parent = sourceIndex.parent();
   while ( parent.isValid() )
   {
-    if ( parent.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) || parent.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+    if ( parent.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive )
+         || parent.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
       return true;
 
     parent = parent.parent();

@@ -19,12 +19,10 @@ import urllib.request
 
 from qgis.PyQt.QtCore import QSize
 from qgis.testing import unittest
-
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 
 
 class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
-
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
 

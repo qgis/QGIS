@@ -22,13 +22,15 @@
 #include "qgspointcloudlayer.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudattributemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudAttributeModel::QgsPointCloudAttributeModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-
-}
+{}
 
 void QgsPointCloudAttributeModel::setLayer( QgsPointCloudLayer *layer )
 {
@@ -249,7 +251,6 @@ QIcon QgsPointCloudAttributeModel::iconForAttributeType( QgsPointCloudAttribute:
     {
       return QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
     }
-
   }
   return QIcon();
 }
@@ -288,16 +289,16 @@ bool QgsPointCloudAttributeProxyModel::filterAcceptsRow( int source_row, const Q
   if ( !ok )
     return true;
 
-  if ( ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::Char ) ||
-       ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::UChar ) ||
-       ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::Short ) ||
-       ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::UShort ) ||
-       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int32 ) ||
-       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt32 ) ||
-       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int64 ) ||
-       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt64 ) ||
-       ( mFilters.testFlag( Float ) && type == QgsPointCloudAttribute::Float ) ||
-       ( mFilters.testFlag( Double ) && type == QgsPointCloudAttribute::Double ) )
+  if ( ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::Char )
+       || ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::UChar )
+       || ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::Short )
+       || ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::UShort )
+       || ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int32 )
+       || ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt32 )
+       || ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int64 )
+       || ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt64 )
+       || ( mFilters.testFlag( Float ) && type == QgsPointCloudAttribute::Float )
+       || ( mFilters.testFlag( Double ) && type == QgsPointCloudAttribute::Double ) )
     return true;
 
   return false;

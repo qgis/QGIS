@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationMarkerItem, at the specified \a point.
      */
@@ -92,14 +91,12 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
   private:
-
     QgsPoint mPoint;
     std::unique_ptr< QgsMarkerSymbol > mSymbol;
 
 #ifdef SIP_RUN
     QgsAnnotationMarkerItem( const QgsAnnotationMarkerItem &other );
 #endif
-
 };
 
 #endif // QGSANNOTATIONMARKERITEM_H

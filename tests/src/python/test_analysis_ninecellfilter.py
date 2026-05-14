@@ -21,25 +21,22 @@ __copyright__ = "(C) 2025, Alexander Bruy"
 
 import os
 import tempfile
+import unittest
 
-from qgis.core import (
-    QgsRasterChecker,
-)
 from qgis.analysis import (
     QgsAspectFilter,
 )
-
-import unittest
+from qgis.core import (
+    QgsRasterChecker,
+)
 from qgis.testing import QgisTestCase
-
-from utilities import unitTestDataPath, start_app
+from utilities import start_app, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
 class TestInterpolation(QgisTestCase):
-
     def __init__(self, methodName):
         QgisTestCase.__init__(self, methodName)
         self.report = "<h1>Python Raster Analysis nine cell filter Tests</h1>\n"

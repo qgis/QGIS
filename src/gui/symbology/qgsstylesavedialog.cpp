@@ -26,8 +26,11 @@
 
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsstylesavedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity type )
   : QDialog( parent )
@@ -71,7 +74,12 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
 
     case QgsStyle::Symbol3DEntity:
       this->setWindowTitle( tr( "Save New 3D Symbol" ) );
-      possibleEntities << QgsStyle::Symbol3DEntity;
+      possibleEntities << QgsStyle::Symbol3DEntity << QgsStyle::MaterialSettingsEntity;
+      break;
+
+    case QgsStyle::MaterialSettingsEntity:
+      this->setWindowTitle( tr( "Save New Material Settings" ) );
+      possibleEntities << QgsStyle::MaterialSettingsEntity;
       break;
 
     case QgsStyle::TagEntity:
@@ -129,6 +137,10 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
           mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "3D Symbol" ), e );
           break;
 
+        case QgsStyle::MaterialSettingsEntity:
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "Material" ), e );
+          break;
+
         case QgsStyle::TagEntity:
         case QgsStyle::SmartgroupEntity:
           break;
@@ -168,7 +180,11 @@ QgsStyle::StyleEntity QgsStyleSaveDialog::selectedType() const
 
 QgsStyle *QgsStyleSaveDialog::destinationStyle()
 {
-  if ( QgsStyle *style = qobject_cast<QgsStyle *>( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), static_cast<int>( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value<QObject *>() ) )
+  if ( QgsStyle *style = qobject_cast<QgsStyle *>(
+         mComboBoxDestination->model()
+           ->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), static_cast<int>( QgsProjectStyleDatabaseModel::CustomRole::Style ) )
+           .value<QObject *>()
+       ) )
   {
     return style;
   }

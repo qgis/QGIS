@@ -16,6 +16,7 @@
 #ifndef QGS3DSCENEEXPORTER_H
 #define QGS3DSCENEEXPORTER_H
 
+#include "qgis_3d.h"
 #include "qgs3dexportobject.h"
 #include "qgsfeatureid.h"
 
@@ -27,6 +28,8 @@
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QSceneLoader>
+
+#define SIP_NO_FILE
 
 class QgsTessellatedPolygonGeometry;
 class QgsTerrainTileEntity;
@@ -45,7 +48,6 @@ class QgsPoint3DSymbol;
 class QgsMeshEntity;
 class TestQgs3DExporter;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Entity that handles the exporting of 3D scenes.
@@ -78,10 +80,10 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     void parseTerrain( QgsTerrainEntity *terrain, const QString &layer );
 
     /**
-     * Saves the scene to a .obj file
+     * Saves the scene to a file
      * Returns FALSE if the operation failed
      */
-    bool save( const QString &sceneName, const QString &sceneFolderPath, int precision = 6 ) const;
+    bool save( QString sceneName, QString sceneFolderPath, const Qgis::Export3DSceneFormat &exportFormat = Qgis::Export3DSceneFormat::Obj, int precision = 6 ) const;
 
     //! Sets whether the triangles will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
@@ -111,6 +113,24 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     void setScale( float scale ) { mScale = scale; }
     //! Returns the scale of the exported 3D model
     float scale() const { return mScale; }
+
+    /**
+     * Returns whether terrain export is enabled.
+     * It terrain export is disabled, the terrain resolution and terrain texture resolution
+     * parameters have no effect.
+     *
+     * \see setTerrainExportEnabled()
+     * \since QGIS 4.0
+     */
+    bool terrainExportEnabled() const { return mTerrainExportEnabled; }
+
+    /**
+     * Sets whether terrain export is enabled.
+     *
+     * \see terrainExportEnabled()
+     * \since QGIS 4.0
+     */
+    void setTerrainExportEnabled( bool enabled ) { mTerrainExportEnabled = enabled; }
 
   private:
     //! Constructs Qgs3DExportObject from instanced point geometry
@@ -142,6 +162,15 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
 
     QString getObjectName( const QString &name );
 
+    //! Computes the geometric center and appropriate scale factor for the 3D scene to ensure proper export visibility.
+    void getSceneCenterAndScale( QVector3D &center, float &scale ) const;
+
+    //! Exports the 3D scene as an OBJ file. Called internally by saveTo().
+    bool saveObj( QString sceneName, QString sceneFolderPath, int precision ) const;
+
+    //! Exports the 3D scene as an STL file. Called internally by saveTo().
+    bool saveStl( QString sceneName, QString sceneFolderPath, int precision ) const;
+
   private:
     QMap<QString, int> mUsedObjectNamesCounter;
     QVector<Qgs3DExportObject *> mObjects;
@@ -152,6 +181,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     bool mExportTextures = false;
     int mTerrainTextureResolution = 512;
     float mScale = 1.0f;
+    bool mTerrainExportEnabled = true;
 
     QSet<QgsFeatureId> mExportedFeatureIds;
 

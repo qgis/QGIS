@@ -36,9 +36,12 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsvectortilelayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( lyr, canvas, u"VectorTileLayerProperties"_s, parent, flags )
@@ -86,6 +89,8 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
 
   mMapLayerServerPropertiesWidget->setHasWfsTitle( false );
+
+  connect( mMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorTileLayerProperties::openUrl );
 
   // update based on lyr's current state
   syncToLayer();
@@ -153,10 +158,11 @@ void QgsVectorTileLayerProperties::syncToLayer()
   /*
    * Information Tab
    */
-  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
-  // Inject the stylesheet
-  const QString html { mLayer->htmlMetadata().replace( "<head>"_L1, QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
-  mMetadataViewer->setHtml( html );
+  QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( u"body { margin: 10px; }\n "_s );
+  mMetadataViewer->clear();
+  mMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+  mMetadataViewer->setHtml( mLayer->htmlMetadata() );
 
   /*
    * Source

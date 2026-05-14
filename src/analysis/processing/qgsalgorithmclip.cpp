@@ -21,6 +21,10 @@
 #include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsClipAlgorithm::name() const
@@ -65,12 +69,16 @@ void QgsClipAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsClipAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm clips a vector layer using the features of an additional polygon layer. Only the parts of the features "
-                      "in the Input layer that fall within the polygons of the Overlay layer will be added to the resulting layer." )
+  return QObject::tr(
+           "This algorithm clips a vector layer using the features of an additional polygon layer. Only the parts of the features "
+           "in the Input layer that fall within the polygons of the Overlay layer will be added to the resulting layer."
+         )
          + u"\n\n"_s
-         + QObject::tr( "The attributes of the features are not modified, although properties such as area or length of the features will "
-                        "be modified by the clipping operation. If such properties are stored as attributes, those attributes will have to "
-                        "be manually updated." );
+         + QObject::tr(
+           "The attributes of the features are not modified, although properties such as area or length of the features will "
+           "be modified by the clipping operation. If such properties are stored as attributes, those attributes will have to "
+           "be manually updated."
+         );
 }
 
 QString QgsClipAlgorithm::shortDescription() const
@@ -107,7 +115,9 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 
   QString dest;
   const Qgis::GeometryType sinkType = QgsWkbTypes::geometryType( featureSource->wkbType() );
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, featureSource->fields(), QgsWkbTypes::promoteNonPointTypesToMulti( featureSource->wkbType() ), featureSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink(
+    parameterAsSink( parameters, u"OUTPUT"_s, context, dest, featureSource->fields(), QgsWkbTypes::promoteNonPointTypesToMulti( featureSource->wkbType() ), featureSource->sourceCrs() )
+  );
 
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
@@ -133,7 +143,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   QgsGeometry combinedClipGeom;
   if ( clipGeoms.length() > 1 )
   {
-    combinedClipGeom = QgsGeometry::unaryUnion( clipGeoms );
+    combinedClipGeom = QgsGeometry::unaryUnion( clipGeoms, QgsGeometryParameters(), feedback );
     if ( combinedClipGeom.isEmpty() )
     {
       throw QgsProcessingException( QObject::tr( "Could not create the combined clip geometry: %1" ).arg( combinedClipGeom.lastError() ) );
@@ -200,12 +210,12 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       if ( !engine->contains( inputFeature.geometry().constGet() ) )
       {
         const QgsGeometry currentGeometry = inputFeature.geometry();
-        newGeometry = combinedClipGeom.intersection( currentGeometry );
+        newGeometry = combinedClipGeom.intersection( currentGeometry, QgsGeometryParameters(), feedback );
         if ( newGeometry.wkbType() == Qgis::WkbType::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == Qgis::WkbType::GeometryCollection )
         {
-          const QgsGeometry intCom = inputFeature.geometry().combine( newGeometry );
-          const QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry );
-          newGeometry = intCom.difference( intSym );
+          const QgsGeometry intCom = inputFeature.geometry().combine( newGeometry, QgsGeometryParameters(), feedback );
+          const QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry, QgsGeometryParameters(), feedback );
+          newGeometry = intCom.difference( intSym, QgsGeometryParameters(), feedback );
         }
       }
       else

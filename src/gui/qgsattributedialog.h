@@ -52,7 +52,14 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
      * \param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+    QgsAttributeDialog(
+      QgsVectorLayer *vl,
+      QgsFeature *thepFeature,
+      bool featureOwner,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      bool showDialogButtons = true,
+      const QgsAttributeEditorContext &context = QgsAttributeEditorContext()
+    );
 
     ~QgsAttributeDialog() override;
 
@@ -129,7 +136,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
     QgsHighlight *mHighlight = nullptr;
     QString mReturnvarname;
     QgsAttributeForm *mAttributeForm = nullptr;
-    QgsFeature *mOwnedFeature = nullptr;
+    std::unique_ptr<QgsFeature> mOwnedFeature;
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;

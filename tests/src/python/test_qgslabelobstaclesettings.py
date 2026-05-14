@@ -11,6 +11,8 @@ __date__ = "2019-12-07"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsExpressionContext,
     QgsExpressionContextScope,
@@ -20,14 +22,12 @@ from qgis.core import (
     QgsProperty,
     QgsPropertyCollection,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLabelObstacleSettings(QgisTestCase):
-
     def test_obstacle_settings(self):
         """
         Test obstacle settings

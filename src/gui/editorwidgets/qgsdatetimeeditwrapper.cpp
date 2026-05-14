@@ -26,16 +26,18 @@
 #include <QCalendarWidget>
 #include <QDateEdit>
 #include <QDateTimeEdit>
+#include <QString>
 #include <QTextCharFormat>
 #include <QTimeEdit>
 
 #include "moc_qgsdatetimeeditwrapper.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 QWidget *QgsDateTimeEditWrapper::createWidget( QWidget *parent )
 {
@@ -90,9 +92,13 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. "
-                                   "For that the QGIS custom widget QgsDateTimeEdit needs to be used." ),
-                               tr( "field widgets" ) );
+    QgsMessageLog::logMessage(
+      tr(
+        "The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. "
+        "For that the QGIS custom widget QgsDateTimeEdit needs to be used."
+      ),
+      tr( "field widgets" )
+    );
   }
 
   if ( mQgsDateTimeEdit )

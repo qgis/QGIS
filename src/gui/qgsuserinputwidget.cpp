@@ -16,8 +16,11 @@
 #include "qgsuserinputwidget.h"
 
 #include <QFrame>
+#include <QString>
 
 #include "moc_qgsuserinputwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUserInputWidget::QgsUserInputWidget( QWidget *parent )
   : QgsFloatingWidget( parent ? parent->window() : nullptr )

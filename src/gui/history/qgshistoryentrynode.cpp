@@ -42,8 +42,7 @@ bool QgsHistoryEntryNode::doubleClicked( const QgsHistoryWidgetContext & )
 }
 
 void QgsHistoryEntryNode::populateContextMenu( QMenu *, const QgsHistoryWidgetContext & )
-{
-}
+{}
 
 bool QgsHistoryEntryNode::matchesString( const QString &string ) const
 {
@@ -87,9 +86,7 @@ int QgsHistoryEntryGroup::indexOf( QgsHistoryEntryNode *child ) const
   if ( child->mParent != this )
     return -1;
 
-  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsHistoryEntryNode> &p ) {
-    return p.get() == child;
-  } );
+  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsHistoryEntryNode> &p ) { return p.get() == child; } );
   if ( it != mChildren.end() )
     return static_cast<int>( std::distance( mChildren.begin(), it ) );
   return -1;

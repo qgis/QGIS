@@ -18,13 +18,14 @@
 #ifndef QGSDXFPAINTENGINE_H
 #define QGSDXFPAINTENGINE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgsabstractgeometry.h"
 
 #include <QPaintEngine>
 #include <QPainterPath>
+
+#define SIP_NO_FILE
 
 class QgsPoint;
 class QgsDxfExport;
@@ -38,7 +39,7 @@ class QgsDxfPaintDevice;
  * \brief Custom paint engine for rendering to DXF drawings.
 */
 
-class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
+class CORE_EXPORT QgsDxfPaintEngine : public QPaintEngine
 {
   public:
     QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxfExport *dxf );

@@ -23,11 +23,14 @@
 #include "qgswmsprovider.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgswmsnewconnection.cpp"
 
-QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName )
-  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, u"WMS"_s, connName )
+using namespace Qt::StringLiterals;
+
+QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName, QgsNewHttpConnection::Flags flags )
+  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, u"WMS"_s, connName, flags )
 {
   connect( wmsFormatDetectButton(), &QPushButton::clicked, this, &QgsWmsNewConnection::detectFormat );
   initWmsSpecificSettings();
@@ -44,11 +47,7 @@ void QgsWmsNewConnection::detectFormat()
 
   if ( !res )
   {
-    QMessageBox::warning(
-      this,
-      tr( "WMS Provider" ),
-      capDownload.lastError()
-    );
+    QMessageBox::warning( this, tr( "WMS Provider" ), capDownload.lastError() );
     return;
   }
 

@@ -21,6 +21,8 @@
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * Unit tests for QgsCopyFileTask
@@ -43,12 +45,10 @@ class TestQgsCopyFileTask : public QObject
 
 
 void TestQgsCopyFileTask::initTestCase()
-{
-}
+{}
 
 void TestQgsCopyFileTask::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsCopyFileTask::testCopy()
 {

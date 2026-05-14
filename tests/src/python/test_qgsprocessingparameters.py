@@ -10,30 +10,25 @@ __author__ = "David Marteau"
 __date__ = "2020-09"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
+import unittest
+
 from processing.core.Processing import Processing
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsApplication,
     QgsProcessingParameterGeometry,
     QgsSettings,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsProcessingParameters(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsProcessingParameters.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsProcessingParameters")
-        QgsSettings().clear()
         Processing.initialize()
         cls.registry = QgsApplication.instance().processingRegistry()
 

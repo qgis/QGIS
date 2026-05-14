@@ -25,6 +25,8 @@
 #include <QStringList>
 #include <QTemporaryDir>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -46,7 +48,8 @@ class TestQgsPdalProvider : public QgsTest
 
   public:
     TestQgsPdalProvider()
-      : QgsTest( u"PDAL Provider Tests"_s ) {}
+      : QgsTest( u"PDAL Provider Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -194,11 +197,7 @@ void TestQgsPdalProvider::querySublayers()
 void TestQgsPdalProvider::brokenPath()
 {
   // test loading a bad layer URI
-  auto layer = std::make_unique<QgsPointCloudLayer>(
-    u"not valid"_s,
-    u"layer"_s,
-    u"pdal"_s
-  );
+  auto layer = std::make_unique<QgsPointCloudLayer>( u"not valid"_s, u"layer"_s, u"pdal"_s );
   QVERIFY( !layer->isValid() );
 }
 
@@ -207,12 +206,7 @@ void TestQgsPdalProvider::validLayer()
   QgsPointCloudLayer::LayerOptions options;
   options.skipIndexGeneration = true;
 
-  auto layer = std::make_unique<QgsPointCloudLayer>(
-    mTestDataDir + u"point_clouds/las/cloud.las"_s,
-    u"layer"_s,
-    u"pdal"_s,
-    options
-  );
+  auto layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + u"point_clouds/las/cloud.las"_s, u"layer"_s, u"pdal"_s, options );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), u"EPSG:28356"_s );
@@ -231,12 +225,7 @@ void TestQgsPdalProvider::testTextReader()
   QgsPointCloudLayer::LayerOptions options;
   options.skipIndexGeneration = true;
 
-  auto layer = std::make_unique<QgsPointCloudLayer>(
-    mTestDataDir + u"point_clouds/text/cloud.txt"_s,
-    u"layer"_s,
-    u"pdal"_s,
-    options
-  );
+  auto layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + u"point_clouds/text/cloud.txt"_s, u"layer"_s, u"pdal"_s, options );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), "" );

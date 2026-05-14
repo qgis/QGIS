@@ -33,11 +33,7 @@ class QgsHanaNewConnection : public QDialog, private Ui::QgsHanaNewConnectionBas
     Q_OBJECT
   public:
     //! Constructor
-    QgsHanaNewConnection(
-      QWidget *parent = nullptr,
-      const QString &connName = QString(),
-      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags
-    );
+    QgsHanaNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     void resizeEvent( QResizeEvent *ev ) override;
 

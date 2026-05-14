@@ -15,11 +15,14 @@
 
 #include "qgsbillboardgeometry.h"
 
+#include <QString>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
 #include "moc_qgsbillboardgeometry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   : QGeometry( parent )
@@ -194,8 +197,7 @@ struct BillboardVertexWithPixelOffset : BillboardVertex
 };
 #pragma pack( pop )
 
-template<typename VertexType>
-QByteArray createVertexBuffer( const QVector<QgsBillboardGeometry::BillboardAtlasData> &billboards )
+template<typename VertexType> QByteArray createVertexBuffer( const QVector<QgsBillboardGeometry::BillboardAtlasData> &billboards )
 {
   QByteArray buffer;
   buffer.resize( billboards.size() * sizeof( VertexType ) );

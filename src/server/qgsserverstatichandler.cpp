@@ -20,6 +20,9 @@
 
 #include <QFile>
 #include <QMimeDatabase>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsServerStaticHandler::QgsServerStaticHandler( const QString &pathRegExp, const QString &staticPathSuffix )
   : mPathRegExp( pathRegExp )

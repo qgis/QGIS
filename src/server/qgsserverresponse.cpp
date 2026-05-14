@@ -22,6 +22,10 @@
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsServerResponse::write( const QString &data )
 {
   QIODevice *iodev = io();
@@ -66,12 +70,10 @@ qint64 QgsServerResponse::write( const char *data )
 }
 
 void QgsServerResponse::finish()
-{
-}
+{}
 
 void QgsServerResponse::flush()
-{
-}
+{}
 
 qint64 QgsServerResponse::write( const std::string data )
 {

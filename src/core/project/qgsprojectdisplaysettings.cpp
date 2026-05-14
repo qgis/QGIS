@@ -24,8 +24,11 @@
 #include "qgsproject.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojectdisplaysettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectDisplaySettings::QgsProjectDisplaySettings( QObject *parent )
   : QObject( parent )
@@ -237,13 +240,13 @@ QDomElement QgsProjectDisplaySettings::writeXml( QDomDocument &doc, const QgsRea
   QDomElement element = doc.createElement( u"ProjectDisplaySettings"_s );
 
   {
-    QDomElement bearingElement =  doc.createElement( u"BearingFormat"_s );
+    QDomElement bearingElement = doc.createElement( u"BearingFormat"_s );
     mBearingFormat->writeXml( bearingElement, doc, context );
     element.appendChild( bearingElement );
   }
 
   {
-    QDomElement geographicElement =  doc.createElement( u"GeographicCoordinateFormat"_s );
+    QDomElement geographicElement = doc.createElement( u"GeographicCoordinateFormat"_s );
     mGeographicCoordinateFormat->writeXml( geographicElement, doc, context );
     element.appendChild( geographicElement );
   }

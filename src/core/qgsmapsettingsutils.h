@@ -24,6 +24,7 @@
 #include <QString>
 
 class QgsMapSettings;
+class QgsRectangle;
 
 /**
  * \ingroup core
@@ -31,9 +32,7 @@ class QgsMapSettings;
  */
 class CORE_EXPORT QgsMapSettingsUtils
 {
-
   public:
-
     /**
      * Flags for controlling the behavior of containsAdvancedEffects()
      * \since QGIS 3.14
@@ -71,6 +70,19 @@ class CORE_EXPORT QgsMapSettingsUtils
      */
     static QString worldFileContent( const QgsMapSettings &mapSettings );
 
+    /**
+     * Returns TRUE if an \a extent is a valid extent which can be used
+     * by QgsMapSettings.
+     *
+     * An extent will be considered invalid if it:
+     *
+     * - is empty
+     * - is non-finite
+     * - is so small it can't be accurately represented using double precision values
+     *
+     * \since QGIS 4.0
+     */
+    static bool isValidExtent( const QgsRectangle &extent );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettingsUtils::EffectsCheckFlags )

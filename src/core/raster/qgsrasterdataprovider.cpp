@@ -26,6 +26,7 @@
 #include <QByteArray>
 #include <QMap>
 #include <QSet>
+#include <QString>
 #include <QTime>
 #include <QUrl>
 #include <QUrlQuery>
@@ -33,7 +34,9 @@
 
 #include "moc_qgsrasterdataprovider.cpp"
 
-#define ERR(message) QgsError(message, "Raster provider")
+using namespace Qt::StringLiterals;
+
+#define ERR( message ) QgsError( message, "Raster provider" )
 
 void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
 {
@@ -41,7 +44,7 @@ void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
 
   if ( mUseSrcNoDataValue.size() < bandNo )
   {
-    for ( int i = mUseSrcNoDataValue.size(); i < bandNo; i++ )
+    for ( qsizetype i = mUseSrcNoDataValue.size(); i < bandNo; i++ )
     {
       mUseSrcNoDataValue.append( false );
     }
@@ -49,7 +52,7 @@ void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
   mUseSrcNoDataValue[bandNo - 1] = use;
 }
 
-QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle const &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -93,8 +96,10 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     providerYRes = extent().height() / ySize();
     tmpXRes = std::max( providerXRes, xRes );
     tmpYRes = std::max( providerYRes, yRes );
-    if ( qgsDoubleNear( tmpXRes, xRes ) ) tmpXRes = xRes;
-    if ( qgsDoubleNear( tmpYRes, yRes ) ) tmpYRes = yRes;
+    if ( qgsDoubleNear( tmpXRes, xRes ) )
+      tmpXRes = xRes;
+    if ( qgsDoubleNear( tmpYRes, yRes ) )
+      tmpYRes = yRes;
   }
   else
   {
@@ -102,8 +107,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     tmpYRes = yRes;
   }
 
-  if ( tmpExtent != boundingBox ||
-       tmpXRes > xRes || tmpYRes > yRes )
+  if ( tmpExtent != boundingBox || tmpXRes > xRes || tmpYRes > yRes )
   {
     // Read smaller extent or lower resolution
 
@@ -121,8 +125,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
     QgsDebugMsgLevel( u"fromRow = %1 toRow = %2 fromCol = %3 toCol = %4"_s.arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ), 4 );
 
-    if ( fromRow < 0 || fromRow >= height || toRow < 0 || toRow >= height ||
-         fromCol < 0 || fromCol >= width || toCol < 0 || toCol >= width )
+    if ( fromRow < 0 || fromRow >= height || toRow < 0 || toRow >= height || fromCol < 0 || fromCol >= width || toCol < 0 || toCol >= width )
     {
       // Should not happen
       QgsDebugError( u"Row or column limits out of range"_s );
@@ -163,8 +166,11 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
     if ( !readBlock( bandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback ) )
     {
-      QgsDebugError( u"Error occurred while reading block"_s );
-      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        QgsDebugError( u"Error occurred while reading block"_s );
+        block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+      }
       block->setValid( false );
       block->setIsNoData();
       return block.release();
@@ -219,9 +225,12 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   {
     if ( !readBlock( bandNo, boundingBox, width, height, block->bits(), feedback ) )
     {
-      QgsDebugError( u"Error occurred while reading block"_s );
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        QgsDebugError( u"Error occurred while reading block"_s );
+        block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+      }
       block->setIsNoData();
-      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
       block->setValid( false );
       return block.release();
     }
@@ -239,18 +248,14 @@ QgsRasterDataProvider::QgsRasterDataProvider()
   , QgsRasterInterface( nullptr )
   , mTemporalCapabilities( std::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
   , mElevationProperties( std::make_unique< QgsRasterDataProviderElevationProperties >() )
-{
+{}
 
-}
-
-QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options,
-    Qgis::DataProviderReadFlags flags )
+QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , QgsRasterInterface( nullptr )
   , mTemporalCapabilities( std::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
   , mElevationProperties( std::make_unique< QgsRasterDataProviderElevationProperties >() )
-{
-}
+{}
 
 Qgis::RasterProviderCapabilities QgsRasterDataProvider::providerCapabilities() const
 {
@@ -326,9 +331,8 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
     if ( bandBlock )
     {
       const double value = bandBlock->value( 0 );
-      if ( ( sourceHasNoDataValue( bandNumber ) && useSourceNoDataValue( bandNumber ) &&
-             ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( bandNumber ) ) ) ) ||
-           ( QgsRasterRange::contains( value, userNoDataValues( bandNumber ) ) ) )
+      if ( ( sourceHasNoDataValue( bandNumber ) && useSourceNoDataValue( bandNumber ) && ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( bandNumber ) ) ) )
+           || ( QgsRasterRange::contains( value, userNoDataValues( bandNumber ) ) ) )
       {
         results.insert( bandNumber, QVariant() ); // null QVariant represents no data
       }
@@ -345,8 +349,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
   return QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat::Value, results );
 }
 
-double QgsRasterDataProvider::sample( const QgsPointXY &point, int band,
-                                      bool *ok, const QgsRectangle &boundingBox, int width, int height, int dpi )
+double QgsRasterDataProvider::sample( const QgsPointXY &point, int band, bool *ok, const QgsRectangle &boundingBox, int width, int height, int dpi )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -422,14 +425,8 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
   if ( mUserNoDataValue[bandNo - 1] != noData )
   {
     // Clear statistics
-    mStatistics.erase( std::remove_if( mStatistics.begin(), mStatistics.end(), [bandNo]( const QgsRasterBandStats & stats )
-    {
-      return stats.bandNumber == bandNo;
-    } ), mStatistics.end() );
-    mHistograms.erase( std::remove_if( mHistograms.begin(), mHistograms.end(), [bandNo]( const QgsRasterHistogram & histogram )
-    {
-      return histogram.bandNumber == bandNo;
-    } ), mHistograms.end() );
+    mStatistics.erase( std::remove_if( mStatistics.begin(), mStatistics.end(), [bandNo]( const QgsRasterBandStats &stats ) { return stats.bandNumber == bandNo; } ), mStatistics.end() );
+    mHistograms.erase( std::remove_if( mHistograms.begin(), mHistograms.end(), [bandNo]( const QgsRasterHistogram &histogram ) { return histogram.bandNumber == bandNo; } ), mHistograms.end() );
     mUserNoDataValue[bandNo - 1] = noData;
   }
 }
@@ -462,19 +459,20 @@ const QgsRasterDataProviderElevationProperties *QgsRasterDataProvider::elevation
   return mElevationProperties.get();
 }
 
-QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey,
-    const QString &uri,
-    const QString &format, int nBands,
-    Qgis::DataType type,
-    int width, int height, double *geoTransform,
-    const QgsCoordinateReferenceSystem &crs,
-    const QStringList &creationOptions )
+QgsRasterDataProvider *QgsRasterDataProvider::create(
+  const QString &providerKey,
+  const QString &uri,
+  const QString &format,
+  int nBands,
+  Qgis::DataType type,
+  int width,
+  int height,
+  double *geoTransform,
+  const QgsCoordinateReferenceSystem &crs,
+  const QStringList &creationOptions
+)
 {
-  QgsRasterDataProvider *ret = QgsProviderRegistry::instance()->createRasterDataProvider(
-                                 providerKey,
-                                 uri, format,
-                                 nBands, type, width,
-                                 height, geoTransform, crs, creationOptions );
+  QgsRasterDataProvider *ret = QgsProviderRegistry::instance()->createRasterDataProvider( providerKey, uri, format, nBands, type, width, height, geoTransform, crs, creationOptions );
   if ( !ret )
   {
     QgsDebugError( "Cannot resolve 'createRasterDataProviderFunction' function in " + providerKey + " provider" );
@@ -639,7 +637,7 @@ static Qgis::RasterResamplingMethod resamplingMethodFromString( const QString &s
   {
     return Qgis::RasterResamplingMethod::Gauss;
   }
-  return  Qgis::RasterResamplingMethod::Nearest;
+  return Qgis::RasterResamplingMethod::Nearest;
 }
 
 void QgsRasterDataProvider::readXml( const QDomElement &filterElem )
@@ -696,17 +694,13 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
   QDomElement resamplingElement = doc.createElement( u"resampling"_s );
   providerElement.appendChild( resamplingElement );
 
-  resamplingElement.setAttribute( u"enabled"_s,
-                                  mProviderResamplingEnabled ? u"true"_s :  u"false"_s );
+  resamplingElement.setAttribute( u"enabled"_s, mProviderResamplingEnabled ? u"true"_s : u"false"_s );
 
-  resamplingElement.setAttribute( u"zoomedInResamplingMethod"_s,
-                                  resamplingMethodToString( mZoomedInResamplingMethod ) );
+  resamplingElement.setAttribute( u"zoomedInResamplingMethod"_s, resamplingMethodToString( mZoomedInResamplingMethod ) );
 
-  resamplingElement.setAttribute( u"zoomedOutResamplingMethod"_s,
-                                  resamplingMethodToString( mZoomedOutResamplingMethod ) );
+  resamplingElement.setAttribute( u"zoomedOutResamplingMethod"_s, resamplingMethodToString( mZoomedOutResamplingMethod ) );
 
-  resamplingElement.setAttribute( u"maxOversampling"_s,
-                                  QString::number( mMaxOversampling ) );
+  resamplingElement.setAttribute( u"maxOversampling"_s, QString::number( mMaxOversampling ) );
 }
 
 QgsRasterAttributeTable *QgsRasterDataProvider::attributeTable( int bandNumber ) const
@@ -729,7 +723,7 @@ void QgsRasterDataProvider::setAttributeTable( int bandNumber, QgsRasterAttribut
 
   if ( attributeTable )
   {
-    mAttributeTables[ bandNumber ] = std::unique_ptr<QgsRasterAttributeTable>( attributeTable );
+    mAttributeTables[bandNumber] = std::unique_ptr<QgsRasterAttributeTable>( attributeTable );
   }
   else
   {
@@ -752,7 +746,7 @@ bool QgsRasterDataProvider::writeFileBasedAttributeTable( int bandNumber, const 
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsRasterAttributeTable *rat { attributeTable( bandNumber ) };
-  if ( ! rat )
+  if ( !rat )
   {
     if ( errorMessage )
     {
@@ -797,7 +791,7 @@ bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const Q
   }
 }
 
-bool QgsRasterDataProvider::writeNativeAttributeTable( QString *errorMessage )  //#spellok
+bool QgsRasterDataProvider::writeNativeAttributeTable( QString *errorMessage ) //#spellok
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -812,7 +806,7 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
   return colorName( colorInterpretation( bandNo ) );
 }
 
-QString QgsRasterDataProvider::colorName( Qgis::RasterColorInterpretation colorInterpretation ) const
+QString QgsRasterDataProvider::colorName( Qgis::RasterColorInterpretation colorInterpretation )
 {
   // Modified copy from GDAL
   switch ( colorInterpretation )
@@ -931,75 +925,84 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   const QUrlQuery query( url.query() );
   VirtualRasterParameters components;
 
-  if ( ! query.hasQueryItem( u"crs"_s ) )
+  if ( !query.hasQueryItem( u"crs"_s ) )
   {
     QgsDebugError( "crs is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
-  if ( ! components.crs.createFromString( query.queryItemValue( u"crs"_s ) ) )
+  if ( !components.crs.createFromString( query.queryItemValue( u"crs"_s ) ) )
   {
     QgsDebugError( "failed to create crs" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
 
 
-  if ( ! query.hasQueryItem( u"extent"_s ) )
+  if ( !query.hasQueryItem( u"extent"_s ) )
   {
     QgsDebugError( "extent is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   QStringList pointValuesList = query.queryItemValue( u"extent"_s ).split( ',' );
   if ( pointValuesList.size() != 4 )
   {
     QgsDebugError( "the extent is not correct" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
-  components.extent = QgsRectangle( pointValuesList.at( 0 ).toDouble(), pointValuesList.at( 1 ).toDouble(),
-                                    pointValuesList.at( 2 ).toDouble(), pointValuesList.at( 3 ).toDouble() );
+  components.extent = QgsRectangle( pointValuesList.at( 0 ).toDouble(), pointValuesList.at( 1 ).toDouble(), pointValuesList.at( 2 ).toDouble(), pointValuesList.at( 3 ).toDouble() );
 
-  if ( ! query.hasQueryItem( u"width"_s ) )
+  if ( !query.hasQueryItem( u"width"_s ) )
   {
     QgsDebugError( "width is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   bool flagW;
-  components.width = query.queryItemValue( u"width"_s ).toInt( & flagW );
-  if ( !flagW ||  components.width < 0 )
+  components.width = query.queryItemValue( u"width"_s ).toInt( &flagW );
+  if ( !flagW || components.width < 0 )
   {
     QgsDebugError( "invalid or negative width input" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
 
-  if ( ! query.hasQueryItem( u"height"_s ) )
+  if ( !query.hasQueryItem( u"height"_s ) )
   {
     QgsDebugError( "height is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   bool flagH;
-  components.height = query.queryItemValue( u"height"_s ).toInt( & flagH );
-  if ( !flagH ||  components.height < 0 )
+  components.height = query.queryItemValue( u"height"_s ).toInt( &flagH );
+  if ( !flagH || components.height < 0 )
   {
     QgsDebugError( "invalid or negative width input" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
 
-  if ( ! query.hasQueryItem( u"formula"_s ) )
+  if ( !query.hasQueryItem( u"formula"_s ) )
   {
     QgsDebugError( "formula is missing" );
-    if ( ok ) *ok = false;
+    if ( ok )
+      *ok = false;
     return components;
   }
   components.formula = query.queryItemValue( u"formula"_s );
 
-  for ( const auto &item : query.queryItems() )
+  const QList<std::pair<QString, QString> > &queryItems { query.queryItems() };
+  for ( const auto &item : std::as_const( queryItems ) )
   {
     if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == ":uri"_L1 ) )
     {
@@ -1014,15 +1017,16 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
     if ( rLayer.uri.isNull() || rLayer.provider.isNull() )
     {
       QgsDebugError( "One or more raster information are missing" );
-      if ( ok ) *ok = false;
+      if ( ok )
+        *ok = false;
       return components;
     }
 
-    components.rInputLayers.append( rLayer ) ;
-
+    components.rInputLayers.append( rLayer );
   }
 
-  if ( ok ) *ok = true;
+  if ( ok )
+    *ok = true;
   return components;
 }
 
@@ -1036,10 +1040,11 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
     query.addQueryItem( u"crs"_s, parts.crs.authid() );
   }
 
-  if ( ! parts.extent.isNull() )
+  if ( !parts.extent.isNull() )
   {
-    QString rect = QString( "%1,%2,%3,%4" ).arg( qgsDoubleToString( parts.extent.xMinimum() ), qgsDoubleToString( parts.extent.yMinimum() ),
-                   qgsDoubleToString( parts.extent.xMaximum() ), qgsDoubleToString( parts.extent.yMaximum() ) );
+    QString rect
+      = QString( "%1,%2,%3,%4" )
+          .arg( qgsDoubleToString( parts.extent.xMinimum() ), qgsDoubleToString( parts.extent.yMinimum() ), qgsDoubleToString( parts.extent.xMaximum() ), qgsDoubleToString( parts.extent.yMaximum() ) );
 
     query.addQueryItem( u"extent"_s, rect );
   }
@@ -1050,7 +1055,7 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
 
   query.addQueryItem( u"formula"_s, parts.formula );
 
-  if ( ! parts.rInputLayers.isEmpty() )
+  if ( !parts.rInputLayers.isEmpty() )
   {
     for ( const auto &it : parts.rInputLayers )
     {

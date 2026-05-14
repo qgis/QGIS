@@ -23,6 +23,9 @@
 #include "qgstest.h"
 
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 static QString _tempFile( const QString &name )
 {
@@ -51,10 +54,7 @@ class TestAlignRaster : public QgsTest
       QgsApplication::init(); // needed for CRS database
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void testRasterInfo()
     {

@@ -12,13 +12,13 @@ __copyright__ = "Copyright 2012, The QGIS Project"
 
 
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.testing import QgisTestCase, start_app
 
 QGISAPP = start_app()
 
 
 class TestPyQgsApplication(QgisTestCase):
-
     def testInvalidThemeName(self):
         """Check using an invalid theme will fallback to  'default'"""
         QGISAPP.setUITheme("fooobar")

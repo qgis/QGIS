@@ -24,12 +24,15 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewnocrsindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewNoCrsIndicatorProvider::QgsLayerTreeViewNoCrsIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewNoCrsIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {

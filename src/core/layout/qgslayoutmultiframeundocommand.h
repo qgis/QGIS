@@ -38,10 +38,9 @@ SIP_NO_FILE
  * the item deletion command.
  *
 */
-class CORE_EXPORT QgsLayoutMultiFrameUndoCommand: public QgsAbstractLayoutUndoCommand
+class CORE_EXPORT QgsLayoutMultiFrameUndoCommand : public QgsAbstractLayoutUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsLayoutMultiFrameUndoCommand.
      * \param item associated layout item
@@ -65,18 +64,15 @@ class CORE_EXPORT QgsLayoutMultiFrameUndoCommand: public QgsAbstractLayoutUndoCo
     QString multiFrameUuid() const;
 
   protected:
-
     void saveState( QDomDocument &stateDoc ) const override;
     void restoreState( QDomDocument &stateDoc ) override;
 
     virtual QgsLayoutMultiFrame *recreateItem( int itemType, QgsLayout *layout ) SIP_FACTORY;
 
   private:
-
     QString mFrameUuid;
     QgsLayout *mLayout = nullptr;
     int mItemType = 0;
-
 };
 
 /**
@@ -88,10 +84,9 @@ class CORE_EXPORT QgsLayoutMultiFrameUndoCommand: public QgsAbstractLayoutUndoCo
  * the associated layout multiframe is deleted and removed from the layout.
  *
 */
-class CORE_EXPORT QgsLayoutMultiFrameDeleteUndoCommand: public QgsLayoutMultiFrameUndoCommand
+class CORE_EXPORT QgsLayoutMultiFrameDeleteUndoCommand : public QgsLayoutMultiFrameUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsLayoutMultiFrameDeleteUndoCommand.
      * \param item associated layout item
@@ -102,7 +97,6 @@ class CORE_EXPORT QgsLayoutMultiFrameDeleteUndoCommand: public QgsLayoutMultiFra
     QgsLayoutMultiFrameDeleteUndoCommand( QgsLayoutMultiFrame *frame, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
     bool mergeWith( const QUndoCommand *command ) override;
     void redo() override;
-
 };
 
 
@@ -115,10 +109,9 @@ class CORE_EXPORT QgsLayoutMultiFrameDeleteUndoCommand: public QgsLayoutMultiFra
  * the associated layout multiframe is recreated and added to the layout.
  *
 */
-class CORE_EXPORT QgsLayoutMultiFrameAddItemCommand: public QgsLayoutMultiFrameUndoCommand
+class CORE_EXPORT QgsLayoutMultiFrameAddItemCommand : public QgsLayoutMultiFrameUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsLayoutMultiFrameAddItemCommand.
      * \param item associated layout item
@@ -130,7 +123,6 @@ class CORE_EXPORT QgsLayoutMultiFrameAddItemCommand: public QgsLayoutMultiFrameU
     bool containsChange() const override;
     bool mergeWith( const QUndoCommand *command ) override;
     void undo() override;
-
 };
 
 ///@endcond

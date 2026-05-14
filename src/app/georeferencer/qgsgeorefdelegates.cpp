@@ -24,14 +24,16 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgsgeorefdelegates.cpp"
+
+using namespace Qt::StringLiterals;
 
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
 QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsDmsAndDdDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & /*index*/ ) const
 {
@@ -88,8 +90,7 @@ double QgsDmsAndDdDelegate::dmsToDD( const QString &dms ) const
 // ---------------------------- QgsCoordDelegate --------------------------- //
 QgsCoordDelegate::QgsCoordDelegate( QWidget *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & /*index*/ ) const
 {

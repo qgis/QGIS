@@ -31,7 +31,6 @@ not projected coordinates are formatted to degree based formats.
 #include "qgscoordinateformatter.h"
 %End
   public:
-
     enum Format /BaseType=IntEnum/
     {
       FormatPair,
@@ -78,7 +77,7 @@ Optional ``flags`` can be specified to control the output format.
 .. seealso:: :py:func:`formatX`
 %End
 
-    static QString format( const QgsPointXY &point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
+    static QString format( const QgsPointXY &point, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
 %Docstring
 Formats a ``point`` according to the specified parameters.
 
@@ -103,7 +102,7 @@ Since QGIS 3.26 the optional ``order`` argument can be used to control
 the order of the coordinates.
 %End
 
-    static QChar separator( );
+    static QChar separator();
 %Docstring
 Returns the character used as X/Y separator, this is a `,` on locales
 that do not use `,` as decimal separator, it is a space otherwise.

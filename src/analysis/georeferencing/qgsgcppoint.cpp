@@ -19,13 +19,16 @@
 #include "qgsexception.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGcpPoint::QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled )
   : mSourcePoint( sourcePoint )
   , mDestinationPoint( destinationPoint )
   , mDestinationCrs( destinationPointCrs )
   , mEnabled( enabled )
-{
-}
+{}
 
 QgsCoordinateReferenceSystem QgsGcpPoint::destinationPointCrs() const
 {

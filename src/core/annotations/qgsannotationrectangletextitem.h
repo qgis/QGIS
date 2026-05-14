@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationRectItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationRectangleTextItem, containing the specified \a text
      * within the specified \a bounds rectangle.
@@ -132,11 +131,9 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationRectItem
     Qgis::RenderUnit marginsUnit() const { return mMarginUnit; }
 
   protected:
-
     void renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback *feedback ) override;
 
   private:
-
     QString mText;
     QgsTextFormat mTextFormat;
     Qt::Alignment mAlignment = Qt::AlignLeft;
@@ -147,6 +144,5 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationRectItem
 #ifdef SIP_RUN
     QgsAnnotationRectangleTextItem( const QgsAnnotationRectangleTextItem &other );
 #endif
-
 };
 #endif // QGSANNOTATIONRECTANGLETEXTITEM_H

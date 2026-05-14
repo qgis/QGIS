@@ -10,25 +10,24 @@ __author__ = "Nathan Woodrow"
 __date__ = "4/11/2012"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
-    QgsFeatureRequest,
-    QgsFields,
     QgsFeature,
+    QgsFeatureRequest,
     QgsField,
+    QgsFields,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
-
     @qgsfunction(1, "testing", register=False)
     def testfun(values, feature, parent):
         """Function help"""
@@ -119,9 +118,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testHelpPythonFunction(self):
         """Test help about python function."""
         QgsExpression.registerFunction(self.help_with_variable)
-        html = (
-            "<h3>function help_with_variable</h3>\n" "The help comes from a variable."
-        )
+        html = "<h3>function help_with_variable</h3>\nThe help comes from a variable."
         self.assertEqual(self.help_with_variable.helpText(), html)
 
         QgsExpression.registerFunction(self.help_with_docstring)

@@ -11,20 +11,20 @@ __date__ = "23/12/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import QgsVectorLayer
 from qgis.gui import (
     QgsGui,
     QgsProviderSourceWidget,
     QgsProviderSourceWidgetProvider,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestSourceWidget(QgsProviderSourceWidget):
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("my_custom_widget")
@@ -37,7 +37,6 @@ class TestSourceWidget(QgsProviderSourceWidget):
 
 
 class TestProvider(QgsProviderSourceWidgetProvider):
-
     def __init__(self, name):
         super().__init__()
         self._name = name
@@ -53,7 +52,6 @@ class TestProvider(QgsProviderSourceWidgetProvider):
 
 
 class TestQgsProviderSourceWidgetProviderRegistry(QgisTestCase):
-
     def testGuiRegistry(self):
         # ensure there is an application instance
         self.assertIsNotNone(QgsGui.sourceWidgetProviderRegistry())

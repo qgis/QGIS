@@ -10,7 +10,7 @@
 
 
 
-class QgsPointCloudRendererPropertiesWidget : QgsMapLayerConfigWidget
+class QgsPointCloudRendererPropertiesWidget : QgsMapLayerConfigWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 A generic widget for setting the 2D renderer for a point cloud layer.
@@ -36,6 +36,8 @@ map canvas and expression contexts.
 
     void syncToLayer( QgsMapLayer *layer ) final;
     void setDockMode( bool dockMode ) final;
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
   public slots:
 

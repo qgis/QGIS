@@ -18,12 +18,13 @@
 #ifndef QGSCOORDINATEUTILS_H
 #define QGSCOORDINATEUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QObject>
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
@@ -43,7 +44,6 @@ class CORE_EXPORT QgsCoordinateUtils
     Q_GADGET
 
   public:
-
     /**
      * Returns the precision to use for displaying coordinates in \a mapCrs to the user.
      * It respects the user's \a project settings.
@@ -127,7 +127,6 @@ class CORE_EXPORT QgsCoordinateUtils
      * \since QGIS 3.26
      */
     Q_INVOKABLE static double degreeToDecimal( const QString &string, bool *ok = nullptr, bool *isEasting = nullptr );
-
 };
 
 

@@ -24,8 +24,7 @@
 QgsLabelSinkProvider::QgsLabelSinkProvider( QgsVectorLayer *layer, const QString &providerId, QgsLabelSink *sink, const QgsPalLayerSettings *settings )
   : QgsVectorLayerLabelProvider( layer, providerId, false, settings )
   , mLabelSink( sink )
-{
-}
+{}
 
 void QgsLabelSinkProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
 {

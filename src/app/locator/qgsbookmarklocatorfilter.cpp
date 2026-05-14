@@ -22,7 +22,11 @@
 #include "qgsfeedback.h"
 #include "qgsstringutils.h"
 
+#include <QString>
+
 #include "moc_qgsbookmarklocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBookmarkLocatorFilter::QgsBookmarkLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

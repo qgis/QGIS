@@ -21,7 +21,11 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolprofilecurvefromfeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolProfileCurveFromFeature::QgsMapToolProfileCurveFromFeature( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

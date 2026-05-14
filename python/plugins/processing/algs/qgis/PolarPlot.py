@@ -27,10 +27,10 @@ from qgis.core import (
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class PolarPlot(QgisAlgorithm):

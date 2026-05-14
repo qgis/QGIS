@@ -20,6 +20,10 @@
 #include "qgsmessagelog.h"
 #include "qgstiles.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVectorTileMatrixSet QgsVectorTileMatrixSet::fromWebMercator( int minimumZoom, int maximumZoom )
 {
   QgsVectorTileMatrixSet res;
@@ -72,11 +76,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
 
     // TODO -- we shouldn't be using z0Dimension here, but rather the actual dimension and properties of
     // this exact LOD
-    QgsTileMatrix tm = QgsTileMatrix::fromCustomDef(
-                         level,
-                         crs,
-                         QgsPointXY( originX, originY ),
-                         z0Dimension );
+    QgsTileMatrix tm = QgsTileMatrix::fromCustomDef( level, crs, QgsPointXY( originX, originY ), z0Dimension );
     tm.setScale( lodMap.value( u"scale"_s ).toDouble() );
     addMatrix( tm );
   }
@@ -100,8 +100,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
     // - I don't want virtual methods in QgsTileMatrixSet and the complexity of handling copies
     //   of matrix sets when there's an inheritance involved
 
-    mTileReplacementFunction = [tileMap]( QgsTileXYZ id, QgsTileXYZ & replacement ) -> Qgis::TileAvailability
-    {
+    mTileReplacementFunction = [tileMap]( QgsTileXYZ id, QgsTileXYZ &replacement ) -> Qgis::TileAvailability {
       /*
        Punch holes in matrix set according to tile map.
        From the ESRI documentation:
@@ -143,7 +142,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
       QVariantList node = tileMap;
       for ( int index = static_cast<int>( bottomToTopQueue.size() ) - 1; index >= 0; --index )
       {
-        const QgsTileXYZ &tile = bottomToTopQueue[ index ];
+        const QgsTileXYZ &tile = bottomToTopQueue[index];
         int childColumn = tile.column() - column;
         int childRow = tile.row() - row;
         int childIndex = 0;
@@ -199,8 +198,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
 
     // we explicitly need to capture a copy of the member variable here
     const QMap< int, QgsTileMatrix > tileMatrices = mTileMatrices;
-    mTileAvailabilityFunction = [this, tileMatrices]( QgsTileXYZ id ) -> Qgis::TileAvailability
-    {
+    mTileAvailabilityFunction = [this, tileMatrices]( QgsTileXYZ id ) -> Qgis::TileAvailability {
       // find zoom level matrix
       const auto it = tileMatrices.constFind( id.zoomLevel() );
       if ( it == tileMatrices.constEnd() )

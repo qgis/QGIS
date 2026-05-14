@@ -22,6 +22,9 @@
 #include <QBuffer>
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class ReplayNmeaConnection : public QgsNmeaConnection
 {
@@ -68,7 +71,8 @@ class TestQgsNmeaConnection : public QgsTest
 
   public:
     TestQgsNmeaConnection()
-      : QgsTest( u"NMEA Connection Tests"_s ) {}
+      : QgsTest( u"NMEA Connection Tests"_s )
+    {}
 
   private slots:
     void initTestCase();

@@ -20,6 +20,10 @@
 #include "qgsabstractreportsection.h"
 #include "qgsmasterlayoutinterface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 // This is not considered stable API - it is exposed to python bindings only for unit testing!
@@ -38,11 +42,9 @@
  */
 class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, public QgsMasterLayoutInterface
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsReport, associated with the specified
      * \a project.
@@ -73,10 +75,8 @@ class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, p
     void nameChanged( const QString &name );
 
   private:
-
     QgsProject *mProject = nullptr;
     QString mName;
-
 };
 
 ///@endcond

@@ -22,6 +22,10 @@
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsCalculateVectorOverlapsAlgorithm::name() const
@@ -72,16 +76,20 @@ QString QgsCalculateVectorOverlapsAlgorithm::svgIconPath() const
 
 QString QgsCalculateVectorOverlapsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the area and percentage cover by which features from an input layer "
-                      "are overlapped by features from a selection of overlay layers.\n\n"
-                      "New attributes are added to the output layer reporting the total area of overlap and percentage of the input feature overlapped "
-                      "by each of the selected overlay layers." );
+  return QObject::tr(
+    "This algorithm calculates the area and percentage cover by which features from an input layer "
+    "are overlapped by features from a selection of overlay layers.\n\n"
+    "New attributes are added to the output layer reporting the total area of overlap and percentage of the input feature overlapped "
+    "by each of the selected overlay layers."
+  );
 }
 
 QString QgsCalculateVectorOverlapsAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the area and percentage cover by which features from an input layer "
-                      "are overlapped by features from a selection of overlay layers." );
+  return QObject::tr(
+    "Calculates the area and percentage cover by which features from an input layer "
+    "are overlapped by features from a selection of overlay layers."
+  );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsCalculateVectorOverlapsAlgorithm::documentationFlags() const
@@ -140,7 +148,14 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
   for ( auto sourceIt = mOverlayerSources.begin(); sourceIt != mOverlayerSources.end(); ++sourceIt, ++nameIt )
   {
     feedback->pushInfo( QObject::tr( "Preparing %1" ).arg( *nameIt ) );
-    const QgsFeatureIterator featureIt = ( *sourceIt )->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( mCrs, context.transformContext() ).setInvalidGeometryCheck( context.invalidGeometryCheck() ).setInvalidGeometryCallback( context.invalidGeometryCallback() ) );
+    const QgsFeatureIterator featureIt = ( *sourceIt )
+                                           ->getFeatures(
+                                             QgsFeatureRequest()
+                                               .setSubsetOfAttributes( QgsAttributeList() )
+                                               .setDestinationCrs( mCrs, context.transformContext() )
+                                               .setInvalidGeometryCheck( context.invalidGeometryCheck() )
+                                               .setInvalidGeometryCallback( context.invalidGeometryCallback() )
+                                           );
     spatialIndices << QgsSpatialIndex( featureIt, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
   }
 
@@ -209,12 +224,12 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
           break;
 
         // dissolve intersecting features, calculate total area of them within our buffer
-        const QgsGeometry overlayDissolved = QgsGeometry::unaryUnion( intersectingGeoms, geometryParameters );
+        const QgsGeometry overlayDissolved = QgsGeometry::unaryUnion( intersectingGeoms, geometryParameters, feedback );
 
         if ( feedback->isCanceled() )
           break;
 
-        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, geometryParameters );
+        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, geometryParameters, feedback );
 
         double overlayArea = 0;
         try

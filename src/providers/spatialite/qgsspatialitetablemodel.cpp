@@ -19,15 +19,16 @@
 
 #include "qgsiconutils.h"
 
+#include <QString>
+
 #include "moc_qgsspatialitetablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
 {
-  mColumns << tr( "Table" )
-           << tr( "Type" )
-           << tr( "Geometry column" )
-           << tr( "SQL" );
+  mColumns << tr( "Table" ) << tr( "Type" ) << tr( "Geometry column" ) << tr( "SQL" );
   setHorizontalHeaderLabels( mColumns );
 }
 
@@ -182,13 +183,11 @@ QIcon QgsSpatiaLiteTableModel::iconForType( Qgis::WkbType type ) const
   {
     return QgsIconUtils::iconPoint();
   }
-  else if ( type == Qgis::WkbType::LineString || type == Qgis::WkbType::LineString25D || type == Qgis::WkbType::MultiLineString
-            || type == Qgis::WkbType::MultiLineString25D )
+  else if ( type == Qgis::WkbType::LineString || type == Qgis::WkbType::LineString25D || type == Qgis::WkbType::MultiLineString || type == Qgis::WkbType::MultiLineString25D )
   {
     return QgsIconUtils::iconLine();
   }
-  else if ( type == Qgis::WkbType::Polygon || type == Qgis::WkbType::Polygon25D || type == Qgis::WkbType::MultiPolygon
-            || type == Qgis::WkbType::MultiPolygon25D )
+  else if ( type == Qgis::WkbType::Polygon || type == Qgis::WkbType::Polygon25D || type == Qgis::WkbType::MultiPolygon || type == Qgis::WkbType::MultiPolygon25D )
   {
     return QgsIconUtils::iconPolygon();
   }

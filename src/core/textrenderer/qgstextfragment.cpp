@@ -18,7 +18,10 @@
 #include "qgsstringutils.h"
 
 #include <QFontMetricsF>
+#include <QString>
 #include <QTextFragment>
+
+using namespace Qt::StringLiterals;
 
 QgsTextFragment::QgsTextFragment( const QString &text, const QgsTextCharacterFormat &format )
   : mText( text != u"\ufffc"_s ? text : QString() )
@@ -30,8 +33,7 @@ QgsTextFragment::QgsTextFragment( const QTextFragment &fragment )
   : mText( fragment.text() != u"\ufffc"_s ? fragment.text() : QString() )
   , mIsImage( fragment.text() == u"\ufffc"_s )
   , mCharFormat( fragment.charFormat() )
-{
-}
+{}
 
 QString QgsTextFragment::text() const
 {
@@ -73,4 +75,3 @@ void QgsTextFragment::applyCapitalization( Qgis::Capitalization capitalization )
 {
   mText = QgsStringUtils::capitalize( mText, capitalization );
 }
-

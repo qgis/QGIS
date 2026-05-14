@@ -31,6 +31,7 @@ class QgsFeatureRequest;
 class QgsMapLayerAction;
 class QgsScrollArea;
 class QgsFieldConditionalFormatWidget;
+class QgsSettingsEntryBool;
 class QgsSettingsEntryVariant;
 
 /**
@@ -80,6 +81,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     };
     Q_ENUM( FeatureListBrowsingAction )
 
+#ifndef SIP_RUN
+
+    /**
+     * Settings entry for whether features are highlighted/flashed in the feature list.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryBool *settingsFeatureListHighlightFeature;
+
+#endif
+
     /**
      * \brief Constructor
      * \param parent  The parent widget
@@ -99,7 +110,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *                   FALSE, limited features can later be loaded using setFilterMode()
      * \param showFirstFeature whether to initially show the first feature form upon initializing the dual view
      */
-    void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), bool loadFeatures = true, bool showFirstFeature = true );
+    void init(
+      QgsVectorLayer *layer,
+      QgsMapCanvas *mapCanvas,
+      const QgsFeatureRequest &request = QgsFeatureRequest(),
+      const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+      bool loadFeatures = true,
+      bool showFirstFeature = true
+    );
 
     /**
      * Change the current view mode.
@@ -343,6 +361,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void tableColumnResized( int column, int width );
 
     void hideColumn();
+
+    void fieldCalculator();
 
     void resizeColumn();
 

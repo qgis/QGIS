@@ -18,9 +18,12 @@
 
 #include "qgis.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPercentageNumericFormat::QgsPercentageNumericFormat()
-{
-}
+{}
 
 QString QgsPercentageNumericFormat::id() const
 {

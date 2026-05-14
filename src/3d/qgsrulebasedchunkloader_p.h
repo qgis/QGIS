@@ -28,7 +28,7 @@
 //
 
 #include "qgs3drendercontext.h"
-#include "qgschunkedentity.h"
+#include "qgsabstractfeaturebasedchunkedentity.h"
 #include "qgschunkloader.h"
 #include "qgsrulebased3drenderer.h"
 
@@ -60,16 +60,20 @@ class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
   public:
     //! Constructs the factory (vl and rootRule must not be null)
-    QgsRuleBasedChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel, double zMin, double zMax );
+    QgsRuleBasedChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, double zMin, double zMax, int maxFeatures );
     ~QgsRuleBasedChunkLoaderFactory() override;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule;
-    int mLeafLevel;
+    //! Contains loaded nodes and whether they are leaf nodes or not
+    mutable QHash< QString, bool > mNodesAreLeafs;
+    int mMaxFeatures;
 };
 
 
@@ -102,6 +106,7 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
     std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule;
+    bool mNodeIsLeaf = false;
 };
 
 
@@ -116,23 +121,17 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
  *
  * \since QGIS 3.12
  */
-class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
+class QgsRuleBasedChunkedEntity : public QgsAbstractFeatureBasedChunkedEntity
 {
     Q_OBJECT
   public:
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
     explicit QgsRuleBasedChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule );
 
-    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
-
     ~QgsRuleBasedChunkedEntity() override;
-  private slots:
-    void onTerrainElevationOffsetChanged();
 
   private:
-    Qt3DCore::QTransform *mTransform = nullptr;
-
-    bool applyTerrainOffset() const;
+    bool applyTerrainOffset() const override;
 };
 
 /// @endcond

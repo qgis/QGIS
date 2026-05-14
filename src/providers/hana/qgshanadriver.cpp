@@ -24,6 +24,9 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QLibrary>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace NS_ODBC;
 

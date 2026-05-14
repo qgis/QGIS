@@ -138,10 +138,7 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
     int maxZoomLevel() const { return mMaxZoomLevel; }
 
     //! Returns whether the style is active at given zoom level (also checks "enabled" flag)
-    bool isActive( int zoomLevel ) const
-    {
-      return mEnabled && ( mMinZoomLevel == -1 || zoomLevel >= mMinZoomLevel ) && ( mMaxZoomLevel == -1 || zoomLevel <= mMaxZoomLevel );
-    }
+    bool isActive( int zoomLevel ) const { return mEnabled && ( mMinZoomLevel == -1 || zoomLevel >= mMinZoomLevel ) && ( mMaxZoomLevel == -1 || zoomLevel <= mMaxZoomLevel ); }
 
     //! Writes object content to given DOM element
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
@@ -198,9 +195,15 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
 
     //! Returns a list of styles to render all layers with the given fill/stroke colors, stroke widths and marker sizes
     static QList<QgsVectorTileBasicRendererStyle> simpleStyle(
-      const QColor &polygonFillColor, const QColor &polygonStrokeColor, double polygonStrokeWidth,
-      const QColor &lineStrokeColor, double lineStrokeWidth,
-      const QColor &pointFillColor, const QColor &pointStrokeColor, double pointSize );
+      const QColor &polygonFillColor,
+      const QColor &polygonStrokeColor,
+      double polygonStrokeWidth,
+      const QColor &lineStrokeColor,
+      double lineStrokeWidth,
+      const QColor &pointFillColor,
+      const QColor &pointStrokeColor,
+      double pointSize
+    );
 
     //! Returns a list of styles to render all layers, using random colors
     static QList<QgsVectorTileBasicRendererStyle> simpleStyleWithRandomColors();
@@ -216,7 +219,6 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
 
     //! Names of required fields for each sub-layer (only valid between startRender/stopRender calls)
     QMap<QString, QSet<QString> > mRequiredFields;
-
 };
 
 #endif // QGSVECTORTILEBASICRENDERER_H

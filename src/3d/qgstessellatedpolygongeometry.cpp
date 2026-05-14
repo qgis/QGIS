@@ -15,28 +15,28 @@
 
 #include "qgstessellatedpolygongeometry.h"
 
-#include "qgsmessagelog.h"
-#include "qgspolygon.h"
 #include "qgstessellator.h"
 
-#include <QMatrix4x4>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
 #include "moc_qgstessellatedpolygongeometry.cpp"
 
-QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals, bool _invertNormals, bool _addBackFaces, bool _addTextureCoords, QNode *parent )
+QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals, bool _invertNormals, bool _addBackFaces, bool _addTextureCoords, bool withTangents, QNode *parent )
   : QGeometry( parent )
   , mWithNormals( _withNormals )
   , mInvertNormals( _invertNormals )
   , mAddBackFaces( _addBackFaces )
   , mAddTextureCoords( _addTextureCoords )
+  , mWithTangents( withTangents )
 {
   mVertexBuffer = new Qt3DCore::QBuffer( this );
+  mIndexBuffer = new Qt3DCore::QBuffer( this );
 
   QgsTessellator tmpTess;
   tmpTess.setAddNormals( mWithNormals );
   tmpTess.setAddTextureUVs( mAddTextureCoords );
+  tmpTess.setAddTangents( mWithTangents );
   const int stride = tmpTess.stride();
 
   mPositionAttribute = new Qt3DCore::QAttribute( this );
@@ -48,6 +48,14 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   mPositionAttribute->setByteStride( stride );
   mPositionAttribute->setByteOffset( 0 );
   addAttribute( mPositionAttribute );
+  int vertexBufferOffset = 3 * sizeof( float );
+
+  mIndexAttribute = new Qt3DCore::QAttribute( this );
+  mIndexAttribute->setName( "indexBuffer" );
+  mIndexAttribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
+  mIndexAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedInt );
+  mIndexAttribute->setBuffer( mIndexBuffer );
+  addAttribute( mIndexAttribute );
 
   if ( mWithNormals )
   {
@@ -58,8 +66,22 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
     mNormalAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
     mNormalAttribute->setBuffer( mVertexBuffer );
     mNormalAttribute->setByteStride( stride );
-    mNormalAttribute->setByteOffset( 3 * sizeof( float ) );
+    mNormalAttribute->setByteOffset( vertexBufferOffset );
     addAttribute( mNormalAttribute );
+    vertexBufferOffset += 3 * sizeof( float );
+  }
+  if ( mWithTangents )
+  {
+    mTangentAttribute = new Qt3DCore::QAttribute( this );
+    mTangentAttribute->setName( Qt3DCore::QAttribute::defaultTangentAttributeName() ); // "vertexTangent"
+    mTangentAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+    mTangentAttribute->setVertexSize( 4 );
+    mTangentAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+    mTangentAttribute->setBuffer( mVertexBuffer );
+    mTangentAttribute->setByteStride( stride );
+    mTangentAttribute->setByteOffset( vertexBufferOffset );
+    addAttribute( mTangentAttribute );
+    vertexBufferOffset += 4 * sizeof( float );
   }
   if ( mAddTextureCoords )
   {
@@ -70,12 +92,13 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
     mTextureCoordsAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
     mTextureCoordsAttribute->setBuffer( mVertexBuffer );
     mTextureCoordsAttribute->setByteStride( stride );
-    mTextureCoordsAttribute->setByteOffset( mWithNormals ? 6 * sizeof( float ) : 3 * sizeof( float ) );
+    mTextureCoordsAttribute->setByteOffset( vertexBufferOffset );
     addAttribute( mTextureCoordsAttribute );
+    vertexBufferOffset += 2 * sizeof( float );
   }
 }
 
-void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices )
+void QgsTessellatedPolygonGeometry::setVertexBufferData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices )
 {
   mTriangleIndexStartingIndices = triangleIndexStartingIndices;
   mTriangleIndexFids = triangleIndexFids;
@@ -84,8 +107,16 @@ void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData,
   mPositionAttribute->setCount( vertexCount );
   if ( mNormalAttribute )
     mNormalAttribute->setCount( vertexCount );
+  if ( mTangentAttribute )
+    mTangentAttribute->setCount( vertexCount );
   if ( mTextureCoordsAttribute )
     mTextureCoordsAttribute->setCount( vertexCount );
+}
+
+void QgsTessellatedPolygonGeometry::setIndexBufferData( const QByteArray &indexBufferData, size_t indexCount )
+{
+  mIndexBuffer->setData( indexBufferData );
+  mIndexAttribute->setCount( indexCount );
 }
 
 // run binary search on a sorted array, return index i where data[i] <= v < data[i+1]

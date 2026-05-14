@@ -152,18 +152,15 @@ class SERVER_EXPORT QgsServerApiException : public QgsServerException
       : QgsServerException( message, responseCode )
       , mCode( code )
       , mMimeType( mimeType )
-    {
-    }
+    {}
 
     QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override
     {
       responseFormat = mMimeType;
-      const json data {
-        {
-          { "code", mCode.toStdString() },
-          { "description", what().toStdString() },
-        }
-      };
+      const json data { {
+        { "code", mCode.toStdString() },
+        { "description", what().toStdString() },
+      } };
 
       return QByteArray::fromStdString( data.dump() );
     }
@@ -190,8 +187,7 @@ class SERVER_EXPORT QgsServerApiInternalServerError : public QgsServerApiExcepti
     //! Construction
     QgsServerApiInternalServerError( const QString &message = u"Internal server error"_s, const QString &mimeType = u"application/json"_s, int responseCode = 500 )
       : QgsServerApiException( u"Internal server error"_s, message, mimeType, responseCode )
-    {
-    }
+    {}
 };
 
 
@@ -211,8 +207,7 @@ class SERVER_EXPORT QgsServerApiNotFoundError : public QgsServerApiException
     //! Construction
     QgsServerApiNotFoundError( const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 404 )
       : QgsServerApiException( u"API not found error"_s, message, mimeType, responseCode )
-    {
-    }
+    {}
 };
 
 
@@ -232,8 +227,7 @@ class SERVER_EXPORT QgsServerApiBadRequestException : public QgsServerApiExcepti
     //! Construction
     QgsServerApiBadRequestException( const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 400 )
       : QgsServerApiException( u"Bad request error"_s, message, mimeType, responseCode )
-    {
-    }
+    {}
 };
 
 
@@ -253,8 +247,7 @@ class SERVER_EXPORT QgsServerApiPermissionDeniedException : public QgsServerApiE
     //! Construction
     QgsServerApiPermissionDeniedException( const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 403 )
       : QgsServerApiException( u"Forbidden"_s, message, mimeType, responseCode )
-    {
-    }
+    {}
 };
 
 /**
@@ -273,8 +266,7 @@ class SERVER_EXPORT QgsServerApiImproperlyConfiguredException : public QgsServer
     //! Construction
     QgsServerApiImproperlyConfiguredException( const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 500 )
       : QgsServerApiException( u"Improperly configured error"_s, message, mimeType, responseCode )
-    {
-    }
+    {}
 };
 
 
@@ -294,8 +286,7 @@ class SERVER_EXPORT QgsServerApiNotImplementedException : public QgsServerApiExc
     //! Construction
     QgsServerApiNotImplementedException( const QString &message = u"Requested method is not implemented"_s, const QString &mimeType = u"application/json"_s, int responseCode = 500 )
       : QgsServerApiException( u"Not implemented error"_s, message, mimeType, responseCode )
-    {
-    }
+    {}
 };
 
 
@@ -312,10 +303,13 @@ class SERVER_EXPORT QgsServerApiInvalidMimeTypeException : public QgsServerApiEx
 {
   public:
     //! Construction
-    QgsServerApiInvalidMimeTypeException( const QString &message = u"The Accept header submitted in the request did not support any of the media types supported by the server for the requested resource"_s, const QString &mimeType = u"application/json"_s, int responseCode = 406 )
+    QgsServerApiInvalidMimeTypeException(
+      const QString &message = u"The Accept header submitted in the request did not support any of the media types supported by the server for the requested resource"_s,
+      const QString &mimeType = u"application/json"_s,
+      int responseCode = 406
+    )
       : QgsServerApiException( u"Invalid mime-type"_s, message, mimeType, responseCode )
-    {
-    }
+    {}
 };
 #endif // no API exceptions for SIP
 

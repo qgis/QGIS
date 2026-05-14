@@ -34,8 +34,11 @@
 #include <QSettings>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTreeView>
 #include <QVBoxLayout>
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {
@@ -352,7 +355,7 @@ bool QgsGrassModuleInputProxy::filterAcceptsRow( int sourceRow, const QModelInde
   QModelIndex sourceIndex = sourceModel()->index( sourceRow, 0, sourceParent );
 
   QgsDebugMsgLevel( QString( "mType = %1 item type = %2" ).arg( mType ).arg( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() ), 2 );
-  QgsGrassObject::Type itemType = ( QgsGrassObject::Type )( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() );
+  QgsGrassObject::Type itemType = ( QgsGrassObject::Type ) ( sourceModel()->data( sourceIndex, QgsGrassModuleInputModel::TypeRole ).toInt() );
 
   if ( itemType == QgsGrassObject::Mapset )
   {
@@ -420,8 +423,7 @@ void QgsGrassModuleInputPopup::setModel( QAbstractItemModel *model )
 // TODO refresh data on sourceModel data change
 QgsGrassModuleInputCompleterProxy::QgsGrassModuleInputCompleterProxy( QObject *parent )
   : QAbstractProxyModel( parent )
-{
-}
+{}
 
 int QgsGrassModuleInputCompleterProxy::rowCount( const QModelIndex &parent ) const
 {
@@ -502,8 +504,7 @@ void QgsGrassModuleInputCompleterProxy::map( const QModelIndex &parent, int leve
 
 QgsGrassModuleInputCompleter::QgsGrassModuleInputCompleter( QAbstractItemModel *model, QWidget *parent )
   : QCompleter( model, parent )
-{
-}
+{}
 
 bool QgsGrassModuleInputCompleter::eventFilter( QObject *watched, QEvent *event )
 {
@@ -665,8 +666,7 @@ bool QgsGrassModuleInputComboBox::setFirst()
 // Taken from Qt Creator
 QgsGrassModuleInputSelectedDelegate::QgsGrassModuleInputSelectedDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 void QgsGrassModuleInputSelectedDelegate::handlePressed( const QModelIndex &index )
 {

@@ -18,6 +18,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsdataitem.h"
 #include "qgsapplication.h"

@@ -37,6 +37,7 @@ class QgsStyleEntityInterface;
 class QgsAbstract3DSymbol;
 class QDomDocument;
 class QDomElement;
+class QgsAbstractMaterialSettings;
 
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
@@ -53,10 +54,12 @@ typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
  */
 typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 
+
 /*
  * Constants used to describe copy-paste MIME types
  */
 #define QGSCLIPBOARD_STYLE_MIME "application/qgis.style"
+#define QGSCLIPBOARD_STYLES_MIME "application/qgis.styles"
 
 /**
  * \ingroup core
@@ -89,7 +92,6 @@ class CORE_EXPORT QgsStyle : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Columns available in the Symbols table.
      *
@@ -97,9 +99,9 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     enum class SymbolTableColumn : int
     {
-      Id, //!< Symbol ID
-      Name, //!< Symbol Name
-      XML, //!< Symbol definition (as XML)
+      Id,         //!< Symbol ID
+      Name,       //!< Symbol Name
+      XML,        //!< Symbol definition (as XML)
       FavoriteId, //!< Symbol is favorite flag
     };
     Q_ENUM( SymbolTableColumn )
@@ -111,7 +113,7 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class TagTableColumn : int
     {
-      Id, //!< Tag ID
+      Id,   //!< Tag ID
       Name, //!< Tag name
     };
     Q_ENUM( TagTableColumn )
@@ -123,7 +125,7 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class TagmapTableColumn : int
     {
-      TagId, //!< Tag ID
+      TagId,    //!< Tag ID
       SymbolId, //!< Symbol ID
     };
     Q_ENUM( TagmapTableColumn )
@@ -135,9 +137,9 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class ColorRampTableColumn : int
     {
-      Id, //!< Color ramp ID
-      Name, //!< Color ramp name
-      XML, //!< Color ramp definition (as XML)
+      Id,         //!< Color ramp ID
+      Name,       //!< Color ramp name
+      XML,        //!< Color ramp definition (as XML)
       FavoriteId, //!< Color ramp is favorite flag
     };
     Q_ENUM( ColorRampTableColumn )
@@ -149,9 +151,9 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class TextFormatTableColumn : int
     {
-      Id, //!< Text format ID
-      Name, //!< Text format name
-      XML, //!< Text format definition (as XML)
+      Id,         //!< Text format ID
+      Name,       //!< Text format name
+      XML,        //!< Text format definition (as XML)
       FavoriteId, //!< Text format is favorite flag
     };
     Q_ENUM( TextFormatTableColumn )
@@ -163,9 +165,9 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class LabelSettingsTableColumn : int
     {
-      Id, //!< Label settings ID
-      Name, //!< Label settings name
-      XML, //!< Label settings definition (as XML)
+      Id,         //!< Label settings ID
+      Name,       //!< Label settings name
+      XML,        //!< Label settings definition (as XML)
       FavoriteId, //!< Label settings is favorite flag
     };
     Q_ENUM( LabelSettingsTableColumn )
@@ -177,9 +179,9 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class SmartGroupTableColumn : int
     {
-      Id, //!< Smart group ID
+      Id,   //!< Smart group ID
       Name, //!< Smart group name
-      XML, //!< Smart group definition (as XML)
+      XML,  //!< Smart group definition (as XML)
     };
     Q_ENUM( SmartGroupTableColumn )
 
@@ -202,14 +204,15 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     enum StyleEntity
     {
-      SymbolEntity, //!< Symbols
-      TagEntity, //!< Tags
-      ColorrampEntity, //!< Color ramps
-      SmartgroupEntity, //!< Smart groups
-      TextFormatEntity, //!< Text formats
-      LabelSettingsEntity, //!< Label settings
+      SymbolEntity,           //!< Symbols
+      TagEntity,              //!< Tags
+      ColorrampEntity,        //!< Color ramps
+      SmartgroupEntity,       //!< Smart groups
+      TextFormatEntity,       //!< Text formats
+      LabelSettingsEntity,    //!< Label settings
       LegendPatchShapeEntity, //!< Legend patch shape \since QGIS 3.14
-      Symbol3DEntity, //!< 3D symbol entity \since QGIS 3.14
+      Symbol3DEntity,         //!< 3D symbol entity \since QGIS 3.14
+      MaterialSettingsEntity, //!< Material settings \since QGIS 4.2
     };
 
     /**
@@ -334,7 +337,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Adds a 3d \a symbol with the specified \a name to the style. Ownership of \a symbol is transferred.
      *
-     * If \a update is set to TRUE, the style database will be automatically updated with the new legend patch shape.
+     * If \a update is set to TRUE, the style database will be automatically updated with the new 3d symbol.
      *
      * Returns TRUE if the operation was successful.
      *
@@ -342,6 +345,20 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.16
      */
     bool addSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol SIP_TRANSFER, bool update = false );
+
+    /**
+     * Adds a 3D material \a settings with the specified \a name to the style.
+     *
+     * Ownership of \a settings is transferred.
+     *
+     * If \a update is set to TRUE, the style database will be automatically updated with the new material settings.
+     *
+     * Returns TRUE if the operation was successful.
+     *
+     * \note Adding material settings with the name of existing ones replaces them.
+     * \since QGIS 4.2
+     */
+    bool addMaterialSettings( const QString &name, QgsAbstractMaterialSettings *settings SIP_TRANSFER, bool update = false );
 
     /**
      * Adds a new tag and returns the tag's id
@@ -374,8 +391,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.4
      */
-    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag,
-                       const QStringList &matchName, const QStringList &noMatchName );
+    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag, const QStringList &matchName, const QStringList &noMatchName );
 
     /**
      * Returns a list of all tags in the style database
@@ -824,7 +840,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.26
      */
-    static QgsTextFormat defaultTextFormatForProject( QgsProject *project,  QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
+    static QgsTextFormat defaultTextFormatForProject( QgsProject *project, QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
 
     /**
      * Adds a 3d \a symbol to the database.
@@ -853,41 +869,80 @@ class CORE_EXPORT QgsStyle : public QObject
     QStringList symbol3DNames() const;
 
     /**
+     * Adds 3D material \a settings to the database.
+     *
+     * \param name is the name of the material settings
+     * \param settings 3D material settings to save. Ownership is transferred.
+     * \param favorite is a boolean value to specify whether the material settings should be added to favorites
+     * \param tags is a list of tags that are associated with the material settings
+     * \returns returns the success state of the save operation
+     *
+     * \since QGIS 4.2
+     */
+    bool saveMaterialSettings( const QString &name, QgsAbstractMaterialSettings *settings SIP_TRANSFER, bool favorite, const QStringList &tags );
+
+    /**
+     * Changes a 3D material settings's name.
+     *
+     * \since QGIS 4.2
+     */
+    bool renameMaterialSettings( const QString &oldName, const QString &newName );
+
+    /**
+     * Returns a list of names of 3D material settings in the style.
+     * \since QGIS 4.2
+     */
+    QStringList materialSettingsNames() const;
+
+    /**
+     * Returns count of 3D material settings in the style.
+     * \since QGIS 4.2
+     */
+    int materialSettingsCount() const;
+
+    /**
+     * Returns a new copy of the 3D material settings with the specified \a name.
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr< QgsAbstractMaterialSettings > materialSettings( const QString &name ) const;
+
+    /**
      * Creates an on-disk database
      *
-     *  This function creates a new on-disk permanent style database.
-     *  \returns returns the success state of the database creation
-     *  \see createMemoryDatabase()
+     * This function creates a new on-disk permanent style database.
+     * \returns returns the success state of the database creation
+     * \see createMemoryDatabase()
      */
     bool createDatabase( const QString &filename );
 
     /**
      * Creates a temporary memory database
      *
-     *  This function is used to create a temporary style database in case a permanent on-disk database is not needed.
-     *  \returns returns the success state of the temporary memory database creation
-     *  \see createDatabase()
+     * This function is used to create a temporary style database in case a permanent on-disk database is not needed.
+     * \returns returns the success state of the temporary memory database creation
+     * \see createDatabase()
      */
     bool createMemoryDatabase();
 
     /**
      * Creates tables structure for new database
      *
-     *  This function is used to create the tables structure in a newly-created database.
-     *  \see createDatabase()
-     *  \see createMemoryDatabase()
+     * This function is used to create the tables structure in a newly-created database.
+     * \see createDatabase()
+     * \see createMemoryDatabase()
      */
     void createTables();
 
     /**
      * Loads a file into the style
      *
-     *  This function will load an on-disk database and populate styles.
-     *  \param filename location of the database to load styles from
-     *  \returns TRUE if the database was successfully loaded. If FALSE is
-     *  returned then a detailed error message can be retrieved via errorString().
+     * This function will load an on-disk database and populate styles.
+     * \param filename location of the database to load styles from
+     * \returns TRUE if the database was successfully loaded. If FALSE is
+     * returned then a detailed error message can be retrieved via errorString().
      *
-     *  \see errorString()
+     * \see errorString()
      */
     bool load( const QString &filename );
 
@@ -896,8 +951,8 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * The current fileName() will be used if no explicit \a filename is specified.
      *
-     *  \returns TRUE if the style was successfully saved. If FALSE is
-     *  returned then a detailed error message can be retrieved via errorString().
+     * \returns TRUE if the style was successfully saved. If FALSE is
+     * returned then a detailed error message can be retrieved via errorString().
      *
      * \see fileName()
      * \see load()
@@ -941,18 +996,18 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Returns the names of the symbols which have a matching 'substring' in its definition
      *
-     *  \param type is either SymbolEntity or ColorrampEntity
-     *  \param qword is the query string to search the symbols or colorramps.
-     *  \returns A QStringList of the matched symbols or colorramps
+     * \param type is either SymbolEntity or ColorrampEntity
+     * \param qword is the query string to search the symbols or colorramps.
+     * \returns A QStringList of the matched symbols or colorramps
      */
     QStringList findSymbols( StyleEntity type, const QString &qword );
 
     /**
      * Returns the tags associated with the symbol
      *
-     *  \param type is either SymbolEntity or ColorrampEntity
-     *  \param symbol is the name of the symbol or color ramp
-     *  \returns A QStringList of the tags that have been applied to that symbol/colorramp
+     * \param type is either SymbolEntity or ColorrampEntity
+     * \param symbol is the name of the symbol or color ramp
+     * \returns A QStringList of the tags that have been applied to that symbol/colorramp
      */
     QStringList tagsOfSymbol( StyleEntity type, const QString &symbol );
 
@@ -967,10 +1022,10 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Returns whether a given tag is associated with the symbol
      *
-     *  \param type is either SymbolEntity or ColorrampEntity
-     *  \param symbol is the name of the symbol or color ramp
-     *  \param tag the name of the tag to look for
-     *  \returns A boolean value identicating whether a tag was found attached to the symbol
+     * \param type is either SymbolEntity or ColorrampEntity
+     * \param symbol is the name of the symbol or color ramp
+     * \param tag the name of the tag to look for
+     * \returns A boolean value identicating whether a tag was found attached to the symbol
      */
     bool symbolHasTag( StyleEntity type, const QString &symbol, const QString &tag );
 
@@ -1241,7 +1296,6 @@ class CORE_EXPORT QgsStyle : public QObject
     void rebuildIconPreviews();
 
   private:
-
     bool mInitialized = true;
     QString mName;
     bool mReadOnly = false;
@@ -1252,6 +1306,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsLabelSettingsMap mLabelSettings;
     QMap<QString, QgsLegendPatchShape > mLegendPatchShapes;
     QMap<QString, QgsAbstract3DSymbol * > m3dSymbols;
+    QMap<QString, QgsAbstractMaterialSettings * > mMaterialSettings;
 
     QHash< QgsStyle::StyleEntity, QHash< QString, QStringList > > mCachedTags;
     QHash< QgsStyle::StyleEntity, QHash< QString, bool > > mCachedFavorites;
@@ -1347,7 +1402,6 @@ class CORE_EXPORT QgsStyle : public QObject
  */
 class CORE_EXPORT QgsStyleEntityInterface
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->type() )
@@ -1368,12 +1422,24 @@ class CORE_EXPORT QgsStyleEntityInterface
         sipType = sipType_QgsStyleLabelSettingsEntity;
         break;
 
+      case QgsStyle::LegendPatchShapeEntity:
+        sipType = sipType_QgsStyleLegendPatchShapeEntity;
+        break;
+
+      case QgsStyle::Symbol3DEntity:
+        sipType = sipType_QgsStyleSymbol3DEntity;
+        break;
+
+      case QgsStyle::MaterialSettingsEntity:
+        sipType = sipType_QgsStyleMaterialSettingsEntity;
+        break;
+
       case QgsStyle::SmartgroupEntity:
       case QgsStyle::TagEntity:
         sipType = 0;
         break;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -1384,7 +1450,6 @@ class CORE_EXPORT QgsStyleEntityInterface
      * Returns the type of style entity.
      */
     virtual QgsStyle::StyleEntity type() const = 0;
-
 };
 
 /**
@@ -1396,7 +1461,6 @@ class CORE_EXPORT QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleSymbolEntity, with the specified \a symbol.
      *
@@ -1414,9 +1478,7 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
     QgsSymbol *symbol() const { return mSymbol; }
 
   private:
-
     QgsSymbol *mSymbol = nullptr;
-
 };
 
 /**
@@ -1428,7 +1490,6 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleColorRampEntity, with the specified color \a ramp.
      *
@@ -1446,7 +1507,6 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
     QgsColorRamp *ramp() const { return mRamp; }
 
   private:
-
     QgsColorRamp *mRamp = nullptr;
 };
 
@@ -1459,7 +1519,6 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleTextFormatEntity, with the specified text \a format.
      */
@@ -1475,9 +1534,7 @@ class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
     QgsTextFormat format() const { return mFormat; }
 
   private:
-
     QgsTextFormat mFormat;
-
 };
 
 /**
@@ -1489,7 +1546,6 @@ class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleLabelSettingsEntity, with the specified label \a settings.
      */
@@ -1506,7 +1562,6 @@ class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
     const QgsPalLayerSettings &settings() const { return mSettings; }
 
   private:
-
     QgsPalLayerSettings mSettings;
 };
 
@@ -1519,7 +1574,6 @@ class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleLegendPatchShapeEntity, with the specified legend patch \a shape.
      */
@@ -1536,7 +1590,6 @@ class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterfac
     const QgsLegendPatchShape &shape() const { return mShape; }
 
   private:
-
     QgsLegendPatchShape mShape;
 };
 
@@ -1549,7 +1602,6 @@ class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterfac
 class CORE_EXPORT QgsStyleSymbol3DEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleSymbol3DEntity, with the specified \a symbol.
      *
@@ -1567,8 +1619,37 @@ class CORE_EXPORT QgsStyleSymbol3DEntity : public QgsStyleEntityInterface
     const QgsAbstract3DSymbol *symbol() const { return mSymbol; }
 
   private:
-
     const QgsAbstract3DSymbol *mSymbol = nullptr;
+};
+
+
+/**
+ * \class QgsStyleMaterialSettingsEntity
+ * \ingroup core
+ * \brief A 3D material settings entity for QgsStyle databases.
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsStyleMaterialSettingsEntity : public QgsStyleEntityInterface
+{
+  public:
+    /**
+   * Constructor for QgsStyleMaterialSettingsEntity, with the specified \a settings.
+   *
+   * Ownership of \a settings is NOT transferred.
+   */
+    QgsStyleMaterialSettingsEntity( const QgsAbstractMaterialSettings *settings )
+      : mSettings( settings )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+    /**
+   * Returns the entity's settings.
+   */
+    const QgsAbstractMaterialSettings *settings() const { return mSettings; }
+
+  private:
+    const QgsAbstractMaterialSettings *mSettings = nullptr;
 };
 
 #endif

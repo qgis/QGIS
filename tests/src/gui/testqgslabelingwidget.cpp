@@ -19,13 +19,18 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsLabelingWidget : public QgsTest
 {
     Q_OBJECT
 
   public:
     TestQgsLabelingWidget()
-      : QgsTest( u"Labeling Widget Tests"_s ) {}
+      : QgsTest( u"Labeling Widget Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -37,20 +42,16 @@ class TestQgsLabelingWidget : public QgsTest
 };
 
 void TestQgsLabelingWidget::initTestCase()
-{
-}
+{}
 
 void TestQgsLabelingWidget::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsLabelingWidget::init()
-{
-}
+{}
 
 void TestQgsLabelingWidget::cleanup()
-{
-}
+{}
 
 void TestQgsLabelingWidget::testRuleKeyPreserved()
 {

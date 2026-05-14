@@ -78,10 +78,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidgetWrapper : public QgsAbstrac
     QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
     QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
-      QgsProcessingContext &context,
-      const QgsProcessingParameterWidgetContext &widgetContext,
-      const QgsProcessingParameterDefinition *definition = nullptr,
-      const QgsProcessingAlgorithm *algorithm = nullptr
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
     ) override;
     void postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers ) override;
 
@@ -104,7 +101,13 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsParameterDefinitionWidget : publi
     Q_OBJECT
 
   public:
-    QgsProcessingMeshDatasetGroupsParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingMeshDatasetGroupsParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
@@ -117,7 +120,9 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidget : public QWidget, private Ui
     Q_OBJECT
 
   public:
-    QgsProcessingMeshDatasetTimeWidget( QWidget *parent = nullptr, const QgsProcessingParameterMeshDatasetTime *param = nullptr, const QgsProcessingParameterWidgetContext &context = QgsProcessingParameterWidgetContext() );
+    QgsProcessingMeshDatasetTimeWidget(
+      QWidget *parent = nullptr, const QgsProcessingParameterMeshDatasetTime *param = nullptr, const QgsProcessingParameterWidgetContext &context = QgsProcessingParameterWidgetContext()
+    );
 
     /**
      * Set the mesh layer for populate the time steps,
@@ -172,10 +177,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidgetWrapper : public QgsAbstractP
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
     void postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers ) override;
     QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
-      QgsProcessingContext &context,
-      const QgsProcessingParameterWidgetContext &widgetContext,
-      const QgsProcessingParameterDefinition *definition = nullptr,
-      const QgsProcessingAlgorithm *algorithm = nullptr
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
     ) override;
 
     //! Sets the layer parameter widget wrapper
@@ -200,7 +202,13 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeParameterDefinitionWidget : public 
     Q_OBJECT
 
   public:
-    QgsProcessingMeshDatasetTimeParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingMeshDatasetTimeParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 

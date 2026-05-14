@@ -36,7 +36,6 @@ copy and pass between threads without issue.
 #include "qgsblockingnetworkrequest.h"
 %End
   public:
-
     enum ErrorCode /BaseType=IntEnum/
     {
       NoError,
@@ -134,6 +133,16 @@ This is an overloaded function.
 
 Performs a "post" operation on the specified ``request``, using the
 given ``data``.
+%End
+
+    ErrorCode post( QNetworkRequest &request, QHttpMultiPart *data, bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+This is an overloaded function.
+
+Performs a "post" operation on the specified ``request``, using the
+given ``data``.
+
+.. versionadded:: 4.2
 %End
 
     ErrorCode head( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );

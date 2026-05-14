@@ -336,6 +336,26 @@ Checks if ``geom`` is empty.
                             operation
 %End
 
+    std::unique_ptr<QgsSfcgalGeometry> geometryN( unsigned int index ) const;
+%Docstring
+Returns the geometry component of a geometry collection at the specified
+index.
+
+- For geometries composed of multiple elements (e.g. GeometryColletion,
+  MultiPoint, MultiLineString, MultiPolygon), this method returns the
+  sub-geometry at the given index.
+- For singular geometries, return the geometry itself when index is 0.
+
+:param index: index of geometry to return
+
+:return: the sub-geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+.. versionadded:: 4.2
+%End
+
     double area( bool withDiscretization = false ) const;
 %Docstring
 Computes the area of ``geom``.
@@ -472,11 +492,11 @@ Scale this geometry by vector ``scaleFactor``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const;
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QgsMatrix4x4 &mat ) const;
 %Docstring
 Apply 3D matrix transform ``mat`` to geometry ``geom``
 
-:param mat: 4x4 transformation matrix (translation is defined of the 4th
+:param mat: 4x4 transformation matrix (translation is defined in the 4th
             column)
 :param errorMsg: Error message returned by SFGCAL
 
@@ -486,6 +506,33 @@ Apply 3D matrix transform ``mat`` to geometry ``geom``
                             operation
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> split3D( const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries ) const;
+%Docstring
+Splits the given geometry with a plane defined by a point ``planePoint``
+and a normal vector ``planeNormal``.
+
+:param planePoint: a point belonging to the splitting plane
+:param planeNormal: the normal vector of the splitting plane
+:param closeGeometries: If true, ensures resulting geometries are
+                        closed.
+:param errorMsg: Error message returned by SFGCAL
+
+:return: A GeometryCollection containing the split geometries, or an
+         empty GeometryCollection if the plane does not intersect the
+         geometry
+
+.. note::
+
+   the geometry needs to be a PolyhedralSurface or a TIN
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
 %End
 
     bool intersects( const QgsAbstractGeometry *otherGeom ) const;
@@ -686,7 +733,7 @@ a null pointer is returned.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const;
+    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis( bool extendToEdges = false ) const;
 %Docstring
 Calculate a 2D approximate medial axis of ``geom`` based on its straight
 skeleton. The approximate medial axis is a simplified representation of
@@ -694,10 +741,41 @@ a shape’s central skeleton It the geometry is 3D, the approximate medial
 axis will be calculated from its 2D projection If the operation fails, a
 null pointer is returned.
 
+:param extendToEdges: whether to extend the medial axis endpoints to the
+                      polygon boundary (since QGIS 4.2). This parameter
+                      has no effect when using SFCGAL versions earlier
+                      than 2.3.
+
 :return: new geometry as 2D multilinestring
 
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> toSolid() const;
+%Docstring
+Converts the geometry to a Solid geometry. The geometry must be of type
+PolyhedralSurface
+
+:return: geometry as a Solid
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+.. versionadded:: 4.2
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> toPolyhedralSurface() const;
+%Docstring
+Converts the geometry to a PolyhedralSurface geometry. The geometry must
+be of type Solid
+
+:return: geometry as a PolyhedralSurface
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+.. versionadded:: 4.2
 %End
 
 
@@ -762,7 +840,7 @@ Converts the current primitive to geometry. Works only with primitives.
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
-    QMatrix4x4 primitiveTransform() const;
+    QgsMatrix4x4 primitiveTransform() const;
 %Docstring
 Returns the primitive transform matrix.
 

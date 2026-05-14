@@ -30,8 +30,11 @@
 
 #include <QClipboard>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstableeditordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   : QMainWindow( parent )
@@ -88,13 +91,9 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::verticalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionVerticalAlignment );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::cellPropertyChanged, mTableWidget, &QgsTableEditorWidget::setSelectionCellProperty );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [this] {
-    mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
-  } );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [this] { mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() ); } );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [this] {
-    mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
-  } );
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [this] { mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() ); } );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::rowHeightChanged, mTableWidget, &QgsTableEditorWidget::setSelectionRowHeight );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::columnWidthChanged, mTableWidget, &QgsTableEditorWidget::setSelectionColumnWidth );
 

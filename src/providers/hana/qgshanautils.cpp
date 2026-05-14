@@ -23,7 +23,10 @@
 
 #include <QDate>
 #include <QDateTime>
+#include <QString>
 #include <QTime>
+
+using namespace Qt::StringLiterals;
 
 using namespace NS_ODBC;
 

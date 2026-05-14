@@ -51,8 +51,7 @@ QgsDoubleRange QgsElevationUtils::calculateZRangeForProject( QgsProject *project
     }
   }
 
-  return QgsDoubleRange( std::isnan( min ) ? std::numeric_limits< double >::lowest() : min,
-                         std::isnan( max ) ? std::numeric_limits< double >::max() : max );
+  return QgsDoubleRange( std::isnan( min ) ? std::numeric_limits< double >::lowest() : min, std::isnan( max ) ? std::numeric_limits< double >::max() : max );
 }
 
 QList<double> QgsElevationUtils::significantZValuesForProject( QgsProject *project )
@@ -72,7 +71,7 @@ QList<double> QgsElevationUtils::significantZValuesForLayers( const QList<QgsMap
 {
   QSet< double > values;
 
-  for ( QgsMapLayer *currentLayer  : layers )
+  for ( QgsMapLayer *currentLayer : layers )
   {
     if ( !currentLayer->elevationProperties() || !currentLayer->elevationProperties()->hasElevation() )
       continue;
@@ -124,4 +123,3 @@ bool QgsElevationUtils::enableElevationForLayer( QgsMapLayer *layer )
   }
   return false;
 }
-

@@ -10,9 +10,8 @@ __author__ = "(C) 2020 by Nyall Dawson"
 __date__ = "05/04/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QSize, QSizeF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsFillSymbol,
     QgsGeometry,
@@ -24,9 +23,10 @@ from qgis.core import (
     QgsStyle,
     QgsSymbol,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize, QSizeF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -34,7 +34,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLegendPatchShape(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "legend_patch"

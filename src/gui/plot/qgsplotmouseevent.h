@@ -44,7 +44,7 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
       sipType = sipType_QgsPlotMouseEvent;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -66,7 +66,9 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
      * \param buttons Further buttons that are pressed
      * \param modifiers Keyboard modifiers
      */
-    QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+    QgsPlotMouseEvent(
+      QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier
+    );
 
     /**
      * Returns the point in map coordinates corresponding to the event.

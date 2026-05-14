@@ -19,12 +19,15 @@
 #include "qgsimageoperation.h"
 
 #include <QApplication>
+#include <QString>
 #include <QStyle>
 #include <QStyleFactory>
 #include <QStyleOption>
 #include <QWindow>
 
 #include "moc_qgsproxystyle.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProxyStyle::QgsProxyStyle( QWidget *parent )
   : QProxyStyle( nullptr ) // no base style yet - it transfers ownership, so we need a NEW QStyle object for the base style
@@ -95,8 +98,7 @@ void QgsAppStyle::polish( QWidget *widget )
 {
   QProxyStyle::polish( widget );
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
-  if ( mBaseStyle.contains( "fusion"_L1, Qt::CaseInsensitive )
-       || mBaseStyle.contains( "adwaita"_L1, Qt::CaseInsensitive ) )
+  if ( mBaseStyle.contains( "fusion"_L1, Qt::CaseInsensitive ) || mBaseStyle.contains( "adwaita"_L1, Qt::CaseInsensitive ) )
   {
     // fix broken inactive window coloring applying to unfocused docks or list/tree widgets
     // see eg https://github.com/FedoraQt/adwaita-qt/issues/126

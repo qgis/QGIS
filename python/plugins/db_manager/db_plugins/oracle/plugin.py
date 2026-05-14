@@ -24,29 +24,25 @@ The content of this file is based on
 # this will disable the dbplugin if the connector raise an ImportError
 from typing import Optional, Union
 
-from .connector import OracleDBConnector
-
-from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.core import NULL, QgsApplication, QgsCredentials, QgsSettings, QgsVectorLayer
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
-from qgis.core import QgsApplication, QgsVectorLayer, NULL, QgsSettings
-
 from ..plugin import (
     ConnectionError,
-    InvalidDataException,
-    DBPlugin,
     Database,
+    DBPlugin,
+    InvalidDataException,
     Schema,
     Table,
-    VectorTable,
-    TableField,
     TableConstraint,
+    TableField,
     TableIndex,
     TableTrigger,
+    VectorTable,
 )
-
-from qgis.core import QgsCredentials
+from .connector import OracleDBConnector
 
 
 def classFactory():
@@ -54,7 +50,6 @@ def classFactory():
 
 
 class OracleDBPlugin(DBPlugin):
-
     @classmethod
     def icon(self):
         return QgsApplication.getThemeIcon("/mIconOracle.svg")
@@ -166,7 +161,6 @@ class OracleDBPlugin(DBPlugin):
 
 
 class ORDatabase(Database):
-
     def __init__(self, connection, uri):
         self.connName = connection.connectionName()
         Database.__init__(self, connection, uri)
@@ -241,7 +235,6 @@ class ORDatabase(Database):
 
         # handling undetermined geometry type
         if not vlayer.isValid():
-
             wkbType, srid = con.getTableMainGeomType(f"({sql}\n)", geomCol)
             uri.setWkbType(wkbType)
             if srid:
@@ -327,7 +320,6 @@ class ORDatabase(Database):
 
 
 class ORSchema(Schema):
-
     def __init__(self, row, db):
         Schema.__init__(self, db)
         # self.oid, self.name, self.owner, self.perms, self.comment = row
@@ -335,7 +327,6 @@ class ORSchema(Schema):
 
 
 class ORTable(Table):
-
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, schema)
         self.name, self.owner, isView = row
@@ -522,7 +513,6 @@ class ORTable(Table):
 
 
 class ORVectorTable(ORTable, VectorTable):
-
     def __init__(self, row, db, schema=None):
         ORTable.__init__(self, row[0:3], db, schema)
         VectorTable.__init__(self, db, schema)
@@ -569,7 +559,6 @@ class ORVectorTable(ORTable, VectorTable):
 
 
 class ORTableField(TableField):
-
     def __init__(self, row, table):
         """build fields information from query and find primary key"""
         TableField.__init__(self, table)
@@ -731,7 +720,6 @@ class ORTableConstraint(TableConstraint):
 
 
 class ORTableIndex(TableIndex):
-
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         (
@@ -760,7 +748,6 @@ class ORTableIndex(TableIndex):
 
 
 class ORTableTrigger(TableTrigger):
-
     def __init__(self, row, table):
         TableTrigger.__init__(self, table)
         self.name, self.event, self.type, self.enabled = row

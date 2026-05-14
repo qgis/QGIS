@@ -62,7 +62,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     friend class QgsVectorLayerEditBuffer;
 
   public:
-
     //! Bitmask of all provider's editing capabilities
     static const int EditingCapabilities = static_cast< int >( Qgis::VectorProviderCapability::EditingCapabilities );
 
@@ -73,9 +72,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * Additional creation options are specified within the \a options value and since QGIS 3.16 creation flags are specified within the \a flags value.
      */
-    QgsVectorDataProvider( const QString &uri = QString(),
-                           const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                           Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsVectorDataProvider(
+      const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
+    );
 
     /**
      * Returns feature source object that can be used for querying provider's data. The returned feature source
@@ -200,8 +199,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param feedback optional feedback object for canceling request
      * \returns list of unique strings containing substring
      */
-    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
-        QgsFeedback *feedback = nullptr ) const;
+    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Calculates an aggregated value from the layer's features. The base implementation does nothing,
@@ -214,12 +212,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param fids list of fids to filter, otherwise will use all fids
      * \returns calculated aggregate value
      */
-    virtual QVariant aggregate( Qgis::Aggregate aggregate,
-                                int index,
-                                const QgsAggregateCalculator::AggregateParameters &parameters,
-                                QgsExpressionContext *context,
-                                bool &ok,
-                                QgsFeatureIds *fids = nullptr ) const;
+    virtual QVariant aggregate(
+      Qgis::Aggregate aggregate, int index, const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, QgsFeatureIds *fids = nullptr
+    ) const;
 
     /**
      * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
@@ -227,7 +222,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param index the index of the attribute
      * \param enumList reference to the list to fill
      */
-    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ) enumList.clear(); }
+    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const
+    {
+      Q_UNUSED( index )
+      enumList.clear();
+    }
 
     using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
@@ -303,8 +302,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *                       The second map parameter being the new geometries themselves
      * \returns TRUE in case of success and FALSE in case of failure
      */
-    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
-                                 const QgsGeometryMap &geometry_map );
+    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map );
 
     /**
      * Returns any literal default values which are present at the provider for a specified
@@ -445,37 +443,41 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     struct NativeType
     {
-      NativeType( const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType )
-        : mTypeDesc( typeDesc )
-        , mTypeName( typeName )
-        , mType( type )
-        , mMinLen( minLen )
-        , mMaxLen( maxLen )
-        , mMinPrec( minPrec )
-        , mMaxPrec( maxPrec )
-        , mSubType( subType )
-      {}
+        NativeType(
+          const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType
+        )
+          : mTypeDesc( typeDesc )
+          , mTypeName( typeName )
+          , mType( type )
+          , mMinLen( minLen )
+          , mMaxLen( maxLen )
+          , mMinPrec( minPrec )
+          , mMaxPrec( maxPrec )
+          , mSubType( subType )
+        {}
 
-      Q_DECL_DEPRECATED NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid )
-        : mTypeDesc( typeDesc )
-        , mTypeName( typeName )
-        , mType( QgsVariantUtils::variantTypeToMetaType( type ) )
-        , mMinLen( minLen )
-        , mMaxLen( maxLen )
-        , mMinPrec( minPrec )
-        , mMaxPrec( maxPrec )
-        , mSubType( QgsVariantUtils::variantTypeToMetaType( subType ) ) SIP_DEPRECATED
-          {}
+        Q_DECL_DEPRECATED NativeType(
+          const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid
+        )
+          : mTypeDesc( typeDesc )
+          , mTypeName( typeName )
+          , mType( QgsVariantUtils::variantTypeToMetaType( type ) )
+          , mMinLen( minLen )
+          , mMaxLen( maxLen )
+          , mMinPrec( minPrec )
+          , mMaxPrec( maxPrec )
+          , mSubType( QgsVariantUtils::variantTypeToMetaType( subType ) ) SIP_DEPRECATED
+        {}
 
 
-          QString mTypeDesc;
-      QString mTypeName;
-      QMetaType::Type mType;
-      int mMinLen;
-      int mMaxLen;
-      int mMinPrec;
-      int mMaxPrec;
-      QMetaType::Type mSubType;
+        QString mTypeDesc;
+        QString mTypeName;
+        QMetaType::Type mType;
+        int mMinLen;
+        int mMaxLen;
+        int mMinPrec;
+        int mMaxPrec;
+        QMetaType::Type mSubType;
     };
 
     /**
@@ -589,7 +591,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param value The metadata value
      * \returns The translated metadata value
      */
-    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ) return value.toString(); }
+    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const
+    {
+      Q_UNUSED( mdKey )
+      return value.toString();
+    }
 
     /**
      * Returns TRUE if the data source has metadata, FALSE otherwise.
@@ -622,7 +628,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     void raiseError( const QString &msg ) const;
 
   protected:
-
     /**
      * Invalidates the min/max cache. This will force the provider to recalculate the
      * cache the next time it is requested.
@@ -672,7 +677,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
      * \since QGIS 3.34
      */
-    static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );
+    static QgsGeometry convertToProviderType( const QgsGeometry &geometry, Qgis::WkbType providerGeometryType );
 
 
   private:

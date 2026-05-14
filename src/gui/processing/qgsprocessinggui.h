@@ -29,9 +29,9 @@
  *
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsProcessingGui {
+class GUI_EXPORT QgsProcessingGui
+{
   public:
-
 };
 
 #endif // QGSPROCESSINGGUI_H

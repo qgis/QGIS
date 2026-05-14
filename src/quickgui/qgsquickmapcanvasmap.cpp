@@ -28,14 +28,18 @@
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsquickmapsettings.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QQuickWindow>
 #include <QSGSimpleTextureNode>
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgsquickmapcanvasmap.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   : QQuickItem( parent )
@@ -121,8 +125,7 @@ void QgsQuickMapCanvasMap::refreshMap()
 
   //build the expression context
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+  expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   QgsProject *project = mMapSettings->project();
   if ( project )
@@ -130,6 +133,7 @@ void QgsQuickMapCanvasMap::refreshMap()
     expressionContext << QgsExpressionContextUtils::projectScope( project );
 
     mapSettings.setLabelingEngineSettings( project->labelingEngineSettings() );
+    mapSettings.setSelectiveMaskingSourceSets( project->selectiveMaskingSourceSetManager()->sets() );
 
     // render main annotation layer above all other layers
     QList<QgsMapLayer *> allLayers = mapSettings.layers();

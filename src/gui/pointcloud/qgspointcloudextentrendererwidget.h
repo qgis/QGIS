@@ -23,12 +23,13 @@
 #include "qgis_gui.h"
 #include "qgspointcloudrendererwidget.h"
 
+#define SIP_NO_FILE
+
 class QgsContrastEnhancement;
 class QgsPointCloudLayer;
 class QgsStyle;
 class QgsPointCloudExtentRenderer;
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

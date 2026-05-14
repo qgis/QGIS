@@ -39,7 +39,7 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
       sipType = sipType_QgsLayoutViewMouseEvent;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:

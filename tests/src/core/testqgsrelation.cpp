@@ -21,6 +21,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -38,13 +41,6 @@ class TestQgsRelation : public QObject
 
 void TestQgsRelation::initTestCase()
 {
-  // Runs once before any tests are run
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsSettings().clear();

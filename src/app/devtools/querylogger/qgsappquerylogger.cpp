@@ -294,7 +294,8 @@ bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const Q
       }
       for ( int i = 0; i < request->childCount(); i++ )
       {
-        if ( QgsDevToolsModelValueNode *valueNode = static_cast<QgsDevToolsModelValueNode *>( request->childAt( i ) ); valueNode->value().contains( mFilterString, Qt::CaseInsensitive ) )
+        QgsDevToolsModelValueNode *valueNode = static_cast<QgsDevToolsModelValueNode *>( request->childAt( i ) );
+        if ( valueNode && valueNode->value().contains( mFilterString, Qt::CaseInsensitive ) )
         {
           return true;
         }
@@ -313,8 +314,7 @@ QueryCostDelegate::QueryCostDelegate( int sortRole, int totalCostRole, QObject *
   : QStyledItemDelegate( parent )
   , mSortRole( sortRole )
   , mTotalCostRole( totalCostRole )
-{
-}
+{}
 
 QueryCostDelegate::~QueryCostDelegate() = default;
 

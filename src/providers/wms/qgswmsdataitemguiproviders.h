@@ -18,6 +18,10 @@
 
 #include "qgsdataitemguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsWMSConnectionItem;
 class QgsXyzLayerItem;
 

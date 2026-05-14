@@ -38,6 +38,7 @@
 #include "qgsproject.h"
 #include "qgsscalecalculator.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QCheckBox>
 #include <QClipboard>
@@ -46,9 +47,12 @@
 #include <QList>
 #include <QPainter>
 #include <QSpinBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsmapsavedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList<QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )
@@ -250,6 +254,7 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
     else // Update size, leave scale untouched
     {
       QgsScaleCalculator calculator;
+      calculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
       calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
       calculator.setDpi( mDpi );
       calculator.setMethod( QgsProject::instance()->scaleMethod() );
@@ -278,6 +283,7 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
 void QgsMapSaveDialog::updateScale( double scale )
 {
   QgsScaleCalculator calculator;
+  calculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
   calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
   calculator.setDpi( mDpi );
   calculator.setMethod( QgsProject::instance()->scaleMethod() );
@@ -296,7 +302,7 @@ void QgsMapSaveDialog::updateOutputSize()
 
 void QgsMapSaveDialog::checkOutputSize()
 {
-  // check if image size does not exceed QPainter limitation https://doc.qt.io/qt-5/qpainter.html#limitations
+  // check if image size does not exceed QPainter limitation https://doc.qt.io/qt-6/qpainter.html#limitations
   if ( mSize.width() > 32768 || mSize.height() > 32768 )
   {
     mMessageBar->pushWarning( QString(), tr( "Output will be truncated, as image width or height is larger than 32768 pixels." ) );
@@ -355,8 +361,8 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
       break;
 
     case Image:
-      mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
-      mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
+      mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
+      mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
       break;
   }
 
@@ -389,9 +395,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
 
   //build the expression context
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+  expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   mapSettings.setExpressionContext( expressionContext );
 
@@ -506,7 +510,10 @@ void QgsMapSaveDialog::onAccepted()
         mapRendererTask->setSaveWorldFile( saveWorldFile() );
 
         connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [fileNameAndFilter] {
-          QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNameAndFilter.first ).toString(), QDir::toNativeSeparators( fileNameAndFilter.first ) ) );
+          QgisApp::instance()->messageBar()->pushSuccess(
+            tr( "Save as image" ),
+            tr( "Successfully saved map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNameAndFilter.first ).toString(), QDir::toNativeSeparators( fileNameAndFilter.first ) )
+          );
         } );
         connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, []( int error ) {
           switch ( error )
@@ -598,11 +605,11 @@ void QgsMapSaveDialog::onAccepted()
         }
 
         connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [fileName] {
-          QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+          QgisApp::instance()
+            ->messageBar()
+            ->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
         } );
-        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, []( int ) {
-          QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not save the map to PDF" ) );
-        } );
+        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, []( int ) { QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not save the map to PDF" ) ); } );
 
         QgsApplication::taskManager()->addTask( mapRendererTask );
       }
@@ -613,10 +620,12 @@ void QgsMapSaveDialog::onAccepted()
 
 void QgsMapSaveDialog::updatePdfExportWarning()
 {
-  const QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeospatialPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
+  const QStringList layers = QgsMapSettingsUtils::
+    containsAdvancedEffects( mMapCanvas->mapSettings(), mGeospatialPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
   if ( !layers.isEmpty() )
   {
-    mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg( QChar( 0x2022 ) + u" "_s + layers.join( u"\n"_s + QChar( 0x2022 ) + u" "_s ) );
+    mInfoDetails
+      = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg( QChar( 0x2022 ) + u" "_s + layers.join( u"\n"_s + QChar( 0x2022 ) + u" "_s ) );
     mInfo->setText( tr( "%1A number of layers%2 use advanced effects, rasterizing map is recommended for proper rendering." ).arg( u"<a href='#'>"_s, u"</a>"_s ) );
     mSaveAsRaster->setChecked( true );
   }

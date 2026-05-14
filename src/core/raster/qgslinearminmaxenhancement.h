@@ -28,12 +28,10 @@ email                : ersts@amnh.org
   */
 class CORE_EXPORT QgsLinearMinMaxEnhancement : public QgsContrastEnhancementFunction
 {
-
   public:
     QgsLinearMinMaxEnhancement( Qgis::DataType, double, double );
 
     int enhance( double ) override;
-
 };
 
 #endif

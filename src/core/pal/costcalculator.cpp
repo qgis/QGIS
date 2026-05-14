@@ -159,7 +159,7 @@ void CostCalculator::calculateCandidatePolygonCentroidDistanceCosts( pal::Featur
 
     const double candidatePolygonCentroidDistance = QgsGeometryUtilsBase::distance2D( cx, cy, lPosX, lPosY );
 
-    minCandidateCentroidDistance  = std::min( minCandidateCentroidDistance, candidatePolygonCentroidDistance );
+    minCandidateCentroidDistance = std::min( minCandidateCentroidDistance, candidatePolygonCentroidDistance );
     maxCandidateCentroidDistance = std::max( maxCandidateCentroidDistance, candidatePolygonCentroidDistance );
 
     polygonCentroidDistances.insert( pos.get(), candidatePolygonCentroidDistance );
@@ -226,16 +226,15 @@ void CostCalculator::finalizeCandidatesCosts( Feats *feat, double bbx[4], double
   do
   {
     discrim += 1.0;
-    for ( stop = 0; stop < feat->candidates.size() && feat->candidates[ stop ]->cost() < discrim; stop++ )
+    for ( stop = 0; stop < feat->candidates.size() && feat->candidates[stop]->cost() < discrim; stop++ )
       ;
-  }
-  while ( stop == 0 && discrim < feat->candidates.back()->cost() + 2.0 );
+  } while ( stop == 0 && discrim < feat->candidates.back()->cost() + 2.0 );
 
   // THIS LOOKS SUSPICIOUS -- it clamps all costs to a fixed value??
   if ( discrim > 1.5 )
   {
     for ( std::size_t k = 0; k < stop; k++ )
-      feat->candidates[ k ]->setCost( 0.0021 );
+      feat->candidates[k]->setCost( 0.0021 );
   }
 
   if ( feat->candidates.size() > stop )
@@ -264,8 +263,7 @@ void CostCalculator::finalizeCandidatesCosts( Feats *feat, double bbx[4], double
 CandidatePolygonRingDistanceCalculator::CandidatePolygonRingDistanceCalculator( LabelPosition *candidate )
   : mPx( ( candidate->x[0] + candidate->x[2] ) / 2.0 )
   , mPy( ( candidate->y[0] + candidate->y[2] ) / 2.0 )
-{
-}
+{}
 
 void CandidatePolygonRingDistanceCalculator::addRing( const pal::PointSet *ring )
 {

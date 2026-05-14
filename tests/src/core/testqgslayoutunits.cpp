@@ -23,12 +23,17 @@
 #include "qgstest.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsLayoutUnits : public QgsTest
 {
     Q_OBJECT
   public:
     TestQgsLayoutUnits()
-      : QgsTest( u"Layout Units Tests"_s ) {}
+      : QgsTest( u"Layout Units Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -90,20 +95,16 @@ class TestQgsLayoutUnits : public QgsTest
 };
 
 void TestQgsLayoutUnits::initTestCase()
-{
-}
+{}
 
 void TestQgsLayoutUnits::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsLayoutUnits::init()
-{
-}
+{}
 
 void TestQgsLayoutUnits::cleanup()
-{
-}
+{}
 
 void TestQgsLayoutUnits::encodeDecode()
 {

@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsFeature : public QObject
 {
     Q_OBJECT
@@ -76,16 +78,13 @@ void TestQgsFeature::initTestCase()
 }
 
 void TestQgsFeature::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsFeature::init()
-{
-}
+{}
 
 void TestQgsFeature::cleanup()
-{
-}
+{}
 
 void TestQgsFeature::attributesTest()
 {

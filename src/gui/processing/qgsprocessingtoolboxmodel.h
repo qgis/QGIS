@@ -67,7 +67,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     }
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -108,10 +108,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
      * Returns a list of children belonging to the node.
      * \note Not available in Python bindings
      */
-    QList<QgsProcessingToolboxModelNode *> children() const SIP_SKIP
-    {
-      return mChildren;
-    }
+    QList<QgsProcessingToolboxModelNode *> children() const SIP_SKIP { return mChildren; }
 
     /**
      * Removes the specified \a node from this node's children, and gives
@@ -375,7 +372,12 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * If \a favoriteManager is specified then it will be used to create a "Favorites" top
      * level group containing favorite algorithms. Since QGIS 3.40
      */
-    QgsProcessingToolboxModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr, QgsProcessingRecentAlgorithmLog *recentLog = nullptr, QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr );
+    QgsProcessingToolboxModel(
+      QObject *parent SIP_TRANSFERTHIS = nullptr,
+      QgsProcessingRegistry *registry = nullptr,
+      QgsProcessingRecentAlgorithmLog *recentLog = nullptr,
+      QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr
+    );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -545,7 +547,12 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      * If \a favoriteManager is specified then it will be used to create a "Favorites" top
      * level group containing favorite algorithms. SInce QGIS 3.40
      */
-    explicit QgsProcessingToolboxProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr, QgsProcessingRecentAlgorithmLog *recentLog = nullptr, QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr );
+    explicit QgsProcessingToolboxProxyModel(
+      QObject *parent SIP_TRANSFERTHIS = nullptr,
+      QgsProcessingRegistry *registry = nullptr,
+      QgsProcessingRecentAlgorithmLog *recentLog = nullptr,
+      QgsProcessingFavoriteAlgorithmManager *favoriteManager = nullptr
+    );
 
     /**
      * Returns the underlying source Processing toolbox model.

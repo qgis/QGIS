@@ -41,21 +41,18 @@ against the native QGIS metadata schema can be performed using
 #include "qgslayermetadata.h"
 %End
   public:
-
     struct SpatialExtent
     {
+        QgsCoordinateReferenceSystem extentCrs;
 
-      QgsCoordinateReferenceSystem extentCrs;
+        QgsBox3D bounds;
 
-      QgsBox3D bounds;
-
-      bool operator==( const QgsLayerMetadata::SpatialExtent &other ) const;
+        bool operator==( const QgsLayerMetadata::SpatialExtent &other ) const;
     };
 
     struct Extent
     {
       public:
-
         QList< QgsLayerMetadata::SpatialExtent > spatialExtents() const;
 %Docstring
 Spatial extents of the resource.
@@ -90,23 +87,20 @@ Sets the temporal ``extents`` of the resource.
 
         bool operator==( const QgsLayerMetadata::Extent &other ) const;
 
-
     };
 
     struct Constraint
     {
-
-      Constraint( const QString &constraint = QString(), const QString &type = QString() );
+        Constraint( const QString &constraint = QString(), const QString &type = QString() );
 %Docstring
 Constructor for Constraint.
 %End
 
-      QString type;
+        QString type;
 
-      QString constraint;
+        QString constraint;
 
-      bool operator==( const QgsLayerMetadata::Constraint &other ) const;
-
+        bool operator==( const QgsLayerMetadata::Constraint &other ) const;
     };
 
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;

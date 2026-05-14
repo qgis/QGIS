@@ -23,15 +23,18 @@
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgsterraintexturegenerator_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
   : mMap( map )
   , mTextureSize( QSize( mMap.terrainSettings()->mapTileResolution(), mMap.terrainSettings()->mapTileResolution() ) )
-{
-}
+{}
 
 int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNodeId tileId, const QString &debugText )
 {

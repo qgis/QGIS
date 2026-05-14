@@ -27,8 +27,7 @@ class QgsDefaultSearchWidgetWrapper;
 QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString &name, const QIcon &icon )
   : mName( name )
   , mIcon( icon )
-{
-}
+{}
 
 /**
  * By default a simple QgsFilterLineEdit is returned as search widget.

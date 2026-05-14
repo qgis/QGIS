@@ -23,7 +23,6 @@ types have been detected.
 #include "qgsvirtuallayerdefinition.h"
 %End
   public:
-
     class SourceLayer
     {
 %Docstring(signature="appended")

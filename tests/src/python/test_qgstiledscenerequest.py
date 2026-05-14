@@ -14,9 +14,8 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 
 import unittest
 
-from qgis.core import Qgis, QgsTiledSceneRequest, QgsFeedback, QgsOrientedBox3D
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.core import Qgis, QgsFeedback, QgsOrientedBox3D, QgsTiledSceneRequest
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -24,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsTiledSceneRequest(QgisTestCase):
-
     def test_basic(self):
         request = QgsTiledSceneRequest()
 

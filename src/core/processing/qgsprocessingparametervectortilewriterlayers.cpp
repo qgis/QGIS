@@ -17,10 +17,13 @@
 
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsProcessingParameterVectorTileWriterLayers::QgsProcessingParameterVectorTileWriterLayers( const QString &name, const QString &description )
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
-{
-}
+{}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterVectorTileWriterLayers::clone() const
 {
@@ -57,7 +60,7 @@ bool QgsProcessingParameterVectorTileWriterLayers::checkValueIsAcceptable( const
       continue;
 
     if ( !context )
-      continue;  // when called without context, we will skip checking whether the layer can be resolved
+      continue; // when called without context, we will skip checking whether the layer can be resolved
 
     if ( !QgsProcessingUtils::mapLayerFromString( inputItemLayer.toString(), *context ) )
       return false;
@@ -95,8 +98,7 @@ QString QgsProcessingParameterVectorTileWriterLayers::asPythonString( QgsProcess
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterVectorTileWriterLayers('%1', %2)"_s
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      QString code = u"QgsProcessingParameterVectorTileWriterLayers('%1', %2)"_s.arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }

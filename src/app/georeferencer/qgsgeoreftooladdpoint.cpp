@@ -22,8 +22,7 @@
 
 QgsGeorefToolAddPoint::QgsGeorefToolAddPoint( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *advancedDigitizingDockWidget )
   : QgsMapToolCapture( canvas, advancedDigitizingDockWidget, QgsMapToolCapture::CaptureMode::CapturePoint )
-{
-}
+{}
 
 void QgsGeorefToolAddPoint::pointCaptured( const QgsPoint &point )
 {

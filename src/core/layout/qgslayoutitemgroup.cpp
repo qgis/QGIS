@@ -22,7 +22,11 @@
 #include "qgslayoutundostack.h"
 #include "qgslayoututils.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitemgroup.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -287,8 +291,7 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItemGroup::exportLayerBehavior() con
 }
 
 void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * )
-{
-}
+{}
 
 void QgsLayoutItemGroup::draw( QgsLayoutItemRenderContext & )
 {
@@ -298,7 +301,6 @@ void QgsLayoutItemGroup::draw( QgsLayoutItemRenderContext & )
 
 void QgsLayoutItemGroup::updateBoundingRect()
 {
-
   if ( mItems.isEmpty() )
   {
     setRect( QRectF() );

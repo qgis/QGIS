@@ -23,7 +23,6 @@ greater than the one used to create a project file.
 #include "qgsprojectversion.h"
 %End
   public:
-
     QgsProjectVersion();
 %Docstring
 Creates a new NULL version

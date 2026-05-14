@@ -25,8 +25,7 @@ QgsScopedOptionsWidgetFactory::QgsScopedOptionsWidgetFactory( std::unique_ptr<Qg
 
 QgsScopedOptionsWidgetFactory::QgsScopedOptionsWidgetFactory( QgsScopedOptionsWidgetFactory &&other )
   : mFactory( std::move( other.mFactory ) )
-{
-}
+{}
 
 QgsScopedOptionsWidgetFactory::~QgsScopedOptionsWidgetFactory()
 {

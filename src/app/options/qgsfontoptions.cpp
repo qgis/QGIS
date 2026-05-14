@@ -20,8 +20,11 @@
 #include "qgssettings.h"
 
 #include <QDir>
+#include <QString>
 
 #include "moc_qgsfontoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsFontOptionsWidget
@@ -144,8 +147,7 @@ void QgsFontOptionsWidget::apply()
 //
 QgsFontOptionsFactory::QgsFontOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Fonts" ), QIcon(), u"fonts"_s )
-{
-}
+{}
 
 QIcon QgsFontOptionsFactory::icon() const
 {

@@ -12,13 +12,13 @@ __copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QUrl, QVariant
 from qgis.core import (
     QgsField,
     QgsFields,
     QgsVirtualLayerDefinition,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QUrl, QVariant
 from qgis.testing import unittest
 
 
@@ -27,7 +27,6 @@ def strToUrl(s):
 
 
 class TestQgsVirtualLayerDefinition(unittest.TestCase):
-
     def test1(self):
         d = QgsVirtualLayerDefinition()
         self.assertEqual(d.toString(), "")

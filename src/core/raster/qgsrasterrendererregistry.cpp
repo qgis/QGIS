@@ -28,23 +28,37 @@
 #include "qgsrastershader.h"
 #include "qgsrastersinglecolorrenderer.h"
 #include "qgsrastertransparency.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 
 #include <QIcon>
+#include <QString>
 
-QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName,
-    QgsRasterRendererCreateFunc rendererFunction,
-    QgsRasterRendererWidgetCreateFunc widgetFunction, Qgis::RasterRendererCapabilities capabilities )
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultRedBand
+  = new QgsSettingsEntryInteger( u"default-red-band"_s, QgsSettingsTree::sTreeRaster, 1, u"Default band number assigned to the red channel when creating an RGB renderer for a multi-band raster."_s );
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultGreenBand
+  = new QgsSettingsEntryInteger( u"default-green-band"_s, QgsSettingsTree::sTreeRaster, 2, u"Default band number assigned to the green channel when creating an RGB renderer for a multi-band raster."_s );
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultBlueBand
+  = new QgsSettingsEntryInteger( u"default-blue-band"_s, QgsSettingsTree::sTreeRaster, 3, u"Default band number assigned to the blue channel when creating an RGB renderer for a multi-band raster."_s );
+const QgsSettingsEntryBool *QgsRasterRendererRegistry::settingsUseStandardDeviation
+  = new QgsSettingsEntryBool( u"use-standard-deviation"_s, QgsSettingsTree::sTreeRaster, false, u"If true, newly created raster renderers use a standard-deviation based contrast enhancement by default."_s );
+const QgsSettingsEntryDouble *QgsRasterRendererRegistry::settingsDefaultStandardDeviation
+  = new QgsSettingsEntryDouble( u"default-standard-deviation"_s, QgsSettingsTree::sTreeRaster, 2.0, u"Default standard deviation multiplier used to compute min/max values for raster contrast enhancement when \"use-standard-deviation\" is enabled."_s );
+
+QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(
+  const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction, QgsRasterRendererWidgetCreateFunc widgetFunction, Qgis::RasterRendererCapabilities capabilities
+)
   : name( name )
   , visibleName( visibleName )
   , capabilities( capabilities )
   , rendererCreateFunction( rendererFunction )
   , widgetCreateFunction( widgetFunction )
-{
-}
+{}
 
 QIcon QgsRasterRendererRegistryEntry::icon()
 {
@@ -54,22 +68,14 @@ QIcon QgsRasterRendererRegistryEntry::icon()
 QgsRasterRendererRegistry::QgsRasterRendererRegistry()
 {
   // insert items in a particular order, which is returned in renderersList()
-  insert( QgsRasterRendererRegistryEntry( u"multibandcolor"_s, QObject::tr( "Multiband color" ),
-                                          QgsMultiBandColorRenderer::create, nullptr,
-                                          Qgis::RasterRendererCapability::UsesMultipleBands ) );
+  insert( QgsRasterRendererRegistryEntry( u"multibandcolor"_s, QObject::tr( "Multiband color" ), QgsMultiBandColorRenderer::create, nullptr, Qgis::RasterRendererCapability::UsesMultipleBands ) );
   insert( QgsRasterRendererRegistryEntry( u"paletted"_s, QObject::tr( "Paletted/Unique values" ), QgsPalettedRasterRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( u"singlebandgray"_s, QObject::tr( "Singleband gray" ),
-                                          QgsSingleBandGrayRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( u"singlebandpseudocolor"_s, QObject::tr( "Singleband pseudocolor" ),
-                                          QgsSingleBandPseudoColorRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( u"singlebandcolordata"_s, QObject::tr( "Singleband color data" ),
-                                          QgsSingleBandColorDataRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( u"singlecolor"_s, QObject::tr( "Single color" ),
-                                          QgsRasterSingleColorRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( u"hillshade"_s, QObject::tr( "Hillshade" ),
-                                          QgsHillshadeRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( u"contour"_s, QObject::tr( "Contours" ),
-                                          QgsRasterContourRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( u"singlebandgray"_s, QObject::tr( "Singleband gray" ), QgsSingleBandGrayRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( u"singlebandpseudocolor"_s, QObject::tr( "Singleband pseudocolor" ), QgsSingleBandPseudoColorRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( u"singlebandcolordata"_s, QObject::tr( "Singleband color data" ), QgsSingleBandColorDataRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( u"singlecolor"_s, QObject::tr( "Single color" ), QgsRasterSingleColorRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( u"hillshade"_s, QObject::tr( "Hillshade" ), QgsHillshadeRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( u"contour"_s, QObject::tr( "Contours" ), QgsRasterContourRenderer::create, nullptr ) );
 }
 
 void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry &entry )
@@ -143,7 +149,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       if ( provider->attributeTable( grayBand ) )
       {
         std::unique_ptr<QgsColorRamp> ramp;
-        if ( ! provider->attributeTable( grayBand )->hasColor() )
+        if ( !provider->attributeTable( grayBand )->hasColor() )
         {
           ramp = std::make_unique< QgsRandomColorRamp >();
         }
@@ -165,12 +171,11 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       }
 
       // last preference -- just fallback to single band gray renderer if we couldn't determine color palette
-      if ( ! renderer )
+      if ( !renderer )
       {
         renderer = std::make_unique< QgsSingleBandGrayRenderer >( provider, grayBand );
 
-        QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
-              provider->dataType( grayBand ) ) );
+        QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType ) ( provider->dataType( grayBand ) ) );
 
         // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
         qgis::down_cast< QgsSingleBandGrayRenderer * >( renderer.get() )->setContrastEnhancement( ce );
@@ -190,17 +195,16 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
         renderer.reset( rat->createRenderer( provider, grayBand ) );
       }
 
-      if ( ! ratErrorMessage.isEmpty() )
+      if ( !ratErrorMessage.isEmpty() )
       {
         QgsDebugMsgLevel( u"Invalid RAT from band 1, RAT was not used to create the renderer: %1."_s.arg( ratErrorMessage ), 2 );
       }
 
-      if ( ! renderer )
+      if ( !renderer )
       {
         renderer = std::make_unique< QgsSingleBandGrayRenderer >( provider, grayBand );
 
-        QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
-              provider->dataType( grayBand ) ) );
+        QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType ) ( provider->dataType( grayBand ) ) );
 
         // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
         qgis::down_cast< QgsSingleBandGrayRenderer * >( renderer.get() )->setContrastEnhancement( ce );
@@ -221,19 +225,17 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     }
     case Qgis::RasterDrawingStyle::MultiBandColor:
     {
-      const QgsSettings s;
-
-      int redBand = s.value( u"/Raster/defaultRedBand"_s, 1 ).toInt();
+      int redBand = settingsDefaultRedBand->value();
       if ( redBand < 0 || redBand > provider->bandCount() )
       {
         redBand = -1;
       }
-      int greenBand = s.value( u"/Raster/defaultGreenBand"_s, 2 ).toInt();
+      int greenBand = settingsDefaultGreenBand->value();
       if ( greenBand < 0 || greenBand > provider->bandCount() )
       {
         greenBand = -1;
       }
-      int blueBand = s.value( u"/Raster/defaultBlueBand"_s, 3 ).toInt();
+      int blueBand = settingsDefaultBlueBand->value();
       if ( blueBand < 0 || blueBand > provider->bandCount() )
       {
         blueBand = -1;
@@ -275,12 +277,11 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
   minValue = 0;
   maxValue = 0;
 
-  const QgsSettings s;
-  if ( s.value( u"/Raster/useStandardDeviation"_s, false ).toBool() )
+  if ( settingsUseStandardDeviation->value() )
   {
     const QgsRasterBandStats stats = provider->bandStatistics( band, Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev );
 
-    const double stdDevFactor = s.value( u"/Raster/defaultStandardDeviation"_s, 2.0 ).toDouble();
+    const double stdDevFactor = settingsDefaultStandardDeviation->value();
     const double diff = stdDevFactor * stats.stdDev;
     minValue = stats.mean - diff;
     maxValue = stats.mean + diff;

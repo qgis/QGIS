@@ -34,6 +34,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsMapToolTrimExtendFeature : public QObject
 {
     Q_OBJECT
@@ -106,9 +108,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       QVERIFY( vlMultiLine->isValid() );
       QgsFeature multi( vlMultiLine->dataProvider()->fields(), 1 );
       multi.setAttribute( u"pk"_s, 1 );
-      multi.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-        "MultiLineString ((10 0, 14 0),(11 1, 11 0.5),(14 -2, 14 2))"
-      ) ) );
+      multi.setGeometry( QgsGeometry::fromWkt( u"MultiLineString ((10 0, 14 0),(11 1, 11 0.5),(14 -2, 14 2))"_s ) );
 
       vlMultiLine->dataProvider()->addFeatures( QgsFeatureList() << multi );
 
@@ -123,14 +123,10 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       QVERIFY( vlLineZ->isValid() );
       QgsFeature linez( vlLineZ->dataProvider()->fields(), 1 );
       linez.setAttribute( u"pk"_s, 1 );
-      linez.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-        "LineStringZ (3 5 5, 2 6 10)"
-      ) ) );
+      linez.setGeometry( QgsGeometry::fromWkt( u"LineStringZ (3 5 5, 2 6 10)"_s ) );
       QgsFeature linez2( vlLineZ->dataProvider()->fields(), 2 );
       linez2.setAttribute( u"pk"_s, 2 );
-      linez2.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-        "LineStringZ (0 5 100, 3 8 200)"
-      ) ) );
+      linez2.setGeometry( QgsGeometry::fromWkt( u"LineStringZ (0 5 100, 3 8 200)"_s ) );
 
       vlLineZ->dataProvider()->addFeatures( QgsFeatureList() << linez << linez2 );
 
@@ -217,10 +213,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       mCanvas->setSnappingUtils( mSnappingUtils );
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
 
     void testPolygon()
@@ -240,34 +233,16 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       // Limit
       QgsPointXY pt;
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 0, 0 );
-      std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      ) );
+      auto event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       // Extend
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1.5 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
 
@@ -304,34 +279,16 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       // Limit
       QgsPointXY pt;
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 12, 0 );
-      std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      ) );
+      auto event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       // Extend
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 11, 0.8 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       /*
@@ -349,35 +306,17 @@ class TestQgsMapToolTrimExtendFeature : public QObject
 
       // Limit
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 12, 0 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       // Extend
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 14, 1 );
 
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       /*
@@ -398,34 +337,16 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       vlMultiLine->startEditing();
       // Limit
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 12, 0 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       // Extend
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 14, -1 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       /*
@@ -456,34 +377,16 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       // Limit
       QgsPointXY pt;
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 0, 5 );
-      std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      ) );
+      auto event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       // Extend
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 5 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
 
@@ -514,34 +417,16 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       // Limit
       QgsPointXY pt;
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 30, 15 );
-      std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      ) );
+      auto event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       // Extend
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 22, 15 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       const QgsFeature fEdit = vlTopoEdit->getFeature( 1 );
@@ -578,36 +463,16 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       // Limit
       QgsPointXY pt;
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 3 );
-      std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      ) );
+      auto event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       // Extend
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 2, 5 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton,
-        Qt::NoButton,
-        Qt::ShiftModifier
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton, Qt::NoButton, Qt::ShiftModifier );
       tool->canvasReleaseEvent( event.get() );
 
 
@@ -631,18 +496,9 @@ class TestQgsMapToolTrimExtendFeature : public QObject
 
       // Extend 2
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 4, 1 );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseMove,
-        pt.toQPointF().toPoint()
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseMove, pt.toQPointF().toPoint() );
       tool->canvasMoveEvent( event.get() );
-      event = std::make_unique<QgsMapMouseEvent>(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        pt.toQPointF().toPoint(),
-        Qt::LeftButton
-      );
+      event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, pt.toQPointF().toPoint(), Qt::LeftButton );
       tool->canvasReleaseEvent( event.get() );
 
       /*             + (2, 6)

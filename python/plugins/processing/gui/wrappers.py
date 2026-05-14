@@ -22,102 +22,100 @@ __copyright__ = "(C) 2016, Arnaud Morvan"
 
 import os
 import re
-from inspect import isclass
 from copy import deepcopy
+from inspect import isclass
 
 from qgis.core import (
+    NULL,
+    Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsExpression,
     QgsFieldProxyModel,
-    QgsSettings,
-    QgsProject,
     QgsMapLayerType,
-    QgsVectorLayer,
     QgsProcessing,
-    QgsProcessingUtils,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterBoolean,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterExtent,
-    QgsProcessingParameterPoint,
-    QgsProcessingParameterFile,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterString,
-    QgsProcessingParameterExpression,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterMeshLayer,
-    QgsProcessingParameterField,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterMapLayer,
-    QgsProcessingParameterBand,
-    QgsProcessingParameterMatrix,
-    QgsProcessingParameterDistance,
-    QgsProcessingParameterDuration,
     QgsProcessingFeatureSourceDefinition,
-    QgsProcessingOutputRasterLayer,
-    QgsProcessingOutputVectorLayer,
+    QgsProcessingModelChildParameterSource,
+    QgsProcessingOutputFile,
     QgsProcessingOutputMapLayer,
     QgsProcessingOutputMultipleLayers,
-    QgsProcessingOutputFile,
-    QgsProcessingOutputString,
     QgsProcessingOutputNumber,
-    QgsProcessingModelChildParameterSource,
-    NULL,
-    Qgis,
+    QgsProcessingOutputRasterLayer,
+    QgsProcessingOutputString,
+    QgsProcessingOutputVectorLayer,
+    QgsProcessingParameterBand,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterDuration,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterExpression,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterMapLayer,
+    QgsProcessingParameterMatrix,
+    QgsProcessingParameterMeshLayer,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterPoint,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingUtils,
+    QgsProject,
+    QgsSettings,
+    QgsVectorLayer,
 )
-
+from qgis.gui import (
+    QgsAbstractProcessingParameterWidgetWrapper,
+    QgsExpressionBuilderDialog,
+    QgsExpressionLineEdit,
+    QgsFieldComboBox,
+    QgsFieldExpressionWidget,
+    QgsGui,
+    QgsMapLayerComboBox,
+    QgsProcessingGui,
+    QgsProcessingMapLayerComboBox,
+    QgsProjectionSelectionDialog,
+    QgsProjectionSelectionWidget,
+    QgsRasterBandComboBox,
+)
+from qgis.PyQt.QtCore import Qt, QVariant
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QComboBox,
-    QLabel,
     QDialog,
     QFileDialog,
     QHBoxLayout,
+    QLabel,
     QLineEdit,
     QPlainTextEdit,
+    QSizePolicy,
     QToolButton,
     QWidget,
-    QSizePolicy,
 )
-from qgis.PyQt.QtGui import QIcon
-from qgis.gui import (
-    QgsGui,
-    QgsExpressionLineEdit,
-    QgsExpressionBuilderDialog,
-    QgsFieldComboBox,
-    QgsFieldExpressionWidget,
-    QgsProjectionSelectionDialog,
-    QgsMapLayerComboBox,
-    QgsProjectionSelectionWidget,
-    QgsRasterBandComboBox,
-    QgsProcessingGui,
-    QgsAbstractProcessingParameterWidgetWrapper,
-    QgsProcessingMapLayerComboBox,
-)
-from qgis.PyQt.QtCore import QVariant, Qt
 from qgis.utils import iface
 
+from processing.core.exceptions import InvalidParameterValue
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.modeler.MultilineTextPanel import MultilineTextPanel
-
-from processing.gui.NumberInputPanel import (
-    NumberInputPanel,
-    ModelerNumberInputPanel,
-    DistanceInputPanel,
-)
-from processing.gui.RangePanel import RangePanel
-from processing.gui.PointSelectionPanel import PointSelectionPanel
-from processing.gui.FileSelectionPanel import FileSelectionPanel
-from processing.gui.CheckboxesPanel import CheckboxesPanel
-from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
-from processing.gui.FixedTablePanel import FixedTablePanel
+from processing.gui.CheckboxesPanel import CheckboxesPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
-
+from processing.gui.FileSelectionPanel import FileSelectionPanel
+from processing.gui.FixedTablePanel import FixedTablePanel
+from processing.gui.MultipleInputPanel import MultipleInputPanel
+from processing.gui.NumberInputPanel import (
+    DistanceInputPanel,
+    ModelerNumberInputPanel,
+    NumberInputPanel,
+)
+from processing.gui.PointSelectionPanel import PointSelectionPanel
+from processing.gui.RangePanel import RangePanel
+from processing.modeler.MultilineTextPanel import MultilineTextPanel
 from processing.tools import dataobjects
 
 DIALOG_STANDARD = QgsProcessingGui.WidgetType.Standard
@@ -127,12 +125,8 @@ DIALOG_MODELER = QgsProcessingGui.WidgetType.Modeler
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class InvalidParameterValue(Exception):
-    pass
-
-
 dialogTypes = {
-    "AlgorithmDialog": DIALOG_STANDARD,
+    "AlgorithmWidget": DIALOG_STANDARD,
     "ModelerParametersDialog": DIALOG_MODELER,
     "BatchAlgorithmDialog": DIALOG_BATCH,
 }
@@ -174,7 +168,7 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
         if idx < 0:
             v = combobox.currentText().strip()
             if validator is not None and not validator(v):
-                raise InvalidParameterValue()
+                raise InvalidParameterValue(self.param, self.widget)
             return v
         if combobox.currentData() == self.NOT_SET_OPTION:
             return None
@@ -267,7 +261,6 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
 
 
 class BasicWidgetWrapper(WidgetWrapper):
-
     def createWidget(self):
         return QLineEdit()
 
@@ -279,7 +272,6 @@ class BasicWidgetWrapper(WidgetWrapper):
 
 
 class BooleanWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -335,7 +327,6 @@ class BooleanWidgetWrapper(WidgetWrapper):
 
 
 class CrsWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -524,25 +515,24 @@ class ExtentWidgetWrapper(WidgetWrapper):
                     try:
                         tokens = s.split(",")
                         if len(tokens) != 4:
-                            raise InvalidParameterValue()
+                            raise InvalidParameterValue(self.param, self.widget)
                         for token in tokens:
                             float(token)
                     except:
-                        raise InvalidParameterValue()
+                        raise InvalidParameterValue(self.param, self.widget)
                 elif (
                     self.parameterDefinition().flags()
                     & QgsProcessingParameterDefinition.Flag.FlagOptional
                 ):
                     s = None
                 else:
-                    raise InvalidParameterValue()
+                    raise InvalidParameterValue(self.param, self.widget)
                 return s
             else:
                 return self.widget.currentData()
 
 
 class PointWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -594,25 +584,24 @@ class PointWidgetWrapper(WidgetWrapper):
                     try:
                         tokens = s.split(",")
                         if len(tokens) != 2:
-                            raise InvalidParameterValue()
+                            raise InvalidParameterValue(self.param, self.widget)
                         for token in tokens:
                             float(token)
                     except:
-                        raise InvalidParameterValue()
+                        raise InvalidParameterValue(self.param, self.widget)
                 elif (
                     self.parameterDefinition().flags()
                     & QgsProcessingParameterDefinition.Flag.FlagOptional
                 ):
                     s = None
                 else:
-                    raise InvalidParameterValue()
+                    raise InvalidParameterValue(self.param, self.widget)
                 return s
             else:
                 return self.widget.currentData()
 
 
 class FileWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -712,7 +701,6 @@ class FileWidgetWrapper(WidgetWrapper):
 
 
 class FixedTableWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -751,7 +739,6 @@ class FixedTableWidgetWrapper(WidgetWrapper):
 
 
 class MultipleLayerWidgetWrapper(WidgetWrapper):
-
     def _getOptions(self):
         if (
             self.parameterDefinition().layerType()
@@ -1113,12 +1100,11 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                 and not self.parameterDefinition().flags()
                 & QgsProcessingParameterDefinition.Flag.FlagOptional
             ):
-                raise InvalidParameterValue()
+                raise InvalidParameterValue(self.param, self.widget)
             return values
 
 
 class NumberWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -1169,7 +1155,6 @@ class NumberWidgetWrapper(WidgetWrapper):
 
 
 class DistanceWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -1225,7 +1210,6 @@ class DistanceWidgetWrapper(WidgetWrapper):
 
 
 class RangeWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -1400,7 +1384,6 @@ class MapLayerWidgetWrapper(WidgetWrapper):
 
 
 class RasterWidgetWrapper(MapLayerWidgetWrapper):
-
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.14
@@ -1445,7 +1428,6 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
 
 
 class MeshWidgetWrapper(MapLayerWidgetWrapper):
-
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.14
@@ -1698,7 +1680,6 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
 
 
 class StringWidgetWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
@@ -1804,7 +1785,7 @@ class StringWidgetWrapper(WidgetWrapper):
                         ):
                             return None
                         else:
-                            raise InvalidParameterValue()
+                            raise InvalidParameterValue(self.param, self.widget)
                     else:
                         return value
                 else:
@@ -1822,7 +1803,6 @@ class StringWidgetWrapper(WidgetWrapper):
 
 
 class ExpressionWidgetWrapper(WidgetWrapper):
-
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.4

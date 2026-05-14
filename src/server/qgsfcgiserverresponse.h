@@ -19,8 +19,6 @@
 #ifndef QGSFCGISERVERRESPONSE_H
 #define QGSFCGISERVERRESPONSE_H
 
-#define SIP_NO_FILE
-
 
 #include <mutex>
 #include <thread>
@@ -29,6 +27,8 @@
 #include "qgsserverresponse.h"
 
 #include <QBuffer>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup server

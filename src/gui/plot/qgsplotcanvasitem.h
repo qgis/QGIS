@@ -44,7 +44,7 @@ class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
       sipType = sipType_QgsPlotCanvasItem;
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
 
   protected:

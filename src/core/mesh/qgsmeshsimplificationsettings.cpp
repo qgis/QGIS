@@ -17,6 +17,10 @@
 
 #include "qgsmeshsimplificationsettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 bool QgsMeshSimplificationSettings::isEnabled() const
 {
   return mEnabled;

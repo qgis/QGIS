@@ -19,7 +19,10 @@
 #include "qgsdatetimefieldformatter.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <qdatetime.h>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsDateTimeEdit : public QObject
 {
@@ -46,12 +49,10 @@ class TestQgsDateTimeEdit : public QObject
 };
 
 void TestQgsDateTimeEdit::initTestCase()
-{
-}
+{}
 
 void TestQgsDateTimeEdit::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsDateTimeEdit::init()
 {
@@ -88,8 +89,7 @@ void TestQgsDateTimeEdit::init()
 }
 
 void TestQgsDateTimeEdit::cleanup()
-{
-}
+{}
 
 void TestQgsDateTimeEdit::nullValues()
 {

@@ -34,7 +34,6 @@ class QgsExpressionContext;
 class CORE_EXPORT QgsLabelPlacementSettings
 {
   public:
-
     /**
      * Returns the technique used to handle overlapping labels.
      * \see setOverlapHandling()
@@ -88,18 +87,55 @@ class CORE_EXPORT QgsLabelPlacementSettings
     void setPrioritization( Qgis::LabelPrioritization prioritization ) { mPrioritization = prioritization; }
 
     /**
+     * Returns the multipart labeling behavior.
+     *
+     * \see setMultiPartBehavior()
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::MultiPartLabelingBehavior multiPartBehavior() const { return mMultiPartBehavior; }
+
+    /**
+     * Sets the multipart labeling \a behavior.
+     *
+     * \see multiPartBehavior()
+     *
+     * \since QGIS 4.0
+     */
+    void setMultiPartBehavior( Qgis::MultiPartLabelingBehavior behavior ) { mMultiPartBehavior = behavior; }
+
+    /**
+     * Returns the whitespace collision handling.
+     *
+     * \see setWhitespaceCollisionHandling()
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::LabelWhitespaceCollisionHandling whitespaceCollisionHandling() const { return mWhitespaceCollisionHandling; }
+
+    /**
+     * Sets the whitespace collision \a handling.
+     *
+     * \see whitespaceCollisionHandling()
+     *
+     * \since QGIS 4.0
+     */
+    void setWhitespaceCollisionHandling( Qgis::LabelWhitespaceCollisionHandling handling ) { mWhitespaceCollisionHandling = handling; }
+
+    /**
      * Updates the placement settings to respect any data defined properties
      * set within the specified \a properties collection.
      */
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 
   private:
-
     Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
     Qgis::LabelPrioritization mPrioritization = Qgis::LabelPrioritization::PreferCloser;
 
     bool mAllowDegradedPlacement = false;
 
+    Qgis::MultiPartLabelingBehavior mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
+    Qgis::LabelWhitespaceCollisionHandling mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
 };
 
 #endif // QGSLABELPLACEMENTSETTINGS_H

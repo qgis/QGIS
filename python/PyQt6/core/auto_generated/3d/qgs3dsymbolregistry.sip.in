@@ -27,7 +27,6 @@ Stores metadata about one 3D symbol class.
 #include "qgs3dsymbolregistry.h"
 %End
   public:
-
     Qgs3DSymbolAbstractMetadata( const QString &type, const QString &visibleName );
 %Docstring
 Constructor for Qgs3DSymbolAbstractMetadata, with the specified ``type``
@@ -76,7 +75,6 @@ through :py:func:`QgsApplication.symbol3DRegistry()`.
 #include "qgs3dsymbolregistry.h"
 %End
   public:
-
     Qgs3DSymbolRegistry();
     ~Qgs3DSymbolRegistry();
 

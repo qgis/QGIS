@@ -69,7 +69,9 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      */
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsVectorLayerSaveAsDialog(
+      QgsVectorLayer *layer, QgsVectorLayerSaveAsDialog::Options options = QgsVectorLayerSaveAsDialog::Option::AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags()
+    );
 
     /**
      * Returns the selected format in which the export should be written.
@@ -263,6 +265,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void mUseAliasesForExportedName_stateChanged( int state );
     void mReplaceRawFieldValues_stateChanged( int state );
     void mAttributeTable_itemChanged( QTableWidgetItem *item );
+    void setCrsForFormat();
 
   private:
     enum class ColumnIndex : int
@@ -280,12 +283,16 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
+    QgsCoordinateReferenceSystem mUserDefinedCrs;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
     Options mOptions = Option::AllOptions;
     QString mDefaultOutputLayerNameFromInputLayerName;
     bool mAddToCanvasStateOnOpenCompatibleDriver = true;
+    QHash<QString, QPair<bool, std::optional<bool>>> mFieldsState;
+    QString mPreviousFormat;
+    bool mCrsDefinedByFormat = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorLayerSaveAsDialog::Options )

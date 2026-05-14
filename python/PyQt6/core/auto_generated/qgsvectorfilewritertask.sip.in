@@ -28,11 +28,7 @@ the QGIS interface.
 #include "qgsvectorfilewritertask.h"
 %End
   public:
-
-    QgsVectorFileWriterTask( QgsVectorLayer *layer,
-                             const QString &fileName,
-                             const QgsVectorFileWriter::SaveVectorOptions &options,
-                             QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
+    QgsVectorFileWriterTask( QgsVectorLayer *layer, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 %Docstring
 Constructor for QgsVectorFileWriterTask. Takes a source ``layer``,
 destination ``fileName`` and save ``options``.
@@ -64,7 +60,6 @@ will be reported.
 %End
 
   protected:
-
     virtual bool run();
 
     virtual void finished( bool result );

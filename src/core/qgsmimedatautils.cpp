@@ -22,7 +22,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
@@ -58,10 +61,7 @@ QgsMimeDataUtils::Uri::Uri( const QString &encData )
   if ( decoded.size() > 9 )
     filePath = decoded.at( 9 );
 
-  QgsDebugMsgLevel( u"type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6"_s
-                    .arg( layerType, providerKey, name, uri,
-                          supportedCrs.join( ',' ),
-                          supportedFormats.join( ',' ) ), 2 );
+  QgsDebugMsgLevel( u"type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6"_s.arg( layerType, providerKey, name, uri, supportedCrs.join( ',' ), supportedFormats.join( ',' ) ), 2 );
 }
 
 QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
@@ -100,17 +100,7 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
 
 QString QgsMimeDataUtils::Uri::data() const
 {
-  return encode( { layerType,
-                   providerKey,
-                   name,
-                   uri,
-                   encode( supportedCrs ),
-                   encode( supportedFormats ),
-                   layerId,
-                   pId,
-                   QgsWkbTypes::displayString( wkbType ),
-                   filePath
-                 } );
+  return encode( { layerType, providerKey, name, uri, encode( supportedCrs ), encode( supportedFormats ), layerId, pId, QgsWkbTypes::displayString( wkbType ), filePath } );
 }
 
 QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error ) const

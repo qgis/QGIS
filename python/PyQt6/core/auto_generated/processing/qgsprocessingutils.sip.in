@@ -24,7 +24,6 @@ Utility functions for use with processing classes.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
 %Docstring
 Returns a list of raster layers from a ``project`` which are compatible
@@ -50,9 +49,7 @@ their :py:func:`QgsMapLayer.name()` value.
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
-    static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
-        const QList< int > &sourceTypes = QList< int >(),
-        bool sort = true );
+    static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project, const QList< int > &sourceTypes = QList< int >(), bool sort = true );
 %Docstring
 Returns a list of vector layers from a ``project`` which are compatible
 with the processing framework.
@@ -294,7 +291,13 @@ with :py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
       TiledScene,
     };
 
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
+    static QgsMapLayer *mapLayerFromString(
+      const QString &string,
+      QgsProcessingContext &context,
+      bool allowLoadingNewLayers = true,
+      QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType,
+      QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags()
+    );
 %Docstring
 Interprets a string as a map layer within the supplied ``context``.
 

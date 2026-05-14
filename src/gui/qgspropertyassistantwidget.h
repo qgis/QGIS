@@ -117,7 +117,9 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
      * The \a initialState dictates the initial state to show in the widget. A corresponding \a layer
      * can also be set to allow population of GUI widgets such as field selectors.
      */
-    QgsPropertyAssistantWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty(), const QgsVectorLayer *layer = nullptr );
+    QgsPropertyAssistantWidget(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty(), const QgsVectorLayer *layer = nullptr
+    );
 
     /**
      * Register an expression context generator class that will be used to retrieve
@@ -173,7 +175,8 @@ class QgsAssistantPreviewItemDelegate : public QItemDelegate
 
   public:
     explicit QgsAssistantPreviewItemDelegate( QStandardItemModel *model )
-      : mModel( model ) {}
+      : mModel( model )
+    {}
 
     QSize sizeHint( const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override
     {

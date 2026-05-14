@@ -23,6 +23,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
@@ -46,7 +48,8 @@ class TestQgsFontMarkerSymbol : public QgsTest
 
   public:
     TestQgsFontMarkerSymbol()
-      : QgsTest( u"Font Marker Tests"_s, u"symbol_fontmarker"_s ) {}
+      : QgsTest( u"Font Marker Tests"_s, u"symbol_fontmarker"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

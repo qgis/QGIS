@@ -30,9 +30,12 @@
 #include <QPicture>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgseffectstackpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -56,10 +59,7 @@ class EffectItem : public QStandardItem
 
     int type() const override { return EFFECT_ITEM_TYPE; }
 
-    QgsPaintEffect *effect()
-    {
-      return mEffect;
-    }
+    QgsPaintEffect *effect() { return mEffect; }
 
     QVariant data( int role ) const override
     {

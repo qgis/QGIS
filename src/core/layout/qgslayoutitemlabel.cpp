@@ -30,7 +30,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
@@ -39,19 +39,21 @@
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
 #include <QTextDocument>
 
 #include "moc_qgslayoutitemlabel.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
-  mDistanceArea = std::make_unique<QgsDistanceArea>( );
+  mDistanceArea = std::make_unique<QgsDistanceArea>();
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
 
   //get default layout font from settings
-  const QgsSettings settings;
-  const QString defaultFontString = settings.value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+  const QString defaultFontString = QgsLayout::settingsLayoutDefaultFont->value();
   if ( !defaultFontString.isEmpty() )
   {
     QFont f = mFormat.font();
@@ -63,10 +65,7 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   mFormat.setSize( 10 );
   mFormat.setSizeUnit( Qgis::RenderUnit::Points );
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
-    updateBoundingRect();
-  } );
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] { updateBoundingRect(); } );
 
   //default to no background
   setBackgroundEnabled( false );
@@ -104,10 +103,8 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
   if ( mMode == QgsLayoutItemLabel::ModeFont )
   {
     const double rectScale = context.renderContext().scaleFactor();
-    painterRect = QRectF( ( xPenAdjust + mMarginX ) * rectScale,
-                          ( yPenAdjust + mMarginY ) * rectScale,
-                          ( rect().width() - 2 * xPenAdjust - 2 * mMarginX ) * rectScale,
-                          ( rect().height() - 2 * yPenAdjust - 2 * mMarginY ) * rectScale );
+    painterRect
+      = QRectF( ( xPenAdjust + mMarginX ) * rectScale, ( yPenAdjust + mMarginY ) * rectScale, ( rect().width() - 2 * xPenAdjust - 2 * mMarginX ) * rectScale, ( rect().height() - 2 * yPenAdjust - 2 * mMarginY ) * rectScale );
   }
   else
   {
@@ -119,9 +116,7 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
 #endif
     const double rectScale = context.renderContext().scaleFactor() * adjustmentFactor;
     // The left/right margin is handled by the stylesheet while the top/bottom margin is ignored by QTextDocument
-    painterRect = QRectF( 0, 0,
-                          ( rect().width() ) * rectScale,
-                          ( rect().height() - yPenAdjust - mMarginY ) * rectScale );
+    painterRect = QRectF( 0, 0, ( rect().width() ) * rectScale, ( rect().height() - yPenAdjust - mMarginY ) * rectScale );
     painter->translate( 0, ( yPenAdjust + mMarginY ) * context.renderContext().scaleFactor() );
     painter->scale( context.renderContext().scaleFactor() / adjustmentFactor, context.renderContext().scaleFactor() / adjustmentFactor );
   }
@@ -149,14 +144,8 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
     case ModeFont:
     {
       context.renderContext().setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
-      QgsTextRenderer::drawText( painterRect, 0,
-                                 QgsTextRenderer::convertQtHAlignment( mHAlignment ),
-                                 currentText().split( '\n' ),
-                                 context.renderContext(),
-                                 mFormat,
-                                 true,
-                                 QgsTextRenderer::convertQtVAlignment( mVAlignment ),
-                                 Qgis::TextRendererFlag::WrapLines );
+      QgsTextRenderer::
+        drawText( painterRect, 0, QgsTextRenderer::convertQtHAlignment( mHAlignment ), currentText().split( '\n' ), context.renderContext(), mFormat, true, QgsTextRenderer::convertQtVAlignment( mVAlignment ), Qgis::TextRendererFlag::WrapLines );
       break;
     }
   }
@@ -276,10 +265,7 @@ void QgsLayoutItemLabel::replaceDateText( QString &text ) const
     QString formatText;
     const int openingBracketPos = text.indexOf( '(', currentDatePos );
     const int closingBracketPos = text.indexOf( ')', openingBracketPos + 1 );
-    if ( openingBracketPos != -1 &&
-         closingBracketPos != -1 &&
-         ( closingBracketPos - openingBracketPos ) > 1 &&
-         openingBracketPos == currentDatePos + constant.size() )
+    if ( openingBracketPos != -1 && closingBracketPos != -1 && ( closingBracketPos - openingBracketPos ) > 1 && openingBracketPos == currentDatePos + constant.size() )
     {
       formatText = text.mid( openingBracketPos + 1, closingBracketPos - openingBracketPos - 1 );
       text.replace( currentDatePos, closingBracketPos - currentDatePos + 1, QDate::currentDate().toString( formatText ) );
@@ -361,12 +347,12 @@ void QgsLayoutItemLabel::adjustSizeToText( ReferencePoint referencePoint )
       yShift = 0;
       break;
     case QgsLayoutItem::UpperMiddle:
-      xShift = - ( newWidth - currentWidth ) / 2.0;
+      xShift = -( newWidth - currentWidth ) / 2.0;
       yShift = 0;
       break;
 
     case QgsLayoutItem::UpperRight:
-      xShift = - ( newWidth - currentWidth );
+      xShift = -( newWidth - currentWidth );
       yShift = 0;
       break;
 
@@ -376,28 +362,28 @@ void QgsLayoutItemLabel::adjustSizeToText( ReferencePoint referencePoint )
       break;
 
     case QgsLayoutItem::Middle:
-      xShift = - ( newWidth - currentWidth ) / 2.0;
+      xShift = -( newWidth - currentWidth ) / 2.0;
       yShift = -( newHeight - currentHeight ) / 2.0;
       break;
 
     case QgsLayoutItem::MiddleRight:
-      xShift = - ( newWidth - currentWidth );
+      xShift = -( newWidth - currentWidth );
       yShift = -( newHeight - currentHeight ) / 2.0;
       break;
 
     case QgsLayoutItem::LowerLeft:
       xShift = 0;
-      yShift = - ( newHeight - currentHeight );
+      yShift = -( newHeight - currentHeight );
       break;
 
     case QgsLayoutItem::LowerMiddle:
-      xShift = - ( newWidth - currentWidth ) / 2.0;
-      yShift = - ( newHeight - currentHeight );
+      xShift = -( newWidth - currentWidth ) / 2.0;
+      yShift = -( newHeight - currentHeight );
       break;
 
     case QgsLayoutItem::LowerRight:
-      xShift = - ( newWidth - currentWidth );
-      yShift = - ( newHeight - currentHeight );
+      xShift = -( newWidth - currentWidth );
+      yShift = -( newHeight - currentHeight );
       break;
   }
 
@@ -534,7 +520,6 @@ QString QgsLayoutItemLabel::displayName() const
 
     case ModeFont:
     {
-
       //if no id, default to portion of label text
       const QString text = mText;
       if ( text.isEmpty() )
@@ -600,11 +585,11 @@ void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight,
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
-      xShift = - ( newWidth - currentWidth ) / 2.0;
+      xShift = -( newWidth - currentWidth ) / 2.0;
     }
     else if ( mHAlignment == Qt::AlignRight )
     {
-      xShift = - ( newWidth - currentWidth );
+      xShift = -( newWidth - currentWidth );
     }
     if ( mVAlignment == Qt::AlignVCenter )
     {
@@ -612,18 +597,18 @@ void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight,
     }
     else if ( mVAlignment == Qt::AlignBottom )
     {
-      yShift = - ( newHeight - currentHeight );
+      yShift = -( newHeight - currentHeight );
     }
   }
   if ( r >= 90 && r < 180 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
-      yShift = -( newHeight  - currentHeight ) / 2.0;
+      yShift = -( newHeight - currentHeight ) / 2.0;
     }
     else if ( mHAlignment == Qt::AlignRight )
     {
-      yShift = -( newHeight  - currentHeight );
+      yShift = -( newHeight - currentHeight );
     }
     if ( mVAlignment == Qt::AlignTop )
     {
@@ -657,11 +642,11 @@ void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight,
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
-      yShift = -( newHeight  - currentHeight ) / 2.0;
+      yShift = -( newHeight - currentHeight ) / 2.0;
     }
     else if ( mHAlignment == Qt::AlignLeft )
     {
-      yShift = -( newHeight  - currentHeight );
+      yShift = -( newHeight - currentHeight );
     }
     if ( mVAlignment == Qt::AlignBottom )
     {

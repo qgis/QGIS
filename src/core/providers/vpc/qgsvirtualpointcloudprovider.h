@@ -23,19 +23,20 @@
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsCopcPointCloudIndex;
 class QgsRemoteCopcPointCloudIndex;
 
-class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
+class QTimer;
+
+class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvider
 {
     Q_OBJECT
   public:
-    QgsVirtualPointCloudProvider( const QString &uri,
-                                  const QgsDataProvider::ProviderOptions &providerOptions,
-                                  Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsVirtualPointCloudProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsVirtualPointCloudProvider() override;
 
@@ -51,21 +52,21 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsPointCloudIndex index() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
-    void loadIndex( ) override;
-    void generateIndex( ) override;
-    PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
+    void loadIndex() override;
+    void generateIndex() override;
+    PointCloudIndexGenerationState indexingState() override { return PointCloudIndexGenerationState::Indexed; }
     QgsGeometry polygonBounds() const override;
     QVector<QgsPointCloudSubIndex> subIndexes() override { return mSubLayers; }
-    void loadSubIndex( int i ) override;
+    void loadSubIndex( int i, bool emitDataChanged = false ) override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = false ) override;
     QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override SIP_FACTORY;
     bool renderInPreview( const QgsDataProvider::PreviewContext & ) override { return false; }
 
     /**
-     * Returns pointer to the overview index. May be NULLPTR if it doesn't exist.
-     * \since QGIS 3.42
+     * Returns a list of all overview indexes.
+     * \since QGIS 4.2
      */
-    QgsPointCloudIndex overview() const { return mOverview; }
+    QVector<QgsPointCloudIndex> overviews() const { return mOverviews; }
 
     /**
      * Returns the calculated average width of point clouds.
@@ -81,16 +82,32 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
      */
     double averageSubIndexHeight() const { return mAverageSubIndexHeight; }
 
+
+    /**
+     * Returns whether the VPC contains unsupported files (files other than COPC or EPT).
+     *
+     * \since QGIS 4.0
+     */
+    bool containsUnsupportedFiles() const { return mContainsUnsupportedFiles; }
+
   signals:
     void subIndexLoaded( int i );
 
   private:
     void parseFile();
+    QByteArray readFileContents( const QString &path );
     void populateAttributeCollection( QSet<QString> names );
+    void onFinishedLoadingSubIndex( int i );
     QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
     QgsPointCloudAttributeCollection mAttributes;
-    QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
+    QVector<QgsPointCloudIndex> mOverviews;
+    QTimer *mSubIndexLoadedRefreshTimer = nullptr; // owned and parented to this
+    QSet<int> mSubLayersBeingLoaded;
+
+    double mRedMax = std::numeric_limits<double>::lowest();
+    double mGreenMax = std::numeric_limits<double>::lowest();
+    double mBlueMax = std::numeric_limits<double>::lowest();
 
     QStringList mUriList;
     QgsRectangle mExtent;
@@ -98,6 +115,9 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsCoordinateReferenceSystem mCrs;
     double mAverageSubIndexWidth = 0;
     double mAverageSubIndexHeight = 0;
+    bool mContainsUnsupportedFiles = false;
+    bool mAllEditableFiles = true;
+    bool mAllLocalFiles = true;
 };
 
 class QgsVirtualPointCloudProviderMetadata : public QgsProviderMetadata
@@ -116,6 +136,7 @@ class QgsVirtualPointCloudProviderMetadata : public QgsProviderMetadata
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+    static bool isVpcFileName( const QString &name );
 };
 
 ///@endcond

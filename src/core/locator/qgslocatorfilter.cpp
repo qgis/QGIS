@@ -21,14 +21,16 @@
 #include "qgsmessagelog.h"
 #include "qgsstringutils.h"
 
+#include <QString>
 #include <QThread>
 
 #include "moc_qgslocatorfilter.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
 {

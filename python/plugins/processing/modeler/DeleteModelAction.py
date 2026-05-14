@@ -20,15 +20,16 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
+
 from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProject
-from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QMessageBox
+
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 
 
 class DeleteModelAction(ContextAction):
-
     def __init__(self):
         super().__init__()
         self.name = QCoreApplication.translate("DeleteModelAction", "Delete Model…")

@@ -35,11 +35,9 @@ class QgsRasterLayer;
  */
 class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterLayerElevationProperties, with the specified \a parent object.
      */
@@ -260,7 +258,6 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     static bool layerLooksLikeDem( QgsRasterLayer *layer );
 
   private:
-
     void setDefaultProfileLineSymbol( const QColor &color );
     void setDefaultProfileFillSymbol( const QColor &color );
 

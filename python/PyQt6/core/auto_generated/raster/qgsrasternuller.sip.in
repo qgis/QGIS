@@ -24,8 +24,8 @@ Raster pipe that deals with null values.
 
     struct NoData
     {
-      double min;
-      double max;
+        double min;
+        double max;
     };
 
     virtual QgsRasterNuller *clone() const /Factory/;

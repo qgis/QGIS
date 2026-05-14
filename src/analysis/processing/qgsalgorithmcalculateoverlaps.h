@@ -18,12 +18,13 @@
 #ifndef QGSALGORITHMCALCULATEOVERLAPS_H
 #define QGSALGORITHMCALCULATEOVERLAPS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerfeatureiterator.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

@@ -23,7 +23,6 @@ nodes (using the visitor pattern).
 #include "qgsstyleentityvisitor.h"
 %End
   public:
-
     enum class NodeType /BaseType=IntEnum/
     {
       Project,
@@ -42,8 +41,7 @@ nodes (using the visitor pattern).
 
     struct StyleLeaf
     {
-
-      StyleLeaf( const QgsStyleEntityInterface *entity, const QString &identifier = QString(), const QString &description = QString() );
+        StyleLeaf( const QgsStyleEntityInterface *entity, const QString &identifier = QString(), const QString &description = QString() );
 %Docstring
 Constructor for StyleLeaf, visiting the given style ``entity`` with the
 specified ``identifier`` and ``description``.
@@ -51,28 +49,26 @@ specified ``identifier`` and ``description``.
 Ownership of ``entity`` is not transferred.
 %End
 
-      QString identifier;
+        QString identifier;
 
-      QString description;
+        QString description;
 
-      const QgsStyleEntityInterface *entity;
+        const QgsStyleEntityInterface *entity;
     };
 
     struct Node
     {
-
-      Node( QgsStyleEntityVisitorInterface::NodeType type, const QString &identifier, const QString &description );
+        Node( QgsStyleEntityVisitorInterface::NodeType type, const QString &identifier, const QString &description );
 %Docstring
 Constructor for Node, visiting the node with the specified
 ``identifier`` and ``description``.
 %End
 
-      QgsStyleEntityVisitorInterface::NodeType type;
+        QgsStyleEntityVisitorInterface::NodeType type;
 
-      QString identifier;
+        QString identifier;
 
-      QString description;
-
+        QString description;
     };
 
     virtual ~QgsStyleEntityVisitorInterface();
@@ -108,7 +104,6 @@ Subclasses should return ``False`` to abort further visitations, or
 
 The default implementation returns ``True``.
 %End
-
 };
 
 /************************************************************************

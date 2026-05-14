@@ -17,13 +17,19 @@
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsfieldconstraints.h"
 #include "qgsfields.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrelationreferenceconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -120,8 +126,8 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
   mCbxMapIdentification->setChecked( config.value( u"MapIdentification"_s, false ).toBool() );
   mCbxAllowAddFeatures->setChecked( config.value( u"AllowAddFeatures"_s, false ).toBool() );
   mCbxReadOnly->setChecked( config.value( u"ReadOnly"_s, false ).toBool() );
-  mFetchLimitCheckBox->setChecked( config.value( u"FetchLimitActive"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ).toInt() > 0 ).toBool() );
-  mFetchLimit->setValue( config.value( u"FetchLimitNumber"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ) ).toInt() );
+  mFetchLimitCheckBox->setChecked( config.value( u"FetchLimitActive"_s, QgsFeatureFilterModel::settingsMaxEntriesRelationWidget->value() > 0 ).toBool() );
+  mFetchLimit->setValue( config.value( u"FetchLimitNumber"_s, QgsFeatureFilterModel::settingsMaxEntriesRelationWidget->value() ).toInt() );
 
   mOrderByExpressionWidget->setExpression( config.value( u"OrderExpression"_s ).toString() );
   mOrderByDescending->setChecked( config.value( u"OrderDescending"_s, false ).toBool() );

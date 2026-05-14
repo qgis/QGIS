@@ -12,6 +12,7 @@
 
 
 
+
 class QgsProcessing
 {
 %Docstring(signature="appended")
@@ -26,7 +27,6 @@ algorithms and parameters.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum class PythonOutputType
     {
       PythonQgsProcessingAlgorithmSubclass,

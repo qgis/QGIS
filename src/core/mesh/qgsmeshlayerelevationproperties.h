@@ -37,11 +37,9 @@ class QgsFillSymbol;
  */
 class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMeshLayerElevationProperties, with the specified \a parent object.
      */
@@ -194,7 +192,6 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     void setElevationLimit( double limit );
 
   private:
-
     void setDefaultProfileLineSymbol( const QColor &color );
     void setDefaultProfileFillSymbol( const QColor &color );
 

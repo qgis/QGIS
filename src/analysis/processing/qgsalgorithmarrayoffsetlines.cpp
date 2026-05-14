@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmarrayoffsetlines.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsCreateArrayOffsetLinesAlgorithm::name() const
@@ -51,8 +55,10 @@ QString QgsCreateArrayOffsetLinesAlgorithm::outputName() const
 
 QString QgsCreateArrayOffsetLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates copies of line features in a layer, by creating multiple offset versions of each feature. "
-                      "Each copy is offset by a preset distance." );
+  return QObject::tr(
+    "This algorithm creates copies of line features in a layer, by creating multiple offset versions of each feature. "
+    "Each copy is offset by a preset distance."
+  );
 }
 
 QString QgsCreateArrayOffsetLinesAlgorithm::shortDescription() const
@@ -88,7 +94,8 @@ void QgsCreateArrayOffsetLinesAlgorithm::initParameters( const QVariantMap & )
   segmentParam->setFlags( segmentParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( segmentParam.release() );
 
-  auto joinStyleParam = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
+  auto joinStyleParam
+    = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
   joinStyleParam->setFlags( joinStyleParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( joinStyleParam.release() );
 

@@ -20,7 +20,10 @@
 #include "qgsstringutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -66,8 +69,10 @@ void QgsRasterLayerUniqueValuesReportAlgorithm::initAlgorithm( const QVariantMap
 
 QString QgsRasterLayerUniqueValuesReportAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm returns the count and area of each unique value in a given raster layer. "
-                      "The area calculation is done in the area unit of the layer's CRS." );
+  return QObject::tr(
+    "This algorithm returns the count and area of each unique value in a given raster layer. "
+    "The area calculation is done in the area unit of the layer's CRS."
+  );
 }
 
 QString QgsRasterLayerUniqueValuesReportAlgorithm::shortDescription() const

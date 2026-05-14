@@ -13,11 +13,8 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 import os
 import shutil
 import tempfile
+import unittest
 
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QPointF, Qt
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsLayout,
     QgsLayoutFrame,
@@ -36,8 +33,11 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QPointF, Qt
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -45,7 +45,6 @@ start_app()
 
 
 class TestQgsLayout(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsProcessingModelComment : public QgsProcessingModelComponent
 {
   public:
-
     /**
      * Constructor for QgsProcessingModelComment with the specified \a description.
      */

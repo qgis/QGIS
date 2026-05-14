@@ -10,7 +10,6 @@
 
 
 
-
 typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase /NoTypeName/;
 
 class QgsOptionalExpression : QgsOptionalQgsExpressionBase
@@ -30,7 +29,6 @@ to redo the configuration.
 typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
 %End
   public:
-
     QgsOptionalExpression();
 %Docstring
 Construct a default optional expression. It will be disabled and with an

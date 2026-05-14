@@ -27,7 +27,6 @@ to match the destination CRS.
 #include "qgsremappingproxyfeaturesink.h"
 %End
   public:
-
     QMap< QString, QgsProperty > fieldMap() const;
 %Docstring
 Returns the field mapping, which defines how to map the values from
@@ -157,7 +156,6 @@ from an XML document.
 
 
 
-
 class QgsRemappingProxyFeatureSink : QgsFeatureSink
 {
 %Docstring(signature="appended")
@@ -177,7 +175,6 @@ geometries to the format required by the destination sink.
 #include "qgsremappingproxyfeaturesink.h"
 %End
   public:
-
 
     QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink );
 %Docstring
@@ -221,10 +218,6 @@ forward features to.
 %End
 
 };
-
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

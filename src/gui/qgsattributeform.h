@@ -26,6 +26,7 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QMultiMap>
+#include <QToolButton>
 #include <QWidget>
 
 class QgsAttributeFormInterface;
@@ -68,7 +69,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr,      //!< Filter should be combined using "OR"
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsAttributeForm(
+      QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
     ~QgsAttributeForm() override;
 
     /**
@@ -408,6 +411,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     struct WidgetInfo
     {
         QWidget *widget = nullptr;
+        bool expandingNeeded = false;
         QString labelText;
         QString toolTip;
         QString hint;
@@ -463,6 +467,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     Q_DECL_DEPRECATED QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context ) SIP_DEPRECATED;
     QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QString &relationWidgetTypeId, const QgsRelation &rel, const QgsAttributeEditorContext &context );
 
+    QToolButton *createCommentInfoButton( QWidget *labelWidget );
+
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature mFeature;
     QgsFeature mCurrentFormFeature;
@@ -481,6 +487,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
     QMap<QLabel *, QgsProperty> mLabelDataDefinedProperties;
     QMap<QWidget *, QgsProperty> mEditableDataDefinedProperties;
+    QMap<QWidget *, QgsProperty> mCustomCommentDataDefinedProperties;
     bool mValuesInitialized = false;
     bool mDirty = false;
     bool mIsSettingFeature = false;

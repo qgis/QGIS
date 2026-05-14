@@ -23,6 +23,10 @@
 #include "layout/qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsLayoutMapExtentToLayerAlgorithm::name() const
@@ -76,12 +80,14 @@ Qgis::ProcessingAlgorithmFlags QgsLayoutMapExtentToLayerAlgorithm::flags() const
 
 QString QgsLayoutMapExtentToLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a polygon layer containing the extent of a print layout map item (or items), "
-                      "with attributes specifying the map size (in layout units), scale and rotation.\n\n"
-                      "If the map item parameter is specified, then only the matching map extent will be exported. If it "
-                      "is not specified, all map extents from the layout will be exported.\n\n"
-                      "Optionally, a specific output CRS can be specified. If it is not specified, the original map "
-                      "item CRS will be used." );
+  return QObject::tr(
+    "This algorithm creates a polygon layer containing the extent of a print layout map item (or items), "
+    "with attributes specifying the map size (in layout units), scale and rotation.\n\n"
+    "If the map item parameter is specified, then only the matching map extent will be exported. If it "
+    "is not specified, all map extents from the layout will be exported.\n\n"
+    "Optionally, a specific output CRS can be specified. If it is not specified, the original map "
+    "item CRS will be used."
+  );
 }
 
 QgsLayoutMapExtentToLayerAlgorithm *QgsLayoutMapExtentToLayerAlgorithm::createInstance() const

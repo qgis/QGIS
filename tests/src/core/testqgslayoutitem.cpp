@@ -38,7 +38,10 @@
 #include <QImage>
 #include <QObject>
 #include <QPainter>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 //simple item for testing, since some methods in QgsLayoutItem are pure virtual
 class TestItem : public QgsLayoutItem
@@ -91,10 +94,7 @@ class MinSizedItem : public TestItem
       setMinimumSize( QgsLayoutSize( 5.0, 10.0, Qgis::LayoutUnit::Centimeters ) );
     }
 
-    void updateMinSize( QgsLayoutSize size )
-    {
-      setMinimumSize( size );
-    }
+    void updateMinSize( QgsLayoutSize size ) { setMinimumSize( size ); }
 };
 
 //item with fixed size
@@ -109,10 +109,7 @@ class FixedSizedItem : public TestItem
       setFixedSize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Inches ) );
     }
 
-    void updateFixedSize( QgsLayoutSize size )
-    {
-      setFixedSize( size );
-    }
+    void updateFixedSize( QgsLayoutSize size ) { setFixedSize( size ); }
 };
 
 //item with both conflicting fixed and minimum size
@@ -136,7 +133,8 @@ class TestQgsLayoutItem : public QgsTest
 
   public:
     TestQgsLayoutItem()
-      : QgsTest( u"Layout Item Tests"_s ) {}
+      : QgsTest( u"Layout Item Tests"_s )
+    {}
 
   private slots:
     void cleanupTestCase();
@@ -227,12 +225,8 @@ void TestQgsLayoutItem::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createItem( 1, nullptr ) );
 
-  auto create = []( QgsLayout *layout ) -> QgsLayoutItem * {
-    return new TestItem( layout );
-  };
-  auto resolve = []( QVariantMap &props, const QgsPathResolver &, bool ) {
-    props.clear();
-  };
+  auto create = []( QgsLayout *layout ) -> QgsLayoutItem * { return new TestItem( layout ); };
+  auto resolve = []( QVariantMap &props, const QgsPathResolver &, bool ) { props.clear(); };
 
   const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::typeAdded );
 
@@ -1684,9 +1678,7 @@ void TestQgsLayoutItem::rotation()
 void TestQgsLayoutItem::writeXml()
 {
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( u"qgis"_s );
 
@@ -1711,9 +1703,7 @@ void TestQgsLayoutItem::writeXml()
 void TestQgsLayoutItem::readXml()
 {
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   QgsProject proj;
@@ -2120,9 +2110,7 @@ std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *l
 {
   //save original item to xml
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( u"qgis"_s );
 

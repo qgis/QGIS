@@ -978,7 +978,180 @@ bool PDFAbstractColorSpace::transform(const PDFAbstractColorSpace* source,
     params.input = transformedInput;
     params.output = transformedOutput;
 
-    cms->transformColorSpace(params);
+    auto transformViaDeviceRGBFallback = [](PDFCMS::ColorSpaceType sourceType,
+                                            PDFCMS::ColorSpaceType targetType,
+                                            const PDFColorBuffer sourceBuffer,
+                                            PDFColorBuffer targetBuffer) -> bool
+    {
+        auto getColorChannelCount = [](PDFCMS::ColorSpaceType type) -> size_t
+        {
+            switch (type)
+            {
+                case PDFCMS::ColorSpaceType::DeviceGray:
+                    return 1;
+
+                case PDFCMS::ColorSpaceType::DeviceRGB:
+                    return 3;
+
+                case PDFCMS::ColorSpaceType::DeviceCMYK:
+                    return 4;
+
+                default:
+                    return 0;
+            }
+        };
+
+        const size_t sourceColorChannelCount = getColorChannelCount(sourceType);
+        const size_t targetColorChannelCount = getColorChannelCount(targetType);
+
+        if (sourceColorChannelCount == 0 || targetColorChannelCount == 0)
+        {
+            return false;
+        }
+
+        if (sourceBuffer.size() % sourceColorChannelCount != 0 ||
+            targetBuffer.size() % targetColorChannelCount != 0 ||
+            sourceBuffer.size() / sourceColorChannelCount != targetBuffer.size() / targetColorChannelCount)
+        {
+            return false;
+        }
+
+        auto clamp01Value = [](PDFColorComponent value) -> PDFColorComponent
+        {
+            return qBound<PDFColorComponent>(0.0f, value, 1.0f);
+        };
+
+        auto rgbToGray = [](const PDFColor3& rgb) -> PDFColorComponent
+        {
+            return 0.299f * rgb[0] + 0.587f * rgb[1] + 0.114f * rgb[2];
+        };
+
+        auto sourceToRGB = [clamp01Value](PDFCMS::ColorSpaceType currentSourceType,
+                                          const PDFColorComponent* sourceColor,
+                                          PDFColor3& targetColor) -> bool
+        {
+            switch (currentSourceType)
+            {
+                case PDFCMS::ColorSpaceType::DeviceGray:
+                {
+                    const PDFColorComponent gray = clamp01Value(sourceColor[0]);
+                    targetColor[0] = gray;
+                    targetColor[1] = gray;
+                    targetColor[2] = gray;
+                    return true;
+                }
+
+                case PDFCMS::ColorSpaceType::DeviceRGB:
+                    targetColor[0] = clamp01Value(sourceColor[0]);
+                    targetColor[1] = clamp01Value(sourceColor[1]);
+                    targetColor[2] = clamp01Value(sourceColor[2]);
+                    return true;
+
+                case PDFCMS::ColorSpaceType::DeviceCMYK:
+                {
+                    const PDFColorComponent c = clamp01Value(sourceColor[0]);
+                    const PDFColorComponent m = clamp01Value(sourceColor[1]);
+                    const PDFColorComponent y = clamp01Value(sourceColor[2]);
+                    const PDFColorComponent k = clamp01Value(sourceColor[3]);
+
+                    targetColor[0] = (1.0f - c) * (1.0f - k);
+                    targetColor[1] = (1.0f - m) * (1.0f - k);
+                    targetColor[2] = (1.0f - y) * (1.0f - k);
+                    return true;
+                }
+
+                default:
+                    return false;
+            }
+        };
+
+        auto rgbToTarget = [clamp01Value, rgbToGray](PDFCMS::ColorSpaceType currentTargetType,
+                                                     const PDFColor3& sourceColor,
+                                                     PDFColorComponent* targetColor) -> bool
+        {
+            const PDFColorComponent r = clamp01Value(sourceColor[0]);
+            const PDFColorComponent g = clamp01Value(sourceColor[1]);
+            const PDFColorComponent b = clamp01Value(sourceColor[2]);
+
+            switch (currentTargetType)
+            {
+                case PDFCMS::ColorSpaceType::DeviceGray:
+                    targetColor[0] = clamp01Value(rgbToGray(sourceColor));
+                    return true;
+
+                case PDFCMS::ColorSpaceType::DeviceRGB:
+                    targetColor[0] = r;
+                    targetColor[1] = g;
+                    targetColor[2] = b;
+                    return true;
+
+                case PDFCMS::ColorSpaceType::DeviceCMYK:
+                {
+                    const PDFColorComponent k = 1.0f - qMax(r, qMax(g, b));
+                    if (k >= 0.99999f)
+                    {
+                        targetColor[0] = 0.0f;
+                        targetColor[1] = 0.0f;
+                        targetColor[2] = 0.0f;
+                        targetColor[3] = 1.0f;
+                    }
+                    else
+                    {
+                        const PDFColorComponent denominator = 1.0f - k;
+                        targetColor[0] = clamp01Value((1.0f - r - k) / denominator);
+                        targetColor[1] = clamp01Value((1.0f - g - k) / denominator);
+                        targetColor[2] = clamp01Value((1.0f - b - k) / denominator);
+                        targetColor[3] = clamp01Value(k);
+                    }
+                    return true;
+                }
+
+                default:
+                    return false;
+            }
+        };
+
+        const size_t colorCount = sourceBuffer.size() / sourceColorChannelCount;
+        const PDFColorComponent* sourceData = sourceBuffer.cbegin();
+        PDFColorComponent* targetData = targetBuffer.begin();
+
+        for (size_t i = 0; i < colorCount; ++i)
+        {
+            const PDFColorComponent* sourceColor = sourceData + i * sourceColorChannelCount;
+            PDFColorComponent* targetColor = targetData + i * targetColorChannelCount;
+            PDFColor3 rgbColor = { };
+
+            if (!sourceToRGB(sourceType, sourceColor, rgbColor))
+            {
+                return false;
+            }
+
+            if (!rgbToTarget(targetType, rgbColor, targetColor))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    const bool cmsTransformResult = cms->transformColorSpace(params);
+    if (!cmsTransformResult)
+    {
+        if (!transformViaDeviceRGBFallback(params.sourceType, params.targetType, transformedInput, transformedOutput))
+        {
+            if (reporter)
+            {
+                reporter->reportRenderErrorOnce(RenderErrorType::Error, PDFTranslationContext::tr("Transformation between color spaces failed."));
+            }
+            return false;
+        }
+
+        if (reporter)
+        {
+            reporter->reportRenderErrorOnce(RenderErrorType::Warning, PDFTranslationContext::tr("CMS transformation between color spaces failed. Simplified fallback conversion was used."));
+        }
+    }
 
     switch (target->getColorSpace())
     {

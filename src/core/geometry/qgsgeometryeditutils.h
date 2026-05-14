@@ -21,7 +21,6 @@ class QgsCurve;
 class QgsGeometryEngine;
 class QgsVectorLayer;
 
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -29,6 +28,8 @@ class QgsVectorLayer;
 #include "qgsfeatureid.h"
 
 #include <QMap>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -39,7 +40,6 @@ class QgsVectorLayer;
 class QgsGeometryEditUtils
 {
   public:
-
     /**
      * Add an interior \a ring to a \a geometry.
      * Ownership of the \a ring is transferred.
@@ -76,10 +76,12 @@ class QgsGeometryEditUtils
      * \param ignoreFeatures map of layer to feature id of features to ignore
      * \return the modified geometry or a null unique_ptr if the \a geom polygon doesn't intersect any geometry in \a avoidIntersectionsLayers
      */
-    static std::unique_ptr< QgsAbstractGeometry > avoidIntersections( const QgsAbstractGeometry &geom,
-        const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-        bool &haveInvalidGeometry,
-        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    static std::unique_ptr< QgsAbstractGeometry > avoidIntersections(
+      const QgsAbstractGeometry &geom,
+      const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+      bool &haveInvalidGeometry,
+      const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() )
+    );
 };
 
 #endif // QGSGEOMETRYEDITUTILS_H

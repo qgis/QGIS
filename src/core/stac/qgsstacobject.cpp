@@ -15,12 +15,15 @@
 
 #include "qgsstacobject.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacObject::QgsStacObject( const QString &id, const QString &version, const QVector< QgsStacLink > &links )
   : mId( id )
   , mStacVersion( version )
   , mLinks( links )
-{
-}
+{}
 
 QString QgsStacObject::stacVersion() const
 {
@@ -91,5 +94,3 @@ QString QgsStacObject::parentUrl() const
   }
   return QString();
 }
-
-

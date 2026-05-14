@@ -15,18 +15,17 @@ __copyright__ = "Copyright 2021, The QGIS Project"
 import os
 import tempfile
 
-from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QTimer
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsAuthMethodConfig,
 )
+from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QTimer
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app
 
 
 class TestPyQgsExternalStorageBase:
-
     storageType = None
     url = None
     badUrl = None
@@ -34,9 +33,6 @@ class TestPyQgsExternalStorageBase:
     @classmethod
     def setUpClass(cls):
         """Run before all tests:"""
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
         cls.authm = QgsApplication.authManager()
@@ -234,7 +230,6 @@ class TestPyQgsExternalStorageBase:
         )
 
         if fetchedContent.status() == Qgis.ContentStatus.Running:
-
             spyErrorOccurred = QSignalSpy(fetchedContent.errorOccurred)
 
             loop = QEventLoop()
@@ -335,7 +330,6 @@ class TestPyQgsExternalStorageBase:
         )
 
         if fetchedContent.status() == Qgis.ContentStatus.Running:
-
             spyErrorOccurred = QSignalSpy(fetchedContent.errorOccurred)
 
             loop = QEventLoop()

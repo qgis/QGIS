@@ -20,7 +20,10 @@
 #include "qgsvariantutils.h"
 
 #include <QDir>
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingOutputDefinition::QgsProcessingOutputDefinition( const QString &name, const QString &description )
   : mName( name )
@@ -277,9 +280,7 @@ QgsProcessingOutputConditionalBranch::QgsProcessingOutputConditionalBranch( cons
 
 QgsProcessingOutputVariant::QgsProcessingOutputVariant( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
-{
-
-}
+{}
 
 QString QgsProcessingOutputVariant::type() const
 {
@@ -327,4 +328,3 @@ QString QgsProcessingOutputVariant::valueAsString( const QVariant &value, QgsPro
   }
   return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
 }
-

@@ -11,15 +11,15 @@ __date__ = "18/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 
-from qgis.gui import QgsSearchWidgetToolButton, QgsSearchWidgetWrapper
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsSearchWidgetToolButton, QgsSearchWidgetWrapper
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsSearchWidgetToolButton(QgisTestCase):
-
     def testAvailableFlags(self):
         """
         Test setting available flags

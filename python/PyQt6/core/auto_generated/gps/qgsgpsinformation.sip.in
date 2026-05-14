@@ -20,7 +20,6 @@ Encapsulates information relating to a GPS position fix.
 #include "qgsgpsinformation.h"
 %End
   public:
-
     double latitude;
 
     double longitude;

@@ -39,9 +39,7 @@ class QgsGeographicCoordinateNumericFormat;
  */
 class CORE_EXPORT QgsLocalDefaultSettings
 {
-
   public:
-
     /**
      * Sets the default bearing \a format, which controls how angular bearings are displayed.
      *
@@ -77,7 +75,6 @@ class CORE_EXPORT QgsLocalDefaultSettings
      * \since QGIS 3.26
      */
     static QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() SIP_FACTORY;
-
 };
 
 #endif // QGSLOCALDEFAULTSETTINGS_H

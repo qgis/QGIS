@@ -24,10 +24,13 @@
 #include <QAction>
 #include <QFocusEvent>
 #include <QPainter>
+#include <QString>
 #include <QStyle>
 #include <QToolButton>
 
 #include "moc_qgsfilterlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
   : QLineEdit( parent )

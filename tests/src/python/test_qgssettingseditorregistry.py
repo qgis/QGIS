@@ -9,22 +9,22 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtWidgets import QComboBox, QSpinBox
+import unittest
+
 from qgis.core import (
     QgsLocatorFilter,
     QgsSettings,
-    QgsSettingsTree,
     QgsSettingsEntryEnumFlag,
     QgsSettingsEntryInteger,
+    QgsSettingsTree,
 )
 from qgis.gui import (
     QgsGui,
     QgsSettingsEditorWidgetWrapper,
     QgsSettingsEnumEditorWidgetWrapper,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtWidgets import QComboBox, QSpinBox
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -32,7 +32,6 @@ PLUGIN_NAME = "UnitTestSettingsRegistry"
 
 
 class PyQgsSettingsRegistry(QgisTestCase):
-
     def setUp(self):
         self.settings_node = QgsSettingsTree.createPluginTreeNode(
             pluginName=PLUGIN_NAME

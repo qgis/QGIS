@@ -27,9 +27,7 @@ QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &nam
 QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &uri, const QVariantMap &configuration )
   : mUri( uri )
   , mConfiguration( configuration )
-{
-
-}
+{}
 
 QIcon QgsAbstractProviderConnection::icon() const
 {

@@ -20,12 +20,18 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsPostgresLayerMetadataProvider::id() const
 {
   return u"postgres"_s;
 }
 
-QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search(
+  const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback
+) const
 {
   QgsLayerMetadataSearchResults results;
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s ) };

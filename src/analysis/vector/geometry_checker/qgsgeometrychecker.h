@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_CHECKER_H
 #define QGS_GEOMETRY_CHECKER_H
@@ -27,6 +26,8 @@
 #include <QList>
 #include <QMutex>
 #include <QStringList>
+
+#define SIP_NO_FILE
 
 typedef qint64 QgsFeatureId;
 class QgsGeometryCheckContext;

@@ -17,11 +17,8 @@ pushd ${DIR} > /dev/null || exit
 modules=(3d core gui analysis server)
 
 code=0
-for root_dir in python python/PyQt6; do
-
-  if [[ $root_dir == "python/PyQt6" ]]; then
-    IS_QT6="-qt6"
-  fi
+ROOT_DIRS=("python/PyQt6")
+for root_dir in "${ROOT_DIRS[@]}"; do
 
   for module in "${modules[@]}"; do
     while read -r sipfile; do
@@ -30,7 +27,7 @@ for root_dir in python python/PyQt6; do
       if [ ! -f $header ]; then
         echo "*** Missing header: $header for sipfile $sipfile"
       else
-        outdiff=$(./scripts/sipify.py $IS_QT6 -python_output $root_dir/${module}/auto_additions/${pyfile}.temp $header | diff $root_dir/$sipfile.in -)
+        outdiff=$(./scripts/sipify.py -python_output $root_dir/${module}/auto_additions/${pyfile}.temp $header | diff $root_dir/$sipfile.in -)
         if [[ -n "$outdiff" ]]; then
           echo " *** SIP file not up to date: $root_dir/$sipfile"
           echo " $outdiff "

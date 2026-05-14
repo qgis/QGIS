@@ -37,7 +37,6 @@
 class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
 {
   public:
-
     /**
      * Constructs a new QgsProxyFeatureSink which forwards features onto a destination \a sink.
      */
@@ -55,14 +54,9 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
     QgsFeatureSink *destinationSink() { return mSink; }
 
   protected:
-
     //! Underlying destination sink
     QgsFeatureSink *mSink = nullptr;
 };
 
 
 #endif // QGSPROXYFEATURESINK_H
-
-
-
-

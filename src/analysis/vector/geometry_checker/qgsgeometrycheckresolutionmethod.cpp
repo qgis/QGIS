@@ -20,8 +20,7 @@ QgsGeometryCheckResolutionMethod::QgsGeometryCheckResolutionMethod( int id, cons
   , mIsStable( isStable )
   , mName( name )
   , mDescription( description )
-{
-}
+{}
 
 int QgsGeometryCheckResolutionMethod::id() const
 {

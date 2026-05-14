@@ -67,12 +67,14 @@ Sets method that determines altitude (whether to clamp to feature to
 terrain)
 %End
 
-    QgsAbstractMaterialSettings *materialSettings() const;
+    virtual QgsAbstractMaterialSettings *materialSettings() const;
+
 %Docstring
 Returns material settings used for shading of the symbol
 %End
 
-    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ );
+    virtual void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ );
+
 %Docstring
 Sets the ``material`` settings used for shading of the symbol.
 
@@ -174,6 +176,10 @@ Models (:py:class:`Qgis`.Point3DShape.Model)
 --------------------------------------------------------------
 
 - ``model`` (path to model file)
+- ``upAxis`` (up axis for model, either "x", "y", "z" or "-x", "-y",
+  "-z")
+- ``forwardAxis`` (forward axis for model, either "x", "y", "z" or "-x",
+  "-y", "-z")
 
 .. seealso:: :py:func:`shapeProperty`
 %End

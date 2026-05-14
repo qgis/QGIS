@@ -25,6 +25,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //
 // Output definitions
 //
@@ -43,7 +45,6 @@ class CORE_EXPORT QgsProcessing
     Q_GADGET
 
   public:
-
     //! Available Python output types
     enum class PythonOutputType SIP_MONKEYPATCH_SCOPEENUM
     {
@@ -130,6 +131,8 @@ class CORE_EXPORT QgsProcessing
     static const QgsSettingsEntryString *settingsDefaultOutputVectorLayerExt;
     //! Settings entry default output raster layer format
     static const QgsSettingsEntryString *settingsDefaultOutputRasterLayerFormat;
+    //! Settings entry default GUI parameter value (per algorithm id and parameter name)
+    static const QgsSettingsEntryVariant *settingsDefaultGuiParam;
 #endif
 };
 

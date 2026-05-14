@@ -17,6 +17,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * This is a helper class to test protected methods of QgsSettingsRegistry
@@ -25,10 +28,7 @@ Q_NOWARN_DEPRECATED_PUSH
 class SettingsRegistryTest : public QgsSettingsRegistry
 {
   public:
-    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry )
-    {
-      QgsSettingsRegistry::addSettingsEntry( settingsEntry );
-    }
+    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry ) { QgsSettingsRegistry::addSettingsEntry( settingsEntry ); }
 };
 Q_NOWARN_DEPRECATED_POP
 

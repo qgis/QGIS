@@ -32,9 +32,12 @@
 #include <QFile>
 #include <QMenu>
 #include <QPainter>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsdecorationimage.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationImage::QgsDecorationImage( QObject *parent )
   : QgsDecorationItem( parent )

@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsReadWriteContext
 {
 %Docstring(signature="appended")
@@ -21,7 +23,6 @@ objects.
 #include "qgsreadwritecontext.h"
 %End
   public:
-
     struct ReadWriteMessage
     {
         ReadWriteMessage( const QString &message = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, const QStringList &categories = QStringList() );
@@ -110,7 +111,7 @@ Returns the stored messages and remove them
 .. versionadded:: 3.2
 %End
 
-    const QgsProjectTranslator *projectTranslator( ) const;
+    const QgsProjectTranslator *projectTranslator() const;
 %Docstring
 Returns the project translator
 
@@ -144,6 +145,21 @@ Sets data coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
+    const QString currentLayerId() const;
+%Docstring
+Returns the currently used layer id as string.
+
+.. versionadded:: 4.0
+%End
+
+    void setCurrentLayerId( const QString &layerId );
+%Docstring
+Sets the current layer id. So functions are able to emit the layer that
+is currently relevant.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 
@@ -167,6 +183,7 @@ This would happen when it gets out of scope.
 Creates a popper
 %End
     ~QgsReadWriteContextCategoryPopper();
+
   private:
     QgsReadWriteContextCategoryPopper &operator=( const QgsReadWriteContextCategoryPopper & );
 };

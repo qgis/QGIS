@@ -23,7 +23,6 @@ profiles from different sources.
 #include "qgsprofilerequest.h"
 %End
   public:
-
     QgsProfileRequest( QgsCurve *curve /Transfer/ );
 %Docstring
 Constructor for QgsProfileRequest.

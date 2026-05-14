@@ -21,8 +21,7 @@
 
 QgsGeoTransform::QgsGeoTransform( Qt3DCore::QNode *parent )
   : Qt3DCore::QTransform( parent )
-{
-}
+{}
 
 void QgsGeoTransform::setGeoTranslation( const QgsVector3D &translation )
 {

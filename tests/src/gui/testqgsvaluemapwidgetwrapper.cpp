@@ -23,6 +23,10 @@
 #include "qgstest.h"
 #include "qgsvaluemapfieldformatter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsValueMapWidgetWrapper : public QObject
 {
     Q_OBJECT
@@ -50,12 +54,10 @@ void TestQgsValueMapWidgetWrapper::cleanupTestCase()
 }
 
 void TestQgsValueMapWidgetWrapper::init()
-{
-}
+{}
 
 void TestQgsValueMapWidgetWrapper::cleanup()
-{
-}
+{}
 
 void TestQgsValueMapWidgetWrapper::testPopulateComboBox()
 {

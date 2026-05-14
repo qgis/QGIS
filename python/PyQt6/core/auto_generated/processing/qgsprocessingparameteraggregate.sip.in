@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsProcessingParameterAggregate : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")

@@ -22,8 +22,9 @@
 #include "qgis_sip.h"
 #include "qgsabstractdbtablemodel.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsOgrDbTableModel : public QgsAbstractDbTableModel
 {
@@ -46,10 +47,7 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     void setSql( const QModelIndex &index, const QString &sql ) override;
 
     //! Returns the number of tables in the model
-    int tableCount() const
-    {
-      return mTableCount;
-    }
+    int tableCount() const { return mTableCount; }
 
     enum Columns
     {
@@ -60,10 +58,7 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     };
 
     //! Sets the DB full path
-    void setPath( const QString &path )
-    {
-      mPath = path;
-    }
+    void setPath( const QString &path ) { mPath = path; }
 
   private:
     //! Number of tables in the model

@@ -19,15 +19,15 @@ __author__ = "Victor Olaya"
 __date__ = "April 2013"
 __copyright__ = "(C) 2013, Victor Olaya"
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.core import Qgis, QgsProcessingFeedback
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.utils import iface
-from qgis.core import QgsProcessingFeedback, Qgis
+
 from processing.gui.MessageDialog import MessageDialog
 
 
 class MessageBarProgress(QgsProcessingFeedback):
-
     def __init__(self, algname=None):
         QgsProcessingFeedback.__init__(self)
 

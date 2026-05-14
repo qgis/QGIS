@@ -33,6 +33,7 @@
 #include "qgschunkloader.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloud3dsymbol_p.h"
+#include "qgspointcloudindex.h"
 #include "qgspointcloudlayer3drenderer.h"
 
 #include <QFutureWatcher>
@@ -58,13 +59,22 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
      * Constructs the factory
      * The factory takes ownership over the passed \a symbol
      */
-    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget );
+    QgsPointCloudLayerChunkLoaderFactory(
+      const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget
+    );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     QgsChunkNode *createRootNode() const override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
     int primitivesCount( QgsChunkNode *node ) const override;
+
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    void prepareChildren( QgsChunkNode *node ) override;
+
+    //! Fetches hierarchy for node, children and grand children in a background thread
+    void fetchHierarchyForNode( const QgsPointCloudNodeId &nodeId, QgsChunkNode *origNode );
+
     Qgs3DRenderContext mRenderContext;
     QgsCoordinateTransform mCoordinateTransform;
     QgsPointCloudIndex mPointCloudIndex;
@@ -74,6 +84,8 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     int mPointBudget = 1000000;
     bool mTriangulate = false;
     QgsRectangle mExtent; //!< This should hold the map's extent in layer's crs
+    QSet<QgsPointCloudNodeId> mPendingHierarchyFetches;
+    QSet<QgsPointCloudNodeId> mFutureHierarchyFetches;
 };
 
 
@@ -94,7 +106,9 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
      * Constructs the loader
      * QgsPointCloudLayerChunkLoader takes ownership over symbol
      */
-    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr<QgsPointCloud3DSymbol> symbol, const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset );
+    QgsPointCloudLayerChunkLoader(
+      const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr<QgsPointCloud3DSymbol> symbol, const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset
+    );
     ~QgsPointCloudLayerChunkLoader() override;
 
     void start() override;
@@ -123,7 +137,18 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, QgsPointCloudIndex index, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
+    explicit QgsPointCloudLayerChunkedEntity(
+      Qgs3DMapSettings *map,
+      QgsPointCloudLayer *pcl,
+      const int indexPosition,
+      const QgsCoordinateTransform &coordinateTransform,
+      QgsPointCloud3DSymbol *symbol,
+      float maxScreenError,
+      bool showBoundingBoxes,
+      double zValueScale,
+      double zValueOffset,
+      int pointBudget
+    );
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
@@ -133,8 +158,18 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     void updateIndex();
 
   private:
+    /**
+     * Get the point cloud index from a layer using the index position, according to the following scheme:
+     * Zero or positive \a indexPosition will return the nth zero-based sub index of a VPC layer.
+     * -1 will return the point cloud index of a standard non VPC layer.
+     * -2 will return the first VPC overview index.
+     * -3 will return the second VPC overview index, and so on.
+     */
+    static QgsPointCloudIndex resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition );
+
     QgsPointCloudLayer *mLayer = nullptr;
     std::unique_ptr<QgsChunkUpdaterFactory> mChunkUpdaterFactory;
+    int mIndexPosition;
 };
 
 /// @endcond

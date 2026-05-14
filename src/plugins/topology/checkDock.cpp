@@ -42,7 +42,8 @@
 //class QgisInterface;
 
 checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
-  : QgsDockWidget( parent ), Ui::checkDock()
+  : QgsDockWidget( parent )
+  , Ui::checkDock()
 {
   mTest = new topolTest( qIface );
 

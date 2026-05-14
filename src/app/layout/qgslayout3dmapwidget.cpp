@@ -41,9 +41,7 @@ void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::funct
     {
       QAction *a = new QAction( widget->canvasName(), menu );
       menu->addAction( a );
-      QObject::connect( a, &QAction::triggered, a, [slot, widget] {
-        slot( widget );
-      } );
+      QObject::connect( a, &QAction::triggered, a, [slot, widget] { slot( widget ); } );
     }
     if ( lst.isEmpty() )
     {
@@ -69,9 +67,7 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
-  _prepare3DViewsMenu( mMenu3DCanvases, this, [this]( Qgs3DMapCanvasWidget *widget ) {
-    copy3DMapSettings( widget );
-  } );
+  _prepare3DViewsMenu( mMenu3DCanvases, this, [this]( Qgs3DMapCanvasWidget *widget ) { copy3DMapSettings( widget ); } );
 
   mMenu3DCanvasesPose = new QMenu( this );
   mPoseFromViewButton->setMenu( mMenu3DCanvasesPose );

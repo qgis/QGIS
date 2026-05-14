@@ -35,9 +35,7 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     Q_OBJECT
 
   public:
-    QgsVtpkVectorTileDataProvider( const QString &uri,
-                                   const QgsDataProvider::ProviderOptions &providerOptions,
-                                   Qgis::DataProviderReadFlags flags );
+    QgsVtpkVectorTileDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags );
     QgsVtpkVectorTileDataProvider( const QgsVtpkVectorTileDataProvider &other );
 
     QgsVtpkVectorTileDataProvider &operator=( const QgsVtpkVectorTileDataProvider &other ) = delete;
@@ -65,7 +63,6 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     static QString DATA_PROVIDER_DESCRIPTION;
 
   private:
-
     //! Returns raw tile data for a single tile loaded from VTPK file
     static QgsVectorTileRawData loadFromVtpk( QgsVtpkTiles &vtpkTileReader, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr );
     bool mIsValid = false;
@@ -76,7 +73,6 @@ class CORE_EXPORT QgsVtpkVectorTileDataProvider : public QgsVectorTileDataProvid
     QVariantMap mStyleDefinition;
     QVariantMap mSpriteDefinition;
     QImage mSpriteImage;
-
 };
 
 

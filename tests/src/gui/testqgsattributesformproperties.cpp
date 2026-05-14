@@ -21,6 +21,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsAttributesFormProperties : public QObject
 {
     Q_OBJECT
@@ -48,12 +52,10 @@ void TestQgsAttributesFormProperties::cleanupTestCase()
 }
 
 void TestQgsAttributesFormProperties::init()
-{
-}
+{}
 
 void TestQgsAttributesFormProperties::cleanup()
-{
-}
+{}
 
 void TestQgsAttributesFormProperties::testConfigStored()
 {

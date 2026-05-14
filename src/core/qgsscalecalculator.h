@@ -22,10 +22,10 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsellipsoidutils.h"
 
 class QString;
 class QgsRectangle;
-
 /**
  * \ingroup core
  * \brief Calculates scale for a given combination of canvas size, map extent,
@@ -37,14 +37,12 @@ class QgsRectangle;
 class CORE_EXPORT QgsScaleCalculator
 {
   public:
-
     /**
      * Constructor
      * \param dpi Monitor resolution in dots per inch
      * \param mapUnits Units of the data on the map
      */
-    QgsScaleCalculator( double dpi = 0,
-                        Qgis::DistanceUnit mapUnits = Qgis::DistanceUnit::Meters );
+    QgsScaleCalculator( double dpi = 0, Qgis::DistanceUnit mapUnits = Qgis::DistanceUnit::Meters );
 
 
     /**
@@ -88,6 +86,21 @@ class CORE_EXPORT QgsScaleCalculator
      * \see setMapUnits()
      */
     Qgis::DistanceUnit mapUnits() const;
+
+    /**
+     * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
+     * retrieved using QgsEllipsoidUtils::acronyms().
+     * \see ellipsoid()
+     * \since QGIS 4.2
+     */
+    void setEllipsoid( const QString &ellipsoid );
+
+    /**
+     * Returns ellipsoid's acronym.
+     * \see setEllipsoid()
+     * \since QGIS 4.2
+     */
+    QString ellipsoid() const { return mEllipsoidDefinition.acronym; }
 
     /**
      * Calculate the scale denominator.
@@ -140,7 +153,6 @@ class CORE_EXPORT QgsScaleCalculator
     double calculateGeographicDistanceAtLatitude( double latitude, double longitude1, double longitude2 ) const;
 
   private:
-
     //! Calculate the \a delta and \a conversionFactor values based on the provided \a mapExtent.
     void calculateMetrics( const QgsRectangle &mapExtent, double &delta, double &conversionFactor ) const;
 
@@ -152,6 +164,9 @@ class CORE_EXPORT QgsScaleCalculator
 
     //! map unit member
     Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Unknown;
+
+    //! ellipsoid definition (name + parameters) associated with the scale calculator
+    QgsEllipsoidUtils::EllipsoidDefinition mEllipsoidDefinition;
 };
 
 #endif // #ifndef QGSSCALECALCULATOR_H

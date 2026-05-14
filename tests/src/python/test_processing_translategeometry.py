@@ -14,39 +14,33 @@ __copyright__ = "Copyright 2025, Alexander Bruy"
 
 import os
 import tempfile
+import unittest
 
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmExecutor import execute
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
-    QgsSettings,
+    Qgis,
     QgsApplication,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsProperty,
+    QgsSettings,
     QgsVectorLayer,
-    Qgis,
 )
-import unittest
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import QgisTestCase
-
-from utilities import unitTestDataPath, start_app
+from utilities import start_app, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
 class TestTranslateGeometry(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsTranslateGeometry.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsTranslateGeometry")
-        QgsSettings().clear()
         Processing.initialize()
 
     def tearDown(self):

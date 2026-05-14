@@ -18,17 +18,25 @@
 
 ///@cond PRIVATE
 
-#include "qgspointcloudlayer3drenderer.h"
+#include "qgsvector3d.h"
 
-#include <QFutureWatcher>
 #include <QVector3D>
-#include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
 
 #define SIP_NO_FILE
 
+namespace Qt3DCore
+{
+  class QBuffer;
+  class QEntity;
+} //namespace Qt3DCore
+
+class QgsBox3D;
+class QgsPointCloudIndex;
+class QgsPointCloudBlock;
+class QgsPointCloudRequest;
+class QgsPointCloud3DRenderContext;
 class QgsPointCloudNodeId;
-class QgsAABB;
 
 class QgsPointCloud3DSymbolHandler
 {
@@ -39,11 +47,11 @@ class QgsPointCloud3DSymbolHandler
 
     struct PointData;
 
-    virtual bool prepare( const QgsPointCloud3DRenderContext &context ) = 0;                                                                                        // override;
-    virtual void processNode( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) = 0; // override;
-    virtual void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) = 0;                                                            // override;
+    virtual bool prepare( const QgsPointCloud3DRenderContext &context ) = 0;                                                                                 // override;
+    virtual void processNode( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) = 0; // override;
+    virtual void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) = 0;                                                     // override;
 
-    void triangulate( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D );
+    void triangulate( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D );
 
     float zMinimum() const { return mZMin; }
     float zMaximum() const { return mZMax; }
@@ -68,14 +76,14 @@ class QgsPointCloud3DSymbolHandler
 
     virtual Qt3DCore::QGeometry *makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride ) = 0;
 
-    std::unique_ptr<QgsPointCloudBlock> pointCloudBlock( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context );
+    std::unique_ptr<QgsPointCloudBlock> pointCloudBlock( QgsPointCloudIndex &pc, QgsPointCloudNodeId node, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context );
 
     // outputs
     PointData outNormal; //!< Features that are not selected
 
   private:
     //! Returns all vertices of the node \a n, and of its parents contained in \a bbox and in an extension of this box depending of the density of the points
-    std::vector<double> getVertices( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D );
+    std::vector<double> getVertices( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D );
 
     //! Calculates the normals of triangles dedined by index contained in \a triangles. Must be used only in the method triangulate().
     void calculateNormals( const std::vector<size_t> &triangles );
@@ -97,7 +105,7 @@ class QgsSingleColorPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHand
     QgsSingleColorPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
+    void processNode( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -110,7 +118,7 @@ class QgsColorRampPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandle
     QgsColorRampPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
+    void processNode( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -123,7 +131,7 @@ class QgsRGBPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandler
     QgsRGBPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
+    void processNode( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:
@@ -136,7 +144,7 @@ class QgsClassificationPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolH
     QgsClassificationPointCloud3DSymbolHandler();
 
     bool prepare( const QgsPointCloud3DRenderContext &context ) override;
-    void processNode( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
+    void processNode( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) override;
     void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
 
   private:

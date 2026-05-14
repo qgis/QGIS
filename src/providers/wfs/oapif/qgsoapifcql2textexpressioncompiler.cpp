@@ -22,16 +22,19 @@
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsOapifCql2TextExpressionCompiler::QgsOapifCql2TextExpressionCompiler(
-  const QMap<QString, QgsOapifQueryablesRequest::Queryable> &queryables,
-  bool supportsLikeBetweenIn,
-  bool supportsCaseI,
-  bool supportsBasicSpatialOperators,
-  bool invertAxisOrientation
+  const QMap<QString, QgsOapifQueryablesRequest::Queryable> &queryables, bool supportsLikeBetweenIn, bool supportsCaseI, bool supportsBasicSpatialOperators, bool invertAxisOrientation
 )
-  : mQueryables( queryables ), mSupportsLikeBetweenIn( supportsLikeBetweenIn ), mSupportsCaseI( supportsCaseI ), mSupportsBasicSpatialOperators( supportsBasicSpatialOperators ), mInvertAxisOrientation( invertAxisOrientation )
-{
-}
+  : mQueryables( queryables )
+  , mSupportsLikeBetweenIn( supportsLikeBetweenIn )
+  , mSupportsCaseI( supportsCaseI )
+  , mSupportsBasicSpatialOperators( supportsBasicSpatialOperators )
+  , mInvertAxisOrientation( invertAxisOrientation )
+{}
 
 QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::compile( const QgsExpression *exp )
 {

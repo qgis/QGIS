@@ -15,16 +15,17 @@
 
 #include "qgsstaccollectionlist.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacCollectionList::QgsStacCollectionList( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched )
   : mCollections( collections )
   , mNumberMatched( numberMatched )
 {
   for ( const QgsStacLink &link : links )
   {
-    if ( link.relation() == "self"_L1 ||
-         link.relation() == "root"_L1 ||
-         link.relation() == "next"_L1 ||
-         link.relation() == "prev"_L1 )
+    if ( link.relation() == "self"_L1 || link.relation() == "root"_L1 || link.relation() == "next"_L1 || link.relation() == "prev"_L1 )
       mUrls.insert( link.relation(), link.href() );
   }
 }

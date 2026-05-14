@@ -19,18 +19,18 @@ email                : brush.tyler@gmail.com
 """
 
 from qgis.core import QgsMessageLog
-from ..plugin import BaseError
+
 from ..data_model import (
-    TableDataModel,
     SqlResultModel,
     SqlResultModelAsync,
     SqlResultModelTask,
+    TableDataModel,
 )
+from ..plugin import BaseError
 from .plugin import SLDatabase
 
 
 class SLTableDataModel(TableDataModel):
-
     def __init__(self, table, parent=None):
         TableDataModel.__init__(self, table, parent)
 
@@ -67,7 +67,6 @@ class SLTableDataModel(TableDataModel):
 
 
 class SLSqlResultModelTask(SqlResultModelTask):
-
     def __init__(self, db, sql, parent):
         super().__init__(db, sql, parent)
         self.clone = None
@@ -90,7 +89,6 @@ class SLSqlResultModelTask(SqlResultModelTask):
 
 
 class SLSqlResultModelAsync(SqlResultModelAsync):
-
     def __init__(self, db, sql, parent):
         super().__init__()
 

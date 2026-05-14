@@ -141,6 +141,5 @@ namespace QgsWms
 {
   QgsWmsRestorer::QgsWmsRestorer( const QgsWmsRenderContext &context )
     : mLayerRestorer( context.layers() )
-  {
-  }
+  {}
 } // namespace QgsWms

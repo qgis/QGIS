@@ -40,7 +40,6 @@ void adsModelNormalMapped(const in vec3 worldPos,
     specularColor = vec3(0.0);
 
     // We perform all work in tangent space, so we convert quantities from world space
-    vec3 tsPos = tangentMatrix * worldPos;
     vec3 n = normalize(tsNormal);
     vec3 v = normalize(tangentMatrix * (worldEye - worldPos));
     vec3 s = vec3(0.0);
@@ -53,8 +52,8 @@ void adsModelNormalMapped(const in vec3 worldPos,
             // Point and Spot lights
 
             // Transform the light position from world to tangent space
-            vec3 tsLightPos = tangentMatrix * lights[i].position;
-            vec3 sUnnormalized = tsLightPos - tsPos;
+            vec3 worldLightDir = lights[i].position - worldPos;
+            vec3 sUnnormalized = tangentMatrix * worldLightDir;
             s = normalize(sUnnormalized); // Light direction in tangent space
 
             // Calculate the attenuation factor
@@ -72,8 +71,9 @@ void adsModelNormalMapped(const in vec3 worldPos,
                 // The light direction is in world space, convert to tangent space
                 if (lights[i].type == TYPE_SPOT) {
                     // Check if fragment is inside or outside of the spot light cone
-                    vec3 tsLightDirection = tangentMatrix * lights[i].direction;
-                    if (degrees(acos(dot(-s, tsLightDirection))) > lights[i].cutOffAngle)
+                    vec3 tsLightDirection = normalize(tangentMatrix * lights[i].direction);
+                    float cutOffCos = cos(radians(lights[i].cutOffAngle));
+                    if (dot(-s, tsLightDirection) < cutOffCos)
                         sDotN = 0.0;
                 }
             }
@@ -90,7 +90,7 @@ void adsModelNormalMapped(const in vec3 worldPos,
         // Calculate the specular factor
         float specular = 0.0;
         if (diffuse > 0.0 && shininess > 0.0) {
-            float normFactor = (shininess + 2.0) / 2.0;
+            float normFactor = (shininess + 2.0) / (2.0 * 3.14159);
             vec3 r = reflect(-s, n);   // Reflection direction in tangent space
             specular = normFactor * pow(max(dot(r, v), 0.0), shininess);
         }
@@ -141,7 +141,8 @@ void adsModel(const in vec3 worldPos,
                 // The light direction is in world space already
                 if (lights[i].type == TYPE_SPOT) {
                     // Check if fragment is inside or outside of the spot light cone
-                    if (degrees(acos(dot(-s, lights[i].direction))) > lights[i].cutOffAngle)
+                    float cutOffCos = cos(radians(lights[i].cutOffAngle));
+                    if (dot(-s, lights[i].direction) < cutOffCos)
                         sDotN = 0.0;
                 }
             }
@@ -158,7 +159,7 @@ void adsModel(const in vec3 worldPos,
         // Calculate the specular factor
         float specular = 0.0;
         if (diffuse > 0.0 && shininess > 0.0) {
-            float normFactor = (shininess + 2.0) / 2.0;
+            float normFactor = (shininess + 2.0) / (2.0 * 3.14159);
             vec3 r = reflect(-s, n);   // Reflection direction in world space
             specular = normFactor * pow(max(dot(r, worldView), 0.0), shininess);
         }
@@ -205,7 +206,8 @@ void adModel(const in vec3 worldPos,
                 // The light direction is in world space already
                 if (lights[i].type == TYPE_SPOT) {
                     // Check if fragment is inside or outside of the spot light cone
-                    if (degrees(acos(dot(-s, lights[i].direction))) > lights[i].cutOffAngle)
+                    float cutOffCos = cos(radians(lights[i].cutOffAngle));
+                    if (dot(-s, lights[i].direction) < cutOffCos)
                         sDotN = 0.0;
                 }
             }

@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsSphere
 {
 %Docstring(signature="appended")
@@ -25,7 +27,6 @@ Represents a simple 3-dimensional sphere.
 #include "qgssphere.h"
 %End
   public:
-
     QgsSphere() /HoldGIL/;
 %Docstring
 Constructor for an invalid QgsSphere.

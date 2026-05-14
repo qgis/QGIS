@@ -19,8 +19,9 @@
 
 #include "qgsprovidermetadata.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 /**
  * This metadata class is responsible for generic tiled scene handling.

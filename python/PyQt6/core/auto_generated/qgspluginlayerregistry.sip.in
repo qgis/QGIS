@@ -21,7 +21,6 @@ Responsible for creating plugin specific map layers.
 #include "qgspluginlayerregistry.h"
 %End
   public:
-
     QgsPluginLayerType( const QString &name );
     virtual ~QgsPluginLayerType();
 
@@ -61,7 +60,6 @@ rather accessed through :py:func:`QgsApplication.pluginLayerRegistry()`.
 #include "qgspluginlayerregistry.h"
 %End
   public:
-
     QgsPluginLayerRegistry();
     ~QgsPluginLayerRegistry();
 

@@ -22,7 +22,7 @@ The content of this file is based on
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QMessageBox
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import DbError

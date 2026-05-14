@@ -16,6 +16,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPythonRunner *QgsPythonRunner::sInstance = nullptr;
 
 ///////////////////////////
@@ -85,4 +89,3 @@ void QgsPythonRunner::setInstance( QgsPythonRunner *runner )
   delete sInstance;
   sInstance = runner;
 }
-

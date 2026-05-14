@@ -18,9 +18,10 @@
 #ifndef QGSPROCESSINGRASTEROPTIONSWIDGETWRAPPER_H
 #define QGSPROCESSINGRASTEROPTIONSWIDGETWRAPPER_H
 
-#define SIP_NO_FILE
 
 #include "qgsprocessingwidgetwrapper.h"
+
+#define SIP_NO_FILE
 
 class QComboBox;
 class QLineEdit;

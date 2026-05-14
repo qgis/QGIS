@@ -28,7 +28,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QTableWidget>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsTextEditWrapper : public QgsTest
 {
@@ -65,12 +68,10 @@ void TestQgsTextEditWrapper::cleanupTestCase()
 }
 
 void TestQgsTextEditWrapper::init()
-{
-}
+{}
 
 void TestQgsTextEditWrapper::cleanup()
-{
-}
+{}
 
 void TestQgsTextEditWrapper::defaultValueClause()
 {

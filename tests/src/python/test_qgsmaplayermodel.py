@@ -10,15 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "16/11/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication, QEvent, QModelIndex, Qt
+import unittest
+
 from qgis.core import (
     QgsApplication,
     QgsMapLayerModel,
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QModelIndex, Qt
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -31,7 +32,6 @@ def create_layer(name):
 
 
 class TestQgsMapLayerModel(QgisTestCase):
-
     def testGettersSetters(self):
         """test model getters/setters"""
         m = QgsMapLayerModel()

@@ -107,8 +107,8 @@
      overflow: visible;
     }
     hr {
-      background-color: #1a1a1a;
       border: none;
+      border-top: 1px solid #1a1a1a;
       height: 1px;
       margin: 1em 0;
     }
@@ -174,6 +174,9 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#whats-new-in-version-4.0-norrköping"
+id="toc-whats-new-in-version-4.0-norrköping">What’s new in Version 4.0
+‘Norrköping’?</a></li>
 <li><a href="#whats-new-in-version-3.44-solothurn"
 id="toc-whats-new-in-version-3.44-solothurn">What’s new in Version 3.44
 ‘Solothurn’?</a></li>
@@ -364,6 +367,184 @@ id="toc-version-0.0.3-alpha-august-10-2002">Version 0.0.3-alpha August
 </ul>
 </nav>
 <p>Change history for the QGIS Project</p>
+<h1 id="whats-new-in-version-4.0-norrköping">What’s new in Version 4.0
+‘Norrköping’?</h1>
+<p>This release has following new features:</p>
+<ul>
+<li>Temporal: Add new accumulate pixels setting to the represent
+temporal values mode</li>
+<li>Map Tools: Add map tool to edit blank segments</li>
+<li>Map Tools: Copy features in an array along a line</li>
+<li>User Interface: New Design for the Welcome Page</li>
+<li>User Interface: Unlock shipping themes through plugins</li>
+<li>User Interface: Create user defined ToolBar and Menu</li>
+<li>User Interface: Attribute table double click zoom</li>
+<li>Symbology: Allow copying/pasting all styles from a layer to
+another</li>
+<li>Symbology: Introduce additional grouped style categories in
+copy/pasting UI</li>
+<li>Annotations: Brand new annotations selection tool</li>
+<li>Annotations: Show text annotations in 3D map views</li>
+<li>Annotations: Support rendering annotation layer markers as 3D
+billboards</li>
+<li>Labelling: Add option to ignore whitespace when detecting label
+collisions</li>
+<li>Labelling: Rework multipart geometry labeling</li>
+<li>Labelling: Placement modes for curved label placement</li>
+<li>Rendering: Introduce selective masking presets</li>
+<li>3D Features: Add an option to disable terrain export on 3D scene
+exports</li>
+<li>3D Features: Highlight identified features in 3d views</li>
+<li>3D Features: Cross sections: use fixed tolerance (width) and nudge
+left/right</li>
+<li>3D Features: Dynamic vector chunking</li>
+<li>3D Features: Render floors of extruded polygons</li>
+<li>3D Features: Add support for a 2d map overlay</li>
+<li>3D Features: Esri Scene Layers</li>
+<li>3D Features: Make orthographic camera work</li>
+<li>Point Clouds: Build virtual point cloud (VPC) algorithm
+enhancements</li>
+<li>Point Clouds: New processing algorithm: Compare point clouds
+(M3C2)</li>
+<li>Point Clouds: Choose at what zoom level VPC will show actual
+points</li>
+<li>Point Clouds: Add virtual point cloud remote dataset support</li>
+<li>Point Clouds: Editing of virtual point clouds</li>
+<li>Point Clouds: New processing algorithm: Height above ground</li>
+<li>Point Clouds: New processing algorithm: Classify ground points</li>
+<li>Point Clouds: New processing algorithm: Filter noise</li>
+<li>Point Clouds: New processing algorithm: Transform point cloud</li>
+<li>Print Layouts: Add horizontal alignment control for layout map grid
+annotations</li>
+<li>Print Layouts: Rework handling of initial layer set and
+synchronization on Layout Legends</li>
+<li>Print Layouts: Add data-defined control over layout map grid
+annotation visibility, and additional expression variables for
+grids</li>
+<li>Print Layouts: Allow for atlas geometries to reshape the frame of
+map items</li>
+<li>Print Layouts: Brand new pie chart plot type</li>
+<li>Print Layouts: Print Layout Charts Implementation</li>
+<li>Print Layouts: Add an atlas option to limit coverage layer rendering
+to the current feature only</li>
+<li>Print Layouts: Add set extent to layer item in the map item’s
+toolbar menu</li>
+<li>Print Layouts: Brand new layout item rotation handles</li>
+<li>Expressions: Add “equals” geometry function</li>
+<li>Expressions: Add expression functions for working with magnetic
+models</li>
+<li>Expressions: Add extract_degrees, extract_minutes, extract_seconds
+functions</li>
+<li>Expressions: Add unaccent function based on PostgreSQL unaccent</li>
+<li>Expressions: Add substr_count expression</li>
+<li>Expressions: Add some timezone related expression functions</li>
+<li>Digitising: Bézier maptool</li>
+<li>Digitising: Add area and total length/perimeter CAD dock floater
+values</li>
+<li>Digitising: Add Maptool to handle chamfer and fillet of
+polygons</li>
+<li>Data Management: Enhanced COG support for raster exports</li>
+<li>Data Management: Copy raw attribute values</li>
+<li>Data Management: Allow storing Comments in QGIS Projects stored in
+PostgreSQL</li>
+<li>Data Management: Allow named layers as temporary output</li>
+<li>Data Management: Possibility to change the layer name in the layer
+panel when saving a scratch layer</li>
+<li>Data Management: Suggest a file name when exporting layer or group
+as layer definition file</li>
+<li>Forms and Widgets: Add the ability to preview the attributes form
+within the vector layer properties dialog</li>
+<li>Forms and Widgets: Refine reuse of last value and introduce
+remembrance toggle</li>
+<li>Layer Legend: Add control over whether layers are included in
+automatic print layout legends</li>
+<li>Layer Legend: Custom Elevation Profile Sources</li>
+<li>Processing: Native polygon orientation algorithms</li>
+<li>Processing: Configure model components using an inline panel instead
+of modal dialogs</li>
+<li>Processing: Add network analysis validation algorithms</li>
+<li>Processing: Add feature preserving raster smoothing algorithm</li>
+<li>Processing: Add native raster gaussian blur algorithm</li>
+<li>Processing: Add native total curvature algorithm from the terrain
+analysis library</li>
+<li>Processing: Expose NODATA and raster creation options for outputs in
+the terrain analysis tools</li>
+<li>Processing: Add Dataset Identification GDAL Processing
+Algorithm</li>
+<li>Processing: Add a way to specify the raster format in processing
+algorithm outputs</li>
+<li>Processing: Show the feature count flowing through a model inside
+the model designer</li>
+<li>Processing: support max-triangle-edge-length in PDAL Export to
+raster (TIN) algorithm</li>
+<li>Processing: Model designer update</li>
+<li>Processing: Allow Reproject Layer algorithm to transform Z
+coordinates</li>
+<li>Processing: Add algorithm to create Cloud Optimized GeoTiffs from
+directory source</li>
+<li>Processing: Add SFCGAL approximate medial axis processing
+algorithm</li>
+<li>Processing: Scale and Resolution settings for WMS extraction</li>
+<li>Processing: Add duplicate features output layer parameter to Delete
+duplicate geometries Algorithm</li>
+<li>Processing: Add algorithms to filter parts by length/area</li>
+<li>Processing: Add optional destination CRS for Package Layers
+algorithm</li>
+<li>Processing: Package Layers algorithm - only export features
+intersecting a given extent</li>
+<li>Processing: Unlimited model canvas size in the model designer</li>
+<li>Application and Project Options: OAuth2 auto refresh</li>
+<li>Application and Project Options: Project trust for embedded code
+enhancement</li>
+<li>Application and Project Options: Elevation Profile Manager</li>
+<li>Application and Project Options: Project/layer metadata localization
+support</li>
+<li>Application and Project Options: Add project setting to enable HTML
+GetFeatureInfo maptip-only mode</li>
+<li>Profile Plots: Add option to sync elevation profile layers with
+project layers</li>
+<li>Profile Plots: Render point cloud as a continuous elevation
+line</li>
+<li>Profile Plots: Show distance:elevation scale ratio in profile
+settings menu</li>
+<li>Browser: Move multiple tables in Database to another Schema</li>
+<li>Browser: Browser DB Table Comment</li>
+<li>Browser: Add create or delete Spatial Index to the Manage menu in
+Browser</li>
+<li>Data Providers: Add support for GML as a feature format for
+OAPIF</li>
+<li>Data Providers: Allow OAPIF users to select an alternate format than
+GeoJSON with which to download features</li>
+<li>Data Providers: Allow update and delete for Field Domains in
+GPKG</li>
+<li>Data Providers: Save QGIS projects to PostgreSQL</li>
+<li>Data Providers: Add Layer Properties info to PostgreSQL
+provider</li>
+<li>Data Providers: Add auth method for Planetary computer</li>
+<li>Data Providers: QGIS Project Versioning in PostgreSQL</li>
+<li>QGIS Server: Try to reload invalid project layers</li>
+<li>QGIS Server: Implement GetFeatureInfo for mesh layers</li>
+<li>Programmability: Add support for area3D to QgsGeometry</li>
+<li>Programmability: Add support for 3d points in pointsAreCollinear
+method of QgsGeometryutils</li>
+<li>Programmability: Implement QgsVectorLayer.as_geopandas()</li>
+<li>Programmability: Expose 3D map tools to PyQgis API</li>
+<li>Programmability: Expose 3D map canvas cross section mode to PyQgis
+API</li>
+<li>Programmability: Refactor ray casting and expose to PyQgis API</li>
+<li>Programmability: TemplatedLineSymbolLayer to enable blank areas
+implementation</li>
+<li>Programmability: Port Hub distance algorithm to C++</li>
+<li>Programmability: Add support for SFCGAL library</li>
+<li>Notable Fixes: Bug fixes by Alessandro Pasotti (QCooperative)</li>
+<li>Notable Fixes: Bug fixes by Even Rouault (Spatialys)</li>
+<li>Notable Fixes: Bug fixes by Julien Cabieces (Oslandia)</li>
+<li>Notable Fixes: Bug Fixes by Denis Rouzaud (OPENGIS)</li>
+<li>Notable Fixes: Bug Fixes by Germán Carrillo (OPENGIS)</li>
+<li>Notable Fixes: Bug Fixes by Till Frankenbach (OPENGIS)</li>
+<li>Notable Fixes: Bug fixes by Stefanos Natsis (LutraConsulting)</li>
+<li></li>
+</ul>
 <h1 id="whats-new-in-version-3.44-solothurn">What’s new in Version 3.44
 ‘Solothurn’?</h1>
 <p>This release has following new features:</p>

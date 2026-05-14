@@ -21,8 +21,11 @@
 
 #include <QColorDialog>
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgslimitedrandomcolorrampdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLimitedRandomColorRampWidget::QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent )
   : QgsPanelWidget( parent )

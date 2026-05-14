@@ -18,11 +18,16 @@
 #ifndef QGSALGORITHMDISSOLVE_H
 #define QGSALGORITHMDISSOLVE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -32,7 +37,15 @@
 class QgsCollectorAlgorithm : public QgsProcessingAlgorithm
 {
   protected:
-    QVariantMap processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const std::function<QgsGeometry( const QVector<QgsGeometry> & )> &collector, int maxQueueLength = 0, Qgis::ProcessingFeatureSourceFlags sourceFlags = Qgis::ProcessingFeatureSourceFlags(), bool separateDisjoint = false );
+    QVariantMap processCollection(
+      const QVariantMap &parameters,
+      QgsProcessingContext &context,
+      QgsProcessingFeedback *feedback,
+      const std::function<QgsGeometry( const QVector<QgsGeometry> & )> &collector,
+      int maxQueueLength = 0,
+      Qgis::ProcessingFeatureSourceFlags sourceFlags = Qgis::ProcessingFeatureSourceFlags(),
+      bool separateDisjoint = false
+    );
 };
 
 /**

@@ -10,20 +10,22 @@ __author__ = "Nyall Dawson"
 __date__ = "10/09/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
 import unittest
-from qgis.testing import start_app, QgisTestCase
-from qgis.PyQt.QtGui import QColor
+
 from qgis.core import (
+    Qgis,
     QgsAbstract3DSymbol,
     QgsFillSymbol,
     QgsGeometry,
+    QgsGoochMaterialSettings,
     QgsLegendPatchShape,
     QgsLimitedRandomColorRamp,
     QgsLinePatternFillSymbolLayer,
     QgsLineSymbol,
     QgsMarkerSymbol,
     QgsPalLayerSettings,
+    QgsPhongMaterialSettings,
+    QgsSimpleLineMaterialSettings,
     QgsStyle,
     QgsStyleModel,
     QgsStyleProxyModel,
@@ -31,12 +33,14 @@ from qgis.core import (
     QgsTextFormat,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class Dummy3dSymbol(QgsAbstract3DSymbol):
-
     def __init__(self):
         super().__init__()
         self.layer_types = [
@@ -82,7 +86,6 @@ def createFillSymbol():
 
 
 class TestQgsStyleModel(QgisTestCase):
-
     def test_style_with_symbols(self):
 
         style = QgsStyle()
@@ -737,6 +740,106 @@ class TestQgsStyleModel(QgisTestCase):
             None,
         )
 
+    def test_style_with_material_settings(self):
+        style = QgsStyle()
+        style.createMemoryDatabase()
+
+        # style with material settings
+
+        material_a = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("a", material_a, True))
+        style.tagSymbol(
+            QgsStyle.StyleEntity.MaterialSettingsEntity, "a", ["tag 1", "tag 2"]
+        )
+        material_B = QgsPhongMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("B ", material_B, True))
+        material_b = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("b", material_b, True))
+        material_C = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("C", material_C, True))
+        style.tagSymbol(QgsStyle.StyleEntity.MaterialSettingsEntity, "C", ["tag 3"])
+        style.addFavorite(QgsStyle.StyleEntity.MaterialSettingsEntity, "C")
+        material_C = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings(" ----c/- ", material_C, True))
+
+        model = QgsStyleModel(style)
+        self.assertEqual(model.rowCount(), 5)
+        self.assertEqual(model.columnCount(), 2)
+
+        self.assertTrue(model.index(0, 0).isValid())
+        self.assertFalse(model.index(10, 0).isValid())
+        self.assertFalse(model.index(0, 10).isValid())
+
+        self.assertFalse(model.parent(model.index(0, 0)).isValid())
+
+        for role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
+            self.assertIsNone(model.data(model.index(-1, 0), role))
+            self.assertIsNone(model.data(model.index(-1, 1), role))
+            self.assertEqual(model.data(model.index(0, 0), role), " ----c/- ")
+            self.assertFalse(model.data(model.index(0, 1), role))
+            self.assertIsNone(model.data(model.index(0, 2), role))
+            self.assertIsNone(model.data(model.index(0, -1), role))
+            self.assertEqual(model.data(model.index(1, 0), role), "B ")
+            self.assertFalse(model.data(model.index(1, 1), role))
+            self.assertEqual(model.data(model.index(2, 0), role), "C")
+            self.assertEqual(model.data(model.index(2, 1), role), "tag 3")
+            self.assertEqual(model.data(model.index(3, 0), role), "a")
+            self.assertEqual(model.data(model.index(3, 1), role), "tag 1, tag 2")
+            self.assertEqual(model.data(model.index(4, 0), role), "b")
+            self.assertFalse(model.data(model.index(4, 1), role))
+            self.assertIsNone(model.data(model.index(5, 0), role))
+            self.assertIsNone(model.data(model.index(5, 1), role))
+
+        # decorations
+        self.assertIsNone(
+            model.data(model.index(-1, 0), Qt.ItemDataRole.DecorationRole)
+        )
+        self.assertIsNone(model.data(model.index(0, 1), Qt.ItemDataRole.DecorationRole))
+        self.assertIsNone(model.data(model.index(5, 0), Qt.ItemDataRole.DecorationRole))
+        # self.assertFalse(model.data(model.index(0, 0), Qt.DecorationRole).isNull())
+
+        self.assertEqual(
+            model.data(model.index(0, 0), QgsStyleModel.Role.TypeRole),
+            QgsStyle.StyleEntity.MaterialSettingsEntity,
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), QgsStyleModel.Role.TypeRole),
+            QgsStyle.StyleEntity.MaterialSettingsEntity,
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), QgsStyleModel.Role.TypeRole),
+            QgsStyle.StyleEntity.MaterialSettingsEntity,
+        )
+
+        self.assertEqual(
+            model.data(model.index(0, 0), QgsStyleModel.Role.MaterialType),
+            "gooch",
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), QgsStyleModel.Role.MaterialType),
+            "phong",
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), QgsStyleModel.Role.MaterialType),
+            "gooch",
+        )
+
+        self.assertEqual(
+            model.data(model.index(0, 0), QgsStyleModel.Role.IsFavoriteRole), False
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), QgsStyleModel.Role.IsFavoriteRole), False
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), QgsStyleModel.Role.IsFavoriteRole), True
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), QgsStyleModel.Role.IsFavoriteRole), False
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), QgsStyleModel.Role.IsFavoriteRole), False
+        )
+
     def test_mixed_style(self):
         """
         Test style with both symbols and ramps
@@ -815,12 +918,24 @@ class TestQgsStyleModel(QgisTestCase):
         symbol3d_b = Dummy3dSymbol()
         self.assertTrue(style.addSymbol3D("symbol3d c", symbol3d_b, True))
 
+        material_a = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material a", material_a, True))
+        style.tagSymbol(
+            QgsStyle.StyleEntity.MaterialSettingsEntity,
+            "material a",
+            ["tag 1", "tag 2"],
+        )
+        material_B = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material B ", material_B, True))
+        material_b = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material c", material_b, True))
+
         model = QgsStyleModel(style)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
         self.assertEqual(model.columnCount(), 2)
 
         self.assertTrue(model.index(0, 0).isValid())
-        self.assertFalse(model.index(20, 0).isValid())
+        self.assertFalse(model.index(23, 0).isValid())
         self.assertFalse(model.index(0, 10).isValid())
 
         self.assertFalse(model.parent(model.index(0, 0)).isValid())
@@ -870,8 +985,16 @@ class TestQgsStyleModel(QgisTestCase):
             self.assertEqual(model.data(model.index(18, 1), role), "tag 1, tag 2")
             self.assertEqual(model.data(model.index(19, 0), role), "symbol3d c")
             self.assertFalse(model.data(model.index(19, 1), role))
-            self.assertIsNone(model.data(model.index(20, 0), role))
-            self.assertIsNone(model.data(model.index(20, 1), role))
+
+            self.assertEqual(model.data(model.index(20, 0), role), "material B ")
+            self.assertFalse(model.data(model.index(20, 1), role))
+            self.assertEqual(model.data(model.index(21, 0), role), "material a")
+            self.assertEqual(model.data(model.index(21, 1), role), "tag 1, tag 2")
+            self.assertEqual(model.data(model.index(22, 0), role), "material c")
+            self.assertFalse(model.data(model.index(22, 1), role))
+
+            self.assertIsNone(model.data(model.index(23, 0), role))
+            self.assertIsNone(model.data(model.index(23, 1), role))
 
         # decorations
         self.assertIsNone(
@@ -879,7 +1002,7 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertIsNone(model.data(model.index(0, 1), Qt.ItemDataRole.DecorationRole))
         self.assertIsNone(
-            model.data(model.index(20, 0), Qt.ItemDataRole.DecorationRole)
+            model.data(model.index(23, 0), Qt.ItemDataRole.DecorationRole)
         )
         self.assertFalse(
             model.data(model.index(0, 0), Qt.ItemDataRole.DecorationRole).isNull()
@@ -969,6 +1092,18 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(19, 0), QgsStyleModel.Role.TypeRole),
             QgsStyle.StyleEntity.Symbol3DEntity,
+        )
+        self.assertEqual(
+            model.data(model.index(20, 0), QgsStyleModel.Role.TypeRole),
+            QgsStyle.StyleEntity.MaterialSettingsEntity,
+        )
+        self.assertEqual(
+            model.data(model.index(21, 0), QgsStyleModel.Role.TypeRole),
+            QgsStyle.StyleEntity.MaterialSettingsEntity,
+        )
+        self.assertEqual(
+            model.data(model.index(22, 0), QgsStyleModel.Role.TypeRole),
+            QgsStyle.StyleEntity.MaterialSettingsEntity,
         )
 
     def test_add_delete_symbols(self):
@@ -1965,6 +2100,270 @@ class TestQgsStyleModel(QgisTestCase):
             model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
 
+    def test_add_material(self):
+        style = QgsStyle()
+        style.createMemoryDatabase()
+
+        model = QgsStyleModel(style)
+        symbol = createMarkerSymbol()
+        self.assertTrue(style.addSymbol("a", symbol, True))
+        symbol = createMarkerSymbol()
+        self.assertTrue(style.addSymbol("c", symbol, True))
+        self.assertEqual(model.rowCount(), 2)
+
+        ramp_a = QgsLimitedRandomColorRamp(5)
+        self.assertTrue(style.addColorRamp("ramp a", ramp_a, True))
+        self.assertEqual(model.rowCount(), 3)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+
+        format_a = QgsTextFormat()
+        self.assertTrue(style.addTextFormat("format a", format_a, True))
+        self.assertEqual(model.rowCount(), 4)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+
+        settings_a = QgsPalLayerSettings()
+        self.assertTrue(style.addLabelSettings("settings a", settings_a, True))
+        self.assertEqual(model.rowCount(), 5)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "settings a"
+        )
+
+        shape_a = QgsLegendPatchShape()
+        self.assertTrue(style.addLegendPatchShape("shape a", shape_a, True))
+        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "settings a"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "shape a"
+        )
+
+        symbol3d_a = Dummy3dSymbol()
+        self.assertTrue(style.addSymbol3D("symbol3d a", symbol3d_a, True))
+        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "settings a"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "shape a"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "symbol3d a"
+        )
+
+        material_a = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material a", material_a, True))
+        self.assertEqual(model.rowCount(), 8)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "settings a"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "shape a"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "symbol3d a"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+
+        material_B = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material c", material_B, True))
+        self.assertEqual(model.rowCount(), 9)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "settings a"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "shape a"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "symbol3d a"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(8, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
+
+        material_b = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material b", material_b, True))
+        self.assertEqual(model.rowCount(), 10)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "settings a"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "shape a"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "symbol3d a"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(8, 0), Qt.ItemDataRole.DisplayRole), "material b"
+        )
+        self.assertEqual(
+            model.data(model.index(9, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
+
+        self.assertTrue(
+            style.removeEntityByName(
+                QgsStyle.StyleEntity.MaterialSettingsEntity, "material a"
+            )
+        )
+        self.assertEqual(model.rowCount(), 9)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "settings a"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "shape a"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "symbol3d a"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "material b"
+        )
+        self.assertEqual(
+            model.data(model.index(8, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
+
+        self.assertTrue(
+            style.removeEntityByName(
+                QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape a"
+            )
+        )
+        self.assertEqual(model.rowCount(), 8)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "c"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp a"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "format a"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "settings a"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "symbol3d a"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "material b"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
+
     def test_renamed(self):
         style = QgsStyle()
         style.createMemoryDatabase()
@@ -1994,8 +2393,12 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertTrue(style.addSymbol3D("symbol3d a", symbol3d_a, True))
         symbol3d_B = Dummy3dSymbol()
         self.assertTrue(style.addSymbol3D("symbol3d c", symbol3d_B, True))
+        material_a = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material a", material_a, True))
+        material_B = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material c", material_B, True))
 
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "a"
         )
@@ -2032,9 +2435,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameSymbol("a", "b"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "b"
         )
@@ -2071,9 +2480,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameSymbol("b", "d"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "c"
         )
@@ -2110,9 +2525,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameSymbol("d", "e"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "c"
         )
@@ -2149,9 +2570,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameSymbol("c", "f"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
         )
@@ -2188,9 +2615,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameColorRamp("ramp a", "ramp b"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
         )
@@ -2226,6 +2659,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameColorRamp("ramp b", "ramp d"))
@@ -2265,6 +2704,12 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameColorRamp("ramp d", "ramp e"))
         self.assertEqual(
@@ -2302,6 +2747,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameColorRamp("ramp c", "ramp f"))
@@ -2341,9 +2792,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameTextFormat("format a", "format b"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
         )
@@ -2379,6 +2836,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameTextFormat("format b", "format d"))
@@ -2418,6 +2881,12 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameTextFormat("format d", "format e"))
         self.assertEqual(
@@ -2455,6 +2924,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameTextFormat("format c", "format f"))
@@ -2494,9 +2969,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameLabelSettings("settings a", "settings b"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
         )
@@ -2532,6 +3013,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameLabelSettings("settings b", "settings d"))
@@ -2571,6 +3058,12 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameLabelSettings("settings d", "settings e"))
         self.assertEqual(
@@ -2608,6 +3101,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameLabelSettings("settings c", "settings f"))
@@ -2647,9 +3146,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameLegendPatchShape("shape a", "shape b"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
         )
@@ -2685,6 +3190,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameLegendPatchShape("shape b", "shape d"))
@@ -2724,6 +3235,12 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameLegendPatchShape("shape d", "shape e"))
         self.assertEqual(
@@ -2761,6 +3278,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameLegendPatchShape("shape c", "shape f"))
@@ -2800,9 +3323,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameSymbol3D("symbol3d a", "symbol3d b"))
-        self.assertEqual(model.rowCount(), 12)
+        self.assertEqual(model.rowCount(), 14)
         self.assertEqual(
             model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
         )
@@ -2838,6 +3367,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d c"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameSymbol3D("symbol3d b", "symbol3d d"))
@@ -2877,6 +3412,12 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d d"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
 
         self.assertTrue(style.renameSymbol3D("symbol3d d", "symbol3d e"))
         self.assertEqual(
@@ -2914,6 +3455,12 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d e"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
         )
 
         self.assertTrue(style.renameSymbol3D("symbol3d c", "symbol3d f"))
@@ -2953,6 +3500,189 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d f"
         )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material a"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
+
+        self.assertTrue(style.renameMaterialSettings("material a", "material b"))
+        self.assertEqual(model.rowCount(), 14)
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "f"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp e"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "ramp f"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "format e"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "format f"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "settings e"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "settings f"
+        )
+        self.assertEqual(
+            model.data(model.index(8, 0), Qt.ItemDataRole.DisplayRole), "shape e"
+        )
+        self.assertEqual(
+            model.data(model.index(9, 0), Qt.ItemDataRole.DisplayRole), "shape f"
+        )
+        self.assertEqual(
+            model.data(model.index(10, 0), Qt.ItemDataRole.DisplayRole), "symbol3d e"
+        )
+        self.assertEqual(
+            model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d f"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material b"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
+
+        self.assertTrue(style.renameMaterialSettings("material b", "material d"))
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "f"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp e"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "ramp f"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "format e"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "format f"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "settings e"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "settings f"
+        )
+        self.assertEqual(
+            model.data(model.index(8, 0), Qt.ItemDataRole.DisplayRole), "shape e"
+        )
+        self.assertEqual(
+            model.data(model.index(9, 0), Qt.ItemDataRole.DisplayRole), "shape f"
+        )
+        self.assertEqual(
+            model.data(model.index(10, 0), Qt.ItemDataRole.DisplayRole), "symbol3d e"
+        )
+        self.assertEqual(
+            model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d f"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material d"
+        )
+
+        self.assertTrue(style.renameMaterialSettings("material d", "material e"))
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "f"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp e"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "ramp f"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "format e"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "format f"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "settings e"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "settings f"
+        )
+        self.assertEqual(
+            model.data(model.index(8, 0), Qt.ItemDataRole.DisplayRole), "shape e"
+        )
+        self.assertEqual(
+            model.data(model.index(9, 0), Qt.ItemDataRole.DisplayRole), "shape f"
+        )
+        self.assertEqual(
+            model.data(model.index(10, 0), Qt.ItemDataRole.DisplayRole), "symbol3d e"
+        )
+        self.assertEqual(
+            model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d f"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material c"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material e"
+        )
+
+        self.assertTrue(style.renameMaterialSettings("material c", "material f"))
+        self.assertEqual(
+            model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), "e"
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), "f"
+        )
+        self.assertEqual(
+            model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), "ramp e"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 0), Qt.ItemDataRole.DisplayRole), "ramp f"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), Qt.ItemDataRole.DisplayRole), "format e"
+        )
+        self.assertEqual(
+            model.data(model.index(5, 0), Qt.ItemDataRole.DisplayRole), "format f"
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole), "settings e"
+        )
+        self.assertEqual(
+            model.data(model.index(7, 0), Qt.ItemDataRole.DisplayRole), "settings f"
+        )
+        self.assertEqual(
+            model.data(model.index(8, 0), Qt.ItemDataRole.DisplayRole), "shape e"
+        )
+        self.assertEqual(
+            model.data(model.index(9, 0), Qt.ItemDataRole.DisplayRole), "shape f"
+        )
+        self.assertEqual(
+            model.data(model.index(10, 0), Qt.ItemDataRole.DisplayRole), "symbol3d e"
+        )
+        self.assertEqual(
+            model.data(model.index(11, 0), Qt.ItemDataRole.DisplayRole), "symbol3d f"
+        )
+        self.assertEqual(
+            model.data(model.index(12, 0), Qt.ItemDataRole.DisplayRole), "material e"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 0), Qt.ItemDataRole.DisplayRole), "material f"
+        )
 
     def test_tags_changed(self):
         style = QgsStyle()
@@ -2983,6 +3713,10 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertTrue(style.addSymbol3D("symbol3d a", symbol3d_a, True))
         symbol3d_B = Dummy3dSymbol()
         self.assertTrue(style.addSymbol3D("symbol3d c", symbol3d_B, True))
+        material_a = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material a", material_a, True))
+        material_B = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material c", material_B, True))
 
         self.assertFalse(model.data(model.index(0, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole))
@@ -2996,6 +3730,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.SymbolEntity, "a", ["t1", "t2"])
         self.assertEqual(
@@ -3012,6 +3748,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.SymbolEntity, "a", ["t3"])
         self.assertEqual(
@@ -3028,6 +3766,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.ColorrampEntity, "ramp a", ["t1", "t2"])
         self.assertEqual(
@@ -3046,6 +3786,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.ColorrampEntity, "ramp c", ["t3"])
         self.assertEqual(
@@ -3066,6 +3808,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.SymbolEntity, "c", ["t4"])
         self.assertEqual(
@@ -3088,6 +3832,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.detagSymbol(QgsStyle.StyleEntity.SymbolEntity, "c", ["t4"])
         self.assertEqual(
@@ -3108,6 +3854,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.detagSymbol(QgsStyle.StyleEntity.ColorrampEntity, "ramp a", ["t1"])
         self.assertEqual(
@@ -3128,6 +3876,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.TextFormatEntity, "format a", ["t1", "t2"])
         self.assertEqual(
@@ -3150,6 +3900,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.TextFormatEntity, "format c", ["t3"])
         self.assertEqual(
@@ -3174,6 +3926,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.TextFormatEntity, "c", ["t6"])
         self.assertEqual(
@@ -3198,6 +3952,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.detagSymbol(QgsStyle.StyleEntity.TextFormatEntity, "format c", ["t3"])
         self.assertEqual(
@@ -3220,6 +3976,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(
             QgsStyle.StyleEntity.LabelSettingsEntity, "settings a", ["t1", "t2"]
@@ -3246,6 +4004,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.LabelSettingsEntity, "settings c", ["t3"])
         self.assertEqual(
@@ -3272,6 +4032,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.LabelSettingsEntity, "c", ["t7"])
         self.assertEqual(
@@ -3298,6 +4060,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.detagSymbol(
             QgsStyle.StyleEntity.LabelSettingsEntity, "settings c", ["t3"]
@@ -3324,6 +4088,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(
             QgsStyle.StyleEntity.LabelSettingsEntity, "settings a", ["t1", "t2"]
@@ -3350,6 +4116,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.LabelSettingsEntity, "settings c", ["t3"])
         self.assertEqual(
@@ -3376,6 +4144,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.LabelSettingsEntity, "c", ["t7"])
         self.assertEqual(
@@ -3402,6 +4172,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.detagSymbol(
             QgsStyle.StyleEntity.LabelSettingsEntity, "settings c", ["t3"]
@@ -3428,6 +4200,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(
             QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape a", ["t1", "t2"]
@@ -3456,6 +4230,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape c", ["t3"])
         self.assertEqual(
@@ -3484,6 +4260,8 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.LegendPatchShapeEntity, "c", ["t7"])
         self.assertEqual(
@@ -3512,6 +4290,8 @@ class TestQgsStyleModel(QgisTestCase):
         )
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.detagSymbol(
             QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape c", ["t3"]
@@ -3540,6 +4320,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.Symbol3DEntity, "symbol3d a", ["t1", "t2"])
         self.assertEqual(
@@ -3568,6 +4350,8 @@ class TestQgsStyleModel(QgisTestCase):
             model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
         )
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.Symbol3DEntity, "symbol3d c", ["t3"])
         self.assertEqual(
@@ -3598,6 +4382,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole), "t3"
         )
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.tagSymbol(QgsStyle.StyleEntity.Symbol3DEntity, "c", ["t7"])
         self.assertEqual(
@@ -3628,6 +4414,8 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole), "t3"
         )
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
         style.detagSymbol(QgsStyle.StyleEntity.Symbol3DEntity, "symbol3d c", ["t3"])
         self.assertEqual(
@@ -3656,6 +4444,146 @@ class TestQgsStyleModel(QgisTestCase):
             model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
         )
         self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
+
+        style.tagSymbol(
+            QgsStyle.StyleEntity.MaterialSettingsEntity, "material a", ["t1", "t2"]
+        )
+        self.assertEqual(
+            model.data(model.index(0, 1), Qt.ItemDataRole.DisplayRole), "t1, t2, t3"
+        )
+        self.assertFalse(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), "t2"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 1), Qt.ItemDataRole.DisplayRole), "t3"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(5, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(6, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(7, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(8, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
+
+        style.tagSymbol(
+            QgsStyle.StyleEntity.MaterialSettingsEntity, "material c", ["t3"]
+        )
+        self.assertEqual(
+            model.data(model.index(0, 1), Qt.ItemDataRole.DisplayRole), "t1, t2, t3"
+        )
+        self.assertFalse(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), "t2"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 1), Qt.ItemDataRole.DisplayRole), "t3"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(5, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(6, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(7, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(8, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole), "t3"
+        )
+
+        style.tagSymbol(QgsStyle.StyleEntity.MaterialSettingsEntity, "c", ["t7"])
+        self.assertEqual(
+            model.data(model.index(0, 1), Qt.ItemDataRole.DisplayRole), "t1, t2, t3"
+        )
+        self.assertFalse(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), "t2"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 1), Qt.ItemDataRole.DisplayRole), "t3"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(5, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(6, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(7, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(8, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertEqual(
+            model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole), "t3"
+        )
+
+        style.detagSymbol(
+            QgsStyle.StyleEntity.MaterialSettingsEntity, "material c", ["t3"]
+        )
+        self.assertEqual(
+            model.data(model.index(0, 1), Qt.ItemDataRole.DisplayRole), "t1, t2, t3"
+        )
+        self.assertFalse(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), "t2"
+        )
+        self.assertEqual(
+            model.data(model.index(3, 1), Qt.ItemDataRole.DisplayRole), "t3"
+        )
+        self.assertEqual(
+            model.data(model.index(4, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(5, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(6, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(7, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(8, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(9, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(10, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(11, 1), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(
+            model.data(model.index(12, 1), Qt.ItemDataRole.DisplayRole), "t1, t2"
+        )
+        self.assertFalse(model.data(model.index(13, 1), Qt.ItemDataRole.DisplayRole))
 
     def test_filter_proxy(self):
         style = QgsStyle()
@@ -3737,52 +4665,69 @@ class TestQgsStyleModel(QgisTestCase):
         symbol3d_B.layer_types = [QgsWkbTypes.GeometryType.LineGeometry]
         self.assertTrue(style.addSymbol3D("sym3d c", symbol3d_B, True))
 
+        material_a = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material a", material_a, True))
+        style.tagSymbol(
+            QgsStyle.StyleEntity.MaterialSettingsEntity,
+            "material a",
+            ["tag 1", "tag 2"],
+        )
+        material_B = QgsSimpleLineMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material BB", material_B, True))
+        material_B = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material c", material_B, True))
+
         model = QgsStyleProxyModel(style)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
 
         # filter string
         model.setFilterString("xx")
         self.assertEqual(model.filterString(), "xx")
         self.assertEqual(model.rowCount(), 0)
         model.setFilterString("b")
-        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(model.rowCount(), 8)
         self.assertEqual(model.data(model.index(0, 0)), "b")
         self.assertEqual(model.data(model.index(1, 0)), "BB")
         self.assertEqual(model.data(model.index(2, 0)), "format BB")
+        self.assertEqual(model.data(model.index(3, 0)), "material BB")
+        self.assertEqual(model.data(model.index(4, 0)), "ramp BB")
+        self.assertEqual(model.data(model.index(5, 0)), "settings BB")
+        self.assertEqual(model.data(model.index(6, 0)), "shape BB")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d BB")
+        model.setFilterString("bb")
+        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(model.data(model.index(0, 0)), "BB")
+        self.assertEqual(model.data(model.index(1, 0)), "format BB")
+        self.assertEqual(model.data(model.index(2, 0)), "material BB")
         self.assertEqual(model.data(model.index(3, 0)), "ramp BB")
         self.assertEqual(model.data(model.index(4, 0)), "settings BB")
         self.assertEqual(model.data(model.index(5, 0)), "shape BB")
         self.assertEqual(model.data(model.index(6, 0)), "sym3d BB")
-        model.setFilterString("bb")
-        self.assertEqual(model.rowCount(), 6)
-        self.assertEqual(model.data(model.index(0, 0)), "BB")
-        self.assertEqual(model.data(model.index(1, 0)), "format BB")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp BB")
-        self.assertEqual(model.data(model.index(3, 0)), "settings BB")
-        self.assertEqual(model.data(model.index(4, 0)), "shape BB")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d BB")
         model.setFilterString("tag 1")
-        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "format a")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp a")
-        self.assertEqual(model.data(model.index(3, 0)), "settings a")
-        self.assertEqual(model.data(model.index(4, 0)), "shape a")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d a")
+        self.assertEqual(model.data(model.index(2, 0)), "material a")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp a")
+        self.assertEqual(model.data(model.index(4, 0)), "settings a")
+        self.assertEqual(model.data(model.index(5, 0)), "shape a")
+        self.assertEqual(model.data(model.index(6, 0)), "sym3d a")
         model.setFilterString("TAG 1")
-        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "format a")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp a")
-        self.assertEqual(model.data(model.index(3, 0)), "settings a")
-        self.assertEqual(model.data(model.index(4, 0)), "shape a")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d a")
+        self.assertEqual(model.data(model.index(2, 0)), "material a")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp a")
+        self.assertEqual(model.data(model.index(4, 0)), "settings a")
+        self.assertEqual(model.data(model.index(5, 0)), "shape a")
+        self.assertEqual(model.data(model.index(6, 0)), "sym3d a")
         model.setFilterString("ram b")
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "ramp BB")
         model.setFilterString("mat b")
-        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.rowCount(), 2)
         self.assertEqual(model.data(model.index(0, 0)), "format BB")
+        self.assertEqual(model.data(model.index(1, 0)), "material BB")
         model.setFilterString("ta ram")  # match ta -> "tag 1", ram -> "ramp a"
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "ramp a")
@@ -3796,15 +4741,15 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "sym3d a")
         model.setFilterString("")
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
 
         # entity type
         model.setEntityFilter(QgsStyle.StyleEntity.SymbolEntity)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
         model.setEntityFilter(QgsStyle.StyleEntity.TextFormatEntity)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
         model.setEntityFilter(QgsStyle.StyleEntity.ColorrampEntity)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
         model.setEntityFilterEnabled(True)
         self.assertEqual(model.rowCount(), 3)
         self.assertEqual(model.data(model.index(0, 0)), "ramp a")
@@ -3867,33 +4812,46 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(model.data(model.index(0, 0)), "sym3d BB")
         model.setFilterString("")
 
+        model.setEntityFilter(QgsStyle.StyleEntity.MaterialSettingsEntity)
+        self.assertEqual(model.rowCount(), 3)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
+        self.assertEqual(model.data(model.index(1, 0)), "material BB")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        model.setFilterString("BB")
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material BB")
+        model.setFilterString("")
+
         model.setEntityFilter(QgsStyle.StyleEntity.SymbolEntity)
         model.setEntityFilterEnabled(False)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
 
         # symbol type filter
         model.setSymbolType(QgsSymbol.SymbolType.Line)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
         model.setSymbolType(QgsSymbol.SymbolType.Marker)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
         model.setSymbolTypeFilterEnabled(True)
-        self.assertEqual(model.rowCount(), 16)
+        self.assertEqual(model.rowCount(), 19)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "another")
         self.assertEqual(model.data(model.index(2, 0)), "BB")
         self.assertEqual(model.data(model.index(3, 0)), "format a")
         self.assertEqual(model.data(model.index(4, 0)), "format BB")
         self.assertEqual(model.data(model.index(5, 0)), "format c")
-        self.assertEqual(model.data(model.index(6, 0)), "ramp a")
-        self.assertEqual(model.data(model.index(7, 0)), "ramp BB")
-        self.assertEqual(model.data(model.index(8, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(9, 0)), "settings a")
-        self.assertEqual(model.data(model.index(10, 0)), "settings BB")
-        self.assertEqual(model.data(model.index(11, 0)), "settings c")
-        self.assertEqual(model.data(model.index(12, 0)), "shape a")
-        self.assertEqual(model.data(model.index(13, 0)), "sym3d a")
-        self.assertEqual(model.data(model.index(14, 0)), "sym3d BB")
-        self.assertEqual(model.data(model.index(15, 0)), "sym3d c")
+        self.assertEqual(model.data(model.index(6, 0)), "material a")
+        self.assertEqual(model.data(model.index(7, 0)), "material BB")
+        self.assertEqual(model.data(model.index(8, 0)), "material c")
+        self.assertEqual(model.data(model.index(9, 0)), "ramp a")
+        self.assertEqual(model.data(model.index(10, 0)), "ramp BB")
+        self.assertEqual(model.data(model.index(11, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(12, 0)), "settings a")
+        self.assertEqual(model.data(model.index(13, 0)), "settings BB")
+        self.assertEqual(model.data(model.index(14, 0)), "settings c")
+        self.assertEqual(model.data(model.index(15, 0)), "shape a")
+        self.assertEqual(model.data(model.index(16, 0)), "sym3d a")
+        self.assertEqual(model.data(model.index(17, 0)), "sym3d BB")
+        self.assertEqual(model.data(model.index(18, 0)), "sym3d c")
 
         model.setEntityFilterEnabled(True)
         self.assertEqual(model.rowCount(), 3)
@@ -3930,7 +4888,40 @@ class TestQgsStyleModel(QgisTestCase):
         model.setFilterString("")
         model.setSymbolTypeFilterEnabled(False)
         model.setEntityFilterEnabled(False)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
+
+        # rendering technique filter
+        model.setEntityFilter(QgsStyle.StyleEntity.MaterialSettingsEntity)
+        model.setEntityFilterEnabled(True)
+        self.assertEqual(model.rowCount(), 3)
+        model.setRenderingTechnique(Qgis.MaterialRenderingTechnique.Lines)
+        self.assertEqual(model.rowCount(), 3)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
+        self.assertEqual(model.data(model.index(1, 0)), "material BB")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        model.setRenderingTechniqueFilterEnabled(True)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material BB")
+        model.setRenderingTechnique(Qgis.MaterialRenderingTechnique.Triangles)
+        self.assertEqual(model.rowCount(), 2)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
+        self.assertEqual(model.data(model.index(1, 0)), "material c")
+
+        model.setFilterString("c")
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material c")
+        model.setRenderingTechniqueFilterEnabled(False)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material c")
+        model.setRenderingTechniqueFilterEnabled(True)
+        model.setFilterString("")
+        model.setRenderingTechnique(Qgis.MaterialRenderingTechnique.Lines)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material BB")
+        model.setFilterString("")
+        model.setRenderingTechniqueFilterEnabled(False)
+        model.setEntityFilterEnabled(False)
+        self.assertEqual(model.rowCount(), 23)
 
         # tag id filter
         self.assertEqual(model.tagId(), -1)
@@ -3938,13 +4929,14 @@ class TestQgsStyleModel(QgisTestCase):
         tag_3_id = style.tagId("tag 3")
         model.setTagId(tag_1_id)
         self.assertEqual(model.tagId(), tag_1_id)
-        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "format a")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp a")
-        self.assertEqual(model.data(model.index(3, 0)), "settings a")
-        self.assertEqual(model.data(model.index(4, 0)), "shape a")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d a")
+        self.assertEqual(model.data(model.index(2, 0)), "material a")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp a")
+        self.assertEqual(model.data(model.index(4, 0)), "settings a")
+        self.assertEqual(model.data(model.index(5, 0)), "shape a")
+        self.assertEqual(model.data(model.index(6, 0)), "sym3d a")
         model.setEntityFilterEnabled(True)
         model.setEntityFilter(QgsStyle.StyleEntity.ColorrampEntity)
         self.assertEqual(model.rowCount(), 1)
@@ -3961,6 +4953,9 @@ class TestQgsStyleModel(QgisTestCase):
         model.setEntityFilter(QgsStyle.StyleEntity.Symbol3DEntity)
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "sym3d a")
+        model.setEntityFilter(QgsStyle.StyleEntity.MaterialSettingsEntity)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
         model.setEntityFilterEnabled(False)
         model.setFilterString("ra")
         self.assertEqual(model.rowCount(), 1)
@@ -3977,10 +4972,13 @@ class TestQgsStyleModel(QgisTestCase):
         model.setFilterString("3d")
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "sym3d a")
+        model.setFilterString("mater")
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
         model.setEntityFilterEnabled(False)
         model.setFilterString("")
         model.setTagId(-1)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
         model.setTagId(tag_3_id)
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "C")
@@ -4019,20 +5017,31 @@ class TestQgsStyleModel(QgisTestCase):
         style.detagSymbol(QgsStyle.StyleEntity.Symbol3DEntity, "sym3d c")
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "C")
+        style.tagSymbol(
+            QgsStyle.StyleEntity.MaterialSettingsEntity, "material c", ["tag 3"]
+        )
+        self.assertEqual(model.rowCount(), 2)
+        self.assertEqual(model.data(model.index(0, 0)), "C")
+        self.assertEqual(model.data(model.index(1, 0)), "material c")
+        style.detagSymbol(QgsStyle.StyleEntity.MaterialSettingsEntity, "material c")
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "C")
+
         model.setTagId(-1)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
 
         # tag string filter
         self.assertFalse(model.tagString())
         model.setTagString("tag 1")
         self.assertEqual(model.tagString(), "tag 1")
-        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "format a")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp a")
-        self.assertEqual(model.data(model.index(3, 0)), "settings a")
-        self.assertEqual(model.data(model.index(4, 0)), "shape a")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d a")
+        self.assertEqual(model.data(model.index(2, 0)), "material a")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp a")
+        self.assertEqual(model.data(model.index(4, 0)), "settings a")
+        self.assertEqual(model.data(model.index(5, 0)), "shape a")
+        self.assertEqual(model.data(model.index(6, 0)), "sym3d a")
         model.setEntityFilterEnabled(True)
         model.setEntityFilter(QgsStyle.StyleEntity.ColorrampEntity)
         self.assertEqual(model.rowCount(), 1)
@@ -4049,6 +5058,9 @@ class TestQgsStyleModel(QgisTestCase):
         model.setEntityFilter(QgsStyle.StyleEntity.Symbol3DEntity)
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "sym3d a")
+        model.setEntityFilter(QgsStyle.StyleEntity.MaterialSettingsEntity)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
         model.setEntityFilterEnabled(False)
         model.setFilterString("ra")
         self.assertEqual(model.rowCount(), 1)
@@ -4065,10 +5077,13 @@ class TestQgsStyleModel(QgisTestCase):
         model.setFilterString("3d")
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "sym3d a")
+        model.setFilterString("matEr")
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
         model.setEntityFilterEnabled(False)
         model.setFilterString("")
         model.setTagString("")
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
         model.setTagString("tag 3")
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "C")
@@ -4105,10 +5120,19 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(model.data(model.index(0, 0)), "C")
         self.assertEqual(model.data(model.index(1, 0)), "sym3d c")
         style.detagSymbol(QgsStyle.StyleEntity.Symbol3DEntity, "sym3d c")
+
+        style.tagSymbol(
+            QgsStyle.StyleEntity.MaterialSettingsEntity, "material c", ["tag 3"]
+        )
+        self.assertEqual(model.rowCount(), 2)
+        self.assertEqual(model.data(model.index(0, 0)), "C")
+        self.assertEqual(model.data(model.index(1, 0)), "material c")
+        style.detagSymbol(QgsStyle.StyleEntity.MaterialSettingsEntity, "material c")
+
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "C")
         model.setTagString("")
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
 
         # favorite filter
         style.addFavorite(QgsStyle.StyleEntity.ColorrampEntity, "ramp c")
@@ -4117,16 +5141,18 @@ class TestQgsStyleModel(QgisTestCase):
         style.addFavorite(QgsStyle.StyleEntity.LabelSettingsEntity, "settings c")
         style.addFavorite(QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape c")
         style.addFavorite(QgsStyle.StyleEntity.Symbol3DEntity, "sym3d c")
+        style.addFavorite(QgsStyle.StyleEntity.MaterialSettingsEntity, "material c")
         self.assertEqual(model.favoritesOnly(), False)
         model.setFavoritesOnly(True)
         self.assertEqual(model.favoritesOnly(), True)
-        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(4, 0)), "settings c")
+        self.assertEqual(model.data(model.index(5, 0)), "shape c")
+        self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
         model.setEntityFilterEnabled(True)
         model.setEntityFilter(QgsStyle.StyleEntity.ColorrampEntity)
         self.assertEqual(model.rowCount(), 1)
@@ -4143,118 +5169,152 @@ class TestQgsStyleModel(QgisTestCase):
         model.setEntityFilter(QgsStyle.StyleEntity.Symbol3DEntity)
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "sym3d c")
+        model.setEntityFilter(QgsStyle.StyleEntity.MaterialSettingsEntity)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material c")
         model.setEntityFilterEnabled(False)
-        model.setFilterString("er")
+        model.setFilterString("her")
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         model.setEntityFilterEnabled(False)
         model.setFilterString("")
-        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.rowCount(), 7)
         style.addFavorite(QgsStyle.StyleEntity.ColorrampEntity, "ramp a")
+        self.assertEqual(model.rowCount(), 8)
+        self.assertEqual(model.data(model.index(0, 0)), "another")
+        self.assertEqual(model.data(model.index(1, 0)), "format c")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp a")
+        self.assertEqual(model.data(model.index(4, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(5, 0)), "settings c")
+        self.assertEqual(model.data(model.index(6, 0)), "shape c")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d c")
+        style.removeFavorite(QgsStyle.StyleEntity.ColorrampEntity, "ramp a")
         self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp a")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
         self.assertEqual(model.data(model.index(3, 0)), "ramp c")
         self.assertEqual(model.data(model.index(4, 0)), "settings c")
         self.assertEqual(model.data(model.index(5, 0)), "shape c")
         self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
-        style.removeFavorite(QgsStyle.StyleEntity.ColorrampEntity, "ramp a")
-        self.assertEqual(model.rowCount(), 6)
-        self.assertEqual(model.data(model.index(0, 0)), "another")
-        self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
         style.addFavorite(QgsStyle.StyleEntity.TextFormatEntity, "format a")
-        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(model.rowCount(), 8)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format a")
         self.assertEqual(model.data(model.index(2, 0)), "format c")
+        self.assertEqual(model.data(model.index(3, 0)), "material c")
+        self.assertEqual(model.data(model.index(4, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(5, 0)), "settings c")
+        self.assertEqual(model.data(model.index(6, 0)), "shape c")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d c")
+        style.removeFavorite(QgsStyle.StyleEntity.TextFormatEntity, "format a")
+        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(model.data(model.index(0, 0)), "another")
+        self.assertEqual(model.data(model.index(1, 0)), "format c")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
         self.assertEqual(model.data(model.index(3, 0)), "ramp c")
         self.assertEqual(model.data(model.index(4, 0)), "settings c")
         self.assertEqual(model.data(model.index(5, 0)), "shape c")
         self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
-        style.removeFavorite(QgsStyle.StyleEntity.TextFormatEntity, "format a")
-        self.assertEqual(model.rowCount(), 6)
+        style.addFavorite(QgsStyle.StyleEntity.LabelSettingsEntity, "settings a")
+        self.assertEqual(model.rowCount(), 8)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
-        style.addFavorite(QgsStyle.StyleEntity.LabelSettingsEntity, "settings a")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(4, 0)), "settings a")
+        self.assertEqual(model.data(model.index(5, 0)), "settings c")
+        self.assertEqual(model.data(model.index(6, 0)), "shape c")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d c")
+        style.removeFavorite(QgsStyle.StyleEntity.LabelSettingsEntity, "settings a")
         self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings a")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp c")
         self.assertEqual(model.data(model.index(4, 0)), "settings c")
         self.assertEqual(model.data(model.index(5, 0)), "shape c")
         self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
-        style.removeFavorite(QgsStyle.StyleEntity.LabelSettingsEntity, "settings a")
-        self.assertEqual(model.rowCount(), 6)
+        style.addFavorite(QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape a")
+        self.assertEqual(model.rowCount(), 8)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
-        style.addFavorite(QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape a")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(4, 0)), "settings c")
+        self.assertEqual(model.data(model.index(5, 0)), "shape a")
+        self.assertEqual(model.data(model.index(6, 0)), "shape c")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d c")
+        style.removeFavorite(QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape a")
         self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape a")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(4, 0)), "settings c")
         self.assertEqual(model.data(model.index(5, 0)), "shape c")
         self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
-        style.removeFavorite(QgsStyle.StyleEntity.LegendPatchShapeEntity, "shape a")
-        self.assertEqual(model.rowCount(), 6)
+        style.addFavorite(QgsStyle.StyleEntity.Symbol3DEntity, "sym3d a")
+        self.assertEqual(model.rowCount(), 8)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
-        style.addFavorite(QgsStyle.StyleEntity.Symbol3DEntity, "sym3d a")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(4, 0)), "settings c")
+        self.assertEqual(model.data(model.index(5, 0)), "shape c")
+        self.assertEqual(model.data(model.index(6, 0)), "sym3d a")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d c")
+        style.removeFavorite(QgsStyle.StyleEntity.Symbol3DEntity, "sym3d a")
         self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d a")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(4, 0)), "settings c")
+        self.assertEqual(model.data(model.index(5, 0)), "shape c")
         self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
-        style.removeFavorite(QgsStyle.StyleEntity.Symbol3DEntity, "sym3d a")
-        self.assertEqual(model.rowCount(), 6)
+        style.addFavorite(QgsStyle.StyleEntity.MaterialSettingsEntity, "material a")
+        self.assertEqual(model.rowCount(), 8)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
+        self.assertEqual(model.data(model.index(2, 0)), "material a")
+        self.assertEqual(model.data(model.index(3, 0)), "material c")
+        self.assertEqual(model.data(model.index(4, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(5, 0)), "settings c")
+        self.assertEqual(model.data(model.index(6, 0)), "shape c")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d c")
+        style.removeFavorite(QgsStyle.StyleEntity.MaterialSettingsEntity, "material a")
+        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(model.data(model.index(0, 0)), "another")
+        self.assertEqual(model.data(model.index(1, 0)), "format c")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        self.assertEqual(model.data(model.index(3, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(4, 0)), "settings c")
+        self.assertEqual(model.data(model.index(5, 0)), "shape c")
+        self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
 
         style.addFavorite(QgsStyle.StyleEntity.SymbolEntity, "BB")
-        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(model.rowCount(), 8)
         self.assertEqual(model.data(model.index(0, 0)), "another")
         self.assertEqual(model.data(model.index(1, 0)), "BB")
         self.assertEqual(model.data(model.index(2, 0)), "format c")
+        self.assertEqual(model.data(model.index(3, 0)), "material c")
+        self.assertEqual(model.data(model.index(4, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(5, 0)), "settings c")
+        self.assertEqual(model.data(model.index(6, 0)), "shape c")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d c")
+        style.removeFavorite(QgsStyle.StyleEntity.SymbolEntity, "another")
+        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(model.data(model.index(0, 0)), "BB")
+        self.assertEqual(model.data(model.index(1, 0)), "format c")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
         self.assertEqual(model.data(model.index(3, 0)), "ramp c")
         self.assertEqual(model.data(model.index(4, 0)), "settings c")
         self.assertEqual(model.data(model.index(5, 0)), "shape c")
         self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
-        style.removeFavorite(QgsStyle.StyleEntity.SymbolEntity, "another")
-        self.assertEqual(model.rowCount(), 6)
-        self.assertEqual(model.data(model.index(0, 0)), "BB")
-        self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
         model.setFavoritesOnly(False)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
 
         # smart group filter
         style.addSmartgroup("smart", "AND", ["tag 3"], [], ["c"], [])
@@ -4265,54 +5325,65 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(model.data(model.index(0, 0)), "C")
         style.addSmartgroup("smart", "OR", ["tag 3"], [], ["c"], [])
         model.setSmartGroupId(2)
-        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.rowCount(), 7)
         self.assertEqual(model.data(model.index(0, 0)), "C")
         self.assertEqual(model.data(model.index(1, 0)), "format c")
-        self.assertEqual(model.data(model.index(2, 0)), "ramp c")
-        self.assertEqual(model.data(model.index(3, 0)), "settings c")
-        self.assertEqual(model.data(model.index(4, 0)), "shape c")
-        self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
-        style.tagSymbol(QgsStyle.StyleEntity.SymbolEntity, "a", ["tag 3"])
-        self.assertEqual(model.rowCount(), 7)
-        self.assertEqual(model.data(model.index(0, 0)), "a")
-        self.assertEqual(model.data(model.index(1, 0)), "C")
-        self.assertEqual(model.data(model.index(2, 0)), "format c")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
         self.assertEqual(model.data(model.index(3, 0)), "ramp c")
         self.assertEqual(model.data(model.index(4, 0)), "settings c")
         self.assertEqual(model.data(model.index(5, 0)), "shape c")
         self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
-        style.renameColorRamp("ramp c", "x")
-        self.assertEqual(model.rowCount(), 6)
+        style.tagSymbol(QgsStyle.StyleEntity.SymbolEntity, "a", ["tag 3"])
+        self.assertEqual(model.rowCount(), 8)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "C")
         self.assertEqual(model.data(model.index(2, 0)), "format c")
+        self.assertEqual(model.data(model.index(3, 0)), "material c")
+        self.assertEqual(model.data(model.index(4, 0)), "ramp c")
+        self.assertEqual(model.data(model.index(5, 0)), "settings c")
+        self.assertEqual(model.data(model.index(6, 0)), "shape c")
+        self.assertEqual(model.data(model.index(7, 0)), "sym3d c")
+        style.renameColorRamp("ramp c", "x")
+        self.assertEqual(model.rowCount(), 7)
+        self.assertEqual(model.data(model.index(0, 0)), "a")
+        self.assertEqual(model.data(model.index(1, 0)), "C")
+        self.assertEqual(model.data(model.index(2, 0)), "format c")
+        self.assertEqual(model.data(model.index(3, 0)), "material c")
+        self.assertEqual(model.data(model.index(4, 0)), "settings c")
+        self.assertEqual(model.data(model.index(5, 0)), "shape c")
+        self.assertEqual(model.data(model.index(6, 0)), "sym3d c")
+        style.renameTextFormat("format c", "x")
+        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.data(model.index(0, 0)), "a")
+        self.assertEqual(model.data(model.index(1, 0)), "C")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
         self.assertEqual(model.data(model.index(3, 0)), "settings c")
         self.assertEqual(model.data(model.index(4, 0)), "shape c")
         self.assertEqual(model.data(model.index(5, 0)), "sym3d c")
-        style.renameTextFormat("format c", "x")
+        style.renameLabelSettings("settings c", "x")
         self.assertEqual(model.rowCount(), 5)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "C")
-        self.assertEqual(model.data(model.index(2, 0)), "settings c")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
         self.assertEqual(model.data(model.index(3, 0)), "shape c")
         self.assertEqual(model.data(model.index(4, 0)), "sym3d c")
-        style.renameLabelSettings("settings c", "x")
+        style.renameLegendPatchShape("shape c", "x")
         self.assertEqual(model.rowCount(), 4)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "C")
-        self.assertEqual(model.data(model.index(2, 0)), "shape c")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
         self.assertEqual(model.data(model.index(3, 0)), "sym3d c")
-        style.renameLegendPatchShape("shape c", "x")
+        style.renameSymbol3D("sym3d c", "x")
         self.assertEqual(model.rowCount(), 3)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "C")
-        self.assertEqual(model.data(model.index(2, 0)), "sym3d c")
-        style.renameSymbol3D("sym3d c", "x")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        style.renameMaterialSettings("material c", "x")
         self.assertEqual(model.rowCount(), 2)
         self.assertEqual(model.data(model.index(0, 0)), "a")
         self.assertEqual(model.data(model.index(1, 0)), "C")
         model.setSmartGroupId(-1)
-        self.assertEqual(model.rowCount(), 20)
+        self.assertEqual(model.rowCount(), 23)
 
         model.setEntityFilter(QgsStyle.StyleEntity.LabelSettingsEntity)
         model.setEntityFilterEnabled(True)
@@ -4422,9 +5493,11 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertTrue(style.addLegendPatchShape("shape a", shape_a, True))
         symbol3d_a = Dummy3dSymbol()
         self.assertTrue(style.addSymbol3D("symbol3d a", symbol3d_a, True))
+        material_a = QgsGoochMaterialSettings()
+        self.assertTrue(style.addMaterialSettings("material a", material_a, True))
 
         model = QgsStyleModel(style)
-        self.assertEqual(model.rowCount(), 6)
+        self.assertEqual(model.rowCount(), 7)
 
         self.assertEqual(style.symbolNames(), ["a"])
         self.assertFalse(model.setData(QModelIndex(), "b", Qt.ItemDataRole.EditRole))
@@ -4490,6 +5563,17 @@ class TestQgsStyleModel(QgisTestCase):
             "symbol3d new name",
         )
         self.assertEqual(style.symbol3DNames(), ["symbol3d new name"])
+
+        self.assertTrue(
+            model.setData(
+                model.index(6, 0), "material new name", Qt.ItemDataRole.EditRole
+            )
+        )
+        self.assertEqual(
+            model.data(model.index(6, 0), Qt.ItemDataRole.DisplayRole),
+            "material new name",
+        )
+        self.assertEqual(style.materialSettingsNames(), ["material new name"])
 
     def test_reset_symbollayer_ids(self):
         """

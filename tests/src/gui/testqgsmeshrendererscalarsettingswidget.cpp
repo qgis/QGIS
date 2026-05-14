@@ -21,6 +21,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test to verify that raster histogram works

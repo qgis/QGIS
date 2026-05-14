@@ -22,9 +22,9 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 import warnings
 
+from qgis.core import QgsSettings
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QFileDialog
-from qgis.core import QgsSettings
 
 from processing.tools.system import isWindows
 
@@ -38,7 +38,6 @@ with warnings.catch_warnings():
 
 
 class FileSelectionPanel(BASE, WIDGET):
-
     def __init__(self, isFolder, ext=None):
         super().__init__(None)
         self.setupUi(self)

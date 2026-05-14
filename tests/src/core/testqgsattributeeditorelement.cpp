@@ -21,6 +21,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -38,13 +41,6 @@ class TestQgsAttributeEditorElement : public QObject
 
 void TestQgsAttributeEditorElement::initTestCase()
 {
-  // Runs once before any tests are run
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsSettings().clear();
@@ -67,12 +63,7 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
   font0.setUnderline( true );
   font0.setStrikeOut( false );
 
-  QgsAttributeEditorElement::LabelStyle style {
-    QColor( Qt::GlobalColor::darkCyan ),
-    font0,
-    true,
-    true
-  };
+  QgsAttributeEditorElement::LabelStyle style { QColor( Qt::GlobalColor::darkCyan ), font0, true, true };
 
 
   QgsAttributeEditorField *field1 = new QgsAttributeEditorField( "f1", 0, nullptr );
@@ -83,12 +74,7 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
   font1.setUnderline( true );
   font1.setStrikeOut( true );
 
-  field1->setLabelStyle(
-    { QColor( Qt::GlobalColor::blue ),
-      font1,
-      true,
-      true }
-  );
+  field1->setLabelStyle( { QColor( Qt::GlobalColor::blue ), font1, true, true } );
 
   editFormConfig.invisibleRootContainer()->addChildElement( field1 );
 
@@ -96,21 +82,10 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
 
   QFont font2 { QgsFontUtils::getStandardTestFont() };
 
-  field2->setLabelStyle(
-    { QColor( Qt::GlobalColor::blue ),
-      font2,
-      false,
-      true }
-  );
+  field2->setLabelStyle( { QColor( Qt::GlobalColor::blue ), font2, false, true } );
 
   QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( "group1", nullptr );
-  container->setLabelStyle(
-    { QColor( Qt::GlobalColor::darkCyan ),
-      font0,
-      true,
-      true
-    }
-  );
+  container->setLabelStyle( { QColor( Qt::GlobalColor::darkCyan ), font0, true, true } );
 
   container->addChildElement( field2 );
   editFormConfig.addTab( container );

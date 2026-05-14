@@ -37,6 +37,9 @@
 
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsDiagramLayerSettings::sPropertyDefinitions;
 
@@ -47,9 +50,9 @@ void QgsDiagramLayerSettings::initPropertyDefinitions()
 
   const QString origin = u"diagram"_s;
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { static_cast< int >( QgsDiagramLayerSettings::Property::BackgroundColor ), QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
+  sPropertyDefinitions = QgsPropertiesDefinition {
+    { static_cast< int >( QgsDiagramLayerSettings::Property::BackgroundColor ),
+      QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
     { static_cast< int >( QgsDiagramLayerSettings::Property::StrokeColor ), QgsPropertyDefinition( "strokeColor", QObject::tr( "Stroke color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
     { static_cast< int >( QgsDiagramLayerSettings::Property::StrokeWidth ), QgsPropertyDefinition( "strokeWidth", QObject::tr( "Stroke width" ), QgsPropertyDefinition::StrokeWidth, origin ) },
     { static_cast< int >( QgsDiagramLayerSettings::Property::PositionX ), QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
@@ -76,7 +79,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
 }
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh )
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mCt( rh.mCt )
   , mPlacement( rh.mPlacement )
   , mPlacementFlags( rh.mPlacementFlags )
@@ -87,7 +90,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings 
   , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
   , mShowAll( rh.mShowAll )
   , mDataDefinedProperties( rh.mDataDefinedProperties )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   initPropertyDefinitions();
 }
@@ -103,8 +106,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( QgsDiagramLayerSettings &&rh )
   , mRenderer( std::move( rh.mRenderer ) )
   , mShowAll( rh.mShowAll )
   , mDataDefinedProperties( std::move( rh.mDataDefinedProperties ) )
-{
-}
+{}
 
 QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings &rh )
 {
@@ -145,9 +147,7 @@ QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( QgsDiagramLayerSett
 }
 
 QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
-{
-
-}
+{}
 
 void QgsDiagramLayerSettings::setRenderer( QgsDiagramRenderer *diagramRenderer )
 {
@@ -155,7 +155,6 @@ void QgsDiagramLayerSettings::setRenderer( QgsDiagramRenderer *diagramRenderer )
     return;
 
   mRenderer.reset( diagramRenderer );
-
 }
 
 void QgsDiagramLayerSettings::setCoordinateTransform( const QgsCoordinateTransform &transform )
@@ -168,7 +167,7 @@ void QgsDiagramLayerSettings::readXml( const QDomElement &elem )
   const QDomNodeList propertyElems = elem.elementsByTagName( u"properties"_s );
   if ( !propertyElems.isEmpty() )
   {
-    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), sPropertyDefinitions );
+    ( void ) mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), sPropertyDefinitions );
   }
   else
   {
@@ -188,7 +187,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement &layerElem, QDomDocument &do
 {
   QDomElement diagramLayerElem = doc.createElement( u"DiagramLayerSettings"_s );
   QDomElement propertiesElem = doc.createElement( u"properties"_s );
-  ( void )mDataDefinedProperties.writeXml( propertiesElem, sPropertyDefinitions );
+  ( void ) mDataDefinedProperties.writeXml( propertiesElem, sPropertyDefinitions );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( u"placement"_s, mPlacement );
   diagramLayerElem.setAttribute( u"linePlacementFlags"_s, mPlacementFlags );
@@ -522,8 +521,7 @@ void QgsDiagramRenderer::setDiagram( QgsDiagram *d )
 QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer &other )
   : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
   , mShowAttributeLegend( other.mShowAttributeLegend )
-{
-}
+{}
 
 QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer &other )
 {
@@ -660,28 +658,28 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   const QString diagramType = elem.attribute( u"diagramType"_s );
   if ( diagramType == QgsPieDiagram::DIAGRAM_NAME_PIE )
   {
-    mDiagram = std::make_unique<QgsPieDiagram>( );
+    mDiagram = std::make_unique<QgsPieDiagram>();
   }
   else if ( diagramType == QgsTextDiagram::DIAGRAM_NAME_TEXT )
   {
-    mDiagram = std::make_unique<QgsTextDiagram>( );
+    mDiagram = std::make_unique<QgsTextDiagram>();
   }
   else if ( diagramType == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM )
   {
-    mDiagram = std::make_unique<QgsHistogramDiagram>( );
+    mDiagram = std::make_unique<QgsHistogramDiagram>();
   }
   else if ( diagramType == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
   {
-    mDiagram = std::make_unique<QgsStackedBarDiagram>( );
+    mDiagram = std::make_unique<QgsStackedBarDiagram>();
   }
   else if ( diagramType == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
   {
-    mDiagram = std::make_unique<QgsStackedDiagram>( );
+    mDiagram = std::make_unique<QgsStackedDiagram>();
   }
   else
   {
     // unknown diagram type -- default to histograms
-    mDiagram = std::make_unique<QgsHistogramDiagram>( );
+    mDiagram = std::make_unique<QgsHistogramDiagram>();
   }
   mShowAttributeLegend = ( elem.attribute( u"attributeLegend"_s, u"1"_s ) != "0"_L1 );
 }
@@ -756,13 +754,10 @@ QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer( 
   , mSettings( other.mSettings )
   , mInterpolationSettings( other.mInterpolationSettings )
   , mDataDefinedSizeLegend( other.mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegend ) : nullptr )
-{
-}
+{}
 
 QgsLinearlyInterpolatedDiagramRenderer::~QgsLinearlyInterpolatedDiagramRenderer()
-{
-
-}
+{}
 
 QgsLinearlyInterpolatedDiagramRenderer &QgsLinearlyInterpolatedDiagramRenderer::operator=( const QgsLinearlyInterpolatedDiagramRenderer &other )
 {
@@ -848,7 +843,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
     mSettings.readXml( settingsElem );
   }
 
-  mDataDefinedSizeLegend.reset( );
+  mDataDefinedSizeLegend.reset();
 
   const QDomElement ddsLegendSizeElem = elem.firstChildElement( u"data-defined-size-legend"_s );
   if ( !ddsLegendSizeElem.isNull() )
@@ -950,7 +945,7 @@ QgsStackedDiagramRenderer *QgsStackedDiagramRenderer::clone() const
 QSizeF QgsStackedDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const
 {
   QSizeF stackedSize( 0, 0 );
-  int enabledDiagramCount = 0;  // We'll add spacing only for enabled subDiagrams
+  int enabledDiagramCount = 0; // We'll add spacing only for enabled subDiagrams
 
   // Iterate renderers. For each renderer, get the diagram
   // size for the feature and add it to the total size
@@ -1259,8 +1254,7 @@ void QgsDiagramSettings::setPaintEffect( QgsPaintEffect *effect )
 
 QgsDiagramSettings::QgsDiagramSettings()
   : mAxisLineSymbol( std::make_unique< QgsLineSymbol >() )
-{
-}
+{}
 
 QgsDiagramSettings::~QgsDiagramSettings() = default;
 
@@ -1299,9 +1293,7 @@ QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
   , mShowAxis( other.mShowAxis )
   , mAxisLineSymbol( other.mAxisLineSymbol ? other.mAxisLineSymbol->clone() : nullptr )
   , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
-{
-
-}
+{}
 
 QgsDiagramSettings &QgsDiagramSettings::operator=( const QgsDiagramSettings &other )
 {
@@ -1388,7 +1380,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     legendSymbol->setSizeMapUnitScale( mSettings.sizeScale );
 
     QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
-    ddSizeLegend.setSymbol( legendSymbol );  // transfers ownership
+    ddSizeLegend.setSymbol( legendSymbol ); // transfers ownership
 
     QList<QgsDataDefinedSizeLegend::SizeClass> sizeClasses;
     if ( ddSizeLegend.classes().isEmpty() )
@@ -1429,7 +1421,6 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
 void QgsLinearlyInterpolatedDiagramRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
 {
   mDataDefinedSizeLegend.reset( settings );
-
 }
 
 QgsDataDefinedSizeLegend *QgsLinearlyInterpolatedDiagramRenderer::dataDefinedSizeLegend() const

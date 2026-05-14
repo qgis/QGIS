@@ -18,13 +18,15 @@
 #include "qgsserverexception.h"
 
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // QgsServerException
 QgsServerException::QgsServerException( const QString &message, int responseCode )
   : QgsException( message )
   , mResponseCode( responseCode )
-{
-}
+{}
 
 QByteArray QgsServerException::formatResponse( QString &responseFormat ) const
 {
@@ -48,8 +50,7 @@ QgsOgcServiceException::QgsOgcServiceException( const QString &code, const QStri
   , mMessage( message )
   , mLocator( locator )
   , mVersion( version )
-{
-}
+{}
 
 QByteArray QgsOgcServiceException::formatResponse( QString &responseFormat ) const
 {

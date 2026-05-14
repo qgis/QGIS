@@ -32,14 +32,16 @@
 
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgslayertreeviewbadlayerindicator.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsLayerTreeViewBadLayerIndicatorProvider::QgsLayerTreeViewBadLayerIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewBadLayerIndicatorProvider::reportLayerError( const QString &error, QgsMapLayer *layer )
 {

@@ -30,6 +30,10 @@
 #include "qgswebframe.h"
 #include "qgswebview.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // Qt includes
 #include <QPoint>
 #include <QToolTip>
@@ -264,7 +268,8 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     return QString();
   }
 
-  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) || ( mapCanvas->mapSettings().isTemporal() && layer->temporalProperties() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
+  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() )
+       || ( mapCanvas->mapSettings().isTemporal() && layer->temporalProperties() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
   {
     return QString();
   }

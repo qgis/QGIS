@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmapplylayerstyle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsApplyLayerStyleAlgorithm::name() const

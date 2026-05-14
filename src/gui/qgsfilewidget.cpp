@@ -30,10 +30,13 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QRegularExpression>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 
 #include "moc_qgsfilewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )

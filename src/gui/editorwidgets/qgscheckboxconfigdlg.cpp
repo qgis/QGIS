@@ -18,7 +18,11 @@
 #include "qgscheckboxfieldformatter.h"
 #include "qgscheckboxwidgetwrapper.h"
 
+#include <QString>
+
 #include "moc_qgscheckboxconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -62,6 +66,8 @@ void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
     leCheckedState->setText( config.value( u"CheckedState"_s ).toString() );
     leUncheckedState->setText( config.value( u"UncheckedState"_s ).toString() );
   }
-  mDisplayAsTextComboBox->setCurrentIndex( mDisplayAsTextComboBox->findData( config.value( u"TextDisplayMethod"_s, QString::number( static_cast<int>( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() ) );
+  mDisplayAsTextComboBox->setCurrentIndex(
+    mDisplayAsTextComboBox->findData( config.value( u"TextDisplayMethod"_s, QString::number( static_cast<int>( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() )
+  );
   mAllowNullState->setChecked( config.value( u"AllowNullState"_s ).toBool() );
 }

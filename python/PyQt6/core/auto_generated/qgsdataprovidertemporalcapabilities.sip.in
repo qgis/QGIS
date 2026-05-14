@@ -31,7 +31,7 @@ temporal capabilities.
     {
       sipType = sipType_QgsVectorDataProviderTemporalCapabilities;
     }
-    else if ( dynamic_cast < QgsMeshDataProviderTemporalCapabilities * >( sipCpp ) )
+    else if ( dynamic_cast< QgsMeshDataProviderTemporalCapabilities * >( sipCpp ) )
     {
       sipType = sipType_QgsMeshDataProviderTemporalCapabilities;
     }

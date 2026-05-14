@@ -29,8 +29,11 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsauthimportidentitydialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent )
   : QDialog( parent )
@@ -56,9 +59,7 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
     connect( btnPkiPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( u"auth_system/auth_workflows.html#authentication-identities"_s );
-    } );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"auth_system/auth_workflows.html#authentication-identities"_s ); } );
     mIdentityType = identitytype;
 
     populateIdentityType();

@@ -21,20 +21,20 @@ __copyright__ = "(C) 2017, Alexander Bruy"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
-    QgsRasterFileWriter,
     QgsProcessing,
     QgsProcessingException,
     QgsProcessingParameterDefinition,
-    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterString,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterString,
+    QgsRasterFileWriter,
 )
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -42,7 +42,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class GridLinear(GdalAlgorithm):
-
     INPUT = "INPUT"
     Z_FIELD = "Z_FIELD"
     RADIUS = "RADIUS"

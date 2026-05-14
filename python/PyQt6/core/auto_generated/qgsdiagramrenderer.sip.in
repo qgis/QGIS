@@ -11,6 +11,7 @@
 
 
 
+
 class QgsDiagramLayerSettings
 {
 %Docstring(signature="appended")
@@ -26,7 +27,6 @@ ALL diagrams within a layer are rendered.
 #include "qgsdiagramrenderer.h"
 %End
   public:
-
     enum Placement /BaseType=IntEnum/
     {
       AroundPoint,
@@ -49,7 +49,7 @@ ALL diagrams within a layer are rendered.
 
 
     enum class Property /BaseType=IntEnum/
-      {
+    {
       BackgroundColor,
       StrokeColor,
       StrokeWidth,
@@ -318,7 +318,6 @@ ALL diagrams within a layer are rendered.
 #include "qgsdiagramrenderer.h"
 %End
   public:
-
     enum LabelPlacementMethod /BaseType=IntEnum/
     {
       Height,

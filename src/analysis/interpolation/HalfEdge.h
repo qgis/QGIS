@@ -71,9 +71,12 @@ class ANALYSIS_EXPORT HalfEdge
 #ifndef SIP_RUN
 
 inline HalfEdge::HalfEdge( int dual, int next, int point, bool mbreak, bool forced )
-  : mDual( dual ), mNext( next ), mPoint( point ), mBreak( mbreak ), mForced( forced )
-{
-}
+  : mDual( dual )
+  , mNext( next )
+  , mPoint( point )
+  , mBreak( mbreak )
+  , mForced( forced )
+{}
 
 inline int HalfEdge::getDual() const
 {

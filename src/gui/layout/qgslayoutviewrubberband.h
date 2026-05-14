@@ -44,7 +44,7 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
       sipType = sipType_QgsLayoutViewMouseEvent;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:

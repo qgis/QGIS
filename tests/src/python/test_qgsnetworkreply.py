@@ -11,15 +11,15 @@ __date__ = "20/06/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 
-from qgis.core import QgsNetworkReplyContent
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsNetworkReplyContent
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsNetworkReply(QgisTestCase):
-
     def test_content_disposition_filename(self):
         self.assertEqual(
             QgsNetworkReplyContent.extractFileNameFromContentDispositionHeader("x"), ""

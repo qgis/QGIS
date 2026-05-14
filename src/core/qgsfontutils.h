@@ -23,6 +23,8 @@
 #include <QFont>
 #include <QString>
 
+class QgsSettingsEntryStringList;
+
 class QMimeData;
 
 /**
@@ -33,7 +35,6 @@ class QMimeData;
 class CORE_EXPORT QgsFontUtils
 {
   public:
-
     /**
      * Check whether exact font is on system
      * \param f The font to test for match
@@ -212,6 +213,10 @@ class CORE_EXPORT QgsFontUtils
      * \since QGIS 3.34
      */
     static QFont createFont( const QString &family, int pointSize = -1, int weight = -1, bool italic = false );
+
+#ifndef SIP_RUN
+    static const QgsSettingsEntryStringList *settingsRecentFontFamilies SIP_SKIP;
+#endif
 };
 
 // clazy:excludeall=qstring-allocations

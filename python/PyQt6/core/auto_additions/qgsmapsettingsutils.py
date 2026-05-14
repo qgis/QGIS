@@ -14,5 +14,6 @@ try:
     QgsMapSettingsUtils.containsAdvancedEffects = staticmethod(QgsMapSettingsUtils.containsAdvancedEffects)
     QgsMapSettingsUtils.worldFileParameters = staticmethod(QgsMapSettingsUtils.worldFileParameters)
     QgsMapSettingsUtils.worldFileContent = staticmethod(QgsMapSettingsUtils.worldFileContent)
+    QgsMapSettingsUtils.isValidExtent = staticmethod(QgsMapSettingsUtils.isValidExtent)
 except (NameError, AttributeError):
     pass

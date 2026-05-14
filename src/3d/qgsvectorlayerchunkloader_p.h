@@ -27,9 +27,9 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkedentity.h"
+#include "qgs3drendercontext.h"
+#include "qgsabstractfeaturebasedchunkedentity.h"
 #include "qgschunkloader.h"
-#include "qgsfeature3dhandler_p.h"
 
 #define SIP_NO_FILE
 
@@ -60,15 +60,19 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
   public:
     //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
+    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
-    int mLeafLevel;
+    //! Contains loaded nodes and whether they are leaf nodes or not
+    mutable QHash< QString, bool > mNodesAreLeafs;
+    int mMaxFeatures;
 };
 
 
@@ -101,6 +105,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
     QString mLayerName;
+    bool mNodeIsLeaf = false;
 };
 
 
@@ -114,29 +119,17 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
  *
  * \since QGIS 3.12
  */
-class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
+class QgsVectorLayerChunkedEntity : public QgsAbstractFeatureBasedChunkedEntity
 {
     Q_OBJECT
   public:
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
     explicit QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol );
 
-    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
-
     ~QgsVectorLayerChunkedEntity() override;
-  private slots:
-    void onTerrainElevationOffsetChanged();
 
   private:
-    friend class QgsRuleBasedChunkedEntity;
-    //! This implementation is shared between QgsVectorLayerChunkedEntity and QgsRuleBasedChunkedEntity
-    static QList<QgsRayCastHit> rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin );
-
-    Qt3DCore::QTransform *mTransform = nullptr;
-
-    bool applyTerrainOffset() const;
-
-    friend class TestQgsChunkedEntity;
+    bool applyTerrainOffset() const override;
 };
 
 /// @endcond

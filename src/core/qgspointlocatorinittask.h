@@ -27,9 +27,10 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgstaskmanager.h"
+
+#define SIP_NO_FILE
 
 class QgsPointLocator;
 
@@ -38,7 +39,6 @@ class QgsPointLocatorInitTask : public QgsTask
     Q_OBJECT
 
   public:
-
     QgsPointLocatorInitTask( QgsPointLocator *loc );
 
     /**
@@ -49,7 +49,6 @@ class QgsPointLocatorInitTask : public QgsTask
     bool run() override;
 
   private:
-
     QgsPointLocator *mLoc = nullptr;
     bool mBuildOK = false;
 };

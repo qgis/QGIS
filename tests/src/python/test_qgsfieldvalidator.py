@@ -13,14 +13,13 @@ __copyright__ = "Copyright 2018, The QGIS Project"
 import os
 import shutil
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QLocale, QVariant
-from qgis.PyQt.QtGui import QValidator
 from qgis.core import QgsVectorLayer
 from qgis.gui import QgsFieldValidator
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QLocale, QVariant
+from qgis.PyQt.QtGui import QValidator
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -29,7 +28,6 @@ start_app()
 
 
 class TestQgsFieldValidator(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests."""

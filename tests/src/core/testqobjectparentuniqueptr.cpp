@@ -25,10 +25,7 @@ class TestQObjectOwner : public QObject
   public:
     ~TestQObjectOwner() override;
 
-    void setChild( TestQObjectChild *child )
-    {
-      mChild = child;
-    }
+    void setChild( TestQObjectChild *child ) { mChild = child; }
 
   private:
     TestQObjectChild *mChild = nullptr;
@@ -49,10 +46,7 @@ class TestQObjectChild
         mParent->setChild( nullptr );
     }
 
-    void setParent( TestQObjectOwner *parent )
-    {
-      mParent = parent;
-    }
+    void setParent( TestQObjectOwner *parent ) { mParent = parent; }
 
     void setValue( int value ) { mValue = value; }
     int value() const { return mValue; }

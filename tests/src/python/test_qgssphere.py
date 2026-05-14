@@ -13,10 +13,10 @@ __date__ = "14/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 import math
-from qgis.core import QgsSphere, QgsPoint, QgsCircle, QgsVector3D
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsCircle, QgsPoint, QgsSphere, QgsVector3D
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -24,7 +24,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSphere(QgisTestCase):
-
     def test_null(self):
         sphere = QgsSphere()
         self.assertTrue(sphere.isNull())

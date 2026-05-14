@@ -23,6 +23,9 @@
 #include "qgspythonutils.h"
 
 #include <QLibrary>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // Initialize static members
 QgsPythonUtils *QgsServerPlugins::sPythonUtils;

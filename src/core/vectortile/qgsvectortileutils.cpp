@@ -37,6 +37,10 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QPolygon>
+#include <QString>
+#include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 void QgsVectorTileUtils::updateUriSources( QString &uri, bool forceUpdate )
 {
@@ -196,7 +200,6 @@ QVariantList QgsVectorTileUtils::parseStyleSourceContentUrl( const QString &sour
 }
 
 
-
 QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTransform &ct, const QgsTileMatrix &tm, const QgsMapToPixel &mtp )
 {
   QgsRectangle r = tm.tileExtent( id );
@@ -228,7 +231,7 @@ double QgsVectorTileUtils::scaleToZoom( double mapScale, double z0Scale )
 {
   double s0 = z0Scale;
   double tileZoom2 = log( s0 / mapScale ) / log( 2 );
-  tileZoom2 -= 1;   // TODO: it seems that map scale is double (is that because of high-dpi screen?)
+  tileZoom2 -= 1; // TODO: it seems that map scale is double (is that because of high-dpi screen?)
   return tileZoom2;
 }
 
@@ -305,24 +308,22 @@ QString QgsVectorTileUtils::formatXYZUrlTemplate( const QString &url, QgsTileXYZ
 
 bool QgsVectorTileUtils::checkXYZUrlTemplate( const QString &url )
 {
-  return url.contains( u"{x}"_s ) &&
-         ( url.contains( u"{y}"_s ) || url.contains( u"{-y}"_s ) ) &&
-         url.contains( u"{z}"_s );
+  return url.contains( u"{x}"_s ) && ( url.contains( u"{y}"_s ) || url.contains( u"{-y}"_s ) ) && url.contains( u"{z}"_s );
 }
 
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest
 {
-  QPointF center;  //!< Center in tile matrix (!) coordinates
-  bool operator()( QgsTileXYZ req1, QgsTileXYZ req2 )
-  {
-    QPointF p1( req1.column() + 0.5, req1.row() + 0.5 );
-    QPointF p2( req2.column() + 0.5, req2.row() + 0.5 );
-    // using chessboard distance (loading order more natural than euclidean/manhattan distance)
-    double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
-    double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
-    return d1 < d2;
-  }
+    QPointF center; //!< Center in tile matrix (!) coordinates
+    bool operator()( QgsTileXYZ req1, QgsTileXYZ req2 )
+    {
+      QPointF p1( req1.column() + 0.5, req1.row() + 0.5 );
+      QPointF p2( req2.column() + 0.5, req2.row() + 0.5 );
+      // using chessboard distance (loading order more natural than euclidean/manhattan distance)
+      double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
+      double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
+      return d1 < d2;
+    }
 };
 
 void QgsVectorTileUtils::sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center )
@@ -336,11 +337,19 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
 {
   if ( styleDefinition.contains( u"sprite"_s ) && ( context.spriteCategories().isEmpty() ) )
   {
-    auto prepareSpriteUrl = []( const QString & sprite, const QString & styleUrl )
-    {
+    auto prepareSpriteUrl = []( const QString &sprite, const QString &styleUrl ) {
       if ( sprite.startsWith( "http"_L1 ) )
       {
         return sprite;
+      }
+      else if ( sprite.startsWith( "mapbox://"_L1 ) )
+      {
+        const QUrl url( styleUrl );
+        const QUrlQuery query( url.query() );
+        if ( query.hasQueryItem( u"access_token"_s ) )
+        {
+          return resolveMapboxUri( sprite, query.queryItemValue( u"access_token"_s ) );
+        }
       }
       else if ( sprite.startsWith( '/'_L1 ) )
       {
@@ -384,8 +393,7 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
         QUrl spriteUrl = QUrl( spritesIterator.value() );
         spriteUrl.setPath( spriteUrl.path() + u"%1.json"_s.arg( resolution > 1 ? u"@%1x"_s.arg( resolution ) : QString() ) );
         QNetworkRequest request = QNetworkRequest( spriteUrl );
-        QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s )
-        QgsBlockingNetworkRequest networkRequest;
+        QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s ) QgsBlockingNetworkRequest networkRequest;
         switch ( networkRequest.get( request ) )
         {
           case QgsBlockingNetworkRequest::NoError:
@@ -397,8 +405,7 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
             QUrl spriteUrl = QUrl( spritesIterator.value() );
             spriteUrl.setPath( spriteUrl.path() + u"%1.png"_s.arg( resolution > 1 ? u"@%1x"_s.arg( resolution ) : QString() ) );
             QNetworkRequest request = QNetworkRequest( spriteUrl );
-            QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s )
-            QgsBlockingNetworkRequest networkRequest;
+            QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s ) QgsBlockingNetworkRequest networkRequest;
             switch ( networkRequest.get( request ) )
             {
               case QgsBlockingNetworkRequest::NoError:
@@ -433,3 +440,34 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
   }
 }
 
+QString QgsVectorTileUtils::resolveMapboxUri( const QString &uri, const QString &accessToken )
+{
+  const QUrl url( uri );
+  if ( url.scheme() != "mapbox"_L1 )
+  {
+    return uri;
+  }
+
+  const QString host = url.host();
+  if ( host == "styles"_L1 )
+  {
+    // e.g. mapbox://styles/mapbox/dark-v11
+    return u"https://api.mapbox.com/styles/v1%1?access_token=%2"_s.arg( url.path(), accessToken );
+  }
+  else if ( host == "sprites" )
+  {
+    // e.g. mapbox://sprites/mapbox/streets-v11
+    return u"https://api.mapbox.com/styles/v1%1/sprite?access_token=%2"_s.arg( url.path(), accessToken );
+  }
+  else if ( host == "fonts" )
+  {
+    // e.g. mapbox://fonts/mapbox/Open Sans Regular/{range}.pbf
+    return u"https://api.mapbox.com/fonts/v1%1?access_token=%2"_s.arg( url.path(), accessToken );
+  }
+  else
+  {
+    // sources:
+    // e.g. mapbox://{username}.{tileset_id}
+    return u"https://api.mapbox.com/v4/%1.json?secure&access_token=%2"_s.arg( host, accessToken );
+  }
+}

@@ -12,7 +12,7 @@
 #include <qgsvectorlayereditpassthrough.h>
 %End
 
-class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
+  class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
 {
 %Docstring(signature="appended")
 An edit buffer which directly passes commands through, used when a layer
@@ -29,6 +29,7 @@ is within a transaction.
       sipType = nullptr;
 %End
   public:
+
     QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
     virtual bool isModified() const;
 

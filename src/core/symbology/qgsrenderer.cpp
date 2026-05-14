@@ -38,7 +38,10 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPolygonF>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsFeatureRenderer::sPropertyDefinitions;
 
@@ -71,9 +74,7 @@ QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
 }
 
 QgsFeatureRenderer::~QgsFeatureRenderer()
-{
-
-}
+{}
 
 const QgsPropertiesDefinition &QgsFeatureRenderer::propertyDefinitions()
 {
@@ -289,16 +290,15 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::Geo
       while ( !ruleChildElem.isNull() )
       {
         // rule has filter or min/max scale denominator, use the RuleRenderer
-        if ( ruleChildElem.localName() == "Filter"_L1 ||
-             ruleChildElem.localName() == "ElseFilter"_L1 ||
-             ruleChildElem.localName() == "MinScaleDenominator"_L1 ||
-             ruleChildElem.localName() == "MaxScaleDenominator"_L1 )
+        if ( ruleChildElem.localName() == "Filter"_L1
+             || ruleChildElem.localName() == "ElseFilter"_L1
+             || ruleChildElem.localName() == "MinScaleDenominator"_L1
+             || ruleChildElem.localName() == "MaxScaleDenominator"_L1 )
         {
           hasRuleRenderer = true;
         }
         // rule has a renderer symbolizer, not a text symbolizer
-        else if ( ruleChildElem.localName().endsWith( "Symbolizer"_L1 ) &&
-                  ruleChildElem.localName() != "TextSymbolizer"_L1 )
+        else if ( ruleChildElem.localName().endsWith( "Symbolizer"_L1 ) && ruleChildElem.localName() != "TextSymbolizer"_L1 )
         {
           QgsDebugMsgLevel( u"Symbolizer element found and not a TextSymbolizer"_s, 2 );
           hasRendererSymbolizer = true;
@@ -443,8 +443,7 @@ double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) cons
 
   QgsExpressionContext &expContext = context.expressionContext();
 
-  auto getValueFromSymbol = [ &expContext, &context ]( const QgsSymbol * sym ) -> double
-  {
+  auto getValueFromSymbol = [&expContext, &context]( const QgsSymbol *sym ) -> double {
     const QgsProperty property = sym->dataDefinedProperties().property( QgsSymbol::Property::ExtentBuffer );
 
     double value = 0.0;
@@ -473,8 +472,7 @@ double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) cons
   if ( symbolList.size() == 1 )
     return getValueFromSymbol( symbolList[0] );
 
-  auto it = std::max_element( symbolList.constBegin(), symbolList.constEnd(), [ &getValueFromSymbol ]( const QgsSymbol * a, const QgsSymbol * b ) -> bool
-  {
+  auto it = std::max_element( symbolList.constBegin(), symbolList.constEnd(), [&getValueFromSymbol]( const QgsSymbol *a, const QgsSymbol *b ) -> bool {
     return getValueFromSymbol( a ) < getValueFromSymbol( b );
   } );
 
@@ -516,9 +514,7 @@ bool QgsFeatureRenderer::willRenderFeature( const QgsFeature &feature, QgsRender
 void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &context )
 {
   const int markerSize = context.convertToPainterUnits( mCurrentVertexMarkerSize, Qgis::RenderUnit::Millimeters );
-  QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
-                                         mCurrentVertexMarkerType,
-                                         markerSize );
+  QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(), mCurrentVertexMarkerType, markerSize );
 }
 
 void QgsFeatureRenderer::renderVertexMarkerPolyline( QPolygonF &pts, QgsRenderContext &context )
@@ -550,7 +546,8 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( const QgsFeature &feature, 
 {
   QgsSymbolList lst;
   QgsSymbol *s = symbolForFeature( feature, context );
-  if ( s ) lst.append( s );
+  if ( s )
+    lst.append( s );
   return lst;
 }
 
@@ -565,7 +562,8 @@ QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &f
 {
   QgsSymbolList lst;
   QgsSymbol *s = originalSymbolForFeature( feature, context );
-  if ( s ) lst.append( s );
+  if ( s )
+    lst.append( s );
   return lst;
 }
 
@@ -577,7 +575,6 @@ QgsPaintEffect *QgsFeatureRenderer::paintEffect() const
 void QgsFeatureRenderer::setPaintEffect( QgsPaintEffect *effect )
 {
   mPaintEffect.reset( effect );
-
 }
 
 void QgsFeatureRenderer::setDataDefinedProperty( Property key, const QgsProperty &property )
@@ -622,7 +619,7 @@ bool QgsFeatureRenderer::accept( QgsStyleEntityVisitorInterface * ) const
 
 void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field )
 {
-  if ( symbol->type() == Qgis:: SymbolType::Marker )
+  if ( symbol->type() == Qgis::SymbolType::Marker )
   {
     QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( symbol );
     if ( Qgis::ScaleMethod::ScaleArea == method )
@@ -647,9 +644,7 @@ void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol *symbol, const QString
   if ( symbol->type() == Qgis::SymbolType::Marker )
   {
     QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( symbol );
-    const QgsProperty dd = QgsProperty::fromExpression( ( s->angle()
-                           ? QString::number( s->angle() ) + " + "
-                           : QString() ) + field );
+    const QgsProperty dd = QgsProperty::fromExpression( ( s->angle() ? QString::number( s->angle() ) + " + " : QString() ) + field );
     s->setDataDefinedAngle( dd );
   }
 }
@@ -661,10 +656,9 @@ void QgsFeatureRenderer::initPropertyDefinitions()
 
   QString origin = u"renderer"_s;
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { static_cast< int >( QgsFeatureRenderer::Property::HeatmapRadius ), QgsPropertyDefinition( "heatmapRadius", QObject::tr( "Radius" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { static_cast< int >( QgsFeatureRenderer::Property::HeatmapMaximum ), QgsPropertyDefinition( "heatmapMaximum", QObject::tr( "Maximum" ), QgsPropertyDefinition::DoublePositive, origin )},
+  sPropertyDefinitions = QgsPropertiesDefinition {
+    { static_cast< int >( QgsFeatureRenderer::Property::HeatmapRadius ), QgsPropertyDefinition( "heatmapRadius", QObject::tr( "Radius" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( QgsFeatureRenderer::Property::HeatmapMaximum ), QgsPropertyDefinition( "heatmapMaximum", QObject::tr( "Maximum" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 }
 

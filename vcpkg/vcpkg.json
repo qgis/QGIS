@@ -2,15 +2,16 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "5d57f5a0a5469a23e005fc79a7c1814ab4fc967e",
+      "baseline": "0b88aacde46a853151730fbe7d0b7ee45f4b6864",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "1c3ef0209e78dceceeca3c4d18f93540a19c37bc",
+        "baseline": "8302019ad51ba3495da18c5c35e66aeae94e80e6",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
+          "arrow",
           "python3",
           "py-*",
           "gdal",
@@ -38,12 +39,19 @@
       "name": "gdal",
       "default-features": false,
       "features": [
-        "freexl"
+        "freexl",
+        "zstd"
       ]
     },
     "geos",
     "gsl",
     "jhasse-poly2tri",
+    {
+      "name": "libjpeg-turbo",
+      "features": [
+        "jpeg8"
+      ]
+    },
     "libspatialindex",
     {
       "name": "libtasn1",
@@ -65,6 +73,9 @@
           "name": "gles3",
           "platform": "emscripten"
         },
+        {
+          "name": "png"
+        },
         "concurrent",
         "freetype",
         "gui",
@@ -80,8 +91,16 @@
       "default-features": false,
       "host": true
     },
+    {
+      "name": "qtmultimedia",
+      "default-features": false,
+      "platform": "emscripten"
+    },
+    {
+      "name": "qtmultimedia",
+      "platform": "!emscripten"
+    },
     "qtsvg",
-    "qtmultimedia",
     "qt5compat",
     "qtkeychain-qt6",
     "zlib",
@@ -113,16 +132,43 @@
       "description": "Determines whether Python bindings should be built",
       "dependencies": [
         {
+          "name": "arrow",
+          "features": [
+            "python"
+          ],
+          "platform": "!windows"
+        },
+        {
+          "name": "arrow",
+          "platform": "windows"
+        },
+        {
           "name": "gdal",
           "features": [
             "python"
           ]
+        },
+        {
+          "name": "py-adbc-postgresql",
+          "platform": "!windows"
+        },
+        {
+          "name": "py-adbc-sqlite",
+          "platform": "!windows"
         },
         "py-attrs",
         "py-autopep8",
         "py-beautifulsoup4",
         "py-dateutil",
         "py-duckdb",
+        {
+          "name": "py-geopandas",
+          "features": [
+            "fiona",
+            "arrow"
+          ],
+          "platform": "!windows"
+        },
         "py-isort",
         "py-jinja2",
         {
@@ -131,13 +177,17 @@
         },
         "py-lxml",
         "py-markupsafe",
+        "py-matplotlib",
         "py-networkx",
         "py-numpy",
         "py-owslib",
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
-        "py-pydantic",
+        {
+          "name": "py-pydantic",
+          "platform": "!windows"
+        },
         "py-pyproj",
         {
           "name": "py-pyqt6",
@@ -156,6 +206,10 @@
         "py-qscintilla",
         "py-rasterio",
         "py-requests",
+        {
+          "name": "py-scipy",
+          "platform": "!windows"
+        },
         "py-shapely",
         "py-six",
         "py-urllib3",
@@ -187,6 +241,12 @@
         },
         "opencl",
         "qtdeclarative",
+        {
+          "name": "qtcharts",
+          "features": [
+            "qml"
+          ]
+        },
         "qtimageformats",
         "qtquickcontrols2",
         "qttools",
@@ -208,7 +268,6 @@
       "description": "Determines whether QGIS gui should be built",
       "dependencies": [
         "qscintilla",
-        "qtmultimedia",
         "qwt"
       ]
     },
@@ -228,6 +287,12 @@
       "description": "Build with PDAL support",
       "dependencies": [
         "pdal"
+      ]
+    },
+    "proj-data": {
+      "description": "Build with proj data",
+      "dependencies": [
+        "proj-data"
       ]
     },
     "qtpositioning": {

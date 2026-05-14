@@ -11,7 +11,7 @@
 
 
 
-class QgsPalettedRasterRenderer: QgsRasterRenderer
+class QgsPalettedRasterRenderer : QgsRasterRenderer
 {
 %Docstring(signature="appended")
 Renderer for paletted raster images.
@@ -21,18 +21,17 @@ Renderer for paletted raster images.
 #include "qgspalettedrasterrenderer.h"
 %End
   public:
-
     struct Class
     {
-      Class( double value, const QColor &color = QColor(), const QString &label = QString() );
+        Class( double value, const QColor &color = QColor(), const QString &label = QString() );
 %Docstring
 Constructor for Class
 %End
 
-      double value;
+        double value;
 
-      QColor color;
-      QString label;
+        QColor color;
+        QString label;
     };
 
     class MultiValueClass
@@ -45,7 +44,6 @@ values.
 %End
 
       public:
-
         MultiValueClass( const QVector< QVariant > &values, const QColor &color = QColor(), const QString &label = QString() );
 %Docstring
 Constructor for MultiValueClass from a list of values
@@ -90,14 +88,14 @@ Returns number of colors
 Returns a map of value to classes (colors) used by the renderer.
 %End
 
-    MultiValueClassData multiValueClasses( ) const;
+    MultiValueClassData multiValueClasses() const;
 %Docstring
 Returns a map of multi value to classes (colors) used by the renderer.
 
 .. versionadded:: 3.30
 %End
 
-    virtual bool canCreateRasterAttributeTable( ) const;
+    virtual bool canCreateRasterAttributeTable() const;
 
 
     void setMultiValueClasses( const MultiValueClassData &classes );
@@ -206,8 +204,7 @@ table file format.
 .. seealso:: :py:func:`classDataFromString`
 %End
 
-    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = 0,
-        QgsRasterBlockFeedback *feedback = 0 );
+    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = 0, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
 Generates class data from a ``raster``, for the specified
 ``bandNumber``. An optional color ``ramp`` can be specified to

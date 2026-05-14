@@ -18,6 +18,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsPostgresStringUtils : public QObject
 {
     Q_OBJECT

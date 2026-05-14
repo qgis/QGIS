@@ -21,10 +21,7 @@ Handles exports of elevation profiles in various formats.
 #include "qgsprofileexporter.h"
 %End
   public:
-
-    QgsProfileExporter( const QList< QgsAbstractProfileSource * > &sources,
-                        const QgsProfileRequest &request,
-                        Qgis::ProfileExportType type );
+    QgsProfileExporter( const QList< QgsAbstractProfileSource * > &sources, const QgsProfileRequest &request, Qgis::ProfileExportType type );
 %Docstring
 Constructor for QgsProfileExporter, using the provided list of profile
 ``sources`` to generate the results.
@@ -72,7 +69,6 @@ task.
 #include "qgsprofileexporter.h"
 %End
   public:
-
     enum class ExportResult
     {
       Success,
@@ -83,11 +79,9 @@ task.
       Canceled,
     };
 
-    QgsProfileExporterTask( const QList< QgsAbstractProfileSource * > &sources,
-                            const QgsProfileRequest &request,
-                            Qgis::ProfileExportType type,
-                            const QString &destination,
-                            const QgsCoordinateTransformContext &transformContext );
+    QgsProfileExporterTask(
+      const QList< QgsAbstractProfileSource * > &sources, const QgsProfileRequest &request, Qgis::ProfileExportType type, const QString &destination, const QgsCoordinateTransformContext &transformContext
+    );
 %Docstring
 Constructor for QgsProfileExporterTask, saving results to the specified
 ``destination`` file.

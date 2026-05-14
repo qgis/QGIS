@@ -28,7 +28,9 @@ for handling functionality in these dialogs.
 %End
   public:
 
-    QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
+    QgsLayerPropertiesDialog(
+      QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0
+    );
 %Docstring
 Constructor for QgsLayerPropertiesDialog.
 

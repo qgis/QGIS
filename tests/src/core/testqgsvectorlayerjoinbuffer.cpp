@@ -17,6 +17,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgsvectorlayer.h>
@@ -83,11 +86,6 @@ void TestVectorLayerJoinBuffer::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mProviders = QList<QString>() << u"memory"_s;
 
@@ -197,12 +195,10 @@ void TestVectorLayerJoinBuffer::initTestCase()
 }
 
 void TestVectorLayerJoinBuffer::init()
-{
-}
+{}
 
 void TestVectorLayerJoinBuffer::cleanup()
-{
-}
+{}
 
 void TestVectorLayerJoinBuffer::cleanupTestCase()
 {

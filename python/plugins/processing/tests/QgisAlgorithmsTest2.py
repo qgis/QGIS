@@ -19,22 +19,21 @@ __author__ = "Matthias Kuhn"
 __date__ = "January 2016"
 __copyright__ = "(C) 2016, Matthias Kuhn"
 
-import AlgorithmsTestBase
-
-import nose2
-import shutil
 import os
-
-from qgis.core import QgsApplication, QgsProcessingException
-from qgis.analysis import QgsNativeAlgorithms
+import shutil
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+import AlgorithmsTestBase
+import nose2
+from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import QgsApplication, QgsProcessingException
+from qgis.testing import QgisTestCase, start_app
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.modeler.ModelerUtils import ModelerUtils
 
 
 class TestQgisAlgorithms2(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
-
     @classmethod
     def setUpClass(cls):
         start_app()

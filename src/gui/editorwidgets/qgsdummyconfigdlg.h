@@ -30,7 +30,8 @@ SIP_NO_FILE
  * \brief Configuration widget for dummy widgets.
  * \note not available in Python bindings
  */
-class GUI_EXPORT QgsDummyConfigDlg : public QgsEditorConfigWidget, private Ui::QgsDummyConfigDlgBase
+class GUI_EXPORT QgsDummyConfigDlg : public QgsEditorConfigWidget,
+                                     private Ui::QgsDummyConfigDlgBase
 {
     Q_OBJECT
 

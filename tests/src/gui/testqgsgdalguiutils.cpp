@@ -17,6 +17,10 @@
 #include "qgsgdalguiutils.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsGdalGuiUtils : public QObject
 {
     Q_OBJECT
@@ -33,8 +37,7 @@ class TestQgsGdalGuiUtils : public QObject
 
 TestQgsGdalGuiUtils::TestQgsGdalGuiUtils()
   : QObject()
-{
-}
+{}
 
 void TestQgsGdalGuiUtils::initTestCase()
 {

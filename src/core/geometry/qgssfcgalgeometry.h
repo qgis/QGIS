@@ -28,10 +28,10 @@ SIP_IF_MODULE( HAVE_SFCGAL_SIP )
 
 #include "qgsabstractgeometry.h"
 #include "qgslinestring.h"
+#include "qgsmatrix4x4.h"
 #include "qgspoint.h"
 #include "qgssfcgalengine.h"
 
-#include <QtGui/qmatrix4x4.h>
 
 /**
  * Wraps SFCGAL geometry object.
@@ -120,6 +120,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     Qgis::WkbType wkbType() const SIP_THROW( QgsSfcgalException );
 
+    // clang-format off
     /**
      * Returns type of the geometry as a OGC string in CamelCase
      * \return type of the geometry as a OGC string in CamelCase
@@ -130,6 +131,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Clones the geometry by performing a deep copy
@@ -319,6 +321,22 @@ class CORE_EXPORT QgsSfcgalGeometry
     bool isEmpty() const SIP_THROW( QgsSfcgalException );
 
     /**
+     * Returns the geometry component of a geometry collection at the specified index.
+     *
+     * - For geometries composed of multiple elements (e.g. GeometryColletion, MultiPoint,
+     *   MultiLineString, MultiPolygon), this method returns the sub-geometry at the given index.
+     * - For singular geometries, return the geometry itself when index is 0.
+     *
+     * \param index index of geometry to return
+     * \return the sub-geometry
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> geometryN( unsigned int index ) const SIP_THROW( QgsSfcgalException );
+
+    /**
      * Computes the area of \a geom.
      * \param withDiscretization If true, the area is computed
      * using the real discretization with radial segments. If false, the area is
@@ -431,14 +449,33 @@ class CORE_EXPORT QgsSfcgalGeometry
     /**
      * Apply 3D matrix transform \a mat to geometry \a geom
      *
-     * \param mat 4x4 transformation matrix (translation is defined of the 4th column)
+     * \param mat 4x4 transformation matrix (translation is defined in the 4th column)
      * \param errorMsg Error message returned by SFGCAL
      * \return new geometry
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
      */
-    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const SIP_THROW( QgsSfcgalException );
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QgsMatrix4x4 &mat ) const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Splits the given geometry with a plane defined by a point \a planePoint and a normal vector \a planeNormal.
+     *
+     * \param planePoint a point belonging to the splitting plane
+     * \param planeNormal the normal vector of the splitting plane
+     * \param closeGeometries If true, ensures resulting geometries are closed.
+     * \param errorMsg Error message returned by SFGCAL
+     * \return A GeometryCollection containing the split geometries, or an empty
+     *         GeometryCollection if the plane does not intersect the geometry
+     *
+     * \note the geometry needs to be a PolyhedralSurface or a TIN
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> split3D( const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Checks if \a otherGeom intersects this.
@@ -609,11 +646,37 @@ class CORE_EXPORT QgsSfcgalGeometry
      * It the geometry is 3D, the approximate medial axis will be calculated from its 2D projection
      * If the operation fails, a null pointer is returned.
      *
+     * \param extendToEdges whether to extend the medial axis endpoints to the polygon boundary (since QGIS 4.2).
+     *        This parameter has no effect when using SFCGAL versions earlier than 2.3.
      * \return new geometry as 2D multilinestring
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const SIP_THROW( QgsSfcgalException );
+    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis( bool extendToEdges = false ) const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Converts the geometry to a Solid geometry.
+     * The geometry must be of type PolyhedralSurface
+     *
+     * \return geometry as a Solid
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> toSolid() const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Converts the geometry to a PolyhedralSurface geometry.
+     * The geometry must be of type Solid
+     *
+     * \return geometry as a PolyhedralSurface
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> toPolyhedralSurface() const SIP_THROW( QgsSfcgalException );
 
     // ============= PRIMITIVE
 
@@ -676,7 +739,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsSfcgalException if an error was encountered during the operation
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
      */
-    QMatrix4x4 primitiveTransform() const SIP_THROW( QgsSfcgalException );
+    QgsMatrix4x4 primitiveTransform() const SIP_THROW( QgsSfcgalException );
 
   protected:
 
@@ -695,11 +758,12 @@ class CORE_EXPORT QgsSfcgalGeometry
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
     void setPrimitiveTranslate( const QgsVector3D &translation );
     void setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center );
+    //!The rotation angle is in radians.
     void setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center );
 
     sfcgal::shared_prim mSfcgalPrim;
     sfcgal::primitiveType mPrimType;
-    QMatrix4x4 mPrimTransform;
+    QgsMatrix4x4 mPrimTransform;
 #endif
 };
 

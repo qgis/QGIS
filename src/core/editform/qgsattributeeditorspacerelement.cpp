@@ -16,6 +16,9 @@
 #include "qgsattributeeditorspacerelement.h"
 
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeEditorElement *QgsAttributeEditorSpacerElement::clone( QgsAttributeEditorElement *parent ) const
 {

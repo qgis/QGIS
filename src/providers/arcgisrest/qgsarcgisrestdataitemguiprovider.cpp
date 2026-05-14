@@ -25,13 +25,17 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsnewarcgisrestconnection.h"
 #include "qgsowsconnection.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsarcgisrestdataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
@@ -79,58 +83,71 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     if ( arcgisConnectionItems.size() == 1 )
     {
       QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-      connect( viewInfo, &QAction::triggered, this, [connectionItem] {
-        QDesktopServices::openUrl( QUrl( connectionItem->url() ) );
-      } );
+      connect( viewInfo, &QAction::triggered, this, [connectionItem] { QDesktopServices::openUrl( QUrl( connectionItem->url() ) ); } );
       menu->addAction( viewInfo );
     }
   }
   else if ( QgsArcGisRestFolderItem *folderItem = qobject_cast<QgsArcGisRestFolderItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [folderItem] {
-      QDesktopServices::openUrl( QUrl( folderItem->path() ) );
-    } );
+    connect( viewInfo, &QAction::triggered, this, [folderItem] { QDesktopServices::openUrl( QUrl( folderItem->path() ) ); } );
     menu->addAction( viewInfo );
   }
   else if ( QgsArcGisFeatureServiceItem *serviceItem = qobject_cast<QgsArcGisFeatureServiceItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [serviceItem] {
-      QDesktopServices::openUrl( QUrl( serviceItem->path() ) );
-    } );
+    connect( viewInfo, &QAction::triggered, this, [serviceItem] { QDesktopServices::openUrl( QUrl( serviceItem->path() ) ); } );
     menu->addAction( viewInfo );
   }
   else if ( QgsArcGisMapServiceItem *serviceItem = qobject_cast<QgsArcGisMapServiceItem *>( item ) )
   {
+    if ( serviceItem->allLayersMapServerUri().isValid() )
+    {
+      QAction *addAllLayers = new QAction( tr( "Add Raster with All MapServer Layers" ), menu );
+      const QgsMimeDataUtils::Uri allLayerUri = serviceItem->allLayersMapServerUri();
+      connect( addAllLayers, &QAction::triggered, this, [allLayerUri] {
+        auto layer = std::make_unique<QgsRasterLayer>( allLayerUri.uri, allLayerUri.name, allLayerUri.providerKey );
+        QgsProject::instance()->addMapLayer( layer.release() );
+      } );
+      menu->addAction( addAllLayers );
+    }
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [serviceItem] {
-      QDesktopServices::openUrl( QUrl( serviceItem->path() ) );
-    } );
+    connect( viewInfo, &QAction::triggered, this, [serviceItem] { QDesktopServices::openUrl( QUrl( serviceItem->path() ) ); } );
     menu->addAction( viewInfo );
   }
   else if ( QgsArcGisSceneServiceItem *serviceItem = qobject_cast<QgsArcGisSceneServiceItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [serviceItem] {
-      QDesktopServices::openUrl( QUrl( serviceItem->path() ) );
-    } );
+    connect( viewInfo, &QAction::triggered, this, [serviceItem] { QDesktopServices::openUrl( QUrl( serviceItem->path() ) ); } );
+    menu->addAction( viewInfo );
+  }
+  else if ( QgsArcGisImageServiceItem *serviceItem = qobject_cast<QgsArcGisImageServiceItem *>( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [serviceItem] { QDesktopServices::openUrl( QUrl( serviceItem->path() ) ); } );
     menu->addAction( viewInfo );
   }
   else if ( QgsArcGisRestParentLayerItem *layerItem = qobject_cast<QgsArcGisRestParentLayerItem *>( item ) )
   {
+    if ( layerItem->allLayersMapServerUri().isValid() )
+    {
+      QAction *addAllLayers = new QAction( tr( "Add Raster with All MapServer Layers" ), menu );
+      const QgsMimeDataUtils::Uri allLayerUri = layerItem->allLayersMapServerUri();
+      connect( addAllLayers, &QAction::triggered, this, [allLayerUri] {
+        auto layer = std::make_unique<QgsRasterLayer>( allLayerUri.uri, allLayerUri.name, allLayerUri.providerKey );
+        QgsProject::instance()->addMapLayer( layer.release() );
+      } );
+      menu->addAction( addAllLayers );
+    }
+
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [layerItem] {
-      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
-    } );
+    connect( viewInfo, &QAction::triggered, this, [layerItem] { QDesktopServices::openUrl( QUrl( layerItem->path() ) ); } );
     menu->addAction( viewInfo );
   }
   else if ( QgsArcGisFeatureServiceLayerItem *layerItem = qobject_cast<QgsArcGisFeatureServiceLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [layerItem] {
-      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
-    } );
+    connect( viewInfo, &QAction::triggered, this, [layerItem] { QDesktopServices::openUrl( QUrl( layerItem->path() ) ); } );
     menu->addAction( viewInfo );
     menu->addSeparator();
 
@@ -140,25 +157,26 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     menu->addAction( addWithFilterAction );
     const QgsMimeDataUtils::UriList uris = layerItem->mimeUris();
 
-    connect( addWithFilterAction, &QAction::triggered, this, [uris, context, this] {
-      addFilteredLayer( uris.value( 0 ), context );
-    } );
+    connect( addWithFilterAction, &QAction::triggered, this, [uris, context, this] { addFilteredLayer( uris.value( 0 ), context ); } );
   }
   else if ( QgsArcGisMapServiceLayerItem *layerItem = qobject_cast<QgsArcGisMapServiceLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [layerItem] {
-      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
-    } );
+    connect( viewInfo, &QAction::triggered, this, [layerItem] { QDesktopServices::openUrl( QUrl( layerItem->path() ) ); } );
     menu->addAction( viewInfo );
     menu->addSeparator();
   }
   else if ( QgsArcGisSceneServiceLayerItem *layerItem = qobject_cast<QgsArcGisSceneServiceLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [layerItem] {
-      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
-    } );
+    connect( viewInfo, &QAction::triggered, this, [layerItem] { QDesktopServices::openUrl( QUrl( layerItem->path() ) ); } );
+    menu->addAction( viewInfo );
+    menu->addSeparator();
+  }
+  else if ( QgsArcGisImageServiceLayerItem *layerItem = qobject_cast<QgsArcGisImageServiceLayerItem *>( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [layerItem] { QDesktopServices::openUrl( QUrl( layerItem->path() ) ); } );
     menu->addAction( viewInfo );
     menu->addSeparator();
   }

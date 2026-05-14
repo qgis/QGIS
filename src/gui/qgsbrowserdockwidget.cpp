@@ -21,11 +21,16 @@
 #include "qgsdirectoryitem.h"
 #include "qgslayeritem.h"
 #include "qgsprojectitem.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QFileDialog>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgsbrowserdockwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
@@ -180,8 +185,7 @@ void QgsBrowserDockWidget::toggleFastScan()
 
   if ( item->type() == Qgis::BrowserItemType::Directory )
   {
-    QgsSettings settings;
-    QStringList fastScanDirs = settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList();
+    QStringList fastScanDirs = QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value();
     const int idx = fastScanDirs.indexOf( item->path() );
     if ( idx != -1 )
     {
@@ -191,7 +195,7 @@ void QgsBrowserDockWidget::toggleFastScan()
     {
       fastScanDirs << item->path();
     }
-    settings.setValue( u"qgis/scanItemsFastScanUris"_s, fastScanDirs );
+    QgsSettingsRegistryCore::settingsScanItemsFastScanUris->setValue( fastScanDirs );
   }
 }
 
@@ -236,5 +240,4 @@ void QgsBrowserDockWidget::setActiveIndex( const QModelIndex &index )
 }
 
 void QgsBrowserDockWidget::splitterMoved()
-{
-}
+{}

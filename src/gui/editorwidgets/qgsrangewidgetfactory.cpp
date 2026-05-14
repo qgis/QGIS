@@ -23,8 +23,7 @@
 
 QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsRangeWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {

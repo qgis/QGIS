@@ -18,6 +18,10 @@
 
 #include "qgsdataitemguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsWfsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT

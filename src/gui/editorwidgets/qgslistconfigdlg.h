@@ -31,7 +31,8 @@ SIP_NO_FILE
  *
  * \since QGIS 3.16
  */
-class GUI_EXPORT QgsListConfigDlg : public QgsEditorConfigWidget, private Ui::QgsListConfigDlg
+class GUI_EXPORT QgsListConfigDlg : public QgsEditorConfigWidget,
+                                    private Ui::QgsListConfigDlg
 {
     Q_OBJECT
 

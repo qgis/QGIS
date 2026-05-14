@@ -16,7 +16,6 @@
 #ifndef QGSPROCESSINGTININPUTLAYERSWIDGET_H
 #define QGSPROCESSINGTININPUTLAYERSWIDGET_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingtinmeshdatawidgetbase.h"
 
@@ -25,6 +24,8 @@
 
 #include <QAbstractTableModel>
 #include <QStyledItemDelegate>
+
+#define SIP_NO_FILE
 
 /// @cond PRIVATE
 
@@ -64,7 +65,8 @@ class QgsProcessingTinInputLayersDelegate : public QStyledItemDelegate
     Q_OBJECT
   public:
     QgsProcessingTinInputLayersDelegate( QObject *parent )
-      : QStyledItemDelegate( parent ) {}
+      : QStyledItemDelegate( parent )
+    {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;

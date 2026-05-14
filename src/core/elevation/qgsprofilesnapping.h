@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsProfileSnapContext
 {
   public:
-
     //! Maximum allowed snapping delta for the distance values when snapping to a continuous elevation surface
     double maximumSurfaceDistanceDelta = 0;
 
@@ -45,7 +44,6 @@ class CORE_EXPORT QgsProfileSnapContext
 
     //! Display ratio of elevation vs distance units
     double displayRatioElevationVsDistance = 1;
-
 };
 
 /**
@@ -56,7 +54,6 @@ class CORE_EXPORT QgsProfileSnapContext
 class CORE_EXPORT QgsProfileSnapResult
 {
   public:
-
     //! Snapped point
     QgsProfilePoint snappedPoint;
 

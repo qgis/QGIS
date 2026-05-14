@@ -28,6 +28,9 @@
 #include "testqgsmaptoolutils.h"
 
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolEditMesh : public QgsTest
 {

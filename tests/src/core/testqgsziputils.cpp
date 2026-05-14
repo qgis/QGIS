@@ -21,6 +21,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsZipUtils : public QObject
 {
     Q_OBJECT
@@ -58,12 +60,10 @@ void TestQgsZipUtils::cleanupTestCase()
 }
 
 void TestQgsZipUtils::init()
-{
-}
+{}
 
 void TestQgsZipUtils::cleanup()
-{
-}
+{}
 
 void TestQgsZipUtils::unzipWithSubdirs()
 {

@@ -21,6 +21,10 @@
 #include "qgscurve.h"
 #include "qgsgeometrycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPointsAlongGeometryAlgorithm::name() const
@@ -55,11 +59,13 @@ QString QgsPointsAlongGeometryAlgorithm::outputName() const
 
 QString QgsPointsAlongGeometryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a points layer, with points distributed along the lines of an "
-                      "input vector layer. The distance between points (measured along the line) is defined as a parameter.\n\n"
-                      "Start and end offset distances can be defined, so the first and last point will not fall exactly on the line's "
-                      "first and last nodes. These start and end offsets are defined as distances, measured along the line from the first and last "
-                      "nodes of the lines." );
+  return QObject::tr(
+    "This algorithm creates a points layer, with points distributed along the lines of an "
+    "input vector layer. The distance between points (measured along the line) is defined as a parameter.\n\n"
+    "Start and end offset distances can be defined, so the first and last point will not fall exactly on the line's "
+    "first and last nodes. These start and end offsets are defined as distances, measured along the line from the first and last "
+    "nodes of the lines."
+  );
 }
 
 QString QgsPointsAlongGeometryAlgorithm::shortDescription() const
@@ -188,8 +194,7 @@ QgsFeatureList QgsPointsAlongGeometryAlgorithm::processFeature( const QgsFeature
     if ( mDynamicEndOffset )
       endOffset = mEndOffsetProperty.valueAsDouble( context.expressionContext(), endOffset );
 
-    const double totalLength = geometry.type() == Qgis::GeometryType::Polygon ? geometry.constGet()->perimeter()
-                                                                              : geometry.length() - endOffset;
+    const double totalLength = geometry.type() == Qgis::GeometryType::Polygon ? geometry.constGet()->perimeter() : geometry.length() - endOffset;
 
     double currentDistance = startOffset;
     QgsFeatureList out;

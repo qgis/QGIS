@@ -25,6 +25,8 @@
 
 #include "moc_qgscodeeditorhtml.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )
 {

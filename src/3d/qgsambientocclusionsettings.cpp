@@ -18,14 +18,16 @@
 #include "qgsreadwritecontext.h"
 
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &other )
   : mEnabled( other.mEnabled )
   , mIntensity( other.mIntensity )
   , mRadius( other.mRadius )
   , mThreshold( other.mThreshold )
-{
-}
+{}
 
 QgsAmbientOcclusionSettings &QgsAmbientOcclusionSettings::operator=( QgsAmbientOcclusionSettings const &rhs )
 {

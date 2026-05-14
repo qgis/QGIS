@@ -27,11 +27,8 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat for
   : mValid( true )
   , mFormat( format )
   , mResults( results )
-{
-}
+{}
 
 QgsRasterIdentifyResult::QgsRasterIdentifyResult( const QgsError &error )
   : mError( error )
-{
-}
-
+{}

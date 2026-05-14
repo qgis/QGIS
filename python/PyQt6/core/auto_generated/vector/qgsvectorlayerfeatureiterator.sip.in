@@ -16,7 +16,7 @@
 #include "qgsfeatureiterator.h"
 %End
 
-class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
+  class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
 {
 %Docstring(signature="appended")
 Partial snapshot of vector layer's state (only the members necessary for
@@ -27,7 +27,6 @@ access to features).
 #include "qgsvectorlayerfeatureiterator.h"
 %End
   public:
-
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 %Docstring
 Constructor for QgsVectorLayerFeatureSource.
@@ -62,7 +61,6 @@ Returns the layer id of the source layer.
 %End
 
   protected:
-
 
 
 
@@ -112,17 +110,17 @@ end of iterating: free the resources / lock
 
     struct FetchJoinInfo
     {
-      const QgsVectorLayerJoinInfo *joinInfo;
-      QgsAttributeList attributes;
-      int indexOffset;
+        const QgsVectorLayerJoinInfo *joinInfo;
+        QgsAttributeList attributes;
+        int indexOffset;
 
 
-      int targetField;
+        int targetField;
 
-      int joinField;
+        int joinField;
 
-      void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
-      void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
+        void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
+        void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
     };
 
     virtual bool isValid() const;
@@ -172,7 +170,6 @@ simplify method
 };
 
 
-
 class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource, QgsExpressionContextScopeGenerator
 {
 %Docstring(signature="appended")
@@ -184,7 +181,6 @@ class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource, QgsExpressionConte
 #include "qgsvectorlayerfeatureiterator.h"
 %End
   public:
-
     QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
 %Docstring
 Constructor for QgsVectorLayerSelectedFeatureSource, for selected

@@ -21,7 +21,11 @@
 #include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgslayertreelayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
   : QgsLayerTreeNode( NodeLayer, true )
@@ -35,8 +39,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QString &layerId, const QString &nam
   : QgsLayerTreeNode( NodeLayer, true )
   , mRef( layerId, name, source, provider )
   , mLayerName( name.isEmpty() ? u"(?)"_s : name )
-{
-}
+{}
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
   : QgsLayerTreeNode( other )
@@ -52,7 +55,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
 void QgsLayerTreeLayer::resolveReferences( const QgsProject *project, bool looseMatching )
 {
   if ( mRef )
-    return;  // already assigned
+    return; // already assigned
 
   if ( !looseMatching )
   {
@@ -205,7 +208,6 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
   // in theory we do not even need to do this - the weak ref should clear itself
   mRef.layer.clear();
   // layerId stays in the reference
-
 }
 
 void QgsLayerTreeLayer::setUseLayerName( const bool use )
@@ -238,4 +240,3 @@ void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape )
 {
   mPatchShape = shape;
 }
-

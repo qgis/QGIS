@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPropertyDefinition
 {
 %Docstring(signature="appended")
@@ -25,7 +26,6 @@ and blend modes.
 #include "qgsproperty.h"
 %End
   public:
-
     enum StandardPropertyTemplate /BaseType=IntEnum/
     {
       Boolean,
@@ -195,7 +195,6 @@ inexpensively copied.
 #include "qgsproperty.h"
 %End
   public:
-
     static QVariantMap propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap );
 %Docstring
 Convert a map of QgsProperty to a map of QVariant This is useful to save
@@ -352,6 +351,17 @@ expression context.
    The optional argument ignoreContext has been added in QGIS 3.14. When set to ``True``,
    even fields not set in context's :py:func:`~QgsProperty.fields` will be reported - this is useful e.g. with vector tiles
    where the actual available field names may not be known beforehand.
+%End
+
+    QSet<QString> referencedVariables() const;
+%Docstring
+Returns the set of any variables referenced by the property's
+expression.
+
+Returns an empty set if the property is inactive or not of type
+:py:class:`Qgis`.PropertyType.Expression.
+
+.. versionadded:: 4.2
 %End
 
     bool isProjectColor() const;

@@ -19,7 +19,6 @@
 #define QGSLAYOUTCHARTSERIESDETAILSWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutchartseriesdetailswidgetbase.h"
 
@@ -27,12 +26,14 @@
 #include "qgslayoutitemchart.h"
 #include "qgspanelwidget.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \brief A widget for editing series details for a layout chart item.
  * \since QGIS 4.0
 */
-class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, private Ui::QgsLayoutChartSeriesDetailsWidgetBase
+class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutChartSeriesDetailsWidgetBase
 {
     Q_OBJECT
 
@@ -42,9 +43,10 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, priv
      * \param layer the vector layer associated to the series
      * \param index the series index
      * \param seriesDetails the series details
+     * \param yAxisOnly when TRUE, the X axis widget will be hidden (since QGIS 4.2)
      * \param parent the parent widget
      */
-    QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent = nullptr );
+    QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, bool yAxisOnly = false, QWidget *parent = nullptr );
 
     //! Returns the series index
     int index() const;
@@ -58,12 +60,23 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, priv
     //! Returns the filter expression
     QString filterExpression() const;
 
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for configuration widgets when required.
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
   private slots:
     void mFilterButton_clicked();
 
   private:
     QPointer<QgsVectorLayer> mVectorLayer;
     int mIndex = 0;
+    bool mYAxisOnly = false;
+
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
 
 #endif // QGSLAYOUTCHARTSERIESDETAILSWIDGET_H

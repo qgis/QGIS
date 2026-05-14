@@ -27,9 +27,11 @@
 // version without notice, or even be removed.
 //
 
-#include <numeric>
-
 #include "qgs3dmapsceneentity.h"
+#include "qgsraycasthit.h"
+
+#include <QMatrix4x4>
+#include <QTime>
 
 #define SIP_NO_FILE
 
@@ -44,15 +46,6 @@ class QgsRay3D;
 class QgsRayCastContext;
 
 
-#include <QVector3D>
-#include <QMatrix4x4>
-
-#include <QTime>
-
-#include "qgschunknode.h"
-#include "qgsraycasthit.h"
-
-
 /**
  * \ingroup qgis_3d
  * \brief Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
@@ -63,7 +56,9 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity(
+      Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr
+    );
     ~QgsChunkedEntity() override;
 
     //! Called when e.g. camera changes and entity may need updated

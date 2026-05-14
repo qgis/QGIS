@@ -22,16 +22,13 @@ QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QString &text, co
   , mText( text )
   , mData( data )
   , mFlags( flags )
-{
-
-}
+{}
 
 QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QList<QMap<int, QVariant> > &columnData, Qt::ItemFlags flags )
   : QAbstractItemModel( parent )
   , mColumnData( columnData )
   , mFlags( flags )
-{
-}
+{}
 
 QVariant QgsSingleItemModel::data( const QModelIndex &index, int role ) const
 {

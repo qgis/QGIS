@@ -10,6 +10,7 @@
 
 
 
+
 class QgsPathResolver
 {
 %Docstring(signature="appended")
@@ -135,7 +136,6 @@ call to :py:func:`~QgsPathResolver.setPathPreprocessor`.
       sipIsErr = 1;
     }
 %End
-
 
 
 

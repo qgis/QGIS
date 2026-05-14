@@ -24,6 +24,10 @@
 #include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsReclassifyUtils::reportClasses( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsProcessingFeedback *feedback )
@@ -54,7 +58,18 @@ void QgsReclassifyUtils::checkForOverlaps( const QVector<QgsReclassifyUtils::Ras
   }
 }
 
-void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsRasterInterface *sourceRaster, int band, const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double destNoDataValue, bool useNoDataForMissingValues, QgsProcessingFeedback *feedback )
+void QgsReclassifyUtils::reclassify(
+  const QVector<QgsReclassifyUtils::RasterClass> &classes,
+  QgsRasterInterface *sourceRaster,
+  int band,
+  const QgsRectangle &extent,
+  int sourceWidthPixels,
+  int sourceHeightPixels,
+  std::unique_ptr<QgsRasterDataProvider> destinationRaster,
+  double destNoDataValue,
+  bool useNoDataForMissingValues,
+  QgsProcessingFeedback *feedback
+)
 {
   QgsRasterIterator iter( sourceRaster );
   iter.startRasterRead( band, sourceWidthPixels, sourceHeightPixels, extent );

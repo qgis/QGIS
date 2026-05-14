@@ -24,7 +24,6 @@ Raster layer specific subclass of
 #include "qgsrasterlayerelevationproperties.h"
 %End
   public:
-
     QgsRasterLayerElevationProperties( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsRasterLayerElevationProperties, with the specified

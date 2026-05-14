@@ -29,7 +29,7 @@ ELSE(QSCI_MOD_VERSION_STR)
       FILE(READ ${_qsci_metadata} _qsci_metadata_contents)
       STRING(REGEX REPLACE ".*\nVersion: ([^\n]+).*$" "\\1" QSCI_MOD_VERSION_STR ${_qsci_metadata_contents})
     ELSE(_qsci_metadata)
-      EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "from Py${QT_VERSION_BASE}.Qsci import QSCINTILLA_VERSION_STR; print(QSCINTILLA_VERSION_STR)" OUTPUT_VARIABLE QSCI_MOD_VERSION_STR)
+      EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "from Py${QT_VERSION_BASE}.Qsci import QSCINTILLA_VERSION_STR; print(QSCINTILLA_VERSION_STR, end='')" OUTPUT_VARIABLE QSCI_MOD_VERSION_STR)
     ENDIF(_qsci_metadata)
 
     IF(QSCI_MOD_VERSION_STR)

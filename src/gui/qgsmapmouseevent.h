@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
       sipType = sipType_QgsMapMouseEvent;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -64,7 +64,9 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * \param buttons   Further buttons that are pressed
      * \param modifiers Keyboard modifiers
      */
-    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+    QgsMapMouseEvent(
+      QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier
+    );
 
     /**
      * \brief snapPoint will snap the points using the map canvas snapping utils configuration

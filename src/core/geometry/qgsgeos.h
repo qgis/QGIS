@@ -30,7 +30,7 @@ class QgsPolygon;
 class QgsGeometry;
 class QgsGeometryCollection;
 
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
 #include <QThreadStorage>
 #endif
 
@@ -45,7 +45,6 @@ class QgsGeometryCollection;
 class CORE_EXPORT QgsGeosContext
 {
   public:
-
     QgsGeosContext();
     ~QgsGeosContext();
 
@@ -62,10 +61,46 @@ class CORE_EXPORT QgsGeosContext
      * for every thread.
      */
 
-#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
+#if defined( USE_THREAD_LOCAL ) && !defined( Q_OS_WIN )
     static thread_local QgsGeosContext sGeosContext;
 #else
     static QThreadStorage< QgsGeosContext * > sGeosContext;
+#endif
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for setting the current thread GEOS context feedback object.
+ *
+ * Temporarily overrides the current thread GEOS context feedback object, resetting it to NULLPTR on destruction.
+ *
+ * \note Not available in Python bindings
+ * \note Requires GEOS 3.14 or later. On earlier GEOS versions this has no effect.
+ *
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsScopedGeosContextRegisterFeedback
+{
+  public:
+    /**
+   * Registers a \a feedback object for GEOS interruption checking.
+   *
+   * Applies to the current thread only.
+   *
+   * The \a feedback object must exist for the lifetime of this object.
+   */
+    QgsScopedGeosContextRegisterFeedback( QgsFeedback *feedback );
+
+    /**
+   * Resets the GEOS interruption checker for the current thread.
+   */
+    ~QgsScopedGeosContextRegisterFeedback();
+
+  private:
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+    static int callback( void *userData );
+    QgsFeedback *mFeedback = nullptr;
 #endif
 };
 
@@ -82,30 +117,29 @@ namespace geos
    */
   struct GeosDeleter
   {
-
-    /**
+      /**
      * Destroys the GEOS geometry \a geom, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSGeometry *geom ) const;
+      void CORE_EXPORT operator()( GEOSGeometry *geom ) const;
 
-    /**
+      /**
      * Destroys the GEOS prepared geometry \a geom, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom ) const;
+      void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom ) const;
 
-    /**
+      /**
      * Destroys the GEOS buffer params \a params, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSBufferParams *params ) const;
+      void CORE_EXPORT operator()( GEOSBufferParams *params ) const;
 
-    /**
+      /**
      * Destroys the GEOS coordinate sequence \a sequence, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSCoordSequence *sequence ) const;
+      void CORE_EXPORT operator()( GEOSCoordSequence *sequence ) const;
   };
 
   /**
@@ -128,7 +162,7 @@ namespace geos
    */
   using coord_sequence_unique_ptr = std::unique_ptr< GEOSCoordSequence, GeosDeleter>;
 
-}
+} //namespace geos
 #endif
 
 /**
@@ -137,10 +171,9 @@ namespace geos
  *
  * \note Available in Python bindings since QGIS 3.42
  */
-class CORE_EXPORT QgsGeos: public QgsGeometryEngine
+class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 {
   public:
-
     /**
      * GEOS geometry engine constructor
      * \param geometry The geometry
@@ -170,10 +203,14 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * The \a method and \a keepCollapsed arguments require builds based on GEOS 3.10 or later.
      *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
+     *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.9 or earlier when the \a method is not Qgis::MakeValidMethod::Linework or the \a keepCollapsed option is set.
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > makeValid(
+      Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr
+    ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Adds a new island polygon to a multipolygon feature
@@ -188,8 +225,12 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     void geometryChanged() override;
     void prepareGeometry() override;
 
-    QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
-    QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *intersection(
+      const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
+    ) const override;
+    QgsAbstractGeometry *difference(
+      const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
+    ) const override;
 
     /**
      * Performs a fast, non-robust intersection between the geometry and
@@ -197,10 +238,11 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \param rectangle clipping rectangle
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns clipped geometry
      */
-    std::unique_ptr< QgsAbstractGeometry > clip( const QgsRectangle &rectangle, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > clip( const QgsRectangle &rectangle, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
@@ -217,34 +259,51 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param maxNodes Maximum nodes used
      * \param errorMsg will be set to descriptive error string if the operation fails
      * \param parameters can be used to specify parameters which control the subdivision results (since QGIS 3.28)
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns subdivided geometry
      */
-    std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg SIP_OUT = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr< QgsAbstractGeometry > subdivide(
+      int maxNodes, QString *errorMsg SIP_OUT = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
+    ) const;
 
-    QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
-    QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
-    QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
-    QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
-    QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine(
+      const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
+    ) const override;
+    QgsAbstractGeometry *combine(
+      const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
+    ) const override;
+    QgsAbstractGeometry *combine(
+      const QVector< QgsGeometry > &, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
+    ) const override;
+    QgsAbstractGeometry *symDifference(
+      const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
+    ) const override;
+    QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    QgsAbstractGeometry *buffer(
+      double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr
+    ) const override;
 
     /**
      * Directly calculates the buffer for a GEOS geometry object and returns a GEOS geometry result.
      *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
+     *
      * \note Not available in Python bindings
      * \since QGIS 3.42
      */
-    SIP_SKIP static geos::unique_ptr buffer( const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr );
+    SIP_SKIP static geos::unique_ptr buffer(
+      const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr
+    );
 
-    QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const override;
-    QgsPoint *centroid( QString *errorMsg = nullptr ) const override;
-    QgsPoint *pointOnSurface( QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
-    double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = nullptr ) const override;
+    QgsPoint *centroid( QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    QgsPoint *pointOnSurface( QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
 
     /**
      * Returns TRUE if the geometry contains the point at (\a x, \a y).
@@ -254,12 +313,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param x x-coordinate of point to test
      * \param y y-coordinate of point to test
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns TRUE if the geometry contains the point
      *
      * \since QGIS 3.26
      */
-    bool contains( double x, double y, QString *errorMsg SIP_OUT = nullptr ) const;
+    bool contains( double x, double y, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns the minimum distance from the geometry to the point at (\a x, \a y).
@@ -269,12 +329,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param x x-coordinate of point to test
      * \param y y-coordinate of point to test
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns minimum distance
      *
      * \since QGIS 3.26
      */
-    double distance( double x, double y, QString *errorMsg SIP_OUT = nullptr ) const;
+    double distance( double x, double y, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns the Hausdorff distance between this geometry and another \a geometry. This is basically a measure of how similar or dissimilar 2 geometries are.
@@ -290,12 +351,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \param geometry geometry to compare to
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2)
      *
      * \returns calculated Hausdorff distance
      *
      * \see hausdorffDistanceDensify()
      */
-    double hausdorffDistance( const QgsAbstractGeometry *geometry, QString *errorMsg SIP_OUT = nullptr ) const;
+    double hausdorffDistance( const QgsAbstractGeometry *geometry, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns the Hausdorff distance between this geometry and another \a geometry. This is basically a measure of how similar or dissimilar 2 geometries are.
@@ -313,12 +375,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param geometry geometry to compare to
      * \param densifyFraction fraction by which to densify each segment
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns calculated densified Hausdorff distance
      *
      * \see hausdorffDistance()
      */
-    double hausdorffDistanceDensify( const QgsAbstractGeometry *geometry, double densifyFraction, QString *errorMsg SIP_OUT = nullptr ) const;
+    double hausdorffDistanceDensify( const QgsAbstractGeometry *geometry, double densifyFraction, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns the Fréchet distance between this geometry and another \a geometry, restricted to discrete points for both geometries.
@@ -330,6 +393,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \param geometry geometry to compare to
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns calculated Fréchet distance
      *
@@ -337,7 +401,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \see frechetDistanceDensify()
      * \since QGIS 3.20
      */
-    double frechetDistance( const QgsAbstractGeometry *geometry, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    double frechetDistance( const QgsAbstractGeometry *geometry, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns the Fréchet distance between this geometry and another \a geometry, restricted to discrete points for both geometries.
@@ -360,6 +424,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param geometry geometry to compare to
      * \param densifyFraction fraction by which to densify each segment
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns calculated densified Fréchet distance
      *
@@ -367,39 +432,46 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \see frechetDistance()
      * \since QGIS 3.20
      */
-    double frechetDistanceDensify( const QgsAbstractGeometry *geometry, double densifyFraction, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    double frechetDistanceDensify( const QgsAbstractGeometry *geometry, double densifyFraction, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
 
-    bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    bool within( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = nullptr ) const override;
+    bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool within( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
     double area( QString *errorMsg = nullptr ) const override;
     double length( QString *errorMsg = nullptr ) const override;
-    bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr ) const override;
-    bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr, QgsFeedback *feedback = nullptr ) const override;
+
+    bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+    bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
+
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
-    EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-                                         QVector<QgsGeometry> &newGeometries,
-                                         bool topological,
-                                         QgsPointSequence &topologyTestPoints,
-                                         QString *errorMsg = nullptr, bool skipIntersectionCheck = false ) const override;
+    EngineOperationResult splitGeometry(
+      const QgsLineString &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr, bool skipIntersectionCheck = false
+    ) const override;
 
     /**
      * Directly calculates the offset curve for a GEOS geometry object and returns a GEOS geometry result.
      *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
+     *
      * \note Not available in Python bindings
      * \since QGIS 3.42
      */
-    SIP_SKIP static geos::unique_ptr offsetCurve( const GEOSGeometry *geometry, double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr );
+    SIP_SKIP static geos::unique_ptr offsetCurve(
+      const GEOSGeometry *geometry, double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr
+    );
 
-    QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const override;
 
     /**
      * Returns a single sided buffer for a geometry. The buffer is only
@@ -410,11 +482,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param joinStyle join style for corners ( Round (1) / Miter (2) / Bevel (3) )
      * \param miterLimit limit on the miter ratio used for very sharp corners
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
+     *
      * \returns buffered geometry, or NULLPTR if buffer could not be calculated
      */
-    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
-        Qgis::JoinStyle joinStyle, double miterLimit,
-        QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer(
+      double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr
+    ) const;
 
     /**
      * Returns the maximum inscribed circle.
@@ -438,6 +512,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \param tolerance tolerance to determine when iteration should end
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns A two-point linestring geometry, with the first point at the center of the inscribed circle and the second
      * on the boundary of the inscribed circle.
@@ -446,7 +521,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > maximumInscribedCircle( double tolerance, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > maximumInscribedCircle( double tolerance, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Constructs the Largest Empty Circle for a set of obstacle geometries, up to a
@@ -468,6 +543,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param tolerance tolerance to determine when iteration should end
      * \param boundary optional set of boundary obstacles
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns A two-point linestring geometry, with first point at the center of the inscribed circle and the second
      * on the boundary of the inscribed circle.
@@ -478,7 +554,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary = nullptr, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > largestEmptyCircle(
+      double tolerance, const QgsAbstractGeometry *boundary = nullptr, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr
+    ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns a linestring geometry which represents the minimum diameter of the geometry.
@@ -491,6 +569,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * This method requires a QGIS build based on GEOS 3.6 or later.
      *
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns linestring representing the minimum diameter of the geometry
      *
@@ -498,7 +577,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > minimumWidth( QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > minimumWidth( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Computes the minimum clearance of a geometry.
@@ -518,6 +597,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * This method requires a QGIS build based on GEOS 3.6 or later.
      *
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns calculated minimum clearance of the geometry
      *
@@ -525,7 +605,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.20
      */
-    double minimumClearance( QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    double minimumClearance( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns a LineString whose endpoints define the minimum clearance of a geometry.
@@ -535,6 +615,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * This method requires a QGIS build based on GEOS 3.6 or later.
      *
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns linestring geometry representing the minimum clearance of the geometry
      *
@@ -542,7 +623,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > minimumClearanceLine( QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > minimumClearanceLine( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
@@ -553,12 +634,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * The input geometry type should be a (Multi)LineString.
      *
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns (multi)linestring geometry representing the fully noded version of the collection of linestrings
      *
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > node( QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > node( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Find paths shared between the two given lineal geometries (this and \a other).
@@ -572,12 +654,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \param other geometry to compare against
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns shared paths, or NULLPTR on exception
      *
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > sharedPaths( const QgsAbstractGeometry *other, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > sharedPaths( const QgsAbstractGeometry *other, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Reshapes the geometry using a line
@@ -595,49 +678,54 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * converts them to single line strings.
      *
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
+     *
      * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * LineString/MultiLineString geometry.
      * \param parameters can be used to specify parameters which control the mergeLines results (since QGIS 3.44)
      */
-    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg SIP_OUT = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg SIP_OUT = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns the closest point on the geometry to the other geometry.
      *
      * \param other geometry to compare against
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns closest point
      *
      * \see shortestLine()
      */
-    std::unique_ptr< QgsAbstractGeometry > closestPoint( const QgsGeometry &other, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > closestPoint( const QgsGeometry &other, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns the shortest line joining this geometry to the other geometry.
      *
      * \param other geometry to compare against
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns shortest line joining this geometry to the other geometry
      *
      * \see closestPoint()
      */
-    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsGeometry &other, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsGeometry &other, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns the shortest line joining this geometry to the other geometry.
      *
      * \param other geometry to compare against
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns shortest line joining this geometry to the other geometry
      *
      * \see closestPoint()
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsAbstractGeometry *other, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsAbstractGeometry *other, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns a distance representing the location along this linestring of the closest point
@@ -647,10 +735,12 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \param point point to seek proximity to
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
+     *
      * \returns distance along line, or -1 on error
      * \note only valid for linestring geometries
      */
-    double lineLocatePoint( const QgsPoint &point, QString *errorMsg SIP_OUT = nullptr ) const;
+    double lineLocatePoint( const QgsPoint &point, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns a distance representing the location along this linestring of the closest point
@@ -663,6 +753,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param x x-coordinate of point to locate
      * \param y y-coordinate of point to locate
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns distance along line, or -1 on error
      *
@@ -670,7 +761,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.26
      */
-    double lineLocatePoint( double x, double y, QString *errorMsg SIP_OUT = nullptr ) const;
+    double lineLocatePoint( double x, double y, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
@@ -680,9 +771,11 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * pass the result to polygonize().
      * An empty geometry will be returned in the case of errors.
      *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
+     *
      * \note Not available in Python bindings
      */
-    SIP_SKIP static QgsGeometry polygonize( const QVector<const QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
+    SIP_SKIP static QgsGeometry polygonize( const QVector<const QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.
@@ -702,10 +795,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param tolerance
      * \param edgesOnly
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns Voronoi diagram
      */
-    std::unique_ptr< QgsAbstractGeometry > voronoiDiagram( const QgsAbstractGeometry *extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > voronoiDiagram(
+      const QgsAbstractGeometry *extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr
+    ) const;
 
     /**
      * Returns the Delaunay triangulation for the vertices of the geometry.
@@ -718,12 +814,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param tolerance
      * \param edgesOnly
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns Delaunay triangulation
      *
      * \see constrainedDelaunayTriangulation()
      */
-    std::unique_ptr< QgsAbstractGeometry > delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns a constrained Delaunay triangulation for the vertices of the geometry.
@@ -733,6 +830,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * This method requires a QGIS build based on GEOS 3.11 or later.
      *
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns constrained Delaunay triangulation
      *
@@ -741,7 +839,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.36
      */
-    std::unique_ptr< QgsAbstractGeometry > constrainedDelaunayTriangulation( QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > constrainedDelaunayTriangulation( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns a possibly concave geometry that encloses the input geometry.
@@ -763,14 +861,59 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param targetPercent
      * \param allowHoles
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns concave geometry that encloses the input geometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * \see concaveHullOfPolygons()
      * \see convexHull()
      * \since QGIS 3.28
      */
-    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
+
+    /**
+     * Constructs a concave hull of a set of polygons, respecting the polygons as constraints.
+     *
+     * A concave hull is a (possibly) non-convex polygon containing all the input polygons.
+     *
+     * The computed hull "fills the gap" between the polygons, and does not intersect their interior.
+     *
+     * A set of polygons has a sequence of hulls of increasing concaveness,
+     * determined by a numeric target parameter.
+     *
+     * The concave hull is constructed by removing the longest outer edges
+     * of the Delaunay Triangulation of the space between the polygons,
+     * until the target criterion parameter is reached.
+     *
+     * The "Maximum Edge Length" parameter limits the length of the longest edge between polygons
+     * to be no larger than this value. This can be expressed as a ratio between the lengths of the
+     * longest and shortest edges.
+     *
+     * The input geometry *must* be a *valid* MultiPolygon (i.e. they must be non-overlapping).
+     *
+     * \param lengthRatio specifies the Maximum Edge Length as a
+     *        fraction of the difference between the longest and
+     *        shortest edge lengths between the polygons.
+     *        This normalizes the Maximum Edge Length to be scale-free.
+     *        A value of 1 produces the convex hull; a value of 0 produces
+     *        the original polygons.
+     * \param allowHoles set to TRUE to allow the concave hull to contain holes
+     * \param isTight set to TRUE if the concave hull should follow the outer boundaries of the input polygons
+     * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation.
+     *
+     * This method requires a QGIS build based on GEOS 3.11 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * \see concaveHull()
+     * \since QGIS 4.2
+     */
+    std::unique_ptr< QgsAbstractGeometry > concaveHullOfPolygons(
+      double lengthRatio, bool allowHoles = false, bool isTight = false, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr
+    ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge
@@ -784,6 +927,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * collection of the same length as the input, with a MULTILINESTRING of the error edges for each invalid polygon,
      * or an EMPTY where the polygon is a valid participant in the coverage. Pass NULLPTR if you do not want the invalid edges returned.
      * \param errorMsg
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * This method requires a QGIS build based on GEOS 3.12 or later.
      *
@@ -793,7 +937,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \see simplifyCoverageVW()
      * \since QGIS 3.36
      */
-    SIP_SKIP Qgis::CoverageValidityResult validateCoverage( double gapWidth, std::unique_ptr< QgsAbstractGeometry > *invalidEdges, QString *errorMsg = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    SIP_SKIP Qgis::CoverageValidityResult validateCoverage(
+      double gapWidth, std::unique_ptr< QgsAbstractGeometry > *invalidEdges, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr
+    ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Operates on a coverage (represented as a list of polygonal geometry with exactly matching edge geometry) to apply
@@ -809,6 +955,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param tolerance A tolerance parameter in linear units.
      * \param preserveBoundary Set to TRUE to preserve the outside edges of the coverage without simplification, or FALSE to allow them to be simplified.
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns simplified coverage
      *
@@ -818,7 +965,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \see validateCoverage()
      * \since QGIS 3.36
      */
-    std::unique_ptr< QgsAbstractGeometry > simplifyCoverageVW( double tolerance, bool preserveBoundary, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > simplifyCoverageVW( double tolerance, bool preserveBoundary, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
 
     /**
      * Optimized union algorithm for polygonal inputs that are correctly noded and do not overlap.
@@ -829,13 +978,14 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * All members must be POLYGON or MULTIPOLYGON.
      *
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns unioned coverage
      *
      * \see validateCoverage()
      * \since QGIS 3.36
      */
-    std::unique_ptr< QgsAbstractGeometry > unionCoverage( QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > unionCoverage( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Create a geometry from a GEOSGeometry
@@ -874,7 +1024,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     SIP_SKIP static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
   private:
-
 #ifdef SIP_RUN
     QgsGeos( const QgsGeos & );
 #endif
@@ -911,9 +1060,12 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param errorMsg Error message returned by GEOS
      * \param op Overlay Operation
      * \param parameters can be used to specify parameters which control the overlay results (since QGIS 3.28)
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      */
-    std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
-    bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > overlay(
+      const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
+    ) const;
+    bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
     static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry *g );
@@ -954,8 +1106,7 @@ class QgsGeosException : public std::runtime_error
   public:
     explicit QgsGeosException( const QString &message )
       : std::runtime_error( message.toUtf8().constData() )
-    {
-    }
+    {}
 };
 
 #endif

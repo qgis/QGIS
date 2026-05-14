@@ -24,6 +24,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsGdalUtils : public QObject
 {
     Q_OBJECT
@@ -62,12 +64,10 @@ void TestQgsGdalUtils::cleanupTestCase()
 }
 
 void TestQgsGdalUtils::init()
-{
-}
+{}
 
 void TestQgsGdalUtils::cleanup()
-{
-}
+{}
 
 void TestQgsGdalUtils::supportsRasterCreate()
 {

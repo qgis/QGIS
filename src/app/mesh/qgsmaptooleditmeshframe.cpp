@@ -50,8 +50,11 @@
 
 #include <QLocale>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmaptooleditmeshframe.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsZValueWidget
@@ -149,11 +152,7 @@ QgsMeshEditForceByLineAction::QgsMeshEditForceByLineAction( QObject *parent )
   mToleranceSpinBox->setClearValue( 1.0 );
 
   mUnitSelecionWidget = new QgsUnitSelectionWidget();
-  mUnitSelecionWidget->setUnits(
-    { Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::MapUnits
-    }
-  );
+  mUnitSelecionWidget->setUnits( { Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits } );
 
   Qgis::RenderUnit toleranceUnit = settings.enumValue( u"UI/Mesh/ForceByLineToleranceUnit"_s, Qgis::RenderUnit::MapUnits );
   mUnitSelecionWidget->setUnit( toleranceUnit );
@@ -286,6 +285,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
   mActionDigitizing = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshDigitizing.svg"_s ), tr( "Digitize Mesh Elements" ), this );
+  mActionDigitizing->setObjectName( u"mActionDigitizing"_s );
   mActionDigitizing->setCheckable( true );
 
   mActionSelectByPolygon = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectPolygon.svg"_s ), tr( "Select Mesh Elements by Polygon" ), this );
@@ -297,32 +297,42 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mSelectionHandler = std::make_unique<QgsMapToolSelectionHandler>( canvas, QgsMapToolSelectionHandler::SelectPolygon );
 
   mActionSelectIsolatedVertices = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectIsolatedVertices.svg"_s ), tr( "Select Isolated Vertices" ), this );
+  mActionSelectIsolatedVertices->setObjectName( u"mActionSelectIsolatedVertices"_s );
   mActionSelectAllVertices = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectAll.svg"_s ), tr( "Select All Vertices" ), this );
+  mActionSelectAllVertices->setObjectName( u"mActionSelectAllVertices"_s );
 
-  mSelectActions << mActionSelectByPolygon
-                 << mActionSelectByExpression
-                 << mActionSelectIsolatedVertices
-                 << mActionSelectAllVertices;
+  mSelectActions << mActionSelectByPolygon << mActionSelectByExpression << mActionSelectIsolatedVertices << mActionSelectAllVertices;
 
   mActionTransformCoordinates = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshTransformByExpression.svg"_s ), tr( "Transform Vertices Coordinates" ), this );
+  mActionTransformCoordinates->setObjectName( u"mActionTransformCoordinates"_s );
   mActionTransformCoordinates->setCheckable( true );
 
   mActionForceByLines = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshEditForceByVectorLines.svg"_s ), tr( "Force by Selected Geometries" ), this );
+  mActionForceByLines->setObjectName( u"mActionForceByLines"_s );
   mActionForceByLines->setCheckable( true );
 
   mWidgetActionForceByLine = new QgsMeshEditForceByLineAction( this );
+  mWidgetActionForceByLine->setObjectName( u"mWidgetActionForceByLine"_s );
   mWidgetActionForceByLine->setMapCanvas( canvas );
 
   mWidgetActionDigitizing = new QgsMeshEditDigitizingAction( this );
+  mWidgetActionDigitizing->setObjectName( u"mWidgetActionDigitizing"_s );
 
   mActionReindexMesh = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshReindex.svg"_s ), tr( "Reindex Faces and Vertices" ), this );
+  mActionReindexMesh->setObjectName( u"mActionReindexMesh"_s );
 
   mActionRemoveVerticesFillingHole = new QAction( this );
+  mActionRemoveVerticesFillingHole->setObjectName( u"mActionRemoveVerticesFillingHole"_s );
   mActionDelaunayTriangulation = new QAction( tr( "Delaunay Triangulation with Selected Vertices" ), this );
+  mActionDelaunayTriangulation->setObjectName( u"mActionDelaunayTriangulation"_s );
   mActionFacesRefinement = new QAction( tr( "Refine Current Face" ), this );
+  mActionFacesRefinement->setObjectName( u"mActionFacesRefinement"_s );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
+  mActionRemoveVerticesWithoutFillingHole->setObjectName( u"mActionRemoveVerticesWithoutFillingHole"_s );
   mActionRemoveFaces = new QAction( tr( "Remove Current Face" ), this );
+  mActionRemoveFaces->setObjectName( u"mActionRemoveFaces"_s );
   mActionSplitFaces = new QAction( tr( "Split Current Face" ), this );
+  mActionSplitFaces->setObjectName( u"mActionSplitFaces"_s );
 
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] { removeSelectedVerticesFromMesh( true ); } );
   connect( mActionRemoveVerticesWithoutFillingHole, &QAction::triggered, this, [this] { removeSelectedVerticesFromMesh( false ); } );
@@ -449,15 +459,7 @@ QgsMapToolEditMeshFrame::~QgsMapToolEditMeshFrame()
 void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
 {
   QList<QAction *> actions;
-  actions
-    << mActionDigitizing
-    << mActionSelectByPolygon
-    << mActionSelectByExpression
-    << mActionTransformCoordinates
-    << mActionForceByLines
-    << mActionReindexMesh
-    << mActionSelectIsolatedVertices
-    << mActionSelectAllVertices;
+  actions << mActionDigitizing << mActionSelectByPolygon << mActionSelectByExpression << mActionTransformCoordinates << mActionForceByLines << mActionReindexMesh << mActionSelectIsolatedVertices << mActionSelectAllVertices;
 
   for ( QAction *action : std::as_const( actions ) )
     action->setEnabled( enable );
@@ -466,10 +468,7 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
 
 QList<QAction *> QgsMapToolEditMeshFrame::mapToolActions()
 {
-  return QList<QAction *>()
-         << mActionDigitizing
-         << mActionSelectByPolygon
-         << mActionForceByLines;
+  return QList<QAction *>() << mActionDigitizing << mActionSelectByPolygon << mActionForceByLines;
 }
 
 QAction *QgsMapToolEditMeshFrame::digitizeAction() const
@@ -501,8 +500,7 @@ QAction *QgsMapToolEditMeshFrame::transformAction() const
 
 QList<QAction *> QgsMapToolEditMeshFrame::forceByLinesActions() const
 {
-  return QList<QAction *>()
-         << mActionForceByLines;
+  return QList<QAction *>() << mActionForceByLines;
 }
 
 QAction *QgsMapToolEditMeshFrame::defaultForceAction() const
@@ -988,8 +986,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mCurrentVertexIndex = closeVertex( mapPoint );
           select( mapPoint, e->modifiers(), tolerance );
         }
-        else if ( mNewFaceMarker->isVisible() && mapPoint.distance( mNewFaceMarker->center() ) < tolerance
-                  && mCurrentVertexIndex >= 0 ) //new face marker clicked --> start adding a new face
+        else if ( mNewFaceMarker->isVisible() && mapPoint.distance( mNewFaceMarker->center() ) < tolerance && mCurrentVertexIndex >= 0 ) //new face marker clicked --> start adding a new face
         {
           clearSelection();
           mCurrentState = AddingNewFace;
@@ -1191,7 +1188,7 @@ void QgsMapToolEditMeshFrame::moveSelection( const QgsPointXY &destinationPoint 
   // we test only the faces that are deformed on the border, moving and not deformed faces are tested later
   mIsMovingAllowed = mCurrentEditor->canBeTransformed( qgis::setToList( borderMovingFace ), transformFunction );
 
-  if ( mIsMovingAllowed )
+  if ( mIsMovingAllowed && !movingFacesGeometry.isEmpty() )
   {
     //to finish test if the polygons formed by the moving faces contains something else
     const QList<int> &faceIndexesIntersect = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( movingFacesGeometry.boundingBox() );
@@ -1235,8 +1232,7 @@ void QgsMapToolEditMeshFrame::select( const QgsPointXY &mapPoint, Qt::KeyboardMo
 
   QgsPointXY currentPoint = mapPoint;
 
-  if ( mSelectFaceMarker->isVisible() && mapPoint.distance( mSelectFaceMarker->center() ) < tolerance
-       && mCurrentFaceIndex >= 0 )
+  if ( mSelectFaceMarker->isVisible() && mapPoint.distance( mSelectFaceMarker->center() ) < tolerance && mCurrentFaceIndex >= 0 )
   {
     setSelectedVertices( nativeFace( mCurrentFaceIndex ).toList(), behavior );
     currentPoint = mCurrentLayer->triangularMesh()->faceCentroids().at( mCurrentFaceIndex );
@@ -1797,10 +1793,7 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
 
     if ( !remainingVertex.isEmpty() )
     {
-      QgisApp::instance()->messageBar()->pushWarning(
-        tr( "Mesh editing" ),
-        tr( "%n vertices were not removed", nullptr, remainingVertex.count() )
-      );
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Mesh editing" ), tr( "%n vertices were not removed", nullptr, remainingVertex.count() ) );
     }
   }
   else
@@ -1808,10 +1801,7 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
     const QgsMeshEditingError error = mCurrentEditor->removeVerticesWithoutFillHoles( mSelectedVertices.keys() );
     if ( error != QgsMeshEditingError() )
     {
-      QgisApp::instance()->messageBar()->pushWarning(
-        tr( "Mesh editing" ),
-        tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex )
-      );
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Mesh editing" ), tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
     }
   }
 }
@@ -1828,10 +1818,7 @@ void QgsMapToolEditMeshFrame::removeFacesFromMesh()
 
   if ( error != QgsMeshEditingError() )
   {
-    QgisApp::instance()->messageBar()->pushWarning(
-      tr( "Mesh editing" ),
-      tr( "removing the faces %1 leads to a topological error, operation canceled." ).arg( error.elementIndex )
-    );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Mesh editing" ), tr( "removing the faces %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
   }
   else
   {
@@ -1966,9 +1953,7 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
     setMovingRubberBandValidity( mTransformDockWidget->isResultValid() );
   } );
 
-  connect( mTransformDockWidget, &QgsMeshTransformCoordinatesDockWidget::aboutToBeApplied, this, [this] {
-    mKeepSelectionOnEdit = true;
-  } );
+  connect( mTransformDockWidget, &QgsMeshTransformCoordinatesDockWidget::aboutToBeApplied, this, [this] { mKeepSelectionOnEdit = true; } );
 
   connect( mTransformDockWidget, &QgsMeshTransformCoordinatesDockWidget::applied, this, [this] {
     mTransformDockWidget->setInput( mCurrentLayer, mSelectedVertices.keys() );
@@ -2371,9 +2356,7 @@ bool QgsMapToolEditMeshFrame::isSelectionGrapped( QgsPointXY &grappedPoint ) con
   }
 
 
-  if ( ( mSelectFaceMarker->isVisible() && grappedPoint.distance( mSelectFaceMarker->center() ) < tolerance
-         && mCurrentFaceIndex >= 0
-         && mSelectedFaces.contains( mCurrentFaceIndex ) ) )
+  if ( ( mSelectFaceMarker->isVisible() && grappedPoint.distance( mSelectFaceMarker->center() ) < tolerance && mCurrentFaceIndex >= 0 && mSelectedFaces.contains( mCurrentFaceIndex ) ) )
   {
     grappedPoint = mCurrentLayer->triangularMesh()->faceCentroids().at( mCurrentFaceIndex );
     return true;
@@ -2737,10 +2720,7 @@ void QgsMapToolEditMeshFrame::clearEdgeHelpers()
   mMergeFaceMarker->setVisible( false );
 }
 
-void QgsMapToolEditMeshFrame::addVertex(
-  const QgsPointXY &mapPoint,
-  const QgsPointLocator::Match &mapPointMatch
-)
+void QgsMapToolEditMeshFrame::addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch )
 {
   QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
@@ -2752,7 +2732,8 @@ void QgsMapToolEditMeshFrame::addVertex(
 
   bool isOnMesh = mCurrentFaceIndex != -1 || ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 );
 
-  if ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::Terrain || ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenTerrain && !isOnMesh ) )
+  if ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::Terrain
+       || ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenTerrain && !isOnMesh ) )
   {
     const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
     const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
@@ -2770,16 +2751,15 @@ void QgsMapToolEditMeshFrame::addVertex(
     // either outside of terrain or the point cannot be transformed to terrainProvider CRS, use currentZValue
     if ( std::isnan( zValue ) )
     {
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "Terrain Z Value" ),
-        tr( "Z Value from project terrain could not be obtained, setting default value %1." ).arg( mZValueWidget->getDefaultValue() ),
-        Qgis::MessageLevel::Warning
-      );
+      QgisApp::instance()
+        ->messageBar()
+        ->pushMessage( tr( "Terrain Z Value" ), tr( "Z Value from project terrain could not be obtained, setting default value %1." ).arg( mZValueWidget->getDefaultValue() ), Qgis::MessageLevel::Warning );
 
       zValue = mZValueWidget->getDefaultValue();
     }
   }
-  else if ( isOnMesh && ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenZWidget || mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenTerrain ) )
+  else if ( isOnMesh
+            && ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenZWidget || mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenTerrain ) )
   {
     if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 ) //we are on a edge -->interpolate the z value
     {
@@ -2958,7 +2938,11 @@ void QgsMapToolEditMeshFrame::updateStatusBarMessage() const
       const int vertexId = mSelectedVertices.firstKey();
       const QgsMeshVertex vertex = mesh.vertex( vertexId );
 
-      message = tr( "Selected mesh vertex ID: %1 at x: %2 y: %3 z: %4." ).arg( vertexId ).arg( QLocale().toString( vertex.x(), 'f' ) ).arg( QLocale().toString( vertex.y(), 'f' ) ).arg( QLocale().toString( vertex.z(), 'f' ) );
+      message = tr( "Selected mesh vertex ID: %1 at x: %2 y: %3 z: %4." )
+                  .arg( vertexId )
+                  .arg( QLocale().toString( vertex.x(), 'f' ) )
+                  .arg( QLocale().toString( vertex.y(), 'f' ) )
+                  .arg( QLocale().toString( vertex.z(), 'f' ) );
     }
     else if ( mSelectedVertices.count() == 2 )
     {

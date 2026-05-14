@@ -30,9 +30,9 @@
 #include "moc_qgs3dmaptoolpointcloudchangeattributepolygon.cpp"
 
 Qgs3DMapToolPointCloudChangeAttributePolygon::Qgs3DMapToolPointCloudChangeAttributePolygon( Qgs3DMapCanvas *canvas, const ToolType type = Polygon )
-  : Qgs3DMapToolPointCloudChangeAttribute( canvas ), mToolType( type )
-{
-}
+  : Qgs3DMapToolPointCloudChangeAttribute( canvas )
+  , mToolType( type )
+{}
 
 Qgs3DMapToolPointCloudChangeAttributePolygon::~Qgs3DMapToolPointCloudChangeAttributePolygon() = default;
 
@@ -56,7 +56,9 @@ void Qgs3DMapToolPointCloudChangeAttributePolygon::mouseMoveEvent( QMouseEvent *
     if ( !mPolygonRubberBand->isEmpty() )
     {
       mPolygonRubberBand->removeLastPoint();
-      mPolygonRubberBand->moveLastPoint( Qgs3DUtils::screenPointToMapCoordinates( QPoint( event->x(), mToolType == AboveLine ? 0 : mCanvas->height() ), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() ) );
+      mPolygonRubberBand->moveLastPoint(
+        Qgs3DUtils::screenPointToMapCoordinates( QPoint( event->x(), mToolType == AboveLine ? 0 : mCanvas->height() ), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() )
+      );
       mPolygonRubberBand->addPoint( movedPoint );
     }
   }
@@ -113,7 +115,8 @@ void Qgs3DMapToolPointCloudChangeAttributePolygon::mouseReleaseEvent( QMouseEven
     }
     else
     {
-      const QgsPoint screenEdgePoint = Qgs3DUtils::screenPointToMapCoordinates( QPoint( event->x(), mToolType == AboveLine ? 0 : mCanvas->height() ), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
+      const QgsPoint screenEdgePoint
+        = Qgs3DUtils::screenPointToMapCoordinates( QPoint( event->x(), mToolType == AboveLine ? 0 : mCanvas->height() ), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
       if ( mLineRubberBand->isEmpty() )
       {
         mLineRubberBand->addPoint( newPoint );

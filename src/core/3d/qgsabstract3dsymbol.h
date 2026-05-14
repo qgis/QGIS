@@ -25,9 +25,12 @@ class QString;
 
 class QgsReadWriteContext;
 class Qgs3DSceneExporter;
+class QgsAbstractMaterialSettings;
 
-namespace Qt3DCore SIP_SKIP { class QEntity; }
-
+namespace Qt3DCore SIP_SKIP
+{
+  class QEntity;
+}
 
 /**
  * \ingroup qgis_3d
@@ -66,9 +69,18 @@ class CORE_EXPORT QgsAbstract3DSymbol
     // *INDENT-OFF*
     //! Data definable properties.
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstract3DSymbol, Property ) : int
-      {
-      Height SIP_MONKEYPATCH_COMPAT_NAME( PropertyHeight ) = 0, //!< Height (altitude)
+    {
+      Height SIP_MONKEYPATCH_COMPAT_NAME( PropertyHeight ) = 0,               //!< Height (altitude)
       ExtrusionHeight SIP_MONKEYPATCH_COMPAT_NAME( PropertyExtrusionHeight ), //!< Extrusion height (zero means no extrusion)
+      ScaleX,                                                                 //!< X-axis scaling \since QGIS 4.2
+      ScaleY,                                                                 //!< Y-axis scaling \since QGIS 4.2
+      ScaleZ,                                                                 //!< Z-axis scaling \since QGIS 4.2
+      TranslationX,                                                           //!< X-axis translation \since QGIS 4.2
+      TranslationY,                                                           //!< Y-axis translation \since QGIS 4.2
+      TranslationZ,                                                           //!< Z-axis translation \since QGIS 4.2
+      RotationX,                                                              //!< X-axis rotation \since QGIS 4.2
+      RotationY,                                                              //!< Y-axis rotation \since QGIS 4.2
+      RotationZ,                                                              //!< Z-axis rotation \since QGIS 4.2
     };
     // *INDENT-ON*
 
@@ -98,8 +110,23 @@ class CORE_EXPORT QgsAbstract3DSymbol
      */
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 
-  protected:
+    /**
+     * Returns the 3D material settings associated with this symbol.
+     * May be NULLPTR for symbols which don't support materials.
+     * \since QGIS 4.2
+     */
+    virtual QgsAbstractMaterialSettings *materialSettings() const SIP_SKIP { return nullptr; }
 
+    /**
+     * Sets the material settings used for shading of the symbol.
+     *
+     * Ownership of \a materialSettings is transferred to the symbol.
+     *
+     * \since QGIS 4.2
+     */
+    virtual void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER ) = 0;
+
+  protected:
     /**
      * Copies base class settings from this object to a \a destination object.
      */

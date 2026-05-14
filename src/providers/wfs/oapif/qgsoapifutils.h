@@ -38,6 +38,7 @@ class QgsOAPIFJson
         QString rel;
         QString type;
         QString title;
+        QStringList profiles;
         qint64 length = -1;
     };
 
@@ -52,5 +53,10 @@ class QgsOAPIFJson
 QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHeaderPair> &responseHeaders, const QString &formatType );
 
 extern const QString OAPIF_PROVIDER_DEFAULT_CRS;
+
+// Originally there was a plan to have a proper mime type for JSON-FG,
+// but that was changed to using the one of GeoJSON + a profile. For the
+// sake of simplicity, internally, use the pseudo mime type.
+extern const QString PSEUDO_JSONFG_MEDIA_TYPE;
 
 #endif // QGSOAPIFUTILS_H

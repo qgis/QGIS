@@ -20,7 +20,6 @@ Encapsulates the context of snapping a profile point.
 #include "qgsprofilesnapping.h"
 %End
   public:
-
     double maximumSurfaceDistanceDelta;
 
     double maximumSurfaceElevationDelta;
@@ -30,7 +29,6 @@ Encapsulates the context of snapping a profile point.
     double maximumPointElevationDelta;
 
     double displayRatioElevationVsDistance;
-
 };
 
 class QgsProfileSnapResult
@@ -45,7 +43,6 @@ Encapsulates results of snapping a profile point.
 #include "qgsprofilesnapping.h"
 %End
   public:
-
     QgsProfilePoint snappedPoint;
 
     bool isValid() const;

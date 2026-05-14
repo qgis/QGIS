@@ -24,8 +24,7 @@
 
 QgsTabBarProxyStyle::QgsTabBarProxyStyle( QTabBar *tabBar )
   : QgsProxyStyle( tabBar )
-{
-}
+{}
 
 void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
 {
@@ -71,8 +70,7 @@ const QMap<int, QgsAttributeEditorElement::LabelStyle> &QgsTabBarProxyStyle::tab
 
 QgsTabBar::QgsTabBar( QWidget *parent )
   : QTabBar( parent )
-{
-}
+{}
 
 void QgsTabBar::setTabBarStyle( QgsTabBarProxyStyle *tabStyle )
 {

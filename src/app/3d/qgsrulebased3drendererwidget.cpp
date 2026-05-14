@@ -29,8 +29,11 @@
 #include <QClipboard>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgsrulebased3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -62,11 +65,6 @@ QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   connect( mDeleteAction, &QAction::triggered, this, &QgsRuleBased3DRendererWidget::removeRule );
 }
 
-QgsRuleBased3DRendererWidget::~QgsRuleBased3DRendererWidget()
-{
-  delete mRootRule;
-}
-
 void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
@@ -75,15 +73,22 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   if ( r && r->type() == "rulebased"_L1 )
   {
     QgsRuleBased3DRenderer *ruleRenderer = static_cast<QgsRuleBased3DRenderer *>( r );
-    mRootRule = ruleRenderer->rootRule()->clone();
+    mRootRule.reset( ruleRenderer->rootRule()->clone() );
   }
-  else
+  else if ( QgsAbstractVectorLayer3DRenderer *vectorRenderer = dynamic_cast< QgsAbstractVectorLayer3DRenderer * >( r ) )
   {
-    // TODO: handle the special case when switching from single symbol renderer
-    mRootRule = new QgsRuleBased3DRenderer::Rule( nullptr );
+    std::unique_ptr< QgsRuleBased3DRenderer > newRenderer = QgsRuleBased3DRenderer::convertFromRenderer( vectorRenderer );
+    if ( newRenderer )
+    {
+      mRootRule.reset( newRenderer->rootRule()->clone() );
+    }
+  }
+  if ( !mRootRule )
+  {
+    mRootRule = std::make_unique<QgsRuleBased3DRenderer::Rule>( nullptr );
   }
 
-  mModel = new QgsRuleBased3DRendererModel( mRootRule );
+  mModel.reset( new QgsRuleBased3DRendererModel( mRootRule.get() ) );
   viewRules->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::widgetChanged );
@@ -221,8 +226,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRendererWidget::currentRule()
 QgsRuleBased3DRendererModel::QgsRuleBased3DRendererModel( QgsRuleBased3DRenderer::Rule *rootRule, QObject *parent )
   : QAbstractItemModel( parent )
   , mRootRule( rootRule )
-{
-}
+{}
 
 Qt::ItemFlags QgsRuleBased3DRendererModel::flags( const QModelIndex &index ) const
 {
@@ -590,7 +594,10 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   connect( groupSymbol, &QGroupBox::toggled, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
   connect( mSymbolWidget, &QgsSymbol3DWidget::widgetChanged, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
   connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { if ( toggled ) editFilter->setText( u"ELSE"_s ); } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) {
+    if ( toggled )
+      editFilter->setText( u"ELSE"_s );
+  } );
 }
 
 Qgs3DRendererRulePropsWidget::~Qgs3DRendererRulePropsWidget() = default;

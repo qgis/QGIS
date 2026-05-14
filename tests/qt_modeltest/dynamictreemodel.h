@@ -54,10 +54,7 @@ class DynamicTreeModel : public QAbstractItemModel
     QHash<qint64, QString> m_items;
     QHash<qint64, QList<QList<qint64>>> m_childItems;
     qint64 nextId;
-    qint64 newId()
-    {
-      return nextId++;
-    }
+    qint64 newId() { return nextId++; }
     QModelIndex m_nextParentIndex;
     int m_nextRow;
     int m_depth;
@@ -73,23 +70,11 @@ class ModelChangeCommand : public QObject
     Q_OBJECT
   public:
     ModelChangeCommand( DynamicTreeModel *model, QObject *parent = 0 );
-    void setAncestorRowNumbers( QList<int> rowNumbers )
-    {
-      m_rowNumbers = rowNumbers;
-    }
+    void setAncestorRowNumbers( QList<int> rowNumbers ) { m_rowNumbers = rowNumbers; }
     QModelIndex findIndex( const QList<int> &rows ) const;
-    void setStartRow( int row )
-    {
-      m_startRow = row;
-    }
-    void setEndRow( int row )
-    {
-      m_endRow = row;
-    }
-    void setNumCols( int cols )
-    {
-      m_numCols = cols;
-    }
+    void setStartRow( int row ) { m_startRow = row; }
+    void setEndRow( int row ) { m_endRow = row; }
+    void setNumCols( int cols ) { m_numCols = cols; }
     virtual void doCommand() = 0;
 
   protected:
@@ -115,14 +100,8 @@ class ModelMoveCommand : public ModelChangeCommand
     virtual bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd, const QModelIndex &destParent, int destRow );
     void doCommand() override;
     virtual void emitPostSignal();
-    void setDestAncestors( QList<int> rows )
-    {
-      m_destRowNumbers = rows;
-    }
-    void setDestRow( int row )
-    {
-      m_destRow = row;
-    }
+    void setDestAncestors( QList<int> rows ) { m_destRowNumbers = rows; }
+    void setDestRow( int row ) { m_destRow = row; }
 
   protected:
     QList<int> m_destRowNumbers;
@@ -158,10 +137,7 @@ class ModelChangeChildrenLayoutsCommand : public ModelChangeCommand
   public:
     ModelChangeChildrenLayoutsCommand( DynamicTreeModel *model, QObject *parent );
     void doCommand() override;
-    void setSecondAncestorRowNumbers( QList<int> rows )
-    {
-      m_secondRowNumbers = rows;
-    }
+    void setSecondAncestorRowNumbers( QList<int> rows ) { m_secondRowNumbers = rows; }
 
   protected:
     QList<int> m_secondRowNumbers;

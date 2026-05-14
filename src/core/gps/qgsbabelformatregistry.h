@@ -21,6 +21,10 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsBabelSimpleImportFormat;
 class QgsBabelGpsDeviceFormat;
 
@@ -37,7 +41,6 @@ class QgsBabelGpsDeviceFormat;
 class CORE_EXPORT QgsBabelFormatRegistry
 {
   public:
-
 #ifndef SIP_RUN
 
     static inline QgsSettingsTreeNamedListNode *sTreeBabelDevices = QgsSettingsTree::sTreeGps->createNamedListNode( u"babel-devices"_s );

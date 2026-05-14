@@ -23,13 +23,15 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
   , mPoint( point )
   , mSymbol( std::make_unique< QgsMarkerSymbol >() )
-{
-
-}
+{}
 
 QgsAnnotationMarkerItem::~QgsAnnotationMarkerItem() = default;
 
@@ -73,13 +75,12 @@ bool QgsAnnotationMarkerItem::writeXml( QDomElement &element, QDomDocument &docu
 Qgis::AnnotationItemFlags QgsAnnotationMarkerItem::flags() const
 {
   // in truth this should depend on whether the marker symbol is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
-         | Qgis::AnnotationItemFlag::SupportsReferenceScale;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox | Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
-  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle ) };
 }
 
 Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
@@ -106,6 +107,17 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      if ( mSymbol )
+      {
+        mSymbol->setAngle( std::fmod( mSymbol->angle() + rotateOperation->angle(), 360.0 ) );
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      }
+      break;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
@@ -129,6 +141,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;

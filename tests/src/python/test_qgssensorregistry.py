@@ -11,20 +11,20 @@ __date__ = "19/03/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
-    QgsSensorRegistry,
     QgsSensorAbstractMetadata,
+    QgsSensorRegistry,
     QgsTcpSocketSensor,
     QgsUdpSocketSensor,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestTcpSensorMetadata(QgsSensorAbstractMetadata):
-
     def __init__(self):
         super().__init__("test_tcp_sensor", "test tcp sensor")
 
@@ -33,7 +33,6 @@ class TestTcpSensorMetadata(QgsSensorAbstractMetadata):
 
 
 class TestUdpSensorMetadata(QgsSensorAbstractMetadata):
-
     def __init__(self):
         super().__init__("test_udp_sensor", "test udp sensor")
 
@@ -42,7 +41,6 @@ class TestUdpSensorMetadata(QgsSensorAbstractMetadata):
 
 
 class TestQgsSensorRegistry(QgisTestCase):
-
     def testRegistry(self):
         registry = QgsSensorRegistry()
 

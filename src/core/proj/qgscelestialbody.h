@@ -22,6 +22,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains information about a celestial body.
@@ -32,7 +34,6 @@
 class CORE_EXPORT QgsCelestialBody
 {
   public:
-
     /**
      * Returns TRUE if the body is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -50,6 +51,7 @@ class CORE_EXPORT QgsCelestialBody
     QString authority() const { return mAuthority; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
@@ -68,11 +70,15 @@ class CORE_EXPORT QgsCelestialBody
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
-    bool mValid = false;
+    bool mValid
+    = false;
     QString mName;
     QString mAuthority;
 

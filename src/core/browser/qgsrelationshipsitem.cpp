@@ -23,12 +23,13 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
 #include "moc_qgsrelationshipsitem.cpp"
 
-QgsRelationshipsItem::QgsRelationshipsItem( QgsDataItem *parent,
-    const QString &path,
-    const QString &connectionUri,
-    const QString &providerKey, const QString &schema, const QString &tableName )
+using namespace Qt::StringLiterals;
+
+QgsRelationshipsItem::QgsRelationshipsItem( QgsDataItem *parent, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema, const QString &tableName )
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Relationships" ), path, providerKey )
   , mConnectionUri( connectionUri )
   , mSchema( schema )
@@ -123,4 +124,3 @@ const QgsWeakRelation &QgsRelationshipItem::relation() const
 }
 
 QgsRelationshipItem::~QgsRelationshipItem() = default;
-

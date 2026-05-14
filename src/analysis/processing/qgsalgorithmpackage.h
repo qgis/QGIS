@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMPACKAGE_H
 #define QGSALGORITHMPACKAGE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -49,7 +50,9 @@ class QgsPackageAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    bool packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly, const QgsRectangle &extent );
+    bool packageVectorLayer(
+      QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly, const QgsRectangle &extent
+    );
 
     std::vector<std::unique_ptr<QgsMapLayer>> mLayers;
     QMap<QString, QString> mClonedLayerIds;

@@ -23,9 +23,15 @@
 #include "qgslayoutundocommand.h"
 
 #include <QPen>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsReadWriteContext;
+class QgsSettingsEntryColor;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryString;
 
 /**
  * \ingroup core
@@ -34,14 +40,12 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
 {
-
   public:
-
     //! Style for drawing the page/snapping grid
     enum Style
     {
-      StyleLines, //!< Solid lines
-      StyleDots, //!< Dots
+      StyleLines,  //!< Solid lines
+      StyleDots,   //!< Dots
       StyleCrosses //!< Crosses
     };
 
@@ -65,7 +69,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see setResolution()
      * \see offset()
      */
-    QgsLayoutMeasurement resolution() const { return mGridResolution;}
+    QgsLayoutMeasurement resolution() const { return mGridResolution; }
 
     /**
      * Sets the \a offset of the page/snap grid.
@@ -127,7 +131,6 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
     bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     // Used for 'collapsing' undo commands
     enum UndoCommand
     {
@@ -141,6 +144,14 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
     Style mGridStyle = StyleLines;
     QgsLayout *mLayout = nullptr;
 
+  public:
+#ifndef SIP_RUN
+    static const QgsSettingsEntryString *settingsGridStyle SIP_SKIP;
+    static const QgsSettingsEntryColor *settingsGridColor SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsGridResolution SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsGridOffsetX SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsGridOffsetY SIP_SKIP;
+#endif
 };
 
 #endif //QGSLAYOUTGRIDSETTINGS_H

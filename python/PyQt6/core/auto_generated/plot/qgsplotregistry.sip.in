@@ -25,7 +25,6 @@ Stores metadata about a plot class.
 #include "qgsplotregistry.h"
 %End
   public:
-
     QgsPlotAbstractMetadata( const QString &type, const QString &visibleName );
 %Docstring
 Constructor for QgsPlotAbstractMetadata with the specified class
@@ -82,7 +81,6 @@ accessed through :py:func:`QgsApplication.plotRegistry()`.
 #include "qgsplotregistry.h"
 %End
   public:
-
     QgsPlotRegistry( QObject *parent = 0 );
 %Docstring
 Creates a new empty plot registry.
@@ -150,9 +148,6 @@ with the specified ``type`` and visible ``name``.
   private:
     QgsPlotRegistry( const QgsPlotRegistry &rh );
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

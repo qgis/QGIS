@@ -22,15 +22,17 @@
 #include <QCalendarWidget>
 #include <QLineEdit>
 #include <QMouseEvent>
+#include <QString>
 #include <QStyle>
 #include <QStyleOptionSpinBox>
 
 #include "moc_qgsdatetimeedit.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
-{
-}
+{}
 
 ///@cond PRIVATE
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
@@ -200,10 +202,12 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
     QAbstractSpinBox::focusInEvent( event ); // clazy:exclude=skipped-base-method
 
     displayCurrentDate();
+    setSelectedSection( sectionAt( 0 ) );
   }
   else
   {
     QDateTimeEdit::focusInEvent( event );
+    setSelectedSection( sectionAt( 0 ) );
   }
 }
 
@@ -411,8 +415,7 @@ QDate QgsDateTimeEdit::date() const
 
 QgsTimeEdit::QgsTimeEdit( QWidget *parent )
   : QgsDateTimeEdit( QTime(), QMetaType::QTime, parent )
-{
-}
+{}
 
 void QgsTimeEdit::setTime( const QTime &time )
 {
@@ -447,8 +450,7 @@ void QgsTimeEdit::emitValueChanged( const QVariant &value )
 
 QgsDateEdit::QgsDateEdit( QWidget *parent )
   : QgsDateTimeEdit( QDate(), QMetaType::QDate, parent )
-{
-}
+{}
 
 void QgsDateEdit::setDate( const QDate &date )
 {

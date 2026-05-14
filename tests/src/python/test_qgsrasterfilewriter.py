@@ -13,13 +13,13 @@ __copyright__ = "Copyright 2012, The QGIS Project"
 import glob
 import os
 import tempfile
+import unittest
 
 from osgeo import gdal
-from qgis.PyQt.QtCore import QDir, QTemporaryFile
 from qgis.core import (
     Qgis,
-    QgsCoordinateTransformContext,
     QgsContrastEnhancement,
+    QgsCoordinateTransformContext,
     QgsRaster,
     QgsRasterBlockFeedback,
     QgsRasterChecker,
@@ -29,9 +29,8 @@ from qgis.core import (
     QgsRasterProjector,
     QgsRectangle,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QTemporaryFile
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -42,7 +41,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestQgsRasterFileWriter(QgisTestCase):
-
     def __init__(self, methodName):
         QgisTestCase.__init__(self, methodName)
         self.testDataDir = unitTestDataPath()

@@ -41,9 +41,14 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QShortcut>
+#include <QString>
+#include <QtConcurrentRun>
 
 #include "moc_qgsqueryresultwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsQueryResultWidget::settingLastSourceFolder = new QgsSettingsEntryString( u"last-source-folder"_s, sTreeSqlQueries, QString(), u"Last used folder for SQL source files"_s );
@@ -120,9 +125,7 @@ QgsQueryResultPanelWidget::QgsQueryResultPanelWidget( QWidget *parent, QgsAbstra
   } );
   connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultPanelWidget::updateButtons );
 
-  connect( mSqlEditor, &QgsCodeEditorSQL::selectionChanged, this, [this] {
-    mExecuteButton->setText( mSqlEditor->selectedText().isEmpty() ? tr( "Execute" ) : tr( "Execute Selection" ) );
-  } );
+  connect( mSqlEditor, &QgsCodeEditorSQL::selectionChanged, this, [this] { mExecuteButton->setText( mSqlEditor->selectedText().isEmpty() ? tr( "Execute" ) : tr( "Execute Selection" ) ); } );
   connect( mFilterToolButton, &QToolButton::pressed, this, [this] {
     if ( mConnection )
     {
@@ -247,12 +250,15 @@ void QgsQueryResultPanelWidget::executeQuery()
     const QString sql { mSqlEditor->selectedText().isEmpty() ? mSqlEditor->text() : mSqlEditor->selectedText() };
 
     bool ok = false;
-    mCurrentHistoryEntryId = QgsGui::historyProviderRegistry()->addEntry( u"dbquery"_s, QVariantMap {
-                                                                                          { u"query"_s, sql },
-                                                                                          { u"provider"_s, mConnection->providerKey() },
-                                                                                          { u"connection"_s, mConnection->uri() },
-                                                                                        },
-                                                                          ok );
+    mCurrentHistoryEntryId = QgsGui::historyProviderRegistry()->addEntry(
+      u"dbquery"_s,
+      QVariantMap {
+        { u"query"_s, sql },
+        { u"provider"_s, mConnection->providerKey() },
+        { u"connection"_s, mConnection->uri() },
+      },
+      ok
+    );
 
     mWasCanceled = false;
     mFeedback = std::make_unique<QgsFeedback>();
@@ -299,9 +305,7 @@ void QgsQueryResultPanelWidget::updateButtons()
   const bool isEmpty = mSqlEditor->text().isEmpty();
   mExecuteButton->setEnabled( !isEmpty );
   mLoadAsNewLayerGroupBox->setVisible( mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
-  mLoadAsNewLayerGroupBox->setEnabled(
-    mSqlErrorMessage.isEmpty() && mFirstRowFetched
-  );
+  mLoadAsNewLayerGroupBox->setEnabled( mSqlErrorMessage.isEmpty() && mFirstRowFetched );
 }
 
 void QgsQueryResultPanelWidget::showCellContextMenu( QPoint point )
@@ -420,8 +424,9 @@ void QgsQueryResultPanelWidget::startFetching()
     {
       if ( mQueryResultWatcher.result().rowCount() != static_cast<long long>( Qgis::FeatureCountState::UnknownCount ) )
       {
-        mStatusLabel->setText( u"Query executed successfully (%1 rows, %2 ms)"_s
-                                 .arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ), QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
+        mStatusLabel->setText(
+          u"Query executed successfully (%1 rows, %2 ms)"_s.arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ), QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) )
+        );
       }
       else
       {
@@ -452,7 +457,12 @@ void QgsQueryResultPanelWidget::startFetching()
           mActualRowCount = mModel->queryResult().rowCount();
         }
         mStatusLabel->setText( tr( "Fetched rows: %1/%2 %3 %4 ms" )
-                                 .arg( QLocale().toString( mModel->rowCount( mModel->index( -1, -1 ) ) ), mActualRowCount != -1 ? QLocale().toString( mActualRowCount ) : tr( "unknown" ), mWasCanceled ? tr( "(stopped)" ) : QString(), QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
+                                 .arg(
+                                   QLocale().toString( mModel->rowCount( mModel->index( -1, -1 ) ) ),
+                                   mActualRowCount != -1 ? QLocale().toString( mActualRowCount ) : tr( "unknown" ),
+                                   mWasCanceled ? tr( "(stopped)" ) : QString(),
+                                   QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() )
+                                 ) );
         mFetchedRowsBatchCount += last - first + 1;
         mProgressBar->setValue( mFetchedRowsBatchCount );
       } );
@@ -547,7 +557,8 @@ void QgsQueryResultPanelWidget::copyResults( int fromRow, int toRow, int fromCol
   if ( !rowStrings.isEmpty() )
   {
     const QString text = rowStrings.join( QLatin1Char( '\n' ) );
-    QString html = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>"_s.arg( text );
+    QString html = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>"_s
+                     .arg( text );
     html.replace( "\t"_L1, "</td><td>"_L1 ).replace( "\n"_L1, "</td></tr><tr><td>"_L1 );
 
     QMimeData *mdata = new QMimeData();
@@ -639,12 +650,7 @@ void QgsQueryResultPanelWidget::notify( const QString &title, const QString &tex
 void QgsQueryResultPanelWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend )
 {
   const QStringList existingQueryNames = QgsGui::storedQueryManager()->allQueryNames( backend );
-  QgsNewNameDialog dlg(
-    QString(),
-    QString(),
-    QStringList(),
-    existingQueryNames
-  );
+  QgsNewNameDialog dlg( QString(), QString(), QStringList(), existingQueryNames );
   dlg.setWindowTitle( tr( "Store Query" ) );
   dlg.setHintString( tr( "Name for the stored query" ) );
   dlg.setOverwriteEnabled( true );
@@ -766,8 +772,7 @@ void QgsQueryResultWidget::showError( const QString &title, const QString &messa
 }
 
 void QgsQueryResultWidget::tokensReady( const QStringList & )
-{
-}
+{}
 
 void QgsQueryResultWidget::copyResults()
 {
@@ -783,7 +788,8 @@ void QgsQueryResultWidget::openQuery()
 {
   if ( !mQueryWidget->codeEditorWidget()->filePath().isEmpty() && mHasChangedFileContents )
   {
-    if ( QMessageBox::warning( this, tr( "Unsaved Changes" ), tr( "There are unsaved changes in the query. Continue?" ), QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, QMessageBox::StandardButton::No ) == QMessageBox::StandardButton::No )
+    if ( QMessageBox::warning( this, tr( "Unsaved Changes" ), tr( "There are unsaved changes in the query. Continue?" ), QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, QMessageBox::StandardButton::No )
+         == QMessageBox::StandardButton::No )
       return;
   }
 
@@ -815,13 +821,7 @@ void QgsQueryResultWidget::saveQuery( bool saveAs )
     if ( initialDir.isEmpty() )
       initialDir = QDir::homePath();
 
-    QString newPath = QFileDialog::getSaveFileName(
-      this,
-      tr( "Save Query" ),
-      initialDir,
-      tr( "SQL queries (*.sql *.SQL)" ) + u";;"_s + QObject::tr( "All files" ) + u" (*.*)"_s,
-      &selectedFilter
-    );
+    QString newPath = QFileDialog::getSaveFileName( this, tr( "Save Query" ), initialDir, tr( "SQL queries (*.sql *.SQL)" ) + u";;"_s + QObject::tr( "All files" ) + u" (*.*)"_s, &selectedFilter );
 
     if ( !newPath.isEmpty() )
     {
@@ -862,12 +862,8 @@ bool QgsQueryResultWidget::promptUnsavedChanges()
     const QMessageBox::StandardButton ret = QMessageBox::question(
       this,
       tr( "Save Query?" ),
-      tr(
-        "There are unsaved changes in this query. Do you want to save those?"
-      ),
-      QMessageBox::StandardButton::Save
-        | QMessageBox::StandardButton::Cancel
-        | QMessageBox::StandardButton::Discard,
+      tr( "There are unsaved changes in this query. Do you want to save those?" ),
+      QMessageBox::StandardButton::Save | QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::Discard,
       QMessageBox::StandardButton::Cancel
     );
 
@@ -930,15 +926,11 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
   QAction *storeInProfileAction = new QAction( tr( "In User Profile…" ), storeQueryMenu );
   storeQueryMenu->addAction( storeInProfileAction );
   storeInProfileAction->setEnabled( !mQueryWidget->sqlEditor()->text().isEmpty() );
-  connect( storeInProfileAction, &QAction::triggered, this, [this] {
-    storeCurrentQuery( Qgis::QueryStorageBackend::LocalProfile );
-  } );
+  connect( storeInProfileAction, &QAction::triggered, this, [this] { storeCurrentQuery( Qgis::QueryStorageBackend::LocalProfile ); } );
   QAction *storeInProjectAction = new QAction( tr( "In Current Project…" ), storeQueryMenu );
   storeQueryMenu->addAction( storeInProjectAction );
   storeInProjectAction->setEnabled( !mQueryWidget->sqlEditor()->text().isEmpty() );
-  connect( storeInProjectAction, &QAction::triggered, this, [this] {
-    storeCurrentQuery( Qgis::QueryStorageBackend::CurrentProject );
-  } );
+  connect( storeInProjectAction, &QAction::triggered, this, [this] { storeCurrentQuery( Qgis::QueryStorageBackend::CurrentProject ); } );
 
 
   const QList< QgsStoredQueryManager::QueryDetails > storedQueries = QgsGui::storedQueryManager()->allQueries();
@@ -959,9 +951,7 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
     {
       QAction *action = new QAction( query.name, mPresetQueryMenu );
       mPresetQueryMenu->addAction( action );
-      connect( action, &QAction::triggered, this, [this, query] {
-        mQueryWidget->sqlEditor()->insertText( query.definition );
-      } );
+      connect( action, &QAction::triggered, this, [this, query] { mQueryWidget->sqlEditor()->insertText( query.definition ); } );
     }
     if ( userProfileQueries.empty() )
     {
@@ -975,9 +965,7 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
     {
       QAction *action = new QAction( query.name, mPresetQueryMenu );
       mPresetQueryMenu->addAction( action );
-      connect( action, &QAction::triggered, this, [this, query] {
-        mQueryWidget->sqlEditor()->insertText( query.definition );
-      } );
+      connect( action, &QAction::triggered, this, [this, query] { mQueryWidget->sqlEditor()->insertText( query.definition ); } );
     }
     if ( projectQueries.empty() )
     {
@@ -996,7 +984,8 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
       QAction *action = new QAction( tr( "%1…" ).arg( query.name ), mPresetQueryMenu );
       removeQueryMenu->addAction( action );
       connect( action, &QAction::triggered, this, [this, query] {
-        const QMessageBox::StandardButton res = QMessageBox::question( this, tr( "Remove Stored Query" ), tr( "Are you sure you want to remove the stored query “%1”?" ).arg( query.name ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+        const QMessageBox::StandardButton res
+          = QMessageBox::question( this, tr( "Remove Stored Query" ), tr( "Are you sure you want to remove the stored query “%1”?" ).arg( query.name ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
         if ( res == QMessageBox::Yes )
         {
           QgsGui::storedQueryManager()->removeQuery( query.name, query.backend );
@@ -1013,12 +1002,7 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
 void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend )
 {
   const QStringList existingQueryNames = QgsGui::storedQueryManager()->allQueryNames( backend );
-  QgsNewNameDialog dlg(
-    QString(),
-    QString(),
-    QStringList(),
-    existingQueryNames
-  );
+  QgsNewNameDialog dlg( QString(), QString(), QStringList(), existingQueryNames );
   dlg.setWindowTitle( tr( "Store Query" ) );
   dlg.setHintString( tr( "Name for the stored query" ) );
   dlg.setOverwriteEnabled( true );
@@ -1041,8 +1025,6 @@ void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend 
 
 void QgsQueryResultWidget::showHistoryPanel( bool show )
 {
-  // the below code block trips up the clang analyser!
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( show )
   {
     mHistoryWidget = new QgsDatabaseQueryHistoryWidget();
@@ -1064,7 +1046,6 @@ void QgsQueryResultWidget::showHistoryPanel( bool show )
     mPanelStack->closePanel( mHistoryWidget );
     mHistoryWidget->deleteLater();
   }
-  // NOLINTEND(bugprone-branch-clone)
 }
 
 
@@ -1191,8 +1172,7 @@ void QgsConnectionsApiFetcher::stopFetching()
 
 QgsQueryResultItemDelegate::QgsQueryResultItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QString QgsQueryResultItemDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
@@ -1225,9 +1205,7 @@ QgsQueryResultDialog::QgsQueryResultDialog( QgsAbstractDatabaseProviderConnectio
 
   QDialogButtonBox *mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::close );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"managing_data_source/create_layers.html#execute-sql"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"managing_data_source/create_layers.html#execute-sql"_s ); } );
   l->addWidget( mWidget );
   l->addWidget( mButtonBox );
 

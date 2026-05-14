@@ -23,10 +23,15 @@
 #include "qgsvectortileutils.h"
 
 #include <QEventLoop>
+#include <QString>
 
 #include "moc_qgsvectortileloader.cpp"
 
-QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage )
+using namespace Qt::StringLiterals;
+
+QgsVectorTileLoader::QgsVectorTileLoader(
+  const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage
+)
   : mEventLoop( new QEventLoop )
   , mFeedback( feedback )
 {
@@ -69,7 +74,7 @@ void QgsVectorTileLoader::downloadBlocking()
     return; // nothing to do
   }
 
-  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
+  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) { return count + replies.count(); } );
   Q_UNUSED( repliesCount )
   QgsDebugMsgLevel( u"Starting event loop with %1 requests"_s.arg( repliesCount ), 2 );
 
@@ -149,7 +154,7 @@ void QgsVectorTileLoader::tileReplyFinished()
 
 void QgsVectorTileLoader::canceled()
 {
-  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
+  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) { return count + replies.count(); } );
   Q_UNUSED( repliesCount )
   QgsDebugMsgLevel( u"Canceling %1 pending requests"_s.arg( repliesCount ), 2 );
   QHash<QgsTileXYZ, QList<QgsTileDownloadManagerReply *>>::iterator it = mReplies.begin();
@@ -159,7 +164,6 @@ void QgsVectorTileLoader::canceled()
 
   // stop blocking download
   mEventLoop->quit();
-
 }
 
 QString QgsVectorTileLoader::error() const
@@ -169,7 +173,9 @@ QString QgsVectorTileLoader::error() const
 
 //////
 
-QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QPointF &viewCenter, const QgsTileRange &range, int zoomLevel, QgsFeedback *feedback, Qgis::RendererUsage usage )
+QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData(
+  const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QPointF &viewCenter, const QgsTileRange &range, int zoomLevel, QgsFeedback *feedback, Qgis::RendererUsage usage
+)
 {
   if ( feedback && feedback->isCanceled() )
     return {};

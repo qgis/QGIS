@@ -21,22 +21,20 @@ The content of this file is based on
 """
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QModelIndex
+from qgis.PyQt.QtCore import QItemSelectionModel, QModelIndex, Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import (
-    QItemDelegate,
+    QApplication,
     QComboBox,
     QDialog,
-    QPushButton,
     QDialogButtonBox,
+    QItemDelegate,
     QMessageBox,
-    QApplication,
+    QPushButton,
 )
-from qgis.PyQt.QtCore import QItemSelectionModel, pyqtSignal
-
 from qgis.utils import OverrideCursor
 
 from .db_plugins.data_model import TableFieldsModel
-from .db_plugins.plugin import DbError, ConnectionError
+from .db_plugins.plugin import ConnectionError, DbError
 from .dlg_db_error import DlgDbError
 from .gui_utils import GuiUtils
 

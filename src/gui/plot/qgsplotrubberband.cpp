@@ -28,8 +28,7 @@
 
 QgsPlotRubberBand::QgsPlotRubberBand( QgsPlotCanvas *canvas )
   : mCanvas( canvas )
-{
-}
+{}
 
 QgsPlotCanvas *QgsPlotRubberBand::canvas() const
 {
@@ -122,8 +121,7 @@ void QgsPlotRubberBand::setBrush( const QBrush &brush )
 
 QgsPlotRectangularRubberBand::QgsPlotRectangularRubberBand( QgsPlotCanvas *canvas )
   : QgsPlotRubberBand( canvas )
-{
-}
+{}
 
 QgsPlotRectangularRubberBand::~QgsPlotRectangularRubberBand()
 {

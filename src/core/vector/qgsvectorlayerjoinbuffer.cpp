@@ -24,13 +24,15 @@
 #include "qgsvectordataprovider.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsvectorlayerjoinbuffer.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer *layer )
   : mLayer( layer )
-{
-}
+{}
 
 static QList<QgsVectorLayer *> _outEdges( QgsVectorLayer *vl )
 {
@@ -195,8 +197,7 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
 
           // Check for name collisions
           int fieldIndex = mLayer->fields().indexFromName( joinFieldName );
-          if ( fieldIndex >= 0
-               && mLayer->fields().fieldOrigin( fieldIndex ) != Qgis::FieldOrigin::Join )
+          if ( fieldIndex >= 0 && mLayer->fields().fieldOrigin( fieldIndex ) != Qgis::FieldOrigin::Join )
             continue;
 
           attributesCache.append( attrs.at( i ) );
@@ -393,7 +394,7 @@ void QgsVectorLayerJoinBuffer::resolveReferences( QgsProject *project )
   for ( QgsVectorJoinList::iterator it = mVectorJoins.begin(); it != mVectorJoins.end(); ++it )
   {
     if ( it->joinLayer() )
-      continue;  // already resolved
+      continue; // already resolved
 
     if ( QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it->joinLayerId() ) ) )
     {

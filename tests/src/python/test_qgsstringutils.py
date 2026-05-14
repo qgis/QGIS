@@ -10,18 +10,17 @@ __author__ = "Nyall Dawson"
 __date__ = "30/08/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsStringReplacement,
     QgsStringReplacementCollection,
     QgsStringUtils,
 )
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import unittest
 
 
 class PyQgsStringReplacement(unittest.TestCase):
-
     def testBasic(self):
         """basic tests for QgsStringReplacement"""
         r = QgsStringReplacement("match", "replace")
@@ -104,7 +103,6 @@ class PyQgsStringReplacement(unittest.TestCase):
 
 
 class PyQgsStringReplacementCollection(unittest.TestCase):
-
     def testBasic(self):
         """basic QgsStringReplacementCollection tests"""
         list = [QgsStringReplacement("aa", "11"), QgsStringReplacement("bb", "22")]
@@ -149,7 +147,6 @@ class PyQgsStringReplacementCollection(unittest.TestCase):
 
 
 class PyQgsStringUtils(unittest.TestCase):
-
     def testMixed(self):
         """test mixed capitalization - ie, no change!"""
         self.assertFalse(

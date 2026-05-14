@@ -11,28 +11,27 @@ __date__ = "18/09/2013"
 __copyright__ = "Copyright 2013, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     NULL,
     QgsAuxiliaryStorage,
-    QgsFeature,
-    QgsFeatureRequest,
-    QgsField,
-    QgsGeometry,
-    QgsProject,
-    QgsPropertyDefinition,
-    QgsVectorLayer,
-    QgsVectorLayerJoinInfo,
-    QgsPoint,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsDatumTransform,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsField,
+    QgsGeometry,
+    QgsPoint,
+    QgsProject,
+    QgsPropertyDefinition,
+    QgsVectorLayer,
+    QgsVectorLayerJoinInfo,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -40,7 +39,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsFeatureIterator(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)
@@ -203,12 +201,8 @@ class TestQgsFeatureIterator(QgisTestCase):
         layer = QgsVectorLayer(myShpFile, "Points", "ogr")
         self.assertTrue(layer.isValid())
 
-        idx = layer.addExpressionField(
-            '"Staff"*2', QgsField("exp1", QVariant.LongLong)
-        )  # NOQA
-        idx = layer.addExpressionField(
-            '"exp1"-1', QgsField("exp2", QVariant.LongLong)
-        )  # NOQA
+        idx = layer.addExpressionField('"Staff"*2', QgsField("exp1", QVariant.LongLong))  # NOQA
+        idx = layer.addExpressionField('"exp1"-1', QgsField("exp2", QVariant.LongLong))  # NOQA
 
         fet = next(
             layer.getFeatures(
@@ -226,9 +220,7 @@ class TestQgsFeatureIterator(QgisTestCase):
         layer = QgsVectorLayer(myShpFile, "Points", "ogr")
         self.assertTrue(layer.isValid())
 
-        idx = layer.addExpressionField(
-            "$x*2", QgsField("exp1", QVariant.LongLong)
-        )  # NOQA
+        idx = layer.addExpressionField("$x*2", QgsField("exp1", QVariant.LongLong))  # NOQA
         idx = layer.addExpressionField(
             '"exp1"/1.5', QgsField("exp2", QVariant.LongLong)
         )  # NOQA
@@ -271,15 +263,9 @@ class TestQgsFeatureIterator(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         cnt = layer.fields().count()  # NOQA
-        idx = layer.addExpressionField(
-            '"exp3"*2', QgsField("exp1", QVariant.LongLong)
-        )  # NOQA
-        idx = layer.addExpressionField(
-            '"exp1"-1', QgsField("exp2", QVariant.LongLong)
-        )  # NOQA
-        idx = layer.addExpressionField(
-            '"exp2"*3', QgsField("exp3", QVariant.LongLong)
-        )  # NOQA
+        idx = layer.addExpressionField('"exp3"*2', QgsField("exp1", QVariant.LongLong))  # NOQA
+        idx = layer.addExpressionField('"exp1"-1', QgsField("exp2", QVariant.LongLong))  # NOQA
+        idx = layer.addExpressionField('"exp2"*3', QgsField("exp3", QVariant.LongLong))  # NOQA
 
         # really just testing that this doesn't hang/crash... there's no good result here!
         fet = next(

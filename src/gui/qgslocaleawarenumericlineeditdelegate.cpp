@@ -28,8 +28,7 @@
 QgsLocaleAwareNumericLineEditDelegate::QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType dataType, QWidget *parent )
   : QStyledItemDelegate( parent )
   , mDataType( dataType )
-{
-}
+{}
 
 QWidget *QgsLocaleAwareNumericLineEditDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {

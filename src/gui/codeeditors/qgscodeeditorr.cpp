@@ -79,8 +79,7 @@ void QgsCodeEditorR::initializeLexer()
 /// @cond PRIVATE
 QgsQsciLexerR::QgsQsciLexerR( QObject *parent )
   : QsciLexer( parent )
-{
-}
+{}
 
 const char *QgsQsciLexerR::language() const
 {

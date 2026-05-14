@@ -20,11 +20,12 @@ __date__ = "April 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
 import os
-from processing.tools.system import isWindows, getTempFilename
-from grassprovider.grass_utils import GrassUtils
+
+from processing.tools.system import getTempFilename, isWindows
+from qgis.core import QgsMessageLog, QgsProcessingParameterString
 from qgis.PyQt.QtCore import QDir
-from qgis.core import QgsProcessingParameterString
-from qgis.core import QgsMessageLog
+
+from grassprovider.grass_utils import GrassUtils
 
 
 def orderedInput(alg, parameters, context, src, tgt, numSeq=None):

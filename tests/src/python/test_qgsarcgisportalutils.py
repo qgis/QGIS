@@ -13,24 +13,19 @@ __date__ = "2018-02-16"
 __copyright__ = "Copyright 2018, Nyall Dawson"
 
 import tempfile
-
-from qgis.PyQt.QtCore import QCoreApplication, QObject
-from qgis.core import QgsApplication, QgsArcGisPortalUtils, QgsSettings
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsApplication, QgsArcGisPortalUtils, QgsSettings
+from qgis.PyQt.QtCore import QObject
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestPyQgsArcGisPortalUtils(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsAFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsAFSProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is

@@ -18,15 +18,13 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+from qgis.core import QgsApplication, QgsDataSourceUri, QgsMapLayerType, QgsProject
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
-
-from qgis.core import QgsProject, QgsMapLayerType, QgsDataSourceUri, QgsApplication
+from qgis.PyQt.QtWidgets import QAction, QApplication
 
 
 class DBManagerPlugin:
-
     def __init__(self, iface):
         self.iface = iface
         self.dlg = None

@@ -33,11 +33,7 @@ class CORE_EXPORT QgsStacAsset
 {
   public:
     //! Constructor
-    QgsStacAsset( const QString &href,
-                  const QString &title,
-                  const QString &description,
-                  const QString &mediaType,
-                  const QStringList &roles );
+    QgsStacAsset( const QString &href, const QString &title, const QString &description, const QString &mediaType, const QStringList &roles );
 
     //! Returns the URI to the asset object
     QString href() const;
@@ -77,7 +73,7 @@ class CORE_EXPORT QgsStacAsset
      *
      * \param authcfg Optional authentication configuration ID (since QGIS 4.0).
      *
-     * If the optional @authcfg parameter is set the authentication configuration ID will be encoded in the returned URI.
+     * If the optional \a authcfg parameter is set the authentication configuration ID will be encoded in the returned URI.
      *
      * \since QGIS 3.42
      */

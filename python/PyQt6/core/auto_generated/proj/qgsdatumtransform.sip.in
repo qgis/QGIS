@@ -25,98 +25,94 @@ Contains methods and classes relating the datum transformations.
 #include "qgsdatumtransform.h"
 %End
   public:
-
     struct TransformPair
     {
-
-      TransformPair( int sourceTransformId = -1, int destinationTransformId = -1 );
+        TransformPair( int sourceTransformId = -1, int destinationTransformId = -1 );
 %Docstring
 Constructor for a TransformPair with the specified ``sourceTransformId``
 and ``destinationTransformId`` transforms.
 %End
 
-      int sourceTransformId;
+        int sourceTransformId;
 
-      int destinationTransformId;
+        int destinationTransformId;
 
-      bool operator==( QgsDatumTransform::TransformPair other ) const;
+        bool operator==( QgsDatumTransform::TransformPair other ) const;
 
-      bool operator!=( QgsDatumTransform::TransformPair other ) const;
-
+        bool operator!=( QgsDatumTransform::TransformPair other ) const;
     };
 
     struct TransformInfo
     {
-      int datumTransformId;
+        int datumTransformId;
 
-      int epsgCode;
+        int epsgCode;
 
-      QString sourceCrsAuthId;
+        QString sourceCrsAuthId;
 
-      QString destinationCrsAuthId;
+        QString destinationCrsAuthId;
 
-      QString sourceCrsDescription;
+        QString sourceCrsDescription;
 
-      QString destinationCrsDescription;
+        QString destinationCrsDescription;
 
-      QString remarks;
+        QString remarks;
 
-      QString scope;
+        QString scope;
 
-      bool preferred;
+        bool preferred;
 
-      bool deprecated;
-
+        bool deprecated;
     };
 
 
     struct GridDetails
     {
-      QString shortName;
-      QString fullName;
-      QString packageName;
-      QString url;
-      bool directDownload;
-      bool openLicense;
-      bool isAvailable;
+        QString shortName;
+        QString fullName;
+        QString packageName;
+        QString url;
+        bool directDownload;
+        bool openLicense;
+        bool isAvailable;
     };
 
     struct SingleOperationDetails
     {
-      QString scope;
+        QString scope;
 
-      QString remarks;
+        QString remarks;
 
-      QString areaOfUse;
+        QString areaOfUse;
 
-      QString authority;
+        QString authority;
 
-      QString code;
+        QString code;
     };
 
     struct TransformDetails
     {
-      QString proj;
-      QString name;
-      double accuracy;
+        QString proj;
+        QString name;
+        double accuracy;
 
-      QString authority;
+        QString authority;
 
-      QString code;
+        QString code;
 
-      QString scope;
+        QString scope;
 
-      QString remarks;
+        QString remarks;
 
-      bool isAvailable;
+        bool isAvailable;
 
-      QString areaOfUse;
+        QString areaOfUse;
 
-      QgsRectangle bounds;
+        QgsRectangle bounds;
 
-      QList< QgsDatumTransform::GridDetails > grids;
+        QList< QgsDatumTransform::GridDetails > grids;
 
-      QList< QgsDatumTransform::SingleOperationDetails > operationDetails;
+        QList< QgsDatumTransform::SingleOperationDetails > operationDetails;
     };
 
     static QList< QgsDatumTransform::TransformDetails > operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded = false );

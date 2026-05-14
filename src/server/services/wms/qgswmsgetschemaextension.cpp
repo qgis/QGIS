@@ -25,7 +25,10 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {

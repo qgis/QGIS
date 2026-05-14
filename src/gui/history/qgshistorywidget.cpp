@@ -24,10 +24,13 @@
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QMenu>
+#include <QString>
 #include <QTextBrowser>
 #include <QtGlobal>
 
 #include "moc_qgshistorywidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QWidget *parent )
   : QgsPanelWidget( parent )

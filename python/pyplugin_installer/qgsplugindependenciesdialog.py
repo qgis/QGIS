@@ -11,13 +11,9 @@ __author__ = "elpaso@itopen.it"
 __date__ = "2018-09-19"
 __copyright__ = "Copyright 2018, GISCE-TI S.L."
 
-import os
-
 from pathlib import Path
 
-from qgis.PyQt import uic
-from qgis.PyQt import QtWidgets, QtCore
-from qgis.utils import iface
+from qgis.PyQt import QtCore, QtWidgets, uic
 
 Ui_QgsPluginDependenciesDialogBase, _ = uic.loadUiType(
     Path(__file__).parent / "qgsplugindependenciesdialogbase.ui"

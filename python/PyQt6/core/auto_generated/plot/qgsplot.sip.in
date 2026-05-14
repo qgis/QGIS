@@ -65,7 +65,7 @@ Base class for plot/chart/graphs.
   public:
 
     enum class DataDefinedProperty /BaseType=IntEnum/
-      {
+    {
       MarginLeft,
       MarginTop,
       MarginRight,
@@ -136,6 +136,15 @@ Writes the plot's properties into an XML ``element``.
 Reads the plot's properties from an XML ``element``.
 %End
 
+    virtual void initFromPlot( const QgsPlot *plot );
+%Docstring
+Initializes properties of this plot from an existing ``plot``,
+transferring all applicable settings. Subclasses should override this
+method and call the base class implementation first.
+
+.. versionadded:: 4.0
+%End
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the plot property definitions.
@@ -158,7 +167,6 @@ Contains information about the context of a plot rendering operation.
 #include "qgsplot.h"
 %End
   public:
-
     QgsPlotRenderContext();
 %Docstring
 Constructor for QgsPlotRenderContext.
@@ -237,7 +245,6 @@ Encapsulates the data for an XY plot series.
 #include "qgsplot.h"
 %End
   public:
-
     QgsXyPlotSeries();
     ~QgsXyPlotSeries();
 
@@ -282,7 +289,6 @@ Encapsulates one or more plot series.
 #include "qgsplot.h"
 %End
   public:
-
     QgsPlotData();
     ~QgsPlotData();
 
@@ -339,7 +345,6 @@ Encapsulates the properties of a plot axis.
 #include "qgsplot.h"
 %End
   public:
-
     QgsPlotAxis();
     ~QgsPlotAxis();
 
@@ -417,6 +422,7 @@ Returns the line symbol used to render the major lines in the axis grid.
 .. seealso:: :py:func:`setGridMajorSymbol`
 %End
 
+
     void setGridMajorSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
 Sets the ``symbol`` used to render the major lines in the axis grid.
@@ -432,6 +438,7 @@ Returns the line symbol used to render the minor lines in the axis grid.
 
 .. seealso:: :py:func:`setGridMinorSymbol`
 %End
+
 
     void setGridMinorSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
@@ -518,6 +525,13 @@ Sets the ``placement`` for the axis label suffixes.
 .. versionadded:: 3.32
 %End
 
+    static void copyProperties( const QgsPlotAxis &source, QgsPlotAxis &destination );
+%Docstring
+Copies all properties from ``source`` axis to ``destination`` axis.
+
+.. versionadded:: 4.0
+%End
+
   private:
     QgsPlotAxis( const QgsPlotAxis &other );
 };
@@ -538,7 +552,6 @@ Base class for 2-dimensional plot/chart/graphs.
 #include "qgsplot.h"
 %End
   public:
-
     Qgs2DPlot();
 %Docstring
 Constructor for Qgs2DPlot.
@@ -590,11 +603,14 @@ components which sit outside the plot area).
 .. seealso:: :py:func:`size`
 %End
 
-    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) const;
 %Docstring
 Returns the area of the plot which corresponds to the actual plot
 content (excluding all titles and other components which sit outside the
 plot area).
+
+The optional ``plotData`` argument can be passed on to support
+calculation of label sizes when an axis' type is categorical.
 %End
 
     const QgsMargins &margins() const;
@@ -611,8 +627,15 @@ Sets the ``margins`` of the plot area (in millimeters)
 .. seealso:: :py:func:`setMargins`
 %End
 
-  protected:
+    void copyCommonProperties( const Qgs2DPlot *other );
+%Docstring
+Copies all Qgs2DPlot-level properties (size, margins, data-defined
+properties) from ``other`` to this plot.
 
+.. versionadded:: 4.0
+%End
+
+  protected:
     void applyDataDefinedProperties( QgsRenderContext &context, QgsMargins &margins ) const;
 %Docstring
 Applies 2D plot data-defined properties
@@ -642,7 +665,6 @@ method to render their actual plot content.
 #include "qgsplot.h"
 %End
   public:
-
     Qgs2DXyPlot();
 %Docstring
 Constructor for Qgs2DXyPlot.
@@ -662,7 +684,7 @@ Constructor for Qgs2DXyPlot.
 Renders the plot.
 %End
 
-    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) const;
 
 %Docstring
 Returns the area of the plot which corresponds to the actual plot
@@ -758,6 +780,7 @@ Returns the fill symbol used to render the background of the chart.
 .. seealso:: :py:func:`setChartBackgroundSymbol`
 %End
 
+
     void setChartBackgroundSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
 Sets the fill ``symbol`` used to render the background of the chart.
@@ -774,6 +797,7 @@ Returns the symbol used to render the border of the chart.
 .. seealso:: :py:func:`setChartBorderSymbol`
 %End
 
+
     void setChartBorderSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
 Sets the ``symbol`` used to render the border of the chart.
@@ -783,9 +807,38 @@ Ownership of ``symbol`` is transferred to the plot.
 .. seealso:: :py:func:`chartBorderSymbol`
 %End
 
-  protected:
+    bool flipAxes() const;
+%Docstring
+Returns whether the X and Y axes are flipped.
+%End
 
-    void applyDataDefinedProperties( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const;
+    void setFlipAxes( bool flipAxes );
+%Docstring
+Sets whether the X and Y axes are flipped.
+%End
+
+    void copyCommonProperties( const Qgs2DXyPlot *other );
+%Docstring
+Copies all Qgs2DXyPlot-level properties (axis ranges, axes, flip state,
+background and border symbols) from ``other`` to this plot.
+
+.. versionadded:: 4.0
+%End
+
+  protected:
+    void applyDataDefinedProperties(
+      QgsRenderContext &context,
+      double &minX,
+      double &maxX,
+      double &minY,
+      double &maxY,
+      double &majorIntervalX,
+      double &minorIntervalX,
+      double &labelIntervalX,
+      double &majorIntervalY,
+      double &minorIntervalY,
+      double &labelIntervalY
+    ) const;
 %Docstring
 Applies 2D XY plot data-defined properties
 %End
@@ -810,7 +863,6 @@ Manages default settings for plot objects.
 #include "qgsplot.h"
 %End
   public:
-
     static QgsNumericFormat *axisLabelNumericFormat() /Factory/;
 %Docstring
 Returns the default numeric format to use for plot axis labels.

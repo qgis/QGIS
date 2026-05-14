@@ -107,7 +107,9 @@ class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
     struct Parameter
     {
         Parameter( const QString &name, const QgsProperty &property )
-          : name( name ), property( property ) {}
+          : name( name )
+          , property( property )
+        {}
 
         QString name;
         QgsProperty property;
@@ -175,10 +177,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
      * Sets the root path containing SVG images to load. If no path is set, the default SVG
      * search paths will be used instead.
      */
-    void setPath( const QString &path )
-    {
-      mPath = path;
-    }
+    void setPath( const QString &path ) { mPath = path; }
 
   signals:
 
@@ -236,10 +235,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
      * Sets the root path containing child paths to find. If no path is set, the default SVG
      * search paths will be used instead.
      */
-    void setParentPaths( const QStringList &parentPaths )
-    {
-      mParentPaths = parentPaths;
-    }
+    void setParentPaths( const QStringList &parentPaths ) { mParentPaths = parentPaths; }
 
   signals:
 
@@ -484,7 +480,12 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
     /**
      * Constructor for QgsSvgSelectorDialog.
      */
-    QgsSvgSelectorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok, Qt::Orientation orientation = Qt::Horizontal );
+    QgsSvgSelectorDialog(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+      QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
+      Qt::Orientation orientation = Qt::Horizontal
+    );
 
     //! Returns pointer to the embedded SVG selector widget
     QgsSvgSelectorWidget *svgSelector() { return mSvgSelector; }

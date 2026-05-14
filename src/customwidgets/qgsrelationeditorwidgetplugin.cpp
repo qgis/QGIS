@@ -23,8 +23,7 @@
 QgsRelationEditorWidgetPlugin::QgsRelationEditorWidgetPlugin( QObject *parent )
   : QObject( parent )
   , mInitialized( false )
-{
-}
+{}
 
 
 QString QgsRelationEditorWidgetPlugin::name() const
@@ -83,20 +82,22 @@ QString QgsRelationEditorWidgetPlugin::whatsThis() const
 
 QString QgsRelationEditorWidgetPlugin::domXml() const
 {
-  return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mRelationEditor\">\n"
-                  "  <property name=\"qgisRelation\" >\n"
-                  "   <string notr=\"true\"></string>\n"
-                  "  </property>\n"
-                  "  <property name=\"geometry\">\n"
-                  "   <rect>\n"
-                  "    <x>0</x>\n"
-                  "    <y>0</y>\n"
-                  "    <width>27</width>\n"
-                  "    <height>27</height>\n"
-                  "   </rect>\n"
-                  "  </property>\n"
-                  " </widget>\n"
-                  "</ui>\n" )
+  return QString(
+           "<ui language=\"c++\">\n"
+           " <widget class=\"%1\" name=\"mRelationEditor\">\n"
+           "  <property name=\"qgisRelation\" >\n"
+           "   <string notr=\"true\"></string>\n"
+           "  </property>\n"
+           "  <property name=\"geometry\">\n"
+           "   <rect>\n"
+           "    <x>0</x>\n"
+           "    <y>0</y>\n"
+           "    <width>27</width>\n"
+           "    <height>27</height>\n"
+           "   </rect>\n"
+           "  </property>\n"
+           " </widget>\n"
+           "</ui>\n"
+  )
     .arg( name() );
 }

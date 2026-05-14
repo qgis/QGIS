@@ -91,7 +91,16 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * \returns TRUE if all features could be copied.
      *
      */
-    bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg = nullptr ) const override;
+    bool copyMoveFeatures(
+      QgsVectorLayer *layer,
+      QgsFeatureRequest &request SIP_INOUT,
+      double dx = 0,
+      double dy = 0,
+      QString *errorMsg SIP_OUT = nullptr,
+      const bool topologicalEditing = false,
+      QgsVectorLayer *topologicalLayer = nullptr,
+      QString *childrenInfoMsg = nullptr
+    ) const override;
 
   private:
     void commitError( QgsVectorLayer *vlayer ) const;

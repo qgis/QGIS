@@ -64,6 +64,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmcheckvalidity.cpp
+  processing/qgsalgorithmextrude.cpp
   processing/qgsalgorithmfixgeometryduplicatenodes.cpp
   processing/qgsalgorithmfixgeometrymultipart.cpp
   processing/qgsalgorithmfixgeometryoverlap.cpp
@@ -97,6 +98,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
   processing/qgsalgorithmconcavehullbyfeature.cpp
+  processing/qgsalgorithmconcavehullofpolygons.cpp
   processing/qgsalgorithmconditionalbranch.cpp
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconverttocurves.cpp
@@ -149,6 +151,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmextractspecificvertices.cpp
   processing/qgsalgorithmfieldcalculator.cpp
+  processing/qgsalgorithmfileuploader.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfillnodata.cpp
   processing/qgsalgorithmfillsinkswangliu.cpp
@@ -158,6 +161,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
+  processing/qgsalgorithmforceccw.cpp
+  processing/qgsalgorithmforcecw.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
   processing/qgsalgorithmgenerateelevationprofile.cpp
@@ -167,6 +172,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmhubdistance.cpp
+  processing/qgsalgorithmhypsometriccurves.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
@@ -198,6 +204,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmultiunion.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
   processing/qgsalgorithmnetworkanalysisbase.cpp
+  processing/qgsalgorithmnetworkextractendpoints.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
@@ -218,6 +225,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmraiseexception.cpp
   processing/qgsalgorithmrandomextract.cpp
+  processing/qgsalgorithmrandomextractwithinsubsets.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrandompointsinpolygons.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
@@ -260,6 +268,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
+  processing/qgsalgorithmselectbyattribute.cpp
+  processing/qgsalgorithmselectbyexpression.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp
   processing/qgsalgorithmserviceareafrompoint.cpp
   processing/qgsalgorithmsetlayerencoding.cpp
@@ -303,6 +313,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmurlopener.cpp
   processing/qgsalgorithmhttprequest.cpp
+  processing/qgsalgorithmvalidatenetwork.cpp
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmvirtualrastercalculator.cpp
   processing/qgsalgorithmvoronoipolygons.cpp
@@ -342,6 +353,13 @@ set(QGIS_ANALYSIS_SRCS
   processing/pdal/qgsalgorithmpdalthinbydecimate.cpp
   processing/pdal/qgsalgorithmpdalthinbyradius.cpp
   processing/pdal/qgsalgorithmpdaltile.cpp
+  processing/pdal/qgsalgorithmpdalheightabovegroundnearestneighbour.cpp
+  processing/pdal/qgsalgorithmpdalheightabovegroundtriangulation.cpp
+  processing/pdal/qgsalgorithmpdalfilternoisestatistical.cpp
+  processing/pdal/qgsalgorithmpdalfilternoiseradius.cpp
+  processing/pdal/qgsalgorithmpdalclassifyground.cpp
+  processing/pdal/qgsalgorithmpdaltransform.cpp
+  processing/pdal/qgsalgorithmpdalcompare.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
@@ -449,6 +467,7 @@ set(QGIS_ANALYSIS_HDRS
   processing/qgsalgorithmbatchgeocode.h
   processing/qgsalgorithmbatchnominatimgeocode.h
   processing/qgsalgorithmfiledownloader.h
+  processing/qgsalgorithmfileuploader.h
   processing/qgsalgorithmimportphotos.h
   processing/qgsnativealgorithms.h
   processing/qgsprojectstylealgorithms.h

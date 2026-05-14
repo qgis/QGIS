@@ -18,16 +18,18 @@
 #include "qgsmetadataurlitemdelegate.h"
 
 #include <QComboBox>
+#include <QString>
 #include <QStringListModel>
 
 #include "moc_qgsmetadataurlitemdelegate.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 MetadataUrlItemDelegate::MetadataUrlItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *MetadataUrlItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {

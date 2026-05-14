@@ -42,7 +42,6 @@ class QgsRasterLayer;
 class CORE_EXPORT QgsMapBoxGlStyleConversionContext
 {
   public:
-
     /**
      * Pushes a \a warning message generated during the conversion.
      */
@@ -160,7 +159,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
     void setLayerId( const QString &value );
 
   private:
-
     QStringList mWarnings;
 
     QString mLayerId;
@@ -174,8 +172,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
 };
 
 
-
-
 /**
  * Abstract base class for MapBox GL style sources.
  * \warning This is private API only, and may change in future QGIS versions
@@ -185,7 +181,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
 class CORE_EXPORT QgsMapBoxGlStyleAbstractSource
 {
   public:
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -224,7 +219,6 @@ class CORE_EXPORT QgsMapBoxGlStyleAbstractSource
     QString name() const;
 
   private:
-
     QString mName;
 };
 
@@ -238,7 +232,6 @@ class CORE_EXPORT QgsMapBoxGlStyleAbstractSource
 class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstractSource
 {
   public:
-
     /**
      * Constructor for QgsMapBoxGlStyleRasterSource.
      */
@@ -284,14 +277,12 @@ class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstract
     QgsRasterLayer *toRasterLayer() const SIP_FACTORY;
 
   private:
-
     QStringList mTiles;
     QString mAttribution;
     int mMinZoom = 0;
     int mMaxZoom = 22;
     int mTileSize = 512;
 };
-
 
 
 /**
@@ -303,7 +294,6 @@ class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstract
 class CORE_EXPORT QgsMapBoxGlStyleRasterSubLayer
 {
   public:
-
     /**
      * Constructor for QgsMapBoxGlStyleRasterSubLayer, with the given \a id and \a source.
      */
@@ -330,11 +320,9 @@ class CORE_EXPORT QgsMapBoxGlStyleRasterSubLayer
     const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
   private:
-
     QString mId;
     QString mSource;
     QgsPropertyCollection mDataDefinedProperties;
-
 };
 
 
@@ -354,7 +342,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     Q_GADGET
 
   public:
-
     /**
      * Constructor for QgsMapBoxGlStyleConverter.
      */
@@ -368,7 +355,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     //! Result of conversion
     enum Result
     {
-      Success = 0, //!< Conversion was successful
+      Success = 0,     //!< Conversion was successful
       NoLayerList = 1, //!< No layer list was found in JSON input
     };
 
@@ -378,13 +365,27 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     enum class PropertyType
     {
-      Color, //!< Color property
-      Numeric, //!< Numeric property (e.g. line width, text size)
-      Opacity, //!< Opacity property
-      Point, //!< Point/offset property
+      Color,        //!< Color property
+      Numeric,      //!< Numeric property (e.g. line width, text size)
+      Opacity,      //!< Opacity property
+      Point,        //!< Point/offset property
       NumericArray, //!< Numeric array for dash arrays or such
+      DashArray,    //!< Dash array. Like numeric array, but must be even length array. Odd length arrays are considered as having an additional 0 value. \since QGIS 4.2
     };
     Q_ENUM( PropertyType )
+
+    /**
+     * Interpolation types, for interpolated value conversion
+     * \warning This is private API only, and may change in future QGIS versions
+     * \since QGIS 4.2
+     */
+    enum class InterpolationType
+    {
+      Linear,      //!< Linear interpolation
+      Exponential, //!< Exponential interpolation
+      CubicBezier, //!< Cubic-bezier interpolation
+    };
+    Q_ENUM( InterpolationType )
 
     /**
      * Converts a JSON \a style map, and returns the resultant status of the conversion.
@@ -464,7 +465,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     QList< QgsMapLayer * > createSubLayers() const SIP_FACTORY;
 
   protected:
-
     /**
      * Parse list of \a sources from JSON.
      * \warning This is private API only, and may change in future QGIS versions
@@ -536,11 +536,14 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param hasLabeling will be set to TRUE if symbol layer generated a labeling style
      * \param context conversion context
     */
-    static void parseSymbolLayer( const QVariantMap &jsonLayer,
-                                  QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT,
-                                  bool &hasRenderer SIP_OUT,
-                                  QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
-                                  bool &hasLabeling SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
+    static void parseSymbolLayer(
+      const QVariantMap &jsonLayer,
+      QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT,
+      bool &hasRenderer SIP_OUT,
+      QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
+      bool &hasLabeling SIP_OUT,
+      QgsMapBoxGlStyleConversionContext &context
+    );
 
     /**
      * Parses a symbol layer as a renderer
@@ -553,8 +556,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \returns TRUE if symbol layer was converted to renderer
     */
-    static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,
-                                            QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
+    static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Parses a color value which is interpolated by zoom range.
@@ -562,10 +564,16 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param json definition of color interpolation
      * \param context conversion context
      * \param defaultColor optional storage for a reasonable "default" color representing the overall property.
+     * \param type interpolation type (since QGIS 4.2)
      *
      * \returns QgsProperty representing interpolation settings
      */
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor SIP_OUT = nullptr );
+    static QgsProperty parseInterpolateColorByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      QColor *defaultColor SIP_OUT = nullptr,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 
     /**
      * Parses a numeric value which is interpolated by zoom range.
@@ -574,10 +582,17 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
      * \param multiplier optional multiplication factor
      * \param defaultNumber optional storage for a reasonable "default" number representing the overall property.
+     * \param type interpolation type (since QGIS 4.2)
      *
      * \returns QgsProperty representing interpolation settings
      */
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber SIP_OUT = nullptr );
+    static QgsProperty parseInterpolateByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      double *defaultNumber SIP_OUT = nullptr,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 
     /**
      * Interpolates opacity with either scale_linear() or scale_exp() (depending on base value).
@@ -586,7 +601,12 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = nullptr );
+    static QgsProperty parseInterpolateOpacityByZoom(
+      const QVariantMap &json,
+      int maxOpacity,
+      QgsMapBoxGlStyleConversionContext *contextPtr = nullptr,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
@@ -594,7 +614,17 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseOpacityStops(
+      double base,
+      const QVariantList &stops,
+      int maxOpacity,
+      QgsMapBoxGlStyleConversionContext &context,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1
+    );
 
     /**
      * Interpolates a point/offset with either scale_linear() or scale_exp() (depending on base value).
@@ -602,7 +632,13 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint SIP_OUT = nullptr );
+    static QgsProperty parseInterpolatePointByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      QPointF *defaultPoint SIP_OUT = nullptr,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 
     /**
      * Interpolates a string by zoom.
@@ -610,9 +646,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context,
-        const QVariantMap &conversionMap,
-        QString *defaultString SIP_OUT = nullptr );
+    static QgsProperty parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, const QVariantMap &conversionMap, QString *defaultString SIP_OUT = nullptr );
 
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
@@ -620,7 +654,17 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+    static QString parsePointStops(
+      double base,
+      const QVariantList &stops,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 0,
+      double y2 = 0
+    );
 
     /**
      * Takes numerical arrays from stops.
@@ -636,8 +680,23 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param stops definition of interpolation stops
      * \param multiplier optional multiplication factor
      * \param context conversion context
+     * \param type interpolation type
+     * \param x1 control point for bezier-cubic interpolation
+     * \param y1 control point for bezier-cubic interpolation
+     * \param x2 control point for bezier-cubic interpolation
+     * \param y2 control point for bezier-cubic interpolation
      */
-    static QString parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseStops(
+      double base,
+      const QVariantList &stops,
+      double multiplier,
+      QgsMapBoxGlStyleConversionContext &context,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1
+    );
 
     /**
      * Parses a list of interpolation stops containing string values.
@@ -649,9 +708,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \returns converted expression
      */
-    static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context,
-                                     const QVariantMap &conversionMap,
-                                     QString *defaultString SIP_OUT = nullptr );
+    static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, const QVariantMap &conversionMap, QString *defaultString SIP_OUT = nullptr );
 
 
     /**
@@ -669,8 +726,15 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseValueList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                       int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
+    static QgsProperty parseValueList(
+      const QVariantList &json,
+      PropertyType type,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      int maxOpacity = 255,
+      QColor *defaultColor SIP_OUT = nullptr,
+      double *defaultNumber SIP_OUT = nullptr
+    );
 
 
     /**
@@ -678,16 +742,30 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseMatchList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                       int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
+    static QgsProperty parseMatchList(
+      const QVariantList &json,
+      PropertyType type,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      int maxOpacity = 255,
+      QColor *defaultColor SIP_OUT = nullptr,
+      double *defaultNumber SIP_OUT = nullptr
+    );
 
     /**
      * Parses and converts a match function value list.
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                      int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
+    static QgsProperty parseStepList(
+      const QVariantList &json,
+      PropertyType type,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      int maxOpacity = 255,
+      QColor *defaultColor SIP_OUT = nullptr,
+      double *defaultNumber SIP_OUT = nullptr
+    );
 
     /**
      * Interpolates a list which starts with the interpolate function.
@@ -696,8 +774,15 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \since QGIS 3.40
      */
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-        int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
+    static QgsProperty parseInterpolateListByZoom(
+      const QVariantList &json,
+      PropertyType type,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      int maxOpacity = 255,
+      QColor *defaultColor SIP_OUT = nullptr,
+      double *defaultNumber SIP_OUT = nullptr
+    );
 
     /**
      * Converts an expression representing a color to a string (can be color string or an expression where a color is expected)
@@ -739,7 +824,20 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, double multiplier = 1, QgsMapBoxGlStyleConversionContext *contextPtr = nullptr );
+    static QString interpolateExpression(
+      double zoomMin,
+      double zoomMax,
+      QVariant valueMin,
+      QVariant valueMax,
+      double base,
+      double multiplier = 1,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      QgsMapBoxGlStyleConversionContext *contextPtr = nullptr
+    );
 
     /**
      * Converts a value to Qt::PenCapStyle enum from JSON value.
@@ -792,10 +890,11 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \since QGIS 3.40
      */
-    static QString retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize SIP_OUT, QString &spriteProperty SIP_OUT, QString &spriteSizeProperty SIP_OUT );
+    static QString retrieveSpriteAsBase64WithProperties(
+      const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize SIP_OUT, QString &spriteProperty SIP_OUT, QString &spriteSizeProperty SIP_OUT
+    );
 
   private:
-
 #ifdef SIP_RUN
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
 #endif
@@ -825,6 +924,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     QList< QgsMapBoxGlStyleAbstractSource * > mSources;
     QList< QgsMapBoxGlStyleRasterSubLayer> mRasterSubLayers;
 
+    friend class QgsSymbolConverterMapBoxGl;
 };
 
 #endif // QGSMAPBOXGLSTYLECONVERTER_H

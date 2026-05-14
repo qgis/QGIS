@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
-
     /**
      * Creates a new attribute editor container
      *
@@ -205,7 +204,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
-    void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
+    void loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
     QString typeIdentifier() const override;
 
     Qgis::AttributeEditorContainerType mType = Qgis::AttributeEditorContainerType::GroupBox;

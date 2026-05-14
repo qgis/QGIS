@@ -86,7 +86,8 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
           indexPath.append( idx );
 
           QTreeWidgetItem *slItem = new QTreeWidgetItem();
-          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type(), nullptr, QgsScreenProperties( mScreen.data() ) );
+          const QIcon slIcon
+            = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, Qgis::RenderUnit::Millimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type(), nullptr, QgsScreenProperties( mScreen.data() ) );
           slItem->setData( 0, Qt::UserRole, idx );
           slItem->setIcon( 0, slIcon );
           auto flags = slItem->flags();

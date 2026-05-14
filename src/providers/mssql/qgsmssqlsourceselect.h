@@ -120,7 +120,9 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     typedef QList<geomPair> geomCol;
 
     // queue another query for the thread
-    void addSearchGeometryColumn( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata, bool disableInvalidGeometryHandling );
+    void addSearchGeometryColumn(
+      const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata, bool disableInvalidGeometryHandling
+    );
 
     // Set the position of the database connection list to the last
     // used one.

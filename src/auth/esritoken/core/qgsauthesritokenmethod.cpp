@@ -20,7 +20,11 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsauthesritokenmethod.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthesritokenedit.h"

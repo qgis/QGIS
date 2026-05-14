@@ -26,6 +26,7 @@
 #include <QImage>
 #include <QSize>
 
+class QgsSettingsEntryInteger;
 class QTemporaryDir;
 
 #ifndef SIP_RUN
@@ -41,11 +42,10 @@ class QTemporaryDir;
 class CORE_EXPORT QgsImageSizeCacheEntry : public QgsAbstractContentCacheEntry
 {
   public:
-
     /**
      * Constructor for QgsImageSizeCacheEntry, corresponding to the specified image \a path.
      */
-    QgsImageSizeCacheEntry( const QString &path ) ;
+    QgsImageSizeCacheEntry( const QString &path );
 
     //! Original image size
     QSize size;
@@ -53,7 +53,6 @@ class CORE_EXPORT QgsImageSizeCacheEntry : public QgsAbstractContentCacheEntry
     int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
-
 };
 
 /**
@@ -73,7 +72,6 @@ class CORE_EXPORT QgsImageSizeCache : public QgsAbstractContentCache< QgsImageSi
     Q_OBJECT
 
   public:
-
     QgsImageSizeCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsImageSizeCache() override;
     long maximumSize() const { return mMaxCacheSize; }
@@ -89,7 +87,6 @@ class CORE_EXPORT QgsImageSizeCache : public QgsAbstractContentCache< QgsImageSi
 class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
 {
   public:
-
     /**
      * Constructor for QgsImageCacheEntry, corresponding to the specified image \a path , \a size and \a opacity.
      *
@@ -101,7 +98,7 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
      * The \a frameNumber argument specifies a frame number for image formats which support animations. This should be
      * set to -1 if not required.
      */
-    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity, double targetDpi, int frameNumber ) ;
+    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity, double targetDpi, int frameNumber );
 
     //! Rendered image size
     QSize size;
@@ -153,7 +150,6 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
     int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
-
 };
 
 ///@endcond
@@ -182,13 +178,14 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsImageCache, with the specified \a parent object.
      */
     QgsImageCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsImageCache() override;
+
+    static const QgsSettingsEntryInteger *settingsMaxImageCacheSize SIP_SKIP;
 
     /**
      * Returns the maximum size of the cache, in bytes.
@@ -224,7 +221,17 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      *
      * \returns rendered image
      */
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, double targetDpi = 96, int frameNumber = -1, bool *isMissing SIP_PYARGREMOVE = nullptr );
+    QImage pathAsImage(
+      const QString &path,
+      const QSize size,
+      const bool keepAspectRatio,
+      const double opacity,
+      bool &fitsInCache SIP_OUT,
+      bool blocking = false,
+      double targetDpi = 96,
+      int frameNumber = -1,
+      bool *isMissing SIP_PYARGREMOVE = nullptr
+    );
 
     /**
      * Returns the original size (in pixels) of the image at the specified \a path.
@@ -297,10 +304,13 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
     void remoteImageFetched( const QString &url );
 
   private:
+    QImage pathAsImagePrivate(
+      const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs
+    );
 
-    QImage pathAsImagePrivate( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs );
-
-    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking = false ) const;
+    QImage renderImage(
+      const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking = false
+    ) const;
 
     static QImage getFrameFromReader( QImageReader &reader, int frameNumber );
 

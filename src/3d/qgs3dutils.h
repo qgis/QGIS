@@ -15,7 +15,6 @@
 
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -29,6 +28,8 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCullFace>
+
+#define SIP_NO_FILE
 
 class QgsCameraPose;
 class QgsLineString;
@@ -46,9 +47,15 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
+namespace Qt3DRender
+{
+  class QAbstractTexture;
+}
+
 class QSurface;
 class Qgs3DRenderContext;
 class QgsRayCastContext;
+class QgsMaterialContext;
 
 /**
  * \ingroup qgis_3d
@@ -114,7 +121,16 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.8
      */
-    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings, Qgs3DMapSettings &mapSettings, int framesPerSecond, const QString &outputDirectory, const QString &fileNameTemplate, const QSize &outputSize, QString &error, QgsFeedback *feedback = nullptr );
+    static bool exportAnimation(
+      const Qgs3DAnimationSettings &animationSettings,
+      Qgs3DMapSettings &mapSettings,
+      int framesPerSecond,
+      const QString &outputDirectory,
+      const QString &fileNameTemplate,
+      const QSize &outputSize,
+      QString &error,
+      QgsFeedback *feedback = nullptr
+    );
 
     /**
      * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
@@ -149,8 +165,28 @@ class _3D_EXPORT Qgs3DUtils
     //! Convert a string to a 4x4 transform matrix
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
+    /**
+     * Converts a SRGB color to a linear color.
+     *
+     * Color alpha is retained without change.
+     *
+     * \warning This method is designed for conversion of single colors only, for passing
+     * static colors to shaders. It is not appropriate for use for bulk conversion operations, e.g.
+     * converting an image from sRGB to linear colors.
+     *
+     * \since QGIS 4.2
+     */
+    static QColor srgbToLinear( const QColor &color );
+
     //! Calculates (x,y,z) positions of (multi)point from the given feature
-    static void extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
+    static void extractPointPositions(
+      const QgsFeature &f,
+      const Qgs3DRenderContext &context,
+      const QgsVector3D &chunkOrigin,
+      Qgis::AltitudeClamping altClamp,
+      QVector<QVector3D> &positions,
+      const QgsVector3D &translation = QgsVector3D( 0, 0, 0 )
+    );
 
     /**
      * Returns TRUE if bbox is completely outside the current viewing volume.
@@ -167,13 +203,23 @@ class _3D_EXPORT Qgs3DUtils
      * Converts extent (in map layer's CRS) to axis aligned bounding box in 3D world coordinates
      * \since QGIS 3.12
      */
-    static QgsAABB layerToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
+    static QgsAABB layerToWorldExtent(
+      const QgsRectangle &extent,
+      double zMin,
+      double zMax,
+      const QgsCoordinateReferenceSystem &layerCrs,
+      const QgsVector3D &mapOrigin,
+      const QgsCoordinateReferenceSystem &mapCrs,
+      const QgsCoordinateTransformContext &context
+    );
 
     /**
      * Converts axis aligned bounding box in 3D world coordinates to extent in map layer CRS
      * \since QGIS 3.12
      */
-    static QgsRectangle worldToLayerExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
+    static QgsRectangle worldToLayerExtent(
+      const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context
+    );
 
     /**
      * Converts map extent to axis aligned bounding box in 3D world coordinates
@@ -194,7 +240,14 @@ class _3D_EXPORT Qgs3DUtils
     static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin );
 
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
-    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context );
+    static QgsVector3D transformWorldCoordinates(
+      const QgsVector3D &worldPoint1,
+      const QgsVector3D &origin1,
+      const QgsCoordinateReferenceSystem &crs1,
+      const QgsVector3D &origin2,
+      const QgsCoordinateReferenceSystem &crs2,
+      const QgsCoordinateTransformContext &context
+    );
 
     /**
      * Try to estimate range of Z values used in the given vector layer and store that in zMin and zMax.
@@ -249,10 +302,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.24
      */
-    static double decodeDepth( const QRgb &pixel )
-    {
-      return ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0;
-    }
+    static double decodeDepth( const QRgb &pixel ) { return ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0; }
 
     /**
      * Creates a QgsPointCloudLayer3DRenderer matching the symbol settings of a given QgsPointCloudRenderer
@@ -374,10 +424,63 @@ class _3D_EXPORT Qgs3DUtils
     static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
 
     /**
-     * Computes the portion of the Y=y plane the camera is looking at
-     * \since QGIS 3.44
+     * Calculates an appropriate up vector for a directional light.
+     *
+     * The returned vector is guaranteed never to be parallel to the line of sight from eye to center.
+     *
+     * \param lightDirection direction vector of the light, must be normalized.
+     *
+     * \since QGIS 4.2
      */
-    static void calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
+    static QVector3D calculateDirectionalLightUpVector( const QVector3D &lightDirection );
+
+    /**
+     * Calculates the split distances for cascading shadow maps using the "Practical Split Scheme".
+     *
+     * \param numberCascades Number of shadow cascades.
+     * \param nearPlane Camera's near plane.
+     * \param farPlane Camera's far plane.
+     * \param lambda Weighting factor between logarithmic and uniform splits (valid values are between 0.0 to 1.0).
+     *
+     * \returns A vector of size numCascades + 1 containing the distances of the split planes.
+     *
+     * \since QGIS 4.2
+     */
+    static std::vector<float> calculateCascadeSplits( int numberCascades, float nearPlane, float farPlane, float lambda = 0.9f );
+
+    /**
+     * Calculates the 8 corners of a camera frustum slice in world space and its center point.
+     *
+     * \param zNear Near plane distance of the slice.
+     * \param zFar Far plane distance of the slice.
+     * \param fov Camera field of view (in degrees).
+     * \param aspectRatio Aspect ratio of the camera.
+     * \param invertedCameraView Inverted view matrix of the camera (view to world transform).
+     * \param corners will be set to the calculated world-space corners.
+     * \param center will be set to the center point of the frustum slice in world space.
+     *
+     * \since QGIS 4.2
+     */
+    static void calculateFrustumSliceCorners( float zNear, float zFar, float fov, float aspectRatio, const QMatrix4x4 &invertedCameraView, QVector3D ( &corners )[8], QVector3D &center );
+
+    /**
+     * Calculates the orthographic projection bounds required to tightly enclose a set of 8 world-space
+     * corners .
+     *
+     * \param worldCorners Array of corners (e.g. frustrum corners) in world coordinates.
+     * \param viewMatrix The view matrix to transform the corners into (e.g. a light's view matrix).
+     * \param left will be set to the calculated left orthographic bound (minimum X in view space).
+     * \param right will be set to the calculated right orthographic bound (maximum X in view space).
+     * \param bottom will be set to the calculated bottom orthographic bound (minimum Y in view space).
+     * \param top will be set to the calculated top orthographic bound (maximum Y in view space).
+     * \param nearPlane will be set to the calculated near plane distance.
+     * \param farPlane will be set to the calculated far plane distance.
+     *
+     * \since QGIS 4.2
+     */
+    static void calculateViewSpaceOrthographicBounds(
+      const QVector3D ( &worldCorners )[8], const QMatrix4x4 &viewMatrix, float &left, float &right, float &bottom, float &top, float &nearPlane, float &farPlane
+    );
 
     /**
      * Returns a list of 4 planes derived from a line extending from \a startPoint to \a endPoint.
@@ -402,6 +505,22 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static std::unique_ptr<Qt3DRender::QCamera> copyCamera( Qt3DRender::QCamera *cam ) SIP_SKIP;
+
+    /**
+     * Sets the default filtering options for a \a texture.
+     *
+     * \note This should not be called for textures which have special filtering considerations,
+     * eg look up tables, data tables, "screen space" textures, or textures where mipmapping is not appropriate.
+     */
+    static void setTextureFiltering( Qt3DRender::QAbstractTexture *texture, const QgsMaterialContext &context );
+
+    // we start with a maximal z range because we can't know this upfront. There's too many
+    // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...
+    // This range will be refined after populating the nodes to the actual z range of the generated chunks nodes.
+    // Assuming the vertical height is in meter, then it's extremely unlikely that a real vertical
+    // height will exceed this amount!
+    static constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
+    static constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
 };
 
 #endif // QGS3DUTILS_H

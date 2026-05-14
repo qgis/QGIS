@@ -27,9 +27,12 @@
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
 
+#include <QString>
 #include <QTextStream>
 #include <QUrlQuery>
 #include <QtAlgorithms>
+
+using namespace Qt::StringLiterals;
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
@@ -637,8 +640,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   mFile = std::make_unique<QgsDelimitedTextFile>();
   mFile->setFromUrl( url );
 
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
 }
 

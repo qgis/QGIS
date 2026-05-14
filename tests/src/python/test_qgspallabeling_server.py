@@ -16,22 +16,19 @@ __copyright__ = "Copyright 2013, The QGIS Project"
 
 import sys
 
-from qgis.PyQt.QtGui import QImage
 from qgis.core import QgsProject, QgsVectorLayerSimpleLabeling
-
+from qgis.PyQt.QtGui import QImage
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
     QgsServerRequest,
 )
-
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import TestLineBase, TestPointBase, suiteTests
 
 
 class TestServerBase(TestQgsPalLabeling):
-
     _TestProj = None
     """:type: QgsProject"""
     _TestProjName = ""
@@ -147,7 +144,6 @@ class TestServerBase(TestQgsPalLabeling):
 
 
 class TestServerBasePoint(TestServerBase):
-
     @classmethod
     def setUpClass(cls):
         TestServerBase.setUpClass()
@@ -156,7 +152,6 @@ class TestServerBasePoint(TestServerBase):
 
 
 class TestServerPoint(TestServerBasePoint, TestPointBase):
-
     def setUp(self):
         super().setUp()
         self.configTest("pal_server", "sp")
@@ -167,7 +162,6 @@ class TestServerPoint(TestServerBasePoint, TestPointBase):
 
 
 class TestServerVsCanvasPoint(TestServerBasePoint, TestPointBase):
-
     def setUp(self):
         super().setUp()
         self.configTest("pal_canvas", "sp")
@@ -178,7 +172,6 @@ class TestServerVsCanvasPoint(TestServerBasePoint, TestPointBase):
 
 
 class TestServerBaseLine(TestServerBase):
-
     @classmethod
     def setUpClass(cls):
         TestServerBase.setUpClass()
@@ -187,7 +180,6 @@ class TestServerBaseLine(TestServerBase):
 
 
 class TestServerLine(TestServerBaseLine, TestLineBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -195,7 +187,6 @@ class TestServerLine(TestServerBaseLine, TestLineBase):
 
 
 class TestServerVsCanvasLine(TestServerBaseLine, TestLineBase):
-
     def setUp(self):
         super().setUp()
         self.configTest("pal_canvas_line", "sp")

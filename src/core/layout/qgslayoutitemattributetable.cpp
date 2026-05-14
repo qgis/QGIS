@@ -39,7 +39,11 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitemattributetable.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutItemAttributeTable
@@ -50,7 +54,7 @@ QgsLayoutItemAttributeTable::QgsLayoutItemAttributeTable( QgsLayout *layout )
 {
   if ( mLayout )
   {
-    connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
+    connect( mLayout->project(), static_cast< void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
 
     //coverage layer change = regenerate columns
     connect( &mLayout->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutItemAttributeTable::atlasLayerChanged );
@@ -427,7 +431,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    // NOLINTBEGIN(bugprone-branch-clone)
     Q_NOWARN_DEPRECATED_PUSH
     if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
     {
@@ -438,7 +441,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
     }
     Q_NOWARN_DEPRECATED_POP
-    // NOLINTEND(bugprone-branch-clone)
   }
 #endif
 
@@ -566,7 +568,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
     if ( mUseConditionalStyling )
     {
-      const QList<QgsConditionalStyle> styles = QgsConditionalStyle::matchingConditionalStyles( conditionalStyles->rowStyles(), QVariant(),  context );
+      const QList<QgsConditionalStyle> styles = QgsConditionalStyle::matchingConditionalStyles( conditionalStyles->rowStyles(), QVariant(), context );
       rowStyle = QgsConditionalStyle::compressStyles( styles );
     }
 
@@ -601,7 +603,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
         const QgsEditorWidgetSetup setup = layer->fields().at( idx ).editorWidgetSetup();
 
-        if ( ! setup.isNull() )
+        if ( !setup.isNull() )
         {
           QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
           QVariant cache;
@@ -725,7 +727,7 @@ QgsTextFormat QgsLayoutItemAttributeTable::textFormatForCell( int row, int colum
 
 QgsExpressionContextScope *QgsLayoutItemAttributeTable::scopeForCell( int row, int column ) const
 {
-  std::unique_ptr< QgsExpressionContextScope >scope( QgsLayoutTable::scopeForCell( row, column ) );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsLayoutTable::scopeForCell( row, column ) );
   scope->setFeature( mFeatures.value( row ) );
   scope->setFields( scope->feature().fields() );
   return scope.release();
@@ -762,8 +764,8 @@ void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObj
 {
   QgsExpressionContext context = createExpressionContext();
 
-  if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes &&
-       ( property == QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
+  if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes
+       && ( property == QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
   {
     mDataDefinedVectorLayer = nullptr;
 
@@ -794,16 +796,14 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 {
-
   QgsLayoutTableColumns allowedColumns { mColumns };
 
   // Filter columns
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-
     QgsVectorLayer *source { sourceLayer() };
 
-    if ( ! source )
+    if ( !source )
     {
       return allowedColumns;
     }
@@ -813,14 +813,14 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 
     for ( const auto &c : std::as_const( allowedColumns ) )
     {
-      if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
+      if ( !c.attribute().isEmpty() && !columnAttributesMap.contains( c.attribute() ) )
       {
-        columnAttributesMap[ c.attribute() ] = QSet<QString>();
+        columnAttributesMap[c.attribute()] = QSet<QString>();
         const QgsExpression columnExp { c.attribute() };
         const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
         for ( const auto &cref : constRefs )
         {
-          columnAttributesMap[ c.attribute() ].insert( cref->name() );
+          columnAttributesMap[c.attribute()].insert( cref->name() );
           allowedAttributes.insert( cref->name() );
         }
       }
@@ -831,18 +831,23 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
     if ( filteredAttributesSet != allowedAttributes )
     {
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
-      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &columnAttributesMap, &forbidden ]( QgsLayoutTableColumn & c ) -> bool
-      {
-        for ( const auto &f : std::as_const( forbidden ) )
-        {
-          if ( columnAttributesMap[ c.attribute() ].contains( f ) )
-          {
-            return true;
+      allowedColumns.erase(
+        std::remove_if(
+          allowedColumns.begin(),
+          allowedColumns.end(),
+          [&columnAttributesMap, &forbidden]( QgsLayoutTableColumn &c ) -> bool {
+            for ( const auto &f : std::as_const( forbidden ) )
+            {
+              if ( columnAttributesMap[c.attribute()].contains( f ) )
+              {
+                return true;
+              }
+            }
+            return false;
           }
-        }
-        return false;
-      } ), allowedColumns.end() );
-
+        ),
+        allowedColumns.end()
+      );
     }
   }
 

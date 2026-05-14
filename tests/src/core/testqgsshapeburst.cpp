@@ -22,6 +22,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include <qgsmapsettings.h>
 #include <qgsmaplayer.h>
@@ -46,7 +48,8 @@ class TestQgsShapeburst : public QgsTest
     Q_OBJECT
   public:
     TestQgsShapeburst()
-      : QgsTest( u"Shapeburst Renderer Tests"_s ) {}
+      : QgsTest( u"Shapeburst Renderer Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -98,9 +101,7 @@ void TestQgsShapeburst::initTestCase()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup shapeburst fill
   mShapeburstFill = new QgsShapeburstFillSymbolLayer();

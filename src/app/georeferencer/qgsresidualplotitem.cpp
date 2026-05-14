@@ -22,8 +22,11 @@
 #include "qgslayoututils.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgsresidualplotitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsResidualPlotItem::QgsResidualPlotItem( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -179,8 +182,7 @@ void QgsResidualPlotItem::setGCPList( const QgsGCPList &list )
 }
 
 void QgsResidualPlotItem::draw( QgsLayoutItemRenderContext & )
-{
-}
+{}
 
 double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM )
 {

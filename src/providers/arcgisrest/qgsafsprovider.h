@@ -31,6 +31,10 @@
 #include "qgssettingsentryimpl.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
  */
@@ -97,12 +101,12 @@ class QgsAfsProvider : public QgsVectorDataProvider
     std::shared_ptr<QgsAfsSharedData> mSharedData;
     QString mLayerName;
     QString mLayerDescription;
-    QStringList mCapabilityStrings;
+    Qgis::ArcGisRestServiceCapabilities mCapabilities;
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
     QgsHttpHeaders mRequestHeaders;
-    bool mServerSupportsCurves = false;
+    bool mServerSupportsCurvedUpdates = false;
     QString mAdminUrl;
     QVariantMap mAdminData;
     QStringList mAdminCapabilityStrings;
@@ -119,6 +123,7 @@ class QgsAfsProviderMetadata : public QgsProviderMetadata
   public:
     QgsAfsProviderMetadata();
     QIcon icon() const override;
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;

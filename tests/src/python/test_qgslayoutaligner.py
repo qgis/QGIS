@@ -11,6 +11,8 @@ __date__ = "3/10/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsLayout,
     QgsLayoutAligner,
@@ -21,14 +23,12 @@ from qgis.core import (
     QgsProject,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLayoutAligner(QgisTestCase):
-
     def testAlign(self):
         p = QgsProject()
         l = QgsLayout(p)

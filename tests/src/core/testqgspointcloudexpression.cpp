@@ -24,8 +24,9 @@
 #include <QString>
 #include <QVector>
 
-template<typename T>
-bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value )
+using namespace Qt::StringLiterals;
+
+template<typename T> bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value )
 {
   switch ( type )
   {
@@ -125,7 +126,9 @@ class TestQgsPointCloudExpression : public QObject
     ;
 };
 
-QgsPointCloudBlock *TestQgsPointCloudExpression::createPointCloudBlock( const QVector<QVariantMap> &points, const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudAttributeCollection &attributes )
+QgsPointCloudBlock *TestQgsPointCloudExpression::createPointCloudBlock(
+  const QVector<QVariantMap> &points, const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudAttributeCollection &attributes
+)
 {
   const int pointRecordSize = attributes.pointRecordSize();
   QByteArray data;
@@ -314,12 +317,10 @@ void TestQgsPointCloudExpression::cleanupTestCase()
 }
 
 void TestQgsPointCloudExpression::init()
-{
-}
+{}
 
 void TestQgsPointCloudExpression::cleanup()
-{
-}
+{}
 
 void TestQgsPointCloudExpression::testCreateBlock()
 {

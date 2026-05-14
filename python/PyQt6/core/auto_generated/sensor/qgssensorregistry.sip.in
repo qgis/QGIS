@@ -23,7 +23,6 @@ Stores metadata about a sensor class.
 #include "qgssensorregistry.h"
 %End
   public:
-
     QgsSensorAbstractMetadata( const QString &type, const QString &visibleName );
 %Docstring
 Constructor for QgsSensorAbstractMetadata with the specified class
@@ -70,7 +69,6 @@ behavior of sensors.
 #include "qgssensorregistry.h"
 %End
   public:
-
     QgsSensorRegistry( QObject *parent = 0 );
 %Docstring
 Creates a new empty item registry.
@@ -132,9 +130,6 @@ specified ``type`` and visible ``name``.
   private:
     QgsSensorRegistry( const QgsSensorRegistry &rh );
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

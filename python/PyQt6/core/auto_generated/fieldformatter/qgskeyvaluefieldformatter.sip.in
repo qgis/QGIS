@@ -22,7 +22,6 @@ E.g. "color: yellow, amount: 5"
 #include "qgskeyvaluefieldformatter.h"
 %End
   public:
-
     QgsKeyValueFieldFormatter();
     virtual QString id() const;
 

@@ -23,11 +23,12 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsmimedatautils.h"
 
+#define SIP_NO_FILE
+
 class QgsAbstractDatabaseProviderConnection;
 class QgsVectorLayerExporterTask;
 class QgsDatabaseSchemaComboBox;
 
-#define SIP_NO_FILE
 
 /**
  * \class QgsDbImportVectorLayerDialog

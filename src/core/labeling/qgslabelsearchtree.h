@@ -49,7 +49,6 @@ namespace pal
 class CORE_EXPORT QgsLabelSearchTree
 {
   public:
-
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 
@@ -90,7 +89,18 @@ class CORE_EXPORT QgsLabelSearchTree
      * \returns TRUE in case of success
      * \note not available in Python bindings
      */
-    bool insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString(), bool isUnplaced = false, long long linkedId = 0 ) SIP_SKIP;
+    bool insertLabel(
+      pal::LabelPosition *labelPos,
+      QgsFeatureId featureId,
+      const QString &layerName,
+      const QString &labeltext,
+      const QFont &labelfont,
+      bool diagram = false,
+      bool pinned = false,
+      const QString &providerId = QString(),
+      bool isUnplaced = false,
+      long long linkedId = 0
+    ) SIP_SKIP;
 
     /**
      * Inserts a rendered callout position.

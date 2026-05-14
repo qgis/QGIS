@@ -43,18 +43,13 @@ class QgsCPLErrorHandler
       CPLPushErrorHandlerEx( showError, &mSourceName );
     }
 
-    ~QgsCPLErrorHandler()
-    {
-      CPLPopErrorHandler();
-    }
+    ~QgsCPLErrorHandler() { CPLPopErrorHandler(); }
 
     QgsCPLErrorHandler( const QgsCPLErrorHandler &other ) = delete;
     QgsCPLErrorHandler &operator=( const QgsCPLErrorHandler &other ) = delete;
 
   private:
-
     QString mSourceName;
-
 };
 
 /**
@@ -80,15 +75,9 @@ class QgsCPLErrorCollectorHandler
     }
 
   public:
-    QgsCPLErrorCollectorHandler()
-    {
-      CPLPushErrorHandlerEx( showError, &mErrors );
-    }
+    QgsCPLErrorCollectorHandler() { CPLPushErrorHandlerEx( showError, &mErrors ); }
 
-    ~QgsCPLErrorCollectorHandler()
-    {
-      CPLPopErrorHandler();
-    }
+    ~QgsCPLErrorCollectorHandler() { CPLPopErrorHandler(); }
 
     /**
      * Takes all collected errors.
@@ -104,11 +93,8 @@ class QgsCPLErrorCollectorHandler
     QgsCPLErrorCollectorHandler &operator=( const QgsCPLErrorCollectorHandler &other ) = delete;
 
   private:
-
     QStringList mErrors;
-
 };
-
 
 
 #endif // QGSCPLERRORHANDLER_H

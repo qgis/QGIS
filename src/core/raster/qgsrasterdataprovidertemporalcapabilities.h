@@ -38,7 +38,6 @@
 class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProviderTemporalCapabilities
 {
   public:
-
     /**
      * Constructor for QgsRasterDataProviderTemporalProperties.
      *
@@ -167,7 +166,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     void setRequestedTemporalRange( const QgsDateTimeRange &range ) SIP_SKIP;
 
   private:
-
     /**
      * Represents available data provider datetime range.
      *
@@ -201,7 +199,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     friend class QgsRasterLayerRenderer;
     friend class TestQgsRasterDataProviderTemporalCapabilities;
-
 };
 
 #endif // QGSRASTERDATAPROVIDERTEMPORALCAPABILITIES_H

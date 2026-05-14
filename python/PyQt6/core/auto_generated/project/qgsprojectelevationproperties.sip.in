@@ -23,7 +23,6 @@ Contains elevation properties for a :py:class:`QgsProject`.
 #include "qgsprojectelevationproperties.h"
 %End
   public:
-
     QgsProjectElevationProperties( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProjectElevationProperties with the specified

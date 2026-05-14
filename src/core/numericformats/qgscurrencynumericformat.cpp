@@ -18,6 +18,10 @@
 
 #include "qgis.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsCurrencyNumericFormat::QgsCurrencyNumericFormat()
   : mPrefix( u"$"_s )
 {

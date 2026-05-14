@@ -19,6 +19,4 @@
 QgsRenderedAnnotationItemDetails::QgsRenderedAnnotationItemDetails( const QString &layerId, const QString &itemId )
   : QgsRenderedItemDetails( layerId )
   , mItemId( itemId )
-{
-
-}
+{}

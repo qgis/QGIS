@@ -23,8 +23,7 @@
 QgsScaleWidgetPlugin::QgsScaleWidgetPlugin( QObject *parent )
   : QObject( parent )
   , mInitialized( false )
-{
-}
+{}
 
 
 QString QgsScaleWidgetPlugin::name() const
@@ -83,20 +82,22 @@ QString QgsScaleWidgetPlugin::whatsThis() const
 
 QString QgsScaleWidgetPlugin::domXml() const
 {
-  return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mScaleWidget\">\n"
-                  "  <property name=\"geometry\">\n"
-                  "   <rect>\n"
-                  "    <x>0</x>\n"
-                  "    <y>0</y>\n"
-                  "    <width>200</width>\n"
-                  "    <height>27</height>\n"
-                  "   </rect>\n"
-                  "  </property>\n"
-                  "  <property name=\"showCurrentScaleButton\">\n"
-                  "   <bool>true</bool>\n"
-                  "  </property>\n"
-                  " </widget>\n"
-                  "</ui>\n" )
+  return QString(
+           "<ui language=\"c++\">\n"
+           " <widget class=\"%1\" name=\"mScaleWidget\">\n"
+           "  <property name=\"geometry\">\n"
+           "   <rect>\n"
+           "    <x>0</x>\n"
+           "    <y>0</y>\n"
+           "    <width>200</width>\n"
+           "    <height>27</height>\n"
+           "   </rect>\n"
+           "  </property>\n"
+           "  <property name=\"showCurrentScaleButton\">\n"
+           "   <bool>true</bool>\n"
+           "  </property>\n"
+           " </widget>\n"
+           "</ui>\n"
+  )
     .arg( name() );
 }

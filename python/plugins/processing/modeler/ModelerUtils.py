@@ -20,8 +20,9 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
-from processing.tools.system import userFolder, mkdir
+
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.system import mkdir, userFolder
 
 
 class ModelerUtils:

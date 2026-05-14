@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
     virtual void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) = 0;
 
 #ifndef SIP_RUN
-// sip gets confused with this, refuses to compile
+    // sip gets confused with this, refuses to compile
 
     /**
      * Attempts to calculate the overall temporal extent for the specified \a layer, using
@@ -126,7 +126,6 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      * \since QGIS 3.20
      */
     virtual QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const;
-
 };
 
 #endif // QGSMAPLAYERTEMPORALPROPERTIES_H

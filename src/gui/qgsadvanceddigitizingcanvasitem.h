@@ -42,7 +42,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
       sipType = sipType_QgsAdvancedDigitizingCanvasItem;
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
 
   public:

@@ -46,7 +46,8 @@ class QgsMeshDatasetGroupSaveMenu : public QObject
     Q_OBJECT
   public:
     QgsMeshDatasetGroupSaveMenu( QObject *parent = nullptr )
-      : QObject( parent ) {}
+      : QObject( parent )
+    {}
     QMenu *createSaveMenu( int groupIndex, QMenu *parentMenu = nullptr );
 
     void setMeshLayer( QgsMeshLayer *meshLayer );

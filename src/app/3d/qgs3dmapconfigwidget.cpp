@@ -16,11 +16,14 @@
 #include "qgs3dmapconfigwidget.h"
 
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgsambientocclusionsettingswidget.h"
+#include "qgscolorbutton.h"
 #include "qgsdemterrainsettings.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
@@ -34,10 +37,16 @@
 #include "qgssettings.h"
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgsskyboxrenderingsettingswidget.h"
+#include "qgsskyboxsettings.h"
+#include "qgsstackedwidget.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 
+#include <QString>
+
 #include "moc_qgs3dmapconfigwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )
@@ -59,7 +68,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
-  m3DOptionsListWidget->setCurrentRow( settings.value( u"Windows/3DMapConfig/Tab"_s, 0 ).toInt() );
+  int tabIndex = settings.value( u"Windows/3DMapConfig/Tab"_s, 0 ).toInt();
+
+  m3DOptionsListWidget->setCurrentRow( tabIndex );
   connect( m3DOptionsListWidget, &QListWidget::currentRowChanged, this, [this]( int index ) { m3DOptionsStackedWidget->setCurrentIndex( index ); } );
   m3DOptionsStackedWidget->setCurrentIndex( m3DOptionsListWidget->currentRow() );
 
@@ -170,12 +181,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowDebugPanel->setChecked( mMap->showDebugPanel() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
-  widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
+  widgetTerrainMaterial->setTechnique( Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture );
   QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
   widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 
   widgetLights->setLights( mMap->lightSources() );
   widgetLights->setPointLightCrs( mMap->crs() );
+  widgetLights->setMapExtent( mMap->extent() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
@@ -185,11 +197,25 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
   // ==================
-  // Page: Skybox
+  // Background (gradient / skybox)
+  comboBox->addItem( tr( "Gradient" ) );
+  comboBox->addItem( tr( "Skybox" ) );
+  connect( comboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stackedWidget, &QStackedWidget::setCurrentIndex );
+  stackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
+  const QgsAbstract3DMapBackgroundSettings *bgSettings = mMap->backgroundSettings();
+  const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( bgSettings );
+  const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( bgSettings );
+
+  mBtnGradientTopColor->setColor( gradientSettings ? gradientSettings->topColor() : QColor( 0, 128, 255 ) );
+  mBtnGradientBottomColor->setColor( gradientSettings ? gradientSettings->bottomColor() : Qt::black );
+
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
-  mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
-  groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
-  groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
+  mSkyboxSettingsWidget->setSkyboxSettings( skyboxSettings ? *skyboxSettings : QgsSkyboxSettings() );
+  pageSkybox->layout()->addWidget( mSkyboxSettingsWidget );
+
+  groupBoxBackground->setChecked( bgSettings ? true : false );
+  comboBox->setCurrentIndex( skyboxSettings ? 1 : 0 );
 
   // ==================
   // Page: Shadows
@@ -227,6 +253,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // none of the 2d/3d canvas sync options supported by globe yet
   groupBox->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
+
+  mShowMapOverlayCheckBox->setChecked( map->is2DMapOverlayEnabled() );
 
   // ==================
   // Page: Advanced
@@ -272,6 +300,7 @@ void Qgs3DMapConfigWidget::apply()
   {
     mMap->setExtent( groupExtent->outputExtent() );
     mMap->setShowExtentIn2DView( mShowExtentIn2DViewCheckbox->isChecked() );
+    mMap->setIs2DMapOverlayEnabled( mShowMapOverlayCheckBox->isChecked() );
   }
 
   const QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
@@ -353,8 +382,23 @@ void Qgs3DMapConfigWidget::apply()
     mMap->setTerrainShadingMaterial( *phongMaterial );
 
   mMap->setLightSources( widgetLights->lightSources() );
-  mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
-  mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
+
+  if ( !groupBoxBackground->isChecked() )
+  {
+    mMap->setBackgroundSettings( nullptr ); // null disables background
+  }
+  else if ( comboBox->currentIndex() == 1 )
+  {
+    mMap->setBackgroundSettings( mSkyboxSettingsWidget->toSkyboxSettings().clone() );
+  }
+  else
+  {
+    auto gradient = std::make_unique<QgsFixedGradientBackgroundSettings>();
+    gradient->setTopColor( mBtnGradientTopColor->color() );
+    gradient->setBottomColor( mBtnGradientBottomColor->color() );
+    mMap->setBackgroundSettings( gradient.release() );
+  }
+
   QgsShadowSettings shadowSettings = mShadowSettingsWidget->toShadowSettings();
   shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
   mMap->setShadowSettings( shadowSettings );
@@ -370,6 +414,8 @@ void Qgs3DMapConfigWidget::apply()
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D, mSync3DTo2DCheckbox->isChecked() );
   mMap->setViewSyncMode( viewSyncMode );
   mMap->setViewFrustumVisualizationEnabled( mVisualizeExtentCheckBox->isChecked() );
+
+  mMap->setIs2DMapOverlayEnabled( mShowMapOverlayCheckBox->isChecked() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()

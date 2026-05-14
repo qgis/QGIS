@@ -20,7 +20,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsColorScheme.__virtual_methods__ = ['flags', 'fetchColors', 'isEditable', 'setColors']
+    QgsColorScheme.__virtual_methods__ = ['flags', 'isEditable', 'setColors']
     QgsColorScheme.__abstract_methods__ = ['schemeName', 'fetchColors', 'clone']
 except (NameError, AttributeError):
     pass

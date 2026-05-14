@@ -68,9 +68,13 @@ class QgsPostgresUtils
     static bool deleteLayer( const QString &uri, QString &errCause );
     static bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade = false );
 
-    static QString whereClause( QgsFeatureId featureId, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData );
+    static QString whereClause(
+      QgsFeatureId featureId, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData
+    );
 
-    static QString whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData );
+    static QString whereClause(
+      const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData
+    );
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );
 
@@ -79,15 +83,9 @@ class QgsPostgresUtils
     // We shift negative 32bit integers to above the max 32bit
     // positive integer to support the whole range of int32 values
     // See https://github.com/qgis/QGIS/issues/22258
-    static qint64 int32pk_to_fid( qint32 x )
-    {
-      return x >= 0 ? x : x + INT32PK_OFFSET;
-    }
+    static qint64 int32pk_to_fid( qint32 x ) { return x >= 0 ? x : x + INT32PK_OFFSET; }
 
-    static qint32 fid_to_int32pk( qint64 x )
-    {
-      return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x );
-    }
+    static qint32 fid_to_int32pk( qint64 x ) { return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x ); }
 
     //! Replaces invalid XML chars with UTF-8[<char_code>]
     static void replaceInvalidXmlChars( QString &xml );
@@ -179,6 +177,48 @@ class QgsPostgresUtils
     * \since QGIS 4.0
     */
     static bool addCommentColumnToProjectsTable( QgsPostgresConn *conn, const QString &schemaName );
+
+    /**
+    * Sets up the necessary database structures for QGIS project versioning in \a schema.
+    *
+    * \since QGIS 4.0
+    */
+    static bool enableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
+
+    /**
+    * Disables QGIS project versioning for the specified \a schema.
+    *
+    * \since QGIS 4.0
+    */
+    static bool disableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
+
+    /**
+    * Check if QGIS project versioning is active for the specified \a schema.
+    *
+    * \since QGIS 4.0
+    */
+    static bool qgisProjectVersioningEnabled( QgsPostgresConn *conn, const QString &schema );
+
+    /**
+     * Move project versions to \a targetSchema
+     *
+     * \since QGIS 4.0
+     */
+    static bool moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema );
+
+    /**
+     * Renames a project in the specified schema.
+     *
+     * \since QGIS 4.0
+     */
+    static bool renameProject( QgsPostgresConn *conn, const QString &schemaName, const QString &oldProjectName, const QString &newProjectName );
+
+    /**
+     * List projects in the specified \a schema
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList projectNamesInSchema( QgsPostgresConn *conn, const QString &schema );
 };
 
 #endif

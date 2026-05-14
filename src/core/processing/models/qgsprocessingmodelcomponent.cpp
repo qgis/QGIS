@@ -20,6 +20,10 @@
 #include "qgscolorutils.h"
 #include "qgsprocessingmodelcomment.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsProcessingModelComponent::QgsProcessingModelComponent( const QString &description )
@@ -102,9 +106,7 @@ void QgsProcessingModelComponent::setLinksCollapsed( Qt::Edge edge, bool collaps
 }
 
 void QgsProcessingModelComponent::setComment( const QgsProcessingModelComment & )
-{
-
-}
+{}
 
 void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
 {

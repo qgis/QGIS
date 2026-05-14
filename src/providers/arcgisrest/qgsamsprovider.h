@@ -128,7 +128,10 @@ class QgsAmsProvider : public QgsRasterDataProvider
     typedef struct TileImage
     {
         TileImage( const QRectF &r, const QImage &i, bool smooth )
-          : rect( r ), img( i ), smooth( smooth ) {}
+          : rect( r )
+          , img( i )
+          , smooth( smooth )
+        {}
         QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
         QImage img;  //!< Cached tile to be drawn
         bool smooth;
@@ -174,7 +177,16 @@ class QgsAmsTiledImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsAmsTiledImageDownloadHandler( const QString &auth, const QgsHttpHeaders &requestHeaders, int reqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback, const QString &urlPrefix );
+    QgsAmsTiledImageDownloadHandler(
+      const QString &auth,
+      const QgsHttpHeaders &requestHeaders,
+      int reqNo,
+      const QgsAmsProvider::TileRequests &requests,
+      QImage *image,
+      const QgsRectangle &viewExtent,
+      QgsRasterBlockFeedback *feedback,
+      const QString &urlPrefix
+    );
     ~QgsAmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
@@ -226,6 +238,7 @@ class QgsAmsProviderMetadata : public QgsProviderMetadata
   public:
     QgsAmsProviderMetadata();
     QIcon icon() const override;
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QgsAmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;

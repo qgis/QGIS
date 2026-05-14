@@ -30,8 +30,7 @@ QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tole
   : mSimplifyFlags( simplifyFlags )
   , mSimplifyAlgorithm( simplifyAlgorithm )
   , mTolerance( tolerance )
-{
-}
+{}
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Helper simplification methods
@@ -48,7 +47,8 @@ bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, 
 {
   const int grid_x1 = std::round( ( x1 - gridOriginX ) * gridInverseSizeXY );
   const int grid_x2 = std::round( ( x2 - gridOriginX ) * gridInverseSizeXY );
-  if ( grid_x1 != grid_x2 ) return false;
+  if ( grid_x1 != grid_x2 )
+    return false;
 
   const int grid_y1 = std::round( ( y1 - gridOriginY ) * gridInverseSizeXY );
   const int grid_y2 = std::round( ( y2 - gridOriginY ) * gridInverseSizeXY );
@@ -67,11 +67,7 @@ bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 //! Generalize the WKB-geometry using the BBOX of the original geometry
-static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox(
-  Qgis::WkbType wkbType,
-  const QgsAbstractGeometry &geometry,
-  const QgsRectangle &envelope,
-  bool isRing )
+static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox( Qgis::WkbType wkbType, const QgsAbstractGeometry &geometry, const QgsRectangle &envelope, bool isRing )
 {
   const Qgis::WkbType geometryType = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) );
 
@@ -95,17 +91,7 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
   }
   else
   {
-    auto ext = std::make_unique< QgsLineString >(
-                 QVector< double >() << x1
-                 << x2
-                 << x2
-                 << x1
-                 << x1,
-                 QVector< double >() << y1
-                 << y1
-                 << y2
-                 << y2
-                 << y1 );
+    auto ext = std::make_unique< QgsLineString >( QVector< double >() << x1 << x2 << x2 << x1 << x1, QVector< double >() << y1 << y1 << y2 << y2 << y1 );
     if ( geometryType == Qgis::WkbType::LineString )
       return std::move( ext );
     else
@@ -117,18 +103,16 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
   }
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry( int simplifyFlags,
-    Qgis::VectorSimplificationAlgorithm simplifyAlgorithm,
-    const QgsAbstractGeometry &geometry, double map2pixelTol,
-    bool isaLinearRing )
+std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry(
+  int simplifyFlags, Qgis::VectorSimplificationAlgorithm simplifyAlgorithm, const QgsAbstractGeometry &geometry, double map2pixelTol, bool isaLinearRing
+)
 {
   bool isGeneralizable = true;
   const Qgis::WkbType wkbType = geometry.wkbType();
 
   // Can replace the geometry by its BBOX ?
   const QgsRectangle envelope = geometry.boundingBox();
-  if ( ( simplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) &&
-       isGeneralizableByMapBoundingBox( envelope, map2pixelTol ) )
+  if ( ( simplifyFlags & QgsMapToPixelSimplifier::SimplifyEnvelope ) && isGeneralizableByMapBoundingBox( envelope, map2pixelTol ) )
   {
     return generalizeWkbGeometryByBoundingBox( wkbType, geometry, envelope, isaLinearRing );
   }
@@ -181,8 +165,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
     // Check whether the LinearRing is really closed.
     if ( isaLinearRing )
     {
-      isaLinearRing = qgsDoubleNear( srcCurve.xAt( 0 ), srcCurve.xAt( numPoints - 1 ) ) &&
-                      qgsDoubleNear( srcCurve.yAt( 0 ), srcCurve.yAt( numPoints - 1 ) );
+      isaLinearRing = qgsDoubleNear( srcCurve.xAt( 0 ), srcCurve.xAt( numPoints - 1 ) ) && qgsDoubleNear( srcCurve.yAt( 0 ), srcCurve.yAt( numPoints - 1 ) );
     }
 
     // Process each vertex...
@@ -194,7 +177,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
         const double gridOriginY = envelope.yMinimum();
 
         // Use a factor for the maximum displacement distance for simplification, similar as GeoServer does
-        const float gridInverseSizeXY = map2pixelTol != 0 ? ( float )( 1.0f / ( 0.8 * map2pixelTol ) ) : 0.0f;
+        const float gridInverseSizeXY = map2pixelTol != 0 ? ( float ) ( 1.0f / ( 0.8 * map2pixelTol ) ) : 0.0f;
 
         const double *xData = nullptr;
         const double *yData = nullptr;
@@ -231,10 +214,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
           if ( isMeasure )
             m = mData ? *mData++ : srcCurve.mAt( i );
 
-          if ( i == 0 ||
-               !isGeneralizable ||
-               !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) ||
-               ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+          if ( i == 0 || !isGeneralizable || !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) || ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
             if ( output )
               output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y, z, m ) );
@@ -273,7 +253,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
         for ( int i = 0; i < numPoints; ++i )
         {
-          if ( ea.res_arealist[ i ] > map2pixelTol )
+          if ( ea.res_arealist[i] > map2pixelTol )
           {
             if ( output )
               output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), ea.inpts.at( i ) );
@@ -320,10 +300,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
           isLongSegment = false;
 
-          if ( i == 0 ||
-               !isGeneralizable ||
-               ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
-               ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+          if ( i == 0 || !isGeneralizable || ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) || ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
             if ( output )
               output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );

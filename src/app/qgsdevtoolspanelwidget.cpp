@@ -23,9 +23,14 @@
 #include "qgspanelwidgetstack.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
+
 #include "moc_qgsdevtoolspanelwidget.cpp"
 
-const QgsSettingsEntryString *QgsDevToolsPanelWidget::settingLastActiveTab = new QgsSettingsEntryString( u"last-active-tab"_s, QgsDevToolsPanelWidget::sTreeDevTools, QString(), u"Last visible tab in developer tools panel"_s );
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryString *QgsDevToolsPanelWidget::settingLastActiveTab
+  = new QgsSettingsEntryString( u"last-active-tab"_s, QgsDevToolsPanelWidget::sTreeDevTools, QString(), u"Last visible tab in developer tools panel"_s );
 
 
 QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFactory *> &factories, QWidget *parent )
@@ -128,9 +133,7 @@ void QgsDevToolsPanelWidget::setCurrentTool( int row )
   mStackedWidget->setCurrentIndex( row );
 }
 
-void QgsDevToolsPanelWidget::showApiDocumentation(
-  Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object, const QString &module
-)
+void QgsDevToolsPanelWidget::showApiDocumentation( Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object, const QString &module )
 {
   bool useQgisDocDirectory = false;
   QString baseUrl;

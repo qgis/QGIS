@@ -32,6 +32,9 @@
 #include <QComboBox>
 #include <QScrollBar>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsValueRelationWidgetWrapper : public QObject
 {
@@ -82,12 +85,10 @@ void TestQgsValueRelationWidgetWrapper::cleanupTestCase()
 }
 
 void TestQgsValueRelationWidgetWrapper::init()
-{
-}
+{}
 
 void TestQgsValueRelationWidgetWrapper::cleanup()
-{
-}
+{}
 
 void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 {

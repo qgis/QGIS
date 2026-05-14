@@ -32,6 +32,9 @@
 #include "qgswmsutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {
@@ -39,7 +42,16 @@ namespace QgsWms
   {
     void appendOwsLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer );
 
-    void appendOwsLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, QgsRectangle &combinedBBox, const QString &strGroup );
+    void appendOwsLayersFromTreeGroup(
+      QDomDocument &doc,
+      QDomElement &parentLayer,
+      QgsServerInterface *serverIface,
+      const QgsProject *project,
+      const QgsWmsRequest &request,
+      const QgsLayerTreeGroup *layerTreeGroup,
+      QgsRectangle &combinedBBox,
+      const QString &strGroup
+    );
 
     void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request );
   } // namespace
@@ -197,7 +209,16 @@ namespace QgsWms
       generalElem.appendChild( bboxElem );
     }
 
-    void appendOwsLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, QgsRectangle &combinedBBox, const QString &strGroup )
+    void appendOwsLayersFromTreeGroup(
+      QDomDocument &doc,
+      QDomElement &parentLayer,
+      QgsServerInterface *serverIface,
+      const QgsProject *project,
+      const QgsWmsRequest &request,
+      const QgsLayerTreeGroup *layerTreeGroup,
+      QgsRectangle &combinedBBox,
+      const QString &strGroup
+    )
     {
       const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 

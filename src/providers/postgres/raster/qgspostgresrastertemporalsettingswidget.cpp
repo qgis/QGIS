@@ -20,7 +20,11 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
 #include "moc_qgspostgresrastertemporalsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -38,9 +42,7 @@ QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget
 
   mPostgresRasterTemporalFieldComboBox->setFilters( QgsFieldProxyModel::Filter::Date | QgsFieldProxyModel::Filter::DateTime | QgsFieldProxyModel::Filter::String );
   mPostgresRasterTemporalFieldComboBox->setAllowEmptyFieldName( true );
-  connect( mPostgresRasterTemporalFieldComboBox, &QgsFieldComboBox::fieldChanged, this, [this]( const QString &fieldName ) {
-    mPostgresRasterDefaultTime->setEnabled( !fieldName.isEmpty() );
-  } );
+  connect( mPostgresRasterTemporalFieldComboBox, &QgsFieldComboBox::fieldChanged, this, [this]( const QString &fieldName ) { mPostgresRasterDefaultTime->setEnabled( !fieldName.isEmpty() ); } );
   mPostgresRasterDefaultTime->setAllowNull( true );
   mPostgresRasterDefaultTime->setEmpty();
   mDefaultTimeStackedWidget->setCurrentIndex( 0 );

@@ -22,7 +22,6 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 
 from qgis.core import QgsApplication, QgsProcessingProvider, QgsRuntimeProfiler
-
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .BarPlot import BarPlot
@@ -33,7 +32,6 @@ from .FieldPyculator import FieldsPyculator
 from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
-from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
@@ -42,18 +40,14 @@ from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PolarPlot import PolarPlot
-from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
-from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
-from .SelectByAttribute import SelectByAttribute
-from .SelectByExpression import SelectByExpression
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .StatisticsByCategories import StatisticsByCategories
@@ -87,7 +81,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             Heatmap(),
             HubDistanceLines(),
             HubDistancePoints(),
-            HypsometricCurves(),
             IdwInterpolation(),
             KNearestConcaveHull(),
             LinesToPolygons(),
@@ -96,18 +89,14 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             PointsDisplacement(),
             PointsFromLines(),
             PolarPlot(),
-            RandomExtractWithinSubsets(),
             RandomPointsAlongLines(),
             RandomPointsLayer(),
             RandomPointsPolygons(),
-            RandomSelectionWithinSubsets(),
             RasterCalculator(),
             RasterLayerHistogram(),
             RectanglesOvalsDiamondsVariable(),
             RegularPoints(),
             Relief(),
-            SelectByAttribute(),
-            SelectByExpression(),
             SetRasterStyle(),
             SetVectorStyle(),
             StatisticsByCategories(),

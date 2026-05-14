@@ -120,10 +120,7 @@ QList<QGraphicsItem *> QgsLayoutMouseHandles::sceneItemsAtPoint( QPointF scenePo
   {
     items = mLayout->items( scenePoint );
   }
-  items.erase( std::remove_if( items.begin(), items.end(), []( QGraphicsItem *item ) {
-                 return !dynamic_cast<QgsLayoutItem *>( item );
-               } ),
-               items.end() );
+  items.erase( std::remove_if( items.begin(), items.end(), []( QGraphicsItem *item ) { return !dynamic_cast<QgsLayoutItem *>( item ); } ), items.end() );
 
   return items;
 }
@@ -179,10 +176,14 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   switch ( mode )
   {
     case Item:
-      snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr, snapVertical ? mVerticalSnapLine : nullptr, &layoutItemsToExclude ).topLeft();
+      snappedPoint
+        = mLayout->snapper()
+            .snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr, snapVertical ? mVerticalSnapLine : nullptr, &layoutItemsToExclude )
+            .topLeft();
       break;
     case Point:
-      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr, snapVertical ? mVerticalSnapLine : nullptr, &layoutItemsToExclude );
+      snappedPoint
+        = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr, snapVertical ? mVerticalSnapLine : nullptr, &layoutItemsToExclude );
       break;
   }
 

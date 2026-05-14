@@ -13,8 +13,11 @@ __copyright__ = "Copyright 2016, Even Rouault"
 import os
 import shutil
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.core import QgsProject, QgsSettings, QgsWkbTypes
+from qgis.gui import QgsFileWidget, QgsNewGeoPackageLayerDialog
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import (
     QComboBox,
@@ -23,10 +26,7 @@ from qgis.PyQt.QtWidgets import (
     QToolButton,
     QTreeWidget,
 )
-from qgis.core import QgsProject, QgsSettings, QgsWkbTypes
-from qgis.gui import QgsFileWidget, QgsNewGeoPackageLayerDialog
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -34,17 +34,10 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestPyQgsNewGeoPackageLayerDialog(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(
-            "QGIS_TestPyQgsNewGeoPackageLayerDialog.com"
-        )
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsNewGeoPackageLayerDialog")
-        QgsSettings().clear()
         start_app()
         cls.basetestpath = tempfile.mkdtemp()
 

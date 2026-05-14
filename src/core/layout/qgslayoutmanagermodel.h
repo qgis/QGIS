@@ -50,7 +50,6 @@ class CORE_EXPORT QgsLayoutManagerModel : public QgsProjectStoredObjectManagerMo
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -61,7 +60,7 @@ class CORE_EXPORT QgsLayoutManagerModel : public QgsProjectStoredObjectManagerMo
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutManagerModel, Role ) : int
     {
-      Layout SIP_MONKEYPATCH_COMPAT_NAME(LayoutRole) = Qt::UserRole + 1, //!< Layout object
+      Layout SIP_MONKEYPATCH_COMPAT_NAME( LayoutRole ) = Qt::UserRole + 1, //!< Layout object
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -94,7 +93,6 @@ class CORE_EXPORT QgsLayoutManagerModel : public QgsProjectStoredObjectManagerMo
      * \see setAllowEmptyLayout()
      */
     bool allowEmptyLayout() const { return allowEmptyObject(); }
-
 };
 
 
@@ -115,12 +113,11 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QgsProjectStoredObjectMana
 #endif
     Q_OBJECT
   public:
-
     //! Available filter flags for filtering the model
     enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
       FilterPrintLayouts = 1 << 1, //!< Includes print layouts
-      FilterReports = 1 << 2, //!< Includes reports
+      FilterReports = 1 << 2,      //!< Includes reports
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
@@ -145,13 +142,10 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QgsProjectStoredObjectMana
     void setFilters( QgsLayoutManagerProxyModel::Filters filters );
 
   protected:
-
     bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
-
     Filters mFilters = Filters( FilterPrintLayouts | FilterReports );
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutManagerProxyModel::Filters )

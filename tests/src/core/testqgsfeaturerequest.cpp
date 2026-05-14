@@ -45,20 +45,16 @@ class TestQgsFeatureRequest : public QObject
 };
 
 void TestQgsFeatureRequest::initTestCase()
-{
-}
+{}
 
 void TestQgsFeatureRequest::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsFeatureRequest::init()
-{
-}
+{}
 
 void TestQgsFeatureRequest::cleanup()
-{
-}
+{}
 
 void TestQgsFeatureRequest::testDefaultConstructed( const QgsFeatureRequest &f )
 {

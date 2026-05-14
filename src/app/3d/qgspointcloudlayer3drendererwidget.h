@@ -15,19 +15,15 @@
 #ifndef QGSPOINTCLOUDLAYER3DRENDERERWIDGET_H
 #define QGSPOINTCLOUDLAYER3DRENDERERWIDGET_H
 
-
-#include <memory>
-
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudlayer3drenderer.h"
 
 class QCheckBox;
 
 class QgsPointCloudLayer;
 class QgsMapCanvas;
 class QgsPointCloud3DSymbolWidget;
+class QgsPointCloudLayer3DRenderer;
 
 //! Widget for configuration of 3D renderer of a point cloud layer
 class QgsPointCloudLayer3DRendererWidget : public QgsMapLayerConfigWidget

@@ -21,12 +21,17 @@
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgswindowmanagerinterface.h"
 
 #include <QScrollBar>
+#include <QString>
 
 #include "moc_qgsstyleitemslistwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsReadOnlyStyleModel
@@ -35,18 +40,15 @@
 ///@cond PRIVATE
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyleModel *sourceModel, QObject *parent )
   : QgsStyleProxyModel( sourceModel, parent )
-{
-}
+{}
 
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
-{
-}
+{}
 
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsCombinedStyleModel *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
-{
-}
+{}
 
 Qt::ItemFlags QgsReadOnlyStyleModel::flags( const QModelIndex &index ) const
 {
@@ -73,8 +75,7 @@ QVariant QgsReadOnlyStyleModel::data( const QModelIndex &index, int role ) const
 
 QgsStyleModelDelegate::QgsStyleModelDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QSize QgsStyleModelDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -237,8 +238,7 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 {
   mStyle = style;
 
-  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsProject::instance()->styleSettings()->combinedStyleModel(), this )
-                                              : new QgsReadOnlyStyleModel( mStyle, this );
+  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsProject::instance()->styleSettings()->combinedStyleModel(), this ) : new QgsReadOnlyStyleModel( mStyle, this );
 
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
@@ -254,12 +254,8 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 
   mSymbolTreeView->setSelectionModel( viewSymbols->selectionModel() );
   connect( viewSymbols->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsStyleItemsListWidget::onSelectionChanged );
-  connect( viewSymbols, &QListView::activated, this, [this]( const QModelIndex &index ) {
-    onSelectionChanged( index, QModelIndex() );
-  } );
-  connect( mSymbolTreeView, &QTreeView::activated, this, [this]( const QModelIndex &index ) {
-    onSelectionChanged( index, QModelIndex() );
-  } );
+  connect( viewSymbols, &QListView::activated, this, [this]( const QModelIndex &index ) { onSelectionChanged( index, QModelIndex() ); } );
+  connect( mSymbolTreeView, &QTreeView::activated, this, [this]( const QModelIndex &index ) { onSelectionChanged( index, QModelIndex() ); } );
 
   populateGroups();
   connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleItemsListWidget::groupsCombo_currentIndexChanged );
@@ -318,6 +314,13 @@ void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
         groupsCombo->setItemText( allGroup, tr( "All 3D Symbols" ) );
       break;
 
+    case QgsStyle::MaterialSettingsEntity:
+      btnSaveSymbol->setText( tr( "Save Material…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save material to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Materials" ) );
+      break;
+
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;
@@ -337,6 +340,13 @@ void QgsStyleItemsListWidget::setEntityTypes( const QList<QgsStyle::StyleEntity>
     btnSaveSymbol->setToolTip( tr( "Save label settings or text format to styles" ) );
     if ( allGroup >= 0 )
       groupsCombo->setItemText( allGroup, tr( "All Settings" ) );
+  }
+  else if ( filters.length() == 2 && filters.contains( QgsStyle::Symbol3DEntity ) && filters.contains( QgsStyle::MaterialSettingsEntity ) )
+  {
+    btnSaveSymbol->setText( tr( "Save Symbol" ) );
+    btnSaveSymbol->setToolTip( tr( "Save 3D symbol or material to styles" ) );
+    if ( allGroup >= 0 )
+      groupsCombo->setItemText( allGroup, tr( "All Symbols" ) );
   }
 }
 
@@ -397,6 +407,11 @@ QgsStyle::StyleEntity QgsStyleItemsListWidget::currentEntityType() const
   return static_cast<QgsStyle::StyleEntity>( mModel->data( index, static_cast<int>( QgsStyleModel::CustomRole::Type ) ).toInt() );
 }
 
+QgsStyleProxyModel *QgsStyleItemsListWidget::proxyModel()
+{
+  return mModel;
+}
+
 void QgsStyleItemsListWidget::showEvent( QShowEvent *event )
 {
   // restore header sizes on show event -- because this widget is used in multiple places simultaneously
@@ -448,6 +463,10 @@ void QgsStyleItemsListWidget::populateGroups()
         allText = tr( "All 3D Symbols" );
         break;
 
+      case QgsStyle::MaterialSettingsEntity:
+        allText = tr( "All Materials" );
+        break;
+
       case QgsStyle::TagEntity:
       case QgsStyle::SmartgroupEntity:
         break;
@@ -483,8 +502,7 @@ void QgsStyleItemsListWidget::populateGroups()
   }
   groupsCombo->blockSignals( false );
 
-  const QgsSettings settings;
-  index = settings.value( u"qgis/symbolsListGroupsIndex"_s, 0 ).toInt();
+  index = QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->value();
   groupsCombo->setCurrentIndex( index );
 
   mUpdatingGroups = false;
@@ -545,9 +563,7 @@ void QgsStyleItemsListWidget::openStyleManager()
   // open as part of a modal dialog, then we MUST use another modal dialog or the result will
   // not be focusable!
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  if ( !panel || !panel->dockMode()
-       || !QgsGui::windowManager()
-       || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
+  if ( !panel || !panel->dockMode() || !QgsGui::windowManager() || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
   {
     // fallback to modal dialog
     std::unique_ptr< QgsStyleManagerDialog > dlg;
@@ -584,6 +600,5 @@ void QgsStyleItemsListWidget::onSelectionChanged( const QModelIndex &index, cons
 
 void QgsStyleItemsListWidget::groupsCombo_currentIndexChanged( int index )
 {
-  QgsSettings settings;
-  settings.setValue( u"qgis/symbolsListGroupsIndex"_s, index );
+  QgsSettingsRegistryCore::settingsSymbolsListGroupsIndex->setValue( index );
 }

@@ -23,8 +23,11 @@
 #include <QItemDelegate>
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <QString>
 
 #include "moc_qgsabstractdbsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchColumnAll = new QgsSettingsEntryBool( u"%1/searchColumnAll"_s, QgsSettingsTree::sTreeWindowState );
 const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( u"%1/searchColumn"_s, QgsSettingsTree::sTreeWindowState, -1 );
@@ -57,12 +60,8 @@ QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::Windo
   mBuildQueryButton->setDisabled( true );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
 
-  connect( mTablesTreeView, &QTreeView::clicked, this, [this]( const QModelIndex &index ) {
-    treeviewClicked( mProxyModel->mapToSource( index ) );
-  } );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [this]( const QModelIndex &index ) {
-    treeviewDoubleClicked( mProxyModel->mapToSource( index ) );
-  } );
+  connect( mTablesTreeView, &QTreeView::clicked, this, [this]( const QModelIndex &index ) { treeviewClicked( mProxyModel->mapToSource( index ) ); } );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [this]( const QModelIndex &index ) { treeviewDoubleClicked( mProxyModel->mapToSource( index ) ); } );
 
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, [this]() { setSql( mProxyModel->mapToSource( mTablesTreeView->currentIndex() ) ); } );
 }

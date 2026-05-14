@@ -17,6 +17,7 @@
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 #include "qgsvirtualpointcloudprovider.h"
 
@@ -58,24 +59,19 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
     createChunkedEntityForSubIndex( i );
   }
 
-  if ( provider()->overview() )
+  const QVector<QgsPointCloudIndex> overviews( provider()->overviews() );
+  for ( int i = 0; i < overviews.size(); ++i )
   {
-    mOverviewEntity = new QgsPointCloudLayerChunkedEntity(
-      mapSettings(),
-      mLayer,
-      provider()->overview(),
-      mCoordinateTransform,
-      dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
-      mMaximumScreenSpaceError,
-      false,
-      mZValueScale,
-      mZValueOffset,
-      mPointBudget
+    // Overview indexes start at -2 and decrease, see QgsPointCloudLayerChunkedEntity::resolveIndex()
+    const int ovId = -i - 2;
+    QgsPointCloudLayerChunkedEntity *ovEnt(
+      new QgsPointCloudLayerChunkedEntity( mapSettings(), mLayer, ovId, mCoordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenSpaceError, false, mZValueScale, mZValueOffset, mPointBudget )
     );
-    mOverviewEntity->setParent( this );
-    connect( mOverviewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
-    connect( mOverviewEntity, &QgsChunkedEntity::newEntityCreated, this, &Qgs3DMapSceneEntity::newEntityCreated );
-    emit newEntityCreated( mOverviewEntity );
+    ovEnt->setParent( this );
+    connect( ovEnt, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
+    connect( ovEnt, &QgsChunkedEntity::newEntityCreated, this, &Qgs3DMapSceneEntity::newEntityCreated );
+    mOverviewEntities.append( ovEnt );
+    emit newEntityCreated( ovEnt );
   }
 
   // this is a rather arbitrary point, it could be somewhere else, ideally near the actual data
@@ -83,7 +79,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
 
   mBboxesEntity = new QgsChunkBoundsEntity( boundsEntityOrigin, this );
   updateBboxEntity();
-  connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
+  connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), [p = provider()]( int i ) { p->loadSubIndex( i ); }, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
 }
 
@@ -92,8 +88,8 @@ QgsVirtualPointCloudEntity::~QgsVirtualPointCloudEntity()
   qDeleteAll( mChunkedEntitiesMap );
   mChunkedEntitiesMap.clear();
 
-  delete mOverviewEntity;
-  mOverviewEntity = nullptr;
+  qDeleteAll( mOverviewEntities );
+  mOverviewEntities.clear();
 }
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
@@ -115,18 +111,8 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   if ( !si.index() || mBboxes.at( i ).isEmpty() || !si.index().isValid() )
     return;
 
-  QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity(
-    mapSettings(),
-    mLayer,
-    si.index(),
-    mCoordinateTransform,
-    static_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
-    mMaximumScreenSpaceError,
-    mShowBoundingBoxes,
-    mZValueScale,
-    mZValueOffset,
-    mPointBudget
-  );
+  QgsPointCloudLayerChunkedEntity *newChunkedEntity
+    = new QgsPointCloudLayerChunkedEntity( mapSettings(), mLayer, i, mCoordinateTransform, static_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenSpaceError, mShowBoundingBoxes, mZValueScale, mZValueOffset, mPointBudget );
 
   mChunkedEntitiesMap.insert( i, newChunkedEntity );
   newChunkedEntity->setParent( this );
@@ -139,6 +125,11 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
 {
   QgsVector3D cameraPosMapCoords = QgsVector3D( sceneContext.cameraPos ) + mapSettings()->origin();
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
+
+  const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+  const double overviewSwitchingScale = rendererBehavior ? rendererBehavior->overviewSwitchingScale() : 1;
+  qsizetype subIndexesRendered = 0;
+
   for ( int i = 0; i < subIndexes.size(); ++i )
   {
     // If the chunked entity needs an update, do it even if it's occluded,
@@ -160,24 +151,34 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
     const float epsilon = static_cast<float>( std::min( box3D.width(), box3D.height() ) ) / SPAN;
     const float distance = static_cast<float>( box3D.distanceTo( cameraPosMapCoords ) );
     const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
-    constexpr float THRESHOLD = .2;
+    const double THRESHOLD = 0.2 / overviewSwitchingScale;
 
     // always display as bbox for the initial temporary camera pos (0, 0, 0)
     // then once the camera changes we display as bbox depending on screen space error
-    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < THRESHOLD;
-    if ( !displayAsBbox && !subIndexes.at( i ).index() )
-      emit subIndexNeedsLoading( i );
-
+    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < static_cast<float>( THRESHOLD );
+    if ( !displayAsBbox )
+    {
+      subIndexesRendered += 1;
+      if ( !subIndexes.at( i ).index() )
+        emit subIndexNeedsLoading( i );
+    }
     setRenderSubIndexAsBbox( i, displayAsBbox );
     if ( !displayAsBbox && mChunkedEntitiesMap.contains( i ) )
       mChunkedEntitiesMap[i]->handleSceneUpdate( sceneContext );
   }
   updateBboxEntity();
 
-  const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-  if ( provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
+  if ( !provider()->overviews().isEmpty()
+       && rendererBehavior
+       && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
-    mOverviewEntity->handleSceneUpdate( sceneContext );
+    const bool allSubIndexesVisible = !mChunkedEntitiesMap.isEmpty() && subIndexesRendered == mChunkedEntitiesMap.size();
+    for ( const auto &ovEnt : std::as_const( mOverviewEntities ) )
+    {
+      // no need to render the overview if all sub indexes are shown
+      ovEnt->setEnabled( !allSubIndexesVisible );
+      ovEnt->handleSceneUpdate( sceneContext );
+    }
   }
 }
 

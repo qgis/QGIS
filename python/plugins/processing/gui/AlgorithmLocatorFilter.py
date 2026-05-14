@@ -21,26 +21,26 @@ __copyright__ = "(C) 2017, Nyall Dawson"
 
 from qgis.core import (
     QgsApplication,
-    QgsProcessingAlgorithm,
-    QgsProcessingFeatureBasedAlgorithm,
+    QgsFields,
     QgsLocatorFilter,
     QgsLocatorResult,
-    QgsProcessing,
-    QgsWkbTypes,
     QgsMapLayerType,
-    QgsFields,
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingFeatureBasedAlgorithm,
     QgsStringUtils,
+    QgsWkbTypes,
 )
+from qgis.utils import iface
+
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.gui.algorithm_widget import AlgorithmWidget
+from processing.gui.AlgorithmExecutor import execute_in_place
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.MessageDialog import MessageDialog
-from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.gui.AlgorithmExecutor import execute_in_place
-from qgis.utils import iface
-from processing.core.ProcessingConfig import ProcessingConfig
 
 
 class AlgorithmLocatorFilter(QgsLocatorFilter):
-
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -124,26 +124,14 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
             dlg.setMessage(message)
             dlg.exec()
             return
-        dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
-        if not dlg:
-            dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
-        canvas = iface.mapCanvas()
-        prevMapTool = canvas.mapTool()
-        dlg.show()
-        dlg.exec()
-        if canvas.mapTool() != prevMapTool:
-            try:
-                canvas.mapTool().reset()
-            except:
-                pass
-            try:
-                canvas.setMapTool(prevMapTool)
-            except RuntimeError:
-                pass
+        widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
+        if not widget:
+            widget = AlgorithmWidget(alg, parent=iface.mainWindow())
+        widget.show()
+        widget.exec()
 
 
 class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
-
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -234,30 +222,8 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
             dlg.exec()
             return
 
-        in_place_input_parameter_name = "INPUT"
-        if hasattr(alg, "inputParameterName"):
-            in_place_input_parameter_name = alg.inputParameterName()
-
-        if [
-            d
-            for d in alg.parameterDefinitions()
-            if d.name() not in (in_place_input_parameter_name, "OUTPUT")
-        ]:
-            dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
-            if not dlg:
-                dlg = AlgorithmDialog(alg, True, parent=iface.mainWindow())
-            canvas = iface.mapCanvas()
-            prevMapTool = canvas.mapTool()
-            dlg.show()
-            dlg.exec()
-            if canvas.mapTool() != prevMapTool:
-                try:
-                    canvas.mapTool().reset()
-                except:
-                    pass
-                canvas.setMapTool(prevMapTool)
-        else:
-            feedback = MessageBarProgress(algname=alg.displayName())
-            parameters = {}
-            execute_in_place(alg, parameters, feedback=feedback)
-            feedback.close()
+        widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
+        if not widget:
+            widget = AlgorithmWidget(alg, True, parent=iface.mainWindow())
+        widget.show()
+        widget.exec()

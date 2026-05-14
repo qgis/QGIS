@@ -17,6 +17,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include <qgsrectangle.h>
 #include <qgspoint.h>
@@ -75,7 +77,9 @@ void TestQgsRectangle::isEmpty()
 void TestQgsRectangle::isNull()
 {
   QVERIFY( QgsRectangle().isNull() );
-  QVERIFY( QgsRectangle( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() ).isNull() );
+  QVERIFY(
+    QgsRectangle( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() ).isNull()
+  );
   QVERIFY( !QgsRectangle( 0.0, 0.0, 0.0, 0.0 ).isNull() );
   QVERIFY( !QgsRectangle( 1.0, 1.0, 1.0, 1.0 ).isNull() );
   QVERIFY( !QgsRectangle( std::numeric_limits<double>::max(), -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), -std::numeric_limits<double>::max() ).isNull() );

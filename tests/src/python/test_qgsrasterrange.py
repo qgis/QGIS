@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class TestQgsRasterRange(unittest.TestCase):
-
     def testBasic(self):
         range = QgsRasterRange(1, 5)
         self.assertEqual(range.min(), 1)

@@ -23,6 +23,9 @@
 #include "qgsrendercontext.h"
 
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QList<QgsMapClippingRegion> QgsMapClippingUtils::collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer )
 {
@@ -30,10 +33,7 @@ QList<QgsMapClippingRegion> QgsMapClippingUtils::collectClippingRegionsForLayer(
   const QList< QgsMapClippingRegion > regions = context.clippingRegions();
   res.reserve( regions.size() );
 
-  std::copy_if( regions.begin(), regions.end(), std::back_inserter( res ), [layer]( const QgsMapClippingRegion & region )
-  {
-    return region.appliesToLayer( layer );
-  } );
+  std::copy_if( regions.begin(), regions.end(), std::back_inserter( res ), [layer]( const QgsMapClippingRegion &region ) { return region.appliesToLayer( layer ); } );
 
   return res;
 }
@@ -56,7 +56,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
     }
     else
     {
-      result = result.intersection( region.geometry() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 
@@ -102,7 +102,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
     }
     else
     {
-      result = result.intersection( region.geometry() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 
@@ -159,7 +159,6 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
       case Qgis::LayerType::TiledScene:
         // for these layer types, we ignore the region's featureClip behavior.
         break;
-
     }
 
     shouldClip = true;
@@ -170,7 +169,7 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
     }
     else
     {
-      result = result.intersection( region.geometry() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 
@@ -196,8 +195,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
     // for labeling, we clip using either painter clip regions or intersects type regions.
     // unlike feature rendering, we clip features to painter clip regions for labeling, because
     // we want the label to sit within the clip region if possible
-    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly &&
-         region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipToIntersection )
+    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly && region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipToIntersection )
       continue;
 
     shouldClip = true;
@@ -208,7 +206,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
     }
     else
     {
-      result = result.intersection( region.geometry() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 

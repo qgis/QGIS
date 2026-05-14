@@ -436,7 +436,7 @@
 %Include auto_generated/pointcloud/qgspointcloudrendererpropertieswidget.sip
 %Include auto_generated/processing/qgsprocessingaggregatewidgets.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
-%Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
+%Include auto_generated/processing/qgsprocessingalgorithmwidgetbase.sip
 %Include auto_generated/processing/qgsprocessingbatchalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessingfavoritealgorithmmanager.sip
 %Include auto_generated/processing/qgsprocessinggui.sip
@@ -456,6 +456,7 @@
 %Include auto_generated/processing/qgsprocessingwidgetwrapper.sip
 %Include auto_generated/processing/models/qgsmodelarrowitem.sip
 %Include auto_generated/processing/models/qgsmodelcomponentgraphicitem.sip
+%Include auto_generated/processing/models/qgsmodeldesignerconfigwidget.sip
 %Include auto_generated/processing/models/qgsmodeldesignerdialog.sip
 %Include auto_generated/processing/models/qgsmodelgraphicitem.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsscene.sip

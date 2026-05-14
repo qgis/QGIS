@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsBabelFormatRegistry
 {
 %Docstring(signature="appended")
@@ -25,7 +27,6 @@ rather accessed through
 #include "qgsbabelformatregistry.h"
 %End
   public:
-
 
     QgsBabelFormatRegistry();
 %Docstring

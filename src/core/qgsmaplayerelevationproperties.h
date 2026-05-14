@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -88,9 +88,9 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      * \since QGIS 3.26
      */
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerElevationProperties, Property ) : int
-      {
-      ZOffset, //!< Z offset
-      ExtrusionHeight, //!< Extrusion height
+    {
+      ZOffset,                     //!< Z offset
+      ExtrusionHeight,             //!< Extrusion height
       RasterPerBandLowerElevation, //!< Lower elevation for each raster band \since QGIS 3.38
       RasterPerBandUpperElevation, //!< Upper elevation for each raster band \since QGIS 3.38
     };
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when z range context is modified.
+      FlagDontInvalidateCachedRendersWhenRangeChanges = 1 //!< Any cached rendering will not be invalidated when z range context is modified.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -350,12 +350,10 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     void copyCommonProperties( const QgsMapLayerElevationProperties *other );
 
   private:
-
     /**
      * Initializes property definitions.
      */
     static void initPropertyDefinitions();
-
 };
 
 #endif // QGSMAPLAYERELEVATIONPROPERTIES_H

@@ -15,22 +15,26 @@
 
 #include "qgspointcloud3dsymbol.h"
 
+#include "qgs3dutils.h"
 #include "qgscolorramptexture.h"
 #include "qgscolorutils.h"
 #include "qgsmaterial.h"
 
+#include <QString>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
+
+using namespace Qt::StringLiterals;
 
 // QgsPointCloud3DSymbol
 
 
 QgsPointCloud3DSymbol::QgsPointCloud3DSymbol()
   : QgsAbstract3DSymbol()
-{
-}
+{}
 
-QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol() {}
+QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol()
+{}
 
 void QgsPointCloud3DSymbol::setPointSize( float size )
 {
@@ -123,12 +127,18 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
   pcDestination->mVerticalTriangleFilter = mVerticalTriangleFilter;
 }
 
+void QgsPointCloud3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
+{
+  Q_UNUSED( materialSettings );
+  throw QgsNotSupportedException( u"QgsPointCloud3DSymbol does not support material settings"_s );
+}
+
+
 // QgsSingleColorPointCloud3DSymbol
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
   : QgsPointCloud3DSymbol()
-{
-}
+{}
 
 QString QgsSingleColorPointCloud3DSymbol::symbolType() const
 {
@@ -170,7 +180,8 @@ void QgsSingleColorPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
   mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );
-  Qt3DRender::QParameter *singleColorParameter = new Qt3DRender::QParameter( "u_singleColor", QVector3D( mSingleColor.redF(), mSingleColor.greenF(), mSingleColor.blueF() ) );
+  const QColor linearColor = Qgs3DUtils::srgbToLinear( mSingleColor );
+  Qt3DRender::QParameter *singleColorParameter = new Qt3DRender::QParameter( "u_singleColor", QVector3D( linearColor.redF(), linearColor.greenF(), linearColor.blueF() ) );
   mat->addParameter( singleColorParameter );
 }
 
@@ -178,8 +189,7 @@ void QgsSingleColorPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 
 QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol()
   : QgsPointCloud3DSymbol()
-{
-}
+{}
 
 QgsColorRampPointCloud3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
 {
@@ -261,6 +271,9 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
     colorRampTexture->addTextureImage( new QgsColorRampTexture( mColorRampShader, 1 ) );
     colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
     colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
+    // note -- this texture is an exception, we do NOT set it to srgb format as we do NOT want
+    // it linearised before sampling. That is because we need to do the interpolation on the ramp
+    // in SRGB color space. The shader converts the result after sampling the ramp to linear.
   }
 
   // Parameters
@@ -277,8 +290,7 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 
 QgsRgbPointCloud3DSymbol::QgsRgbPointCloud3DSymbol()
   : QgsPointCloud3DSymbol()
-{
-}
+{}
 
 QString QgsRgbPointCloud3DSymbol::symbolType() const
 {
@@ -454,8 +466,7 @@ void QgsRgbPointCloud3DSymbol::setBlueContrastEnhancement( QgsContrastEnhancemen
 
 QgsClassificationPointCloud3DSymbol::QgsClassificationPointCloud3DSymbol()
   : QgsPointCloud3DSymbol()
-{
-}
+{}
 
 QgsClassificationPointCloud3DSymbol *QgsClassificationPointCloud3DSymbol::clone() const
 {
@@ -581,6 +592,9 @@ void QgsClassificationPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
     colorRampTexture->addTextureImage( new QgsColorRampTexture( mColorRampShader, 1 ) );
     colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
     colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
+    // note -- this texture is an exception, we do NOT set it to srgb format as we do NOT want
+    // it linearised before sampling. That is because we need to do the interpolation on the ramp
+    // in SRGB color space. The shader converts the result after sampling the ramp to linear.
   }
 
   // Parameters

@@ -27,7 +27,9 @@ QgsLabelRemoveDuplicatesSettingsWidget::QgsLabelRemoveDuplicatesSettingsWidget( 
 
   setPanelTitle( tr( "Duplicate Removal" ) );
 
-  mNoRepeatDistUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mNoRepeatDistUnitWidget->setUnits(
+    QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches
+  );
 
   connect( mNoRepeatDistSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( !mBlockSignals )
@@ -62,8 +64,7 @@ QgsLabelThinningSettings QgsLabelRemoveDuplicatesSettingsWidget::settings() cons
 }
 
 void QgsLabelRemoveDuplicatesSettingsWidget::setGeometryType( Qgis::GeometryType )
-{
-}
+{}
 
 void QgsLabelRemoveDuplicatesSettingsWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {

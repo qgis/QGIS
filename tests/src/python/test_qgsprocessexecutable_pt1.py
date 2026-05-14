@@ -28,7 +28,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProcessExecutablePt1(QgisTestCase):
-
     TMP_DIR = ""
 
     @classmethod

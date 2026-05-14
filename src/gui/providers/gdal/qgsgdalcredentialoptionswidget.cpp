@@ -29,8 +29,11 @@
 #include <QComboBox>
 #include <QHoverEvent>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsgdalcredentialoptionswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsGdalCredentialOptionsModel
@@ -38,8 +41,7 @@
 
 QgsGdalCredentialOptionsModel::QgsGdalCredentialOptionsModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 int QgsGdalCredentialOptionsModel::columnCount( const QModelIndex & ) const
 {
@@ -112,9 +114,7 @@ QVariant QgsGdalCredentialOptionsModel::data( const QModelIndex &index, int role
           return option.first;
 
         case Column::Value:
-          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == "YES"_L1 ? tr( "Yes" ) : option.second == "NO"_L1 ? tr( "No" )
-                                                                                                                                        : option.second )
-                                                                 : option.second;
+          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == "YES"_L1 ? tr( "Yes" ) : option.second == "NO"_L1 ? tr( "No" ) : option.second ) : option.second;
 
         default:
           break;
@@ -313,8 +313,7 @@ void QgsGdalCredentialOptionsModel::setCredentialOptions( const QList<QPair<QStr
 
 QgsGdalCredentialOptionsDelegate::QgsGdalCredentialOptionsDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
 {
@@ -444,8 +443,7 @@ void QgsGdalCredentialOptionsDelegate::setModelData( QWidget *editor, QAbstractI
 
 QgsGdalCredentialOptionsRemoveOptionDelegate::QgsGdalCredentialOptionsRemoveOptionDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 bool QgsGdalCredentialOptionsRemoveOptionDelegate::eventFilter( QObject *obj, QEvent *event )
 {
@@ -501,7 +499,9 @@ QgsGdalCredentialOptionsWidget::QgsGdalCredentialOptionsWidget( QWidget *parent 
 {
   setupUi( this );
 
-  mLabelInfo->setText( tr( "Consult the <a href=\"%1\">GDAL documentation</a> for credential options." ).arg( "https://gdal.org/user/virtual_file_systems.html#drivers-supporting-virtual-file-systems"_L1 ) );
+  mLabelInfo->setText(
+    tr( "Consult the <a href=\"%1\">GDAL documentation</a> for credential options." ).arg( "https://gdal.org/user/virtual_file_systems.html#drivers-supporting-virtual-file-systems"_L1 )
+  );
   mLabelInfo->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mLabelInfo->setOpenExternalLinks( true );
 
@@ -622,8 +622,7 @@ void QgsGdalCredentialOptionsWidget::modelOptionsChanged()
           "OSS_SECRET_ACCESS_KEY",
           "OSS_ACCESS_KEY_ID",
           "SWIFT_AUTH_TOKEN",
-          "SWIFT_KEY"
-        } )
+          "SWIFT_KEY" } )
   {
     if ( !options.value( key ).toString().isEmpty() )
     {

@@ -19,9 +19,8 @@ email                : brush.tyler@gmail.com
 """
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QTableView, QAbstractItemView, QApplication, QAction
-from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard
-
+from qgis.PyQt.QtGui import QClipboard, QCursor, QKeySequence
+from qgis.PyQt.QtWidgets import QAbstractItemView, QAction, QApplication, QTableView
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import DbError, Table
@@ -29,7 +28,6 @@ from .dlg_db_error import DlgDbError
 
 
 class TableViewer(QTableView):
-
     def __init__(self, parent=None):
         QTableView.__init__(self, parent)
         self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)

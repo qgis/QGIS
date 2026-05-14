@@ -19,6 +19,10 @@
 #include "qgsexpressionutils.h"
 #include "qgssqlexpressioncompiler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
   , mGeometryColumn( source->mGeometryColumn )
@@ -27,8 +31,7 @@ QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeature
   , mRequestedGeomType( source->mRequestedGeomType )
   , mRequestedSrid( source->mRequestedSrid )
   , mDetectedSrid( source->mDetectedSrid )
-{
-}
+{}
 
 QString QgsPostgresExpressionCompiler::quotedIdentifier( const QString &identifier )
 {

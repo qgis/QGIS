@@ -45,7 +45,12 @@ class GUI_EXPORT QgsDatabaseQueryHistoryWidget : public QgsHistoryWidget
      * If no \a registry is specified then the singleton QgsHistoryProviderRegistry from QgsGui::historyProviderRegistry()
      * will be used.
      */
-    QgsDatabaseQueryHistoryWidget( Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = nullptr, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QWidget *parent = nullptr );
+    QgsDatabaseQueryHistoryWidget(
+      Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
+      QgsHistoryProviderRegistry *registry = nullptr,
+      const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
+      QWidget *parent = nullptr
+    );
 
     /**
      * Causes the widget to emit the sqlTriggered() signal.

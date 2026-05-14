@@ -34,8 +34,8 @@ class QgsFeedback;
  */
 struct CORE_EXPORT QgsMetadataSearchContext
 {
-  //! Coordinate transform context
-  QgsCoordinateTransformContext transformContext;
+    //! Coordinate transform context
+    QgsCoordinateTransformContext transformContext;
 };
 
 /**
@@ -55,18 +55,16 @@ struct CORE_EXPORT QgsMetadataSearchContext
  *
  * \since QGIS 3.28
  */
-class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
+class CORE_EXPORT QgsLayerMetadataProviderResult : public QgsLayerMetadata
 {
-
   public:
-
     /**
      * Constructor for QgsLayerMetadataProviderResult.
      * \param metadata layer metadata.
      */
     QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata );
 
-    QgsLayerMetadataProviderResult( ) = default;
+    QgsLayerMetadataProviderResult() = default;
 
     /**
      * Returns the layer extent in EPSG:4326
@@ -140,7 +138,6 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
 
 
   private:
-
     //! Layer spatial extent of the layer in EPSG:4326
     QgsPolygon mGeographicExtent;
     //! Layer geometry type (Point, Polygon, Linestring)
@@ -171,9 +168,7 @@ Q_DECLARE_METATYPE( QgsLayerMetadataProviderResult )
  */
 class CORE_EXPORT QgsLayerMetadataSearchResults
 {
-
   public:
-
     /**
      * Returns the list of metadata results.
      */
@@ -195,7 +190,6 @@ class CORE_EXPORT QgsLayerMetadataSearchResults
     void addError( const QString &error );
 
   private:
-
     //! List of metadata that matched the search criteria
     QList<QgsLayerMetadataProviderResult> mMetadata;
     //! List of errors occurred while searching
@@ -212,9 +206,7 @@ Q_DECLARE_METATYPE( QgsLayerMetadataSearchResults )
  */
 class CORE_EXPORT QgsAbstractLayerMetadataProvider
 {
-
   public:
-
     virtual ~QgsAbstractLayerMetadataProvider() = default;
 
     /**
@@ -231,8 +223,10 @@ class CORE_EXPORT QgsAbstractLayerMetadataProvider
      * \param feedback can be used to monitor and control the search process.
      * \returns a QgsLayerMetadataSearchResult object with a list of metadata and errors
      */
-    virtual QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const = 0;
-
+    virtual QgsLayerMetadataSearchResults search(
+      const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr
+    ) const
+      = 0;
 };
 
 #endif // QGSABSTRACTLAYERMETADATAPROVIDER_H

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsStacObject
     {
       sipType = NULL;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:

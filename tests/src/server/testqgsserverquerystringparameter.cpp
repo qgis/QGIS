@@ -19,6 +19,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsserverquerystringparameter.h"
 #include "qgsserverapicontext.h"
@@ -79,12 +81,10 @@ void TestQgsServerQueryStringParameter::cleanupTestCase()
 }
 
 void TestQgsServerQueryStringParameter::init()
-{
-}
+{}
 
 void TestQgsServerQueryStringParameter::cleanup()
-{
-}
+{}
 
 void TestQgsServerQueryStringParameter::testArguments()
 {

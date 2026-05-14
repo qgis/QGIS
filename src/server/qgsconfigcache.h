@@ -29,7 +29,10 @@
 #include <QDomDocument>
 #include <QFileSystemWatcher>
 #include <QObject>
+#include <QString>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 #ifndef SIP_RUN
 

@@ -23,7 +23,6 @@ vertex only.
 #include "qgslinesegment.h"
 %End
   public:
-
     QgsLineSegment2D( const QgsPointXY &start, const QgsPointXY &end ) /HoldGIL/;
 %Docstring
 Constructor for a QgsLineSegment2D from the specified ``start`` point to

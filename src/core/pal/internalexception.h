@@ -30,9 +30,10 @@
 #ifndef INTERNAL_EXCEPTION_H
 #define INTERNAL_EXCEPTION_H
 
-#define SIP_NO_FILE
 
 #include <exception>
+
+#define SIP_NO_FILE
 
 namespace pal
 {
@@ -44,17 +45,13 @@ namespace pal
   class InternalException
   {
     public:
-
       /**
        * \brief Thrown when something is added in a Full set
        * \ingroup core
       */
       class Full : public std::exception
       {
-          const char *what() const throw() override
-          {
-            return "This set is full...";
-          }
+          const char *what() const throw() override { return "This set is full..."; }
       };
 
       /**
@@ -63,10 +60,7 @@ namespace pal
       */
       class Empty : public std::exception
       {
-          const char *what() const throw() override
-          {
-            return "This set is empty...";
-          }
+          const char *what() const throw() override { return "This set is empty..."; }
       };
 
       /**
@@ -75,10 +69,7 @@ namespace pal
       */
       class WrongGeometry : public std::exception
       {
-          const char *what() const throw() override
-          {
-            return "GeometryTypeId is not expected...";
-          }
+          const char *what() const throw() override { return "GeometryTypeId is not expected..."; }
       };
 
       /**
@@ -87,10 +78,7 @@ namespace pal
       */
       class UnknownGeometry : public std::exception
       {
-          const char *what() const throw() override
-          {
-            return "Geometry Type is unknown";
-          }
+          const char *what() const throw() override { return "Geometry Type is unknown"; }
       };
 
 
@@ -100,13 +88,10 @@ namespace pal
       */
       class NoLabelPosition : public std::exception
       {
-          const char *what() const throw() override
-          {
-            return "No way to compute positions";
-          }
+          const char *what() const throw() override { return "No way to compute positions"; }
       };
   };
 
-} // end namespace
+} //namespace pal
 
 #endif

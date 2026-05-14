@@ -19,10 +19,16 @@
 #include "qgscontrastenhancement.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgsrasterrendererregistry.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 
+#include <QString>
+
 #include "moc_qgsrasterrenderingoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsRasterRenderingOptionsWidget
@@ -49,9 +55,9 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
   mZoomedOutResamplingComboBox->insertItem( 1, tr( "Bilinear (2x2 Kernel)" ), u"bilinear"_s );
   mZoomedOutResamplingComboBox->insertItem( 2, tr( "Cubic (4x4 Kernel)" ), u"cubic"_s );
 
-  QString zoomedInResampling = settings.value( u"/Raster/defaultZoomedInResampling"_s, u"nearest neighbour"_s ).toString();
+  QString zoomedInResampling = QgsRasterLayer::settingsRasterDefaultZoomedInResampling->value();
   mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( zoomedInResampling ) );
-  QString zoomedOutResampling = settings.value( u"/Raster/defaultZoomedOutResampling"_s, u"nearest neighbour"_s ).toString();
+  QString zoomedOutResampling = QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->value();
   mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( zoomedOutResampling ) );
 
   spnOversampling->setValue( QgsRasterLayer::settingsRasterDefaultOversampling->value() );
@@ -66,12 +72,12 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
   initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, u"multiBandSingleByte"_s, QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS ) );
   initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, u"multiBandMultiByte"_s, QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS ) );
 
-  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * settings.value( u"/Raster/cumulativeCutLower"_s, QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER ) ).toDouble() );
+  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * QgsRasterMinMaxOrigin::settingsCumulativeCutLower->value() );
   mRasterCumulativeCutLowerDoubleSpinBox->setClearValue( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER * 100 );
-  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * settings.value( u"/Raster/cumulativeCutUpper"_s, QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER ) ).toDouble() );
+  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->value() );
   mRasterCumulativeCutUpperDoubleSpinBox->setClearValue( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER * 100 );
 
-  spnThreeBandStdDev->setValue( settings.value( u"/Raster/defaultStandardDeviation"_s, QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR ).toDouble() );
+  spnThreeBandStdDev->setValue( QgsRasterRendererRegistry::settingsDefaultStandardDeviation->value() );
   spnThreeBandStdDev->setClearValue( QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR );
 }
 
@@ -88,8 +94,8 @@ void QgsRasterRenderingOptionsWidget::apply()
   settings.setValue( u"/Raster/defaultGreenBand"_s, spnGreen->value() );
   settings.setValue( u"/Raster/defaultBlueBand"_s, spnBlue->value() );
 
-  settings.setValue( u"/Raster/defaultZoomedInResampling"_s, mZoomedInResamplingComboBox->currentData().toString() );
-  settings.setValue( u"/Raster/defaultZoomedOutResampling"_s, mZoomedOutResamplingComboBox->currentData().toString() );
+  QgsRasterLayer::settingsRasterDefaultZoomedInResampling->setValue( mZoomedInResamplingComboBox->currentData().toString() );
+  QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->setValue( mZoomedOutResamplingComboBox->currentData().toString() );
 
   QgsRasterLayer::settingsRasterDefaultOversampling->setValue( spnOversampling->value() );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->setValue( mCbEarlyResampling->isChecked() );
@@ -102,51 +108,43 @@ void QgsRasterRenderingOptionsWidget::apply()
   saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, u"multiBandSingleByte"_s );
   saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, u"multiBandMultiByte"_s );
 
-  settings.setValue( u"/Raster/cumulativeCutLower"_s, mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
-  settings.setValue( u"/Raster/cumulativeCutUpper"_s, mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->setValue( mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->setValue( mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
-  settings.setValue( u"/Raster/defaultStandardDeviation"_s, spnThreeBandStdDev->value() );
+  QgsRasterRendererRegistry::settingsDefaultStandardDeviation->setValue( spnThreeBandStdDev->value() );
 }
 
 void QgsRasterRenderingOptionsWidget::initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal )
 {
-  QgsSettings settings;
-
   //add items to the color enhanceContrast combo boxes
   cbox->addItem( tr( "No Stretch" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::NoEnhancement ) );
   cbox->addItem( tr( "Stretch to MinMax" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchToMinimumMaximum ) );
   cbox->addItem( tr( "Stretch and Clip to MinMax" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ) );
   cbox->addItem( tr( "Clip to MinMax" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::ClipToMinimumMaximum ) );
 
-  QString contrastEnhancement = settings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();
+  const QString contrastEnhancement = QgsRasterLayer::settingsRasterDefaultContrastEnhancementAlgorithm->valueWithDefaultOverride( defaultVal, { name } );
   cbox->setCurrentIndex( cbox->findData( contrastEnhancement ) );
 }
 
 void QgsRasterRenderingOptionsWidget::saveContrastEnhancement( QComboBox *cbox, const QString &name )
 {
-  QgsSettings settings;
-  QString value = cbox->currentData().toString();
-  settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
+  QgsRasterLayer::settingsRasterDefaultContrastEnhancementAlgorithm->setValue( cbox->currentData().toString(), { name } );
 }
 
 void QgsRasterRenderingOptionsWidget::initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal )
 {
-  QgsSettings settings;
-
   //add items to the color limitsContrast combo boxes
   cbox->addItem( tr( "Cumulative Pixel Count Cut" ), QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::CumulativeCut ) );
   cbox->addItem( tr( "Minimum / Maximum" ), QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::MinimumMaximum ) );
   cbox->addItem( tr( "Mean +/- Standard Deviation" ), QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::StdDev ) );
 
-  QString contrastLimits = settings.value( "/Raster/defaultContrastEnhancementLimits/" + name, defaultVal ).toString();
+  const QString contrastLimits = QgsRasterLayer::settingsRasterDefaultContrastEnhancementLimits->valueWithDefaultOverride( defaultVal, { name } );
   cbox->setCurrentIndex( cbox->findData( contrastLimits ) );
 }
 
 void QgsRasterRenderingOptionsWidget::saveMinMaxLimits( QComboBox *cbox, const QString &name )
 {
-  QgsSettings settings;
-  QString value = cbox->currentData().toString();
-  settings.setValue( "/Raster/defaultContrastEnhancementLimits/" + name, value );
+  QgsRasterLayer::settingsRasterDefaultContrastEnhancementLimits->setValue( cbox->currentData().toString(), { name } );
 }
 
 
@@ -155,8 +153,7 @@ void QgsRasterRenderingOptionsWidget::saveMinMaxLimits( QComboBox *cbox, const Q
 //
 QgsRasterRenderingOptionsFactory::QgsRasterRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Raster" ), QIcon(), u"raster"_s )
-{
-}
+{}
 
 QIcon QgsRasterRenderingOptionsFactory::icon() const
 {

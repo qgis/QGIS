@@ -29,7 +29,6 @@ order to update the listed schemas,
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       Empty,

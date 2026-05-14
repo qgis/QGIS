@@ -37,12 +37,16 @@
 #include "qgsrectangle.h"
 #include "qgsscreenhelper.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QClipboard>
 #include <QMenu>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgslayoutview.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -1093,10 +1097,7 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
     }
     event->accept();
   }
-  else if ( event->key() == Qt::Key_Left
-            || event->key() == Qt::Key_Right
-            || event->key() == Qt::Key_Up
-            || event->key() == Qt::Key_Down )
+  else if ( event->key() == Qt::Key_Left || event->key() == Qt::Key_Right || event->key() == Qt::Key_Up || event->key() == Qt::Key_Down )
   {
     QgsLayout *l = currentLayout();
     const QList<QgsLayoutItem *> layoutItemList = l->selectedLayoutItems();
@@ -1213,9 +1214,8 @@ void QgsLayoutView::pushStatusMessage( const QString &message )
 void QgsLayoutView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
-  QgsSettings settings;
-  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
-  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
+  double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
+  bool reverseZoom = QgsSettingsRegistryGui::settingsReverseWheelZoom->value();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps

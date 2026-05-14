@@ -13,21 +13,21 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 from shutil import rmtree
 
-import unittest
-from qgis.testing import start_app, QgisTestCase
-from qgis.core import (
-    QgsApplication,
-    QgsRasterLayer,
-    QgsDataSourceUri,
-    QgsAuthMethodConfig,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-)
-from qgis import processing
 from grassprovider.grass_provider import GrassProvider
 from grassprovider.grass_utils import GrassUtils
+from qgis import processing
+from qgis.core import (
+    QgsApplication,
+    QgsAuthMethodConfig,
+    QgsDataSourceUri,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsRasterLayer,
+)
+from qgis.testing import QgisTestCase, start_app
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 os.environ["QGIS_AUTH_DB_DIR_PATH"] = QGIS_AUTH_DB_DIR_PATH
@@ -36,7 +36,6 @@ start_app()
 
 
 class TestProcessingGrassAlgsPostgreRasterProvider(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

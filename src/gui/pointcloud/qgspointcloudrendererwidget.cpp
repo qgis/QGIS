@@ -19,8 +19,7 @@
 QgsPointCloudRendererWidget::QgsPointCloudRendererWidget( QgsPointCloudLayer *layer, QgsStyle *style )
   : mLayer( layer )
   , mStyle( style )
-{
-}
+{}
 
 void QgsPointCloudRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {

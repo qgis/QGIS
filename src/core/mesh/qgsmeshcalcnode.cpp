@@ -23,14 +23,12 @@
 #include "qgsmeshmemorydataprovider.h"
 
 QgsMeshCalcNode::QgsMeshCalcNode()
-{
-}
+{}
 
 QgsMeshCalcNode::QgsMeshCalcNode( double number )
   : mType( tNumber )
   , mNumber( number )
-{
-}
+{}
 
 
 QgsMeshCalcNode::QgsMeshCalcNode( Operator op, QgsMeshCalcNode *left, QgsMeshCalcNode *right )
@@ -38,19 +36,15 @@ QgsMeshCalcNode::QgsMeshCalcNode( Operator op, QgsMeshCalcNode *left, QgsMeshCal
   , mLeft( left )
   , mRight( right )
   , mOperator( op )
-{
-}
+{}
 
-QgsMeshCalcNode::QgsMeshCalcNode( QgsMeshCalcNode *condition /* bool condition */,
-                                  QgsMeshCalcNode *left /*if true */,
-                                  QgsMeshCalcNode *right /* if false */ )
+QgsMeshCalcNode::QgsMeshCalcNode( QgsMeshCalcNode *condition /* bool condition */, QgsMeshCalcNode *left /*if true */, QgsMeshCalcNode *right /* if false */ )
   : mType( tOperator )
   , mLeft( left )
   , mRight( right )
   , mCondition( condition )
   , mOperator( opIF )
-{
-}
+{}
 
 QgsMeshCalcNode::QgsMeshCalcNode( const QString &datasetGroupName )
   : mType( tDatasetGroupRef )
@@ -225,7 +219,7 @@ QStringList QgsMeshCalcNode::notAggregatedUsedDatasetGroupNames() const
   return res;
 }
 
-bool QgsMeshCalcNode::calculate( const  QgsMeshCalcUtils &dsu, QgsMeshMemoryDatasetGroup &result, bool isAggregate ) const
+bool QgsMeshCalcNode::calculate( const QgsMeshCalcUtils &dsu, QgsMeshMemoryDatasetGroup &result, bool isAggregate ) const
 {
   if ( mType == tDatasetGroupRef )
   {
@@ -237,10 +231,7 @@ bool QgsMeshCalcNode::calculate( const  QgsMeshCalcUtils &dsu, QgsMeshMemoryData
     QgsMeshMemoryDatasetGroup leftDatasetGroup( "left", dsu.outputType() );
     QgsMeshMemoryDatasetGroup rightDatasetGroup( "right", dsu.outputType() );
 
-    bool currentOperatorIsAggregate = mOperator == opSUM_AGGR ||
-                                      mOperator == opMAX_AGGR ||
-                                      mOperator == opMIN_AGGR ||
-                                      mOperator == opAVG_AGGR;
+    bool currentOperatorIsAggregate = mOperator == opSUM_AGGR || mOperator == opMAX_AGGR || mOperator == opMIN_AGGR || mOperator == opAVG_AGGR;
 
     if ( !mLeft || !mLeft->calculate( dsu, leftDatasetGroup, isAggregate || currentOperatorIsAggregate ) )
     {
@@ -353,7 +344,7 @@ bool QgsMeshCalcNode::calculate( const  QgsMeshCalcUtils &dsu, QgsMeshMemoryData
 
 QgsMeshCalcNode *QgsMeshCalcNode::parseMeshCalcString( const QString &str, QString &parserErrorMsg )
 {
-  extern QgsMeshCalcNode *localParseMeshCalcString( const QString & str, QString & parserErrorMsg );
+  extern QgsMeshCalcNode *localParseMeshCalcString( const QString &str, QString &parserErrorMsg );
   return localParseMeshCalcString( str, parserErrorMsg );
 }
 
@@ -368,9 +359,7 @@ bool QgsMeshCalcNode::isNonTemporal() const
   switch ( mOperator )
   {
     case QgsMeshCalcNode::opIF:
-      return ( mLeft && mLeft->isNonTemporal() ) &&
-             ( mRight && mRight->isNonTemporal() &&
-               mCondition->isNonTemporal() );
+      return ( mLeft && mLeft->isNonTemporal() ) && ( mRight && mRight->isNonTemporal() && mCondition->isNonTemporal() );
       break;
     case QgsMeshCalcNode::opPLUS:
     case QgsMeshCalcNode::opMINUS:
@@ -390,8 +379,7 @@ bool QgsMeshCalcNode::isNonTemporal() const
     case QgsMeshCalcNode::opMIN:
     case QgsMeshCalcNode::opMAX:
     case QgsMeshCalcNode::opABS:
-      return ( mLeft && mLeft->isNonTemporal() ) &&
-             ( mRight && mRight->isNonTemporal() );
+      return ( mLeft && mLeft->isNonTemporal() ) && ( mRight && mRight->isNonTemporal() );
       break;
     case QgsMeshCalcNode::opSUM_AGGR:
     case QgsMeshCalcNode::opMAX_AGGR:

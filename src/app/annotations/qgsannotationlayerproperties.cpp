@@ -29,9 +29,12 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsannotationlayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( layer, canvas, u"AnnotationLayerProperties"_s, parent, flags )
@@ -177,7 +180,7 @@ void QgsAnnotationLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( u"working_with_vector_tiles/vector_tiles_properties.html"_s );
+    QgsHelp::openHelp( u"map_views/map_view.html#annotation-tools"_s );
   }
 }
 

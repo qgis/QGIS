@@ -23,48 +23,47 @@ import sys
 
 from qgis.core import (
     Qgis,
-    QgsRasterLayer,
-    QgsVectorLayer,
-    QgsMapLayer,
     QgsCoordinateReferenceSystem,
     QgsExpression,
-    QgsProject,
-    QgsRectangle,
-    QgsWkbTypes,
-    QgsVectorFileWriter,
+    QgsMapLayer,
     QgsProcessing,
-    QgsProcessingUtils,
-    QgsProcessingParameters,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterVectorLayer,
+    QgsProcessingParameterAnnotationLayer,
     QgsProcessingParameterBand,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterColor,
     QgsProcessingParameterCrs,
-    QgsProcessingParameterRange,
-    QgsProcessingParameterPoint,
-    QgsProcessingParameterGeometry,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterEnum,
-    QgsProcessingParameterExtent,
     QgsProcessingParameterExpression,
-    QgsProcessingParameterMatrix,
-    QgsProcessingParameterFile,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
-    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterFolderDestination,
-    QgsProcessingParameterRasterDestination,
-    QgsProcessingParameterPointCloudDestination,
-    QgsProcessingParameterString,
+    QgsProcessingParameterGeometry,
     QgsProcessingParameterMapLayer,
+    QgsProcessingParameterMatrix,
     QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterColor,
+    QgsProcessingParameterPoint,
+    QgsProcessingParameterPointCloudDestination,
     QgsProcessingParameterPointCloudLayer,
-    QgsProcessingParameterAnnotationLayer,
+    QgsProcessingParameterRange,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameters,
+    QgsProcessingParameterString,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingUtils,
+    QgsProject,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
-
 from qgis.PyQt.QtCore import QCoreApplication
 
 PARAMETER_NUMBER = "number"
@@ -342,7 +341,6 @@ def getParameterFromString(s, context=""):
         else:
             return None
     else:  # try script syntax
-
         # try native method
         param = QgsProcessingParameters.parameterFromScriptCode(s)
         if param:

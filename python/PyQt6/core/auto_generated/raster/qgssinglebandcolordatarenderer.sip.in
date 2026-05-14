@@ -10,7 +10,7 @@
 
 
 
-class QgsSingleBandColorDataRenderer: QgsRasterRenderer
+class QgsSingleBandColorDataRenderer : QgsRasterRenderer
 {
 %Docstring(signature="appended")
 Raster renderer pipe for single band color.

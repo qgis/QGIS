@@ -36,7 +36,7 @@ class QgsRenderContext;
  * \class QgsHistogramDiagram
  * \brief A histogram style diagram.
  */
-class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram SIP_NODEFAULTCTORS
+class CORE_EXPORT QgsHistogramDiagram : public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
     static const QString DIAGRAM_NAME_HISTOGRAM SIP_SKIP;
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 
   private:
     QBrush mCategoryBrush;
-    QPen   mPen;
+    QPen mPen;
     double mScaleFactor;
 };
 

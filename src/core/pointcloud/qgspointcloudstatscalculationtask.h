@@ -30,7 +30,6 @@
 //
 
 #include "qgspointcloudindex.h"
-#include "qgspointcloudrequest.h"
 #include "qgspointcloudstatscalculator.h"
 #include "qgstaskmanager.h"
 
@@ -50,6 +49,7 @@ class QgsPointCloudStatsCalculationTask : public QgsTask
     void cancel() override;
 
     QgsPointCloudStatistics calculationResults() const;
+
   private:
     QgsPointCloudStatsCalculator mCalculator;
     QVector<QgsPointCloudAttribute> mAttributes;

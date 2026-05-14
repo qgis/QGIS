@@ -18,8 +18,7 @@
 QgsAbstractMapToolHandler::QgsAbstractMapToolHandler( QgsMapTool *tool, QAction *action )
   : mMapTool( tool )
   , mAction( action )
-{
-}
+{}
 
 QgsAbstractMapToolHandler::~QgsAbstractMapToolHandler() = default;
 
@@ -35,5 +34,4 @@ QAction *QgsAbstractMapToolHandler::action()
 }
 
 void QgsAbstractMapToolHandler::setLayerForTool( QgsMapLayer * )
-{
-}
+{}

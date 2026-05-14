@@ -18,6 +18,10 @@
 
 #include "qgscoordinatereferencesystem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 Qgis::CoordinateOrder QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( const QgsCoordinateReferenceSystem &crs )
 {
   // crs may be a compound crs, so get just the horizontal component first

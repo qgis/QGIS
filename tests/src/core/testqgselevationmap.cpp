@@ -19,13 +19,18 @@ Email                : wonder dot sk at gmail dot com
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsElevationMap : public QgsTest
 {
     Q_OBJECT
 
   public:
     TestQgsElevationMap()
-      : QgsTest( u"Elevation Map Tests"_s, u"elevation_map"_s ) {}
+      : QgsTest( u"Elevation Map Tests"_s, u"elevation_map"_s )
+    {}
 
   private slots:
     void initTestCase();

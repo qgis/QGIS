@@ -21,20 +21,19 @@ __copyright__ = "(C) 2016, Alexander Bruy"
 
 import os
 
+from qgis.analysis import QgsRelief
+from qgis.core import QgsApplication, QgsMapLayer
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import pyqtSlot, QDir
-from qgis.PyQt.QtGui import QColor, QBrush
+from qgis.PyQt.QtCore import QDir, pyqtSlot
+from qgis.PyQt.QtGui import QBrush, QColor
 from qgis.PyQt.QtWidgets import (
-    QTreeWidgetItem,
-    QFileDialog,
-    QMessageBox,
-    QInputDialog,
     QColorDialog,
+    QFileDialog,
+    QInputDialog,
+    QMessageBox,
+    QTreeWidgetItem,
 )
 from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import QgsApplication, QgsMapLayer
-from qgis.analysis import QgsRelief
 
 from processing.gui.wrappers import WidgetWrapper
 from processing.tools import system
@@ -44,7 +43,6 @@ WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "reliefcolorswidgetbase.u
 
 
 class ReliefColorsWidget(BASE, WIDGET):
-
     def __init__(self):
         super().__init__(None)
         self.setupUi(self)
@@ -250,18 +248,11 @@ class ReliefColorsWidget(BASE, WIDGET):
         rColors = self.reliefColors()
         colors = ""
         for c in rColors:
-            colors += "{:f}, {:f}, {:d}, {:d}, {:d};".format(
-                c.minElevation,
-                c.maxElevation,
-                c.color.red(),
-                c.color.green(),
-                c.color.blue(),
-            )
+            colors += f"{c.minElevation:f}, {c.maxElevation:f}, {c.color.red():d}, {c.color.green():d}, {c.color.blue():d};"
         return colors[:-1]
 
 
 class ReliefColorsWidgetWrapper(WidgetWrapper):
-
     def createWidget(self):
         return ReliefColorsWidget()
 

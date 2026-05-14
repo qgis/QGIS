@@ -24,7 +24,6 @@ including the min and max value.
 #include "qgsrasterrange.h"
 %End
   public:
-
     enum BoundsType /BaseType=IntEnum/
     {
       IncludeMinAndMax,
@@ -129,8 +128,6 @@ Returns a text representation of the range.
 %End
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

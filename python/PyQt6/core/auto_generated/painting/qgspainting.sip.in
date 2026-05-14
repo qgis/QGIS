@@ -19,7 +19,6 @@ Contains miscellaneous painting utility functions.
 #include "qgspainting.h"
 %End
   public:
-
     static QPainter::CompositionMode getCompositionMode( Qgis::BlendMode blendMode );
 %Docstring
 Returns a QPainter.CompositionMode corresponding to a
@@ -43,7 +42,9 @@ Returns ``True`` if ``mode`` is a clipping blend mode.
 .. versionadded:: 3.30
 %End
 
-    static QTransform triangleToTriangleTransform( double inX1, double inY1, double inX2, double inY2, double inX3, double inY3, double outX1, double outY1, double outX2, double outY2, double outX3, double outY3, bool &ok /Out/ );
+    static QTransform triangleToTriangleTransform(
+      double inX1, double inY1, double inX2, double inY2, double inX3, double inY3, double outX1, double outY1, double outX2, double outY2, double outX3, double outY3, bool &ok /Out/
+    );
 %Docstring
 Calculates the QTransform which maps the triangle defined by the points
 (``inX1``, ``inY1``), (``inY2``, ``inY2``), (``inX3``, ``inY3``) to the
@@ -70,12 +71,7 @@ triangle defined by (``outX1``, ``outY1``), (``outY2``, ``outY2``),
 %End
 
     static bool drawTriangleUsingTexture(
-      QPainter *painter,
-      const QPolygonF &triangle,
-      const QImage &textureImage,
-      float textureX1, float textureY1,
-      float textureX2, float textureY2,
-      float textureX3, float textureY3
+      QPainter *painter, const QPolygonF &triangle, const QImage &textureImage, float textureX1, float textureY1, float textureX2, float textureY2, float textureX3, float textureY3
     );
 %Docstring
 Draws a ``triangle`` onto a ``painter`` using a mapped texture image.

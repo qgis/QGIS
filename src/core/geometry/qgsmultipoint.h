@@ -20,19 +20,24 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsMultiPoint
  * \brief Multi point geometry collection.
  */
-class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiPoint : public QgsGeometryCollection
 {
   public:
-
+    // clang-format off
     /**
      * Constructor for an empty multipoint geometry.
      */
     QgsMultiPoint() SIP_HOLDGIL;
+    // clang-format on
 
 #ifndef SIP_RUN
 
@@ -64,6 +69,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     */
     QgsMultiPoint( const QVector<QgsPointXY> &points );
 #else
+// clang-format off
 
     /**
      * Construct a multipoint from a sequence of points (QgsPoint objects, QgsPointXY objects, or sequences of float values).
@@ -267,6 +273,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
         sipCpp = new sipQgsMultiPoint( QgsMultiPoint( pointList ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -293,6 +300,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
      */
     QgsPoint *pointN( int index );
 #else
+// clang-format off
 
     /**
      * Returns the point with the specified \a index.
@@ -313,6 +321,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
       return sipConvertFromType( sipCpp->pointN( a0 ), sipType_QgsPoint, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -382,6 +391,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     QgsMultiPoint *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -390,6 +400,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     QString str = u"<QgsMultiPoint: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

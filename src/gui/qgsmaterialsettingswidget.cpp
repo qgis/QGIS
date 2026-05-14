@@ -21,6 +21,5 @@ QgsMaterialSettingsWidget::QgsMaterialSettingsWidget( QWidget *parent )
   : QWidget( parent )
 {}
 
-void QgsMaterialSettingsWidget::setTechnique( QgsMaterialSettingsRenderingTechnique )
-{
-}
+void QgsMaterialSettingsWidget::setTechnique( Qgis::MaterialRenderingTechnique )
+{}

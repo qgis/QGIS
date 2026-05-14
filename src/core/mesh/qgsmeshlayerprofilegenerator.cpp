@@ -29,6 +29,10 @@
 #include "qgsprofilesnapping.h"
 #include "qgsterrainprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsMeshLayerProfileGenerator
 //
@@ -81,6 +85,11 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
 QString QgsMeshLayerProfileGenerator::sourceId() const
 {
   return mId;
+}
+
+QString QgsMeshLayerProfileGenerator::type() const
+{
+  return u"mesh"_s;
 }
 
 QgsMeshLayerProfileGenerator::~QgsMeshLayerProfileGenerator() = default;
@@ -181,4 +190,3 @@ double QgsMeshLayerProfileGenerator::heightAt( double x, double y )
 {
   return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y ) * mScale + mOffset;
 }
-

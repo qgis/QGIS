@@ -21,12 +21,9 @@ in a background task.
 #include "qgsprocessingalgrunnertask.h"
 %End
   public:
-
-    QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
-                                const QVariantMap &parameters,
-                                QgsProcessingContext &context,
-                                QgsProcessingFeedback *feedback = 0,
-                                QgsTask::Flags flags = QgsTask::CanCancel );
+    QgsProcessingAlgRunnerTask(
+      const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback = 0, QgsTask::Flags flags = QgsTask::CanCancel
+    );
 %Docstring
 Constructor for QgsProcessingAlgRunnerTask. Takes an ``algorithm``,
 algorithm ``parameters`` and processing ``context``.
@@ -54,15 +51,12 @@ The ``results`` argument contains the results reported by the algorithm.
 %End
 
   protected:
-
     virtual bool run();
 
     virtual void finished( bool result );
 
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

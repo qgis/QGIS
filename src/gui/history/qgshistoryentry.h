@@ -25,6 +25,8 @@
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 /**
  * Encapsulates a history entry.
  *

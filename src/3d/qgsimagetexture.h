@@ -42,10 +42,7 @@ class _3D_EXPORT QgsImageTexture : public Qt3DRender::QPaintedTextureImage
     QgsImageTexture( const QImage &image, Qt3DCore::QNode *parent = nullptr );
 
     //! paints on the current QImage using painter
-    void paint( QPainter *painter ) override
-    {
-      painter->drawImage( mImage.rect(), mImage, mImage.rect() );
-    }
+    void paint( QPainter *painter ) override { painter->drawImage( mImage.rect(), mImage, mImage.rect() ); }
 
     //! Returns the image
     QImage getImage() const { return mImage; }

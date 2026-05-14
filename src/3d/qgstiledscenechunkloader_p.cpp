@@ -23,6 +23,7 @@
 #include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgsgltfutils.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
@@ -30,9 +31,14 @@
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
+#include <QString>
+#include <Qt3DCore/QEntity>
+#include <Qt3DRender/QGeometryRenderer>
 #include <QtConcurrentRun>
 
 #include "moc_qgstiledscenechunkloader_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -62,8 +68,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
   , mIndex( index )
-{
-}
+{}
 
 void QgsTiledSceneChunkLoader::start()
 {
@@ -120,7 +125,7 @@ void QgsTiledSceneChunkLoader::start()
         QgsQuantizedMeshTile qmTile( content );
         qmTile.removeDegenerateTriangles();
         tinygltf::Model model = qmTile.toGltf( true, 100 );
-        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
+        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, mFactory.mRenderContext, &errors );
       }
       catch ( QgsQuantizedMeshParsingException &ex )
       {
@@ -129,11 +134,66 @@ void QgsTiledSceneChunkLoader::start()
     }
     else if ( format == "cesiumtiles"_L1 )
     {
-      const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
-      if ( tileContent.gltf.isEmpty() )
+      const QVector<QgsCesiumUtils::TileContents> tileContents = QgsCesiumUtils::extractTileContent( content, uri );
+      if ( tileContents.isEmpty() )
         return;
-      entityTransform.tileTransform.translate( tileContent.rtcCenter );
-      mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
+
+      QVector<Qt3DCore::QEntity *> childEntities;
+
+      for ( const QgsCesiumUtils::TileContents &innerContent : tileContents )
+      {
+        if ( innerContent.gltf.isEmpty() )
+          continue;
+
+        QgsGltf3DUtils::EntityTransform innerTransform = entityTransform;
+        innerTransform.tileTransform.translate( innerContent.rtcCenter );
+
+        // Check for instancing (i3dm or EXT_mesh_gpu_instancing)
+        tinygltf::Model model;
+        QString gltfErrors, gltfWarnings;
+        if ( !QgsGltfUtils::loadGltfModel( innerContent.gltf, model, &gltfErrors, &gltfWarnings ) )
+        {
+          errors.append( u"GLTF load error: "_s + gltfErrors );
+          continue;
+        }
+
+        const QgsMatrix4x4 rawTileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
+        const auto instancedPrimitives = QgsCesiumUtils::resolveInstancing( model, innerContent.instancing, innerTransform.gltfUpAxis, rawTileTransform, innerContent.rtcCenter );
+
+        if ( instancedPrimitives.isEmpty() )
+        {
+          // the common case (b3dm or glTF tile without EXT_mesh_gpu_instancing)
+          Qt3DCore::QEntity *e = QgsGltf3DUtils::parsedGltfToEntity( model, innerTransform, uri, mFactory.mRenderContext, &errors );
+          if ( e )
+            childEntities << e;
+        }
+        else
+        {
+          // the instanced case (i3dm or glTF tile with EXT_mesh_gpu_instancing)
+          QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( mFactory.mRenderContext );
+          childEntities << QgsGltf3DUtils::createInstancedEntities( model, instancedPrimitives, innerTransform, uri, materialContext, &errors );
+
+          if ( !innerContent.instancing.has_value() )
+          {
+            // for glTF tiles with EXT_mesh_gpu_instancing, the model can have a mixture of instanced
+            // and non-instanced nodes. Handle the non-instanced nodes here (if any).
+            Qt3DCore::QEntity *nonInstancedEntity = QgsGltf3DUtils::parsedGltfToEntity( model, innerTransform, uri, mFactory.mRenderContext, &errors );
+            if ( nonInstancedEntity )
+              childEntities << nonInstancedEntity;
+          }
+        }
+
+        if ( childEntities.size() == 1 )
+        {
+          mEntity = childEntities[0];
+        }
+        else
+        {
+          mEntity = new Qt3DCore::QEntity;
+          for ( Qt3DCore::QEntity *e : childEntities )
+            e->setParent( mEntity );
+        }
+      }
     }
     else if ( format == "draco"_L1 )
     {
@@ -148,7 +208,7 @@ void QgsTiledSceneChunkLoader::start()
         return;
       }
 
-      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), &errors );
+      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), mFactory.mRenderContext, &errors );
     }
     else
       return; // unsupported tile content type
@@ -192,12 +252,7 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 ///
 
 QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory(
-  const Qgs3DRenderContext &context,
-  const QgsTiledSceneIndex &index,
-  QgsCoordinateReferenceSystem tileCrs,
-  QgsCoordinateReferenceSystem layerCrs,
-  double zValueScale,
-  double zValueOffset
+  const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double zValueScale, double zValueOffset
 )
   : mRenderContext( context )
   , mIndex( index )
@@ -263,9 +318,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
     // XXX: This check doesn't work for Quantized Mesh layers and possibly some
     // Cesium 3D tiles as well. For now this hack is in place to make sure both
     // work in practice.
-    if ( t.metadata()["contentFormat"] == u"cesiumtiles"_s
-         && mRenderContext.crs().type() != Qgis::CrsType::Geocentric
-         && hasLargeBounds( t, mBoundsTransform ) )
+    if ( t.metadata()["contentFormat"] == "cesiumtiles"_L1 && mRenderContext.crs().type() != Qgis::CrsType::Geocentric && hasLargeBounds( t, mBoundsTransform ) )
     {
       // if the tile is huge, let's try to see if our scene is actually inside
       // (if not, let' skip this child altogether!)
@@ -276,12 +329,14 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
       const QgsVector3D ecef2 = cEcef - obb.center();
       const double *half = obb.halfAxes();
       // this is an approximate check anyway, no need for double precision matrix/vector
+      // clang-format off
       QMatrix4x4 rot(
         half[0], half[3], half[6], 0,
         half[1], half[4], half[7], 0,
         half[2], half[5], half[8], 0,
         0, 0, 0, 1
       );
+      // clang-format on
       QVector3D aaa = rot.inverted().map( ecef2.toVector3D() );
       if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 || aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
       {
@@ -341,9 +396,7 @@ void QgsTiledSceneChunkLoaderFactory::fetchHierarchyForNode( long long nodeId, Q
     emit childrenPrepared( origNode );
     futureWatcher->deleteLater();
   } );
-  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] {
-    mIndex.fetchHierarchy( nodeId );
-  } ) );
+  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] { mIndex.fetchHierarchy( nodeId ); } ) );
 }
 
 void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <Capability>
+    <Request>
+      <GetFeatureInfo>
+        <Format>text/plain</Format>
+        <Format>text/html</Format>
+        <DCPType>
+          <HTTP>
+            <Get onlineResource="http://example.com/wms" />
+          </HTTP>
+        </DCPType>
+      </GetFeatureInfo>
+    </Request>
+    <ows:Operation name="GetFeatureInfo">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://example.com/wms">
+            <ows:Constraint name="GetFeatureInfoFormat">
+              <ows:AllowedValues>
+                <ows:Value>text/plain</ows:Value>
+                <ows:Value>text/html</ows:Value>
+                <ows:Value>application/json</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+  </Capability>
+</WMS_Capabilities>

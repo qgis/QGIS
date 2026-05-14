@@ -21,6 +21,10 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::name() const
@@ -50,9 +54,11 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::groupId() const
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates rectangle, oval or diamond-shaped polygons from the input point layer using "
-                      "specified width, height and (optional) rotation values. Multipart inputs should be promoted "
-                      "to singleparts first." );
+  return QObject::tr(
+    "This algorithm creates rectangle, oval or diamond-shaped polygons from the input point layer using "
+    "specified width, height and (optional) rotation values. Multipart inputs should be promoted "
+    "to singleparts first."
+  );
 }
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::shortDescription() const

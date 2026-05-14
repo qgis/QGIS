@@ -27,7 +27,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QObject>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutContext : public QgsTest
 {
@@ -35,7 +38,8 @@ class TestQgsLayoutContext : public QgsTest
 
   public:
     TestQgsLayoutContext()
-      : QgsTest( u"Layout Context Tests"_s ) {}
+      : QgsTest( u"Layout Context Tests"_s )
+    {}
 
   private slots:
 

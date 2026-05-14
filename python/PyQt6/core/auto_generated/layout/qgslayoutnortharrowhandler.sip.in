@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutNorthArrowHandler: QObject
+class QgsLayoutNorthArrowHandler : QObject
 {
 %Docstring(signature="appended")
 An object which handles north-arrow type behavior for layout items.
@@ -22,7 +22,6 @@ An object which handles north-arrow type behavior for layout items.
 #include "qgslayoutnortharrowhandler.h"
 %End
   public:
-
     enum NorthMode /BaseType=IntEnum/
     {
       GridNorth,

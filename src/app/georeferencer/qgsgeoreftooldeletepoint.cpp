@@ -22,8 +22,7 @@
 
 QgsGeorefToolDeletePoint::QgsGeorefToolDeletePoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-{
-}
+{}
 
 void QgsGeorefToolDeletePoint::canvasMoveEvent( QgsMapMouseEvent *e )
 {

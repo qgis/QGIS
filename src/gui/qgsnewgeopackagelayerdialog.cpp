@@ -44,8 +44,11 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsnewgeopackagelayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define DEFAULT_OGR_FID_COLUMN_TITLE "fid" // default value from OGR
 
@@ -315,7 +318,9 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
     if ( !currentFound )
     {
-      if ( QMessageBox::question( this, windowTitle(), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      if ( QMessageBox::
+             question( this, windowTitle(), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel )
+           != QMessageBox::Ok )
       {
         return false;
       }
@@ -435,7 +440,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
     {
       overwriteTable = property( "question_existing_layer_answer_overwrite" ).toBool();
     }
-    else if ( QMessageBox::question( this, tr( "New GeoPackage Layer" ), tr( "A table with the same name already exists. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+    else if ( QMessageBox::question( this, tr( "New GeoPackage Layer" ), tr( "A table with the same name already exists. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+              == QMessageBox::Yes )
     {
       overwriteTable = true;
     }

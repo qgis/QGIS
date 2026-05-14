@@ -25,7 +25,6 @@ feature should be rendered.
 #include "qgsembeddedsymbolrenderer.h"
 %End
   public:
-
     QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol /Transfer/ );
 %Docstring
 Constructor for QgsEmbeddedSymbolRenderer.

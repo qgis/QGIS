@@ -28,22 +28,20 @@ over the features from a vector layer.
 #include "qgsaggregatecalculator.h"
 %End
   public:
-
     struct AggregateInfo
     {
-      QString function;
-      QString name;
-      QSet<QMetaType::Type> supportedTypes;
+        QString function;
+        QString name;
+        QSet<QMetaType::Type> supportedTypes;
     };
 
     struct AggregateParameters
     {
+        QString filter;
 
-      QString filter;
+        QString delimiter;
 
-      QString delimiter;
-
-      QgsFeatureRequest::OrderBy orderBy;
+        QgsFeatureRequest::OrderBy orderBy;
     };
 
     QgsAggregateCalculator( const QgsVectorLayer *layer );
@@ -121,8 +119,7 @@ aggregate.
 .. seealso:: :py:func:`setDelimiter`
 %End
 
-    QVariant calculate( Qgis::Aggregate aggregate, const QString &fieldOrExpression,
-                        QgsExpressionContext *context = 0, bool *ok = 0, QgsFeedback *feedback = 0 ) const;
+    QVariant calculate( Qgis::Aggregate aggregate, const QString &fieldOrExpression, QgsExpressionContext *context = 0, bool *ok = 0, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Calculates the value of an aggregate.
 

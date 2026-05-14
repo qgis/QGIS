@@ -18,7 +18,11 @@
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayertree.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTree::QgsLayerTree()
 {
@@ -141,7 +145,7 @@ void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteConte
   {
     // Safety belt, see https://github.com/qgis/QGIS/issues/26975
     // Crash when deleting an item from the layout legend
-    if ( ! layer )
+    if ( !layer )
       continue;
     QDomElement layerElem = doc.createElement( u"item"_s );
     layerElem.appendChild( doc.createTextNode( layer->id() ) );
@@ -233,8 +237,7 @@ void QgsLayerTree::addMissingLayers()
   const QList< QgsLayerTreeLayer * > layers = findLayers();
   for ( const auto layer : layers )
   {
-    if ( !mCustomLayerOrder.contains( layer->layer() ) &&
-         layer->layer() && layer->layer()->isSpatial() )
+    if ( !mCustomLayerOrder.contains( layer->layer() ) && layer->layer() && layer->layer()->isSpatial() )
     {
       mCustomLayerOrder.append( layer->layer() );
       changed = true;

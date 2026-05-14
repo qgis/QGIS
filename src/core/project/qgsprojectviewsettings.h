@@ -38,7 +38,6 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectViewSettings for the specified \a project.
      *
@@ -237,7 +236,6 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     void presetFullExtentChanged();
 
   private:
-
     QgsProject *mProject = nullptr;
     QVector<double> mMapScales;
     bool mUseProjectScales = false;

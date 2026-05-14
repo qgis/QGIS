@@ -63,7 +63,12 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, public
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString &service, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
+    QgsOWSSourceSelect(
+      const QString &service,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+      QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone
+    );
 
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
@@ -143,7 +148,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, public
      * create an item including possible parents
      * \note not available in Python bindings
      */
-    QgsTreeWidgetItem *createItem( int id, const QStringList &names, QMap<int, QgsTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames ) SIP_FACTORY SIP_SKIP;
+    QgsTreeWidgetItem *createItem(
+      int id, const QStringList &names, QMap<int, QgsTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames
+    ) SIP_FACTORY SIP_SKIP;
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString &authId );

@@ -22,7 +22,6 @@ Utility functions for working with
 #include "qgscoordinatereferencesystemutils.h"
 %End
   public:
-
     static Qgis::CoordinateOrder defaultCoordinateOrderForCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Returns the default coordinate order to use for the specified ``crs``.

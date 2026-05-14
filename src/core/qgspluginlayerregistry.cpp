@@ -22,10 +22,13 @@
 #include "qgspluginlayer.h"
 #include "qgsproject.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPluginLayerType::QgsPluginLayerType( const QString &name )
   : mName( name )
-{
-}
+{}
 
 QString QgsPluginLayerType::name() const
 {

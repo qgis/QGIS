@@ -23,6 +23,10 @@
 #include "qgsfeatureiterator.h"
 #include "qgslocatorfilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT

@@ -22,7 +22,6 @@ map layers and layer styles.
 #include "qgsmapthemecollection.h"
 %End
   public:
-
     class MapThemeLayerRecord
     {
 %Docstring(signature="appended")
@@ -69,7 +68,6 @@ Individual map theme record of visible layers and styles.
 %End
 
       public:
-
         bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const;
         bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const;
 

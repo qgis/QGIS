@@ -21,7 +21,9 @@
 #include "qgsgeometryengine.h"
 #include "qgsvectorlayer.h"
 
-QgsGeometryCheck::Result QgsGeometryContainedCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryContainedCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   QMap<QString, QSet<QVariant>> uniqueIds;
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
@@ -82,7 +84,9 @@ QgsGeometryCheck::Result QgsGeometryContainedCheck::collectErrors( const QMap<QS
   return QgsGeometryCheck::Result::Success;
 }
 
-void QgsGeometryContainedCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryContainedCheck::fixError(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes
+) const
 {
   QgsGeometryContainedCheckError *containerError = static_cast<QgsGeometryContainedCheckError *>( error );
   QgsFeaturePool *featurePoolA = featurePools[error->layerId()];
@@ -128,8 +132,6 @@ void QgsGeometryContainedCheck::fixError( const QMap<QString, QgsFeaturePool *> 
 
 QStringList QgsGeometryContainedCheck::resolutionMethods() const
 {
-  static const QStringList methods = QStringList()
-                                     << tr( "Delete feature" )
-                                     << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "Delete feature" ) << tr( "No action" );
   return methods;
 }

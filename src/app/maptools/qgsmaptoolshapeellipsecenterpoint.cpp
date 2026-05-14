@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -22,7 +22,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapeellipsecenterpoint.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeEllipseCenterPointMetadata::TOOL_ID = u"ellipse-center-point"_s;
 
@@ -89,6 +93,11 @@ void QgsMapToolShapeEllipseCenterPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e,
   if ( mTempRubberBand )
   {
     mEllipse = QgsEllipse::fromCenterPoint( mPoints.at( 0 ), point );
-    mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
+    const QgsGeometry newGeometry( mEllipse.toPolygon( segments() ) );
+    if ( !newGeometry.isEmpty() )
+    {
+      mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+      setTransientGeometry( newGeometry );
+    }
   }
 }

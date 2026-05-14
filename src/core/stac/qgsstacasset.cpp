@@ -15,20 +15,18 @@
 
 #include "qgsstacasset.h"
 
+#include <QString>
 #include <QUrl>
 
-QgsStacAsset::QgsStacAsset( const QString &href,
-                            const QString &title,
-                            const QString &description,
-                            const QString &mediaType,
-                            const QStringList &roles )
+using namespace Qt::StringLiterals;
+
+QgsStacAsset::QgsStacAsset( const QString &href, const QString &title, const QString &description, const QString &mediaType, const QStringList &roles )
   : mHref( href )
   , mTitle( title )
   , mDescription( description )
   , mMediaType( mediaType )
   , mRoles( roles )
-{
-}
+{}
 
 QString QgsStacAsset::href() const
 {
@@ -58,17 +56,12 @@ QStringList QgsStacAsset::roles() const
 bool QgsStacAsset::isCloudOptimized() const
 {
   const QString format = formatName();
-  return format == "COG"_L1 ||
-         format == "COPC"_L1 ||
-         format == "EPT"_L1 ||
-         format == "Zarr"_L1 ||
-         format == "Parquet"_L1;
+  return format == "COG"_L1 || format == "COPC"_L1 || format == "EPT"_L1 || format == "Zarr"_L1 || format == "Parquet"_L1 || format == "TileDB"_L1;
 }
 
 QString QgsStacAsset::formatName() const
 {
-  if ( mMediaType == "image/tiff; application=geotiff; profile=cloud-optimized"_L1 ||
-       mMediaType == "image/vnd.stac.geotiff; cloud-optimized=true"_L1 )
+  if ( mMediaType == "image/tiff; application=geotiff; profile=cloud-optimized"_L1 || mMediaType == "image/vnd.stac.geotiff; cloud-optimized=true"_L1 )
     return u"COG"_s;
   else if ( mMediaType == "application/vnd.laszip+copc"_L1 )
     return u"COPC"_s;
@@ -78,6 +71,8 @@ QString QgsStacAsset::formatName() const
     return u"Zarr"_s;
   else if ( mMediaType == "application/vnd.apache.parquet"_L1 )
     return u"Parquet"_s;
+  else if ( mMediaType.contains( "tiledb"_L1, Qt::CaseInsensitive ) )
+    return u"TileDB"_s;
   return QString();
 }
 
@@ -86,12 +81,20 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
-  if ( formatName() == "COG"_L1 )
+  if ( ( formatName() == "COG"_L1 ) || ( formatName() == "Zarr"_L1 ) || ( formatName() == "TileDB"_L1 ) || ( formatName() == "Parquet"_L1 ) )
   {
-    uri.layerType = u"raster"_s;
-    uri.providerKey = u"gdal"_s;
-    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
-         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
+    if ( formatName() == "Parquet"_L1 )
+    {
+      uri.layerType = u"vector"_s;
+      uri.providerKey = u"ogr"_s;
+    }
+    else
+    {
+      uri.layerType = u"raster"_s;
+      uri.providerKey = u"gdal"_s;
+    }
+
+    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) || href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
     {
       uri.uri = u"/vsicurl/%1"_s.arg( href() );
       if ( !authcfg.isEmpty() )
@@ -101,9 +104,26 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
     {
       uri.uri = u"/vsis3/%1"_s.arg( href().mid( 5 ) );
     }
+    else if ( href().startsWith( "azure://"_L1, Qt::CaseInsensitive ) )
+    {
+      uri.uri = u"/vsiaz/%1"_s.arg( href().mid( 8 ) );
+    }
+    else if ( href().startsWith( "az://"_L1, Qt::CaseInsensitive ) )
+    {
+      uri.uri = u"/vsiaz/%1"_s.arg( href().mid( 5 ) );
+    }
+    else if ( href().startsWith( "gcp://"_L1, Qt::CaseInsensitive ) )
+    {
+      uri.uri = u"/vsigs/%1"_s.arg( href().mid( 6 ) );
+    }
     else
     {
       uri.uri = href();
+    }
+
+    if ( formatName() == "Zarr"_L1 )
+    {
+      uri.uri = u"ZARR:\"%1\""_s.arg( uri.uri );
     }
   }
   else if ( formatName() == "COPC"_L1 )
@@ -121,47 +141,6 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
     uri.uri = href();
     if ( !authcfg.isEmpty() )
       uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
-  }
-  else if ( formatName() == "Zarr"_L1 )
-  {
-    uri.layerType = u"raster"_s;
-    uri.providerKey = u"gdal"_s;
-    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
-         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
-    {
-      uri.uri = u"ZARR:\"/vsicurl/%1\""_s.arg( href() );
-      if ( !authcfg.isEmpty() )
-        uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
-    }
-    else if ( href().startsWith( "s3://"_L1, Qt::CaseInsensitive ) )
-    {
-      // Remove the s3:// protocol prefix for compatibility with GDAL's /vsis3
-      uri.uri = u"ZARR:\"/vsis3/%1\""_s.arg( href().mid( 5 ) );
-    }
-    else
-    {
-      uri.uri = href();
-    }
-  }
-  else if ( formatName() == "Parquet"_L1 )
-  {
-    uri.layerType = u"vector"_s;
-    uri.providerKey = u"ogr"_s;
-    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
-         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
-    {
-      uri.uri = u"/vsicurl/%1"_s.arg( href() );
-      if ( !authcfg.isEmpty() )
-        uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
-    }
-    else if ( href().startsWith( "s3://"_L1, Qt::CaseInsensitive ) )
-    {
-      uri.uri = u"/vsis3/%1"_s.arg( href().mid( 5 ) );
-    }
-    else
-    {
-      uri.uri = href();
-    }
   }
   else
   {
@@ -196,7 +175,7 @@ bool QgsStacAsset::isDownloadable() const
    * - succeed but download an HTML directory listing response, or
    * - something else that does not meet the user's needs.
    */
-  if ( formatName() == "Zarr"_L1 )
+  if ( formatName() == "Zarr"_L1 || formatName() == "TileDB"_L1 )
   {
     return false;
   }

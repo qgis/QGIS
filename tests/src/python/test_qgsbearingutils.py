@@ -11,20 +11,20 @@ __date__ = "18/10/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsBearingUtils,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsPointXY,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsBearingUtils(QgisTestCase):
-
     def testTrueNorth(self):
         """test calculating bearing to true north"""
 

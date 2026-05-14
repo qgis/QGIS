@@ -115,16 +115,10 @@ class ANALYSIS_EXPORT QgsGcpPoint
     // TODO c++20 - replace with = default
     bool operator==( const QgsGcpPoint &other ) const
     {
-      return mEnabled == other.mEnabled
-             && mSourcePoint == other.mSourcePoint
-             && mDestinationPoint == other.mDestinationPoint
-             && mDestinationCrs == other.mDestinationCrs;
+      return mEnabled == other.mEnabled && mSourcePoint == other.mSourcePoint && mDestinationPoint == other.mDestinationPoint && mDestinationCrs == other.mDestinationCrs;
     }
 
-    bool operator!=( const QgsGcpPoint &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsGcpPoint &other ) const { return !( *this == other ); }
 
   private:
     QgsPointXY mSourcePoint;

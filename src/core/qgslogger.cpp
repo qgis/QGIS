@@ -20,8 +20,11 @@
 #include <QApplication>
 #include <QElapsedTimer>
 #include <QFile>
+#include <QString>
 #include <QThread>
 #include <QtDebug>
+
+using namespace Qt::StringLiterals;
 
 #ifndef CMAKE_SOURCE_DIR
 #error CMAKE_SOURCE_DIR undefined
@@ -44,11 +47,11 @@ void QgsLogger::init()
   *sFileFilter() = getenv( "QGIS_DEBUG_FILE" ) ? getenv( "QGIS_DEBUG_FILE" ) : "";
   sDebugLevel = getenv( "QGIS_DEBUG" ) ? atoi( getenv( "QGIS_DEBUG" ) ) :
 #ifdef QGISDEBUG
-                1
+                                       1
 #else
-                0
+                                       0
 #endif
-                ;
+    ;
 
   sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
   // cppcheck-suppress internalAstError

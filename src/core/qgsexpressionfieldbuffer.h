@@ -36,13 +36,13 @@ class CORE_EXPORT QgsExpressionFieldBuffer
   public:
     struct ExpressionField
     {
-      ExpressionField( const QString &exp, const QgsField &fld )
-        : cachedExpression( exp )
-        , field( fld )
-      {}
+        ExpressionField( const QString &exp, const QgsField &fld )
+          : cachedExpression( exp )
+          , field( fld )
+        {}
 
-      QgsExpression cachedExpression;
-      QgsField field;
+        QgsExpression cachedExpression;
+        QgsField field;
     };
 
     QgsExpressionFieldBuffer() = default;

@@ -31,8 +31,9 @@ class QgsProviderMetadata;
 #include <QObject>
 #include <QPointer>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsGdalItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {

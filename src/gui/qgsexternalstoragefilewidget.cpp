@@ -30,10 +30,13 @@
 #include <QLineEdit>
 #include <QProgressBar>
 #include <QRegularExpression>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 
 #include "moc_qgsexternalstoragefilewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define FILEPATH_VARIABLE "selected_file_path"
 
@@ -143,10 +146,7 @@ void QgsExternalStorageFileWidget::addFileWidgetScope()
 QgsExpressionContextScope *QgsExternalStorageFileWidget::createFileWidgetScope()
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "FileWidget" ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable(
-    QStringLiteral( FILEPATH_VARIABLE ),
-    QString(), true, false, tr( "User selected absolute filepath" )
-  ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( FILEPATH_VARIABLE ), QString(), true, false, tr( "User selected absolute filepath" ) ) );
   return scope;
 }
 

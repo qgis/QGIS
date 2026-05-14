@@ -32,8 +32,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QImage>
+#include <QString>
 
 #include "moc_qgshighlight.cpp"
+
+using namespace Qt::StringLiterals;
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer

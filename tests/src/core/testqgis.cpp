@@ -22,6 +22,8 @@
 #include <QSignalSpy>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgis.h"
 #include "qgsmaplayermodel.h"
@@ -46,7 +48,8 @@ class TestQgis : public QgsTest
 
   public:
     TestQgis()
-      : QgsTest( u"Qgis Tests"_s ) {}
+      : QgsTest( u"Qgis Tests"_s )
+    {}
 
   private slots:
     void init() {}    // will be called before each testfunction is executed.
@@ -559,7 +562,12 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "qvariantlist equal one element" ) << QVariant( QVariantList() << QVariant( 9 ) ) << QVariant( QVariantList() << QVariant( 9 ) ) << false << false << 0;
   QTest::newRow( "qvariantlist 3" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 3 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false << -1;
   QTest::newRow( "qvariantlist 4" ) << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 3 ) ) << false << true << 1;
-  QTest::newRow( "qvariantlist equal two element" ) << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << false << false << 0;
+  QTest::newRow( "qvariantlist equal two element" )
+    << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) )
+    << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) )
+    << false
+    << false
+    << 0;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false << -1;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << QVariant( QVariantList() << QVariant( 5 ) ) << false << true << 1;
   QTest::newRow( "qstringlist empty" ) << QVariant( QStringList() ) << QVariant( QStringList() ) << false << false << 0;
@@ -616,15 +624,9 @@ void TestQgis::testNanCompatibleEquals()
 class ConstTester
 {
   public:
-    void doSomething()
-    {
-      mVal = 1;
-    }
+    void doSomething() { mVal = 1; }
 
-    void doSomething() const
-    {
-      mVal = 2;
-    }
+    void doSomething() const { mVal = 2; }
 
     mutable int mVal = 0;
 };
@@ -761,6 +763,11 @@ void TestQgis::testQgsFlagValueToKeys()
   QCOMPARE( ok, true );
   QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters( -10 ), &ok ), QString() );
   QCOMPARE( ok, false );
+
+  // with no flags set
+  filters = QgsFieldProxyModel::Filters();
+  QCOMPARE( qgsFlagValueToKeys( filters, &ok ), u"0"_s );
+  QCOMPARE( ok, true );
 }
 
 void TestQgis::testQgsFlagKeysToValue()
@@ -787,6 +794,13 @@ void TestQgis::testQgsFlagKeysToValue()
   // also try with an invalid int value
   QCOMPARE( qgsFlagKeysToValue( QString::number( -1 ), defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );
+
+  // 0 = no flags set
+  QCOMPARE( qgsFlagKeysToValue( u"0"_s, defaultValue, true, &ok ), QgsFieldProxyModel::Filters() );
+  QCOMPARE( ok, true );
+  // "0" should work even if we aren't accepting ints
+  QCOMPARE( qgsFlagKeysToValue( u"0"_s, defaultValue, false, &ok ), QgsFieldProxyModel::Filters() );
+  QCOMPARE( ok, true );
 }
 
 void TestQgis::testQMapQVariantList()

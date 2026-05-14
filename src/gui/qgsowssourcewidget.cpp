@@ -21,8 +21,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QNetworkRequest>
+#include <QString>
 
 #include "moc_qgsowssourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *parent )
   : QgsProviderSourceWidget( parent )
@@ -83,18 +86,8 @@ void QgsOWSSourceWidget::setSourceUri( const QString &uri )
   if ( !bbox.isEmpty() )
   {
     QStringList coords = bbox.split( ',' );
-    extent = inverted ? QgsRectangle(
-                          coords.at( 1 ).toDouble(),
-                          coords.at( 0 ).toDouble(),
-                          coords.at( 3 ).toDouble(),
-                          coords.at( 2 ).toDouble()
-                        )
-                      : QgsRectangle(
-                          coords.at( 0 ).toDouble(),
-                          coords.at( 1 ).toDouble(),
-                          coords.at( 2 ).toDouble(),
-                          coords.at( 3 ).toDouble()
-                        );
+    extent = inverted ? QgsRectangle( coords.at( 1 ).toDouble(), coords.at( 0 ).toDouble(), coords.at( 3 ).toDouble(), coords.at( 2 ).toDouble() )
+                      : QgsRectangle( coords.at( 0 ).toDouble(), coords.at( 1 ).toDouble(), coords.at( 2 ).toDouble(), coords.at( 3 ).toDouble() );
   }
   else
   {
@@ -115,8 +108,9 @@ QString QgsOWSSourceWidget::sourceUri() const
   {
     bool inverted = parts.value( u"InvertAxisOrientation"_s ).toBool();
 
-    QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                     .arg( qgsDoubleToString( spatialExtent.xMinimum() ), qgsDoubleToString( spatialExtent.yMinimum() ), qgsDoubleToString( spatialExtent.xMaximum() ), qgsDoubleToString( spatialExtent.yMaximum() ) );
+    QString bbox
+      = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+          .arg( qgsDoubleToString( spatialExtent.xMinimum() ), qgsDoubleToString( spatialExtent.yMinimum() ), qgsDoubleToString( spatialExtent.xMaximum() ), qgsDoubleToString( spatialExtent.yMaximum() ) );
 
     parts.insert( u"bbox"_s, bbox );
   }

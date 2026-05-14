@@ -32,15 +32,12 @@ class QgsEsriI3SDataProviderSharedData;
  * Data provider implementation for Esri I3S
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsEsriI3SDataProvider final: public QgsTiledSceneDataProvider
+class CORE_EXPORT QgsEsriI3SDataProvider final : public QgsTiledSceneDataProvider
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsEsriI3SDataProvider
-    QgsEsriI3SDataProvider( const QString &uri,
-                            const QgsDataProvider::ProviderOptions &providerOptions,
-                            Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsEsriI3SDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
     QgsEsriI3SDataProvider( const QgsEsriI3SDataProvider &other );
     QgsEsriI3SDataProvider &operator=( const QgsEsriI3SDataProvider &other ) = delete;
 
@@ -60,15 +57,13 @@ class CORE_EXPORT QgsEsriI3SDataProvider final: public QgsTiledSceneDataProvider
     QgsDoubleRange zRange() const final;
 
   private:
-
     bool loadFromRestService( const QString &uri, json &layerJson, QString &i3sVersion );
     bool loadFromSlpk( const QString &uri, json &layerJson, QString &i3sVersion );
     bool checkI3SVersion( const QString &i3sVersion );
 
     bool mIsValid = false;
 
-    std::shared_ptr<QgsEsriI3SDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
-
+    std::shared_ptr<QgsEsriI3SDataProviderSharedData> mShared; //!< Mutable data shared between provider instances
 };
 
 /**

@@ -18,13 +18,15 @@
 
 #include "qgslayout.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsReportSectionFieldGroup::QgsReportSectionFieldGroup( QgsAbstractReportSection *parent )
   : QgsAbstractReportSection( parent )
-{
-
-}
+{}
 
 QString QgsReportSectionFieldGroup::description() const
 {
@@ -302,4 +304,3 @@ void QgsReportSectionFieldGroup::updateChildContexts( const QgsFeature &feature 
 }
 
 ///@endcond
-

@@ -82,9 +82,7 @@ Restores the property hierarchy from a specified DOM node.
 Used for restoring properties from project file
 %End
 
-    virtual bool writeXml( const QString &nodeName,
-                           QDomElement &element,
-                           QDomDocument &document ) = 0;
+    virtual bool writeXml( const QString &nodeName, QDomElement &element, QDomDocument &document ) = 0;
 %Docstring
 Writes the property hierarchy to a specified DOM element.
 
@@ -106,7 +104,6 @@ For :py:class:`QgsProjectPropertyValue` nodes, this is straightforward
 it exists; i.e., :py:class:`QgsProjectPropertyKey` "foo" will return the
 property value mapped to its name, "foo", in its QHash of QProperties.
 %End
-
 };
 
 
@@ -121,7 +118,6 @@ Project property value node, contains a
 #include "qgsprojectproperty.h"
 %End
   public:
-
     QgsProjectPropertyValue();
 
     QgsProjectPropertyValue( const QVariant &value );
@@ -140,9 +136,8 @@ value.
 
     virtual bool readXml( const QDomNode &keyNode );
 
-     virtual bool writeXml( const QString &nodeName,
-                   QDomElement &element,
-                   QDomDocument &document );
+    virtual bool writeXml( const QString &nodeName, QDomElement &element, QDomDocument &document );
+
 
 };
 
@@ -173,7 +168,6 @@ maps to itself, i.e. "bar", that will contain a
 #include "qgsprojectproperty.h"
 %End
   public:
-
     QgsProjectPropertyKey( const QString &name = QString() );
 %Docstring
 Create a new QgsProjectPropertyKey with the specified identifier.

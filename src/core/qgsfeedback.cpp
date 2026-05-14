@@ -20,20 +20,16 @@
 QgsFeedback::~QgsFeedback() = default;
 
 /* static */
-std::unique_ptr<QgsFeedback> QgsFeedback::createScaledFeedback(
-  QgsFeedback *parentFeedback, double startPercentage, double endPercentage )
+std::unique_ptr<QgsFeedback> QgsFeedback::createScaledFeedback( QgsFeedback *parentFeedback, double startPercentage, double endPercentage )
 {
   auto scaledFeedback = std::make_unique<QgsFeedback>();
   if ( parentFeedback )
   {
     const double ratio = ( endPercentage - startPercentage ) / 100.0;
-    QObject::connect( scaledFeedback.get(), &QgsFeedback::progressChanged,
-                      parentFeedback, [parentFeedback, startPercentage, ratio]( double progress )
-    {
+    QObject::connect( scaledFeedback.get(), &QgsFeedback::progressChanged, parentFeedback, [parentFeedback, startPercentage, ratio]( double progress ) {
       parentFeedback->setProgress( startPercentage + progress * ratio );
     } );
-    QObject::connect( scaledFeedback.get(), &QgsFeedback::canceled,
-                      parentFeedback, &QgsFeedback::cancel );
+    QObject::connect( scaledFeedback.get(), &QgsFeedback::canceled, parentFeedback, &QgsFeedback::cancel );
   }
   return scaledFeedback;
 }

@@ -29,15 +29,19 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessingmeshdatasetwidget.cpp"
 
+using namespace Qt::StringLiterals;
+
 /// @cond PRIVATE
 
 QgsProcessingMeshDatasetGroupsWidget::QgsProcessingMeshDatasetGroupsWidget( QWidget *parent, const QgsProcessingParameterMeshDatasetGroups *param )
-  : QWidget( parent ), mParam( param )
+  : QWidget( parent )
+  , mParam( param )
 {
   QHBoxLayout *hl = new QHBoxLayout();
   hl->setContentsMargins( 0, 0, 0, 0 );
@@ -153,9 +157,7 @@ void QgsProcessingMeshDatasetGroupsWidget::showDialog()
       return ( pos >= 0 && pos < options.size() ) ? options.at( pos ) : QString();
     } );
 
-    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() {
-      setValue( widget->selectedOptions() );
-    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() { setValue( widget->selectedOptions() ); } );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
     panel->openPanel( widget );
   }
@@ -186,9 +188,7 @@ void QgsProcessingMeshDatasetGroupsWidget::selectCurrentActiveDatasetGroup()
     if ( scalarDatasetGroup >= 0 && mParam->isDataTypeSupported( mMeshLayer->datasetGroupMetadata( scalarDatasetGroup ).dataType() ) )
       options.append( scalarDatasetGroup );
 
-    if ( vectorDatasetGroup >= 0
-         && mParam->isDataTypeSupported( mMeshLayer->datasetGroupMetadata( vectorDatasetGroup ).dataType() )
-         && vectorDatasetGroup != scalarDatasetGroup )
+    if ( vectorDatasetGroup >= 0 && mParam->isDataTypeSupported( mMeshLayer->datasetGroupMetadata( vectorDatasetGroup ).dataType() ) && vectorDatasetGroup != scalarDatasetGroup )
       options.append( vectorDatasetGroup );
   }
 
@@ -209,7 +209,9 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMeshDatasetGroupsWidge
   return new QgsProcessingMeshDatasetGroupsWidgetWrapper( parameter, type );
 }
 
-QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
+)
 {
   return new QgsProcessingMeshDatasetGroupsParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
@@ -227,9 +229,7 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::postInitialize( const QList<Qg
         if ( wrapper->parameterDefinition()->name() == static_cast<const QgsProcessingParameterMeshDatasetGroups *>( parameterDefinition() )->meshLayerParameterName() )
         {
           setMeshLayerWrapperValue( wrapper );
-          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] {
-            setMeshLayerWrapperValue( wrapper );
-          } );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { setMeshLayerWrapperValue( wrapper ); } );
           break;
         }
       }
@@ -271,9 +271,7 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
 QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
 {
   mWidget = new QgsProcessingMeshDatasetGroupsWidget( nullptr, static_cast<const QgsProcessingParameterMeshDatasetGroups *>( parameterDefinition() ) );
-  connect( mWidget, &QgsProcessingMeshDatasetGroupsWidget::changed, this, [this] {
-    emit widgetValueHasChanged( this );
-  } );
+  connect( mWidget, &QgsProcessingMeshDatasetGroupsWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
 
   return mWidget;
 }
@@ -314,8 +312,7 @@ void QgsProcessingMeshDatasetGroupsWidget::updateSummaryText()
 
 QgsProcessingMeshDatasetTimeWidgetWrapper::QgsProcessingMeshDatasetTimeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
-{
-}
+{}
 
 QString QgsProcessingMeshDatasetTimeWidgetWrapper::parameterType() const
 {
@@ -360,7 +357,9 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::postInitialize( const QList<QgsA
   }
 }
 
-QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
+)
 {
   return new QgsProcessingMeshDatasetTimeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
@@ -420,9 +419,7 @@ QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()
   {
     connect( canvas, &QgsMapCanvas::temporalRangeChanged, mWidget, &QgsProcessingMeshDatasetTimeWidget::updateValue );
   }
-  connect( mWidget, &QgsProcessingMeshDatasetTimeWidget::changed, this, [this] {
-    emit widgetValueHasChanged( this );
-  } );
+  connect( mWidget, &QgsProcessingMeshDatasetTimeWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
 
   return mWidget;
 }
@@ -442,7 +439,8 @@ QVariant QgsProcessingMeshDatasetTimeWidgetWrapper::widgetValue() const
 }
 
 QgsProcessingMeshDatasetTimeWidget::QgsProcessingMeshDatasetTimeWidget( QWidget *parent, const QgsProcessingParameterMeshDatasetTime *param, const QgsProcessingParameterWidgetContext &context )
-  : QWidget( parent ), mParam( param )
+  : QWidget( parent )
+  , mParam( param )
 {
   setupUi( this );
 
@@ -452,9 +450,18 @@ QgsProcessingMeshDatasetTimeWidget::QgsProcessingMeshDatasetTimeWidget( QWidget 
 
   mCanvas = context.mapCanvas();
 
-  connect( radioButtonCurrentCanvasTime, &QRadioButton::toggled, this, [this]( bool isChecked ) {if ( isChecked ) this->updateValue(); } );
-  connect( radioButtonDefinedDateTime, &QRadioButton::toggled, this, [this]( bool isChecked ) {if ( isChecked ) this->updateValue(); } );
-  connect( radioButtonDatasetGroupTimeStep, &QRadioButton::toggled, this, [this]( bool isChecked ) {if ( isChecked ) this->updateValue(); } );
+  connect( radioButtonCurrentCanvasTime, &QRadioButton::toggled, this, [this]( bool isChecked ) {
+    if ( isChecked )
+      this->updateValue();
+  } );
+  connect( radioButtonDefinedDateTime, &QRadioButton::toggled, this, [this]( bool isChecked ) {
+    if ( isChecked )
+      this->updateValue();
+  } );
+  connect( radioButtonDatasetGroupTimeStep, &QRadioButton::toggled, this, [this]( bool isChecked ) {
+    if ( isChecked )
+      this->updateValue();
+  } );
   connect( dateTimeEdit, &QgsDateTimeEdit::dateTimeChanged, this, &QgsProcessingMeshDatasetTimeWidget::updateValue );
   connect( comboBoxDatasetTimeStep, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingMeshDatasetTimeWidget::updateValue );
 
@@ -710,11 +717,7 @@ void QgsProcessingMeshDatasetTimeWidget::updateValue()
 
 
 QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::QgsProcessingMeshDatasetGroupsParameterDefinitionWidget(
-  QgsProcessingContext &context,
-  const QgsProcessingParameterWidgetContext &widgetContext,
-  const QgsProcessingParameterDefinition *definition,
-  const QgsProcessingAlgorithm *algorithm,
-  QWidget *parent
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent
 )
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
@@ -753,14 +756,12 @@ QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::QgsProcessingMeshDatase
     }
   }
 
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::createParameter(
-  const QString &name,
-  const QString &description,
-  Qgis::ProcessingParameterFlags flags
-) const
+QgsProcessingParameterDefinition *QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
 {
   QSet<int> supportedDataType;
   supportedDataType.insert( QgsMeshDatasetGroupMetadata::DataOnEdges );
@@ -773,11 +774,7 @@ QgsProcessingParameterDefinition *QgsProcessingMeshDatasetGroupsParameterDefinit
 }
 
 QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetTimeParameterDefinitionWidget(
-  QgsProcessingContext &context,
-  const QgsProcessingParameterWidgetContext &widgetContext,
-  const QgsProcessingParameterDefinition *definition,
-  const QgsProcessingAlgorithm *algorithm,
-  QWidget *parent
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent
 )
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
@@ -834,14 +831,14 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
     } );
   }
 
+  connect( mParentDatasetComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingMeshDatasetTimeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
 {
-  auto param = std::make_unique<QgsProcessingParameterMeshDatasetTime>(
-    name, description, mMeshLayerParameterName, mParentDatasetComboBox->currentData().toString()
-  );
+  auto param = std::make_unique<QgsProcessingParameterMeshDatasetTime>( name, description, mMeshLayerParameterName, mParentDatasetComboBox->currentData().toString() );
 
   param->setFlags( flags );
   return param.release();

@@ -64,7 +64,9 @@ namespace QgsMapToolSelectUtils
    * the selection rubber band (otherwise intersection is enough).
    * \param singleSelect only selects the closest feature to the selectGeometry.
   */
-  void setSelectedFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qgis::SelectBehavior selectBehavior = Qgis::SelectBehavior::SetSelection, bool doContains = true, bool singleSelect = false );
+  void setSelectedFeatures(
+    QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qgis::SelectBehavior selectBehavior = Qgis::SelectBehavior::SetSelection, bool doContains = true, bool singleSelect = false
+  );
 
   /**
    * Selects multiple matching features from within currently selected layer.

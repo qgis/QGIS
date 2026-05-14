@@ -366,7 +366,9 @@ class QgsWcsDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWcsDownloadHandler( const QUrl &url, QgsAuthorizationSettings &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback );
+    QgsWcsDownloadHandler(
+      const QUrl &url, QgsAuthorizationSettings &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback
+    );
     ~QgsWcsDownloadHandler() override;
 
     void blockingDownload();

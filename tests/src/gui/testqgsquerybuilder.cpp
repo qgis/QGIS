@@ -20,6 +20,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsQueryBuilder : public QObject
 {
     Q_OBJECT
@@ -40,19 +44,18 @@ class TestQgsQueryBuilder : public QObject
 
 void TestQgsQueryBuilder::initTestCase() // will be called before the first testfunction is executed.
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 void TestQgsQueryBuilder::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsQueryBuilder::init()
-{
-}
+{}
 
 void TestQgsQueryBuilder::cleanup()
-{
-}
+{}
 
 QStringList TestQgsQueryBuilder::getModelItemDisplayStrings( QStandardItemModel *model )
 {

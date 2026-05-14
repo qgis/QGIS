@@ -20,12 +20,15 @@
 #include "qgscolorutils.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayerselectionproperties.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsVectorLayerSelectionProperties::QgsVectorLayerSelectionProperties( QObject *parent )
-  :  QgsMapLayerSelectionProperties( parent )
-{
-}
+  : QgsMapLayerSelectionProperties( parent )
+{}
 
 QgsVectorLayerSelectionProperties::~QgsVectorLayerSelectionProperties() = default;
 

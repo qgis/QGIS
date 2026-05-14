@@ -11,30 +11,24 @@ __date__ = "14/12/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsNominatimGeocoder,
     QgsRectangle,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsNominatimGeocoder(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestQgsGeocoderLocatorFilter.com")
-        QCoreApplication.setApplicationName("TestQgsGeocoderLocatorFilter")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is

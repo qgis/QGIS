@@ -18,6 +18,10 @@
 #include "qgscolorschemeregistry.h"
 #include "qgspointcloudrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // default renderers
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudrgbrenderer.h"
@@ -28,18 +32,10 @@
 QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
 {
   // add default renderers
-  addRenderer( new QgsPointCloudRendererMetadata( u"extent"_s,
-               QObject::tr( "Extent Only" ),
-               QgsPointCloudExtentRenderer::create ) );
-  addRenderer( new QgsPointCloudRendererMetadata( u"ramp"_s,
-               QObject::tr( "Attribute by Ramp" ),
-               QgsPointCloudAttributeByRampRenderer::create ) );
-  addRenderer( new QgsPointCloudRendererMetadata( u"rgb"_s,
-               QObject::tr( "RGB" ),
-               QgsPointCloudRgbRenderer::create ) );
-  addRenderer( new QgsPointCloudRendererMetadata( u"classified"_s,
-               QObject::tr( "Classification" ),
-               QgsPointCloudClassifiedRenderer::create ) );
+  addRenderer( new QgsPointCloudRendererMetadata( u"extent"_s, QObject::tr( "Extent Only" ), QgsPointCloudExtentRenderer::create ) );
+  addRenderer( new QgsPointCloudRendererMetadata( u"ramp"_s, QObject::tr( "Attribute by Ramp" ), QgsPointCloudAttributeByRampRenderer::create ) );
+  addRenderer( new QgsPointCloudRendererMetadata( u"rgb"_s, QObject::tr( "RGB" ), QgsPointCloudRgbRenderer::create ) );
+  addRenderer( new QgsPointCloudRendererMetadata( u"classified"_s, QObject::tr( "Classification" ), QgsPointCloudClassifiedRenderer::create ) );
 }
 
 QgsPointCloudRendererRegistry::~QgsPointCloudRendererRegistry()

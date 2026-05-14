@@ -18,20 +18,20 @@
 
 ///@cond PRIVATE
 
-#define SIP_NO_FILE
 
 #include "qgsfeedback.h"
 #include "qgsmimedatautils.h"
 
+#define SIP_NO_FILE
+
 class QgsGeoPackageRasterWriter
 {
   public:
-
     //! Error codes
     enum WriterError
     {
-      NoError = 0, //!< No errors were encountered
-      WriteError, //!< Generic GDAL Translate error
+      NoError = 0,     //!< No errors were encountered
+      WriteError,      //!< Generic GDAL Translate error
       ErrUserCanceled, //!< User canceled the export
     };
 
@@ -49,4 +49,3 @@ class QgsGeoPackageRasterWriter
 ///@endcond
 
 #endif // QGSGEOPACKAGERASTERWRITER_H
-

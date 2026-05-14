@@ -38,10 +38,7 @@
 class QgsCoordinateReferenceSystemPrivate : public QSharedData
 {
   public:
-
-    explicit QgsCoordinateReferenceSystemPrivate()
-    {
-    }
+    explicit QgsCoordinateReferenceSystemPrivate() {}
 
     QgsCoordinateReferenceSystemPrivate( const QgsCoordinateReferenceSystemPrivate &other )
       : QSharedData( other )
@@ -62,10 +59,9 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mWktPreferred( other.mWktPreferred )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
-      , mProjLock{}
+      , mProjLock {}
       , mProjObjects()
-    {
-    }
+    {}
 
     ~QgsCoordinateReferenceSystemPrivate()
     {
@@ -118,7 +114,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     void cleanPjObjects()
     {
-
       // During destruction of PJ* objects, the errno is set in the underlying
       // context. Consequently the context attached to the PJ* must still exist !
       // Which is not necessarily the case currently unfortunately. So
@@ -140,7 +135,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 
   public:
-
     void setPj( QgsProjUtils::proj_pj_unique_ptr obj )
     {
       const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
@@ -176,11 +170,10 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     mutable bool mAxisInverted = false;
 
   private:
-    mutable QReadWriteLock mProjLock{};
-    mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects{};
+    mutable QReadWriteLock mProjLock {};
+    mutable QMap< PJ_CONTEXT *, PJ * > mProjObjects {};
 
   public:
-
     PJ *threadLocalProjObject() const
     {
       QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
@@ -188,7 +181,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
         return nullptr;
 
       PJ_CONTEXT *context = QgsProjContext::get();
-      const QMap < PJ_CONTEXT *, PJ * >::const_iterator it = mProjObjects.constFind( context );
+      const QMap< PJ_CONTEXT *, PJ * >::const_iterator it = mProjObjects.constFind( context );
 
       if ( it != mProjObjects.constEnd() )
       {
@@ -208,7 +201,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     {
       const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
 
-      const QMap < PJ_CONTEXT *, PJ * >::iterator it = mProjObjects.find( pj_context );
+      const QMap< PJ_CONTEXT *, PJ * >::iterator it = mProjObjects.find( pj_context );
       if ( it != mProjObjects.end() )
       {
         proj_destroy( it.value() );
@@ -225,8 +218,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 
   private:
-    QgsCoordinateReferenceSystemPrivate &operator= ( const QgsCoordinateReferenceSystemPrivate & ) = delete;
-
+    QgsCoordinateReferenceSystemPrivate &operator=( const QgsCoordinateReferenceSystemPrivate & ) = delete;
 };
 
 /// @endcond

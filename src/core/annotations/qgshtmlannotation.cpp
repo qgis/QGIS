@@ -36,10 +36,13 @@
 #include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QSettings>
+#include <QString>
 #include <QTextStream>
 #include <QWidget>
 
 #include "moc_qgshtmlannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
   : QgsAnnotation( parent )
@@ -114,8 +117,7 @@ QSizeF QgsHtmlAnnotation::minimumFrameSize() const
   if ( mWebPage )
   {
     const QSizeF widgetMinSize = QSizeF( 0, 0 ); // mWebPage->minimumSize();
-    return QSizeF( contentsMargin().left() + contentsMargin().right() + widgetMinSize.width(),
-                   contentsMargin().top() + contentsMargin().bottom() + widgetMinSize.height() );
+    return QSizeF( contentsMargin().left() + contentsMargin().right() + widgetMinSize.width(), contentsMargin().top() + contentsMargin().bottom() + widgetMinSize.height() );
   }
   else
   {

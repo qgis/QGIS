@@ -20,7 +20,6 @@ Formats layer metadata into HTML.
 #include "qgslayermetadataformatter.h"
 %End
   public:
-
     QgsLayerMetadataFormatter( const QgsLayerMetadata &metadata );
 %Docstring
 Constructor for QgsLayerMetadataFormatter

@@ -8,6 +8,9 @@
 
 
 
+
+
+
 class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 {
 %Docstring(signature="appended")
@@ -168,6 +171,7 @@ greater than this threshold value will not be rendered, see
 %End
 
     virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
+
 
 
   protected:

@@ -6,13 +6,13 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import QgsMathUtils
 import unittest
+
+from qgis.core import QgsMathUtils
 from qgis.testing import QgisTestCase
 
 
 class TestQgsMathUtils(QgisTestCase):
-
     def test_to_rationale(self):
         self.assertEqual(QgsMathUtils.doubleToRational(0.0), (0, 1))
         self.assertEqual(QgsMathUtils.doubleToRational(1), (1, 1))

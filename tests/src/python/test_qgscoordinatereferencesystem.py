@@ -13,16 +13,15 @@ __date__ = "06/04/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import json
+import unittest
 
 from qgis.core import Qgis, QgsCoordinateReferenceSystem
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsCoordinateReferenceSystem(QgisTestCase):
-
     def test_axis_order(self):
         """
         Test QgsCoordinateReferenceSystem.axisOrdering() (including the Python MethodCode associated with this)
@@ -211,6 +210,35 @@ class TestQgsCoordinateReferenceSystem(QgisTestCase):
             QgsCoordinateReferenceSystem("EPSG:3111").toJsonString(schema="xxx")
         )
         self.assertEqual(proj_json["$schema"], "xxx")
+
+    def test_isEarthCrs(self):
+
+        self.assertTrue(QgsCoordinateReferenceSystem("EPSG:4326").isEarthCrs())
+        self.assertTrue(QgsCoordinateReferenceSystem("EPSG:5514").isEarthCrs())
+
+        self.assertFalse(QgsCoordinateReferenceSystem("IAU_2015:30100").isEarthCrs())
+        self.assertFalse(QgsCoordinateReferenceSystem("IAU_2015:49902").isEarthCrs())
+        self.assertFalse(QgsCoordinateReferenceSystem().isEarthCrs())
+
+    def test_isSameCelestialBody(self):
+
+        self.assertTrue(
+            QgsCoordinateReferenceSystem("EPSG:4326").isSameCelestialBody(
+                QgsCoordinateReferenceSystem("EPSG:5514")
+            )
+        )
+
+        self.assertFalse(
+            QgsCoordinateReferenceSystem("EPSG:4326").isSameCelestialBody(
+                QgsCoordinateReferenceSystem()
+            )
+        )
+
+        self.assertFalse(
+            QgsCoordinateReferenceSystem("EPSG:4326").isSameCelestialBody(
+                QgsCoordinateReferenceSystem("IAU_2015:30100")
+            )
+        )
 
 
 if __name__ == "__main__":

@@ -18,9 +18,6 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 import os
 import time
 
-from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDir
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
     QgsAbstractDatabaseProviderConnection,
@@ -39,6 +36,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt import QtCore
+from qgis.PyQt.QtCore import QDir, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app
 
 
@@ -65,9 +65,6 @@ class TestPyQgsProviderConnectionBase:
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
     def setUp(self):
@@ -124,7 +121,6 @@ class TestPyQgsProviderConnectionBase:
             and capabilities
             & QgsAbstractDatabaseProviderConnection.Capability.DropSchema
         ):
-
             myNewSchema = self.getUniqueSchemaName("myNewSchema")
             # Start clean
             if myNewSchema in conn.schemas():
@@ -177,7 +173,6 @@ class TestPyQgsProviderConnectionBase:
             and capabilities
             & QgsAbstractDatabaseProviderConnection.Capability.DropVectorTable
         ):
-
             if (
                 capabilities
                 & QgsAbstractDatabaseProviderConnection.Capability.CreateSchema
@@ -700,7 +695,6 @@ class TestPyQgsProviderConnectionBase:
         """Test that feedback can cancel an executeSql query"""
 
         if hasattr(self, "slowQuery"):
-
             md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
             conn = md.createConnection(self.uri, {})
             feedback = QgsFeedback()

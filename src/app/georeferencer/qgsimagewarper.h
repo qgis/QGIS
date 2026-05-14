@@ -74,7 +74,18 @@ class APP_EXPORT QgsImageWarper
      * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      */
-    Result warpFile( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, QgsFeedback *feedback, double destResX = 0.0, double destResY = 0.0 );
+    Result warpFile(
+      const QString &input,
+      const QString &output,
+      const QgsGeorefTransform &georefTransform,
+      ResamplingMethod resampling,
+      bool useZeroAsTrans,
+      const QStringList &options,
+      const QgsCoordinateReferenceSystem &crs,
+      QgsFeedback *feedback,
+      double destResX = 0.0,
+      double destResY = 0.0
+    );
 
   private:
     struct TransformChain
@@ -99,9 +110,21 @@ class APP_EXPORT QgsImageWarper
     void *addGeoToPixelTransform( GDALTransformerFunc GDALTransformer, void *GDALTransformerArg, double *padfGeotransform ) const;
     void destroyGeoToPixelTransform( void *GeoToPixelTransformArg ) const;
 
-    bool openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling, const GDALTransformerFunc &pfnTransform, gdal::dataset_unique_ptr &hSrcDS, gdal::warp_options_unique_ptr &psWarpOptions ) const;
+    bool openSrcDSAndGetWarpOpt(
+      const QString &input, ResamplingMethod resampling, const GDALTransformerFunc &pfnTransform, gdal::dataset_unique_ptr &hSrcDS, gdal::warp_options_unique_ptr &psWarpOptions
+    ) const;
 
-    bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs );
+    bool createDestinationDataset(
+      const QString &outputName,
+      GDALDatasetH hSrcDS,
+      gdal::dataset_unique_ptr &hDstDS,
+      uint resX,
+      uint resY,
+      double *adfGeoTransform,
+      bool useZeroAsTrans,
+      const QStringList &options,
+      const QgsCoordinateReferenceSystem &crs
+    );
 
     //! \brief GDAL progress callback, used to display warping progress via a QProgressDialog
     static int CPL_STDCALL updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg );
@@ -128,7 +151,17 @@ class QgsImageWarperTask : public QgsTask
      * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      */
-    QgsImageWarperTask( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, QgsImageWarper::ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, double destResX = 0.0, double destResY = 0.0 );
+    QgsImageWarperTask(
+      const QString &input,
+      const QString &output,
+      const QgsGeorefTransform &georefTransform,
+      QgsImageWarper::ResamplingMethod resampling,
+      bool useZeroAsTrans,
+      const QStringList &options,
+      const QgsCoordinateReferenceSystem &crs,
+      double destResX = 0.0,
+      double destResY = 0.0
+    );
 
     void cancel() override;
 

@@ -24,6 +24,10 @@
 #include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
   mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
@@ -88,6 +92,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
   int green = 0;
   int blue = 0;
   int alpha = 0;
+
+  bool dataDefinedPropertiesActive = dataDefinedProperties().isActive( QgsPointCloudRenderer::Property::Color );
   for ( int i = 0; i < count; ++i )
   {
     if ( context.renderContext().renderingStopped() )
@@ -130,16 +136,20 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
 
+      QColor color( red, green, blue, alpha );
+      if ( dataDefinedPropertiesActive )
+        color = colorFromExpression( block, i, color, context );
+
       if ( renderAsTriangles() )
       {
-        addPointToTriangulation( x, y, z, QColor( red, green, blue, alpha ), context );
+        addPointToTriangulation( x, y, z, color, context );
 
         // We don't want to render any points if we're rendering triangles and there is no preview painter
         if ( !context.renderContext().previewRenderPainter() )
           continue;
       }
 
-      drawPoint( x, y, QColor( red, green, blue, alpha ), context );
+      drawPoint( x, y, color, context );
       if ( renderElevation )
         drawPointToElevationMap( x, y, z, context );
 
@@ -185,9 +195,9 @@ QDomElement QgsPointCloudAttributeByRampRenderer::save( QDomDocument &doc, const
   return rendererElem;
 }
 
-QSet<QString> QgsPointCloudAttributeByRampRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+QSet<QString> QgsPointCloudAttributeByRampRenderer::usedAttributes( const QgsPointCloudRenderContext &context ) const
 {
-  QSet<QString> res;
+  QSet<QString> res = QgsPointCloudRenderer::usedAttributes( context );
   res << mAttribute;
   return res;
 }
@@ -202,12 +212,15 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
     case Qgis::ShaderInterpolationMethod::Linear:
       // for interpolated shaders we use a ramp legend node unless the settings flag
       // to use the continuous legend is not set, in that case we fall through
-      if ( mColorRampShader.sourceColorRamp() && ( ! mColorRampShader.legendSettings() || mColorRampShader.legendSettings()->useContinuousLegend() ) )
+      if ( mColorRampShader.sourceColorRamp() && ( !mColorRampShader.legendSettings() || mColorRampShader.legendSettings()->useContinuousLegend() ) )
       {
-        res << new QgsColorRampLegendNode( nodeLayer, mColorRampShader.sourceColorRamp()->clone(),
-                                           mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
-                                           mColorRampShader.minimumValue(),
-                                           mColorRampShader.maximumValue() );
+        res << new QgsColorRampLegendNode(
+          nodeLayer,
+          mColorRampShader.sourceColorRamp()->clone(),
+          mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
+          mColorRampShader.minimumValue(),
+          mColorRampShader.maximumValue()
+        );
         break;
       }
       [[fallthrough]];

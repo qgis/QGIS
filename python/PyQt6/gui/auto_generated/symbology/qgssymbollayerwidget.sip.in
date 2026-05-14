@@ -10,8 +10,7 @@
 
 
 
-template<T>
-class QgsMapToolEditBlankSegments;
+template<T> class QgsMapToolEditBlankSegments;
 
 class QgsSymbolLayerWidget : QWidget, QgsExpressionContextGenerator
 {
@@ -388,6 +387,11 @@ Constructor for QgsTemplatedLineSymbolLayerWidget.
 :param vl: associated vector layer
 :param parent: parent widget
 %End
+
+    virtual bool event( QEvent *e );
+
+
+    ~QgsTemplatedLineSymbolLayerWidget();
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
 

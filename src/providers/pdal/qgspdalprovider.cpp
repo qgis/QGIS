@@ -38,19 +38,18 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QQueue>
+#include <QString>
 
 #include "moc_qgspdalprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define PROVIDER_KEY u"pdal"_s
 #define PROVIDER_DESCRIPTION u"PDAL point cloud data provider"_s
 
 QQueue<QgsPdalProvider *> QgsPdalProvider::sIndexingQueue;
 
-QgsPdalProvider::QgsPdalProvider(
-  const QString &uri,
-  const QgsDataProvider::ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags
-)
+QgsPdalProvider::QgsPdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
   , mIndex( nullptr )
 {
@@ -350,8 +349,7 @@ QStringList QgsPdalProviderMetadata::sExtensions;
 
 QgsPdalProviderMetadata::QgsPdalProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsPdalProviderMetadata::icon() const
 {
@@ -365,9 +363,7 @@ QgsPdalProvider *QgsPdalProviderMetadata::createProvider( const QString &uri, co
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsPdalProviderMetadata::capabilities() const
 {
-  return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri
-         | ProviderMetadataCapability::QuerySublayers;
+  return ProviderMetadataCapability::LayerTypesForUri | ProviderMetadataCapability::PriorityForUri | ProviderMetadataCapability::QuerySublayers;
 }
 
 QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri ) const
@@ -474,11 +470,7 @@ void QgsPdalProviderMetadata::buildSupportedPointCloudFileFilterAndExtensions()
     // Let's call the defaultReader() method just so we trigger the private method extensions.load()
     extensions.defaultReader( "laz" );
 
-    const QStringList allowedReaders {
-      u"readers.las"_s,
-      u"readers.e57"_s,
-      u"readers.bpf"_s
-    };
+    const QStringList allowedReaders { u"readers.las"_s, u"readers.e57"_s, u"readers.bpf"_s };
 
     // the readers.text exposes extensions (csv, txt) which are generally not
     // point cloud files. Add these extensions to the filters but do not expose

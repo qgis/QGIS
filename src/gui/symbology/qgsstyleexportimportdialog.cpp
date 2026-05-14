@@ -36,10 +36,13 @@
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTemporaryFile>
 #include <QUrl>
 
 #include "moc_qgsstyleexportimportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
   : QDialog( parent )
@@ -63,8 +66,6 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mTempStyle->createMemoryDatabase();
 
   // TODO validate
-  mGroupSelectionDlg = nullptr;
-  mTempFile = nullptr;
 
   QgsStyle *dialogStyle = nullptr;
   if ( mDialogMode == Import )
@@ -235,10 +236,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
 }
 
 QgsStyleExportImportDialog::~QgsStyleExportImportDialog()
-{
-  delete mTempFile;
-  delete mGroupSelectionDlg;
-}
+{}
 
 void QgsStyleExportImportDialog::setImportFilePath( const QString &path )
 {
@@ -429,7 +427,7 @@ void QgsStyleExportImportDialog::importFileChanged( const QString &path )
 
 void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
 {
-  mTempFile = new QTemporaryFile();
+  mTempFile = std::make_unique<QTemporaryFile>();
   if ( mTempFile->open() )
   {
     mFileName = mTempFile->fileName();

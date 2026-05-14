@@ -44,7 +44,6 @@ class QgsRenderedItemResultsSpatialIndex;
 class CORE_EXPORT QgsRenderedItemResults
 {
   public:
-
     /**
      * Constructor for QgsRenderedItemResults.
      *
@@ -112,7 +111,6 @@ class CORE_EXPORT QgsRenderedItemResults
 
     std::unordered_map< QString, std::vector< std::unique_ptr< QgsRenderedItemDetails > > > mDetails;
     std::unique_ptr< QgsRenderedItemResultsSpatialIndex > mAnnotationItemsIndex;
-
 };
 
 #endif // QGSRENDEREDITEMRESULTS_H

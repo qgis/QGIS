@@ -23,7 +23,11 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsactionmenu.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent )
   : QMenu( parent )
@@ -194,7 +198,8 @@ void QgsActionMenu::reloadActions()
     mVisibleActionCount++;
   }
 
-  const QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::SingleFeature, mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext() );
+  const QList<QgsMapLayerAction *> mapLayerActions
+    = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::SingleFeature, mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext() );
 
   if ( !mapLayerActions.isEmpty() )
   {

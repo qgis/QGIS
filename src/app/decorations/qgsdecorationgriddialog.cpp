@@ -26,7 +26,11 @@
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 
+#include <QString>
+
 #include "moc_qgsdecorationgriddialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )

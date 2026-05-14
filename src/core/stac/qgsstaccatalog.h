@@ -42,10 +42,7 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
      * \param description Detailed multi-line description to fully explain the Catalog. CommonMark 0.29 syntax may be used for rich text representation.
      * \param links A list of references to other documents.
      */
-    QgsStacCatalog( const QString &id,
-                    const QString &version,
-                    const QString &description,
-                    const QVector< QgsStacLink > &links );
+    QgsStacCatalog( const QString &id, const QString &version, const QString &description, const QVector< QgsStacLink > &links );
 
     Qgis::StacObjectType type() const override;
     QString toHtml() const override;

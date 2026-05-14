@@ -23,32 +23,36 @@ __copyright__ = "(C) 2009, Martin Dobias"
 QGIS utilities module
 
 """
-from typing import List, Dict, Optional
+import builtins
+import configparser
+import functools
+import glob
+import os
+import os.path
+import sys
+import time
+import traceback
+import warnings
+from typing import Optional
 
+from qgis.core import (
+    Qgis,
+    QgsMessageLog,
+    QgsMessageOutput,
+    QgsSettingsTree,
+    qgsfunction,
+)
+from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
     QCoreApplication,
     QLocale,
     QThread,
-    qDebug,
     QUrl,
+    qDebug,
 )
 from qgis.PyQt.QtGui import QDesktopServices
-from qgis.PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import Qgis, QgsMessageLog, qgsfunction, QgsMessageOutput
-from qgis.gui import QgsMessageBar
-
-import os
-import sys
-import traceback
-import glob
-import os.path
-import configparser
-import warnings
-import time
-import functools
-
-import builtins
+from qgis.PyQt.QtWidgets import QApplication, QPushButton
 
 builtins.__dict__["unicode"] = str
 builtins.__dict__["basestring"] = str
@@ -412,6 +416,8 @@ def get_plugin_deps(plugin_id: str) -> dict[str, Optional[str]]:
         return result
 
     for dep in plugin_deps.split(","):
+        if not dep:
+            continue
         if "==" in dep:
             name, version_required = dep.split("==")
         else:
@@ -472,10 +478,29 @@ def _startPlugin(packageName: str) -> bool:
 
     package = sys.modules[packageName]
 
+    # Create the plugin's settings tree node and expose it as a module-level
+    # attribute so the plugin can access it during classFactory and at module
+    # import time. The node lives at "plugins/<packageName>" in the settings
+    # tree and is automatically removed in unloadPlugin().
+    try:
+        package.SETTINGS_NODE = QgsSettingsTree.createPluginTreeNode(packageName)
+    except Exception:
+        QgsMessageLog.logMessage(
+            f"Could not create settings tree node for plugin '{packageName}':\n{traceback.format_exc()}",
+            "Plugins",
+            Qgis.MessageLevel.Warning,
+        )
+
     # create an instance of the plugin
     try:
         plugins[packageName] = package.classFactory(iface)
     except:
+        # classFactory failed: drop the just-created settings node so we don't
+        # leave a stale empty node behind.
+        try:
+            QgsSettingsTree.unregisterPluginTreeNode(packageName)
+        except Exception:
+            pass
         _unloadPluginModules(packageName)
         errMsg = QCoreApplication.translate(
             "Python", "Couldn't load plugin '{0}'"
@@ -657,6 +682,16 @@ def unloadPlugin(packageName: str) -> bool:
             messagebar=True,
         )
         return False
+    finally:
+        # Always remove the plugin's settings tree node, even if unload() raised.
+        try:
+            QgsSettingsTree.unregisterPluginTreeNode(packageName)
+        except Exception:
+            QgsMessageLog.logMessage(
+                f"Could not unregister settings tree node for plugin '{packageName}':\n{traceback.format_exc()}",
+                "Plugins",
+                Qgis.MessageLevel.Warning,
+            )
 
 
 def _unloadPluginModules(packageName: str):
@@ -825,6 +860,7 @@ def closeProjectMacro():
 def _list_project_expression_functions():
     """Get a list of expression functions stored in the current project"""
     import ast
+
     from qgis.core import QgsProject
 
     functions = []
@@ -858,8 +894,8 @@ def clean_project_expression_functions():
             QgsExpression.unregisterFunction(function)
 
         # Reload user expressions
-        from qgis.core import QgsApplication
         import expressions
+        from qgis.core import QgsApplication
 
         userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
         expressionspath = os.path.join(userpythonhome, "expressions")
@@ -886,8 +922,8 @@ serverIface = None
 
 
 def initServerInterface(pointer):
-    from qgis.server import QgsServerInterface
     from qgis.PyQt.sip import wrapinstance
+    from qgis.server import QgsServerInterface
 
     sys.excepthook = sys.__excepthook__
     global serverIface
@@ -928,8 +964,8 @@ def startServerPlugin(packageName: str):
 def spatialite_connect(*args, **kwargs):
     """returns a dbapi2.Connection to a SpatiaLite db
     using the "mod_spatialite" extension (python3)"""
-    import sqlite3
     import re
+    import sqlite3
 
     def fcnRegexp(pattern, string):
         result = re.search(pattern, string)
@@ -1048,24 +1084,8 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
     if level is None:
         level = 0
 
-    if "PyQt4" in name:
-        msg = (
-            "PyQt4 classes cannot be imported in QGIS 3.x.\n"
-            "Use {} or preferably the version independent {} import instead.".format(
-                name.replace("PyQt4", "PyQt5"), name.replace("PyQt4", "qgis.PyQt")
-            )
-        )
-        raise ImportError(msg)
     qt_version = int(QT_VERSION_STR.split(".")[0])
-    if qt_version == 5 and "PyQt6" in name:
-        msg = (
-            "PyQt6 classes cannot be imported in a QGIS build based on Qt5.\n"
-            "Use {} or preferably the version independent {} import instead (where available).".format(
-                name.replace("PyQt6", "PyQt5"), name.replace("PyQt6", "qgis.PyQt")
-            )
-        )
-        raise ImportError(msg)
-    elif qt_version == 6 and "PyQt5" in name:
+    if qt_version == 6 and "PyQt5" in name:
         msg = (
             "PyQt5 classes cannot be imported in a QGIS build based on Qt6.\n"
             "Use {} or preferably the version independent {} import instead (where available).".format(
@@ -1130,8 +1150,9 @@ def processing_algorithm_from_script(filepath: str):
 
     Warning -- this ALSO execs the file as a script, so treat with caution!
     """
-    import sys
     import inspect
+    import sys
+
     from qgis.processing import alg
 
     filename = filepath.replace("\\\\", "/")

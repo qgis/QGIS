@@ -23,7 +23,7 @@ class QgsWmsNewConnection : public QgsNewHttpConnection
 {
     Q_OBJECT
   public:
-    QgsWmsNewConnection( QWidget *parent = nullptr, const QString &connName = QString() );
+    QgsWmsNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags() );
 
   private slots:
 

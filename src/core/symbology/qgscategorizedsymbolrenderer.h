@@ -20,6 +20,9 @@
 #include "qgsrenderer.h"
 
 #include <QHash>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 class QgsStyle;
@@ -35,7 +38,6 @@ class QgsColorRamp;
 class CORE_EXPORT QgsRendererCategory
 {
   public:
-
     QgsRendererCategory() = default;
 
     /**
@@ -144,6 +146,7 @@ class CORE_EXPORT QgsRendererCategory
     bool toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = !sipCpp->value().isValid()
@@ -153,9 +156,12 @@ class CORE_EXPORT QgsRendererCategory
                         : u"<QgsRendererCategory: %1 (%2)>"_s.arg( sipCpp->value().toString(), sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  protected:
+    // clang-format off
+    protected:
+    // clang-format on
     friend class QgsCategorizedSymbolRendererWidget;
 
     QVariant mValue;
@@ -175,6 +181,8 @@ typedef QList<QgsRendererCategory> QgsCategoryList;
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
+    using Category = QgsRendererCategory;
+    using Categories = QgsCategoryList;
 
     /**
      * Constructor for QgsCategorizedSymbolRenderer.
@@ -445,8 +453,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      *
      * \since QGIS 3.4
      */
-    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
-                        QVariantList &unmatchedCategories SIP_OUT, QStringList &unmatchedSymbols SIP_OUT, bool caseSensitive = true, bool useTolerantMatch = false );
+    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories SIP_OUT, QStringList &unmatchedSymbols SIP_OUT, bool caseSensitive = true, bool useTolerantMatch = false );
 
 
     /**
@@ -485,6 +492,9 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum = -1;
+
+    //! whether the attribute is numeric (derived from attribute name in startRender)
+    bool mAttrIsNumeric = false;
 
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbol *> mSymbolHash;
@@ -531,7 +541,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     //! Returns list of legend symbol items from individual categories
     QgsLegendSymbolList baseLegendSymbolItems() const;
-
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERER_H

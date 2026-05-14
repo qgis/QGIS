@@ -22,7 +22,6 @@ Renders tiled scene layers using the raw primitive wireframes.
 #include "qgstiledscenewireframerenderer.h"
 %End
   public:
-
     QgsTiledSceneWireframeRenderer();
 %Docstring
 Constructor for QgsTiledSceneWireframeRenderer.

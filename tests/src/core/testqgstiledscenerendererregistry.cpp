@@ -21,6 +21,9 @@
 #include "qgstiledscenerendererregistry.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy renderer for testing
 class DummyRenderer : public QgsTiledSceneRenderer
@@ -65,12 +68,10 @@ void TestQgsTiledSceneRendererRegistry::cleanupTestCase()
 }
 
 void TestQgsTiledSceneRendererRegistry::init()
-{
-}
+{}
 
 void TestQgsTiledSceneRendererRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsTiledSceneRendererRegistry::metadata()
 {

@@ -20,24 +20,25 @@ __date__ = "August 2013"
 __copyright__ = "(C) 2013, Alexander Bruy"
 
 from osgeo import gdal
-from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     QgsFeature,
+    QgsFeatureRequest,
     QgsFeatureSink,
-    QgsFields,
     QgsField,
+    QgsFields,
     QgsGeometry,
     QgsPointXY,
-    QgsWkbTypes,
     QgsProcessing,
     QgsProcessingException,
-    QgsFeatureRequest,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterRasterLayer,
+    QgsWkbTypes,
 )
-from processing.tools import raster
+from qgis.PyQt.QtCore import QMetaType
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import raster
 
 gdal.UseExceptions()
 

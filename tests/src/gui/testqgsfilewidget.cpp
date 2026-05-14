@@ -24,6 +24,10 @@
 #include "qgsmimedatautils.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsFileWidget : public QObject
 {
     Q_OBJECT
@@ -40,20 +44,16 @@ class TestQgsFileWidget : public QObject
 };
 
 void TestQgsFileWidget::initTestCase()
-{
-}
+{}
 
 void TestQgsFileWidget::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsFileWidget::init()
-{
-}
+{}
 
 void TestQgsFileWidget::cleanup()
-{
-}
+{}
 
 void TestQgsFileWidget::relativePath()
 {

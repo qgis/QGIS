@@ -16,6 +16,10 @@
 #include "qgsaabb.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsAABB class
@@ -38,8 +42,7 @@ class TestQgsAABB : public QgsTest
 
 //runs before all tests
 void TestQgsAABB::initTestCase()
-{
-}
+{}
 
 //runs after all tests
 void TestQgsAABB::cleanupTestCase()

@@ -33,29 +33,27 @@ class QgsCelestialBody;
 class CORE_EXPORT QgsEllipsoidUtils
 {
   public:
-
     /**
      * Contains parameters for an ellipsoid.
      */
     struct EllipsoidParameters
     {
-      //! Whether ellipsoid parameters are valid
-      bool valid{ true };
+        //! Whether ellipsoid parameters are valid
+        bool valid { true };
 
-      //! Semi-major axis, in meters
-      double semiMajor{ -1.0 };
-      //! Semi-minor axis, in meters
-      double semiMinor{ -1.0 };
+        //! Semi-major axis, in meters
+        double semiMajor { -1.0 };
+        //! Semi-minor axis, in meters
+        double semiMinor { -1.0 };
 
-      //! Whether custom parameters alone should be used (semiMajor/semiMinor only)
-      bool useCustomParameters{ false };
+        //! Whether custom parameters alone should be used (semiMajor/semiMinor only)
+        bool useCustomParameters { false };
 
-      //! Inverse flattening
-      double inverseFlattening{ -1.0 };
+        //! Inverse flattening
+        double inverseFlattening { -1.0 };
 
-      //! Associated coordinate reference system
-      QgsCoordinateReferenceSystem crs;
-
+        //! Associated coordinate reference system
+        QgsCoordinateReferenceSystem crs;
     };
 
     /**
@@ -63,21 +61,21 @@ class CORE_EXPORT QgsEllipsoidUtils
      */
     struct EllipsoidDefinition
     {
-      //! authority:code for QGIS builds with proj version 6 or greater, or custom acronym for ellipsoid for earlier proj builds
-      QString acronym;
-      //! Description of ellipsoid
-      QString description;
-      //! Ellipsoid parameters
-      QgsEllipsoidUtils::EllipsoidParameters parameters;
+        //! authority:code for QGIS builds with proj version 6 or greater, or custom acronym for ellipsoid for earlier proj builds
+        QString acronym;
+        //! Description of ellipsoid
+        QString description;
+        //! Ellipsoid parameters
+        QgsEllipsoidUtils::EllipsoidParameters parameters;
 
-      /**
+        /**
        * Name of the associated celestial body (e.g. "Earth").
        *
        * \warning This method requires PROJ 8.1 or later. On earlier PROJ builds the string will always be empty.
        *
        * \since QGIS 3.20
        */
-      QString celestialBodyName;
+        QString celestialBodyName;
     };
 
     /**
@@ -128,4 +126,3 @@ class CORE_EXPORT QgsEllipsoidUtils
 };
 
 #endif // QGSELLIPSOIDUTILS_H
-

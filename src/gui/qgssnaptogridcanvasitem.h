@@ -59,7 +59,7 @@ class GUI_EXPORT QgsSnapToGridCanvasItem : public QgsMapCanvasItem
     }
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
 
   public:

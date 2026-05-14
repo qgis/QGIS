@@ -23,7 +23,6 @@ Represents an elevation profile attached to a project.
 %End
   public:
 
-
     explicit QgsElevationProfile( QgsProject *project );
 %Docstring
 Constructor for QgsElevationProfile.
@@ -247,6 +246,28 @@ Emitted when the profile is renamed.
 Emitted when the use project layer tree property is changed.
 
 .. seealso:: :py:func:`setUseProjectLayerTree`
+%End
+
+    void profileCurveChanged();
+%Docstring
+Emitted when the profile curve is changed.
+
+.. seealso:: :py:func:`profileCurve`
+
+.. seealso:: :py:func:`setProfileCurve`
+
+.. versionadded:: 4.2
+%End
+
+    void toleranceChanged( double tolerance );
+%Docstring
+Emitted when the profile tolerance is changed.
+
+.. seealso:: :py:func:`tolerance`
+
+.. seealso:: :py:func:`setTolerance`
+
+.. versionadded:: 4.2
 %End
 
 };

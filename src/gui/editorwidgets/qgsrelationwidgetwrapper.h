@@ -34,21 +34,10 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
   public:
     //! Constructor for QgsRelationWidgetWrapper
-    QgsRelationWidgetWrapper(
-      QgsVectorLayer *vl,
-      const QgsRelation &relation,
-      QWidget *editor SIP_CONSTRAINED = nullptr,
-      QWidget *parent SIP_TRANSFERTHIS SIP_CONSTRAINED = nullptr
-    );
+    QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor SIP_CONSTRAINED = nullptr, QWidget *parent SIP_TRANSFERTHIS SIP_CONSTRAINED = nullptr );
 
     //! Constructor for QgsRelationWidgetWrapper
-    QgsRelationWidgetWrapper(
-      const QString &relationEditorName,
-      QgsVectorLayer *vl,
-      const QgsRelation &relation,
-      QWidget *editor = nullptr,
-      QWidget *parent SIP_TRANSFERTHIS = nullptr
-    );
+    QgsRelationWidgetWrapper( const QString &relationEditorName, QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Defines if a title label should be shown for this widget.

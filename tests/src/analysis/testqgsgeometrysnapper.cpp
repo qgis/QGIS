@@ -14,6 +14,10 @@ Email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include "qgsgeometrysnapper.h"
 #include "qgsgeometry.h"
@@ -72,11 +76,9 @@ void TestQgsGeometrySnapper::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 void TestQgsGeometrySnapper::init()
-{
-}
+{}
 void TestQgsGeometrySnapper::cleanup()
-{
-}
+{}
 
 void TestQgsGeometrySnapper::snapPolygonToPolygon()
 {

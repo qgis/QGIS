@@ -25,6 +25,10 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsTinMeshCreationAlgorithm::group() const

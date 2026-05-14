@@ -11,7 +11,7 @@
 
 
 
-class QgsLayoutItemPolyline: QgsLayoutNodesItem
+class QgsLayoutItemPolyline : QgsLayoutNodesItem
 {
 %Docstring(signature="appended")
 Layout item for node based polyline shapes.
@@ -21,7 +21,6 @@ Layout item for node based polyline shapes.
 #include "qgslayoutitempolyline.h"
 %End
   public:
-
     enum MarkerMode /BaseType=IntEnum/
     {
       NoMarker,
@@ -222,7 +221,6 @@ Returns the pen width in millimeters for the stroke of the arrow head.
 
 
   protected:
-
     virtual bool _addNode( int indexPoint, QPointF newPoint, double radius );
 
     virtual bool _removeNode( int nodeIndex );
@@ -244,7 +242,6 @@ Returns the pen width in millimeters for the stroke of the arrow head.
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

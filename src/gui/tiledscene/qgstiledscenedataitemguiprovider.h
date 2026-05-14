@@ -17,9 +17,14 @@
 #define QGSTILEDSCENEDATAITEMGUIPROVIDER_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "qgsdataitemguiprovider.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 class QgsTiledSceneDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {

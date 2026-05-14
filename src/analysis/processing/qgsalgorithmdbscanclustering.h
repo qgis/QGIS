@@ -18,13 +18,14 @@
 #ifndef QGSALGORITHMDBSCANCLUSTERING_H
 #define QGSALGORITHMDBSCANCLUSTERING_H
 
-#define SIP_NO_FILE
 
 #include <unordered_map>
 
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 class QgsSpatialIndexKDBush;
 
@@ -52,7 +53,18 @@ class ANALYSIS_EXPORT QgsDbscanClusteringAlgorithm : public QgsProcessingAlgorit
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    static void stdbscan( std::size_t minSize, const double eps1, const double eps2, bool borderPointsAreNoise, long featureCount, QgsFeatureIterator features, QgsSpatialIndexKDBush &index, std::unordered_map<QgsFeatureId, int> &idToCluster, std::unordered_map<QgsFeatureId, QDateTime> &idToDateTime, QgsProcessingFeedback *feedback );
+    static void stdbscan(
+      std::size_t minSize,
+      const double eps1,
+      const double eps2,
+      bool borderPointsAreNoise,
+      long featureCount,
+      QgsFeatureIterator features,
+      QgsSpatialIndexKDBush &index,
+      std::unordered_map<QgsFeatureId, int> &idToCluster,
+      std::unordered_map<QgsFeatureId, QDateTime> &idToDateTime,
+      QgsProcessingFeedback *feedback
+    );
 };
 
 ///@endcond PRIVATE

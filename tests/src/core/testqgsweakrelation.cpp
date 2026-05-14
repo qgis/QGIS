@@ -21,6 +21,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsweakrelation.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsWeakRelation : public QObject
 {
     Q_OBJECT
@@ -44,10 +48,6 @@ class TestQgsWeakRelation : public QObject
 
 void TestQgsWeakRelation::initTestCase()
 {
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   QgsApplication::init();
   QgsApplication::initQgis();
 }
@@ -91,7 +91,19 @@ void TestQgsWeakRelation::testSetters()
 
 void TestQgsWeakRelation::testResolved()
 {
-  QgsWeakRelation weakRel( u"my_relation_id"_s, u"my_relation_name"_s, Qgis::RelationshipStrength::Association, u"referencingLayerId"_s, u"referencingLayerName"_s, u"Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int"_s, u"memory"_s, u"referencedLayerId"_s, u"referencedLayerName"_s, u"Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string"_s, u"memory"_s );
+  QgsWeakRelation weakRel(
+    u"my_relation_id"_s,
+    u"my_relation_name"_s,
+    Qgis::RelationshipStrength::Association,
+    u"referencingLayerId"_s,
+    u"referencingLayerName"_s,
+    u"Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int"_s,
+    u"memory"_s,
+    u"referencedLayerId"_s,
+    u"referencedLayerName"_s,
+    u"Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string"_s,
+    u"memory"_s
+  );
   weakRel.setReferencingLayerFields( { "fk_province" } );
   weakRel.setReferencedLayerFields( { "pk" } );
 
@@ -136,7 +148,19 @@ void TestQgsWeakRelation::testResolved()
 
 void TestQgsWeakRelation::testResolvedManyToMany()
 {
-  QgsWeakRelation weakRel( u"my_relation_id"_s, u"my_relation_name"_s, Qgis::RelationshipStrength::Association, u"referencingLayerId"_s, u"referencingLayerName"_s, u"Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int"_s, u"memory"_s, u"referencedLayerId"_s, u"referencedLayerName"_s, u"Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string"_s, u"memory"_s );
+  QgsWeakRelation weakRel(
+    u"my_relation_id"_s,
+    u"my_relation_name"_s,
+    Qgis::RelationshipStrength::Association,
+    u"referencingLayerId"_s,
+    u"referencingLayerName"_s,
+    u"Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int"_s,
+    u"memory"_s,
+    u"referencedLayerId"_s,
+    u"referencedLayerName"_s,
+    u"Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string"_s,
+    u"memory"_s
+  );
   weakRel.setCardinality( Qgis::RelationshipCardinality::ManyToMany );
   weakRel.setMappingTable( QgsVectorLayerRef( u"mappingTableId"_s, u"mappingTableName"_s, u"None?field=origin_key:int&field=destination_key:int"_s, u"memory"_s ) );
 
@@ -211,7 +235,19 @@ void TestQgsWeakRelation::testResolvedManyToMany()
 
 void TestQgsWeakRelation::testReadWrite()
 {
-  QgsWeakRelation weakRel( u"my_relation_id"_s, u"my_relation_name"_s, Qgis::RelationshipStrength::Association, u"referencingLayerId"_s, u"referencingLayerName"_s, u"Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int"_s, u"memory"_s, u"referencedLayerId"_s, u"referencedLayerName"_s, u"Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string"_s, u"memory"_s );
+  QgsWeakRelation weakRel(
+    u"my_relation_id"_s,
+    u"my_relation_name"_s,
+    Qgis::RelationshipStrength::Association,
+    u"referencingLayerId"_s,
+    u"referencingLayerName"_s,
+    u"Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int"_s,
+    u"memory"_s,
+    u"referencedLayerId"_s,
+    u"referencedLayerName"_s,
+    u"Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string"_s,
+    u"memory"_s
+  );
   weakRel.setReferencingLayerFields( { "fk_province" } );
   weakRel.setReferencedLayerFields( { "pk" } );
 
@@ -226,9 +262,7 @@ void TestQgsWeakRelation::testReadWrite()
   QVERIFY( relations.at( 0 ).isValid() );
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   // Check the XML is written for the referenced layer
@@ -284,9 +318,7 @@ void TestQgsWeakRelation::testWriteStyleCategoryRelations()
 
   // Write to XML
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   QDomElement node = doc.createElement( u"style_categories_relations"_s );
   QString errorMessage;

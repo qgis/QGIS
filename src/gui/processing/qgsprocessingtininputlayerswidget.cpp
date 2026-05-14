@@ -18,7 +18,11 @@
 #include "qgsprocessingcontext.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingtininputlayerswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
@@ -359,9 +363,7 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTinInputLayersWidgetWr
 QWidget *QgsProcessingTinInputLayersWidgetWrapper::createWidget()
 {
   mWidget = new QgsProcessingTinInputLayersWidget( widgetContext().project() );
-  connect( mWidget, &QgsProcessingTinInputLayersWidget::changed, this, [this] {
-    emit widgetValueHasChanged( this );
-  } );
+  connect( mWidget, &QgsProcessingTinInputLayersWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
 
   return mWidget;
 }

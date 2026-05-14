@@ -20,8 +20,8 @@ __date__ = "January 2016"
 __copyright__ = "(C) 2016, Matthiasd Kuhn"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsFillSymbol,
     QgsProject,
@@ -32,10 +32,9 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QSize
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 start_app()
@@ -43,7 +42,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSymbolExpressionVariables(QgisTestCase):
-
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, "polys.shp")
         self.layer = QgsVectorLayer(myShpFile, "Polys", "ogr")

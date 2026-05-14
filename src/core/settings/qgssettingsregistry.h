@@ -38,7 +38,6 @@ class QgsSettingsEntryGroup;
 class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
 {
   public:
-
     QgsSettingsRegistry();
     virtual ~QgsSettingsRegistry();
 
@@ -70,7 +69,6 @@ class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
     QList<const QgsSettingsRegistry *> subRegistries() const;
 
   protected:
-
     /**
      * Adds \a settingsEntry to the registry.
      */
@@ -84,7 +82,6 @@ class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
     Q_DECL_DEPRECATED void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup ) SIP_DEPRECATED;
 
   private:
-
     QMap<QString, const QgsSettingsEntryBase *> mSettingsEntriesMap;
 
     Q_NOWARN_DEPRECATED_PUSH
@@ -94,7 +91,6 @@ class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
     QList<const QgsSettingsRegistry *> mSettingsRegistryChildList;
 
     friend class QgsSettingsEntryBase;
-
 };
 
 #endif // QGSSETTINGSREGISTRY_H

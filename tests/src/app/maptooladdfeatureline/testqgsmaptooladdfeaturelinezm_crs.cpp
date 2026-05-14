@@ -29,7 +29,10 @@
 #include "qgswkbtypes.h"
 
 #include <QDebug>
+#include <QString>
 #include <QTest>
+
+using namespace Qt::StringLiterals;
 
 // Comparison operator for QgsGeometry.
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
@@ -37,7 +40,7 @@ bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
   if ( g1.isNull() && g2.isNull() )
     return true;
   else
-    return g1.equals( g2 );
+    return g1.isExactlyEqual( g2 );
 }
 
 namespace QTest

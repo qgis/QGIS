@@ -23,7 +23,6 @@ Makes metadata of processing parameters available.
 #include "qgsprocessingparametertype.h"
 %End
   public:
-
     static QColor defaultModelColor();
 %Docstring
 Returns the default color for a processing parameter.
@@ -194,7 +193,6 @@ The default implementation returns
 
 .. versionadded:: 4.0
 %End
-
 };
 
 /************************************************************************

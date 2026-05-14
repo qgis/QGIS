@@ -29,6 +29,7 @@
 #include "qgsmaskrendersettings.h"
 #include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
+#include "qgsselectivemaskingsourceset.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsvectorsimplifymethod.h"
 
@@ -44,6 +45,7 @@ class QgsCoordinateTransform;
 class QgsScaleCalculator;
 class QgsMapRendererJob;
 class QgsRenderedFeatureHandlerInterface;
+class QgsSelectiveMaskingSourceSet;
 
 /**
  * \class QgsLabelBlockingRegion
@@ -56,7 +58,6 @@ class QgsRenderedFeatureHandlerInterface;
 class CORE_EXPORT QgsLabelBlockingRegion
 {
   public:
-
     /**
      * Constructor for a label blocking region
      */
@@ -66,7 +67,6 @@ class CORE_EXPORT QgsLabelBlockingRegion
 
     //! Geometry of region to avoid placing labels within (in destination map coordinates and CRS)
     QgsGeometry geometry;
-
 };
 
 
@@ -271,8 +271,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \note not available in Python bindings
      * \since QGIS 3.40
      */
-    template <typename T>
-    QVector<T> layers() const;
+    template<typename T> QVector<T> layers() const;
 #endif
 
     /**
@@ -436,10 +435,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see setTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    Qgis::TextRenderFormat textRenderFormat() const
-    {
-      return mTextRenderFormat;
-    }
+    Qgis::TextRenderFormat textRenderFormat() const { return mTextRenderFormat; }
 
     /**
      * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
@@ -941,8 +937,25 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
 
-  protected:
+    /**
+     * Returns a hash of all selective masking source sets defined for the map.
+     *
+     * The hash keys are the set IDs.
+     *
+     * \see setSelectiveMaskingSourceSets()
+     * \since QGIS 4.0
+     */
+    QHash< QString, QgsSelectiveMaskingSourceSet > selectiveMaskingSourceSets() const;
 
+    /**
+     * Sets a list of all selective masking source sets defined for the map.
+     *
+     * \see selectiveMaskingSourceSets()
+     * \since QGIS 4.0
+     */
+    void setSelectiveMaskingSourceSets( const QVector< QgsSelectiveMaskingSourceSet > &sets );
+
+  protected:
     double mDpi = 96.0;
     double mDpiTarget = -1;
 
@@ -1012,6 +1025,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     QgsMaskRenderSettings mMaskRenderSettings;
 
+    QHash< QString, QgsSelectiveMaskingSourceSet > mSelectiveMaskingSourceSets;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
@@ -1026,7 +1041,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
 
     QgsDoubleRange mZRange;
-
 };
 
 #endif // QGSMAPSETTINGS_H

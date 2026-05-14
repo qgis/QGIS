@@ -34,6 +34,8 @@
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 class QgsFeature;
 class QgsVectorLayer;
 class QgsPaintEffect;
@@ -52,7 +54,7 @@ typedef QMap<QString, QgsSymbol * > QgsSymbolMap SIP_SKIP;
 #include "qgslegendsymbolitem.h"
 
 
-#define RENDERER_TAG_NAME   "renderer-v2"
+#define RENDERER_TAG_NAME "renderer-v2"
 
 ////////
 // symbol levels
@@ -107,7 +109,6 @@ typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
  */
 class CORE_EXPORT QgsFeatureRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -123,6 +124,8 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_QgsRuleBasedRenderer;
     else if ( type == "heatmapRenderer"_L1 )
       sipType = sipType_QgsHeatmapRenderer;
+    else if ( type == "mergedFeatureRenderer"_L1 )
+      sipType = sipType_QgsMergedFeatureRenderer;
     else if ( type == "invertedPolygonRenderer"_L1 )
       sipType = sipType_QgsInvertedPolygonRenderer;
     else if ( type == "pointCluster"_L1 )
@@ -137,7 +140,7 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -149,7 +152,7 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     enum class Property : int
     {
-      HeatmapRadius, //!< Heatmap renderer radius
+      HeatmapRadius,  //!< Heatmap renderer radius
       HeatmapMaximum, //!< Heatmap maximum value
     };
 
@@ -235,7 +238,11 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \returns An expression used as where clause
      */
-    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ) return QString(); }
+    virtual QString filter( const QgsFields &fields = QgsFields() )
+    {
+      Q_UNUSED( fields )
+      return QString();
+    }
 
     /**
      * Returns a list of attributes required by this renderer. Attributes not listed in here may
@@ -292,10 +299,10 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
-      SymbolLevels          = 1,      //!< Rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      SymbolLevels = 1,               //!< Rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
       MoreSymbolsPerFeature = 1 << 2, //!< May use more than one symbol to render a feature: symbolsForFeature() will return them
-      Filter                = 1 << 3, //!< Features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
-      ScaleDependent        = 1 << 4  //!< Depends on scale if feature will be rendered (rule based )
+      Filter = 1 << 3,                //!< Features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent = 1 << 4         //!< Depends on scale if feature will be rendered (rule based )
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )

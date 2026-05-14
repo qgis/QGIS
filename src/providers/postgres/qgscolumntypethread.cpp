@@ -23,8 +23,11 @@ email                : jef at norbit dot de
 #include "qgspostgresconnpool.h"
 
 #include <QMetaType>
+#include <QString>
 
 #include "moc_qgscolumntypethread.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString &name, bool useEstimatedMetaData, bool allowGeometrylessTables )
   : mName( name )
@@ -76,7 +79,8 @@ void QgsGeomColumnTypeThread::run()
 
   for ( auto &layerProperty : layerProperties )
   {
-    if ( !layerProperty.geometryColName.isNull() && ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown || layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
+    if ( !layerProperty.geometryColName.isNull()
+         && ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown || layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
       unrestrictedLayers << &layerProperty;
     }

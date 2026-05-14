@@ -10,27 +10,27 @@ __author__ = "Nyall Dawson"
 __date__ = "2016-05"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant, QTemporaryDir
-from qgis.PyQt.QtWidgets import QDateTimeEdit, QWidget
-from qgis.core import QgsVectorLayer, QgsField, QgsFeature
+import unittest
+
+from osgeo import gdal, ogr, osr
+from qgis.core import QgsFeature, QgsField, QgsVectorLayer
 from qgis.gui import (
     QgsAttributeForm,
     QgsAttributeFormEditorWidget,
+    QgsAttributeFormWidget,
     QgsDefaultSearchWidgetWrapper,
     QgsGui,
     QgsSearchWidgetWrapper,
-    QgsAttributeFormWidget,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-from osgeo import gdal, ogr, osr
+from qgis.PyQt.QtCore import QDate, QDateTime, QTemporaryDir, QTime, QVariant
+from qgis.PyQt.QtWidgets import QDateTimeEdit, QWidget
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 QgsGui.editorWidgetRegistry().initEditors()
 
 
 class PyQgsAttributeFormEditorWidget(QgisTestCase):
-
     def testCurrentFilterExpression(self):
         """Test creating an expression using the widget"""
 

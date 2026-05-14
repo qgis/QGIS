@@ -18,7 +18,11 @@
 #include "qgsgeocoder.h"
 #include "qgsgeocodercontext.h"
 
+#include <QString>
+
 #include "moc_qgsabstractgeocoderlocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractGeocoderLocatorFilter::QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, const QgsRectangle &boundingBox )
   : mName( name )
@@ -26,9 +30,7 @@ QgsAbstractGeocoderLocatorFilter::QgsAbstractGeocoderLocatorFilter( const QStrin
   , mPrefix( prefix )
   , mGeocoder( geocoder )
   , mBoundingBox( boundingBox )
-{
-
-}
+{}
 
 QString QgsAbstractGeocoderLocatorFilter::name() const
 {
@@ -76,9 +78,7 @@ QgsGeocoderInterface *QgsAbstractGeocoderLocatorFilter::geocoder() const
 QgsGeocoderResult QgsAbstractGeocoderLocatorFilter::locatorResultToGeocoderResult( const QgsLocatorResult &result ) const
 {
   const QVariantMap attrs = result.userData().toMap();
-  QgsGeocoderResult geocodeResult( attrs.value( u"identifier"_s ).toString(),
-                                   attrs.value( u"geom"_s ).value< QgsGeometry >(),
-                                   attrs.value( u"crs"_s ).value< QgsCoordinateReferenceSystem >() );
+  QgsGeocoderResult geocodeResult( attrs.value( u"identifier"_s ).toString(), attrs.value( u"geom"_s ).value< QgsGeometry >(), attrs.value( u"crs"_s ).value< QgsCoordinateReferenceSystem >() );
   geocodeResult.setAdditionalAttributes( attrs.value( u"attributes"_s ).toMap() );
   geocodeResult.setViewport( attrs.value( u"viewport"_s ).value< QgsRectangle >() );
   geocodeResult.setDescription( result.description );

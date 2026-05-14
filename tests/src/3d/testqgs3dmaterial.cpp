@@ -16,18 +16,24 @@
  ***************************************************************************/
 
 #include "qgs3d.h"
+#include "qgsgoochmaterial3dhandler.h"
 #include "qgsgoochmaterialsettings.h"
 #include "qgsmaterial.h"
 #include "qgsmaterialregistry.h"
+#include "qgsphongmaterial3dhandler.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgssimplelinematerial3dhandler.h"
 #include "qgssimplelinematerialsettings.h"
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
+
+using namespace Qt::StringLiterals;
 
 class TestQgs3DMaterial : public QgsTest
 {
@@ -64,12 +70,10 @@ void TestQgs3DMaterial::cleanupTestCase()
 }
 
 void TestQgs3DMaterial::init()
-{
-}
+{}
 
 void TestQgs3DMaterial::cleanup()
-{
-}
+{}
 
 void TestQgs3DMaterial::setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings )
 {
@@ -118,26 +122,27 @@ void TestQgs3DMaterial::colorDataDefinedPhong()
   yellowProperty.setExpressionString( u"'yellow'"_s );
   yellowProperty.setActive( false );
 
+  QgsPhongMaterial3DHandler handler;
   setColorProperty( redProperty, QgsAbstractMaterialSettings::Property::Diffuse, propertyCollection, phongSettings );
-  QCOMPARE( phongSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArrayAllBlack );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &phongSettings, expressionContext ), colorByteArrayAllBlack );
 
   redProperty.setActive( true );
   setColorProperty( redProperty, QgsAbstractMaterialSettings::Property::Diffuse, propertyCollection, phongSettings );
-  QCOMPARE( phongSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_1 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &phongSettings, expressionContext ), colorByteArray_1 );
 
   setColorProperty( blueProperty, QgsAbstractMaterialSettings::Property::Ambient, propertyCollection, phongSettings );
-  QCOMPARE( phongSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_1 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &phongSettings, expressionContext ), colorByteArray_1 );
 
   blueProperty.setActive( true );
   setColorProperty( blueProperty, QgsAbstractMaterialSettings::Property::Ambient, propertyCollection, phongSettings );
-  QCOMPARE( phongSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_2 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &phongSettings, expressionContext ), colorByteArray_2 );
 
   setColorProperty( yellowProperty, QgsAbstractMaterialSettings::Property::Specular, propertyCollection, phongSettings );
-  QCOMPARE( phongSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_2 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &phongSettings, expressionContext ), colorByteArray_2 );
 
   yellowProperty.setActive( true );
   setColorProperty( yellowProperty, QgsAbstractMaterialSettings::Property::Specular, propertyCollection, phongSettings );
-  QCOMPARE( phongSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_3 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &phongSettings, expressionContext ), colorByteArray_3 );
 }
 
 void TestQgs3DMaterial::colorDataDefinedGooch()
@@ -194,43 +199,41 @@ void TestQgs3DMaterial::colorDataDefinedGooch()
   whiteProperty.setExpressionString( u"'white'"_s );
   whiteProperty.setActive( false );
 
+  QgsGoochMaterial3DHandler handler;
   setColorProperty( redProperty, QgsAbstractMaterialSettings::Property::Diffuse, propertyCollection, goochSettings );
-  QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArrayAllBlack );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &goochSettings, expressionContext ), colorByteArrayAllBlack );
 
   redProperty.setActive( true );
   setColorProperty( redProperty, QgsAbstractMaterialSettings::Property::Diffuse, propertyCollection, goochSettings );
-  QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_1 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &goochSettings, expressionContext ), colorByteArray_1 );
 
   setColorProperty( blueProperty, QgsAbstractMaterialSettings::Property::Warm, propertyCollection, goochSettings );
-  QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_1 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &goochSettings, expressionContext ), colorByteArray_1 );
 
   blueProperty.setActive( true );
   setColorProperty( blueProperty, QgsAbstractMaterialSettings::Property::Warm, propertyCollection, goochSettings );
-  QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_2 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &goochSettings, expressionContext ), colorByteArray_2 );
 
   setColorProperty( yellowProperty, QgsAbstractMaterialSettings::Property::Cool, propertyCollection, goochSettings );
-  QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_2 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &goochSettings, expressionContext ), colorByteArray_2 );
 
   yellowProperty.setActive( true );
   setColorProperty( yellowProperty, QgsAbstractMaterialSettings::Property::Cool, propertyCollection, goochSettings );
-  QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_3 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &goochSettings, expressionContext ), colorByteArray_3 );
 
   setColorProperty( whiteProperty, QgsAbstractMaterialSettings::Property::Specular, propertyCollection, goochSettings );
-  QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_3 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &goochSettings, expressionContext ), colorByteArray_3 );
 
   whiteProperty.setActive( true );
   setColorProperty( whiteProperty, QgsAbstractMaterialSettings::Property::Specular, propertyCollection, goochSettings );
-  QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_4 );
+  QCOMPARE( handler.dataDefinedVertexColorsAsByte( &goochSettings, expressionContext ), colorByteArray_4 );
 }
 
 void TestQgs3DMaterial::clipping()
 {
   const QString defineClippingStr = u"#define %1"_s.arg( QgsMaterial::CLIP_PLANE_DEFINE );
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  const QList<QVector4D> clipPlanesEquations
+    = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 150.0 ) << QVector4D( -0.866025, 0.5, 0, 150.0 ) << QVector4D( 0.5, 0.866025, 0, 305.0 ) << QVector4D( -0.5, -0.866025, 0, 205.0 );
 
   auto findParameters = []( const Qt3DRender::QEffect *effect, bool &arrayFound, bool &maxFound ) -> void {
     arrayFound = false;
@@ -262,7 +265,8 @@ void TestQgs3DMaterial::clipping()
   // It does not contain any geometry shader
   const QgsPhongMaterialSettings phongMaterialSettings;
   const QgsMaterialContext phongMaterialContext;
-  QgsMaterial *phongMaterial = phongMaterialSettings.toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, phongMaterialContext );
+  QgsPhongMaterial3DHandler handler;
+  QgsMaterial *phongMaterial = handler.toMaterial( &phongMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, phongMaterialContext );
   QVERIFY( phongMaterial );
   Qt3DRender::QEffect *phongMaterialEffect = phongMaterial->effect();
   QVERIFY( phongMaterialEffect );
@@ -312,7 +316,8 @@ void TestQgs3DMaterial::clipping()
   // It contains a geometry shader
   const QgsSimpleLineMaterialSettings lineMaterialSettings;
   const QgsMaterialContext lineMaterialContext;
-  QgsMaterial *lineMaterial = lineMaterialSettings.toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, lineMaterialContext );
+  QgsSimpleLineMaterial3DHandler lineHandler;
+  QgsMaterial *lineMaterial = lineHandler.toMaterial( &lineMaterialSettings, Qgis::MaterialRenderingTechnique::Lines, lineMaterialContext );
   QVERIFY( lineMaterial );
   Qt3DRender::QEffect *lineMaterialEffect = lineMaterial->effect();
   QVERIFY( lineMaterialEffect );

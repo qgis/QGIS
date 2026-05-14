@@ -26,6 +26,8 @@
 #include <QStringList>
 #include <QTime>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsrasterchecker.h"
 #include "qgsrasterdataprovider.h"
@@ -46,7 +48,8 @@ class TestQgsRasterFileWriter : public QgsTest
 
   public:
     TestQgsRasterFileWriter()
-      : QgsTest( u"Raster File Writer Tests"_s ) {}
+      : QgsTest( u"Raster File Writer Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

@@ -21,6 +21,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy callout for testing
 class DummyCallout : public QgsCallout
@@ -67,12 +70,10 @@ void TestQgsCalloutRegistry::cleanupTestCase()
 }
 
 void TestQgsCalloutRegistry::init()
-{
-}
+{}
 
 void TestQgsCalloutRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsCalloutRegistry::metadata()
 {

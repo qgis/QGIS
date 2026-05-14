@@ -23,6 +23,8 @@ email                : hugo dot mercier at oslandia dot com
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 {
   if ( withExtension )
@@ -66,7 +68,10 @@ QgsScopedSqlite::~QgsScopedSqlite()
   close_();
 }
 
-sqlite3 *QgsScopedSqlite::get() const { return db_; }
+sqlite3 *QgsScopedSqlite::get() const
+{
+  return db_;
+}
 
 bool QgsScopedSqlite::interrupt()
 {
@@ -118,7 +123,10 @@ namespace Sqlite
     sqlite3_finalize( stmt_ );
   }
 
-  int Query::step() { return sqlite3_step( stmt_ ); }
+  int Query::step()
+  {
+    return sqlite3_step( stmt_ );
+  }
 
   Query &Query::bind( const QVariant &value, int idx )
   {
@@ -227,6 +235,9 @@ namespace Sqlite
     return QByteArray::fromRawData( data, size );
   }
 
-  sqlite3_stmt *Query::stmt() { return stmt_; }
+  sqlite3_stmt *Query::stmt()
+  {
+    return stmt_;
+  }
 
 } // namespace Sqlite

@@ -10,9 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "04/12/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDir, QSize, Qt
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFillSymbol,
@@ -24,16 +23,16 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsPointCloudExtentRenderer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "pointcloudrenderer"

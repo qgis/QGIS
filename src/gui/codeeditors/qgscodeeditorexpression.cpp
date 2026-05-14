@@ -22,6 +22,8 @@
 
 #include "moc_qgscodeeditorexpression.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   : QgsCodeEditor( parent )
 {
@@ -208,8 +210,7 @@ const char *QgsLexerExpression::wordCharacters() const
 
 QgsSciApisExpression::QgsSciApisExpression( QsciLexer *lexer )
   : QsciAPIs( lexer )
-{
-}
+{}
 
 QStringList QgsSciApisExpression::callTips( const QStringList &context, int commas, QsciScintilla::CallTipsStyle style, QList<int> &shifts )
 {

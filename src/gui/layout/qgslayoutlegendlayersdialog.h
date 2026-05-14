@@ -16,11 +16,12 @@
 #define QGSLAYOUTLEGENDLAYERSDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutlegendlayersdialogbase.h"
 
 #include "qgis_gui.h"
+
+#define SIP_NO_FILE
 
 class QgsMapLayer;
 class QgsMapLayerProxyModel;

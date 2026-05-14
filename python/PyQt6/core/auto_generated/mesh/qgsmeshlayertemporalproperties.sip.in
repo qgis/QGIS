@@ -40,7 +40,6 @@ The time in a mesh layer is defined by :
 #include "qgsmeshlayertemporalproperties.h"
 %End
   public:
-
     QgsMeshLayerTemporalProperties( QObject *parent /TransferThis/ = 0, bool enabled = true );
 %Docstring
 Constructor for QgsMeshLayerTemporalProperties
@@ -52,7 +51,6 @@ Constructor for QgsMeshLayerTemporalProperties
 %End
 
   public:
-
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );

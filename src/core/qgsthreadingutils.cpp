@@ -15,7 +15,17 @@
 
 #include "qgsthreadingutils.h"
 
-#if defined(QGISDEBUG)
+#include <QCoreApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+#if defined( QGISDEBUG )
 QSet< QString > QgsThreadingUtils::sEmittedWarnings;
 QMutex QgsThreadingUtils::sEmittedWarningMutex;
 #endif
+
+QString QgsThreadingUtils::threadDescription( QThread *thread )
+{
+  return u"%1%2"_s.arg( thread == qApp->thread() ? u"MAIN thread"_s : QString() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 );
+}

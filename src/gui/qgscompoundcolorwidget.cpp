@@ -33,10 +33,13 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QScreen>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgscompoundcolorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
   : QgsPanelWidget( parent )
@@ -54,12 +57,8 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
     { mBlueRadio, QgsColorWidget::ColorComponent::Blue }
   };
 
-  mCmykRadios = {
-    { mCyanRadio, QgsColorWidget::ColorComponent::Cyan },
-    { mMagentaRadio, QgsColorWidget::ColorComponent::Magenta },
-    { mYellowRadio, QgsColorWidget::ColorComponent::Yellow },
-    { mBlackRadio, QgsColorWidget::ColorComponent::Black }
-  };
+  mCmykRadios
+    = { { mCyanRadio, QgsColorWidget::ColorComponent::Cyan }, { mMagentaRadio, QgsColorWidget::ColorComponent::Magenta }, { mYellowRadio, QgsColorWidget::ColorComponent::Yellow }, { mBlackRadio, QgsColorWidget::ColorComponent::Black } };
 
   mRgbGroup = new QButtonGroup( this );
   int i = 0;
@@ -427,7 +426,8 @@ void QgsCompoundColorWidget::importPalette()
 
 bool QgsCompoundColorWidget::removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent )
 {
-  if ( QMessageBox::question( parent, tr( "Remove Color Palette" ), tr( "Are you sure you want to remove %1?" ).arg( scheme->schemeName() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( parent, tr( "Remove Color Palette" ), tr( "Are you sure you want to remove %1?" ).arg( scheme->schemeName() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+       != QMessageBox::Yes )
   {
     //user canceled
     return false;

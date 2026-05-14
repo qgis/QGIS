@@ -41,32 +41,33 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QRegularExpression>
+#include <QString>
 #include <QStyle>
 #include <QTimer>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVector>
-#include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
 #include "moc_qgsdataitem.cpp"
 
+using namespace Qt::StringLiterals;
+
 // use GDAL VSI mechanism
-#define CPL_SUPRESS_CPLUSPLUS  //#spellok
+#define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 
 QgsAnimatedIcon *QgsDataItem::sPopulatingIcon = nullptr;
 
 QgsDataItem::QgsDataItem( Qgis::BrowserItemType type, QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
-// Do not pass parent to QObject, Qt would delete this when parent is deleted
+  // Do not pass parent to QObject, Qt would delete this when parent is deleted
   : mType( type )
   , mParent( parent )
   , mName( name )
   , mProviderKey( providerKey )
   , mPath( path )
-{
-}
+{}
 
 QgsDataItem::~QgsDataItem()
 {
@@ -87,8 +88,6 @@ QgsDataItem::~QgsDataItem()
     mDeferredDelete = true;
     mFutureWatcher->waitForFinished();
   }
-
-
 }
 
 QString QgsDataItem::pathComponent( const QString &string )
@@ -190,6 +189,11 @@ QVector<QgsDataItem *> QgsDataItem::createChildren()
   return QVector<QgsDataItem *>();
 }
 
+int QgsDataItem::creatorAncestorDepth() const
+{
+  return mCreatorAncestorDepth;
+}
+
 void QgsDataItem::populate( bool foreground )
 {
   if ( state() == Qgis::BrowserItemState::Populated || state() == Qgis::BrowserItemState::Populating )
@@ -221,7 +225,7 @@ QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
   QgsDebugMsgLevel( "path = " + item->path(), 2 );
   QElapsedTimer time;
   time.start();
-  const QVector <QgsDataItem *> children = item->createChildren();
+  const QVector<QgsDataItem *> children = item->createChildren();
   QgsDebugMsgLevel( u"%1 children created in %2 ms"_s.arg( children.size() ).arg( time.elapsed() ), 3 );
   // Children objects must be pushed to main thread.
   for ( QgsDataItem *child : children )
@@ -268,10 +272,21 @@ void QgsDataItem::populate( const QVector<QgsDataItem *> &children )
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 3 );
 
+  std::function< void( QgsDataItem *, int ) > setChildAncestorDepthRecursive;
+  setChildAncestorDepthRecursive = [&setChildAncestorDepthRecursive]( QgsDataItem *child, int depth ) {
+    child->mCreatorAncestorDepth = depth;
+    const QVector< QgsDataItem * > children = child->children();
+    for ( QgsDataItem *nextChild : children )
+    {
+      setChildAncestorDepthRecursive( nextChild, depth + 1 );
+    }
+  };
+
   for ( QgsDataItem *child : children )
   {
     if ( !child ) // should not happen
       continue;
+    setChildAncestorDepthRecursive( child, 1 );
     // update after thread finished -> refresh
     addChildItem( child, true );
   }
@@ -367,8 +382,7 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
         // The child cannot createChildren() itself
         mChildren.value( index )->refresh( child->children() );
       }
-      else if ( mChildren.value( index )->state() == Qgis::BrowserItemState::Populated
-                && ( child->capabilities2() & Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed ) )
+      else if ( mChildren.value( index )->state() == Qgis::BrowserItemState::Populated && ( child->capabilities2() & Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed ) )
       {
         mChildren.value( index )->refresh();
       }
@@ -435,8 +449,7 @@ void QgsDataItem::addChildItem( QgsDataItem *child, bool refresh )
     for ( i = 0; i < mChildren.size(); i++ )
     {
       // sort items by type, so directories are before data items
-      if ( mChildren.at( i )->mType == child->mType &&
-           mChildren.at( i )->mName.localeAwareCompare( child->mName ) > 0 )
+      if ( mChildren.at( i )->mType == child->mType && mChildren.at( i )->mName.localeAwareCompare( child->mName ) > 0 )
         break;
     }
   }
@@ -499,10 +512,23 @@ int QgsDataItem::findItem( QVector<QgsDataItem *> items, QgsDataItem *item )
   return -1;
 }
 
+QgsDataItem *QgsDataItem::ancestorAtDepth( int depth ) const
+{
+  if ( depth < 0 )
+    return nullptr;
+
+  QgsDataItem *result = const_cast< QgsDataItem * >( this );
+  while ( result && depth > 0 )
+  {
+    depth--;
+    result = result->parent();
+  }
+  return result;
+}
+
 bool QgsDataItem::equal( const QgsDataItem *other )
 {
-  return ( metaObject()->className() == other->metaObject()->className() &&
-           mPath == other->path() );
+  return ( metaObject()->className() == other->metaObject()->className() && mPath == other->path() );
 }
 
 QList<QAction *> QgsDataItem::actions( QWidget *parent )
@@ -548,6 +574,11 @@ bool QgsDataItem::rename( const QString & )
 void QgsDataItem::setCapabilities( int capabilities )
 {
   setCapabilities( static_cast< Qgis::BrowserItemCapabilities >( capabilities ) );
+}
+
+Qgis::BrowserItemFilterFlags QgsDataItem::filterFlags() const
+{
+  return Qgis::BrowserItemFilterFlags();
 }
 
 Qgis::BrowserItemState QgsDataItem::state() const
@@ -599,4 +630,3 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 
   setState( Qgis::BrowserItemState::Populated ); // no more children
 }
-

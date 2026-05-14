@@ -24,7 +24,11 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsfieldconditionalformatwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsFieldConditionalFormatWidget
@@ -113,9 +117,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
     emit rulesUpdated( fieldName );
   } );
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleSaved, this, [ruleWidget] {
-    ruleWidget->acceptPanel();
-  } );
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleSaved, this, [ruleWidget] { ruleWidget->acceptPanel(); } );
 
   connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::canceled, this, [this, ruleWidget] {
     mPanelHandled = true;
@@ -131,8 +133,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
 }
 
 void QgsFieldConditionalFormatWidget::loadStyle( const QgsConditionalStyle & )
-{
-}
+{}
 
 QList<QgsConditionalStyle> QgsFieldConditionalFormatWidget::getStyles()
 {
@@ -155,8 +156,7 @@ void QgsFieldConditionalFormatWidget::addNewRule()
 }
 
 void QgsFieldConditionalFormatWidget::reset()
-{
-}
+{}
 
 void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyle> &styles )
 {
@@ -239,8 +239,7 @@ void QgsFieldConditionalFormatWidget::deleteCurrentRule()
 }
 
 void QgsFieldConditionalFormatWidget::viewRules()
-{
-}
+{}
 
 
 //

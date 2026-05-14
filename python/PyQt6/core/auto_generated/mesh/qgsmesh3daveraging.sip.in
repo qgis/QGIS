@@ -116,7 +116,7 @@ Returns type of averaging method
 
 };
 
-class QgsMeshMultiLevelsAveragingMethod: QgsMesh3DAveragingMethod
+class QgsMeshMultiLevelsAveragingMethod : QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
 Multi level averaging method specifies limits of vertical layers from
@@ -212,7 +212,7 @@ level
 
 };
 
-class QgsMeshSigmaAveragingMethod: QgsMesh3DAveragingMethod
+class QgsMeshSigmaAveragingMethod : QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
 Sigma averages over the values between 0 (bed level) and 1 (surface).
@@ -271,7 +271,7 @@ higher or equal than
 
 };
 
-class QgsMeshRelativeHeightAveragingMethod: QgsMesh3DAveragingMethod
+class QgsMeshRelativeHeightAveragingMethod : QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
 Relative height averaging method which averages the values based on
@@ -297,7 +297,6 @@ will be truncated at the bed level.
 #include "qgsmesh3daveraging.h"
 %End
   public:
-
     QgsMeshRelativeHeightAveragingMethod();
 %Docstring
 Constructs default depth averaging method
@@ -349,7 +348,7 @@ Returns whether the start and end vertical levels are relative to top
 
 };
 
-class QgsMeshElevationAveragingMethod: QgsMesh3DAveragingMethod
+class QgsMeshElevationAveragingMethod : QgsMesh3DAveragingMethod
 {
 %Docstring(signature="appended")
 Elevation averaging method averages the values based on range defined
@@ -369,7 +368,6 @@ surface and bed levels.
 #include "qgsmesh3daveraging.h"
 %End
   public:
-
     QgsMeshElevationAveragingMethod();
 
     QgsMeshElevationAveragingMethod( double startElevation, double endElevation );

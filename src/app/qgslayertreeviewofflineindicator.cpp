@@ -18,12 +18,15 @@
 #include "qgisapp.h"
 #include "qgslayertreeview.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewofflineindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewOfflineIndicatorProvider::QgsLayerTreeViewOfflineIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 void QgsLayerTreeViewOfflineIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {

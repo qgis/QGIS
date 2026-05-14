@@ -23,6 +23,10 @@
 #include "qgspolygon.h"
 #include "qgstessellator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsTessellateAlgorithm::name() const
@@ -130,7 +134,6 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
         const QgsRectangle bounds = f.geometry().boundingBox();
         QgsTessellator t;
         t.setBounds( bounds );
-        t.setOutputZUp( true );
 
         if ( f.geometry().isMultipart() )
         {

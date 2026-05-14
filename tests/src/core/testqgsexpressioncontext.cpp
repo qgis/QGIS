@@ -21,11 +21,16 @@
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerstore.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudlayer.h"
 #include "qgsproject.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsExpressionContext : public QObject
 {
@@ -54,6 +59,7 @@ class TestQgsExpressionContext : public QObject
     void globalScope();
     void projectScope();
     void layerScope();
+    void layerScopePointCloud();
     void featureBasedContext();
 
     void cache();
@@ -69,34 +75,24 @@ class TestQgsExpressionContext : public QObject
     {
       public:
         GetTestValueFunction()
-          : QgsScopedExpressionFunction( u"get_test_value"_s, 1, u"test"_s ) {}
+          : QgsScopedExpressionFunction( u"get_test_value"_s, 1, u"test"_s )
+        {}
 
-        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
-        {
-          return 42;
-        }
+        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return 42; }
 
-        QgsScopedExpressionFunction *clone() const override
-        {
-          return new GetTestValueFunction();
-        }
+        QgsScopedExpressionFunction *clone() const override { return new GetTestValueFunction(); }
     };
 
     class GetTestValueFunction2 : public QgsScopedExpressionFunction
     {
       public:
         GetTestValueFunction2()
-          : QgsScopedExpressionFunction( u"get_test_value"_s, 1, u"test"_s ) {}
+          : QgsScopedExpressionFunction( u"get_test_value"_s, 1, u"test"_s )
+        {}
 
-        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
-        {
-          return 43;
-        }
+        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return 43; }
 
-        QgsScopedExpressionFunction *clone() const override
-        {
-          return new GetTestValueFunction2();
-        }
+        QgsScopedExpressionFunction *clone() const override { return new GetTestValueFunction2(); }
     };
 
     class ModifiableFunction : public QgsScopedExpressionFunction
@@ -115,10 +111,7 @@ class TestQgsExpressionContext : public QObject
           return ++( *mVal );
         }
 
-        QgsScopedExpressionFunction *clone() const override
-        {
-          return new ModifiableFunction( mVal );
-        }
+        QgsScopedExpressionFunction *clone() const override { return new ModifiableFunction( mVal ); }
 
         /**
          * This function is not static, it's value changes with every invocation.
@@ -140,11 +133,6 @@ void TestQgsExpressionContext::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsExpressionContext::cleanupTestCase()
@@ -153,12 +141,10 @@ void TestQgsExpressionContext::cleanupTestCase()
 }
 
 void TestQgsExpressionContext::init()
-{
-}
+{}
 
 void TestQgsExpressionContext::cleanup()
-{
-}
+{}
 
 void TestQgsExpressionContext::contextScope()
 {
@@ -603,8 +589,7 @@ void TestQgsExpressionContext::takeScopes()
   QgsExpressionContextScope *projectScope = QgsExpressionContextUtils::projectScope( project );
 
   QgsExpressionContextScope *globalScope = QgsExpressionContextUtils::globalScope();
-  context << globalScope
-          << projectScope;
+  context << globalScope << projectScope;
 
   QCOMPARE( context.variable( "test_global" ).toString(), QString( "testval" ) );
   QCOMPARE( context.variable( "test_project" ).toString(), QString( "testval" ) );
@@ -911,6 +896,43 @@ void TestQgsExpressionContext::layerScope()
   delete layerScope;
 }
 
+void TestQgsExpressionContext::layerScopePointCloud()
+{
+  const QString dataPath = QString( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json";
+  auto pcLayer = std::make_unique<QgsPointCloudLayer>( dataPath, u"test pc"_s, u"ept"_s );
+  QVERIFY( pcLayer->isValid() );
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::layerScope( pcLayer.get() );
+
+  // some standard layer variables should be present
+  QCOMPARE( context.variable( "layer_name" ).toString(), pcLayer->name() );
+  QCOMPARE( context.variable( "layer_id" ).toString(), pcLayer->id() );
+
+  // point cloud attributes should be present in the context
+  const QgsPointCloudAttributeCollection attributes = pcLayer->attributes();
+  QVERIFY( attributes.count() > 0 );
+  for ( const QgsPointCloudAttribute &attr : attributes.attributes() )
+  {
+    const QVariant value = context.variable( attr.name() );
+    QVERIFY( value.isValid() );
+    switch ( attr.type() )
+    {
+      case QgsPointCloudAttribute::Int64:
+      case QgsPointCloudAttribute::UInt64:
+        QCOMPARE( value.toLongLong(), static_cast<qlonglong>( 0 ) );
+        break;
+      case QgsPointCloudAttribute::Float:
+      case QgsPointCloudAttribute::Double:
+        QCOMPARE( value.toDouble(), 0.0 );
+        break;
+      default:
+        QCOMPARE( value.toInt(), 0 );
+        break;
+    }
+  }
+}
+
 void TestQgsExpressionContext::featureBasedContext()
 {
   QgsFields fields;
@@ -1010,9 +1032,7 @@ void TestQgsExpressionContext::description()
 void TestQgsExpressionContext::readWriteScope()
 {
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
   const QDomElement rootNode = doc.createElement( u"qgis"_s );
 

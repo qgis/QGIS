@@ -25,7 +25,10 @@
 #include "qgis_gui.h"
 
 #include <QLocale>
+#include <QString>
 #include <QValidator>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup gui

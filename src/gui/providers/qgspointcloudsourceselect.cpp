@@ -22,8 +22,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgspointcloudsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -97,9 +100,12 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     QUrl url = QUrl::fromUserInput( mPath );
     QString fileName = url.fileName();
 
-    if ( fileName.compare( "ept.json"_L1, Qt::CaseInsensitive ) != 0 && !fileName.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) && !fileName.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) )
+    if ( fileName.compare( "ept.json"_L1, Qt::CaseInsensitive ) != 0
+         && !fileName.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive )
+         && !fileName.endsWith( ".vpc"_L1, Qt::CaseInsensitive )
+         && !fileName.endsWith( ".vpz"_L1, Qt::CaseInsensitive ) )
     {
-      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz or .vpc" ).arg( mPath ) );
+      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json, .copc.laz, .vpc or .vpz" ).arg( mPath ) );
       return;
     }
 
@@ -108,16 +114,16 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
     if ( !preferredProviders.empty() )
     {
-      QString baseName = u"remote ept layer"_s;
-      if ( mPath.endsWith( "/ept.json"_L1, Qt::CaseInsensitive ) )
+      QString baseName = u"remote point cloud layer"_s;
+      if ( mPath.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) || mPath.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) )
+      {
+        baseName = QFileInfo( mPath ).baseName();
+      }
+      else if ( mPath.endsWith( "/ept.json"_L1, Qt::CaseInsensitive ) )
       {
         QStringList separatedPath = mPath.split( '/' );
         if ( separatedPath.size() >= 2 )
           baseName = separatedPath[separatedPath.size() - 2];
-      }
-      if ( mPath.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) )
-      {
-        baseName = QFileInfo( mPath ).baseName();
       }
 
       QVariantMap parts;

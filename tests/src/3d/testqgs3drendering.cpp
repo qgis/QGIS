@@ -16,6 +16,7 @@
 #include <memory>
 
 #include "qgs3d.h"
+#include "qgs3dhighlightfeaturehandler.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
@@ -29,11 +30,13 @@
 #include "qgsapplication.h"
 #include "qgsbillboardgeometry.h"
 #include "qgscameracontroller.h"
+#include "qgscategorized3drenderer.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsfontutils.h"
@@ -46,6 +49,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsmetalroughmaterialsettings.h"
+#include "qgsmetalroughtexturedmaterialsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgspoint3dbillboardmaterial.h"
@@ -56,18 +60,25 @@
 #include "qgsrasterlayer.h"
 #include "qgsrastershader.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssimplelinematerialsettings.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgstest.h"
+#include "qgstiledscenelayer.h"
+#include "qgstiledscenelayer3drenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QSignalSpy>
+#include <QString>
+#include <Qt3DRender/QGeometryRenderer>
+
+using namespace Qt::StringLiterals;
 
 class TestQgs3DRendering : public QgsTest
 {
@@ -83,6 +94,7 @@ class TestQgs3DRendering : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testLights();
     void testFlatTerrain();
+    void testGradientBackground();
     void testDemTerrain();
     void testTerrainShading();
     void testEpsg4978LineRendering();
@@ -96,6 +108,12 @@ class TestQgs3DRendering : public QgsTest
     void testExtrudedPolygonsDataDefinedGoochClipping();
     void testExtrudedPolygonsGoochShading();
     void testExtrudedPolygonsMetalRoughShading();
+    void testExtrudedPolygonsMetalRoughShadingOpacity();
+    void testExtrudedPolygonsMetalRoughTexturedShading();
+    void testExtrudedPolygonsMetalRoughTexturedShadingNormals();
+    void testExtrudedPolygonsMetalRoughTexturedShadingEmission();
+    void testExtrudedPolygonsMetalRoughTexturedShadingDisplacement();
+    void testExtrudedPolygonsMetalRoughTexturedShadingOpacity();
     void testPolygonsEdges();
     void testLineRendering();
     void testLineRenderingClipping();
@@ -107,10 +125,14 @@ class TestQgs3DRendering : public QgsTest
     void testMapTheme();
     void testRuleBasedRenderer();
     void testFilteredRuleBasedRenderer();
+    void testCategorizedRenderer();
     void testAnimationExport();
     void testBillboardRendering();
     void testTexturedBillboardRendering();
     void testInstancedRendering();
+    void testInstancedRenderingTransform_data();
+    void testInstancedRenderingTransform();
+    void testModelPointRendering_data();
     void testModelPointRendering();
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
@@ -120,6 +142,10 @@ class TestQgs3DRendering : public QgsTest
     void testDebugMap();
     void testAnnotationLayerBillboards();
     void testAnnotationLayerText();
+    void testExtrudedPolygonsHighlighting();
+    void testInstancedRenderingHighlighting();
+    void testModelPointRenderingHighlighting();
+    void testTiledSceneInstanced();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -176,6 +202,7 @@ void TestQgs3DRendering::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   Qgs3D::initialize();
+  Qgs3D::settingTextureFilterQuality->setValue( Qgis::TextureFilterQuality::Trilinear );
 
   mProject = std::make_unique<QgsProject>();
 
@@ -330,6 +357,53 @@ void TestQgs3DRendering::testFlatTerrain()
   delete map;
 
   QGSVERIFYIMAGECHECK( "flat_terrain_4", "flat_terrain_4", img4, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testGradientBackground()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+
+  auto *gradientBg = new QgsFixedGradientBackgroundSettings();
+  gradientBg->setTopColor( QColor( 30, 120, 220 ) );
+  gradientBg->setBottomColor( QColor( 0, 0, 0 ) );
+  map->setBackgroundSettings( gradientBg );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "gradient_background", "gradient_background", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // test the background changes with new settings
+  auto *gradientBg2 = new QgsFixedGradientBackgroundSettings();
+  gradientBg2->setTopColor( QColor( 220, 30, 30 ) );
+  gradientBg2->setBottomColor( QColor( 255, 255, 255 ) );
+  map->setBackgroundSettings( gradientBg2 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "gradient_background_2", "gradient_background_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // passing null, the bg settings should clear any bg entity
+  map->setBackgroundSettings( nullptr );
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "buildings_no_background", "buildings_no_background", img3, QString(), 40, QSize( 0, 0 ), 2 );
+
+  delete scene;
+  delete map;
 }
 
 void TestQgs3DRendering::testDemTerrain()
@@ -501,11 +575,8 @@ void TestQgs3DRendering::testExtrudedPolygonsClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  const QList<QVector4D> clipPlanesEquations
+    = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 150.0 ) << QVector4D( -0.866025, 0.5, 0, 150.0 ) << QVector4D( 0.5, 0.866025, 0, 305.0 ) << QVector4D( -0.5, -0.866025, 0, 205.0 );
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -603,10 +674,9 @@ void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
   map->setCrs( mProject->crs() );
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
-  QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 1.0 );
-  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
-  map->setLightSources( { defaultLight.clone() } );
+  QgsDirectionalLightSettings directionalLight;
+  directionalLight.setDirection( QgsVector3D( 0.32, 0.27, -0.91 ) );
+  map->setLightSources( { directionalLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs(), map->transformContext() );
@@ -616,7 +686,7 @@ void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 100, 45, 0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 60, 60, 0 );
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
@@ -735,11 +805,8 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhongClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong", "polygon3d_extrusion_data_defined_phong", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  const QList<QVector4D> clipPlanesEquations
+    = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 150.0 ) << QVector4D( -0.866025, 0.5, 0, 150.0 ) << QVector4D( 0.5, 0.866025, 0, 305.0 ) << QVector4D( -0.5, -0.866025, 0, 205.0 );
   scene->enableClipping( clipPlanesEquations );
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
 
@@ -877,11 +944,8 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGoochClipping()
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch", "polygon3d_extrusion_data_defined_gooch", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  const QList<QVector4D> clipPlanesEquations
+    = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 150.0 ) << QVector4D( -0.866025, 0.5, 0, 150.0 ) << QVector4D( 0.5, 0.866025, 0, 305.0 ) << QVector4D( -0.5, -0.866025, 0, 205.0 );
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -1002,6 +1066,300 @@ void TestQgs3DRendering::testExtrudedPolygonsMetalRoughShading()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "metal_rough", "metal_rough", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsMetalRoughShadingOpacity()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughMaterialSettings materialSettings;
+  materialSettings.setBaseColor( QColor( 255, 0, 255 ) );
+  materialSettings.setMetalness( 0 );
+  materialSettings.setRoughness( 0.6 );
+  materialSettings.setOpacity( 0.7 );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.9 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 100, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "metal_rough_opacity", "metal_rough_opacity", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsMetalRoughTexturedShading()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughTexturedMaterialSettings materialSettings;
+  materialSettings.setBaseColorTexturePath( testDataPath( "/3d/materials/Metal005_Color.jpg" ) );
+  materialSettings.setMetalnessTexturePath( testDataPath( "/3d/materials/Metal005_Metalness.jpg" ) );
+  materialSettings.setRoughnessTexturePath( testDataPath( "/3d/materials/Metal005_Roughness.jpg" ) );
+  materialSettings.setTextureScale( 0.02 );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.9 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 30, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough", "polygon3d_extrusion_textured_metalrough", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsMetalRoughTexturedShadingEmission()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughTexturedMaterialSettings materialSettings;
+  materialSettings.setBaseColorTexturePath( testDataPath( "/3d/materials/Metal005_Color.jpg" ) );
+  materialSettings.setMetalnessTexturePath( testDataPath( "/3d/materials/Metal005_Metalness.jpg" ) );
+  materialSettings.setRoughnessTexturePath( testDataPath( "/3d/materials/Metal005_Roughness.jpg" ) );
+  materialSettings.setEmissionTexturePath( testDataPath( "/3d/materials/Metal005_Emission.jpg" ) );
+  materialSettings.setTextureScale( 0.02 );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  // pull the light down low
+  defaultLight.setIntensity( 0.1 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 30, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough_emission", "polygon3d_extrusion_textured_metalrough_emission", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsMetalRoughTexturedShadingDisplacement()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughTexturedMaterialSettings materialSettings;
+  materialSettings.setBaseColorTexturePath( testDataPath( "/3d/materials/Metal005_Gradient.jpg" ) );
+  materialSettings.setHeightTexturePath( testDataPath( "/3d/materials/Metal005_Displacement.jpg" ) );
+  materialSettings.setParallaxScale( 0.3 );
+  materialSettings.setTextureScale( 0.05 );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 1.5 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1500 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 20, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough_displacement1", "polygon3d_extrusion_textured_metalrough_displacement1", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 20, 45, 45 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough_displacement2", "polygon3d_extrusion_textured_metalrough_displacement2", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsMetalRoughTexturedShadingOpacity()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughTexturedMaterialSettings materialSettings;
+  materialSettings.setBaseColorTexturePath( testDataPath( "/3d/materials/Metal005_Color.jpg" ) );
+  materialSettings.setMetalnessTexturePath( testDataPath( "/3d/materials/Metal005_Metalness.jpg" ) );
+  materialSettings.setRoughnessTexturePath( testDataPath( "/3d/materials/Metal005_Roughness.jpg" ) );
+  materialSettings.setEmissionTexturePath( testDataPath( "/3d/materials/Metal005_Emission.jpg" ) );
+  materialSettings.setTextureScale( 0.02 );
+  materialSettings.setOpacity( 0.95 );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.9 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 30, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough_opacity", "polygon3d_extrusion_textured_metalrough_opacity", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsMetalRoughTexturedShadingNormals()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughTexturedMaterialSettings materialSettings;
+  materialSettings.setBaseColorTexturePath( testDataPath( "/3d/materials/Metal005_Color.jpg" ) );
+  materialSettings.setMetalnessTexturePath( testDataPath( "/3d/materials/Metal005_Metalness.jpg" ) );
+  materialSettings.setRoughnessTexturePath( testDataPath( "/3d/materials/Metal005_Roughness.jpg" ) );
+  materialSettings.setNormalTexturePath( testDataPath( "/3d/materials/Metal005_Normal.jpg" ) );
+  materialSettings.setTextureScale( 0.02 );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.9 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 30, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough_normals", "polygon3d_extrusion_textured_metalrough_normals", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testPolygonsEdges()
@@ -1164,9 +1522,7 @@ void TestQgs3DRendering::testLineRenderingClipping()
   QGSVERIFYIMAGECHECK( "line_rendering_1", "line_rendering_1", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 300.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 300.0 );
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 300.0 ) << QVector4D( -0.866025, 0.5, 0, 300.0 );
   scene->enableClipping( clipPlanesEquations );
 
   QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
@@ -1319,7 +1675,8 @@ void TestQgs3DRendering::testBufferedLineRendering()
   lineSymbol->setWidth( 10 );
   lineSymbol->setExtrusionHeight( 30 );
   QgsPhongMaterialSettings matSettings;
-  matSettings.setAmbient( Qt::red );
+  matSettings.setDiffuse( QColor( 255, 0, 0 ) );
+  matSettings.setAmbient( QColor( 100, 0, 0 ) );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
@@ -1328,7 +1685,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
+  defaultLight.setIntensity( 1.0 );
   defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
@@ -1366,7 +1723,8 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
   lineSymbol->setWidth( 10 );
   lineSymbol->setExtrusionHeight( 30 );
   QgsPhongMaterialSettings matSettings;
-  matSettings.setAmbient( Qt::red );
+  matSettings.setDiffuse( QColor( 255, 0, 0 ) );
+  matSettings.setAmbient( QColor( 100, 0, 0 ) );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
@@ -1375,7 +1733,7 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
+  defaultLight.setIntensity( 1.0 );
   defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
@@ -1398,9 +1756,7 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
   QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
   // Enable clipping
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( -0.866025, 0.5, 0, 432.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 125.0 );
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( -0.866025, 0.5, 0, 432.0 ) << QVector4D( 0.5, 0.866025, 0, 125.0 );
 
   scene->enableClipping( clipPlanesEquations );
 
@@ -1444,7 +1800,8 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   lineSymbol->setExtrusionHeight( 30 );
   lineSymbol->setOffset( 10 );
   QgsPhongMaterialSettings matSettings;
-  matSettings.setAmbient( Qt::red );
+  matSettings.setDiffuse( QColor( 255, 0, 0 ) );
+  matSettings.setAmbient( QColor( 100, 0, 0 ) );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
@@ -1453,7 +1810,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
+  defaultLight.setIntensity( 1.0 );
   defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
@@ -1631,6 +1988,80 @@ void TestQgs3DRendering::testFilteredRuleBasedRenderer()
   QGSVERIFYIMAGECHECK( "rulebased_filtered", "rulebased_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
+void TestQgs3DRendering::testCategorizedRenderer()
+{
+  QgsPhongMaterialSettings matterialSettingsIndus;
+  matterialSettingsIndus.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3dIndus = new QgsPolygon3DSymbol;
+  symbol3dIndus->setMaterialSettings( matterialSettingsIndus.clone() );
+  symbol3dIndus->setExtrusionHeight( 5.f );
+
+  QgsPhongMaterialSettings materialSettingsComm;
+  materialSettingsComm.setAmbient( Qt::red );
+  QgsPolygon3DSymbol *symbol3dComm = new QgsPolygon3DSymbol;
+  symbol3dComm->setMaterialSettings( materialSettingsComm.clone() );
+  symbol3dComm->setExtrusionHeight( 8.f );
+
+  QgsPhongMaterialSettings materialSettingsRes;
+  materialSettingsRes.setAmbient( Qt::blue );
+  QgsPolygon3DSymbol *symbol3dRes = new QgsPolygon3DSymbol;
+  symbol3dRes->setMaterialSettings( materialSettingsRes.clone() );
+  symbol3dRes->setExtrusionHeight( 10.f );
+
+  Qgs3DCategoryList categories;
+  categories.append( Qgs3DRendererCategory( QVariant( "industrial" ), symbol3dIndus ) );
+  categories.append( Qgs3DRendererCategory( QVariant( "commercial" ), symbol3dComm ) );
+  categories.append( Qgs3DRendererCategory( QVariant( "residential" ), symbol3dRes ) );
+  QgsCategorized3DRenderer *renderer3d = new QgsCategorized3DRenderer( QString( "type" ), categories );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
+
+  // When running the test, it would sometimes return partially rendered image.
+  // It is probably based on how fast qt3d manages to upload the data to GPU...
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "categorized", "categorized", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // disable a category and check that is is not displayed
+  Qgs3DRendererCategory firstCategory = categories[0];
+  firstCategory.setRenderState( false );
+  categories[0] = firstCategory;
+
+  QgsCategorized3DRenderer *newRenderer3d = new QgsCategorized3DRenderer( QString( "type" ), categories );
+  mLayerBuildings->setRenderer3D( newRenderer3d );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "categorized_renderstate", "categorized_renderstate", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
+  delete scene;
+  delete map;
+}
+
 void TestQgs3DRendering::testAnimationExport()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
@@ -1657,16 +2088,7 @@ void TestQgs3DRendering::testAnimationExport()
   const QString dir = QDir::temp().path();
   QString error;
 
-  const bool success = Qgs3DUtils::exportAnimation(
-    animSettings,
-    map,
-    1,
-    dir,
-    "test3danimation###.png",
-    QSize( 600, 400 ),
-    error,
-    nullptr
-  );
+  const bool success = Qgs3DUtils::exportAnimation( animSettings, map, 1, dir, "test3danimation###.png", QSize( 600, 400 ), error, nullptr );
 
   QVERIFY( success );
   QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( u"test3danimation001.png"_s ) ) ) );
@@ -1720,10 +2142,7 @@ void TestQgs3DRendering::testInstancedRendering()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 660.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 685.0 )
-                                         << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 660.0 ) << QVector4D( 0.5, 0.866025, 0, 685.0 ) << QVector4D( -0.5, -0.866025, 0, 650.0 );
   scene->enableClipping( clipPlanesEquations );
 
   // When running the test on Travis, it would initially return empty rendered image.
@@ -1772,11 +2191,81 @@ void TestQgs3DRendering::testInstancedRendering()
   QGSVERIFYIMAGECHECK( "cylinder_rendering", "cylinder_rendering", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
-void TestQgs3DRendering::testModelPointRendering()
+void TestQgs3DRendering::testInstancedRenderingTransform_data()
 {
+  QTest::addColumn<QMatrix4x4>( "transform" );
+  QTest::addColumn<QgsPropertyCollection>( "dataDefinedProperties" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QgsPropertyCollection ddProps;
+  QMatrix4x4 scaleTransform;
+  scaleTransform.scale( 5.5, 1.5, 3 );
+  QTest::newRow( "scale" ) << scaleTransform << ddProps << u"cylinder_scale_rendering"_s;
+
+  QMatrix4x4 translateTransform;
+  translateTransform.translate( 550, 150, 300 );
+  QTest::newRow( "translate" ) << translateTransform << ddProps << u"cylinder_translate_rendering"_s;
+
+  QMatrix4x4 rotateTransform;
+  rotateTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+  QTest::newRow( "rotate" ) << rotateTransform << ddProps << u"cylinder_rotate_rendering"_s;
+
+  QMatrix4x4 trsTransform;
+  trsTransform.translate( 550, 150, 300 );
+  trsTransform.scale( 5.5, 1.5, 3 );
+  trsTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+
+  QTest::newRow( "trs" ) << trsTransform << ddProps << u"cylinder_trs_rendering"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then .75 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then .5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then .3 end"_s ) );
+
+  QTest::newRow( "scale with data defined props" ) << scaleTransform << ddProps << u"cylinder_scale_dd_rendering"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then -200 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -100 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 50 end"_s ) );
+
+  QTest::newRow( "translate with data defined props" ) << translateTransform << ddProps << u"cylinder_translate_dd_rendering"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -20 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 45 end"_s ) );
+
+  QTest::newRow( "rotation with data defined props" ) << rotateTransform << ddProps << u"cylinder_rotate_dd_rendering"_s;
+
+  QMatrix4x4 trsTransform2;
+  trsTransform2.translate( 550, 150, 300 );
+  trsTransform2.scale( 1.5, 1.1, 1.3 );
+  trsTransform2.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then .75 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then .5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then .3 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then -200 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -100 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 50 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -20 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 45 end"_s ) );
+
+  QTest::newRow( "trs with data defined props" ) << trsTransform2 << ddProps << u"cylinder_trs_dd_rendering"_s;
+}
+
+void TestQgs3DRendering::testInstancedRenderingTransform()
+{
+  QFETCH( QMatrix4x4, transform );
+  QFETCH( QgsPropertyCollection, dataDefinedProperties );
+  QFETCH( QString, referenceImage );
+
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700&field=field1:int&field=field2:int&field=field3:int", "points Z", "memory" );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
   QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
@@ -1786,8 +2275,143 @@ void TestQgs3DRendering::testModelPointRendering()
   QgsFeature f2( layerPointsZ->fields() );
   QgsFeature f3( layerPointsZ->fields() );
 
+  f1.setAttributes( QgsAttributes() << 1 << 2 << 3 );
   f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setAttributes( QgsAttributes() << 11 << 2 << 13 );
   f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setAttributes( QgsAttributes() << 1 << 12 << 3 );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
+  sphere3DSymbol->setDataDefinedProperties( dataDefinedProperties );
+
+  sphere3DSymbol->setTransform( transform );
+  QVariantMap vmSphere;
+  vmSphere[u"radius"_s] = 80.0f;
+  vmSphere[u"length"_s] = 200.0f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::gray );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  const QImage image = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, image, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testModelPointRendering_data()
+{
+  QTest::addColumn<QMatrix4x4>( "transform" );
+  QTest::addColumn<QVariantMap>( "props" );
+  QTest::addColumn<QgsPropertyCollection>( "dataDefinedProperties" );
+  QTest::addColumn<bool>( "useClipping" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QVariantMap basePropertiesMap;
+  basePropertiesMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
+
+
+  QgsPropertyCollection ddProps;
+  QMatrix4x4 uniformScale;
+  uniformScale.scale( 100.0f );
+  QTest::newRow( "no transform no clip" ) << uniformScale << basePropertiesMap << ddProps << false << u"model_rendering"_s;
+  QTest::newRow( "no transform clip" ) << uniformScale << basePropertiesMap << ddProps << true << u"model_rendering_clipping"_s;
+
+  QMatrix4x4 scaleTransform;
+  scaleTransform.scale( 150, 195, 60 );
+  QTest::newRow( "scale" ) << scaleTransform << basePropertiesMap << ddProps << false << u"model_rendering_scale"_s;
+
+  QMatrix4x4 translateTransform;
+  translateTransform.translate( 150, -150, 100 );
+  translateTransform.scale( 100 );
+  QTest::newRow( "translate" ) << translateTransform << basePropertiesMap << ddProps << false << u"model_rendering_translation"_s;
+
+  QMatrix4x4 rotateTransform;
+  rotateTransform.scale( 100 );
+  rotateTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+  QTest::newRow( "rotate" ) << rotateTransform << basePropertiesMap << ddProps << false << u"model_rendering_rotation"_s;
+
+  QMatrix4x4 trsTransform;
+  trsTransform.translate( 150, -150, 100 );
+  trsTransform.scale( 150, 195, 60 );
+  trsTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+
+  QTest::newRow( "trs" ) << trsTransform << basePropertiesMap << ddProps << false << u"model_rendering_trs"_s;
+
+  QVariantMap axisPropertiesMap = basePropertiesMap;
+  axisPropertiesMap[u"upAxis"_s] = u"y"_s;
+  axisPropertiesMap[u"forwardAxis"_s] = u"-z"_s;
+  QTest::newRow( "trs y up -z forward" ) << trsTransform << axisPropertiesMap << ddProps << false << u"model_rendering_trs_y_up"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 175 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then 50 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 130 end"_s ) );
+
+  QTest::newRow( "scale with data defined props" ) << scaleTransform << basePropertiesMap << ddProps << false << u"model_rendering_dd_scale"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 45 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -10 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 90 end"_s ) );
+
+  QTest::newRow( "rotation with data defined props" ) << rotateTransform << basePropertiesMap << ddProps << false << u"model_rendering_dd_rotation"_s;
+
+  ddProps.clear();
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then -150 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then 150 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then -90 end"_s ) );
+
+  QTest::newRow( "translation with data defined props" ) << translateTransform << basePropertiesMap << ddProps << false << u"model_rendering_dd_translation"_s;
+}
+
+void TestQgs3DRendering::testModelPointRendering()
+{
+  QFETCH( QMatrix4x4, transform );
+  QFETCH( QVariantMap, props );
+  QFETCH( QgsPropertyCollection, dataDefinedProperties );
+  QFETCH( bool, useClipping );
+  QFETCH( QString, referenceImage );
+
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700&field=field1:int&field=field2:int&field=field3:int", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setAttributes( QgsAttributes() << 1 << 2 << 3 );
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setAttributes( QgsAttributes() << 11 << 2 << 13 );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setAttributes( QgsAttributes() << 1 << 12 << 3 );
   f3.setGeometry( QgsGeometry( p3 ) );
 
   QgsFeatureList featureList;
@@ -1796,15 +2420,12 @@ void TestQgs3DRendering::testModelPointRendering()
 
   QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
   symbol->setShape( Qgis::Point3DShape::Model );
-  QVariantMap vMap;
-  vMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
-  symbol->setShapeProperties( vMap );
+  symbol->setShapeProperties( props );
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setAmbient( Qt::green );
   symbol->setMaterialSettings( materialSettings.clone() );
-  QMatrix4x4 id;
-  id.scale( 100.0f );
-  symbol->setTransform( id );
+  symbol->setTransform( transform );
+  symbol->setDataDefinedProperties( dataDefinedProperties );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
 
@@ -1823,11 +2444,11 @@ void TestQgs3DRendering::testModelPointRendering()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 660.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 685.0 )
-                                         << QVector4D( -0.5, -0.866025, 0, 650.0 );
-  scene->enableClipping( clipPlanesEquations );
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 660.0 ) << QVector4D( 0.5, 0.866025, 0, 685.0 ) << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  if ( useClipping )
+    scene->enableClipping( clipPlanesEquations );
+  else
+    scene->disableClipping();
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
@@ -1835,13 +2456,7 @@ void TestQgs3DRendering::testModelPointRendering()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "model_rendering_clipping", "model_rendering_clipping", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
-
-  scene->disableClipping();
-
-  Qgs3DUtils::captureSceneImage( engine, scene );
-  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, imgModel, QString(), 80, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testBillboardRendering()
@@ -2443,6 +3058,7 @@ void TestQgs3DRendering::testDebugMap()
   shadowSettings.setRenderShadows( true );
   shadowSettings.setSelectedDirectionalLight( 0 );
   shadowSettings.setMaximumShadowRenderingDistance( 2500 );
+  shadowSettings.setShadowQuality( Qgis::ShadowQuality::High );
   mapSettings.setShadowSettings( shadowSettings );
 
   // =========== creating Qgs3DMapScene
@@ -2618,6 +3234,223 @@ void TestQgs3DRendering::testAnnotationLayerText()
   delete map;
 
   QGSVERIFYIMAGECHECK( "annotation_text_rendering_2", "annotation_text_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsHighlighting()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  QgsFeatureRequest req;
+  req.setFilterFids( { 105, 269, 388, 395, 397 } );
+  QgsFeature feature;
+  QgsFeatureIterator fit = mLayerBuildings->getFeatures( req );
+  while ( fit.nextFeature( feature ) )
+    highlighter->highlightFeature( feature, mLayerBuildings );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_highlighting", "polygon3d_extrusion_highlighting", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testInstancedRenderingHighlighting()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  QVariantMap vmSphere;
+  vmSphere[u"radius"_s] = 80.0f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::gray );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  highlighter->highlightFeature( f1, layerPointsZ.get() );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering_highlighting", "sphere_rendering_highlighting", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+
+void TestQgs3DRendering::testModelPointRenderingHighlighting()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Model );
+  QVariantMap vMap;
+  vMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
+  symbol->setShapeProperties( vMap );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::green );
+  symbol->setMaterialSettings( materialSettings.clone() );
+  QMatrix4x4 id;
+  id.scale( 100.0f );
+  symbol->setTransform( id );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  highlighter->highlightFeature( f1, layerPointsZ.get() );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering_highlighting", "model_rendering_highlighting", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testTiledSceneInstanced()
+{
+  auto layer = std::make_unique<QgsTiledSceneLayer>( testDataPath( "/3dtiles/instanced_rtc/tileset.json" ), u"instanced"_s, u"cesiumtiles"_s );
+  QVERIFY( layer->dataProvider()->isValid() );
+
+  layer->setRenderer3D( new QgsTiledSceneLayer3DRenderer() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  map->setExtent( QgsRectangle( -8417257.0, 4871967.0, -8416943.0, 4872283.0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layer.get() );
+  map->setTerrainShadingEnabled( true );
+
+  QgsDirectionalLightSettings *defaultLight = new QgsDirectionalLightSettings();
+  map->setLightSources( { defaultLight } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 500, 30, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "tiled_scene_instanced", "tiled_scene_instanced", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

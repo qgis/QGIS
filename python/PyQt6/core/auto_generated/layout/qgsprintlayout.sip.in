@@ -19,7 +19,6 @@ layouts.
 #include "qgsprintlayout.h"
 %End
   public:
-
     QgsPrintLayout( QgsProject *project );
 %Docstring
 Constructor for QgsPrintLayout.

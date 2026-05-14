@@ -20,6 +20,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSpatialIndexAlgorithm::name() const
@@ -55,10 +59,12 @@ Qgis::ProcessingAlgorithmFlags QgsSpatialIndexAlgorithm::flags() const
 
 QString QgsSpatialIndexAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Creates an index to speed up access to the features "
-                      "in a layer based on their spatial location. Support "
-                      "for spatial index creation is dependent on the layer's "
-                      "data provider." );
+  return QObject::tr(
+    "Creates an index to speed up access to the features "
+    "in a layer based on their spatial location. Support "
+    "for spatial index creation is dependent on the layer's "
+    "data provider."
+  );
 }
 
 QgsSpatialIndexAlgorithm *QgsSpatialIndexAlgorithm::createInstance() const

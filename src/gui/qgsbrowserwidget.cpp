@@ -40,10 +40,13 @@
 #include <QMenu>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QToolButton>
 #include <QTreeView>
 
 #include "moc_qgsbrowserwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -244,9 +247,7 @@ void QgsBrowserWidget::showContextMenu( QPoint pt )
   QgsDataItemGuiContext context = createContext();
 
   QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
-  std::sort( providers.begin(), providers.end(), []( QgsDataItemGuiProvider *a, QgsDataItemGuiProvider *b ) {
-    return a->precedenceWhenPopulatingMenus() < b->precedenceWhenPopulatingMenus();
-  } );
+  std::sort( providers.begin(), providers.end(), []( QgsDataItemGuiProvider *a, QgsDataItemGuiProvider *b ) { return a->precedenceWhenPopulatingMenus() < b->precedenceWhenPopulatingMenus(); } );
   for ( QgsDataItemGuiProvider *provider : std::as_const( providers ) )
   {
     provider->populateContextMenu( item, menu, selectedItems, context );

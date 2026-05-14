@@ -16,12 +16,15 @@
 #include "qgshstoreutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QVariantMap QgsHstoreUtils::parse( const QString &string )
 {
   QVariantMap map;
   QList<QString> bits;
-  static const QList<QString > sSeps{ "=>", "," };
+  static const QList<QString > sSeps { "=>", "," };
 
   int i = 0;
   while ( i < string.length() )
@@ -42,7 +45,7 @@ QVariantMap QgsHstoreUtils::parse( const QString &string )
         while ( i < string.length() && string.at( i ).isSpace() )
           ++i;
 
-        if ( QStringView{string}.mid( i ).startsWith( sep ) )
+        if ( QStringView { string }.mid( i ).startsWith( sep ) )
         {
           i += sep.length();
         }
@@ -77,7 +80,7 @@ QVariantMap QgsHstoreUtils::parse( const QString &string )
     if ( bits.length() == 2 )
     {
       if ( !bits.at( 0 ).isEmpty() && !bits.at( 1 ).isEmpty() )
-        map[ bits.at( 0 ) ] = bits.at( 1 );
+        map[bits.at( 0 )] = bits.at( 1 );
       bits.clear();
     }
   }
@@ -92,8 +95,7 @@ QString QgsHstoreUtils::build( const QVariantMap &map )
   {
     QString key = it.key();
     QString value = it.value().toString();
-    list << QString( "\"%1\"=>\"%2\"" ).arg( key.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ),
-         value.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) );
+    list << QString( "\"%1\"=>\"%2\"" ).arg( key.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ), value.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) );
   }
   return list.join( ',' );
 }

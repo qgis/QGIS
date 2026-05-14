@@ -21,18 +21,18 @@ __copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
     QgsProcessingException,
+    QgsProcessingOutputRasterLayer,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterNumber,
+    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterString,
-    QgsProcessingParameterBoolean,
-    QgsProcessingOutputRasterLayer,
 )
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

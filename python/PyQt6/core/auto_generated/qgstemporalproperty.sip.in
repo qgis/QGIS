@@ -24,7 +24,6 @@ Base class for temporal property.
 #include "qgstemporalproperty.h"
 %End
   public:
-
     enum Flag /BaseType=IntEnum/
     {
       FlagDontInvalidateCachedRendersWhenRangeChanges

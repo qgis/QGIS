@@ -51,11 +51,7 @@ Sets the minimum ``value`` for the raster shader.
 .. seealso:: :py:func:`minimumValue`
 %End
 
-    virtual bool shade( double value,
-                        int *returnRedValue /Out/,
-                        int *returnGreenValue /Out/,
-                        int *returnBlueValue /Out/,
-                        int *returnAlpha /Out/ ) const;
+    virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlpha /Out/ ) const;
 %Docstring
 Generates an new RGBA value based on one input ``value``.
 
@@ -68,14 +64,9 @@ Generates an new RGBA value based on one input ``value``.
          - returnAlpha: The alpha component of the new RGBA value
 %End
 
-    virtual bool shade( double redValue,
-                        double greenValue,
-                        double blueValue,
-                        double alphaValue,
-                        int *returnRedValue /Out/,
-                        int *returnGreenValue /Out/,
-                        int *returnBlueValue /Out/,
-                        int *returnAlpha /Out/ ) const;
+    virtual bool shade(
+      double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlpha /Out/
+    ) const;
 %Docstring
 Generates an new RGBA value based on an original RGBA value.
 
@@ -135,7 +126,6 @@ Sets label precision to ``labelPrecision``
 %End
 
   protected:
-
 
 
 

@@ -18,18 +18,16 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import pyqtSignal, QCoreApplication
-from qgis.PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
-
-from qgis.core import Qgis, QgsProject, QgsMessageLog
+from osgeo import gdal
+from qgis.core import Qgis, QgsMessageLog, QgsProject
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
+from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
+from qgis.PyQt.QtWidgets import QLabel, QMenu, QTreeView, QWidget
 
 from .db_model import DBModel, PluginItem
 from .db_plugins.gpkg.plugin import GPKGRasterTable
 from .db_plugins.plugin import DBPlugin, Schema, Table
 from .db_plugins.vlayers.plugin import LTable
-
-from osgeo import gdal
 
 
 class DBTree(QTreeView):

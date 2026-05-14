@@ -19,6 +19,10 @@
 #include "qgswmtsparameters.h"
 #include "qgswmtsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWmts
 {
 

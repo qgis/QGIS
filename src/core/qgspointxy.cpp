@@ -24,16 +24,18 @@
 #include "qgspoint.h"
 
 #include <QObject>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgspointxy.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointXY::QgsPointXY( const QgsPointXY &p )
   : mX( p.x() )
   , mY( p.y() )
   , mIsEmpty( p.isEmpty() )
-{
-}
+{}
 
 QgsPointXY::QgsPointXY( const QgsPoint &point )
 {

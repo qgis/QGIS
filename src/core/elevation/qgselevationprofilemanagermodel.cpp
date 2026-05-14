@@ -48,5 +48,4 @@ QModelIndex QgsElevationProfileManagerModel::indexFromProfile( QgsElevationProfi
 
 QgsElevationProfileManagerProxyModel::QgsElevationProfileManagerProxyModel( QObject *parent )
   : QgsProjectStoredObjectManagerProxyModel( parent )
-{
-}
+{}

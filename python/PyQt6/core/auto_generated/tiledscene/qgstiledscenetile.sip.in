@@ -22,7 +22,6 @@ Represents an individual tile from a tiled scene data source.
 #include "qgstiledscenetile.h"
 %End
   public:
-
     QgsTiledSceneTile();
 %Docstring
 Constructor for an invalid tile.

@@ -69,7 +69,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     }
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
   public:
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )

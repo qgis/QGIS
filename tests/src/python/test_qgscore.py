@@ -11,15 +11,15 @@ __date__ = "28.6.2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 
-from qgis.core import qgsDoubleNear, qgsRound
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import qgsDoubleNear, qgsRound
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestCoreAdditions(QgisTestCase):
-
     def testQgsRound(self):
         qgsDoubleNear(qgsRound(1234.567, 2), 1234.57, 0.01)
         qgsDoubleNear(qgsRound(-1234.567, 2), -1234.57, 0.01)

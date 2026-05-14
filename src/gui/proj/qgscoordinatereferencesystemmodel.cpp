@@ -21,8 +21,11 @@
 #include "qgsstringutils.h"
 
 #include <QFont>
+#include <QString>
 
 #include "moc_qgscoordinatereferencesystemmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCoordinateReferenceSystemModel::QgsCoordinateReferenceSystemModel( QObject *parent )
   : QAbstractItemModel( parent )
@@ -288,10 +291,7 @@ void QgsCoordinateReferenceSystemModel::userCrsAdded( const QString &id )
       QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( u"USER"_s );
       if ( !group )
       {
-        auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
-          tr( "User-defined" ),
-          QgsApplication::getThemeIcon( u"/user.svg"_s ), u"USER"_s
-        );
+        auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( tr( "User-defined" ), QgsApplication::getThemeIcon( u"/user.svg"_s ), u"USER"_s );
         beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
         group = qgis::down_cast<QgsCoordinateReferenceSystemModelGroupNode *>( mRootNode->addChildNode( std::move( newGroup ) ) );
         endInsertRows();
@@ -479,10 +479,7 @@ QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinate
   QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( u"CUSTOM"_s );
   if ( !group )
   {
-    auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
-      tr( "Custom" ),
-      QgsApplication::getThemeIcon( u"/user.svg"_s ), u"CUSTOM"_s
-    );
+    auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( tr( "Custom" ), QgsApplication::getThemeIcon( u"/user.svg"_s ), u"CUSTOM"_s );
     beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
     group = qgis::down_cast< QgsCoordinateReferenceSystemModelGroupNode * >( mRootNode->addChildNode( std::move( newGroup ) ) );
     endInsertRows();
@@ -584,13 +581,11 @@ QgsCoordinateReferenceSystemModelGroupNode::QgsCoordinateReferenceSystemModelGro
   : mId( id )
   , mName( name )
   , mIcon( icon )
-{
-}
+{}
 
 QgsCoordinateReferenceSystemModelCrsNode::QgsCoordinateReferenceSystemModelCrsNode( const QgsCrsDbRecord &record )
   : mRecord( record )
-{
-}
+{}
 ///@endcond
 
 
@@ -664,7 +659,9 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
     return true;
 
   const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
-  const QgsCoordinateReferenceSystemModelNode::NodeType nodeType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
+  const QgsCoordinateReferenceSystemModelNode::NodeType nodeType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>(
+    sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt()
+  );
   switch ( nodeType )
   {
     case QgsCoordinateReferenceSystemModelNode::NodeGroup:
@@ -729,8 +726,7 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
     if ( !projectionName.isEmpty() )
       candidate += ' ' + projectionName;
 
-    if ( !( QgsStringUtils::containsByWord( candidate, mFilterString )
-            || authid.contains( mFilterString, Qt::CaseInsensitive ) ) )
+    if ( !( QgsStringUtils::containsByWord( candidate, mFilterString ) || authid.contains( mFilterString, Qt::CaseInsensitive ) ) )
       return false;
   }
   return true;
@@ -738,8 +734,12 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
 
 bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  QgsCoordinateReferenceSystemModelNode::NodeType leftType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
-  QgsCoordinateReferenceSystemModelNode::NodeType rightType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( right, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
+  QgsCoordinateReferenceSystemModelNode::NodeType leftType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>(
+    sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt()
+  );
+  QgsCoordinateReferenceSystemModelNode::NodeType rightType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>(
+    sourceModel()->data( right, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt()
+  );
 
   if ( leftType != rightType )
   {

@@ -22,17 +22,16 @@ from qgis.PyQt.QtWidgets import QApplication
 
 from .html_elems import (
     HtmlContent,
-    HtmlSection,
-    HtmlParagraph,
     HtmlList,
+    HtmlParagraph,
+    HtmlSection,
     HtmlTable,
-    HtmlTableHeader,
     HtmlTableCol,
+    HtmlTableHeader,
 )
 
 
 class DatabaseInfo:
-
     def __init__(self, db):
         self.db = db
 
@@ -166,7 +165,6 @@ class DatabaseInfo:
 
 
 class SchemaInfo:
-
     def __init__(self, schema):
         self.schema = schema
 
@@ -239,7 +237,6 @@ class SchemaInfo:
 
 
 class TableInfo:
-
     def __init__(self, table):
         self.table = table
 
@@ -503,7 +500,6 @@ class TableInfo:
 
 
 class VectorTableInfo(TableInfo):
-
     def __init__(self, table):
         TableInfo.__init__(self, table)
 
@@ -616,7 +612,6 @@ class VectorTableInfo(TableInfo):
 
 
 class RasterTableInfo(TableInfo):
-
     def __init__(self, table):
         TableInfo.__init__(self, table)
 

@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
 {
   public:
-
     /**
        * Handling of negative and 0 values in the method
        * \since QGIS 3.12
@@ -51,8 +50,6 @@ class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
   private:
     QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error ) override;
     QString valueToLabel( double value ) const override;
-
-
 };
 
 #endif // QGSCLASSIFICATIONLOGARITHMIC_H

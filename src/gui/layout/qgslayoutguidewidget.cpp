@@ -43,11 +43,16 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   mHozGuidesTableView->setEditTriggers( QAbstractItemView::AllEditTriggers );
   mVertGuidesTableView->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
-  mHozGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mHozGuidesTableView ) );
+  QgsLayoutGuidePositionDelegate *hozPosDelegate = new QgsLayoutGuidePositionDelegate( mHozGuidesTableView );
+  mHozGuidesTableView->setItemDelegateForColumn( 0, hozPosDelegate );
   mHozGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mHozGuidesTableView ) );
 
-  mVertGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mVertGuidesTableView ) );
+  QgsLayoutGuidePositionDelegate *vertPosDelegate = new QgsLayoutGuidePositionDelegate( mVertGuidesTableView );
+  mVertGuidesTableView->setItemDelegateForColumn( 0, vertPosDelegate );
   mVertGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mVertGuidesTableView ) );
+
+  connect( hozPosDelegate, &QAbstractItemDelegate::closeEditor, mHozProxyModel, [this]( QWidget *, QAbstractItemDelegate::EndEditHint ) { mHozProxyModel->invalidate(); } );
+  connect( vertPosDelegate, &QAbstractItemDelegate::closeEditor, mVertProxyModel, [this]( QWidget *, QAbstractItemDelegate::EndEditHint ) { mVertProxyModel->invalidate(); } );
 
   connect( mAddHozGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::addHorizontalGuide );
   connect( mAddVertGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::addVerticalGuide );
@@ -60,9 +65,7 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
   connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutGuideWidget::updatePageCount );
   updatePageCount();
-  connect( mPageNumberComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
-    setCurrentPage( mPageNumberComboBox->currentData().toInt() );
-  } );
+  connect( mPageNumberComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { setCurrentPage( mPageNumberComboBox->currentData().toInt() ); } );
 
   connect( layoutView, &QgsLayoutView::pageChanged, this, &QgsLayoutGuideWidget::setCurrentPage );
   setCurrentPage( 0 );
@@ -70,14 +73,32 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
 {
+  const int newSourceRow = mLayout->guides().rowCount( QModelIndex() );
   auto newGuide = std::make_unique<QgsLayoutGuide>( Qt::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) );
   mLayout->guides().addGuide( newGuide.release() );
+
+  const QModelIndex sourceIndex = mLayout->guides().index( newSourceRow, 0 );
+  const QModelIndex proxyIndex = mHozProxyModel->mapFromSource( sourceIndex );
+  if ( proxyIndex.isValid() )
+  {
+    mHozGuidesTableView->selectionModel()->select( proxyIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+    mHozGuidesTableView->edit( proxyIndex );
+  }
 }
 
 void QgsLayoutGuideWidget::addVerticalGuide()
 {
+  const int newSourceRow = mLayout->guides().rowCount( QModelIndex() );
   auto newGuide = std::make_unique<QgsLayoutGuide>( Qt::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) );
   mLayout->guides().addGuide( newGuide.release() );
+
+  const QModelIndex sourceIndex = mLayout->guides().index( newSourceRow, 0 );
+  const QModelIndex proxyIndex = mVertProxyModel->mapFromSource( sourceIndex );
+  if ( proxyIndex.isValid() )
+  {
+    mVertGuidesTableView->selectionModel()->select( proxyIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+    mVertGuidesTableView->edit( proxyIndex );
+  }
 }
 
 void QgsLayoutGuideWidget::deleteHorizontalGuide()
@@ -169,8 +190,7 @@ void QgsLayoutGuideWidget::updatePageCount()
 
 QgsLayoutGuidePositionDelegate::QgsLayoutGuidePositionDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutGuidePositionDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
@@ -194,8 +214,7 @@ void QgsLayoutGuidePositionDelegate::setModelData( QWidget *editor, QAbstractIte
 
 QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 QWidget *QgsLayoutGuideUnitDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {

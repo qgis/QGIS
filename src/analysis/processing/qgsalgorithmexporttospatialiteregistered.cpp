@@ -22,6 +22,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayerexporter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExportToRegisteredSpatialiteAlgorithm::name() const
@@ -51,11 +55,13 @@ QString QgsExportToRegisteredSpatialiteAlgorithm::groupId() const
 
 QString QgsExportToRegisteredSpatialiteAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports a vector layer to a SpatiaLite database, creating "
-                      "a new table.\n\n"
-                      "Prior to this a connection between QGIS and the SpatiaLite "
-                      "database has to be created (for example through the QGIS "
-                      "Browser panel)." );
+  return QObject::tr(
+    "Exports a vector layer to a SpatiaLite database, creating "
+    "a new table.\n\n"
+    "Prior to this a connection between QGIS and the SpatiaLite "
+    "database has to be created (for example through the QGIS "
+    "Browser panel)."
+  );
 }
 
 QString QgsExportToRegisteredSpatialiteAlgorithm::shortDescription() const

@@ -18,22 +18,10 @@
 __author__ = "Andrea Aime"
 __date__ = "July 2016"
 __copyright__ = "(C) 2012, Andrea Aime"
-import pathlib
 import os
+import pathlib
+import unittest
 
-from qgis.PyQt.QtCore import (
-    QDir,
-    QFile,
-    QIODevice,
-    QFile,
-    QTextStream,
-    QPointF,
-    QSizeF,
-    Qt,
-    QTemporaryDir,
-)
-from qgis.PyQt.QtGui import QColor, QFont, QImage
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsEllipseSymbolLayer,
@@ -46,10 +34,10 @@ from qgis.core import (
     QgsPalLayerSettings,
     QgsPointPatternFillSymbolLayer,
     QgsProperty,
+    QgsRasterMarkerSymbolLayer,
     QgsRuleBasedLabeling,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
-    QgsRasterMarkerSymbolLayer,
     QgsSimpleMarkerSymbolLayer,
     QgsSimpleMarkerSymbolLayerBase,
     QgsSldExportContext,
@@ -62,9 +50,19 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QDir,
+    QFile,
+    QIODevice,
+    QPointF,
+    QSizeF,
+    Qt,
+    QTemporaryDir,
+    QTextStream,
+)
+from qgis.PyQt.QtGui import QColor, QFont, QImage
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -1488,7 +1486,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
                 )
 
         node = list.item(index)
-        self.assertTrue(node.isElement(), "Found node but it" "s not an element")
+        self.assertTrue(node.isElement(), "Found node but its not an element")
         return node.toElement()
 
     def getRule(self, root, ruleIndex):

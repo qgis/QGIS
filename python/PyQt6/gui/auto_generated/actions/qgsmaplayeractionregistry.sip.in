@@ -37,7 +37,9 @@ accessed through :py:func:`QgsGui.mapLayerActionRegistry()`.
 Adds a map layer action to the registry
 %End
 
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() );
+    QList<QgsMapLayerAction *> mapLayerActions(
+      QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext()
+    );
 %Docstring
 Returns the map layer actions which can run on the specified layer.
 

@@ -23,6 +23,10 @@
 #include "qgsdataitem.h"
 #include "qgslayermetadata.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item that represents a layer that can be opened with one of the providers.
@@ -32,29 +36,58 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayerItem.
      */
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsLayerItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    // --- reimplemented from QgsDataItem ---
+      // --- reimplemented from QgsDataItem ---
 
-    bool equal( const QgsDataItem *other ) override;
+      bool equal( const QgsDataItem *other ) override;
 
     bool hasDragEnabled() const override { return true; }
 
     QgsMimeDataUtils::UriList mimeUris() const override;
 
     // --- New virtual methods for layer item derived classes ---
+
+#ifndef SIP_RUN
+    /**
+     * Encapsulates a layer mime URI, with additional details.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    struct LayerUriWithDetails
+    {
+        //! Layer URI
+        QgsMimeDataUtils::Uri uri;
+        //! A user-friendly, translated description of the layer type
+        QString userFriendlyDescription;
+    };
+
+    /**
+     * Returns a list of layer mime URIs, with additional details.
+     *
+     * An alternative to mimeUris(), allowing for returning richer layer detail.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    virtual QList< LayerUriWithDetails > layerUrisWithDetails() const;
+#endif
 
     /**
      * Returns the associated map layer type.
@@ -116,7 +149,6 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     QStringList mSupportFormats;
 
   public:
-
     /**
      * Returns the icon for a vector layer whose geometry type is provided.
      * \since QGIS 3.18
@@ -153,11 +185,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     void setLayerMetadata( const QgsLayerMetadata &metadata );
 
   private:
-
     QgsLayerMetadata mLayerMetadata;
-
 };
 
 #endif // QGSLAYERITEM_H
-
-

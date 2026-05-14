@@ -26,7 +26,11 @@
 #include "qgsmeshlayer.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsmeshlayerelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayerElevationProperties::QgsMeshLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
@@ -286,9 +290,9 @@ QList<double> QgsMeshLayerElevationProperties::significantZValues( QgsMapLayer *
         if ( it.value().isInfinite() )
           continue;
 
-        if ( !res.contains( it.value().lower( ) ) )
+        if ( !res.contains( it.value().lower() ) )
           res.append( it.value().lower() );
-        if ( !res.contains( it.value().upper( ) ) )
+        if ( !res.contains( it.value().upper() ) )
           res.append( it.value().upper() );
       }
       std::sort( res.begin(), res.end() );

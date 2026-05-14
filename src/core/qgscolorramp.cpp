@@ -21,8 +21,7 @@ QgsColorRamp::~QgsColorRamp() = default;
 
 QList<QPair<QString, QString> > QgsColorRamp::rampTypes()
 {
-  return QList<QPair<QString, QString> >
-  {
+  return QList<QPair<QString, QString> > {
     qMakePair( QgsGradientColorRamp::typeString(), QObject::tr( "Gradient" ) ),
     qMakePair( QgsPresetSchemeColorRamp::typeString(), QObject::tr( "Color Presets" ) ),
     qMakePair( QgsLimitedRandomColorRamp::typeString(), QObject::tr( "Random" ) ),

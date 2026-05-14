@@ -12,12 +12,10 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsProviderRegistry
 from qgis.gui import QgsDatabaseSchemaComboBox
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import unittest
-
 from utilities import start_app, unitTestDataPath
 
 start_app()
@@ -26,15 +24,11 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsDatabaseSchemaComboBox(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
         cls.postgres_conn = "service='qgis_test'"
         if "QGIS_PGTEST_DB" in os.environ:

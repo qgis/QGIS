@@ -21,6 +21,9 @@
 #include "qgssettingstree.h"
 
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( u"localized_data_paths"_s, QgsSettingsTree::sTreeQgis, QStringList() );
 
@@ -49,7 +52,6 @@ QString QgsLocalizedDataPathRegistry::localizedPath( const QString &fullPath ) c
       return basePath.relativeFilePath( fullPath );
 
   return QString();
-
 }
 
 QStringList QgsLocalizedDataPathRegistry::paths() const

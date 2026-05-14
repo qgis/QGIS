@@ -16,11 +16,12 @@
 #ifndef QGSINDEXEDFEATURE_H
 #define QGSINDEXEDFEATURE_H
 
-#define SIP_NO_FILE
 
 #include "qgsfeature.h"
 
 #include <QVector>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

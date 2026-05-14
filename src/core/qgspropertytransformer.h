@@ -57,7 +57,6 @@ class QgsColorRamp;
 class CORE_EXPORT QgsCurveTransform
 {
   public:
-
     /**
      * Constructs a default QgsCurveTransform which linearly maps values
      * between 0 and 1 unchanged. I.e. y == x.
@@ -149,7 +148,6 @@ class CORE_EXPORT QgsCurveTransform
     bool loadVariant( const QVariant &transformer );
 
   private:
-
     void calcSecondDerivativeArray();
 
     QList< QgsPointXY > mControlPoints;
@@ -167,7 +165,6 @@ class CORE_EXPORT QgsCurveTransform
  */
 class CORE_EXPORT QgsPropertyTransformer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer )
@@ -178,7 +175,7 @@ class CORE_EXPORT QgsPropertyTransformer
       sipType = sipType_QgsColorRampTransformer;
     else
       sipType = sipType_QgsPropertyTransformer;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -187,8 +184,8 @@ class CORE_EXPORT QgsPropertyTransformer
     enum Type
     {
       GenericNumericTransformer, //!< Generic transformer for numeric values (QgsGenericNumericTransformer)
-      SizeScaleTransformer, //!< Size scaling transformer (QgsSizeScaleTransformer)
-      ColorRampTransformer, //!< Color ramp transformer (QgsColorRampTransformer)
+      SizeScaleTransformer,      //!< Size scaling transformer (QgsSizeScaleTransformer)
+      ColorRampTransformer,      //!< Color ramp transformer (QgsColorRampTransformer)
     };
 
     /**
@@ -304,7 +301,6 @@ class CORE_EXPORT QgsPropertyTransformer
     static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
   protected:
-
     /**
      * Applies base class numeric transformations. Derived classes should call this
      * to transform an \a input numeric value before they apply any transform to the result.
@@ -332,7 +328,6 @@ class CORE_EXPORT QgsPropertyTransformer
 class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
 {
   public:
-
     /**
      * Constructor for QgsGenericNumericTransformer.
      * \param minValue minimum expected input value
@@ -342,12 +337,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
      * \param nullOutput value to return for null inputs
      * \param exponent optional exponential for non-linear scaling
      */
-    QgsGenericNumericTransformer( double minValue = 0.0,
-                                  double maxValue = 1.0,
-                                  double minOutput = 0.0,
-                                  double maxOutput = 1.0,
-                                  double nullOutput = 0.0,
-                                  double exponent = 1.0 );
+    QgsGenericNumericTransformer( double minValue = 0.0, double maxValue = 1.0, double minOutput = 0.0, double maxOutput = 1.0, double nullOutput = 0.0, double exponent = 1.0 );
 
     Type transformerType() const override { return GenericNumericTransformer; }
     QgsGenericNumericTransformer *clone() const override SIP_FACTORY;
@@ -436,7 +426,6 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
     double mMaxOutput;
     double mNullOutput;
     double mExponent;
-
 };
 
 /**
@@ -449,13 +438,12 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
 class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
 {
   public:
-
     //! Size scaling methods
     enum ScaleType
     {
-      Linear, //!< Linear scaling
-      Area, //!< Area based scaling
-      Flannery, //!< Flannery scaling method
+      Linear,      //!< Linear scaling
+      Area,        //!< Area based scaling
+      Flannery,    //!< Flannery scaling method
       Exponential, //!< Scale using set exponent
     };
 
@@ -469,13 +457,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
      * \param nullSize size to return for null values
      * \param exponent exponent for Exponential scaling method
      */
-    QgsSizeScaleTransformer( ScaleType type = Linear,
-                             double minValue = 0.0,
-                             double maxValue = 1.0,
-                             double minSize = 0.0,
-                             double maxSize = 1.0,
-                             double nullSize = 0.0,
-                             double exponent = 1.0 );
+    QgsSizeScaleTransformer( ScaleType type = Linear, double minValue = 0.0, double maxValue = 1.0, double minSize = 0.0, double maxSize = 1.0, double nullSize = 0.0, double exponent = 1.0 );
 
     Type transformerType() const override { return SizeScaleTransformer; }
     QgsSizeScaleTransformer *clone() const override SIP_FACTORY;
@@ -577,7 +559,6 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     double mMaxSize;
     double mNullSize;
     double mExponent;
-
 };
 
 /**
@@ -590,7 +571,6 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
 class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 {
   public:
-
     /**
      * Constructor for QgsColorRampTransformer.
      * \param minValue minimum expected value
@@ -599,11 +579,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      * \param nullColor color to return for null values
      * \param rampName name of the source color ramp (since QGIS 3.36)
      */
-    QgsColorRampTransformer( double minValue = 0.0,
-                             double maxValue = 1.0,
-                             QgsColorRamp *ramp SIP_TRANSFER = nullptr,
-                             const QColor &nullColor = QColor( 0, 0, 0, 0 ),
-                             const QString &rampName = QString() );
+    QgsColorRampTransformer( double minValue = 0.0, double maxValue = 1.0, QgsColorRamp *ramp SIP_TRANSFER = nullptr, const QColor &nullColor = QColor( 0, 0, 0, 0 ), const QString &rampName = QString() );
 
     QgsColorRampTransformer( const QgsColorRampTransformer &other );
     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
@@ -664,11 +640,9 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
     void setRampName( const QString &name ) { mRampName = name; }
 
   private:
-
     std::unique_ptr< QgsColorRamp > mGradientRamp;
     QColor mNullColor;
     QString mRampName;
-
 };
 
 #endif // QGSPROPERTYTRANSFORMER_H

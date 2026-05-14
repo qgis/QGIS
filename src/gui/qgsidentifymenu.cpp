@@ -29,16 +29,18 @@
 #include "qgsvectorlayer.h"
 
 #include <QMouseEvent>
+#include <QString>
 
 #include "moc_qgsidentifymenu.cpp"
+
+using namespace Qt::StringLiterals;
 
 //TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   : QMenu( canvas )
   , mCanvas( canvas )
   , mDefaultActionName( tr( "Identify" ) )
-{
-}
+{}
 
 QgsIdentifyMenu::~QgsIdentifyMenu()
 {
@@ -86,9 +88,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas(
           QgsDebugError( u"Could not transform geometry to layer CRS"_s );
         }
 
-        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
-                                                             .setFilterRect( rect )
-                                                             .setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
+        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
         QgsFeature f;
         while ( fit.nextFeature( f ) )
         {

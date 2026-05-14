@@ -27,8 +27,11 @@
 #include <QItemSelectionModel>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdbimportvectorlayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )
@@ -40,9 +43,7 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
 
   mSourceLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
   connect( mSourceLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsDbImportVectorLayerDialog::sourceLayerComboChanged );
-  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, [this]( const QgsCoordinateReferenceSystem &crs ) {
-    mExtentGroupBox->setOutputCrs( crs );
-  } );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, [this]( const QgsCoordinateReferenceSystem &crs ) { mExtentGroupBox->setOutputCrs( crs ); } );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsDbImportVectorLayerDialog::doImport );
@@ -285,12 +286,7 @@ void QgsDbImportVectorLayerDialog::addField()
   const int rowCount = mFieldsView->model()->rowCount();
   mFieldsView->appendField( QgsField( u"new_field"_s ), u"NULL"_s );
   const QModelIndex index = mFieldsView->model()->index( rowCount, 0 );
-  mFieldsView->selectionModel()->select(
-    index,
-    QItemSelectionModel::SelectionFlags(
-      QItemSelectionModel::Clear | QItemSelectionModel::Select | QItemSelectionModel::Current | QItemSelectionModel::Rows
-    )
-  );
+  mFieldsView->selectionModel()->select( index, QItemSelectionModel::SelectionFlags( QItemSelectionModel::Clear | QItemSelectionModel::Select | QItemSelectionModel::Current | QItemSelectionModel::Rows ) );
   mFieldsView->scrollTo( index );
 }
 

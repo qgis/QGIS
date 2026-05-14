@@ -20,16 +20,22 @@
 #include "qgsapplication.h"
 #include "qgscircle.h"
 #include "qgselevationmap.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrendererregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
-#include "qgsvirtualpointcloudprovider.h"
 
 #include <QPointer>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
+
+QgsPropertiesDefinition QgsPointCloudRenderer::sPropertyDefinitions;
 
 QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, QgsFeedback *feedback )
   : mRenderContext( context )
@@ -38,9 +44,7 @@ QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &contex
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
   , mFeedback( feedback )
-{
-
-}
+{}
 
 long QgsPointCloudRenderContext::pointsRendered() const
 {
@@ -71,6 +75,8 @@ QgsPointCloudRenderer::QgsPointCloudRenderer()
   settings.setSize( 1 );
   textFormat.setBuffer( settings );
   mLabelTextFormat = std::move( textFormat );
+  mElevationShadingRenderer.setActiveEyeDomeLighting( false ); // we explicitly set shader effects to false, in case some are turned on by default
+  mElevationShadingRenderer.setActiveHillshading( false );
 }
 
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
@@ -91,7 +97,12 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
 
 QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
 {
-  return QSet< QString >();
+  QSet<QString> res;
+  if ( mDataDefinedProperties.hasActiveProperties() )
+  {
+    res = mDataDefinedProperties.referencedVariables();
+  }
+  return res;
 }
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRenderer::prepare()
@@ -124,13 +135,27 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
     case Qgis::PointCloudSymbol::Circle:
       break;
   }
+
+  mDataDefinedProperties.prepare( context.renderContext().expressionContext() );
+
+  if ( mDataDefinedProperties.hasActiveProperties() )
+  {
+    mExpressionContextScope = std::make_unique<QgsExpressionContextScope>();
+    context.renderContext().expressionContext().appendScope( mExpressionContextScope.get() );
+  }
 }
 
-void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
+void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext &context )
 {
 #ifdef QGISDEBUG
   Q_ASSERT_X( mThread == QThread::currentThread(), "QgsPointCloudRenderer::stopRender", "stopRender called in a different thread - use a cloned renderer instead" );
 #endif
+
+  if ( mExpressionContextScope )
+  {
+    context.renderContext().expressionContext().popScope();
+    mExpressionContextScope.reset();
+  }
 }
 
 bool QgsPointCloudRenderer::legendItemChecked( const QString & )
@@ -139,9 +164,7 @@ bool QgsPointCloudRenderer::legendItemChecked( const QString & )
 }
 
 void QgsPointCloudRenderer::checkLegendItem( const QString &, bool )
-{
-
-}
+{}
 
 double QgsPointCloudRenderer::maximumScreenError() const
 {
@@ -151,6 +174,11 @@ double QgsPointCloudRenderer::maximumScreenError() const
 void QgsPointCloudRenderer::setMaximumScreenError( double error )
 {
   mMaximumScreenError = error;
+}
+
+void QgsPointCloudRenderer::setOverviewSwitchingScale( double scale )
+{
+  mOverviewSwitchingScale = scale;
 }
 
 Qgis::RenderUnit QgsPointCloudRenderer::maximumScreenErrorUnit() const
@@ -188,17 +216,13 @@ void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double 
   switch ( mPointSymbol )
   {
     case Qgis::PointCloudSymbol::Square:
-      elevationPainter->fillRect( QRectF( x - width * 0.5,
-                                          y - width * 0.5,
-                                          width, width ), brush );
+      elevationPainter->fillRect( QRectF( x - width * 0.5, y - width * 0.5, width, width ), brush );
       break;
 
     case Qgis::PointCloudSymbol::Circle:
       elevationPainter->setBrush( brush );
       elevationPainter->setPen( Qt::NoPen );
-      elevationPainter->drawEllipse( QRectF( x - width * 0.5,
-                                             y - width * 0.5,
-                                             width, width ) );
+      elevationPainter->drawEllipse( QRectF( x - width * 0.5, y - width * 0.5, width, width ) );
       break;
   };
 }
@@ -221,6 +245,9 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setShowLabels( mShowLabels );
   destination->setLabelTextFormat( mLabelTextFormat );
   destination->setZoomOutBehavior( mZoomOutBehavior );
+  destination->setOverviewSwitchingScale( mOverviewSwitchingScale );
+  destination->setElevationShadingRenderer( mElevationShadingRenderer );
+  destination->setDataDefinedProperties( mDataDefinedProperties );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -246,6 +273,16 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
     mLabelTextFormat.readXml( element.firstChildElement( u"text-style"_s ), context );
   }
   mZoomOutBehavior = qgsEnumKeyToValue( element.attribute( u"zoomOutBehavior"_s ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
+  mOverviewSwitchingScale = element.attribute( u"overviewSwitchingScale"_s, u"1.0"_s ).toDouble();
+
+  const QDomNode elevationShadingNode = element.namedItem( u"elevation-shading-renderer"_s );
+  if ( !elevationShadingNode.isNull() )
+  {
+    mElevationShadingRenderer.readXml( elevationShadingNode.toElement(), context );
+  }
+  const QDomElement ddElem = element.firstChildElement( u"dataDefinedProperties"_s );
+  if ( !ddElem.isNull() )
+    mDataDefinedProperties.readXml( ddElem, propertyDefinitions() );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -272,7 +309,22 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
     element.appendChild( mLabelTextFormat.writeXml( doc, context ) );
   }
   if ( mZoomOutBehavior != Qgis::PointCloudZoomOutRenderBehavior::RenderExtents )
+  {
     element.setAttribute( u"zoomOutBehavior"_s, qgsEnumValueToKey( mZoomOutBehavior ) );
+  }
+  if ( mOverviewSwitchingScale != 1.0 )
+  {
+    element.setAttribute( u"overviewSwitchingScale"_s, qgsDoubleToString( mOverviewSwitchingScale ) );
+  }
+
+  QDomDocument doc = element.ownerDocument();
+  QDomElement elevationShadingNode = doc.createElement( u"elevation-shading-renderer"_s );
+  mElevationShadingRenderer.writeXml( elevationShadingNode, context );
+  element.appendChild( elevationShadingNode );
+
+  QDomElement ddElem = doc.createElement( u"dataDefinedProperties"_s );
+  mDataDefinedProperties.writeXml( ddElem, propertyDefinitions() );
+  element.appendChild( ddElem );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
@@ -295,11 +347,27 @@ void QgsPointCloudRenderer::setDrawOrder2d( Qgis::PointCloudDrawOrder order )
   mDrawOrder2d = order;
 }
 
+void QgsPointCloudRenderer::initPropertyDefinitions()
+{
+  if ( !sPropertyDefinitions.isEmpty() )
+    return;
+
+  sPropertyDefinitions = {
+    { static_cast<int>( QgsPointCloudRenderer::Property::Color ), QgsPropertyDefinition( "colorExpression", QObject::tr( "Color expression" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  };
+}
+
+const QgsPropertiesDefinition &QgsPointCloudRenderer::propertyDefinitions()
+{
+  QgsPointCloudRenderer::initPropertyDefinitions();
+  return sPropertyDefinitions;
+}
+
 QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, const QgsRenderContext &renderContext, const QgsGeometry &geometry, double toleranceForPointIdentification )
 {
   QVector<QVariantMap> selectedPoints;
 
-  const double maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
+  const double maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() ); // in pixels
 
   const QgsRectangle layerExtentLayerCoords = layer->dataProvider()->extent();
   QgsRectangle layerExtentMapCoords = layerExtentLayerCoords;
@@ -380,6 +448,34 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   selectedPoints.erase( std::remove_if( selectedPoints.begin(), selectedPoints.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), selectedPoints.end() );
 
   return selectedPoints;
+}
+
+QgsElevationShadingRenderer QgsPointCloudRenderer::elevationShadingRenderer() const
+{
+  return mElevationShadingRenderer;
+}
+
+QColor QgsPointCloudRenderer::colorFromExpression( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context )
+{
+  const char *ptr = block->data();
+  const auto &request = block->attributes();
+  const std::size_t recordSize = request.pointRecordSize();
+  const char *pointData = ptr + pointIndex * recordSize;
+
+  QgsExpressionContext &ctx = context.renderContext().expressionContext();
+
+  int offset = 0;
+  for ( const QgsPointCloudAttribute &att : request.attributes() )
+  {
+    QVariant value;
+    context.getAttribute( pointData, offset, att.type(), value );
+    mExpressionContextScope->setVariable( att.name(), value, false );
+    offset += att.size();
+  }
+
+  ctx.setOriginalValueVariable( QVariant::fromValue( rendererColor ) );
+
+  return mDataDefinedProperties.valueAsColor( Property::Color, ctx, rendererColor );
 }
 
 //

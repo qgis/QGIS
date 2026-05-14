@@ -53,6 +53,7 @@ class QgsDockWidget;
 class QgsMapLayerAction;
 class QgsEditorWidgetSetup;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
 class QgsTiledSceneLayer;
 
 class QwtPlotCurve;
@@ -160,12 +161,25 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
 
     static const QgsSettingsEntryBool *settingHideNullValues;
     static const QgsSettingsEntryBool *settingShowRelations;
+    static const QgsSettingsEntryBool *settingIdentifyExpand;
+    static const QgsSettingsEntryBool *settingIdentifyAutoFeatureForm;
+    static const QgsSettingsEntryBool *settingHideDerivedAttributes;
+    static const QgsSettingsEntryInteger *settingColumnWidth;
+    static const QgsSettingsEntryInteger *settingColumnWidthTable;
 
     //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes );
 
     //! Adds feature from raster layer
-    void addFeature( QgsRasterLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes, const QgsFields &fields = QgsFields(), const QgsFeature &feature = QgsFeature(), const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
+    void addFeature(
+      QgsRasterLayer *layer,
+      const QString &label,
+      const QMap<QString, QString> &attributes,
+      const QMap<QString, QString> &derivedAttributes,
+      const QgsFields &fields = QgsFields(),
+      const QgsFeature &feature = QgsFeature(),
+      const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() )
+    );
 
     /**
      * Adds results from mesh layer

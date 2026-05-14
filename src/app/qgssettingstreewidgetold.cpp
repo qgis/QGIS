@@ -50,8 +50,11 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgssettingstreewidgetold.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsTreeWidgetOld::QgsSettingsTreeWidgetOld( QWidget *parent )
   : QTreeWidget( parent )
@@ -172,7 +175,8 @@ void QgsSettingsTreeWidgetOld::showContextMenu( QPoint pos )
     {
       QAction *deleteAction = new QAction( tr( "Delete Group…" ), mContextMenu );
       connect( deleteAction, &QAction::triggered, this, [this, itemPath, itemText] {
-        if ( QMessageBox::question( nullptr, tr( "Delete Group" ), tr( "Are you sure you want to delete the %1 group?" ).arg( itemText ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        if ( QMessageBox::question( nullptr, tr( "Delete Group" ), tr( "Are you sure you want to delete the %1 group?" ).arg( itemText ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+             != QMessageBox::Yes )
           return;
 
 
@@ -187,7 +191,8 @@ void QgsSettingsTreeWidgetOld::showContextMenu( QPoint pos )
     {
       QAction *deleteSetting = new QAction( tr( "Delete Setting…" ), mContextMenu );
       connect( deleteSetting, &QAction::triggered, this, [this, itemPath] {
-        if ( QMessageBox::question( nullptr, tr( "Delete Setting" ), tr( "Are you sure you want to delete the %1 setting?" ).arg( itemPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        if ( QMessageBox::question( nullptr, tr( "Delete Setting" ), tr( "Are you sure you want to delete the %1 setting?" ).arg( itemPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+             != QMessageBox::Yes )
           return;
 
         mSettings.remove( itemPath );

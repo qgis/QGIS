@@ -17,7 +17,6 @@
 
 
 class QgsEditError(Exception):
-
     def __init__(self, value):
         self.value = value
 
@@ -26,7 +25,6 @@ class QgsEditError(Exception):
 
 
 class edit:
-
     def __init__(self, layer):
         self.layer = layer
 

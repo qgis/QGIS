@@ -1,0 +1,78 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/converters/qgssymbolconverterregistry.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsSymbolConverterRegistry : QObject
+{
+%Docstring(signature="appended")
+A registry of known symbol converters.
+
+:py:class:`QgsSymbolConverterRegistry` is not usually directly created,
+but rather accessed through
+:py:func:`QgsApplication.symbolConverterRegistry()`.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgssymbolconverterregistry.h"
+%End
+  public:
+    QgsSymbolConverterRegistry( QObject *parent = 0 );
+%Docstring
+Creates a new empty symbol converter registry.
+
+QgsSymbolConverterRegistry is not usually directly created, but rather
+accessed through :py:func:`QgsApplication.symbolConverterRegistry()`.
+%End
+
+    ~QgsSymbolConverterRegistry();
+
+
+    bool addConverter( QgsAbstractSymbolConverter *converter /Transfer/ );
+%Docstring
+Adds a ``converter`` to the registry.
+
+Ownership of the converter is transferred to the registry.
+
+:return: ``True`` if the converter was successfully added.
+%End
+
+    QgsAbstractSymbolConverter *converter( const QString &name ) const;
+%Docstring
+Returns the converter with matching ``name``, or ``None`` if no matching
+converter is registered.
+%End
+
+    bool removeConverter( const QString &name );
+%Docstring
+Removes the converter with matching ``name``.
+
+The converter will be deleted.
+
+:return: ``True`` if the converter was successfully removed.
+%End
+
+    QStringList converterNames() const;
+%Docstring
+Returns a list of the registered converter names (IDs).
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/converters/qgssymbolconverterregistry.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

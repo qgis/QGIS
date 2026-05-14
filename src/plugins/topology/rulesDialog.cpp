@@ -28,12 +28,16 @@
 #include "topolTest.h"
 
 #include <QDebug>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_rulesDialog.cpp"
 
+using namespace Qt::StringLiterals;
+
 rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent )
-  : QDialog( parent ), Ui::rulesDialog()
+  : QDialog( parent )
+  , Ui::rulesDialog()
 {
   setupUi( this );
 
@@ -94,9 +98,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   } );
 
   mRulesTable->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [this] {
-    mContextMenu->exec( QCursor::pos() );
-  } );
+  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [this] { mContextMenu->exec( QCursor::pos() ); } );
 
   //setHorizontalHeaderItems();
   mRulesTable->hideColumn( 3 );

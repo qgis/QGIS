@@ -28,6 +28,7 @@ Base factory for editors for settings.
 %Docstring
 Constructor
 %End
+
     virtual QString id() const = 0;
 
 
@@ -44,7 +45,6 @@ Sets the widget value
 %End
 
     virtual QVariant variantValueFromWidget() const;
-
     virtual U valueFromWidget() const = 0;
 %Docstring
 Returns the widget value
@@ -233,6 +233,55 @@ Constructor of the wrapper for a given ``setting`` and its widget
 
 
     virtual void enableAutomaticUpdatePrivate();
+
+};
+
+
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QGroupBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQGroupBoxboolBase /NoTypeName/;
+
+class QgsSettingsBoolGroupBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQGroupBoxboolBase
+{
+%Docstring(signature="appended")
+A factory for editors of boolean settings with a group box.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QGroupBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQGroupBoxboolBase;
+%End
+  public:
+    QgsSettingsBoolGroupBoxWrapper( QObject *parent = 0 );
+%Docstring
+Constructor of the factory
+%End
+
+    QgsSettingsBoolGroupBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
+%End
+
+    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
+
+    virtual QString id() const;
+
+
+    virtual bool setSettingFromWidget() const;
+
+
+    virtual bool valueFromWidget() const;
+
+
+    virtual bool setWidgetValue( const bool &value ) const;
+
+
+    virtual void enableAutomaticUpdatePrivate();
+
+
+  protected:
+    virtual void configureEditorPrivateImplementation();
 
 };
 

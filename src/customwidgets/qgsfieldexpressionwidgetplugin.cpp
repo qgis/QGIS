@@ -23,8 +23,7 @@
 QgsFieldExpressionWidgetPlugin::QgsFieldExpressionWidgetPlugin( QObject *parent )
   : QObject( parent )
   , mInitialized( false )
-{
-}
+{}
 
 
 QString QgsFieldExpressionWidgetPlugin::name() const
@@ -83,17 +82,19 @@ QString QgsFieldExpressionWidgetPlugin::whatsThis() const
 
 QString QgsFieldExpressionWidgetPlugin::domXml() const
 {
-  return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mFieldExpressionWidget\">\n"
-                  "  <property name=\"geometry\">\n"
-                  "   <rect>\n"
-                  "    <x>0</x>\n"
-                  "    <y>0</y>\n"
-                  "    <width>200</width>\n"
-                  "    <height>27</height>\n"
-                  "   </rect>\n"
-                  "  </property>\n"
-                  " </widget>\n"
-                  "</ui>\n" )
+  return QString(
+           "<ui language=\"c++\">\n"
+           " <widget class=\"%1\" name=\"mFieldExpressionWidget\">\n"
+           "  <property name=\"geometry\">\n"
+           "   <rect>\n"
+           "    <x>0</x>\n"
+           "    <y>0</y>\n"
+           "    <width>200</width>\n"
+           "    <height>27</height>\n"
+           "   </rect>\n"
+           "  </property>\n"
+           " </widget>\n"
+           "</ui>\n"
+  )
     .arg( name() );
 }

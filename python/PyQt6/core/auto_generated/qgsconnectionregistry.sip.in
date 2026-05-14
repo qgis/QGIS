@@ -28,7 +28,6 @@ rather accessed through :py:func:`QgsApplication.connectionRegistry()`.
 #include "qgsconnectionregistry.h"
 %End
   public:
-
     QgsConnectionRegistry( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsConnectionRegistry.
@@ -52,8 +51,6 @@ Ownership is transferred to the caller.
   private:
     QgsConnectionRegistry( const QgsConnectionRegistry &other );
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

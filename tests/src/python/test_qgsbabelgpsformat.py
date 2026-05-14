@@ -10,7 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "2021-07"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -19,21 +20,15 @@ from qgis.core import (
     QgsBabelSimpleImportFormat,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestQgsBabelGpsFormat(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsBabelGpsFormat.com")
-        QCoreApplication.setApplicationName("TestPyQgsBabelGpsFormat")
-        QgsSettings().clear()
         start_app()
 
     def test_simple_format(self):

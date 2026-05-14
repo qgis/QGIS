@@ -32,7 +32,6 @@ class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRenderer
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsMapRendererAbstractCustomPainterJob, using the given
      * map \a settings.
@@ -40,14 +39,12 @@ class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRenderer
     QgsMapRendererAbstractCustomPainterJob( const QgsMapSettings &settings );
 
   protected:
-
     /**
      * Prepares the given \a painter ready for a map render.
      *
      * The \a backgroundColor argument specifies the color to use for the map's background.
      */
     void preparePainter( QPainter *painter, const QColor &backgroundColor = Qt::transparent );
-
 };
 
 /**

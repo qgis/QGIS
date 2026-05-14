@@ -76,11 +76,14 @@
 #include <QPushButton>
 #include <QScrollBar>
 #include <QSslCipher>
+#include <QString>
 #include <QStyle>
 #include <QTimer>
 #include <QToolButton>
 
 #include "moc_qgsauthsslimportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   : QDialog( parent )
@@ -232,10 +235,7 @@ void QgsAuthSslImportDialog::socketEncrypted()
   appendString( u"%1: %2"_s.arg( tr( "Protocol" ), QgsAuthCertUtils::getSslProtocolName( mSocket->protocol() ) ) );
 
   const QSslCipher ciph = mSocket->sessionCipher();
-  const QString cipher = u"%1: %2, %3 (%4/%5)"_s
-                           .arg( tr( "Session cipher" ), ciph.authenticationMethod(), ciph.name() )
-                           .arg( ciph.usedBits() )
-                           .arg( ciph.supportedBits() );
+  const QString cipher = u"%1: %2, %3 (%4/%5)"_s.arg( tr( "Session cipher" ), ciph.authenticationMethod(), ciph.name() ).arg( ciph.usedBits() ).arg( ciph.supportedBits() );
   appendString( cipher );
 
 
@@ -401,8 +401,10 @@ void QgsAuthSslImportDialog::loadCertFromFile()
 
   if ( !QgsAuthCertUtils::certificateIsSslServer( cert ) )
   {
-    appendString( tr( "Certificate does not appear for be for an SSL server. "
-                      "You can still add a configuration, if you know it is the correct certificate." ) );
+    appendString( tr(
+      "Certificate does not appear for be for an SSL server. "
+      "You can still add a configuration, if you know it is the correct certificate."
+    ) );
   }
 
   wdgtSslConfig->setEnabled( true );

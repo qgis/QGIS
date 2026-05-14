@@ -20,17 +20,13 @@ QgsRenderedLayerStatistics::QgsRenderedLayerStatistics( const QString &layerId, 
   : QgsRenderedItemDetails( layerId )
   , mMin( minimum )
   , mMax( maximum )
-{
-
-}
+{}
 
 QgsRenderedLayerStatistics::QgsRenderedLayerStatistics( const QString &layerId, double minimum, double maximum )
   : QgsRenderedItemDetails( layerId )
-  , mMin( {minimum} )
-, mMax( {maximum} )
-{
-
-}
+  , mMin( { minimum } )
+  , mMax( { maximum } )
+{}
 
 QList<double> QgsRenderedLayerStatistics::minimum() const
 {

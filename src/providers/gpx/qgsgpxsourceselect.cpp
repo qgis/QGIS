@@ -21,8 +21,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsgpxsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -54,8 +57,14 @@ void QgsGpxSourceSelect::addButtonClicked()
   const QFileInfo fileInfo( mGpxPath );
   if ( !fileInfo.isReadable() )
   {
-    QMessageBox::warning( nullptr, tr( "Add GPX Layer" ), tr( "Unable to read the selected file.\n"
-                                                              "Please select a valid file." ) );
+    QMessageBox::warning(
+      nullptr,
+      tr( "Add GPX Layer" ),
+      tr(
+        "Unable to read the selected file.\n"
+        "Please select a valid file."
+      )
+    );
     return;
   }
 

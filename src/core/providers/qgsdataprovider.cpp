@@ -19,15 +19,17 @@
 #include "qgsthreadingutils.h"
 
 #include <QMutexLocker>
+#include <QString>
 
 #include "moc_qgsdataprovider.cpp"
 
+using namespace Qt::StringLiterals;
+
 #define SUBLAYER_SEPARATOR u"!!::!!"_s
 
-QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
-                                  Qgis::DataProviderReadFlags flags )
-  : mDataSourceURI( uri ),
-    mOptions( providerOptions )
+QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
+  : mDataSourceURI( uri )
+  , mOptions( providerOptions )
 {
   mReadFlags = flags;
 }

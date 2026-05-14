@@ -27,6 +27,10 @@
 #include "qgstextrenderer.h"
 #include "qgsvectorlayerplotdatagatherer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPieChartPlot::QgsPieChartPlot()
 {
   setFillSymbolAt( 0, QgsPlotDefaultSettings::pieChartFillSymbol() );
@@ -130,6 +134,8 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
       //this allows the ramp to pregenerate a set of visually distinctive colors
       randomRamp->setTotalColorCount( categories.size() );
     }
+
+    chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_series_name"_s, series->name(), true ) );
 
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
@@ -438,4 +444,26 @@ void QgsPieChartPlot::setNumericFormat( QgsNumericFormat *format )
 void QgsPieChartPlot::setLabelType( Qgis::PieChartLabelType type )
 {
   mLabelType = type;
+}
+
+void QgsPieChartPlot::initFromPlot( const QgsPlot *plot )
+{
+  if ( !plot )
+  {
+    return;
+  }
+
+  // pie charts do not have axis, so we transfer only settings related to the chart area
+  if ( const Qgs2DPlot *plot2D = dynamic_cast<const Qgs2DPlot *>( plot ) )
+  {
+    Qgs2DPlot::copyCommonProperties( plot2D );
+  }
+
+  if ( const QgsPieChartPlot *pieChartPlot = dynamic_cast<const QgsPieChartPlot *>( plot ) )
+  {
+    for ( int idx = 0; idx < pieChartPlot->fillSymbolCount(); idx++ )
+    {
+      setFillSymbolAt( idx, pieChartPlot->fillSymbolAt( idx )->clone() );
+    }
+  }
 }

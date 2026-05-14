@@ -15,6 +15,9 @@
 
 #include "qgstexturematerial.h"
 
+#include "qgs3dutils.h"
+
+#include <QString>
 #include <QUrl>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -25,6 +28,8 @@
 #include <Qt3DRender/QTexture>
 
 #include "moc_qgstexturematerial.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
@@ -43,8 +48,6 @@ QgsTextureMaterial::~QgsTextureMaterial() = default;
 
 void QgsTextureMaterial::init()
 {
-  connect( mTextureParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsTextureMaterial::handleTextureChanged );
-
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect();
 
   effect->addParameter( mTextureParameter );
@@ -79,9 +82,16 @@ Qt3DRender::QAbstractTexture *QgsTextureMaterial::texture() const
   return mTextureParameter->value().value<Qt3DRender::QAbstractTexture *>();
 }
 
-void QgsTextureMaterial::handleTextureChanged( const QVariant &var )
+void QgsTextureMaterial::setInstancingEnabled( bool enabled )
 {
-  emit textureChanged( var.value<Qt3DRender::QAbstractTexture *>() );
+  if ( enabled == mInstancingEnabled )
+    return;
+  mInstancingEnabled = enabled;
+
+  QByteArray vertexCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/texture.vert"_s ) );
+  if ( enabled )
+    vertexCode = Qgs3DUtils::addDefinesToShaderCode( vertexCode, QStringList( { u"INSTANCING"_s } ) );
+  mGL3Shader->setVertexShaderCode( vertexCode );
 }
 
 ///@endcond PRIVATE

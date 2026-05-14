@@ -23,7 +23,10 @@
 #include "qgssettings.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -33,7 +36,14 @@
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-    DummyAlgorithm( const QString &name, const QString &group, Qgis::ProcessingAlgorithmFlags flags = Qgis::ProcessingAlgorithmFlags(), const QString &tags = QString(), const QString &shortDescription = QString(), const QString &displayName = QString() )
+    DummyAlgorithm(
+      const QString &name,
+      const QString &group,
+      Qgis::ProcessingAlgorithmFlags flags = Qgis::ProcessingAlgorithmFlags(),
+      const QString &tags = QString(),
+      const QString &shortDescription = QString(),
+      const QString &displayName = QString()
+    )
       : mName( name )
       , mDisplayName( displayName )
       , mGroup( group )
@@ -69,12 +79,8 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
       : mId( id )
       , mName( name )
       , mAlgs( algs )
-    {
-    }
-    ~DummyProvider() override
-    {
-      qDeleteAll( mAlgs );
-    }
+    {}
+    ~DummyProvider() override { qDeleteAll( mAlgs ); }
 
     QString id() const override { return mId; }
     bool isActive() const override { return mActive; }
@@ -116,11 +122,6 @@ void TestQgsProcessingModel::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsSettings().clear();
 }

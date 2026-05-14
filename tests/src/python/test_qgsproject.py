@@ -14,42 +14,42 @@ __copyright__ = "Copyright 2015, The QGIS Project"
 import codecs
 import os
 import re
+import unittest
 from io import BytesIO
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
-from lxml import etree as et
 
+from lxml import etree as et
 from osgeo import ogr
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsDataProvider,
+    QgsElevationProfile,
     QgsExpressionContextUtils,
     QgsFeature,
     QgsGeometry,
-    QgsLayerNotesUtils,
     QgsLabelingEngineSettings,
+    QgsLayerNotesUtils,
     QgsMapLayer,
     QgsProject,
     QgsProjectColorScheme,
     QgsProjectDirtyBlocker,
     QgsRasterLayer,
-    QgsSettings,
+    QgsSelectiveMaskingSourceSet,
+    QgsSettingsTree,
     QgsUnitTypes,
     QgsVectorLayer,
-    QgsElevationProfile,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from utilities import unitTestDataPath, getTempfilePath
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
+from utilities import getTempfilePath, unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -60,7 +60,6 @@ def createLayer(name):
 
 
 class TestQgsProject(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)
@@ -84,6 +83,21 @@ class TestQgsProject(QgisTestCase):
         self.assertFalse(prj.crs().isValid())
         prj.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs("EPSG:3111"))
         self.assertEqual(prj.crs().authid(), "EPSG:3111")
+
+    def test_non_earth_crs(self):
+        """Check that if non Earth CRS is set the signals are still fired just once."""
+
+        project = QgsProject.instance()
+        project.clear()
+
+        spy_crs = QSignalSpy(project.crsChanged)
+        spy_ellipsoid = QSignalSpy(project.ellipsoidChanged)
+
+        project.setCrs(QgsCoordinateReferenceSystem("IAU_2015:30100"), True)
+        self.assertEqual(project.crs().authid(), "IAU_2015:30100")
+
+        self.assertEqual(len(spy_crs), 1)
+        self.assertEqual(len(spy_ellipsoid), 1)
 
     def test_vertical_crs(self):
         project = QgsProject()
@@ -454,6 +468,34 @@ class TestQgsProject(QgisTestCase):
 
         p.clear()
         self.assertFalse(p.elevationProfileManager().profiles())
+
+    def test_selective_masking_source_set_manager(self):
+        p = QgsProject()
+        self.assertFalse(p.selectiveMaskingSourceSetManager().sets())
+        source_set1 = QgsSelectiveMaskingSourceSet()
+        source_set1.setName("p1")
+        p.selectiveMaskingSourceSetManager().addSet(source_set1)
+        source_set2 = QgsSelectiveMaskingSourceSet()
+        source_set2.setName("p2")
+        p.selectiveMaskingSourceSetManager().addSet(source_set2)
+        self.assertCountEqual(
+            [s.name() for s in p.selectiveMaskingSourceSetManager().sets()],
+            ["p1", "p2"],
+        )
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, "selective_masking_sets.qgs")
+            self.assertTrue(p.write(path))
+            # Verify
+            p2 = QgsProject()
+            self.assertTrue(p2.read(path))
+            self.assertCountEqual(
+                [s.name() for s in p2.selectiveMaskingSourceSetManager().sets()],
+                ["p1", "p2"],
+            )
+
+        p.clear()
+        self.assertFalse(p.selectiveMaskingSourceSetManager().sets())
 
     def testReadEntry(self):
         prj = QgsProject.instance()
@@ -1762,13 +1804,14 @@ class TestQgsProject(QgisTestCase):
 
     def testBackgroundColor(self):
         p = QgsProject()
-        s = QgsSettings()
 
-        red = int(s.value("qgis/default_canvas_color_red", 255))
-        green = int(s.value("qgis/default_canvas_color_green", 255))
-        blue = int(s.value("qgis/default_canvas_color_blue", 255))
+        defaultColor = (
+            QgsSettingsTree.node("qgis")
+            .childSetting("default-canvas-color")
+            .valueAsVariant()
+        )
         # test default canvas background color
-        self.assertEqual(p.backgroundColor(), QColor(red, green, blue))
+        self.assertEqual(p.backgroundColor(), defaultColor)
         spy = QSignalSpy(p.backgroundColorChanged)
         p.setBackgroundColor(QColor(0, 0, 0))
         self.assertEqual(len(spy), 1)
@@ -1780,14 +1823,14 @@ class TestQgsProject(QgisTestCase):
 
     def testSelectionColor(self):
         p = QgsProject()
-        s = QgsSettings()
 
-        red = int(s.value("qgis/default_selection_color_red", 255))
-        green = int(s.value("qgis/default_selection_color_green", 255))
-        blue = int(s.value("qgis/default_selection_color_blue", 0))
-        alpha = int(s.value("qgis/default_selection_color_alpha", 255))
+        defaultColor = (
+            QgsSettingsTree.node("qgis")
+            .childSetting("default-selection-color")
+            .valueAsVariant()
+        )
         # test default feature selection color
-        self.assertEqual(p.selectionColor(), QColor(red, green, blue, alpha))
+        self.assertEqual(p.selectionColor(), defaultColor)
         spy = QSignalSpy(p.selectionColorChanged)
         p.setSelectionColor(QColor(0, 0, 0, 50))
         self.assertEqual(len(spy), 1)

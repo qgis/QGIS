@@ -373,6 +373,7 @@ public:
                            std::vector<PDFInteger> widths,
                            PDFEncoding::Encoding encodingType,
                            encoding::EncodingTable encoding,
+                           StandardFontType standardFontType,
                            GlyphIndices glyphIndices);
     virtual ~PDFSimpleFont() override = default;
 
@@ -382,6 +383,9 @@ public:
 
     /// Returns the glyph advance (or zero, if glyph advance is invalid)
     PDFInteger getGlyphAdvance(size_t index) const;
+
+    /// Returns the assigned standard font (or invalid, if font is not standard)
+    StandardFontType getStandardFontType() const { return m_standardFontType; }
 
     virtual PDFEncodedText encodeText(const QString& text) const override;
 
@@ -396,6 +400,7 @@ protected:
     PDFEncoding::Encoding m_encodingType;
     encoding::EncodingTable m_encoding;
     GlyphIndices m_glyphIndices;
+    StandardFontType m_standardFontType; ///< Type of the standard font (or invalid, if it is not a standard font)
 };
 
 class PDFType1Font : public PDFSimpleFont
@@ -421,12 +426,8 @@ public:
     virtual FontType getFontType() const override;
     virtual void dumpFontToTreeItem(ITreeFactory* treeFactory) const override;
 
-    /// Returns the assigned standard font (or invalid, if font is not standard)
-    StandardFontType getStandardFontType() const { return m_standardFontType; }
-
 private:
     FontType m_fontType;
-    StandardFontType m_standardFontType; ///< Type of the standard font (or invalid, if it is not a standard font)
 };
 
 class PDFTrueTypeFont : public PDFSimpleFont

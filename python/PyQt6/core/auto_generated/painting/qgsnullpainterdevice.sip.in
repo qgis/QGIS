@@ -12,7 +12,7 @@
 
 
 
-class QgsNullPaintDevice: QPaintDevice
+class QgsNullPaintDevice : QPaintDevice
 {
 %Docstring(signature="appended")
 Null painter device that can be used for map renderer jobs which use
@@ -25,7 +25,6 @@ custom painters.
 #include "qgsnullpainterdevice.h"
 %End
   public:
-
     QgsNullPaintDevice();
 
     virtual QPaintEngine *paintEngine() const;

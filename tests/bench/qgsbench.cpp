@@ -19,7 +19,10 @@
 #include <ctime>
 #include <iostream>
 
+#include <QString>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 #ifndef Q_OS_WIN
 #include <sys/resource.h>

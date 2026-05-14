@@ -27,17 +27,14 @@
 #include "moc_qgsprocessingalgrunnertask.cpp"
 
 QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, Flags flags )
-  : QgsTask(
-      tr( "Executing “%1”" ).arg( algorithm->displayName() ),
-      flags & ( !( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::CanCancel ) ? ( ~QgsTask::CanCancel ) : ( ~QgsTask::Flags() ) )
-    )
+  : QgsTask( tr( "Executing “%1”" ).arg( algorithm->displayName() ), flags & ( !( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::CanCancel ) ? ( ~QgsTask::CanCancel ) : ( ~QgsTask::Flags() ) ) )
   , mParameters( parameters )
   , mContext( context )
   , mFeedback( feedback )
 {
   if ( !mFeedback )
   {
-    mOwnedFeedback = std::make_unique<QgsProcessingFeedback>( );
+    mOwnedFeedback = std::make_unique<QgsProcessingFeedback>();
     mFeedback = mOwnedFeedback.get();
   }
   try

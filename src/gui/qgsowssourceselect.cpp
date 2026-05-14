@@ -49,10 +49,13 @@
 #include <QPicture>
 #include <QRadioButton>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrl>
 #include <QValidator>
 
 #include "moc_qgsowssourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
@@ -128,9 +131,10 @@ void QgsOWSSourceSelect::prepareExtent()
   if ( !canvas )
     return;
   QgsCoordinateReferenceSystem destinationCrs = canvas->mapSettings().destinationCrs();
-  mSpatialExtentBox->setCurrentExtent( destinationCrs.bounds(), destinationCrs );
+  mSpatialExtentBox->setCurrentExtent( canvas->extent(), destinationCrs );
   mSpatialExtentBox->setOutputExtentFromCurrent();
   mSpatialExtentBox->setMapCanvas( canvas );
+  mSpatialExtentBox->setChecked( false );
 }
 
 void QgsOWSSourceSelect::refresh()
@@ -296,8 +300,7 @@ void QgsOWSSourceSelect::mEditButton_clicked()
 
 void QgsOWSSourceSelect::mDeleteButton_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( mConnectionsComboBox->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( mConnectionsComboBox->currentText() );
   const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Remove Connection" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
@@ -329,12 +332,7 @@ void QgsOWSSourceSelect::mLoadButton_clicked()
 }
 
 QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
-  int id,
-  const QStringList &names,
-  QMap<int, QgsTreeWidgetItem *> &items,
-  int &layerAndStyleCount,
-  const QMap<int, int> &layerParents,
-  const QMap<int, QStringList> &layerParentNames
+  int id, const QStringList &names, QMap<int, QgsTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames
 )
 {
   QgsDebugMsgLevel( u"id = %1 layerAndStyleCount = %2 names = %3 "_s.arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ), 2 );
@@ -364,8 +362,7 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
 }
 
 void QgsOWSSourceSelect::populateLayerList()
-{
-}
+{}
 
 void QgsOWSSourceSelect::mConnectButton_clicked()
 {
@@ -388,8 +385,7 @@ void QgsOWSSourceSelect::mConnectButton_clicked()
 }
 
 void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
-{
-}
+{}
 
 void QgsOWSSourceSelect::mChangeCRSButton_clicked()
 {
@@ -433,8 +429,7 @@ void QgsOWSSourceSelect::mChangeCRSButton_clicked()
 }
 
 void QgsOWSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
-{
-}
+{}
 
 void QgsOWSSourceSelect::populateCrs()
 {
@@ -651,11 +646,18 @@ void QgsOWSSourceSelect::addDefaultServers()
   settings.endGroup();
   populateConnectionList();
 
-  QMessageBox::information( this, tr( "Add WMS Servers" ), "<p>" + tr( "Several WMS servers have "
-                                                                       "been added to the server list. Note that if "
-                                                                       "you access the Internet via a web proxy, you will "
-                                                                       "need to set the proxy settings in the QGIS options dialog." )
-                                                             + "</p>" );
+  QMessageBox::information(
+    this,
+    tr( "Add WMS Servers" ),
+    "<p>"
+      + tr(
+        "Several WMS servers have "
+        "been added to the server list. Note that if "
+        "you access the Internet via a web proxy, you will "
+        "need to set the proxy settings in the QGIS options dialog."
+      )
+      + "</p>"
+  );
 }
 
 void QgsOWSSourceSelect::mLayerUpButton_clicked()
@@ -717,5 +719,4 @@ QStringList QgsOWSSourceSelect::selectedLayersTimes()
 }
 
 void QgsOWSSourceSelect::updateButtons()
-{
-}
+{}

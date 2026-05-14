@@ -12,18 +12,18 @@ __author__ = "Nyall Dawson"
 __date__ = "26/06/2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import Qgis
 from qgis.gui import QgsAlignmentComboBox
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsAlignmentComboBox(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsAlignmentComboBox()

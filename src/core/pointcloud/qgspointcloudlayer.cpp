@@ -47,14 +47,14 @@
 #include "qgsvirtualpointcloudprovider.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgspointcloudlayer.cpp"
 
-QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
-                                        const QString &baseName,
-                                        const QString &providerLib,
-                                        const QgsPointCloudLayer::LayerOptions &options )
+using namespace Qt::StringLiterals;
+
+QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri, const QString &baseName, const QString &providerLib, const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::PointCloud, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
   , mLayerOptions( options )
@@ -74,6 +74,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
   connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
   connect( undoStack(), &QUndoStack::indexChanged, this, &QgsMapLayer::layerModified );
   connect( this, &QgsMapLayer::layerModified, this, [this] { triggerRepaint(); } );
+  connect( this, &QgsMapLayer::dataChanged, this, [this] { triggerRepaint(); } );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer()
@@ -128,6 +129,11 @@ QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &re
 QgsAbstractProfileGenerator *QgsPointCloudLayer::createProfileGenerator( const QgsProfileRequest &request )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mElevationProperties && mElevationProperties->type() == Qgis::PointCloudProfileType::TriangulatedSurface )
+  {
+    return new QgsTriangulatedPointCloudLayerProfileGenerator( this, request );
+  }
 
   return new QgsPointCloudLayerProfileGenerator( this, request );
 }
@@ -208,7 +214,7 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   }
   if ( mDataProvider )
   {
-    QDomElement provider  = doc.createElement( u"provider"_s );
+    QDomElement provider = doc.createElement( u"provider"_s );
     const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     layerNode.appendChild( provider );
@@ -238,7 +244,7 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
 
     const QDomElement legendElem = node.firstChildElement( u"legend"_s );
-    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    if ( QgsMapLayerLegend *l = legend(); l && !legendElem.isNull() )
     {
       l->readXml( legendElem, context );
     }
@@ -321,8 +327,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   return result;
 }
 
-bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -331,7 +336,7 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   QDomElement elem = node.toElement();
   writeCommonStyle( elem, doc, context, categories );
 
-  ( void )writeStyle( node, doc, errorMessage, context, categories );
+  ( void ) writeStyle( node, doc, errorMessage, context, categories );
 
   if ( categories.testFlag( Legend ) && legend() )
   {
@@ -372,7 +377,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
+    QDomElement blendModeElem = doc.createElement( u"blendMode"_s );
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
@@ -402,8 +407,7 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
   invalidateWgs84Extent();
 }
 
-void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
+void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -436,6 +440,8 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     return;
   }
 
+  mIsVpc = qobject_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() ) != nullptr;
+
   mDataProvider->setParent( this );
   QgsDebugMsgLevel( u"Instantiated the point cloud data provider plugin"_s, 2 );
 
@@ -463,18 +469,12 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     loadDefaultStyleFlag = true;
   }
 
-  if ( !mLayerOptions.skipIndexGeneration &&
-       mDataProvider &&
-       mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
-       mDataProvider->pointCount() > 0 )
+  if ( !mLayerOptions.skipIndexGeneration && mDataProvider && mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed && mDataProvider->pointCount() > 0 )
   {
     mDataProvider->generateIndex();
   }
 
-  if ( !mLayerOptions.skipStatisticsCalculation &&
-       mDataProvider &&
-       mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
-       mDataProvider->pointCount() > 0 )
+  if ( !mLayerOptions.skipStatisticsCalculation && mDataProvider && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed && mDataProvider->pointCount() > 0 )
   {
     calculateStatistics();
   }
@@ -591,10 +591,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   const qint64 pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Point count" ) + u"</td><td>"_s
-                + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
-                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Point count" ) + u"</td><td>"_s + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) ) + u"</td></tr>\n"_s;
 
   if ( const QgsPointCloudDataProvider *provider = dataProvider() )
   {
@@ -615,77 +612,49 @@ QString QgsPointCloudLayer::htmlMetadata() const
     QDate creationDate( originalMetadata.value( u"creation_year"_s ).toInt(), 1, 1 );
     creationDate = creationDate.addDays( originalMetadata.value( u"creation_doy"_s ).toInt() );
 
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Creation date" ) + u"</td><td>"_s
-                  + creationDate.toString( Qt::ISODate )
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Creation date" ) + u"</td><td>"_s + creationDate.toString( Qt::ISODate ) + u"</td></tr>\n"_s;
   }
   if ( originalMetadata.contains( u"major_version"_s ) && originalMetadata.contains( u"minor_version"_s ) )
   {
     myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Version" ) + u"</td><td>"_s
-                  + u"%1.%2"_s.arg( originalMetadata.value( u"major_version"_s ).toString(),
-                                    originalMetadata.value( u"minor_version"_s ).toString() )
+                  + tr( "Version" )
+                  + u"</td><td>"_s
+                  + u"%1.%2"_s.arg( originalMetadata.value( u"major_version"_s ).toString(), originalMetadata.value( u"minor_version"_s ).toString() )
                   + u"</td></tr>\n"_s;
   }
 
   if ( !originalMetadata.value( u"dataformat_id"_s ).toString().isEmpty() )
   {
     myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Data format" ) + u"</td><td>"_s
-                  + u"%1 (%2)"_s.arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( u"dataformat_id"_s ).toInt() ),
-                                      originalMetadata.value( u"dataformat_id"_s ).toString() ).trimmed()
+                  + tr( "Data format" )
+                  + u"</td><td>"_s
+                  + u"%1 (%2)"_s
+                      .arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( u"dataformat_id"_s ).toInt() ), originalMetadata.value( u"dataformat_id"_s ).toString() )
+                      .trimmed()
                   + u"</td></tr>\n"_s;
   }
 
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Scale X" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"scale_x"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Scale Y" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"scale_y"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Scale Z" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"scale_z"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Scale X" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"scale_x"_s ).toDouble() ) + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Scale Y" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"scale_y"_s ).toDouble() ) + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Scale Z" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"scale_z"_s ).toDouble() ) + u"</td></tr>\n"_s;
 
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Offset X" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"offset_x"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Offset Y" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"offset_y"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
-  myMetadata += u"<tr><td class=\"highlight\">"_s
-                + tr( "Offset Z" ) + u"</td><td>"_s
-                + QString::number( originalMetadata.value( u"offset_z"_s ).toDouble() )
-                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Offset X" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"offset_x"_s ).toDouble() ) + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Offset Y" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"offset_y"_s ).toDouble() ) + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Offset Z" ) + u"</td><td>"_s + QString::number( originalMetadata.value( u"offset_z"_s ).toDouble() ) + u"</td></tr>\n"_s;
 
   if ( !originalMetadata.value( u"project_id"_s ).toString().isEmpty() )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Project ID" ) + u"</td><td>"_s
-                  + originalMetadata.value( u"project_id"_s ).toString()
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Project ID" ) + u"</td><td>"_s + originalMetadata.value( u"project_id"_s ).toString() + u"</td></tr>\n"_s;
   }
 
   if ( !originalMetadata.value( u"system_id"_s ).toString().isEmpty() )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "System ID" ) + u"</td><td>"_s
-                  + originalMetadata.value( u"system_id"_s ).toString()
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "System ID" ) + u"</td><td>"_s + originalMetadata.value( u"system_id"_s ).toString() + u"</td></tr>\n"_s;
   }
 
   if ( !originalMetadata.value( u"software_id"_s ).toString().isEmpty() )
   {
-    myMetadata += u"<tr><td class=\"highlight\">"_s
-                  + tr( "Software ID" ) + u"</td><td>"_s
-                  + originalMetadata.value( u"software_id"_s ).toString()
-                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Software ID" ) + u"</td><td>"_s + originalMetadata.value( u"software_id"_s ).toString() + u"</td></tr>\n"_s;
   }
 
   // End Provider section
@@ -693,7 +662,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // identification section
   myMetadata += u"<h1>"_s + tr( "Identification" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.identificationSectionHtml( );
+  myMetadata += htmlFormatter.identificationSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // extent section
@@ -703,7 +672,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // Start the Access section
   myMetadata += u"<h1>"_s + tr( "Access" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.accessSectionHtml( );
+  myMetadata += htmlFormatter.accessSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Attributes section
@@ -732,17 +701,17 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // Start the contacts section
   myMetadata += u"<h1>"_s + tr( "Contacts" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.contactsSectionHtml( );
+  myMetadata += htmlFormatter.contactsSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Start the links section
   myMetadata += u"<h1>"_s + tr( "Links" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.linksSectionHtml( );
+  myMetadata += htmlFormatter.linksSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Start the history section
   myMetadata += u"<h1>"_s + tr( "History" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.historySectionHtml( );
+  myMetadata += htmlFormatter.historySectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   myMetadata += customPropertyHtmlMetadata();
@@ -906,15 +875,14 @@ void QgsPointCloudLayer::calculateStatistics()
   }
 
   QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );
-  connect( task, &QgsTask::taskCompleted, this, [this, task, indexStats, indexStatsAttributes]()
-  {
+  connect( task, &QgsTask::taskCompleted, this, [this, task, indexStats, indexStatsAttributes]() {
     mStatistics = task->calculationResults();
 
     // Fetch what we can directly from the index
     QMap<QString, QgsPointCloudAttributeStatistics> statsMap = mStatistics.statisticsMap();
     for ( const QString &attribute : indexStatsAttributes )
     {
-      statsMap[ attribute ] = indexStats.statisticsOf( attribute );
+      statsMap[attribute] = indexStats.statisticsOf( attribute );
     }
     mStatistics = QgsPointCloudStatistics( mStatistics.sampledPointsCount(), statsMap );
 
@@ -931,8 +899,7 @@ void QgsPointCloudLayer::calculateStatistics()
   } );
 
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
-  connect( task, &QgsTask::taskTerminated, this, [this]()
-  {
+  connect( task, &QgsTask::taskTerminated, this, [this]() {
     if ( mStatsCalculationTask )
     {
       QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
@@ -987,11 +954,13 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
         if ( subIndex.at( i ).index() )
           continue;
 
-        if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
-             ( renderExtent.width() < vpcProvider->averageSubIndexWidth() ||
-               renderExtent.height() < vpcProvider->averageSubIndexHeight() ) )
+        const double overviewSwitchingScale = mRenderer ? mRenderer->overviewSwitchingScale() : 1.0;
+        const double widthThreshold = vpcProvider->averageSubIndexWidth() * overviewSwitchingScale;
+        const double heightThreshold = vpcProvider->averageSubIndexHeight() * overviewSwitchingScale;
+
+        if ( subIndex.at( i ).extent().intersects( renderExtent ) && ( renderExtent.width() < widthThreshold || renderExtent.height() < heightThreshold ) )
         {
-          mDataProvider->loadSubIndex( i );
+          mDataProvider->loadSubIndex( i, true );
         }
       }
     }
@@ -1001,17 +970,39 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
 bool QgsPointCloudLayer::startEditing()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( mEditIndex )
+  if ( !mDataProvider || mEditable )
     return false;
 
-  mEditIndex = QgsPointCloudIndex( new QgsPointCloudEditingIndex( this ) );
-
-  if ( !mEditIndex.isValid() )
+  if ( mIsVpc )
   {
-    mEditIndex = QgsPointCloudIndex();
-    return false;
+    QgsVirtualPointCloudProvider *vpcProvider = qobject_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
+    const QVector<QgsPointCloudSubIndex> subIndexes = vpcProvider->subIndexes();
+
+    for ( int i = 0; i < subIndexes.size(); ++i )
+    {
+      const QgsPointCloudSubIndex &subIndex = subIndexes.at( i );
+      QgsPointCloudIndex index = subIndex.index();
+
+      if ( !index.isValid() )
+      {
+        continue;
+      }
+
+      QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( index ) );
+      mEditingIndexes[i] = editIndex;
+    }
+  }
+  else
+  {
+    mEditIndex = QgsPointCloudIndex( new QgsPointCloudEditingIndex( mDataProvider->index() ) );
+    if ( !mEditIndex.isValid() )
+    {
+      mEditIndex = QgsPointCloudIndex();
+      return false;
+    }
   }
 
+  mEditable = true;
   emit editingStarted();
   return true;
 }
@@ -1019,12 +1010,16 @@ bool QgsPointCloudLayer::startEditing()
 bool QgsPointCloudLayer::commitChanges( bool stopEditing )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( !mEditIndex )
-    return false;
 
-  if ( mEditIndex.isModified() )
+  if ( mIsVpc )
   {
-    if ( !mEditIndex.commitChanges( &mCommitError ) )
+    for ( QgsPointCloudIndex &index : mEditingIndexes )
+      if ( index.isModified() && !index.commitChanges( &mCommitError ) )
+        return false;
+  }
+  else
+  {
+    if ( mEditIndex.isModified() && !mEditIndex.commitChanges( &mCommitError ) )
       return false;
 
     // emitting layerModified() is not required as that's done automatically
@@ -1035,7 +1030,12 @@ bool QgsPointCloudLayer::commitChanges( bool stopEditing )
 
   if ( stopEditing )
   {
-    mEditIndex = QgsPointCloudIndex();
+    if ( mIsVpc )
+      mEditingIndexes.clear();
+    else
+      mEditIndex = QgsPointCloudIndex();
+
+    mEditable = false;
     emit editingStopped();
   }
 
@@ -1051,25 +1051,57 @@ QString QgsPointCloudLayer::commitError() const
 bool QgsPointCloudLayer::rollBack()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( !mEditIndex )
+  if ( !mEditable )
     return false;
 
-  const QList<QgsPointCloudNodeId> updatedNodes = mEditIndex.updatedNodes();
-
-  undoStack()->clear();
-
-  mEditIndex = QgsPointCloudIndex();
-  emit editingStopped();
-
-  if ( !updatedNodes.isEmpty() )
+  if ( mIsVpc )
   {
-    for ( const QgsPointCloudNodeId &n : updatedNodes )
-      emit chunkAttributeValuesChanged( n );
+    if ( mEditingIndexes.isEmpty() )
+      return false;
+
+    QVector<QPair<int, QList<QgsPointCloudNodeId>>> queuedUpdates;
+    queuedUpdates.reserve( mEditingIndexes.size() );
+    for ( auto [position, index] : mEditingIndexes.asKeyValueRange() )
+    {
+      if ( !index.isValid() )
+        continue;
+      const QList<QgsPointCloudNodeId> updatedNodes = index.updatedNodes();
+      if ( !updatedNodes.isEmpty() )
+        queuedUpdates.push_back( qMakePair( position, updatedNodes ) );
+    }
+
+    undoStack()->clear();
+    mEditable = false;
+    mEditingIndexes.clear();
+    emit editingStopped();
+
+    for ( const QPair<int, QList<QgsPointCloudNodeId>> &pair : std::as_const( queuedUpdates ) )
+    {
+      const int position = pair.first;
+      const QList<QgsPointCloudNodeId> &nodes = pair.second;
+      for ( QgsPointCloudNodeId n : nodes )
+        emit chunkAttributeValuesChanged( n, position );
+    }
+  }
+  else
+  {
+    if ( !mEditIndex )
+      return false;
+
+    const QList<QgsPointCloudNodeId> updatedNodes = mEditIndex.updatedNodes();
+
+    undoStack()->clear();
+
+    mEditIndex = QgsPointCloudIndex();
+    mEditable = false;
+    emit editingStopped();
+
+    for ( QgsPointCloudNodeId n : updatedNodes )
+      emit chunkAttributeValuesChanged( n, -1 );
 
     // emitting layerModified() is not required as that's done automatically
     // when undo stack index changes
   }
-
   return true;
 }
 
@@ -1082,85 +1114,123 @@ bool QgsPointCloudLayer::supportsEditing() const
 bool QgsPointCloudLayer::isEditable() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( mEditIndex )
-    return true;
 
-  return false;
+  return mEditable;
 }
 
 bool QgsPointCloudLayer::isModified() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( !mEditIndex )
+  if ( !mEditable )
     return false;
 
-  return mEditIndex.isModified();
+  if ( mIsVpc )
+  {
+    for ( const QgsPointCloudIndex &index : std::as_const( mEditingIndexes ) )
+    {
+      if ( index.isModified() )
+        return true;
+    }
+    return false;
+  }
+  else
+  {
+    if ( !mEditIndex )
+      return false;
+    return mEditIndex.isModified();
+  }
 }
 
-bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
+bool QgsPointCloudLayer::changeAttributeValue( QgsPointCloudNodeId n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
 {
-  return this->changeAttributeValue( { { n, points } }, attribute, value );
+  if ( mIsVpc )
+    return false;
+
+  // for regular point clouds, we send -1 for the position parameter
+  return this->changeAttributeValue( { { -1, { { n, points } } } }, attribute, value );
 }
 
-bool QgsPointCloudLayer::changeAttributeValue( const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value )
+bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayer::changeAttributeValue"_s );
 
-  if ( !mEditIndex )
+  if ( !mEditable )
     return false;
 
-  // Cannot allow x,y,z editing as points may get moved outside the node extents
-  if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) == 0 ||
-       attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) == 0 ||
-       attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
-    return false;
+  QVector<QgsPointCloudSubIndex> subs = subIndexes();
 
-  const QgsPointCloudAttributeCollection attributeCollection = mEditIndex.attributes();
-
-  int attributeOffset;
-  const QgsPointCloudAttribute *at = attributeCollection.find( attribute.name(), attributeOffset );
-
-  if ( !at ||
-       at->size() != attribute.size() ||
-       at->type() != attribute.type() )
+  for ( auto it = mappedPoints.constBegin(); it != mappedPoints.constEnd(); it++ )
   {
-    return false;
-  }
+    const int position = it.key();
+    QHash<QgsPointCloudNodeId, QVector<int>> nodesAndPoints = it.value();
+    QgsPointCloudIndex editIndex;
 
-  if ( !QgsPointCloudLayerEditUtils::isAttributeValueValid( attribute, value ) )
-  {
-    return false;
-  }
+    // NOLINTBEGIN(bugprone-branch-clone)
+    if ( mIsVpc )
+    {
+      if ( position >= subs.size() || position < 0 )
+        return false;
 
-  for ( auto it = nodesAndPoints.constBegin(); it != nodesAndPoints.constEnd(); it++ )
-  {
-    QgsPointCloudNodeId n = it.key();
-    QVector<int> points = it.value();
+      QgsPointCloudIndex index = subs.at( position ).index();
+      if ( !index || !index.isValid() )
+        return false;
 
-    if ( !n.isValid() || !mEditIndex.hasNode( n ) ) // todo: should not have to check if n.isValid
+      editIndex = index;
+    }
+    else
+    {
+      editIndex = mEditIndex;
+    }
+    // NOLINTEND(bugprone-branch-clone)
+
+    // Cannot allow x,y,z editing as points may get moved outside the node extents
+    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) == 0 || attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) == 0 || attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
       return false;
 
-    if ( points.isEmpty() )
-      continue;
+    const QgsPointCloudAttributeCollection attributeCollection = editIndex.attributes();
 
-    int pointsMin = std::numeric_limits<int>::max();
-    int pointsMax = std::numeric_limits<int>::min();
-    for ( int pt : std::as_const( points ) )
+    int attributeOffset;
+    const QgsPointCloudAttribute *at = attributeCollection.find( attribute.name(), attributeOffset );
+
+    if ( !at || at->size() != attribute.size() || at->type() != attribute.type() )
     {
-      if ( pt < pointsMin )
-        pointsMin = pt;
-      if ( pt > pointsMax )
-        pointsMax = pt;
+      return false;
     }
 
-    if ( pointsMin < 0 || pointsMax >= mEditIndex.getNode( n ).pointCount() )
+    if ( !QgsPointCloudLayerEditUtils::isAttributeValueValid( attribute, value ) )
+    {
       return false;
+    }
 
+    for ( auto it = nodesAndPoints.constBegin(); it != nodesAndPoints.constEnd(); it++ )
+    {
+      QgsPointCloudNodeId n = it.key();
+      QVector<int> points = it.value();
+
+      if ( !n.isValid() || !editIndex.hasNode( n ) ) // todo: should not have to check if n.isValid
+        return false;
+
+      if ( points.isEmpty() )
+        continue;
+
+      int pointsMin = std::numeric_limits<int>::max();
+      int pointsMax = std::numeric_limits<int>::min();
+      for ( int pt : std::as_const( points ) )
+      {
+        if ( pt < pointsMin )
+          pointsMin = pt;
+        if ( pt > pointsMax )
+          pointsMax = pt;
+      }
+
+      if ( pointsMin < 0 || pointsMax >= editIndex.getNode( n ).pointCount() )
+        return false;
+    }
   }
 
-  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( this, nodesAndPoints, attribute, value ) );
+  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( this, mappedPoints, attribute, value ) );
 
   return true;
 }
@@ -1175,4 +1245,63 @@ QgsPointCloudIndex QgsPointCloudLayer::index() const
     return mDataProvider->index();
 
   return QgsPointCloudIndex();
+}
+
+QVector<QgsPointCloudSubIndex> QgsPointCloudLayer::subIndexes() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !mDataProvider )
+    return QVector<QgsPointCloudSubIndex>();
+
+  const QVector<QgsPointCloudSubIndex> subs = mDataProvider->subIndexes();
+
+  if ( !mEditable )
+  {
+    return subs;
+  }
+
+  QVector<QgsPointCloudSubIndex> indexes;
+  indexes.reserve( subs.size() );
+
+  for ( qsizetype i = 0; i < subs.size(); i++ )
+  {
+    QgsPointCloudSubIndex sub = subs.at( i );
+    QgsPointCloudIndex index = sub.index();
+
+    if ( index.isValid() )
+    {
+      if ( !mEditingIndexes.contains( i ) )
+      {
+        QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( index ) );
+        mEditingIndexes[i] = editIndex;
+      }
+      sub.setIndex( mEditingIndexes[i] );
+    }
+    indexes.append( sub );
+  }
+
+  return indexes;
+}
+
+QgsPointCloudIndex QgsPointCloudLayer::overview() const
+{
+  if ( !mDataProvider || !mIsVpc )
+    return QgsPointCloudIndex();
+
+  const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
+
+  if ( vpcProvider->overviews().isEmpty() )
+    return QgsPointCloudIndex();
+
+  return vpcProvider->overviews().first();
+}
+
+QVector<QgsPointCloudIndex> QgsPointCloudLayer::overviews() const
+{
+  if ( !mDataProvider || !mIsVpc )
+    return {};
+
+  const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
+  return vpcProvider->overviews();
 }

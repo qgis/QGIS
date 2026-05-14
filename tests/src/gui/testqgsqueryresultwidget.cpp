@@ -24,7 +24,10 @@
 #include <QAction>
 #include <QApplication>
 #include <QDialog>
+#include <QString>
 #include <QVBoxLayout>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsQueryResultWidget : public QObject
 {
@@ -68,12 +71,10 @@ void TestQgsQueryResultWidget::cleanupTestCase()
 }
 
 void TestQgsQueryResultWidget::init()
-{
-}
+{}
 
 void TestQgsQueryResultWidget::cleanup()
-{
-}
+{}
 
 // Test do not crash when deleting the result while the model fetcher is running
 void TestQgsQueryResultWidget::testWidgetCrash()
@@ -147,9 +148,7 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
 
   // Test feedback interrupt
   w = std::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
-  QTimer::singleShot( 0, w.get(), [&] {
-    QTest::mousePress( w->mQueryWidget->mStopButton, Qt::MouseButton::LeftButton );
-  } );
+  QTimer::singleShot( 0, w.get(), [&] { QTest::mousePress( w->mQueryWidget->mStopButton, Qt::MouseButton::LeftButton ); } );
   connect( w->mQueryWidget->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [&] { exited = true; } );
   while ( !exited )
     QgsApplication::processEvents();

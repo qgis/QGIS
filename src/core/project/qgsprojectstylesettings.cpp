@@ -30,8 +30,11 @@
 #include "qgsxmlutils.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojectstylesettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectStyleSettings::QgsProjectStyleSettings( QgsProject *project )
   : QObject( project )
@@ -460,7 +463,7 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
   if ( fileInfo.suffix().compare( "xml"_L1, Qt::CaseInsensitive ) == 0 )
   {
     style->createMemoryDatabase();
-    ( void )style->importXml( path );
+    ( void ) style->importXml( path );
     style->setFileName( path );
     style->setReadOnly( true );
   }
@@ -519,7 +522,7 @@ void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
 
   makeDirty();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   if ( mColorSpace.isValid() && QgsColorUtils::toColorModel( mColorSpace.colorModel() ) != colorModel )
   {
     setColorSpace( QColorSpace() );
@@ -543,8 +546,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
     return;
   }
 
-  auto clearIccProfile = [this]()
-  {
+  auto clearIccProfile = [this]() {
     mProject->removeAttachedFile( mIccProfileFilePath );
     mIccProfileFilePath.clear();
     mColorSpace = QColorSpace();
@@ -553,7 +555,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
   if ( !mIccProfileFilePath.isEmpty() )
     clearIccProfile();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   bool ok;
   Qgis::ColorModel colorModel = QgsColorUtils::toColorModel( colorSpace.colorModel(), &ok );
   mColorSpace = ok ? colorSpace : QColorSpace();
@@ -566,7 +568,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
   if ( !mColorSpace.isValid() )
     return;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   if ( colorModel != mColorModel )
     mColorModel = colorModel;
 #endif
@@ -801,7 +803,9 @@ bool QgsProjectStyleDatabaseProxyModel::filterAcceptsRow( int sourceRow, const Q
 {
   if ( mFilters & Filter::FilterHideReadOnly )
   {
-    if ( const QgsStyle *style = qobject_cast< QgsStyle * >( sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >() ) )
+    if ( const QgsStyle *style = qobject_cast< QgsStyle * >(
+           sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >()
+         ) )
     {
       if ( style->isReadOnly() )
         return false;

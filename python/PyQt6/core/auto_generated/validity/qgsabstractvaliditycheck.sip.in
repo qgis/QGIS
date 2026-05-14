@@ -27,7 +27,6 @@ communicated to users, but not prevent them from proceeding.
 #include "qgsabstractvaliditycheck.h"
 %End
   public:
-
     enum Type /BaseType=IntEnum/
     {
       Warning,
@@ -41,7 +40,6 @@ communicated to users, but not prevent them from proceeding.
     QString detailedDescription;
 
     QString checkId;
-
 };
 
 class QgsAbstractValidityCheck
@@ -79,9 +77,8 @@ Checks must be registered in the application's
 #include "qgsabstractvaliditycheck.h"
 %End
   public:
-
     enum class Type /BaseType=IntEnum/
-      {
+    {
       LayoutCheck,
       UserCheck,
     };
@@ -145,7 +142,6 @@ stored in the subclass instance to be returned by this method.
 The ``context`` argument gives the wider in which the check is being
 run.
 %End
-
 };
 
 /************************************************************************

@@ -21,7 +21,12 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"
 
-#define CPL_SUPRESS_CPLUSPLUS  //#spellok
+#define SIP_NO_FILE
+
+class QgsSettingsEntryBool;
+
+
+#define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include <gdal.h>
 
 #include <QString>
@@ -34,18 +39,16 @@ class QgsCoordinateReferenceSystem;
 class QgsProviderSublayerDetails;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 /**
  * Releases a QgsOgrLayer
  */
 struct QgsOgrLayerReleaser
 {
-
-  /**
+    /**
    * Releases a QgsOgrLayer \a layer.
    */
-  void operator()( QgsOgrLayer *layer ) const;
+    void operator()( QgsOgrLayer *layer ) const;
 };
 
 /**
@@ -76,11 +79,11 @@ class CORE_EXPORT QgsOgrProviderUtils
 
       public:
         QString dsName;
-        bool    updateMode = false;
+        bool updateMode = false;
         QStringList options;
         DatasetIdentification() = default;
 
-        bool operator< ( const DatasetIdentification &other ) const;
+        bool operator<( const DatasetIdentification &other ) const;
     };
 
     //! GDAL dataset objects and layers in use in it
@@ -89,13 +92,12 @@ class CORE_EXPORT QgsOgrProviderUtils
       public:
         QRecursiveMutex mutex;
 
-        GDALDatasetH    hDS = nullptr;
-        QMap<QString, QgsOgrLayer *>  setLayers;
-        int            refCount = 0;
-        bool           canBeShared = true;
+        GDALDatasetH hDS = nullptr;
+        QMap<QString, QgsOgrLayer *> setLayers;
+        int refCount = 0;
+        bool canBeShared = true;
 
-        DatasetWithLayers()
-        {}
+        DatasetWithLayers() {}
     };
 
     //! Map dataset identification to a list of corresponding DatasetWithLayers*
@@ -103,19 +105,14 @@ class CORE_EXPORT QgsOgrProviderUtils
 
     static bool canUseOpenedDatasets( const QString &dsName );
 
-    static void releaseInternal( const DatasetIdentification &ident,
-                                 DatasetWithLayers *ds,
-                                 bool removeFromDatasetList );
+    static void releaseInternal( const DatasetIdentification &ident, DatasetWithLayers *ds, bool removeFromDatasetList );
 
     static DatasetWithLayers *createDatasetWithLayers(
-      const QString &dsName,
-      bool updateMode,
-      const QStringList &options,
-      const QString &layerName,
-      const DatasetIdentification &ident,
-      QgsOgrLayerUniquePtr &layer,
-      QString &errCause );
+      const QString &dsName, bool updateMode, const QStringList &options, const QString &layerName, const DatasetIdentification &ident, QgsOgrLayerUniquePtr &layer, QString &errCause
+    );
+
   public:
+    static const QgsSettingsEntryBool *settingsWalForSqlite3;
 
     static QString fileVectorFilters();
     static QString databaseDrivers();
@@ -137,24 +134,16 @@ class CORE_EXPORT QgsOgrProviderUtils
      * \param attributes a list of name/type pairs for the initial attributes
      * \return TRUE in case of success
      */
-    static bool createEmptyDataSource( const QString &uri,
-                                       const QString &format,
-                                       const QString &encoding,
-                                       Qgis::WkbType vectortype,
-                                       const QList< QPair<QString, QString> > &attributes,
-                                       const QgsCoordinateReferenceSystem &srs,
-                                       QString &errorMessage );
+    static bool createEmptyDataSource(
+      const QString &uri, const QString &format, const QString &encoding, Qgis::WkbType vectortype, const QList< QPair<QString, QString> > &attributes, const QgsCoordinateReferenceSystem &srs, QString &errorMessage
+    );
 
     static bool deleteLayer( const QString &uri, QString &errCause );
 
     //! Inject credentials into the dsName (if any)
     static QString expandAuthConfig( const QString &dsName );
 
-    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount,
-                                   bool fetchGeometry,
-                                   const QgsAttributeList &fetchAttributes,
-                                   bool firstAttrIsFid,
-                                   const QString &subsetString );
+    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid, const QString &subsetString );
 
     //! Remove comments from subset string (typically a full SELECT) and trim
     static QString cleanSubsetString( const QString &subsetString );
@@ -181,31 +170,17 @@ class CORE_EXPORT QgsOgrProviderUtils
     static QgsOgrDatasetSharedPtr getAlreadyOpenedDataset( const QString &dsName );
 
     //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it doesn't already use that layer.
-    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
-                                          const QString &layerName,
-                                          QString &errCause );
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName, const QString &layerName, QString &errCause );
 
 
     //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer.
-    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
-                                          bool updateMode,
-                                          const QStringList &options,
-                                          const QString &layerName,
-                                          QString &errCause,
-                                          bool checkModificationDateAgainstCache );
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName, bool updateMode, const QStringList &options, const QString &layerName, QString &errCause, bool checkModificationDateAgainstCache );
 
     //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it doesn't already use that layer.
-    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
-                                          int layerIndex,
-                                          QString &errCause );
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName, int layerIndex, QString &errCause );
 
     //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer.
-    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
-                                          bool updateMode,
-                                          const QStringList &options,
-                                          int layerIndex,
-                                          QString &errCause,
-                                          bool checkModificationDateAgainstCache );
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName, bool updateMode, const QStringList &options, int layerIndex, QString &errCause, bool checkModificationDateAgainstCache );
 
     //! Returns a QgsOgrLayer* with a SQL result layer
     static QgsOgrLayerUniquePtr getSqlLayer( QgsOgrLayer *baseLayer, OGRLayerH hSqlLayer, const QString &sql );
@@ -245,25 +220,19 @@ class CORE_EXPORT QgsOgrProviderUtils
     //! Resolves the geometry type for a feature, with special handling for some drivers
     static OGRwkbGeometryType resolveGeometryTypeForFeature( OGRFeatureH feature, const QString &driverName );
 
-    static QString analyzeURI( QString const &uri,
-                               bool &isSubLayer,
-                               int &layerIndex,
-                               QString &layerName,
-                               QString &subsetString,
-                               OGRwkbGeometryType &ogrGeometryTypeFilter,
-                               QStringList &openOptions,
-                               QVariantMap &credentialOptions );
+    static QString analyzeURI(
+      QString const &uri, bool &isSubLayer, int &layerIndex, QString &layerName, QString &subsetString, OGRwkbGeometryType &ogrGeometryTypeFilter, QStringList &openOptions, QVariantMap &credentialOptions
+    );
 
     //! Whether a driver can share the same dataset handle among different layers
     static bool canDriverShareSameDatasetAmongLayers( const QString &driverName );
 
     //! Whether a driver can share the same dataset handle among different layers
-    static bool canDriverShareSameDatasetAmongLayers( const QString &driverName,
-        bool updateMode,
-        const QString &dsName );
+    static bool canDriverShareSameDatasetAmongLayers( const QString &driverName, bool updateMode, const QString &dsName );
 
-    static QList<QgsProviderSublayerDetails> querySubLayerList( int i, QgsOgrLayer *layer, GDALDatasetH hDS, const QString &driverName, Qgis::SublayerQueryFlags flags,
-        const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback = nullptr );
+    static QList<QgsProviderSublayerDetails> querySubLayerList(
+      int i, QgsOgrLayer *layer, GDALDatasetH hDS, const QString &driverName, Qgis::SublayerQueryFlags flags, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback = nullptr
+    );
 
     /**
      * Utility function to create and store a new DB connection
@@ -320,9 +289,7 @@ class QgsOgrDataset
     ~QgsOgrDataset() = default;
 
   public:
-
-    static QgsOgrDatasetSharedPtr create( const QgsOgrProviderUtils::DatasetIdentification &ident,
-                                          QgsOgrProviderUtils::DatasetWithLayers *ds );
+    static QgsOgrDatasetSharedPtr create( const QgsOgrProviderUtils::DatasetIdentification &ident, QgsOgrProviderUtils::DatasetWithLayers *ds );
     QRecursiveMutex &mutex() { return mDs->mutex; }
 
     bool executeSQLNoReturn( const QString &sql );
@@ -352,7 +319,6 @@ class QgsOgrFeatureDefn
     QRecursiveMutex &mutex();
 
   public:
-
     //! Wrapper of OGR_FD_GetFieldCount
     int GetFieldCount();
 
@@ -396,22 +362,13 @@ class QgsOgrLayer
     QgsOgrLayer();
     ~QgsOgrLayer() = default;
 
-    static QgsOgrLayerUniquePtr CreateForLayer(
-      const QgsOgrProviderUtils::DatasetIdentification &ident,
-      const QString &layerName,
-      QgsOgrProviderUtils::DatasetWithLayers *ds,
-      OGRLayerH hLayer );
+    static QgsOgrLayerUniquePtr CreateForLayer( const QgsOgrProviderUtils::DatasetIdentification &ident, const QString &layerName, QgsOgrProviderUtils::DatasetWithLayers *ds, OGRLayerH hLayer );
 
-    static QgsOgrLayerUniquePtr CreateForSql(
-      const QgsOgrProviderUtils::DatasetIdentification &ident,
-      const QString &sql,
-      QgsOgrProviderUtils::DatasetWithLayers *ds,
-      OGRLayerH hLayer );
+    static QgsOgrLayerUniquePtr CreateForSql( const QgsOgrProviderUtils::DatasetIdentification &ident, const QString &sql, QgsOgrProviderUtils::DatasetWithLayers *ds, OGRLayerH hLayer );
 
     QRecursiveMutex &mutex() { return ds->mutex; }
 
   public:
-
     //! Returns GDALDriverH object for current dataset
     GDALDriverH driver();
 
@@ -478,7 +435,7 @@ class QgsOgrLayer
     //! Wrapper of OGR_L_GetLayerCount
     OGRErr SetFeature( OGRFeatureH hFeature );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
     //! Wrapper of OGR_L_UpdateFeature
     OGRErr UpdateFeature( OGRFeatureH hFeature, int nUpdatedFieldsCount, const int *panUpdatedFieldsIdx, int nUpdatedGeomFieldsCount, const int *panUpdatedGeomFieldsIdx, bool bUpdateStyleString );
 #endif

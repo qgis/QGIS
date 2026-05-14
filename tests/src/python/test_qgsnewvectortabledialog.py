@@ -14,13 +14,8 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 import shutil
 import tempfile
+import unittest
 
-from qgis.PyQt.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QDialogButtonBox,
-    QLineEdit,
-)
 from qgis.core import (
     QgsFields,
     QgsProviderRegistry,
@@ -28,9 +23,13 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsNewVectorTableDialog
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDialogButtonBox,
+    QLineEdit,
+)
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

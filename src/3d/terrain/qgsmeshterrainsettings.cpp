@@ -19,6 +19,10 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshterraingenerator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstractTerrainSettings *QgsMeshTerrainSettings::create()
 {
   return new QgsMeshTerrainSettings();
@@ -26,8 +30,7 @@ QgsAbstractTerrainSettings *QgsMeshTerrainSettings::create()
 
 QgsMeshTerrainSettings::QgsMeshTerrainSettings()
   : mSymbol( std::make_unique<QgsMesh3DSymbol>() )
-{
-}
+{}
 
 QgsMeshTerrainSettings::~QgsMeshTerrainSettings() = default;
 

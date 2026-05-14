@@ -86,11 +86,7 @@ QVariant QgsProcessingDxfLayerDetailsWidget::value() const
 // QgsProcessingDxfLayersPanelWidget
 //
 
-QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget(
-  const QVariant &value,
-  QgsProject *project,
-  QWidget *parent
-)
+QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget( const QVariant &value, QgsProject *project, QWidget *parent )
   : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), QVariantList(), parent )
   , mProject( project )
 {
@@ -152,9 +148,7 @@ void QgsProcessingDxfLayersPanelWidget::configureLayer()
     widget->setPanelTitle( tr( "Configure Layer" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingDxfLayerDetailsWidget::widgetChanged, this, [this, item, widget]() {
-      setItemValue( item, widget->value() );
-    } );
+    connect( widget, &QgsProcessingDxfLayerDetailsWidget::widgetChanged, this, [this, item, widget]() { setItemValue( item, widget->value() ); } );
     panel->openPanel( widget );
   }
   else
@@ -254,9 +248,7 @@ void QgsProcessingDxfLayersWidget::showDialog()
   {
     QgsProcessingDxfLayersPanelWidget *widget = new QgsProcessingDxfLayersPanelWidget( mValue, mProject );
     widget->setPanelTitle( tr( "Input layers" ) );
-    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() {
-      setValue( widget->selectedOptions() );
-    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() { setValue( widget->selectedOptions() ); } );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
     panel->openPanel( widget );
   }
@@ -290,8 +282,7 @@ void QgsProcessingDxfLayersWidget::updateSummaryText()
 
 QgsProcessingDxfLayersWidgetWrapper::QgsProcessingDxfLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
-{
-}
+{}
 
 QString QgsProcessingDxfLayersWidgetWrapper::parameterType() const
 {
@@ -307,9 +298,7 @@ QWidget *QgsProcessingDxfLayersWidgetWrapper::createWidget()
 {
   mPanel = new QgsProcessingDxfLayersWidget( nullptr );
   mPanel->setProject( widgetContext().project() );
-  connect( mPanel, &QgsProcessingDxfLayersWidget::changed, this, [this] {
-    emit widgetValueHasChanged( this );
-  } );
+  connect( mPanel, &QgsProcessingDxfLayersWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
   return mPanel;
 }
 

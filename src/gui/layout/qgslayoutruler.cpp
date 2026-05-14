@@ -27,8 +27,11 @@
 #include <QGraphicsLineItem>
 #include <QMenu>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutruler.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;
@@ -242,8 +245,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           const int labelSize = mRulerFontMetrics->boundingRect( label ).width();
 
           //draw label only if it fits in before start of next page
-          if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel )
-               || ( nextPageStartPixel == 0 ) )
+          if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel ) || ( nextPageStartPixel == 0 ) )
           {
             drawRotatedText( &p, QPointF( mTextBaseline, pixelCoord + mMinSpacingVerticalLabels + labelSize ), label );
           }

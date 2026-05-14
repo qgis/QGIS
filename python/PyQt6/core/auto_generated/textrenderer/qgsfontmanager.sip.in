@@ -21,7 +21,6 @@ Encapsulates details required for downloading a font.
 #include "qgsfontmanager.h"
 %End
   public:
-
     QgsFontDownloadDetails();
 %Docstring
 Constructor for an invalid QgsFontDownloadDetails.
@@ -89,7 +88,6 @@ Manages available fonts and font installation for a QGIS instance.
 #include "qgsfontmanager.h"
 %End
   public:
-
 
     explicit QgsFontManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
@@ -292,7 +290,9 @@ known.
 .. versionadded:: 3.38
 %End
 
-    bool installFontsFromData( const QByteArray &data, QString &errorMessage /Out/, QStringList &families /Out/, QString &licenseDetails /Out/, const QString &filename = QString(), const QString &extension = QString() );
+    bool installFontsFromData(
+      const QByteArray &data, QString &errorMessage /Out/, QStringList &families /Out/, QString &licenseDetails /Out/, const QString &filename = QString(), const QString &extension = QString()
+    );
 %Docstring
 Installs local user fonts from the specified raw ``data``.
 

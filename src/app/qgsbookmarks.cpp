@@ -37,10 +37,13 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QModelIndex>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 
 #include "moc_qgsbookmarks.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES = 6;
 
@@ -128,7 +131,8 @@ void QgsBookmarks::deleteClicked()
     return;
 
   // make sure the user really wants to delete these bookmarks
-  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ), tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ), QMessageBox::Yes | QMessageBox::No ) )
+  if ( QMessageBox::No
+       == QMessageBox::question( this, tr( "Delete Bookmarks" ), tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ), QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   // Remove in reverse order to keep the merged model indexes
@@ -286,7 +290,9 @@ void QgsBookmarks::exportToXml()
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+    QgisApp::instance()
+      ->messageBar()
+      ->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
   }
 
   settings.setValue( u"Windows/Bookmarks/LastUsedDirectory"_s, QFileInfo( fileName ).path() );
@@ -297,9 +303,9 @@ void QgsBookmarks::exportToXml()
 //
 
 QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *parent, int decimals )
-  : QStyledItemDelegate( parent ), mDecimals( decimals == -1 ? QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES : decimals )
-{
-}
+  : QStyledItemDelegate( parent )
+  , mDecimals( decimals == -1 ? QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES : decimals )
+{}
 
 QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {

@@ -10,9 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "11/5/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
@@ -20,23 +19,14 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsCoordinateTransformContext(QgisTestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestQgsCoordinateTransformContext.com")
-        QCoreApplication.setApplicationName("TestQgsCoordinateTransformContext")
-        QgsSettings().clear()
-
     def testSourceDestinationDatumTransformsProj6(self):
         context = QgsCoordinateTransformContext()
         self.assertEqual(context.coordinateOperations(), {})

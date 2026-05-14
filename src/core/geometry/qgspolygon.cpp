@@ -23,6 +23,10 @@
 #include "qgsmultilinestring.h"
 #include "qgswkbptr.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPolygon::QgsPolygon()
 {
   mWkbType = Qgis::WkbType::Polygon;
@@ -210,7 +214,7 @@ QString QgsPolygon::asWkt( int precision ) const
       if ( !curve->isEmpty() )
       {
         QString childWkt;
-        if ( ! qgsgeometry_cast< const QgsLineString *>( curve ) )
+        if ( !qgsgeometry_cast< const QgsLineString *>( curve ) )
         {
           std::unique_ptr<QgsLineString> line( curve->curveToLine() );
           childWkt = line->asWkt( precision );
@@ -345,8 +349,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
       double bX = ring->xAt( j );
       double bY = ring->yAt( j );
 
-      if ( ( ( aY > y ) != ( bY > y ) ) &&
-           ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
+      if ( ( ( aY > y ) != ( bY > y ) ) && ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
         inside = !inside;
 
       minimumDistance = std::min( minimumDistance, QgsGeometryUtilsBase::sqrDistToLine( x, y, aX, aY, bX, bY, minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() ) );

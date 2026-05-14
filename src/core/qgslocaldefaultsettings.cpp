@@ -23,6 +23,9 @@
 #include "qgsreadwritecontext.h"
 
 #include <QSettings>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsLocalDefaultSettings::setBearingFormat( const QgsBearingNumericFormat *format )
 {

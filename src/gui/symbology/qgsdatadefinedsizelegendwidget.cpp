@@ -30,9 +30,12 @@
 #include "qgsvectorlayer.h"
 
 #include <QInputDialog>
+#include <QString>
 #include <QStyledItemDelegate>
 
 #include "moc_qgsdatadefinedsizelegendwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -114,10 +117,10 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 
   // prepare layer and model to preview legend
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  mPreviewLayer = new QgsVectorLayer( u"Point?crs=EPSG:4326"_s, u"Preview"_s, u"memory"_s, options );
-  mPreviewTree = new QgsLayerTree;
-  mPreviewLayerNode = mPreviewTree->addLayer( mPreviewLayer ); // node owned by the tree
-  mPreviewModel = new QgsLayerTreeModel( mPreviewTree );
+  mPreviewLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=EPSG:4326"_s, u"Preview"_s, u"memory"_s, options );
+  mPreviewTree = std::make_unique<QgsLayerTree>();
+  mPreviewLayerNode = mPreviewTree->addLayer( mPreviewLayer.get() ); // node owned by the tree
+  mPreviewModel = new QgsLayerTreeModel( mPreviewTree.get() );
   if ( canvas )
     mPreviewModel->setLegendMapViewData( canvas->mapUnitsPerPixel(), canvas->mapSettings().outputDpi(), canvas->scale() );
   viewLayerTree->setModel( mPreviewModel );
@@ -136,11 +139,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 }
 
 QgsDataDefinedSizeLegendWidget::~QgsDataDefinedSizeLegendWidget()
-{
-  delete mPreviewModel;
-  delete mPreviewTree;
-  delete mPreviewLayer;
-}
+{}
 
 QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendWidget::dataDefinedSizeLegend() const
 {
@@ -198,10 +197,11 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   }
   else
   {
-    ec << QgsExpressionContextUtils::globalScope()
-       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-       << QgsExpressionContextUtils::atlasScope( nullptr )
-       << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    ec
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
   context.setExpressionContext( &ec );
 

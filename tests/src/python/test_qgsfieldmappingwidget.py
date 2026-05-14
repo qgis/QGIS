@@ -11,38 +11,35 @@ __author__ = "Alessandro Pasotti"
 __date__ = "16/03/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QItemSelectionModel,
-    QModelIndex,
-    QVariant,
-    Qt,
-    QMetaType,
-)
-from qgis.PyQt.QtGui import QColor
+import unittest
+
 from qgis.core import (
+    NULL,
     QgsField,
     QgsFieldConstraints,
     QgsFields,
     QgsProperty,
-    NULL,
     QgsVectorDataProvider,
 )
 from qgis.gui import QgsFieldMappingModel, QgsFieldMappingWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QItemSelectionModel,
+    QMetaType,
+    QModelIndex,
+    Qt,
+    QVariant,
+)
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestPyQgsFieldMappingModel(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
     def setUp(self):

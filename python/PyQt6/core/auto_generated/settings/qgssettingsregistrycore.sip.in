@@ -23,7 +23,6 @@ Used for settings introspection and collects all
 #include "qgssettingsregistrycore.h"
 %End
   public:
-
     QgsSettingsRegistryCore();
     ~QgsSettingsRegistryCore();
 

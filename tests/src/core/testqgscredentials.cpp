@@ -17,7 +17,9 @@
 
 #include <QObject>
 #include <QString>
-#include <QtConcurrent>
+#include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 class TestCredentials : public QgsCredentials
 {
@@ -39,10 +41,7 @@ class TestCredentials : public QgsCredentials
       return true;
     }
 
-    bool requestMasterPassword( QString &, bool ) override
-    {
-      return true;
-    }
+    bool requestMasterPassword( QString &, bool ) override { return true; }
 
   public:
     QString mUsername;

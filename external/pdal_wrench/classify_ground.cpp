@@ -35,7 +35,7 @@ namespace fs = std::filesystem;
 void ClassifyGround::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
-    argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
+    argOutputFormatVpc = &programArgs.add("vpc-output-format", "Output format (las/laz/copc)", outputFormatVpc, "copc");
     
     argCellSize = &programArgs.add("cell-size", "Sets the grid cell size in map units. Smaller values give finer detail but may increase noise.", cellSize, 1.0);
     argScalar = &programArgs.add("scalar", "Increases the threshold on steeper slopes. Raise this for rough terrain.", scalar, 1.25);
@@ -52,17 +52,20 @@ bool ClassifyGround::checkArgs()
         return false;
     }
 
-    if (argOutputFormat->set())
+    if (argOutputFormatVpc->set())
     {
-        if (outputFormat != "las" && outputFormat != "laz" && outputFormat != "copc")
+        if (outputFormatVpc != "las" && outputFormatVpc != "laz" && outputFormatVpc != "copc")
         {
-            std::cerr << "unknown output format: " << outputFormat << std::endl;
+            std::cerr << "unknown output format: " << outputFormatVpc << std::endl;
             return false;
         }
     }
-    else
-        outputFormat = "las";  // uncompressed by default
-
+    
+    if ( isVpcFilename(outputFile) && outputFormatVpc == "copc" )
+    {
+        isStreaming = false;
+    }
+    
     return true;
 }
 
@@ -117,7 +120,7 @@ void ClassifyGround::preparePipelines(std::vector<std::unique_ptr<PipelineManage
     filterOptions.add(pdal::Option("window", windowSize));
     
 
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
         fs::path outputParentDir = fs::path(outputFile).parent_path();
@@ -134,14 +137,7 @@ void ClassifyGround::preparePipelines(std::vector<std::unique_ptr<PipelineManage
             ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
-            // for input file /x/y/z.las that goes to /tmp/hello.vpc,
-            // individual output file will be called /tmp/hello/z.las
-            fs::path inputBasename = fileStem(f.filename);
-
-            if (!ends_with(outputFile, ".vpc"))
-                tile.outputFilename = (outputSubdir / inputBasename).string() + ".las";
-            else
-                tile.outputFilename = (outputSubdir / inputBasename).string() + "." + outputFormat;
+            tile.outputFilename = tileOutputFileName(outputFile, outputFormatVpc, outputSubdir, f.filename);
 
             tileOutputFiles.push_back(tile.outputFilename);
 

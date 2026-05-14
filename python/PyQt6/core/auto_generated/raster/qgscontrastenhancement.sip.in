@@ -25,7 +25,6 @@ specified ContrastEnhancementAlgorithm.
 #include "qgscontrastenhancement.h"
 %End
   public:
-
     enum ContrastEnhancementAlgorithm /BaseType=IntEnum/
     {
       NoEnhancement,

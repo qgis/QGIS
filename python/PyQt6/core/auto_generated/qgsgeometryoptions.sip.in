@@ -24,7 +24,6 @@ layer.
 #include "qgsgeometryoptions.h"
 %End
   public:
-
     QgsGeometryOptions();
 %Docstring
 Create a new QgsGeometryOptions object.

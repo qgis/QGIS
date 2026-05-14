@@ -27,14 +27,16 @@
 #include <QMouseEvent>
 #include <QObject>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsfeaturelistviewdelegate.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
   : QItemDelegate( parent )
   , mListModel( listModel )
-{
-}
+{}
 
 QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( QPoint pos )
 {

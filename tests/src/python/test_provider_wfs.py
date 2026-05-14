@@ -12,19 +12,20 @@ __copyright__ = "Copyright 2016, Even Rouault"
 
 import hashlib
 import http.server
-from pathlib import Path
 import os
 import re
 import shutil
 import socketserver
 import tempfile
 import threading
+from pathlib import Path
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ["QT_HASH_SEED"] = "1"
 
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+import unittest
 
+from osgeo import gdal
 from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
@@ -38,19 +39,20 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsGeometry,
     QgsMapLayerType,
+    QgsNetworkAccessManager,
+    QgsNetworkRequestParameters,
     QgsPointXY,
     QgsProviderRegistry,
     QgsRectangle,
     QgsSettings,
+    QgsTestUtils,
     QgsVectorDataProvider,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsNetworkAccessManager,
-    QgsNetworkRequestParameters,
-    QgsTestUtils,
 )
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
+    QByteArray,
     QCoreApplication,
     QDate,
     QDateTime,
@@ -58,19 +60,14 @@ from qgis.PyQt.QtCore import (
     QObject,
     Qt,
     QTime,
-    QVariant,
     QUrl,
     QUrlQuery,
-    QByteArray,
+    QVariant,
 )
-from qgis.PyQt.QtNetwork import QNetworkAccessManager
+from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
 from qgis.PyQt.QtXml import QDomDocument
-
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
-
-from osgeo import gdal
 
 # Default value is 2 second, which is too short when run under Valgrind
 gdal.SetConfigOption("OGR_GMLAS_XERCES_MAX_TIME", "20")
@@ -83,20 +80,21 @@ def sanitize(endpoint, x):
 
 
 class MessageLogger(QObject):
-
     def __init__(self, tag=None):
         QObject.__init__(self)
         self.log = []
         self.tag = tag
 
     def __enter__(self):
-        QgsApplication.messageLog().messageReceived.connect(self.logMessage)
+        QgsApplication.messageLog().messageReceivedWithFormat.connect(self.logMessage)
         return self
 
     def __exit__(self, type, value, traceback):
-        QgsApplication.messageLog().messageReceived.disconnect(self.logMessage)
+        QgsApplication.messageLog().messageReceivedWithFormat.disconnect(
+            self.logMessage
+        )
 
-    def logMessage(self, msg, tag, level):
+    def logMessage(self, msg, tag, level, format):
         if tag == self.tag or not self.tag:
             self.log.append(msg.encode("UTF-8"))
 
@@ -105,7 +103,6 @@ class MessageLogger(QObject):
 
 
 class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
-
     def treat_date_as_datetime(self):
         return True
 
@@ -117,10 +114,6 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is
@@ -1362,7 +1355,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "wb",
         ) as f:
             f.write(
-                """
+                f"""
 <WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
   <OperationsMetadata>
     <Operation name="GetFeature">
@@ -1408,11 +1401,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
       <LatLongBoundingBox minx="-71.123" miny="66.33" maxx="-65.32" maxy="78.3"/>
     </FeatureType>
   </FeatureTypeList>
-</WFS_Capabilities>""".format(
-                    transaction_endpoint=transaction_endpoint
-                ).encode(
-                    "UTF-8"
-                )
+</WFS_Capabilities>""".encode()
             )
 
         with open(
@@ -1458,7 +1447,8 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             | QgsVectorDataProvider.Capability.ChangeGeometries
             | QgsVectorDataProvider.Capability.DeleteFeatures
             | QgsVectorDataProvider.Capability.SelectAtId
-            | QgsVectorDataProvider.Capability.ReloadData,
+            | QgsVectorDataProvider.Capability.ReloadData
+            | QgsVectorDataProvider.Capability.CacheData,
         )
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
@@ -4616,7 +4606,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "wb",
         ) as f:
             f.write(
-                """
+                f"""
 <wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
   <OperationsMetadata>
     <Operation name="GetFeature">
@@ -4661,11 +4651,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
       </WGS84BoundingBox>
     </FeatureType>
   </FeatureTypeList>
-</wfs:WFS_Capabilities>""".format(
-                    endpoint=endpoint
-                ).encode(
-                    "UTF-8"
-                )
+</wfs:WFS_Capabilities>""".encode()
             )
 
         with open(
@@ -5518,7 +5504,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "wb",
         ) as f:
             f.write(
-                """
+                f"""
 <WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
   <FeatureTypeList>
     <FeatureType>
@@ -5534,24 +5520,20 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
     <Operation name="DescribeFeatureType">
       <DCP>
         <HTTP>
-          <Get type="simple" href="http://{0}?"/>
-          <Post type="simple" href="http://{0}?"/>
+          <Get type="simple" href="http://{endpoint_alternate}?"/>
+          <Post type="simple" href="http://{endpoint_alternate}?"/>
         </HTTP>
       </DCP>
     </Operation>
     <Operation name="GetFeature">
       <DCP>
         <HTTP>
-          <Get type="simple" href="http://{0}?"/>
-          <Post type="simple" href="http://{0}?"/>
+          <Get type="simple" href="http://{endpoint_alternate}?"/>
+          <Post type="simple" href="http://{endpoint_alternate}?"/>
         </HTTP>
       </DCP>
     </Operation>
-  </OperationsMetadata></WFS_Capabilities>""".format(
-                    endpoint_alternate
-                ).encode(
-                    "UTF-8"
-                )
+  </OperationsMetadata></WFS_Capabilities>""".encode()
             )
 
         with open(
@@ -7046,7 +7028,6 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
         responses = []
 
         class SequentialHandler(http.server.SimpleHTTPRequestHandler):
-
             def do_GET(self):
                 c, response = responses.pop(0)
                 self.send_response(c)
@@ -7157,7 +7138,7 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
             + "/fake_qgis_http_endpoint_WFS_case_insensitive_kvp_2.0"
         )
 
-        get_cap = """
+        get_cap = f"""
 <WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
   <FeatureTypeList>
     <FeatureType>
@@ -7173,24 +7154,20 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
     <Operation name="DescribeFeatureType">
       <DCP>
         <HTTP>
-          <Get type="simple" href="http://{0}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
-          <Post type="simple" href="http://{0}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
+          <Get type="simple" href="http://{endpoint}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
+          <Post type="simple" href="http://{endpoint}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
         </HTTP>
       </DCP>
     </Operation>
     <Operation name="GetFeature">
       <DCP>
         <HTTP>
-          <Get type="simple" href="http://{0}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
-          <Post type="simple" href="http://{0}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
+          <Get type="simple" href="http://{endpoint}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
+          <Post type="simple" href="http://{endpoint}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
         </HTTP>
       </DCP>
     </Operation>
-  </OperationsMetadata></WFS_Capabilities>""".format(
-            endpoint
-        ).encode(
-            "UTF-8"
-        )
+  </OperationsMetadata></WFS_Capabilities>""".encode()
 
         with open(
             sanitize(
@@ -7372,7 +7349,8 @@ Can't recognize service requested.
             | QgsVectorDataProvider.Capability.ChangeGeometries
             | QgsVectorDataProvider.Capability.DeleteFeatures
             | QgsVectorDataProvider.Capability.SelectAtId
-            | QgsVectorDataProvider.Capability.ReloadData,
+            | QgsVectorDataProvider.Capability.ReloadData
+            | QgsVectorDataProvider.Capability.CacheData,
         )
 
         # Transaction response failure (no modifications)
@@ -9018,6 +8996,59 @@ Can't recognize service requested.
         )
         self.assertTrue(vl.isValid())
 
+        # test with geometry held in a Spatial Sampling Feature
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_WFS_complex_features_spatial_sampling_feature"
+        )
+        shutil.copy(
+            os.path.join(
+                TEST_DATA_DIR,
+                "provider",
+                "wfs",
+                "spatial_sampling_features_complexfeatures",
+                "getcapabilities.xml",
+            ),
+            sanitize(endpoint, "?SERVICE=WFS?REQUEST=GetCapabilities&VERSION=2.0.0"),
+        )
+        shutil.copy(
+            os.path.join(
+                TEST_DATA_DIR,
+                "provider",
+                "wfs",
+                "spatial_sampling_features_complexfeatures",
+                "describefeaturetype.xml",
+            ),
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=sams:SF_SpatialSamplingFeature",
+            ),
+        )
+
+        # Test with simpleFeature featureMode
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='sams:SF_SpatialSamplingFeature' version='2.0.0' featureMode='simpleFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        assert not vl.isSpatial()
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Null)
+
+        # Test with complexFeatures featureMode
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='sams:SF_SpatialSamplingFeature' version='2.0.0' featureMode='complexFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        assert vl.isSpatial()
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Point)
+
 
 class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
     """
@@ -9479,10 +9510,6 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProviderPost.com")
-        QCoreApplication.setApplicationName("TestPyQgsWFSProviderPost")
-        QgsSettings().clear()
         start_app()
 
         cls._request_preprocessor_id = QgsNetworkAccessManager.setRequestPreprocessor(

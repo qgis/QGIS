@@ -20,7 +20,6 @@ methods.
 #include "qgsfeaturesink.h"
 %End
   public:
-
     enum SinkFlag /BaseType=IntEnum/
     {
 

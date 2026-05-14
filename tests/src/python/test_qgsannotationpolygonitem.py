@@ -12,15 +12,15 @@ __author__ = "(C) 2020 by Nyall Dawson"
 __date__ = "29/07/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsAnnotationItemEditContext,
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationRotateItem,
     QgsAnnotationItemEditOperationTranslateItem,
     QgsAnnotationItemNode,
     QgsAnnotationPolygonItem,
@@ -40,9 +40,10 @@ from qgis.core import (
     QgsRenderContext,
     QgsVertexId,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -50,7 +51,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsAnnotationPolygonItem(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "annotation_layer"
@@ -383,6 +383,35 @@ class TestQgsAnnotationPolygonItem(QgisTestCase):
         self.assertEqual(
             res.representativeGeometry().asWkt(),
             "Polygon ((112 213, 114 213, 114 215, 112 213))",
+        )
+
+    def test_rotate_operation(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(
+                QgsLineString(
+                    [
+                        QgsPoint(0, 0),
+                        QgsPoint(10, 0),
+                        QgsPoint(10, 10),
+                        QgsPoint(0, 10),
+                        QgsPoint(0, 0),
+                    ]
+                )
+            )
+        )
+        self.assertEqual(
+            item.geometry().asWkt(), "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))"
+        )
+
+        self.assertEqual(
+            item.applyEditV2(
+                QgsAnnotationItemEditOperationRotateItem("", 90),
+                QgsAnnotationItemEditContext(),
+            ),
+            Qgis.AnnotationItemEditOperationResult.Success,
+        )
+        self.assertEqual(
+            item.geometry().asWkt(), "Polygon ((0 10, 0 0, 10 0, 10 10, 0 10))"
         )
 
     def testReadWriteXml(self):

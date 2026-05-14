@@ -27,7 +27,10 @@
 #include <QColor>
 #include <QDesktopServices>
 #include <QFont>
+#include <QString>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDatabaseQueryLoggerRootNode
@@ -35,8 +38,7 @@
 
 QgsDatabaseQueryLoggerRootNode::QgsDatabaseQueryLoggerRootNode()
   : QgsDevToolsModelGroup( QString() )
-{
-}
+{}
 
 QVariant QgsDatabaseQueryLoggerRootNode::data( int ) const
 {
@@ -168,9 +170,7 @@ QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
   QList<QAction *> res;
 
   QAction *copyUrlAction = new QAction( QObject::tr( "Copy SQL" ), parent );
-  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [this] {
-    QApplication::clipboard()->setText( mSql );
-  } );
+  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [this] { QApplication::clipboard()->setText( mSql ); } );
   res << copyUrlAction;
 
   QAction *copyJsonAction = new QAction( QObject::tr( "Copy as JSON" ), parent );

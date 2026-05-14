@@ -21,8 +21,7 @@
 
 QgsMapLayerActionRegistry::QgsMapLayerActionRegistry( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction *action )
 {

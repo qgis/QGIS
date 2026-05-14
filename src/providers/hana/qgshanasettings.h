@@ -147,19 +147,13 @@ class QgsHanaSettings
      * Specifies whether tables without geometries are returned or not.
      */
     bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
-    void setAllowGeometrylessTables( bool allowGeometrylessTables )
-    {
-      mAllowGeometrylessTables = allowGeometrylessTables;
-    }
+    void setAllowGeometrylessTables( bool allowGeometrylessTables ) { mAllowGeometrylessTables = allowGeometrylessTables; }
 
     /**
      * Specifies whether estimated metadata from e.g. an index can be used or not.
      */
     bool useEstimatedMetadata() const { return mUseEstimatedMetadata; }
-    void setUseEstimatedMetadata( bool useEstimatedMetadata )
-    {
-      mUseEstimatedMetadata = useEstimatedMetadata;
-    }
+    void setUseEstimatedMetadata( bool useEstimatedMetadata ) { mUseEstimatedMetadata = useEstimatedMetadata; }
 
     /**
      * Enables or disables TLS 1.1 – TLS1.2 encryption.
@@ -196,14 +190,8 @@ class QgsHanaSettings
     /**
      * Specifies the host name used to verify server’s identity.
      */
-    const QString &sslHostNameInCertificate() const
-    {
-      return mSslHostNameInCertificate;
-    }
-    void setSslHostNameInCertificate( const QString &value )
-    {
-      mSslHostNameInCertificate = value;
-    }
+    const QString &sslHostNameInCertificate() const { return mSslHostNameInCertificate; }
+    void setSslHostNameInCertificate( const QString &value ) { mSslHostNameInCertificate = value; }
 
     /**
      * Enables proxy.
@@ -220,50 +208,26 @@ class QgsHanaSettings
     /**
      * Specifies the host name of the proxy server.
      */
-    const QString &proxyHost() const
-    {
-      return mProxyHost;
-    }
-    void setProxyHost( const QString &value )
-    {
-      mProxyHost = value;
-    }
+    const QString &proxyHost() const { return mProxyHost; }
+    void setProxyHost( const QString &value ) { mProxyHost = value; }
 
     /**
      * Specifies the port of the proxy server.
      */
-    uint proxyPort() const
-    {
-      return mProxyPort;
-    }
-    void setProxyPort( uint value )
-    {
-      mProxyPort = value;
-    }
+    uint proxyPort() const { return mProxyPort; }
+    void setProxyPort( uint value ) { mProxyPort = value; }
 
     /**
      * Specifies the user name for Basic HTTP Authentication or METHOD 02 SOCKS authentication.
      */
-    const QString &proxyUsername() const
-    {
-      return mProxyUsername;
-    }
-    void setProxyUsername( const QString &value )
-    {
-      mProxyUsername = value;
-    }
+    const QString &proxyUsername() const { return mProxyUsername; }
+    void setProxyUsername( const QString &value ) { mProxyUsername = value; }
 
     /**
      * Specifies the password for Basic HTTP Authentication or METHOD 02 SOCKS authentication.
      */
-    const QString &proxyPassword() const
-    {
-      return mProxyPassword;
-    }
-    void setProxyPassword( const QString &value )
-    {
-      mProxyPassword = value;
-    }
+    const QString &proxyPassword() const { return mProxyPassword; }
+    void setProxyPassword( const QString &value ) { mProxyPassword = value; }
 
     /**
      * Gets the server port.

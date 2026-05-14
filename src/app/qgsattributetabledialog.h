@@ -22,6 +22,7 @@
 #include <ctime>
 
 #include "qgis_app.h"
+#include "qgsattributetableconfig.h"
 
 #include <QDialog>
 #include <QItemSelectionModel>
@@ -36,12 +37,21 @@ class QgsAttributeTableFilterModel;
 class QgsRubberBand;
 struct QgsStoredExpression;
 class QgsDockableWidgetHelper;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryEnumFlag<QgsAttributeTableConfig::AddFeatureMethod> *settingsDefaultAddFeatureMethod SIP_SKIP;
+
+    //! Settings entry autosize columns by default when opening attribute table
+    static const QgsSettingsEntryBool *settingsAutosizeAttributeTable SIP_SKIP;
+
+    //! Settings entry whether attribute tables are docked by default
+    static const QgsSettingsEntryBool *settingsAttributeTableDefaultDocked SIP_SKIP;
+
     /**
      * Constructor
      * \param layer layer pointer
@@ -49,7 +59,14 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * \param parent parent object
      * \param flags window flags
      */
-    QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window, bool *initiallyDocked = nullptr, const QString &filterExpression = QString() );
+    QgsAttributeTableDialog(
+      QgsVectorLayer *layer,
+      QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll,
+      QWidget *parent = nullptr,
+      Qt::WindowFlags flags = Qt::Window,
+      bool *initiallyDocked = nullptr,
+      const QString &filterExpression = QString()
+    );
     ~QgsAttributeTableDialog() override;
 
     QgsExpressionContext createExpressionContext() const override;
@@ -184,7 +201,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     /**
      * add feature
      */
-    void mActionAddFeature_triggered();
     void mActionAddFeatureViaAttributeTable_triggered();
     void mActionAddFeatureViaAttributeForm_triggered();
 
@@ -229,6 +245,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
   private:
     QMenu *mMenuActions = nullptr;
     QToolButton *mActionFeatureActions = nullptr;
+    QToolButton *mAddFeatureButton = nullptr;
 
     QDialog *mDialog = nullptr;
 
@@ -241,6 +258,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QAction *mActionDockUndock = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
+
+    // For testability
+    void addAttribute( const QgsField &field );
+    void removeAttributes( const QList<int> &attributes );
 
     friend class TestQgsAttributeTable;
 };

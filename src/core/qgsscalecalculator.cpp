@@ -20,16 +20,23 @@
 
 #include <cmath>
 
+#include "qgsellipsoidutils.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsunittypes.h"
 
 #include <QSizeF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits )
   : mDpi( dpi )
   , mMapUnits( mapUnits )
-{}
+{
+  mEllipsoidDefinition.acronym = "PARAMETER:6378000:6357000"_L1;
+  mEllipsoidDefinition.parameters = QgsEllipsoidUtils::ellipsoidParameters( mEllipsoidDefinition.acronym );
+}
 
 void QgsScaleCalculator::setMethod( Qgis::ScaleCalculationMethod method )
 {
@@ -57,7 +64,21 @@ Qgis::DistanceUnit QgsScaleCalculator::mapUnits() const
   return mMapUnits;
 }
 
-double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth )  const
+void QgsScaleCalculator::setEllipsoid( const QString &ellipsoid )
+{
+  mEllipsoidDefinition.acronym = ellipsoid;
+  mEllipsoidDefinition.parameters = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+
+  // If the ellipsoid parameters are not valid, set them to the approximate values for the WGS84
+  if ( !mEllipsoidDefinition.parameters.valid )
+  {
+    mEllipsoidDefinition.acronym = "PARAMETER:6378000:6357000"_L1;
+    mEllipsoidDefinition.parameters = QgsEllipsoidUtils::ellipsoidParameters( mEllipsoidDefinition.acronym );
+  }
+}
+
+
+double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth ) const
 {
   if ( qgsDoubleNear( canvasWidth, 0. ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
@@ -74,7 +95,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canv
   return scale;
 }
 
-QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, double scale )  const
+QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, double scale ) const
 {
   if ( qgsDoubleNear( scale, 0.0 ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
@@ -89,8 +110,7 @@ QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, do
   const double deltaHeight = ( mapExtent.yMaximum() - mapExtent.yMinimum() ) * delta / ( mapExtent.xMaximum() - mapExtent.xMinimum() );
   const double imageHeight = ( deltaHeight * conversionFactor ) / ( static_cast< double >( scale ) ) * mDpi;
 
-  QgsDebugMsgLevel( u"imageWidth = %1 imageHeight = %2 conversionFactor = %3"_s
-                    .arg( imageWidth ).arg( imageHeight ).arg( conversionFactor ), 4 );
+  QgsDebugMsgLevel( u"imageWidth = %1 imageHeight = %2 conversionFactor = %3"_s.arg( imageWidth ).arg( imageHeight ).arg( conversionFactor ), 4 );
 
   return QSizeF( imageWidth, imageHeight );
 }
@@ -173,31 +193,24 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
   switch ( mMethod )
   {
     case Qgis::ScaleCalculationMethod::HorizontalTop:
-      return calculateGeographicDistanceAtLatitude( mapExtent.yMaximum(),
-             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      return calculateGeographicDistanceAtLatitude( mapExtent.yMaximum(), mapExtent.xMinimum(), mapExtent.xMaximum() );
 
     case Qgis::ScaleCalculationMethod::HorizontalMiddle:
-      return calculateGeographicDistanceAtLatitude( ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5,
-             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      return calculateGeographicDistanceAtLatitude( ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5, mapExtent.xMinimum(), mapExtent.xMaximum() );
 
     case Qgis::ScaleCalculationMethod::HorizontalBottom:
-      return calculateGeographicDistanceAtLatitude( mapExtent.yMinimum(),
-             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      return calculateGeographicDistanceAtLatitude( mapExtent.yMinimum(), mapExtent.xMinimum(), mapExtent.xMaximum() );
 
     case Qgis::ScaleCalculationMethod::HorizontalAverage:
     {
-      const double dTop = calculateGeographicDistanceAtLatitude( mapExtent.yMaximum(),
-                          mapExtent.xMinimum(), mapExtent.xMaximum() );
-      const double dMiddle = calculateGeographicDistanceAtLatitude( ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5,
-                             mapExtent.xMinimum(), mapExtent.xMaximum() );
-      const double dBottom = calculateGeographicDistanceAtLatitude( mapExtent.yMinimum(),
-                             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      const double dTop = calculateGeographicDistanceAtLatitude( mapExtent.yMaximum(), mapExtent.xMinimum(), mapExtent.xMaximum() );
+      const double dMiddle = calculateGeographicDistanceAtLatitude( ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5, mapExtent.xMinimum(), mapExtent.xMaximum() );
+      const double dBottom = calculateGeographicDistanceAtLatitude( mapExtent.yMinimum(), mapExtent.xMinimum(), mapExtent.xMaximum() );
       return ( dTop + dMiddle + dBottom ) / 3.0;
     }
 
     case Qgis::ScaleCalculationMethod::AtEquator:
-      return calculateGeographicDistanceAtLatitude( 0,
-             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      return calculateGeographicDistanceAtLatitude( 0, mapExtent.xMinimum(), mapExtent.xMaximum() );
   }
   // unreachable!
   return 0;
@@ -226,19 +239,16 @@ double QgsScaleCalculator::calculateGeographicDistanceAtLatitude( double lat, do
   // - Scale this distance by the number of degrees between
   //   the two longitudes
 
-
-  // - TODO: respect the actual ellipsoid parameters!!
+  const double semiMajor = mEllipsoidDefinition.parameters.semiMajor;
+  const double semiMinor = mEllipsoidDefinition.parameters.semiMinor;
 
   // For a longitude change of 180 degrees
   static const double RADS = ( 4.0 * std::atan( 1.0 ) ) / 180.0;
   const double a = std::pow( std::cos( lat * RADS ), 2 );
   const double c = 2.0 * std::atan2( std::sqrt( a ), std::sqrt( 1.0 - a ) );
-  static const double RA = 6378000; // [m]
-  // The eccentricity. This comes from sqrt(1.0 - rb*rb/(ra*ra)) with rb set
-  // to 6357000 m.
-  static const double E = 0.0810820288;
-  const double radius = RA * ( 1.0 - E * E ) /
-                        std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
+  // The eccentricity, derived from sqrt( (a*a-b*b)/(a*a))
+  const double E = std::sqrt( ( semiMajor * semiMajor - semiMinor * semiMinor ) / ( semiMajor * semiMajor ) );
+  const double radius = semiMajor * ( 1.0 - E * E ) / std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
   const double meters = ( longitude2 - longitude1 ) / 180.0 * radius * c;
 
   QgsDebugMsgLevel( "Distance across map extent (m): " + QString::number( meters ), 4 );

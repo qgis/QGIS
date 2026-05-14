@@ -19,6 +19,10 @@
 #include "qgis.h"
 #include "qgssettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 bool QgsHanaIdentifierType::isValid( uint i ) noexcept
 {
   return ( i >= InstanceNumber ) && ( i <= PortNumber );

@@ -21,9 +21,10 @@
 
 #include <QUndoCommand>
 
+#define SIP_NO_FILE
+
 class QgsProcessingModelAlgorithm;
 
-#define SIP_NO_FILE
 
 ///@cond NOT_STABLE
 
@@ -36,7 +37,26 @@ class QgsProcessingModelAlgorithm;
 class GUI_EXPORT QgsModelUndoCommand : public QUndoCommand
 {
   public:
-    QgsModelUndoCommand( QgsProcessingModelAlgorithm *model, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
+    enum class CommandOperation
+    {
+      Unknown = 0,      //!< Unknown operation
+      NameChanged = 1,  //!< Model name changed
+      GroupChanged = 2, //!< Model group changed
+    };
+
+    /**
+     * Constructor for QgsModelUndoCommand.
+     *
+     * This variant accepts a CommandOperation enum for collapsing commands.
+    */
+    QgsModelUndoCommand( QgsProcessingModelAlgorithm *model, const QString &text, CommandOperation operation = CommandOperation::Unknown, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Constructor for QgsModelUndoCommand.
+     *
+     * This variant accepts an arbitrary string value for collapsing commands.
+     */
+    QgsModelUndoCommand( QgsProcessingModelAlgorithm *model, const QString &text, const QString &idString, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Saves the "after" state of the model. Should be called after making the actual associated change within the model.
@@ -48,6 +68,16 @@ class GUI_EXPORT QgsModelUndoCommand : public QUndoCommand
     void redo() override;
     bool mergeWith( const QUndoCommand *other ) override;
 
+    /**
+     * Returns the command operation.
+     */
+    CommandOperation operation() const { return mOperation; }
+
+    /**
+     * Returns the (optional) string value ID for collapsing commands.
+     */
+    QString idString() const { return mIdString; }
+
   private:
     //! Flag to prevent the first redo() if the command is pushed to the undo stack
     bool mFirstRun = true;
@@ -55,7 +85,8 @@ class GUI_EXPORT QgsModelUndoCommand : public QUndoCommand
     QgsProcessingModelAlgorithm *mModel = nullptr;
     QVariant mBeforeState;
     QVariant mAfterState;
-    int mId = 0;
+    CommandOperation mOperation = CommandOperation::Unknown;
+    QString mIdString;
 };
 
 ///@endcond

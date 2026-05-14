@@ -18,14 +18,16 @@
 #include "qgscolorbutton.h"
 
 #include <QLayout>
+#include <QString>
 
 #include "moc_qgscolorwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 
 QVariant QgsColorWidgetWrapper::value() const

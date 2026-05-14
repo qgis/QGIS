@@ -17,8 +17,9 @@
 
 #include "ui_qgs3doptionsbase.h"
 
-#include "qgscodeeditor.h"
 #include "qgsoptionswidgetfactory.h"
+
+class QgsSettingsEntryBool;
 
 /**
  * \ingroup app

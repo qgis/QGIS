@@ -22,6 +22,9 @@ QgsNewsFeedModel.Link.__doc__ = "Optional entry URL link"
 QgsNewsFeedModel.Sticky = QgsNewsFeedModel.CustomRole.Sticky
 QgsNewsFeedModel.Sticky.is_monkey_patched = True
 QgsNewsFeedModel.Sticky.__doc__ = "Whether entry is sticky"
+QgsNewsFeedModel.Published = QgsNewsFeedModel.CustomRole.Published
+QgsNewsFeedModel.Published.is_monkey_patched = True
+QgsNewsFeedModel.Published.__doc__ = "Entry publication date"
 QgsNewsFeedModel.CustomRole.__doc__ = """Custom model roles.
 
 .. note::
@@ -37,12 +40,13 @@ QgsNewsFeedModel.CustomRole.__doc__ = """Custom model roles.
 * ``Image``: Optional entry image
 * ``Link``: Optional entry URL link
 * ``Sticky``: Whether entry is sticky
+* ``Published``: Entry publication date
 
 """
 # --
 QgsNewsFeedModel.CustomRole.baseClass = QgsNewsFeedModel
 try:
-    QgsNewsFeedModel.__overridden_methods__ = ['data', 'flags', 'index', 'parent', 'rowCount', 'columnCount']
+    QgsNewsFeedModel.__overridden_methods__ = ['data', 'flags', 'index', 'parent', 'rowCount', 'columnCount', 'roleNames']
     QgsNewsFeedModel.__group__ = ['network']
 except (NameError, AttributeError):
     pass

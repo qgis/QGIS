@@ -47,7 +47,6 @@ class QgsPointCloudDataProvider;
 class CORE_EXPORT QgsPointCloudRendererAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsPointCloudRendererAbstractMetadata, with the specified \a name.
      *
@@ -104,7 +103,12 @@ class CORE_EXPORT QgsPointCloudRendererAbstractMetadata
      * \note Not available in Python bindings
      */
     virtual QgsPointCloudRendererWidget *createRendererWidget( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer *oldRenderer ) SIP_FACTORY
-    { Q_UNUSED( layer ) Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
+    {
+      Q_UNUSED( layer )
+      Q_UNUSED( style );
+      Q_UNUSED( oldRenderer );
+      return nullptr;
+    }
 #endif
 
   protected:
@@ -127,27 +131,23 @@ typedef QgsPointCloudRendererWidget *( *QgsPointCloudRendererWidgetFunc )( QgsPo
 class CORE_EXPORT QgsPointCloudRendererMetadata : public QgsPointCloudRendererAbstractMetadata
 {
   public:
-
     /**
      * Construct metadata
      * \note not available in Python bindings
      */
-    QgsPointCloudRendererMetadata( const QString &name,
-                                   const QString &visibleName,
-                                   QgsPointCloudRendererCreateFunc pfCreate,
-                                   const QIcon &icon = QIcon(),
-                                   QgsPointCloudRendererWidgetFunc pfWidget = nullptr ) SIP_SKIP
-  : QgsPointCloudRendererAbstractMetadata( name, visibleName, icon )
-    , mCreateFunc( pfCreate )
-    , mWidgetFunc( pfWidget )
+    QgsPointCloudRendererMetadata( const QString &name, const QString &visibleName, QgsPointCloudRendererCreateFunc pfCreate, const QIcon &icon = QIcon(), QgsPointCloudRendererWidgetFunc pfWidget = nullptr )
+      SIP_SKIP : QgsPointCloudRendererAbstractMetadata( name, visibleName, icon ),
+                 mCreateFunc( pfCreate ),
+                 mWidgetFunc( pfWidget )
     {}
 
-    QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY
-    { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
+    QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
 
 #ifndef SIP_RUN
     QgsPointCloudRendererWidget *createRendererWidget( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer *renderer ) override SIP_FACTORY
-    { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
+    {
+      return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr;
+    }
 #endif
 
     //! \note not available in Python bindings
@@ -168,7 +168,6 @@ class CORE_EXPORT QgsPointCloudRendererMetadata : public QgsPointCloudRendererAb
 #ifdef SIP_RUN
     QgsPointCloudRendererMetadata();
 #endif
-
 };
 
 
@@ -185,7 +184,6 @@ class CORE_EXPORT QgsPointCloudRendererMetadata : public QgsPointCloudRendererAb
 class CORE_EXPORT QgsPointCloudRendererRegistry
 {
   public:
-
     QgsPointCloudRendererRegistry();
     ~QgsPointCloudRendererRegistry();
 
@@ -231,6 +229,7 @@ class CORE_EXPORT QgsPointCloudRendererRegistry
      * default colors and translated names for the 19 classes (0-18) of point data record formats 6-10
      */
     static QgsPointCloudCategoryList classificationAttributeCategories( const QgsPointCloudLayer *layer );
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRendererRegistry( const QgsPointCloudRendererRegistry &rh );

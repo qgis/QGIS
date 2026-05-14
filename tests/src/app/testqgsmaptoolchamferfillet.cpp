@@ -23,6 +23,10 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
@@ -72,11 +76,6 @@ void TestQgsMapToolChamferFillet::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
@@ -259,9 +258,11 @@ void TestQgsMapToolChamferFillet::testFillet()
   utils.mouseMove( 0.25, 0.5 );
   utils.mouseClick( 0.25, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt2 = QString( "Polygon ((0 0, 0 1, 0.05 1, 0.14 1, 0.24 0.98, 0.33 0.96, 0.41 0.93, 0.5 0.89, "
-                                "0.58 0.84, 0.65 0.78, 0.72 0.72, 0.78 0.65, 0.84 0.58, 0.89 0.5, 0.93 0.41, "
-                                "0.96 0.33, 0.98 0.24, 1 0.14, 1 0.05, 1 0, 0 0))" );
+  const QString wkt2 = QString(
+    "Polygon ((0 0, 0 1, 0.05 1, 0.14 1, 0.24 0.98, 0.33 0.96, 0.41 0.93, 0.5 0.89, "
+    "0.58 0.84, 0.65 0.78, 0.72 0.72, 0.78 0.65, 0.84 0.58, 0.89 0.5, 0.93 0.41, "
+    "0.96 0.33, 0.98 0.24, 1 0.14, 1 0.05, 1 0, 0 0))"
+  );
   QVERIFY( compareGeom( mLayerBase->getFeature( 1 ).geometry(), wkt2, 0.05 ) );
 
   mLayerBase->undoStack()->undo();

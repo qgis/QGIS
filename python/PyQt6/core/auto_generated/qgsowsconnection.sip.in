@@ -16,6 +16,7 @@
 
 
 
+
 class QgsOwsConnection : QObject
 {
 %Docstring(signature="appended")
@@ -26,7 +27,6 @@ Connections management for OWS connections.
 #include "qgsowsconnection.h"
 %End
   public:
-
 
     QgsOwsConnection( const QString &service, const QString &connName );
 %Docstring

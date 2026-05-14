@@ -34,7 +34,12 @@ class QgsAppMissingGridHandler : public QObject
 
     void missingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid );
 
-    void missingPreferredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation );
+    void missingPreferredGrid(
+      const QgsCoordinateReferenceSystem &sourceCrs,
+      const QgsCoordinateReferenceSystem &destinationCrs,
+      const QgsDatumTransform::TransformDetails &preferredOperation,
+      const QgsDatumTransform::TransformDetails &availableOperation
+    );
 
     void coordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error );
 
@@ -48,7 +53,12 @@ class QgsAppMissingGridHandler : public QObject
 
     void onMissingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid );
 
-    void onMissingPreferredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation );
+    void onMissingPreferredGrid(
+      const QgsCoordinateReferenceSystem &sourceCrs,
+      const QgsCoordinateReferenceSystem &destinationCrs,
+      const QgsDatumTransform::TransformDetails &preferredOperation,
+      const QgsDatumTransform::TransformDetails &availableOperation
+    );
 
     void onCoordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error );
 

@@ -27,18 +27,17 @@
  * \ingroup core
  * \brief A renderer that automatically displaces points with the same geographic location.
 */
-class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
+class CORE_EXPORT QgsPointDisplacementRenderer : public QgsPointDistanceRenderer
 {
   public:
-
     /**
      * Placement methods for dispersing points
      */
     enum Placement
     {
-      Ring, //!< Place points in a single ring around group
+      Ring,            //!< Place points in a single ring around group
       ConcentricRings, //!< Place points in concentric rings around group
-      Grid //!< Place points in a grid around group
+      Grid             //!< Place points in a grid around group
     };
 
     /**
@@ -172,12 +171,21 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) const override SIP_FORCE;
 
     //helper functions
-    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius,
-                                           double &gridRadius, int &gridSize, QVector<double> &diagonals ) const;
+    void calculateSymbolAndLabelPositions(
+      QgsSymbolRenderContext &symbolContext,
+      QPointF centerPoint,
+      int nPosition,
+      double symbolDiagonal,
+      QList<QPointF> &symbolPositions,
+      QList<QPointF> &labelShifts,
+      double &circleRadius,
+      double &gridRadius,
+      int &gridSize,
+      QVector<double> &diagonals
+    ) const;
     void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext &context, QPointF centerPoint, int nSymbols ) const;
     void drawSymbols( const ClusteredGroup &group, QgsRenderContext &context, const QList<QPointF> &symbolPositions ) const;
-    void drawGrid( int gridSizeUnits, QgsSymbolRenderContext &context,
-                   QList<QPointF> pointSymbolPositions, int nSymbols ) const;
+    void drawGrid( int gridSizeUnits, QgsSymbolRenderContext &context, QList<QPointF> pointSymbolPositions, int nSymbols ) const;
     void centralizeGrid( QList<QPointF> &pointSymbolPositions, double radius, int size ) const;
 };
 

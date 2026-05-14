@@ -39,15 +39,15 @@ QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
   const QgsMeshDataBlock &activeFaceFlagValues,
   QgsMeshDatasetGroupMetadata::DataType dataType,
   const QgsRenderContext &context,
-  const QSize &size )
-  : mTriangularMesh( m ),
-    mDatasetValues( datasetValues ),
-    mActiveFaceFlagValues( activeFaceFlagValues ),
-    mContext( context ),
-    mDataType( dataType ),
-    mOutputSize( size )
-{
-}
+  const QSize &size
+)
+  : mTriangularMesh( m )
+  , mDatasetValues( datasetValues )
+  , mActiveFaceFlagValues( activeFaceFlagValues )
+  , mContext( context )
+  , mDataType( dataType )
+  , mOutputSize( size )
+{}
 
 QgsMeshLayerInterpolator::~QgsMeshLayerInterpolator() = default;
 
@@ -72,7 +72,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
   auto outputBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float64, width, height );
   const double noDataValue = std::numeric_limits<double>::quiet_NaN();
   outputBlock->setNoDataValue( noDataValue );
-  outputBlock->setIsNoData();  // assume initially that all values are unset
+  outputBlock->setIsNoData(); // assume initially that all values are unset
   double *data = reinterpret_cast<double *>( outputBlock->bits() );
 
   QList<int> spatialIndexTriangles;
@@ -156,23 +156,10 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
         double val;
         const QgsPointXY p = mContext.mapToPixel().toMapCoordinates( k / pixelRatio, j / pixelRatio );
         if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
-          val = QgsMeshLayerUtils::interpolateFromVerticesData(
-                  p1,
-                  p2,
-                  p3,
-                  value1,
-                  value2,
-                  value3,
-                  p );
+          val = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, value1, value2, value3, p );
         else
         {
-          val = QgsMeshLayerUtils::interpolateFromFacesData(
-                  p1,
-                  p2,
-                  p3,
-                  value,
-                  p
-                );
+          val = QgsMeshLayerUtils::interpolateFromFacesData( p1, p2, p3, value, p );
         }
         if ( !std::isnan( val ) )
         {

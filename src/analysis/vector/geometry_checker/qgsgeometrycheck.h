@@ -109,15 +109,9 @@ class ANALYSIS_EXPORT QgsGeometryCheck
         QMap<QString, QgsFeatureIds> ids SIP_SKIP;
 
 #ifndef SIP_RUN
-        QMap<QString, QgsFeatureIds> toMap() const
-        {
-          return ids;
-        }
+        QMap<QString, QgsFeatureIds> toMap() const { return ids; }
 
-        bool isEmpty() const
-        {
-          return ids.isEmpty();
-        }
+        bool isEmpty() const { return ids.isEmpty(); }
 #endif
     };
 
@@ -212,15 +206,9 @@ class ANALYSIS_EXPORT QgsGeometryCheck
         QgsVertexId vidx;
 
         // TODO c++20 - replace with = default
-        bool operator==( const QgsGeometryCheck::Change &other ) const
-        {
-          return what == other.what && type == other.type && vidx == other.vidx;
-        }
+        bool operator==( const QgsGeometryCheck::Change &other ) const { return what == other.what && type == other.type && vidx == other.vidx; }
 
-        bool operator!=( const QgsGeometryCheck::Change &other ) const
-        {
-          return !( *this == other );
-        }
+        bool operator!=( const QgsGeometryCheck::Change &other ) const { return !( *this == other ); }
     };
 
     /**
@@ -248,8 +236,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * Returns the configuration value with the \a name, saved in the QGIS settings for
      * this geometry check. If no configuration could be found, \a defaultValue is returned.
      */
-    template<class T>
-    T configurationValue( const QString &name, const QVariant &defaultValue = QVariant() )
+    template<class T> T configurationValue( const QString &name, const QVariant &defaultValue = QVariant() )
     {
       return mConfiguration.value( name, QgsSettings().value( "/geometry_checker/" + id() + "/" + name, defaultValue ) ).value<T>();
     }
@@ -284,7 +271,13 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      *
      * \since QGIS 3.4
      */
-    virtual Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const;
+    virtual Result collectErrors(
+      const QMap<QString, QgsFeaturePool *> &featurePools,
+      QList<QgsGeometryCheckError *> &errors SIP_INOUT,
+      QStringList &messages SIP_INOUT,
+      QgsFeedback *feedback,
+      const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds()
+    ) const;
 
     /**
      * Fixes the error \a error with the specified \a method.
@@ -294,7 +287,8 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * \see availableResolutionMethods()
      * \since QGIS 3.4
      */
-    virtual void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const SIP_SKIP;
+    virtual void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const
+      SIP_SKIP;
 
     /**
      * Returns a list of available resolution methods.
@@ -355,7 +349,8 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * \note Not available in Python bindings
      * \since QGIS 3.4
      */
-    void replaceFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
+    void replaceFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const
+      SIP_SKIP;
 
     /**
      * Deletes a part of a feature geometry.

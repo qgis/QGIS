@@ -18,13 +18,16 @@
 #include "qgsapplication.h"
 #include "qgsfieldconstraints.h"
 
+#include <QString>
+
 #include "moc_qgsattributesformtreeviewindicatorprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributesFormTreeViewIndicatorProvider::QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view )
   : QObject( view )
   , mAttributesFormTreeView( view )
-{
-}
+{}
 
 void QgsAttributesFormTreeViewIndicatorProvider::onAddedChildren( QgsAttributesFormItem *item, int indexFrom, int indexTo )
 {
@@ -146,8 +149,7 @@ void QgsAttributesFormTreeViewIndicatorProvider::setEnabled( bool enabled )
 
 QgsFieldConstraintIndicatorProvider::QgsFieldConstraintIndicatorProvider( QgsAttributesFormBaseView *view )
   : QgsAttributesFormTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 bool QgsFieldConstraintIndicatorProvider::acceptsItem( QgsAttributesFormItem *item )
 {
@@ -214,7 +216,11 @@ QString QgsFieldConstraintIndicatorProvider::tooltipText( QgsAttributesFormItem 
   const QgsFieldConstraints constraints = config.mFieldConstraints;
 
   auto addOriginAndStrengthText = [=]( QString name, QgsFieldConstraints::Constraint constraint ) {
-    return u"%1 (%2, %3)"_s.arg( name, constraints.constraintOrigin( constraint ) == QgsFieldConstraints::ConstraintOriginProvider ? tr( "provider" ) : tr( "layer" ), constraints.constraintStrength( constraint ) == QgsFieldConstraints::ConstraintStrengthHard ? tr( "enforced" ) : tr( "unenforced" ) );
+    return u"%1 (%2, %3)"_s.arg(
+      name,
+      constraints.constraintOrigin( constraint ) == QgsFieldConstraints::ConstraintOriginProvider ? tr( "provider" ) : tr( "layer" ),
+      constraints.constraintStrength( constraint ) == QgsFieldConstraints::ConstraintStrengthHard ? tr( "enforced" ) : tr( "unenforced" )
+    );
   };
 
   QString tooltipText;
@@ -240,8 +246,7 @@ QString QgsFieldConstraintIndicatorProvider::tooltipText( QgsAttributesFormItem 
 
 QgsFieldDefaultValueIndicatorProvider::QgsFieldDefaultValueIndicatorProvider( QgsAttributesFormBaseView *view )
   : QgsAttributesFormTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 bool QgsFieldDefaultValueIndicatorProvider::acceptsItem( QgsAttributesFormItem *item )
 {

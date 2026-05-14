@@ -105,8 +105,7 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
     return;
   }
 
-  auto collectReferenceCoord = [distribution]( QgsLayoutItem * item )->double
-  {
+  auto collectReferenceCoord = [distribution]( QgsLayoutItem *item ) -> double {
     const QRectF itemBBox = item->sceneBoundingRect();
     switch ( distribution )
     {
@@ -145,8 +144,7 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
 
   const double step = ( maxCoord - minCoord ) / ( items.size() - 1 );
 
-  auto distributeItemToCoord = [layout, distribution]( QgsLayoutItem * item, double refCoord )
-  {
+  auto distributeItemToCoord = [layout, distribution]( QgsLayoutItem *item, double refCoord ) {
     QPointF shifted = item->pos();
     switch ( distribution )
     {
@@ -198,8 +196,7 @@ void QgsLayoutAligner::resizeItems( QgsLayout *layout, const QList<QgsLayoutItem
   if ( !( items.size() >= 2 || ( items.size() == 1 && resize == ResizeToSquare ) ) )
     return;
 
-  auto collectSize = [resize]( QgsLayoutItem * item )->double
-  {
+  auto collectSize = [resize]( QgsLayoutItem *item ) -> double {
     const QRectF itemBBox = item->sceneBoundingRect();
     switch ( resize )
     {
@@ -234,8 +231,7 @@ void QgsLayoutAligner::resizeItems( QgsLayout *layout, const QList<QgsLayoutItem
     }
   }
 
-  auto resizeItemToSize = [layout, resize]( QgsLayoutItem * item, double size )
-  {
+  auto resizeItemToSize = [layout, resize]( QgsLayoutItem *item, double size ) {
     QSizeF newSize = item->rect().size();
     switch ( resize )
     {
@@ -384,10 +380,8 @@ void QgsLayoutAligner::distributeEquispacedItems( QgsLayout *layout, const QList
   {
     const QRectF itemBBox = item->sceneBoundingRect();
 
-    const double item_min = ( distribution == DistributeHSpace ? itemBBox.left() :
-                              itemBBox.top() );
-    const double item_max = ( distribution == DistributeHSpace ? itemBBox.right() :
-                              itemBBox.bottom() );
+    const double item_min = ( distribution == DistributeHSpace ? itemBBox.left() : itemBBox.top() );
+    const double item_max = ( distribution == DistributeHSpace ? itemBBox.right() : itemBBox.bottom() );
 
     minCoord = std::min( minCoord, item_min );
     maxCoord = std::max( maxCoord, item_max );
@@ -419,8 +413,7 @@ void QgsLayoutAligner::distributeEquispacedItems( QgsLayout *layout, const QList
 
     layout->undoStack()->endCommand();
 
-    currentVal += ( distribution == DistributeHSpace ? item->rect().width() :
-                    item->rect().height() ) + step;
+    currentVal += ( distribution == DistributeHSpace ? item->rect().width() : item->rect().height() ) + step;
   }
   layout->undoStack()->endMacro();
   return;

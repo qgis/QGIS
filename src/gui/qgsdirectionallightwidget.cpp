@@ -52,8 +52,7 @@ QgsDirectionalLightWidget::QgsDirectionalLightWidget( QWidget *parent )
 }
 
 QgsDirectionalLightWidget::~QgsDirectionalLightWidget()
-{
-}
+{}
 
 void QgsDirectionalLightWidget::setAzimuth( double azimuth )
 {

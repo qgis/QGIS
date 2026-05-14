@@ -31,25 +31,13 @@ QLineF segment( int index, QRectF rect, double radius )
   switch ( index )
   {
     case 0:
-      return QLineF( rect.left() + radius,
-                     rect.top(),
-                     rect.right() - radius,
-                     rect.top() );
+      return QLineF( rect.left() + radius, rect.top(), rect.right() - radius, rect.top() );
     case 1:
-      return QLineF( rect.right(),
-                     rect.top() + yMultiplier * radius,
-                     rect.right(),
-                     rect.bottom() - yMultiplier * radius );
+      return QLineF( rect.right(), rect.top() + yMultiplier * radius, rect.right(), rect.bottom() - yMultiplier * radius );
     case 2:
-      return QLineF( rect.right() - radius,
-                     rect.bottom(),
-                     rect.left() + radius,
-                     rect.bottom() );
+      return QLineF( rect.right() - radius, rect.bottom(), rect.left() + radius, rect.bottom() );
     case 3:
-      return QLineF( rect.left(),
-                     rect.bottom() - yMultiplier * radius,
-                     rect.left(),
-                     rect.top() + yMultiplier * radius );
+      return QLineF( rect.left(), rect.bottom() - yMultiplier * radius, rect.left(), rect.top() + yMultiplier * radius );
     default:
       return QLineF();
   }
@@ -160,17 +148,9 @@ QPainterPath QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const Q
     else
     {
       if ( invertedY )
-        path.arcTo( std::min( p1.x(), currentSegment.p1().x() ),
-                    std::min( p1.y(), currentSegment.p1().y() ),
-                    cornerRadius, cornerRadius,
-                    i == 1 ? -90 : ( i == 2 ? 0 : 90 ),
-                    90 );
+        path.arcTo( std::min( p1.x(), currentSegment.p1().x() ), std::min( p1.y(), currentSegment.p1().y() ), cornerRadius, cornerRadius, i == 1 ? -90 : ( i == 2 ? 0 : 90 ), 90 );
       else
-        path.arcTo( std::min( p1.x(), currentSegment.p1().x() ),
-                    std::min( p1.y(), currentSegment.p1().y() ),
-                    cornerRadius, cornerRadius,
-                    i == 1 ? 90 : ( i == 2 ? 0 : -90 ),
-                    -90 );
+        path.arcTo( std::min( p1.x(), currentSegment.p1().x() ), std::min( p1.y(), currentSegment.p1().y() ), cornerRadius, cornerRadius, i == 1 ? 90 : ( i == 2 ? 0 : -90 ), -90 );
     }
 
     if ( i == balloonSegment )
@@ -185,15 +165,9 @@ QPainterPath QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const Q
   }
 
   if ( invertedY )
-    path.arcTo( std::min( p1.x(), p0.x() ),
-                std::min( p1.y(), p0.y() ),
-                cornerRadius, cornerRadius,
-                180, 90 );
+    path.arcTo( std::min( p1.x(), p0.x() ), std::min( p1.y(), p0.y() ), cornerRadius, cornerRadius, 180, 90 );
   else
-    path.arcTo( std::min( p1.x(), p0.x() ),
-                std::min( p1.y(), p0.y() ),
-                cornerRadius, cornerRadius,
-                -180, -90 );
+    path.arcTo( std::min( p1.x(), p0.x() ), std::min( p1.y(), p0.y() ), cornerRadius, cornerRadius, -180, -90 );
 
   return path;
 }

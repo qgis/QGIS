@@ -29,16 +29,21 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeature3dhandler_p.h"
+namespace Qt3DCore
+{
+  class QEntity;
+}
 
-class QgsPoint3DSymbol;
-class QgsAbstract3DSymbol;
+class QgsFeature3DHandler;
 class Qgs3DRenderContext;
+class QgsAbstract3DSymbol;
+class QgsPoint3DSymbol;
+class QgsVectorLayer;
 
 namespace Qgs3DSymbolImpl
 {
   //! factory method for QgsLine3DSymbol
-  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
+  QgsFeature3DHandler *handlerForPoint3DSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
 
   //! convenience function to create a complete entity from QgsPolygon3DSymbol (will run getFeatures() on the layer)
   Qt3DCore::QEntity *entityForPoint3DSymbol( const Qgs3DRenderContext &context, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol );

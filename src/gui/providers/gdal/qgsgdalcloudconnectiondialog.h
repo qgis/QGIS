@@ -17,9 +17,10 @@
 #define QGSGDALCLOUDCONNECTIONDIALOG_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsGdalCredentialOptionsWidget;
 

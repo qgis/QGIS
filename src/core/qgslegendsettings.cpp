@@ -217,8 +217,7 @@ void QgsLegendSettings::drawText( QPainter *p, const QRectF &rect, const QString
 {
   const QFont textFont = scaledFontPixelSize( font );
 
-  const QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
-                           rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
+  const QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE, rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
 
   const QgsScopedQPainterState painterState( p );
   p->setFont( textFont );

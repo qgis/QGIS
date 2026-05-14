@@ -18,6 +18,9 @@
 #include "qgsreadwritecontext.h"
 
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 bool Qgs3DAxisSettings::operator==( Qgs3DAxisSettings const &rhs ) const
 {

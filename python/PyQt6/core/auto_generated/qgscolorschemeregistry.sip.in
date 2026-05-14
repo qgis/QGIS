@@ -24,7 +24,6 @@ be created directly, or accessed via a
 #include "qgscolorschemeregistry.h"
 %End
   public:
-
     QgsColorSchemeRegistry();
 %Docstring
 Constructor for an empty color scheme registry
@@ -183,7 +182,6 @@ This method is thread safe.
 %End
 
 };
-
 
 
 /************************************************************************

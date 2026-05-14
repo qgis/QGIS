@@ -22,15 +22,16 @@ __copyright__ = "(C) 2016, Médéric Ribreux"
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterString,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterFolderDestination,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import isWindows

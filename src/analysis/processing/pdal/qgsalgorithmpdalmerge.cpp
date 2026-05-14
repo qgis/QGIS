@@ -20,6 +20,10 @@
 #include "qgspointcloudlayer.h"
 #include "qgsrunprocess.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPdalMergeAlgorithm::name() const
@@ -81,10 +85,12 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
 
   const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
 
-  if ( outputFile.endsWith( u".vpc"_s, Qt::CaseInsensitive ) )
+  if ( isVpcFileName( outputFile ) )
     throw QgsProcessingException(
-      QObject::tr( "This algorithm does not support output to VPC. Please use LAS or LAZ as the output format. "
-                   "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." )
+      QObject::tr(
+        "This algorithm does not support output to VPC. Please use LAS or LAZ as the output format. "
+        "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm."
+      )
     );
 
   setOutputValue( u"OUTPUT"_s, outputFile );
@@ -92,8 +98,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   QStringList args;
   args.reserve( layers.count() + 3 );
 
-  args << u"merge"_s
-       << u"--output=%1"_s.arg( outputFile );
+  args << u"merge"_s << u"--output=%1"_s.arg( outputFile );
 
   applyCommonParameters( args, layers.at( 0 )->crs(), parameters, context );
   applyThreadsParameter( args, context );

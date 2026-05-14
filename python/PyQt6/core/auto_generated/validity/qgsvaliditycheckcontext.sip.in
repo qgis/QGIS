@@ -47,7 +47,6 @@ Returns the context type.
 %End
 
     virtual ~QgsValidityCheckContext();
-
 };
 
 class QgsLayoutValidityCheckContext : QgsValidityCheckContext
@@ -66,7 +65,6 @@ of the :py:class:`QgsAbstractValidityCheck`.TypeLayoutCheck type.
 #include "qgsvaliditycheckcontext.h"
 %End
   public:
-
     QgsLayoutValidityCheckContext( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutValidityCheckContext for the specified
@@ -76,7 +74,6 @@ Constructor for QgsLayoutValidityCheckContext for the specified
     virtual int type() const;
 
     QgsLayout *layout;
-
 };
 /************************************************************************
  * This file has been generated automatically from                      *

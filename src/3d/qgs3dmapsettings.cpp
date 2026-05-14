@@ -19,9 +19,11 @@
 #include "qgs3drendercontext.h"
 #include "qgs3dterrainregistry.h"
 #include "qgs3dutils.h"
+#include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgscolorutils.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsflatterrainsettings.h"
 #include "qgslightsource.h"
 #include "qgsmaplayerlistutils_p.h"
@@ -34,15 +36,16 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgs3dmapsettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapSettings::Qgs3DMapSettings()
   : QObject( nullptr )
 {
-  connect( this, &Qgs3DMapSettings::settingsChanged, [&]() {
-    QgsProject::instance()->setDirty();
-  } );
+  connect( this, &Qgs3DMapSettings::settingsChanged, [&]() { QgsProject::instance()->setDirty(); } );
   connectChangedSignalsToSettingsChanged();
   mTerrainSettings = std::make_unique<QgsFlatTerrainSettings>();
 }
@@ -75,29 +78,27 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMapThemes( other.mMapThemes )
   , mDpi( other.mDpi )
   , mIsFpsCounterEnabled( other.mIsFpsCounterEnabled )
-  , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
-  , mSkyboxSettings( other.mSkyboxSettings )
   , mShadowSettings( other.mShadowSettings )
   , mAmbientOcclusionSettings( other.mAmbientOcclusionSettings )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
+  , mMsaaEnabled( other.mMsaaEnabled )
+  , mTextureFilterQuality( other.mTextureFilterQuality )
   , mViewSyncMode( other.mViewSyncMode )
   , mVisualizeViewFrustum( other.mVisualizeViewFrustum )
-  , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
-  , mDebugShadowMapCorner( other.mDebugShadowMapCorner )
-  , mDebugShadowMapSize( other.mDebugShadowMapSize )
-  , mDebugDepthMapEnabled( other.mDebugDepthMapEnabled )
-  , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
-  , mDebugDepthMapSize( other.mDebugDepthMapSize )
   , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
   , mRendererUsage( other.mRendererUsage )
   , m3dAxisSettings( other.m3dAxisSettings )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
   , mExtent( other.mExtent )
   , mShowExtentIn2DView( other.mShowExtentIn2DView )
+  , mShow2DMapOverlay( other.mShow2DMapOverlay )
 {
   setTerrainSettings( other.mTerrainSettings ? other.mTerrainSettings->clone() : new QgsFlatTerrainSettings() );
+
+  if ( other.mBackgroundSettings )
+    mBackgroundSettings.reset( other.mBackgroundSettings->clone() );
 
   for ( QgsLightSource *source : std::as_const( other.mLightSources ) )
   {
@@ -105,9 +106,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
       mLightSources << source->clone();
   }
 
-  connect( this, &Qgs3DMapSettings::settingsChanged, [&]() {
-    QgsProject::instance()->setDirty();
-  } );
+  connect( this, &Qgs3DMapSettings::settingsChanged, [&]() { QgsProject::instance()->setDirty(); } );
   connectChangedSignalsToSettingsChanged();
 }
 
@@ -122,21 +121,25 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QgsProjectDirtyBlocker blocker( QgsProject::instance() );
   QDomElement elemOrigin = elem.firstChildElement( u"origin"_s );
+  // clang-format off
   mOrigin = QgsVector3D(
     elemOrigin.attribute( u"x"_s ).toDouble(),
     elemOrigin.attribute( u"y"_s ).toDouble(),
     elemOrigin.attribute( u"z"_s ).toDouble()
   );
+  // clang-format on
 
   QDomElement elemExtent = elem.firstChildElement( u"extent"_s );
   if ( !elemExtent.isNull() )
   {
+    // clang-format off
     mExtent = QgsRectangle(
       elemExtent.attribute( u"xMin"_s ).toDouble(),
       elemExtent.attribute( u"yMin"_s ).toDouble(),
       elemExtent.attribute( u"xMax"_s ).toDouble(),
       elemExtent.attribute( u"yMax"_s ).toDouble()
     );
+    // clang-format on
 
     mShowExtentIn2DView = elemExtent.attribute( u"showIn2dView"_s, u"0"_s ).toInt();
   }
@@ -249,9 +252,30 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     setTerrainSettings( terrainSettings.release() );
   }
 
-  QDomElement elemSkybox = elem.firstChildElement( u"skybox"_s );
-  mIsSkyboxEnabled = elemSkybox.attribute( u"skybox-enabled"_s ).toInt();
-  mSkyboxSettings.readXml( elemSkybox, context );
+  mBackgroundSettings.reset();
+  QDomElement elemBackground = elem.firstChildElement( u"background"_s );
+  if ( !elemBackground.isNull() )
+  {
+    switch ( qgsEnumKeyToValue( elemBackground.attribute( u"type"_s ), Qgis::Map3DBackgroundType::NoBackground ) )
+    {
+      case Qgis::Map3DBackgroundType::DistinctTextureSkybox:
+      {
+        auto skybox = std::make_unique<QgsSkyboxSettings>();
+        skybox->readXml( elemBackground, context );
+        mBackgroundSettings = std::move( skybox );
+        break;
+      }
+      case Qgis::Map3DBackgroundType::FixedGradientBackground:
+      {
+        auto gradient = std::make_unique<QgsFixedGradientBackgroundSettings>();
+        gradient->readXml( elemBackground, context );
+        mBackgroundSettings = std::move( gradient );
+        break;
+      }
+      case Qgis::Map3DBackgroundType::NoBackground:
+        break;
+    }
+  }
 
   QDomElement elemShadows = elem.firstChildElement( u"shadow-rendering"_s );
   mShadowSettings.readXml( elemShadows, context );
@@ -265,13 +289,10 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", u"1"_s ).toInt();
 
   QDomElement elemNavigationSync = elem.firstChildElement( u"navigation-sync"_s );
-  mViewSyncMode = ( Qgis::ViewSyncModeFlags )( elemNavigationSync.attribute( u"view-sync-mode"_s, u"0"_s ).toInt() );
+  mViewSyncMode = static_cast<Qgis::ViewSyncModeFlags>( elemNavigationSync.attribute( u"view-sync-mode"_s, u"0"_s ).toInt() );
   mVisualizeViewFrustum = elemNavigationSync.attribute( u"view-frustum-visualization-enabled"_s, u"0"_s ).toInt();
 
   QDomElement elemDebugSettings = elem.firstChildElement( u"debug-settings"_s );
-  mDebugShadowMapEnabled = elemDebugSettings.attribute( u"shadowmap-enabled"_s, u"0"_s ).toInt();
-  mDebugShadowMapCorner = static_cast<Qt::Corner>( elemDebugSettings.attribute( u"shadowmap-corner"_s, "0" ).toInt() );
-  mDebugShadowMapSize = elemDebugSettings.attribute( u"shadowmap-size"_s, u"0.2"_s ).toDouble();
 
   mDebugDepthMapEnabled = elemDebugSettings.attribute( u"depthmap-enabled"_s, u"0"_s ).toInt();
   mDebugDepthMapCorner = static_cast<Qt::Corner>( elemDebugSettings.attribute( u"depthmap-corner"_s, u"1"_s ).toInt() );
@@ -294,6 +315,16 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elem3dAxis = elem.firstChildElement( u"axis3d"_s );
   m3dAxisSettings.readXml( elem3dAxis, context );
+
+  QDomElement elemMapOverlay = elem.firstChildElement( u"map-overlay"_s );
+  if ( !elemMapOverlay.isNull() )
+  {
+    mShow2DMapOverlay = elemMapOverlay.attribute( u"enabled"_s, u"0"_s ).toInt();
+  }
+  else
+  {
+    mShow2DMapOverlay = false;
+  }
 }
 
 QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -378,10 +409,13 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
-  QDomElement elemSkybox = doc.createElement( u"skybox"_s );
-  elemSkybox.setAttribute( u"skybox-enabled"_s, mIsSkyboxEnabled );
-  mSkyboxSettings.writeXml( elemSkybox, context );
-  elem.appendChild( elemSkybox );
+  if ( mBackgroundSettings )
+  {
+    QDomElement elemBackground = doc.createElement( u"background"_s );
+    elemBackground.setAttribute( u"type"_s, qgsEnumValueToKey( mBackgroundSettings->type() ) );
+    mBackgroundSettings->writeXml( elemBackground, context );
+    elem.appendChild( elemBackground );
+  }
 
   QDomElement elemShadows = doc.createElement( u"shadow-rendering"_s );
   mShadowSettings.writeXml( elemShadows, context );
@@ -414,9 +448,6 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemNavigationSync );
 
   QDomElement elemDebugSettings = doc.createElement( u"debug-settings"_s );
-  elemDebugSettings.setAttribute( u"shadowmap-enabled"_s, mDebugShadowMapEnabled );
-  elemDebugSettings.setAttribute( u"shadowmap-corner"_s, mDebugShadowMapCorner );
-  elemDebugSettings.setAttribute( u"shadowmap-size"_s, mDebugShadowMapSize );
   elemDebugSettings.setAttribute( u"depthmap-enabled"_s, mDebugDepthMapEnabled );
   elemDebugSettings.setAttribute( u"depthmap-corner"_s, mDebugDepthMapCorner );
   elemDebugSettings.setAttribute( u"depthmap-size"_s, mDebugDepthMapSize );
@@ -429,6 +460,13 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elem3dAxis = doc.createElement( u"axis3d"_s );
   m3dAxisSettings.writeXml( elem3dAxis, context );
   elem.appendChild( elem3dAxis );
+
+  if ( mShow2DMapOverlay )
+  {
+    QDomElement elemMapOverlay = doc.createElement( u"map-overlay"_s );
+    elemMapOverlay.setAttribute( u"enabled"_s, 1 );
+    elem.appendChild( elemMapOverlay );
+  }
 
   return elem;
 }
@@ -612,6 +650,21 @@ QColor Qgs3DMapSettings::backgroundColor() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mBackgroundColor;
+}
+
+const QgsAbstract3DMapBackgroundSettings *Qgs3DMapSettings::backgroundSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mBackgroundSettings.get();
+}
+
+void Qgs3DMapSettings::setBackgroundSettings( QgsAbstract3DMapBackgroundSettings *settings )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mBackgroundSettings.reset( settings );
+  emit backgroundSettingsChanged();
 }
 
 void Qgs3DMapSettings::setSelectionColor( const QColor &color )
@@ -1081,6 +1134,24 @@ int Qgs3DMapSettings::eyeDomeLightingDistance() const
   return mEyeDomeLightingDistance;
 }
 
+void Qgs3DMapSettings::setMsaaEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mMsaaEnabled == enabled )
+    return;
+
+  mMsaaEnabled = enabled;
+  emit msaaEnabledChanged();
+}
+
+bool Qgs3DMapSettings::isMsaaEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMsaaEnabled;
+}
+
 QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1220,7 +1291,9 @@ QgsSkyboxSettings Qgs3DMapSettings::skyboxSettings() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mSkyboxSettings;
+  if ( mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox )
+    return *dynamic_cast<const QgsSkyboxSettings *>( mBackgroundSettings.get() );
+  return QgsSkyboxSettings();
 }
 
 QgsShadowSettings Qgs3DMapSettings::shadowSettings() const
@@ -1241,8 +1314,7 @@ void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSetting
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mSkyboxSettings = skyboxSettings;
-  emit skyboxSettingsChanged();
+  setBackgroundSettings( skyboxSettings.clone() );
 }
 
 void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSettings )
@@ -1265,14 +1337,17 @@ bool Qgs3DMapSettings::isSkyboxEnabled() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIsSkyboxEnabled;
+  return mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox;
 }
 
 void Qgs3DMapSettings::setIsSkyboxEnabled( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mIsSkyboxEnabled = enabled;
+  if ( enabled )
+    setBackgroundSettings( ( mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox ) ? mBackgroundSettings->clone() : new QgsSkyboxSettings() );
+  else
+    setBackgroundSettings( nullptr );
 }
 
 bool Qgs3DMapSettings::isFpsCounterEnabled() const
@@ -1300,35 +1375,22 @@ bool Qgs3DMapSettings::showDebugPanel() const
   return mShowDebugPanel;
 }
 
-void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  mDebugShadowMapEnabled = enabled;
-  mDebugShadowMapCorner = corner;
-  mDebugShadowMapSize = size;
-  emit debugShadowMapSettingsChanged();
-}
+void Qgs3DMapSettings::setDebugShadowMapSettings( bool, Qt::Corner, double )
+{}
 
 bool Qgs3DMapSettings::debugShadowMapEnabled() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mDebugShadowMapEnabled;
+  return false;
 }
 
 Qt::Corner Qgs3DMapSettings::debugShadowMapCorner() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mDebugShadowMapCorner;
+  return Qt::Corner::TopLeftCorner;
 }
 
 double Qgs3DMapSettings::debugShadowMapSize() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mDebugShadowMapSize;
+  return 0;
 }
 
 void Qgs3DMapSettings::setDebugDepthMapSettings( bool enabled, Qt::Corner corner, double size )
@@ -1479,14 +1541,13 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
@@ -1535,4 +1596,22 @@ void Qgs3DMapSettings::setShowExtentIn2DView( bool show )
 
   mShowExtentIn2DView = show;
   emit showExtentIn2DViewChanged();
+}
+
+bool Qgs3DMapSettings::is2DMapOverlayEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShow2DMapOverlay;
+}
+
+void Qgs3DMapSettings::setIs2DMapOverlayEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mShow2DMapOverlay == enabled )
+    return;
+
+  mShow2DMapOverlay = enabled;
+  emit show2DMapOverlayChanged();
 }

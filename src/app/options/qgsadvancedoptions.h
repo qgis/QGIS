@@ -21,6 +21,10 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSettingsTreeWidget;
 class QgsSettingsTreeWidgetOld;
 

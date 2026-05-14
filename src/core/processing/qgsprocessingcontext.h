@@ -44,7 +44,6 @@ class QgsProcessingLayerPostProcessorInterface;
 class CORE_EXPORT QgsProcessingContext
 {
   public:
-
     //! Flags that affect how processing algorithms are run
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
@@ -88,11 +87,13 @@ class CORE_EXPORT QgsProcessingContext
       mModelResult = other.mModelResult;
     }
 
+    // clang-format off
     /**
      * Returns any flags set in the context.
      * \see setFlags()
      */
     QgsProcessingContext::Flags flags() const SIP_HOLDGIL { return mFlags; }
+    // clang-format on
 
     /**
      * Sets \a flags for the context.
@@ -423,6 +424,7 @@ class CORE_EXPORT QgsProcessingContext
 #ifndef SIP_RUN
     void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; mUseDefaultInvalidGeometryCallback = false; }
 #else
+// clang-format off
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -436,6 +438,7 @@ class CORE_EXPORT QgsProcessingContext
 
     Py_END_ALLOW_THREADS
     % End
+// clang-format on
 #endif
 
     /**
@@ -462,6 +465,7 @@ class CORE_EXPORT QgsProcessingContext
 #ifndef SIP_RUN
     void setTransformErrorCallback( const std::function< void( const QgsFeature & ) > &callback ) { mTransformErrorCallback = callback; }
 #else
+// clang-format off
     void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -475,6 +479,7 @@ class CORE_EXPORT QgsProcessingContext
 
     Py_END_ALLOW_THREADS
     % End
+// clang-format on
 #endif
 
     /**

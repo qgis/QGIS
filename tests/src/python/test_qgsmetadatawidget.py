@@ -12,7 +12,8 @@ __author__ = "Nyall Dawson"
 __date__ = "20/03/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsAbstractMetadataBase,
@@ -23,14 +24,13 @@ from qgis.core import (
     QgsProjectMetadata,
 )
 from qgis.gui import QgsMetadataWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMetadataWidget(QgisTestCase):
-
     def testLayerMode(self):
         """
         Create a fully populated QgsLayerMetadata object, then set it to the widget and re-read back

@@ -21,13 +21,11 @@ to an expected result or render time.
 #include "qgsrasterchecker.h"
 %End
   public:
-
     QgsRasterChecker();
 
     QString report() const;
 
-    bool runTest( const QString &verifiedKey, QString verifiedUri,
-                  const QString &expectedKey, QString expectedUri );
+    bool runTest( const QString &verifiedKey, QString verifiedUri, const QString &expectedKey, QString expectedUri );
 %Docstring
 Test using renderer to generate the image to be compared.
 
@@ -36,6 +34,7 @@ Test using renderer to generate the image to be compared.
 :param expectedKey: expected provider key
 :param expectedUri: URI of the expected (control) raster
 %End
+
 }; // class QgsRasterChecker
 
 

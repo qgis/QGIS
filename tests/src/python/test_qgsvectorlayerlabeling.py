@@ -7,12 +7,9 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
-
-from qgis.PyQt.QtCore import QDir, QSize
-from qgis.PyQt.QtGui import QColor, QPainter
+import unittest
 
 from qgis.core import (
-    edit,
     Qgis,
     QgsCategorizedSymbolRenderer,
     QgsCentroidFillSymbolLayer,
@@ -26,19 +23,20 @@ from qgis.core import (
     QgsMapClippingRegion,
     QgsMapSettings,
     QgsMarkerSymbol,
+    QgsPalLayerSettings,
     QgsPointXY,
+    QgsProperty,
     QgsRectangle,
+    QgsRenderContext,
     QgsRendererCategory,
     QgsRuleBasedLabeling,
-    QgsProperty,
     QgsTextFormat,
-    QgsRenderContext,
-    QgsPalLayerSettings,
     QgsVectorLayerSimpleLabeling,
+    edit,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -48,7 +46,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsVectorLayerLabeling(QgisTestCase):
-
     def testHasNonDefaultCompositionModeSimple(self):
         settings = QgsPalLayerSettings()
         labeling = QgsVectorLayerSimpleLabeling(settings)

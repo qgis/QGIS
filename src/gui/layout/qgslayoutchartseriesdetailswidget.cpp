@@ -18,15 +18,27 @@
 #include "qgslayoutchartseriesdetailswidget.h"
 
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+
+#include <QString>
 
 #include "moc_qgslayoutchartseriesdetailswidget.cpp"
 
-QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent )
+using namespace Qt::StringLiterals;
+
+QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, bool yAxisOnly, QWidget *parent )
   : QgsPanelWidget( parent )
   , mVectorLayer( layer )
   , mIndex( index )
+  , mYAxisOnly( yAxisOnly )
 {
   setupUi( this );
+
+  if ( mYAxisOnly )
+  {
+    mXExpressionWidget->setVisible( false );
+    xExpressionLabel->setVisible( false );
+  }
 
   if ( mVectorLayer )
   {
@@ -35,11 +47,17 @@ QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorL
   }
 
   mXExpressionWidget->setExpression( seriesDetails.xExpression() );
+  mXExpressionWidget->registerExpressionContextGenerator( this );
   mYExpressionWidget->setExpression( seriesDetails.yExpression() );
+  mYExpressionWidget->registerExpressionContextGenerator( this );
   mFilterLineEdit->setText( seriesDetails.filterExpression() );
 
-  connect( mXExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &, bool ) { emit widgetChanged(); } );
-  connect( mYExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &, bool ) { emit widgetChanged(); } );
+  connect( mXExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &, bool ) {
+    emit widgetChanged();
+  } );
+  connect( mYExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &, bool ) {
+    emit widgetChanged();
+  } );
   connect( mFilterLineEdit, &QLineEdit::textChanged, this, [this] { emit widgetChanged(); } );
   connect( mFilterButton, &QToolButton::clicked, this, &QgsLayoutChartSeriesDetailsWidget::mFilterButton_clicked );
 }
@@ -71,6 +89,7 @@ void QgsLayoutChartSeriesDetailsWidget::mFilterButton_clicked()
 
   const QgsExpressionContext context = mVectorLayer->createExpressionContext();
   QgsExpressionBuilderDialog expressionBuilderDialog( mVectorLayer.data(), mFilterLineEdit->text(), this, u"generic"_s, context );
+  expressionBuilderDialog.setExpressionContext( createExpressionContext() );
   expressionBuilderDialog.setWindowTitle( tr( "Expression Based Filter" ) );
 
   if ( expressionBuilderDialog.exec() == QDialog::Accepted )
@@ -81,4 +100,24 @@ void QgsLayoutChartSeriesDetailsWidget::mFilterButton_clicked()
       mFilterLineEdit->setText( expression );
     }
   }
+}
+
+void QgsLayoutChartSeriesDetailsWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator = generator;
+}
+
+QgsExpressionContext QgsLayoutChartSeriesDetailsWidget::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  if ( mExpressionContextGenerator )
+  {
+    context = mExpressionContextGenerator->createExpressionContext();
+  }
+  else
+  {
+    context.appendScope( QgsExpressionContextUtils::globalScope() );
+  }
+
+  return context;
 }

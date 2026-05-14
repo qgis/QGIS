@@ -16,6 +16,10 @@
 
 #include "qgsattributeeditorcontainer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 {
   qDeleteAll( mChildren );
@@ -151,7 +155,7 @@ void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem, QDomDocu
   elem.setAttribute( u"visibilityExpressionEnabled"_s, mVisibilityExpression.enabled() ? 1 : 0 );
   elem.setAttribute( u"visibilityExpression"_s, mVisibilityExpression->expression() );
   if ( mBackgroundColor.isValid() )
-    elem.setAttribute( u"backgroundColor"_s, mBackgroundColor.name( ) );
+    elem.setAttribute( u"backgroundColor"_s, mBackgroundColor.name() );
   const auto constMChildren = mChildren;
   for ( QgsAttributeEditorElement *child : constMChildren )
   {
@@ -223,4 +227,3 @@ QString QgsAttributeEditorContainer::typeIdentifier() const
 {
   return u"attributeEditorContainer"_s;
 }
-

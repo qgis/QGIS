@@ -20,8 +20,7 @@
 
 QgsAttributeFormInterface::QgsAttributeFormInterface( QgsAttributeForm *form )
   : mForm( form )
-{
-}
+{}
 
 bool QgsAttributeFormInterface::acceptChanges( const QgsFeature &feature )
 {
@@ -30,12 +29,10 @@ bool QgsAttributeFormInterface::acceptChanges( const QgsFeature &feature )
 }
 
 void QgsAttributeFormInterface::initForm()
-{
-}
+{}
 
 void QgsAttributeFormInterface::featureChanged()
-{
-}
+{}
 
 QgsAttributeForm *QgsAttributeFormInterface::form() const
 {

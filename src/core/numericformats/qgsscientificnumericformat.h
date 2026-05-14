@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsScientificNumericFormat : public QgsBasicNumericFormat
 {
   public:
-
     /**
       * Default constructor
       */
@@ -51,8 +50,6 @@ class CORE_EXPORT QgsScientificNumericFormat : public QgsBasicNumericFormat
      * \see setShowTrailingZeros()
      */
     void setNumberDecimalPlaces( int places ) override;
-
-
 };
 
 #endif // QGSSCIENTIFICNUMERICFORMAT_H

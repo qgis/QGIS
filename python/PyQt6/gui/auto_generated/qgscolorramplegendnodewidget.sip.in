@@ -95,7 +95,11 @@ A dialog for configuring a :py:class:`QgsColorRampLegendNode`
 #include "qgscolorramplegendnodewidget.h"
 %End
   public:
-    QgsColorRampLegendNodeDialog( const QgsColorRampLegendNodeSettings &settings, QWidget *parent /TransferThis/ = 0, QgsColorRampLegendNodeWidget::Capabilities capabilities = QgsColorRampLegendNodeWidget::Capability::AllCapabilities );
+    QgsColorRampLegendNodeDialog(
+      const QgsColorRampLegendNodeSettings &settings,
+      QWidget *parent /TransferThis/ = 0,
+      QgsColorRampLegendNodeWidget::Capabilities capabilities = QgsColorRampLegendNodeWidget::Capability::AllCapabilities
+    );
 %Docstring
 Constructor for QgsColorRampLegendNodeDialog, initially showing the
 specified ``settings``.

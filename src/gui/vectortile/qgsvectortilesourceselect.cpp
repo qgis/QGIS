@@ -31,8 +31,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsvectortilesourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -86,9 +89,7 @@ QgsVectorTileSourceSelect::QgsVectorTileSourceSelect( QWidget *parent, Qt::Windo
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileVectorTileFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
-    emit enableButtons( !path.isEmpty() );
-  } );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) { emit enableButtons( !path.isEmpty() ); } );
 }
 
 void QgsVectorTileSourceSelect::btnNew_clicked()
@@ -153,8 +154,7 @@ void QgsVectorTileSourceSelect::btnEdit_clicked()
 
 void QgsVectorTileSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 

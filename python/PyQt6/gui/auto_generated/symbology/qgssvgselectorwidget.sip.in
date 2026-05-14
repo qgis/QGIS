@@ -223,7 +223,12 @@ A dialog for selection of an SVG file.
 #include "qgssvgselectorwidget.h"
 %End
   public:
-    QgsSvgSelectorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok, Qt::Orientation orientation = Qt::Horizontal );
+    QgsSvgSelectorDialog(
+      QWidget *parent /TransferThis/ = 0,
+      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+      QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
+      Qt::Orientation orientation = Qt::Horizontal
+    );
 %Docstring
 Constructor for QgsSvgSelectorDialog.
 %End

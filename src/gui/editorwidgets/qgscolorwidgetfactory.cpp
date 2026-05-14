@@ -20,8 +20,7 @@
 
 QgsColorWidgetFactory::QgsColorWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 
 QgsEditorWidgetWrapper *QgsColorWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const

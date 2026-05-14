@@ -17,13 +17,15 @@
 
 #include "qgsprocessingmodelparameter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsProcessingModelParameter::QgsProcessingModelParameter( const QString &parameterName )
   : mParameterName( parameterName )
-{
-
-}
+{}
 
 QgsProcessingModelParameter *QgsProcessingModelParameter::clone() const
 {

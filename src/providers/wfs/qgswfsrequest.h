@@ -38,11 +38,7 @@ class QgsWfsRequest : public QgsBaseNetworkRequest
   protected:
     QDomDocument createPostDocument() const;
     QDomElement createRootPostElement(
-      const QgsWfsCapabilities &capabilities,
-      const QString &wfsVersion,
-      QDomDocument &postDocument,
-      const QString &name,
-      const QStringList &typeNamesForNamespaces = QStringList()
+      const QgsWfsCapabilities &capabilities, const QString &wfsVersion, QDomDocument &postDocument, const QString &name, const QStringList &typeNamesForNamespaces = QStringList()
     ) const;
 
     //! URI

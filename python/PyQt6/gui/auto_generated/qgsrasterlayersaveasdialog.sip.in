@@ -36,7 +36,15 @@ A dialog for configuring raster layer export parameters.
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsRasterLayerSaveAsDialog(
+      QgsRasterLayer *rasterLayer,
+      QgsRasterDataProvider *sourceProvider,
+      const QgsRectangle &currentExtent,
+      const QgsCoordinateReferenceSystem &layerCrs,
+      const QgsCoordinateReferenceSystem &currentCrs,
+      QWidget *parent /TransferThis/ = 0,
+      Qt::WindowFlags f = Qt::WindowFlags()
+    );
 %Docstring
 Constructor for QgsRasterLayerSaveAsDialog
 %End

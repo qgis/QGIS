@@ -20,13 +20,13 @@ __date__ = "January 2015"
 __copyright__ = "(C) 2015, Giovanni Manghi"
 
 from qgis.core import (
-    QgsProcessingException,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterString,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterVectorDestination,
-    QgsProcessingParameterDefinition,
     QgsProcessing,
+    QgsProcessingException,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
+    QgsProcessingParameterVectorDestination,
 )
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm

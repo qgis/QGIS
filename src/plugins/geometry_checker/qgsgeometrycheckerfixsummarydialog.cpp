@@ -25,7 +25,11 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsgeometrycheckerfixsummarydialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats, QgsGeometryChecker *checker, QWidget *parent )
   : QDialog( parent )

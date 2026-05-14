@@ -46,6 +46,8 @@ Abstract base class for all geometries.
       sipType = sipType_QgsCircularString;
     else if ( qgsgeometry_cast<QgsCompoundCurve *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCompoundCurve;
+    else if ( qgsgeometry_cast<QgsNurbsCurve *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsNurbsCurve;
     else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
     else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
@@ -93,6 +95,7 @@ Abstract base class for all geometries.
 
       YX
     };
+
 
     QgsAbstractGeometry();
     virtual ~QgsAbstractGeometry();
@@ -1103,8 +1106,7 @@ Returns next vertex of the geometry (undefined behavior if
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+    else PyErr_SetString( PyExc_StopIteration, "" );
 %End
 
 };
@@ -1150,8 +1152,7 @@ calling :py:func:`~QgsGeometryPartIterator.next`)
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+    else PyErr_SetString( PyExc_StopIteration, "" );
 %End
 
 };
@@ -1198,8 +1199,7 @@ before calling :py:func:`~QgsGeometryConstPartIterator.next`)
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+    else PyErr_SetString( PyExc_StopIteration, "" );
 %End
 
 };

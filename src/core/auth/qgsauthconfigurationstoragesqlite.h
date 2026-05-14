@@ -18,13 +18,14 @@
 
 ///@cond PRIVATE
 
-#define SIP_NO_FILE
 
 #include "qgsauthconfigurationstoragedb.h"
 
 #include <QObject>
 #include <QRecursiveMutex>
 #include <QSqlDatabase>
+
+#define SIP_NO_FILE
 
 /**
  * This class is not part of the API: is is just a thin convenience wrapper
@@ -36,19 +37,16 @@ class QgsAuthConfigurationStorageSqlite : public QgsAuthConfigurationStorageDb
 
     //  QgsAuthConfigurationStorageDb interface
   public:
-
     QgsAuthConfigurationStorageSqlite( const QString &databasePath );
 
     bool initialize() override;
     QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const override;
     QString description() const override;
-    QString type( ) const override;
+    QString type() const override;
 
   private:
-
     bool tableExists( const QString &table ) const override;
     void checkCapabilities() override;
-
 };
 /// @endcond
 

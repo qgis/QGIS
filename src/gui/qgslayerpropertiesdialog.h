@@ -66,7 +66,9 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
      * \param fl widget flags
      * \param settings custom QgsSettings pointer
      */
-    QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = nullptr );
+    QgsLayerPropertiesDialog(
+      QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = nullptr
+    );
 
     /**
      * Sets the metadata \a widget and \a page associated with the dialog.
@@ -197,14 +199,12 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     /**
      * Resets the dialog to the current layer state.
       */
-    virtual void syncToLayer() SIP_SKIP
-    = 0;
+    virtual void syncToLayer() SIP_SKIP = 0;
 
     /**
      * Applies the dialog settings to the layer.
      */
-    virtual void apply() SIP_SKIP
-    = 0;
+    virtual void apply() SIP_SKIP = 0;
 
     /**
      * Rolls back changes made to the layer.

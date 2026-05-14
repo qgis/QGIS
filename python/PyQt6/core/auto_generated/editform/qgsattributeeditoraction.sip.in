@@ -19,7 +19,6 @@ This element will load a layer action onto the form.
 #include "qgsattributeeditoraction.h"
 %End
   public:
-
     QgsAttributeEditorAction( const QgsAction &action, QgsAttributeEditorElement *parent );
 %Docstring
 Creates a new element which can display a layer action.

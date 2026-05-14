@@ -15,13 +15,16 @@
 
 #include "qgscheckboxwidgetwrapper.h"
 
+#include <QString>
+
 #include "moc_qgscheckboxwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 
 QVariant QgsCheckboxWidgetWrapper::value() const

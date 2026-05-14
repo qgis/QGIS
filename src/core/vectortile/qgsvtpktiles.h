@@ -114,7 +114,6 @@ class CORE_EXPORT QgsVtpkTiles
     QByteArray tileData( int z, int x, int y );
 
   private:
-
 #ifdef SIP_RUN
     QgsVtpkTiles( const QgsVtpkTiles &other );
 #endif

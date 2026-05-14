@@ -19,18 +19,18 @@ __author__ = "Marco Bernasocchi"
 __date__ = "June 2016"
 __copyright__ = "(C) 2016, Marco Bernasocchi"
 
+from qgis.PyQt.QtCore import QSize, Qt, pyqtSignal
+from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
     QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QListWidget,
     QPushButton,
     QSizePolicy,
-    QLabel,
-    QHBoxLayout,
     QVBoxLayout,
-    QListWidget,
-    QAbstractItemView,
 )
-from qgis.PyQt.QtGui import QFont
-from qgis.PyQt.QtCore import Qt, QSize, pyqtSignal
 
 
 class ListMultiSelectWidget(QGroupBox):
@@ -225,7 +225,6 @@ class ListMultiSelectWidget(QGroupBox):
 
 
 class SmallQPushButton(QPushButton):
-
     def __init__(self, text):
         QPushButton.__init__(self)
         self.setText(text)

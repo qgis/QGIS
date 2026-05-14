@@ -79,6 +79,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
+    // clang-format off
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -90,6 +91,8 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = sipType_QgsCircularString;
     else if ( qgsgeometry_cast<QgsCompoundCurve *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCompoundCurve;
+    else if ( qgsgeometry_cast<QgsNurbsCurve *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsNurbsCurve;
     else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
     else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
@@ -157,11 +160,15 @@ class CORE_EXPORT QgsAbstractGeometry
     };
     Q_ENUM( QgsAbstractGeometry::AxisOrder )
 
+    // clang-format on
+
     QgsAbstractGeometry() = default;
     virtual ~QgsAbstractGeometry() = default;
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
     QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );
 
+    // === WARNING ===
+    // implementation of `QgsAbstractGeometry::operator==` are mainly delegated to `fuzzyEquals` functions if the default tolerance/epsilon value is changed, documentation must be updaded accordingly and also changed in expression helper files (resources/function_help/json)
     virtual bool operator==( const QgsAbstractGeometry &other ) const = 0;
     virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
 
@@ -236,12 +243,14 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QString geometryType() const = 0;
 
+    // clang-format off
     /**
      * Returns the WKB type of the geometry.
      * \see geometryType
      * \see wktTypeStr
      */
     inline Qgis::WkbType wkbType() const SIP_HOLDGIL { return mWkbType; }
+    // clang-format on
 
     /**
      * Returns the WKT type string of the geometry.
@@ -1258,6 +1267,7 @@ class CORE_EXPORT QgsVertexIterator
     QgsPoint next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsVertexIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1270,6 +1280,7 @@ class CORE_EXPORT QgsVertexIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:
@@ -1307,6 +1318,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     QgsAbstractGeometry *next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsGeometryPartIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1319,6 +1331,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:
@@ -1357,6 +1370,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     const QgsAbstractGeometry *next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsGeometryConstPartIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1369,6 +1383,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:

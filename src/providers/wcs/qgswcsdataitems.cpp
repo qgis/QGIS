@@ -18,7 +18,11 @@
 #include "qgslogger.h"
 #include "qgsowsconnection.h"
 
+#include <QString>
+
 #include "moc_qgswcsdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgswcssourceselect.h"
@@ -85,7 +89,9 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
 
 // ---------------------------------------------------------------------------
 
-QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWcsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary &coverageSummary )
+QgsWCSLayerItem::QgsWCSLayerItem(
+  QgsDataItem *parent, QString name, QString path, const QgsWcsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary &coverageSummary
+)
   : QgsLayerItem( parent, name, path, QString(), Qgis::BrowserLayerType::Raster, u"wcs"_s )
   , mCapabilities( capabilitiesProperty )
   , mDataSourceUri( dataSourceUri )

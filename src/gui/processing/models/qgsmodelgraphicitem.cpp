@@ -29,9 +29,12 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsmodelgraphicitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
@@ -177,14 +180,15 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
 }
 
 
-QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size )
+QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem(
+  QgsModelComponentGraphicItem *parent, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size
+)
   : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
   , mComponentItem( parent )
   , mComponent( component )
   , mIndex( index )
   , mEdge( edge )
-{
-}
+{}
 
 void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {

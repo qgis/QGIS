@@ -29,7 +29,6 @@ calculated by specifying the statistic in the constructor or via
 #include "qgsdatetimestatisticalsummary.h"
 %End
   public:
-
     QgsDateTimeStatisticalSummary( Qgis::DateTimeStatistics stats = Qgis::DateTimeStatistic::All );
 %Docstring
 Constructor for QgsDateTimeStatisticalSummary

@@ -20,9 +20,12 @@
 #include "qgsdatabaseschemamodel.h"
 
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsdatabaseschemacombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent )
   : QWidget( parent )
@@ -185,8 +188,7 @@ void QgsDatabaseSchemaComboBox::rowsChanged()
 ///@cond PRIVATE
 QgsDatabaseSchemaComboBoxSortModel::QgsDatabaseSchemaComboBoxSortModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-{
-}
+{}
 
 bool QgsDatabaseSchemaComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {

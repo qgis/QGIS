@@ -20,7 +20,6 @@ Encapsulates the context of a geocoding operation.
 #include "qgsgeocodercontext.h"
 %End
   public:
-
     QgsGeocoderContext( const QgsCoordinateTransformContext &transformContext );
 %Docstring
 Constructor for QgsGeocoderContext, with the specified

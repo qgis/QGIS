@@ -20,7 +20,8 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QApplication>
 #include <QFile>
@@ -28,7 +29,13 @@
 #include <QFontDatabase>
 #include <QFontInfo>
 #include <QMimeData>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryStringList *QgsFontUtils::settingsRecentFontFamilies
+  = new QgsSettingsEntryStringList( u"recent"_s, QgsSettingsTree::sTreeFonts, QStringList(), u"List of recently used font families."_s );
 
 bool QgsFontUtils::fontMatchOnSystem( const QFont &f )
 {
@@ -52,25 +59,32 @@ bool QgsFontUtils::fontFamilyHasStyle( const QString &family, const QString &sty
   if ( fontDB.styles( family ).contains( style ) )
     return true;
 
-#ifdef Q_OS_WIN
   QString modified( style );
+#ifdef Q_OS_WIN
   if ( style == "Roman" )
     modified = "Normal";
-  if ( style == "Oblique" )
+  else if ( style == "Oblique" )
     modified = "Italic";
-  if ( style == "Bold Oblique" )
+  else if ( style == "Bold Oblique" )
     modified = "Bold Italic";
   if ( fontDB.styles( family ).contains( modified ) )
     return true;
 #endif
+
+  // Deal with Qt6 Normal -> Regular style renaming
+  if ( modified == "Normal" )
+    modified = "Regular";
+  else if ( modified == QCoreApplication::translate( "QFontDatabase", "Normal" ) )
+    modified = QCoreApplication::translate( "QFontDatabase", "Regular" );
+  if ( fontDB.styles( family ).contains( modified ) )
+    return true;
 
   return false;
 }
 
 QString QgsFontUtils::resolveFontStyleName( const QFont &font )
 {
-  auto styleNameIsMatch = [&font]( const QString & candidate ) -> bool
-  {
+  auto styleNameIsMatch = [&font]( const QString &candidate ) -> bool {
     // confirm that style name matches bold/italic flags
     QFont testFont( font.family() );
     testFont.setStyleName( candidate );
@@ -180,6 +194,11 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
   // is the font's style already the same as requested?
   if ( actualFontStyle == fontDB.styleString( f ) )
   {
+    if ( f.styleName().isEmpty() )
+    {
+      f.setStyleName( actualFontStyle );
+      return true;
+    }
     return false;
   }
 
@@ -283,7 +302,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
     }
 
     const QString fontFamily = !f.key().startsWith( "Deja"_L1 ) ? standardTestFontFamily() : u"QGIS DejaVu Sans"_s;
-    const QString fontstyle  = !f.key().startsWith( "Deja"_L1 ) ?  f.key() : f.key().mid( 5 );
+    const QString fontstyle = !f.key().startsWith( "Deja"_L1 ) ? f.key() : f.key().mid( 5 );
 
     if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
@@ -302,8 +321,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
         const int fontID = QFontDatabase::addApplicationFont( fontPath );
         loaded = ( fontID != -1 );
         fontsLoaded = ( fontsLoaded || loaded );
-        QgsDebugMsgLevel( u"Test font '%1 %2' %3 from filesystem [%4]"_s
-                          .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ), 2 );
+        QgsDebugMsgLevel( u"Test font '%1 %2' %3 from filesystem [%4]"_s.arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ), 2 );
         QgsDebugMsgLevel( u"font families in %1: %2"_s.arg( fontID ).arg( QFontDatabase().applicationFontFamilies( fontID ).join( "," ) ), 2 );
       }
       else
@@ -315,8 +333,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
           loaded = ( fontID != -1 );
           fontsLoaded = ( fontsLoaded || loaded );
         }
-        QgsDebugMsgLevel( u"Test font '%1' (%2) %3 from testdata.qrc"_s
-                          .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ), 2 );
+        QgsDebugMsgLevel( u"Test font '%1' (%2) %3 from testdata.qrc"_s.arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ), 2 );
       }
     }
   }
@@ -327,9 +344,9 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
 QFont QgsFontUtils::getStandardTestFont( const QString &style, int pointsize )
 {
   const QString fontFamily = !style.startsWith( "Deja"_L1 ) ? standardTestFontFamily() : u"QGIS DejaVu Sans"_s;
-  const QString fontStyle  = !style.startsWith( "Deja"_L1 ) ?  style : style.mid( 5 );
+  const QString fontStyle = !style.startsWith( "Deja"_L1 ) ? style : style.mid( 5 );
 
-  if ( ! fontFamilyHasStyle( fontFamily, fontStyle ) )
+  if ( !fontFamilyHasStyle( fontFamily, fontStyle ) )
   {
     loadStandardTestFonts( QStringList() << style );
   }
@@ -354,7 +371,18 @@ QFont QgsFontUtils::getStandardTestFont( const QString &style, int pointsize )
     QgsDebugMsgLevel( u"Inexact font match - consider installing the %1 font."_s.arg( fontFamily ), 2 );
     QgsDebugMsgLevel( u"Requested: %1"_s.arg( f.toString() ), 2 );
     QFontInfo fi( f );
-    QgsDebugMsgLevel( u"Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9"_s.arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ), 2 );
+    QgsDebugMsgLevel(
+      u"Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9"_s.arg( fi.family() )
+        .arg( fi.pointSizeF() )
+        .arg( fi.pixelSize() )
+        .arg( fi.styleHint() )
+        .arg( fi.weight() )
+        .arg( fi.style() )
+        .arg( fi.underline() )
+        .arg( fi.strikeOut() )
+        .arg( fi.fixedPitch() ),
+      2
+    );
   }
 #endif
   // in case above statement fails to set style
@@ -404,7 +432,7 @@ bool QgsFontUtils::setFromXmlElement( QFont &font, const QDomElement &element )
 
   if ( element.hasAttribute( u"style"_s ) )
   {
-    ( void )updateFontViaStyle( font, translateNamedStyle( element.attribute( u"style"_s ) ) );
+    ( void ) updateFontViaStyle( font, translateNamedStyle( element.attribute( u"style"_s ) ) );
   }
 
   return true;
@@ -431,7 +459,7 @@ bool QgsFontUtils::setFromXmlChildNode( QFont &font, const QDomElement &element,
 
 QMimeData *QgsFontUtils::toMimeData( const QFont &font )
 {
-  std::unique_ptr< QMimeData >mimeData( new QMimeData );
+  std::unique_ptr< QMimeData > mimeData( new QMimeData );
 
   QDomDocument fontDoc;
   const QDomElement fontElem = toXmlElement( font, fontDoc, u"font"_s );
@@ -477,15 +505,7 @@ QFont QgsFontUtils::fromMimeData( const QMimeData *data, bool *ok )
 static QMap<QString, QString> createTranslatedStyleMap()
 {
   QMap<QString, QString> translatedStyleMap;
-  const QStringList words = QStringList()
-                            << u"Normal"_s
-                            << u"Regular"_s
-                            << u"Light"_s
-                            << u"Bold"_s
-                            << u"Black"_s
-                            << u"Demi"_s
-                            << u"Italic"_s
-                            << u"Oblique"_s;
+  const QStringList words = QStringList() << u"Normal"_s << u"Regular"_s << u"Light"_s << u"Bold"_s << u"Black"_s << u"Demi"_s << u"Italic"_s << u"Oblique"_s;
   const auto constWords = words;
   for ( const QString &word : constWords )
   {
@@ -590,8 +610,7 @@ void QgsFontUtils::addRecentFontFamily( const QString &family )
     return;
   }
 
-  QgsSettings settings;
-  QStringList recentFamilies = settings.value( u"fonts/recent"_s ).toStringList();
+  QStringList recentFamilies = settingsRecentFontFamilies->value();
 
   //remove matching families
   recentFamilies.removeAll( family );
@@ -602,13 +621,12 @@ void QgsFontUtils::addRecentFontFamily( const QString &family )
   //trim to 10 fonts
   recentFamilies = recentFamilies.mid( 0, 10 );
 
-  settings.setValue( u"fonts/recent"_s, recentFamilies );
+  settingsRecentFontFamilies->setValue( recentFamilies );
 }
 
 QStringList QgsFontUtils::recentFontFamilies()
 {
-  const QgsSettings settings;
-  return settings.value( u"fonts/recent"_s ).toStringList();
+  return settingsRecentFontFamilies->value();
 }
 
 void QgsFontUtils::setFontFamily( QFont &font, const QString &family )

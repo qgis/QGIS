@@ -12,7 +12,7 @@
 
 
 
-class QgsLayoutModel: QAbstractItemModel
+class QgsLayoutModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
 A model for items attached to a layout.
@@ -35,7 +35,6 @@ required.
 #include "qgslayoutmodel.h"
 %End
   public:
-
     enum Columns /BaseType=IntEnum/
     {
       Visibility,
@@ -98,7 +97,7 @@ Returns the QModelIndex corresponding to a :py:class:`QgsLayoutItem`
 };
 
 
-class QgsLayoutProxyModel: QSortFilterProxyModel
+class QgsLayoutProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 Allows for filtering a :py:class:`QgsLayoutModel` by item type.
@@ -108,7 +107,6 @@ Allows for filtering a :py:class:`QgsLayoutModel` by item type.
 #include "qgslayoutmodel.h"
 %End
   public:
-
     QgsLayoutProxyModel( QgsLayout *layout, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for :py:class:`QgsLayoutProxyModelm`, attached to the
@@ -212,7 +210,6 @@ Returns ``None`` if no flag based filtering is occurring.
 
 
 };
-
 
 
 /************************************************************************

@@ -30,9 +30,12 @@
 #include <QGraphicsView>
 #include <QMainWindow>
 #include <QMenu>
+#include <QString>
 #include <QToolTip>
 
 #include "moc_qgstilescalewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )

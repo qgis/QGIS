@@ -18,6 +18,10 @@
 #include "qgsmarkersymbol.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 static QgsRenderContext _createRenderContext( double mupp, double dpi, double scale )
 {
   QgsRenderContext context;
@@ -39,7 +43,8 @@ class TestQgsDataDefinedSizeLegend : public QgsTest
 
   public:
     TestQgsDataDefinedSizeLegend()
-      : QgsTest( u"Data Defined Size Legend Tests"_s, u"data_defined_size_legend"_s ) {}
+      : QgsTest( u"Data Defined Size Legend Tests"_s, u"data_defined_size_legend"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

@@ -28,12 +28,16 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgspostgresimportprojectdialog.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent )
-  : QDialog { parent }, mSchemaToImportTo( targetSchema )
+  : QDialog { parent }
+  , mSchemaToImportTo( targetSchema )
 {
   setWindowTitle( tr( "Import Projects to Schema “%1”" ).arg( targetSchema ) );
   setMinimumWidth( 600 );
@@ -168,11 +172,7 @@ QSet<QString> QgsPostgresImportProjectDialog::projectNamesInSchema()
 
 QString QgsPostgresImportProjectDialog::prepareProjectName( const QString &fullFilePath )
 {
-  QgsProject project;
-  project.read( fullFilePath );
-  QString projectName = project.title().isEmpty() ? project.baseName() : project.title();
-
-  projectName = createUniqueProjectName( projectName );
+  const QString projectName = createUniqueProjectName( QFileInfo( fullFilePath ).completeBaseName() );
 
   mExistingProjectNames.insert( projectName );
   return projectName;

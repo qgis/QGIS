@@ -31,10 +31,13 @@
 #include "qgssymbollayerutils.h"
 
 #include <QGraphicsPathItem>
+#include <QString>
 #include <QSvgRenderer>
 #include <QVector2D>
 
 #include "moc_qgslayoutitempolyline.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPolyline::QgsLayoutItemPolyline( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )
@@ -65,9 +68,7 @@ QIcon QgsLayoutItemPolyline::icon() const
   return QgsApplication::getThemeIcon( u"/mLayoutItemPolyline.svg"_s );
 }
 
-bool QgsLayoutItemPolyline::_addNode( const int indexPoint,
-                                      QPointF newPoint,
-                                      const double radius )
+bool QgsLayoutItemPolyline::_addNode( const int indexPoint, QPointF newPoint, const double radius )
 {
   const double distStart = computeDistance( newPoint, mPolygon[0] );
   const double distEnd = computeDistance( newPoint, mPolygon[mPolygon.size() - 1] );
@@ -152,7 +153,6 @@ void QgsLayoutItemPolyline::drawStartMarker( QPainter *painter )
       break;
     }
   }
-
 }
 
 void QgsLayoutItemPolyline::drawEndMarker( QPainter *painter )
@@ -258,8 +258,7 @@ void QgsLayoutItemPolyline::drawSvgMarker( QPainter *p, QPointF point, double an
     return;
 
   QSvgRenderer r;
-  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( markerPath, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadStrokeColor, mArrowHeadStrokeWidth,
-                                 1.0 );
+  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( markerPath, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadStrokeColor, mArrowHeadStrokeWidth, 1.0 );
   r.load( svgContent );
 
   const QgsScopedQPainterState painterState( p );
@@ -432,10 +431,7 @@ bool QgsLayoutItemPolyline::accept( QgsStyleEntityVisitorInterface *visitor ) co
 
 void QgsLayoutItemPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const
 {
-  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolylineStyleSymbol.get(),
-                         doc,
-                         context );
+  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(), mPolylineStyleSymbol.get(), doc, context );
   elmt.appendChild( pe );
 }
 

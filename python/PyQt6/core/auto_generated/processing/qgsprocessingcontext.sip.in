@@ -26,7 +26,6 @@ and expression context.
 #include "qgsprocessingcontext.h"
 %End
   public:
-
     enum Flag /BaseType=IntEnum/
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.

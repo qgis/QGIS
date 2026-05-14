@@ -33,7 +33,6 @@ class QgsProject;
 class CORE_EXPORT QgsRelationContext
 {
   public:
-
     /**
      * Constructor for QgsRelationContext.
      */
@@ -51,8 +50,6 @@ class CORE_EXPORT QgsRelationContext
 
   private:
     QgsProject *mProject = nullptr;
-
 };
 
 #endif // QGSRELATIONCONTEXT_H
-

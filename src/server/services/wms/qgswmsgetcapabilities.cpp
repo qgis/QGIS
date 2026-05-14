@@ -40,6 +40,10 @@
 #include "qgsvectorlayer.h"
 #include "qgswmsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWms
 {
   namespace
@@ -55,11 +59,21 @@ namespace QgsWms
 
     void appendCrsElementToLayer( QDomDocument &doc, QDomElement &layerElement, const QDomElement &precedingElement, const QString &crsText );
 
-    void appendCrsElementsToLayer( QDomDocument &doc, QDomElement &layerElement, const QStringList &crsList, const QStringList &constrainedCrsList );
+    void appendCrsElementsToLayer( QDomDocument &doc, QDomElement &layerElement, const QStringList &crsList, const QStringList &constrainedCrsList, bool hasEarthCrs = true );
 
     void appendLayerStyles( QDomDocument &doc, QDomElement &layerElem, const QgsWmsLayerInfos &layerInfos, const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *settings );
 
-    void appendLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings, QList<QgsDateTimeRange> &parentDateRanges );
+    void appendLayersFromTreeGroup(
+      QDomDocument &doc,
+      QDomElement &parentLayer,
+      QgsServerInterface *serverIface,
+      const QgsProject *project,
+      const QgsWmsRequest &request,
+      const QgsLayerTreeGroup *layerTreeGroup,
+      const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos,
+      bool projectSettings,
+      QList<QgsDateTimeRange> &parentDateRanges
+    );
 
     void addKeywordListElement( const QgsProject *project, QDomDocument &doc, QDomElement &parent );
   } // namespace
@@ -160,7 +174,9 @@ namespace QgsWms
 
     if ( request.wmsParameters().version() == "1.1.1"_L1 )
     {
-      doc = QDomDocument( u"WMT_MS_Capabilities SYSTEM 'http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd'"_s ); //WMS 1.1.1 needs DOCTYPE  "SYSTEM http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
+      doc = QDomDocument(
+        u"WMT_MS_Capabilities SYSTEM 'http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd'"_s
+      ); //WMS 1.1.1 needs DOCTYPE  "SYSTEM http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
       doc.appendChild( xmlDeclaration );
       wmsCapabilitiesElement = doc.createElement( u"WMT_MS_Capabilities"_s /*wms:WMS_Capabilities*/ );
     }
@@ -209,9 +225,7 @@ namespace QgsWms
       capabilityElement.appendChild( getWFSLayersElement( doc, project ) );
     }
 
-    capabilityElement.appendChild(
-      getLayersAndStylesCapabilitiesElement( doc, serverIface, project, request, projectSettings )
-    );
+    capabilityElement.appendChild( getLayersAndStylesCapabilitiesElement( doc, serverIface, project, request, projectSettings ) );
 
     if ( projectSettings )
     {
@@ -753,19 +767,26 @@ namespace QgsWms
     return wfsLayersElem;
   }
 
-  void handleLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings, QList<QgsDateTimeRange> &parentDateRanges )
+  void handleLayersFromTreeGroup(
+    QDomDocument &doc,
+    QDomElement &parentLayer,
+    QgsServerInterface *serverIface,
+    const QgsProject *project,
+    const QgsWmsRequest &request,
+    const QgsLayerTreeGroup *layerTreeGroup,
+    const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos,
+    bool projectSettings,
+    QList<QgsDateTimeRange> &parentDateRanges
+  )
   {
     const auto layerIds = layerTreeGroup->findLayerIds();
 
-    parentLayer.setAttribute(
-      u"queryable"_s,
-      hasQueryableLayers( layerIds, wmsLayerInfos ) ? u"1"_s : u"0"_s
-    );
+    parentLayer.setAttribute( u"queryable"_s, hasQueryableLayers( layerIds, wmsLayerInfos ) ? u"1"_s : u"0"_s );
 
     const QgsRectangle wgs84BoundingRect = combineWgs84BoundingRect( layerIds, wmsLayerInfos );
     QMap<QString, QgsRectangle> crsExtents = combineCrsExtents( layerIds, wmsLayerInfos );
 
-    appendCrsElementsToLayer( doc, parentLayer, crsExtents.keys(), QStringList() );
+    appendCrsElementsToLayer( doc, parentLayer, crsExtents.keys(), QStringList(), !wgs84BoundingRect.isNull() );
     appendLayerWgs84BoundingRect( doc, parentLayer, wgs84BoundingRect );
     appendLayerCrsExtents( doc, parentLayer, crsExtents );
 
@@ -843,42 +864,34 @@ namespace QgsWms
     {
       const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
 
-      // Get WMS WGS84 bounding rectangle
+      // Get WMS WGS84 bounding rectangle (only meaningful for Earth-based CRS)
       QgsRectangle wmsWgs84BoundingRect;
-      try
+      if ( project->crs().isEarthCrs() )
       {
-        wmsWgs84BoundingRect = QgsWmsLayerInfos::transformExtent(
-          wmsExtent, project->crs(), wgs84, project->transformContext(), true
-        );
-      }
-      catch ( QgsCsException &cse )
-      {
-        QgsMessageLog::logMessage(
-          u"Error transforming extent: %1"_s.arg( cse.what() ),
-          u"Server"_s,
-          Qgis::MessageLevel::Warning
-        );
+        try
+        {
+          wmsWgs84BoundingRect = QgsWmsLayerInfos::transformExtent( wmsExtent, project->crs(), wgs84, project->transformContext(), true );
+        }
+        catch ( QgsCsException &cse )
+        {
+          QgsMessageLog::logMessage( u"Error transforming extent: %1"_s.arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
+        }
       }
 
       // Get WMS extents in output CRSes
       QMap<QString, QgsRectangle> wmsCrsExtents;
       try
       {
-        wmsCrsExtents = QgsWmsLayerInfos::transformExtentToCrsList(
-          wmsExtent, project->crs(), outputCrsList, project->transformContext()
-        );
+        wmsCrsExtents = QgsWmsLayerInfos::transformExtentToCrsList( wmsExtent, project->crs(), outputCrsList, project->transformContext() );
       }
       catch ( QgsCsException &cse )
       {
         QgsMessageLog::logMessage( u"Error transforming extent: %1"_s.arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
       }
 
-      layerParentElem.setAttribute(
-        u"queryable"_s,
-        hasQueryableLayers( projectLayerTreeRoot->findLayerIds(), wmsLayerInfos ) ? u"1"_s : u"0"_s
-      );
+      layerParentElem.setAttribute( u"queryable"_s, hasQueryableLayers( projectLayerTreeRoot->findLayerIds(), wmsLayerInfos ) ? u"1"_s : u"0"_s );
 
-      appendCrsElementsToLayer( doc, layerParentElem, wmsCrsExtents.keys(), QStringList() );
+      appendCrsElementsToLayer( doc, layerParentElem, wmsCrsExtents.keys(), QStringList(), project->crs().isEarthCrs() );
       appendLayerWgs84BoundingRect( doc, layerParentElem, wmsWgs84BoundingRect );
       appendLayerCrsExtents( doc, layerParentElem, wmsCrsExtents );
 
@@ -1014,7 +1027,17 @@ namespace QgsWms
       }
     }
 
-    void writeLegendUrl( QDomDocument &doc, QDomElement &styleElem, const QString &legendUrl, const QString &legendUrlFormat, const QString &name, const QString &styleName, const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *settings )
+    void writeLegendUrl(
+      QDomDocument &doc,
+      QDomElement &styleElem,
+      const QString &legendUrl,
+      const QString &legendUrlFormat,
+      const QString &name,
+      const QString &styleName,
+      const QgsProject *project,
+      const QgsWmsRequest &request,
+      const QgsServerSettings *settings
+    )
     {
       // QString LegendURL for explicit layerbased GetLegendGraphic request
       QDomElement getLayerLegendGraphicElem = doc.createElement( u"LegendURL"_s );
@@ -1094,8 +1117,9 @@ namespace QgsWms
       // we write a TIME dimension even if dateRanges is empty. Not sure this is appropriate but
       // it was like that from the beginning so better keep it that way to avoid regression on client side
 
-      const bool hasDateTime = std::any_of( dateRanges.constBegin(), dateRanges.constEnd(), []( const QgsDateTimeRange &r ) { return r.begin().time() != QTime( 0, 0 )
-                                                                                                                                     || ( !r.isInstant() && r.end().time() != QTime( 0, 0 ) ); } );
+      const bool hasDateTime = std::any_of( dateRanges.constBegin(), dateRanges.constEnd(), []( const QgsDateTimeRange &r ) {
+        return r.begin().time() != QTime( 0, 0 ) || ( !r.isInstant() && r.end().time() != QTime( 0, 0 ) );
+      } );
 
       const QString dateFormat = hasDateTime ? u"yyyy-MM-ddTHH:mm:ss"_s : u"yyyy-MM-dd"_s;
 
@@ -1120,7 +1144,17 @@ namespace QgsWms
       return !hasDateTime;
     }
 
-    void appendLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings, QList<QgsDateTimeRange> &parentDateRanges )
+    void appendLayersFromTreeGroup(
+      QDomDocument &doc,
+      QDomElement &parentLayer,
+      QgsServerInterface *serverIface,
+      const QgsProject *project,
+      const QgsWmsRequest &request,
+      const QgsLayerTreeGroup *layerTreeGroup,
+      const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos,
+      bool projectSettings,
+      QList<QgsDateTimeRange> &parentDateRanges
+    )
     {
       const QString version = request.wmsParameters().version();
 
@@ -1213,10 +1247,7 @@ namespace QgsWms
 
           const QgsWmsLayerInfos &layerInfos = wmsLayerInfos[treeLayer->layerId()];
 
-          layerElem.setAttribute(
-            u"queryable"_s,
-            layerInfos.queryable ? u"1"_s : u"0"_s
-          );
+          layerElem.setAttribute( u"queryable"_s, layerInfos.queryable ? u"1"_s : u"0"_s );
 
           QDomElement nameElem = doc.createElement( u"Name"_s );
           QDomText nameText = doc.createTextNode( layerInfos.name );
@@ -1228,7 +1259,7 @@ namespace QgsWms
           // Append not null Bounding rectangles
           if ( !layerInfos.wgs84BoundingRect.isNull() )
           {
-            appendCrsElementsToLayer( doc, layerElem, layerInfos.crsExtents.keys(), QStringList() );
+            appendCrsElementsToLayer( doc, layerElem, layerInfos.crsExtents.keys(), QStringList(), l->crs().isEarthCrs() );
 
             appendLayerWgs84BoundingRect( doc, layerElem, layerInfos.wgs84BoundingRect );
 
@@ -1354,9 +1385,7 @@ namespace QgsWms
           }
 
           // Add WMS time dimension if not already added
-          if ( !timeDimensionAdded
-               && l->temporalProperties()
-               && l->temporalProperties()->isActive() )
+          if ( !timeDimensionAdded && l->temporalProperties() && l->temporalProperties()->isActive() )
           {
             // TODO: set "default" (reference value)
 
@@ -1406,7 +1435,7 @@ namespace QgsWms
       }
     }
 
-    void appendCrsElementsToLayer( QDomDocument &doc, QDomElement &layerElement, const QStringList &crsList, const QStringList &constrainedCrsList )
+    void appendCrsElementsToLayer( QDomDocument &doc, QDomElement &layerElement, const QStringList &crsList, const QStringList &constrainedCrsList, bool hasEarthCrs )
     {
       if ( layerElement.isNull() )
       {
@@ -1419,8 +1448,7 @@ namespace QgsWms
       QDomElement titleElement = layerElement.firstChildElement( u"Title"_s );
       QDomElement abstractElement = layerElement.firstChildElement( u"Abstract"_s );
       QDomElement keywordListElement = layerElement.firstChildElement( u"KeywordList"_s );
-      QDomElement CRSPrecedingElement = !keywordListElement.isNull() ? keywordListElement : !abstractElement.isNull() ? abstractElement
-                                                                                                                      : titleElement;
+      QDomElement CRSPrecedingElement = !keywordListElement.isNull() ? keywordListElement : !abstractElement.isNull() ? abstractElement : titleElement;
 
       if ( CRSPrecedingElement.isNull() )
       {
@@ -1445,9 +1473,9 @@ namespace QgsWms
         }
       }
 
-      // Support for CRS:84 is mandatory (equals EPSG:4326 with reversed axis)
+      // Support for CRS:84 is mandatory for Earth-based layers (equals EPSG:4326 with reversed axis)
       // https://github.com/opengeospatial/ets-wms13/blob/47155399c09b200cb21382874fdb21d5fae4ab6e/src/site/markdown/index.md
-      if ( version == "1.3.0"_L1 )
+      if ( version == "1.3.0"_L1 && hasEarthCrs )
       {
         appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, QString( "CRS:84" ) );
       }
@@ -1735,9 +1763,7 @@ namespace QgsWms
             QVariant wmsPublishDataSourceUrl = currentLayer->customProperty( u"WMSPublishDataSourceUrl"_s, false );
             if ( wmsPublishDataSourceUrl.toBool() )
             {
-              bool tiled = qobject_cast<const QgsRasterDataProvider *>( provider )
-                             ? !qobject_cast<const QgsRasterDataProvider *>( provider )->nativeResolutions().isEmpty()
-                             : false;
+              bool tiled = qobject_cast<const QgsRasterDataProvider *>( provider ) ? !qobject_cast<const QgsRasterDataProvider *>( provider )->nativeResolutions().isEmpty() : false;
 
               QDomElement dataSourceElem = doc.createElement( tiled ? u"WMTSDataSource"_s : u"WMSDataSource"_s );
               QDomText dataSourceUri = doc.createTextNode( provider->dataSourceUri() );

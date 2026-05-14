@@ -20,12 +20,18 @@
 ///@cond NOT_STABLE
 
 
-QgsModelUndoCommand::QgsModelUndoCommand( QgsProcessingModelAlgorithm *model, const QString &text, int id, QUndoCommand *parent )
+QgsModelUndoCommand::QgsModelUndoCommand( QgsProcessingModelAlgorithm *model, const QString &text, CommandOperation id, QUndoCommand *parent )
   : QUndoCommand( text, parent )
   , mModel( model )
-  , mId( id )
+  , mOperation( id )
 {
   mBeforeState = model->toVariant();
+}
+
+QgsModelUndoCommand::QgsModelUndoCommand( QgsProcessingModelAlgorithm *model, const QString &text, const QString &idString, QUndoCommand *parent )
+  : QgsModelUndoCommand( model, text, CommandOperation::Unknown, parent )
+{
+  mIdString = idString;
 }
 
 void QgsModelUndoCommand::saveAfterState()
@@ -35,7 +41,10 @@ void QgsModelUndoCommand::saveAfterState()
 
 int QgsModelUndoCommand::id() const
 {
-  return mId;
+  // QUndoStack::push() will only try to merge two commands if they have the same ID, and the ID is not -1.
+  // so we always return the same (non -1) value here, and implement the actual merge compatibility logic in
+  // mergeWith
+  return 0;
 }
 
 void QgsModelUndoCommand::undo()
@@ -69,11 +78,21 @@ void QgsModelUndoCommand::redo()
 
 bool QgsModelUndoCommand::mergeWith( const QUndoCommand *other )
 {
-  if ( other->id() == 0 || other->id() != mId )
-    return false;
-
   if ( const QgsModelUndoCommand *c = dynamic_cast<const QgsModelUndoCommand *>( other ) )
   {
+    bool canMerge = false;
+    if ( !c->idString().isEmpty() && c->idString() == mIdString )
+    {
+      canMerge = true;
+    }
+    else if ( c->operation() != CommandOperation::Unknown && c->operation() == mOperation )
+    {
+      canMerge = true;
+    }
+
+    if ( !canMerge )
+      return false;
+
     mAfterState = c->mAfterState;
     return true;
   }

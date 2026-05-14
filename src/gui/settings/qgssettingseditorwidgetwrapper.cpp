@@ -20,9 +20,12 @@
 #include "qgssettingsentry.h"
 
 #include <QDialog>
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgssettingseditorwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetWrapper::fromWidget( const QWidget *widget )
 {
@@ -37,8 +40,7 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetWrapper::fromWidget( cons
 
 QgsSettingsEditorWidgetWrapper::QgsSettingsEditorWidgetWrapper( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QWidget *QgsSettingsEditorWidgetWrapper::createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent )
 {
@@ -69,9 +71,7 @@ void QgsSettingsEditorWidgetWrapper::configureAutomaticUpdate( QDialog *dialog )
   setWidgetFromSetting();
   if ( dialog )
   {
-    QObject::connect( dialog, &QDialog::accepted, this, [this]() {
-      setSettingFromWidget();
-    } );
+    QObject::connect( dialog, &QDialog::accepted, this, [this]() { setSettingFromWidget(); } );
   }
   else
   {

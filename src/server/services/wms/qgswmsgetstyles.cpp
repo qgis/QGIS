@@ -31,6 +31,10 @@
 #include "qgswmsrendercontext.h"
 #include "qgswmsrequest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWms
 {
 

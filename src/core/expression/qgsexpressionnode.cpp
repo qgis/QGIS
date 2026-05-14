@@ -69,9 +69,7 @@ QgsExpressionNode::QgsExpressionNode( const QgsExpressionNode &other )
   , mHasCachedValue( other.mHasCachedValue )
   , mCachedStaticValue( other.mCachedStaticValue )
   , mCompiledSimplifiedNode( other.mCompiledSimplifiedNode ? other.mCompiledSimplifiedNode->clone() : nullptr )
-{
-
-}
+{}
 
 QgsExpressionNode &QgsExpressionNode::operator=( const QgsExpressionNode &other )
 {

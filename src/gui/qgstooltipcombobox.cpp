@@ -26,8 +26,7 @@
 
 QgsToolTipComboBox::QgsToolTipComboBox( QWidget *parent )
   : QComboBox( parent )
-{
-}
+{}
 
 bool QgsToolTipComboBox::event( QEvent *event )
 {

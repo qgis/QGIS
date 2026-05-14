@@ -20,8 +20,11 @@
 #include "qgstiledscenedataitems.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgstiledsceneprovidermetadata.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -30,8 +33,7 @@
 
 QgsTiledSceneProviderMetadata::QgsTiledSceneProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsTiledSceneProviderMetadata::icon() const
 {
@@ -40,10 +42,7 @@ QIcon QgsTiledSceneProviderMetadata::icon() const
 
 QList<QgsDataItemProvider *> QgsTiledSceneProviderMetadata::dataItemProviders() const
 {
-  return
-  {
-    new QgsTiledSceneDataItemProvider()
-  };
+  return { new QgsTiledSceneDataItemProvider() };
 }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsTiledSceneProviderMetadata::connections( bool cached )

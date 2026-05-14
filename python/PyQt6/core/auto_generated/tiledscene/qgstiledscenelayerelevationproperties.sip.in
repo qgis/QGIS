@@ -23,7 +23,6 @@ Tiled scene layer specific subclass of
 #include "qgstiledscenelayerelevationproperties.h"
 %End
   public:
-
     QgsTiledSceneLayerElevationProperties( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsTiledSceneLayerElevationProperties, with the
@@ -43,7 +42,6 @@ specified ``parent`` object.
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
     virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
-
 
 };
 

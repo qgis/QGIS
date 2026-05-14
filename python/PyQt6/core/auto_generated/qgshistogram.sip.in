@@ -23,7 +23,6 @@ Calculator for a numeric histogram from a list of values.
 #include "qgshistogram.h"
 %End
   public:
-
     QgsHistogram();
 
     virtual ~QgsHistogram();

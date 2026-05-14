@@ -9,7 +9,9 @@
 
 
 
-class QgsCompoundCurve: QgsCurve
+
+
+class QgsCompoundCurve : QgsCurve
 {
 %Docstring(signature="appended")
 Compound curve geometry type.

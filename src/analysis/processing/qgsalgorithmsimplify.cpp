@@ -21,6 +21,10 @@
 
 #include "qgsmaptopixelgeometrysimplifier.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsSimplifyAlgorithm::~QgsSimplifyAlgorithm() = default;
@@ -57,10 +61,12 @@ QString QgsSimplifyAlgorithm::outputName() const
 
 QString QgsSimplifyAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm simplifies the geometries in a line or polygon layer. It creates a new layer "
-                      "with the same features as the ones in the input layer, but with geometries containing a lower number of vertices.\n\n"
-                      "The algorithm gives a choice of simplification methods, including distance based "
-                      "(the \"Douglas-Peucker\" algorithm), area based (\"Visvalingam\" algorithm) and snapping geometries to a grid." );
+  return QObject::tr(
+    "This algorithm simplifies the geometries in a line or polygon layer. It creates a new layer "
+    "with the same features as the ones in the input layer, but with geometries containing a lower number of vertices.\n\n"
+    "The algorithm gives a choice of simplification methods, including distance based "
+    "(the \"Douglas-Peucker\" algorithm), area based (\"Visvalingam\" algorithm) and snapping geometries to a grid."
+  );
 }
 
 QString QgsSimplifyAlgorithm::shortDescription() const
@@ -81,15 +87,9 @@ QList<int> QgsSimplifyAlgorithm::inputLayerTypes() const
 void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
 {
   QStringList methods;
-  methods << QObject::tr( "Distance (Douglas-Peucker)" )
-          << QObject::tr( "Snap to grid" )
-          << QObject::tr( "Area (Visvalingam)" );
+  methods << QObject::tr( "Distance (Douglas-Peucker)" ) << QObject::tr( "Snap to grid" ) << QObject::tr( "Area (Visvalingam)" );
 
-  addParameter( new QgsProcessingParameterEnum(
-    u"METHOD"_s,
-    QObject::tr( "Simplification method" ),
-    methods, false, 0
-  ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Simplification method" ), methods, false, 0 ) );
   auto tolerance = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), 1.0, u"INPUT"_s, false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Tolerance"_s, QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
@@ -111,7 +111,7 @@ bool QgsSimplifyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsP
   return true;
 }
 
-QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
+QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -123,7 +123,7 @@ QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, 
       double tolerance = mTolerance;
       if ( mDynamicTolerance )
         tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), tolerance );
-      outputGeometry = inputGeometry.simplify( tolerance );
+      outputGeometry = inputGeometry.simplify( tolerance, feedback );
     }
     else
     {

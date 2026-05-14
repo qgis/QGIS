@@ -1,4 +1,6 @@
 set(QGIS_GUI_SRCS
+  3d/qgsmaterialwidget.cpp
+
   actions/qgsactionmenu.cpp
   actions/qgsmaplayeraction.cpp
   actions/qgsmaplayeractioncontext.cpp
@@ -124,9 +126,12 @@ set(QGIS_GUI_SRCS
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
   annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgsannotationmaptool.cpp
   annotations/qgscreateannotationitemmaptool.cpp
   annotations/qgscreateannotationitemmaptool_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
+  annotations/qgsmaptoolselectannotation.cpp
+  annotations/qgsmaptoolselectannotationmousehandles.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -358,8 +363,13 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolcapturelayergeometry.cpp
   maptools/qgsmaptoolcapturerubberband.cpp
   maptools/qgsmaptooldigitizefeature.cpp
+
+  maptools/qgsbezierdata.cpp
+  maptools/qgsbeziermarker.cpp
+
   maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooleditblanksegments.cpp
+  maptools/qgsmaptoolextraitem.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp
   maptools/qgsmaptoolidentify.cpp
@@ -404,6 +414,7 @@ set(QGIS_GUI_SRCS
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
   pointcloud/qgspointcloudextentrendererwidget.cpp
+  pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayersaveasdialog.cpp
   pointcloud/qgspointcloudrendererwidget.cpp
   pointcloud/qgspointcloudrendererpropertieswidget.cpp
@@ -412,7 +423,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingaggregatewidgets.cpp
   processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
-  processing/qgsprocessingalgorithmdialogbase.cpp
+  processing/qgsprocessingalgorithmwidgetbase.cpp
   processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
   processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
@@ -449,6 +460,8 @@ set(QGIS_GUI_SRCS
 
   processing/models/qgsmodelarrowitem.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
+  processing/models/qgsmodeldesignerconfigdockwidget.cpp
+  processing/models/qgsmodeldesignerconfigwidget.cpp
   processing/models/qgsmodeldesignerdialog.cpp
   processing/models/qgsmodeldesignerinputstreewidget.cpp
   processing/models/qgsmodelgraphicitem.cpp
@@ -543,6 +556,7 @@ set(QGIS_GUI_SRCS
 
   tiledscene/qgstiledsceneconnectiondialog.cpp
   tiledscene/qgstiledscenedataitemguiprovider.cpp
+  tiledscene/qgstiledscenelayerproperties.cpp
   tiledscene/qgstiledsceneproviderguimetadata.cpp
   tiledscene/qgstiledscenerendererpropertieswidget.cpp
   tiledscene/qgstiledscenerendererwidget.cpp
@@ -1098,6 +1112,8 @@ set(QGIS_GUI_HDRS
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
+  3d/qgsmaterialwidget.h
+
   actions/qgsactionmenu.h
   actions/qgsmaplayeraction.h
   actions/qgsmaplayeractioncontext.h
@@ -1107,9 +1123,12 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
+  annotations/qgsannotationmaptool.h
   annotations/qgscreateannotationitemmaptool.h
   annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h
+  annotations/qgsmaptoolselectannotation.h
+  annotations/qgsmaptoolselectannotationmousehandles.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
@@ -1369,9 +1388,12 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolcapture.h
   maptools/qgsmaptoolcapturelayergeometry.h
   maptools/qgsmaptoolcapturerubberband.h
+  maptools/qgsbezierdata.h
+  maptools/qgsbeziermarker.h
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
   maptools/qgsmaptooleditblanksegments.h
+  maptools/qgsmaptoolextraitem.h
   maptools/qgsmaptoolemitpoint.h
   maptools/qgsmaptoolextent.h
   maptools/qgsmaptoolidentify.h
@@ -1416,6 +1438,7 @@ set(QGIS_GUI_HDRS
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h
   pointcloud/qgspointcloudextentrendererwidget.h
+  pointcloud/qgspointcloudlayerproperties.h
   pointcloud/qgspointcloudlayersaveasdialog.h
   pointcloud/qgspointcloudrendererwidget.h
   pointcloud/qgspointcloudrendererpropertieswidget.h
@@ -1424,7 +1447,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingaggregatewidgets.h
   processing/qgsprocessingaggregatewidgetwrapper.h
   processing/qgsprocessingalgorithmconfigurationwidget.h
-  processing/qgsprocessingalgorithmdialogbase.h
+  processing/qgsprocessingalgorithmwidgetbase.h
   processing/qgsprocessingbatchalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
@@ -1461,6 +1484,8 @@ set(QGIS_GUI_HDRS
 
   processing/models/qgsmodelarrowitem.h
   processing/models/qgsmodelcomponentgraphicitem.h
+  processing/models/qgsmodeldesignerconfigdockwidget.h
+  processing/models/qgsmodeldesignerconfigwidget.h
   processing/models/qgsmodeldesignerdialog.h
   processing/models/qgsmodeldesignerinputstreewidget.h
   processing/models/qgsmodelgraphicitem.h
@@ -1616,6 +1641,7 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolselectordialog.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
+  symbology/qgstemplatedcategorizedrendererwidget_p.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 
   sensor/qgssensorguiregistry.h
@@ -1644,6 +1670,7 @@ set(QGIS_GUI_HDRS
 
   tiledscene/qgstiledsceneconnectiondialog.h
   tiledscene/qgstiledscenedataitemguiprovider.h
+  tiledscene/qgstiledscenelayerproperties.h
   tiledscene/qgstiledsceneproviderguimetadata.h
   tiledscene/qgstiledscenerendererpropertieswidget.h
   tiledscene/qgstiledscenerendererwidget.h
@@ -1905,6 +1932,7 @@ target_include_directories(qgis_gui SYSTEM PUBLIC
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/3d
   ${CMAKE_SOURCE_DIR}/src/gui/actions
   ${CMAKE_SOURCE_DIR}/src/gui/annotations
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig

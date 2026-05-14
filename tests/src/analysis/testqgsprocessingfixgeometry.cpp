@@ -20,13 +20,18 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsProcessingFixGeometry : public QgsTest
 {
     Q_OBJECT
 
   public:
     TestQgsProcessingFixGeometry()
-      : QgsTest( u"Processing Algorithms Fix Geometry"_s ) {}
+      : QgsTest( u"Processing Algorithms Fix Geometry"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -67,11 +72,6 @@ void TestQgsProcessingFixGeometry::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
@@ -143,9 +143,7 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
   QVERIFY( sourceLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryangle"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryangle"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -228,9 +226,7 @@ void TestQgsProcessingFixGeometry::fixMultipartAlg()
   QVERIFY( sourceLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometrymultipart"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometrymultipart"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -291,10 +287,7 @@ void TestQgsProcessingFixGeometry::fixDuplicateNodesAlg_data()
   QTest::newRow( "Lines" )
     << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), u"lines"_s, u"ogr"_s )
     << new QgsVectorLayer( mDataDir.absoluteFilePath( "remove_duplicated_nodes.gpkg|layername=errors_layer_line" ), u"lines vertex to delete"_s, u"ogr"_s )
-    << ( QStringList()
-         << u"Delete duplicate node"_s
-         << u"Delete duplicate node"_s
-         << u"Delete duplicate node"_s )
+    << ( QStringList() << u"Delete duplicate node"_s << u"Delete duplicate node"_s << u"Delete duplicate node"_s )
     << linesFinalVertexCount;
 
   QTest::newRow( "Polygon" )
@@ -315,9 +308,7 @@ void TestQgsProcessingFixGeometry::fixDuplicateNodesAlg()
   QVERIFY( sourceLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryduplicatenodes"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryduplicatenodes"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -420,9 +411,7 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
   QVERIFY( sourceLayer.isValid() );
   QVERIFY( errorsLayer.isValid() );
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryarea"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryarea"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -467,32 +456,14 @@ void TestQgsProcessingFixGeometry::fixGapAlg_data()
   QTest::addColumn<int>( "method" );
 
   QTest::newRow( "Add to longest shared edge" )
-    << ( QStringList()
-         << u"Add to longest shared edge"_s
-         << u"Add to longest shared edge"_s
-         << u"Add to longest shared edge"_s
-         << u"Add to longest shared edge"_s
-         << u"Add to longest shared edge"_s )
+    << ( QStringList() << u"Add to longest shared edge"_s << u"Add to longest shared edge"_s << u"Add to longest shared edge"_s << u"Add to longest shared edge"_s << u"Add to longest shared edge"_s )
     << 6
     << 0;
 
-  QTest::newRow( "Create new feature" )
-    << ( QStringList()
-         << u"Create new feature"_s
-         << u"Create new feature"_s
-         << u"Create new feature"_s
-         << u"Create new feature"_s
-         << u"Create new feature"_s )
-    << 11
-    << 1;
+  QTest::newRow( "Create new feature" ) << ( QStringList() << u"Create new feature"_s << u"Create new feature"_s << u"Create new feature"_s << u"Create new feature"_s << u"Create new feature"_s ) << 11 << 1;
 
   QTest::newRow( "Add to largest neighbouring area" )
-    << ( QStringList()
-         << u"Add to largest neighbouring area"_s
-         << u"Add to largest neighbouring area"_s
-         << u"Add to largest neighbouring area"_s
-         << u"Add to largest neighbouring area"_s
-         << u"Add to largest neighbouring area"_s )
+    << ( QStringList() << u"Add to largest neighbouring area"_s << u"Add to largest neighbouring area"_s << u"Add to largest neighbouring area"_s << u"Add to largest neighbouring area"_s << u"Add to largest neighbouring area"_s )
     << 6
     << 2;
 }
@@ -515,9 +486,7 @@ void TestQgsProcessingFixGeometry::fixGapAlg()
   QFETCH( int, method );
   QFETCH( int, featureCount );
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometrygap"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometrygap"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -621,9 +590,7 @@ void TestQgsProcessingFixGeometry::fixSelfIntersectionAlg()
   QVERIFY( sourceLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryselfintersection"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryselfintersection"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -667,9 +634,7 @@ void TestQgsProcessingFixGeometry::fixHoleAlg()
   QVERIFY( errorsLayer.isValid() );
   const QStringList reportList = QStringList() << u"Remove hole"_s;
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryhole"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryhole"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -710,13 +675,10 @@ void TestQgsProcessingFixGeometry::fixOverlapAlg()
   QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "remove_overlaps.gpkg|layername=overlap_errors" ), QString(), u"ogr"_s );
   QVERIFY( sourceLayer.isValid() );
   QVERIFY( errorsLayer.isValid() );
-  const QStringList reportList = QStringList()
-                                 << u"Remove overlapping area from neighboring polygon with shortest shared edge"_s
-                                 << u"Remove overlapping area from neighboring polygon with shortest shared edge"_s;
+  const QStringList reportList
+    = QStringList() << u"Remove overlapping area from neighboring polygon with shortest shared edge"_s << u"Remove overlapping area from neighboring polygon with shortest shared edge"_s;
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryoverlap"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometryoverlap"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -759,16 +721,9 @@ void TestQgsProcessingFixGeometry::fixMissingVertexAlg()
   QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "add_missing_vertex.gpkg|layername=errors_layer" ), QString(), u"ogr"_s );
   QVERIFY( sourceLayer.isValid() );
   QVERIFY( errorsLayer.isValid() );
-  const QStringList reportList = QStringList()
-                                 << u"Add missing vertex"_s
-                                 << u"Add missing vertex"_s
-                                 << u"Add missing vertex"_s
-                                 << u"Add missing vertex"_s
-                                 << u"Add missing vertex"_s;
+  const QStringList reportList = QStringList() << u"Add missing vertex"_s << u"Add missing vertex"_s << u"Add missing vertex"_s << u"Add missing vertex"_s << u"Add missing vertex"_s;
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometrymissingvertex"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometrymissingvertex"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
@@ -812,16 +767,12 @@ void TestQgsProcessingFixGeometry::fixDeleteFeaturesAlg_data()
   QTest::newRow( "Points" )
     << new QgsVectorLayer( testDataDir.absoluteFilePath( "point_layer.shp" ), u"point layer"_s, u"ogr"_s )
     << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_features.gpkg|layername=points_to_delete" ), u"points to delete"_s, u"ogr"_s )
-    << ( QStringList()
-         << u"Feature deleted"_s
-         << u"Feature deleted"_s );
+    << ( QStringList() << u"Feature deleted"_s << u"Feature deleted"_s );
 
   QTest::newRow( "Lines" )
     << new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), u"line layer"_s, u"ogr"_s )
     << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_features.gpkg|layername=lines_to_delete" ), u"lines to delete"_s, u"ogr"_s )
-    << ( QStringList()
-         << u"Feature deleted"_s
-         << u"Feature deleted"_s );
+    << ( QStringList() << u"Feature deleted"_s << u"Feature deleted"_s );
 
   QTest::newRow( "Polygons" )
     << new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), u"polygon layer"_s, u"ogr"_s )
@@ -854,9 +805,7 @@ void TestQgsProcessingFixGeometry::fixDeleteFeaturesAlg()
   QVERIFY( sourceLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
 
-  const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometrydeletefeatures"_s )
-  );
+  const std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:fixgeometrydeletefeatures"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;

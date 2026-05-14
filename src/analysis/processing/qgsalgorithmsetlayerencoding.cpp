@@ -20,6 +20,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSetLayerEncodingAlgorithm::name() const
@@ -49,9 +53,11 @@ QString QgsSetLayerEncodingAlgorithm::groupId() const
 
 QString QgsSetLayerEncodingAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sets the encoding used for reading a layer's attributes. No permanent changes "
-                      "are made to the layer, rather it affects only how the layer is read during the current session.\n\n"
-                      "Changing the encoding is only supported for some vector layer data sources." );
+  return QObject::tr(
+    "This algorithm sets the encoding used for reading a layer's attributes. No permanent changes "
+    "are made to the layer, rather it affects only how the layer is read during the current session.\n\n"
+    "Changing the encoding is only supported for some vector layer data sources."
+  );
 }
 
 QString QgsSetLayerEncodingAlgorithm::shortDescription() const

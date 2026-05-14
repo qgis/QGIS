@@ -92,8 +92,7 @@ class CORE_EXPORT QgsVectorTileWriter
         //! Constructs an entry for a vector layer
         explicit Layer( QgsVectorLayer *layer )
           : mLayer( layer )
-        {
-        }
+        {}
 
         //! Returns vector layer of this entry
         QgsVectorLayer *layer() const { return mLayer; }

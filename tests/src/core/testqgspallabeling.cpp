@@ -26,13 +26,16 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsPalLabeling : public QgsTest
 {
     Q_OBJECT
 
   public:
     TestQgsPalLabeling()
-      : QgsTest( u"PAL labeling Tests"_s, u"pallabeling"_s ) {}
+      : QgsTest( u"PAL labeling Tests"_s, u"pallabeling"_s )
+    {}
 
   private slots:
     void cleanupTestCase(); // will be called after the last testfunction was executed.

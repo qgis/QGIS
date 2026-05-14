@@ -23,6 +23,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * Unit tests for QgsAuthConfig

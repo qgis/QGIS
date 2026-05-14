@@ -38,8 +38,11 @@
 #include <QImage>
 #include <QMessageBox>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsgrassrasterprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define ERR( message ) QGS_ERROR_MESSAGE( message, "GRASS provider" )
 #define QGS_ERROR( message ) QgsError( message, "GRASS provider" )
@@ -247,7 +250,12 @@ bool QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle const &viewExte
   arguments.append( "map=" + mMapName + "@" + mMapset );
 
   arguments.append( ( u"window=%1,%2,%3,%4,%5,%6"_s
-                        .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ), QgsRasterBlock::printValue( viewExtent.yMinimum() ), QgsRasterBlock::printValue( viewExtent.xMaximum() ), QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
+                        .arg(
+                          QgsRasterBlock::printValue( viewExtent.xMinimum() ),
+                          QgsRasterBlock::printValue( viewExtent.yMinimum() ),
+                          QgsRasterBlock::printValue( viewExtent.xMaximum() ),
+                          QgsRasterBlock::printValue( viewExtent.yMaximum() )
+                        )
                         .arg( pixelWidth )
                         .arg( pixelHeight ) ) );
   arguments.append( u"format=value"_s );
@@ -329,7 +337,13 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, Qgis::Ras
   QgsDebugMsgLevel( QString( "count = %1" ).arg( myRasterBandStats.elementCount ), 2 );
   QgsDebugMsgLevel( QString( "stdev = %1" ).arg( myRasterBandStats.stdDev ), 2 );
 
-  myRasterBandStats.statsGathered = Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max | Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::Sum | Qgis::RasterBandStatistic::SumOfSquares | Qgis::RasterBandStatistic::StdDev;
+  myRasterBandStats.statsGathered = Qgis::RasterBandStatistic::Min
+                                    | Qgis::RasterBandStatistic::Max
+                                    | Qgis::RasterBandStatistic::Range
+                                    | Qgis::RasterBandStatistic::Mean
+                                    | Qgis::RasterBandStatistic::Sum
+                                    | Qgis::RasterBandStatistic::SumOfSquares
+                                    | Qgis::RasterBandStatistic::StdDev;
 
   mStatistics.append( myRasterBandStats );
   return myRasterBandStats;
@@ -396,7 +410,10 @@ QgsRectangle QgsGrassRasterProvider::extent() const
 }
 
 // this is only called once when statistics are calculated
-int QgsGrassRasterProvider::xBlockSize() const { return mCols; }
+int QgsGrassRasterProvider::xBlockSize() const
+{
+  return mCols;
+}
 int QgsGrassRasterProvider::yBlockSize() const
 {
   return mYBlockSize;
@@ -404,8 +421,14 @@ int QgsGrassRasterProvider::yBlockSize() const
 
 // TODO this should be always refreshed if raster has changed ?
 // maybe also only for stats
-int QgsGrassRasterProvider::xSize() const { return mCols; }
-int QgsGrassRasterProvider::ySize() const { return mRows; }
+int QgsGrassRasterProvider::xSize() const
+{
+  return mCols;
+}
+int QgsGrassRasterProvider::ySize() const
+{
+  return mRows;
+}
 
 QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
@@ -459,9 +482,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &poin
 
 Qgis::RasterInterfaceCapabilities QgsGrassRasterProvider::capabilities() const
 {
-  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify
-                                                 | Qgis::RasterInterfaceCapability::IdentifyValue
-                                                 | Qgis::RasterInterfaceCapability::Size;
+  Qgis::RasterInterfaceCapabilities capability = Qgis::RasterInterfaceCapability::Identify | Qgis::RasterInterfaceCapability::IdentifyValue | Qgis::RasterInterfaceCapability::Size;
   return capability;
 }
 

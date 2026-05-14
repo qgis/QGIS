@@ -22,13 +22,13 @@
 
 #include "qgspanelwidget.h"
 #include "qgsrulebased3drenderer.h"
+#include "qobjectuniqueptr.h"
 
+#include <QAbstractItemModel>
 #include <QWidget>
 
 class QgsVectorLayer;
 class QgsRuleBased3DRenderer;
-
-#include <QAbstractItemModel>
 
 
 class QgsRuleBased3DRendererModel : public QAbstractItemModel
@@ -83,12 +83,11 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
 
   public:
     QgsRuleBased3DRendererWidget( QWidget *parent = nullptr );
-    ~QgsRuleBased3DRendererWidget() override;
 
     //! load renderer from the layer
     void setLayer( QgsVectorLayer *layer );
     //! no transfer of ownership
-    QgsRuleBased3DRenderer::Rule *rootRule() { return mRootRule; }
+    QgsRuleBased3DRenderer::Rule *rootRule() { return mRootRule.get(); }
 
     void setDockMode( bool dockMode ) override;
 
@@ -110,8 +109,8 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
   private:
     QgsVectorLayer *mLayer = nullptr;
 
-    QgsRuleBased3DRenderer::Rule *mRootRule = nullptr;
-    QgsRuleBased3DRendererModel *mModel = nullptr;
+    std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule = nullptr;
+    QObjectUniquePtr<QgsRuleBased3DRendererModel> mModel = nullptr;
 
     QAction *mCopyAction = nullptr;
     QAction *mPasteAction = nullptr;

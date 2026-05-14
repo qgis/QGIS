@@ -35,7 +35,9 @@ class GUI_EXPORT QgsEncodingFileDialog : public QFileDialog
     /**
      * Constructor for QgsEncodingFileDialog
      */
-    QgsEncodingFileDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &caption = QString(), const QString &directory = QString(), const QString &filter = QString(), const QString &encoding = QString() );
+    QgsEncodingFileDialog(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &caption = QString(), const QString &directory = QString(), const QString &filter = QString(), const QString &encoding = QString()
+    );
     //! Returns a string describing the chosen encoding
     QString encoding() const;
     //! Adds a 'Cancel All' button for the user to click

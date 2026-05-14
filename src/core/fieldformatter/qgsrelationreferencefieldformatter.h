@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
 {
   public:
-
     /**
       * Default constructor of field formatter for a relation reference field.
       */
@@ -49,7 +48,6 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
     QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const override;
 
     //friend class TestQgsRelationReferenceFieldFormatter;
-
 };
 
 #endif // QGSRELATIONREFERENCEFIELDKIT_H

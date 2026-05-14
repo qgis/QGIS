@@ -32,8 +32,8 @@ class QIcon;
 */
 class QgsSpatiaLiteTableModel : public QgsAbstractDbTableModel
 {
-  Q_OBJECT public :
-
+    Q_OBJECT
+  public:
     QgsSpatiaLiteTableModel( QObject *parent = nullptr );
 
     QStringList columns() const override;
@@ -51,15 +51,9 @@ class QgsSpatiaLiteTableModel : public QgsAbstractDbTableModel
     */
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
     //! Returns the number of tables in the model
-    int tableCount() const
-    {
-      return mTableCount;
-    }
+    int tableCount() const { return mTableCount; }
     //! Sets the SQLite DB full path
-    void setSqliteDb( const QString &dbName )
-    {
-      mSqliteDb = dbName;
-    }
+    void setSqliteDb( const QString &dbName ) { mSqliteDb = dbName; }
 
   private:
     //! Number of tables in the model

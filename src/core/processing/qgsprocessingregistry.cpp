@@ -27,7 +27,11 @@
 #include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsvectorfilewriter.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
@@ -45,7 +49,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeEnum() );
   addParameterType( new QgsProcessingParameterTypeExtent() );
   addParameterType( new QgsProcessingParameterTypeMatrix() );
-  addParameterType( new QgsProcessingParameterTypeFile() ) ;
+  addParameterType( new QgsProcessingParameterTypeFile() );
   addParameterType( new QgsProcessingParameterTypeField() );
   addParameterType( new QgsProcessingParameterTypeVectorDestination() );
   addParameterType( new QgsProcessingParameterTypeRasterDestination() );
@@ -123,13 +127,10 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
   }
 
   provider->setParent( this );
-  mProviders[ provider->id()] = provider;
+  mProviders[provider->id()] = provider;
 
   mCachedInformation.clear();
-  connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, [this]
-  {
-    mCachedInformation.clear();
-  } );
+  connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, [this] { mCachedInformation.clear(); } );
 
   emit providerAdded( provider->id() );
   return true;

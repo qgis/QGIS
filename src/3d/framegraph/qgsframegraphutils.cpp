@@ -16,6 +16,7 @@
 #include "qgsframegraphutils.h"
 
 #include <QMetaEnum>
+#include <QString>
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QBlendEquation>
@@ -30,6 +31,8 @@
 #include <Qt3DRender/QSeamlessCubemap>
 #include <Qt3DRender/QSortPolicy>
 #include <Qt3DRender/QTechnique>
+
+using namespace Qt::StringLiterals;
 
 QStringList QgsFrameGraphUtils::dumpSceneGraph( const Qt3DCore::QNode *node, FgDumpContext context )
 {
@@ -50,15 +53,12 @@ QString QgsFrameGraphUtils::formatIdName( FgDumpContext context, quint64 id, con
 QString QgsFrameGraphUtils::formatIdName( FgDumpContext context, const Qt3DRender::QAbstractTexture *texture )
 {
   QString fixedName = texture->objectName().isEmpty() ? "<no_name>"_L1 : texture->objectName();
-  return "{%1[%2]/%3"_L1
-    .arg( QString::number( texture->id().id() - context.lowestId ), QString( QMetaEnum::fromType<Qt3DRender::QAbstractTexture::TextureFormat>().valueToKey( texture->format() ) ), fixedName );
+  return "{%1[%2]/%3"_L1.arg( QString::number( texture->id().id() - context.lowestId ), QString( QMetaEnum::fromType<Qt3DRender::QAbstractTexture::TextureFormat>().valueToKey( texture->format() ) ), fixedName );
 }
 
 QString QgsFrameGraphUtils::formatNode( FgDumpContext context, const Qt3DCore::QNode *node )
 {
-  QString res = "(%1%2)"_L1
-                  .arg( QLatin1String( node->metaObject()->className() ) )
-                  .arg( formatIdName( context, node->id().id(), node->objectName() ) );
+  QString res = "(%1%2)"_L1.arg( QLatin1String( node->metaObject()->className() ) ).arg( formatIdName( context, node->id().id(), node->objectName() ) );
   if ( !node->isEnabled() )
     res += " [D]"_L1;
   return res;
@@ -122,10 +122,7 @@ QString QgsFrameGraphUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore:
           const auto texImages = textMat->texture()->textureImages();
           for ( const auto *texImg : texImages )
           {
-            fl += formatField(
-              texImg->metaObject()->className(),
-              formatIdName( context, texImg->id().id(), texImg->objectName() )
-            );
+            fl += formatField( texImg->metaObject()->className(), formatIdName( context, texImg->id().id(), texImg->objectName() ) );
           }
         }
       }

@@ -41,9 +41,9 @@ void QgsListWidget::setReadOnly( bool readOnly )
 
 ///@cond PRIVATE
 QgsListModel::QgsListModel( QMetaType::Type subType, QObject *parent )
-  : QAbstractTableModel( parent ), mSubType( subType )
-{
-}
+  : QAbstractTableModel( parent )
+  , mSubType( subType )
+{}
 
 void QgsListModel::setList( const QVariantList &list )
 {

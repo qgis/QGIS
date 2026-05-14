@@ -22,6 +22,10 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * QgsServerFilter
  * Class defining I/O filters for QGIS Server and
@@ -31,8 +35,7 @@
 
 QgsServerFilter::QgsServerFilter( QgsServerInterface *serverInterface )
   : mServerInterface( serverInterface )
-{
-}
+{}
 
 void QgsServerFilter::requestReady()
 {

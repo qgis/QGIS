@@ -43,13 +43,14 @@
 
 #include "moc_qgsdecorationitem.cpp"
 
+using namespace Qt::StringLiterals;
+
 //non qt includes
 #include <cmath>
 
 QgsDecorationItem::QgsDecorationItem( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 void QgsDecorationItem::update()
 {

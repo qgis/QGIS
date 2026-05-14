@@ -16,14 +16,12 @@
 #include "qgspointcloudexpression.h"
 
 #include "qgsexpression.h"
-#include "qgspointcloudattribute.h"
 #include "qgspointcloudexpression_p.h"
 #include "qgspointcloudexpressionnodeimpl.h"
 
 QgsPointCloudExpression::QgsPointCloudExpression()
   : d( new QgsPointCloudExpressionPrivate )
-{
-}
+{}
 
 QgsPointCloudExpression::QgsPointCloudExpression( const QString &subsetString )
   : d( new QgsPointCloudExpressionPrivate )
@@ -44,7 +42,7 @@ void QgsPointCloudExpression::setExpression( const QString &subset )
   QgsExpression expression( subset );
   if ( expression.hasParserError() )
   {
-    d->mRootNode = nullptr;
+    d->mRootNode.reset();
     d->mParserErrorString = expression.parserErrorString();
     d->mParserErrors = expression.parserErrors();
   }
@@ -99,7 +97,7 @@ QString QgsPointCloudExpression::expression() const
 
 bool QgsPointCloudExpression::isValid() const
 {
-  return d->mRootNode;
+  return d->mRootNode.get();
 }
 
 bool QgsPointCloudExpression::hasParserError() const
@@ -131,7 +129,7 @@ void QgsPointCloudExpression::detach()
 
   if ( d->ref > 1 )
   {
-    ( void )d->ref.deref();
+    ( void ) d->ref.deref();
 
     d = new QgsPointCloudExpressionPrivate( *d );
   }
@@ -189,7 +187,7 @@ QString QgsPointCloudExpression::dump() const
 
 const QgsPointCloudExpressionNode *QgsPointCloudExpression::rootNode() const
 {
-  return d->mRootNode;
+  return d->mRootNode.get();
 }
 
 QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpression::nodes() const
@@ -203,7 +201,7 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpression::nodes() cons
 bool QgsPointCloudExpression::checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage )
 {
   QgsPointCloudExpression exp( expression );
-  ( void )exp.prepare( block );
+  ( void ) exp.prepare( block );
   errorMessage = exp.parserErrorString();
   return !exp.hasParserError();
 }

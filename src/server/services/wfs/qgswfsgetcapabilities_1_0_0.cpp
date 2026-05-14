@@ -28,6 +28,10 @@
 #include "qgsvectorlayer.h"
 #include "qgswfsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWfs
 {
   namespace v1_0_0
@@ -398,7 +402,9 @@ namespace QgsWfs
             const QDomElement insertElement = doc.createElement( u"Insert"_s /*wfs:Insert*/ );
             operationsElement.appendChild( insertElement );
           }
-          if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) && ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) && wfstUpdateLayersId.contains( layer->id() ) )
+          if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues )
+               && ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries )
+               && wfstUpdateLayersId.contains( layer->id() ) )
           {
             //wfs:Update element
             const QDomElement updateElement = doc.createElement( u"Update"_s /*wfs:Update*/ );

@@ -28,8 +28,7 @@
 QgsAttributesFormTreeViewProxyStyle::QgsAttributesFormTreeViewProxyStyle( QgsAttributesFormBaseView *treeView )
   : QgsProxyStyle( treeView )
   , mAttributesFormTreeView( treeView )
-{
-}
+{}
 
 QRect QgsAttributesFormTreeViewProxyStyle::subElementRect( QStyle::SubElement element, const QStyleOption *option, const QWidget *widget ) const
 {
@@ -59,8 +58,7 @@ QRect QgsAttributesFormTreeViewProxyStyle::subElementRect( QStyle::SubElement el
 QgsAttributesFormTreeViewItemDelegate::QgsAttributesFormTreeViewItemDelegate( QgsAttributesFormBaseView *parent )
   : QStyledItemDelegate( parent )
   , mAttributesFormTreeView( parent )
-{
-}
+{}
 
 void QgsAttributesFormTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -77,7 +75,8 @@ void QgsAttributesFormTreeViewItemDelegate::paint( QPainter *painter, const QSty
   if ( indicators.isEmpty() )
     return;
 
-  const QRect indRect = mAttributesFormTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsAttributesFormTreeViewProxyStyle::SE_AttributesFormTreeItemIndicator ), &opt, mAttributesFormTreeView );
+  const QRect indRect
+    = mAttributesFormTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsAttributesFormTreeViewProxyStyle::SE_AttributesFormTreeItemIndicator ), &opt, mAttributesFormTreeView );
   const int spacing = indRect.height() / 10;
   const int h = indRect.height();
   int x = indRect.left();
@@ -128,7 +127,8 @@ bool QgsAttributesFormTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstr
         initStyleOption( &opt, index );
         opt.showDecorationSelected = true; // See https://github.com/qgis/QGIS/pull/7853 for the rationale of this fix
 
-        const QRect indRect = mAttributesFormTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsAttributesFormTreeViewProxyStyle::SE_AttributesFormTreeItemIndicator ), &opt, mAttributesFormTreeView );
+        const QRect indRect
+          = mAttributesFormTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsAttributesFormTreeViewProxyStyle::SE_AttributesFormTreeItemIndicator ), &opt, mAttributesFormTreeView );
 
         if ( indRect.contains( event->pos() ) )
         {

@@ -19,7 +19,6 @@ connected to frameChanged.
 #include "qgsanimatedicon.h"
 %End
   public:
-
     QgsAnimatedIcon( const QString &iconPath = QString(), QObject *parent = 0 );
 %Docstring
 Create a new animated icon. Optionally, the ``iconPath`` can already be

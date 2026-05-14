@@ -28,12 +28,11 @@
  * \ingroup core
  * \brief An annotation item that displays formatted text from a QTextDocument document.
 */
-class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
+class CORE_EXPORT QgsTextAnnotation : public QgsAnnotation
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTextAnnotation.
      */
@@ -64,7 +63,6 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     static QgsTextAnnotation *create() SIP_FACTORY { return new QgsTextAnnotation(); }
 
   protected:
-
     void renderAnnotation( QgsRenderContext &context, QSizeF size ) const override;
 
   private:

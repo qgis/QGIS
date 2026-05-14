@@ -28,8 +28,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsxyzsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
@@ -102,8 +105,7 @@ void QgsXyzSourceSelect::btnEdit_clicked()
 
 void QgsXyzSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 

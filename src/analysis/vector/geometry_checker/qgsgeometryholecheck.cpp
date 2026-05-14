@@ -22,7 +22,9 @@
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerror.h"
 
-QgsGeometryCheck::Result QgsGeometryHoleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryHoleCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   Q_UNUSED( messages )
 

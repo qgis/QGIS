@@ -15,24 +15,24 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
 import shutil
+import unittest
 
 import numpy as np
 from osgeo import gdal, osr
-from qgis.PyQt.QtCore import QTemporaryDir, QVariant
-from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
     QgsPalettedRasterRenderer,
     QgsPresetSchemeColorRamp,
     QgsProject,
+    QgsProviderRegistry,
     QgsRasterAttributeTable,
     QgsRasterLayer,
     QgsSingleBandPseudoColorRenderer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDateTime, Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -151,7 +151,6 @@ def createTestRasters(cls, path):
 
 
 class TestQgsRasterAttributeTable(QgisTestCase):
-
     def setUp(self):
 
         self.iface = get_iface()
@@ -1489,6 +1488,204 @@ class TestQgsRasterAttributeTable(QgisTestCase):
             ],
         )
         self.assertEqual(rat.data(), data_rows)
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 12, 0),
+        "GDAL 3.12.0 required",
+    )
+    def testS102Rat(self):
+        """Test issue GH #64797 - RAT reading for S-102 datasets does not work correctly"""
+
+        s102RAT = """<PAMDataset>
+  <PAMRasterBand band="1">
+<GDALRasterAttributeTable tableType="thematic">
+  <FieldDefn index="0">
+    <Name>id</Name>
+    <Type typeAsString="Integer">0</Type>
+    <Usage usageAsString="MinMax">5</Usage>
+  </FieldDefn>
+  <FieldDefn index="1">
+    <Name>bool_field</Name>
+    <Type typeAsString="Boolean">3</Type>
+    <Usage usageAsString="Generic">0</Usage>
+  </FieldDefn>
+  <FieldDefn index="2">
+    <Name>real_field</Name>
+    <Type typeAsString="Real">1</Type>
+    <Usage usageAsString="Generic">0</Usage>
+  </FieldDefn>
+  <!-- unknown type to check it doesn't mess the order up -->
+  <FieldDefn index="3">
+    <Name>wkb_field</Name>
+    <Type typeAsString="WKBGeometry">5</Type>
+    <Usage usageAsString="Generic">0</Usage>
+  </FieldDefn>
+  <FieldDefn index="4">
+    <Name>datetime_field</Name>
+    <Type typeAsString="DateTime">4</Type>
+    <Usage usageAsString="Generic">0</Usage>
+  </FieldDefn>
+  <Row index="0">
+    <F>1</F>
+    <F>false</F>
+    <F>2.3</F>
+    <F>XXXXXX</F>
+    <F>2023/01/01 00:00:00+00</F>
+  </Row>
+  <Row index="1">
+    <F>2</F>
+    <F>true</F>
+    <F>3.4</F>
+    <F>XXXXXX</F>
+    <F>2023/06/01 12:30:45+00</F>
+  </Row>
+</GDALRasterAttributeTable>
+</PAMRasterBand>
+</PAMDataset>
+"""
+        rat_path = os.path.join(self.temp_path, "s102_rat.tif.aux.xml")
+
+        with open(rat_path, "w+") as rat_file:
+            rat_file.write(s102RAT)
+
+        tif_path = os.path.join(self.temp_path, "s102_rat.tif")
+        # Create a 2x2 raster using GDAL
+        driver = gdal.GetDriverByName("GTiff")
+        dataset = driver.Create(tif_path, 2, 2, 1, gdal.GDT_Byte)
+        dataset.GetRasterBand(1).Fill(0)
+        dataset = None
+
+        raster = QgsRasterLayer(tif_path)
+
+        self.assertTrue(raster.isValid())
+        rat = raster.attributeTable(1)
+        self.assertIsNotNone(rat)
+        fields = [{f.name: f.type} for f in rat.fields()]
+        self.assertEqual(
+            fields,
+            [
+                {"id": QVariant.Int},
+                {"bool_field": QVariant.Bool},
+                {"real_field": QVariant.Double},
+                # "wkb_field" skipped due to unhandled type
+                {"datetime_field": QVariant.DateTime},
+            ],
+        )
+
+        # Check data
+        self.assertEqual(
+            rat.data(),
+            [
+                [
+                    1,
+                    False,
+                    2.3,
+                    QDateTime.fromString(
+                        "2023/01/01 00:00:00+00", Qt.DateFormat.ISODate
+                    ),
+                ],
+                [
+                    2,
+                    True,
+                    3.4,
+                    QDateTime.fromString(
+                        "2023/06/01 12:30:45+00", Qt.DateFormat.ISODate
+                    ),
+                ],
+            ],
+        )
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 8, 0),
+        "GDAL 3.8.0 required",
+    )
+    def test_COG_layout(self):
+        # Create a 2x2 cog raster using GDAL
+        tif_path = os.path.join(self.temp_path, "cog_layout.tif")
+        driver = gdal.GetDriverByName("MEM")
+        dataset = driver.Create("cog_layout.tif", 2, 2, 1, gdal.GDT_Byte)
+        # Set CRS and geotransform to avoid warnings when opening the raster in QGIS
+        dataset.SetGeoTransform((0, 1, 0, 0, 0, -1))
+        srs = osr.SpatialReference()
+        srs.ImportFromEPSG(4326)
+        dataset.SetProjection(srs.ExportToWkt())
+        dataset.GetRasterBand(1).Fill(0)
+        dataset.GetRasterBand(1).FlushCache()
+        dataset.FlushCache()
+
+        gdal.GetDriverByName("COG").CreateCopy(
+            tif_path,
+            dataset,
+        )
+
+        dataset = None
+
+        raster = QgsRasterLayer(tif_path)
+        self.assertTrue(raster.isValid())
+
+        def _make_rat():
+            # Create a RAT for the COG raster
+            rat = QgsRasterAttributeTable()
+            self.assertTrue(
+                rat.appendField(
+                    QgsRasterAttributeTable.Field(
+                        "Value",
+                        Qgis.RasterAttributeTableFieldUsage.MinMax,
+                        QVariant.Int,
+                    )
+                )
+            )
+            self.assertTrue(
+                rat.appendField(
+                    QgsRasterAttributeTable.Field(
+                        "Class",
+                        Qgis.RasterAttributeTableFieldUsage.Name,
+                        QVariant.String,
+                    )
+                )
+            )
+
+            # Add some rows to the RAT
+            self.assertTrue(rat.appendRow([0, "Zero"]))
+            self.assertTrue(rat.appendRow([1, "One"]))
+            return rat
+
+        # Associate the RAT with the raster layer
+        raster.dataProvider().setAttributeTable(1, _make_rat())
+
+        # Try and fail to write the raster layer to disk
+        ret, error = raster.dataProvider().writeNativeAttributeTable()  # spellok
+        self.assertFalse(ret)
+        self.assertIn(
+            "set the open option IGNORE_COG_LAYOUT_BREAK=YES to override", error
+        )
+
+        # Same test but with the open option set
+        parts = QgsProviderRegistry.instance().decodeUri(
+            "gdal", raster.dataProvider().dataSourceUri()
+        )
+        parts["openOptions"] = ["IGNORE_COG_LAYOUT_BREAK=YES"]
+        uri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
+        raster = QgsRasterLayer(uri)
+
+        self.assertTrue(raster.isValid())
+        raster.dataProvider().setAttributeTable(1, _make_rat())
+
+        ret, error = raster.dataProvider().writeNativeAttributeTable()  # spellok
+        self.assertTrue(ret)
+
+        # Reopen the raster and check the RAT is there and correct
+        raster = QgsRasterLayer(uri)
+        self.assertTrue(raster.isValid())
+        rat = raster.dataProvider().attributeTable(1)
+        self.assertEqual(len(rat.data()), 2)
+        fields = rat.fields()
+        self.assertEqual(fields[0].name, "Value")
+        self.assertEqual(fields[0].usage, Qgis.RasterAttributeTableFieldUsage.MinMax)
+        self.assertEqual(fields[0].type, QVariant.Int)
+        self.assertEqual(fields[1].name, "Class")
+        self.assertEqual(fields[1].usage, Qgis.RasterAttributeTableFieldUsage.Name)
+        self.assertEqual(fields[1].type, QVariant.String)
 
 
 if __name__ == "__main__":

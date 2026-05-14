@@ -14,6 +14,7 @@
 
 
 
+
 class QgsField
 {
 %Docstring(signature="appended")
@@ -34,14 +35,7 @@ name, type length, and if applicable, precision.
     static const QMetaObject staticMetaObject;
 
   public:
-
-    QgsField( const QString &name = QString(),
-              QMetaType::Type type = QMetaType::Type::UnknownType,
-              const QString &typeName = QString(),
-              int len = 0,
-              int prec = 0,
-              const QString &comment = QString(),
-              QMetaType::Type subType = QMetaType::Type::UnknownType ) /HoldGIL/;
+    QgsField( const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(), QMetaType::Type subType = QMetaType::Type::UnknownType ) /HoldGIL/;
 %Docstring
 Constructor. Constructs a new QgsField object.
 
@@ -382,6 +376,27 @@ Sets the alias for the field (the friendly displayed name of the field
 :param alias: field alias, or empty string to remove an existing alias
 
 .. seealso:: :py:func:`alias`
+%End
+
+    QString customComment() const /HoldGIL/;
+%Docstring
+Returns the custom comment for the field. an empty string when custom
+comment require to be empty and NULL if no custom comment has been
+defined and the provider one should be used.
+
+.. seealso:: :py:func:`setCustomComment`
+%End
+
+    void setCustomComment( const QString &customComment ) /HoldGIL/;
+%Docstring
+Sets the custom comment for the field.
+
+:param customComment: custom comment (can be empty as well) or NULL to
+                      remove the custom comment.
+
+.. seealso:: :py:func:`customComment`
+
+.. versionadded:: 4.2
 %End
 
     Qgis::FieldConfigurationFlags configurationFlags() const /HoldGIL/;

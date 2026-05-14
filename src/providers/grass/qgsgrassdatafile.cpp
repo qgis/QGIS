@@ -23,8 +23,7 @@
 
 QgsGrassDataFile::QgsGrassDataFile( QObject *parent )
   : QFile( parent )
-{
-}
+{}
 
 bool QgsGrassDataFile::open( FILE *fh )
 {

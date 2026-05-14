@@ -23,9 +23,12 @@
 #include <QCheckBox>
 #include <QListView>
 #include <QMimeData>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgscustomlayerorderwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent )
   : QWidget( parent )
@@ -91,8 +94,7 @@ void QgsCustomLayerOrderWidget::modelUpdated()
 CustomLayerOrderModel::CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge *bridge, QObject *parent )
   : QAbstractListModel( parent )
   , mBridge( bridge )
-{
-}
+{}
 
 int CustomLayerOrderModel::rowCount( const QModelIndex & ) const
 {

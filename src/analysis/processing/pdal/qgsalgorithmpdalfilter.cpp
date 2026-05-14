@@ -21,6 +21,10 @@
 #include "qgspointcloudlayer.h"
 #include "qgsrunprocess.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPdalFilterAlgorithm::name() const
@@ -68,6 +72,9 @@ void QgsPdalFilterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterExpression( u"FILTER_EXPRESSION"_s, QObject::tr( "Filter expression" ), QVariant(), u"INPUT"_s, false, Qgis::ExpressionType::PointCloud ) );
   addParameter( new QgsProcessingParameterExtent( u"FILTER_EXTENT"_s, QObject::tr( "Cropping extent" ), QVariant(), true ) );
+
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered" ) ) );
 }
 
@@ -86,6 +93,7 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
 
   const QString filterExpression = parameterAsString( parameters, u"FILTER_EXPRESSION"_s, context ).trimmed();
   if ( !filterExpression.isEmpty() )
@@ -99,20 +107,12 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
     if ( layer->crs().isValid() )
     {
       const QgsRectangle extent = parameterAsExtent( parameters, u"FILTER_EXTENT"_s, context, layer->crs() );
-      args << u"--bounds=([%1, %2], [%3, %4])"_s
-                .arg( extent.xMinimum() )
-                .arg( extent.xMaximum() )
-                .arg( extent.yMinimum() )
-                .arg( extent.yMaximum() );
+      args << u"--bounds=([%1, %2], [%3, %4])"_s.arg( extent.xMinimum() ).arg( extent.xMaximum() ).arg( extent.yMinimum() ).arg( extent.yMaximum() );
     }
     else
     {
       const QgsRectangle extent = parameterAsExtent( parameters, u"FILTER_EXTENT"_s, context );
-      args << u"--bounds=([%1, %2], [%3, %4])"_s
-                .arg( extent.xMinimum() )
-                .arg( extent.xMaximum() )
-                .arg( extent.yMinimum() )
-                .arg( extent.yMaximum() );
+      args << u"--bounds=([%1, %2], [%3, %4])"_s.arg( extent.xMinimum() ).arg( extent.xMaximum() ).arg( extent.yMinimum() ).arg( extent.yMaximum() );
     }
   }
 

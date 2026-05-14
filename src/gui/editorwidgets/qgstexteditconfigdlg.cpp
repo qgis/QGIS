@@ -15,7 +15,11 @@
 
 #include "qgstexteditconfigdlg.h"
 
+#include <QString>
+
 #include "moc_qgstexteditconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

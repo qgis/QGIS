@@ -21,6 +21,10 @@
 #include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsCPLHTTPFetchOverrider::QgsCPLHTTPFetchOverrider( const QString &authCfg, QgsFeedback *feedback )
   : mAuthCfg( authCfg )
   , mFeedback( feedback )
@@ -35,13 +39,9 @@ QgsCPLHTTPFetchOverrider::~QgsCPLHTTPFetchOverrider()
 }
 
 
-CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
-    CSLConstList papszOptions,
-    GDALProgressFunc /* pfnProgress */,
-    void * /*pProgressArg */,
-    CPLHTTPFetchWriteFunc pfnWrite,
-    void *pWriteArg,
-    void *pUserData )
+CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback(
+  const char *pszURL, CSLConstList papszOptions, GDALProgressFunc /* pfnProgress */, void * /*pProgressArg */, CPLHTTPFetchWriteFunc pfnWrite, void *pWriteArg, void *pUserData
+)
 {
   QgsCPLHTTPFetchOverrider *pThis = static_cast<QgsCPLHTTPFetchOverrider *>( pUserData );
 
@@ -91,9 +91,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
       const char *pszValue = CPLParseNameValue( papszTokensHeaders[i], &pszKey );
       if ( pszKey && pszValue )
       {
-        request.setRawHeader(
-          QByteArray::fromStdString( pszKey ),
-          QByteArray::fromStdString( pszValue ) );
+        request.setRawHeader( QByteArray::fromStdString( pszKey ), QByteArray::fromStdString( pszValue ) );
       }
       CPLFree( pszKey );
     }
@@ -108,16 +106,11 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
   {
     if ( !pszCustomRequest || EQUAL( pszCustomRequest, "POST" ) )
     {
-      errCode = blockingRequest.post( request,
-                                      QByteArray::fromStdString( pszPostFields ),
-                                      forceRefresh,
-                                      pThis->mFeedback );
+      errCode = blockingRequest.post( request, QByteArray::fromStdString( pszPostFields ), forceRefresh, pThis->mFeedback );
     }
     else if ( EQUAL( pszCustomRequest, "PUT" ) )
     {
-      errCode = blockingRequest.put( request,
-                                     QByteArray::fromStdString( pszPostFields ),
-                                     pThis->mFeedback );
+      errCode = blockingRequest.put( request, QByteArray::fromStdString( pszPostFields ), pThis->mFeedback );
     }
     else
     {
@@ -162,10 +155,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
       CPLFree( psResult->pszContentType );
       psResult->pszContentType = CPLStrdup( pair.second.toStdString().c_str() );
     }
-    psResult->papszHeaders = CSLAddNameValue(
-                               psResult->papszHeaders,
-                               pair.first.toStdString().c_str(),
-                               pair.second.toStdString().c_str() );
+    psResult->papszHeaders = CSLAddNameValue( psResult->papszHeaders, pair.first.toStdString().c_str(), pair.second.toStdString().c_str() );
   }
 
   // Process content

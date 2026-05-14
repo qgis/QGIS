@@ -42,7 +42,6 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterFileWriterTask. Takes a source \a writer,
      * \a columns, \a rows, \a outputExtent and destination \a crs.
@@ -50,10 +49,9 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
      * be deleted when the task completes.
      * \deprecated QGIS 3.8. Use version with transformContext instead.
      */
-    Q_DECL_DEPRECATED QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe SIP_TRANSFER,
-        int columns, int rows,
-        const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsRasterFileWriterTask(
+      const QgsRasterFileWriter &writer, QgsRasterPipe *pipe SIP_TRANSFER, int columns, int rows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs
+    ) SIP_DEPRECATED;
 
 
     /**
@@ -63,12 +61,15 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
      * Ownership of the \a pipe is transferred to the writer task, and will
      * be deleted when the task completes.
      */
-    QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe SIP_TRANSFER,
-                             int columns, int rows,
-                             const QgsRectangle &outputExtent,
-                             const QgsCoordinateReferenceSystem &crs,
-                             const QgsCoordinateTransformContext &transformContext
-                           );
+    QgsRasterFileWriterTask(
+      const QgsRasterFileWriter &writer,
+      QgsRasterPipe *pipe SIP_TRANSFER,
+      int columns,
+      int rows,
+      const QgsRectangle &outputExtent,
+      const QgsCoordinateReferenceSystem &crs,
+      const QgsCoordinateTransformContext &transformContext
+    );
 
     ~QgsRasterFileWriterTask() override;
 
@@ -98,12 +99,10 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
     void errorOccurred( int error, const QString &errorMessage );
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
-
     QgsRasterFileWriter mWriter;
     int mRows = 0;
     int mColumns = 0;

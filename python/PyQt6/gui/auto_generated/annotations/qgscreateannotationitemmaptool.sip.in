@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsCreateAnnotationItemMapToolHandler : QObject
 {
 %Docstring(signature="appended")

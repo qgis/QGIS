@@ -27,8 +27,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 
 ""
-from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
+from processing.gui.MultipleInputDialog import MultipleInputDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 

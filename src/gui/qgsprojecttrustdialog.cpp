@@ -28,9 +28,12 @@
 
 #include <QFileInfo>
 #include <QPushButton>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsprojecttrustdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -54,9 +57,7 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
     }
   } );
 
-  connect( mScriptPreviewBackButton, &QAbstractButton::clicked, this, [this] {
-    mScriptPreviewStackedWidget->setCurrentIndex( 0 );
-  } );
+  connect( mScriptPreviewBackButton, &QAbstractButton::clicked, this, [this] { mScriptPreviewStackedWidget->setCurrentIndex( 0 ); } );
 
   mScriptPreviewEditor->setReadOnly( true );
   mScriptPreviewEditor->setLineNumbersVisible( false );

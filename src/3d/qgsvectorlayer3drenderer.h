@@ -69,6 +69,15 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRende
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Creates a new QgsVectorLayer3DRenderer from an existing \a renderer.
+     *
+     * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr< QgsVectorLayer3DRenderer > convertFromRenderer( const QgsAbstractVectorLayer3DRenderer *renderer, QgsVectorLayer *layer = nullptr );
+
   private:
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol; //!< 3D symbol that defines appearance
 

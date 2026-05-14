@@ -21,7 +21,11 @@
 #include "qgspallabeling.h"
 #include "qgsrendereditemresults.h"
 
+#include <QString>
+
 #include "moc_qgsmaprenderersequentialjob.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )

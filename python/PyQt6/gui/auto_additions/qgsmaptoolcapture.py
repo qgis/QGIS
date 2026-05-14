@@ -19,7 +19,7 @@ QgsMapToolCapture.Capability.__and__ = lambda flag1, flag2: _force_int(flag1) & 
 QgsMapToolCapture.Capability.__or__ = lambda flag1, flag2: QgsMapToolCapture.Capability(_force_int(flag1) | _force_int(flag2))
 try:
     QgsMapToolCapture.__virtual_methods__ = ['capabilities', 'supportsTechnique', 'geometryCaptured', 'pointCaptured', 'lineCaptured', 'polygonCaptured']
-    QgsMapToolCapture.__overridden_methods__ = ['activate', 'deactivate', 'cadCanvasMoveEvent', 'cadCanvasReleaseEvent', 'keyPressEvent', 'clean']
+    QgsMapToolCapture.__overridden_methods__ = ['activate', 'deactivate', 'cadCanvasPressEvent', 'cadCanvasMoveEvent', 'cadCanvasReleaseEvent', 'keyPressEvent', 'keyReleaseEvent', 'wheelEvent', 'clean']
     QgsMapToolCapture.__group__ = ['maptools']
 except (NameError, AttributeError):
     pass

@@ -23,9 +23,12 @@
 
 #include <QMouseEvent>
 #include <QPainter>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgscurveeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -79,8 +82,7 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTrans
 
   mPlotCurve = new QwtPlotCurve();
   mPlotCurve->setTitle( u"Curve"_s );
-  mPlotCurve->setPen( QPen( QColor( 30, 30, 30 ), 0.0 ) ),
-    mPlotCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mPlotCurve->setPen( QPen( QColor( 30, 30, 30 ), 0.0 ) ), mPlotCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mPlotCurve->attach( mPlot );
 
   mPlotFilter = new QgsCurveEditorPlotEventFilter( mPlot );
@@ -207,8 +209,7 @@ int QgsCurveEditorWidget::findNearestControlPoint( QPointF point ) const
 
 
 void QgsCurveEditorWidget::plotMouseRelease( QPointF )
-{
-}
+{}
 
 void QgsCurveEditorWidget::plotMouseMove( QPointF point )
 {

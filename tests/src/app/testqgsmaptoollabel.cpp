@@ -30,6 +30,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsMapToolLabel : public QObject
 {
     Q_OBJECT
@@ -46,10 +48,7 @@ class TestQgsMapToolLabel : public QObject
       QgsApplication::initQgis();
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void testSelectLabel()
     {
@@ -100,10 +99,7 @@ class TestQgsMapToolLabel : public QObject
       // no labels yet
       QgsPointXY pt;
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      std::unique_ptr<QMouseEvent> event( new QMouseEvent(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      ) );
+      auto event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QgsLabelPosition pos;
       QVERIFY( !tool->labelAtPosition( event.get(), pos ) );
 
@@ -135,19 +131,13 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, u"label"_s );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, u"l"_s );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( !tool->labelAtPosition( event.get(), pos ) );
 
       // label second layer
@@ -161,56 +151,38 @@ class TestQgsMapToolLabel : public QObject
       // should prioritize current layer
       canvas->setCurrentLayer( vl1.get() );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, u"label"_s );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, u"l"_s );
 
       //... but fallback to any labels if nothing in current layer
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl2->id() );
       QCOMPARE( pos.labelText, u"label3"_s );
 
       canvas->setCurrentLayer( vl2.get() );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl2->id() );
       QCOMPARE( pos.labelText, u"label"_s );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl2->id() );
       QCOMPARE( pos.labelText, u"label2"_s );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl2->id() );
       QCOMPARE( pos.labelText, u"label3"_s );
@@ -219,10 +191,7 @@ class TestQgsMapToolLabel : public QObject
 
       // when multiple candidates exist, pick the smallest
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, u"l"_s );
@@ -289,10 +258,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( canvas->labelingResults() );
       QgsPointXY pt;
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      std::unique_ptr<QMouseEvent> event( new QMouseEvent(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      ) );
+      auto event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QgsLabelPosition pos;
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
@@ -321,10 +287,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
 
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
@@ -344,10 +307,7 @@ class TestQgsMapToolLabel : public QObject
       loop.exec();
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
 
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
@@ -358,10 +318,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::CapLeft );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = std::make_unique<QMouseEvent>(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      );
+      event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
 
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
@@ -433,10 +390,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( canvas->labelingResults() );
       QgsPointXY pt;
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      std::unique_ptr<QMouseEvent> event( new QMouseEvent(
-        QEvent::MouseButtonPress,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
-      ) );
+      auto event = std::make_unique<QMouseEvent>( QEvent::MouseButtonPress, QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
       QgsLabelPosition pos;
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
@@ -476,7 +430,8 @@ class TestQgsMapToolLabel : public QObject
 
     void dataDefinedColumnName()
     {
-      QgsVectorLayer *vl1 = new QgsVectorLayer( u"Point?crs=epsg:3946&field=label_x_1:string&field=label_y_1:string&field=label_x_2:string&field=label_y_2:string&field=override_x_field:string"_s, u"vl1"_s, u"memory"_s );
+      QgsVectorLayer *vl1
+        = new QgsVectorLayer( u"Point?crs=epsg:3946&field=label_x_1:string&field=label_y_1:string&field=label_x_2:string&field=label_y_2:string&field=override_x_field:string"_s, u"vl1"_s, u"memory"_s );
       QVERIFY( vl1->isValid() );
       QgsProject::instance()->addMapLayer( vl1 );
 

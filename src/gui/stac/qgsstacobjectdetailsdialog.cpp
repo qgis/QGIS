@@ -21,8 +21,11 @@
 #include "qgsstacitem.h"
 
 #include <QDesktopServices>
+#include <QString>
 
 #include "moc_qgsstacobjectdetailsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -76,9 +79,7 @@ void QgsStacObjectDetailsDialog::setContent( QString bodyHtml, QString thumbnail
   html += u"%1\n"_s.arg( bodyHtml );
   html += "</body>\n</html>\n"_L1;
   mWebView->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
-  connect( mWebView, &QgsWebView::linkClicked, this, []( const QUrl &url ) {
-    QDesktopServices::openUrl( url );
-  } );
+  connect( mWebView, &QgsWebView::linkClicked, this, []( const QUrl &url ) { QDesktopServices::openUrl( url ); } );
   mWebView->setHtml( html );
 }
 

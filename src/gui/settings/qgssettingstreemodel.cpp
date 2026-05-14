@@ -456,8 +456,7 @@ bool QgsSettingsTreeModel::setData( const QModelIndex &index, const QVariant &va
 QgsSettingsTreeItemDelegate::QgsSettingsTreeItemDelegate( QgsSettingsTreeModel *model, QObject *parent )
   : QItemDelegate( parent )
   , mModel( model )
-{
-}
+{}
 
 QWidget *QgsSettingsTreeItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {

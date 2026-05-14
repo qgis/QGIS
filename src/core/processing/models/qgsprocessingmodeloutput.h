@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
 {
   public:
-
     /**
      * Constructor for QgsProcessingModelOutput with the specified \a name and \a description.
      */
@@ -126,7 +125,6 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
     void setComment( const QgsProcessingModelComment &comment ) override { mComment = comment; }
 
   private:
-
     QString mName;
     QVariant mDefaultValue;
     QString mChildId;
@@ -134,7 +132,6 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
     bool mMandatory = false;
 
     QgsProcessingModelComment mComment;
-
 };
 
 ///@endcond

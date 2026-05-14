@@ -32,6 +32,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsSettingsBoolGroupBoxWrapper.__overridden_methods__ = ['createWrapper', 'id', 'setSettingFromWidget', 'valueFromWidget', 'setWidgetValue', 'enableAutomaticUpdatePrivate', 'configureEditorPrivateImplementation']
+    QgsSettingsBoolGroupBoxWrapper.__group__ = ['settings']
+except (NameError, AttributeError):
+    pass
+try:
     QgsSettingsIntegerSpinBoxWrapper.__overridden_methods__ = ['createWrapper', 'id', 'setSettingFromWidget', 'valueFromWidget', 'setWidgetValue', 'enableAutomaticUpdatePrivate']
     QgsSettingsIntegerSpinBoxWrapper.__group__ = ['settings']
 except (NameError, AttributeError):

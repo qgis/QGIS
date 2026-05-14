@@ -23,6 +23,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgisApp python support.
@@ -60,11 +62,6 @@ void TestQgisAppPython::initTestCase()
 {
   const QByteArray pluginPath = QByteArray( TEST_DATA_DIR ) + "/test_plugin_path";
   qputenv( "QGIS_PLUGINPATH", pluginPath );
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   qDebug() << "TestQgisAppPython::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix

@@ -29,7 +29,6 @@ Provides utility functions for working with mesh data.
 #include "qgsmeshutils.h"
 %End
   public:
-
     static QgsRasterBlock *exportRasterBlock(
       const QgsMeshLayer &layer,
       const QgsMeshDatasetIndex &datasetIndex,
@@ -61,7 +60,6 @@ provider and calculates triangular mesh
 
 .. versionadded:: 3.6
 %End
-
 
 
 

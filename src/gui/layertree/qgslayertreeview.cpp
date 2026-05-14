@@ -31,8 +31,11 @@
 #include <QMenu>
 #include <QMimeData>
 #include <QScrollBar>
+#include <QString>
 
 #include "moc_qgslayertreeview.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -72,9 +75,7 @@ QgsLayerTreeViewBase::QgsLayerTreeViewBase( QWidget *parent )
 }
 
 QgsLayerTreeViewBase::~QgsLayerTreeViewBase()
-{
-  delete mBlockDoubleClickTimer;
-}
+{}
 
 void QgsLayerTreeViewBase::mouseDoubleClickEvent( QMouseEvent *event )
 {
@@ -483,9 +484,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 }
 
 QgsLayerTreeView::~QgsLayerTreeView()
-{
-  delete mMenuProvider;
-}
+{}
 
 void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 {
@@ -530,8 +529,7 @@ void QgsLayerTreeView::setModel( QgsLayerTreeModel *treeModel, QgsLayerTreeProxy
 
 void QgsLayerTreeView::setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider )
 {
-  delete mMenuProvider;
-  mMenuProvider = menuProvider;
+  mMenuProvider.reset( menuProvider );
 }
 
 void QgsLayerTreeView::setLayerVisible( QgsMapLayer *layer, bool visible )

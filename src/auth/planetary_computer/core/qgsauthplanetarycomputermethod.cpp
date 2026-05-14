@@ -25,7 +25,11 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 
+#include <QString>
+
 #include "moc_qgsauthplanetarycomputermethod.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthplanetarycomputeredit.h"

@@ -12,7 +12,8 @@ __author__ = "Nyall Dawson"
 __date__ = "16/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+import unittest
+
 from qgis.core import (
     NULL,
     QgsAggregateCalculator,
@@ -24,16 +25,14 @@ from qgis.core import (
     QgsInterval,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt
 
 start_app()
 
 
 class TestQgsAggregateCalculator(QgisTestCase):
-
     def testLayer(self):
         """Test setting/retrieving layer"""
         a = QgsAggregateCalculator(None)

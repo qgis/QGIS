@@ -28,6 +28,8 @@
 #include <QStringList>
 #include <QTimer>
 
+using namespace Qt::StringLiterals;
+
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */
 #else
@@ -87,9 +89,7 @@ int main( int argc, char *argv[] )
   for ( int i = 1; i < argc; ++i )
   {
     const QString arg( argv[i] );
-    if ( arg == "--json"_L1
-         || arg == "--verbose"_L1
-         || arg == "--no-python"_L1 )
+    if ( arg == "--json"_L1 || arg == "--verbose"_L1 || arg == "--no-python"_L1 )
     {
       // ignore these arguments
       continue;
@@ -164,19 +164,10 @@ int main( int argc, char *argv[] )
     return 0;
   }
 
-  QString myPrefixPath;
-  if ( myPrefixPath.isEmpty() )
-  {
-    QDir dir( QCoreApplication::applicationDirPath() );
-    dir.cdUp();
-    myPrefixPath = dir.absolutePath();
-  }
-  QgsApplication::setPrefixPath( myPrefixPath, true );
-
   // Set up the QSettings environment must be done after qapp is created
   QgsApplication::setOrganizationName( u"QGIS"_s );
   QgsApplication::setOrganizationDomain( u"qgis.org"_s );
-  QgsApplication::setApplicationName( u"QGIS3"_s );
+  QgsApplication::setApplicationName( u"QGIS4"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();

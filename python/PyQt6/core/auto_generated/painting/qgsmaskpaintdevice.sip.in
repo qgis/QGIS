@@ -12,7 +12,7 @@
 
 
 
-class QgsMaskPaintDevice: QPaintDevice
+class QgsMaskPaintDevice : QPaintDevice
 {
 %Docstring(signature="appended")
 Mask painter device that can be used to register everything painted into
@@ -27,7 +27,6 @@ a QPainterPath used later as clip path.
 #include "qgsmaskpaintdevice.h"
 %End
   public:
-
  QgsMaskPaintDevice( bool usePathStroker = false ) /Deprecated="Since 3.38. Use QgsGeometryPaintDevice instead."/;
 %Docstring
 ! Constructor If ``usePathStroker`` is ``True``, path will be considered

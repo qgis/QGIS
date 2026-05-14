@@ -26,6 +26,7 @@
 
 class QgsCelestialBody;
 class QgsProjOperation;
+class QgsSettingsEntryStringList;
 
 
 #ifndef SIP_RUN
@@ -41,13 +42,13 @@ class QgsProjOperation;
  */
 struct CORE_EXPORT QgsCrsDbRecord
 {
-  QString description;
-  QString projectionAcronym;
-  QString srsId;
-  QString authName;
-  QString authId;
-  Qgis::CrsType type = Qgis::CrsType::Unknown;
-  bool deprecated = false;
+    QString description;
+    QString projectionAcronym;
+    QString srsId;
+    QString authName;
+    QString authId;
+    Qgis::CrsType type = Qgis::CrsType::Unknown;
+    bool deprecated = false;
 };
 #endif
 
@@ -66,6 +67,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
 {
     Q_OBJECT
   public:
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsAuthId SIP_SKIP;
+
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsWkt SIP_SKIP;
+
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsProj4 SIP_SKIP;
 
     /**
      * Constructor for QgsCoordinateReferenceSystemRegistry, with the specified \a parent object.
@@ -82,7 +88,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     class UserCrsDetails
     {
       public:
-
         //! CRS ID
         long id = -1;
 
@@ -286,13 +291,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     void recentCrsCleared();
 
   private:
-
     bool insertProjection( const QString &projectionAcronym );
 
     mutable QReadWriteLock mCrsDbRecordsLock;
     mutable bool mCrsDbRecordsPopulated = false;
     mutable QList< QgsCrsDbRecord > mCrsDbRecords;
-
 };
 
 

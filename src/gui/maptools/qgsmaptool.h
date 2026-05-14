@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgspropertycollection.h"
 
 #include <QCursor>
 #include <QGestureEvent>
@@ -41,6 +42,7 @@ class QAction;
 class QAbstractButton;
 class QgsMapMouseEvent;
 class QMenu;
+class QgsSettingsEntryDouble;
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode
@@ -153,6 +155,15 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual bool canvasToolTipEvent( QHelpEvent *e );
 
     /**
+     * Shortcut events coming from the application for overriding. The default
+     * implementation does nothing. Returns whether the event was handled by
+     * the tool and should not be propagated further.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool shortcutEvent( QKeyEvent *e );
+
+    /**
      * Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
@@ -214,6 +225,16 @@ class GUI_EXPORT QgsMapTool : public QObject
     */
     static double searchRadiusMM();
 
+#ifndef SIP_RUN
+
+    /**
+     * Settings entry for the search/identify radius in mm.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryDouble *settingSearchRadiusMM;
+
+#endif
+
     /**
      * Gets search radius in map units for given context. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
@@ -264,6 +285,28 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Transforms a \a point from screen coordinates to map coordinates.
     QgsPointXY toMapCoordinates( QPoint point );
+
+    /**
+     * Property status used in method dealing with property
+     */
+    enum class PropertyStatus
+    {
+      Valid,                   //!< Property is valid
+      DoesNotExist,            //!< Property does not exist
+      CurrentExpressionInvalid //!< Property is an invalid expression
+    };
+
+    /**
+     * Returns data defined property column name for the \a propertyKey from \a properties associated to the \a layer
+     * \a status is updated with current property status
+     */
+    QString dataDefinedColumnName( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *layer, PropertyStatus &status ) const;
+
+    /**
+     * Returns data defined property column index for the \a propertyKey from \a properties associated to the \a layer
+     */
+    int dataDefinedColumnIndex( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *vlayer ) const;
+
 
   signals:
 

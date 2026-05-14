@@ -18,9 +18,9 @@ email                : ersts@amnh.org
 
 #include "qgslinearminmaxenhancementwithclip.h"
 
-QgsLinearMinMaxEnhancementWithClip::QgsLinearMinMaxEnhancementWithClip( Qgis::DataType qgsRasterDataType, double minimumValue, double maximumValue ) : QgsContrastEnhancementFunction( qgsRasterDataType, minimumValue, maximumValue )
-{
-}
+QgsLinearMinMaxEnhancementWithClip::QgsLinearMinMaxEnhancementWithClip( Qgis::DataType qgsRasterDataType, double minimumValue, double maximumValue )
+  : QgsContrastEnhancementFunction( qgsRasterDataType, minimumValue, maximumValue )
+{}
 
 int QgsLinearMinMaxEnhancementWithClip::enhance( double value )
 {

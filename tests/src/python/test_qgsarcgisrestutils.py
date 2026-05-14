@@ -12,9 +12,12 @@ __author__ = "(C) 2022 by Nyall Dawson"
 __date__ = "14/07/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QTimeZone, QVariant
+import math
+import unittest
+
 from qgis.core import (
     NULL,
+    Qgis,
     QgsArcGisRestContext,
     QgsArcGisRestUtils,
     QgsCoordinateReferenceSystem,
@@ -25,9 +28,8 @@ from qgis.core import (
     QgsGeometry,
     QgsUnsetAttributeValue,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QTimeZone, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -35,7 +37,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsArcGisRestUtils(QgisTestCase):
-
     def test_json_to_geometry(self):
         tests = [
             (
@@ -913,6 +914,252 @@ class TestQgsArcGisRestUtils(QgisTestCase):
                 "nullable": False,
                 "type": "esriFieldTypeSmallInteger",
             },
+        )
+
+    def test_serviceCapabilitiesFromString(self):
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString("")
+        self.assertEqual(res, Qgis.ArcGisRestServiceCapabilities())
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString("update")
+        self.assertEqual(res, Qgis.ArcGisRestServiceCapability.Update)
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString("UPDATE")
+        self.assertEqual(res, Qgis.ArcGisRestServiceCapability.Update)
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString("UPDATE,query")
+        self.assertEqual(
+            res,
+            Qgis.ArcGisRestServiceCapability.Update
+            | Qgis.ArcGisRestServiceCapability.Query,
+        )
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString(
+            "UPDATE,query,Delete,Create,map"
+        )
+        self.assertEqual(
+            res,
+            Qgis.ArcGisRestServiceCapability.Update
+            | Qgis.ArcGisRestServiceCapability.Query
+            | Qgis.ArcGisRestServiceCapability.Delete
+            | Qgis.ArcGisRestServiceCapability.Create
+            | Qgis.ArcGisRestServiceCapability.Map,
+        )
+
+    def testPixelTypeToDataType(self):
+        """
+        Test QgsArcGisRestUtils.dataTypeFromString
+        """
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString(""), Qgis.DataType.UnknownDataType
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("asdasdas"),
+            Qgis.DataType.UnknownDataType,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("c128"), Qgis.DataType.CFloat64
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("C64"), Qgis.DataType.CFloat32
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("F32"), Qgis.DataType.Float32
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("F64"), Qgis.DataType.Float64
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("S16"), Qgis.DataType.Int16
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("S32"), Qgis.DataType.Int32
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("s8"), Qgis.DataType.Int8
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u1"), Qgis.DataType.Byte
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u16"), Qgis.DataType.UInt16
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u2"), Qgis.DataType.Byte
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u4"), Qgis.DataType.Byte
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u32"), Qgis.DataType.UInt32
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u8"), Qgis.DataType.Byte
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("unknown"),
+            Qgis.DataType.UnknownDataType,
+        )
+
+    def testColorInterpretationFromBand(self):
+        """
+        Test QgsArcGisRestUtils.colorInterpretationFromBandName
+        """
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName(""),
+            Qgis.RasterColorInterpretation.Undefined,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("bAnd_1"),
+            Qgis.RasterColorInterpretation.Undefined,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("0"),
+            Qgis.RasterColorInterpretation.Undefined,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Red"),
+            Qgis.RasterColorInterpretation.RedBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("green"),
+            Qgis.RasterColorInterpretation.GreenBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("BLUE"),
+            Qgis.RasterColorInterpretation.BlueBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("alpha"),
+            Qgis.RasterColorInterpretation.AlphaBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("NIR"),
+            Qgis.RasterColorInterpretation.NIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("NearIR"),
+            Qgis.RasterColorInterpretation.NIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("SWIR 1"),
+            Qgis.RasterColorInterpretation.SWIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("swir2"),
+            Qgis.RasterColorInterpretation.SWIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("VRE 1"),
+            Qgis.RasterColorInterpretation.RedEdgeBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("RedEdge"),
+            Qgis.RasterColorInterpretation.RedEdgeBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("CoastalAerosol"),
+            Qgis.RasterColorInterpretation.CoastalBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Pan"),
+            Qgis.RasterColorInterpretation.PanBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Thermal"),
+            Qgis.RasterColorInterpretation.TIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("TIR"),
+            Qgis.RasterColorInterpretation.TIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Gray"),
+            Qgis.RasterColorInterpretation.GrayIndex,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Grey"),
+            Qgis.RasterColorInterpretation.GrayIndex,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Cyan"),
+            Qgis.RasterColorInterpretation.CyanBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Magenta"),
+            Qgis.RasterColorInterpretation.MagentaBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Hue"),
+            Qgis.RasterColorInterpretation.HueBand,
+        )
+
+    def test_nodata_for_data_type(self):
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.UnknownDataType),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Byte), (255, True)
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Int8),
+            (-128, True),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.UInt16),
+            (65535, True),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Int16),
+            (-32768, True),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.UInt32),
+            (4294967295, True),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Int32),
+            (-2147483648, True),
+        )
+        self.assertTrue(
+            math.isnan(
+                QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Float32)[0]
+            )
+        )
+        self.assertTrue(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Float32)[1]
+        )
+
+        self.assertTrue(
+            math.isnan(
+                QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Float64)[0]
+            )
+        )
+        self.assertTrue(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Float64)[1]
+        )
+
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.CInt16),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.CInt32),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.CFloat32),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.CFloat64),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.ARGB32),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(
+                Qgis.DataType.ARGB32_Premultiplied
+            ),
+            (0, False),
         )
 
 

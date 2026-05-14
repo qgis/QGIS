@@ -22,7 +22,10 @@
 #include "qgsmeshrendereractivedatasetwidget.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -62,9 +65,7 @@ void TestQgsMeshLayerPropertiesDialog::initTestCase()
   const QString uri( testDataDir + "/quad_and_triangle.2dm" );
   mpMeshLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
 
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpMeshLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpMeshLayer );
 }
 
 //runs after all tests

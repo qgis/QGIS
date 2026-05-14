@@ -22,7 +22,6 @@ Base class for objects with an associated (optional) temporal range.
 #include "qgstemporalrangeobject.h"
 %End
   public:
-
     QgsTemporalRangeObject( bool enabled = false );
 %Docstring
 Constructor QgsTemporalRangeObject.

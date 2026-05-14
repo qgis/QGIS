@@ -24,6 +24,7 @@
 #include "qgstriangularmesh.h"
 
 #include <QByteArray>
+#include <QString>
 #include <QUrl>
 #include <QVector2D>
 #include <QVector3D>
@@ -36,17 +37,19 @@
 
 #include "moc_qgsmesh3dmaterial_p.cpp"
 
+using namespace Qt::StringLiterals;
+
 class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
     ArrowsTextureGenerator( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength )
-      : mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
+      : mVectors( vectors )
+      , mSize( size )
+      , mFixedSize( fixedSize )
+      , mMaxVectorLength( maxVectorLength )
     {}
 
-    qintptr id() const override
-    {
-      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<ArrowsTextureGenerator>::id );
-    }
+    qintptr id() const override { return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<ArrowsTextureGenerator>::id ); }
 
     Qt3DRender::QTextureImageDataPtr operator()() override
     {
@@ -141,6 +144,9 @@ void QgsMesh3DMaterial::configure()
     colorRampTexture->addTextureImage( new QgsColorRampTexture( QgsColorRampShader(), 1 ) );
   }
 
+  // note -- this texture is an exception, we do NOT set it to srgb format as we do NOT want
+  // it linearised before sampling. That is because we need to do the interpolation on the ramp
+  // in SRGB color space. The shader converts the result after sampling the ramp to linear.
   colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
   colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
 
@@ -175,7 +181,7 @@ void QgsMesh3DMaterial::configure()
 
   // Parameters
   mTechnique->addParameter( new Qt3DRender::QParameter( "flatTriangles", ( !mSymbol->smoothedTriangles() ) ) );
-  const QColor wireframecolor = mSymbol->wireframeLineColor();
+  const QColor wireframecolor = Qgs3DUtils::srgbToLinear( mSymbol->wireframeLineColor() );
   mTechnique->addParameter( new Qt3DRender::QParameter( "lineWidth", float( mSymbol->wireframeLineWidth() ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "lineColor", QVector4D( wireframecolor.redF(), wireframecolor.greenF(), wireframecolor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "wireframeEnabled", mSymbol->wireframeEnabled() ) );
@@ -184,7 +190,7 @@ void QgsMesh3DMaterial::configure()
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampCount", mSymbol->colorRampShader().colorRampItemList().count() ) );
   const Qgis::ShaderInterpolationMethod colorRampType = mSymbol->colorRampShader().colorRampType();
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", static_cast<int>( colorRampType ) ) );
-  const QColor meshColor = mSymbol->singleMeshColor();
+  const QColor meshColor = Qgs3DUtils::srgbToLinear( mSymbol->singleMeshColor() );
   mTechnique->addParameter( new Qt3DRender::QParameter( "meshColor", QVector4D( meshColor.redF(), meshColor.greenF(), meshColor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3DMaterial::ScalarDataSet ) ) );
 }
@@ -207,7 +213,7 @@ void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   else
   {
     meta = layer->datasetGroupMetadata( datasetIndex );
-    arrowsColor = layer->rendererSettings().vectorSettings( datasetIndex.group() ).color();
+    arrowsColor = Qgs3DUtils::srgbToLinear( layer->rendererSettings().vectorSettings( datasetIndex.group() ).color() );
     arrowsEnabledParameter->setValue( true );
     const int maxSize = mSymbol->maximumTextureSize();
     // construct grid
@@ -232,14 +238,7 @@ void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
     const double yMin = gridExtent.yMinimum() + ySpacing / 2;
     minCorner = QgsPointXY( xMin, yMin );
 
-    vectors = QgsMeshLayerUtils::griddedVectorValues(
-      layer,
-      datasetIndex,
-      xSpacing,
-      ySpacing,
-      gridSize,
-      minCorner
-    );
+    vectors = QgsMeshLayerUtils::griddedVectorValues( layer, datasetIndex, xSpacing, ySpacing, gridSize, minCorner );
 
     if ( vectors.isEmpty() )
       return;
@@ -258,6 +257,7 @@ void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   arrowTexture->addTextureImage( arrowTextureImage );
   arrowTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
   arrowTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );
+  arrowTexture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsColor", QVector4D( arrowsColor.redF(), arrowsColor.greenF(), arrowsColor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsSpacing", float( mSymbol->arrowsSpacing() ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowTexture", arrowTexture ) );

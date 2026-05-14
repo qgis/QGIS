@@ -52,7 +52,9 @@ class QgsWfsCapabilities
 
         //! constructor
         Argument( const QString &nameIn = QString(), const QString &typeIn = QString() )
-          : name( nameIn ), type( typeIn ) {}
+          : name( nameIn )
+          , type( typeIn )
+        {}
     };
 
     //! description of server functions
@@ -71,10 +73,16 @@ class QgsWfsCapabilities
 
         //! constructor with name and fixed number of arguments
         Function( const QString &nameIn, int args )
-          : name( nameIn ), minArgs( args ), maxArgs( args ) {}
+          : name( nameIn )
+          , minArgs( args )
+          , maxArgs( args )
+        {}
         //! constructor with name and min,max number of arguments
         Function( const QString &nameIn, int minArgs, int maxArgsIn )
-          : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
+          : name( nameIn )
+          , minArgs( minArgs )
+          , maxArgs( maxArgsIn )
+        {}
         //! default constructor
         Function() = default;
     };

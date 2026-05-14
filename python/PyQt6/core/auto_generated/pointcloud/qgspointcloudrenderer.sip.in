@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsPointCloudRenderContext
 {
 %Docstring(signature="appended")
@@ -23,9 +25,7 @@ operation.
 #include "qgspointcloudrenderer.h"
 %End
   public:
-
-    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = 0 );
+    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = 0 );
 %Docstring
 Constructor for QgsPointCloudRenderContext.
 
@@ -193,6 +193,11 @@ Abstract base class for 2d point cloud renderers.
       sipType = 0;
 %End
   public:
+
+    enum class Property /BaseType=IntEnum/
+    {
+      Color,
+    };
 
     QgsPointCloudRenderer();
 
@@ -625,8 +630,76 @@ Returns the renderer behavior when zoomed out
 .. versionadded:: 3.42
 %End
 
-  protected:
+    void setOverviewSwitchingScale( const double value );
+%Docstring
+Sets the overview switching scale
 
+Point clouds whose extents intersect the map extent are considered
+visible. When zoomed out beyond the overview switching scale (render
+extent exceeds average point cloud dimensions by the scale factor), and
+overview zoom-out behavior is enabled, the overview is rendered instead
+of an individual point cloud.
+
+.. versionadded:: 4.0
+%End
+
+    double overviewSwitchingScale() const;
+%Docstring
+Returns the overview switching scale
+
+.. versionadded:: 4.0
+%End
+
+    QgsElevationShadingRenderer elevationShadingRenderer() const;
+%Docstring
+Returns the shading renderer used to render shading on the layer.
+
+.. seealso:: :py:func:`setElevationShadingRenderer`
+
+.. versionadded:: 4.2
+%End
+
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer );
+%Docstring
+Sets the shading ``renderer`` used to render shading on the layer.
+
+.. seealso:: :py:func:`elevationShadingRenderer`
+
+.. versionadded:: 4.2
+%End
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the property definitions for data defined properties used by the
+renderer.
+
+.. versionadded:: 4.2
+%End
+
+    const QgsPropertyCollection &dataDefinedProperties() const;
+%Docstring
+Returns the renderer's property collection, used for data defined
+overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 4.2
+%End
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the renderer's property collection, used for data defined
+overrides.
+
+:param collection: property collection. Existing properties will be
+                   replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 4.2
+%End
+
+  protected:
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
 %Docstring
 Retrieves the x and y coordinate for the point at index ``i``.
@@ -681,6 +754,7 @@ to the specified DOM ``element``.
 
 .. seealso:: :py:func:`restoreCommonProperties`
 %End
+
 
   private:
     QgsPointCloudRenderer( const QgsPointCloudRenderer &other );

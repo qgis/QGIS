@@ -35,7 +35,6 @@ struct QgsRasterViewPort;
 class CORE_EXPORT QgsRasterIterator
 {
   public:
-
     /**
      * Constructor for QgsRasterIterator, iterating over the specified \a input raster source.
      *
@@ -90,7 +89,17 @@ class CORE_EXPORT QgsRasterIterator
      *
      * \since QGIS 3.26
      */
-    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth SIP_OUT, int &subRegionHeight SIP_OUT, int &subRegionLeft SIP_OUT, int &subRegionTop SIP_OUT, int resamplingFactor = 1 );
+    static QgsRectangle subRegion(
+      const QgsRectangle &rasterExtent,
+      int rasterWidth,
+      int rasterHeight,
+      const QgsRectangle &subRegion,
+      int &subRegionWidth SIP_OUT,
+      int &subRegionHeight SIP_OUT,
+      int &subRegionLeft SIP_OUT,
+      int &subRegionTop SIP_OUT,
+      int resamplingFactor = 1
+    );
 
     /**
      * Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns FALSE.
@@ -134,10 +143,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param topLeftRow top left row
      * \returns FALSE if the last part was already returned
     */
-    bool readNextRasterPart( int bandNumber,
-                             int &nCols, int &nRows,
-                             QgsRasterBlock **block SIP_TRANSFERBACK,
-                             int &topLeftCol, int &topLeftRow );
+    bool readNextRasterPart( int bandNumber, int &nCols, int &nRows, QgsRasterBlock **block SIP_TRANSFERBACK, int &topLeftCol, int &topLeftRow );
 
     /**
      * Fetches next part of raster data.
@@ -156,12 +162,19 @@ class CORE_EXPORT QgsRasterIterator
      * \note Not available in Python bindings
      * \since QGIS 3.2
     */
-    bool readNextRasterPart( int bandNumber,
-                             int &nCols, int &nRows,
-                             std::unique_ptr< QgsRasterBlock > &block,
-                             int &topLeftCol, int &topLeftRow,
-                             QgsRectangle *blockExtent = nullptr,
-                             int *tileColumns = nullptr, int *tileRows = nullptr, int *tileTopLeftColumn = nullptr, int *tileTopLeftRow = nullptr ) SIP_SKIP;
+    bool readNextRasterPart(
+      int bandNumber,
+      int &nCols,
+      int &nRows,
+      std::unique_ptr< QgsRasterBlock > &block,
+      int &topLeftCol,
+      int &topLeftRow,
+      QgsRectangle *blockExtent = nullptr,
+      int *tileColumns = nullptr,
+      int *tileRows = nullptr,
+      int *tileTopLeftColumn = nullptr,
+      int *tileTopLeftRow = nullptr
+    ) SIP_SKIP;
 
     /**
      * Cancels the raster iteration and resets the iterator.
@@ -248,13 +261,13 @@ class CORE_EXPORT QgsRasterIterator
     //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
     struct RasterPartInfo
     {
-      qgssize currentCol;
-      qgssize currentRow;
-      qgssize nCols;
-      qgssize nRows;
-      qgssize iteratedPixels = 0;
-      qgssize previousIteratedPixels = 0;
-      qgssize currentBlockSize = 0;
+        qgssize currentCol;
+        qgssize currentRow;
+        qgssize nCols;
+        qgssize nRows;
+        qgssize iteratedPixels = 0;
+        qgssize previousIteratedPixels = 0;
+        qgssize currentBlockSize = 0;
     };
 
     QgsRasterInterface *mInput = nullptr;
@@ -272,8 +285,19 @@ class CORE_EXPORT QgsRasterIterator
 
     //! Remove part into and release memory
     void removePartInfo( int bandNumber );
-    bool readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows, int &tileTopLeftColumn, int &tileTopLeftRow );
-
+    bool readNextRasterPartInternal(
+      int bandNumber,
+      int &nCols,
+      int &nRows,
+      std::unique_ptr<QgsRasterBlock> *block,
+      int &topLeftCol,
+      int &topLeftRow,
+      QgsRectangle *blockExtent,
+      int &tileColumns,
+      int &tileRows,
+      int &tileTopLeftColumn,
+      int &tileTopLeftRow
+    );
 };
 
 #endif // QGSRASTERITERATOR_H

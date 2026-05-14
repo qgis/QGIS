@@ -20,6 +20,12 @@
 
 #define SIP_NO_FILE
 
+namespace Qt3DRender
+{
+  class QTexture2D;
+}
+
+
 /**
  * \ingroup qgis_3d
  * \brief An entity that is responsible for capturing depth.

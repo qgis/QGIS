@@ -24,7 +24,6 @@ A model for display of available attributes from a point cloud.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       AttributeName,
@@ -130,7 +129,6 @@ attribute model.
 #include "qgspointcloudattributemodel.h"
 %End
   public:
-
     enum Filter /BaseType=IntEnum/
     {
       Char,

@@ -32,8 +32,7 @@ QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod me
   : mMethod( method )
   , mPoints( points )
   , mDestinationCrs( destinationCrs )
-{
-}
+{}
 
 bool QgsVectorWarper::transformFeatures( QgsFeatureIterator &iterator, QgsFeatureSink *sink, const QgsCoordinateTransformContext &context, QgsFeedback *feedback ) const
 {
@@ -95,7 +94,9 @@ bool QgsVectorWarper::transformFeatures( QgsFeatureIterator &iterator, QgsFeatur
 // QgsVectorWarperTask
 //
 
-QgsVectorWarperTask::QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs, QgsVectorLayer *layer, const QString &fileName )
+QgsVectorWarperTask::QgsVectorWarperTask(
+  QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs, QgsVectorLayer *layer, const QString &fileName
+)
   : QgsTask( tr( "Warping %1" ).arg( fileName ), QgsTask::CanCancel )
   , mMethod( method )
   , mPoints( points )

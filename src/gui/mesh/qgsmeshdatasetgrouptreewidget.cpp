@@ -25,8 +25,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmeshdatasetgrouptreewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent )
   : QWidget( parent )
@@ -39,9 +42,7 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent )
   connect( mExpandButton, &QToolButton::clicked, mDatasetGroupTreeView, &QTreeView::expandAll );
   connect( mCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::selectAllGroups );
   connect( mUnCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::deselectAllGroups );
-  connect( mResetDefaultButton, &QToolButton::clicked, this, [this] {
-    this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
-  } );
+  connect( mResetDefaultButton, &QToolButton::clicked, this, [this] { this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer ); } );
 
   connect( mDatasetGroupTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this]() {
     const QModelIndex index = mDatasetGroupTreeView->currentIndex();

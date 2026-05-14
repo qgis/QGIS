@@ -15,28 +15,23 @@ import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
 from qgis.core import (
     QgsProviderConnectionModel,
     QgsProviderRegistry,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.testing import unittest
-
 from utilities import start_app, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsProviderConnectionModel(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
         gpkg_original_path = (

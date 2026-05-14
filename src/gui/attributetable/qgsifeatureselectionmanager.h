@@ -35,7 +35,8 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
 
   public:
     QgsIFeatureSelectionManager( QObject *parent SIP_TRANSFERTHIS )
-      : QObject( parent ) {}
+      : QObject( parent )
+    {}
 
     /**
      * Returns the number of features that are selected in this layer.

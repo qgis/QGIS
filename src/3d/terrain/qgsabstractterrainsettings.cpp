@@ -18,12 +18,14 @@
 #include "qgis.h"
 
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractTerrainSettings::~QgsAbstractTerrainSettings() = default;
 
 void QgsAbstractTerrainSettings::resolveReferences( const QgsProject * )
-{
-}
+{}
 
 void QgsAbstractTerrainSettings::writeCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
 {

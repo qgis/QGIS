@@ -19,6 +19,10 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for GPX source select
 class QgsGpxSourceSelectProvider : public QgsSourceSelectProvider
 {
@@ -27,7 +31,9 @@ class QgsGpxSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "GPS" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 65; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddGpsLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsGpxSourceSelect( parent, fl, widgetMode );
     }
@@ -39,8 +45,7 @@ class QgsGpxProviderGuiMetadata : public QgsProviderGuiMetadata
   public:
     QgsGpxProviderGuiMetadata()
       : QgsProviderGuiMetadata( u"gpx"_s )
-    {
-    }
+    {}
 
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override
     {

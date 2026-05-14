@@ -28,12 +28,13 @@
 #include <QStyledItemDelegate>
 #include <QVariantMap>
 
+#define SIP_NO_FILE
+
 class QgsExtentWidget;
 class QgsSensorThingsConnectionPropertiesTask;
 class QTableView;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 
 class QgsSensorThingsExpansionsModel : public QAbstractItemModel

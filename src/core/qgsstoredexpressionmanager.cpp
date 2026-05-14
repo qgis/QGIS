@@ -20,8 +20,11 @@
 #include "qgis.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsstoredexpressionmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsStoredExpressionManager::addStoredExpression( const QString &name, const QString &expression, const QgsStoredExpression::Category &tag )
 {

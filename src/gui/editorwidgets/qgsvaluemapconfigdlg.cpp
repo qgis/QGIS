@@ -26,9 +26,12 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsvaluemapconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -99,16 +102,15 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 
   if ( valueList.count() > 0 )
   {
-    for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+    for ( int i = 0; i < valueList.count(); i++ )
     {
       orderedList.append( qMakePair( valueList[i].toMap().constBegin().value().toString(), valueList[i].toMap().constBegin().key() ) );
     }
   }
   else
   {
-    int row = 0;
     const QVariantMap values = config.value( u"map"_s ).toMap();
-    for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
+    for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++ )
     {
       if ( QgsVariantUtils::isNull( mit.value() ) )
         orderedList.append( qMakePair( mit.key(), QVariant() ) );
@@ -137,8 +139,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
       const QString validValue = checkValueLength( item->text() );
       if ( validValue.length() != item->text().length() )
       {
-        const QString errorMessage = tr( "Value '%1' has been trimmed (maximum field length: %2)" )
-                                       .arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
+        const QString errorMessage = tr( "Value '%1' has been trimmed (maximum field length: %2)" ).arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
         item->setText( validValue );
         mValueMapErrorsLabel->setVisible( true );
         mValueMapErrorsLabel->setText( u"%1<br>%2"_s.arg( errorMessage, mValueMapErrorsLabel->text() ) );
@@ -222,13 +223,11 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
       {
         if ( reportedErrors.length() < maxOverflowErrors )
         {
-          reportedErrors.push_back( tr( "Value '%1' has been trimmed (maximum field length: %2)" )
-                                      .arg( value, QString::number( mappedField.length() ) ) );
+          reportedErrors.push_back( tr( "Value '%1' has been trimmed (maximum field length: %2)" ).arg( value, QString::number( mappedField.length() ) ) );
         }
         else if ( reportedErrors.length() == maxOverflowErrors )
         {
-          reportedErrors.push_back( tr( "Only first %1 errors have been reported." )
-                                      .arg( maxOverflowErrors ) );
+          reportedErrors.push_back( tr( "Only first %1 errors have been reported." ).arg( maxOverflowErrors ) );
         }
       }
 

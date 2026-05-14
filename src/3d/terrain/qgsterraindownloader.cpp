@@ -23,6 +23,10 @@
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTerrainDownloader::QgsTerrainDownloader( const QgsCoordinateTransformContext &transformContext )
 {
   setDataSource( defaultDataSource() );
@@ -120,7 +124,9 @@ void QgsTerrainDownloader::tileImageToHeightMap( const QImage &img, QByteArray &
 }
 
 
-QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context, QString tmpFilenameImg, QString tmpFilenameTif )
+QByteArray QgsTerrainDownloader::getHeightMap(
+  const QgsRectangle &extentOrig, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context, QString tmpFilenameImg, QString tmpFilenameTif
+)
 {
   if ( !mOnlineDtm || !mOnlineDtm->isValid() )
   {

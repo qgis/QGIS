@@ -20,7 +20,6 @@ An interface for objects which can translate project strings.
 #include "qgsprojecttranslator.h"
 %End
   public:
-
     virtual ~QgsProjectTranslator();
 
     virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = 0, int n = -1 ) const = 0;
@@ -44,7 +43,6 @@ This function can be called from wherever the
 
 .. versionadded:: 3.4
 %End
-
 };
 
 /************************************************************************

@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsstringutils.h"
 #include "qgsunsetattributevalue.h"
 
 #include <QBitArray>
@@ -31,11 +32,14 @@
 #include <QPixmap>
 #include <QQuaternion>
 #include <QRect>
+#include <QString>
 #include <QTime>
 #include <QUuid>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+
+using namespace Qt::StringLiterals;
 
 QString QgsVariantUtils::typeToDisplayString( QMetaType::Type type, QMetaType::Type subType )
 {
@@ -172,7 +176,7 @@ QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Typ
 bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings )
 {
 #ifndef QGISDEBUG
-  ( void )silenceNullWarnings;
+  ( void ) silenceNullWarnings;
 #endif
 
   if ( variant.isNull() || !variant.isValid() )
@@ -585,7 +589,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::UInt;
 
     case QMetaType::Float:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
     case QMetaType::Float16:
 #endif
       return QVariant::Type::Double;
@@ -628,10 +632,7 @@ QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )
 
 QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
 {
-
-  auto _displayString = [ ]( const QVariant & variant, int precision ) -> QString
-  {
-
+  auto _displayString = []( const QVariant &variant, int precision ) -> QString {
     if ( QgsVariantUtils::isNull( variant ) )
     {
       return QgsApplication::nullRepresentation();
@@ -641,8 +642,7 @@ QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
     if ( variant.userType() == QMetaType::Type::Double )
     {
       // Locales with decimal point != '.' or that require group separator: use QLocale
-      if ( QLocale().decimalPoint() != '.' ||
-           !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+      if ( QLocale().decimalPoint() != '.' || !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
       {
         if ( precision > 0 )
         {
@@ -669,8 +669,10 @@ QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
           }
           else
           {
-            if ( dotPosition < 0 ) precision = 0;
-            else precision = static_cast<int>( str.length() ) - dotPosition - 1;
+            if ( dotPosition < 0 )
+              precision = 0;
+            else
+              precision = static_cast<int>( str.length() ) - dotPosition - 1;
 
             if ( -1 < variant.toDouble() && variant.toDouble() < 1 )
             {
@@ -697,8 +699,7 @@ QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
       }
     }
     // Other numeric types than doubles
-    else if ( QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( variant.userType() ) ) &&
-              !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+    else if ( QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( variant.userType() ) ) && !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
     {
       bool ok;
       const qlonglong converted( variant.toLongLong( &ok ) );
@@ -732,4 +733,44 @@ QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
   {
     return _displayString( variant, precision );
   }
+}
+
+QString QgsVariantUtils::variantToHtml( const QVariantMap &variantMap, const QString &title = QString() )
+{
+  QString result;
+  if ( !title.isEmpty() )
+  {
+    result += u"<tr><td class=\"highlight\">%1</td><td></td></tr>"_s.arg( title );
+  }
+  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
+  {
+    if ( ( it.value().type() == QVariant::List || it.value().type() == QVariant::StringList ) )
+    {
+      const QVariantList childList = it.value().toList();
+      result += u"<tr><td class=\"highlight\">%1</td><td><ul>"_s.arg( it.key() );
+      for ( const QVariant &v : childList )
+      {
+        if ( v.type() == QVariant::Map )
+        {
+          const QVariantMap grandChildMap = v.toMap();
+          result += u"<li><table>%1</table></li>"_s.arg( variantToHtml( grandChildMap ) );
+        }
+        else
+        {
+          result += u"<li>%1</li>"_s.arg( QgsStringUtils::insertLinks( v.toString() ) );
+        }
+      }
+      result += "</ul></td></tr>"_L1;
+    }
+    else if ( it.value().type() == QVariant::Map )
+    {
+      const QVariantMap childMap = it.value().toMap();
+      result += u"<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>"_s.arg( it.key(), variantToHtml( childMap ) );
+    }
+    else
+    {
+      result += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>"_s.arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
+    }
+  }
+  return result;
 }

@@ -22,8 +22,7 @@
 Qgs3DMapTool::Qgs3DMapTool( Qgs3DMapCanvas *canvas )
   : QObject( canvas )
   , mCanvas( canvas )
-{
-}
+{}
 
 void Qgs3DMapTool::mousePressEvent( QMouseEvent *event )
 {
@@ -56,12 +55,10 @@ void Qgs3DMapTool::mouseWheelEvent( QWheelEvent *event )
 }
 
 void Qgs3DMapTool::activate()
-{
-}
+{}
 
 void Qgs3DMapTool::deactivate()
-{
-}
+{}
 
 QCursor Qgs3DMapTool::cursor() const
 {
@@ -69,8 +66,7 @@ QCursor Qgs3DMapTool::cursor() const
 }
 
 void Qgs3DMapTool::onMapSettingsChanged()
-{
-}
+{}
 
 Qgs3DMapCanvas *Qgs3DMapTool::canvas()
 {

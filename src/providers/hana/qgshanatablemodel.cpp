@@ -22,21 +22,17 @@
 #include "qgshanasettings.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgshanatablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHanaTableModel::QgsHanaTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
 
 {
-  mColumns << tr( "Schema" )
-           << tr( "Table" )
-           << tr( "Comment" )
-           << tr( "Column" )
-           << tr( "Type" )
-           << tr( "SRID" )
-           << tr( "Feature id" )
-           << tr( "Select at id" )
-           << tr( "SQL" );
+  mColumns << tr( "Schema" ) << tr( "Table" ) << tr( "Comment" ) << tr( "Column" ) << tr( "Type" ) << tr( "SRID" ) << tr( "Feature id" ) << tr( "Select at id" ) << tr( "SQL" );
   setHorizontalHeaderLabels( mColumns );
 }
 
@@ -141,8 +137,10 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
   QStandardItem *selItem = new QStandardItem( QString() );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
-  selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping "
-                           "the attribute table in memory (e.g. in case of expensive views)." ) );
+  selItem->setToolTip( tr(
+    "Disable 'Fast Access to Features at ID' capability to force keeping "
+    "the attribute table in memory (e.g. in case of expensive views)."
+  ) );
 
   QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 

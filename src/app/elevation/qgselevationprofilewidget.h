@@ -90,7 +90,7 @@ class QgsElevationProfileLayersDialog : public QDialog, private Ui::QgsElevation
     QList<QgsMapLayer *> mVisibleLayers;
 };
 
-class QgsElevationProfileWidget : public QWidget
+class APP_EXPORT QgsElevationProfileWidget : public QWidget
 {
     Q_OBJECT
   public:
@@ -101,6 +101,7 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryColor *settingBackgroundColor;
     static const QgsSettingsEntryBool *settingShowSubsections;
     static const QgsSettingsEntryBool *settingShowScaleRatioInToolbar;
+    static const QgsSettingsEntryBool *settingShowCurveIn3D;
 
     QgsElevationProfileWidget( QgsElevationProfile *profile, QgsMapCanvas *canvas );
     ~QgsElevationProfileWidget() override;
@@ -123,6 +124,12 @@ class QgsElevationProfileWidget : public QWidget
 
   signals:
     void toggleDockModeRequested( bool docked );
+    void profileDataChanged( QgsElevationProfile *profile, double zMin, double zMax );
+    void profileDataRemoved( QgsElevationProfile *profile );
+    void profileCursorMoved( QgsElevationProfile *profile, const QgsPointXY &mapPoint, const QgsProfilePoint &profilePoint );
+
+  public slots:
+    void updateCurveIn3D();
 
   private slots:
     void addLayers();
@@ -172,6 +179,7 @@ class QgsElevationProfileWidget : public QWidget
     QAction *mRenameProfileAction = nullptr;
     QAction *mLockRatioAction = nullptr;
     QAction *mShowSubsectionsAction = nullptr;
+    QAction *mShowCurveIn3DAction = nullptr;
     QAction *mSubsectionsSymbologyAction = nullptr;
     QAction *mSyncLayerTreeAction = nullptr;
     QAction *mActionAddGroup = nullptr;

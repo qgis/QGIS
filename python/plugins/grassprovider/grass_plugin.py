@@ -27,7 +27,6 @@ with QgsRuntimeProfiler.profile("Import GRASS Provider"):
 
 
 class GrassProviderPlugin:
-
     def __init__(self):
         self.provider = GrassProvider()
 

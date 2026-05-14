@@ -30,8 +30,7 @@ class QgsVectorLayer;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 
-template<class T>
-class GUI_EXPORT QgsMapToolEditBlankSegments;
+template<class T> class GUI_EXPORT QgsMapToolEditBlankSegments;
 
 /**
  * \ingroup gui
@@ -85,7 +84,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, public QgsExpressionCont
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    QgsVectorLayer *mVectorLayer = nullptr;
+    QPointer<QgsVectorLayer> mVectorLayer;
 
   signals:
 
@@ -455,6 +454,8 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
 
 class QgsTemplatedLineSymbolLayerBase;
 class QgsMapToolEditBlankSegmentsBase;
+class QgsMapToolAddExtraItem;
+class QgsMapToolModifyExtraItems;
 
 /**
  * \ingroup gui
@@ -483,6 +484,10 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
      * \param parent parent widget
      */
     QgsTemplatedLineSymbolLayerWidget( TemplatedSymbolType symbolType, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    bool event( QEvent *e ) override;
+
+    ~QgsTemplatedLineSymbolLayerWidget() override;
 
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
@@ -518,16 +523,16 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     void blankSegmentsUnitChanged();
     void setAverageAngle( double val );
     void toggleMapToolEditBlankSegments( bool toggled );
-
-    void updateBlankSegmentsWidget();
+    void toggleMapToolAddExtraItem( bool toggled );
+    void toggleMapToolModifyExtraItem( bool toggled );
+    void updatePerFeatureCustomizationWidget();
 
   private:
-    // Returns blank segments field index, -1 if no dd property field has been set
-    int blankSegmentsFieldIndex() const;
-
     QgsTemplatedLineSymbolLayerBase *mLayer = nullptr;
     TemplatedSymbolType mSymbolType = TemplatedSymbolType::Hash;
     QObjectUniquePtr<QgsMapToolEditBlankSegmentsBase> mMapToolEditBlankSegments;
+    QObjectUniquePtr<QgsMapToolAddExtraItem> mMapToolAddExtraItem;
+    QObjectUniquePtr<QgsMapToolModifyExtraItems> mMapToolModifyExtraItem;
 };
 
 /**

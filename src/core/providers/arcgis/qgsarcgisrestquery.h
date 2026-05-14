@@ -15,14 +15,17 @@
 #ifndef QGSARCGISRESTQUERY_H
 #define QGSARCGISRESTQUERY_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgshttpheaders.h"
 #include "qgsrectangle.h"
 
+#include <QPointer>
 #include <QString>
 #include <QVariantMap>
+
+#define SIP_NO_FILE
 
 class QgsFeedback;
 class QNetworkReply;
@@ -37,34 +40,62 @@ class QgsCoordinateReferenceSystem;
 class CORE_EXPORT QgsArcGisRestQueryUtils
 {
   public:
-
     /**
      * Service types
      */
     enum class ServiceTypeFilter
     {
-      AllTypes, //!< All types
-      Vector,   //!< Vector type
-      Raster,   //!< Raster type
-      Scene    //!< Scene
+      Vector = 1 << 0,
+      Raster = 1 << 1,
+      Scene = 1 << 2,
     };
+    Q_DECLARE_FLAGS( ServiceTypeFilters, ServiceTypeFilter );
+
+    /**
+     * Attempts to resolve the service type from a \a url.
+     *
+     * This may not be successful, e.g. when the service is sitting behind an internal proxy.
+     */
+    static Qgis::ArcGisRestServiceType sniffServiceTypeFromUrl( const QUrl &url );
+
+    /**
+     * Attempts to resolve the service type from a \a json definition.
+     */
+    static Qgis::ArcGisRestServiceType sniffServiceTypeFromJson( const QVariantMap &json );
 
     /**
      * Retrieves JSON service info for the specified base URL.
      */
-    static QVariantMap getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString() );
+    static QVariantMap getServiceInfo(
+      const QString &baseurl,
+      const QString &authcfg,
+      QString &errorTitle,
+      QString &errorText,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
+    );
 
     /**
      * Retrieves JSON layer info for the specified layer URL.
      */
-    static QVariantMap getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString() );
+    static QVariantMap getLayerInfo(
+      const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString()
+    );
 
     /**
      * Retrieves all object IDs for the specified layer URL.
      */
-    static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString(),
-                                     const QgsRectangle &bbox = QgsRectangle(),
-                                     const QString &whereClause = QString() );
+    static QVariantMap getObjectIds(
+      const QString &layerurl,
+      const QString &authcfg,
+      QString &errorTitle,
+      QString &errorText,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      const QString &urlPrefix = QString(),
+      const QgsRectangle &bbox = QgsRectangle(),
+      const QString &whereClause = QString()
+    );
 
 
     /**
@@ -72,7 +103,9 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      *
      * \since QGIS 3.28
      */
-    static QgsRectangle getExtent( const QString &layerurl, const QString &whereClause, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString() );
+    static QgsRectangle getExtent(
+      const QString &layerurl, const QString &whereClause, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString()
+    );
 
     /**
      * Retrieves all matching objects from the specified layer URL.
@@ -89,47 +122,122 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      * \param fetchAttributes
      * \param fetchM
      * \param fetchZ
-     * \param filterRect
      * \param errorTitle
      * \param errorText
      * \param requestHeaders
      * \param feedback
      * \param urlPrefix
      */
-    static QVariantMap getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
-                                   bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
-                                   const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() );
+    static QVariantMap getObjects(
+      const QString &layerurl,
+      const QString &authcfg,
+      const QList<quint32> &objectIds,
+      const QString &crs,
+      bool fetchGeometry,
+      const QStringList &fetchAttributes,
+      bool fetchM,
+      bool fetchZ,
+      QString &errorTitle,
+      QString &errorText,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = nullptr,
+      const QString &urlPrefix = QString()
+    );
 
     /**
      * Gets a list of object IDs which fall within the specified extent.
      */
-    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr,
-        const QString &whereClause = QString(), const QString &urlPrefix = QString() );
+    static QList<quint32> getObjectIdsByExtent(
+      const QString &layerurl,
+      const QgsRectangle &filterRect,
+      QString &errorTitle,
+      QString &errorText,
+      const QString &authcfg,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = nullptr,
+      const QString &whereClause = QString(),
+      const QString &urlPrefix = QString()
+    );
 
     /**
      * Performs a blocking request to a URL and returns the retrieved data.
      */
-    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr, const QString &urlPrefix = QString() );
-
+    static QByteArray queryService(
+      const QUrl &url,
+      const QString &authcfg,
+      QString &errorTitle,
+      QString &errorText,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = nullptr,
+      QString *contentType = nullptr,
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
+    );
     /**
      * Performs a blocking request to a URL and returns the retrieved JSON content.
      */
-    static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() );
+    static QVariantMap queryServiceJSON(
+      const QUrl &url,
+      const QString &authcfg,
+      QString &errorTitle,
+      QString &errorText,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = nullptr,
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
+    );
 
     /**
      * Calls the specified \a visitor function on all folder items found within the given service data.
      */
-    static void visitFolderItems( const std::function<void ( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void visitFolderItems( const std::function<void( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
 
     /**
      * Calls the specified \a visitor function on all service items found within the given service data.
      */
-    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url, Qgis::ArcGisRestServiceType serviceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void visitServiceItems(
+      const std::function<void( const QString &serviceName, const QString &url, Qgis::ArcGisRestServiceType serviceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl
+    );
+
+    /**
+     * Encapsulates details relating to a layer item.
+     *
+     * \since QGIS 4.2
+     */
+    struct LayerItemDetails
+    {
+        //! Parent layer ID
+        QString parentLayerId;
+        //! Service type
+        Qgis::ArcGisRestServiceType serviceType = Qgis::ArcGisRestServiceType::Unknown;
+        //! Geometry type
+        Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown;
+        //! Layer ID
+        QString layerId;
+        //! Layer name
+        QString name;
+        //! Description
+        QString description;
+        //! URL
+        QString url;
+        //! TRUE if layer item represents a parent layer
+        bool isParentLayer = false;
+        //! Coordinate reference system
+        QgsCoordinateReferenceSystem crs;
+        //! Map server image format
+        QString format;
+        //! TRUE if layer is a map server with the query capability
+        bool isMapServerWithQueryCapability = false;
+        //! TRUE if layer is the special map server "all layers" layer
+        bool isMapServerSpecialAllLayersOption = false;
+    };
 
     /**
      * Calls the specified \a visitor function on all layer items found within the given service data.
      */
-    static void addLayerItems( const std::function<void ( const QString &parentLayerId, ServiceTypeFilter serviceType, Qgis::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QgsCoordinateReferenceSystem &crs, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter = ServiceTypeFilter::AllTypes );
+    static void addLayerItems(
+      const std::function<void( const LayerItemDetails &details )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, Qgis::ArcGisRestServiceType serviceType
+    );
 
     /**
      * Parses and processes a \a url.
@@ -137,7 +245,6 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     static QUrl parseUrl( const QUrl &url, bool *isTestEndpoint = nullptr );
 
   private:
-
     static void adjustBaseUrl( QString &baseUrl, const QString &name );
 
     friend class TestQgsArcGisRestUtils;
@@ -159,7 +266,7 @@ class CORE_EXPORT QgsArcGisAsyncQuery : public QObject
     void handleReply();
 
   private:
-    QNetworkReply *mReply = nullptr;
+    QPointer<QNetworkReply> mReply;
     QByteArray *mResult = nullptr;
 };
 
@@ -182,6 +289,8 @@ class CORE_EXPORT QgsArcGisAsyncParallelQuery : public QObject
     QString mAuthCfg;
     QgsHttpHeaders mRequestHeaders;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsArcGisRestQueryUtils::ServiceTypeFilters )
 
 ///@endcond
 

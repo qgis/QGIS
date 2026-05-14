@@ -25,7 +25,6 @@
 
 class QgsSensorThingsFeatureSource : public QgsAbstractFeatureSource
 {
-
   public:
     QgsSensorThingsFeatureSource( const std::shared_ptr<QgsSensorThingsSharedData> &sharedData );
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;

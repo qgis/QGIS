@@ -46,8 +46,7 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
      *
      * \note Not available in Python bindings
      */
-    template<class T>
-    static void deleteConnections( const QList<T *> &items, const std::function<void( const QString & )> &deleteConnection, QgsDataItemGuiContext context )
+    template<class T> static void deleteConnections( const QList<T *> &items, const std::function<void( const QString & )> &deleteConnection, QgsDataItemGuiContext context )
     {
       ( void ) context;
       if ( items.empty() )

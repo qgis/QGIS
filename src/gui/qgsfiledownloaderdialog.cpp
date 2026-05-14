@@ -19,11 +19,15 @@
 #include "qgsfileutils.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsfiledownloaderdialog.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg )
-  : mOutputFileName( outputFileName ), mDownloader( new QgsFileDownloader( url, outputFileName, authcfg, true ) )
+  : mOutputFileName( outputFileName )
+  , mDownloader( new QgsFileDownloader( url, outputFileName, authcfg, true ) )
 {
   setWindowTitle( tr( "Download" ) );
   setLabelText( tr( "Downloading %1." ).arg( outputFileName ) );

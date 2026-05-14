@@ -33,8 +33,8 @@
 
 QgsDetailedItemDelegate::QgsDetailedItemDelegate( QObject *parent )
   : QAbstractItemDelegate( parent )
-  , mpWidget( new QgsDetailedItemWidget() )
-  , mpCheckBox( new QCheckBox() )
+  , mpWidget( std::make_unique<QgsDetailedItemWidget>() )
+  , mpCheckBox( std::make_unique<QCheckBox>() )
 
 {
   //mpWidget->setFixedHeight(80);
@@ -44,10 +44,7 @@ QgsDetailedItemDelegate::QgsDetailedItemDelegate( QObject *parent )
 }
 
 QgsDetailedItemDelegate::~QgsDetailedItemDelegate()
-{
-  delete mpCheckBox;
-  delete mpWidget;
-}
+{}
 
 void QgsDetailedItemDelegate::paint( QPainter *thepPainter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -68,10 +65,7 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter, const QStyleOptionVi
 }
 
 
-QSize QgsDetailedItemDelegate::sizeHint(
-  const QStyleOptionViewItem &option,
-  const QModelIndex &index
-) const
+QSize QgsDetailedItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   if ( index.data( Qt::UserRole ).userType() == qMetaTypeId<QgsDetailedItemData>() )
   {

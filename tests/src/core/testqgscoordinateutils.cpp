@@ -19,6 +19,8 @@
 #include <QLocale>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsCoordinateUtils : public QObject
 {
     Q_OBJECT

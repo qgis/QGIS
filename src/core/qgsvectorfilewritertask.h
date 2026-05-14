@@ -38,17 +38,13 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorFileWriterTask. Takes a source \a layer, destination \a fileName
      * and save \a options.
      *
      * Since QGIS 3.40 the \a sinkFlags can be specified.
      */
-    QgsVectorFileWriterTask( QgsVectorLayer *layer,
-                             const QString &fileName,
-                             const QgsVectorFileWriter::SaveVectorOptions &options,
-                             QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
+    QgsVectorFileWriterTask( QgsVectorLayer *layer, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     void cancel() override;
 
@@ -75,12 +71,10 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
     void errorOccurred( int error, const QString &errorMessage );
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
-
     QString mDestFileName;
 
     std::unique_ptr< QgsFeedback > mOwnedFeedback;

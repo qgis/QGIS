@@ -1313,7 +1313,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param module used only if api = Qgis::DocumentationApi::PyQgis
      * \since QGIS 3.42
     */
-    virtual void showApiDocumentation( Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel, const QString &object = QString(), const QString &module = QString() ) = 0;
+    virtual void showApiDocumentation(
+      Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis,
+      Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel,
+      const QString &object = QString(),
+      const QString &module = QString()
+    ) = 0;
 
     /**
      * Register a new application exit blocker, which can be used to prevent the QGIS application

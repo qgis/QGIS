@@ -13,14 +13,13 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 import os
 import shutil
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QT_VERSION, QEventLoop, QLocale
-from qgis.PyQt.QtGui import QValidator
 from qgis.core import QgsDataCollectionItem, QgsLayerItem, QgsVectorLayer
 from qgis.gui import QgsFieldValidator
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QT_VERSION, QEventLoop, QLocale
+from qgis.PyQt.QtGui import QValidator
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -28,13 +27,11 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class PyQgsLayerItem(QgsLayerItem):
-
     def __del__(self):
         self.tabSetDestroyedFlag[0] = True
 
 
 class PyQgsDataConnectionItem(QgsDataCollectionItem):
-
     def createChildren(self):
         children = []
 
@@ -67,7 +64,6 @@ DO NOT ADD TESTS TO THIS FILE WITHOUT A DETAILED EXPLANATION ON WHY!!!!
 
 
 class TestQgsDisabledTests(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests."""

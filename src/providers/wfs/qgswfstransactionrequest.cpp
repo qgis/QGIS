@@ -17,12 +17,15 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgswfstransactionrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
-{
-}
+{}
 
 bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {

@@ -28,7 +28,11 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsmssqldataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
@@ -105,11 +109,24 @@ void QgsMssqlConnectionItem::refresh()
   QgsDebugMsgLevel( "mPath = " + mPath, 3 );
   stop();
 
-  QgsDataCollectionItem::refresh();
+  // Clear all children
+  const QVector<QgsDataItem *> allChildren = children();
+  for ( QgsDataItem *item : allChildren )
+  {
+    removeChildItem( item );
+    delete item;
+  }
+
+  // read up the schemas and layers from database
+  const QVector<QgsDataItem *> items = createChildren();
+  for ( QgsDataItem *item : items )
+    addChildItem( item, true );
 }
 
 QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
 {
+  setState( Qgis::BrowserItemState::Populating );
+
   stop();
 
   QVector<QgsDataItem *> children;
@@ -169,6 +186,30 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       layer.pkCols = QStringList(); //TODO
       layer.isGeography = false;
 
+      // skip layers which are added already
+      bool skip = false;
+      const auto constMChildren = mChildren;
+      for ( QgsDataItem *child : constMChildren )
+      {
+        if ( child->name() == layer.schemaName )
+        {
+          const auto constChildren = child->children();
+          for ( QgsDataItem *child2 : constChildren )
+          {
+            QgsMssqlLayerItem *layerItem = qobject_cast<QgsMssqlLayerItem *>( child2 );
+            if ( child2->name() == layer.tableName && layerItem && layerItem->disableInvalidGeometryHandling() == disableInvalidGeometryHandling )
+            {
+              newLayers.append( child2 );
+              skip = true; // already added
+              break;
+            }
+          }
+        }
+      }
+
+      if ( skip )
+        continue;
+
       QString type = layer.type;
       QString srid = layer.srid;
 
@@ -213,6 +254,18 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
         newLayers.append( added );
     }
 
+    // Remove no more present items
+    const auto constMChildren = mChildren;
+    for ( QgsDataItem *child : constMChildren )
+    {
+      const auto constChildren = child->children();
+      for ( QgsDataItem *child2 : constChildren )
+      {
+        if ( findItem( newLayers, child2 ) < 0 )
+          child->deleteChildItem( child2 );
+      }
+    }
+
     // add missing schemas (i.e., empty schemas)
     const QStringList allSchemas = QgsMssqlConnection::schemas( db, nullptr );
     QStringList excludedSchema = QgsMssqlConnection::excludedSchemasList( mName );
@@ -254,6 +307,11 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     setAsPopulated();
   }
 
+  for ( QgsDataItem *child : std::as_const( children ) )
+  {
+    setChildAncestorDepthRecursive( child, 1 );
+  }
+
   return children;
 }
 
@@ -265,6 +323,16 @@ void QgsMssqlConnectionItem::setAsPopulated()
     child->setState( Qgis::BrowserItemState::Populated );
   }
   setState( Qgis::BrowserItemState::Populated );
+}
+
+void QgsMssqlConnectionItem::setChildAncestorDepthRecursive( QgsDataItem *child, int depth )
+{
+  child->mCreatorAncestorDepth = depth;
+  const QVector< QgsDataItem * > children = child->children();
+  for ( QgsDataItem *nextChild : children )
+  {
+    setChildAncestorDepthRecursive( nextChild, depth + 1 );
+  }
 }
 
 void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
@@ -457,6 +525,7 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
 
   QgsMssqlLayerItem *layerItem = new QgsMssqlLayerItem( this, layerProperty.tableName, mPath + '/' + layerProperty.tableName, layerType, layerProperty );
   layerItem->setToolTip( tip );
+  layerItem->mCreatorAncestorDepth = 2;
   if ( refresh )
     addChildItem( layerItem, true );
   else

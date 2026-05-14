@@ -26,8 +26,11 @@
 #include <QList>
 #include <QMetaType>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -37,7 +40,6 @@ class CORE_EXPORT QgsSQLStatement
 {
     Q_DECLARE_TR_FUNCTIONS( QgsSQLStatement )
   public:
-
     /**
      * Creates a new statement based on the provided string.
      */
@@ -138,12 +140,12 @@ class CORE_EXPORT QgsSQLStatement
       boAnd,
 
       // comparison
-      boEQ,  // =
-      boNE,  // <>
-      boLE,  // <=
-      boGE,  // >=
-      boLT,  // <
-      boGT,  // >
+      boEQ, // =
+      boNE, // <>
+      boLE, // <=
+      boGE, // >=
+      boLT, // <
+      boGT, // >
       boLike,
       boNotLike,
       boILike,
@@ -217,27 +219,54 @@ class CORE_EXPORT QgsSQLStatement
     */
     class CORE_EXPORT Node
     {
-
 #ifdef SIP_RUN
         SIP_CONVERT_TO_SUBCLASS_CODE
         switch ( sipCpp->nodeType() )
         {
-          case QgsSQLStatement::ntUnaryOperator:   sipType = sipType_QgsSQLStatement_NodeUnaryOperator; break;
-          case QgsSQLStatement::ntBinaryOperator:  sipType = sipType_QgsSQLStatement_NodeBinaryOperator; break;
-          case QgsSQLStatement::ntInOperator:      sipType = sipType_QgsSQLStatement_NodeInOperator; break;
-          case QgsSQLStatement::ntBetweenOperator: sipType = sipType_QgsSQLStatement_NodeBetweenOperator; break;
-          case QgsSQLStatement::ntFunction:        sipType = sipType_QgsSQLStatement_NodeFunction; break;
-          case QgsSQLStatement::ntLiteral:         sipType = sipType_QgsSQLStatement_NodeLiteral; break;
-          case QgsSQLStatement::ntColumnRef:       sipType = sipType_QgsSQLStatement_NodeColumnRef; break;
-          case QgsSQLStatement::ntSelectedColumn:  sipType = sipType_QgsSQLStatement_NodeSelectedColumn; break;
-          case QgsSQLStatement::ntSelect:          sipType = sipType_QgsSQLStatement_NodeSelect; break;
-          case QgsSQLStatement::ntTableDef:        sipType = sipType_QgsSQLStatement_NodeTableDef; break;
-          case QgsSQLStatement::ntJoin:            sipType = sipType_QgsSQLStatement_NodeJoin; break;
-          case QgsSQLStatement::ntColumnSorted:    sipType = sipType_QgsSQLStatement_NodeColumnSorted; break;
-          case QgsSQLStatement::ntCast:            sipType = sipType_QgsSQLStatement_NodeCast; break;
-          default:                               sipType = 0; break;
+          case QgsSQLStatement::ntUnaryOperator:
+            sipType = sipType_QgsSQLStatement_NodeUnaryOperator;
+            break;
+          case QgsSQLStatement::ntBinaryOperator:
+            sipType = sipType_QgsSQLStatement_NodeBinaryOperator;
+            break;
+          case QgsSQLStatement::ntInOperator:
+            sipType = sipType_QgsSQLStatement_NodeInOperator;
+            break;
+          case QgsSQLStatement::ntBetweenOperator:
+            sipType = sipType_QgsSQLStatement_NodeBetweenOperator;
+            break;
+          case QgsSQLStatement::ntFunction:
+            sipType = sipType_QgsSQLStatement_NodeFunction;
+            break;
+          case QgsSQLStatement::ntLiteral:
+            sipType = sipType_QgsSQLStatement_NodeLiteral;
+            break;
+          case QgsSQLStatement::ntColumnRef:
+            sipType = sipType_QgsSQLStatement_NodeColumnRef;
+            break;
+          case QgsSQLStatement::ntSelectedColumn:
+            sipType = sipType_QgsSQLStatement_NodeSelectedColumn;
+            break;
+          case QgsSQLStatement::ntSelect:
+            sipType = sipType_QgsSQLStatement_NodeSelect;
+            break;
+          case QgsSQLStatement::ntTableDef:
+            sipType = sipType_QgsSQLStatement_NodeTableDef;
+            break;
+          case QgsSQLStatement::ntJoin:
+            sipType = sipType_QgsSQLStatement_NodeJoin;
+            break;
+          case QgsSQLStatement::ntColumnSorted:
+            sipType = sipType_QgsSQLStatement_NodeColumnSorted;
+            break;
+          case QgsSQLStatement::ntCast:
+            sipType = sipType_QgsSQLStatement_NodeCast;
+            break;
+          default:
+            sipType = 0;
+            break;
         }
-        SIP_END
+      SIP_END
 #endif
 
       public:
@@ -292,7 +321,6 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeList
     {
       public:
-
         NodeList() = default;
         virtual ~NodeList() { qDeleteAll( mList ); }
 
@@ -328,10 +356,23 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeUnaryOperator( QgsSQLStatement::UnaryOperator op, QgsSQLStatement::Node *operand SIP_TRANSFER ) : mOp( op ), mOperand( operand ) {}
+        NodeUnaryOperator( QgsSQLStatement::UnaryOperator op, QgsSQLStatement::Node *operand SIP_TRANSFER )
+          : mOp( op )
+          , mOperand( operand )
+        {}
 
-        //! Operator
-        QgsSQLStatement::UnaryOperator op() const { return mOp; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString str = u"<QgsSQLStatement.NodeUnaryOperator: %1>"_s.arg( sipCpp->text() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Operator
+            QgsSQLStatement::UnaryOperator op() const
+        {
+          return mOp;
+        }
 
         //! Operand
         QgsSQLStatement::Node *operand() const { return mOperand.get(); }
@@ -342,8 +383,15 @@ class CORE_EXPORT QgsSQLStatement
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
-      private:
+        /**
+         * Returns a the name of this operator without the operands.
+         * I.e. "NOT" or "-"
+         *
+         * \since QGIS 4.2
+         */
+        QString text() const;
 
+      private:
         NodeUnaryOperator( const NodeUnaryOperator &other ) = delete;
         NodeUnaryOperator &operator=( const NodeUnaryOperator &other ) = delete;
 
@@ -370,8 +418,18 @@ class CORE_EXPORT QgsSQLStatement
           , mOpRight( opRight )
         {}
 
-        //! Operator
-        QgsSQLStatement::BinaryOperator op() const { return mOp; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString str = u"<QgsSQLStatement.NodeBinaryOperator: %1>"_s.arg( sipCpp->text() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Operator
+            QgsSQLStatement::BinaryOperator op() const
+        {
+          return mOp;
+        }
 
         //! Left operand
         QgsSQLStatement::Node *opLeft() const { return mOpLeft.get(); }
@@ -391,8 +449,15 @@ class CORE_EXPORT QgsSQLStatement
         //! Is left associative ?
         bool leftAssociative() const;
 
-      private:
+        /**
+         * Returns a the name of this operator without the operands.
+         * I.e. "AND", "OR", ...
+         *
+         * \since QGIS 4.2
+         */
+        QString text() const;
 
+      private:
         NodeBinaryOperator( const NodeBinaryOperator &other ) = delete;
         NodeBinaryOperator &operator=( const NodeBinaryOperator &other ) = delete;
 
@@ -401,7 +466,6 @@ class CORE_EXPORT QgsSQLStatement
 #endif
 
       protected:
-
         BinaryOperator mOp;
         std::unique_ptr<Node> mOpLeft;
         std::unique_ptr<Node> mOpRight;
@@ -415,7 +479,11 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeInOperator( QgsSQLStatement::Node *node SIP_TRANSFER, QgsSQLStatement::NodeList *list SIP_TRANSFER, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
+        NodeInOperator( QgsSQLStatement::Node *node SIP_TRANSFER, QgsSQLStatement::NodeList *list SIP_TRANSFER, bool notin = false )
+          : mNode( node )
+          , mList( list )
+          , mNotIn( notin )
+        {}
 
         //! Variable at the left of IN
         QgsSQLStatement::Node *node() const { return mNode.get(); }
@@ -433,7 +501,6 @@ class CORE_EXPORT QgsSQLStatement
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
-
         NodeInOperator( const NodeInOperator &other ) = delete;
         NodeInOperator &operator=( const NodeInOperator &other ) = delete;
 
@@ -456,7 +523,11 @@ class CORE_EXPORT QgsSQLStatement
       public:
         //! Constructor
         NodeBetweenOperator( QgsSQLStatement::Node *node SIP_TRANSFER, QgsSQLStatement::Node *minVal SIP_TRANSFER, QgsSQLStatement::Node *maxVal SIP_TRANSFER, bool notBetween = false )
-          : mNode( node ), mMinVal( minVal ), mMaxVal( maxVal ), mNotBetween( notBetween ) {}
+          : mNode( node )
+          , mMinVal( minVal )
+          , mMaxVal( maxVal )
+          , mNotBetween( notBetween )
+        {}
 
         //! Variable at the left of BETWEEN
         QgsSQLStatement::Node *node() const { return mNode.get(); }
@@ -477,7 +548,6 @@ class CORE_EXPORT QgsSQLStatement
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
-
         NodeBetweenOperator( const NodeBetweenOperator &other ) = delete;
         NodeBetweenOperator &operator=( const NodeBetweenOperator &other ) = delete;
 
@@ -500,10 +570,25 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeFunction( const QString &name, QgsSQLStatement::NodeList *args  SIP_TRANSFER ) : mName( name ), mArgs( args ) {}
+        NodeFunction( const QString &name, QgsSQLStatement::NodeList *args SIP_TRANSFER )
+          : mName( name )
+          , mArgs( args )
+        {}
 
-        //! Returns function name
-        QString name() const { return mName; }
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString function;
+        QString str = u"<QgsSQLStatement.NodeFunction: %1>"_s.arg( sipCpp->name() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Returns function name
+            QString name() const
+        {
+          return mName;
+        }
 
         //! Returns arguments
         QgsSQLStatement::NodeList *args() const { return mArgs.get(); }
@@ -515,7 +600,6 @@ class CORE_EXPORT QgsSQLStatement
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
-
         NodeFunction( const NodeFunction &other ) = delete;
         NodeFunction &operator=( const NodeFunction &other ) = delete;
 
@@ -526,7 +610,6 @@ class CORE_EXPORT QgsSQLStatement
       protected:
         QString mName;
         std::unique_ptr<NodeList> mArgs;
-
     };
 
     /**
@@ -537,16 +620,35 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeLiteral( const QVariant &value ) : mValue( value ) {}
+        NodeLiteral( const QVariant &value )
+          : mValue( value )
+        {}
 
-        //! The value of the literal.
-        inline QVariant value() const { return mValue; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString str = u"<QgsSQLStatement.NodeLiteral: %1>"_s.arg( sipCpp->valueAsString() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+          //! The value of the literal.
+          inline QVariant value() const
+        {
+          return mValue;
+        }
 
         QgsSQLStatement::NodeType nodeType() const override { return ntLiteral; }
         QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+
+        /**
+         * Returns a string representation of the node's literal value.
+         * \since QGIS 4.2
+         */
+        QString valueAsString() const;
+
 
       protected:
         QVariant mValue;
@@ -560,12 +662,48 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor with column name only
-        NodeColumnRef( const QString &name, bool star ) : mName( name ), mDistinct( false ), mStar( star ) {}
+        NodeColumnRef( const QString &name, bool star )
+          : mName( name )
+          , mDistinct( false )
+          , mStar( star )
+        {}
         //! Constructor with table and column name
-        NodeColumnRef( const QString &tableName, const QString &name, bool star ) : mTableName( tableName ), mName( name ), mDistinct( false ), mStar( star ) {}
+        NodeColumnRef( const QString &tableName, const QString &name, bool star )
+          : mTableName( tableName )
+          , mName( name )
+          , mDistinct( false )
+          , mStar( star )
+        {}
 
-        //! Sets whether this is prefixed by DISTINCT
-        void setDistinct( bool distinct = true ) { mDistinct = distinct; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString columnRef;
+        if ( sipCpp->star() )
+        {
+          columnRef = "*";
+        }
+        else
+        {
+          columnRef = sipCpp->name();
+        }
+        if ( !sipCpp->tableName().isEmpty() )
+        {
+          columnRef = u"\"%1.%2\""_s.arg( sipCpp->tableName(), columnRef );
+        }
+        if ( sipCpp->distinct() )
+        {
+          columnRef = u"DISTINCT %1"_s.arg( columnRef );
+        }
+        QString str = u"<QgsSQLStatement.NodeColumnRef: %1>"_s.arg( columnRef );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+          //! Sets whether this is prefixed by DISTINCT
+          void setDistinct( bool distinct = true )
+        {
+          mDistinct = distinct;
+        }
 
         //! The name of the table. May be empty.
         QString tableName() const { return mTableName; }
@@ -602,7 +740,9 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeSelectedColumn( QgsSQLStatement::Node *node SIP_TRANSFER ) : mColumnNode( node ) {}
+        NodeSelectedColumn( QgsSQLStatement::Node *node SIP_TRANSFER )
+          : mColumnNode( node )
+        {}
 
         //! Sets alias name
         void setAlias( const QString &alias ) { mAlias = alias; }
@@ -622,7 +762,6 @@ class CORE_EXPORT QgsSQLStatement
         QgsSQLStatement::NodeSelectedColumn *cloneThis() const SIP_FACTORY;
 
       private:
-
         NodeSelectedColumn( const NodeSelectedColumn &other ) = delete;
         NodeSelectedColumn &operator=( const NodeSelectedColumn &other ) = delete;
 
@@ -643,10 +782,23 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeCast( QgsSQLStatement::Node *node SIP_TRANSFER, const QString &type ) : mNode( node ), mType( type ) {}
+        NodeCast( QgsSQLStatement::Node *node SIP_TRANSFER, const QString &type )
+          : mNode( node )
+          , mType( type )
+        {}
 
-        //! Node that is referred to
-        QgsSQLStatement::Node *node() const { return mNode.get(); }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString str = u"<QgsSQLStatement.NodeCast: AS %1>"_s.arg( sipCpp->type() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Node that is referred to
+            QgsSQLStatement::Node *node() const
+        {
+          return mNode.get();
+        }
 
         //! Type
         QString type() const { return mType; }
@@ -658,7 +810,6 @@ class CORE_EXPORT QgsSQLStatement
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
-
         NodeCast( const NodeCast &other ) = delete;
         NodeCast &operator=( const NodeCast &other ) = delete;
 
@@ -679,18 +830,46 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor with table name
-        NodeTableDef( const QString &name ) : mName( name ) {}
+        NodeTableDef( const QString &name )
+          : mName( name )
+        {}
         //! Constructor with table name and alias
-        NodeTableDef( const QString &name, const QString &alias ) : mName( name ), mAlias( alias ) {}
+        NodeTableDef( const QString &name, const QString &alias )
+          : mName( name )
+          , mAlias( alias )
+        {}
 
         /**
          * Constructor with schema, table name and alias
          * \since QGIS 3.28
          */
-        NodeTableDef( const QString &schema, const QString &name, const QString &alias ) : mName( name ), mSchema( schema ), mAlias( alias ) {}
+        NodeTableDef( const QString &schema, const QString &name, const QString &alias )
+          : mName( name )
+          , mSchema( schema )
+          , mAlias( alias )
+        {}
 
-        //! Table name
-        QString name() const { return mName; }
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode QString table;
+        if ( !sipCpp->schema().isEmpty() )
+        {
+          table = u"%1.%2"_s.arg( sipCpp->schema(), sipCpp->name() );
+        }
+        else
+        {
+          table = sipCpp->name();
+        }
+        QString str = u"<QgsSQLStatement.NodeTableDef: %1>"_s.arg( table );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+            //! Table name
+            QString name() const
+        {
+          return mName;
+        }
 
         /**
          * Returns the schema name.
@@ -724,9 +903,17 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor with table definition, ON expression
-        NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, QgsSQLStatement::Node *onExpr SIP_TRANSFER, QgsSQLStatement::JoinType type ) : mTableDef( tabledef ), mOnExpr( onExpr ), mType( type ) {}
+        NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, QgsSQLStatement::Node *onExpr SIP_TRANSFER, QgsSQLStatement::JoinType type )
+          : mTableDef( tabledef )
+          , mOnExpr( onExpr )
+          , mType( type )
+        {}
         //! Constructor with table definition and USING columns
-        NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, const QList<QString> &usingColumns, QgsSQLStatement::JoinType type ) : mTableDef( tabledef ), mUsingColumns( usingColumns ), mType( type ) {}
+        NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, const QList<QString> &usingColumns, QgsSQLStatement::JoinType type )
+          : mTableDef( tabledef )
+          , mUsingColumns( usingColumns )
+          , mType( type )
+        {}
 
         //! Table definition
         QgsSQLStatement::NodeTableDef *tableDef() const { return mTableDef.get(); }
@@ -749,7 +936,6 @@ class CORE_EXPORT QgsSQLStatement
         QgsSQLStatement::NodeJoin *cloneThis() const SIP_FACTORY;
 
       private:
-
         NodeJoin( const NodeJoin &other ) = delete;
         NodeJoin &operator=( const NodeJoin &other ) = delete;
 
@@ -772,7 +958,10 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeColumnSorted( QgsSQLStatement::NodeColumnRef *column SIP_TRANSFER, bool asc ) : mColumn( column ), mAsc( asc ) {}
+        NodeColumnSorted( QgsSQLStatement::NodeColumnRef *column SIP_TRANSFER, bool asc )
+          : mColumn( column )
+          , mAsc( asc )
+        {}
 
         //! The name of the column.
         QgsSQLStatement::NodeColumnRef *column() const { return mColumn.get(); }
@@ -789,7 +978,6 @@ class CORE_EXPORT QgsSQLStatement
         QgsSQLStatement::NodeColumnSorted *cloneThis() const SIP_FACTORY;
 
       private:
-
         NodeColumnSorted( const NodeColumnSorted &other ) = delete;
         NodeColumnSorted &operator=( const NodeColumnSorted &other ) = delete;
 
@@ -810,17 +998,29 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeSelect( const QList<QgsSQLStatement::NodeTableDef *> &tableList SIP_TRANSFER, const QList<QgsSQLStatement::NodeSelectedColumn *> &columns SIP_TRANSFER, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ) {}
+        NodeSelect( const QList<QgsSQLStatement::NodeTableDef *> &tableList SIP_TRANSFER, const QList<QgsSQLStatement::NodeSelectedColumn *> &columns SIP_TRANSFER, bool distinct )
+          : mTableList( tableList )
+          , mColumns( columns )
+          , mDistinct( distinct )
+        {}
         ~NodeSelect() override;
 
         //! Sets joins
-        void setJoins( const QList<QgsSQLStatement::NodeJoin *> &joins SIP_TRANSFER ) { qDeleteAll( mJoins ); mJoins = joins; }
+        void setJoins( const QList<QgsSQLStatement::NodeJoin *> &joins SIP_TRANSFER )
+        {
+          qDeleteAll( mJoins );
+          mJoins = joins;
+        }
         //! Append a join
         void appendJoin( QgsSQLStatement::NodeJoin *join SIP_TRANSFER ) { mJoins.append( join ); }
         //! Sets where clause
-        void setWhere( QgsSQLStatement::Node *where SIP_TRANSFER ) { mWhere.reset( where );  }
+        void setWhere( QgsSQLStatement::Node *where SIP_TRANSFER ) { mWhere.reset( where ); }
         //! Sets order by columns
-        void setOrderBy( const QList<QgsSQLStatement::NodeColumnSorted *> &orderBy SIP_TRANSFER ) { qDeleteAll( mOrderBy ); mOrderBy = orderBy; }
+        void setOrderBy( const QList<QgsSQLStatement::NodeColumnSorted *> &orderBy SIP_TRANSFER )
+        {
+          qDeleteAll( mOrderBy );
+          mOrderBy = orderBy;
+        }
 
         //! Returns the list of tables
         QList<QgsSQLStatement::NodeTableDef *> tables() const { return mTableList; }
@@ -842,7 +1042,6 @@ class CORE_EXPORT QgsSQLStatement
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
-
         NodeSelect( const NodeSelect &other ) = delete;
         NodeSelect &operator=( const NodeSelect &other ) = delete;
 
@@ -902,19 +1101,31 @@ class CORE_EXPORT QgsSQLStatement
      * \ingroup core
      * \brief A visitor that recursively explores all children.
     */
-    class CORE_EXPORT RecursiveVisitor: public QgsSQLStatement::Visitor
+    class CORE_EXPORT RecursiveVisitor : public QgsSQLStatement::Visitor
     {
       public:
-
         RecursiveVisitor() = default;
 
         void visit( const QgsSQLStatement::NodeUnaryOperator &n ) override { n.operand()->accept( *this ); }
-        void visit( const QgsSQLStatement::NodeBinaryOperator &n ) override { n.opLeft()->accept( *this ); n.opRight()->accept( *this ); }
-        void visit( const QgsSQLStatement::NodeInOperator &n ) override { n.node()->accept( *this ); n.list()->accept( *this ); }
-        void visit( const QgsSQLStatement::NodeBetweenOperator &n ) override { n.node()->accept( *this ); n.minVal()->accept( *this ); n.maxVal()->accept( *this ); }
+        void visit( const QgsSQLStatement::NodeBinaryOperator &n ) override
+        {
+          n.opLeft()->accept( *this );
+          n.opRight()->accept( *this );
+        }
+        void visit( const QgsSQLStatement::NodeInOperator &n ) override
+        {
+          n.node()->accept( *this );
+          n.list()->accept( *this );
+        }
+        void visit( const QgsSQLStatement::NodeBetweenOperator &n ) override
+        {
+          n.node()->accept( *this );
+          n.minVal()->accept( *this );
+          n.maxVal()->accept( *this );
+        }
         void visit( const QgsSQLStatement::NodeFunction &n ) override { n.args()->accept( *this ); }
         void visit( const QgsSQLStatement::NodeLiteral & ) override {}
-        void visit( const QgsSQLStatement::NodeColumnRef & ) override { }
+        void visit( const QgsSQLStatement::NodeColumnRef & ) override {}
         void visit( const QgsSQLStatement::NodeSelectedColumn &n ) override { n.column()->accept( *this ); }
         void visit( const QgsSQLStatement::NodeTableDef & ) override {}
         void visit( const QgsSQLStatement::NodeSelect &n ) override;
@@ -953,12 +1164,10 @@ Q_DECLARE_METATYPE( QgsSQLStatement::Node * )
 class CORE_EXPORT QgsSQLStatementFragment : public QgsSQLStatement
 {
   public:
-
     /**
      * Constructor for QgsSQLStatementFragment of the specified \a fragment.
      */
     QgsSQLStatementFragment( const QString &fragment );
-
 };
 
 

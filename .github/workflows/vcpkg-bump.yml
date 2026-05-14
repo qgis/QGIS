@@ -1,0 +1,42 @@
+---
+name: 📦 Vcpkg bump
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run weekly on Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  vcpkg-bump:
+    runs-on: ubuntu-latest
+    if: github.repository == 'qgis/QGIS'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ssh-key: ${{ secrets.VCPKG_BUMPER_KEY }}
+          persist-credentials: true  # required to open a PR
+ 
+      - name: Resolve latest baselines
+        id: baselines
+        run: python3 scripts/bump_vcpkg_baselines.py vcpkg/vcpkg.json
+
+      - name: Create pull request
+        if: steps.baselines.outputs.updated == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  #  v8.2.0
+        with:
+          branch: vcpkg-bumps/auto
+          delete-branch: true
+          commit-message: "Bump vcpkg baselines"
+          title: "Bump vcpkg baselines"
+          body: |
+            Automated vcpkg baseline bump.
+
+            ${{ steps.baselines.outputs.summary }}

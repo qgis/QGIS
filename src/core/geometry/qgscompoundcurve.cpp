@@ -31,6 +31,9 @@
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsCompoundCurve::QgsCompoundCurve()
 {
@@ -90,7 +93,8 @@ int QgsCompoundCurve::dimension() const
   return 1;
 }
 
-QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( curve )
+QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve )
+  : QgsCurve( curve )
 {
   mWkbType = curve.wkbType();
   mCurves.reserve( curve.mCurves.size() );
@@ -149,7 +153,7 @@ void QgsCompoundCurve::scroll( int index )
   if ( index < 1 || index >= size - 1 )
     return;
 
-  auto [p1, p2 ] = splitCurveAtVertex( index );
+  auto [p1, p2] = splitCurveAtVertex( index );
 
   mCurves.clear();
   if ( QgsCompoundCurve *curve2 = qgsgeometry_cast< QgsCompoundCurve *>( p2.get() ) )
@@ -199,7 +203,7 @@ bool QgsCompoundCurve::fromWkb( QgsConstWkbPtr &wkbPtr )
     {
       return false;
     }
-    currentCurve->fromWkb( wkbPtr );  // also updates wkbPtr
+    currentCurve->fromWkb( wkbPtr ); // also updates wkbPtr
     mCurves.append( currentCurve );
   }
   return true;
@@ -217,8 +221,7 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defaultChildWkbType = u"LineString%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
@@ -429,7 +432,7 @@ bool QgsCompoundCurve::isValid( QString &error, Qgis::GeometryValidityFlags flag
   if ( mCurves.isEmpty() )
     return true;
 
-  for ( int i = 0; i < mCurves.size() ; ++i )
+  for ( int i = 0; i < mCurves.size(); ++i )
   {
     if ( !mCurves[i]->isValid( error, flags ) )
     {
@@ -889,8 +892,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
     // else, if both curves are empty then
     // remove both curves and create a LineString to link
     // the curves before and the curves after the whole geometry
-    else if ( curve->numPoints() == 0 &&
-              nextCurve->numPoints() == 0 )
+    else if ( curve->numPoints() == 0 && nextCurve->numPoints() == 0 )
     {
       removeCurve( nextCurveId );
       removeCurve( curveId );
@@ -936,7 +938,7 @@ bool QgsCompoundCurve::deleteVertices( const QList<QgsVertexId> &positions )
     const int firstCurveId = curveIds.at( 0 ).first;
     const QgsVertexId firstCurveVertex = curveIds.at( 0 ).second;
     curveVertices[firstCurveId].append( firstCurveVertex );
-    if ( curveIds.size() == 2 )  // vertex is shared between two curves
+    if ( curveIds.size() == 2 ) // vertex is shared between two curves
     {
       const int secondCurveId = curveIds.at( 1 ).first;
       const QgsVertexId secondCurveVertex = curveIds.at( 1 ).second;
@@ -961,13 +963,13 @@ bool QgsCompoundCurve::deleteVertices( const QList<QgsVertexId> &positions )
     {
       // we loop through the vertices to see if we need to handle special case
       // of a middle vertex (see deleteVertex)
-      std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId & a, const QgsVertexId & b ) { return a.vertex < b.vertex; } );
+      std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex < b.vertex; } );
       QList<QgsVertexId> circularVerticesToDelete;
 
       QListIterator<QgsVertexId> curveVerticesIt( vertices );
 
       // search for odd vertices (middle vertices of an arc)
-      for ( size_t i = vertices.size(); i -- > 0; )
+      for ( size_t i = vertices.size(); i-- > 0; )
       {
         const QgsVertexId curveVertexId = vertices.at( i );
 
@@ -1124,7 +1126,6 @@ QVector< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId 
 
 bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
 {
-
   // First we find out the sub-curves that are contain that vertex.
 
   // If there is more than one, it means the vertex was at the beginning or end
@@ -1163,9 +1164,9 @@ bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
     QgsPointSequence points;
     circularString->points( points );
 
-    const QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
-    const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
-    const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
+    const QgsPointSequence partA = points.mid( 0, subVertexId.vertex );
+    const QgsPointSequence partB = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
+    const QgsPointSequence partC = points.mid( subVertexId.vertex + 1 );
 
     auto curveA = std::make_unique<QgsCircularString>();
     curveA->setPoints( partA );
@@ -1188,9 +1189,9 @@ bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
     QgsPointSequence points;
     lineString->points( points );
 
-    const QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
-    const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
-    const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
+    const QgsPointSequence partA = points.mid( 0, subVertexId.vertex );
+    const QgsPointSequence partB = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
+    const QgsPointSequence partC = points.mid( subVertexId.vertex + 1 );
 
     auto curveA = std::make_unique<QgsLineString>();
     curveA->setPoints( partA );
@@ -1215,7 +1216,7 @@ bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
 }
 
 
-double QgsCompoundCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
+double QgsCompoundCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::Vertex, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
@@ -1316,7 +1317,7 @@ bool QgsCompoundCurve::transform( QgsAbstractGeometryTransformer *transformer, Q
   return res;
 }
 
-void QgsCompoundCurve::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+void QgsCompoundCurve::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
@@ -1350,7 +1351,7 @@ std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCompoundCur
     if ( !curve2 && index < curveStart + curveSize )
     {
       // split the curve
-      auto [ p1, p2 ] = curve->splitCurveAtVertex( index - curveStart );
+      auto [p1, p2] = curve->splitCurveAtVertex( index - curveStart );
       if ( !p1->isEmpty() )
         curve1->addCurve( p1.release() );
 

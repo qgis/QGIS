@@ -13,7 +13,7 @@
 
 
 
-class QgsGeometryPaintDevice: QPaintDevice
+class QgsGeometryPaintDevice : QPaintDevice
 {
 %Docstring(signature="appended")
 A paint device which converts everything renderer to a
@@ -26,7 +26,6 @@ A paint device which converts everything renderer to a
 #include "qgsgeometrypaintdevice.h"
 %End
   public:
-
     QgsGeometryPaintDevice( bool usePathStroker = false );
 %Docstring
 Constructor for QgsGeometryPaintDevice.

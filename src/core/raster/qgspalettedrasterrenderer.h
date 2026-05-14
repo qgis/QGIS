@@ -33,27 +33,26 @@ class QgsRasterAttributeTable;
  * \ingroup core
  * \brief Renderer for paletted raster images.
 */
-class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsPalettedRasterRenderer : public QgsRasterRenderer
 {
   public:
-
     //! Properties of a single value class
     struct CORE_EXPORT Class
     {
-      //! Constructor for Class
-      Class( double value, const QColor &color = QColor(), const QString &label = QString() )
-        : value( value )
-        , color( color )
-        , label( label )
-      {}
+        //! Constructor for Class
+        Class( double value, const QColor &color = QColor(), const QString &label = QString() )
+          : value( value )
+          , color( color )
+          , label( label )
+        {}
 
-      //! Value
-      double value;
+        //! Value
+        double value;
 
-      //! Color to render value
-      QColor color;
-      //! Label for value
-      QString label;
+        //! Color to render value
+        QColor color;
+        //! Label for value
+        QString label;
     };
 
     /**
@@ -63,9 +62,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     class CORE_EXPORT MultiValueClass
     {
-
       public:
-
         //! Constructor for MultiValueClass from a list of values
         MultiValueClass( const QVector< QVariant > &values, const QColor &color = QColor(), const QString &label = QString() );
 
@@ -121,9 +118,9 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * Returns a map of multi value to classes (colors) used by the renderer.
      * \since QGIS 3.30
      */
-    MultiValueClassData multiValueClasses( ) const;
+    MultiValueClassData multiValueClasses() const;
 
-    bool canCreateRasterAttributeTable( ) const override;
+    bool canCreateRasterAttributeTable() const override;
 
     /**
      * Sets the multi value classes to \a setMultiValueClasses.
@@ -210,8 +207,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * Generates class data from a \a raster, for the specified \a bandNumber. An optional
      * color \a ramp can be specified to automatically assign colors from the ramp.
      */
-    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = nullptr,
-        QgsRasterBlockFeedback *feedback = nullptr );
+    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = nullptr, QgsRasterBlockFeedback *feedback = nullptr );
 
 
   private:

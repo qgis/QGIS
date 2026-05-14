@@ -23,12 +23,17 @@
 #include "qgsline3dsymbolwidget.h"
 #include "qgsmaterialregistry.h"
 #include "qgsmetalroughmaterialwidget.h"
+#include "qgsmetalroughtexturedmaterialwidget.h"
 #include "qgsnullmaterialwidget.h"
 #include "qgsphongmaterialwidget.h"
 #include "qgsphongtexturedmaterialwidget.h"
 #include "qgspoint3dsymbolwidget.h"
 #include "qgspolygon3dsymbolwidget.h"
 #include "qgssimplelinematerialwidget.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void Qgs3DAppUtils::initialize()
 {
@@ -42,6 +47,7 @@ void Qgs3DAppUtils::initialize()
   qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"gooch"_s ) )->setWidgetFunction( QgsGoochMaterialWidget::create );
   qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"simpleline"_s ) )->setWidgetFunction( QgsSimpleLineMaterialWidget::create );
   qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"metalrough"_s ) )->setWidgetFunction( QgsMetalRoughMaterialWidget::create );
+  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"metalroughtextured"_s ) )->setWidgetFunction( QgsMetalRoughTexturedMaterialWidget::create );
 
   QgsStyleModel::setIconGenerator( new Qgs3DIconGenerator( QgsApplication::defaultStyleModel() ) );
 }

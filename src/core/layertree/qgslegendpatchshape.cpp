@@ -19,13 +19,15 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgsstyle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLegendPatchShape::QgsLegendPatchShape( Qgis::SymbolType type, const QgsGeometry &geometry, bool preserveAspectRatio )
   : mSymbolType( type )
   , mGeometry( geometry )
   , mPreserveAspectRatio( preserveAspectRatio )
-{
-
-}
+{}
 
 bool QgsLegendPatchShape::isNull() const
 {
@@ -83,10 +85,7 @@ QgsGeometry QgsLegendPatchShape::scaledGeometry( QSizeF size ) const
     }
 
     // important -- the transform needs to flip from north-up to painter style "increasing y down" coordinates
-    const QPolygonF targetRectPoly = QPolygonF() << QPointF( dx, dy + size.height() )
-                                     << QPointF( dx + size.width(), dy + size.height() )
-                                     << QPointF( dx + size.width(), dy )
-                                     << QPointF( dx, dy );
+    const QPolygonF targetRectPoly = QPolygonF() << QPointF( dx, dy + size.height() ) << QPointF( dx + size.width(), dy + size.height() ) << QPointF( dx + size.width(), dy ) << QPointF( dx, dy );
     QTransform t;
 
     if ( bounds.width() > 0 && bounds.height() > 0 )
@@ -136,7 +135,7 @@ void QgsLegendPatchShape::readXml( const QDomElement &element, const QgsReadWrit
 
 void QgsLegendPatchShape::writeXml( QDomElement &element, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  element.setAttribute( u"wkt"_s, mGeometry.isNull() ? QString() : mGeometry.asWkt( ) );
+  element.setAttribute( u"wkt"_s, mGeometry.isNull() ? QString() : mGeometry.asWkt() );
   element.setAttribute( u"preserveAspect"_s, mPreserveAspectRatio ? u"1"_s : u"0"_s );
   element.setAttribute( u"type"_s, QString::number( static_cast< int >( mSymbolType ) ) );
 }

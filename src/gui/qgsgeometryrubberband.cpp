@@ -25,15 +25,15 @@
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType )
-  : QgsMapCanvasItem( mapCanvas ), mGeometryType( geomType )
+  : QgsMapCanvasItem( mapCanvas )
+  , mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );
 }
 
 QgsGeometryRubberBand::~QgsGeometryRubberBand()
-{
-}
+{}
 
 void QgsGeometryRubberBand::paint( QPainter *painter )
 {
@@ -181,10 +181,11 @@ QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
   QgsRectangle r;                                  // in canvas units
   QgsRectangle rectMap = mGeometry->boundingBox(); // in map units
   QList<QgsPointXY> pl;
-  pl << QgsPointXY( rectMap.xMinimum(), rectMap.yMinimum() )
-     << QgsPointXY( rectMap.xMinimum(), rectMap.yMaximum() )
-     << QgsPointXY( rectMap.xMaximum(), rectMap.yMaximum() )
-     << QgsPointXY( rectMap.xMaximum(), rectMap.yMinimum() );
+  pl
+    << QgsPointXY( rectMap.xMinimum(), rectMap.yMinimum() )
+    << QgsPointXY( rectMap.xMinimum(), rectMap.yMaximum() )
+    << QgsPointXY( rectMap.xMaximum(), rectMap.yMaximum() )
+    << QgsPointXY( rectMap.xMaximum(), rectMap.yMinimum() );
 
   for ( QgsPointXY &p : pl )
   {

@@ -28,7 +28,6 @@ user-configurable, and should only be set by the
 #include "qgsvectordataprovidertemporalcapabilities.h"
 %End
   public:
-
     QgsVectorDataProviderTemporalCapabilities( bool enabled = false );
 %Docstring
 Constructor for QgsVectorDataProviderTemporalCapabilities.

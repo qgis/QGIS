@@ -16,15 +16,19 @@
 #include "qgspointlightsettings.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgscolorutils.h"
 #include "qgsgeotransform.h"
 #include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
+#include <QString>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DRender/QPointLight>
+
+using namespace Qt::StringLiterals;
 
 Qgis::LightSourceType QgsPointLightSettings::type() const
 {
@@ -44,7 +48,7 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
   lightTransform->setGeoTranslation( position().toVector3D() );
 
   Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
-  light->setColor( color() );
+  light->setColor( Qgs3DUtils::srgbToLinear( color() ) );
   light->setIntensity( intensity() );
 
   light->setConstantAttenuation( constantAttenuation() );
@@ -112,5 +116,10 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
 
 bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other ) const
 {
-  return mPosition == other.mPosition && mColor == other.mColor && mIntensity == other.mIntensity && mConstantAttenuation == other.mConstantAttenuation && mLinearAttenuation == other.mLinearAttenuation && mQuadraticAttenuation == other.mQuadraticAttenuation;
+  return mPosition == other.mPosition
+         && mColor == other.mColor
+         && mIntensity == other.mIntensity
+         && mConstantAttenuation == other.mConstantAttenuation
+         && mLinearAttenuation == other.mLinearAttenuation
+         && mQuadraticAttenuation == other.mQuadraticAttenuation;
 }

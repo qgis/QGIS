@@ -17,7 +17,10 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QObject>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include "qgssqliteutils.h"
@@ -65,11 +68,6 @@ void TestQgsSqliteUtils::initTestCase()
 
   // output test environment
   QgsApplication::showSettings();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsSqliteUtils::cleanupTestCase()

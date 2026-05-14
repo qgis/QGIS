@@ -2,6 +2,11 @@
 
 [Replace this with some text explaining the rationale and details about this pull request]
 
+## AI tool usage
+
+ - [ ] AI tool(s) (Copilot, Claude, or something similar) supported my development of this PR. See our [policy about AI tool use](https://github.com/qgis/QGIS-Enhancement-Proposals/blob/master/qep-408-ai-tool-policy.md). Use of AI tools *must* be indicated. Failure to be honest might result in banning.
+
+
 <!--
   BEFORE HITTING SUBMIT -- Please BUILD AND TEST your changes thoroughly. This is YOUR responsibility! Do NOT rely on the QGIS code maintainers to do this for you!!
 

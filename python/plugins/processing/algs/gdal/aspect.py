@@ -23,14 +23,15 @@ import os
 
 from qgis.core import (
     QgsProcessingException,
-    QgsRasterFileWriter,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterBand,
     QgsProcessingParameterBoolean,
-    QgsProcessingParameterString,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsRasterFileWriter,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

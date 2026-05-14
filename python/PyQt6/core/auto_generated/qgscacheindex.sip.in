@@ -19,7 +19,6 @@ Abstract base class for cache indices.
 #include "qgscacheindex.h"
 %End
   public:
-
     QgsAbstractCacheIndex();
     virtual ~QgsAbstractCacheIndex();
 

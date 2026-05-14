@@ -24,6 +24,10 @@
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for WCS layers source select
 class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 {
@@ -32,14 +36,17 @@ class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "WCS" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 30; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddWcsLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsWCSSourceSelect( parent, fl, widgetMode );
     }
 };
 
 
-QgsWcsSourceWidgetProvider::QgsWcsSourceWidgetProvider() {}
+QgsWcsSourceWidgetProvider::QgsWcsSourceWidgetProvider()
+{}
 
 QString QgsWcsSourceWidgetProvider::providerKey() const
 {
@@ -63,8 +70,7 @@ QgsProviderSourceWidget *QgsWcsSourceWidgetProvider::createWidget( QgsMapLayer *
 
 QgsWcsProviderGuiMetadata::QgsWcsProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsWcsProvider::WCS_KEY )
-{
-}
+{}
 
 QList<QgsSourceSelectProvider *> QgsWcsProviderGuiMetadata::sourceSelectProviders()
 {
@@ -75,8 +81,7 @@ QList<QgsSourceSelectProvider *> QgsWcsProviderGuiMetadata::sourceSelectProvider
 
 QList<QgsDataItemGuiProvider *> QgsWcsProviderGuiMetadata::dataItemGuiProviders()
 {
-  return QList<QgsDataItemGuiProvider *>()
-         << new QgsWcsDataItemGuiProvider;
+  return QList<QgsDataItemGuiProvider *>() << new QgsWcsDataItemGuiProvider;
 }
 
 QList<QgsProviderSourceWidgetProvider *> QgsWcsProviderGuiMetadata::sourceWidgetProviders()

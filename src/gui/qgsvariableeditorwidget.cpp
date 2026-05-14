@@ -31,10 +31,13 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
+#include <QString>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
 #include "moc_qgsvariableeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsVariableEditorWidget

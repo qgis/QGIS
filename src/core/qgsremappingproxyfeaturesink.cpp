@@ -19,6 +19,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRemappingProxyFeatureSink::QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink, bool ownsSink )
   : QgsFeatureSink()
   , mDefinition( mappingDefinition )

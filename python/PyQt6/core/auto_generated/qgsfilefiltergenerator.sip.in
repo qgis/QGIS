@@ -32,10 +32,7 @@ filter string, for use in file open or file save dialogs.
 This method needs to be reimplemented in all classes which implement
 this interface and return a file filter.
 %End
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

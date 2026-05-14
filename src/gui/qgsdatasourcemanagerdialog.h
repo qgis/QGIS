@@ -167,7 +167,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QString &text, const QIcon &icon, const QString &toolTip = QString() );
     void removeProviderDialog( const QString &providerName );
     void makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey );
-    Ui::QgsDataSourceManagerDialog *ui = nullptr;
+    std::unique_ptr<Ui::QgsDataSourceManagerDialog> ui;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     int mPreviousRow = -1;
     QStringList mPageProviderKeys;

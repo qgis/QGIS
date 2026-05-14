@@ -29,7 +29,6 @@ Other option has also to be set before calling
 #include "qgsmeshforcebypolylines.h"
 %End
   public:
-
     QgsMeshEditForceByLine();
 
     void setInputLine( const QgsPoint &pt1, const QgsPoint &pt2, double tolerance, bool newVertexOnIntersection );
@@ -65,7 +64,6 @@ lines, in case these line are not 3D, the default value will be used
 };
 
 
-
 class QgsMeshEditForceByPolylines : QgsMeshEditForceByLine
 {
 %Docstring(signature="appended")
@@ -87,7 +85,6 @@ instances with :py:func:`~addLineFromGeometry` or
 #include "qgsmeshforcebypolylines.h"
 %End
   public:
-
     QgsMeshEditForceByPolylines();
 
     virtual QString text() const;

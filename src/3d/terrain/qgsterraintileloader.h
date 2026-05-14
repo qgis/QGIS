@@ -27,16 +27,19 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgschunkloader.h"
 #include "qgsrectangle.h"
 
 #include <QImage>
 
+#define SIP_NO_FILE
+
 class QgsPhongMaterialSettings;
 class QgsTerrainEntity;
 class QgsTerrainTileEntity;
+class QgsMaterialContext;
+class Qgs3DRenderContext;
 
 namespace Qt3DRender
 {
@@ -63,9 +66,9 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     void loadTexture();
 
     //! Creates a new texture that is linked to the entity
-    Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity );
+    Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context );
     //! Creates material component for the entity with the rendered map as a texture
-    void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture );
+    void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture, const Qgs3DRenderContext &context );
     //! Gives access to the terain entity
     QgsTerrainEntity *terrain() { return mTerrain; }
     // Emit finished by default when texture is loaded.

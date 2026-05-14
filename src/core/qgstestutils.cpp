@@ -19,7 +19,10 @@
 #include "qgsvectordataprovider.h"
 
 #include <QCryptographicHash>
+#include <QString>
 #include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 ///
@@ -30,7 +33,6 @@ static void getFeaturesForProvider( const QPair< std::shared_ptr< QgsAbstractFea
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
-
   }
 }
 

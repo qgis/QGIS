@@ -96,23 +96,11 @@ class QgsHistogramValuesGatherer : public QThread
 
     const QgsHistogram &histogram() const { return mHistogram; }
 
-    const QgsVectorLayer *layer() const
-    {
-      return mLayer;
-    }
-    void setLayer( const QgsVectorLayer *layer )
-    {
-      mLayer = const_cast<QgsVectorLayer *>( layer );
-    }
+    const QgsVectorLayer *layer() const { return mLayer; }
+    void setLayer( const QgsVectorLayer *layer ) { mLayer = const_cast<QgsVectorLayer *>( layer ); }
 
-    QString expression() const
-    {
-      return mExpression;
-    }
-    void setExpression( const QString &expression )
-    {
-      mExpression = expression;
-    }
+    QString expression() const { return mExpression; }
+    void setExpression( const QString &expression ) { mExpression = expression; }
 
   signals:
 

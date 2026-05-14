@@ -13,17 +13,17 @@ __copyright__ = "Copyright 2024, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 from shutil import rmtree
 
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
 from qgis.core import (
     QgsApplication,
-    QgsRasterLayer,
-    QgsDataSourceUri,
     QgsAuthMethodConfig,
+    QgsDataSourceUri,
+    QgsRasterLayer,
 )
-from processing.algs.gdal.GdalUtils import GdalUtils, GdalConnectionDetails
+from qgis.testing import QgisTestCase, start_app
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 os.environ["QGIS_AUTH_DB_DIR_PATH"] = QGIS_AUTH_DB_DIR_PATH
@@ -32,7 +32,6 @@ start_app()
 
 
 class TestProcessingAlgsGdalGdalUtils(QgisTestCase):
-
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""

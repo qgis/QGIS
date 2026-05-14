@@ -21,6 +21,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsFontUtils : public QObject
 {
     Q_OBJECT
@@ -49,20 +51,16 @@ void TestQgsFontUtils::cleanupTestCase()
 }
 
 void TestQgsFontUtils::init()
-{
-}
+{}
 
 void TestQgsFontUtils::cleanup()
-{
-}
+{}
 
 void TestQgsFontUtils::xmlMethods()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();
@@ -114,9 +112,7 @@ void TestQgsFontUtils::fromChildNode()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();

@@ -37,9 +37,7 @@
 
 class CORE_EXPORT QgsStringReplacement
 {
-
   public:
-
     /**
      * Constructor for QgsStringReplacement.
      * \param match string to match
@@ -47,10 +45,7 @@ class CORE_EXPORT QgsStringReplacement
      * \param caseSensitive set to TRUE for a case sensitive match
      * \param wholeWordOnly set to TRUE to match complete words only, or FALSE to allow partial word matches
      */
-    QgsStringReplacement( const QString &match,
-                          const QString &replacement,
-                          bool caseSensitive = false,
-                          bool wholeWordOnly = false );
+    QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive = false, bool wholeWordOnly = false );
 
     //! Returns the string matched by this object
     QString match() const { return mMatch; }
@@ -73,10 +68,7 @@ class CORE_EXPORT QgsStringReplacement
 
     bool operator==( const QgsStringReplacement &other ) const
     {
-      return mMatch == other.mMatch
-             && mReplacement == other.mReplacement
-             && mCaseSensitive == other.mCaseSensitive
-             && mWholeWordOnly == other.mWholeWordOnly;
+      return mMatch == other.mMatch && mReplacement == other.mReplacement && mCaseSensitive == other.mCaseSensitive && mWholeWordOnly == other.mWholeWordOnly;
     }
 
     /**
@@ -92,7 +84,6 @@ class CORE_EXPORT QgsStringReplacement
     static QgsStringReplacement fromProperties( const QgsStringMap &properties );
 
   private:
-
     QString mMatch;
 
     QString mReplacement;
@@ -113,9 +104,7 @@ class CORE_EXPORT QgsStringReplacement
 
 class CORE_EXPORT QgsStringReplacementCollection
 {
-
   public:
-
     /**
      * Constructor for QgsStringReplacementCollection
      * \param replacements initial list of string replacements
@@ -136,10 +125,7 @@ class CORE_EXPORT QgsStringReplacementCollection
      * order they are specified here.
      * \see replacements()
      */
-    void setReplacements( const QList< QgsStringReplacement > &replacements )
-    {
-      mReplacements = replacements;
-    }
+    void setReplacements( const QList< QgsStringReplacement > &replacements ) { mReplacements = replacements; }
 
     /**
      * Processes a given input string, applying any valid replacements which should be made
@@ -167,8 +153,6 @@ class CORE_EXPORT QgsStringReplacementCollection
 
   private:
     QList< QgsStringReplacement > mReplacements;
-
-
 };
 
 /**
@@ -180,7 +164,6 @@ class CORE_EXPORT QgsStringReplacementCollection
 class CORE_EXPORT QgsStringUtils
 {
   public:
-
     /**
      * Converts a string by applying capitalization rules to the string.
      * \param string input string
@@ -396,8 +379,6 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 4.0
      */
     static QString unaccent( const QString &input );
-
-
 };
 
 #endif //QGSSTRINGUTILS_H

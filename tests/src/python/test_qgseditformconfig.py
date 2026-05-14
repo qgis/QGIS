@@ -14,9 +14,8 @@ import http.server
 import os
 import socketserver
 import threading
+import unittest
 
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -31,21 +30,19 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
 
 
 class TestQgsEditFormConfig(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
-        QgsSettings().clear()
 
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + "")

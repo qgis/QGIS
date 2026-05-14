@@ -142,7 +142,8 @@ class SpinBoxDelegate : public QItemDelegate
 
   public:
     explicit SpinBoxDelegate( QObject *parent = nullptr )
-      : QItemDelegate( parent ) {}
+      : QItemDelegate( parent )
+    {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & /*index*/ ) const override;
 

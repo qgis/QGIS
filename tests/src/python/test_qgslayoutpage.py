@@ -10,8 +10,8 @@ __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "23/10/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsFillSymbol,
     QgsLayout,
@@ -20,16 +20,15 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSimpleFillSymbolLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
 
 class TestQgsLayoutPage(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

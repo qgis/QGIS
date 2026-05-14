@@ -31,7 +31,6 @@ email                : hugo dot mercier at oslandia dot com
 class CORE_EXPORT QgsVirtualLayerDefinition
 {
   public:
-
     /**
      * \ingroup core
      * \brief Either a reference to a live layer in the registry
@@ -181,10 +180,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     bool hasReferencedLayers() const;
 
     //! Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
-    bool hasDefinedGeometry() const
-    {
-      return geometryWkbType() != Qgis::WkbType::NoGeometry && geometryWkbType() != Qgis::WkbType::Unknown;
-    }
+    bool hasDefinedGeometry() const { return geometryWkbType() != Qgis::WkbType::NoGeometry && geometryWkbType() != Qgis::WkbType::Unknown; }
 
     /**
      * Returns the subset string.

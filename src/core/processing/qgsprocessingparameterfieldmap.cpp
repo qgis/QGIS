@@ -15,11 +15,14 @@
 
 #include "qgsprocessingparameterfieldmap.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsProcessingParameterFieldMapping::QgsProcessingParameterFieldMapping( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
   , mParentLayerParameterName( parentLayerParameterName )
-{
-}
+{}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterFieldMapping::clone() const
 {
@@ -69,8 +72,7 @@ QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::Pytho
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterFieldMapping('%1', %2"_s
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      QString code = u"QgsProcessingParameterFieldMapping('%1', %2"_s.arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mParentLayerParameterName.isEmpty() )
         code += u", parentLayerParameterName=%1"_s.arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
@@ -114,4 +116,3 @@ void QgsProcessingParameterFieldMapping::setParentLayerParameterName( const QStr
 {
   mParentLayerParameterName = name;
 }
-

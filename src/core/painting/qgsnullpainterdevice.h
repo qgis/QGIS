@@ -26,12 +26,11 @@
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
-class QgsNullPaintEngine: public QPaintEngine
+class QgsNullPaintEngine : public QPaintEngine
 {
-
   public:
-
-    QgsNullPaintEngine() : QPaintEngine( QPaintEngine::AllFeatures ) {};
+    QgsNullPaintEngine()
+      : QPaintEngine( QPaintEngine::AllFeatures ) {};
 
     bool begin( QPaintDevice * ) override { return true; };
     bool end() override { return true; };
@@ -53,7 +52,6 @@ class QgsNullPaintEngine: public QPaintEngine
     void drawTextItem( const QPointF &, const QTextItem & ) override { return; };
     void drawTiledPixmap( const QRectF &, const QPixmap &, const QPointF & ) override { return; };
     void drawImage( const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags ) override { return; };
-
 };
 ///@endcond
 #endif
@@ -64,11 +62,9 @@ class QgsNullPaintEngine: public QPaintEngine
  * \brief Null painter device that can be used for map renderer jobs which use custom painters.
  * \since QGIS 3.24
  */
-class CORE_EXPORT QgsNullPaintDevice: public QPaintDevice
+class CORE_EXPORT QgsNullPaintDevice : public QPaintDevice
 {
-
   public:
-
     QgsNullPaintDevice();
 
     QPaintEngine *paintEngine() const override;
@@ -86,12 +82,10 @@ class CORE_EXPORT QgsNullPaintDevice: public QPaintDevice
     void setOutputDpi( const int dpi ) { mDpi = dpi; };
 
   private:
-
     std::unique_ptr<QgsNullPaintEngine> mPaintEngine;
 
     QSize mSize;
     int mDpi = 96;
-
 };
 
 

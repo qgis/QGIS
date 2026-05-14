@@ -175,8 +175,7 @@ void QgsMarkerSymbol::setSize( double s ) const
       }
       // also scale offset to maintain relative position
       if ( !qgsDoubleNear( origSize, 0.0 ) && ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) ) )
-        markerLayer->setOffset( QPointF( markerLayer->offset().x() * s / origSize,
-                                         markerLayer->offset().y() * s / origSize ) );
+        markerLayer->setOffset( QPointF( markerLayer->offset().x() * s / origSize, markerLayer->offset().y() * s / origSize ) );
     }
     else
     {
@@ -336,9 +335,7 @@ void QgsMarkerSymbol::setDataDefinedSize( const QgsProperty &property ) const
 
       if ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) )
       {
-        markerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Offset, QgsSymbolLayerUtils::scaleWholeSymbol(
-                                               markerLayer->offset().x() / symbolSize,
-                                               markerLayer->offset().y() / symbolSize, property ) );
+        markerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Offset, QgsSymbolLayerUtils::scaleWholeSymbol( markerLayer->offset().x() / symbolSize, markerLayer->offset().y() / symbolSize, property ) );
       }
     }
   }
@@ -451,14 +448,17 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer *layer, QPoint
 void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
   const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, context.expressionContext(), mOpacity * 100 ) * 0.01
-                         : mOpacity;
+                                                                       : mOpacity;
 
   QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, renderHints(), f );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
   // If we're drawing using symbol levels, we only draw buffers for the bottom most level
-  const bool usingBuffer = ( layerIdx == -1 || layerIdx == 0 ) && mBufferSettings && mBufferSettings->enabled() && mBufferSettings->fillSymbol()
+  const bool usingBuffer = ( layerIdx == -1 || layerIdx == 0 )
+                           && mBufferSettings
+                           && mBufferSettings->enabled()
+                           && mBufferSettings->fillSymbol()
                            && !symbolRenderContext()->renderHints().testFlag( Qgis::SymbolRenderHint::ExcludeSymbolBuffers );
 
   if ( layerIdx != -1 && !usingBuffer )
@@ -568,7 +568,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
         break;
     }
 
-    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2 );
+    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2, context.feedback() );
     const QList<QList<QPolygonF> > polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
     for ( const QList< QPolygonF > &polygon : polygons )
     {

@@ -28,10 +28,13 @@
 #include "qgsvectorlayer.h"
 
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgsexpressionlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   : QWidget( parent )
@@ -46,8 +49,7 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   setMultiLine( false );
 
   mExpressionContext = QgsExpressionContext();
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
 
 QgsExpressionLineEdit::~QgsExpressionLineEdit() = default;

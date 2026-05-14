@@ -20,7 +20,6 @@ Provides utility functions for handling hstore-formatted strings.
 #include "qgshstoreutils.h"
 %End
   public:
-
     static QVariantMap parse( const QString &string );
 %Docstring
 Returns a QVariantMap object containing the key and values from a
@@ -39,7 +38,6 @@ Build a hstore-formatted string from a QVariantMap.
 
 .. versionadded:: 3.4
 %End
-
 };
 
 /************************************************************************

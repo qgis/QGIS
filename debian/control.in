@@ -58,8 +58,7 @@ Build-Depends:
  poppler-utils,
  lighttpd,
  qt6-base-dev, qt6-base-private-dev, qt6-multimedia-dev, qt6-positioning-dev, qtkeychain-qt6-dev, qt6-tools-dev-tools, qt6-tools-dev, libqca-qt6-dev, libqca-qt6-plugins,
- libqscintilla2-qt6-dev, qt6-serialport-dev, qt6-svg-dev, qt6-5compat-dev, qt6-webengine-dev, qt6-3d-dev, qt6-3d-assimpsceneimport-plugin, qt6-3d-defaultgeometryloader-plugin,
- qt6-3d-gltfsceneio-plugin, qt6-3d-scene2d-plugin,
+ libqscintilla2-qt6-dev, qt6-serialport-dev, qt6-svg-dev, qt6-5compat-dev, qt6-webengine-dev, qt6-3d-dev,
  python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtserialport, python3-pyqt6.qtsvg, pyqt6-dev-tools, pyqt6-dev,
  pyqt6.qsci-dev, python3-pyqt6.sip,
  libsfcgal-dev (>= 2.0.0),
@@ -86,7 +85,10 @@ Architecture: all
 Depends:
  libjs-jquery,
  libjs-leaflet,
- qml-module-qtcharts,
+ qml6-module-qtcharts,
+ qml6-module-qtquick-controls,
+ qml6-module-qtquick-effects,
+ qml6-module-qtquick-layouts,
  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -177,6 +179,7 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
+ qt6-svg-plugins,
  python3-qgis (= ${binary:Version}),
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})

@@ -25,8 +25,8 @@ __copyright__ = (
     "geotux_tuxman@linuxmail.org"
 )
 
-from qgis.PyQt.QtCore import QObject
 from qgis.core import QgsProject
+from qgis.PyQt.QtCore import QObject
 
 
 class QgisInterface(QObject):

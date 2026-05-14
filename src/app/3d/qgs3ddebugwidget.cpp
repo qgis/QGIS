@@ -38,13 +38,6 @@ Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent )
   scrollArea->adjustSize();
   adjustSize();
 
-  // set up the shadow map block
-  mDebugShadowMapCornerComboBox->addItem( tr( "Top Left" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Top Right" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Left" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Right" ) );
-  mDebugShadowMapSizeSpinBox->setClearValue( 0.1 );
-
   // set up the depth map block
   mDebugDepthMapCornerComboBox->addItem( tr( "Top Left" ) );
   mDebugDepthMapCornerComboBox->addItem( tr( "Top Right" ) );
@@ -82,25 +75,8 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( chkShowCameraRotationCenter, &QCheckBox::toggled, this, [this]( const bool enabled ) { mMap->setShowCameraRotationCenter( enabled ); } );
   connect( chkShowLightSourceOrigins, &QCheckBox::toggled, this, [this]( const bool enabled ) { mMap->setShowLightSourceOrigins( enabled ); } );
   connect( chkStopUpdates, &QCheckBox::toggled, this, [this]( const bool enabled ) { mMap->setStopUpdates( enabled ); } );
-  connect( chkStopOriginShifts, &QCheckBox::toggled, this, [this]( const bool enabled ) {
-    m3DMapCanvas->scene()->setSceneOriginShiftEnabled( !enabled );
-  } );
+  connect( chkStopOriginShifts, &QCheckBox::toggled, this, [this]( const bool enabled ) { m3DMapCanvas->scene()->setSceneOriginShiftEnabled( !enabled ); } );
   connect( chkDebugOverlay, &QCheckBox::toggled, this, [this]( const bool enabled ) { mMap->setIsDebugOverlayEnabled( enabled ); } );
-
-  // set up the shadow map block
-  whileBlocking( mDebugShadowMapGroupBox )->setChecked( mMap->debugShadowMapEnabled() );
-  whileBlocking( mDebugShadowMapCornerComboBox )->setCurrentIndex( mMap->debugShadowMapCorner() );
-  whileBlocking( mDebugShadowMapSizeSpinBox )->setValue( mMap->debugShadowMapSize() );
-  // Do not display the shadow debug map if the shadow effect is not enabled.
-  connect( mDebugShadowMapGroupBox, &QGroupBox::toggled, this, [this]( const bool enabled ) {
-    mMap->setDebugShadowMapSettings( enabled && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), mDebugShadowMapSizeSpinBox->value() );
-  } );
-  connect( mDebugShadowMapCornerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( const int index ) {
-    mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( index ), mDebugShadowMapSizeSpinBox->value() );
-  } );
-  connect( mDebugShadowMapSizeSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
-    mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), value );
-  } );
 
   // set up the depth map block
   whileBlocking( mDebugDepthMapGroupBox )->setChecked( mMap->debugDepthMapEnabled() );
@@ -120,9 +96,7 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( mNearPlane, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     m3DMapCanvas->cameraController()->camera()->setNearPlane( static_cast<float>( value ) );
   } );
-  connect( mFarPlane, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
-    m3DMapCanvas->cameraController()->camera()->setFarPlane( static_cast<float>( value ) );
-  } );
+  connect( mFarPlane, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) { m3DMapCanvas->cameraController()->camera()->setFarPlane( static_cast<float>( value ) ); } );
   connect( mCameraX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     QVector3D newPosition = m3DMapCanvas->cameraController()->camera()->position();
     newPosition.setX( static_cast<float>( value ) );
@@ -141,32 +115,17 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( mLookingX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     QgsVector3D newLookingAt = m3DMapCanvas->cameraController()->lookingAtPoint();
     newLookingAt.setX( value );
-    m3DMapCanvas->cameraController()->setLookingAtPoint(
-      newLookingAt,
-      m3DMapCanvas->cameraController()->distance(),
-      m3DMapCanvas->cameraController()->pitch(),
-      m3DMapCanvas->cameraController()->yaw()
-    );
+    m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, m3DMapCanvas->cameraController()->distance(), m3DMapCanvas->cameraController()->pitch(), m3DMapCanvas->cameraController()->yaw() );
   } );
   connect( mLookingY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     QgsVector3D newLookingAt = m3DMapCanvas->cameraController()->lookingAtPoint();
     newLookingAt.setY( value );
-    m3DMapCanvas->cameraController()->setLookingAtPoint(
-      newLookingAt,
-      m3DMapCanvas->cameraController()->distance(),
-      m3DMapCanvas->cameraController()->pitch(),
-      m3DMapCanvas->cameraController()->yaw()
-    );
+    m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, m3DMapCanvas->cameraController()->distance(), m3DMapCanvas->cameraController()->pitch(), m3DMapCanvas->cameraController()->yaw() );
   } );
   connect( mLookingZ, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     QgsVector3D newLookingAt = m3DMapCanvas->cameraController()->lookingAtPoint();
     newLookingAt.setZ( value );
-    m3DMapCanvas->cameraController()->setLookingAtPoint(
-      newLookingAt,
-      m3DMapCanvas->cameraController()->distance(),
-      m3DMapCanvas->cameraController()->pitch(),
-      m3DMapCanvas->cameraController()->yaw()
-    );
+    m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, m3DMapCanvas->cameraController()->distance(), m3DMapCanvas->cameraController()->pitch(), m3DMapCanvas->cameraController()->yaw() );
   } );
 }
 

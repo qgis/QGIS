@@ -25,6 +25,9 @@ email                : ersts@amnh.org
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterShader::QgsRasterShader( double minimumValue, double maximumValue )
   : mMinimumValue( minimumValue )
@@ -116,4 +119,3 @@ void QgsRasterShader::readXml( const QDomElement &elem, const QgsReadWriteContex
     setRasterShaderFunction( colorRampShader );
   }
 }
-

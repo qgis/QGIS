@@ -31,16 +31,14 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsdatasourceselectdialog.cpp"
 
-QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
-  QgsBrowserGuiModel *browserModel,
-  bool setFilterByLayerType,
-  Qgis::LayerType layerType,
-  QWidget *parent
-)
+using namespace Qt::StringLiterals;
+
+QgsDataSourceSelectWidget::QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel, bool setFilterByLayerType, Qgis::LayerType layerType, QWidget *parent )
   : QgsPanelWidget( parent )
 {
   if ( !browserModel )
@@ -132,13 +130,8 @@ void QgsDataSourceSelectWidget::showEvent( QShowEvent *e )
   const QString lastSelectedPath( QgsSettings().value( u"datasourceSelectLastSelectedItem"_s, QString(), QgsSettings::Section::Gui ).toString() );
   if ( !lastSelectedPath.isEmpty() )
   {
-    const QModelIndexList items = mBrowserProxyModel.match(
-      mBrowserProxyModel.index( 0, 0 ),
-      static_cast<int>( QgsBrowserModel::CustomRole::Path ),
-      QVariant::fromValue( lastSelectedPath ),
-      1,
-      Qt::MatchRecursive
-    );
+    const QModelIndexList items
+      = mBrowserProxyModel.match( mBrowserProxyModel.index( 0, 0 ), static_cast<int>( QgsBrowserModel::CustomRole::Path ), QVariant::fromValue( lastSelectedPath ), 1, Qt::MatchRecursive );
     if ( items.count() > 0 )
     {
       const QModelIndex expandIndex = items.at( 0 );

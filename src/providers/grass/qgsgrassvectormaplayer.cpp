@@ -23,8 +23,11 @@
 #include "qgslogger.h"
 
 #include <QFileInfo>
+#include <QString>
 
 #include "moc_qgsgrassvectormaplayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {
@@ -41,8 +44,7 @@ extern "C"
 QgsGrassVectorMapLayer::QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int field )
   : mField( field )
   , mMap( map )
-{
-}
+{}
 
 void QgsGrassVectorMapLayer::clear()
 {
@@ -693,9 +695,7 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
         {
           QVariant value = it.value().value( index );
           QString valueString = quotedValue( value );
-          QString query = u"UPDATE %1 SET %2 = %3 WHERE %4 = %5"_s
-                            .arg( mFieldInfo->table, field.name(), valueString, keyColumnName() )
-                            .arg( it.key() );
+          QString query = u"UPDATE %1 SET %2 = %3 WHERE %4 = %5"_s.arg( mFieldInfo->table, field.name(), valueString, keyColumnName() ).arg( it.key() );
           QString err;
           executeSql( query, err );
           if ( !err.isEmpty() )

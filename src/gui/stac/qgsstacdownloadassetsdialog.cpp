@@ -26,9 +26,12 @@
 #include <QClipboard>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 #include <QTreeWidget>
 
 #include "moc_qgsstacdownloadassetsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -65,11 +68,7 @@ void QgsStacDownloadAssetsDialog::accept()
 
     connect( fetcher, &QgsNetworkContentFetcherTask::errorOccurred, fetcher, [bar = mMessageBar]( QNetworkReply::NetworkError, const QString &errorMsg ) {
       if ( bar )
-        bar->pushMessage(
-          tr( "Error downloading STAC asset" ),
-          errorMsg,
-          Qgis::MessageLevel::Critical
-        );
+        bar->pushMessage( tr( "Error downloading STAC asset" ), errorMsg, Qgis::MessageLevel::Critical );
     } );
 
     connect( fetcher, &QgsNetworkContentFetcherTask::fetched, fetcher, [fetcher, folder, bar = mMessageBar] {
@@ -110,20 +109,14 @@ void QgsStacDownloadAssetsDialog::accept()
         if ( failed )
         {
           if ( bar )
-            bar->pushMessage(
-              tr( "Error downloading STAC asset" ),
-              tr( "Could not write to file %1" ).arg( file.fileName() ),
-              Qgis::MessageLevel::Critical
-            );
+            bar->pushMessage( tr( "Error downloading STAC asset" ), tr( "Could not write to file %1" ).arg( file.fileName() ), Qgis::MessageLevel::Critical );
         }
         else
         {
           if ( bar )
-            bar->pushMessage(
-              tr( "STAC asset downloaded" ),
-              file.fileName(),
-              Qgis::MessageLevel::Success
-            );
+          {
+            bar->pushMessage( QString(), tr( "STAC asset downloaded to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file.fileName() ).toString(), QDir::toNativeSeparators( file.fileName() ) ), Qgis::MessageLevel::Success );
+          }
         }
       }
     } );
@@ -208,9 +201,7 @@ void QgsStacDownloadAssetsDialog::showContextMenu( QPoint p )
 
   const QString url = item->text( 5 );
   QAction *copyUrlAction = new QAction( tr( "Copy URL" ), mContextMenu );
-  connect( copyUrlAction, &QAction::triggered, this, [url] {
-    QApplication::clipboard()->setText( url );
-  } );
+  connect( copyUrlAction, &QAction::triggered, this, [url] { QApplication::clipboard()->setText( url ); } );
   mContextMenu->addAction( copyUrlAction );
   mContextMenu->exec( QCursor::pos() );
 }

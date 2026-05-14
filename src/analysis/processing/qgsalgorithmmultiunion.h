@@ -18,10 +18,15 @@
 #ifndef QGSALGORITHMMULTIUNION_H
 #define QGSALGORITHMMULTIUNION_H
 
-#define SIP_NO_FILE
 
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

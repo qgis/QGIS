@@ -25,9 +25,12 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgssubstitutionlistwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -172,8 +175,7 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement &sub
   const int row = mTableSubstitutions->rowCount();
   mTableSubstitutions->insertRow( row );
 
-  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                  | Qt::ItemIsEditable;
+  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 
   QTableWidgetItem *matchItem = new QTableWidgetItem( substitution.match() );
   matchItem->setFlags( itemFlags );

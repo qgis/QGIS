@@ -32,7 +32,6 @@ integer numbers starting at 0.
 #include "qgsmaskidprovider.h"
 %End
   public:
-
     int insertLabelLayer( const QString &layerId, const QString &ruleId, const QSet<QgsSymbolLayerReference> &maskedSymbolLayers );
 %Docstring
 Inserts a label layer to the provider and returns its associated mask

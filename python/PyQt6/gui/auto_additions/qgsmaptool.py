@@ -4,6 +4,18 @@ QgsMapTool.EditTool = QgsMapTool.Flag.EditTool
 QgsMapTool.AllowZoomRect = QgsMapTool.Flag.AllowZoomRect
 QgsMapTool.ShowContextMenu = QgsMapTool.Flag.ShowContextMenu
 QgsMapTool.Flags = lambda flags=0: QgsMapTool.Flag(flags)
+# monkey patching scoped based enum
+QgsMapTool.PropertyStatus.Valid.__doc__ = "Property is valid"
+QgsMapTool.PropertyStatus.DoesNotExist.__doc__ = "Property does not exist"
+QgsMapTool.PropertyStatus.CurrentExpressionInvalid.__doc__ = "Property is an invalid expression"
+QgsMapTool.PropertyStatus.__doc__ = """Property status used in method dealing with property
+
+* ``Valid``: Property is valid
+* ``DoesNotExist``: Property does not exist
+* ``CurrentExpressionInvalid``: Property is an invalid expression
+
+"""
+# --
 from enum import Enum
 
 
@@ -18,7 +30,7 @@ try:
     QgsMapTool.__attribute_docs__ = {'messageEmitted': 'Emitted when a ``message`` should be shown to the user in the\napplication message bar.\n\n.. seealso:: :py:func:`messageDiscarded`\n', 'messageDiscarded': 'Emitted when the previous message from the tool should be cleared from\nthe application message bar.\n\n.. seealso:: :py:func:`messageEmitted`\n', 'activated': 'Emitted when the map tool is activated.\n\n.. seealso:: :py:func:`deactivated`\n', 'deactivated': 'Emitted when the map tool is deactivated.\n\n.. seealso:: :py:func:`activated`\n', 'reactivated': 'Emitted when the map tool is activated, while it is already active.\n\n.. versionadded:: 3.32\n'}
     QgsMapTool.searchRadiusMM = staticmethod(QgsMapTool.searchRadiusMM)
     QgsMapTool.searchRadiusMU = staticmethod(QgsMapTool.searchRadiusMU)
-    QgsMapTool.__virtual_methods__ = ['flags', 'canvasMoveEvent', 'canvasDoubleClickEvent', 'canvasPressEvent', 'canvasReleaseEvent', 'wheelEvent', 'keyPressEvent', 'keyReleaseEvent', 'gestureEvent', 'canvasToolTipEvent', 'setCursor', 'activate', 'deactivate', 'reactivate', 'clean', 'populateContextMenu', 'populateContextMenuWithEvent']
+    QgsMapTool.__virtual_methods__ = ['flags', 'canvasMoveEvent', 'canvasDoubleClickEvent', 'canvasPressEvent', 'canvasReleaseEvent', 'wheelEvent', 'keyPressEvent', 'keyReleaseEvent', 'gestureEvent', 'canvasToolTipEvent', 'shortcutEvent', 'setCursor', 'activate', 'deactivate', 'reactivate', 'clean', 'populateContextMenu', 'populateContextMenuWithEvent']
     QgsMapTool.__signal_arguments__ = {'messageEmitted': ['message: str', 'level: Qgis.MessageLevel = Qgis.MessageLevel.Info']}
     QgsMapTool.__group__ = ['maptools']
 except (NameError, AttributeError):

@@ -20,12 +20,15 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewnonremovableindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewNonRemovableIndicatorProvider::QgsLayerTreeViewNonRemovableIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
-{
-}
+{}
 
 QString QgsLayerTreeViewNonRemovableIndicatorProvider::iconName( QgsMapLayer *layer )
 {

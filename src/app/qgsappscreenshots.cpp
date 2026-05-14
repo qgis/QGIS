@@ -35,9 +35,12 @@
 #include <QImageWriter>
 #include <QMenu>
 #include <QScreen>
+#include <QString>
 #include <QWindow>
 
 #include "moc_qgsappscreenshots.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   : mSaveDirectory( saveDirectory )

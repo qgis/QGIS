@@ -31,16 +31,20 @@
 #include "qgsrubberband.h"
 #include "qgsscalecombobox.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QRadioButton>
+#include <QString>
 #include <QToolBar>
 #include <QToolButton>
 
 #include "moc_qgsmapcanvasdockwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *parent, bool isDocked )
   : QWidget( parent )
@@ -132,7 +136,10 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mActionShowCursor->setChecked( true );
   connect( mActionShowCursor, &QAction::toggled, this, [this]( bool checked ) { mXyMarker->setVisible( checked ); } );
   mActionShowExtent->setChecked( false );
-  connect( mActionShowExtent, &QAction::toggled, this, [this]( bool checked ) { mExtentRubberBand->setVisible( checked ); updateExtentRect(); } );
+  connect( mActionShowExtent, &QAction::toggled, this, [this]( bool checked ) {
+    mExtentRubberBand->setVisible( checked );
+    updateExtentRect();
+  } );
   mActionShowLabels->setChecked( true );
   connect( mActionShowLabels, &QAction::toggled, this, &QgsMapCanvasDockWidget::showLabels );
 
@@ -244,13 +251,12 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvasDockWidget::currentMapThemeRenamed );
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::RespectSetting );
+  mDockableWidgetHelper
+    = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? Qgis::DockableWidgetInitialState::ForceDocked : Qgis::DockableWidgetInitialState::RestorePreviousState );
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock 2D Map View" ) );
   mToolbar->addWidget( toggleButton );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
-    close();
-  } );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { close(); } );
 }
 
 QgsMapCanvasDockWidget::~QgsMapCanvasDockWidget()
@@ -541,8 +547,7 @@ void QgsMapCanvasDockWidget::updateExtentRect()
       g.transform( ct );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   }
   mExtentRubberBand->setToGeometry( g, nullptr );
 }
@@ -612,7 +617,7 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   const QgsSettings settings;
   const int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
   const int maximumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  const int defaultFactor = 100 * settings.value( u"/qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
+  const int defaultFactor = 100 * QgsSettingsRegistryGui::settingsMagnifierFactorDefault->value();
 
   mMagnifierWidget = new QgsDoubleSpinBox();
   mMagnifierWidget->setSuffix( u"%"_s );

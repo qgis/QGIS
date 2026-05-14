@@ -19,12 +19,13 @@
 #define QGSLAYOUTPICTUREWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutpicturewidgetbase.h"
 
 #include "qgis_gui.h"
 #include "qgslayoutitemwidget.h"
+
+#define SIP_NO_FILE
 
 class QgsLayoutItemPicture;
 

@@ -22,8 +22,7 @@
 
 QgsStackedWidget::QgsStackedWidget( QWidget *parent )
   : QStackedWidget( parent )
-{
-}
+{}
 
 QSize QgsStackedWidget::sizeHint() const
 {

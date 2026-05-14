@@ -29,16 +29,15 @@ class QgsSensorManager;
  * \brief A QAbstractItemModel subclass for showing sensors within a QgsSensorManager.
  * \since QGIS 3.32
  */
-class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
+class CORE_EXPORT QgsSensorModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-
     //! Model columns
     enum class Column : int
     {
-      Name = 0, //!< Name
+      Name = 0,      //!< Name
       LastValue = 1, //!< Last value
     };
 
@@ -53,12 +52,12 @@ class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSensorModel, Role ) : int
     {
       SensorType = Qt::UserRole + 1, //!< Sensor type
-      SensorId, //!< Sensor id
-      SensorName, //!< Sensor name
-      SensorStatus, //!< Sensor status (disconnected, connected, etc.)
-      SensorLastValue, //!< Sensor last captured value
-      SensorLastTimestamp, //!< Sensor timestamp of last captured value
-      Sensor, //!< Sensor object pointer
+      SensorId,                      //!< Sensor id
+      SensorName,                    //!< Sensor name
+      SensorStatus,                  //!< Sensor status (disconnected, connected, etc.)
+      SensorLastValue,               //!< Sensor last captured value
+      SensorLastTimestamp,           //!< Sensor timestamp of last captured value
+      Sensor,                        //!< Sensor object pointer
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -71,10 +70,8 @@ class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column,
-                       const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -88,7 +85,6 @@ class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
     void sensorDataCaptured( const QString &id );
 
   private:
-
     QgsSensorManager *mSensorManager = nullptr;
     QStringList mSensorIds;
 };

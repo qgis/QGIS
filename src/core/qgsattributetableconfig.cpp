@@ -17,7 +17,12 @@
 
 #include "qgsfields.h"
 
+#include <QString>
 #include <QStringList>
+
+#include "moc_qgsattributetableconfig.cpp"
+
+using namespace Qt::StringLiterals;
 
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
 {
@@ -180,6 +185,8 @@ void QgsAttributeTableConfig::readXml( const QDomNode &node )
       mActionWidgetStyle = ButtonList;
     else
       mActionWidgetStyle = DropDown;
+
+    mAddFeatureMethod = qgsEnumKeyToValue( configNode.toElement().attribute( u"addFeatureMethod"_s ), AddFeatureMethod::Unset );
   }
   else
   {
@@ -218,6 +225,16 @@ void QgsAttributeTableConfig::setSortExpression( const QString &sortExpression )
   mSortExpression = sortExpression;
 }
 
+QgsAttributeTableConfig::AddFeatureMethod QgsAttributeTableConfig::addFeatureMethod() const
+{
+  return mAddFeatureMethod;
+}
+
+void QgsAttributeTableConfig::setAddFeatureMethod( const AddFeatureMethod addFeatureMethod )
+{
+  mAddFeatureMethod = addFeatureMethod;
+}
+
 int QgsAttributeTableConfig::columnWidth( int column ) const
 {
   return mColumns.at( column ).width;
@@ -225,7 +242,7 @@ int QgsAttributeTableConfig::columnWidth( int column ) const
 
 void QgsAttributeTableConfig::setColumnWidth( int column, int width )
 {
-  mColumns[ column ].width = width;
+  mColumns[column].width = width;
 }
 
 bool QgsAttributeTableConfig::columnHidden( int column ) const
@@ -235,12 +252,16 @@ bool QgsAttributeTableConfig::columnHidden( int column ) const
 
 void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
 {
-  mColumns[ column ].hidden = hidden;
+  mColumns[column].hidden = hidden;
 }
 
 bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig &other ) const
 {
-  return mSortExpression != other.mSortExpression || mColumns != other.mColumns || mActionWidgetStyle != other.mActionWidgetStyle || mSortOrder != other.mSortOrder;
+  return mSortExpression != other.mSortExpression
+         || mColumns != other.mColumns
+         || mActionWidgetStyle != other.mActionWidgetStyle
+         || mSortOrder != other.mSortOrder
+         || mAddFeatureMethod != other.mAddFeatureMethod;
 }
 
 Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
@@ -263,14 +284,17 @@ void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
 {
   QDomDocument doc( node.ownerDocument() );
 
-  QDomElement configElement  = doc.createElement( u"attributetableconfig"_s );
+  QDomElement configElement = doc.createElement( u"attributetableconfig"_s );
   configElement.setAttribute( u"actionWidgetStyle"_s, mActionWidgetStyle == ButtonList ? "buttonList" : "dropDown" );
 
   configElement.setAttribute( u"sortExpression"_s, mSortExpression );
 
   configElement.setAttribute( u"sortOrder"_s, mSortOrder );
 
-  QDomElement columnsElement  = doc.createElement( u"columns"_s );
+  if ( mAddFeatureMethod != AddFeatureMethod::Unset )
+    configElement.setAttribute( u"addFeatureMethod"_s, qgsEnumValueToKey( mAddFeatureMethod ) );
+
+  QDomElement columnsElement = doc.createElement( u"columns"_s );
 
   const auto constMColumns = mColumns;
   for ( const ColumnConfig &column : constMColumns )
@@ -304,9 +328,7 @@ bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &oth
   {
     for ( int i = 0; i < columns().size(); i++ )
     {
-      if ( columns().at( i ).name != other.columns().at( i ).name ||
-           columns().at( i ).type != other.columns().at( i ).type ||
-           columns().at( i ).hidden != other.columns().at( i ).hidden )
+      if ( columns().at( i ).name != other.columns().at( i ).name || columns().at( i ).type != other.columns().at( i ).type || columns().at( i ).hidden != other.columns().at( i ).hidden )
       {
         return false;
       }
@@ -317,7 +339,7 @@ bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &oth
   return false;
 }
 
-bool QgsAttributeTableConfig::ColumnConfig::operator== ( const ColumnConfig &other ) const
+bool QgsAttributeTableConfig::ColumnConfig::operator==( const ColumnConfig &other ) const
 {
   return type == other.type && name == other.name && hidden == other.hidden && width == other.width;
 }

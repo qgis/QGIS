@@ -10,17 +10,16 @@ __author__ = "Julien Cabieces"
 __date__ = "02/05/2024"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor
-from qgis.gui import QgsColorWidget
-
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsColorWidget
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsColorWidget(QgisTestCase):
-
     def testAlterColor(self):
         """
         test alterColor method
@@ -44,7 +43,9 @@ class TestQgsColorWidget(QgisTestCase):
         # hsv
         QgsColorWidget.alterColor(color, QgsColorWidget.ColorComponent.Hue, 100)
         self.assertEqual(color.spec(), QColor.Spec.Hsv)
-        self.assertEqual(color, QColor.fromHsv(100, 72, 156, 210))
+        self.assertEqual(
+            color, QColor.fromHsvF(100 / 360, 71.92217588 / 255, 156 / 255, 210 / 255)
+        )
         QgsColorWidget.alterColor(color, QgsColorWidget.ColorComponent.Saturation, 150)
         self.assertEqual(color.spec(), QColor.Spec.Hsv)
         self.assertEqual(color, QColor.fromHsv(100, 150, 156, 210))
@@ -105,7 +106,10 @@ class TestQgsColorWidget(QgisTestCase):
         w.setComponent(QgsColorWidget.ColorComponent.Hue)
         w.setComponentValue(100)
         self.assertEqual(w.color().spec(), QColor.Spec.Hsv)
-        self.assertEqual(w.color(), QColor.fromHsv(100, 72, 156, 210))
+        self.assertEqual(
+            w.color(),
+            QColor.fromHsvF(100 / 360, 71.92217588 / 255, 156 / 255, 210 / 255),
+        )
         w.setComponent(QgsColorWidget.ColorComponent.Saturation)
         w.setComponentValue(150)
         self.assertEqual(w.color().spec(), QColor.Spec.Hsv)

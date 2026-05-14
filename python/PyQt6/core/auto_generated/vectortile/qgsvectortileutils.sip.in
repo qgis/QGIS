@@ -24,7 +24,6 @@ Utility functions for working with vector tiles.
 #include "qgsvectortileutils.h"
 %End
   public:
-
     static void updateUriSources( QString &uri /In,Out/, bool forceUpdate = false );
 %Docstring
 Parses the style URL to update the source URLs in the ``uri``. If
@@ -92,6 +91,14 @@ Downloads the sprite image and sets it to the conversion context
 :param styleDefinition: the style definition map
 :param context: the style conversion context
 :param styleUrl: optional the style url
+%End
+
+    static QString resolveMapboxUri( const QString &uri, const QString &accessToken );
+%Docstring
+Resolves a URI which uses the mapbox:// protocol to a standard HTTPS
+URL.
+
+.. versionadded:: 4.2
 %End
 
 };

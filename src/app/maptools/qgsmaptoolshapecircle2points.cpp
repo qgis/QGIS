@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,11 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecircle2points.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsMapToolShapeCircle2PointsMetadata::id() const
 {
@@ -83,5 +87,10 @@ void QgsMapToolShapeCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsM
     return;
 
   mCircle = QgsCircle::from2Points( mPoints.at( 0 ), mParentTool->mapPoint( *e ) );
-  mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
+  const QgsGeometry newGeometry( mCircle.toCircularString( true ) );
+  if ( !newGeometry.isEmpty() )
+  {
+    mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+    setTransientGeometry( newGeometry );
+  }
 }

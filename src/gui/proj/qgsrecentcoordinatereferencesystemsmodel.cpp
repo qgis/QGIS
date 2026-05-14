@@ -242,8 +242,7 @@ bool QgsRecentCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int source
 
   if ( !mFilterString.trimmed().isEmpty() )
   {
-    if ( !( crs.description().contains( mFilterString, Qt::CaseInsensitive )
-            || crs.authid().contains( mFilterString, Qt::CaseInsensitive ) ) )
+    if ( !( crs.description().contains( mFilterString, Qt::CaseInsensitive ) || crs.authid().contains( mFilterString, Qt::CaseInsensitive ) ) )
       return false;
   }
 

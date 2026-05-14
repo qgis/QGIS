@@ -26,10 +26,13 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QProcessEnvironment>
+#include <QString>
 #include <QTemporaryDir>
 #include <QThread>
 
 #include "moc_qgspdalindexingtask.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPdalIndexingTask::QgsPdalIndexingTask( const QString &file, const QString &outputPath, const QString &name )
   : QgsTask( tr( "Creating indexed COPC (%1)" ).arg( name ) )

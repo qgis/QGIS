@@ -18,22 +18,39 @@
 
 #include "qgis_3d.h"
 #include "qgs3daxissettings.h"
-#include "qgs3dmapcanvas.h"
 #include "qgscoordinatereferencesystem.h"
 
+#include <QCursor>
+#include <QObject>
 #include <QVector3D>
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QText2DEntity>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QScreenRayCaster>
-#include <QtWidgets/QMenu>
+#include <Qt3DRender/QAbstractRayCaster>
+#include <Qt3DRender/QPickingSettings>
 
 #define SIP_NO_FILE
 
+namespace Qt3DCore
+{
+  class QEntity;
+  class QTransform;
+} //namespace Qt3DCore
+
+namespace Qt3DExtras
+{
+  class QText2DEntity;
+}
+
+namespace Qt3DRender
+{
+  class QCamera;
+  class QScreenRayCaster;
+} //namespace Qt3DRender
+
 class QgsCameraController;
+class Qgs3DMapCanvas;
+class Qgs3DMapSettings;
 class Qgs3DMapScene;
 class Qgs3DAxisRenderView;
+class QMenu;
 
 /**
  * \ingroup qgis_3d

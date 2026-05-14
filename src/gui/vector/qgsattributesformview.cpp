@@ -41,16 +41,18 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QString>
 #include <QTreeView>
 #include <QWidget>
 
 #include "moc_qgsattributesformview.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsAttributesFormBaseView::QgsAttributesFormBaseView( QgsVectorLayer *layer, QWidget *parent )
   : QTreeView( parent )
   , mLayer( layer )
-{
-}
+{}
 
 QModelIndex QgsAttributesFormBaseView::firstSelectedIndex() const
 {
@@ -63,8 +65,7 @@ QModelIndex QgsAttributesFormBaseView::firstSelectedIndex() const
 QgsExpressionContext QgsAttributesFormBaseView::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  expContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -151,8 +152,7 @@ QgsAttributesFormModel *QgsAttributesFormBaseView::sourceModel() const
 
 QgsAttributesAvailableWidgetsView::QgsAttributesAvailableWidgetsView( QgsVectorLayer *layer, QWidget *parent )
   : QgsAttributesFormBaseView( layer, parent )
-{
-}
+{}
 
 void QgsAttributesAvailableWidgetsView::setModel( QAbstractItemModel *model )
 {
@@ -195,10 +195,7 @@ void QgsAttributesFormLayoutView::handleExternalDroppedItem( QModelIndex &index 
 
   const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
 
-  if ( itemType == QgsAttributesFormData::QmlWidget
-       || itemType == QgsAttributesFormData::HtmlWidget
-       || itemType == QgsAttributesFormData::TextWidget
-       || itemType == QgsAttributesFormData::SpacerWidget )
+  if ( itemType == QgsAttributesFormData::QmlWidget || itemType == QgsAttributesFormData::HtmlWidget || itemType == QgsAttributesFormData::TextWidget || itemType == QgsAttributesFormData::SpacerWidget )
   {
     onItemDoubleClicked( mModel->mapFromSource( index ) );
   }
@@ -218,8 +215,7 @@ void QgsAttributesFormLayoutView::dragEnterEvent( QDragEnterEvent *event )
 {
   const QMimeData *data = event->mimeData();
 
-  if ( data->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s )
-       || data->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) )
+  if ( data->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s ) || data->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) )
   {
     // Inner drag and drop actions are always MoveAction
     if ( event->source() == this )
@@ -243,8 +239,7 @@ void QgsAttributesFormLayoutView::dragMoveEvent( QDragMoveEvent *event )
 {
   const QMimeData *data = event->mimeData();
 
-  if ( data->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s )
-       || data->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) )
+  if ( data->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s ) || data->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) )
   {
     // Inner drag and drop actions are always MoveAction
     if ( event->source() == this )
@@ -262,8 +257,7 @@ void QgsAttributesFormLayoutView::dragMoveEvent( QDragMoveEvent *event )
 
 void QgsAttributesFormLayoutView::dropEvent( QDropEvent *event )
 {
-  if ( !( event->mimeData()->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s )
-          || event->mimeData()->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) ) )
+  if ( !( event->mimeData()->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s ) || event->mimeData()->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) ) )
     return;
 
   if ( event->source() == this )
@@ -319,7 +313,8 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       QLineEdit *title = new QLineEdit( itemName );
 
       //qmlCode
-      QgsCodeEditor *qmlCode = new QgsCodeEditor( this );
+      QgsCodeEditor *qmlCode = new QgsCodeEditor( this, QString(), true, true, QgsCodeEditor::Flag::CodeFolding, QgsCodeEditor::Mode::ScriptEditor );
+      qmlCode->setLineNumbersVisible( true );
       qmlCode->setEditingTimeoutInterval( 250 );
       qmlCode->setText( itemData.qmlElementEditorConfiguration().qmlCode );
 
@@ -327,20 +322,13 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       QgsFeature previewFeature;
       mLayer->getFeatures().nextFeature( previewFeature );
 
-      //update preview on text change
-      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature] {
-        qmlWrapper->setQmlCode( qmlCode->text() );
-        qmlWrapper->reinitWidget();
-        qmlWrapper->setFeature( previewFeature );
-      } );
-
       //templates
       QComboBox *qmlObjectTemplate = new QComboBox();
       qmlObjectTemplate->addItem( tr( "Free Text…" ) );
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
-      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [qmlCode]( int index ) {
+      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::currentIndexChanged ), qmlCode, [qmlCode]( int index ) {
         qmlCode->clear();
         switch ( index )
         {
@@ -351,60 +339,66 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
           }
           case 1:
           {
-            qmlCode->setText( QStringLiteral( "import QtQuick 2.0\n"
-                                              "\n"
-                                              "Rectangle {\n"
-                                              "    width: 100\n"
-                                              "    height: 100\n"
-                                              "    color: \"steelblue\"\n"
-                                              "    Text{ text: \"A rectangle\" }\n"
-                                              "}\n" ) );
+            qmlCode->setText( QStringLiteral(
+              "import QtQuick 2.0\n"
+              "\n"
+              "Rectangle {\n"
+              "    width: 100\n"
+              "    height: 100\n"
+              "    color: \"steelblue\"\n"
+              "    Text{ text: \"A rectangle\" }\n"
+              "}\n"
+            ) );
             break;
           }
           case 2:
           {
-            qmlCode->setText( QStringLiteral( "import QtQuick 2.0\n"
-                                              "import QtCharts 2.0\n"
-                                              "\n"
-                                              "ChartView {\n"
-                                              "    width: 400\n"
-                                              "    height: 400\n"
-                                              "\n"
-                                              "    PieSeries {\n"
-                                              "        id: pieSeries\n"
-                                              "        PieSlice { label: \"First slice\"; value: 25 }\n"
-                                              "        PieSlice { label: \"Second slice\"; value: 45 }\n"
-                                              "        PieSlice { label: \"Third slice\"; value: 30 }\n"
-                                              "    }\n"
-                                              "}\n" ) );
+            qmlCode->setText( QStringLiteral(
+              "import QtQuick 2.0\n"
+              "import QtCharts 2.0\n"
+              "\n"
+              "ChartView {\n"
+              "    width: 400\n"
+              "    height: 400\n"
+              "\n"
+              "    PieSeries {\n"
+              "        id: pieSeries\n"
+              "        PieSlice { label: \"First slice\"; value: 25 }\n"
+              "        PieSlice { label: \"Second slice\"; value: 45 }\n"
+              "        PieSlice { label: \"Third slice\"; value: 30 }\n"
+              "    }\n"
+              "}\n"
+            ) );
             break;
           }
           case 3:
           {
-            qmlCode->setText( QStringLiteral( "import QtQuick 2.0\n"
-                                              "import QtCharts 2.0\n"
-                                              "\n"
-                                              "ChartView {\n"
-                                              "    title: \"Bar series\"\n"
-                                              "    width: 600\n"
-                                              "    height:400\n"
-                                              "    legend.alignment: Qt.AlignBottom\n"
-                                              "    antialiasing: true\n"
-                                              "    ValueAxis{\n"
-                                              "        id: valueAxisY\n"
-                                              "        min: 0\n"
-                                              "        max: 15\n"
-                                              "    }\n"
-                                              "\n"
-                                              "    BarSeries {\n"
-                                              "        id: mySeries\n"
-                                              "        axisY: valueAxisY\n"
-                                              "        axisX: BarCategoryAxis { categories: [\"2007\", \"2008\", \"2009\", \"2010\", \"2011\", \"2012\" ] }\n"
-                                              "        BarSet { label: \"Bob\"; values: [2, 2, 3, 4, 5, 6] }\n"
-                                              "        BarSet { label: \"Susan\"; values: [5, 1, 2, 4, 1, 7] }\n"
-                                              "        BarSet { label: \"James\"; values: [3, 5, 8, 13, 5, 8] }\n"
-                                              "    }\n"
-                                              "}\n" ) );
+            qmlCode->setText( QStringLiteral(
+              "import QtQuick 2.0\n"
+              "import QtCharts 2.0\n"
+              "\n"
+              "ChartView {\n"
+              "    title: \"Bar series\"\n"
+              "    width: 600\n"
+              "    height:400\n"
+              "    legend.alignment: Qt.AlignBottom\n"
+              "    antialiasing: true\n"
+              "    ValueAxis{\n"
+              "        id: valueAxisY\n"
+              "        min: 0\n"
+              "        max: 15\n"
+              "    }\n"
+              "\n"
+              "    BarSeries {\n"
+              "        id: mySeries\n"
+              "        axisY: valueAxisY\n"
+              "        axisX: BarCategoryAxis { categories: [\"2007\", \"2008\", \"2009\", \"2010\", \"2011\", \"2012\" ] }\n"
+              "        BarSet { label: \"Bob\"; values: [2, 2, 3, 4, 5, 6] }\n"
+              "        BarSet { label: \"Susan\"; values: [5, 1, 2, 4, 1, 7] }\n"
+              "        BarSet { label: \"James\"; values: [3, 5, 8, 13, 5, 8] }\n"
+              "    }\n"
+              "}\n"
+            ) );
             break;
           }
           default:
@@ -456,9 +450,37 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addFieldButton );
       expressionWidgetBox->layout()->addWidget( editExpressionButton );
-      expressionWidgetBox->layout()->addWidget( editExpressionButton );
       layout->addWidget( qmlCodeBox );
       layout->addWidget( qmlCode );
+
+      QTextEdit *errorFeedbackWidget = new QTextEdit();
+      errorFeedbackWidget->setMaximumHeight( 90 );
+      layout->addWidget( errorFeedbackWidget );
+
+      //update preview on text change
+      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature, errorFeedbackWidget] {
+        qmlWrapper->setQmlCode( qmlCode->text() );
+        qmlWrapper->reinitWidget();
+        qmlWrapper->setFeature( previewFeature );
+        if ( QQuickWidget *qmlWidget = dynamic_cast<QQuickWidget *>( qmlWrapper->widget() ) )
+        {
+          const QList<QQmlError> errors = qmlWidget->errors();
+          if ( !errors.isEmpty() )
+          {
+            QStringList errorStrings;
+            for ( const QQmlError &error : errors )
+            {
+              errorStrings << u"%1:%2: %3"_s.arg( QString::number( error.line() ), QString::number( error.column() ), error.description() );
+            }
+            errorFeedbackWidget->setText( errorStrings.join( "\n" ) );
+          }
+          else
+          {
+            errorFeedbackWidget->setText( QObject::tr( "Valid code" ) );
+          }
+        }
+      } );
+
       QScrollArea *qmlPreviewBox = new QgsScrollArea();
       qmlPreviewBox->setMinimumWidth( 200 );
       qmlPreviewBox->setWidget( qmlWrapper->widget() );
@@ -473,9 +495,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] {
-        QgsHelp::openHelp( u"working_with_vector/vector_properties.html#other-widgets"_s );
-      } );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] { QgsHelp::openHelp( u"working_with_vector/vector_properties.html#other-widgets"_s ); } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -547,7 +567,8 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       } );
 
       connect( editExpressionButton, &QAbstractButton::clicked, this, [this, htmlCode] {
-        QString expression = QgsExpressionFinder::findAndSelectActiveExpression( htmlCode, u"<script>\\s*document\\.write\\(\\s*expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)\\s*\\)\\s*;?\\s*</script>"_s );
+        QString expression
+          = QgsExpressionFinder::findAndSelectActiveExpression( htmlCode, u"<script>\\s*document\\.write\\(\\s*expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)\\s*\\)\\s*;?\\s*</script>"_s );
         expression.replace( "\\\""_L1, "\""_L1 );
         QgsExpressionContext context = createExpressionContext();
         QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, u"generic"_s, context );
@@ -585,9 +606,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] {
-        QgsHelp::openHelp( u"working_with_vector/vector_properties.html#other-widgets"_s );
-      } );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] { QgsHelp::openHelp( u"working_with_vector/vector_properties.html#other-widgets"_s ); } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -678,9 +697,9 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       expressionWidgetBox->layout()->addWidget( editExpressionButton );
       layout->addWidget( text );
       QScrollArea *textPreviewBox = new QgsScrollArea();
-      textPreviewBox->setLayout( new QGridLayout );
+      textPreviewBox->setWidgetResizable( true );
       textPreviewBox->setMinimumWidth( 200 );
-      textPreviewBox->layout()->addWidget( textWrapper->widget() );
+      textPreviewBox->setWidget( textWrapper->widget() );
       //emit to load preview for the first time
       emit text->textChanged();
       textSplitter->addWidget( textPreviewBox );
@@ -692,9 +711,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] {
-        QgsHelp::openHelp( u"working_with_vector/vector_properties.html#other-widgets"_s );
-      } );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] { QgsHelp::openHelp( u"working_with_vector/vector_properties.html#other-widgets"_s ); } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -735,9 +752,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] {
-        QgsHelp::openHelp( u"working_with_vector/vector_properties.html#other-widgets"_s );
-      } );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] { QgsHelp::openHelp( u"working_with_vector/vector_properties.html#other-widgets"_s ); } );
 
       mainLayout->addWidget( buttonBox );
 

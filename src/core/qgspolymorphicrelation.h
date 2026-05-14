@@ -60,7 +60,6 @@ class CORE_EXPORT QgsPolymorphicRelation
     Q_PROPERTY( bool isValid READ isValid )
 
   public:
-
     /**
      * Default constructor. Creates an invalid relation.
      */
@@ -189,6 +188,7 @@ class CORE_EXPORT QgsPolymorphicRelation
 #ifndef SIP_RUN
     QList< QgsRelation::FieldPair > fieldPairs() const;
 #else
+    // clang-format off
     QMap< QString, QString > fieldPairs() const;
     % MethodCode
     const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
@@ -198,6 +198,7 @@ class CORE_EXPORT QgsPolymorphicRelation
       sipRes->insert( pair.first, pair.second );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -297,7 +298,6 @@ class CORE_EXPORT QgsPolymorphicRelation
     QExplicitlySharedDataPointer<QgsPolymorphicRelationPrivate> d;
 
     QgsRelationContext mContext;
-
 };
 
 // Register QgsPolymorphicRelation for usage with QVariant

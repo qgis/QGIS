@@ -10,7 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsFillSymbol,
@@ -23,16 +24,14 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerElevationProperties,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsVectorLayerElevationProperties(QgisTestCase):
-
     def testBasic(self):
         props = QgsVectorLayerElevationProperties(None)
         self.assertEqual(props.zScale(), 1)

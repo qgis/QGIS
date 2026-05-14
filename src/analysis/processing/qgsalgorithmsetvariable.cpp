@@ -19,6 +19,10 @@
 
 #include "qgsexpressioncontextutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSetProjectVariableAlgorithm::name() const
@@ -28,9 +32,7 @@ QString QgsSetProjectVariableAlgorithm::name() const
 
 Qgis::ProcessingAlgorithmFlags QgsSetProjectVariableAlgorithm::flags() const
 {
-  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox
-         | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging
-         | Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool;
+  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging | Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool;
 }
 
 QString QgsSetProjectVariableAlgorithm::displayName() const

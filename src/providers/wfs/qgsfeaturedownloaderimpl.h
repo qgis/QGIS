@@ -119,9 +119,7 @@ class QgsFeatureDownloaderImpl
   {                                                                                                                                                                 \
     if ( requestMadeFromMainThread )                                                                                                                                \
     {                                                                                                                                                               \
-      auto resumeMainThread = [this]() {                                                                                                                            \
-        emitResumeMainThread();                                                                                                                                     \
-      };                                                                                                                                                            \
+      auto resumeMainThread = [this]() { emitResumeMainThread(); };                                                                                                 \
       QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred, this, resumeMainThread, Qt::DirectConnection );         \
       QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection ); \
     }                                                                                                                                                               \
@@ -134,15 +132,12 @@ class QgsFeatureDownloaderImpl
     QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE( requestMadeFromMainThread );                                                                        \
     if ( requestMadeFromMainThread )                                                                                                                      \
     {                                                                                                                                                     \
-      auto resumeMainThread = [this]() {                                                                                                                  \
-        emitResumeMainThread();                                                                                                                           \
-      };                                                                                                                                                  \
+      auto resumeMainThread = [this]() { emitResumeMainThread(); };                                                                                       \
       QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred, this, resumeMainThread, Qt::DirectConnection ); \
     }                                                                                                                                                     \
   } while ( false )
 #else
-#define QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread ) \
-  QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE( requestMadeFromMainThread )
+#define QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread ) QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE( requestMadeFromMainThread )
 #endif
 
 // Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
@@ -160,11 +155,20 @@ class QgsFeatureDownloaderImpl
   } while ( 0 )
 
 // Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
-#define DEFINE_FEATURE_DOWNLOADER_IMPL_SLOTS                      \
-protected:                                                        \
-  void emitDoStop() override { emit doStop(); }                   \
-  void setStopFlag() { QgsFeatureDownloaderImpl::setStopFlag(); } \
-  void stop() { QgsFeatureDownloaderImpl::stop(); }
+#define DEFINE_FEATURE_DOWNLOADER_IMPL_SLOTS \
+protected:                                   \
+  void emitDoStop() override                 \
+  {                                          \
+    emit doStop();                           \
+  }                                          \
+  void setStopFlag()                         \
+  {                                          \
+    QgsFeatureDownloaderImpl::setStopFlag(); \
+  }                                          \
+  void stop()                                \
+  {                                          \
+    QgsFeatureDownloaderImpl::stop();        \
+  }
 
 #define CREATE_PROGRESS_TASK( actual_downloader_impl_class )                                                            \
   do                                                                                                                    \

@@ -25,7 +25,10 @@
 #include "qgspolygon.h"
 #include "qgsprocessingparametermeshdataset.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

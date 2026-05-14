@@ -22,7 +22,6 @@ items.
 #include "qgsbrowserproxymodel.h"
 %End
   public:
-
     enum FilterSyntax /BaseType=IntEnum/
     {
       Normal,
@@ -196,7 +195,6 @@ Sets show layers to ``showLayers``
 %End
 
   protected:
-
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
 

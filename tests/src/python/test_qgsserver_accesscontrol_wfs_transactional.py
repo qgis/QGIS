@@ -12,8 +12,8 @@ __author__ = "Stephane Brunner"
 __date__ = "28/08/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.testing import unittest
-from qgis.core import QgsProject, QgsVectorLayer, QgsGeometry, QgsOgcUtils
+from osgeo import ogr
+from qgis.core import QgsGeometry, QgsOgcUtils, QgsProject, QgsVectorLayer
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
@@ -21,9 +21,9 @@ from qgis.server import (
     QgsServerFilter,
     QgsServerRequest,
 )
-from test_qgsserver_accesscontrol import XML_NS, TestQgsServerAccessControl
+from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
-from osgeo import ogr
+from test_qgsserver_accesscontrol import XML_NS, TestQgsServerAccessControl
 
 WFS_TRANSACTION_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:Transaction {xml_ns}>
@@ -102,7 +102,6 @@ WFS_TRANSACTION_DELETE = """<?xml version="1.0" encoding="UTF-8"?>
 
 
 class TestQgsServerAccessControlWFSTransactional(TestQgsServerAccessControl):
-
     @classmethod
     def project_file(cls):
         return "project_shp.qgs"

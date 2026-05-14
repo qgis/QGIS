@@ -46,7 +46,6 @@ namespace Qt3DRender
 class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
 {
     Q_OBJECT
-    Q_PROPERTY( Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged )
 
   public:
     /**
@@ -57,27 +56,31 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
 
     Qt3DRender::QAbstractTexture *texture() const;
 
+    /**
+     * When instancing is enabled, the vertex shader uses per-instance
+     * translation, rotation, and scale attributes for GPU instancing.
+     */
+    void setInstancingEnabled( bool enabled );
+
   public slots:
 
     /**
      * Sets the diffuse component of the material.
      * Ownership is transferred to the material.
+     *
+     * Must be explicitly set to SRGB format.
      */
     void setTexture( Qt3DRender::QAbstractTexture *texture );
 
-  signals:
-    void textureChanged( Qt3DRender::QAbstractTexture *texture );
-
   private:
     void init();
-
-    void handleTextureChanged( const QVariant &var );
 
     Qt3DRender::QParameter *mTextureParameter = nullptr;
     Qt3DRender::QTechnique *mGL3Technique = nullptr;
     Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
     Qt3DRender::QShaderProgram *mGL3Shader = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
+    bool mInstancingEnabled = false;
 };
 
 ///@endcond PRIVATE

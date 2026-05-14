@@ -17,12 +17,14 @@
 #include "qgsabstractprofilesource.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsprofilesourceregistry.cpp"
 
-QgsProfileSourceRegistry::QgsProfileSourceRegistry()
-{
+using namespace Qt::StringLiterals;
 
-}
+QgsProfileSourceRegistry::QgsProfileSourceRegistry()
+{}
 
 QgsProfileSourceRegistry::~QgsProfileSourceRegistry()
 {
@@ -36,7 +38,6 @@ QList< QgsAbstractProfileSource * > QgsProfileSourceRegistry::profileSources() c
 
 bool QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *profileSource )
 {
-
   if ( mSources.contains( profileSource ) )
   {
     return false;

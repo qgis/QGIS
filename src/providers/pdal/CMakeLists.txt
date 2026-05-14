@@ -170,6 +170,7 @@ set(PDAL_WRENCH_SRCS
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/classify_ground.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/filter_noise.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/height_above_ground.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/compare.cpp
 
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/tile.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/BufferCache.cpp
@@ -225,12 +226,14 @@ if (PDAL_2_5_OR_HIGHER)
 
   target_include_directories(pdal_wrench PRIVATE
     ${CMAKE_SOURCE_DIR}/external
+    ${LIBZIP_INCLUDE_DIRS}
   )
 
   target_link_libraries (pdal_wrench PRIVATE
     ${PDAL_LIBRARIES}
     GDAL::GDAL
     Threads::Threads
+    ${LIBZIP_LIBRARY}
   )
 
   install(TARGETS pdal_wrench

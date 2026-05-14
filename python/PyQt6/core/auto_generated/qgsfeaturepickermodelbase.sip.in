@@ -23,7 +23,6 @@ Features are fetched asynchronously.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       IdentifierValue,
@@ -346,7 +345,6 @@ Emitted when the fetching limit for the feature request changes
 
 
   protected:
-
     QVariant extraIdentifierValue() const;
 %Docstring
 Allows specifying one value that does not need to match the filter

@@ -23,15 +23,17 @@
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 QgsLayoutItemUndoCommand::QgsLayoutItemUndoCommand( QgsLayoutItem *item, const QString &text, int id, QUndoCommand *parent )
   : QgsAbstractLayoutUndoCommand( text, id, parent )
   , mItemUuid( item->uuid() )
   , mLayout( item->layout() )
   , mItemType( item->type() )
-{
-
-}
+{}
 
 bool QgsLayoutItemUndoCommand::mergeWith( const QUndoCommand *command )
 {

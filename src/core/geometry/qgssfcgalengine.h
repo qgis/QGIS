@@ -19,7 +19,6 @@
 #ifndef QGSSFCGALENGINE_H
 #define QGSSFCGALENGINE_H
 
-#define SIP_NO_FILE
 
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <source_location>
@@ -28,18 +27,25 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmatrix4x4.h"
 #include "qgspoint.h"
 #include "qgsvector3d.h"
 
-#include <QMatrix4x4>
+#define SIP_NO_FILE
 
 class QgsGeometry;
 class QgsSfcgalGeometry;
 
 /// compute SFCGAL integer version from major, minor and patch number
+/// This is not available before SFCGAL version 2.3.
+#ifndef SFCGAL_MAKE_VERSION
 #define SFCGAL_MAKE_VERSION( major, minor, patch ) ( ( major ) * 10000 + ( minor ) * 100 + ( patch ) )
+#endif
 /// compute current SFCGAL integer version
+/// This is not available before SFCGAL version 2.3.
+#ifndef SFCGAL_VERSION_NUM
 #define SFCGAL_VERSION_NUM SFCGAL_MAKE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
+#endif
 
 /// check if \a ptr is not null else add stacktrace entry and return the \a defaultObj
 #define CHECK_NOT_NULL( ptr, defaultObj )                                              \
@@ -65,13 +71,12 @@ class QgsSfcgalGeometry;
   }
 
 /// check if no error has been caught else add stacktrace entry, log the stacktrace and throw an exception
-#define THROW_ON_ERROR(errorMsg)                                       \
+#define THROW_ON_ERROR( errorMsg )                                     \
   if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ) ) )    \
   {                                                                    \
     QgsDebugError( sfcgal::errorHandler()->getFullText() );            \
     throw QgsSfcgalException( sfcgal::errorHandler()->getFullText() ); \
   }
-
 
 
 /**
@@ -88,8 +93,8 @@ namespace sfcgal
   //! Class used as SFCGAL geometry deleter.
   struct GeometryDeleter
   {
-    //! Destroys the SFCGAL geometry \a geom, using the static QGIS SFCGAL context.
-    void CORE_EXPORT operator()( geometry *geom ) const;
+      //! Destroys the SFCGAL geometry \a geom, using the static QGIS SFCGAL context.
+      void CORE_EXPORT operator()( geometry *geom ) const;
   };
 
   //! Unique SFCGAL geometry pointer.
@@ -119,8 +124,8 @@ namespace sfcgal
   //! Class used as SFCGAL primitive deleter.
   struct PrimitiveDeleter
   {
-    //! Destroys the SFCGAL primitive \a prim, using the static QGIS SFCGAL context.
-    void CORE_EXPORT operator()( primitive *prim ) const;
+      //! Destroys the SFCGAL primitive \a prim, using the static QGIS SFCGAL context.
+      void CORE_EXPORT operator()( primitive *prim ) const;
   };
 
   //! Unique SFCGAL primitive pointer.
@@ -134,9 +139,9 @@ namespace sfcgal
   //! Hold primitive parameter description
   struct PrimitiveParameterDesc
   {
-    std::string name;
-    std::string type;
-    std::variant<int, double, QgsPoint, QgsVector3D> value;
+      std::string name;
+      std::string type;
+      std::variant<int, double, QgsPoint, QgsVector3D> value;
   };
 
   //! Used by json lib to convert to json
@@ -203,9 +208,9 @@ namespace sfcgal
   CORE_EXPORT ErrorHandler *errorHandler();
 
   //! Shortcut for SFCGAL function definition.
-  using func_geomgeom_to_geom = sfcgal_geometry_t *( * )( const sfcgal_geometry_t *, const sfcgal_geometry_t * );
+  using func_geomgeom_to_geom = sfcgal_geometry_t *( * ) ( const sfcgal_geometry_t *, const sfcgal_geometry_t * );
   //! Shortcut for SFCGAL function definition.
-  using func_geom_to_geom = sfcgal_geometry_t *( * )( const sfcgal_geometry_t * );
+  using func_geom_to_geom = sfcgal_geometry_t *( * ) ( const sfcgal_geometry_t * );
 } // namespace sfcgal
 
 /**
@@ -217,7 +222,6 @@ namespace sfcgal
 class CORE_EXPORT QgsSfcgalEngine
 {
   public:
-
     /**
      * Creates a QgsAbstractGeometry from an internal SFCGAL geometry (from SFCGAL library).
      *
@@ -426,6 +430,23 @@ class CORE_EXPORT QgsSfcgalEngine
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static bool isSimple( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+
+    /**
+     * Returns the geometry component of a geometry collection at the specified index.
+     *
+     * - For geometries composed of multiple elements (e.g. GeometryColletion, MultiPoint,
+     *   MultiLineString, MultiPolygon), this method returns the sub-geometry at the given index.
+     * - For singular geometries, return the geometry itself when index is 0.
+     *
+     * \param geom geometry to perform the operation
+     * \param index index of geometry to return
+     * \param errorMsg Error message returned by SFGCAL
+     * \return the sub-geometry or a nullptr if the operation failed
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom geometryN( const sfcgal::geometry *geom, unsigned int index, QString *errorMsg = nullptr );
 
     /**
      * Calculate the boundary of \a geom
@@ -664,9 +685,37 @@ class CORE_EXPORT QgsSfcgalEngine
      * The output is a 2D multilinestring
      *
      * \param geom geometry to perform the operation
+     * \param extendToEdges whether to extend the medial axis endpoints to the polygon boundary (since QGIS 4.2).
+     *        This parameter has no effect when using SFCGAL versions earlier than 2.3.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, bool extendToEdges = false, QString *errorMsg = nullptr );
+
+    /**
+     * Converts a PolyhedralSurface geometry to a Solid geometry.
+     *
+     * The input geometry must be of type PolyhedralSurface. If the conversion fails, a null
+     * shared pointer is returned.
+     *
+     * \param geom the input geometry
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom toSolid( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+    /**
+     * Converts a Solid geometry to a PolyhedralSurface geometry.
+     *
+     * The input geometry must be of type Solid. If the conversion fails, a null
+     * shared pointer is returned.
+     *
+     * \param geom the input geometry
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom toPolyhedralSurface( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 
@@ -677,7 +726,23 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param mat 4x4 transformation matrix
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom transform( const sfcgal::geometry *geom, const QMatrix4x4 &mat, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom transform( const sfcgal::geometry *geom, const QgsMatrix4x4 &mat, QString *errorMsg = nullptr );
+
+    /**
+     * Splits the given geometry with a plane defined by a point \a planePoint and a normal vector \a planeNormal.
+     *
+     * \param geom the 3D geometry on which to perform the operation: a PolyhedralSurface or a TIN
+     * \param planePoint a point belonging to the splitting plane
+     * \param planeNormal the normal vector of the splitting plane
+     * \param closeGeometries If true, ensures resulting geometries are closed.
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \return A GeometryCollection containing the split geometries, or an empty
+     *         GeometryCollection if the plane does not intersect the geometry
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom split3D( const sfcgal::geometry *geom, const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries, QString *errorMsg = nullptr );
 
     /**
      * Creates a SFGAL geometry from a shared SFCGAL primitive (from SFCGAL library).
@@ -709,7 +774,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param mat a transformation matrix
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom primitiveAsPolyhedral( const sfcgal::primitive *prim, const QMatrix4x4 &mat = QMatrix4x4(), QString *errorMsg = nullptr );
+    static sfcgal::shared_geom primitiveAsPolyhedral( const sfcgal::primitive *prim, const QgsMatrix4x4 &mat = QgsMatrix4x4(), QString *errorMsg = nullptr );
 
     /**
      * Checks if \a primA and \a primB are equal.
@@ -726,23 +791,25 @@ class CORE_EXPORT QgsSfcgalEngine
      * Computes the area of \a prim.
      *
      * \param prim primitive to perform the operation
+     * \param primTransform a transformation matrix
      * \param withDiscretization If true, the area is computed
      * using the real discretization with radial segments. If false, the area is
      * computed for a perfect primitive. Defaults to false.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static double primitiveArea( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
+    static double primitiveArea( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform = QgsMatrix4x4(), bool withDiscretization = false, QString *errorMsg = nullptr );
 
     /**
      * Computes the volume of \a prim.
      *
      * \param prim primitive to perform the operation
+     * \param primTransform a transformation matrix
      * \param withDiscretization If true, the volume is computed
      * using the real discretization with radial segments. If false, the volume is
      * computed for a perfect primitive. Defaults to false.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static double primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
+    static double primitiveVolume( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform = QgsMatrix4x4(), bool withDiscretization = false, QString *errorMsg = nullptr );
 
     /**
      * Returns the list of available parameter description for this primitive.
@@ -784,8 +851,7 @@ class SFCGALException : public std::runtime_error
   public:
     explicit SFCGALException( const QString &message )
       : std::runtime_error( message.toUtf8().constData() )
-    {
-    }
+    {}
 };
 
 /// @endcond

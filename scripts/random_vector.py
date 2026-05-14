@@ -7,7 +7,6 @@ import os
 import random
 import string
 import sys
-
 from optparse import OptionParser
 
 from osgeo import ogr

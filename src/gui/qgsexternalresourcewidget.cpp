@@ -33,10 +33,13 @@
 #include <QMimeType>
 #include <QMovie>
 #include <QSettings>
+#include <QString>
 #include <QToolButton>
 #include <QVariant>
 
 #include "moc_qgsexternalresourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   : QWidget( parent )
@@ -400,9 +403,7 @@ void QgsExternalResourceWidget::onFetchFinished()
   }
   else if ( content == mContent && mContent->status() == Qgis::ContentStatus::Finished )
   {
-    const QString filePath = mDocumentViewerContent == Web
-                               ? QUrl::fromLocalFile( mContent->filePath() ).toString()
-                               : mContent->filePath();
+    const QString filePath = mDocumentViewerContent == Web ? QUrl::fromLocalFile( mContent->filePath() ).toString() : mContent->filePath();
 
     updateDocumentContent( filePath );
   }

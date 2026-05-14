@@ -53,7 +53,15 @@ Dialog for selecting provider sublayers.
 #include "qgsprovidersublayersdialog.h"
 %End
   public:
-    QgsProviderSublayersDialog( const QString &uri, const QString &providerKey, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails = QList<QgsProviderSublayerDetails>(), const QList<Qgis::LayerType> &acceptableTypes = QList<Qgis::LayerType>(), QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsProviderSublayersDialog(
+      const QString &uri,
+      const QString &providerKey,
+      const QString &filePath,
+      const QList<QgsProviderSublayerDetails> initialDetails = QList<QgsProviderSublayerDetails>(),
+      const QList<Qgis::LayerType> &acceptableTypes = QList<Qgis::LayerType>(),
+      QWidget *parent /TransferThis/ = 0,
+      Qt::WindowFlags fl = Qt::WindowFlags()
+    );
 %Docstring
 Constructor.
 %End

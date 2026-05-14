@@ -34,9 +34,12 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QProgressDialog>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgslayoutpicturewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   : QgsLayoutItemBaseWidget( nullptr, picture )
@@ -65,6 +68,9 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mAnchorPointComboBox->addItem( tr( "Bottom Center" ), QgsLayoutItem::LowerMiddle );
   mAnchorPointComboBox->addItem( tr( "Bottom Right" ), QgsLayoutItem::LowerRight );
 
+  mClipItemComboBox->setCurrentLayout( picture->layout() );
+  mClipItemComboBox->setItemFlags( QgsLayoutItem::FlagProvidesClipPath );
+
   connect( mPictureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mPictureRotationSpinBox_valueChanged );
   connect( mRotationFromComposerMapCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutPictureWidget::mRotationFromComposerMapCheckBox_stateChanged );
   connect( mResizeModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPictureWidget::mResizeModeComboBox_currentIndexChanged );
@@ -79,6 +85,18 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsLayoutPictureWidget::setSvgDynamicParameters );
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
+
+  connect( mClipToItemCheckBox, &QGroupBox::toggled, this, [this]( bool active ) {
+    mPicture->beginCommand( tr( "Toggle Picture Clipping" ) );
+    mPicture->setClipToItem( active );
+    mPicture->endCommand();
+  } );
+
+  connect( mClipItemComboBox, &QgsLayoutItemComboBox::itemChanged, this, [this]( QgsLayoutItem *item ) {
+    mPicture->beginCommand( tr( "Change Picture Clipping Item" ) );
+    mPicture->setClippingItem( item );
+    mPicture->endCommand();
+  } );
 
   mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastComposerPictureDir"_s );
 
@@ -279,6 +297,8 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mFillColorButton->blockSignals( true );
     mStrokeColorButton->blockSignals( true );
     mStrokeWidthSpinBox->blockSignals( true );
+    mClipToItemCheckBox->blockSignals( true );
+    mClipItemComboBox->blockSignals( true );
 
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
@@ -337,6 +357,9 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mStrokeColorButton->setColor( mPicture->svgStrokeColor() );
     mStrokeWidthSpinBox->setValue( mPicture->svgStrokeWidth() );
 
+    mClipToItemCheckBox->setChecked( mPicture->clipToItem() );
+    mClipItemComboBox->setItem( mPicture->clippingItem() );
+
     mRotationFromComposerMapCheckBox->blockSignals( false );
     mPictureRotationSpinBox->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
@@ -347,6 +370,8 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mFillColorButton->blockSignals( false );
     mStrokeColorButton->blockSignals( false );
     mStrokeWidthSpinBox->blockSignals( false );
+    mClipToItemCheckBox->blockSignals( false );
+    mClipItemComboBox->blockSignals( false );
 
     populateDataDefinedButtons();
   }
@@ -364,7 +389,24 @@ void QgsLayoutPictureWidget::updateSvgParamGui( bool resetValues )
   QColor defaultFill, defaultStroke;
   double defaultStrokeWidth, defaultFillOpacity, defaultStrokeOpacity;
   bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultStrokeColor, hasDefaultStrokeWidth, hasDefaultStrokeOpacity;
-  QgsApplication::svgCache()->containsParams( picturePath, hasFillParam, hasDefaultFillColor, defaultFill, hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity, hasStrokeParam, hasDefaultStrokeColor, defaultStroke, hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth, hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
+  QgsApplication::svgCache()->containsParams(
+    picturePath,
+    hasFillParam,
+    hasDefaultFillColor,
+    defaultFill,
+    hasFillOpacityParam,
+    hasDefaultFillOpacity,
+    defaultFillOpacity,
+    hasStrokeParam,
+    hasDefaultStrokeColor,
+    defaultStroke,
+    hasStrokeWidthParam,
+    hasDefaultStrokeWidth,
+    defaultStrokeWidth,
+    hasStrokeOpacityParam,
+    hasDefaultStrokeOpacity,
+    defaultStrokeOpacity
+  );
 
   if ( resetValues )
   {

@@ -30,6 +30,8 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 
+#define SIP_NO_FILE
+
 class QgsProfileRequest;
 class QgsCurve;
 class QgsVectorLayer;
@@ -39,8 +41,6 @@ class QgsGeos;
 class QgsLineString;
 class QgsPolygon;
 class QgsProfileSnapContext;
-
-#define SIP_NO_FILE
 
 
 /**
@@ -53,15 +53,14 @@ class QgsProfileSnapContext;
 class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
   public:
-
     struct Feature
     {
-      //! Original feature ID
-      QgsFeatureId featureId;
-      //! Feature's geometry with any terrain height adjustment and extrusion applied
-      QgsGeometry geometry;
-      //! Cross section distance vs height geometry for feature
-      QgsGeometry crossSectionGeometry;
+        //! Original feature ID
+        QgsFeatureId featureId;
+        //! Feature's geometry with any terrain height adjustment and extrusion applied
+        QgsGeometry geometry;
+        //! Cross section distance vs height geometry for feature
+        QgsGeometry crossSectionGeometry;
     };
 
     QHash< QgsFeatureId, QVector< Feature > > features;
@@ -87,10 +86,15 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
     QVector< QgsAbstractProfileResults::Feature > asIndividualFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const;
     QgsProfileSnapResult snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
-    void visitFeaturesAtPoint( const QgsProfilePoint &point, double maximumPointDistanceDelta, double maximumPointElevationDelta, double maximumSurfaceElevationDelta,
-                               const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor, bool visitWithin ) const;
-    void visitFeaturesInRange( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange,
-                               const std::function<void ( QgsFeatureId )> &visitor ) const;
+    void visitFeaturesAtPoint(
+      const QgsProfilePoint &point,
+      double maximumPointDistanceDelta,
+      double maximumPointElevationDelta,
+      double maximumSurfaceElevationDelta,
+      const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor,
+      bool visitWithin
+    ) const;
+    void visitFeaturesInRange( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const std::function<void( QgsFeatureId )> &visitor ) const;
 };
 
 
@@ -103,9 +107,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
  */
 class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
-
   public:
-
     /**
      * Constructor for QgsVectorLayerProfileGenerator.
      */
@@ -117,9 +119,9 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
+    QString type() const override;
 
   private:
-
     // We may need to split mProfileCurve into multiple parts, this will be
     // called for each part.
     bool generateProfileInner( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() );
@@ -185,6 +187,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     QgsCoordinateTransform mTargetToTerrainProviderTransform;
 
     std::unique_ptr< QgsVectorLayerProfileResults > mResults;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     bool mRespectLayerSymbology = true;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
@@ -194,7 +197,6 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     QPointer< QgsVectorLayer > mLayer;
 
     friend class QgsVectorLayerProfileResults;
-
 };
 
 #endif // QGSVECTORLAYERPROFILEGENERATOR_H

@@ -34,12 +34,13 @@
 
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgshanadataitemguiprovider.cpp"
 
-void QgsHanaDataItemGuiProvider::populateContextMenu(
-  QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context
-)
+using namespace Qt::StringLiterals;
+
+void QgsHanaDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
   if ( QgsHanaRootItem *rootItem = qobject_cast<QgsHanaRootItem *>( item ) )
   {
@@ -110,21 +111,6 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
 
     menu->addMenu( maintainMenu );
   }
-
-  if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
-  {
-    const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
-    if ( !layerInfo.isView )
-    {
-      QMenu *maintainMenu = new QMenu( tr( "Table Operations" ), menu );
-
-      QAction *actionRenameLayer = new QAction( tr( "Rename Table…" ), this );
-      connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
-      maintainMenu->addAction( actionRenameLayer );
-
-      menu->addMenu( maintainMenu );
-    }
-  }
 }
 
 bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
@@ -175,9 +161,7 @@ bool QgsHanaDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiCo
   return false;
 }
 
-bool QgsHanaDataItemGuiProvider::handleDrop(
-  QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction
-)
+bool QgsHanaDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction )
 {
   if ( QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
   {
@@ -312,7 +296,9 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
         }
       }
 
-      if ( QMessageBox::question( nullptr, caption, tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( schemaName, tableNames ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      if ( QMessageBox::
+             question( nullptr, caption, tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( schemaName, tableNames ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+           != QMessageBox::Yes )
         return;
     }
 
@@ -365,39 +351,6 @@ void QgsHanaDataItemGuiProvider::renameSchema( QgsHanaSchemaItem *schemaItem, Qg
   else
   {
     notify( caption, tr( "Unable to rename schema '%1'\n%2" ).arg( schemaName, errorMsg ), context, Qgis::MessageLevel::Warning );
-  }
-}
-
-void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDataItemGuiContext context )
-{
-  const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
-  const QString caption = tr( "Rename Table" );
-  QgsNewNameDialog dlg( tr( "table '%1.%2'" ).arg( layerInfo.schemaName, layerInfo.tableName ), layerInfo.tableName );
-  dlg.setWindowTitle( caption );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == layerInfo.tableName )
-    return;
-
-  const QString newLayerName = dlg.name();
-  QString errorMsg;
-  try
-  {
-    const QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
-    providerConn.renameVectorTable( layerInfo.schemaName, layerInfo.tableName, newLayerName );
-  }
-  catch ( const QgsProviderConnectionException &ex )
-  {
-    errorMsg = ex.what();
-  }
-
-  if ( errorMsg.isEmpty() )
-  {
-    notify( caption, tr( "'%1' renamed successfully to '%2'." ).arg( layerInfo.tableName, newLayerName ), context, Qgis::MessageLevel::Success );
-    if ( layerItem->parent() )
-      layerItem->parent()->refresh();
-  }
-  else
-  {
-    notify( caption, tr( "Unable to rename '%1'\n%2" ).arg( layerInfo.tableName, errorMsg ), context, Qgis::MessageLevel::Warning );
   }
 }
 
@@ -468,9 +421,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
         QVariantMap providerOptions;
         const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
 
-        std::unique_ptr<QgsVectorLayerExporterTask> exportTask(
-          new QgsVectorLayerExporterTask( srcLayer, destUri, u"hana"_s, srcLayer->crs(), providerOptions, owner )
-        );
+        auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri, u"hana"_s, srcLayer->crs(), providerOptions, owner );
 
         // when export is successful:
         connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [connectionItemPointer, toSchema]() {
@@ -485,7 +436,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
           {
             QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
             output->setTitle( tr( "Import to SAP HANA database" ) );
-            output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+            output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
             output->showMessage();
           }
           if ( connectionItemPointer )
@@ -511,7 +462,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to SAP HANA database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
 
@@ -539,7 +490,8 @@ bool QgsHanaDataItemGuiProvider::handleDropUri( QgsHanaConnectionItem *connectio
     }
   };
 
-  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "SAP HANA Import" ), tr( "Import to SAP HANA database" ), QVariantMap(), onSuccess, onFailure, this );
+  return QgsDataItemGuiProviderUtils::
+    handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "SAP HANA Import" ), tr( "Import to SAP HANA database" ), QVariantMap(), onSuccess, onFailure, this );
 }
 
 void QgsHanaDataItemGuiProvider::handleImportVector( QgsHanaConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context )
@@ -566,5 +518,6 @@ void QgsHanaDataItemGuiProvider::handleImportVector( QgsHanaConnectionItem *conn
     }
   };
 
-  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "SAP HANA Import" ), tr( "Import to SAP HANA database" ), QVariantMap(), onSuccess, onFailure, this );
+  QgsDataItemGuiProviderUtils::
+    handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "SAP HANA Import" ), tr( "Import to SAP HANA database" ), QVariantMap(), onSuccess, onFailure, this );
 }

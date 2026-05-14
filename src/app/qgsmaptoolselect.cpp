@@ -77,7 +77,11 @@ void QgsMapToolSelect::keyPressEvent( QKeyEvent *e )
       case Qt::Key_Alt:
       case Qt::Key_Meta:
         //note -- if ctrl and shift are already depressed, pressing alt reports the "meta" key eventZ
-        modifiersChanged( e->modifiers() & Qt::ControlModifier || e->key() == Qt::Key_Control, e->modifiers() & Qt::ShiftModifier || e->key() == Qt::Key_Shift, e->modifiers() & Qt::AltModifier || e->key() == Qt::Key_Alt || ( e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier && e->key() == Qt::Key_Meta ) );
+        modifiersChanged(
+          e->modifiers() & Qt::ControlModifier || e->key() == Qt::Key_Control,
+          e->modifiers() & Qt::ShiftModifier || e->key() == Qt::Key_Shift,
+          e->modifiers() & Qt::AltModifier || e->key() == Qt::Key_Alt || ( e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier && e->key() == Qt::Key_Meta )
+        );
         break;
 
       default:
@@ -101,7 +105,11 @@ void QgsMapToolSelect::keyReleaseEvent( QKeyEvent *e )
       case Qt::Key_Control:
       case Qt::Key_Alt:
       case Qt::Key_Meta:
-        modifiersChanged( e->modifiers() & Qt::ControlModifier && e->key() != Qt::Key_Control, e->modifiers() & Qt::ShiftModifier && e->key() != Qt::Key_Shift, e->modifiers() & Qt::AltModifier && e->key() != Qt::Key_Alt && !( e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier && e->key() == Qt::Key_Meta ) );
+        modifiersChanged(
+          e->modifiers() & Qt::ControlModifier && e->key() != Qt::Key_Control,
+          e->modifiers() & Qt::ShiftModifier && e->key() != Qt::Key_Shift,
+          e->modifiers() & Qt::AltModifier && e->key() != Qt::Key_Alt && !( e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier && e->key() == Qt::Key_Meta )
+        );
         break;
 
       default:
@@ -166,8 +174,7 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
 
   const QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mapPoint, mCanvas, layer );
 
-  QgsMapToolSelectUtils::QgsMapToolSelectMenuActions *menuActions
-    = new QgsMapToolSelectUtils::QgsMapToolSelectMenuActions( mCanvas, vlayer, behavior, QgsGeometry::fromRect( r ), menu );
+  QgsMapToolSelectUtils::QgsMapToolSelectMenuActions *menuActions = new QgsMapToolSelectUtils::QgsMapToolSelectMenuActions( mCanvas, vlayer, behavior, QgsGeometry::fromRect( r ), menu );
 
   menuActions->populateMenu( menu );
 

@@ -27,7 +27,6 @@ but rather accessed through
 #include "qgsprofilesourceregistry.h"
 %End
   public:
-
     QgsProfileSourceRegistry();
 %Docstring
 Constructor - creates a registry of profile sources

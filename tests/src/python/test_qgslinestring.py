@@ -10,17 +10,16 @@ __author__ = "Loïc Bartoletti"
 __date__ = "12/09/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
-import unittest
 import math
+import unittest
 
 from qgis.core import Qgis, QgsLineString, QgsPoint, QgsVertexId
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLineString(QgisTestCase):
-
     def testConstruct(self):
         # With points
         line = QgsLineString(QgsPoint(1, 2), QgsPoint(3, 4))

@@ -61,8 +61,9 @@ class CORE_EXPORT QgsMeshDatasetIndex
     //! Returns whether index is valid, ie at least groups is set
     bool isValid() const;
 
-    bool operator == ( QgsMeshDatasetIndex other ) const;
-    bool operator != ( QgsMeshDatasetIndex other ) const;
+    bool operator==( QgsMeshDatasetIndex other ) const;
+    bool operator!=( QgsMeshDatasetIndex other ) const;
+
   private:
     int mGroupIndex = -1;
     int mDatasetIndex = -1;
@@ -83,8 +84,7 @@ class CORE_EXPORT QgsMeshDatasetValue
 {
   public:
     //! Constructor for vector value
-    QgsMeshDatasetValue( double x,
-                         double y );
+    QgsMeshDatasetValue( double x, double y );
 
     //! Constructor for scalar value
     QgsMeshDatasetValue( double scalar );
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsMeshDatasetValue
     void setX( double x );
 
     //! Sets Y value
-    void setY( double y ) ;
+    void setY( double y );
 
     //! Returns magnitude of vector for vector data or scalar value for scalar data
     double scalar() const;
@@ -145,8 +145,8 @@ class CORE_EXPORT QgsMeshDataBlock
     enum DataType
     {
       ActiveFlagInteger, //!< Integer boolean flag whether face is active
-      ScalarDouble, //!< Scalar double values
-      Vector2DDouble, //!< Vector double pairs (x1, y1, x2, y2, ... )
+      ScalarDouble,      //!< Scalar double values
+      Vector2DDouble,    //!< Vector double pairs (x1, y1, x2, y2, ... )
     };
 
     //! Constructs an invalid block
@@ -361,7 +361,6 @@ class CORE_EXPORT QgsMesh3DDataBlock
 class CORE_EXPORT QgsMeshDatasetGroupMetadata
 {
   public:
-
     //! Location of where data is specified for datasets in the dataset group
     enum DataType
     {
@@ -388,16 +387,18 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      * \param extraOptions dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
      * \param uri The uri of the dataset
      */
-    QgsMeshDatasetGroupMetadata( const QString &name,
-                                 const QString uri,
-                                 bool isScalar,
-                                 DataType dataType,
-                                 double minimum,
-                                 double maximum,
-                                 int maximumVerticalLevels,
-                                 const QDateTime &referenceTime,
-                                 bool isTemporal,
-                                 const QMap<QString, QString> &extraOptions );
+    QgsMeshDatasetGroupMetadata(
+      const QString &name,
+      const QString uri,
+      bool isScalar,
+      DataType dataType,
+      double minimum,
+      double maximum,
+      int maximumVerticalLevels,
+      const QDateTime &referenceTime,
+      bool isTemporal,
+      const QMap<QString, QString> &extraOptions
+    );
 
     /**
      * Returns name of the dataset group
@@ -510,12 +511,7 @@ class CORE_EXPORT QgsMeshDatasetMetadata
      * \param maximum maximum value (magnitude for vectors) present among dataset values
      * \param maximumVerticalLevels maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
      */
-    QgsMeshDatasetMetadata( double time,
-                            bool isValid,
-                            double minimum,
-                            double maximum,
-                            int maximumVerticalLevels
-                          );
+    QgsMeshDatasetMetadata( double time, bool isValid, double minimum, double maximum, int maximumVerticalLevels );
 
     /**
      * Returns the time value for this dataset
@@ -563,7 +559,6 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 class CORE_EXPORT QgsMeshDataset
 {
   public:
-
     QgsMeshDataset() = default;
 
     virtual ~QgsMeshDataset() = default;
@@ -597,7 +592,6 @@ class CORE_EXPORT QgsMeshDataset
 class CORE_EXPORT QgsMeshDatasetGroup
 {
   public:
-
     /**
      * Type of the dataset group
      *
@@ -605,10 +599,10 @@ class CORE_EXPORT QgsMeshDatasetGroup
      */
     enum Type
     {
-      Unknown, //!< Generic type used for non typed dataset group
+      Unknown,    //!< Generic type used for non typed dataset group
       Persistent, //!< Dataset group store in a file
-      Memory, //!< Temporary dataset group in memory
-      Virtual, //!< Virtual Dataset group defined by a formula
+      Memory,     //!< Temporary dataset group in memory
+      Virtual,    //!< Virtual Dataset group defined by a formula
     };
 
     QgsMeshDatasetGroup() = default;
@@ -627,7 +621,7 @@ class CORE_EXPORT QgsMeshDatasetGroup
     QgsMeshDatasetGroupMetadata groupMetadata() const;
 
     //! Returns the metadata of the dataset with index \a datasetIndex
-    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const = 0 ;
+    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const = 0;
 
     //! Returns the count of datasets in the group
     virtual int datasetCount() const = 0;
@@ -719,10 +713,9 @@ class CORE_EXPORT QgsMeshDatasetGroup
  *
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
+class CORE_EXPORT QgsMeshMemoryDataset : public QgsMeshDataset
 {
   public:
-
     QgsMeshMemoryDataset() = default;
 
     QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
@@ -752,10 +745,9 @@ class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
  *
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
+class CORE_EXPORT QgsMeshMemoryDatasetGroup : public QgsMeshDatasetGroup
 {
   public:
-
     QgsMeshMemoryDatasetGroup() = default;
     //! Constructor with the \a name of the group
     QgsMeshMemoryDatasetGroup( const QString &name );
@@ -766,10 +758,10 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
     int datasetCount() const override;
     QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
     QgsMeshDataset *dataset( int index ) const override;
-    QgsMeshDatasetGroup::Type type() const override {return QgsMeshDatasetGroup::Memory;}
+    QgsMeshDatasetGroup::Type type() const override { return QgsMeshDatasetGroup::Memory; }
 
     //! Returns a invalid DOM element
-    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context )  const override;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
     //! Adds a memory dataset to the group
     void addDataset( std::shared_ptr<QgsMeshMemoryDataset> dataset );
@@ -791,18 +783,22 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
  *
  * \since QGIS 3.22
  */
-class QgsMeshVerticesElevationDataset: public QgsMeshDataset
+class QgsMeshVerticesElevationDataset : public QgsMeshDataset
 {
   public:
     //! Constructor
     QgsMeshVerticesElevationDataset( QgsMesh *mesh );
 
     QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
-    QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;;
-    QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;;
-    bool isActive( int ) const override {return true;};
-    QgsMeshDatasetMetadata metadata() const override;;
+    QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;
+    ;
+    QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;
+    ;
+    bool isActive( int ) const override { return true; };
+    QgsMeshDatasetMetadata metadata() const override;
+    ;
     int valuesCount() const override;
+
   private:
     QgsMesh *mMesh;
 };
@@ -823,11 +819,14 @@ class CORE_EXPORT QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGr
     QgsMeshVerticesElevationDatasetGroup( QString name, QgsMesh *mesh );
 
     void initialize() override;
-    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;;
-    int datasetCount() const override;;
-    QgsMeshDataset *dataset( int index ) const override;;
+    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
+    ;
+    int datasetCount() const override;
+    ;
+    QgsMeshDataset *dataset( int index ) const override;
+    ;
     QgsMeshDatasetGroup::Type type() const override;
-    QDomElement writeXml( QDomDocument &, const QgsReadWriteContext & ) const override {return QDomElement();};
+    QDomElement writeXml( QDomDocument &, const QgsReadWriteContext & ) const override { return QDomElement(); };
 
   private:
     std::unique_ptr<QgsMeshVerticesElevationDataset> mDataset;
@@ -865,7 +864,6 @@ class CORE_EXPORT QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGr
 class CORE_EXPORT QgsMeshDatasetGroupTreeItem
 {
   public:
-
     /**
      * Constructor for an empty dataset group tree item
      */
@@ -879,10 +877,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      * \param isVector whether the dataset group is a vector dataset group
      * \param index index of the dataset group
      */
-    QgsMeshDatasetGroupTreeItem( const QString &defaultName,
-                                 const QString &sourceName,
-                                 bool isVector,
-                                 int index );
+    QgsMeshDatasetGroupTreeItem( const QString &defaultName, const QString &sourceName, bool isVector, int index );
 
     /**
      * Constructor from a DOM element, constructs also the children
@@ -1087,7 +1082,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
 
     QgsMeshDatasetGroupTreeItem *searchItemBySourceName( const QString &sourceName ) const;
     QgsMeshDatasetGroupTreeItem *rootItem() const;
-    void freeAsDependency(); // cppcheck-suppress functionConst
+    void freeAsDependency();     // cppcheck-suppress functionConst
     void freeFromDependencies(); // cppcheck-suppress functionConst
 };
 

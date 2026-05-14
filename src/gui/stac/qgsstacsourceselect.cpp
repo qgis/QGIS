@@ -37,15 +37,18 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgsstacsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mStac( new QgsStacController )
+  , mStac( std::make_unique<QgsStacController>() )
   , mItemsModel( new QgsStacItemListModel( this ) )
 {
   setupUi( this );
@@ -65,9 +68,9 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 
   populateConnectionList();
 
-  connect( mStac, &QgsStacController::finishedStacObjectRequest, this, &QgsStacSourceSelect::onStacObjectRequestFinished );
-  connect( mStac, &QgsStacController::finishedItemCollectionRequest, this, &QgsStacSourceSelect::onItemCollectionRequestFinished );
-  connect( mStac, &QgsStacController::finishedCollectionsRequest, this, &QgsStacSourceSelect::onCollectionsRequestFinished );
+  connect( mStac.get(), &QgsStacController::finishedStacObjectRequest, this, &QgsStacSourceSelect::onStacObjectRequestFinished );
+  connect( mStac.get(), &QgsStacController::finishedItemCollectionRequest, this, &QgsStacSourceSelect::onItemCollectionRequestFinished );
+  connect( mStac.get(), &QgsStacController::finishedCollectionsRequest, this, &QgsStacSourceSelect::onCollectionsRequestFinished );
 
   mItemsView->setModel( mItemsModel );
   mItemsView->setItemDelegate( new QgsStacItemDelegate( this ) );
@@ -81,7 +84,7 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 
   connect( mFootprintsCheckBox, &QCheckBox::clicked, this, &QgsStacSourceSelect::showFootprints );
 
-  mParametersDialog = new QgsStacSearchParametersDialog( mStac, mapCanvas(), this );
+  mParametersDialog = new QgsStacSearchParametersDialog( mStac.get(), mapCanvas(), this );
 
   connect( mFiltersButton, &QToolButton::clicked, mParametersDialog, &QgsStacSearchParametersDialog::open );
   connect( mParametersDialog, &QgsStacSearchParametersDialog::finished, this, &QgsStacSourceSelect::onSearchParametersDialogClosed );
@@ -90,9 +93,7 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 }
 
 QgsStacSourceSelect::~QgsStacSourceSelect()
-{
-  delete mStac;
-}
+{}
 
 void QgsStacSourceSelect::hideEvent( QHideEvent *e )
 {
@@ -213,8 +214,7 @@ void QgsStacSourceSelect::btnEdit_clicked()
 
 void QgsStacSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -302,13 +302,17 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
       // collections endpoint should have a "data" relation according to spec but some servers don't
       // so let's be less strict and only check the href and optionally the media type
       if ( QUrl( l.href() ).path().endsWith( "/collections" ) && // allow query parameters in the url
-           ( l.mediaType().isEmpty() ||                          // media type is optional
-             l.mediaType() == "application/json"_L1 ||           // but if it's there it should be json or geojson
+           ( l.mediaType().isEmpty()
+             || // media type is optional
+             l.mediaType() == "application/json"_L1
+             || // but if it's there it should be json or geojson
              l.mediaType() == "application/geo+json"_L1 ) )
         collectionsUrl = l.href();
-      else if ( l.relation() == "search" &&                 // relation needs to be "search" according to spec
-                ( l.mediaType().isEmpty() ||                // media type is optional
-                  l.mediaType() == "application/json"_L1 || // but if it's there it should be json or geojson
+      else if ( l.relation() == "search" && // relation needs to be "search" according to spec
+                ( l.mediaType().isEmpty()
+                  || // media type is optional
+                  l.mediaType() == "application/json"_L1
+                  || // but if it's there it should be json or geojson
                   l.mediaType() == "application/geo+json"_L1 ) )
         mSearchUrl = l.href();
 
@@ -452,10 +456,7 @@ void QgsStacSourceSelect::search()
     }
     else
     {
-      dateString = u"%1/%2"_s.arg(
-        fromDate.isNull() ? u".."_s : fromDate.toString( Qt::ISODateWithMs ),
-        toDate.isNull() ? u".."_s : toDate.toString( Qt::ISODateWithMs )
-      );
+      dateString = u"%1/%2"_s.arg( fromDate.isNull() ? u".."_s : fromDate.toString( Qt::ISODateWithMs ), toDate.isNull() ? u".."_s : toDate.toString( Qt::ISODateWithMs ) );
     }
     q.addQueryItem( u"datetime"_s, dateString );
   }
@@ -567,9 +568,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   } );
 
   QAction *detailsAction = new QAction( tr( "Details…" ), menu );
-  connect( detailsAction, &QAction::triggered, this, [this, index] {
-    showItemDetails( index );
-  } );
+  connect( detailsAction, &QAction::triggered, this, [this, index] { showItemDetails( index ); } );
 
 
   if ( mapCanvas() )

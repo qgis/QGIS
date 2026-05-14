@@ -23,8 +23,11 @@
 #include <QCompleter>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsfeaturelistcombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   : QComboBox( parent )

@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutItemAttributeTable: QgsLayoutTable
+class QgsLayoutItemAttributeTable : QgsLayoutTable
 {
 %Docstring(signature="appended")
 A layout table subclass that displays attributes from a vector layer.
@@ -20,7 +20,6 @@ A layout table subclass that displays attributes from a vector layer.
 #include "qgslayoutitemattributetable.h"
 %End
   public:
-
     enum ContentSource /BaseType=IntEnum/
     {
       LayerAttributes,
@@ -348,7 +347,6 @@ styling properties of the linked vector layer.
 %End
 
   protected:
-
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );

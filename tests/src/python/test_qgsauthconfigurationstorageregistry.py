@@ -12,22 +12,22 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
-from osgeo import gdal
 import unittest
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.PyQt.QtTest import QSignalSpy
+
+from osgeo import gdal
 from qgis.core import (
     Qgis,
+    QgsAuthConfigurationStorageDb,
     QgsAuthConfigurationStorageRegistry,
     QgsAuthMethodConfig,
-    QgsAuthConfigurationStorageDb,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 
 class TestQgsAuthConfigurationStorageRegistry(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

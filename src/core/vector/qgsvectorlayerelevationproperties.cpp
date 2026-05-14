@@ -28,7 +28,11 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayerelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerElevationProperties::QgsVectorLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
@@ -269,10 +273,7 @@ bool QgsVectorLayerElevationProperties::showByDefaultInElevationProfilePlots() c
 {
   // show by default if the features aren't just directly clamped onto the terrain with
   // no other changes
-  return !qgsDoubleNear( mZOffset, 0 )
-         || !qgsDoubleNear( mZScale, 1 )
-         || mEnableExtrusion
-         || mClamping != Qgis::AltitudeClamping::Terrain;
+  return !qgsDoubleNear( mZOffset, 0 ) || !qgsDoubleNear( mZScale, 1 ) || mEnableExtrusion || mClamping != Qgis::AltitudeClamping::Terrain;
 }
 
 void QgsVectorLayerElevationProperties::setClamping( Qgis::AltitudeClamping clamping )

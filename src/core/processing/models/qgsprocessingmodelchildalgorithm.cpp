@@ -21,6 +21,10 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QString &algorithmId )
@@ -46,7 +50,7 @@ QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( c
   if ( &other == this )
     return *this;
 
-  QgsProcessingModelComponent::operator =( other );
+  QgsProcessingModelComponent::operator=( other );
   mId = other.mId;
   mConfiguration = other.mConfiguration;
   setAlgorithmId( other.algorithmId() );
@@ -237,8 +241,14 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   return true;
 }
 
-QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters,
-    int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const
+QStringList QgsProcessingModelChildAlgorithm::asPythonCode(
+  const QgsProcessing::PythonOutputType outputType,
+  const QgsStringMap &extraParameters,
+  int currentIndent,
+  int indentSize,
+  const QMap<QString, QString> &friendlyChildNames,
+  const QMap<QString, QString> &friendlyOutputNames
+) const
 {
   QStringList lines;
   const QString baseIndent = QString( ' ' ).repeated( currentIndent );
@@ -308,7 +318,7 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
   }
   if ( lines.constLast().endsWith( ',' ) )
   {
-    lines[ lines.count() - 1 ].truncate( lines.constLast().length() - 1 );
+    lines[lines.count() - 1].truncate( lines.constLast().length() - 1 );
   }
   lines << baseIndent + u"}"_s;
 

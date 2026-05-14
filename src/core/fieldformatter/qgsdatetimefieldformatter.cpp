@@ -21,6 +21,10 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 const QString QgsDateTimeFieldFormatter::DATE_FORMAT = u"yyyy-MM-dd"_s;
 const QString QgsDateTimeFieldFormatter::TIME_FORMAT = u"HH:mm:ss"_s;
 const QString QgsDateTimeFieldFormatter::DATETIME_FORMAT = u"yyyy-MM-dd HH:mm:ss"_s;
@@ -72,7 +76,7 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   }
   else if ( static_cast<QMetaType::Type>( value.userType() ) == QMetaType::QTime )
   {
-    return  value.toTime().toString( displayFormat );
+    return value.toTime().toString( displayFormat );
   }
   else
   {

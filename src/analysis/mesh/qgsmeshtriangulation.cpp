@@ -30,7 +30,11 @@
 #include "qgsmulticurve.h"
 #include "qgsmultisurface.h"
 
+#include <QString>
+
 #include "moc_qgsmeshtriangulation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshTriangulation::QgsMeshTriangulation()
   : QObject()
@@ -270,7 +274,10 @@ QgsMeshDatasetMetadata QgsMeshZValueDatasetGroup::datasetMetadata( int datasetIn
   return mDataset->metadata();
 }
 
-int QgsMeshZValueDatasetGroup::datasetCount() const { return 1; }
+int QgsMeshZValueDatasetGroup::datasetCount() const
+{
+  return 1;
+}
 
 QgsMeshDataset *QgsMeshZValueDatasetGroup::dataset( int index ) const
 {

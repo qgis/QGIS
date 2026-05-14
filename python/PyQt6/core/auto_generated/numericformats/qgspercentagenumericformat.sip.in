@@ -20,7 +20,6 @@ value.
 #include "qgspercentagenumericformat.h"
 %End
   public:
-
     enum InputValues /BaseType=IntEnum/
     {
       ValuesArePercentage,

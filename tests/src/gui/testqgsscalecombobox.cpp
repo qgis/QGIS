@@ -24,7 +24,10 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsScaleComboBox : public QObject
 {
@@ -64,8 +67,7 @@ void TestQgsScaleComboBox::cleanupTestCase()
 }
 
 void TestQgsScaleComboBox::init()
-{
-}
+{}
 
 void TestQgsScaleComboBox::basic()
 {
@@ -369,8 +371,7 @@ void TestQgsScaleComboBox::enterScale( double scale, QgsScaleComboBox *widget )
 }
 
 void TestQgsScaleComboBox::cleanup()
-{
-}
+{}
 
 void TestQgsScaleComboBox::testLocale()
 {

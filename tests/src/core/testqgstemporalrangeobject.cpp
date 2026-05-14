@@ -67,8 +67,7 @@ void TestQgsTemporalRangeObject::init()
 }
 
 void TestQgsTemporalRangeObject::cleanup()
-{
-}
+{}
 
 void TestQgsTemporalRangeObject::cleanupTestCase()
 {

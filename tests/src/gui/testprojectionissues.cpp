@@ -24,6 +24,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestProjectionIssues : public QObject
 {
@@ -86,12 +89,10 @@ void TestProjectionIssues::cleanupTestCase()
 }
 
 void TestProjectionIssues::init()
-{
-}
+{}
 
 void TestProjectionIssues::cleanup()
-{
-}
+{}
 
 void TestProjectionIssues::issue5895()
 {

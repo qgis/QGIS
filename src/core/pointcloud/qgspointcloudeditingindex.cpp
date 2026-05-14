@@ -25,17 +25,17 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QMutex>
+#include <QString>
 
-QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
+using namespace Qt::StringLiterals;
+
+QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &index )
 {
-  if ( !layer ||
-       !layer->dataProvider() ||
-       !layer->dataProvider()->hasValidIndex() ||
-       !( layer->dataProvider()->capabilities() & QgsPointCloudDataProvider::Capability::ChangeAttributeValues ) )
+  if ( !index.isValid() )
     return;
 
-  mUri = layer->source();
-  mIndex = layer->dataProvider()->index();
+  mIndex = index;
+  mUri = index.uri();
 
   mAttributes = mIndex.attributes();
   mScale = mIndex.scale();
@@ -78,12 +78,12 @@ QVariantMap QgsPointCloudEditingIndex::originalMetadata() const
   return mIndex.originalMetadata();
 }
 
-bool QgsPointCloudEditingIndex::hasNode( const QgsPointCloudNodeId &n ) const
+bool QgsPointCloudEditingIndex::hasNode( QgsPointCloudNodeId n ) const
 {
   return mIndex.hasNode( n );
 }
 
-QgsPointCloudNode QgsPointCloudEditingIndex::getNode( const QgsPointCloudNodeId &id ) const
+QgsPointCloudNode QgsPointCloudEditingIndex::getNode( QgsPointCloudNodeId id ) const
 {
   return mIndex.getNode( id );
 }
@@ -98,7 +98,7 @@ QString QgsPointCloudEditingIndex::subsetString() const
   return mIndex.subsetString();
 }
 
-std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   mEditedNodeDataMutex.lock(); // Unlocked in both branches!
   if ( mEditedNodeData.contains( n ) )
@@ -128,7 +128,7 @@ std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const
   }
 }
 
-QgsPointCloudBlockRequest *QgsPointCloudEditingIndex::asyncNodeData( const QgsPointCloudNodeId &, const QgsPointCloudRequest & )
+QgsPointCloudBlockRequest *QgsPointCloudEditingIndex::asyncNodeData( QgsPointCloudNodeId, const QgsPointCloudRequest & )
 {
   Q_ASSERT( false );
   return nullptr;
@@ -166,7 +166,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
     QgsPointCloudNodeId n = it.key();
     // right now we're assuming there's no change of point count
     qint32 nodePointCount = static_cast<qint32>( getNode( n ).pointCount() );
-    updatedChunks[n] = QgsCopcUpdate::UpdatedChunk{ nodePointCount, it.value() };
+    updatedChunks[n] = QgsCopcUpdate::UpdatedChunk { nodePointCount, it.value() };
   }
 
   QFileInfo fileInfo( mUri );

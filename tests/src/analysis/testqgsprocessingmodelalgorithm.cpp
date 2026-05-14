@@ -18,18 +18,26 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelfeedback.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
 #include "qgsxmlutils.h"
 
 #include <QObject>
+#include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class DummyAlgorithm2 : public QgsProcessingAlgorithm
 {
   public:
     DummyAlgorithm2( const QString &name )
-      : mName( name ) { mFlags = QgsProcessingAlgorithm::flags(); }
+      : mName( name )
+    {
+      mFlags = QgsProcessingAlgorithm::flags();
+    }
 
     void initAlgorithm( const QVariantMap & = QVariantMap() ) override
     {
@@ -54,12 +62,10 @@ class DummySecurityRiskAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     DummySecurityRiskAlgorithm( const QString &name )
-      : mName( name ) {}
+      : mName( name )
+    {}
 
-    void initAlgorithm( const QVariantMap & = QVariantMap() ) override
-    {
-      addParameter( new QgsProcessingParameterVectorDestination( u"vector_dest"_s ) );
-    }
+    void initAlgorithm( const QVariantMap & = QVariantMap() ) override { addParameter( new QgsProcessingParameterVectorDestination( u"vector_dest"_s ) ); }
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
@@ -80,20 +86,12 @@ class DummyRaiseExceptionAlgorithm : public QgsProcessingAlgorithm
       hasPostProcessed = false;
     }
     static bool hasPostProcessed;
-    ~DummyRaiseExceptionAlgorithm() override
-    {
-      hasPostProcessed |= mHasPostProcessed;
-    }
+    ~DummyRaiseExceptionAlgorithm() override { hasPostProcessed |= mHasPostProcessed; }
 
-    void initAlgorithm( const QVariantMap & = QVariantMap() ) override
-    {
-    }
+    void initAlgorithm( const QVariantMap & = QVariantMap() ) override {}
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
-    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override
-    {
-      throw QgsProcessingException( u"something bad happened"_s );
-    }
+    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { throw QgsProcessingException( u"something bad happened"_s ); }
     static bool postProcessAlgorithmCalled;
     QVariantMap postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * ) final
     {
@@ -118,20 +116,11 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
     QString id() const override { return u"dummy4"_s; }
     QString name() const override { return u"dummy4"_s; }
 
-    bool supportsNonFileBasedOutput() const override
-    {
-      return false;
-    }
+    bool supportsNonFileBasedOutput() const override { return false; }
 
-    QStringList supportedOutputVectorLayerExtensions() const override
-    {
-      return QStringList() << u"mif"_s;
-    }
+    QStringList supportedOutputVectorLayerExtensions() const override { return QStringList() << u"mif"_s; }
 
-    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override
-    {
-      return QList<QPair<QString, QString>>() << QPair<QString, QString>( u"XYZ"_s, u"xyz"_s );
-    }
+    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override { return QList<QPair<QString, QString>>() << QPair<QString, QString>( u"XYZ"_s, u"xyz"_s ); }
 
     void loadAlgorithms() override
     {
@@ -205,11 +194,6 @@ void TestQgsProcessingModelAlgorithm::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsSettings settings;
   settings.clear();
@@ -427,7 +411,10 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QgsStringMap extraParams;
   extraParams[u"SOMETHING"_s] = u"SOMETHING_ELSE"_s;
   extraParams[u"SOMETHING2"_s] = u"SOMETHING_ELSE2"_s;
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), u"    alg_params = {\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs[''] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s );
+  QCOMPARE(
+    child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ),
+    u"    alg_params = {\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs[''] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s
+  );
   // bit of a hack -- but try to simulate an algorithm not originally available!
   child.mAlgorithm.reset();
   QVERIFY( !child.algorithm() );
@@ -449,9 +436,13 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( child.position(), QPointF( 1, 2 ) );
   child.setSize( QSizeF( 3, 4 ) );
   QCOMPARE( child.size(), QSizeF( 3, 4 ) );
+  QVERIFY( !child.linksCollapsed( Qt::TopEdge ) );
+  child.setLinksCollapsed( Qt::TopEdge, true );
   QVERIFY( child.linksCollapsed( Qt::TopEdge ) );
   child.setLinksCollapsed( Qt::TopEdge, false );
   QVERIFY( !child.linksCollapsed( Qt::TopEdge ) );
+  QVERIFY( !child.linksCollapsed( Qt::BottomEdge ) );
+  child.setLinksCollapsed( Qt::BottomEdge, true );
   QVERIFY( child.linksCollapsed( Qt::BottomEdge ) );
   child.setLinksCollapsed( Qt::BottomEdge, false );
   QVERIFY( !child.linksCollapsed( Qt::BottomEdge ) );
@@ -496,11 +487,20 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( child.parameterSources().value( u"b"_s ).at( 0 ).staticValue().toInt(), 7 );
   QCOMPARE( child.parameterSources().value( u"b"_s ).at( 1 ).staticValue().toInt(), 9 );
 
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), u"    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s );
+  QCOMPARE(
+    child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ),
+    u"    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s
+  );
   child.comment()->setDescription( u"do\nsomething\n\nuseful"_s );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), u"    # desc\n    # do\n    # something\n    # \n    # useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s );
+  QCOMPARE(
+    child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ),
+    u"    # desc\n    # do\n    # something\n    # \n    # useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s
+  );
   child.comment()->setDescription( u"do something useful"_s );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), u"    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s );
+  QCOMPARE(
+    child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ),
+    u"    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s
+  );
 
   std::unique_ptr<QgsProcessingModelChildAlgorithm> childClone( child.clone() );
   QCOMPARE( childClone->toVariant(), child.toVariant() );
@@ -548,13 +548,22 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( child.modelOutput( u"a"_s ).description(), u"my output"_s );
   child.modelOutput( "a" ).setDescription( u"my output 2"_s );
   QCOMPARE( child.modelOutput( "a" ).description(), u"my output 2"_s );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), u"    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']"_s );
+  QCOMPARE(
+    child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ),
+    u"    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']"_s
+  );
 
   // ensure friendly name is used if present
   child.addParameterSources( u"b"_s, QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "a", "out" ) );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), u"    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': outputs['alga']['out'],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']"_s );
+  QCOMPARE(
+    child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ),
+    u"    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': outputs['alga']['out'],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']"_s
+  );
   friendlyNames.remove( u"a"_s );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), u"    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': outputs['a']['out'],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']"_s );
+  QCOMPARE(
+    child.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ),
+    u"    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': outputs['a']['out'],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']"_s
+  );
 
   // no existent
   child.modelOutput( u"b"_s ).setDescription( u"my output 3"_s );
@@ -975,7 +984,15 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   alg5c1.addParameterSources( u"y"_s, QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "cx2", "out3" ) );
   alg5c1.addParameterSources( u"z"_s, QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( 5 ) );
   alg5c1.addParameterSources( "a", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromExpression( "2*2" ) );
-  alg5c1.addParameterSources( "zm", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( 6 ) << QgsProcessingModelChildParameterSource::fromModelParameter( "p2" ) << QgsProcessingModelChildParameterSource::fromChildOutput( "cx2", "out4" ) << QgsProcessingModelChildParameterSource::fromExpression( "1+2" ) << QgsProcessingModelChildParameterSource::fromStaticValue( QgsProperty::fromExpression( "1+8" ) ) );
+  alg5c1.addParameterSources(
+    "zm",
+    QgsProcessingModelChildParameterSources()
+      << QgsProcessingModelChildParameterSource::fromStaticValue( 6 )
+      << QgsProcessingModelChildParameterSource::fromModelParameter( "p2" )
+      << QgsProcessingModelChildParameterSource::fromChildOutput( "cx2", "out4" )
+      << QgsProcessingModelChildParameterSource::fromExpression( "1+2" )
+      << QgsProcessingModelChildParameterSource::fromStaticValue( QgsProperty::fromExpression( "1+8" ) )
+  );
   alg5c1.setActive( true );
   alg5c1.setLinksCollapsed( Qt::BottomEdge, true );
   alg5c1.setLinksCollapsed( Qt::TopEdge, true );
@@ -1468,100 +1485,104 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   model2.childAlgorithm( u"cx1"_s ).setDescription( "first step in my model" );
   const QStringList actualParts = model2.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, 2 );
   QgsDebugMsgLevel( actualParts.join( '\n' ), 1 );
-  const QStringList expectedParts = QStringLiteral( "\"\"\"\n"
-                                                    "Model exported as python.\n"
-                                                    "Name : 2my model\n"
-                                                    "Group : \n"
-                                                    "With QGIS : %1\n"
-                                                    "\"\"\"\n\n"
-                                                    "from typing import Any, Optional\n"
-                                                    "\n"
-                                                    "from qgis.core import QgsProcessing\n"
-                                                    "from qgis.core import QgsProcessingAlgorithm\n"
-                                                    "from qgis.core import QgsProcessingContext\n"
-                                                    "from qgis.core import QgsProcessingFeedback, QgsProcessingMultiStepFeedback\n"
-                                                    "from qgis.core import QgsProcessingParameterFeatureSource\n"
-                                                    "from qgis.core import QgsProcessingParameterNumber\n"
-                                                    "from qgis.core import QgsProcessingParameterCrs\n"
-                                                    "from qgis.core import QgsProcessingParameterFeatureSink\n"
-                                                    "from qgis.core import QgsProcessingParameterDefinition\n"
-                                                    "from qgis.core import QgsCoordinateReferenceSystem\n"
-                                                    "from qgis.core import QgsExpression\n"
-                                                    "from qgis import processing\n"
-                                                    "\n"
-                                                    "\n"
-                                                    "class MyModel(QgsProcessingAlgorithm):\n"
-                                                    "\n"
-                                                    "  def initAlgorithm(self, config: Optional[dict[str, Any]] = None):\n"
-                                                    "    # an input\n"
-                                                    "    self.addParameter(QgsProcessingParameterFeatureSource('SOURCE_LAYER', '', defaultValue=None))\n"
-                                                    "    self.addParameter(QgsProcessingParameterNumber('DIST', '', type=QgsProcessingParameterNumber.Double, defaultValue=None))\n"
-                                                    "    param = QgsProcessingParameterCrs('CRS', '', defaultValue=QgsCoordinateReferenceSystem('EPSG:28355'))\n"
-                                                    "    param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)\n"
-                                                    "    self.addParameter(param)\n"
-                                                    "    self.addParameter(QgsProcessingParameterFeatureSink('MyModelOutput', 'my model output', type=QgsProcessing.TypeVectorPolygon, createByDefault=True, supportsAppend=True, defaultValue=None))\n"
-                                                    "    self.addParameter(QgsProcessingParameterFeatureSink('MyOutput', 'My output', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))\n"
-                                                    "\n"
-                                                    "  def processAlgorithm(self, parameters: dict[str, Any], context: QgsProcessingContext, model_feedback: QgsProcessingFeedback) -> dict[str, Any]:\n"
-                                                    "    # Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the\n"
-                                                    "    # overall progress through the model\n"
-                                                    "    feedback = QgsProcessingMultiStepFeedback(3, model_feedback)\n"
-                                                    "    results = {}\n"
-                                                    "    outputs = {}\n"
-                                                    "\n"
-                                                    "    # first step in my model\n"
-                                                    "    alg_params = {\n"
-                                                    "      'DISSOLVE': False,\n"
-                                                    "      'DISTANCE': parameters['DIST'],\n"
-                                                    "      'END_CAP_STYLE': 1,  # Flat\n"
-                                                    "      'INPUT': parameters['SOURCE_LAYER'],\n"
-                                                    "      'JOIN_STYLE': 2,  # Bevel\n"
-                                                    "      'SEGMENTS': QgsExpression('@myvar*2').evaluate(),\n"
-                                                    "      'OUTPUT': parameters['MyModelOutput']\n"
-                                                    "    }\n"
-                                                    "    outputs['FirstStepInMyModel'] = processing.run('native:buffer', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
-                                                    "    results['MyModelOutput'] = outputs['FirstStepInMyModel']['OUTPUT']\n"
-                                                    "\n"
-                                                    "    feedback.setCurrentStep(1)\n"
-                                                    "    if feedback.isCanceled():\n"
-                                                    "      return {}\n"
-                                                    "\n"
-                                                    "    alg_params = {\n"
-                                                    "      'INPUT': outputs['FirstStepInMyModel']['OUTPUT'],\n"
-                                                    "      'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT\n"
-                                                    "    }\n"
-                                                    "    outputs['cx2'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
-                                                    "\n"
-                                                    "    feedback.setCurrentStep(2)\n"
-                                                    "    if feedback.isCanceled():\n"
-                                                    "      return {}\n"
-                                                    "\n"
-                                                    "    alg_params = {\n"
-                                                    "      'EXPRESSION': 'true',\n"
-                                                    "      'INPUT': outputs['FirstStepInMyModel']['OUTPUT'],\n"
-                                                    "      'OUTPUT': parameters['MY_OUT'],\n"
-                                                    "      'OUTPUT': parameters['MyOutput']\n"
-                                                    "    }\n"
-                                                    "    outputs['cx3'] = processing.run('native:extractbyexpression', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
-                                                    "    results['MyOutput'] = outputs['cx3']['OUTPUT']\n"
-                                                    "    return results\n"
-                                                    "\n"
-                                                    "  def name(self) -> str:\n"
-                                                    "    return '2my model'\n"
-                                                    "\n"
-                                                    "  def displayName(self) -> str:\n"
-                                                    "    return '2my model'\n"
-                                                    "\n"
-                                                    "  def group(self) -> str:\n"
-                                                    "    return ''\n"
-                                                    "\n"
-                                                    "  def groupId(self) -> str:\n"
-                                                    "    return ''\n"
-                                                    "\n"
-                                                    "  def createInstance(self):\n"
-                                                    "    return self.__class__()\n" )
-                                      .arg( Qgis::versionInt() )
-                                      .split( '\n' );
+  const QStringList expectedParts
+    = QStringLiteral(
+        "\"\"\"\n"
+        "Model exported as python.\n"
+        "Name : 2my model\n"
+        "Group : \n"
+        "With QGIS : %1\n"
+        "\"\"\"\n\n"
+        "from typing import Any, Optional\n"
+        "\n"
+        "from qgis.core import QgsProcessing\n"
+        "from qgis.core import QgsProcessingAlgorithm\n"
+        "from qgis.core import QgsProcessingContext\n"
+        "from qgis.core import QgsProcessingFeedback, QgsProcessingMultiStepFeedback\n"
+        "from qgis.core import QgsProcessingParameterFeatureSource\n"
+        "from qgis.core import QgsProcessingParameterNumber\n"
+        "from qgis.core import QgsProcessingParameterCrs\n"
+        "from qgis.core import QgsProcessingParameterFeatureSink\n"
+        "from qgis.core import QgsProcessingParameterDefinition\n"
+        "from qgis.core import QgsCoordinateReferenceSystem\n"
+        "from qgis.core import QgsExpression\n"
+        "from qgis import processing\n"
+        "\n"
+        "\n"
+        "class MyModel(QgsProcessingAlgorithm):\n"
+        "\n"
+        "  def initAlgorithm(self, config: Optional[dict[str, Any]] = None):\n"
+        "    # an input\n"
+        "    self.addParameter(QgsProcessingParameterFeatureSource('SOURCE_LAYER', '', defaultValue=None))\n"
+        "    self.addParameter(QgsProcessingParameterNumber('DIST', '', type=QgsProcessingParameterNumber.Double, defaultValue=None))\n"
+        "    param = QgsProcessingParameterCrs('CRS', '', defaultValue=QgsCoordinateReferenceSystem('EPSG:28355'))\n"
+        "    param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)\n"
+        "    self.addParameter(param)\n"
+        "    self.addParameter(QgsProcessingParameterFeatureSink('MyModelOutput', 'my model output', type=QgsProcessing.TypeVectorPolygon, createByDefault=True, supportsAppend=True, "
+        "defaultValue=None))\n"
+        "    self.addParameter(QgsProcessingParameterFeatureSink('MyOutput', 'My output', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))\n"
+        "\n"
+        "  def processAlgorithm(self, parameters: dict[str, Any], context: QgsProcessingContext, model_feedback: QgsProcessingFeedback) -> dict[str, Any]:\n"
+        "    # Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the\n"
+        "    # overall progress through the model\n"
+        "    feedback = QgsProcessingMultiStepFeedback(3, model_feedback)\n"
+        "    results = {}\n"
+        "    outputs = {}\n"
+        "\n"
+        "    # first step in my model\n"
+        "    alg_params = {\n"
+        "      'DISSOLVE': False,\n"
+        "      'DISTANCE': parameters['DIST'],\n"
+        "      'END_CAP_STYLE': 1,  # Flat\n"
+        "      'INPUT': parameters['SOURCE_LAYER'],\n"
+        "      'JOIN_STYLE': 2,  # Bevel\n"
+        "      'SEGMENTS': QgsExpression('@myvar*2').evaluate(),\n"
+        "      'OUTPUT': parameters['MyModelOutput']\n"
+        "    }\n"
+        "    outputs['FirstStepInMyModel'] = processing.run('native:buffer', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
+        "    results['MyModelOutput'] = outputs['FirstStepInMyModel']['OUTPUT']\n"
+        "\n"
+        "    feedback.setCurrentStep(1)\n"
+        "    if feedback.isCanceled():\n"
+        "      return {}\n"
+        "\n"
+        "    alg_params = {\n"
+        "      'INPUT': outputs['FirstStepInMyModel']['OUTPUT'],\n"
+        "      'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT\n"
+        "    }\n"
+        "    outputs['cx2'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
+        "\n"
+        "    feedback.setCurrentStep(2)\n"
+        "    if feedback.isCanceled():\n"
+        "      return {}\n"
+        "\n"
+        "    alg_params = {\n"
+        "      'EXPRESSION': 'true',\n"
+        "      'INPUT': outputs['FirstStepInMyModel']['OUTPUT'],\n"
+        "      'OUTPUT': parameters['MY_OUT'],\n"
+        "      'OUTPUT': parameters['MyOutput']\n"
+        "    }\n"
+        "    outputs['cx3'] = processing.run('native:extractbyexpression', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
+        "    results['MyOutput'] = outputs['cx3']['OUTPUT']\n"
+        "    return results\n"
+        "\n"
+        "  def name(self) -> str:\n"
+        "    return '2my model'\n"
+        "\n"
+        "  def displayName(self) -> str:\n"
+        "    return '2my model'\n"
+        "\n"
+        "  def group(self) -> str:\n"
+        "    return ''\n"
+        "\n"
+        "  def groupId(self) -> str:\n"
+        "    return ''\n"
+        "\n"
+        "  def createInstance(self):\n"
+        "    return self.__class__()\n"
+    )
+        .arg( Qgis::versionInt() )
+        .split( '\n' );
   QCOMPARE( actualParts, expectedParts );
 }
 
@@ -1689,7 +1710,16 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruning()
   algr4.setModelOutputs( outputsr4 );
   model1.addChildAlgorithm( algr4 );
 
-  QgsProcessingFeedback feedback;
+  QgsProcessingModelFeedback feedback;
+
+  QSignalSpy brokenSpy( &feedback, &QgsProcessingModelFeedback::childAlgorithmsBroken );
+  QSignalSpy preparingSpy( &feedback, &QgsProcessingModelFeedback::preparingChild );
+  QSignalSpy preparationFailedSpy( &feedback, &QgsProcessingModelFeedback::childPreparationFailed );
+  QSignalSpy childStartedSpy( &feedback, &QgsProcessingModelFeedback::childStarted );
+  QSignalSpy childFailedSpy( &feedback, &QgsProcessingModelFeedback::childExecutionFailed );
+  QSignalSpy childExecutedSpy( &feedback, &QgsProcessingModelFeedback::childExecutionSucceeded );
+  QSignalSpy prunedSpy( &feedback, &QgsProcessingModelFeedback::childPruned );
+
   QVariantMap params;
   // vector input
   params.insert( u"LAYER"_s, u"v1"_s );
@@ -1708,10 +1738,34 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruning()
   QVERIFY( !results.contains( u"fill3:RASTER_OUTPUT2"_s ) );
   QVERIFY( !results.contains( u"fill4:RASTER_OUTPUT3"_s ) );
 
+  QCOMPARE( brokenSpy.size(), 0 );
+  QCOMPARE( preparingSpy.size(), 4 );
+  QSet< QString > expectedPrepared = { "buffer", "buffer3", "filter", "buffer2" };
+  QCOMPARE( feedback.preparedChildren(), expectedPrepared );
+  QCOMPARE( preparationFailedSpy.size(), 0 );
+  QCOMPARE( childStartedSpy.size(), 4 );
+  QCOMPARE( feedback.startedChildren(), expectedPrepared );
+  QCOMPARE( childFailedSpy.size(), 0 );
+  QCOMPARE( childExecutedSpy.size(), 4 );
+  QCOMPARE( feedback.successfulChildren(), expectedPrepared );
+  QCOMPARE( prunedSpy.size(), 3 );
+  QSet< QString > expectedPruned = { "fill4", "fill2", "fill3" };
+  QCOMPARE( feedback.prunedChildren(), expectedPruned );
+
+  QgsProcessingModelFeedback feedback2;
+
+  QSignalSpy brokenSpy2( &feedback2, &QgsProcessingModelFeedback::childAlgorithmsBroken );
+  QSignalSpy preparingSpy2( &feedback2, &QgsProcessingModelFeedback::preparingChild );
+  QSignalSpy preparationFailedSpy2( &feedback2, &QgsProcessingModelFeedback::childPreparationFailed );
+  QSignalSpy childStartedSpy2( &feedback2, &QgsProcessingModelFeedback::childStarted );
+  QSignalSpy childFailedSpy2( &feedback2, &QgsProcessingModelFeedback::childExecutionFailed );
+  QSignalSpy childExecutedSpy2( &feedback2, &QgsProcessingModelFeedback::childExecutionSucceeded );
+  QSignalSpy prunedSpy2( &feedback2, &QgsProcessingModelFeedback::childPruned );
+
   // raster input
   params.insert( u"LAYER"_s, u"R1"_s );
   context.modelResult().clear();
-  results = model1.run( params, context, &feedback );
+  results = model1.run( params, context, &feedback2 );
   // we should get the raster branch outputs only
   QVERIFY( !results.value( u"fill2:RASTER_OUTPUT"_s ).toString().isEmpty() );
   QVERIFY( !results.value( u"fill3:RASTER_OUTPUT2"_s ).toString().isEmpty() );
@@ -1719,6 +1773,20 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruning()
   QVERIFY( !results.contains( u"buffer:BUFFER_OUTPUT"_s ) );
   QVERIFY( !results.contains( u"buffer2:BUFFER2_OUTPUT"_s ) );
   QVERIFY( !results.contains( u"buffer3:BUFFER3_OUTPUT"_s ) );
+
+  QCOMPARE( brokenSpy2.size(), 0 );
+  QCOMPARE( preparingSpy2.size(), 4 );
+  expectedPrepared = { "fill4", "filter", "fill3", "fill2" };
+  QCOMPARE( feedback2.preparedChildren(), expectedPrepared );
+  QCOMPARE( preparationFailedSpy2.size(), 0 );
+  QCOMPARE( childStartedSpy2.size(), 4 );
+  QCOMPARE( feedback2.startedChildren(), expectedPrepared );
+  QCOMPARE( childFailedSpy2.size(), 0 );
+  QCOMPARE( childExecutedSpy2.size(), 4 );
+  QCOMPARE( feedback2.successfulChildren(), expectedPrepared );
+  QCOMPARE( prunedSpy2.size(), 3 );
+  expectedPruned = { "buffer", "buffer3", "buffer2" };
+  QCOMPARE( feedback2.prunedChildren(), expectedPruned );
 }
 
 void TestQgsProcessingModelAlgorithm::modelBranchPruningConditional()
@@ -1758,24 +1826,75 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruningConditional()
   model1.addChildAlgorithm( algc2 );
 
   QgsProcessingModelChildAlgorithm algc3;
-  algc2.setChildId( "exception" );
+  algc2.setChildId( "warning" );
   algc3.setAlgorithmId( "native:raisewarning" );
   algc3.setDependencies( QList<QgsProcessingModelChildDependency>() << QgsProcessingModelChildDependency( u"branch"_s, u"name2"_s ) );
   model1.addChildAlgorithm( algc3 );
 
-  QgsProcessingFeedback feedback;
+  QgsProcessingModelFeedback feedback;
+
+  QSignalSpy brokenSpy( &feedback, &QgsProcessingModelFeedback::childAlgorithmsBroken );
+  QSignalSpy preparingSpy( &feedback, &QgsProcessingModelFeedback::preparingChild );
+  QSignalSpy preparationFailedSpy( &feedback, &QgsProcessingModelFeedback::childPreparationFailed );
+  QSignalSpy childStartedSpy( &feedback, &QgsProcessingModelFeedback::childStarted );
+  QSignalSpy childFailedSpy( &feedback, &QgsProcessingModelFeedback::childExecutionFailed );
+  QSignalSpy childExecutedSpy( &feedback, &QgsProcessingModelFeedback::childExecutionSucceeded );
+  QSignalSpy prunedSpy( &feedback, &QgsProcessingModelFeedback::childPruned );
+
   const QVariantMap params;
   bool ok = false;
   QVariantMap results = model1.run( params, context, &feedback, &ok );
   QVERIFY( !ok ); // the branch with the exception should be hit
 
+  QCOMPARE( brokenSpy.size(), 0 );
+  QCOMPARE( preparingSpy.size(), 2 );
+  QSet< QString > expectedPrepared = { "exception", "branch" };
+  QCOMPARE( feedback.preparedChildren(), expectedPrepared );
+  QCOMPARE( preparationFailedSpy.size(), 0 );
+  QCOMPARE( childStartedSpy.size(), 2 );
+  QCOMPARE( feedback.startedChildren(), expectedPrepared );
+  QCOMPARE( childFailedSpy.size(), 1 );
+  QSet< QString > expectedFailed = { "exception" };
+  QCOMPARE( feedback.failedChildren(), expectedFailed );
+  QCOMPARE( childExecutedSpy.size(), 1 );
+  QSet< QString > expectedSuccess = { "branch" };
+  QCOMPARE( feedback.successfulChildren(), expectedSuccess );
+  QCOMPARE( prunedSpy.size(), 1 );
+  QSet< QString > expectedPruned = { "native:raisewarning_1" };
+  QCOMPARE( feedback.prunedChildren(), expectedPruned );
+
   // flip the condition results
   context.expressionContext().scope( 0 )->setVariable( u"var1"_s, 0 );
   context.expressionContext().scope( 0 )->setVariable( u"var2"_s, 1 );
 
+  QgsProcessingModelFeedback feedback2;
+
+  QSignalSpy brokenSpy2( &feedback2, &QgsProcessingModelFeedback::childAlgorithmsBroken );
+  QSignalSpy preparingSpy2( &feedback2, &QgsProcessingModelFeedback::preparingChild );
+  QSignalSpy preparationFailedSpy2( &feedback2, &QgsProcessingModelFeedback::childPreparationFailed );
+  QSignalSpy childStartedSpy2( &feedback2, &QgsProcessingModelFeedback::childStarted );
+  QSignalSpy childFailedSpy2( &feedback2, &QgsProcessingModelFeedback::childExecutionFailed );
+  QSignalSpy childExecutedSpy2( &feedback2, &QgsProcessingModelFeedback::childExecutionSucceeded );
+  QSignalSpy prunedSpy2( &feedback2, &QgsProcessingModelFeedback::childPruned );
+
   context.modelResult().clear();
-  results = model1.run( params, context, &feedback, &ok );
+  results = model1.run( params, context, &feedback2, &ok );
   QVERIFY( ok ); // the branch with the exception should NOT be hit
+
+  QCOMPARE( brokenSpy2.size(), 0 );
+  QCOMPARE( preparingSpy2.size(), 2 );
+  expectedPrepared = { "native:raisewarning_1", "branch" };
+  QCOMPARE( feedback2.preparedChildren(), expectedPrepared );
+  QCOMPARE( preparationFailedSpy2.size(), 0 );
+  QCOMPARE( childStartedSpy2.size(), 2 );
+  QCOMPARE( feedback2.startedChildren(), expectedPrepared );
+  QCOMPARE( childFailedSpy2.size(), 0 );
+  QCOMPARE( childExecutedSpy2.size(), 2 );
+  expectedSuccess = { "native:raisewarning_1", "branch" };
+  QCOMPARE( feedback2.successfulChildren(), expectedSuccess );
+  QCOMPARE( prunedSpy2.size(), 1 );
+  expectedPruned = { "exception" };
+  QCOMPARE( feedback2.prunedChildren(), expectedPruned );
 }
 
 void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
@@ -2771,19 +2890,13 @@ void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
   c1.setChildId( u"c1"_s );
   c1.setAlgorithmId( u"native:stringconcatenation"_s );
   // a parameter source from an expression which isn't coming from another child algorithm
-  c1.setParameterSources(
-    { { u"INPUT_2"_s, { QgsProcessingModelChildParameterSource::fromExpression( u"@a_parameter || 'x'"_s ) } }
-    }
-  );
+  c1.setParameterSources( { { u"INPUT_2"_s, { QgsProcessingModelChildParameterSource::fromExpression( u"@a_parameter || 'x'"_s ) } } } );
   model.addChildAlgorithm( c1 );
 
   QgsProcessingModelChildAlgorithm c2;
   c2.setChildId( u"c2"_s );
   c2.setAlgorithmId( u"native:stringconcatenation"_s );
-  c2.setParameterSources(
-    { { u"INPUT_1"_s, { QgsProcessingModelChildParameterSource::fromExpression( u"@c1_CONCATENATION || 'x'"_s ) } }
-    }
-  );
+  c2.setParameterSources( { { u"INPUT_1"_s, { QgsProcessingModelChildParameterSource::fromExpression( u"@c1_CONCATENATION || 'x'"_s ) } } } );
   model.addChildAlgorithm( c2 );
 
   QgsProcessingContext context;

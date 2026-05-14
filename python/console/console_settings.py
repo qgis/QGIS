@@ -20,19 +20,18 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from pathlib import Path
 
+from qgis.core import Qgis, QgsApplication, QgsSettings, QgsSettingsTree
+from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
+from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import (
-    QWidget,
     QFileDialog,
+    QHBoxLayout,
     QMessageBox,
     QTableWidgetItem,
-    QHBoxLayout,
+    QWidget,
 )
-from qgis.PyQt.QtGui import QIcon, QDesktopServices
-
-from qgis.core import QgsSettings, QgsApplication, QgsSettingsTree, Qgis
-from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 
 from .console_compile_apis import PrepareAPIDialog
 
@@ -42,7 +41,6 @@ Ui_SettingsDialogPythonConsole, _ = uic.loadUiType(
 
 
 class ConsoleOptionsFactory(QgsOptionsWidgetFactory):
-
     def __init__(self):
         super(QgsOptionsWidgetFactory, self).__init__()
 
@@ -57,7 +55,6 @@ class ConsoleOptionsFactory(QgsOptionsWidgetFactory):
 
 
 class ConsoleOptionsPage(QgsOptionsPageWidget):
-
     def __init__(self, parent):
         super().__init__(parent)
         self.options_widget = ConsoleOptionsWidget(parent)
@@ -76,7 +73,6 @@ class ConsoleOptionsPage(QgsOptionsPageWidget):
 
 
 class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
-
     def __init__(self, parent):
         super().__init__(parent)
         self.setWindowTitle(

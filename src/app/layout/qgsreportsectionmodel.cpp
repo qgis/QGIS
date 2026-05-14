@@ -19,7 +19,11 @@
 
 #include "qgsguiutils.h"
 
+#include <QString>
+
 #include "moc_qgsreportsectionmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -28,8 +32,7 @@
 QgsReportSectionModel::QgsReportSectionModel( QgsReport *report, QObject *parent )
   : QAbstractItemModel( parent )
   , mReport( report )
-{
-}
+{}
 
 Qt::ItemFlags QgsReportSectionModel::flags( const QModelIndex &index ) const
 {

@@ -35,6 +35,9 @@
 
 #include <QLocale>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutScaleBar : public QgsTest
 {
@@ -42,7 +45,8 @@ class TestQgsLayoutScaleBar : public QgsTest
 
   public:
     TestQgsLayoutScaleBar()
-      : QgsTest( u"Layout Scalebar Tests"_s, u"layout_scalebar"_s ) {}
+      : QgsTest( u"Layout Scalebar Tests"_s, u"layout_scalebar"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -440,7 +444,14 @@ void TestQgsLayoutScaleBar::numeric()
   map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
   map->setFrameEnabled( true );
   l.addLayoutItem( map );
-  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+  // base extent that sets scale to roughly 49097
+  const QgsRectangle extent( 17.923, 30.160, 18.023, 30.260 );
+  map->setExtent( extent );
+  // adjust to the desired scale
+  map->setScale( 49100 );
+  // the extent was modified slightly to fit the scale, so we check that it was actually modified
+  QVERIFY( extent != map->extent() );
+
 
   QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
@@ -596,9 +607,9 @@ void TestQgsLayoutScaleBar::dataDefined()
   // non-deprecated Data Defined Properties (as of QGIS 3.26)
   // The values should override the manually set values set previous so that we can test that they are correctly being applied
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments, QgsProperty::fromExpression( u"0"_s ) );
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegments, QgsProperty::fromExpression( u"length('Hi')"_s ) );       // basic expression -> 2
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth, QgsProperty::fromExpression( u"1000.0 * 2.0"_s ) );        // basic math expression -> 2
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarMinimumWidth, QgsProperty::fromExpression( u"to_real('50.0')"_s ) );     // basic conversion expression -> 50
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegments, QgsProperty::fromExpression( u"length('Hi')"_s ) );   // basic expression -> 2
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth, QgsProperty::fromExpression( u"1000.0 * 2.0"_s ) );    // basic math expression -> 2
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarMinimumWidth, QgsProperty::fromExpression( u"to_real('50.0')"_s ) ); // basic conversion expression -> 50
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarMaximumWidth, QgsProperty::fromExpression( u"to_real('50.0') * 3"_s ) ); // basic conversion with math expression -> 150
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarHeight, QgsProperty::fromExpression( u"20"_s ) );
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarSubdivisionHeight, QgsProperty::fromExpression( u"30"_s ) );

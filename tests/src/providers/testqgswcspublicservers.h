@@ -40,13 +40,15 @@ class TestQgsWcsPublicServers : public QObject
         QStringList coverages; // coverage regex
         QString description;   // problem description
         Issue( const QString &d )
-          : description( d ) {}
+          : description( d )
+        {}
     };
     struct Server
     {
         Server() = default;
         Server( const QString &u )
-          : url( u ) {}
+          : url( u )
+        {}
         QString url;         // URL
         QString description; // notes
         QList<TestQgsWcsPublicServers::Issue> issues;

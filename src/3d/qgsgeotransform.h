@@ -27,11 +27,12 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgsvector3d.h"
 
 #include <Qt3DCore/QTransform>
+
+#define SIP_NO_FILE
 
 /**
  * Specialized kind of QTransform that:

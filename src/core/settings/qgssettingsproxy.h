@@ -16,12 +16,13 @@
 #ifndef QGSSETTINGSPROXY_H
 #define QGSSETTINGSPROXY_H
 
-#define SIP_NO_FILE
 
 #include <optional>
 
 #include "qgis_core.h"
 #include "qgssettings.h"
+
+#define SIP_NO_FILE
 
 /**
  * \class QgsSettingsProxy
@@ -35,7 +36,6 @@
 class CORE_EXPORT QgsSettingsProxy
 {
   public:
-
     /**
      * Constructor for QgsSettingsProxy.
      *
@@ -47,23 +47,15 @@ class CORE_EXPORT QgsSettingsProxy
     /**
      * Returns a pointer to the proxied QgsSettings object.
      */
-    QgsSettings *operator->()
-    {
-      return mOwnedSettings.has_value() ? &( *mOwnedSettings ) : mNonOwnedSettings;
-    }
+    QgsSettings *operator->() { return mOwnedSettings.has_value() ? &( *mOwnedSettings ) : mNonOwnedSettings; }
 
     /**
      * Returns a reference to the proxied QgsSettings object.
      */
-    QgsSettings &operator* ()
-    {
-      return mOwnedSettings.has_value() ? *mOwnedSettings : *mNonOwnedSettings;
-    }
+    QgsSettings &operator*() { return mOwnedSettings.has_value() ? *mOwnedSettings : *mNonOwnedSettings; }
 
   private:
-
     QgsSettings *mNonOwnedSettings = nullptr;
     std::optional< QgsSettings > mOwnedSettings;
-
 };
 #endif // QGSSETTINGSPROXY_H

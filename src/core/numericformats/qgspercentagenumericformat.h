@@ -28,12 +28,11 @@
 class CORE_EXPORT QgsPercentageNumericFormat : public QgsBasicNumericFormat
 {
   public:
-
     //! Input value format, which specifies the format of the incoming values
     enum InputValues
     {
       ValuesArePercentage, //!< Incoming values are percentage values (e.g. 50 for 50%)
-      ValuesAreFractions, //!< Incoming values are numeric fractions (e.g. 0.5 for 50%)
+      ValuesAreFractions,  //!< Incoming values are numeric fractions (e.g. 0.5 for 50%)
     };
 
     /**
@@ -65,9 +64,7 @@ class CORE_EXPORT QgsPercentageNumericFormat : public QgsBasicNumericFormat
     void setInputValues( InputValues format );
 
   private:
-
     InputValues mInputValues = ValuesArePercentage;
-
 };
 
 #endif // QGSPERCENTAGENUMERICFORMAT_H

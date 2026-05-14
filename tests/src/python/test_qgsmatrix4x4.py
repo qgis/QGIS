@@ -12,19 +12,20 @@ __author__ = "(C) 2023 by Martin Dobias"
 __date__ = "18/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
+import math
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsMatrix4x4,
     QgsVector3D,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMatrix4x4(QgisTestCase):
-
     def test_basic(self):
 
         m0 = QgsMatrix4x4()
@@ -86,6 +87,14 @@ class TestQgsMatrix4x4(QgisTestCase):
                 ),
             )
 
+        matA = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+        matB = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16.0001)
+        self.assertNotEqual(matA, matB)
+        self.assertTrue(matA.fuzzyEqual(matB, 1e-4))
+        self.assertTrue(matB.fuzzyEqual(matA, 1e-4))
+        self.assertFalse(matA.fuzzyEqual(matB, 1e-5))
+        self.assertFalse(matB.fuzzyEqual(matA, 1e-5))
+
     def test_translate(self):
         """
         Test translating a matrix
@@ -138,6 +147,179 @@ class TestQgsMatrix4x4(QgisTestCase):
                 1.0,
             ],
         )
+
+    def test_scale(self):
+        """
+        Test scaling a matrix
+        """
+        mat = QgsMatrix4x4()
+        mat.scale(QgsVector3D(2, 3, 5))
+        self.assertEqual(
+            mat.data(),
+            [
+                2.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                3.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                5.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+            ],
+        )
+
+        mat = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 0, 0, 1)
+
+        mat.scale(QgsVector3D(0.5, 2, 1))
+        self.assertEqual(
+            mat.data(),
+            [
+                0.5,
+                2.5,
+                4.5,
+                0.0,
+                4.0,
+                12.0,
+                20.0,
+                0.0,
+                3.0,
+                7.0,
+                11.0,
+                0.0,
+                4.0,
+                8.0,
+                12.0,
+                1.0,
+            ],
+        )
+
+    def test_rotate(self):
+        """
+        Test rotating a matrix
+        """
+        mat = QgsMatrix4x4()
+        mat2 = QgsMatrix4x4()
+        self.assertAlmostEqual(mat, mat2)
+        mat.rotate(90.0, QgsVector3D(0, 1, 0))
+        result = mat.data()
+        expected_result = [
+            0.0,
+            0.0,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+        ]
+        for value, expected in zip(result, expected_result):
+            self.assertAlmostEqual(value, expected)
+
+        mat2.rotate(90.0, 0, 1, 0)
+        self.assertAlmostEqual(mat, mat2)
+
+        mat = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 0, 0, 1)
+        mat2 = mat
+        self.assertAlmostEqual(mat, mat2)
+
+        mat.rotate(45, QgsVector3D(1, 0, 0))
+        result = mat.data()
+        expected_result = [
+            1.0,
+            5.0,
+            9.0,
+            0.0,
+            5.0 * math.sqrt(2) / 2.0,
+            13.0 * math.sqrt(2) / 2.0,
+            21.0 * math.sqrt(2) / 2.0,
+            0.0,
+            math.sqrt(2) / 2.0,
+            math.sqrt(2) / 2.0,
+            math.sqrt(2) / 2.0,
+            0.0,
+            4.0,
+            8.0,
+            12.0,
+            1.0,
+        ]
+        for value, expected in zip(result, expected_result):
+            self.assertAlmostEqual(value, expected)
+
+        mat2.rotate(45, 1, 0, 0)
+        self.assertAlmostEqual(mat, mat2)
+
+        # combine rotation and translation
+        mat = QgsMatrix4x4()
+        mat.translate(QgsVector3D(5, 1, -2))
+        self.assertEqual(mat.data(), [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 1, -2, 1])
+
+        mat.rotate(90.0, 0, 0, 1)
+        expected_result = [0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 5, 1, -2, 1]
+        for value, expected in zip(mat.data(), expected_result):
+            self.assertAlmostEqual(value, expected)
+
+        mat.translate(QgsVector3D(-1, 5, 2))
+        expected_result = [0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        for value, expected in zip(mat.data(), expected_result):
+            self.assertAlmostEqual(value, expected)
+
+    def test_determinant(self):
+        mat = QgsMatrix4x4()
+        self.assertEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.translate(QgsVector3D(10.0, 20.0, 30.0))
+        self.assertEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.rotate(45.0, QgsVector3D(0.0, 0.0, 1.0))
+        self.assertAlmostEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+        self.assertEqual(mat.determinant(), 24.0)
+
+        mat = QgsMatrix4x4()
+        mat.translate(QgsVector3D(5.0, 5.0, 5.0))
+        mat.rotate(30.0, QgsVector3D(1, 0, 0))
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+        self.assertAlmostEqual(mat.determinant(), 24.0)
+
+    def test_mapVector(self):
+        mat = QgsMatrix4x4()
+
+        mat.translate(QgsVector3D(10.0, 20.0, 30.0))
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+
+        vector = QgsVector3D(1.0, 2.0, 3.0)
+
+        # map() includes translation
+        mapped = mat.map(vector)
+        self.assertEqual(mapped.x(), 12.0)
+        self.assertEqual(mapped.y(), 26.0)
+        self.assertEqual(mapped.z(), 42.0)
+
+        # mapVector() ignores translation
+        mapped_vector = mat.mapVector(vector)
+        self.assertEqual(mapped_vector.x(), 2.0)
+        self.assertEqual(mapped_vector.y(), 6.0)
+        self.assertEqual(mapped_vector.z(), 12.0)
 
 
 if __name__ == "__main__":

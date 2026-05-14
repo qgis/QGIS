@@ -30,10 +30,9 @@ class QgsPolygon;
  * \class QgsSurface
  * \brief Surface geometry type.
  */
-class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
+class CORE_EXPORT QgsSurface : public QgsAbstractGeometry
 {
   public:
-
     QgsBox3D boundingBox3D() const override
     {
       if ( mBoundingBox.isNull() )
@@ -95,7 +94,6 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
     }
 #endif
   protected:
-
     void clearCache() const override;
 
     mutable QgsBox3D mBoundingBox;

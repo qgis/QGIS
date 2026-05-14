@@ -32,13 +32,12 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     Q_OBJECT
 
   public:
-
     //! Shape type
     enum Shape
     {
-      Ellipse, //!< Ellipse shape
+      Ellipse,   //!< Ellipse shape
       Rectangle, //!< Rectangle shape
-      Triangle //!< Triangle shape
+      Triangle   //!< Triangle shape
     };
 
 
@@ -113,7 +112,6 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   protected:
-
     void draw( QgsLayoutItemRenderContext &context ) override;
 
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
@@ -134,7 +132,6 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     void updateBoundingRect();
 
   private:
-
     Shape mShape = Rectangle;
 
     std::unique_ptr< QgsFillSymbol > mShapeStyleSymbol;

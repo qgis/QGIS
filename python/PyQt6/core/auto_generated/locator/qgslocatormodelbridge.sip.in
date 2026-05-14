@@ -56,7 +56,7 @@ Returns ``True`` if some text to be search is pending in the queue
 Returns ``True`` if the a search is currently running
 %End
 
-    void triggerResult( const QModelIndex &index,  const int actionId = -1 );
+    void triggerResult( const QModelIndex &index, const int actionId = -1 );
 %Docstring
 Triggers the result at given ``index`` and with optional ``actionId`` if
 an additional action was triggered

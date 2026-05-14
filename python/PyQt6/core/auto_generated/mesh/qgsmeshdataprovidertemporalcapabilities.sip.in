@@ -10,7 +10,7 @@
 
 
 
-class QgsMeshDataProviderTemporalCapabilities: QgsDataProviderTemporalCapabilities
+class QgsMeshDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
 {
 %Docstring(signature="appended")
 Handles properties relating to a mesh data provider's temporal
@@ -23,7 +23,6 @@ capabilities.
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 %End
   public:
-
     enum MatchingTemporalDatasetMethod /BaseType=IntEnum/
     {
       FindClosestDatasetBeforeStartRangeTime,

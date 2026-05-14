@@ -26,8 +26,7 @@
 
 QgsModelViewToolTemporaryKeyZoom::QgsModelViewToolTemporaryKeyZoom( QgsModelGraphicsView *view )
   : QgsModelViewToolZoom( view )
-{
-}
+{}
 
 void QgsModelViewToolTemporaryKeyZoom::modelReleaseEvent( QgsModelViewMouseEvent *event )
 {

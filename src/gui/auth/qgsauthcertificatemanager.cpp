@@ -21,8 +21,11 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsauthcertificatemanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
   : QWidget( parent )

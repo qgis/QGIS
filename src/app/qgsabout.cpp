@@ -29,10 +29,13 @@
 #include <QImageReader>
 #include <QRegularExpression>
 #include <QSqlDatabase>
+#include <QString>
 #include <QTextStream>
 #include <QUrl>
 
 #include "moc_qgsabout.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_MACOS
 // Modeless dialog with close button only
@@ -125,10 +128,12 @@ void QgsAbout::init()
   QFile donorsFile( QgsApplication::donorsFilePath() );
   if ( donorsFile.open( QIODevice::ReadOnly ) )
   {
-    const QString donorsHTML = tr( "<p>For a list of individuals and institutions who have contributed "
-                                   "money to fund QGIS development and other project costs see "
-                                   "<a href=\"https://qgis.org/funding/donate/\">"
-                                   "https://qgis.org/funding/donate/</a></p>" );
+    const QString donorsHTML = tr(
+      "<p>For a list of individuals and institutions who have contributed "
+      "money to fund QGIS development and other project costs see "
+      "<a href=\"https://qgis.org/funding/donate/\">"
+      "https://qgis.org/funding/donate/</a></p>"
+    );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );

@@ -18,12 +18,12 @@
 #ifndef QGSFILTERRESTORER_H
 #define QGSFILTERRESTORER_H
 
-#define SIP_NO_FILE
-
 
 #include "qgis_server.h"
 
 #include <QHash>
+
+#define SIP_NO_FILE
 
 class QgsMapLayer;
 class QgsAccessControl;
@@ -41,10 +41,7 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
     QgsOWSServerFilterRestorer() = default;
 
     //! Destructor. When object is destroyed all original layer filters will be restored.
-    ~QgsOWSServerFilterRestorer()
-    {
-      restoreLayerFilters( mOriginalLayerFilters );
-    }
+    ~QgsOWSServerFilterRestorer() { restoreLayerFilters( mOriginalLayerFilters ); }
 
     QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer &rh ) = delete;
     QgsOWSServerFilterRestorer &operator=( const QgsOWSServerFilterRestorer &rh ) = delete;

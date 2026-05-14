@@ -32,8 +32,11 @@
 #include <QNetworkProxy>
 #include <QNetworkProxyFactory>
 #include <QRegularExpression>
+#include <QString>
 #include <QTcpSocket>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 void QgsHelp::openHelp( const QString &key )
 {

@@ -38,7 +38,6 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -47,6 +46,7 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
     enum class CustomRole : int
     {
       Object = Qt::UserRole + 1, //!< Object
+      IsEmptyObject,             //!< TRUE if row represents the empty object \since QGIS 4.0
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -70,10 +70,9 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
     void objectAdded( const QString &name );
     void objectRemoved( const QString &name );
 #endif
-///@endcond
+    ///@endcond
 
   protected:
-
 ///@cond PRIVATE
 #ifndef SIP_RUN
     virtual void objectAboutToBeAddedInternal( const QString & ) {}
@@ -84,9 +83,9 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
     virtual int rowCountInternal( const QModelIndex & ) const { return 0; }
     virtual QVariant dataInternal( const QModelIndex &, int ) const { return QVariant(); }
     virtual bool setDataInternal( const QModelIndex &, const QVariant &, int = Qt::EditRole ) { return false; }
-    virtual Qt::ItemFlags flagsInternal( const QModelIndex & ) const { return Qt::ItemFlags();}
+    virtual Qt::ItemFlags flagsInternal( const QModelIndex & ) const { return Qt::ItemFlags(); }
 #endif
-///@endcond
+    ///@endcond
 };
 
 /**
@@ -98,12 +97,9 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
  *
  * \since QGIS 4.0
  */
-template<class T>
-class CORE_EXPORT QgsProjectStoredObjectManagerModel : public QgsProjectStoredObjectManagerModelBase
+template<class T> class CORE_EXPORT QgsProjectStoredObjectManagerModel : public QgsProjectStoredObjectManagerModelBase
 {
-
   public:
-
     /**
      * Constructor for QgsProjectStoredObjectManagerModel, showing the objects from the specified \a manager.
      */
@@ -134,8 +130,7 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModel : public QgsProjectStoredOb
     bool allowEmptyObject() const { return mAllowEmpty; }
 
   protected:
-
-///@cond PRIVATE
+    ///@cond PRIVATE
     int rowCountInternal( const QModelIndex &parent ) const override;
     QVariant dataInternal( const QModelIndex &index, int role ) const override;
     bool setDataInternal( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -147,7 +142,7 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModel : public QgsProjectStoredOb
     void objectRemovedInternal( const QString &name ) override;
     void objectRenamedInternal( T *object, const QString &newName );
     QVariant objectToVariant( T *object ) const;
-///@endcond PRIVATE
+    ///@endcond PRIVATE
 
     //! Object manager
     QgsAbstractProjectStoredObjectManager<T> *mObjectManager = nullptr;
@@ -155,8 +150,6 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModel : public QgsProjectStoredOb
   private:
     bool mAllowEmpty = false;
 };
-
-
 
 
 /**
@@ -174,7 +167,6 @@ class CORE_EXPORT QgsProjectStoredObjectManagerProxyModelBase : public QSortFilt
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectStoredObjectManagerProxyModelBase.
      */
@@ -200,7 +192,6 @@ class CORE_EXPORT QgsProjectStoredObjectManagerProxyModelBase : public QSortFilt
     void setFilterString( const QString &filter );
 
   protected:
-
     /**
      * Returns TRUE if the proxy accepts the matching source row.
      *
@@ -225,21 +216,16 @@ class CORE_EXPORT QgsProjectStoredObjectManagerProxyModelBase : public QSortFilt
  *
  * \since QGIS 4.0
  */
-template<class T>
-class CORE_EXPORT QgsProjectStoredObjectManagerProxyModel : public QgsProjectStoredObjectManagerProxyModelBase
+template<class T> class CORE_EXPORT QgsProjectStoredObjectManagerProxyModel : public QgsProjectStoredObjectManagerProxyModelBase
 {
-
   public:
-
     /**
      * Constructor for QgsProjectStoredObjectManagerProxyModel.
      */
     explicit QgsProjectStoredObjectManagerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
   protected:
-
     bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const override;
-
 };
 
 

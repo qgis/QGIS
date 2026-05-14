@@ -30,9 +30,7 @@ QgsPlotTool::QgsPlotTool( QgsPlotCanvas *canvas, const QString &name )
   , mCanvas( canvas )
   , mToolName( name )
 {
-  connect( mCanvas, &QgsPlotCanvas::willBeDeleted, this, [this] {
-    mCanvas = nullptr;
-  } );
+  connect( mCanvas, &QgsPlotCanvas::willBeDeleted, this, [this] { mCanvas = nullptr; } );
 }
 
 QgsPoint QgsPlotTool::toMapCoordinates( const QgsPointXY &point ) const

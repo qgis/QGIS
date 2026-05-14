@@ -70,12 +70,16 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QSvgWidget>
 #include <QTextStream>
 #include <QToolButton>
+#include <QToolTip>
 #include <QUiLoader>
 
 #include "moc_qgsattributeform.cpp"
+
+using namespace Qt::StringLiterals;
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -203,6 +207,10 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
       case QgsAttributeEditorContext::IdentifyMode:
         w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
+
+      case QgsAttributeEditorContext::PreviewMode:
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
+        break;
     }
   }
   //update all form editor widget modes to match
@@ -213,49 +221,63 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
     w->setContext( newContext );
   }
 
-  bool relationWidgetsVisible = ( mMode != QgsAttributeEditorContext::AggregateSearchMode );
-  for ( QgsAttributeFormRelationEditorWidget *w : findChildren<QgsAttributeFormRelationEditorWidget *>() )
-  {
-    w->setVisible( relationWidgetsVisible );
-  }
+  auto setRelationWidgetsVisible = [this]( bool relationWidgetsVisible ) {
+    for ( QgsAttributeFormRelationEditorWidget *w : findChildren<QgsAttributeFormRelationEditorWidget *>() )
+    {
+      w->setVisible( relationWidgetsVisible );
+    }
+  };
 
   switch ( mode )
   {
     case QgsAttributeEditorContext::SingleEditMode:
+      setRelationWidgetsVisible( true );
       setFeature( mFeature );
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::AddFeatureMode:
+      setRelationWidgetsVisible( true );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::FixAttributeMode:
+      setRelationWidgetsVisible( true );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::MultiEditMode:
+      setRelationWidgetsVisible( true );
       resetMultiEdit( false );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::SearchMode:
+      setRelationWidgetsVisible( true );
       mSearchButtonBox->setVisible( true );
       synchronizeState();
       hideButtonBox();
       break;
 
     case QgsAttributeEditorContext::AggregateSearchMode:
+      setRelationWidgetsVisible( false );
       mSearchButtonBox->setVisible( false );
       synchronizeState();
       hideButtonBox();
       break;
 
     case QgsAttributeEditorContext::IdentifyMode:
+      setRelationWidgetsVisible( true );
       setFeature( mFeature );
+      synchronizeState();
+      mSearchButtonBox->setVisible( false );
+      break;
+
+    case QgsAttributeEditorContext::PreviewMode:
+      setRelationWidgetsVisible( false );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
@@ -308,6 +330,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
     case QgsAttributeEditorContext::FixAttributeMode:
+    case QgsAttributeEditorContext::PreviewMode:
     {
       resetValues();
 
@@ -569,9 +592,23 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
   if ( !mDefaultValueDependencies.contains( originIdx ) )
     return;
 
-  if ( !mFeature.isValid()
-       && mMode != QgsAttributeEditorContext::AddFeatureMode )
-    return;
+  if ( !mFeature.isValid() )
+  {
+    switch ( mMode )
+    {
+      case QgsAttributeEditorContext::SingleEditMode:
+      case QgsAttributeEditorContext::IdentifyMode:
+      case QgsAttributeEditorContext::FixAttributeMode:
+      case QgsAttributeEditorContext::SearchMode:
+      case QgsAttributeEditorContext::AggregateSearchMode:
+      case QgsAttributeEditorContext::MultiEditMode:
+        return;
+
+      case QgsAttributeEditorContext::AddFeatureMode:
+      case QgsAttributeEditorContext::PreviewMode:
+        break;
+    }
+  }
 
   // create updated Feature
   QgsFeature updatedFeature = getUpdatedFeature();
@@ -918,6 +955,9 @@ bool QgsAttributeForm::saveWithDetails( QString *error )
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
       break;
+
+    case QgsAttributeEditorContext::PreviewMode:
+      return true;
   }
 
   mIsSaving = true;
@@ -943,6 +983,9 @@ bool QgsAttributeForm::saveWithDetails( QString *error )
 
     case QgsAttributeEditorContext::MultiEditMode:
       success = saveMultiEdits();
+      break;
+
+    case QgsAttributeEditorContext::PreviewMode:
       break;
   }
 
@@ -1070,6 +1113,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
     case QgsAttributeEditorContext::FixAttributeMode:
+    case QgsAttributeEditorContext::PreviewMode:
     {
       Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
@@ -1262,6 +1306,32 @@ void QgsAttributeForm::updateLabels()
         if ( ok && !value.isEmpty() )
         {
           label->setText( value );
+        }
+      }
+    }
+  }
+  if ( !mCustomCommentDataDefinedProperties.isEmpty() )
+  {
+    QgsFeature currentFeature;
+    if ( currentFormValuesFeature( currentFeature ) )
+    {
+      QgsExpressionContext context = createExpressionContext( currentFeature );
+
+      for ( auto it = mCustomCommentDataDefinedProperties.constBegin(); it != mCustomCommentDataDefinedProperties.constEnd(); ++it )
+      {
+        QWidget *labelWidget { it.key() };
+        bool ok;
+        const QString value { it->valueAsString( context, QString(), &ok ) };
+        if ( ok && !value.isEmpty() )
+        {
+          const QString fieldName = labelWidget->objectName();
+          const QgsFields fields = mLayer->fields();
+          int idx = fields.lookupField( fieldName );
+
+          if ( idx >= 0 )
+          {
+            labelWidget->setToolTip( QgsFieldModel::fieldToolTipExtended( fields.at( idx ), mLayer, value ) );
+          }
         }
       }
     }
@@ -1540,6 +1610,27 @@ QgsRelationWidgetWrapper *QgsAttributeForm::setupRelationWidgetWrapper( const QS
   return rww;
 }
 
+QToolButton *QgsAttributeForm::createCommentInfoButton( QWidget *labelWidget )
+{
+  QToolButton *infoButton = new QToolButton( labelWidget );
+  infoButton->setIcon( QgsApplication::getThemeIcon( u"/mIndicatorFieldComment.svg"_s, QgsApplication::palette().color( QPalette::WindowText ) ) );
+  infoButton->setFocusPolicy( Qt::NoFocus );
+  // looks like an icon, but on click the tooltip of the label appears
+  infoButton->setAutoRaise( true );
+  infoButton->setStyleSheet(
+    "QToolButton { "
+    "  border: none; "
+    "  background-color: transparent; "
+    "  padding: 0px; "
+    "}"
+  );
+  // connect button to label (for the label's tooltip)
+  connect( infoButton, &QToolButton::clicked, labelWidget, [labelWidget]() { QToolTip::showText( QCursor::pos(), labelWidget->toolTip(), labelWidget ); } );
+  // invisible per default
+  infoButton->setVisible( false );
+  return infoButton;
+}
+
 void QgsAttributeForm::preventFeatureRefresh()
 {
   mPreventFeatureRefresh = true;
@@ -1587,10 +1678,26 @@ bool QgsAttributeForm::needsGeometry() const
 
 void QgsAttributeForm::synchronizeState()
 {
-  bool isEditable = ( mFeature.isValid()
-                      || mMode == QgsAttributeEditorContext::AddFeatureMode
-                      || mMode == QgsAttributeEditorContext::MultiEditMode )
-                    && mLayer->isEditable();
+  bool isEditable = false;
+  switch ( mMode )
+  {
+    case QgsAttributeEditorContext::SingleEditMode:
+    case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
+    case QgsAttributeEditorContext::SearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
+    case QgsAttributeEditorContext::MultiEditMode:
+      isEditable = mFeature.isValid() && mLayer->isEditable();
+      break;
+
+    case QgsAttributeEditorContext::AddFeatureMode:
+      isEditable = mLayer->isEditable();
+      break;
+
+    case QgsAttributeEditorContext::PreviewMode:
+      isEditable = true;
+      break;
+  }
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
@@ -1600,7 +1707,9 @@ void QgsAttributeForm::synchronizeState()
       const QList<QgsAttributeFormEditorWidget *> formWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
 
       for ( QgsAttributeFormEditorWidget *formWidget : formWidgets )
+      {
         formWidget->setConstraintResultVisible( isEditable );
+      }
 
       eww->setConstraintResultVisible( isEditable );
 
@@ -1637,7 +1746,8 @@ void QgsAttributeForm::synchronizeState()
       {
         if ( !mValidConstraints && !mConstraintsFailMessageBarItem )
         {
-          mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::MessageLevel::Warning, -1 );
+          mConstraintsFailMessageBarItem
+            = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::MessageLevel::Warning, -1 );
           mMessageBar->pushItem( mConstraintsFailMessageBarItem );
         }
         else if ( mValidConstraints && mConstraintsFailMessageBarItem )
@@ -1659,7 +1769,9 @@ void QgsAttributeForm::synchronizeState()
   // change OK button status
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
+  {
     okButton->setEnabled( isEditable );
+  }
 }
 
 void QgsAttributeForm::init()
@@ -1790,10 +1902,27 @@ void QgsAttributeForm::init()
               layout->setRowStretch( row, widgDef->verticalStretch() );
               addSpacer = false;
             }
+            else
+            {
+              if ( widgetInfo.expandingNeeded )
+              {
+                addSpacer = false;
+                widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+              }
+              else
+              {
+                widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Maximum );
+              }
+            }
 
             if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
             {
-              registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+              registerContainerInformation( new ContainerInformation(
+                widgetInfo.widget,
+                containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(),
+                containerDef->collapsed(),
+                containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression()
+              ) );
             }
             column += 2;
             break;
@@ -1809,6 +1938,18 @@ void QgsAttributeForm::init()
               layout->setRowStretch( row, widgDef->verticalStretch() );
               addSpacer = false;
             }
+            else
+            {
+              if ( widgetInfo.expandingNeeded )
+              {
+                addSpacer = false;
+                widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+              }
+              else
+              {
+                widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Maximum );
+              }
+            }
             if ( widgDef->horizontalStretch() > 0 && widgDef->horizontalStretch() > layout->columnStretch( column + 1 ) )
             {
               layout->setColumnStretch( column + 1, widgDef->horizontalStretch() );
@@ -1816,7 +1957,12 @@ void QgsAttributeForm::init()
 
             if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
             {
-              registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+              registerContainerInformation( new ContainerInformation(
+                widgetInfo.widget,
+                containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(),
+                containerDef->collapsed(),
+                containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression()
+              ) );
             }
             column += 2;
             break;
@@ -1832,7 +1978,6 @@ void QgsAttributeForm::init()
             }
 
             QWidget *tabPage = new QWidget( tabWidget );
-
             tabWidget->addTab( tabPage, widgDef->name() );
             tabWidget->setTabStyle( tabWidget->tabBar()->count() - 1, widgDef->labelStyle() );
 
@@ -1844,6 +1989,11 @@ void QgsAttributeForm::init()
             tabPage->setLayout( tabPageLayout );
 
             WidgetInfo widgetInfo = createWidgetFromDef( widgDef, tabPage, mLayer, mContext );
+            if ( widgetInfo.expandingNeeded )
+            {
+              addSpacer = false;
+              widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+            }
             tabPageLayout->addWidget( widgetInfo.widget );
             break;
           }
@@ -1894,7 +2044,8 @@ void QgsAttributeForm::init()
         hasRootFields = true;
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
-        QLabel *label = new QLabel( widgetInfo.labelText );
+        QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
+        QLabel *label = new QLabel( widgetInfo.labelText, labelWidget );
 
         if ( widgetInfo.labelStyle.overrideColor )
         {
@@ -1909,7 +2060,7 @@ void QgsAttributeForm::init()
           label->setFont( widgetInfo.labelStyle.font );
         }
 
-        label->setToolTip( widgetInfo.toolTip );
+        labelWidget->setToolTip( widgetInfo.toolTip );
         if ( columnCount > 1 && !widgetInfo.labelOnTop )
         {
           label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -1917,12 +2068,23 @@ void QgsAttributeForm::init()
 
         label->setBuddy( widgetInfo.widget );
 
+        // Indicator button when a comment is available for the field
+        QToolButton *commentInfoButton = createCommentInfoButton( labelWidget );
+        // Only visible when there is a comment available
+        if ( !widgetInfo.hint.isEmpty() )
+          commentInfoButton->setVisible( true );
+
         // If at least one expanding widget is present do not add a spacer
         if ( widgetInfo.widget
              && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Fixed
              && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Maximum
              && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Preferred )
           addSpacer = false;
+
+        QHBoxLayout *labelLayout = new QHBoxLayout( labelWidget );
+        labelLayout->addWidget( label );
+        labelLayout->addWidget( commentInfoButton );
+        labelLayout->setContentsMargins( 0, 0, 0, 0 );
 
         if ( !widgetInfo.showLabel )
         {
@@ -1947,7 +2109,7 @@ void QgsAttributeForm::init()
         {
           QVBoxLayout *c = new QVBoxLayout();
           label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-          c->addWidget( label );
+          c->addWidget( labelWidget );
           c->addWidget( widgetInfo.widget );
           layout->addLayout( c, row, column, 1, 2 );
 
@@ -1966,7 +2128,7 @@ void QgsAttributeForm::init()
         else
         {
           const int widgetColumn = column + 1;
-          layout->addWidget( label, row, column++ );
+          layout->addWidget( labelWidget, row, column++ );
           layout->addWidget( widgetInfo.widget, row, column++ );
 
           if ( widgDef->verticalStretch() > 0 && widgDef->verticalStretch() > layout->rowStretch( row ) )
@@ -1988,12 +2150,24 @@ void QgsAttributeForm::init()
           if ( fieldIdx >= 0 && fieldIdx < mLayer->fields().count() )
           {
             const QString fieldName { mLayer->fields().at( fieldIdx ).name() };
+            label->setObjectName( fieldName );
+
             if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
             {
               const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
               if ( property.isActive() )
               {
                 mLabelDataDefinedProperties[label] = property;
+              }
+            }
+            labelWidget->setObjectName( fieldName );
+            if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment ) )
+            {
+              const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::CustomComment ) };
+              if ( property.isActive() )
+              {
+                mCustomCommentDataDefinedProperties[labelWidget] = property;
+                commentInfoButton->setVisible( true );
               }
             }
             if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Editable ) )
@@ -2055,15 +2229,40 @@ void QgsAttributeForm::init()
 
     const QgsFields fields = mLayer->fields();
 
+    // Collect non-first fields of composite foreign keys — these should be
+    // hidden since the RelationReference widget on the first field manages
+    // all composite key values internally
+    QSet<int> compositeHiddenFields;
+    const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( mLayer );
+    for ( const QgsRelation &rel : referencingRelations )
+    {
+      if ( rel.type() != Qgis::RelationshipType::Normal )
+        continue;
+
+      const QList<QgsRelation::FieldPair> fieldPairs = rel.fieldPairs();
+      if ( fieldPairs.size() > 1 )
+      {
+        for ( int i = 1; i < fieldPairs.size(); i++ )
+        {
+          const int idx = fields.lookupField( fieldPairs.at( i ).referencingField() );
+          if ( idx >= 0 )
+            compositeHiddenFields.insert( idx );
+        }
+      }
+    }
+
     for ( const QgsField &field : fields )
     {
-      int idx = fields.lookupField( field.name() );
+      const QString fieldName = field.name();
+      int idx = fields.lookupField( fieldName );
       if ( idx < 0 )
         continue;
 
+      if ( compositeHiddenFields.contains( idx ) )
+        continue;
+
       //show attribute alias if available
-      QString fieldName = mLayer->attributeDisplayName( idx );
-      QString labelText = fieldName;
+      QString labelText = mLayer->attributeDisplayName( idx );
       labelText.replace( '&', "&&"_L1 ); // need to escape '&' or they'll be replace by _ in the label text
 
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
@@ -2074,8 +2273,18 @@ void QgsAttributeForm::init()
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
-      QLabel *label = new QLabel( labelText );
-      label->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
+      QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
+      QLabel *label = new QLabel( labelText, labelWidget );
+      label->setObjectName( fieldName );
+
+      labelWidget->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
+
+      // Indicator button when a comment is available for the field
+      QToolButton *commentInfoButton = createCommentInfoButton( labelWidget );
+      // Only visible when there is a comment available (not visible when custom comment is an empty string)
+      if ( !field.customComment().isEmpty() || ( field.customComment().isNull() && !field.comment().isEmpty() ) )
+        commentInfoButton->setVisible( true );
+
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
 
@@ -2085,6 +2294,16 @@ void QgsAttributeForm::init()
         if ( property.isActive() )
         {
           mLabelDataDefinedProperties[label] = property;
+        }
+      }
+      labelWidget->setObjectName( fieldName );
+      if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment ) )
+      {
+        const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::CustomComment ) };
+        if ( property.isActive() )
+        {
+          mCustomCommentDataDefinedProperties[labelWidget] = property;
+          commentInfoButton->setVisible( true );
         }
       }
 
@@ -2146,17 +2365,23 @@ void QgsAttributeForm::init()
         mIconMap[eww->widget()] = i;
       }
 
+      QHBoxLayout *labelLayout = new QHBoxLayout( labelWidget );
+      labelLayout->addWidget( label );
+      labelLayout->addWidget( commentInfoButton );
+      labelLayout->setContentsMargins( 0, 0, 0, 0 );
+
       if ( labelOnTop )
       {
-        gridLayout->addWidget( label, row++, 0, 1, 2 );
+        gridLayout->addWidget( labelWidget, row++, 0, 1, 2 );
         gridLayout->addWidget( w, row++, 0, 1, 2 );
         gridLayout->addWidget( i, row++, 0, 1, 2 );
       }
       else
       {
-        gridLayout->addWidget( label, row, 0 );
-        gridLayout->addWidget( w, row, 1 );
-        gridLayout->addWidget( i, row++, 2 );
+        int widgetColumn = 0;
+        gridLayout->addWidget( labelWidget, row, widgetColumn++ );
+        gridLayout->addWidget( w, row, widgetColumn++ );
+        gridLayout->addWidget( i, row++, widgetColumn++ );
       }
     }
 
@@ -2222,9 +2447,7 @@ void QgsAttributeForm::init()
     openAttributeTableButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     openAttributeTableButton->setText( tr( "Show in &Table" ) );
     openAttributeTableButton->setToolTip( tr( "Open the attribute table editor with the filtered features" ) );
-    connect( openAttributeTableButton, &QToolButton::clicked, this, [this] {
-      emit openFilteredFeaturesAttributeTable( createFilterExpression() );
-    } );
+    connect( openAttributeTableButton, &QToolButton::clicked, this, [this] { emit openFilteredFeaturesAttributeTable( createFilterExpression() ); } );
     boxLayout->addWidget( openAttributeTableButton );
 
     QPushButton *zoomButton = new QPushButton();
@@ -2332,17 +2555,12 @@ void QgsAttributeForm::initPython()
 
   // Init Python, if init function is not empty and the combo indicates
   // the source for the function code
-  if ( !mLayer->editFormConfig().initFunction().isEmpty()
-       && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
+  if ( !mLayer->editFormConfig().initFunction().isEmpty() && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
   {
     const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
     if ( !allowed )
     {
-      mMessageBar->pushMessage(
-        tr( "Security warning" ),
-        tr( "The attribute form contains an embedded script which has been denied execution." ),
-        Qgis::MessageLevel::Warning
-      );
+      mMessageBar->pushMessage( tr( "Security warning" ), tr( "The attribute form contains an embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
       return;
     }
 
@@ -2411,9 +2629,7 @@ void QgsAttributeForm::initPython()
       static int sFormId = 0;
       mPyFormVarName = u"_qgis_featureform_%1_%2"_s.arg( mFormNr ).arg( sFormId++ );
 
-      QString form = u"%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )"_s
-                       .arg( mPyFormVarName )
-                       .arg( ( quint64 ) this );
+      QString form = u"%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )"_s.arg( mPyFormVarName ).arg( ( quint64 ) this );
 
       QgsPythonRunner::run( form );
 
@@ -2428,7 +2644,9 @@ void QgsAttributeForm::initPython()
       {
         // If we get here, it means that the function doesn't accept three arguments
         QMessageBox msgBox;
-        msgBox.setText( tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the <b>Fields</b> tab of the layer properties." ).arg( initFunction ) );
+        msgBox.setText(
+          tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the <b>Fields</b> tab of the layer properties." ).arg( initFunction )
+        );
         msgBox.exec();
 #if 0
         QString expr = QString( "%1(%2)" )
@@ -2517,13 +2735,15 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         mWidgets.append( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
-        newWidgetInfo.hint = fields.at( fldIdx ).comment();
+        const QString customComment = fields.at( fldIdx ).customComment();
+        newWidgetInfo.hint = customComment.isNull() ? fields.at( fldIdx ).comment() : customComment;
       }
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );
       newWidgetInfo.labelText = mLayer->attributeDisplayName( fldIdx );
       newWidgetInfo.labelText.replace( '&', "&&"_L1 ); // need to escape '&' or they'll be replace by _ in the label text
-      newWidgetInfo.toolTip = u"<b>%1</b><p>%2</p>"_s.arg( mLayer->attributeDisplayName( fldIdx ), newWidgetInfo.hint );
+
+      newWidgetInfo.toolTip = ( QgsFieldModel::fieldToolTipExtended( fields.at( fldIdx ), mLayer ) );
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;
@@ -2651,7 +2871,23 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
           if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
           {
-            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+            registerContainerInformation( new ContainerInformation(
+              widgetInfo.widget,
+              containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(),
+              containerDef->collapsed(),
+              containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression()
+            ) );
+          }
+          if ( childDef->verticalStretch() == 0 )
+          {
+            if ( widgetInfo.expandingNeeded )
+            {
+              widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+            }
+            else
+            {
+              widgetInfo.widget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Maximum );
+            }
           }
         }
 
@@ -2666,7 +2902,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         }
         else
         {
-          QLabel *mypLabel = new QLabel( widgetInfo.labelText );
+          QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
+          QLabel *mypLabel = new QLabel( widgetInfo.labelText, labelWidget );
 
           if ( widgetInfo.labelStyle.overrideColor )
           {
@@ -2681,6 +2918,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
             mypLabel->setFont( widgetInfo.labelStyle.font );
           }
 
+          // Indicator button when a comment is available for the field
+          QToolButton *commentInfoButton = createCommentInfoButton( labelWidget );
+          // Only visible when there is a comment available
+          if ( !widgetInfo.hint.isEmpty() )
+            commentInfoButton->setVisible( true );
+
           // Alias DD overrides
           if ( childDef->type() == Qgis::AttributeEditorType::Field )
           {
@@ -2690,6 +2933,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
             if ( fldIdx < fields.count() && fldIdx >= 0 )
             {
               const QString fieldName { fields.at( fldIdx ).name() };
+              mypLabel->setObjectName( fieldName );
+
               if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
               {
                 const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
@@ -2706,10 +2951,19 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
                   mEditableDataDefinedProperties[widgetInfo.widget] = property;
                 }
               }
+              labelWidget->setObjectName( fieldName );
+              if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment ) )
+              {
+                const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::CustomComment ) };
+                if ( property.isActive() )
+                {
+                  mCustomCommentDataDefinedProperties[labelWidget] = property;
+                }
+              }
             }
           }
 
-          mypLabel->setToolTip( widgetInfo.toolTip );
+          labelWidget->setToolTip( widgetInfo.toolTip );
           if ( columnCount > 1 && !widgetInfo.labelOnTop )
           {
             mypLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -2717,12 +2971,17 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
           mypLabel->setBuddy( widgetInfo.widget );
 
+          QHBoxLayout *labelLayout = new QHBoxLayout( labelWidget );
+          labelLayout->addWidget( mypLabel );
+          labelLayout->addWidget( commentInfoButton );
+          labelLayout->setContentsMargins( 0, 0, 0, 0 );
+
           if ( widgetInfo.labelOnTop )
           {
             widgetColumn = column + 1;
             QVBoxLayout *c = new QVBoxLayout();
             mypLabel->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-            c->layout()->addWidget( mypLabel );
+            c->addWidget( labelWidget );
             c->layout()->addWidget( widgetInfo.widget );
             gbLayout->addLayout( c, row, column, 1, 2 );
             column += 2;
@@ -2730,7 +2989,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           else
           {
             widgetColumn = column + 1;
-            gbLayout->addWidget( mypLabel, row, column++ );
+            gbLayout->addWidget( labelWidget, row, column++ );
             gbLayout->addWidget( widgetInfo.widget, row, column++ );
           }
         }
@@ -2775,13 +3034,13 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
+      newWidgetInfo.expandingNeeded |= !addSpacer;
       break;
     }
 
     case Qgis::AttributeEditorType::QmlElement:
     {
       const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
-
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
       context.setAttributeFormMode( mMode );
@@ -2992,6 +3251,7 @@ void QgsAttributeForm::layerSelectionChanged()
     case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
+    case QgsAttributeEditorContext::PreviewMode:
       break;
 
     case QgsAttributeEditorContext::MultiEditMode:
@@ -3223,7 +3483,8 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 
 bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
 {
-  return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature );
+  return QgsVectorLayerUtils::
+    fieldIsEditable( mLayer, fieldIndex, mFeature, mMode == QgsAttributeEditorContext::PreviewMode ? QgsVectorLayerUtils::FieldIsEditableFlag::IgnoreLayerEditability : QgsVectorLayerUtils::FieldIsEditableFlags() );
 }
 
 void QgsAttributeForm::updateFieldDependencies()
@@ -3312,8 +3573,7 @@ void QgsAttributeForm::updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrap
   if ( eww )
   {
     QString expressionField = eww->layer()->expressionField( eww->fieldIdx() );
-    if ( expressionField.contains( u"relation_aggregate"_s )
-         || expressionField.contains( u"get_features"_s ) )
+    if ( expressionField.contains( u"relation_aggregate"_s ) || expressionField.contains( u"get_features"_s ) )
       mRelatedLayerFieldsDependencies.insert( eww );
   }
   else

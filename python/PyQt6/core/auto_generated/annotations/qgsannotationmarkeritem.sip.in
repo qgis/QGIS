@@ -21,7 +21,6 @@ An annotation item which renders a marker symbol at a point location.
 #include "qgsannotationmarkeritem.h"
 %End
   public:
-
     QgsAnnotationMarkerItem( const QgsPoint &point );
 %Docstring
 Constructor for QgsAnnotationMarkerItem, at the specified ``point``.

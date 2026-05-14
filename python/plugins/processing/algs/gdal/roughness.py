@@ -22,14 +22,14 @@ __copyright__ = "(C) 2013, Alexander Bruy"
 import os
 
 from qgis.core import (
-    QgsRasterFileWriter,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterBand,
-    QgsProcessingParameterString,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsRasterFileWriter,
 )
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm

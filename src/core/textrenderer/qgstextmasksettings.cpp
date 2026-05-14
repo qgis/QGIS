@@ -22,6 +22,10 @@
 #include "qgstextrenderer_p.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTextMaskSettings::QgsTextMaskSettings()
 {
   d = new QgsTextMaskSettingsPrivate();
@@ -31,15 +35,13 @@ QgsTextMaskSettings::~QgsTextMaskSettings() = default;
 
 QgsTextMaskSettings::QgsTextMaskSettings( const QgsTextMaskSettings &other ) //NOLINT
   : d( other.d )
-{
-}
+{}
 
 QgsTextMaskSettings::QgsTextMaskSettings( QgsTextMaskSettings &&other ) //NOLINT
   : d( std::move( other.d ) )
-{
-}
+{}
 
-QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &other )  //NOLINT
+QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -48,7 +50,7 @@ QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &
   return *this;
 }
 
-QgsTextMaskSettings &QgsTextMaskSettings::operator=( QgsTextMaskSettings &&other )  //NOLINT
+QgsTextMaskSettings &QgsTextMaskSettings::operator=( QgsTextMaskSettings &&other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -69,8 +71,7 @@ bool QgsTextMaskSettings::operator==( const QgsTextMaskSettings &other ) const
        || d->maskedSymbolLayers != other.maskedSymbolLayers() )
     return false;
 
-  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
-       || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
+  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() ) || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
     return false;
 
   return true;

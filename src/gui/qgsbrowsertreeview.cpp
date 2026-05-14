@@ -29,8 +29,11 @@
 #include <QKeyEvent>
 #include <QRegularExpression>
 #include <QSortFilterProxyModel>
+#include <QString>
 
 #include "moc_qgsbrowsertreeview.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )

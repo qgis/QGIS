@@ -20,28 +20,23 @@ __date__ = "February 2015"
 __copyright__ = "(C) 2014-2015, Victor Olaya"
 
 import os
-import re
 import shutil
 import stat
 import subprocess
-import sys
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional, List, Dict
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsProcessingUtils,
-    QgsMessageLog,
-    QgsCoordinateReferenceSystem,
-    QgsProcessingContext,
-)
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import userFolder, isWindows, isMac, mkdir
+from processing.tools.system import isMac, isWindows, mkdir, userFolder
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsMessageLog,
+    QgsProcessingContext,
+    QgsProcessingUtils,
+)
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class GrassUtils:
@@ -273,9 +268,7 @@ class GrassUtils:
                     if folder is None:
                         for version in ["8", "6", "4", "2", "1", "0"]:
                             testfolder = (
-                                "/Applications/GRASS-7.{}.app/Contents/MacOS".format(
-                                    version
-                                )
+                                f"/Applications/GRASS-7.{version}.app/Contents/MacOS"
                             )
                             if os.path.isdir(testfolder):
                                 folder = testfolder

@@ -12,10 +12,7 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 
 import os
 import tempfile
-
-from qgis.PyQt.QtCore import Qt, QRectF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
 
 from qgis.core import (
     Qgis,
@@ -31,20 +28,21 @@ from qgis.core import (
     QgsGeometry,
     QgsLayout,
     QgsLayoutItemElevationProfile,
+    QgsLayoutItemShape,
     QgsLineString,
     QgsLineSymbol,
+    QgsMarkerSymbol,
     QgsPrintLayout,
     QgsProject,
     QgsRasterLayer,
+    QgsSimpleFillSymbolLayer,
     QgsTextFormat,
     QgsVectorLayer,
-    QgsSimpleFillSymbolLayer,
-    QgsLayoutItemShape,
-    QgsMarkerSymbol,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -89,7 +87,6 @@ class MyDummyProfileSource(QgsAbstractProfileSource):
 
 
 class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "layout_profile"
@@ -480,8 +477,8 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(layer3.isValid())
         project.addMapLayers([layer3])
 
-        profile.setLayers([layer2, layer3])
-        self.assertEqual(profile.layers(), [layer2, layer3])
+        profile.setSources([layer2, layer3])
+        self.assertEqual(profile.sources(), [layer2, layer3])
 
         project.layoutManager().addLayout(layout)
 
@@ -500,7 +497,8 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             ][0]
 
             self.assertEqual(
-                [m.id() for m in profile2.layers()], [layer2.id(), layer3.id()]
+                [m.profileSourceId() for m in profile2.sources()],
+                [layer2.id(), layer3.id()],
             )
 
     def test_settings(self):
@@ -711,9 +709,13 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             )
         )
 
-        profile_item.setLayers([vl])
-
+        profile_item.setSources([vl])
         self.assertTrue(self.render_layout_check("vector_layer", layout))
+
+        # Fix for issue 64218
+        # (removing a source from project should not crash the layout)
+        p.removeAllMapLayers()
+        self.assertTrue(self.render_layout_check("vector_layer_after_removal", layout))
 
     def test_draw_distance_units(self):
         """
@@ -801,7 +803,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             )
         )
 
-        profile_item.setLayers([vl])
+        profile_item.setSources([vl])
 
         self.assertTrue(self.render_layout_check("distance_units", layout))
 
@@ -887,7 +889,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             )
         )
 
-        profile_item.setLayers([vl])
+        profile_item.setSources([vl])
 
         self.assertTrue(self.render_layout_check("vector_layer_map_units", layout))
 
@@ -974,7 +976,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             )
         )
 
-        profile_item.setLayers([vl])
+        profile_item.setSources([vl])
 
         self.assertTrue(self.render_layout_check("zero_label_interval", layout))
 
@@ -1063,7 +1065,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         )
 
         profile_item.setTolerance(tolerance)
-        profile_item.setLayers([vl])
+        profile_item.setSources([vl])
 
         self.assertTrue(
             self.render_layout_check("vector_layer_map_units_tolerance", layout)
@@ -1156,7 +1158,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             QgsLineSymbol.createSimple({"color": "#0000ff", "width": 1.5})
         )
 
-        profile_item.setLayers([vl])
+        profile_item.setSources([vl])
 
         self.assertTrue(self.render_layout_check("vector_layer_subsections", layout))
 
@@ -1187,7 +1189,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(layer3.isValid())
         project.addMapLayers([layer3])
 
-        profile.setLayers([layer2, layer3])
+        profile.setLayers([layer2, layer3])  # Only kept as legacy
 
         # Calling sources() returns the layers (even if we never called
         # setSources()), but in reversed order, since they will be

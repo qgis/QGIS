@@ -26,19 +26,20 @@
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve )
   : QgsAnnotationItem()
   , mText( text )
   , mCurve( curve )
-{
-
-}
+{}
 
 Qgis::AnnotationItemFlags QgsAnnotationLineTextItem::flags() const
 {
   // in truth this should depend on whether the text format is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
-         | Qgis::AnnotationItemFlag::SupportsReferenceScale;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox | Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QgsAnnotationLineTextItem::~QgsAnnotationLineTextItem() = default;
@@ -52,7 +53,7 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
 {
   // TODO -- expose as an option!
   QgsGeometry smoothed( mCurve->clone() );
-  smoothed = smoothed.smooth( );
+  smoothed = smoothed.smooth();
 
   QPolygonF pts = smoothed.asQPolygonF();
 
@@ -70,11 +71,7 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
   }
 
   // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-  pts.erase( std::remove_if( pts.begin(), pts.end(),
-                             []( const QPointF point )
-  {
-    return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-  } ), pts.end() );
+  pts.erase( std::remove_if( pts.begin(), pts.end(), []( const QPointF point ) { return !std::isfinite( point.x() ) || !std::isfinite( point.y() ); } ), pts.end() );
 
   QPointF *ptr = pts.data();
   for ( int i = 0; i < pts.size(); ++i, ++ptr )
@@ -110,8 +107,7 @@ bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &do
 QList<QgsAnnotationItemNode> QgsAnnotationLineTextItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
   QList< QgsAnnotationItemNode > res;
-  int i = 0;
-  for ( auto it = mCurve->vertices_begin(); it != mCurve->vertices_end(); ++it, ++i )
+  for ( auto it = mCurve->vertices_begin(); it != mCurve->vertices_end(); ++it )
   {
     res.append( QgsAnnotationItemNode( it.vertexId(), QgsPointXY( ( *it ).x(), ( *it ).y() ), Qgis::AnnotationItemNodeType::VertexHandle ) );
   }
@@ -157,6 +153,17 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineTextItem::applyEditV2( 
       mCurve->transform( transform );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      QgsPointXY center = mCurve->boundingBox().center();
+      QTransform transform = QTransform::fromTranslate( center.x(), center.y() );
+      transform.rotate( -rotateOperation->angle() );
+      transform.translate( -center.x(), -center.y() );
+      mCurve->transform( transform );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -182,6 +189,18 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::trans
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
       std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
+      modifiedCurve->transform( transform );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
+      QgsPointXY center = modifiedCurve->boundingBox().center();
+      QTransform transform = QTransform::fromTranslate( center.x(), center.y() );
+      transform.rotate( -rotateOperation->angle() );
+      transform.translate( -center.x(), -center.y() );
       modifiedCurve->transform( transform );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
     }
@@ -220,7 +239,7 @@ bool QgsAnnotationLineTextItem::readXml( const QDomElement &element, const QgsRe
   if ( !ok )
     mOffsetFromLineUnit = Qgis::RenderUnit::Millimeters;
 
-  mOffsetFromLineScale =  QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"offsetFromLineScale"_s ) );
+  mOffsetFromLineScale = QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"offsetFromLineScale"_s ) );
 
   readCommonProperties( element, context );
 
@@ -238,7 +257,7 @@ QgsRectangle QgsAnnotationLineTextItem::boundingBox( QgsRenderContext &context )
 
   const double lineOffsetInMapUnits = std::fabs( context.convertToMapUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale ) );
 
-  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, { displayText} );
+  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, { displayText } );
 
   // text size has already been calculated using any symbology reference scale factor above -- we need
   // to temporarily remove the reference scale here or we'll be undoing the scaling

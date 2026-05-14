@@ -20,6 +20,10 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsprocessingparameteraggregate.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsAggregateAlgorithm::name() const
@@ -34,11 +38,13 @@ QString QgsAggregateAlgorithm::displayName() const
 
 QString QgsAggregateAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a vector or table layer and aggregates features based on a group by expression. Features for which group by expression return the same value are grouped together.\n\n"
-                      "It is possible to group all source features together using constant value in group by parameter, example: NULL.\n\n"
-                      "It is also possible to group features using multiple fields using Array function, example: Array(\"Field1\", \"Field2\").\n\n"
-                      "Geometries (if present) are combined into one multipart geometry for each group.\n\n"
-                      "Output attributes are computed depending on each given aggregate definition." );
+  return QObject::tr(
+    "This algorithm takes a vector or table layer and aggregates features based on a group by expression. Features for which group by expression return the same value are grouped together.\n\n"
+    "It is possible to group all source features together using constant value in group by parameter, example: NULL.\n\n"
+    "It is also possible to group features using multiple fields using Array function, example: Array(\"Field1\", \"Field2\").\n\n"
+    "Geometries (if present) are combined into one multipart geometry for each group.\n\n"
+    "Output attributes are computed depending on each given aggregate definition."
+  );
 }
 
 QString QgsAggregateAlgorithm::shortDescription() const
@@ -53,7 +59,7 @@ Qgis::ProcessingAlgorithmDocumentationFlags QgsAggregateAlgorithm::documentation
 
 QStringList QgsAggregateAlgorithm::tags() const
 {
-  return QObject::tr( "attributes,sum,mean,collect,dissolve,statistics" ).split( ',' );
+  return QObject::tr( "attributes,sum,mean,median,count,collect,dissolve,statistics,merge,combine,concatenate" ).split( ',' );
 }
 
 QString QgsAggregateAlgorithm::group() const
@@ -234,7 +240,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
 
     if ( !geometry.isNull() && !geometry.isEmpty() )
     {
-      geometry = QgsGeometry::unaryUnion( geometry.asGeometryCollection() );
+      geometry = QgsGeometry::unaryUnion( geometry.asGeometryCollection(), QgsGeometryParameters(), feedback );
       if ( geometry.isEmpty() )
       {
         QStringList keyString;
@@ -301,9 +307,7 @@ QgsExpression QgsAggregateAlgorithm::createExpression( const QString &expression
   expr.setAreaUnits( context.areaUnit() );
   if ( expr.hasParserError() )
   {
-    throw QgsProcessingException(
-      QObject::tr( "Parser error in expression \"%1\": %2" ).arg( expressionString, expr.parserErrorString() )
-    );
+    throw QgsProcessingException( QObject::tr( "Parser error in expression \"%1\": %2" ).arg( expressionString, expr.parserErrorString() ) );
   }
   return expr;
 }

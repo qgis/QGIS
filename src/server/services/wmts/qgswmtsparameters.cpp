@@ -19,7 +19,11 @@
 
 #include "qgsmessagelog.h"
 
+#include <QString>
+
 #include "moc_qgswmtsparameters.cpp"
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWmts
 {
@@ -44,8 +48,7 @@ namespace QgsWmts
   QgsWmtsParameter::QgsWmtsParameter( const QgsWmtsParameter::Name name, const QMetaType::Type type, const QVariant defaultValue )
     : QgsServerParameterDefinition( type, defaultValue )
     , mName( name )
-  {
-  }
+  {}
 
   int QgsWmtsParameter::toInt() const
   {
@@ -179,9 +182,7 @@ namespace QgsWmts
       return Format::NONE;
 
     Format f = Format::PNG;
-    if ( fStr.compare( "jpg"_L1, Qt::CaseInsensitive ) == 0
-         || fStr.compare( "jpeg"_L1, Qt::CaseInsensitive ) == 0
-         || fStr.compare( "image/jpeg"_L1, Qt::CaseInsensitive ) == 0 )
+    if ( fStr.compare( "jpg"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "jpeg"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "image/jpeg"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::JPG;
 
     return f;

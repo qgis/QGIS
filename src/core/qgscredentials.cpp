@@ -18,9 +18,12 @@
 #include "qgslogger.h"
 
 #include <QIODevice>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgscredentials.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCredentials *QgsCredentials::sInstance = nullptr;
 

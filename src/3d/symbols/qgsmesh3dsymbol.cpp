@@ -20,10 +20,13 @@
 #include "qgscolorutils.h"
 #include "qgsphongmaterialsettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMesh3DSymbol::QgsMesh3DSymbol()
   : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
-{
-}
+{}
 
 QgsMesh3DSymbol::~QgsMesh3DSymbol() = default;
 

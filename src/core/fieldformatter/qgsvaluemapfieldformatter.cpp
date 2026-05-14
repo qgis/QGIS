@@ -18,6 +18,10 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 const QString QgsValueMapFieldFormatter::NULL_VALUE = u"{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"_s;
 
 QgsValueMapFieldFormatter::QgsValueMapFieldFormatter()

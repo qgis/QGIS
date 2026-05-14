@@ -16,8 +16,6 @@
 #ifndef QGS3DAPPUTILS_H
 #define QGS3DAPPUTILS_H
 
-#include <memory>
-
 class Qgs3DAppUtils
 {
   public:

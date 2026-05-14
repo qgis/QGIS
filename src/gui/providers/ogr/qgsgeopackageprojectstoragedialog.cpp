@@ -14,7 +14,11 @@
  ***************************************************************************/
 #include "qgsgeopackageprojectstoragedialog.h"
 
+#include <QString>
+
 #include "moc_qgsgeopackageprojectstoragedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -81,9 +85,7 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   }
 
   connect( mCboProject, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
-  connect( mCboProject, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [this]( const QString & ) {
-    mCboProject->setItemData( mCboProject->currentIndex(), false );
-  } );
+  connect( mCboProject, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [this]( const QString & ) { mCboProject->setItemData( mCboProject->currentIndex(), false ); } );
   connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
 
   // If possible, set the item currently displayed database

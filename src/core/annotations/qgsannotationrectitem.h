@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsAnnotationRectItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationRectItem, rendering the annotation
      * within the specified \a bounds geometry.
@@ -208,7 +207,6 @@ class CORE_EXPORT QgsAnnotationRectItem : public QgsAnnotationItem
     virtual void renderInBounds( QgsRenderContext &context, const QRectF &painterRect, QgsFeedback *feedback ) = 0;
 
   private:
-
     Qgis::AnnotationPlacementMode mPlacementMode = Qgis::AnnotationPlacementMode::SpatialBounds;
     QgsRectangle mBounds;
 
@@ -222,6 +220,5 @@ class CORE_EXPORT QgsAnnotationRectItem : public QgsAnnotationItem
 #ifdef SIP_RUN
     QgsAnnotationRectItem( const QgsAnnotationRectItem &other );
 #endif
-
 };
 #endif // QGSANNOTATIONRECTITEM_H

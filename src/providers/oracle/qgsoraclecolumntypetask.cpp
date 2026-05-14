@@ -52,16 +52,13 @@ bool QgsOracleColumnTypeTask::run()
   }
 
   int i = 0, n = layerProperties.size();
-  for ( QVector<QgsOracleLayerProperty>::iterator it = layerProperties.begin(),
-                                                  end = layerProperties.end();
-        it != end; ++it )
+  for ( QVector<QgsOracleLayerProperty>::iterator it = layerProperties.begin(), end = layerProperties.end(); it != end; ++it )
   {
     QgsOracleLayerProperty &layerProperty = *it;
     if ( !isCanceled() )
     {
       setProgress( ( i * 100. ) / n );
-      emit progressMessage( tr( "Scanning column %1.%2.%3…" )
-                              .arg( layerProperty.ownerName, layerProperty.tableName, layerProperty.geometryColName ) );
+      emit progressMessage( tr( "Scanning column %1.%2.%3…" ).arg( layerProperty.ownerName, layerProperty.tableName, layerProperty.geometryColName ) );
       conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, QgsOracleConn::onlyExistingTypes( mName ) );
     }
 

@@ -21,7 +21,10 @@
 #include "qgsdistancearea.h"
 #include "qgsspatialindex.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -52,9 +55,11 @@ QString QgsNearestNeighbourAnalysisAlgorithm::groupId() const
 
 QString QgsNearestNeighbourAnalysisAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm performs nearest neighbor analysis for a point layer.\n\n"
-                      "The output describes how the data are distributed (clustered, randomly or distributed).\n\n"
-                      "Output is generated as an HTML file with the computed statistical values." );
+  return QObject::tr(
+    "This algorithm performs nearest neighbor analysis for a point layer.\n\n"
+    "The output describes how the data are distributed (clustered, randomly or distributed).\n\n"
+    "Output is generated as an HTML file with the computed statistical values."
+  );
 }
 
 QString QgsNearestNeighbourAnalysisAlgorithm::shortDescription() const

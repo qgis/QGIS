@@ -45,7 +45,15 @@ vec3 goochModel( const in vec3 pos, const in vec3 n )
     vec3 result = vec3(0.0);
     for (int i = 0; i < lightCount; ++i) {
         // Calculate the vector from the light to the fragment
-        vec3 s = normalize( vec3( lights[i].position ) - pos );
+        vec3 s;
+        if (lights[i].type == TYPE_DIRECTIONAL)
+        {
+            s = normalize( -lights[i].direction );
+        }
+        else
+        {
+            s = normalize( vec3( lights[i].position ) - pos );
+        }
 
         // Calculate the cos theta factor mapped onto the range [0,1]
         float sDotNFactor = ( 1.0 + dot( s, n ) ) / 2.0;

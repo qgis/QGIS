@@ -16,13 +16,14 @@
 #ifndef QGSMATERIAL_H
 #define QGSMATERIAL_H
 
-#define SIP_NO_FILE
 
 #include "qgis_3d.h"
 
 #include <QList>
 #include <QVector4D>
 #include <Qt3DRender/QMaterial>
+
+#define SIP_NO_FILE
 
 namespace Qt3DRender
 {

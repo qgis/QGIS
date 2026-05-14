@@ -84,10 +84,7 @@ class _3D_EXPORT QgsCameraPose
     {
       return mCenterPoint == other.mCenterPoint && mDistanceFromCenterPoint == other.mDistanceFromCenterPoint && mPitchAngle == other.mPitchAngle && mHeadingAngle == other.mHeadingAngle;
     }
-    bool operator!=( const QgsCameraPose &other ) const
-    {
-      return !operator==( other );
-    }
+    bool operator!=( const QgsCameraPose &other ) const { return !operator==( other ); }
 
   private:
     //! ground point towards which the camera is looking

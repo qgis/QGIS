@@ -18,6 +18,8 @@
 
 #include "qgsfeaturepickermodelbase.h"
 
+class QgsSettingsEntryInteger;
+
 /**
  * \ingroup core
  * \brief Provides a list of features based on filter conditions.
@@ -41,6 +43,10 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
     Q_PROPERTY( QVariantList extraIdentifierValues READ extraIdentifierValues WRITE setExtraIdentifierValues NOTIFY extraIdentifierValuesChanged )
 
   public:
+#ifndef SIP_RUN
+    //! Settings for maximum number of entries in relation widget
+    static const QgsSettingsEntryInteger *settingsMaxEntriesRelationWidget;
+#endif
 
     /**
      * Create a new QgsFeatureFilterModel, optionally specifying a \a parent.

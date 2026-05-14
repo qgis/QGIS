@@ -21,7 +21,10 @@
 #include "qgstiledscenerendererregistry.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsTiledSceneRenderContext
@@ -30,9 +33,7 @@
 QgsTiledSceneRenderContext::QgsTiledSceneRenderContext( QgsRenderContext &context, QgsFeedback *feedback )
   : mRenderContext( context )
   , mFeedback( feedback )
-{
-
-}
+{}
 
 QImage QgsTiledSceneRenderContext::textureImage() const
 {

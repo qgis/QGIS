@@ -20,7 +20,6 @@ be exported by :py:class:`QgsLayoutExporter`.
 #include "qgsabstractlayoutiterator.h"
 %End
   public:
-
     virtual ~QgsAbstractLayoutIterator();
 
     virtual QgsLayout *layout() = 0;
@@ -58,11 +57,7 @@ to iterate over.
 Returns the file path for the current feature, based on a specified base
 file path and extension.
 %End
-
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

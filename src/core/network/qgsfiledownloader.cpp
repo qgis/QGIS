@@ -25,8 +25,11 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QString>
 
 #include "moc_qgsfiledownloader.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifndef QT_NO_SSL
 #include <QSslError>
@@ -130,7 +133,7 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
   {
     QStringList errorMessages;
     errorMessages.reserve( errors.size() + 1 );
-    errorMessages <<  u"SSL Errors: "_s;
+    errorMessages << u"SSL Errors: "_s;
 
     for ( const QSslError &error : errors )
       errorMessages << error.errorString();
@@ -164,7 +167,7 @@ void QgsFileDownloader::onReadyRead()
     error( tr( "No output filename specified" ) );
     onFinished();
   }
-  else if ( ! mFile.isOpen() && ! mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  else if ( !mFile.isOpen() && !mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     error( tr( "Cannot open output file: %1" ).arg( mFile.fileName() ) );
     onFinished();
@@ -179,7 +182,7 @@ void QgsFileDownloader::onReadyRead()
 void QgsFileDownloader::onFinished()
 {
   // when canceled
-  if ( ! mErrors.isEmpty() || mDownloadCanceled )
+  if ( !mErrors.isEmpty() || mDownloadCanceled )
   {
     if ( mFile.isOpen() )
       mFile.close();
@@ -218,4 +221,3 @@ void QgsFileDownloader::onDownloadProgress( qint64 bytesReceived, qint64 bytesTo
   }
   emit downloadProgress( bytesReceived, bytesTotal );
 }
-

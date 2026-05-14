@@ -9,7 +9,7 @@
 
 
 
-class QgsPointClusterRenderer: QgsPointDistanceRenderer
+class QgsPointClusterRenderer : QgsPointDistanceRenderer
 {
 %Docstring(signature="appended")
 A renderer that automatically clusters points with the same geographic
@@ -20,7 +20,6 @@ position.
 #include "qgspointclusterrenderer.h"
 %End
   public:
-
     QgsPointClusterRenderer();
 
     virtual Qgis::FeatureRendererFlags flags() const;

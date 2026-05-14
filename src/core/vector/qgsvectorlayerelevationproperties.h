@@ -37,11 +37,9 @@ class QgsMarkerSymbol;
  */
 class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorLayerElevationProperties, with the specified \a parent object.
      */
@@ -341,7 +339,6 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     void setShowMarkerSymbolInSurfacePlots( bool show );
 
   private:
-
     void setDefaultProfileLineSymbol( const QColor &color );
     void setDefaultProfileMarkerSymbol( const QColor &color );
     void setDefaultProfileFillSymbol( const QColor &color );
@@ -363,7 +360,6 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
     double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
     bool mShowMarkerSymbolInSurfacePlots = false;
-
 };
 
 #endif // QGSVECTORLAYERELEVATIONPROPERTIES_H

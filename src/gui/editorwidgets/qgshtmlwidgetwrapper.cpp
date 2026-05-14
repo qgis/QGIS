@@ -22,8 +22,11 @@
 #include "qgswebframe.h"
 
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgshtmlwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -96,9 +99,7 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
   }
 
   auto frame = webView.page()->mainFrame();
-  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, &evaluator] {
-    frame->addToJavaScriptWindowObject( u"expression"_s, &evaluator );
-  } );
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, &evaluator] { frame->addToJavaScriptWindowObject( u"expression"_s, &evaluator ); } );
 
   webView.setHtml( mHtmlCode );
 
@@ -110,7 +111,8 @@ void QgsHtmlWidgetWrapper::setHtmlCode( const QString &htmlCode )
   mHtmlCode = htmlCode;
 
   bool ok = false;
-  const thread_local QRegularExpression expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
+  const thread_local QRegularExpression
+    expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
   QRegularExpressionMatchIterator matchIt = expRe.globalMatch( mHtmlCode );
   while ( !ok && matchIt.hasNext() )
   {
@@ -141,9 +143,7 @@ void QgsHtmlWidgetWrapper::setHtmlContext()
   HtmlExpression *htmlExpression = new HtmlExpression();
   htmlExpression->setExpressionContext( expressionContext );
   auto frame = mWidget->page()->mainFrame();
-  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, htmlExpression] {
-    frame->addToJavaScriptWindowObject( u"expression"_s, htmlExpression );
-  } );
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, htmlExpression] { frame->addToJavaScriptWindowObject( u"expression"_s, htmlExpression ); } );
 
   mWidget->setHtml( mHtmlCode );
 }

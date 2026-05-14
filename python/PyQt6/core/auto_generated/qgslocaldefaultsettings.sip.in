@@ -31,7 +31,6 @@ retrieve these local settings.
 #include "qgslocaldefaultsettings.h"
 %End
   public:
-
     static void setBearingFormat( const QgsBearingNumericFormat *format );
 %Docstring
 Sets the default bearing ``format``, which controls how angular bearings
@@ -73,7 +72,6 @@ returned value.
 
 .. versionadded:: 3.26
 %End
-
 };
 
 /************************************************************************

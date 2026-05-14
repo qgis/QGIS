@@ -20,16 +20,16 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPointer>
+#include <QString>
 
 #include "moc_qgsmeshvariablestrokewidthwidget.cpp"
 
-QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
-  const QgsInterpolatedLineWidth &variableStrokeWidth,
-  double defaultMinimumvalue,
-  double defaultMaximumValue,
-  QWidget *parent
-)
-  : QgsPanelWidget( parent ), mDefaultMinimumValue( defaultMinimumvalue ), mDefaultMaximumValue( defaultMaximumValue )
+using namespace Qt::StringLiterals;
+
+QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget( const QgsInterpolatedLineWidth &variableStrokeWidth, double defaultMinimumvalue, double defaultMaximumValue, QWidget *parent )
+  : QgsPanelWidget( parent )
+  , mDefaultMinimumValue( defaultMinimumvalue )
+  , mDefaultMaximumValue( defaultMaximumValue )
 {
   setupUi( this );
 

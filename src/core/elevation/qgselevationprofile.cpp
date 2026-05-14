@@ -20,7 +20,11 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgselevationprofile.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfile::QgsElevationProfile( QgsProject *project )
   : mProject( project )
@@ -51,7 +55,7 @@ QDomElement QgsElevationProfile::writeXml( QDomDocument &document, const QgsRead
   if ( mProfileCurve )
   {
     QDomElement curveElem = document.createElement( u"curve"_s );
-    curveElem.appendChild( document.createTextNode( mProfileCurve->asWkt( ) ) );
+    curveElem.appendChild( document.createTextNode( mProfileCurve->asWkt() ) );
     profileElem.appendChild( curveElem );
   }
 
@@ -100,8 +104,6 @@ bool QgsElevationProfile::readXml( const QDomElement &element, const QDomDocumen
   {
     const QDomElement curveElem = curveNodeList.at( 0 ).toElement();
     const QgsGeometry curve = QgsGeometry::fromWkt( curveElem.text() );
-    // clang-tidy false positive
-    // NOLINTBEGIN(bugprone-branch-clone)
     if ( const QgsCurve *curveGeom = qgsgeometry_cast< const QgsCurve * >( curve.constGet() ) )
     {
       mProfileCurve.reset( curveGeom->clone() );
@@ -110,7 +112,6 @@ bool QgsElevationProfile::readXml( const QDomElement &element, const QDomDocumen
     {
       mProfileCurve.reset();
     }
-    // NOLINTEND(bugprone-branch-clone)
   }
 
   mTolerance = element.attribute( u"tolerance"_s ).toDouble();
@@ -173,6 +174,7 @@ void QgsElevationProfile::setProfileCurve( QgsCurve *curve )
     return;
   mProfileCurve.reset( curve );
   dirtyProject();
+  emit profileCurveChanged();
 }
 
 QgsCurve *QgsElevationProfile::profileCurve() const
@@ -187,6 +189,7 @@ void QgsElevationProfile::setTolerance( double tolerance )
 
   mTolerance = tolerance;
   dirtyProject();
+  emit toleranceChanged( mTolerance );
 }
 
 double QgsElevationProfile::tolerance() const

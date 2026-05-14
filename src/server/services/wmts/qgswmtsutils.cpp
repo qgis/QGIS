@@ -29,6 +29,10 @@
 #include "qgssettingsregistrycore.h"
 #include "qgswmtsparameters.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWmts
 {
   namespace

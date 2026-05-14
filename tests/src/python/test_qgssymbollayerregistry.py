@@ -10,7 +10,8 @@ __author__ = "Denis Rouzaud"
 __date__ = "26/11/2021"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt import sip
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -18,8 +19,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsSymbolLayerAbstractMetadata,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt import sip
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -33,7 +34,6 @@ class MySuperMarkerMetadata(QgsSymbolLayerAbstractMetadata):
 
 
 class TestQgsSymbolLayerRegistry(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """

@@ -25,10 +25,13 @@
 #include <QMouseEvent>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QString>
 #include <QStyleOptionGroupBox>
 #include <QToolButton>
 
 #include "moc_qgscollapsiblegroupbox.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString COLLAPSE_HIDE_BORDER_FIX = u" QgsCollapsibleGroupBoxBasic { border: none; }"_s;
 
@@ -134,9 +137,7 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent *event )
 void QgsCollapsibleGroupBoxBasic::mousePressEvent( QMouseEvent *event )
 {
   // avoid leaving checkbox in pressed state if alt- or shift-clicking
-  if ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier | Qt::ShiftModifier )
-       && titleRect().contains( event->pos() )
-       && isCheckable() )
+  if ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier | Qt::ShiftModifier ) && titleRect().contains( event->pos() ) && isCheckable() )
   {
     event->ignore();
     return;
@@ -231,9 +232,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
   mShiftDown = ( mShiftDown || mCollapseButton->shiftDown() );
 
   // find any sync group siblings and toggle them
-  if ( ( senderCollBtn || mTitleClicked )
-       && ( mAltDown || mShiftDown )
-       && !mSyncGroup.isEmpty() )
+  if ( ( senderCollBtn || mTitleClicked ) && ( mAltDown || mShiftDown ) && !mSyncGroup.isEmpty() )
   {
     QgsDebugMsgLevel( u"Alt or Shift key down, syncing group"_s, 2 );
     // get pointer to parent or grandparent widget

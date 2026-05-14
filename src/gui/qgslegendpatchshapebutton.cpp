@@ -24,8 +24,11 @@
 
 #include <QBuffer>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgslegendpatchshapebutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -104,9 +107,7 @@ void QgsLegendPatchShapeButton::showSettingsDialog()
   if ( panel && panel->dockMode() )
   {
     QgsLegendPatchShapeWidget *widget = new QgsLegendPatchShapeWidget( this, mShape );
-    connect( widget, &QgsLegendPatchShapeWidget::changed, this, [this, widget] {
-      setShape( widget->shape() );
-    } );
+    connect( widget, &QgsLegendPatchShapeWidget::changed, this, [this, widget] { setShape( widget->shape() ); } );
     widget->setPanelTitle( mDialogTitle );
     panel->openPanel( widget );
   }
@@ -195,7 +196,10 @@ void QgsLegendPatchShapeButton::prepareMenu()
 
   QAction *defaultAction = new QAction( tr( "Reset to Default" ), this );
   mMenu->addAction( defaultAction );
-  connect( defaultAction, &QAction::triggered, this, [this] { setToDefault(); emit changed(); } );
+  connect( defaultAction, &QAction::triggered, this, [this] {
+    setToDefault();
+    emit changed();
+  } );
 
   mMenu->addSeparator();
 

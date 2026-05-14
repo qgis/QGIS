@@ -19,8 +19,11 @@
 #include "qgssettings.h"
 
 #include <QDir>
+#include <QString>
 
 #include "moc_qgselevationoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsElevationOptionsWidget
@@ -48,9 +51,7 @@ QString QgsElevationOptionsWidget::helpKey() const
 
 void QgsElevationOptionsWidget::apply()
 {
-  QgsElevationProfileWidget::settingBackgroundColor->setValue(
-    mButtonBackgroundColor->isNull() ? QColor() : mButtonBackgroundColor->color()
-  );
+  QgsElevationProfileWidget::settingBackgroundColor->setValue( mButtonBackgroundColor->isNull() ? QColor() : mButtonBackgroundColor->color() );
 }
 
 //
@@ -58,8 +59,7 @@ void QgsElevationOptionsWidget::apply()
 //
 QgsElevationOptionsFactory::QgsElevationOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Elevation" ), QIcon(), u"elevation"_s )
-{
-}
+{}
 
 QIcon QgsElevationOptionsFactory::icon() const
 {

@@ -38,7 +38,6 @@ class CORE_EXPORT QgsLocatorContext
     Q_PROPERTY( bool usingPrefix MEMBER usingPrefix )
 
   public:
-
     QgsLocatorContext() = default;
 
     /**
@@ -67,9 +66,6 @@ class CORE_EXPORT QgsLocatorContext
      * Will be TRUE if search is being conducted using a filter prefix.
      */
     bool usingPrefix = false;
-
 };
 
 #endif // QGSLOCATORCONTEXT_H
-
-

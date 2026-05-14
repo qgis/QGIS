@@ -22,27 +22,35 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 
 from osgeo import gdal
-
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication, QgsProcessingProvider, QgsRuntimeProfiler
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from .GdalUtils import GdalUtils
+from qgis.PyQt.QtCore import QCoreApplication
 
-from .AssignProjection import AssignProjection
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
+
 from .aspect import aspect
+from .AssignProjection import AssignProjection
+from .Buffer import Buffer
 from .buildvrt import buildvrt
 from .ClipRasterByExtent import ClipRasterByExtent
 from .ClipRasterByMask import ClipRasterByMask
+from .ClipVectorByExtent import ClipVectorByExtent
+from .ClipVectorByMask import ClipVectorByMask
 from .ColorRelief import ColorRelief
 from .contour import contour, contour_polygon
+from .CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
+from .DatasetIdentify import DatasetIdentify
 from .Datasources2Vrt import Datasources2Vrt
+from .Dissolve import Dissolve
+from .ExecuteSql import ExecuteSql
+from .extractprojection import ExtractProjection
 from .fillnodata import fillnodata
-from .gdalinfo import gdalinfo
 from .gdal2tiles import gdal2tiles
 from .gdal2xyz import gdal2xyz
 from .gdaladdo import gdaladdo
 from .gdalcalc import gdalcalc
+from .gdalinfo import gdalinfo
 from .gdaltindex import gdaltindex
+from .GdalUtils import GdalUtils
 from .GridAverage import GridAverage
 from .GridDataMetrics import GridDataMetrics
 from .GridInverseDistance import GridInverseDistance
@@ -52,41 +60,31 @@ from .GridNearestNeighbor import GridNearestNeighbor
 from .hillshade import hillshade
 from .merge import merge
 from .nearblack import nearblack
+from .OffsetCurve import OffsetCurve
+from .ogr2ogr import ogr2ogr
+from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
+from .ogrinfo import ogrinfo, ogrinfojson
+from .OgrToPostGis import OgrToPostGis
+from .OneSideBuffer import OneSideBuffer
+from .pansharp import pansharp
 from .pct2rgb import pct2rgb
+from .PointsAlongLines import PointsAlongLines
 from .polygonize import polygonize
 from .proximity import proximity
 from .rasterize import rasterize
+from .rasterize_over import rasterize_over
+from .rasterize_over_fixed_value import rasterize_over_fixed_value
 from .rearrange_bands import rearrange_bands
 from .retile import retile
 from .rgb2pct import rgb2pct
 from .roughness import roughness
 from .sieve import sieve
 from .slope import slope
-from .translate import translate
 from .tpi import tpi
+from .translate import translate
 from .tri import tri
-from .warp import warp
-from .pansharp import pansharp
-from .rasterize_over_fixed_value import rasterize_over_fixed_value
 from .viewshed import viewshed
-
-from .extractprojection import ExtractProjection
-from .rasterize_over import rasterize_over
-
-from .Buffer import Buffer
-from .ClipVectorByExtent import ClipVectorByExtent
-from .ClipVectorByMask import ClipVectorByMask
-from .DatasetIdentify import DatasetIdentify
-from .Dissolve import Dissolve
-from .ExecuteSql import ExecuteSql
-from .OffsetCurve import OffsetCurve
-from .ogr2ogr import ogr2ogr
-from .ogrinfo import ogrinfo, ogrinfojson
-from .OgrToPostGis import OgrToPostGis
-from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
-from .OneSideBuffer import OneSideBuffer
-from .PointsAlongLines import PointsAlongLines
-from .CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
+from .warp import warp
 
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 
@@ -98,7 +96,6 @@ gdal.UseExceptions()
 
 
 class GdalAlgorithmProvider(QgsProcessingProvider):
-
     def __init__(self):
         super().__init__()
         self.algs = []

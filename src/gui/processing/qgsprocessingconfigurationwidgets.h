@@ -19,10 +19,11 @@
 #ifndef QGSPROCESSINGCONFIGURATIONWIDGETS_H
 #define QGSPROCESSINGCONFIGURATIONWIDGETS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
+
+#define SIP_NO_FILE
 
 class QTableWidget;
 

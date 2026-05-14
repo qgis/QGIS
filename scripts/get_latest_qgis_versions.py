@@ -45,12 +45,12 @@ def extract(release, github_token):
         "ltr": {
             "short_version": current_ltr,
             "patch_version": releases[current_ltr],
-            "tag_name": f'final-{releases[current_ltr].replace(".", "_")}',
+            "tag_name": f"final-{releases[current_ltr].replace('.', '_')}",
         },
         "stable": {
             "short_version": current_release,
             "patch_version": releases[current_release],
-            "tag_name": f'final-{releases[current_release].replace(".", "_")}',
+            "tag_name": f"final-{releases[current_release].replace('.', '_')}",
         },
     }
 

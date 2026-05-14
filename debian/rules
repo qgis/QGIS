@@ -274,7 +274,7 @@ else
 endif
 
 ifneq (,$(filter apidoc,$(CONTROL_EXPRESSIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
+	PATH=/usr/lib/qt6/libexec:$(PATH) ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
 endif
 
 override_dh_auto_test: test-stamp

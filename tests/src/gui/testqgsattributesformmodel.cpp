@@ -19,6 +19,10 @@
 #include "qgsproject.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
@@ -56,11 +60,6 @@ void TestQgsAttributesFormModel::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsAttributesFormModel::setUpProjectWithRelation()

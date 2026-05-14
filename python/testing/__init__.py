@@ -22,45 +22,44 @@ __copyright__ = "(C) 2016, Matthias Kuhn"
 import difflib
 import filecmp
 import functools
+import hashlib
 import inspect
 import os
 import sys
 import tempfile
 import unittest
-import hashlib
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 from warnings import warn
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QVariant,
-    QDateTime,
-    QDate,
-    QDir,
-    QUrl,
-    QSize,
-    QCoreApplication,
-)
-from qgis.PyQt.QtGui import QImage, QDesktopServices, QPainter
 from qgis.core import (
-    QgsApplication,
-    QgsFeatureRequest,
-    QgsCoordinateReferenceSystem,
     NULL,
-    QgsVectorLayer,
-    QgsRenderChecker,
-    QgsMultiRenderChecker,
-    QgsMapSettings,
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsFeatureRequest,
     QgsLayout,
     QgsLayoutChecker,
+    QgsMapSettings,
+    QgsMultiRenderChecker,
+    QgsRenderChecker,
+    QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QDir,
+    QSize,
+    Qt,
+    QUrl,
+    QVariant,
+)
+from qgis.PyQt.QtGui import QDesktopServices, QImage, QPainter
 
 unittest.util._MAX_LENGTH = 2000
 
 
 class QgisTestCase(unittest.TestCase):
-
     @staticmethod
     def is_ci_run() -> bool:
         """
@@ -355,6 +354,10 @@ class QgisTestCase(unittest.TestCase):
             query = query[len("/query") :]
             endpoint = endpoint + "_query"
 
+        if query.startswith("/exportImage"):
+            query = query[len("/exportImage") :]
+            endpoint = endpoint + "_exportImage"
+
         if len(endpoint + query) > 150:
             ret = endpoint + hashlib.md5(query.encode()).hexdigest()
             # print('Before: ' + endpoint + query)
@@ -364,13 +367,7 @@ class QgisTestCase(unittest.TestCase):
             "<", "_"
         ).replace(">", "_").replace('"', "_").replace("'", "_").replace(
             " ", "_"
-        ).replace(
-            ":", "_"
-        ).replace(
-            "/", "_"
-        ).replace(
-            "\n", "_"
-        )
+        ).replace(":", "_").replace("/", "_").replace("\n", "_")
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
         """
@@ -582,7 +579,6 @@ class QgisTestCase(unittest.TestCase):
         )
 
         for feats in zip(expected_features, result_features):
-
             eq = self.checkGeometriesEqual(
                 feats[0].geometry(),
                 feats[1].geometry(),
@@ -671,9 +667,9 @@ class QgisTestCase(unittest.TestCase):
                 )
                 self.assertTrue(res)
             else:
-                assert (
-                    False
-                ), f"Don't know how to compare {expected_file_path.suffix} files"
+                assert False, (
+                    f"Don't know how to compare {expected_file_path.suffix} files"
+                )
 
     def assertDirectoriesEqual(self, dirpath_expected: str, dirpath_result: str):
         """Checks whether both directories have the same content (recursively) and raises an assertion error if not."""
@@ -878,16 +874,7 @@ class QgisTestCase(unittest.TestCase):
                 self.assertEqual(
                     attr_expected,
                     attr_result,
-                    "Features {}/{} differ in attributes\n\n * Field expected: {} ({})\n * result  : {} ({})\n\n * Expected: {} != Result  : {}".format(
-                        feat0.id(),
-                        feat1.id(),
-                        field_expected.name(),
-                        field_expected.typeName(),
-                        field_result.name(),
-                        field_result.typeName(),
-                        repr(attr_expected),
-                        repr(attr_result),
-                    ),
+                    f"Features {feat0.id()}/{feat1.id()} differ in attributes\n\n * Field expected: {field_expected.name()} ({field_expected.typeName()})\n * result  : {field_result.name()} ({field_result.typeName()})\n\n * Expected: {repr(attr_expected)} != Result  : {repr(attr_result)}",
                 )
             elif attr_expected != attr_result:
                 return False
@@ -1122,12 +1109,16 @@ def start_app(cleanup=True):
             Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True
         )
 
-        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
-        # no need to mess with it here.
-        QGISAPP = QgsApplication(argvb, myGuiFlag)
+        QCoreApplication.setOrganizationName("QGIS")
+        QCoreApplication.setOrganizationDomain("qgis.org")
+        QCoreApplication.setApplicationName("QGIS-TEST")
 
         tmpdir = tempfile.mkdtemp("", "QGIS-PythonTestConfigPath-")
         os.environ["QGIS_CUSTOM_CONFIG_PATH"] = tmpdir
+
+        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
+        # no need to mess with it here.
+        QGISAPP = QgsApplication(argvb, myGuiFlag)
 
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())

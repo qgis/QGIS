@@ -28,10 +28,13 @@
 #include <QDate>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QValidator>
 #include <QVariant>
 
 #include "moc_qgsfieldvalidator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat )
   : QValidator( parent )
@@ -109,9 +112,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
 }
 
 QgsFieldValidator::~QgsFieldValidator()
-{
-  delete mValidator;
-}
+{}
 
 QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
 {
@@ -161,11 +162,7 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   }
   else
   {
-    QgsDebugError(
-      u"unsupported type %1 (%2) for validation"_s
-        .arg( mField.type() )
-        .arg( mField.typeName() )
-    );
+    QgsDebugError( u"unsupported type %1 (%2) for validation"_s.arg( mField.type() ).arg( mField.typeName() ) );
     return Invalid;
   }
 

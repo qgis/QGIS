@@ -20,11 +20,10 @@ email                : brush.tyler@gmail.com
 
 from qgis.core import QgsDataSourceUri
 
-from .plugin import DbError, ConnectionError
+from .plugin import ConnectionError, DbError
 
 
 class DBConnector:
-
     def __init__(self, uri):
         """Creates a new DB connector"""
 

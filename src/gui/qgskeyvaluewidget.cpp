@@ -63,8 +63,7 @@ QVariantMap QgsKeyValueModel::map() const
 
 QgsKeyValueModel::QgsKeyValueModel( QObject *parent )
   : QAbstractTableModel( parent )
-{
-}
+{}
 
 int QgsKeyValueModel::rowCount( const QModelIndex &parent ) const
 {

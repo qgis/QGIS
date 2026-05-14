@@ -8,16 +8,15 @@ the Free Software Foundation; either version 2 of the License, or
 
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
     QgsProject,
     QgsSettings,
 )
 from qgis.gui import QgsGui
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QLocale
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -25,15 +24,10 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsStoredQueryManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsStoredQueryManager.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsStoredQueryManager")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
@@ -43,7 +37,6 @@ class TestQgsStoredQueryManager(QgisTestCase):
         """
         p = QgsProject.instance()
         manager = QgsGui.storedQueryManager()
-        QgsSettings().clear()
         QgsProject.instance().clear()
 
         self.assertFalse(manager.allQueryNames(Qgis.QueryStorageBackend.CurrentProject))

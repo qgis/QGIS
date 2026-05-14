@@ -10,30 +10,28 @@ __author__ = "Nyall Dawson"
 __date__ = "23/08/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
-import tempfile
 import os
+import tempfile
+import unittest
 
+from qgis.core import (
+    Qgis,
+    QgsProviderRegistry,
+    QgsReadWriteContext,
+    QgsTiledSceneLayer,
+    QgsTiledSceneLayerElevationProperties,
+    QgsUnitTypes,
+)
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (
-    Qgis,
-    QgsTiledSceneLayer,
-    QgsTiledSceneLayerElevationProperties,
-    QgsProviderRegistry,
-    QgsReadWriteContext,
-    QgsUnitTypes,
-)
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsTiledSceneElevationProperties(QgisTestCase):
-
     def testBasic(self):
         props = QgsTiledSceneLayerElevationProperties(None)
         self.assertEqual(props.zScale(), 1)

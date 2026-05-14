@@ -10,8 +10,8 @@ __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "15/03/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsLayoutManager,
     QgsMasterLayoutInterface,
@@ -19,9 +19,9 @@ from qgis.core import (
     QgsProject,
     QgsReport,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -29,7 +29,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutManager(QgisTestCase):
-
     def setUp(self):
         """Run before each test."""
         self.manager = None

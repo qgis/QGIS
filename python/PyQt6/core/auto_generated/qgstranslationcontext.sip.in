@@ -23,7 +23,6 @@ creation of ts files.
 #include "qgstranslationcontext.h"
 %End
   public:
-
     QgsTranslationContext();
 
     QgsProject *project() const;

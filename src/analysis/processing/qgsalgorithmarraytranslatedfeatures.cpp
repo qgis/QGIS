@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmarraytranslatedfeatures.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsArrayTranslatedFeaturesAlgorithm::name() const
@@ -51,8 +55,10 @@ QString QgsArrayTranslatedFeaturesAlgorithm::outputName() const
 
 QString QgsArrayTranslatedFeaturesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates copies of features in a layer, by creating multiple translated versions of each feature. "
-                      "Each copy is incrementally displaced by a preset amount in the x/y/z/m axis." );
+  return QObject::tr(
+    "This algorithm creates copies of features in a layer, by creating multiple translated versions of each feature. "
+    "Each copy is incrementally displaced by a preset amount in the x/y/z/m axis."
+  );
 }
 
 QString QgsArrayTranslatedFeaturesAlgorithm::shortDescription() const

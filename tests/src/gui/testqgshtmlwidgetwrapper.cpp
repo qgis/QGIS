@@ -45,12 +45,10 @@ void TestQgsHtmlWidgetWrapper::cleanupTestCase()
 }
 
 void TestQgsHtmlWidgetWrapper::init()
-{
-}
+{}
 
 void TestQgsHtmlWidgetWrapper::cleanup()
-{
-}
+{}
 
 QGSTEST_MAIN( TestQgsHtmlWidgetWrapper )
 #include "testqgshtmlwidgetwrapper.moc"

@@ -42,7 +42,6 @@
 class CORE_EXPORT QgsAuthMethodConfig
 {
   public:
-
     /**
      * Construct a configuration for an authentication method
      * \param method Textual key of the authentication method
@@ -208,16 +207,13 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 class CORE_EXPORT QgsPkiBundle
 {
   public:
-
     /**
      * Construct a bundle from existing PKI components
      * \param clientCert Certificate to store in bundle
      * \param clientKey Private key to store in bundle
      * \param caChain Chain of Certificate Authorities for client certificate
      */
-    QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(),
-                  const QSslKey &clientKey = QSslKey(),
-                  const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
+    QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(), const QSslKey &clientKey = QSslKey(), const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 
     /**
      * Construct a bundle of PKI components from PEM-formatted file paths
@@ -226,18 +222,14 @@ class CORE_EXPORT QgsPkiBundle
      * \param keyPass Private key passphrase
      * \param caChain Chain of Certificate Authorities for client certificate
      */
-    static const QgsPkiBundle fromPemPaths( const QString &certPath,
-                                            const QString &keyPath,
-                                            const QString &keyPass = QString(),
-                                            const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
+    static const QgsPkiBundle fromPemPaths( const QString &certPath, const QString &keyPath, const QString &keyPass = QString(), const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 
     /**
      * Construct a bundle of PKI components from a PKCS#12 file path
      * \param bundlepath Bundle file path
      * \param bundlepass Optional bundle passphrase
      */
-    static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
-        const QString &bundlepass = QString() );
+    static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath, const QString &bundlepass = QString() );
 
     //! Whether the bundle, either its certificate or private key, is null
     bool isNull() const;
@@ -277,7 +269,6 @@ class CORE_EXPORT QgsPkiBundle
 class CORE_EXPORT QgsPkiConfigBundle
 {
   public:
-
     /**
      * Construct a bundle from existing PKI components and authentication method configuration
      * \param config Authentication method configuration
@@ -285,10 +276,7 @@ class CORE_EXPORT QgsPkiConfigBundle
      * \param certkey Private key to store in bundle
      * \param cachain list of CA certificates
      */
-    QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
-                        const QSslCertificate &cert,
-                        const QSslKey &certkey,
-                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
+    QgsPkiConfigBundle( const QgsAuthMethodConfig &config, const QSslCertificate &cert, const QSslKey &certkey, const QList<QSslCertificate> &cachain = QList<QSslCertificate>() );
 
     //! Whether the bundle is valid
     bool isValid();
@@ -350,7 +338,7 @@ class CORE_EXPORT QgsAuthConfigSslServer
     void setSslCertificate( const QSslCertificate &cert ) { mSslCert = cert; }
 
     //! Server host:port string
-    const QString sslHostPort() const  { return mSslHostPort; }
+    const QString sslHostPort() const { return mSslHostPort; }
     //! Sets server host:port string
     void setSslHostPort( const QString &hostport ) { mSslHostPort = hostport; }
 
@@ -402,7 +390,6 @@ class CORE_EXPORT QgsAuthConfigSslServer
     bool isNull() const;
 
   private:
-
     QString mSslHostPort;
     QSslCertificate mSslCert;
 

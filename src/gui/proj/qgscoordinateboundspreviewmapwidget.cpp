@@ -16,7 +16,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 
+#include <QString>
+
 #include "moc_qgscoordinateboundspreviewmapwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidget *parent )
   : QgsMapCanvas( parent )
@@ -50,13 +54,9 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
 QgsCoordinateBoundsPreviewMapWidget::~QgsCoordinateBoundsPreviewMapWidget()
 {
   setMapTool( nullptr );
-  delete mPanTool;
-  mPanTool = nullptr;
+
 
   qDeleteAll( mLayers );
-  delete mPreviewBand;
-  delete mCanvasPreviewBand;
-  delete mCanvasCenterMarker;
 }
 
 void QgsCoordinateBoundsPreviewMapWidget::setPreviewRect( const QgsRectangle &rect )

@@ -25,21 +25,18 @@ Helper functions for various unit types.
     static const QMetaObject staticMetaObject;
 
   public:
-
     struct DistanceValue
     {
+        double value;
 
-      double value;
-
-      Qgis::DistanceUnit unit;
+        Qgis::DistanceUnit unit;
     };
 
     struct AreaValue
     {
+        double value;
 
-      double value;
-
-      Qgis::AreaUnit unit;
+        Qgis::AreaUnit unit;
     };
 
     typedef QList<Qgis::RenderUnit> RenderUnitList;
@@ -594,7 +591,6 @@ Returns a translated abbreviation representing a layout ``unit`` (e.g.
 %Docstring
 Returns a translated string representing a layout ``unit``.
 %End
-
 };
 
 /************************************************************************

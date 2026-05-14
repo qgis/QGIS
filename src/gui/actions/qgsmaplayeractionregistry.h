@@ -58,7 +58,9 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
      *
      * The \a context argument was added in QGIS 3.30.
      */
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() );
+    QList<QgsMapLayerAction *> mapLayerActions(
+      QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext()
+    );
 
     //! Removes a map layer action from the registry
     bool removeMapLayerAction( QgsMapLayerAction *action );

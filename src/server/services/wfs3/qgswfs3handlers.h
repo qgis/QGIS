@@ -21,6 +21,10 @@
 #include "qgsfields.h"
 #include "qgsserverogcapihandler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsFeatureRequest;
 class QgsServerOgcApi;
 class QgsFeature;
@@ -69,6 +73,27 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
      */
     const QString templatePath( const QgsServerApiContext &context ) const override;
+
+    /**
+     * Returns TRUE if features can be added to the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Note: this method only checks if the provider supports editing and the WFS flag for adding features is set,
+     * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
+     */
+    bool canInsertFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns TRUE if features can be deleted in the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Note: this method only checks if the provider supports editing and the WFS flag for deleting features is set,
+     * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
+     */
+    bool canDeleteFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns TRUE if features can be updated (attributes or geometry changed) from the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Note: this method only checks if the provider supports editing and the WFS flag for changing features is set,
+     * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
+     */
+    bool canUpdateFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
 };
 
 /**
@@ -109,10 +134,7 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     QRegularExpression path() const override { return QRegularExpression( R"re((.html|.json)?$)re" ); }
     std::string operationId() const override { return "getLandingPage"; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
-    std::string summary() const override
-    {
-      return "WFS 3.0 Landing Page";
-    }
+    std::string summary() const override { return "WFS 3.0 Landing Page"; }
     std::string description() const override
     {
       return "The landing page provides links to the API definition, the Conformance "
@@ -121,6 +143,7 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     std::string linkTitle() const override { return "Landing page"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
     json schema( const QgsServerApiContext &context ) const override;
+    QString const templatePath( const QgsServerApiContext &context ) const override;
 };
 
 /**
@@ -146,6 +169,7 @@ class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
     std::string linkTitle() const override { return "WFS 3.0 conformance classes"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::conformance; }
     json schema( const QgsServerApiContext &context ) const override;
+    const QString templatePath( const QgsServerApiContext &context ) const override;
 };
 
 
@@ -163,10 +187,7 @@ class QgsWfs3CollectionsHandler : public QgsWfs3AbstractItemsHandler
     // QgsServerOgcApiHandler interface
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections(\.json|\.html|/)?$)re" ); }
     std::string operationId() const override { return "describeCollections"; }
-    std::string summary() const override
-    {
-      return "Metadata about the feature collections shared by this API.";
-    }
+    std::string summary() const override { return "Metadata about the feature collections shared by this API."; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
     std::string description() const override
     {
@@ -237,7 +258,10 @@ class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
     void handleRequest( const QgsServerApiContext &context ) const override;
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html|/)?$)re" ); }
     std::string operationId() const override { return "getFeature"; }
-    std::string description() const override { return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)."; }
+    std::string description() const override
+    {
+      return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).";
+    }
     std::string summary() const override { return "Retrieve a single feature with ID {featureId} from the collection with ID {collectionId}."; }
     std::string linkTitle() const override { return "Retrieve a feature"; }
     QStringList tags() const override { return { u"Features"_s }; }

@@ -28,8 +28,11 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgscolorschemelist.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -683,8 +686,7 @@ void QgsColorSchemeModel::addColor( const QColor &color, const QString &label, b
 QgsColorSwatchDelegate::QgsColorSwatchDelegate( QWidget *parent )
   : QAbstractItemDelegate( parent )
   , mParent( parent )
-{
-}
+{}
 
 void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {

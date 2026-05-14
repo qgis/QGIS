@@ -19,7 +19,11 @@
 #include "qgsproviderregistry.h"
 #include "qgstiledsceneconnection.h"
 
+#include <QString>
+
 #include "moc_qgstiledscenedataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

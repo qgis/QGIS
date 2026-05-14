@@ -62,8 +62,7 @@ void QgsDataItemGuiContext::setView( QgsBrowserTreeView *view )
 //
 
 void QgsDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
-{
-}
+{}
 
 int QgsDataItemGuiProvider::precedenceWhenPopulatingMenus() const
 {

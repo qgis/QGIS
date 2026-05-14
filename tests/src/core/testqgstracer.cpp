@@ -26,6 +26,10 @@
 #include "qgstracer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsTracer : public QObject
 {
     Q_OBJECT
@@ -49,8 +53,7 @@ class TestQgsTracer : public QObject
 
 namespace QTest
 {
-  template<>
-  char *toString( const QgsPointXY &point )
+  template<> char *toString( const QgsPointXY &point )
   {
     QByteArray ba = "QgsPointXY(" + QByteArray::number( point.x() ) + ", " + QByteArray::number( point.y() ) + ")";
     return qstrdup( ba.data() );
@@ -108,10 +111,7 @@ void TestQgsTracer::cleanupTestCase()
 void TestQgsTracer::testSimple()
 {
   QStringList wkts;
-  wkts << u"LINESTRING(0 0, 0 10)"_s
-       << u"LINESTRING(0 0, 10 0)"_s
-       << u"LINESTRING(0 10, 20 10)"_s
-       << u"LINESTRING(10 0, 20 10)"_s;
+  wkts << u"LINESTRING(0 0, 0 10)"_s << u"LINESTRING(0 0, 10 0)"_s << u"LINESTRING(0 10, 20 10)"_s << u"LINESTRING(10 0, 20 10)"_s;
 
   /* This shape - nearly a square (one side is shifted to have exactly one shortest
    * path between corners):
@@ -306,8 +306,7 @@ void TestQgsTracer::testAddPointsOnIntersections()
   // checks whether tracer adds vertices at intersections
 
   QStringList wkts;
-  wkts << u"LINESTRING(0 0, 10 10)"_s
-       << u"LINESTRING(0 10, 10 0)"_s;
+  wkts << u"LINESTRING(0 0, 10 10)"_s << u"LINESTRING(0 10, 10 0)"_s;
 
   /* This shape (without a vertex where the linestring crosses itself):
    *    +  +  10,10
@@ -352,10 +351,7 @@ void TestQgsTracer::testLayerUpdates()
 
   // same shape as in testSimple()
   QStringList wkts;
-  wkts << u"LINESTRING(0 0, 0 10)"_s
-       << u"LINESTRING(0 0, 10 0)"_s
-       << u"LINESTRING(0 10, 20 10)"_s
-       << u"LINESTRING(10 0, 20 10)"_s;
+  wkts << u"LINESTRING(0 0, 0 10)"_s << u"LINESTRING(0 0, 10 0)"_s << u"LINESTRING(0 10, 20 10)"_s << u"LINESTRING(10 0, 20 10)"_s;
 
   QgsVectorLayer *vl = make_layer( wkts );
 
@@ -416,10 +412,7 @@ void TestQgsTracer::testExtent()
 
   // same shape as in testSimple()
   QStringList wkts;
-  wkts << u"LINESTRING(0 0, 0 10)"_s
-       << u"LINESTRING(0 0, 10 0)"_s
-       << u"LINESTRING(0 10, 20 10)"_s
-       << u"LINESTRING(10 0, 20 10)"_s;
+  wkts << u"LINESTRING(0 0, 0 10)"_s << u"LINESTRING(0 0, 10 0)"_s << u"LINESTRING(0 10, 20 10)"_s << u"LINESTRING(10 0, 20 10)"_s;
 
   QgsVectorLayer *vl = make_layer( wkts );
 
@@ -495,10 +488,7 @@ void TestQgsTracer::testCurved()
 void TestQgsTracer::testOffset()
 {
   QStringList wkts;
-  wkts << u"LINESTRING(0 0, 0 10)"_s
-       << u"LINESTRING(0 0, 10 0)"_s
-       << u"LINESTRING(0 10, 20 10)"_s
-       << u"LINESTRING(10 0, 20 10)"_s;
+  wkts << u"LINESTRING(0 0, 0 10)"_s << u"LINESTRING(0 0, 10 0)"_s << u"LINESTRING(0 10, 20 10)"_s << u"LINESTRING(10 0, 20 10)"_s;
 
   /* This shape - nearly a square (one side is shifted to have exactly one shortest
    * path between corners):

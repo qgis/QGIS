@@ -19,40 +19,37 @@ __author__ = "Matthias Kuhn"
 __date__ = "January 2016"
 __copyright__ = "(C) 2016, Matthias Kuhn"
 
-import nose2
 import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QFile, QIODevice
-from qgis.PyQt.QtXml import QDomDocument
-
+import nose2
 from qgis.core import (
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsCoordinateReferenceSystem,
     QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsDistanceArea,
     QgsFeature,
     QgsGeometry,
     QgsPointXY,
-    QgsProject,
-    QgsVectorLayer,
-    QgsRasterLayer,
-    QgsRectangle,
+    QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeatureSourceDefinition,
-    QgsDistanceArea,
-    QgsCoordinateTransformContext,
+    QgsProcessingFeedback,
+    QgsProject,
     QgsProviderRegistry,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsVectorLayer,
 )
-
+from qgis.PyQt.QtCore import QFile, QIODevice
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
-
 from processing.tests.TestData import (
     wms_layer_1_1_1,
     wms_layer_1_3_0,
@@ -63,7 +60,6 @@ testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
 
 class TestGdalAlgorithms(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         start_app()
@@ -104,7 +100,6 @@ class TestGdalAlgorithms(QgisTestCase):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         for a in p.algorithms():
-
             # there are some algorithms that are in the gdal provider but do not subclass GdalAlgorithm, like CreateCloudOptimizedGeoTIFF
             if not isinstance(a, GdalAlgorithm):
                 continue

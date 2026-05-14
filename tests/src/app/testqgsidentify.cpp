@@ -37,12 +37,17 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
+#include <QSignalSpy>
+#include <QString>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsIdentify : public QObject
 {
@@ -89,8 +94,7 @@ class TestQgsIdentify : public QObject
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref );
 
     // Release return with delete []
-    unsigned char *
-      hex2bytes( const char *hex, int *size )
+    unsigned char *hex2bytes( const char *hex, int *size )
     {
       QByteArray ba = QByteArray::fromHex( hex );
       unsigned char *out = new unsigned char[ba.size()];
@@ -115,11 +119,6 @@ void TestQgsIdentify::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::showSettings();
 
   // enforce C locale because the tests expect it
@@ -235,7 +234,7 @@ void TestQgsIdentify::clickxy()
 void TestQgsIdentify::closestPoint()
 {
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   //create a temporary layer
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"LineStringZM?crs=epsg:3111&field=pk:int&field=col1:double&field=url:string"_s, u"vl"_s, u"memory"_s );
@@ -340,7 +339,7 @@ void TestQgsIdentify::closestPoint()
 void TestQgsIdentify::lengthCalculation()
 {
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   //create a temporary layer
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
@@ -389,7 +388,7 @@ void TestQgsIdentify::lengthCalculation()
   QGSCOMPARENEAR( length, 88355.1, 0.1 );
 
   //test unchecked "keep base units" setting
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, false );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( false );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
@@ -400,7 +399,7 @@ void TestQgsIdentify::lengthCalculation()
   QGSCOMPARENEAR( length, 16.734000, 0.001 );
 
   // no conversion of Cartesian lengths between unit types
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Degrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
@@ -463,7 +462,7 @@ void TestQgsIdentify::lengthCalculation()
 void TestQgsIdentify::perimeterCalculation()
 {
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   //create a temporary layer
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
@@ -514,7 +513,7 @@ void TestQgsIdentify::perimeterCalculation()
   QGSCOMPARENEAR( perimeter, 420873.0, 0.1 );
 
   //test unchecked "keep base units" setting
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, false );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( false );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal — WGS84)" )];
@@ -525,7 +524,7 @@ void TestQgsIdentify::perimeterCalculation()
   QCOMPARE( perimeter, 79.711 );
 
   // no conversion of Cartesian lengths between unit types
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Degrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
@@ -540,7 +539,7 @@ void TestQgsIdentify::perimeterCalculation()
 void TestQgsIdentify::areaCalculation()
 {
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   //create a temporary layer
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
@@ -592,7 +591,7 @@ void TestQgsIdentify::areaCalculation()
   QGSCOMPARENEAR( area, 388.280000, 0.001 );
 
   //test unchecked "keep base units" setting
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, false );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( false );
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
@@ -604,7 +603,7 @@ void TestQgsIdentify::areaCalculation()
   QGSCOMPARENEAR( area, 388.280000, 0.001 );
 
   // no conversion of Cartesian lengths between unit types
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
@@ -646,8 +645,7 @@ QList<QgsMapToolIdentify::IdentifyResult> TestQgsIdentify::testIdentifyMesh( Qgs
 }
 
 // private
-QList<QgsMapToolIdentify::IdentifyResult>
-  TestQgsIdentify::testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
+QList<QgsMapToolIdentify::IdentifyResult> TestQgsIdentify::testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   auto action = std::make_unique<QgsMapToolIdentifyAction>( canvas );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -659,8 +657,7 @@ QList<QgsMapToolIdentify::IdentifyResult>
 }
 
 // private
-QList<QgsMapToolIdentify::IdentifyResult>
-  TestQgsIdentify::testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref )
+QList<QgsMapToolIdentify::IdentifyResult> TestQgsIdentify::testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref )
 {
   auto action = std::make_unique<QgsMapToolIdentifyAction>( canvas );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
@@ -835,12 +832,8 @@ void TestQgsIdentify::identifyMesh()
   QVERIFY( tempLayer->isValid() );
   const QString vectorDs = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle_vertex_vector.dat";
   tempLayer->dataProvider()->addDataset( vectorDs );
-  static_cast<QgsMeshLayerTemporalProperties *>(
-    tempLayer->temporalProperties()
-  )
-    ->setReferenceTime(
-      QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ), tempLayer->dataProvider()->temporalCapabilities()
-    );
+  static_cast<QgsMeshLayerTemporalProperties *>( tempLayer->temporalProperties() )
+    ->setReferenceTime( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ), tempLayer->dataProvider()->temporalCapabilities() );
 
   // we need to setup renderer otherwise triangular mesh
   // will not be populated and identify will not work
@@ -972,9 +965,7 @@ void TestQgsIdentify::identifyInvalidPolygons()
   f1.setAttribute( u"pk"_s, 1 );
   // This geometry is an invalid polygon (3 distinct vertices).
   // GEOS reported invalidity: Points of LinearRing do not form a closed linestring
-  f1.setGeometry( geomFromHexWKB(
-    "010300000001000000030000000000000000000000000000000000000000000000000024400000000000000000000000000000244000000000000024400000000000000000"
-  ) );
+  f1.setGeometry( geomFromHexWKB( "010300000001000000030000000000000000000000000000000000000000000000000024400000000000000000000000000000244000000000000024400000000000000000" ) );
   // TODO: check why we need the ->dataProvider() part, since
   //       there's a QgsVectorLayer::addFeatures method too
   //memoryLayer->addFeatures( QgsFeatureList() << f1 );
@@ -1293,7 +1284,9 @@ void TestQgsIdentify::testPolygonZ()
   QCOMPARE( tempLayer->crs3D().horizontalCrs().authid(), u"EPSG:4979"_s );
 
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setGeometry( QgsGeometry::fromWkt( u"PolygonZ((134.445567853 -23.445567853 5543.325, 140.485567853 -23.445567853 5563.325, 140.485567853 -20.445567853 5523.325, 134.445567853 -23.445567853 5543.325))"_s ) );
+  f1.setGeometry(
+    QgsGeometry::fromWkt( u"PolygonZ((134.445567853 -23.445567853 5543.325, 140.485567853 -23.445567853 5563.325, 140.485567853 -20.445567853 5523.325, 134.445567853 -23.445567853 5543.325))"_s )
+  );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
@@ -1359,8 +1352,12 @@ void TestQgsIdentify::identifyVirtualPointCloud()
   pointCloud->setCrs( QgsCoordinateReferenceSystem( u"EPSG:28356"_s ) );
   QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), u"EPSG:28356"_s );
 
+  QSignalSpy spy( pointCloud.get(), &QgsMapLayer::dataChanged );
+
   for ( int i = 0; i < pointCloud->dataProvider()->subIndexes().size(); i++ )
-    pointCloud->dataProvider()->loadSubIndex( i );
+    pointCloud->dataProvider()->loadSubIndex( i, true ); // emit dataChanged signal when done loading
+
+  QVERIFY( spy.wait() );
 
   // set project CRS and ellipsoid
   // Note that using a different CRS here (a world-wide WGS84-based one) caused

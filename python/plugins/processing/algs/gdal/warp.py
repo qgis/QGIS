@@ -21,20 +21,21 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.core import (
-    QgsRasterFileWriter,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterEnum,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterExtent,
-    QgsProcessingParameterString,
+    QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsRasterFileWriter,
 )
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -42,7 +43,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class warp(GdalAlgorithm):
-
     INPUT = "INPUT"
     SOURCE_CRS = "SOURCE_CRS"
     TARGET_CRS = "TARGET_CRS"

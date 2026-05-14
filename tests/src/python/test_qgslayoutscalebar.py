@@ -10,17 +10,16 @@ __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "23/10/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.core import QgsLayoutItemScaleBar
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsLayoutItemScaleBar
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
 
 class TestQgsLayoutScaleBar(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

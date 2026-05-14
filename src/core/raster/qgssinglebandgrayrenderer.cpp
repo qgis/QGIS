@@ -31,14 +31,16 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand )
   : QgsRasterRenderer( input, u"singlebandgray"_s )
   , mGrayBand( grayBand )
   , mContrastEnhancement( nullptr )
   , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
-{
-}
+{}
 
 QgsSingleBandGrayRenderer *QgsSingleBandGrayRenderer::clone() const
 {
@@ -72,14 +74,13 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
 
   if ( elem.attribute( u"gradient"_s ) == "WhiteToBlack"_L1 )
   {
-    r->setGradient( WhiteToBlack );  // BlackToWhite is default
+    r->setGradient( WhiteToBlack ); // BlackToWhite is default
   }
 
   const QDomElement contrastEnhancementElem = elem.firstChildElement( u"contrastEnhancement"_s );
   if ( !contrastEnhancementElem.isNull() )
   {
-    QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
-          input->dataType( grayBand ) ) );
+    QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType ) ( input->dataType( grayBand ) ) );
     ce->readXml( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
   }
@@ -137,7 +138,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
 
   const QRgb myDefaultColor = renderColorForNodataPixel();
   bool isNoData = false;
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  for ( qgssize i = 0; i < ( qgssize ) width * height; i++ )
   {
     double grayVal = inputBlock->valueAndNoData( i, isNoData );
 
@@ -257,7 +258,7 @@ void QgsSingleBandGrayRenderer::writeXml( QDomDocument &doc, QDomElement &parent
 
 QList<QPair<QString, QColor> > QgsSingleBandGrayRenderer::legendSymbologyItems() const
 {
-  QList<QPair<QString, QColor> >  symbolItems;
+  QList<QPair<QString, QColor> > symbolItems;
   if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
   {
     const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
@@ -281,10 +282,13 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandGrayRenderer::createLegendNode
 
     const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
     const QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
-    res << new QgsColorRampLegendNode( nodeLayer, new QgsGradientColorRamp( minColor, maxColor ),
-                                       mLegendSettings ? *mLegendSettings : QgsColorRampLegendNodeSettings(),
-                                       mContrastEnhancement->minimumValue(),
-                                       mContrastEnhancement->maximumValue() );
+    res << new QgsColorRampLegendNode(
+      nodeLayer,
+      new QgsGradientColorRamp( minColor, maxColor ),
+      mLegendSettings ? *mLegendSettings : QgsColorRampLegendNodeSettings(),
+      mContrastEnhancement->minimumValue(),
+      mContrastEnhancement->maximumValue()
+    );
   }
   return res;
 }
@@ -442,7 +446,7 @@ bool QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   }
 
   // create tags
-  for ( auto it = colorMapping.constBegin(); it != colorMapping.constEnd() ; ++it )
+  for ( auto it = colorMapping.constBegin(); it != colorMapping.constEnd(); ++it )
   {
     // set low level color mapping
     QDomElement lowColorMapEntryElem = doc.createElement( u"sld:ColorMapEntry"_s );
@@ -477,8 +481,7 @@ bool QgsSingleBandGrayRenderer::refresh( const QgsRectangle &extent, const QList
   }
 
   bool refreshed = false;
-  if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement &&
-       min.size() >= 1 && max.size() >= 1 )
+  if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement && min.size() >= 1 && max.size() >= 1 )
   {
     mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
     mContrastEnhancement->setMinimumValue( min[0] );

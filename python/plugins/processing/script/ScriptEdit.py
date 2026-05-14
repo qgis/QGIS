@@ -20,16 +20,14 @@ __date__ = "April 2013"
 __copyright__ = "(C) 2013, Alexander Bruy"
 
 
+from qgis.gui import QgsCodeEditorPython
+from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QKeySequence
 from qgis.PyQt.QtWidgets import QShortcut
-from qgis.gui import QgsCodeEditorPython
-
-from qgis.PyQt.Qsci import QsciScintilla
 
 
 class ScriptEdit(QgsCodeEditorPython):
-
     def __init__(self, parent=None):
         super().__init__(parent)
 

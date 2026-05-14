@@ -15,24 +15,32 @@
 
 #include "qgsmaptool.h"
 
+#include "qgsexpressionnodeimpl.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QAbstractButton>
 #include <QAction>
+#include <QString>
 
 #include "moc_qgsmaptool.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryDouble *QgsMapTool::settingSearchRadiusMM
+  = new QgsSettingsEntryDouble( u"search-radius-mm"_s, QgsSettingsTree::sTreeMap, Qgis::DEFAULT_SEARCH_RADIUS_MM, u"Search/identify radius in millimeters"_s );
 
 QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
   , mCanvas( canvas )
   , mCursor( Qt::CrossCursor )
-{
-}
+{}
 
 
 QgsMapTool::~QgsMapTool()
@@ -127,8 +135,7 @@ void QgsMapTool::reactivate()
 }
 
 void QgsMapTool::clean()
-{
-}
+{}
 
 void QgsMapTool::setAction( QAction *action )
 {
@@ -220,6 +227,12 @@ bool QgsMapTool::canvasToolTipEvent( QHelpEvent *e )
   return false;
 }
 
+bool QgsMapTool::shortcutEvent( QKeyEvent *e )
+{
+  Q_UNUSED( e )
+  return false;
+}
+
 QgsMapCanvas *QgsMapTool::canvas() const
 {
   return mCanvas;
@@ -227,8 +240,7 @@ QgsMapCanvas *QgsMapTool::canvas() const
 
 double QgsMapTool::searchRadiusMM()
 {
-  const QgsSettings settings;
-  const double radius = settings.value( u"Map/searchRadiusMM"_s, Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  const double radius = settingSearchRadiusMM->value();
 
   if ( radius > 0 )
   {
@@ -255,11 +267,95 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
 
 
 void QgsMapTool::populateContextMenu( QMenu * )
-{
-}
+{}
 
 
 bool QgsMapTool::populateContextMenuWithEvent( QMenu *, QgsMapMouseEvent * )
 {
   return false;
+}
+
+QString QgsMapTool::dataDefinedColumnName( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *layer, PropertyStatus &status ) const
+{
+  status = PropertyStatus::DoesNotExist;
+  if ( !properties.isActive( propertyKey ) )
+    return QString();
+
+  const QgsProperty property = properties.property( propertyKey );
+
+  switch ( property.propertyType() )
+  {
+    case Qgis::PropertyType::Invalid:
+      break;
+
+    case Qgis::PropertyType::Static:
+      status = PropertyStatus::Valid;
+      break;
+
+    case Qgis::PropertyType::Field:
+      status = PropertyStatus::Valid;
+      return property.field();
+
+    case Qgis::PropertyType::Expression:
+    {
+      status = PropertyStatus::Valid;
+
+      // an expression based property may still be a effectively a single field reference in the map canvas context.
+      // e.g. if it is a expression like '"some_field"', or 'case when @some_project_var = 'a' then "field_a" else "field_b" end'
+
+      QgsExpressionContext context = mCanvas->createExpressionContext();
+      context.appendScope( layer->createExpressionContextScope() );
+
+      QgsExpression expression( property.expressionString() );
+      if ( expression.prepare( &context ) )
+      {
+        // maybe the expression is effectively a single node in this context...
+        const QgsExpressionNode *node = expression.rootNode()->effectiveNode();
+        if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
+        {
+          const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
+          return columnRef->name();
+        }
+
+        // ok, it's not. But let's be super smart and helpful for users!
+        // maybe it's a COALESCE("some field", 'some' || 'fallback' || 'expression') type expression, where the user wants to override
+        // some labels with a value stored in a field but all others use some expression
+        if ( node->nodeType() == QgsExpressionNode::ntFunction )
+        {
+          const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
+          if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
+          {
+            if ( function->name() == "coalesce"_L1 )
+            {
+              if ( const QgsExpressionNode *firstArg = functionNode->args()->list().value( 0 ) )
+              {
+                const QgsExpressionNode *firstArgNode = firstArg->effectiveNode();
+                if ( firstArgNode->nodeType() == QgsExpressionNode::ntColumnRef )
+                {
+                  const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( firstArgNode );
+                  return columnRef->name();
+                }
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        status = PropertyStatus::CurrentExpressionInvalid;
+      }
+      break;
+    }
+  }
+
+  return QString();
+}
+
+int QgsMapTool::dataDefinedColumnIndex( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *vlayer ) const
+{
+  PropertyStatus status = PropertyStatus::DoesNotExist;
+  QString fieldname = dataDefinedColumnName( propertyKey, properties, vlayer, status );
+  if ( !fieldname.isEmpty() )
+    return vlayer->fields().lookupField( fieldname );
+  return -1;
 }

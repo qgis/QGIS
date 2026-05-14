@@ -20,26 +20,25 @@ __date__ = "November 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
+    QgsDataSourceUri,
     QgsProcessing,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterString,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterField,
-    QgsProcessingParameterExtent,
+    QgsProcessingException,
     QgsProcessingParameterBoolean,
-    QgsProcessingParameterProviderConnection,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterDatabaseSchema,
     QgsProcessingParameterDatabaseTable,
-    QgsProviderRegistry,
-    QgsProcessingException,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterProviderConnection,
+    QgsProcessingParameterString,
     QgsProviderConnectionException,
-    QgsDataSourceUri,
+    QgsProviderRegistry,
 )
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
 from processing.tools.system import isWindows
 
 

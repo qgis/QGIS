@@ -49,18 +49,17 @@ class QgsLayoutItem;
  *
  */
 
-class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
+class CORE_EXPORT QgsLayoutModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-
     //! Columns returned by the model
     enum Columns
     {
       Visibility = 0, //!< Item visibility checkbox
-      LockStatus, //!< Item lock status checkbox
-      ItemId, //!< Item ID
+      LockStatus,     //!< Item lock status checkbox
+      ItemId,         //!< Item ID
     };
 
     /**
@@ -236,7 +235,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      */
     void updateItemSelectStatus( QgsLayoutItem *item );
 #endif
-///@endcond
+    ///@endcond
 
     /**
      * Returns the QgsLayoutItem corresponding to a QModelIndex \a index, if possible.
@@ -260,10 +259,9 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      */
     void setSelected( const QModelIndex &index );
 #endif
-///@endcond
+    ///@endcond
 
   private:
-
     //! Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)
     QList<QgsLayoutItem *> mItemZList;
 
@@ -301,12 +299,11 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
  * \ingroup core
  * \brief Allows for filtering a QgsLayoutModel by item type.
  */
-class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
+class CORE_EXPORT QgsLayoutProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutProxyModelm, attached to the specified \a layout.
      */
@@ -396,13 +393,11 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
 
   private:
     QgsLayout *mLayout = nullptr;
-    QgsLayoutItemRegistry::ItemType mItemTypeFilter =  QgsLayoutItemRegistry::LayoutItem ;
+    QgsLayoutItemRegistry::ItemType mItemTypeFilter = QgsLayoutItemRegistry::LayoutItem;
     QList< QgsLayoutItem * > mExceptedList;
     bool mAllowEmpty = false;
     QgsLayoutItem::Flags mItemFlags = QgsLayoutItem::Flags();
-
 };
-
 
 
 #endif //QGSLAYOUTMODEL_H

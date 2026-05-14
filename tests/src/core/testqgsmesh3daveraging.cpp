@@ -126,7 +126,8 @@ void TestQgsMesh3DAveraging::initTestCase()
   scalarBlock.setValid( true );
 
   vectorBlock = QgsMesh3DDataBlock( 2, true );
-  const QVector<double> valuesVec = { 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4, 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4 };
+  const QVector<double> valuesVec
+    = { 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4, 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4 };
   vectorBlock.setFaceToVolumeIndex( faceToVolumeIndex );
   vectorBlock.setVerticalLevelsCount( verticalLevelsCount );
   vectorBlock.setVerticalLevels( verticalLevels );
@@ -135,8 +136,7 @@ void TestQgsMesh3DAveraging::initTestCase()
 }
 //runs after all tests
 void TestQgsMesh3DAveraging::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsMesh3DAveraging::testMeshSingleLevelFromTopAveragingMethod_data()
 {

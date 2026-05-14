@@ -17,7 +17,11 @@
 
 #include "qgssensorthingssourcewidget.h"
 
+#include <QString>
+
 #include "moc_qgssensorthingssourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -91,8 +95,7 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::SortOrder, fm.horizontalAdvance( '0' ) * 15 );
   mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Actions, fm.horizontalAdvance( '0' ) * 5 );
 
-  for ( Qgis::SensorThingsEntity type :
-        {
+  for ( Qgis::SensorThingsEntity type : {
           Qgis::SensorThingsEntity::Thing,
           Qgis::SensorThingsEntity::Location,
           Qgis::SensorThingsEntity::HistoricalLocation,
@@ -132,10 +135,7 @@ QgsSensorThingsSourceWidget::~QgsSensorThingsSourceWidget()
 
 void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
 {
-  mSourceParts = QgsProviderRegistry::instance()->decodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    uri
-  );
+  mSourceParts = QgsProviderRegistry::instance()->decodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uri );
 
   const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( mSourceParts.value( u"entity"_s ).toString() );
   if ( type != Qgis::SensorThingsEntity::Invalid )
@@ -198,10 +198,7 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
 
 QString QgsSensorThingsSourceWidget::sourceUri() const
 {
-  return updateUriFromGui( QgsProviderRegistry::instance()->encodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    mSourceParts
-  ) );
+  return updateUriFromGui( QgsProviderRegistry::instance()->encodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, mSourceParts ) );
 }
 
 QString QgsSensorThingsSourceWidget::groupTitle() const
@@ -222,10 +219,7 @@ Qgis::SensorThingsEntity QgsSensorThingsSourceWidget::currentEntityType() const
 
 QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connectionUri ) const
 {
-  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    connectionUri
-  );
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, connectionUri );
 
   const Qgis::SensorThingsEntity entityType = mComboEntityType->currentData().value<Qgis::SensorThingsEntity>();
   parts.insert( u"entity"_s, qgsEnumValueToKey( entityType ) );
@@ -296,10 +290,7 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
   else
     parts.insert( u"bounds"_s, QVariant::fromValue( mExtentWidget->outputExtent() ) );
 
-  return QgsProviderRegistry::instance()->encodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    parts
-  );
+  return QgsProviderRegistry::instance()->encodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, parts );
 }
 
 void QgsSensorThingsSourceWidget::entityTypeChanged()
@@ -457,8 +448,7 @@ void QgsSensorThingsSourceWidget::setCurrentGeometryTypeFromString( const QStrin
 
 QgsSensorThingsExpansionsModel::QgsSensorThingsExpansionsModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 int QgsSensorThingsExpansionsModel::columnCount( const QModelIndex & ) const
 {
@@ -781,8 +771,7 @@ void QgsSensorThingsExpansionsModel::setExpansions( const QList<QgsSensorThingsE
 
 QgsSensorThingsExpansionsDelegate::QgsSensorThingsExpansionsDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 void QgsSensorThingsExpansionsDelegate::setBaseEntityType( Qgis::SensorThingsEntity type )
 {
@@ -796,8 +785,7 @@ QWidget *QgsSensorThingsExpansionsDelegate::createEditor( QWidget *parent, const
     case QgsSensorThingsExpansionsModel::Column::Entity:
     {
       // need to find out entity type for the previous row (or the base entity type for the first row)
-      const Qgis::SensorThingsEntity entityType = index.row() == 0 ? mBaseEntityType
-                                                                   : index.model()->data( index.model()->index( index.row() - 1, 0 ), Qt::EditRole ).value<Qgis::SensorThingsEntity>();
+      const Qgis::SensorThingsEntity entityType = index.row() == 0 ? mBaseEntityType : index.model()->data( index.model()->index( index.row() - 1, 0 ), Qt::EditRole ).value<Qgis::SensorThingsEntity>();
 
       QList<Qgis::SensorThingsEntity> compatibleEntities = QgsSensorThingsUtils::expandableTargets( entityType );
       compatibleEntities.removeAll( mBaseEntityType );
@@ -853,9 +841,7 @@ QWidget *QgsSensorThingsExpansionsDelegate::createEditor( QWidget *parent, const
       // need to find out entity type for this row
       const Qgis::SensorThingsEntity entityType = index.model()->data( index.model()->index( index.row(), 0 ), Qt::EditRole ).value<Qgis::SensorThingsEntity>();
       QgsSensorThingsFilterWidget *w = new QgsSensorThingsFilterWidget( parent, entityType );
-      connect( w, &QgsSensorThingsFilterWidget::filterChanged, this, [this, w]() {
-        const_cast<QgsSensorThingsExpansionsDelegate *>( this )->emit commitData( w );
-      } );
+      connect( w, &QgsSensorThingsFilterWidget::filterChanged, this, [this, w]() { const_cast<QgsSensorThingsExpansionsDelegate *>( this )->emit commitData( w ); } );
       return w;
     }
 
@@ -956,8 +942,7 @@ void QgsSensorThingsExpansionsDelegate::setModelData( QWidget *editor, QAbstract
 
 QgsSensorThingsRemoveExpansionDelegate::QgsSensorThingsRemoveExpansionDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 bool QgsSensorThingsRemoveExpansionDelegate::eventFilter( QObject *obj, QEvent *event )
 {

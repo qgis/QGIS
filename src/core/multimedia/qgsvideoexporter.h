@@ -43,7 +43,6 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Returns TRUE if the video export functionality is available on the current system.
      */
@@ -244,7 +243,6 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     void handleError( QMediaRecorder::Error error, const QString &errorString );
 
   private:
-
     QString mFileName;
     QSize mSize;
     QStringList mInputFiles;
@@ -260,7 +258,9 @@ class CORE_EXPORT QgsVideoExporter : public QObject
 
     std::unique_ptr< QMediaCaptureSession > mSession;
     std::unique_ptr< QMediaRecorder > mRecorder;
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
     std::unique_ptr< QVideoFrameInput > mVideoInput;
+#endif
 };
 
 

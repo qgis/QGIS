@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the qgsGraduatedSymbolRenderer class.
@@ -48,20 +50,16 @@ class TestQgsGraduatedSymbolRenderer : public QObject
 };
 
 void TestQgsGraduatedSymbolRenderer::initTestCase()
-{
-}
+{}
 
 void TestQgsGraduatedSymbolRenderer::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsGraduatedSymbolRenderer::init()
-{
-}
+{}
 
 void TestQgsGraduatedSymbolRenderer::cleanup()
-{
-}
+{}
 
 void TestQgsGraduatedSymbolRenderer::rangesOverlap()
 {

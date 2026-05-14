@@ -41,7 +41,6 @@ class QgsFeatureRequest;
 class CORE_EXPORT QgsFeatureFilterProvider
 {
   public:
-
 #ifndef SIP_RUN
 
     QgsFeatureFilterProvider() = default;

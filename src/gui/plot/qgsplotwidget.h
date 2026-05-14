@@ -119,12 +119,16 @@ class GUI_EXPORT QgsBarChartPlotWidget : public QgsPlotWidget, private Ui::QgsBa
   private slots:
     void mAddSymbolPushButton_clicked();
     void mRemoveSymbolPushButton_clicked();
+    //! Updates enabled/disabled state of the X axis controls depending on the axis type
+    void updateXAxisProperties();
 
   private:
     int mBlockChanges = 0;
 
     std::unique_ptr< QgsNumericFormat > mXAxisNumericFormat;
     std::unique_ptr< QgsNumericFormat > mYAxisNumericFormat;
+
+    bool mFlipAxes = false;
 };
 
 
@@ -160,12 +164,16 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
   private slots:
     void mAddSymbolPushButton_clicked();
     void mRemoveSymbolPushButton_clicked();
+    //! Updates enabled/disabled state of the X axis controls depending on the axis type
+    void updateXAxisProperties();
 
   private:
     int mBlockChanges = 0;
 
     std::unique_ptr< QgsNumericFormat > mXAxisNumericFormat;
     std::unique_ptr< QgsNumericFormat > mYAxisNumericFormat;
+
+    bool mFlipAxes = false;
 };
 
 //

@@ -10,13 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "03.02.2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QLocale
 from qgis.core import Qgis, QgsUnitTypes
+from qgis.PyQt.QtCore import QLocale
 from qgis.testing import unittest
 
 
 class TestQgsUnitTypes(unittest.TestCase):
-
     def setUp(self):
         super().setUp()
         # enforce C locale because the tests expect it
@@ -815,12 +814,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 self.assertAlmostEqual(
                     res,
                     expected_factor,
-                    msg="got {:.7f}, expected {:.7f} when converting from {} to {}".format(
-                        res,
-                        expected_factor,
-                        QgsUnitTypes.toString(from_unit),
-                        QgsUnitTypes.toString(to_unit),
-                    ),
+                    msg=f"got {res:.7f}, expected {expected_factor:.7f} when converting from {QgsUnitTypes.toString(from_unit)} to {QgsUnitTypes.toString(to_unit)}",
                 )
                 # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(
@@ -1025,12 +1019,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 self.assertAlmostEqual(
                     res,
                     expected_factor,
-                    msg="got {:.15f}, expected {:.15f} when converting from {} to {}".format(
-                        res,
-                        expected_factor,
-                        QgsUnitTypes.toString(from_unit),
-                        QgsUnitTypes.toString(to_unit),
-                    ),
+                    msg=f"got {res:.15f}, expected {expected_factor:.15f} when converting from {QgsUnitTypes.toString(from_unit)} to {QgsUnitTypes.toString(to_unit)}",
                 )
                 # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(
@@ -1264,12 +1253,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 self.assertAlmostEqual(
                     res,
                     expected_factor,
-                    msg="got {:.15f}, expected {:.15f} when converting from {} to {}".format(
-                        res,
-                        expected_factor,
-                        QgsUnitTypes.toString(from_unit),
-                        QgsUnitTypes.toString(to_unit),
-                    ),
+                    msg=f"got {res:.15f}, expected {expected_factor:.15f} when converting from {QgsUnitTypes.toString(from_unit)} to {QgsUnitTypes.toString(to_unit)}",
                 )
                 # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(
@@ -1435,12 +1419,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                     res,
                     expected_factor,
                     places=10,
-                    msg="got {:.15f}, expected {:.15f} when converting from {} to {}".format(
-                        res,
-                        expected_factor,
-                        QgsUnitTypes.toString(from_unit),
-                        QgsUnitTypes.toString(to_unit),
-                    ),
+                    msg=f"got {res:.15f}, expected {expected_factor:.15f} when converting from {QgsUnitTypes.toString(from_unit)} to {QgsUnitTypes.toString(to_unit)}",
                 )
                 # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(
@@ -1681,12 +1660,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 self.assertAlmostEqual(
                     res,
                     expected_factor,
-                    msg="got {:.7f}, expected {:.7f} when converting from {} to {}".format(
-                        res,
-                        expected_factor,
-                        QgsUnitTypes.toString(from_unit),
-                        QgsUnitTypes.toString(to_unit),
-                    ),
+                    msg=f"got {res:.7f}, expected {expected_factor:.7f} when converting from {QgsUnitTypes.toString(from_unit)} to {QgsUnitTypes.toString(to_unit)}",
                 )
                 # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(

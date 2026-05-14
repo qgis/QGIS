@@ -9,9 +9,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import unittest
+
 from qgis import core as qgis_core
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
     QgsMapLayerProxyModel,
@@ -29,8 +29,9 @@ from qgis.core import (
     QgsSettingsTree,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 
 __author__ = "Damiano Lombardi"
 __date__ = "02/04/2021"
@@ -41,7 +42,6 @@ start_app()
 
 
 class TestQgsSettingsEntry(QgisTestCase):
-
     cnt = 0
 
     def setUp(self):

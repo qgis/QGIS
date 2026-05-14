@@ -15,7 +15,11 @@
 
 #include "qgslistconfigdlg.h"
 
+#include <QString>
+
 #include "moc_qgslistconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsListConfigDlg::QgsListConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

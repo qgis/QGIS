@@ -245,9 +245,7 @@ static bool snapLineString( QgsLineString *linestring, const QgsSpatialIndex &in
     if ( !newVerticesAlongSegment.empty() )
     {
       // sort by distance along the segment
-      std::sort( newVerticesAlongSegment.begin(), newVerticesAlongSegment.end(), []( AnchorAlongSegment p1, AnchorAlongSegment p2 ) {
-        return p1.along < p2.along;
-      } );
+      std::sort( newVerticesAlongSegment.begin(), newVerticesAlongSegment.end(), []( AnchorAlongSegment p1, AnchorAlongSegment p2 ) { return p1.along < p2.along; } );
 
       // insert new vertices
       for ( const AnchorAlongSegment &vertex : newVerticesAlongSegment )

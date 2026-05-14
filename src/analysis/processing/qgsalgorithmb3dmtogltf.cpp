@@ -20,6 +20,10 @@
 #include "qgscesiumutils.h"
 #include "qgsgltfutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define TINYGLTF_IMPLEMENTATION
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
@@ -150,11 +154,9 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
     {
       // transfer B3DM RTC center to GLTF CESIUM_RTC extension
       tinygltf::Value::Object cesiumRtc;
-      cesiumRtc["center"] = tinygltf::Value( tinygltf::Value::Array {
-        tinygltf::Value( b3dmContent.rtcCenter.x() ),
-        tinygltf::Value( b3dmContent.rtcCenter.y() ),
-        tinygltf::Value( b3dmContent.rtcCenter.z() )
-      } );
+      cesiumRtc["center"] = tinygltf::Value(
+        tinygltf::Value::Array { tinygltf::Value( b3dmContent.rtcCenter.x() ), tinygltf::Value( b3dmContent.rtcCenter.y() ), tinygltf::Value( b3dmContent.rtcCenter.z() ) }
+      );
 
       model.extensions["CESIUM_RTC"] = tinygltf::Value( cesiumRtc );
       model.extensionsRequired.emplace_back( "CESIUM_RTC" );

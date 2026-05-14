@@ -24,20 +24,20 @@
 #include "qgsrendercontext.h"
 #include "qgstextrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, QgsPointXY point )
   : QgsAnnotationItem()
   , mText( text )
   , mPoint( point )
-{
-
-}
+{}
 
 Qgis::AnnotationItemFlags QgsAnnotationPointTextItem::flags() const
 {
   // in truth this should depend on whether the text format is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
-         | Qgis::AnnotationItemFlag::SupportsReferenceScale
-         | Qgis::AnnotationItemFlag::SupportsCallouts;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox | Qgis::AnnotationItemFlag::SupportsReferenceScale | Qgis::AnnotationItemFlag::SupportsCallouts;
 }
 
 QgsAnnotationPointTextItem::~QgsAnnotationPointTextItem() = default;
@@ -78,18 +78,15 @@ void QgsAnnotationPointTextItem::render( QgsRenderContext &context, QgsFeedback 
 
   if ( callout() )
   {
-    const double textWidth = QgsTextRenderer::textWidth(
-                               context, mTextFormat, displayText.split( '\n' ) );
-    const double textHeight = QgsTextRenderer::textHeight(
-                                context, mTextFormat, displayText.split( '\n' ) );
+    const double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayText.split( '\n' ) );
+    const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayText.split( '\n' ) );
 
     QgsCallout::QgsCalloutContext calloutContext;
     renderCallout( context, QRectF( pt.x(), pt.y() - textHeight, textWidth, textHeight ), angle, calloutContext, feedback );
   }
 
-  QgsTextRenderer::drawText( pt, - angle * M_PI / 180.0,
-                             QgsTextRenderer::convertQtHAlignment( mAlignment ),
-                             mTextFormat.allowHtmlFormatting() ? QStringList{displayText }: displayText.split( '\n' ), context, mTextFormat );
+  QgsTextRenderer::
+    drawText( pt, -angle * M_PI / 180.0, QgsTextRenderer::convertQtHAlignment( mAlignment ), mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ), context, mTextFormat );
 }
 
 bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -166,8 +163,8 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
 {
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
 
-  const double widthInPixels = QgsTextRenderer::textWidth( context, mTextFormat, mTextFormat.allowHtmlFormatting() ? QStringList{displayText }: displayText.split( '\n' ) );
-  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, mTextFormat.allowHtmlFormatting() ? QStringList{displayText }: displayText.split( '\n' ) );
+  const double widthInPixels = QgsTextRenderer::textWidth( context, mTextFormat, mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ) );
+  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ) );
 
   // text size has already been calculated using any symbology reference scale factor above -- we need
   // to temporarily remove the reference scale here or we'll be undoing the scaling
@@ -222,7 +219,7 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
 
 QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodesV2( const QgsAnnotationItemEditContext &context ) const
 {
-  QList<QgsAnnotationItemNode> res = { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+  QList<QgsAnnotationItemNode> res = { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle ) };
 
   QgsPointXY calloutNodePoint;
   if ( !calloutAnchor().isEmpty() )
@@ -273,6 +270,13 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      mAngle = std::fmod( mAngle + rotateOperation->angle(), 360.0 );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
@@ -296,6 +300,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::tran
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;

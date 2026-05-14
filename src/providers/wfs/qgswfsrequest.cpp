@@ -20,7 +20,11 @@
 #include "qgslogger.h"
 #include "qgswfsconstants.h"
 
+#include <QString>
+
 #include "moc_qgswfsrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : QgsBaseNetworkRequest( uri.auth(), tr( "WFS" ) )
@@ -41,7 +45,9 @@ QDomDocument QgsWfsRequest::createPostDocument() const
   return postDocument;
 }
 
-QDomElement QgsWfsRequest::createRootPostElement( const QgsWfsCapabilities &capabilities, const QString &wfsVersion, QDomDocument &postDocument, const QString &name, const QStringList &typeNamesForNamespaces ) const
+QDomElement QgsWfsRequest::createRootPostElement(
+  const QgsWfsCapabilities &capabilities, const QString &wfsVersion, QDomDocument &postDocument, const QString &name, const QStringList &typeNamesForNamespaces
+) const
 {
   QDomElement rootElement = postDocument.createElement( name );
   rootElement.setAttribute( u"service"_s, u"WFS"_s );

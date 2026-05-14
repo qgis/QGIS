@@ -85,17 +85,14 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsvectorlayerproperties.cpp"
 
-QgsVectorLayerProperties::QgsVectorLayerProperties(
-  QgsMapCanvas *canvas,
-  QgsMessageBar *messageBar,
-  QgsVectorLayer *lyr,
-  QWidget *parent,
-  Qt::WindowFlags fl
-)
+using namespace Qt::StringLiterals;
+
+QgsVectorLayerProperties::QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr, QWidget *parent, Qt::WindowFlags fl )
   : QgsLayerPropertiesDialog( lyr, canvas, u"VectorLayerProperties"_s, parent, fl )
   , mMessageBar( messageBar )
   , mLayer( lyr )
@@ -153,10 +150,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
   else
   {
-    mContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr )
-             << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    mContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
   mContext << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -227,7 +225,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( mSourceFieldsPropertiesDialog, &QgsSourceFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
 
-  mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame );
+  mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame, mSourceFieldsPropertiesDialog );
   mAttributesFormPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->setLayout( new QVBoxLayout( mAttributesFormFrame ) );
   mAttributesFormFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -1044,8 +1042,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
           }
           case DatasourceDatabase:
           {
-            QString infoWindowTitle = QObject::tr( "Save style '%1' to DB (%2)" )
-                                        .arg( styleName, mLayer->providerType() );
+            QString infoWindowTitle = QObject::tr( "Save style '%1' to DB (%2)" ).arg( styleName, mLayer->providerType() );
             QString msgError;
 
             QgsMapLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
@@ -1072,7 +1069,9 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             QString errorMessage;
             if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), dbSettings.name, errorMessage ) )
             {
-              if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+              if ( QMessageBox::
+                     question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No )
+                   == QMessageBox::No )
               {
                 return;
               }
@@ -1843,9 +1842,7 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
     mLayer->updateFields();
 
     // immediately deactivate data defined button
-    if ( key >= 0 && def.origin().compare( "labeling", Qt::CaseInsensitive ) == 0
-         && labelingDialog
-         && labelingDialog->labelingGui() )
+    if ( key >= 0 && def.origin().compare( "labeling", Qt::CaseInsensitive ) == 0 && labelingDialog && labelingDialog->labelingGui() )
     {
       labelingDialog->labelingGui()->deactivateField( static_cast<QgsPalLayerSettings::Property>( key ) );
     }

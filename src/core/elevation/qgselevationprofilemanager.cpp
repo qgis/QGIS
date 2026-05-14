@@ -19,7 +19,11 @@
 #include "qgsreadwritecontext.h"
 #include "qgsruntimeprofiler.h"
 
+#include <QString>
+
 #include "moc_qgselevationprofilemanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfileManager::QgsElevationProfileManager( QgsProject *project )
   : QgsAbstractProjectStoredObjectManager( project )
@@ -140,9 +144,6 @@ void QgsElevationProfileManager::setupObjectConnections( QgsElevationProfile *pr
 {
   if ( profile )
   {
-    connect( profile, &QgsElevationProfile::nameChanged, this, [this, profile]( const QString & newName )
-    {
-      emit profileRenamed( profile, newName );
-    } );
+    connect( profile, &QgsElevationProfile::nameChanged, this, [this, profile]( const QString &newName ) { emit profileRenamed( profile, newName ); } );
   }
 }

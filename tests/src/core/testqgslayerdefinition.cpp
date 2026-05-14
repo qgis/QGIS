@@ -21,8 +21,11 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayerDefinition : public QObject
 {

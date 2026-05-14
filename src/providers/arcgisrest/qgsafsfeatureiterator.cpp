@@ -24,8 +24,7 @@
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
   : mSharedData( sharedData )
-{
-}
+{}
 
 QgsFeatureIterator QgsAfsFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
@@ -120,7 +119,15 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
     return false;
 
-  if ( mFeatureIterator >= mSource->sharedData()->objectIdCount() )
+  QString errorMessage;
+  if ( !mSource->sharedData()->ensureObjectIdsFetched( errorMessage ) )
+  {
+    QgsDebugError( errorMessage );
+    return false;
+  }
+
+  const long long objectIdCount = mSource->sharedData()->objectIdCount();
+  if ( mFeatureIterator >= objectIdCount )
     return false;
 
   if ( mDeferredFeaturesInFilterRectCheck )
@@ -166,7 +173,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       if ( mRemainingFeatureIds.empty() )
         return false;
 
-      bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, QgsRectangle(), mInterruptionChecker );
+      bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, mRemainingFeatureIds, mInterruptionChecker );
       if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
         return false;
 
@@ -185,7 +192,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
     case Qgis::FeatureRequestFilterType::Expression:
     case Qgis::FeatureRequestFilterType::NoFilter:
     {
-      while ( mFeatureIterator < mSource->sharedData()->objectIdCount() )
+      while ( mFeatureIterator < objectIdCount )
       {
         if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
           return false;
@@ -197,7 +204,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
         bool isDeleted = mSource->sharedData()->isDeleted( mFeatureIterator );
         if ( !isDeleted )
         {
-          success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
+          success = mSource->sharedData()->getFeature( mFeatureIterator, f, mRemainingFeatureIds, mInterruptionChecker );
         }
 
         if ( !mFeatureIdList.empty() )

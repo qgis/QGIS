@@ -173,7 +173,7 @@ static PointCount createFileInfo(const StringList& input, StringList dimNames,
             std::vector<std::string> dirfiles = directoryList(filename);
             filenames.insert(filenames.end(), dirfiles.begin(), dirfiles.end());
         }
-        else if (ends_with(filename, ".vpc"))
+        else if (isVpcFilename(filename))
         {
             VirtualPointCloud vpc;
             if (!vpc.read(filename))
@@ -442,7 +442,7 @@ void addArgs(pdal::ProgramArgs& programArgs, BaseInfo::Options& options, pdal::A
     programArgs.add("input-file-list", "Read input files from a text file", options.inputFileList);
     programArgs.add("length,l", "Tile length", options.tileLength, 1000.);
     tempArg = &(programArgs.add("temp_dir", "Temp directory", options.tempDir));
-    programArgs.add("output-format", "Output format (las/laz)", options.outputFormat);
+    programArgs.add("vpc-output-format", "Output format (las/laz/copc)", options.outputFormat);
 
     // for debugging
     programArgs.add("preserve_temp_dir", "Do not remove the temp directory before and after processing (for debugging)",
@@ -474,7 +474,7 @@ bool handleOptions(pdal::StringList& arglist, BaseInfo::Options& options)
         throw FatalError(err.what());
     }
 
-    if (ends_with(options.outputDir, ".vpc"))
+    if (isVpcFilename(options.outputDir))
     {
         options.outputDir = options.outputDir.substr(0, options.outputDir.size()-4);
         options.buildVpc = true;

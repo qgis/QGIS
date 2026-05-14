@@ -21,7 +21,10 @@
 #include "qgsunittypes.h"
 
 #include <QPicture>
+#include <QString>
 #include <QTransform>
+
+using namespace Qt::StringLiterals;
 
 QgsPaintEffect *QgsTransformEffect::create( const QVariantMap &map )
 {
@@ -112,8 +115,7 @@ QTransform QgsTransformEffect::createTransform( const QgsRenderContext &context 
   const double translateX = context.convertToPainterUnits( mTranslateX, mTranslateUnit, mTranslateMapUnitScale );
   const double translateY = context.convertToPainterUnits( mTranslateY, mTranslateUnit, mTranslateMapUnitScale );
 
-  t.translate( translateX + left + width / 2.0,
-               translateY + top + height / 2.0 );
+  t.translate( translateX + left + width / 2.0, translateY + top + height / 2.0 );
 
   t.rotate( mRotation );
   t.shear( mShearX, mShearY );
@@ -124,8 +126,7 @@ QTransform QgsTransformEffect::createTransform( const QgsRenderContext &context 
     t.scale( mReflectX ? -1 : 1, mReflectY ? -1 : 1 );
   }
 
-  t.translate( -left - width / 2.0,
-               -top - height / 2.0 );
+  t.translate( -left - width / 2.0, -top - height / 2.0 );
 
   return t;
 }

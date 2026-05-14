@@ -21,12 +21,14 @@
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
-{
-}
+{}
 
 QgsEditorWidgetWrapper *QgsKeyValueWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {

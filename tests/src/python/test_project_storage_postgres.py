@@ -15,16 +15,15 @@ __date__ = "2018-03-29"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 import os
+import unittest
 
 import psycopg2
-from qgis.PyQt.QtCore import QUrl, QUrlQuery
 from qgis.core import (
     QgsDataSourceUri,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QUrl, QUrlQuery
+from qgis.testing import QgisTestCase, start_app
 from test_project_storage_base import TestPyQgsProjectStorageBase
 from utilities import unitTestDataPath
 
@@ -33,7 +32,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsProjectStoragePostgres(QgisTestCase, TestPyQgsProjectStorageBase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

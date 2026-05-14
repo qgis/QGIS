@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPointCloudAttribute
 {
 %Docstring(signature="appended")
@@ -106,7 +107,6 @@ A collection of point cloud attributes.
 #include "qgspointcloudattribute.h"
 %End
   public:
-
     QgsPointCloudAttributeCollection();
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
 %Docstring

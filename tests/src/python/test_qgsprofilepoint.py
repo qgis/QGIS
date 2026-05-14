@@ -11,15 +11,15 @@ __date__ = "18/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 
-from qgis.core import QgsProfilePoint
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsProfilePoint
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsProfilePoint(QgisTestCase):
-
     def testBasic(self):
         point = QgsProfilePoint()
         self.assertTrue(point.isEmpty())

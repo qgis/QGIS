@@ -13,18 +13,18 @@ __author__ = "Alessandro Pasotti"
 __date__ = "20/08/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QTemporaryDir, QVariant
-from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsRasterAttributeTable,
     QgsRasterLayer,
 )
 from qgis.gui import QgsRasterAttributeTableWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QTemporaryDir, QVariant
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
-
 from test_qgsrasterattributetable import createTestRasters
 
 # Convenience instances in case you may need them
@@ -33,7 +33,6 @@ start_app()
 
 
 class TestQgsRasterAttributeTableWidget(QgisTestCase):
-
     def setUp(self):
 
         self.iface = get_iface()

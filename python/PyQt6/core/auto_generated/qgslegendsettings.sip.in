@@ -565,7 +565,9 @@ Draws Text. Takes care about all the composer specific issues
 font bug)
 %End
 
-    void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
+    void drawText(
+      QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap
+    ) const;
 %Docstring
 Like the above, but with a rectangle for multiline text
 
@@ -652,7 +654,6 @@ If ``length`` is 0, then no automatic wrapping will occur.
 %End
 
 };
-
 
 
 /************************************************************************

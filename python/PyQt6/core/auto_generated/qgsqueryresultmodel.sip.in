@@ -25,7 +25,6 @@ A model for
 #include "qgsqueryresultmodel.h"
 %End
   public:
-
     QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = 0 );
 %Docstring
 Constructs a QgsQueryResultModel from a ``queryResult`` with optional
@@ -35,7 +34,6 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional
     ~QgsQueryResultModel();
 
   public:
-
     virtual int rowCount( const QModelIndex &parent ) const;
 
     virtual int columnCount( const QModelIndex &parent ) const;

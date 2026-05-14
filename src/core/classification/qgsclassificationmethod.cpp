@@ -25,6 +25,9 @@
 #include "qgsxmlutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const int QgsClassificationMethod::MAX_PRECISION = 15;
 const int QgsClassificationMethod::MIN_PRECISION = -6;
@@ -34,7 +37,7 @@ QList<double> QgsClassificationMethod::rangesToBreaks( const QList<QgsClassifica
 {
   QList<double> values;
   values.reserve( classes.count() );
-  for ( int i = 0 ; i < classes.count(); i++ )
+  for ( int i = 0; i < classes.count(); i++ )
     values << classes.at( i ).upperBound();
   return values;
 }
@@ -43,8 +46,7 @@ QgsClassificationMethod::QgsClassificationMethod( MethodProperties properties, i
   : mFlags( properties )
   , mCodeComplexity( codeComplexity )
   , mLabelFormat( u"%1 - %2"_s )
-{
-}
+{}
 
 QgsClassificationMethod::~QgsClassificationMethod()
 {
@@ -265,7 +267,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QList<doub
   // get the breaks
   QString error;
   QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses, error );
-  ( void )error;
+  ( void ) error;
 
   breaks.insert( 0, minimum );
   // create classes
@@ -282,7 +284,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, 
   // get the breaks
   QString error;
   QList<double> breaks = calculateBreaks( minimum, maximum, QList<double>(), nclasses, error );
-  ( void )error;
+  ( void ) error;
 
   breaks.insert( 0, minimum );
   // create classes
@@ -295,7 +297,6 @@ QList<QgsClassificationRange> QgsClassificationMethod::breaksToClasses( const QL
 
   for ( int i = 1; i < breaks.count(); i++ )
   {
-
     const double lowerValue = breaks.at( i - 1 );
     const double upperValue = breaks.at( i );
 
@@ -325,7 +326,7 @@ void QgsClassificationMethod::makeBreaksSymmetric( QList<double> &breaks, double
   std::sort( breaks.begin(), breaks.end() );
   // breaks contain the maximum of the distrib but not the minimum
   double distBelowSymmetricValue = std::fabs( breaks[0] - symmetryPoint );
-  double distAboveSymmetricValue = std::fabs( breaks[ breaks.size() - 2 ] - symmetryPoint ) ;
+  double distAboveSymmetricValue = std::fabs( breaks[breaks.size() - 2] - symmetryPoint );
   double absMin = std::min( distAboveSymmetricValue, distBelowSymmetricValue );
 
   // make symmetric

@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsWmsUtils
 {
   public:
-
     /**
      * Returns whether a map \a layer is an OGC WMS layer or not.
      * \param layer Map layer that will be checked.

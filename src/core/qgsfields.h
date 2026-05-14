@@ -51,36 +51,36 @@ class CORE_EXPORT QgsFields
     Q_PROPERTY( QStringList names READ names )
 
   public:
-
 #ifndef SIP_RUN
 
     typedef struct Field
     {
-      Field()
-      {}
+        Field() {}
 
-      Field( const QgsField &f, Qgis::FieldOrigin o, int oi )
-        : field( f )
-        , origin( o )
-        , originIndex( oi )
-      {}
+        Field( const QgsField &f, Qgis::FieldOrigin o, int oi )
+          : field( f )
+          , origin( o )
+          , originIndex( oi )
+        {}
 
-      // TODO c++20 - replace with = default
+        // TODO c++20 - replace with = default
 
-      bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
-      bool operator!=( const Field &other ) const { return !( *this == other ); }
+        bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
+        bool operator!=( const Field &other ) const { return !( *this == other ); }
 
-      QgsField field;      //!< Field
-      Qgis::FieldOrigin origin = Qgis::FieldOrigin::Unknown ;  //!< Origin of the field
-      int originIndex = -1 ;     //!< Index specific to the origin
+        QgsField field;                                        //!< Field
+        Qgis::FieldOrigin origin = Qgis::FieldOrigin::Unknown; //!< Origin of the field
+        int originIndex = -1;                                  //!< Index specific to the origin
     } Field;
 
 #endif
 
+    // clang-format off
     /**
      * Constructor for an empty field container
      */
     QgsFields() SIP_HOLDGIL;
+    // clang-format on
 
     QgsFields( const QgsFields &other ) SIP_HOLDGIL;
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
@@ -144,6 +144,7 @@ class CORE_EXPORT QgsFields
      */
     void remove( int fieldIdx );
 #else
+// clang-format off
 
     /**
      * Removes the field with the given index.
@@ -162,6 +163,7 @@ class CORE_EXPORT QgsFields
       sipCpp->remove( a0 );
     }
     % End
+// clang-format on
 #endif
 
     //! Extends with fields from another QgsFields container
@@ -174,6 +176,7 @@ class CORE_EXPORT QgsFields
     int count() const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
+// clang-format off
     int __len__() const SIP_HOLDGIL;
     % MethodCode
     sipRes = sipCpp->count();
@@ -184,6 +187,7 @@ class CORE_EXPORT QgsFields
     % MethodCode
     sipRes = true;
     % End
+// clang-format on
 #endif
 
     //! Returns number of items
@@ -209,6 +213,7 @@ class CORE_EXPORT QgsFields
     //! Gets field at particular index (must be in range 0..N-1)
     QgsField &operator[]( int i ) SIP_HOLDGIL SIP_FACTORY;
 #ifdef SIP_RUN
+// clang-format off
     % MethodCode
     SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->count() );
     if ( idx < 0 )
@@ -216,9 +221,11 @@ class CORE_EXPORT QgsFields
     else
       sipRes = new QgsField( sipCpp->operator[]( idx ) );
     % End
+// clang-format on
 #endif
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __getitem__( const QString &name ) const SIP_HOLDGIL SIP_TYPEHINT( QgsField );
     % MethodCode
     const int fieldIdx = sipCpp->lookupField( *a0 );
@@ -232,6 +239,7 @@ class CORE_EXPORT QgsFields
       sipRes = sipConvertFromType( new QgsField( sipCpp->at( fieldIdx ) ), sipType_QgsField, Py_None );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -241,6 +249,7 @@ class CORE_EXPORT QgsFields
      */
     QgsField at( int i ) const SIP_FACTORY;
 #else
+// clang-format off
 
     /**
      * Returns the field at particular index (must be in range 0..N-1).
@@ -258,6 +267,7 @@ class CORE_EXPORT QgsFields
       sipRes = new QgsField( sipCpp->at( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -267,6 +277,7 @@ class CORE_EXPORT QgsFields
      */
     QgsField field( int fieldIdx ) const SIP_FACTORY;
 #else
+// clang-format off
 
     /**
      * Returns the field at particular index (must be in range 0..N-1).
@@ -284,6 +295,7 @@ class CORE_EXPORT QgsFields
       sipRes = new QgsField( sipCpp->field( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -293,6 +305,7 @@ class CORE_EXPORT QgsFields
      */
     QgsField field( const QString &name ) const SIP_FACTORY;
 #else
+// clang-format off
 
     /**
      * Returns the field with matching name.
@@ -311,6 +324,7 @@ class CORE_EXPORT QgsFields
       sipRes = new QgsField( sipCpp->field( *a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -320,6 +334,7 @@ class CORE_EXPORT QgsFields
      */
     Qgis::FieldOrigin fieldOrigin( int fieldIdx ) const;
 #else
+// clang-format off
 
     /**
      * Returns the field's origin (value from an enumeration).
@@ -338,6 +353,7 @@ class CORE_EXPORT QgsFields
       sipRes = sipCpp->fieldOrigin( a0 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -351,6 +367,7 @@ class CORE_EXPORT QgsFields
      */
     int fieldOriginIndex( int fieldIdx ) const;
 #else
+// clang-format off
 
     /**
      * Returns the field's origin index (its meaning is specific to each type of origin).
@@ -373,6 +390,7 @@ class CORE_EXPORT QgsFields
       sipRes = sipCpp->fieldOriginIndex( a0 );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -438,6 +456,7 @@ class CORE_EXPORT QgsFields
      */
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const SIP_FACTORY;
 #else
+// clang-format off
 
     /**
      * Returns an icon corresponding to a field index, based on the field's type and source
@@ -457,6 +476,7 @@ class CORE_EXPORT QgsFields
       sipRes = new QIcon( sipCpp->iconForField( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -487,6 +507,7 @@ class CORE_EXPORT QgsFields
     }
 
 #ifdef SIP_RUN
+// clang-format off
 
     void __setitem__( int key, const QgsField &field ) SIP_HOLDGIL;
     % MethodCode
@@ -497,6 +518,7 @@ class CORE_EXPORT QgsFields
       ( *sipCpp )[idx] = *a1;
     % End
 
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

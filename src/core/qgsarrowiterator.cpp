@@ -21,24 +21,28 @@
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 
-#define QGIS_NANOARROW_THROW_NOT_OK_ERR( expr, err )                                                                             \
-  do                                                                                                                             \
-  {                                                                                                                              \
-    const int ec = ( expr );                                                                                                     \
-    if ( ec != NANOARROW_OK )                                                                                                    \
-    {                                                                                                                            \
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+#define QGIS_NANOARROW_THROW_NOT_OK_ERR( expr, err )                                                              \
+  do                                                                                                              \
+  {                                                                                                               \
+    const int ec = ( expr );                                                                                      \
+    if ( ec != NANOARROW_OK )                                                                                     \
+    {                                                                                                             \
       throw QgsException( u"nanoarrow error (%1): %2"_s.arg( ec ).arg( QString::fromUtf8( ( err )->message ) ) ); \
-    }                                                                                                                            \
+    }                                                                                                             \
   } while ( 0 )
 
-#define QGIS_NANOARROW_THROW_NOT_OK( expr )                                     \
-  do                                                                            \
-  {                                                                             \
-    const int ec = ( expr );                                                    \
-    if ( ec != NANOARROW_OK )                                                   \
-    {                                                                           \
+#define QGIS_NANOARROW_THROW_NOT_OK( expr )                      \
+  do                                                             \
+  {                                                              \
+    const int ec = ( expr );                                     \
+    if ( ec != NANOARROW_OK )                                    \
+    {                                                            \
       throw QgsException( u"nanoarrow error (%1)"_s.arg( ec ) ); \
-    }                                                                           \
+    }                                                            \
   } while ( 0 )
 
 
@@ -115,9 +119,15 @@ bool QgsArrowSchema::isValid() const
   return mSchema.release;
 }
 
-int QgsArrowSchema::geometryColumnIndex() const { return mGeometryColumnIndex; }
+int QgsArrowSchema::geometryColumnIndex() const
+{
+  return mGeometryColumnIndex;
+}
 
-void QgsArrowSchema::setGeometryColumnIndex( int geometryColumnIndex ) { mGeometryColumnIndex = geometryColumnIndex; }
+void QgsArrowSchema::setGeometryColumnIndex( int geometryColumnIndex )
+{
+  mGeometryColumnIndex = geometryColumnIndex;
+}
 
 QgsArrowArray::QgsArrowArray( QgsArrowArray &&other )
 {
@@ -540,7 +550,9 @@ namespace
   {
     public:
       ArrowIteratorArrayStreamImpl( QgsArrowIterator iterator, int batchSize )
-        : mIterator( iterator ), mBatchSize( batchSize ) {}
+        : mIterator( iterator )
+        , mBatchSize( batchSize )
+      {}
 
       int GetSchema( struct ArrowSchema *schema )
       {
@@ -585,8 +597,7 @@ namespace
 
 QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
   : mFeatureIterator( featureIterator )
-{
-}
+{}
 
 struct ArrowSchema *QgsArrowIterator::schema()
 {

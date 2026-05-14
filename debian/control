@@ -23,7 +23,10 @@ Architecture: all
 Depends:
  libjs-jquery,
  libjs-leaflet,
- qml-module-qtcharts,
+ qml6-module-qtcharts,
+ qml6-module-qtquick-controls,
+ qml6-module-qtquick-effects,
+ qml6-module-qtquick-layouts,
  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and

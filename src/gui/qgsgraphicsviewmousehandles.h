@@ -18,7 +18,6 @@
 #define QGSGRAPHICSVIEWMOUSEHANDLES_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -28,6 +27,8 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QPointer>
+
+#define SIP_NO_FILE
 
 class QGraphicsView;
 class QInputEvent;
@@ -109,6 +110,34 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      */
     void setRotationEnabled( bool enable );
 
+    /**
+     * Sets to TRUE for item dragging behavior to require a mouse click,
+     * mouse movement, then a second mouse click to confirm the dragging
+     * operation.
+     *
+     * \since QGIS 4.0
+     */
+    void setCadMouseDigitizingModeEnabled( bool enable );
+
+    /**
+     * Returns TRUE if resize functionality is enabled.
+     *
+     * Resize is enabled by default.
+     *
+     * \since QGIS 4.2
+     */
+    bool isResizeEnabled() const { return mResizeEnabled; }
+
+    /**
+     * Sets whether resize functionality is enabled.
+     *
+     * Resize is enabled by default. Subclasses must implement the
+     * setItemRect() method in order to support resize.
+     *
+     * \since QGIS 4.2
+     */
+    void setResizeEnabled( bool enable );
+
   public slots:
 
     //! Redraws handles when selected item size changes
@@ -140,7 +169,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
     virtual void rotateItem( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY );
     virtual void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY );
-    virtual void setItemRect( QGraphicsItem *item, QRectF rect ) = 0;
+    virtual void setItemRect( QGraphicsItem *item, QRectF rect );
 
     /**
      * Called when a resize or move action is in progress and the effects can be previewed for the specified \a item. The
@@ -238,7 +267,10 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     QRectF mResizeRect;
 
+    bool mCadMouseDigitizingMode = false;
+
     bool mRotationEnabled = false;
+    bool mResizeEnabled = true;
     //! Center point around which rotation occurs
     QPointF mRotationCenter;
     //! The starting rotation angle from center point
@@ -254,8 +286,11 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     Qgis::MouseHandlesAction mCurrentMouseMoveAction = Qgis::MouseHandlesAction::NoAction;
     bool mDoubleClickInProgress = false;
 
+
     //! True if user is currently dragging items
     bool mIsDragging = false;
+    //! True if user is starting to drag items in click-click behavior
+    bool mIsDragStarting = false;
     //! True is user is currently resizing items
     bool mIsResizing = false;
     //! True is user is currently rotating items
@@ -281,6 +316,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     //! Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)
     Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
+
+    friend class QgsMapToolSelectAnnotation;
 };
 
 ///@endcond PRIVATE

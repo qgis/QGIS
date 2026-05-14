@@ -21,7 +21,6 @@ Represents a patch shape for use in map legends.
 #include "qgslegendpatchshape.h"
 %End
   public:
-
     QgsLegendPatchShape();
 %Docstring
 Constructor for a null QgsLegendPatchShape.
@@ -30,9 +29,7 @@ A null QgsLegendPatchShape indicates that the default legend patch shape
 should be used instead.
 %End
 
-    QgsLegendPatchShape( Qgis::SymbolType type,
-                         const QgsGeometry &geometry,
-                         bool preserveAspectRatio = true );
+    QgsLegendPatchShape( Qgis::SymbolType type, const QgsGeometry &geometry, bool preserveAspectRatio = true );
 %Docstring
 Constructor for QgsLegendPatchShape.
 

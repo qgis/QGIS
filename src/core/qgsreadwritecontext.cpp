@@ -14,6 +14,10 @@
  ***************************************************************************/
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 class DefaultTranslator : public QgsProjectTranslator
 {
@@ -34,9 +38,7 @@ Q_GLOBAL_STATIC( DefaultTranslator, sDefaultTranslator )
 
 QgsReadWriteContext::QgsReadWriteContext()
   : mProjectTranslator( sDefaultTranslator() )
-{
-
-}
+{}
 
 QgsReadWriteContext::~QgsReadWriteContext()
 {

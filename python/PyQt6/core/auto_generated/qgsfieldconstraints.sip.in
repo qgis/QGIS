@@ -23,7 +23,6 @@ Stores information about constraints which may be present on a field.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum Constraint /BaseType=IntEnum/
     {
       ConstraintNotNull,

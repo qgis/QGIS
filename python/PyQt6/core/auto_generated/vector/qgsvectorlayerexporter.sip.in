@@ -29,16 +29,16 @@ provider.
 #include "qgsvectorlayerexporter.h"
 %End
   public:
-
-
-    static Qgis::VectorExportResult exportLayer( QgsVectorLayer *layer,
-        const QString &uri,
-        const QString &providerKey,
-        const QgsCoordinateReferenceSystem &destCRS,
-        bool onlySelected = false,
-        QString *errorMessage /Out/ = 0,
-        const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-        QgsFeedback *feedback = 0 );
+    static Qgis::VectorExportResult exportLayer(
+      QgsVectorLayer *layer,
+      const QString &uri,
+      const QString &providerKey,
+      const QgsCoordinateReferenceSystem &destCRS,
+      bool onlySelected = false,
+      QString *errorMessage /Out/ = 0,
+      const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
+      QgsFeedback *feedback = 0
+    );
 %Docstring
 Writes the contents of vector layer to a different datasource.
 
@@ -59,15 +59,14 @@ Writes the contents of vector layer to a different datasource.
 
     struct OutputField
     {
-
-      OutputField( const QgsField &field, const QString &expression );
+        OutputField( const QgsField &field, const QString &expression );
 %Docstring
 Constructor for OutputField, with the specified ``field`` definition and
 source ``expression``.
 %End
 
-      QgsField field;
-      QString expression;
+        QgsField field;
+        QString expression;
     };
 
     class ExportOptions
@@ -79,7 +78,6 @@ Encapsulates options for use with QgsVectorLayerExporter.
 %End
 
       public:
-
         void setSelectedOnly( bool selected );
 %Docstring
 Sets whether the export should only include selected features.
@@ -252,13 +250,15 @@ If empty, all input fields will be copied directly.
 
     };
 
-    static Qgis::VectorExportResult exportLayer( QgsVectorLayer *layer,
-        const QString &uri,
-        const QString &providerKey,
-        const QgsVectorLayerExporter::ExportOptions &exportOptions,
-        QString *errorMessage /Out/ = 0,
-        const QMap<QString, QVariant> &providerOptions = QMap<QString, QVariant>(),
-        QgsFeedback *feedback = 0 );
+    static Qgis::VectorExportResult exportLayer(
+      QgsVectorLayer *layer,
+      const QString &uri,
+      const QString &providerKey,
+      const QgsVectorLayerExporter::ExportOptions &exportOptions,
+      QString *errorMessage /Out/ = 0,
+      const QMap<QString, QVariant> &providerOptions = QMap<QString, QVariant>(),
+      QgsFeedback *feedback = 0
+    );
 %Docstring
 Writes the contents of vector layer to a different data provider.
 
@@ -278,14 +278,16 @@ Writes the contents of vector layer to a different data provider.
 .. versionadded:: 3.44
 %End
 
-    QgsVectorLayerExporter( const QString &uri,
-                            const QString &provider,
-                            const QgsFields &fields,
-                            Qgis::WkbType geometryType,
-                            const QgsCoordinateReferenceSystem &crs,
-                            bool overwrite = false,
-                            const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
+    QgsVectorLayerExporter(
+      const QString &uri,
+      const QString &provider,
+      const QgsFields &fields,
+      Qgis::WkbType geometryType,
+      const QgsCoordinateReferenceSystem &crs,
+      bool overwrite = false,
+      const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
+      QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
+    );
 %Docstring
 Constructor for QgsVectorLayerExporter.
 
@@ -372,13 +374,14 @@ blocking the QGIS interface.
 #include "qgsvectorlayerexporter.h"
 %End
   public:
-
-    QgsVectorLayerExporterTask( QgsVectorLayer *layer,
-                                const QString &uri,
-                                const QString &providerKey,
-                                const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-                                bool ownsLayer = false );
+    QgsVectorLayerExporterTask(
+      QgsVectorLayer *layer,
+      const QString &uri,
+      const QString &providerKey,
+      const QgsCoordinateReferenceSystem &destinationCrs,
+      const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
+      bool ownsLayer = false
+    );
 %Docstring
 Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``,
 destination ``uri`` and ``providerKey``, and various export related
@@ -387,12 +390,14 @@ has to be set to ``True`` if the task should take ownership of the layer
 and delete it after export.
 %End
 
-    QgsVectorLayerExporterTask( QgsVectorLayer *layer,
-                                const QString &uri,
-                                const QString &providerKey,
-                                const QgsVectorLayerExporter::ExportOptions &exportOptions,
-                                const QMap<QString, QVariant> &providerOptions = QMap<QString, QVariant>(),
-                                bool ownsLayer = false );
+    QgsVectorLayerExporterTask(
+      QgsVectorLayer *layer,
+      const QString &uri,
+      const QString &providerKey,
+      const QgsVectorLayerExporter::ExportOptions &exportOptions,
+      const QMap<QString, QVariant> &providerOptions = QMap<QString, QVariant>(),
+      bool ownsLayer = false
+    );
 %Docstring
 Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``,
 destination ``uri`` and ``providerKey``, and various export related
@@ -404,11 +409,13 @@ ownership of the layer and delete it after export.
 .. versionadded:: 3.44
 %End
 
-    static QgsVectorLayerExporterTask *withLayerOwnership( QgsVectorLayer *layer /Transfer/,
-        const QString &uri,
-        const QString &providerKey,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QMap<QString, QVariant> &options = QMap<QString, QVariant>() ) /Factory/;
+    static QgsVectorLayerExporterTask *withLayerOwnership(
+      QgsVectorLayer *layer /Transfer/,
+      const QString &uri,
+      const QString &providerKey,
+      const QgsCoordinateReferenceSystem &destinationCrs,
+      const QMap<QString, QVariant> &options = QMap<QString, QVariant>()
+    ) /Factory/;
 %Docstring
 Creates a new QgsVectorLayerExporterTask which has ownership over a
 source ``layer``. When the export task has completed (successfully or
@@ -435,7 +442,6 @@ will be reported.
 %End
 
   protected:
-
     virtual bool run();
 
     virtual void finished( bool result );

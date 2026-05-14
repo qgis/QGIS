@@ -18,8 +18,7 @@
 #include "qgsappgpsdigitizing.h"
 
 QgsAppGpsTools::QgsAppGpsTools()
-{
-}
+{}
 
 void QgsAppGpsTools::setGpsPanelConnection( QgsGpsConnection *connection )
 {

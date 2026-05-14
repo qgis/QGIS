@@ -87,8 +87,10 @@ void QgsFieldConstraints::setConstraintExpression( const QString &expression, co
 
 bool QgsFieldConstraints::operator==( const QgsFieldConstraints &other ) const
 {
-  return mConstraints == other.mConstraints && mConstraintOrigins == other.mConstraintOrigins
-         && mExpressionConstraint == other.mExpressionConstraint && mExpressionConstraintDescription == other.mExpressionConstraintDescription
+  return mConstraints == other.mConstraints
+         && mConstraintOrigins == other.mConstraintOrigins
+         && mExpressionConstraint == other.mExpressionConstraint
+         && mExpressionConstraintDescription == other.mExpressionConstraintDescription
          && mConstraintStrengths == other.mConstraintStrengths
          && mDomainName == other.mDomainName;
 }

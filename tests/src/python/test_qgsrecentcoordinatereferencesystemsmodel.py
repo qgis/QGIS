@@ -11,7 +11,8 @@ __date__ = "12/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import Qt, QModelIndex, QCoreApplication
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -19,28 +20,22 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.gui import (
+    QgsCoordinateReferenceSystemProxyModel,
     QgsRecentCoordinateReferenceSystemsModel,
     QgsRecentCoordinateReferenceSystemsProxyModel,
-    QgsCoordinateReferenceSystemProxyModel,
 )
-
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QModelIndex, Qt
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
-        QgsSettings().clear()
         start_app()
 
     def test_model(self):

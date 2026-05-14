@@ -29,7 +29,8 @@ SIP_NO_FILE
  * \brief Configuration widget for checkbox widgets.
  * \note not available in Python bindings
  */
-class GUI_EXPORT QgsCheckBoxConfigDlg : public QgsEditorConfigWidget, private Ui::QgsCheckBoxConfigDlgBase
+class GUI_EXPORT QgsCheckBoxConfigDlg : public QgsEditorConfigWidget,
+                                        private Ui::QgsCheckBoxConfigDlgBase
 {
     Q_OBJECT
 

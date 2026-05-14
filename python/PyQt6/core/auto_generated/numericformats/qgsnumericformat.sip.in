@@ -24,7 +24,6 @@ A context for numeric formats.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsNumericFormatContext();
 %Docstring
 Constructor for QgsNumericFormatContext.
@@ -189,7 +188,7 @@ Sets the expression ``context`` to use when evaluating
 #include <qgsexpressionbasednumericformat.h>
 %End
 
-class QgsNumericFormat
+  class QgsNumericFormat
 {
 %Docstring(signature="appended")
 Abstract base class for numeric formatters, which allow for formatting a
@@ -299,7 +298,6 @@ Writes the format to an XML ``element``.
     bool operator!=( const QgsNumericFormat &other ) const;
 
   protected:
-
 };
 
 /************************************************************************

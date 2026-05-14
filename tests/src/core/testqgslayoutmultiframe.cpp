@@ -29,6 +29,9 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutMultiFrame : public QgsTest
 {
@@ -36,7 +39,8 @@ class TestQgsLayoutMultiFrame : public QgsTest
 
   public:
     TestQgsLayoutMultiFrame()
-      : QgsTest( u"Layout MultiFrame Tests"_s ) {}
+      : QgsTest( u"Layout MultiFrame Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -63,22 +67,13 @@ class TestMultiFrame : public QgsLayoutMultiFrame
   public:
     TestMultiFrame( QgsLayout *layout )
       : QgsLayoutMultiFrame( layout )
-    {
-    }
+    {}
 
-    int type() const override
-    {
-      return QgsLayoutItemRegistry::PluginItem + 1;
-    }
+    int type() const override { return QgsLayoutItemRegistry::PluginItem + 1; }
 
-    void render( QgsLayoutItemRenderContext &, const QRectF &, int ) override
-    {
-    }
+    void render( QgsLayoutItemRenderContext &, const QRectF &, int ) override {}
 
-    QSizeF totalSize() const override
-    {
-      return QSizeF();
-    }
+    QSizeF totalSize() const override { return QSizeF(); }
 };
 
 void TestQgsLayoutMultiFrame::initTestCase()
@@ -318,12 +313,8 @@ void TestQgsLayoutMultiFrame::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createMultiFrame( 1, nullptr ) );
 
-  auto create = []( QgsLayout *layout ) -> QgsLayoutMultiFrame * {
-    return new TestMultiFrame( layout );
-  };
-  auto resolve = []( QVariantMap &props, const QgsPathResolver &, bool ) {
-    props.clear();
-  };
+  auto create = []( QgsLayout *layout ) -> QgsLayoutMultiFrame * { return new TestMultiFrame( layout ); };
+  auto resolve = []( QVariantMap &props, const QgsPathResolver &, bool ) { props.clear(); };
 
   const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::multiFrameTypeAdded );
 

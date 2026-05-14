@@ -28,7 +28,11 @@
 #include "qgsprovidermetadata.h"
 #include "qgsreadwritelocker.h"
 
+#include <QString>
+
 #include "moc_qgsauthoauth2method.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
@@ -128,12 +132,15 @@ QgsAuthOAuth2Method::QgsAuthOAuth2Method()
 {
   setVersion( 1 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::NetworkReply );
-  setDataProviders( QStringList() << u"ows"_s << u"wfs"_s // convert to lowercase
-                                  << u"wcs"_s << u"wms"_s );
+  setDataProviders(
+    QStringList()
+    << u"ows"_s
+    << u"wfs"_s // convert to lowercase
+    << u"wcs"_s
+    << u"wms"_s
+  );
 
-  const QStringList cachedirpaths = QStringList()
-                                    << QgsAuthOAuth2Config::tokenCacheDirectory()
-                                    << QgsAuthOAuth2Config::tokenCacheDirectory( true );
+  const QStringList cachedirpaths = QStringList() << QgsAuthOAuth2Config::tokenCacheDirectory() << QgsAuthOAuth2Config::tokenCacheDirectory( true );
 
   for ( const QString &cachedirpath : cachedirpaths )
   {
@@ -404,8 +411,10 @@ bool QgsAuthOAuth2Method::updateNetworkReply( QNetworkReply *reply, const QStrin
 
   if ( !reply )
   {
-    const QString msg = QStringLiteral( "Updated reply with token refresh connection FAILED"
-                                        " for authcfg %1: null reply object" )
+    const QString msg = QStringLiteral(
+                          "Updated reply with token refresh connection FAILED"
+                          " for authcfg %1: null reply object"
+    )
                           .arg( authcfg );
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     return false;
@@ -578,7 +587,8 @@ void QgsAuthOAuth2Method::onAuthCode()
 {
 #ifdef WITH_GUI
   bool ok = false;
-  QString code = QInputDialog::getText( QApplication::activeWindow(), u"Authoriation Code"_s, u"Enter the authorization code"_s, QLineEdit::Normal, u"Required"_s, &ok, Qt::Dialog, Qt::InputMethodHint::ImhNone );
+  QString code
+    = QInputDialog::getText( QApplication::activeWindow(), u"Authoriation Code"_s, u"Enter the authorization code"_s, QLineEdit::Normal, u"Required"_s, &ok, Qt::Dialog, Qt::InputMethodHint::ImhNone );
   if ( ok && !code.isEmpty() )
   {
     emit setAuthCode( code );
@@ -731,8 +741,11 @@ void QgsAuthOAuth2Method::putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle
   QgsReadWriteLocker locker( mO2CacheLock, QgsReadWriteLocker::Write );
   QgsDebugMsgLevel( u"Putting oauth2 bundle for authcfg: %1"_s.arg( authcfg ), 2 );
   mOAuth2ConfigCache.insert( authcfg, bundle );
-  // Restart the timer so that we have a full interval before the next cleanup
-  mCacheHousekeepingTimer.start();
+// Restart the timer so that we have a full interval before the next cleanup
+// Suppress warning: Potential leak of memory pointed to by 'callable' [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
+  QMetaObject::invokeMethod( &mCacheHousekeepingTimer, qOverload<>( &QTimer::start ), Qt::QueuedConnection );
+#endif
 }
 
 void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )

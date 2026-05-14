@@ -1,4 +1,4 @@
-""""Base test for layer metadata providers
+""" "Base test for layer metadata providers
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -11,7 +11,6 @@ __author__ = "elpaso@itopen.it"
 __date__ = "2022-08-19"
 __copyright__ = "Copyright 2022, ItOpen"
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsBox3d,
     QgsLayerMetadata,
@@ -25,7 +24,6 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.testing import start_app
-
 from utilities import compareWkt, unitTestDataPath
 
 QGIS_APP = start_app()
@@ -43,9 +41,6 @@ class LayerMetadataProviderTestBase:
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
 
     def testMetadataWriteRead(self):
 

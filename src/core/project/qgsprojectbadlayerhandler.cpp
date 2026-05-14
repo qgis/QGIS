@@ -21,6 +21,9 @@
 #include "qgsmessagelog.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
@@ -102,7 +105,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
       return IS_FILE;
     }
 
-    case IS_RASTER:         // rasters are currently only accessed as
+    case IS_RASTER: // rasters are currently only accessed as
       // physical files
       return IS_FILE;
 

@@ -23,8 +23,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsinstallgridshiftdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -54,7 +57,8 @@ void QgsInstallGridShiftFileDialog::installFromFile()
 {
   QgsSettings settings;
   const QString initialDir = settings.value( u"lastTransformGridFolder"_s, QDir::homePath(), QgsSettings::App ).toString();
-  const QString gridFilePath = QFileDialog::getOpenFileName( nullptr, tr( "Install %1" ).arg( mGridName ), initialDir, u"%1 (%1);;"_s.arg( mGridName ) + tr( "Grid Shift Files" ) + u" (*.gsb *.GSB *.tif);;"_s + QObject::tr( "All files" ) + " (*)" );
+  const QString gridFilePath = QFileDialog::
+    getOpenFileName( nullptr, tr( "Install %1" ).arg( mGridName ), initialDir, u"%1 (%1);;"_s.arg( mGridName ) + tr( "Grid Shift Files" ) + u" (*.gsb *.GSB *.tif);;"_s + QObject::tr( "All files" ) + " (*)" );
 
   if ( gridFilePath.isEmpty() )
   {

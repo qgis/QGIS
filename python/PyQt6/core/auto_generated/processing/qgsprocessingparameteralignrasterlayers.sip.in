@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsProcessingParameterAlignRasterLayers : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")

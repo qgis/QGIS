@@ -27,8 +27,9 @@
 #include <QStyledItemDelegate>
 #include <QUrl>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsStacSearchParametersDialog;
 class QgsStacItemListModel;
@@ -107,7 +108,7 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     QUrl mNextPageUrl;
     int mCollectionsPageCounter = 0;
 
-    QgsStacController *mStac = nullptr;
+    std::unique_ptr<QgsStacController> mStac;
     QgsStacItemListModel *mItemsModel = nullptr;
     QgsStacSearchParametersDialog *mParametersDialog = nullptr;
     QObjectUniquePtr<QgsRubberBand> mCurrentItemBand;

@@ -27,7 +27,13 @@
 #include "qgsvirtualpointcloudentity_p.h"
 #include "qgsxmlutils.h"
 
-QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext(
+  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset
+)
   : Qgs3DRenderContext( context )
   , mSymbol( std::move( symbol ) )
   , mZValueScale( zValueScale )
@@ -103,8 +109,7 @@ void QgsPointCloud3DRenderContext::updateExtent()
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"pointcloud"_s )
-{
-}
+{}
 
 QgsAbstract3DRenderer *QgsPointCloudLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -118,8 +123,7 @@ QgsAbstract3DRenderer *QgsPointCloudLayer3DRendererMetadata::createRenderer( QDo
 
 
 QgsPointCloudLayer3DRenderer::QgsPointCloudLayer3DRenderer()
-{
-}
+{}
 
 void QgsPointCloudLayer3DRenderer::setLayer( QgsPointCloudLayer *layer )
 {
@@ -147,6 +151,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
   r->setMaximumScreenError( mMaximumScreenError );
   r->setShowBoundingBoxes( mShowBoundingBoxes );
   r->setZoomOutBehavior( mZoomOutBehavior );
+  r->setOverviewSwitchingScale( mOverviewSwitchingScale );
   return r;
 }
 
@@ -163,11 +168,32 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( Qgs3DMapSettings 
   Qt3DCore::QEntity *entity = nullptr;
   if ( pcl->index() )
   {
-    entity = new QgsPointCloudLayerChunkedEntity( map, pcl, pcl->index(), coordinateTransform, mSymbol->clone(), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsPointCloudLayerChunkedEntity(
+      map,
+      pcl,
+      -1,
+      coordinateTransform,
+      mSymbol->clone(),
+      static_cast<float>( maximumScreenError() ),
+      showBoundingBoxes(),
+      static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(),
+      static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(),
+      mPointBudget
+    );
   }
   else if ( !pcl->dataProvider()->subIndexes().isEmpty() )
   {
-    entity = new QgsVirtualPointCloudEntity( map, pcl, coordinateTransform, mSymbol->clone(), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsVirtualPointCloudEntity(
+      map,
+      pcl,
+      coordinateTransform,
+      mSymbol->clone(),
+      static_cast<float>( maximumScreenError() ),
+      showBoundingBoxes(),
+      static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(),
+      static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(),
+      mPointBudget
+    );
   }
   return entity;
 }
@@ -188,6 +214,7 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   elem.setAttribute( u"show-bounding-boxes"_s, showBoundingBoxes() ? u"1"_s : u"0"_s );
   elem.setAttribute( u"point-budget"_s, mPointBudget );
   elem.setAttribute( u"zoom-out-behavior"_s, qgsEnumValueToKey( mZoomOutBehavior ) );
+  elem.setAttribute( u"overview-switching-scale"_s, mOverviewSwitchingScale );
 
   QDomElement elemSymbol = doc.createElement( u"symbol"_s );
   if ( mSymbol )
@@ -209,6 +236,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mMaximumScreenError = elem.attribute( u"max-screen-error"_s, u"3.0"_s ).toDouble();
   mPointBudget = elem.attribute( u"point-budget"_s, u"5000000"_s ).toInt();
   mZoomOutBehavior = qgsEnumKeyToValue( elem.attribute( u"zoom-out-behavior"_s ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
+  mOverviewSwitchingScale = elem.attribute( u"overview-switching-scale"_s, u"1.0"_s ).toDouble();
 
   if ( symbolType == "single-color"_L1 )
     mSymbol = std::make_unique<QgsSingleColorPointCloud3DSymbol>();
@@ -264,9 +292,7 @@ bool QgsPointCloudLayer3DRenderer::convertFrom2DRenderer( QgsPointCloudRenderer 
     return false;
   }
 
-  QgsPointCloud3DSymbol *newSymbol = const_cast<QgsPointCloud3DSymbol *>(
-    static_cast<QgsPointCloud3DSymbol *>( renderer3D->symbol()->clone() )
-  );
+  QgsPointCloud3DSymbol *newSymbol = const_cast<QgsPointCloud3DSymbol *>( static_cast<QgsPointCloud3DSymbol *>( renderer3D->symbol()->clone() ) );
   // we need to retain some settings from the previous symbol, like point size
   const QgsPointCloud3DSymbol *oldSymbol = symbol();
   if ( oldSymbol )

@@ -22,16 +22,15 @@ __copyright__ = "(C) 2013, Victor Olaya"
 import warnings
 
 from qgis.core import (
+    QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
-    QgsProcessingException,
     QgsProcessingParameterFileDestination,
 )
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-
-from processing.tools import vector
-
 from qgis.PyQt.QtCore import QCoreApplication
+
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import vector
 
 
 class MeanAndStdDevPlot(QgisAlgorithm):

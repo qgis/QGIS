@@ -20,9 +20,12 @@
 #include "qgsmaplayerstyle.h"
 
 #include <QDomElement>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsmaplayerstylemanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   : mLayer( layer )

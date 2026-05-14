@@ -43,7 +43,10 @@ class ANALYSIS_EXPORT QgsRelief
     struct ReliefColor
     {
         ReliefColor( const QColor &c, double min, double max )
-          : color( c ), minElevation( min ), maxElevation( max ) {}
+          : color( c )
+          , minElevation( min )
+          , maxElevation( max )
+        {}
 
         QColor color;
         double minElevation;

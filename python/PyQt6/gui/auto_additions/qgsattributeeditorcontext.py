@@ -6,6 +6,7 @@ QgsAttributeEditorContext.MultiEditMode = QgsAttributeEditorContext.Mode.MultiEd
 QgsAttributeEditorContext.SearchMode = QgsAttributeEditorContext.Mode.SearchMode
 QgsAttributeEditorContext.AggregateSearchMode = QgsAttributeEditorContext.Mode.AggregateSearchMode
 QgsAttributeEditorContext.IdentifyMode = QgsAttributeEditorContext.Mode.IdentifyMode
+QgsAttributeEditorContext.PreviewMode = QgsAttributeEditorContext.Mode.PreviewMode
 QgsAttributeEditorContext.Mode.baseClass = QgsAttributeEditorContext
 QgsAttributeEditorContext.Undefined = QgsAttributeEditorContext.RelationMode.Undefined
 QgsAttributeEditorContext.Multiple = QgsAttributeEditorContext.RelationMode.Multiple

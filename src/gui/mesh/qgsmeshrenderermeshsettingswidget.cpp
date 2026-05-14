@@ -30,13 +30,7 @@ QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *p
 {
   setupUi( this );
 
-  mLineUnitsComboBox->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points
-    }
-  );
+  mLineUnitsComboBox->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points } );
 
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );

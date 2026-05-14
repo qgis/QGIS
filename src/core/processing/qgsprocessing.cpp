@@ -17,15 +17,25 @@
 
 #include "qgsprocessing.h"
 
+#include <QString>
+
 #include "moc_qgsprocessing.cpp"
 
-const QgsSettingsEntryBool *QgsProcessing::settingsPreferFilenameAsLayerName = new QgsSettingsEntryBool( u"prefer-filename-as-layer-name"_s, sTreeConfiguration, true, QObject::tr( "Prefer filename as layer name" ) );
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *QgsProcessing::settingsPreferFilenameAsLayerName
+  = new QgsSettingsEntryBool( u"prefer-filename-as-layer-name"_s, sTreeConfiguration, true, QObject::tr( "Prefer filename as layer name" ) );
 
 const QgsSettingsEntryString *QgsProcessing::settingsTempPath = new QgsSettingsEntryString( u"temp-path"_s, sTreeConfiguration, QString(), QObject::tr( "Override temporary output folder path" ) );
 
-const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputVectorLayerExt = new QgsSettingsEntryString( u"default-output-vector-ext"_s, sTreeConfiguration, QString(), QObject::tr( "Default output vector layer extension" ) );
+const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputVectorLayerExt
+  = new QgsSettingsEntryString( u"default-output-vector-ext"_s, sTreeConfiguration, QString(), QObject::tr( "Default output vector layer extension" ) );
 
-const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputRasterLayerFormat = new QgsSettingsEntryString( u"default-output-raster-format"_s, sTreeConfiguration, QString(), QObject::tr( "Default output raster layer format" ) );
+const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputRasterLayerFormat
+  = new QgsSettingsEntryString( u"default-output-raster-format"_s, sTreeConfiguration, QString(), QObject::tr( "Default output raster layer format" ) );
+
+const QgsSettingsEntryVariant *QgsProcessing::settingsDefaultGuiParam
+  = new QgsSettingsEntryVariant( u"default-gui-param/%1/%2"_s, QgsSettingsTree::sTreeProcessing, QVariant(), u"Default GUI parameter value, keyed by algorithm id and parameter name. When set, overrides the default value shown in the algorithm dialog."_s );
 
 const QString QgsProcessing::TEMPORARY_OUTPUT = u"TEMPORARY_OUTPUT"_s;
 

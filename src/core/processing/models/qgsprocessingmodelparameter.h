@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelComponent
 {
   public:
-
     /**
      * Constructor for QgsProcessingModelParameter. The parameter name should match one of the
      * parameters from the parent model.
@@ -73,11 +72,9 @@ class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelCompone
     void setComment( const QgsProcessingModelComment &comment ) override { mComment = comment; }
 
   private:
-
     QString mParameterName;
 
     QgsProcessingModelComment mComment;
-
 };
 
 ///@endcond

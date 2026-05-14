@@ -1,26 +1,28 @@
-{ makeWrapper
-, nixosTests
-, symlinkJoin
+{
+  lib,
+  stdenv,
+  makeWrapper,
+  nixosTests,
+  symlinkJoin,
 
-, extraPythonPackages ? (ps: [ ])
+  extraPythonPackages ? (ps: [ ]),
 
-, qt6Packages
+  qt6Packages,
 
   # unwrapped package parameters
-, withGrass ? false
-, withServer ? false
+  withGrass ? false,
+  withServer ? false,
 }:
 
 let
   qgis-unwrapped = qt6Packages.callPackage ./unwrapped.nix {
-    withGrass = withGrass;
-    withServer = withServer;
+    inherit withGrass withServer;
   };
 in
-symlinkJoin rec {
+symlinkJoin {
 
-  inherit (qgis-unwrapped) version;
-  name = "qgis-${version}";
+  inherit (qgis-unwrapped) version outputs src;
+  pname = "qgis";
 
   paths = [ qgis-unwrapped ];
 
@@ -38,8 +40,24 @@ symlinkJoin rec {
     for program in $out/bin/*; do
       wrapProgram $program \
         --prefix PATH : $program_PATH \
+        --set PYTHONHOME ${qgis-unwrapped.py} \
         --set PYTHONPATH $program_PYTHONPATH
     done
+  ''
+  + lib.optionalString stdenv.hostPlatform.isDarwin ''
+    QGIS_PYTHON_PATH="$out/Applications/QGIS.app/Contents/Frameworks"
+    for program in $out/Applications/QGIS.app/Contents/MacOS/qgis \
+                   $out/Applications/QGIS.app/Contents/MacOS/qgis_process; do
+      if [[ -e "$program" ]]; then
+        wrapProgram "$program" \
+          --prefix PATH : $program_PATH \
+          --set PYTHONHOME ${qgis-unwrapped.py} \
+          --set PYTHONPATH "$QGIS_PYTHON_PATH:$program_PYTHONPATH"
+      fi
+    done
+  ''
+  + lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
+    ln -s ${qgis-unwrapped.man} $man
   '';
 
   passthru = {

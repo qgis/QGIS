@@ -66,8 +66,7 @@ void TestQgsRasterDataProviderTemporalCapabilities::init()
 }
 
 void TestQgsRasterDataProviderTemporalCapabilities::cleanup()
-{
-}
+{}
 
 void TestQgsRasterDataProviderTemporalCapabilities::cleanupTestCase()
 {

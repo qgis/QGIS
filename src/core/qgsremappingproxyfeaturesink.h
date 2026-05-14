@@ -38,7 +38,6 @@
 class CORE_EXPORT QgsRemappingSinkDefinition
 {
   public:
-
     /**
      * Returns the field mapping, which defines how to map the values from incoming features to destination
      * field values.
@@ -149,7 +148,6 @@ class CORE_EXPORT QgsRemappingSinkDefinition
     bool operator!=( const QgsRemappingSinkDefinition &other ) const;
 
   private:
-
     QMap< QString, QgsProperty > mFieldMap;
 
     QgsCoordinateReferenceSystem mSourceCrs;
@@ -158,11 +156,9 @@ class CORE_EXPORT QgsRemappingSinkDefinition
     Qgis::WkbType mDestinationWkbType = Qgis::WkbType::Unknown;
 
     QgsFields mDestinationFields;
-
 };
 
 Q_DECLARE_METATYPE( QgsRemappingSinkDefinition )
-
 
 
 /**
@@ -180,7 +176,6 @@ Q_DECLARE_METATYPE( QgsRemappingSinkDefinition )
 class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
 {
   public:
-
 #ifndef SIP_RUN
 
     /**
@@ -229,7 +224,6 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
     QgsFeatureSink *destinationSink() { return mSink; }
 
   private:
-
     QgsRemappingSinkDefinition mDefinition;
     QgsCoordinateTransform mTransform;
     QgsFeatureSink *mSink = nullptr;
@@ -238,7 +232,3 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
 };
 
 #endif // QGSREMAPPINGPROXYFEATURESINK_H
-
-
-
-

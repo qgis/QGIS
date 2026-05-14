@@ -21,12 +21,13 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerconfigwidget.h"
+#include "qgspropertycollection.h"
+#include "qgssymbolwidgetcontext.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;
 class QgsPointCloudRendererWidget;
 class QgsMapCanvas;
-class QgsSymbolWidgetContext;
 class QgsMessageBar;
 
 /**
@@ -35,7 +36,7 @@ class QgsMessageBar;
  *
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsPointCloudRendererPropsDialogBase
+class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfigWidget, public QgsExpressionContextGenerator, private Ui::QgsPointCloudRendererPropsDialogBase
 {
     Q_OBJECT
 
@@ -52,6 +53,7 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
     void syncToLayer( QgsMapLayer *layer ) final;
     void setDockMode( bool dockMode ) final;
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 
@@ -63,8 +65,15 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
     void emitWidgetChanged();
 
+    void updateDataDefinedProperty();
+
   private:
+    // for 3D rendering, see values in qgspointcloud3dsymbolwidget.h
+    const QMap<double, QString> mOverviewSwitchingScaleMap { { 5.0, "Much earlier" }, { 2.0, "Earlier" }, { 1.0, "Normal" }, { 0.5, "Later" } };
+
     static void initRendererWidgetFunctions();
+    void setOverviewSwitchingScale( double scale );
+    double overviewSwitchingScale() const;
 
     QgsPointCloudLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;
@@ -75,6 +84,10 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mBlockChangedSignal = false;
+
+    QgsPropertyCollection mDataDefinedProperties;
+
+    QgsSymbolWidgetContext mContext;
 };
 
 

@@ -28,13 +28,16 @@
 #include "qgsmarkersymbol.h"
 #include "qgsproject.h"
 #include "qgsrulebasedrenderer.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerlabelprovider.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayerTree : public QObject
 {
@@ -81,30 +84,17 @@ class TestQgsLayerTree : public QObject
 
     void testRendererLegend( QgsFeatureRenderer *renderer );
 
-    bool childVisiblity( int childIndex ) const
-    {
-      return mRoot->children().at( childIndex )->isVisible();
-    }
+    bool childVisiblity( int childIndex ) const { return mRoot->children().at( childIndex )->isVisible(); }
 
-    bool visibilityChecked( int childIndex ) const
-    {
-      return mRoot->children().at( childIndex )->itemVisibilityChecked();
-    }
+    bool visibilityChecked( int childIndex ) const { return mRoot->children().at( childIndex )->itemVisibilityChecked(); }
 
-    void setVisibilityChecked( int childIndex, bool state )
-    {
-      mRoot->children().at( childIndex )->setItemVisibilityChecked( state );
-    }
+    void setVisibilityChecked( int childIndex, bool state ) { mRoot->children().at( childIndex )->setItemVisibilityChecked( state ); }
 };
 
 void TestQgsLayerTree::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mRoot = new QgsLayerTreeGroup();
   mRoot->addGroup( u"grp1"_s );
@@ -331,8 +321,7 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   QgsSymbolLegendNode::MINIMUM_SIZE = -1;
   QgsSymbolLegendNode::MAXIMUM_SIZE = -1;
 
-  QgsSettings settings;
-  settings.setValue( "/qgis/legendsymbolMaximumSize", maxSize );
+  QgsSymbolLegendNode::settingsLegendSymbolMaximumSize->setValue( maxSize );
 
   //new memory layer
   QgsVectorLayer *vl = new QgsVectorLayer( u"Point?field=col1:integer"_s, u"vl"_s, u"memory"_s );
@@ -387,8 +376,7 @@ void TestQgsLayerTree::testRestrictedSymbolSizeWithGeometryGenerator()
   QgsSymbolLegendNode::MINIMUM_SIZE = -1;
   QgsSymbolLegendNode::MAXIMUM_SIZE = -1;
 
-  QgsSettings settings;
-  settings.setValue( "/qgis/legendsymbolMaximumSize", maxSize );
+  QgsSymbolLegendNode::settingsLegendSymbolMaximumSize->setValue( maxSize );
 
   //new memory layer
   QgsVectorLayer *vl = new QgsVectorLayer( u"Point?field=col1:integer"_s, u"vl"_s, u"memory"_s );
@@ -971,11 +959,12 @@ void TestQgsLayerTree::testCustomNodeDeleted()
   group->insertCustomNode( -1, u"custom-id-2"_s, u"Custom Name 2"_s );
 
   QList< QgsLayerTreeNode * > order = root.layerAndCustomNodeOrder();
-  group->removeCustomNode( u"non-existent"_s );
-  QCOMPARE( order, root.layerAndCustomNodeOrder() );
+  QVERIFY( !root.findCustomNode( u"non-existent"_s ) );
 
   QVERIFY( group->findCustomNodeIds().contains( u"custom-id-2"_s ) );
-  group->removeCustomNode( u"custom-id-2"_s );
+  QgsLayerTreeCustomNode *node = root.findCustomNode( u"custom-id-2"_s );
+  QVERIFY( node );
+  qobject_cast< QgsLayerTreeGroup * >( node->parent() )->removeCustomNode( node );
   QVERIFY( order != root.layerAndCustomNodeOrder() );
   QVERIFY( !group->findCustomNodeIds().contains( u"custom-id-2"_s ) );
 }

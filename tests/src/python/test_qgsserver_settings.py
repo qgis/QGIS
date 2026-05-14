@@ -18,14 +18,12 @@ import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.server import QgsServerSettings, QgsServerSettingsEnv
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 DEFAULT_CACHE_SIZE = 0  # Smart cache size
 
 
 class TestQgsServerSettings(unittest.TestCase):
-
     def setUp(self):
         self.settings = QgsServerSettings()
         self.testdata_path = unitTestDataPath("qgis_server_settings")

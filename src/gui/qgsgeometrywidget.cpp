@@ -26,9 +26,12 @@
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsgeometrywidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryWidget::QgsGeometryWidget( QWidget *parent )
   : QWidget( parent )

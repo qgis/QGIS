@@ -34,13 +34,15 @@
 
 #include <QSettings>
 #include <QStatusBar>
+#include <QString>
 
 #include "moc_qgsmaptoolfeatureaction.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-{
-}
+{}
 
 void QgsMapToolFeatureAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
@@ -182,11 +184,7 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
         const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
         if ( !allowed )
         {
-          QgisApp::instance()->messageBar()->pushMessage(
-            tr( "Security warning" ),
-            tr( "The action contains an embedded script which has been denied execution." ),
-            Qgis::MessageLevel::Warning
-          );
+          QgisApp::instance()->messageBar()->pushMessage( tr( "Security warning" ), tr( "The action contains an embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
           return;
         }
         break;
@@ -203,9 +201,7 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
 
     // define custom substitutions: layer id and clicked coords
     QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
+    context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( u"click_x"_s, point.x(), true ) );
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( u"click_y"_s, point.y(), true ) );

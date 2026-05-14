@@ -125,11 +125,7 @@ void QgsMapLayerServerPropertiesWidget::sync()
   mLayerAbstractTextEdit->setPlainText( mServerProperties->abstract() );
   mLayerKeywordListLineEdit->setText( mServerProperties->keywordList() );
   mLayerDataUrlLineEdit->setText( mServerProperties->dataUrl() );
-  mLayerDataUrlFormatComboBox->setCurrentIndex(
-    mLayerDataUrlFormatComboBox->findText(
-      mServerProperties->dataUrlFormat()
-    )
-  );
+  mLayerDataUrlFormatComboBox->setCurrentIndex( mLayerDataUrlFormatComboBox->findText( mServerProperties->dataUrlFormat() ) );
   //layer attribution
   mLayerAttributionLineEdit->setText( mServerProperties->attribution() );
   mLayerAttributionUrlLineEdit->setText( mServerProperties->attributionUrl() );
@@ -160,11 +156,7 @@ void QgsMapLayerServerPropertiesWidget::sync()
 
   // layer legend url
   mLayerLegendUrlLineEdit->setText( mServerProperties->legendUrl() );
-  mLayerLegendUrlFormatComboBox->setCurrentIndex(
-    mLayerLegendUrlFormatComboBox->findText(
-      mServerProperties->legendUrlFormat()
-    )
-  );
+  mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mServerProperties->legendUrlFormat() ) );
 }
 
 void QgsMapLayerServerPropertiesWidget::addMetadataUrl()

@@ -89,14 +89,13 @@ class CORE_EXPORT QgsRasterContourRenderer : public QgsRasterRenderer
     void setDownscale( double scale ) { mDownscale = scale; }
 
   private:
-
 #ifdef SIP_RUN
     QgsRasterContourRenderer( const QgsRasterContourRenderer & );
     const QgsRasterContourRenderer &operator=( const QgsRasterContourRenderer & );
 #endif
 
-    std::unique_ptr<QgsLineSymbol> mContourSymbol;   // should not be null
-    std::unique_ptr<QgsLineSymbol> mContourIndexSymbol;  // may be null
+    std::unique_ptr<QgsLineSymbol> mContourSymbol;      // should not be null
+    std::unique_ptr<QgsLineSymbol> mContourIndexSymbol; // may be null
     double mDownscale = 8.;
     double mContourInterval = 100.;
     double mContourIndexInterval = 0.;

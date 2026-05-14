@@ -99,9 +99,7 @@ class CORE_EXPORT QgsProjectProperty
      * \param element the parent (or encompassing) property element
      * \param document the overall project file Dom document
      */
-    virtual bool writeXml( const QString &nodeName,
-                           QDomElement &element,
-                           QDomDocument &document ) = 0;
+    virtual bool writeXml( const QString &nodeName, QDomElement &element, QDomDocument &document ) = 0;
 
     /**
      * Returns the node's value.
@@ -114,7 +112,6 @@ class CORE_EXPORT QgsProjectProperty
      *
      */
     virtual QVariant value() const = 0;
-
 };
 
 
@@ -126,7 +123,6 @@ class CORE_EXPORT QgsProjectProperty
 class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 {
   public:
-
     QgsProjectPropertyValue() = default;
 
     /**
@@ -145,15 +141,11 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 
     void dump( int tabs = 0 ) const override;
     bool readXml( const QDomNode &keyNode ) override;
-    bool writeXml( const QString &nodeName,
-                   QDomElement &element,
-                   QDomDocument &document ) override;
+    bool writeXml( const QString &nodeName, QDomElement &element, QDomDocument &document ) override;
 
   private:
-
     // We use QVariant as it's very handy to keep multiple types and provides type conversions
     QVariant mValue;
-
 };
 
 
@@ -181,7 +173,6 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     Q_DECLARE_TR_FUNCTIONS( QgsProjectPropertyKey )
 
   public:
-
     /**
      * Create a new QgsProjectPropertyKey with the specified identifier.
      */
@@ -224,10 +215,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Removes the specified key.
      */
-    void removeKey( const QString &keyName )
-    {
-      delete mProperties.take( keyName );
-    }
+    void removeKey( const QString &keyName ) { delete mProperties.take( keyName ); }
 
     /**
      * Sets the value associated with this key.
@@ -252,10 +240,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
      * \note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
-    QgsProjectPropertyValue *setValue( const QVariant &value )
-    {
-      return setValue( name(), value );
-    }
+    QgsProjectPropertyValue *setValue( const QVariant &value ) { return setValue( name(), value ); }
 
     void dump( int tabs = 0 ) const override;
     bool readXml( const QDomNode &keyNode ) override;
@@ -308,19 +293,14 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Attempts to find a property with a matching sub-key name.
      */
-    QgsProjectProperty *find( const QString &propertyName ) const
-    {
-      return mProperties.value( propertyName );
-    }
+    QgsProjectProperty *find( const QString &propertyName ) const { return mProperties.value( propertyName ); }
 
   private:
-
     //! Name of the key
     QString mName;
 
     //! Sub-keys
-    QHash < QString, QgsProjectProperty * > mProperties;
-
+    QHash< QString, QgsProjectProperty * > mProperties;
 };
 
 #endif

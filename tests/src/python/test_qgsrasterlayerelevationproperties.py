@@ -14,26 +14,24 @@ import math
 import os
 import unittest
 
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
+    QgsDoubleRange,
     QgsFillSymbol,
     QgsLineSymbol,
+    QgsProperty,
+    QgsRasterLayer,
     QgsRasterLayerElevationProperties,
     QgsReadWriteContext,
-    QgsRasterLayer,
-    QgsDoubleRange,
-    QgsProperty,
 )
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsRasterLayerElevationProperties(QgisTestCase):
-
     def test_basic_elevation_surface(self):
         """
         Basic tests for the class using the RepresentsElevationSurface mode

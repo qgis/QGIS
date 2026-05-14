@@ -19,5 +19,4 @@
 
 QgsAbstractInputController::QgsAbstractInputController( QObject *parent )
   : QObject( parent )
-{
-}
+{}

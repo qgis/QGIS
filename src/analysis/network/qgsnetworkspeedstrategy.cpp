@@ -19,8 +19,7 @@ QgsNetworkSpeedStrategy::QgsNetworkSpeedStrategy( int attributeId, double defaul
   : mAttributeId( attributeId )
   , mDefaultValue( defaultValue )
   , mToMetricFactor( toMetricFactor )
-{
-}
+{}
 
 QVariant QgsNetworkSpeedStrategy::cost( double distance, const QgsFeature &f ) const
 {

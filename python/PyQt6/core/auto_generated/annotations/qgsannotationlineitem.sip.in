@@ -22,7 +22,6 @@ An annotation item which renders a line symbol along a line geometry.
 #include "qgsannotationlineitem.h"
 %End
   public:
-
     QgsAnnotationLineItem( QgsCurve *curve /Transfer/ );
 %Docstring
 Constructor for QgsAnnotationLineItem, with the specified ``curve``.

@@ -26,7 +26,10 @@
 #include "qgstest.h"
 #include "qgstrackedvectorlayertools.h"
 
+#include <QString>
 #include <QTreeWidgetItem>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsRelationEditorWidget : public QObject
 {
@@ -261,8 +264,7 @@ void TestQgsRelationEditorWidget::testMultiEditNM()
       if ( childItem->text( 0 ) == "Layer2-11"_L1 )
       {
         QStringList possibleParents;
-        possibleParents << u"Layer1-0"_s
-                        << u"Layer1-1"_s;
+        possibleParents << u"Layer1-0"_s << u"Layer1-1"_s;
         QVERIFY( possibleParents.contains( parentItem->text( 0 ) ) );
       }
     }

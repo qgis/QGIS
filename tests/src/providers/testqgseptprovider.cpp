@@ -27,6 +27,8 @@
 #include <QStringList>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -52,7 +54,8 @@ class TestQgsEptProvider : public QgsTest
 
   public:
     TestQgsEptProvider()
-      : QgsTest( u"EPT Provider Tests"_s ) {}
+      : QgsTest( u"EPT Provider Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -708,7 +711,7 @@ void TestQgsEptProvider::testPointCloudRequest()
     queue.pop_front();
     nodes.push_back( node );
 
-    for ( const QgsPointCloudNodeId &child : index.getNode( node ).children() )
+    for ( QgsPointCloudNodeId child : index.getNode( node ).children() )
     {
       queue.push_back( child );
     }
@@ -779,7 +782,7 @@ void TestQgsEptProvider::testPointCloudRequestIgnoreFilter()
     queue.pop_front();
     nodes.push_back( node );
 
-    for ( const QgsPointCloudNodeId &child : index.getNode( node ).children() )
+    for ( QgsPointCloudNodeId child : index.getNode( node ).children() )
     {
       queue.push_back( child );
     }

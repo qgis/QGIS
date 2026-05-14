@@ -16,14 +16,16 @@
 #include "qgsgeorefvalidators.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 
 #include "moc_qgsgeorefvalidators.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsDMSAndDDValidator::QgsDMSAndDDValidator( QObject *parent )
   : QValidator( parent )
-{
-}
+{}
 
 QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) const
 {

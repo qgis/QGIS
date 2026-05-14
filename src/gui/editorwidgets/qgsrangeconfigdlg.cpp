@@ -18,7 +18,11 @@
 #include "qgsrangewidgetwrapper.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrangeconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

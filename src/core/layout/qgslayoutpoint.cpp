@@ -20,7 +20,10 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPoint::QgsLayoutPoint( const double x, const double y, const Qgis::LayoutUnit units )
   : mX( x )
@@ -36,15 +39,11 @@ QgsLayoutPoint::QgsLayoutPoint( const QPointF point, const Qgis::LayoutUnit unit
   : mX( point.x() )
   , mY( point.y() )
   , mUnits( units )
-{
-
-}
+{}
 
 QgsLayoutPoint::QgsLayoutPoint( const Qgis::LayoutUnit units )
   : mUnits( units )
-{
-
-}
+{}
 
 bool QgsLayoutPoint::isNull() const
 {
@@ -87,7 +86,7 @@ bool QgsLayoutPoint::operator==( const QgsLayoutPoint &other ) const
 
 bool QgsLayoutPoint::operator!=( const QgsLayoutPoint &other ) const
 {
-  return ( ! operator==( other ) );
+  return ( !operator==( other ) );
 }
 
 QgsLayoutPoint QgsLayoutPoint::operator*( const double v ) const

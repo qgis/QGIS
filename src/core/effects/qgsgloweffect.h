@@ -24,6 +24,9 @@
 #include "qgspainteffect.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -35,14 +38,12 @@
 
 class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 {
-
   public:
-
     //! Color sources for the glow
     enum GlowColorType
     {
       SingleColor, //!< Use a single color and fade the color to totally transparent
-      ColorRamp //!< Use colors from a color ramp
+      ColorRamp    //!< Use colors from a color ramp
     };
 
     QgsGlowEffect();
@@ -262,7 +263,6 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QgsGlowEffect &operator=( const QgsGlowEffect &rhs );
 
   protected:
-
     QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
     void draw( QgsRenderContext &context ) override;
 
@@ -285,7 +285,6 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QColor mColor;
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
     GlowColorType mColorType = SingleColor;
-
 };
 
 
@@ -298,9 +297,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
 class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
 {
-
   public:
-
     /**
      * Creates a new QgsOuterGlowEffect effect from a properties string map.
      * \param map encoded properties string map
@@ -314,9 +311,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
     QgsOuterGlowEffect *clone() const override SIP_FACTORY;
 
   protected:
-
     bool shadeExterior() const override { return true; }
-
 };
 
 
@@ -329,9 +324,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
 
 class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
 {
-
   public:
-
     /**
      * Creates a new QgsInnerGlowEffect effect from a properties string map.
      * \param map encoded properties string map
@@ -345,10 +338,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
     QgsInnerGlowEffect *clone() const override SIP_FACTORY;
 
   protected:
-
     bool shadeExterior() const override { return false; }
-
 };
 
 #endif // QGSGLOWEFFECT_H
-

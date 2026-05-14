@@ -10,17 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "27/06/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
-from qgis.PyQt.QtCore import QSize
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsMapSettings,
     QgsRectangle,
     QgsTiledSceneLayer,
     QgsTiledSceneTextureRenderer,
     QgsTiledSceneWireframeRenderer,
-    QgsCoordinateReferenceSystem,
-    QgsMapSettings,
 )
-from qgis.testing import start_app, QgisTestCase, unittest
-
+from qgis.PyQt.QtCore import QSize
+from qgis.testing import QgisTestCase, start_app, unittest
 from utilities import unitTestDataPath
 
 start_app()
@@ -101,6 +100,32 @@ class TestQgsTiledSceneRender(QgisTestCase):
         self.assertTrue(
             self.render_map_settings_check(
                 "wireframe_render_color", "wireframe_render_color", mapsettings
+            )
+        )
+
+    def test_render_instanced(self):
+        layer = QgsTiledSceneLayer(
+            unitTestDataPath() + "/3dtiles/instanced_rtc/tileset.json",
+            "instanced layer",
+            "cesiumtiles",
+        )
+        self.assertTrue(layer.dataProvider().isValid())
+
+        renderer = QgsTiledSceneTextureRenderer()
+        layer.setRenderer(renderer)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        mapsettings.setExtent(
+            QgsRectangle(-8417257.0, 4871967.0, -8416943.0, 4872283.0)
+        )
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "instanced_render", "instanced_render", mapsettings
             )
         )
 

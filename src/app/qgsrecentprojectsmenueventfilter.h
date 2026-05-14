@@ -18,19 +18,19 @@
 
 #include <QObject>
 
-class QgsWelcomePage;
+class QgsWelcomeScreen;
 
 class QgsRecentProjectsMenuEventFilter : public QObject
 {
     Q_OBJECT
 
   public:
-    QgsRecentProjectsMenuEventFilter( QgsWelcomePage *welcomePage = nullptr, QObject *parent = nullptr );
+    QgsRecentProjectsMenuEventFilter( QgsWelcomeScreen *welcomeScreen = nullptr, QObject *parent = nullptr );
 
     bool eventFilter( QObject *obj, QEvent *event ) override;
 
   private:
-    QgsWelcomePage *mWelcomePage;
+    QgsWelcomeScreen *mWelcomeScreen = nullptr;
 };
 
 #endif // QGSRECENTPROJECTSMENUEVENTFILTER_H

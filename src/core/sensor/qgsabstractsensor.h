@@ -22,7 +22,10 @@
 
 #include <QDateTime>
 #include <QDomElement>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -66,24 +69,25 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     SIP_END
 #endif
 
-    Q_OBJECT
+    // clang-format off
+  Q_OBJECT
 
   public:
+    // clang-format on
 
     /**
      * Contains details of a sensor data capture
      */
     struct CORE_EXPORT SensorData
     {
-
-      /**
+        /**
        * Last captured sensor value stored as a QVariant.
        * \note The member can store multiple values if the sensor passes on a QVariantMap.
        */
-      QVariant lastValue;
+        QVariant lastValue;
 
-      //! Timestamp of last captured sensor value
-      QDateTime lastTimestamp;
+        //! Timestamp of last captured sensor value
+        QDateTime lastTimestamp;
     };
 
     /**
@@ -191,7 +195,6 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     void errorOccurred( const QString &errorString );
 
   protected:
-
     /**
      * Handles the connection to the sensor.
      * \note Triggered by calling connectSensor()
@@ -208,11 +211,9 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     QString mErrorString;
 
   private:
-
     QString mId;
     QString mName;
     Qgis::DeviceConnectionStatus mStatus = Qgis::DeviceConnectionStatus::Disconnected;
-
 };
 
 Q_DECLARE_METATYPE( QgsAbstractSensor * )

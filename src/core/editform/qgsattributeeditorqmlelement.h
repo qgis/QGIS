@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElement
 {
   public:
-
     /**
      * Creates a new element which can display QML
      *
@@ -55,7 +54,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
 
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
-    void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
+    void loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
     QString typeIdentifier() const override;
     QString mQmlCode;
 };

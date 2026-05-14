@@ -11,8 +11,10 @@ __date__ = "2016-11-07"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import (
+    Qgis,
     QgsFeature,
     QgsFeatureRequest,
     QgsPoint,
@@ -21,16 +23,13 @@ from qgis.core import (
     QgsRelationManager,
     QgsVectorLayer,
     QgsVectorLayerTools,
-    Qgis,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class SubQgsVectorLayerTools(QgsVectorLayerTools):
-
     def __init__(self):
         super().__init__()
 
@@ -48,7 +47,6 @@ class SubQgsVectorLayerTools(QgsVectorLayerTools):
 
 
 class TestQgsVectorLayerTools(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """

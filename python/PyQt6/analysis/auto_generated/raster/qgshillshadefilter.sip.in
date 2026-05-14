@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsHillshadeFilter : QgsDerivativeFilter
 {
 %Docstring(signature="appended")

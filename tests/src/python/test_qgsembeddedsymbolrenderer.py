@@ -24,7 +24,6 @@ __copyright__ = "(C) 2015, Matthias Kuhn"
 
 import unittest
 
-from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsEmbeddedSymbolRenderer,
     QgsFeature,
@@ -36,8 +35,8 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

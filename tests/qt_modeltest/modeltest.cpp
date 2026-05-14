@@ -28,14 +28,18 @@
 #include <QAbstractItemModel>
 #include <QDebug>
 #include <QSize>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 /*!
     Connect to all of the models signals.  Whenever anything happens
     recheck everything.
 */
 ModelTest::ModelTest( QAbstractItemModel *_model, QObject *parent )
-  : QObject( parent ), model( _model )
+  : QObject( parent )
+  , model( _model )
 {
   Q_ASSERT( model );
 

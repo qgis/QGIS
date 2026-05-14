@@ -12,8 +12,8 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 
 import sys
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import unittest
 
 """
@@ -31,7 +31,6 @@ app = QCoreApplication(sys.argv)
 
 
 class TestQgsNoApplication(unittest.TestCase):
-
     def testMembers(self):
         self.assertTrue(QgsApplication.actionScopeRegistry())
         # self.assertTrue(QgsApplication.annotationRegistry()) NOT AVAILABLE IN BINDINGS

@@ -29,8 +29,11 @@
 #include <QDialogButtonBox>
 #include <QFont>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdecorationtitledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QWidget *parent )
   : QDialog( parent )
@@ -83,12 +86,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   spnHorizontal->setClearValue( 0 );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::Percentage,
-      Qgis::RenderUnit::Pixels
-    }
-  );
+  wgtUnitSelection->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::Percentage, Qgis::RenderUnit::Pixels } );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // font settings

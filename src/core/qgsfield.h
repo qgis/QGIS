@@ -25,6 +25,8 @@
 #include <QVariant>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 typedef QList<int> QgsAttributeList SIP_SKIP;
 
 /***************************************************************************
@@ -66,9 +68,10 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
     Q_PROPERTY( Qgis::FieldConfigurationFlags configurationFlags READ configurationFlags WRITE setConfigurationFlags )
     Q_PROPERTY( bool isReadOnly READ isReadOnly WRITE setReadOnly )
+    Q_PROPERTY( QString customComment READ customComment WRITE setCustomComment )
 
   public:
-
+    // clang-format off
     /**
      * Constructor. Constructs a new QgsField object.
      * \param name Field name
@@ -84,13 +87,8 @@ class CORE_EXPORT QgsField
      *                all the elements don't need to have the same type, leave
      *                this to QVariant::Invalid.
      */
-    QgsField( const QString &name = QString(),
-              QMetaType::Type type = QMetaType::Type::UnknownType,
-              const QString &typeName = QString(),
-              int len = 0,
-              int prec = 0,
-              const QString &comment = QString(),
-              QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
+    QgsField( const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(), QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
+    // clang-format on
 
 
     /**
@@ -375,6 +373,21 @@ class CORE_EXPORT QgsField
     void setAlias( const QString &alias ) SIP_HOLDGIL;
 
     /**
+     * Returns the custom comment for the field.
+     * an empty string when custom comment require to be empty and NULL if no custom comment has been defined and the provider one should be used.
+     * \see setCustomComment()
+     */
+    QString customComment() const SIP_HOLDGIL;
+
+    /**
+     * Sets the custom comment for the field.
+     * \param customComment custom comment (can be empty as well) or NULL to remove the custom comment.
+     * \see customComment()
+     * \since QGIS 4.2
+     */
+    void setCustomComment( const QString &customComment ) SIP_HOLDGIL;
+
+    /**
      * Returns the Flags for the field (searchable, …).
      * \see setConfigurationFlags()
      * \since QGIS 3.34
@@ -409,6 +422,7 @@ class CORE_EXPORT QgsField
      */
     bool convertCompatible( QVariant &v, QString *errorMessage = nullptr ) const;
 #else
+// clang-format off
 
     /**
      * Converts the provided variant to a compatible format
@@ -470,6 +484,7 @@ class CORE_EXPORT QgsField
     }
 
     % End
+// clang-format on
 #endif
 
     //! Allows direct construction of QVariants from fields.
@@ -567,11 +582,13 @@ class CORE_EXPORT QgsField
     void setMergePolicy( Qgis::FieldDomainMergePolicy policy ) SIP_HOLDGIL;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsField: %1 (%2)>"_s.arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

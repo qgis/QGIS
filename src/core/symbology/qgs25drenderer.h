@@ -119,7 +119,6 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     void setShadowEnabled( bool value ) const;
 
   private:
-
     QgsFillSymbolLayer *roofLayer() const;
     QgsFillSymbolLayer *wallLayer() const;
     QgsOuterGlowEffect *glowEffect() const;

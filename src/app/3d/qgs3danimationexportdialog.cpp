@@ -23,9 +23,12 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QtGlobal>
 
 #include "moc_qgs3danimationexportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog()
   : QDialog( nullptr )
@@ -76,9 +79,7 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog()
     settings.setValue( u"Export3DAnimation/height"_s, mHeightSpinBox->value() );
   } );
 
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"map_views/3d_map_view.html#create-animation"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"map_views/3d_map_view.html#create-animation"_s ); } );
 
   QgsGui::enableAutoGeometryRestore( this );
 }

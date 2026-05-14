@@ -21,8 +21,7 @@
 
 QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( QObject *parent, bool enabled )
   : QgsTemporalProperty( parent, enabled )
-{
-}
+{}
 
 bool QgsMapLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange & ) const
 {

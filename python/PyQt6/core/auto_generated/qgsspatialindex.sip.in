@@ -14,6 +14,8 @@
 
 
 
+
+
 class QgsSpatialIndex : QgsFeatureSink
 {
 %Docstring(signature="appended")
@@ -37,7 +39,6 @@ inexpensively copied.
 #include "qgsspatialindex.h"
 %End
   public:
-
 
     enum Flag /BaseType=IntEnum/
     {

@@ -36,18 +36,20 @@
 #include <QModelIndex>
 #include <QPixmapCache>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QStyle>
 #include <QTime>
 
 #include "moc_qgssvgselectorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QgsSvgSelectorLoader
 
 ///@cond PRIVATE
 QgsSvgSelectorLoader::QgsSvgSelectorLoader( QObject *parent )
   : QThread( parent )
-{
-}
+{}
 
 QgsSvgSelectorLoader::~QgsSvgSelectorLoader()
 {
@@ -170,8 +172,7 @@ void QgsSvgSelectorLoader::loadImages( const QString &path )
 
 QgsSvgGroupLoader::QgsSvgGroupLoader( QObject *parent )
   : QThread( parent )
-{
-}
+{}
 
 QgsSvgGroupLoader::~QgsSvgGroupLoader()
 {
@@ -262,9 +263,9 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString &entry ) const
   QColor fill, stroke;
   double strokeWidth, fillOpacity, strokeOpacity;
   bool fillParam, fillOpacityParam, strokeParam, strokeWidthParam, strokeOpacityParam;
-  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultStrokeColor = false,
-       hasDefaultStrokeWidth = false, hasDefaultStrokeOpacity = false;
-  QgsApplication::svgCache()->containsParams( entry, fillParam, hasDefaultFillColor, fill, fillOpacityParam, hasDefaultFillOpacity, fillOpacity, strokeParam, hasDefaultStrokeColor, stroke, strokeWidthParam, hasDefaultStrokeWidth, strokeWidth, strokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity );
+  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultStrokeColor = false, hasDefaultStrokeWidth = false, hasDefaultStrokeOpacity = false;
+  QgsApplication::svgCache()
+    ->containsParams( entry, fillParam, hasDefaultFillColor, fill, fillOpacityParam, hasDefaultFillOpacity, fillOpacity, strokeParam, hasDefaultStrokeColor, stroke, strokeWidthParam, hasDefaultStrokeWidth, strokeWidth, strokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity );
 
   //if defaults not set in symbol, use these values
   if ( !hasDefaultFillColor )

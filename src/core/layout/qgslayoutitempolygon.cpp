@@ -28,7 +28,11 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitempolygon.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPolygon::QgsLayoutItemPolygon( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )
@@ -59,9 +63,7 @@ QIcon QgsLayoutItemPolygon::icon() const
   return QgsApplication::getThemeIcon( u"/mLayoutItemPolygon.svg"_s );
 }
 
-bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
-                                     QPointF newPoint,
-                                     const double radius )
+bool QgsLayoutItemPolygon::_addNode( const int indexPoint, QPointF newPoint, const double radius )
 {
   Q_UNUSED( radius )
   mPolygon.insert( indexPoint + 1, newPoint );
@@ -171,8 +173,7 @@ void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QSt
   polygonPath.addPolygon( mPolygon );
 
   mPolygonStyleSymbol->startRender( renderContext );
-  mPolygonStyleSymbol->renderPolygon( polygonPath.toFillPolygon( t ), &rings,
-                                      nullptr, renderContext );
+  mPolygonStyleSymbol->renderPolygon( polygonPath.toFillPolygon( t ), &rings, nullptr, renderContext );
   mPolygonStyleSymbol->stopRender( renderContext );
 }
 
@@ -189,10 +190,7 @@ void QgsLayoutItemPolygon::setSymbol( QgsFillSymbol *symbol )
 
 void QgsLayoutItemPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const
 {
-  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolygonStyleSymbol.get(),
-                         doc,
-                         context );
+  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(), mPolygonStyleSymbol.get(), doc, context );
   elmt.appendChild( pe );
 }
 
@@ -210,4 +208,3 @@ bool QgsLayoutItemPolygon::_removeNode( const int index )
 
   return true;
 }
-

@@ -21,7 +21,8 @@
 #include "qgsdoublespinbox.h"
 #include "qgsguiutils.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
 
 #include <QDrag>
@@ -33,10 +34,16 @@
 #include <QPainter>
 #include <QRectF>
 #include <QResizeEvent>
+#include <QString>
 #include <QStyleOptionFrame>
 #include <QToolButton>
 
 #include "moc_qgscolorwidgets.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryEnumFlag<QgsColorTextWidget::ColorTextFormat> *QgsColorTextWidget::settingsTextFormat
+  = new QgsSettingsEntryEnumFlag<QgsColorTextWidget::ColorTextFormat>( u"text-format"_s, QgsSettingsTree::sTreeColorWidgets, QgsColorTextWidget::HexRgb );
 
 #define HUE_MAX 360
 
@@ -383,7 +390,7 @@ void QgsColorWidget::setComponent( const QgsColorWidget::ColorComponent componen
 
 void QgsColorWidget::setComponentValue( const int value )
 {
-  setComponentValueF( static_cast<float>( value ) );
+  setComponentValueF( static_cast<float>( value ) / static_cast< float >( componentRange( mComponent ) ) );
 }
 
 void QgsColorWidget::setComponentValueF( const float value )
@@ -580,10 +587,7 @@ void QgsColorWheel::resizeEvent( QResizeEvent *event )
   // For some reason the first reported size than that of the parent widget, leading to a cut-off color wheel
   if ( event->size().width() > parentWidget()->size().width() )
   {
-    QSize newSize(
-      std::min( event->size().width(), parentWidget()->size().width() - 2 ),
-      std::min( event->size().height(), parentWidget()->size().height() - 2 )
-    );
+    QSize newSize( std::min( event->size().width(), parentWidget()->size().width() - 2 ), std::min( event->size().height(), parentWidget()->size().height() - 2 ) );
     resize( newSize );
     createImages( newSize );
   }
@@ -843,13 +847,11 @@ QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-  mBoxImage = new QImage( width() - mMargin * 2, height() - mMargin * 2, QImage::Format_RGB32 );
+  mBoxImage = std::make_unique<QImage>( width() - static_cast<int>( mMargin * 2 ), height() - static_cast<int>( mMargin * 2 ), QImage::Format_RGB32 );
 }
 
 QgsColorBox::~QgsColorBox()
-{
-  delete mBoxImage;
-}
+{}
 
 QSize QgsColorBox::sizeHint() const
 {
@@ -915,8 +917,8 @@ void QgsColorBox::setColor( const QColor &color, const bool emitSignals )
 void QgsColorBox::resizeEvent( QResizeEvent *event )
 {
   mDirty = true;
-  delete mBoxImage;
-  mBoxImage = new QImage( event->size().width() - mMargin * 2, event->size().height() - mMargin * 2, QImage::Format_RGB32 );
+  mBoxImage = std::make_unique<QImage>( event->size().width() - static_cast<int>( mMargin * 2 ), event->size().height() - static_cast<int>( mMargin * 2 ), QImage::Format_RGB32 );
+
   QgsColorWidget::resizeEvent( event );
 }
 
@@ -1355,23 +1357,19 @@ void QgsColorRampWidget::keyPressEvent( QKeyEvent *event )
   {
     setComponentValueF( oldValue - delta );
   }
-  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_PageDown )
-            || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_PageUp ) )
+  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_PageDown ) || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_PageUp ) )
   {
     setComponentValueF( oldValue + 10 * delta );
   }
-  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_PageUp )
-            || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_PageDown ) )
+  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_PageUp ) || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_PageDown ) )
   {
     setComponentValueF( oldValue - 10 * delta );
   }
-  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_Home )
-            || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_End ) )
+  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_Home ) || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_End ) )
   {
     setComponentValueF( 0 );
   }
-  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_End )
-            || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_Home ) )
+  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_End ) || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_Home ) )
   {
     //set to maximum value
     setComponentValueF( 1.f );
@@ -1574,15 +1572,13 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   setLayout( hLayout );
 
   const int frameWidth = mLineEdit->style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  mLineEdit->setStyleSheet( u"QLineEdit { padding-right: %1px; } "_s
-                              .arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
+  mLineEdit->setStyleSheet( u"QLineEdit { padding-right: %1px; } "_s.arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
 
   connect( mLineEdit, &QLineEdit::editingFinished, this, &QgsColorTextWidget::textChanged );
   connect( mMenuButton, &QAbstractButton::clicked, this, &QgsColorTextWidget::showMenu );
 
   //restore format setting
-  QgsSettings settings;
-  mFormat = settings.enumValue( u"ColorWidgets/textWidgetFormat"_s, HexRgb );
+  mFormat = settingsTextFormat->value();
 
   updateText();
 }
@@ -1687,8 +1683,7 @@ void QgsColorTextWidget::showMenu()
   }
 
   //save format setting
-  QgsSettings settings;
-  settings.setEnumValue( u"ColorWidgets/textWidgetFormat"_s, mFormat );
+  settingsTextFormat->setValue( mFormat );
 
   updateText();
 }
@@ -1705,8 +1700,7 @@ void QgsColorTextWidget::setAllowOpacity( const bool allowOpacity )
 QgsColorPreviewWidget::QgsColorPreviewWidget( QWidget *parent )
   : QgsColorWidget( parent )
   , mColor2( QColor() )
-{
-}
+{}
 
 void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter &painter )
 {

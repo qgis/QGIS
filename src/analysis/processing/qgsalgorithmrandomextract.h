@@ -18,11 +18,16 @@
 #ifndef QGSALGORITHMRANDOMEXTRACT_H
 #define QGSALGORITHMRANDOMEXTRACT_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -37,7 +42,7 @@ class QgsRandomExtractSelectAlgorithmBase : public QgsProcessingAlgorithm
 
   protected:
     /**
-     * Selectes \a count random feature IDs from the \a source.
+     * Selects \a count random feature IDs from the \a source.
      */
     void sampleFeatureIds( QgsFeatureSource *source, const long long count, QgsProcessingFeedback *feedback );
 

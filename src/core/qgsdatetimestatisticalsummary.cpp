@@ -62,7 +62,6 @@ void QgsDateTimeStatisticalSummary::calculate( const QVariantList &values )
 
 void QgsDateTimeStatisticalSummary::addValue( const QVariant &value )
 {
-
   if ( value.userType() == QMetaType::Type::QDateTime )
   {
     testDateTime( value.toDateTime(), QgsVariantUtils::isNull( value ) );
@@ -70,15 +69,13 @@ void QgsDateTimeStatisticalSummary::addValue( const QVariant &value )
   else if ( value.userType() == QMetaType::Type::QDate )
   {
     const QDate date = value.toDate();
-    testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
-                  : QDateTime(), QgsVariantUtils::isNull( value ) );
+    testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) ) : QDateTime(), QgsVariantUtils::isNull( value ) );
   }
   else if ( value.userType() == QMetaType::Type::QTime )
   {
     mIsTimes = true;
     const QTime time = value.toTime();
-    testDateTime( time.isValid() ? QDateTime( QDate::fromJulianDay( 0 ), time )
-                  : QDateTime(), QgsVariantUtils::isNull( value ) );
+    testDateTime( time.isValid() ? QDateTime( QDate::fromJulianDay( 0 ), time ) : QDateTime(), QgsVariantUtils::isNull( value ) );
   }
   else //not a date
   {
@@ -145,11 +142,7 @@ QVariant QgsDateTimeStatisticalSummary::statistic( Qgis::DateTimeStatistic stat 
     case Qgis::DateTimeStatistic::Max:
       return mIsTimes ? QVariant( mMax.time() ) : QVariant( mMax );
     case Qgis::DateTimeStatistic::Range:
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-      return mIsTimes ? QVariant::fromValue( mMax.time() - mMin.time() ) : QVariant::fromValue( mMax - mMin );
-#else
       return mIsTimes ? QVariant::fromValue( mMax.time() - mMin.time() ) : QVariant::fromValue( QgsInterval( static_cast< double >( ( mMax - mMin ).count() ) / 1000.0 ) );
-#endif
     case Qgis::DateTimeStatistic::All:
       return 0;
   }
@@ -158,11 +151,7 @@ QVariant QgsDateTimeStatisticalSummary::statistic( Qgis::DateTimeStatistic stat 
 
 QgsInterval QgsDateTimeStatisticalSummary::range() const
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-  return mMax - mMin;
-#else
   return QgsInterval( static_cast< double >( ( mMax - mMin ).count() ) / 1000.0 );
-#endif
 }
 
 QString QgsDateTimeStatisticalSummary::displayName( Qgis::DateTimeStatistic statistic )
@@ -186,4 +175,3 @@ QString QgsDateTimeStatisticalSummary::displayName( Qgis::DateTimeStatistic stat
   }
   return QString();
 }
-

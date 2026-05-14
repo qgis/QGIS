@@ -88,12 +88,15 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QScreen>
+#include <QString>
 #include <QTableWidgetItem>
 #include <QTextStream>
 #include <QUrl>
 #include <QVector>
 
 #include "moc_qgsrasterlayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsLayerPropertiesDialog( lyr, canvas, u"RasterLayerProperties"_s, parent, fl )
@@ -107,6 +110,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   setupUi( this );
 
   mMetadataViewer = new QgsWebView( this );
+  mMetadataViewer->setOpenLinks( false );
+  connect( mMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsRasterLayerProperties::openUrl );
   mOptsPage_Information->layout()->addWidget( mMetadataViewer );
 
   mRasterTransparencyWidget = new QgsRasterTransparencyWidget( mRasterLayer, canvas, this );
@@ -257,10 +262,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   }
   else
   {
-    mContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr )
-             << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    mContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   // Initialize with layer center
@@ -355,7 +361,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QString pyramidFormat( u"<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>"_s );
   QString pyramidHeader = tr( "Description" );
   QString pyramidSentence1 = tr( "Large resolution raster layers can slow navigation in QGIS." );
-  QString pyramidSentence2 = tr( "By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom." );
+  QString pyramidSentence2 = tr(
+    "By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom."
+  );
   QString pyramidSentence3 = tr( "You must have write access in the directory where the original data is stored to build pyramids." );
   QString pyramidSentence4 = tr( "Please note that building internal pyramids may alter the original data file and once created they cannot be removed!" );
   QString pyramidSentence5 = tr( "Please note that building internal pyramids could corrupt your image - always make a backup of your data first!" );
@@ -439,7 +447,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {
-      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != "singlebandcolordata"_L1 ) || ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == "singlebandcolordata"_L1 ) )
+      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != "singlebandcolordata"_L1 )
+           || ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == "singlebandcolordata"_L1 ) )
       {
         mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
       }
@@ -522,6 +531,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mOptsPage_Source->setProperty( "helpPage", u"working_with_raster/raster_properties.html#source-properties"_s );
   mOptsPage_Style->setProperty( "helpPage", u"working_with_raster/raster_properties.html#symbology-properties"_s );
   mOptsPage_Transparency->setProperty( "helpPage", u"working_with_raster/raster_properties.html#transparency-properties"_s );
+  mOptsPage_Labeling->setProperty( "helpPage", u"working_with_raster/raster_properties.html#labels-properties"_s );
 
   if ( mOptsPage_Histogram )
     mOptsPage_Histogram->setProperty( "helpPage", u"working_with_raster/raster_properties.html#histogram-properties"_s );
@@ -537,6 +547,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mOptsPage_Metadata->setProperty( "helpPage", u"working_with_raster/raster_properties.html#metadata-properties"_s );
   mOptsPage_Legend->setProperty( "helpPage", u"working_with_raster/raster_properties.html#legend-properties"_s );
+  mOptsPage_RasterAttributeTable->setProperty( "helpPage", u"working_with_raster/raster_properties.html#raster-attribute-tables"_s );
   mOptsPage_Server->setProperty( "helpPage", u"working_with_raster/raster_properties.html#server-properties"_s );
 
   initialize();
@@ -711,8 +722,7 @@ void QgsRasterLayerProperties::sync()
   mRasterTransparencyWidget->syncToLayer();
   mLabelingWidget->syncToLayer( mRasterLayer );
 
-  if ( provider->dataType( 1 ) == Qgis::DataType::ARGB32
-       || provider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
+  if ( provider->dataType( 1 ) == Qgis::DataType::ARGB32 || provider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {
     mRasterTransparencyWidget->gboxNoDataValue->setEnabled( false );
     mRasterTransparencyWidget->gboxCustomTransparency->setEnabled( false );
@@ -720,8 +730,7 @@ void QgsRasterLayerProperties::sync()
   }
 
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
-  if ( !( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
-          || provider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
+  if ( !( provider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids || provider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     if ( mOptsPage_Pyramids )
     {
@@ -999,13 +1008,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
 
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QString res = provider->buildPyramids(
-    myPyramidList,
-    resamplingMethod,
-    cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>(),
-    QStringList(),
-    feedback.get()
-  );
+  QString res = provider->buildPyramids( myPyramidList, resamplingMethod, cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>(), QStringList(), feedback.get() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
   buttonBuildPyramids->setEnabled( false );
@@ -1021,8 +1024,14 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
     }
     else if ( res == "ERROR_WRITE_FORMAT"_L1 )
     {
-      QMessageBox::warning( this, tr( "Building Pyramids" ), tr( "The file was not writable. Some formats do not "
-                                                                 "support pyramid overviews. Consult the GDAL documentation if in doubt." ) );
+      QMessageBox::warning(
+        this,
+        tr( "Building Pyramids" ),
+        tr(
+          "The file was not writable. Some formats do not "
+          "support pyramid overviews. Consult the GDAL documentation if in doubt."
+        )
+      );
     }
     else if ( res == "FAILED_NOT_SUPPORTED"_L1 )
     {
@@ -1295,10 +1304,11 @@ bool QgsRasterLayerProperties::rasterIsMultiBandColor()
 
 void QgsRasterLayerProperties::updateInformationContent()
 {
-  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
-  // Inject the stylesheet
-  const QString html { mRasterLayer->htmlMetadata().replace( "<head>"_L1, QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
-  mMetadataViewer->setHtml( html );
+  QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( u"body { margin: 10px; }\n "_s );
+  mMetadataViewer->clear();
+  mMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+  mMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
   mMetadataFilled = true;
 }
 

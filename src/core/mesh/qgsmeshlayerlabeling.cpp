@@ -22,6 +22,10 @@
 #include "qgspallabeling.h"
 #include "qgsstyleentityvisitor.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstractMeshLayerLabeling *QgsAbstractMeshLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString type = element.attribute( u"type"_s );
@@ -54,8 +58,7 @@ QgsPalLayerSettings QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( const
 QgsMeshLayerSimpleLabeling::QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces )
   : mSettings( new QgsPalLayerSettings( settings ) )
   , mLabelFaces( labelFaces )
-{
-}
+{}
 
 QString QgsMeshLayerSimpleLabeling::type() const
 {

@@ -32,7 +32,8 @@
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsstatusbar.h"
 #include "qgsunittypes.h"
 #include "qgsvectordataprovider.h"
@@ -41,9 +42,12 @@
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QString>
 #include <QVariant>
 
 #include "moc_qgsmaptoolidentifyaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   : QgsMapToolIdentify( canvas )
@@ -76,9 +80,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
 
     connect( mResultsDialog.data(), static_cast<void ( QgsIdentifyResultsDialog::* )( QgsRasterLayer * )>( &QgsIdentifyResultsDialog::formatChanged ), this, &QgsMapToolIdentify::formatChanged );
     connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::copyToClipboard, this, &QgsMapToolIdentifyAction::handleCopyToClipboard );
-    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::selectionModeChanged, this, [this] {
-      mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
-    } );
+    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::selectionModeChanged, this, [this] { mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() ); } );
   }
 
   return mResultsDialog;
@@ -125,7 +127,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
   if ( mode == DefaultQgsSetting )
-    mode = QgsSettings().enumValue( u"Map/identifyMode"_s, ActiveLayer );
+    mode = QgsMapToolIdentify::settingIdentifyMode->value();
   QList<QgsMapLayer *> layerList;
   if ( mode == ActiveLayer )
   {
@@ -148,7 +150,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   {
     // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
-    if ( results.size() != 1 || !QgsSettings().value( u"/Map/identifyAutoFeatureForm"_s, false ).toBool() )
+    if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       resultsDialog()->QDialog::show();
 
     QList<IdentifyResult>::const_iterator result;

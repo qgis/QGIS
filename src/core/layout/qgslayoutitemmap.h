@@ -43,7 +43,6 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemMapAtlasClippingSettings, with the specified \a map parent.
      */
@@ -168,7 +167,6 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
 
   private:
-
     QgsLayoutItemMap *mMap = nullptr;
     bool mClipToAtlasFeature = false;
     bool mRestrictToLayers = false;
@@ -190,7 +188,6 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemMapItemClipPathSettings, with the specified \a map parent.
      */
@@ -315,7 +312,6 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
     void changed();
 
   private:
-
     QgsLayoutItemMap *mMap = nullptr;
     bool mEnabled = false;
     QgsMapClippingRegion::FeatureClippingType mFeatureClippingType = QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly;
@@ -323,7 +319,6 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
 
     QPointer< QgsLayoutItem > mClipPathSource;
     QString mClipPathUuid;
-
 };
 
 
@@ -334,11 +329,9 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
  */
 class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRangeObject
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Settings entry - Whether to force rasterized clipping masks, regardless of output format.
      *
@@ -351,7 +344,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     enum AtlasScalingMode
     {
-      Fixed,      //!< The current scale of the map is used for each feature of the atlas
+      Fixed, //!< The current scale of the map is used for each feature of the atlas
 
       /**
        * A scale is chosen from the predefined scales. The smallest scale from
@@ -375,7 +368,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     enum MapItemFlag SIP_ENUM_BASETYPE( IntFlag )
     {
-      ShowPartialLabels  = 1 << 0, //!< Whether to draw labels which are partially outside of the map view
+      ShowPartialLabels = 1 << 0,  //!< Whether to draw labels which are partially outside of the map view
       ShowUnplacedLabels = 1 << 1, //!< Whether to render unplaced labels in the map view
     };
     Q_DECLARE_FLAGS( MapItemFlags, MapItemFlag )
@@ -942,14 +935,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     double estimatedFrameBleed() const override;
 
   protected:
-
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
     QPainterPath framePath() const override;
 
     //! True if a draw is already in progress
-    bool isDrawing() const {return mDrawing;}
+    bool isDrawing() const { return mDrawing; }
 
     // In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;
@@ -1041,8 +1033,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     void recreateCachedImageInBackground();
 
     void updateAtlasFeature();
-  private:
 
+  private:
     QgsLayoutItemMap::MapItemFlags mMapFlags = QgsLayoutItemMap::MapItemFlags();
 
     //! Unique identifier
@@ -1184,8 +1176,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
     bool mPainterCancelWait = false;
 
-    QgsLayoutMeasurement mLabelMargin{ 0 };
-    QgsLayoutMeasurement mEvaluatedLabelMargin{ 0 };
+    QgsLayoutMeasurement mLabelMargin { 0 };
+    QgsLayoutMeasurement mEvaluatedLabelMargin { 0 };
 
     QStringList mBlockingLabelItemUuids;
     QList< QPointer< QgsLayoutItem > > mBlockingLabelItems;
@@ -1286,7 +1278,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     friend class QgsCompositionConverter;
     friend class QgsGeospatialPdfRenderedFeatureHandler;
     friend class QgsLayoutExporter;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItemMap::MapItemFlags )

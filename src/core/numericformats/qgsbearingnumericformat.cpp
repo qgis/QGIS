@@ -18,9 +18,12 @@
 
 #include "qgis.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsBearingNumericFormat::QgsBearingNumericFormat()
-{
-}
+{}
 
 QString QgsBearingNumericFormat::id() const
 {

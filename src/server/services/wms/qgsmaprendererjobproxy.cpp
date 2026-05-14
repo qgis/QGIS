@@ -24,14 +24,15 @@
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {
 
-  QgsMapRendererJobProxy::QgsMapRendererJobProxy(
-    bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider
-  )
+  QgsMapRendererJobProxy::QgsMapRendererJobProxy( bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider )
     : mParallelRendering( parallelRendering )
     , mFeatureFilterProvider( featureFilterProvider )
   {

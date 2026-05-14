@@ -29,6 +29,8 @@
 #include <QTest>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -56,7 +58,8 @@ class TestQgsCopcProvider : public QgsTest
 
   public:
     TestQgsCopcProvider()
-      : QgsTest( u"COPC Provider Tests"_s ) {}
+      : QgsTest( u"COPC Provider Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -639,9 +642,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       expectedPoints.push_back( point );
     }
 
-    auto cmp = []( const QMap<QString, QVariant> &p1, const QMap<QString, QVariant> &p2 ) {
-      return qgsVariantLessThan( p1.value( u"X"_s, 0 ), p2.value( u"X"_s, 0 ) );
-    };
+    auto cmp = []( const QMap<QString, QVariant> &p1, const QMap<QString, QVariant> &p2 ) { return qgsVariantLessThan( p1.value( u"X"_s, 0 ), p2.value( u"X"_s, 0 ) ); };
     std::sort( expectedPoints.begin(), expectedPoints.end(), cmp );
     std::sort( identifiedPoints.begin(), identifiedPoints.end(), cmp );
 
@@ -811,9 +812,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       expectedPoints.push_back( point );
     }
 
-    auto cmp = []( const QMap<QString, QVariant> &p1, const QMap<QString, QVariant> &p2 ) {
-      return qgsVariantLessThan( p1.value( u"X"_s, 0 ), p2.value( u"X"_s, 0 ) );
-    };
+    auto cmp = []( const QMap<QString, QVariant> &p1, const QMap<QString, QVariant> &p2 ) { return qgsVariantLessThan( p1.value( u"X"_s, 0 ), p2.value( u"X"_s, 0 ) ); };
     std::sort( expectedPoints.begin(), expectedPoints.end(), cmp );
     std::sort( identifiedPoints.begin(), identifiedPoints.end(), cmp );
 
@@ -1201,7 +1200,7 @@ void TestQgsCopcProvider::testPointCloudRequest()
     queue.pop_front();
     nodes.push_back( node );
 
-    for ( const QgsPointCloudNodeId &child : index.getNode( node ).children() )
+    for ( QgsPointCloudNodeId child : index.getNode( node ).children() )
     {
       queue.push_back( child );
     }
@@ -1272,7 +1271,7 @@ void TestQgsCopcProvider::testPointCloudRequestIgnoreFilter()
     queue.pop_front();
     nodes.push_back( node );
 
-    for ( const QgsPointCloudNodeId &child : index.getNode( node ).children() )
+    for ( QgsPointCloudNodeId child : index.getNode( node ).children() )
     {
       queue.push_back( child );
     }

@@ -21,10 +21,10 @@ __copyright__ = "(C) 2016, Nyall Dawson"
 
 import os
 import shutil
+import unittest
 
 from qgis.core import NULL, QgsVectorLayer
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 from processing.tests.TestData import points
 from processing.tools import vector
@@ -35,7 +35,6 @@ start_app()
 
 
 class VectorTest(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.cleanup_paths = []

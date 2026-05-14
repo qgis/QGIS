@@ -27,6 +27,8 @@
 #include <QStringList>
 #include <QTime>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
@@ -51,7 +53,8 @@ class TestQgsRasterSubLayer : public QgsTest
 
   public:
     TestQgsRasterSubLayer()
-      : QgsTest( u"Raster Sub Layer Tests"_s ) {}
+      : QgsTest( u"Raster Sub Layer Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

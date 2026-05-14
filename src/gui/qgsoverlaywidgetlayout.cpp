@@ -23,8 +23,7 @@
 
 QgsOverlayWidgetLayout::QgsOverlayWidgetLayout( QWidget *parent )
   : QLayout( parent )
-{
-}
+{}
 
 QgsOverlayWidgetLayout::~QgsOverlayWidgetLayout()
 {

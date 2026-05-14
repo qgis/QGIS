@@ -24,7 +24,6 @@ import tempfile
 import urllib.parse
 
 import osgeo.gdal  # NOQA
-
 from qgis.core import QgsMultiRenderChecker
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
@@ -35,7 +34,6 @@ from utilities import getExecutablePath, unitTestDataPath
 
 
 class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
-
     def _pdf_to_png(self, pdf_file_path, rendered_file_path, page, dpi=96):
 
         # PDF-to-image utility
@@ -54,8 +52,7 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         # noinspection PyUnboundLocalVariable
         if not PDFUTIL:
             assert False, (
-                "PDF-to-image utility not found on PATH: "
-                "install Poppler (with Cairo)"
+                "PDF-to-image utility not found on PATH: install Poppler (with Cairo)"
             )
 
         if PDFUTIL.strip().endswith("pdftocairo"):
@@ -104,10 +101,7 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
             subprocess.check_call(call)
         except subprocess.CalledProcessError as e:
             assert False, (
-                "exportToPdf failed!\n"
-                "cmd: {}\n"
-                "returncode: {}\n"
-                "message: {}".format(e.cmd, e.returncode, e.message)
+                f"exportToPdf failed!\ncmd: {e.cmd}\nreturncode: {e.returncode}\nmessage: {e.message}"
             )
 
     def _pdf_diff(self, pdf, control_image, max_diff, max_size_diff=QSize(), dpi=96):

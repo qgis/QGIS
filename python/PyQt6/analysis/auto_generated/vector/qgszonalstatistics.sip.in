@@ -23,7 +23,9 @@ multipolygon layer and appends the results as attributes.
 #include "qgszonalstatistics.h"
 %End
   public:
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
+    QgsZonalStatistics(
+      QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default
+    );
 %Docstring
 Convenience constructor for QgsZonalStatistics, using an input raster
 layer.
@@ -37,7 +39,16 @@ calculation.
    the constructor which accepts a :py:class:`QgsRasterInterface` should be used instead.
 %End
 
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
+    QgsZonalStatistics(
+      QgsVectorLayer *polygonLayer,
+      QgsRasterInterface *rasterInterface,
+      const QgsCoordinateReferenceSystem &rasterCrs,
+      double rasterUnitsPerPixelX,
+      double rasterUnitsPerPixelY,
+      const QString &attributePrefix = QString(),
+      int rasterBand = 1,
+      Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default
+    );
 %Docstring
 Constructor for QgsZonalStatistics, using a QgsRasterInterface.
 
@@ -99,7 +110,9 @@ use in a field name.
 
 
 
-    static QMap<int, QVariant> calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, Qgis::ZonalStatistics statistics ) /PyName=calculateStatistics/;
+    static QMap<int, QVariant> calculateStatisticsInt(
+      QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, Qgis::ZonalStatistics statistics
+    ) /PyName=calculateStatistics/;
 %Docstring
 Calculates the specified ``statistics`` for the pixels of ``rasterBand``
 in ``rasterInterface`` (a raster layer

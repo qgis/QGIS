@@ -19,27 +19,24 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
-#include "qgsframegraph.h"
 #include "qgsmapsettings.h"
 
-#include <QScreen>
-#include <QVector2D>
-#include <QVector3D>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QLayer>
-#include <Qt3DRender/QPickEvent>
-#include <Qt3DRender/QScreenRayCaster>
+#include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QSortPolicy>
 #include <Qt3DRender/QViewport>
 #include <Qt3DRender/qsubtreeenabler.h>
 
-Qgs3DAxisRenderView::Qgs3DAxisRenderView( const QString &viewName, Qgs3DMapCanvas *canvas,             //
-                                          QgsCameraController *cameraCtrl, Qgs3DMapSettings *settings, //
-                                          Qgs3DAxis *axis3D )
+Qgs3DAxisRenderView::Qgs3DAxisRenderView(
+  const QString &viewName,
+  Qgs3DMapCanvas *canvas, //
+  QgsCameraController *cameraCtrl,
+  Qgs3DMapSettings *settings, //
+  Qgs3DAxis *axis3D
+)
   : QgsAbstractRenderView( viewName )
   , mCanvas( canvas )
   , mMapSettings( settings )
@@ -143,8 +140,20 @@ void Qgs3DAxisRenderView::onViewportSizeUpdate( int width, int height )
   {
     QgsMapSettings set;
     QgsDebugMsgLevel( QString( "onViewportSizeUpdate window w/h: %1px / %2px" ).arg( windowWidth ).arg( windowHeight ), 2 );
-    QgsDebugMsgLevel( QString( "onViewportSizeUpdate window physicalDpi %1 (%2, %3)" ).arg( mCanvas->screen()->physicalDotsPerInch() ).arg( mCanvas->screen()->physicalDotsPerInchX() ).arg( mCanvas->screen()->physicalDotsPerInchY() ), 2 );
-    QgsDebugMsgLevel( QString( "onViewportSizeUpdate window logicalDotsPerInch %1 (%2, %3)" ).arg( mCanvas->screen()->logicalDotsPerInch() ).arg( mCanvas->screen()->logicalDotsPerInchX() ).arg( mCanvas->screen()->logicalDotsPerInchY() ), 2 );
+    QgsDebugMsgLevel(
+      QString( "onViewportSizeUpdate window physicalDpi %1 (%2, %3)" )
+        .arg( mCanvas->screen()->physicalDotsPerInch() )
+        .arg( mCanvas->screen()->physicalDotsPerInchX() )
+        .arg( mCanvas->screen()->physicalDotsPerInchY() ),
+      2
+    );
+    QgsDebugMsgLevel(
+      QString( "onViewportSizeUpdate window logicalDotsPerInch %1 (%2, %3)" )
+        .arg( mCanvas->screen()->logicalDotsPerInch() )
+        .arg( mCanvas->screen()->logicalDotsPerInchX() )
+        .arg( mCanvas->screen()->logicalDotsPerInchY() ),
+      2
+    );
 
     QgsDebugMsgLevel( QString( "onViewportSizeUpdate window pixel ratio %1" ).arg( mCanvas->screen()->devicePixelRatio() ), 2 );
 
@@ -211,11 +220,13 @@ void Qgs3DAxisRenderView::onViewportSizeUpdate( int width, int height )
     {
       const float halfWidthSize = static_cast<float>( windowWidth * widthRatio / 2.0 );
       const float halfHeightSize = static_cast<float>( windowWidth * widthRatio / 2.0 );
+      // clang-format off
       mLabelCamera->lens()->setOrthographicProjection(
         -halfWidthSize, halfWidthSize,
         -halfHeightSize, halfHeightSize,
         mLabelCamera->lens()->nearPlane(), mLabelCamera->lens()->farPlane()
       );
+      // clang-format on
     }
   }
 }

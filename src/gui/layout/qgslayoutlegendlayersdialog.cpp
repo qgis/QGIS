@@ -22,8 +22,11 @@
 #include "qgssettings.h"
 
 #include <QStandardItem>
+#include <QString>
 
 #include "moc_qgslayoutlegendlayersdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   : QDialog( parent )

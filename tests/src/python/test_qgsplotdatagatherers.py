@@ -10,8 +10,10 @@ __author__ = "Mathieu Pellerin"
 __date__ = "22/8/2025"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
-from qgis.PyQt.QtCore import QEventLoop
+import unittest
+
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsExpressionContext,
     QgsExpressionContextUtils,
@@ -22,16 +24,14 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerXyPlotDataGatherer,
     QgsXyPlotSeries,
-    Qgis,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QEventLoop
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsPlot(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "plot"
@@ -62,6 +62,7 @@ class TestQgsPlot(QgisTestCase):
 
         # test a single series
         series1_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
+            "Series 1",
             '"category"',
             '"value"',
         )
@@ -82,6 +83,7 @@ class TestQgsPlot(QgisTestCase):
 
         # test two series with the second series filtered and missing one category
         series2_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
+            "Series 1",
             '"category"',
             '"value"',
             filterExpression='"category" != \'category_b\' AND "value" <= 10',
@@ -104,6 +106,7 @@ class TestQgsPlot(QgisTestCase):
 
         # test a single series with predefined categories
         series1_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
+            "Series 1",
             '"category"',
             '"value"',
         )
@@ -149,7 +152,7 @@ class TestQgsPlot(QgisTestCase):
 
         # test a single series
         series1_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
-            '"int"', '"value"'
+            "Series 1", '"int"', '"value"'
         )
 
         iterator = layer.getFeatures()
@@ -171,6 +174,7 @@ class TestQgsPlot(QgisTestCase):
 
         # test a single series, ordered by expression
         series1_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
+            "Series 1",
             '"int"',
             '"value"',
         )
@@ -196,7 +200,7 @@ class TestQgsPlot(QgisTestCase):
 
         # test two series with the second series filtered and missing one category
         series2_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
-            '"int"', '"value"', filterExpression='"int" < 3'
+            "Series 1", '"int"', '"value"', filterExpression='"int" < 3'
         )
 
         iterator = layer.getFeatures(request)

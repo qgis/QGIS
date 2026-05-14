@@ -23,12 +23,13 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
 #include "moc_qgsfielddomainsitem.cpp"
 
-QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
-    const QString &path,
-    const QString &connectionUri,
-    const QString &providerKey )
+using namespace Qt::StringLiterals;
+
+QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent, const QString &path, const QString &connectionUri, const QString &providerKey )
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Field Domains" ), path, providerKey )
   , mConnectionUri( connectionUri )
 {

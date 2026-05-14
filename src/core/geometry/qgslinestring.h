@@ -26,6 +26,9 @@
 #include "qgsgeometryutils_base.h"
 
 #include <QPolygonF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLineSegment2D;
 class QgsBox3D;
@@ -41,15 +44,15 @@ class QgsBox3D;
  * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
  */
-class CORE_EXPORT QgsLineString: public QgsCurve
+class CORE_EXPORT QgsLineString : public QgsCurve
 {
-
   public:
-
+    // clang-format off
     /**
      * Constructor for an empty linestring geometry.
      */
     QgsLineString() SIP_HOLDGIL;
+    // clang-format on
 #ifndef SIP_RUN
 
     /**
@@ -66,6 +69,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsLineString( const QVector<QgsPointXY> &points );
 #else
+// clang-format off
 
     /**
      * Construct a linestring from a sequence of points (QgsPoint objects, QgsPointXY objects, or sequences of float values).
@@ -248,6 +252,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp = new sipQgsLineString( QgsLineString( xl, yl, zl, ml, is25D ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -437,6 +442,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsPoint pointN( int i ) const;
 #else
+// clang-format off
 
     /**
      * Returns the point at the specified index.
@@ -464,11 +470,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
     double xAt( int index ) const override;
 #else
+// clang-format off
 
     /**
      * Returns the x-coordinate of the specified node in the line string.
@@ -494,11 +502,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return PyFloat_FromDouble( sipCpp->xAt( count + a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
     double yAt( int index ) const override;
 #else
+// clang-format off
 
     /**
      * Returns the y-coordinate of the specified node in the line string.
@@ -524,6 +534,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return PyFloat_FromDouble( sipCpp->yAt( count + a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -638,6 +649,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return std::numeric_limits<double>::quiet_NaN();
     }
 #else
+// clang-format off
 
     /**
      * Returns the z-coordinate of the specified node in the line string.
@@ -665,6 +677,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return PyFloat_FromDouble( sipCpp->zAt( count + a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -684,11 +697,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return std::numeric_limits<double>::quiet_NaN();
     }
 #else
+// clang-format off
 
     /**
-     * Returns the m-coordinate of the specified node in the line string.
+     * Returns the m value of the specified node in the line string.
      *
-     * If the LineString does not have a m-dimension then ``NaN`` will be returned.
+     * If the LineString does not have m values then ``NaN`` will be returned.
      *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
@@ -711,6 +725,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return PyFloat_FromDouble( sipCpp->mAt( count + a0 ) );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -724,6 +739,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setXAt( int index, double x );
 #else
+// clang-format off
 
     /**
      * Sets the x-coordinate of the specified node in the line string.
@@ -752,6 +768,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp->setXAt( count + a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -765,6 +782,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setYAt( int index, double y );
 #else
+// clang-format off
 
     /**
      * Sets the y-coordinate of the specified node in the line string.
@@ -793,6 +811,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp->setYAt( count + a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -810,6 +829,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         mZ[ index ] = z;
     }
 #else
+// clang-format off
 
     /**
      * Sets the z-coordinate of the specified node in the line string.
@@ -837,6 +857,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp->setZAt( count + a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -854,6 +875,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         mM[ index ] = m;
     }
 #else
+// clang-format off
 
     /**
      * Sets the m-coordinate of the specified node in the line string.
@@ -881,6 +903,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         sipCpp->setMAt( count + a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -1122,6 +1145,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -1213,6 +1237,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
     % End
 
+// clang-format on
 #endif
 
     /**

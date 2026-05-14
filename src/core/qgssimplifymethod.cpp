@@ -19,6 +19,10 @@
 #include "qgslogger.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsSimplifyMethod::setMethodType( MethodType methodType )
 {
   mMethodType = methodType;
@@ -57,11 +61,7 @@ QgsAbstractGeometrySimplifier *QgsSimplifyMethod::createGeometrySimplifier( cons
 
 bool QgsSimplifyMethod::operator==( const QgsSimplifyMethod &v ) const
 {
-  return
-    mMethodType == v.mMethodType &&
-    mTolerance == v.mTolerance &&
-    mThreshold == v.mThreshold &&
-    mForceLocalOptimization == v.mForceLocalOptimization;
+  return mMethodType == v.mMethodType && mTolerance == v.mTolerance && mThreshold == v.mThreshold && mForceLocalOptimization == v.mForceLocalOptimization;
 }
 
 bool QgsSimplifyMethod::operator!=( const QgsSimplifyMethod &v ) const

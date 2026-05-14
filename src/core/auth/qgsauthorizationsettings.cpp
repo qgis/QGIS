@@ -17,6 +17,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAuthorizationSettings::QgsAuthorizationSettings( const QString &userName, const QString &password, const QgsHttpHeaders &httpHeaders, const QString &authcfg )
   : mUserName( userName )
   , mPassword( password )

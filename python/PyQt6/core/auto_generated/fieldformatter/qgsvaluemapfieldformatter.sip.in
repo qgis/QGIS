@@ -32,7 +32,6 @@ the above configuration:
 #include "qgsvaluemapfieldformatter.h"
 %End
   public:
-
     static const QString NULL_VALUE;
 
     QgsValueMapFieldFormatter();

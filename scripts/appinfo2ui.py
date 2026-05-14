@@ -19,7 +19,6 @@
 """
 
 import sys
-
 from html import escape
 from xml.etree import ElementTree as et
 

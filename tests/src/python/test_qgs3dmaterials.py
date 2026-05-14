@@ -6,28 +6,29 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import QgsReadWriteContext
-from qgis._3d import (
-    QgsSimpleLineMaterialSettings,
-    QgsPhongMaterialSettings,
+import unittest
+from pathlib import Path
+
+from qgis.core import (
     QgsGoochMaterialSettings,
     QgsMetalRoughMaterialSettings,
-    QgsPhongTexturedMaterialSettings,
+    QgsMetalRoughTexturedMaterialSettings,
     QgsNullMaterialSettings,
+    QgsPhongMaterialSettings,
+    QgsPhongTexturedMaterialSettings,
+    QgsReadWriteContext,
+    QgsSimpleLineMaterialSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
-TEST_DATA_DIR = unitTestDataPath()
+TEST_DATA_DIR = unitTestDataPath("3d")
 
 
 class TestQgsSimpleLineMaterialSettings(QgisTestCase):
-
     def test_getters_setters(self):
         # Create fresh instance
         settings = QgsSimpleLineMaterialSettings()
@@ -92,7 +93,6 @@ class TestQgsSimpleLineMaterialSettings(QgisTestCase):
 
 
 class TestQgsPhongMaterialSettings(QgisTestCase):
-
     def test_getters_setters(self):
         settings = QgsPhongMaterialSettings()
 
@@ -232,9 +232,78 @@ class TestQgsPhongMaterialSettings(QgisTestCase):
 
         self.assertEqual(settings, settings2)
 
+    def test_average_color(self):
+        # metallic blue
+        settings = QgsPhongMaterialSettings()
+        settings.setAmbient(QColor(0, 17, 51))
+        settings.setDiffuse(QColor(0, 132, 255))
+        settings.setSpecular(QColor(255, 255, 255))
+        settings.setShininess(100.0)
+        settings.setOpacity(1.0)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 26)
+        self.assertEqual(avg_color.green(), 109)
+        self.assertEqual(avg_color.blue(), 204)
+        self.assertEqual(avg_color.alpha(), 255)
+
+        # Matte red
+        settings = QgsPhongMaterialSettings()
+        settings.setAmbient(QColor(34, 0, 0))
+        settings.setDiffuse(QColor(204, 0, 0))
+        settings.setSpecular(QColor(51, 51, 51))
+        settings.setShininess(40.0)
+        settings.setOpacity(0.75)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 141)
+        self.assertEqual(avg_color.green(), 5)
+        self.assertEqual(avg_color.blue(), 5)
+        self.assertEqual(avg_color.alpha(), 191)
+
+    def test_set_colors_from_base(self):
+        settings = QgsPhongMaterialSettings()
+        settings.setShininess(100.0)
+        base_color = QColor(217, 151, 103)
+        settings.setColorsFromBase(base_color)
+
+        ambient = settings.ambient()
+        self.assertEqual(ambient.red(), 43)
+        self.assertEqual(ambient.green(), 30)
+        self.assertEqual(ambient.blue(), 21)
+
+        diffuse = settings.diffuse()
+        self.assertEqual(diffuse.red(), 208)
+        self.assertEqual(diffuse.green(), 145)
+        self.assertEqual(diffuse.blue(), 99)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 10)
+        self.assertEqual(specular.green(), 10)
+        self.assertEqual(specular.blue(), 10)
+
+        self.assertAlmostEqual(settings.shininess(), 32.0, 1)
+
+        # with metallic parameter
+        settings.setColorsFromBase(base_color, 0.6)
+
+        ambient = settings.ambient()
+        self.assertEqual(ambient.red(), 43)
+        self.assertEqual(ambient.green(), 30)
+        self.assertEqual(ambient.blue(), 21)
+
+        diffuse = settings.diffuse()
+        self.assertEqual(diffuse.red(), 135)
+        self.assertEqual(diffuse.green(), 94)
+        self.assertEqual(diffuse.blue(), 64)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 134)
+        self.assertEqual(specular.green(), 95)
+        self.assertEqual(specular.blue(), 66)
+
+        self.assertAlmostEqual(settings.shininess(), 132.8, 1)
+
 
 class TestQgsGoochMaterialSettings(QgisTestCase):
-
     def test_getters_setters(self):
         settings = QgsGoochMaterialSettings()
 
@@ -361,16 +430,108 @@ class TestQgsGoochMaterialSettings(QgisTestCase):
 
         self.assertEqual(settings, settings2)
 
+    def test_average_color(self):
+        # warm beige-orange color
+        settings = QgsGoochMaterialSettings()
+        settings.setWarm(QColor(255, 200, 100))
+        settings.setCool(QColor(0, 50, 150))
+        settings.setDiffuse(QColor(200, 100, 50))
+        settings.setSpecular(QColor(255, 255, 200))
+        settings.setShininess(60.0)
+        settings.setAlpha(0.3)
+        settings.setBeta(0.6)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 225)
+        self.assertEqual(avg_color.green(), 187)
+        self.assertEqual(avg_color.blue(), 158)
+        self.assertEqual(avg_color.alpha(), 255)
+
+        # Metallic blue
+        settings = QgsGoochMaterialSettings()
+        settings.setWarm(QColor(150, 170, 220))
+        settings.setCool(QColor(20, 60, 160))
+        settings.setDiffuse(QColor(100, 140, 200))
+        settings.setSpecular(QColor(220, 235, 255))
+        settings.setShininess(120.0)
+        settings.setAlpha(0.3)
+        settings.setBeta(0.6)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 148)
+        self.assertEqual(avg_color.green(), 189)
+        self.assertEqual(avg_color.blue(), 255)
+        self.assertEqual(avg_color.alpha(), 255)
+
+    def test_set_colors_from_base(self):
+        settings = QgsGoochMaterialSettings()
+        settings.setShininess(100.0)
+        self.assertEqual(settings.alpha(), 0.25)
+        self.assertEqual(settings.beta(), 0.5)
+        # bright green
+        base_color = QColor(76, 204, 51)
+        settings.setColorsFromBase(base_color)
+        self.assertEqual(settings.alpha(), 0.25)
+        self.assertEqual(settings.beta(), 0.5)
+
+        cool = settings.cool()
+        self.assertEqual(cool.red(), 57)
+        self.assertEqual(cool.green(), 153)
+        self.assertEqual(cool.blue(), 102)
+
+        warm = settings.warm()
+        self.assertEqual(warm.red(), 166)
+        self.assertEqual(warm.green(), 230)
+        self.assertEqual(warm.blue(), 26)
+
+        diffuse = settings.diffuse()
+        self.assertEqual(diffuse.red(), 111)
+        self.assertEqual(diffuse.green(), 191)
+        self.assertEqual(diffuse.blue(), 64)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 102)
+        self.assertEqual(specular.green(), 102)
+        self.assertEqual(specular.blue(), 102)
+
+        # set alpha and beta
+        settings2 = QgsGoochMaterialSettings()
+        settings2.setShininess(100.0)
+        self.assertEqual(settings2.alpha(), 0.25)
+        self.assertEqual(settings2.beta(), 0.5)
+        # bright green
+        base_color = QColor(76, 204, 51)
+        settings2.setColorsFromBase(base_color, 0.3, 0.6)
+        self.assertEqual(settings2.alpha(), 0.3)
+        self.assertEqual(settings2.beta(), 0.6)
+
+        cool = settings2.cool()
+        self.assertEqual(cool.red(), 53)
+        self.assertEqual(cool.green(), 143)
+        self.assertEqual(cool.blue(), 112)
+
+        warm = settings2.warm()
+        self.assertEqual(warm.red(), 183)
+        self.assertEqual(warm.green(), 235)
+        self.assertEqual(warm.blue(), 20)
+
+        diffuse = settings2.diffuse()
+        self.assertEqual(diffuse.red(), 118)
+        self.assertEqual(diffuse.green(), 189)
+        self.assertEqual(diffuse.blue(), 66)
+
+        specular = settings2.specular()
+        self.assertEqual(specular.red(), 102)
+        self.assertEqual(specular.green(), 102)
+        self.assertEqual(specular.blue(), 102)
+
 
 class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
-
     def test_getters_setters(self):
         settings = QgsMetalRoughMaterialSettings()
 
         # Test default values
         self.assertEqual(settings.baseColor(), QColor.fromRgbF(0.5, 0.5, 0.5, 1.0))
         self.assertEqual(settings.metalness(), 0.0)
-        self.assertEqual(settings.roughness(), 0.0)
+        self.assertEqual(settings.roughness(), 0.5)
 
         # Test setters/getters
         settings.setBaseColor(QColor(255, 0, 0))
@@ -443,8 +604,194 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         self.assertEqual(settings, settings2)
 
 
-class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
+class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
+    def test_getters_setters(self):
+        settings = QgsMetalRoughTexturedMaterialSettings()
 
+        # Test default values
+        self.assertFalse(settings.baseColorTexturePath())
+        self.assertFalse(settings.metalnessTexturePath())
+        self.assertFalse(settings.roughnessTexturePath())
+        self.assertFalse(settings.ambientOcclusionTexturePath())
+        self.assertFalse(settings.normalTexturePath())
+        self.assertFalse(settings.heightTexturePath())
+        self.assertEqual(settings.parallaxScale(), 0.1)
+        self.assertFalse(settings.emissionTexturePath())
+        self.assertEqual(settings.emissionFactor(), 1)
+        self.assertEqual(settings.textureScale(), 1)
+        self.assertEqual(settings.textureRotation(), 0)
+
+        # Test setters/getters
+        settings.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertEqual(settings.baseColorTexturePath(), "/path/to/base_texture.png")
+
+        settings.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        self.assertEqual(
+            settings.metalnessTexturePath(), "/path/to/metalness_texture.png"
+        )
+
+        settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        self.assertEqual(
+            settings.roughnessTexturePath(), "/path/to/roughness_texture.png"
+        )
+
+        settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        self.assertEqual(
+            settings.ambientOcclusionTexturePath(), "/path/to/ao_texture.png"
+        )
+
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+        self.assertEqual(settings.normalTexturePath(), "/path/to/normal_texture.png")
+
+        settings.setHeightTexturePath("/path/to/height_texture.png")
+        self.assertEqual(settings.heightTexturePath(), "/path/to/height_texture.png")
+        settings.setParallaxScale(0.4)
+        self.assertEqual(settings.parallaxScale(), 0.4)
+
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertEqual(
+            settings.emissionTexturePath(), "/path/to/emission_texture.png"
+        )
+
+        settings.setEmissionFactor(2.2)
+        self.assertEqual(settings.emissionFactor(), 2.2)
+        settings.setTextureScale(12.1)
+        self.assertEqual(settings.textureScale(), 12.1)
+        settings.setTextureRotation(45)
+        self.assertEqual(settings.textureRotation(), 45)
+
+    def test_clone(self):
+        settings = QgsMetalRoughTexturedMaterialSettings()
+        settings.setBaseColorTexturePath("/path/to/base_texture.png")
+        settings.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+        settings.setHeightTexturePath("/path/to/height_texture.png")
+        settings.setParallaxScale(0.4)
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
+
+        settings.setTextureScale(12.1)
+        settings.setTextureRotation(45)
+        settings.setEmissionFactor(2.2)
+
+        cloned = settings.clone()
+        self.assertEqual(cloned.baseColorTexturePath(), "/path/to/base_texture.png")
+        self.assertEqual(
+            cloned.metalnessTexturePath(), "/path/to/metalness_texture.png"
+        )
+        self.assertEqual(
+            cloned.roughnessTexturePath(), "/path/to/roughness_texture.png"
+        )
+        self.assertEqual(
+            cloned.ambientOcclusionTexturePath(), "/path/to/ao_texture.png"
+        )
+        self.assertEqual(cloned.normalTexturePath(), "/path/to/normal_texture.png")
+        self.assertEqual(cloned.heightTexturePath(), "/path/to/height_texture.png")
+        self.assertEqual(cloned.parallaxScale(), 0.4)
+        self.assertEqual(cloned.emissionTexturePath(), "/path/to/emission_texture.png")
+        self.assertEqual(cloned.emissionFactor(), 2.2)
+        self.assertEqual(cloned.textureScale(), 12.1)
+        self.assertEqual(cloned.textureRotation(), 45)
+
+    def test_equality(self):
+        settings1 = QgsMetalRoughTexturedMaterialSettings()
+        settings2 = QgsMetalRoughTexturedMaterialSettings()
+
+        self.assertEqual(settings1, settings2)
+
+        settings2.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setNormalTexturePath("/path/to/normal_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setNormalTexturePath("/path/to/normal_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setHeightTexturePath("/path/to/height_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setHeightTexturePath("/path/to/height_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setParallaxScale(0.4)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setParallaxScale(0.4)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setEmissionFactor(2.2)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionFactor(2.2)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setTextureScale(9)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setTextureScale(9)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setTextureRotation(19)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setTextureRotation(19)
+        self.assertEqual(settings1, settings2)
+
+    def test_equals_method(self):
+        settings1 = QgsMetalRoughTexturedMaterialSettings()
+        settings2 = QgsMetalRoughTexturedMaterialSettings()
+
+        self.assertTrue(settings1.equals(settings2))
+
+        settings2.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertFalse(settings1.equals(settings2))
+
+        settings1.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertTrue(settings1.equals(settings2))
+
+    def test_xml_roundtrip(self):
+        settings = QgsMetalRoughTexturedMaterialSettings()
+        settings.setBaseColorTexturePath("/path/to/base_texture.png")
+        settings.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+        settings.setHeightTexturePath("/path/to/height_texture.png")
+        settings.setParallaxScale(0.4)
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
+        settings.setEmissionFactor(2.2)
+        settings.setTextureScale(12.1)
+        settings.setTextureRotation(45)
+
+        doc = QDomDocument("settings")
+        element = doc.createElement("settings")
+        settings.writeXml(element, QgsReadWriteContext())
+
+        settings2 = QgsMetalRoughTexturedMaterialSettings()
+        settings2.readXml(element, QgsReadWriteContext())
+
+        self.assertEqual(settings, settings2)
+
+
+class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
     def test_getters_setters(self):
         settings = QgsPhongTexturedMaterialSettings()
 
@@ -581,9 +928,71 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setDiffuseTexturePath("")
         self.assertFalse(settings.requiresTextureCoordinates())
 
+    def test_average_color(self):
+        # metallic blue
+        settings = QgsPhongTexturedMaterialSettings()
+        settings.setAmbient(QColor(0, 17, 71))
+        settings.setSpecular(QColor(255, 255, 255))
+        blue_texture_path = Path(TEST_DATA_DIR) / "texture_blue.png"
+        settings.setDiffuseTexturePath(str(blue_texture_path))
+        settings.setShininess(100.0)
+        settings.setOpacity(1.0)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 13)
+        self.assertEqual(avg_color.green(), 34)
+        self.assertEqual(avg_color.blue(), 66)
+        self.assertEqual(avg_color.alpha(), 255)
+
+        # Matte red
+        settings = QgsPhongTexturedMaterialSettings()
+        settings.setAmbient(QColor(34, 0, 0))
+        settings.setSpecular(QColor(51, 51, 51))
+        red_texture_path = Path(TEST_DATA_DIR) / "texture_red.png"
+        settings.setDiffuseTexturePath(str(red_texture_path))
+        settings.setShininess(40.0)
+        settings.setOpacity(0.75)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 43)
+        self.assertEqual(avg_color.green(), 3)
+        self.assertEqual(avg_color.blue(), 3)
+        self.assertEqual(avg_color.alpha(), 191)
+
+    def test_set_colors_from_base(self):
+        settings = QgsPhongTexturedMaterialSettings()
+        settings.setShininess(100.0)
+        settings.setDiffuseTexturePath("/path/to/texture.png")
+        base_color = QColor(217, 151, 103)
+        settings.setColorsFromBase(base_color)
+
+        ambient = settings.ambient()
+        self.assertEqual(ambient.red(), 43)
+        self.assertEqual(ambient.green(), 30)
+        self.assertEqual(ambient.blue(), 21)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 10)
+        self.assertEqual(specular.green(), 10)
+        self.assertEqual(specular.blue(), 10)
+
+        self.assertAlmostEqual(settings.shininess(), 32.0, 1)
+
+        # with metallic parameter
+        settings.setColorsFromBase(base_color, 0.6)
+
+        ambient = settings.ambient()
+        self.assertEqual(ambient.red(), 43)
+        self.assertEqual(ambient.green(), 30)
+        self.assertEqual(ambient.blue(), 21)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 134)
+        self.assertEqual(specular.green(), 95)
+        self.assertEqual(specular.blue(), 66)
+
+        self.assertAlmostEqual(settings.shininess(), 132.8, 1)
+
 
 class TestQgsNullMaterialSettings(QgisTestCase):
-
     def test_clone(self):
         settings = QgsNullMaterialSettings()
         cloned = settings.clone()

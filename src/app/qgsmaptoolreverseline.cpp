@@ -33,8 +33,7 @@ QgsMapToolReverseLine::QgsMapToolReverseLine( QgsMapCanvas *canvas )
 }
 
 QgsMapToolReverseLine::~QgsMapToolReverseLine()
-{
-}
+{}
 
 void QgsMapToolReverseLine::canvasMoveEvent( QgsMapMouseEvent *e )
 {

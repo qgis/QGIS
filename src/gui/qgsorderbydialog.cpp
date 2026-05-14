@@ -21,9 +21,12 @@
 #include "qgsvectorlayer.h"
 
 #include <QKeyEvent>
+#include <QString>
 #include <QTableWidget>
 
 #include "moc_qgsorderbydialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )

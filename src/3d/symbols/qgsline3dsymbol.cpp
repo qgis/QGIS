@@ -15,6 +15,7 @@
 
 #include "qgsline3dsymbol.h"
 
+#include "qgis.h"
 #include "qgs3d.h"
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"
@@ -23,10 +24,13 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLine3DSymbol::QgsLine3DSymbol()
   : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
-{
-}
+{}
 
 QgsLine3DSymbol::~QgsLine3DSymbol() = default;
 
@@ -79,9 +83,9 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
 
   const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
   const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );
-  mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
+  mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( materialType );
   if ( !mMaterialSettings )
-    mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s ) );
+    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s );
   mMaterialSettings->readXml( elemMaterial, context );
 }
 

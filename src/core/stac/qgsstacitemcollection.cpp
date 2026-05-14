@@ -15,6 +15,10 @@
 
 #include "qgsstacitemcollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacItemCollection::QgsStacItemCollection( const QVector< QgsStacItem * > &items, const QVector< QgsStacLink > &links, int numberMatched )
   : mItems( items )
   , mLinks( links )
@@ -22,11 +26,7 @@ QgsStacItemCollection::QgsStacItemCollection( const QVector< QgsStacItem * > &it
 {
   for ( const QgsStacLink &link : mLinks )
   {
-    if ( link.relation() == "self"_L1 ||
-         link.relation() == "root"_L1 ||
-         link.relation() == "parent"_L1 ||
-         link.relation() == "collection"_L1 ||
-         link.relation() == "next"_L1 )
+    if ( link.relation() == "self"_L1 || link.relation() == "root"_L1 || link.relation() == "parent"_L1 || link.relation() == "collection"_L1 || link.relation() == "next"_L1 )
       mUrls.insert( link.relation(), link.href() );
   }
 }

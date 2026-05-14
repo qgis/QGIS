@@ -8,28 +8,27 @@ the Free Software Foundation; either version 2 of the License, or
 
 import unittest
 
+from qgis.core import (
+    Qgis,
+    QgsAbstractRasterLayerLabeling,
+    QgsBasicNumericFormat,
+    QgsCoordinateReferenceSystem,
+    QgsCurrencyNumericFormat,
+    QgsExpressionBasedNumericFormat,
+    QgsMapSettings,
+    QgsPalLayerSettings,
+    QgsPercentageNumericFormat,
+    QgsProperty,
+    QgsRasterLayer,
+    QgsRasterLayerSimpleLabeling,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsTextFormat,
+)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (
-    Qgis,
-    QgsRasterLayerSimpleLabeling,
-    QgsCoordinateReferenceSystem,
-    QgsExpressionBasedNumericFormat,
-    QgsTextFormat,
-    QgsMapSettings,
-    QgsRasterLayer,
-    QgsRectangle,
-    QgsReadWriteContext,
-    QgsAbstractRasterLayerLabeling,
-    QgsBasicNumericFormat,
-    QgsCurrencyNumericFormat,
-    QgsPercentageNumericFormat,
-    QgsPalLayerSettings,
-    QgsProperty,
-)
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont
 
 # Convenience instances in case you may need them
@@ -38,7 +37,6 @@ start_app()
 
 
 class TestQgsRasterLabeling(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "raster_labeling"

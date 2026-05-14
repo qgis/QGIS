@@ -47,8 +47,7 @@ class QgsTerrainTileEntity : public Qt3DCore::QEntity
     QgsTerrainTileEntity( QgsChunkNodeId tileId, Qt3DCore::QNode *parent = nullptr )
       : Qt3DCore::QEntity( parent )
       , mTileId( tileId )
-    {
-    }
+    {}
 
     //! Returns coordinates of the tile
     QgsChunkNodeId tileId() const { return mTileId; }

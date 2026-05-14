@@ -84,12 +84,7 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     Q_OBJECT
   public:
     QgsTiledSceneChunkLoaderFactory(
-      const Qgs3DRenderContext &context,
-      const QgsTiledSceneIndex &index,
-      QgsCoordinateReferenceSystem tileCrs,
-      QgsCoordinateReferenceSystem layerCrs,
-      double zValueScale,
-      double zValueOffset
+      const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double zValueScale, double zValueOffset
     );
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -128,7 +123,16 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset );
+    explicit QgsTiledSceneLayerChunkedEntity(
+      Qgs3DMapSettings *map,
+      const QgsTiledSceneIndex &index,
+      QgsCoordinateReferenceSystem tileCrs,
+      QgsCoordinateReferenceSystem layerCrs,
+      double maximumScreenError,
+      bool showBoundingBoxes,
+      double zValueScale,
+      double zValueOffset
+    );
 
     ~QgsTiledSceneLayerChunkedEntity() override;
 

@@ -39,8 +39,11 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QRadioButton>
+#include <QString>
 
 #include "moc_qgsarcgisrestsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsArcGisRestBrowserProxyModel
@@ -48,8 +51,7 @@
 
 QgsArcGisRestBrowserProxyModel::QgsArcGisRestBrowserProxyModel( QObject *parent )
   : QgsBrowserProxyModel( parent )
-{
-}
+{}
 
 void QgsArcGisRestBrowserProxyModel::setConnectionName( const QString &name )
 {
@@ -109,8 +111,7 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( QWidget *parent, Qt::Windo
 }
 
 QgsArcGisRestSourceSelect::~QgsArcGisRestSourceSelect()
-{
-}
+{}
 
 void QgsArcGisRestSourceSelect::populateImageEncodings( const QString &formats )
 {
@@ -183,7 +184,7 @@ void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
   mBrowserView->expand( mProxyModel->index( 0, 0 ) );
   mBrowserView->setHeaderHidden( true );
 
-  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << u"AFS"_s << u"arcgisfeatureserver"_s << u"AMS"_s << u"arcgismapserver"_s << u"I3S"_s << u"esrii3s"_s );
+  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << u"AFS"_s << u"arcgisfeatureserver"_s << u"AMS"_s << u"arcgismapserver"_s << u"I3S"_s << u"esrii3s"_s << u"arcgisimageserver"_s );
 
   const QModelIndex afsSourceIndex = mBrowserModel->findPath( u"arcgisfeatureserver:"_s );
   mBrowserView->setRootIndex( mProxyModel->mapFromSource( afsSourceIndex ) );
@@ -246,8 +247,7 @@ void QgsArcGisRestSourceSelect::modifyEntryOfServerList()
 void QgsArcGisRestSourceSelect::deleteEntryOfServerList()
 {
   const QString selectedConnection = cmbConnections->currentText();
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( selectedConnection );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( selectedConnection );
   const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
@@ -355,6 +355,12 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
         break;
 
       case Qgis::ArcGisRestServiceType::ImageServer:
+        Q_NOWARN_DEPRECATED_PUSH
+        emit addRasterLayer( uri, layerName, u"arcgisimageserver"_s );
+        Q_NOWARN_DEPRECATED_POP
+        emit addLayer( Qgis::LayerType::Raster, uri, layerName, u"arcgisimageserver"_s );
+        break;
+
       case Qgis::ArcGisRestServiceType::GlobeServer:
       case Qgis::ArcGisRestServiceType::GPServer:
       case Qgis::ArcGisRestServiceType::GeocodeServer:
@@ -585,6 +591,10 @@ QString QgsArcGisRestSourceSelect::indexToUri( const QModelIndex &proxyIndex, QS
       uri.removeParam( u"format"_s );
       uri.setParam( u"format"_s, getSelectedImageEncoding() );
       serviceType = Qgis::ArcGisRestServiceType::MapServer;
+    }
+    else if ( qobject_cast<QgsArcGisImageServiceLayerItem *>( layerItem ) )
+    {
+      serviceType = Qgis::ArcGisRestServiceType::ImageServer;
     }
     else if ( qobject_cast<QgsArcGisSceneServiceLayerItem *>( layerItem ) )
     {

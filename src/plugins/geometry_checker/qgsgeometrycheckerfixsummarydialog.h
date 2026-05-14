@@ -37,10 +37,7 @@ class QgsGeometryCheckerFixSummaryDialog : public QDialog
         QSet<QgsGeometryCheckError *> obsoleteErrors;
         QSet<QgsGeometryCheckError *> fixedErrors;
         QSet<QgsGeometryCheckError *> failedErrors;
-        int itemCount() const
-        {
-          return newErrors.size() + obsoleteErrors.size() + fixedErrors.size() + failedErrors.size();
-        }
+        int itemCount() const { return newErrors.size() + obsoleteErrors.size() + fixedErrors.size() + failedErrors.size(); }
     };
 
     QgsGeometryCheckerFixSummaryDialog( const Statistics &stats, QgsGeometryChecker *checker, QWidget *parent = nullptr );

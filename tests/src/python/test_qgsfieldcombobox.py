@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "20/07/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     QgsField,
     QgsFieldModel,
@@ -20,8 +20,9 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsFieldComboBox
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -44,7 +45,6 @@ def create_model():
 
 
 class TestQgsFieldComboBox(QgisTestCase):
-
     def testGettersSetters(self):
         """test combobox getters/setters"""
         l = create_layer()

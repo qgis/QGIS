@@ -27,12 +27,15 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsdelimitedtextsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int MAX_SAMPLE_LENGTH = 200;
 
@@ -100,9 +103,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
     updateFieldsAndEnable();
   } );
 
-  connect( mBooleanFalse, &QLineEdit::textChanged, mBooleanFalse, [this] {
-    updateFieldsAndEnable();
-  } );
+  connect( mBooleanFalse, &QLineEdit::textChanged, mBooleanFalse, [this] { updateFieldsAndEnable(); } );
 
   const QgsSettings settings;
   mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
@@ -525,9 +526,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDate ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), "date" );
     typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QTime ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), "time" );
     typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDateTime ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), "datetime" );
-    connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this, column, typeCombo]( int ) {
-      mOverriddenFields.insert( column, typeCombo->currentData().toString() );
-    } );
+    connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this, column, typeCombo]( int ) { mOverriddenFields.insert( column, typeCombo->currentData().toString() ); } );
     tblSample->setCellWidget( 0, column, typeCombo );
   }
 
@@ -545,9 +544,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     mScanWidget->hide();
   } );
 
-  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanStarted, this, [this]( const QgsFields &fields ) {
-    updateFieldTypes( fields );
-  } );
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanStarted, this, [this]( const QgsFields &fields ) { updateFieldTypes( fields ); } );
 
   connect( mCancelButton, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::cancelScanTask );
 
@@ -557,9 +554,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   } );
 
   // This is required because QgsTask emits a progress changed 100 when done
-  connect( mScanTask, &QgsDelimitedTextFileScanTask::taskCompleted, this, [this] {
-    mScanWidget->hide();
-  } );
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::taskCompleted, this, [this] { mScanWidget->hide(); } );
 
   QgsApplication::taskManager()->addTask( mScanTask, 100 );
 
@@ -976,11 +971,8 @@ void QgsDelimitedTextSourceSelect::cancelScanTask()
 
 bool QgsDelimitedTextFileScanTask::run()
 {
-  QgsDelimitedTextProvider provider(
-    mDataSource,
-    QgsDataProvider::ProviderOptions(),
-    Qgis::DataProviderReadFlag::SkipFeatureCount | Qgis::DataProviderReadFlag::SkipGetExtent | Qgis::DataProviderReadFlag::SkipFullScan
-  );
+  QgsDelimitedTextProvider
+    provider( mDataSource, QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlag::SkipFeatureCount | Qgis::DataProviderReadFlag::SkipGetExtent | Qgis::DataProviderReadFlag::SkipFullScan );
 
   connect( &mFeedback, &QgsFeedback::processedCountChanged, this, &QgsDelimitedTextFileScanTask::processedCountChanged );
 

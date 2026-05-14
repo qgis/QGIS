@@ -18,6 +18,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsabstractgeometry.h"
 #include "qgscircularstring.h"
@@ -48,33 +50,21 @@ class TestQgsCurve : public QObject
 };
 
 
-#define TEST_C2L( circularString, tol, toltype, exp, prec ) \
-  {                                                         \
-    std::unique_ptr<QgsLineString> lineString(              \
-      circularString->curveToLine( tol, toltype )           \
-    );                                                      \
-    QVERIFY( lineString.get() );                            \
-    QString wkt_out = lineString->asWkt( prec );            \
-    QCOMPARE( wkt_out, QString( exp ) );                    \
-    /* Test reverse */                                      \
-    std::unique_ptr<QgsCircularString> reversed(            \
-      circularString->reversed()                            \
-    );                                                      \
-    lineString.reset(                                       \
-      reversed->curveToLine( tol, toltype )                 \
-    );                                                      \
-    wkt_out = lineString->asWkt( prec );                    \
-    lineString.reset(                                       \
-      reversed->curveToLine( tol, toltype )                 \
-    );                                                      \
-    std::unique_ptr<QgsLineString> expgeom(                 \
-      dynamic_cast<QgsLineString *>(                        \
-        QgsGeometryFactory::geomFromWkt( exp ).release()    \
-      )                                                     \
-    );                                                      \
-    expgeom.reset( expgeom->reversed() );                   \
-    QString exp_reversed = expgeom->asWkt( prec );          \
-    QCOMPARE( wkt_out, exp_reversed );                      \
+#define TEST_C2L( circularString, tol, toltype, exp, prec )                                                                      \
+  {                                                                                                                              \
+    std::unique_ptr<QgsLineString> lineString( circularString->curveToLine( tol, toltype ) );                                    \
+    QVERIFY( lineString.get() );                                                                                                 \
+    QString wkt_out = lineString->asWkt( prec );                                                                                 \
+    QCOMPARE( wkt_out, QString( exp ) );                                                                                         \
+    /* Test reverse */                                                                                                           \
+    std::unique_ptr<QgsCircularString> reversed( circularString->reversed() );                                                   \
+    lineString.reset( reversed->curveToLine( tol, toltype ) );                                                                   \
+    wkt_out = lineString->asWkt( prec );                                                                                         \
+    lineString.reset( reversed->curveToLine( tol, toltype ) );                                                                   \
+    std::unique_ptr<QgsLineString> expgeom( dynamic_cast<QgsLineString *>( QgsGeometryFactory::geomFromWkt( exp ).release() ) ); \
+    expgeom.reset( expgeom->reversed() );                                                                                        \
+    QString exp_reversed = expgeom->asWkt( prec );                                                                               \
+    QCOMPARE( wkt_out, exp_reversed );                                                                                           \
   }
 
 void TestQgsCurve::curveToLine()
@@ -82,13 +72,7 @@ void TestQgsCurve::curveToLine()
   std::unique_ptr<QgsCircularString> circularString;
 
   /* input: 2 quadrants arc (180 degrees, PI radians) */
-  circularString.reset( dynamic_cast<QgsCircularString *>(
-    QgsGeometryFactory::geomFromWkt( QStringLiteral(
-                                       "CIRCULARSTRING(0 0,100 100,200 0)"
-                                     )
-    )
-      .release()
-  ) );
+  circularString.reset( dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( u"CIRCULARSTRING(0 0,100 100,200 0)"_s ).release() ) );
   QVERIFY( circularString.get() );
 
   /* op: Maximum of 10 units of difference, symmetric */
@@ -107,12 +91,7 @@ void TestQgsCurve::curveToLine()
   TEST_C2L( circularString, 70 * M_PI / 180, QgsAbstractGeometry::MaximumAngle, "LineString (0 0, 50 86.6, 150 86.6, 200 0)", 2 );
 
   /* input: 2 arcs of 2 quadrants each (180 degrees + 180 degrees other direction) */
-  circularString.reset( dynamic_cast<QgsCircularString *>(
-    QgsGeometryFactory::geomFromWkt( QStringLiteral(
-                                       "CIRCULARSTRING(0 0,100 100,200 0,300 -100,400 0)"
-                                     ) )
-      .release()
-  ) );
+  circularString.reset( dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( u"CIRCULARSTRING(0 0,100 100,200 0,300 -100,400 0)"_s ).release() ) );
   QVERIFY( circularString.get() );
 
   /* op: Maximum of M_PI / 3 degrees of angle */

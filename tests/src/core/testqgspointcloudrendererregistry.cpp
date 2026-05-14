@@ -22,6 +22,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy renderer for testing
 class DummyRenderer : public QgsPointCloudRenderer
@@ -65,12 +68,10 @@ void TestQgsPointCloudRendererRegistry::cleanupTestCase()
 }
 
 void TestQgsPointCloudRendererRegistry::init()
-{
-}
+{}
 
 void TestQgsPointCloudRendererRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsPointCloudRendererRegistry::metadata()
 {

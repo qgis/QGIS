@@ -23,7 +23,6 @@ Settings for a color ramp legend node.
 #include "qgscolorramplegendnodesettings.h"
 %End
   public:
-
     enum Direction /BaseType=IntEnum/
     {
       MinimumToMaximum,

@@ -25,8 +25,7 @@
 
 QgsAbstract3DEngine::QgsAbstract3DEngine( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 void QgsAbstract3DEngine::requestCaptureImage()
 {

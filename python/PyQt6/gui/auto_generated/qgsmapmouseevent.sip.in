@@ -43,7 +43,9 @@ from the QgsMapCanvas.
 :param event: The original mouse event
 %End
 
-    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+    QgsMapMouseEvent(
+      QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier
+    );
 %Docstring
 Creates a new QgsMapMouseEvent. Should only be required to be called
 from the QgsMapCanvas.

@@ -19,7 +19,6 @@ An attribute editor widget that will represent a spacer.
 #include "qgsattributeeditorspacerelement.h"
 %End
   public:
-
     QgsAttributeEditorSpacerElement( const QString &name, QgsAttributeEditorElement *parent );
 %Docstring
 Creates a new element which represents a spacer

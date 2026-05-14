@@ -27,6 +27,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayout3DMap : public QgsTest
 {
@@ -34,7 +37,8 @@ class TestQgsLayout3DMap : public QgsTest
 
   public:
     TestQgsLayout3DMap()
-      : QgsTest( u"Layout 3D Map Tests"_s, u"composer_3d"_s ) {}
+      : QgsTest( u"Layout 3D Map Tests"_s, u"composer_3d"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -71,12 +75,10 @@ void TestQgsLayout3DMap::cleanupTestCase()
 }
 
 void TestQgsLayout3DMap::init()
-{
-}
+{}
 
 void TestQgsLayout3DMap::cleanup()
-{
-}
+{}
 
 void TestQgsLayout3DMap::testBasic()
 {

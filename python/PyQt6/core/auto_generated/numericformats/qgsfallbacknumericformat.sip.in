@@ -20,7 +20,6 @@ a value.
 #include "qgsfallbacknumericformat.h"
 %End
   public:
-
     QgsFallbackNumericFormat();
     virtual QString id() const;
 

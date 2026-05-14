@@ -23,6 +23,9 @@
 #include "qgssensorwidget.h"
 
 #include <QIcon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup gui

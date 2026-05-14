@@ -19,5 +19,4 @@
 
 QgsDataProviderTemporalCapabilities::QgsDataProviderTemporalCapabilities( bool available )
   : mHasTemporalCapabilities( available )
-{
-}
+{}

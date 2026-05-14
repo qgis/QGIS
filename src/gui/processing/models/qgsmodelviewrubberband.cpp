@@ -25,8 +25,7 @@
 
 QgsModelViewRubberBand::QgsModelViewRubberBand( QgsModelGraphicsView *view )
   : mView( view )
-{
-}
+{}
 
 QgsModelGraphicsView *QgsModelViewRubberBand::view() const
 {
@@ -119,8 +118,7 @@ void QgsModelViewRubberBand::setBrush( const QBrush &brush )
 
 QgsModelViewRectangularRubberBand::QgsModelViewRectangularRubberBand( QgsModelGraphicsView *view )
   : QgsModelViewRubberBand( view )
-{
-}
+{}
 
 QgsModelViewRectangularRubberBand *QgsModelViewRectangularRubberBand::create( QgsModelGraphicsView *view ) const
 {
@@ -184,8 +182,7 @@ QRectF QgsModelViewRectangularRubberBand::finish( QPointF position, Qt::Keyboard
 
 QgsModelViewBezierRubberBand::QgsModelViewBezierRubberBand( QgsModelGraphicsView *view )
   : QgsModelViewRubberBand( view )
-{
-}
+{}
 
 QgsModelViewBezierRubberBand *QgsModelViewBezierRubberBand::create( QgsModelGraphicsView *view ) const
 {

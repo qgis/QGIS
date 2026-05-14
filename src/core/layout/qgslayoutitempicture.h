@@ -32,19 +32,18 @@ class QgsLayoutNorthArrowHandler;
  * \ingroup core
  * \brief A layout item subclass that displays SVG files or raster format images (jpg, png, ...).
  */
-class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
 {
     Q_OBJECT
   public:
-
     /**
      * Controls how pictures are scaled within the item's frame
      */
     enum ResizeMode
     {
-      Zoom, //!< Enlarges image to fit frame while maintaining aspect ratio of picture
-      Stretch, //!< Stretches image to fit frame, ignores aspect ratio
-      Clip, //!< Draws image at original size and clips any portion which falls outside frame
+      Zoom,            //!< Enlarges image to fit frame while maintaining aspect ratio of picture
+      Stretch,         //!< Stretches image to fit frame, ignores aspect ratio
+      Clip,            //!< Draws image at original size and clips any portion which falls outside frame
       ZoomResizeFrame, //!< Enlarges image to fit frame, then resizes frame to fit resultant image
       FrameToImageSize //!< Sets size of frame to match original size of image without scaling
     };
@@ -53,7 +52,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     enum NorthMode
     {
       GridNorth = 0, //!< Align to grid north
-      TrueNorth, //!< Align to true north
+      TrueNorth,     //!< Align to true north
     };
 
     /**
@@ -290,6 +289,44 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 
     /**
+     * Returns TRUE if the picture item should by clipped to the associated item.
+     *
+     * \see setClipToItem
+     * \see clippingItem
+     * \since QGIS 4.2
+     */
+    bool clipToItem() const;
+
+    /**
+     * Sets whether the picture item should by clipped to the associated item.
+     *
+     * \see clipToItem
+     * \see setClippingItem
+     * \since QGIS 4.2
+     */
+    void setClipToItem( bool clipToItem );
+
+    /**
+     * Returns the item that will will provide the clipping path for the picture, or
+     * NULLPTR if no item is set.
+     *
+     * \see setClippingItem
+     * \see clipToItem
+     * \since QGIS 4.2
+     */
+    QgsLayoutItem *clippingItem() const;
+
+    /**
+     * Sets the \a item that will will provide the clipping path for the picture.
+     *
+     * \note The specified item must return the QgsLayoutItem::FlagProvidesClipPath flag.
+     * \see clippingItem
+     * \see setClipToItem
+     * \since QGIS 4.2
+     */
+    void setClippingItem( QgsLayoutItem *item );
+
+    /**
      * Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
      * \param context expression context for evaluating data defined picture sources
@@ -308,14 +345,13 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void pictureRotationChanged( double newRotation );
 
   protected:
-
     void draw( QgsLayoutItemRenderContext &context ) override;
+    QPainterPath framePath() const override;
     QSizeF applyItemSizeConstraint( QSizeF targetSize ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     QgsLayoutItemPicture() = delete;
 
     //! Returns size of current raster or svg picture
@@ -355,6 +391,10 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     QgsLayoutNorthArrowHandler *mNorthArrowHandler = nullptr;
 
+    bool mClipToItem = false;
+    QPointer< QgsLayoutItem > mClippingItem;
+    QString mClippingItemUuid;
+
     //! Loads an image file into the picture item and redraws the item
     void loadPicture( const QVariant &data );
 
@@ -376,6 +416,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     void loadPictureUsingCache( const QString &path );
 
+    QPainterPath customFramePath() const;
+
     QgsLayoutItemPicture( const QgsLayoutItemPicture & ) = delete;
     QgsLayoutItemPicture &operator=( const QgsLayoutItemPicture & ) = delete;
 
@@ -387,7 +429,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     friend class QgsCompositionConverter;
     friend class TestQgsCompositionConverter;
-
 };
 
 #endif // QGSLAYOUTITEMPICTURE_H

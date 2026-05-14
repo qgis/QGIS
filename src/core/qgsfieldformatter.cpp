@@ -26,7 +26,7 @@ QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex
   Q_UNUSED( config )
   Q_UNUSED( cache )
 
-  if ( ! layer->fields().exists( fieldIndex ) )
+  if ( !layer->fields().exists( fieldIndex ) )
     return QString();
 
   QString defVal;

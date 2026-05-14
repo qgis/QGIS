@@ -26,6 +26,9 @@
 
 #include <QLineEdit>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsFilterLineEdit;
 
@@ -61,11 +64,6 @@ void TestQgsFeatureListComboBox::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST-FEATURELIST-COMBOBOX"_s );
 }
 
 void TestQgsFeatureListComboBox::cleanupTestCase()
@@ -119,8 +117,7 @@ void TestQgsFeatureListComboBox::init()
 }
 
 void TestQgsFeatureListComboBox::cleanup()
-{
-}
+{}
 
 void TestQgsFeatureListComboBox::testSetGetLayer()
 {

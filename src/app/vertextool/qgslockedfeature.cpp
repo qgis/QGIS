@@ -32,7 +32,11 @@
 #include "qgsvertexeditor.h"
 #include "qgsvertexmarker.h"
 
+#include <QString>
+
 #include "moc_qgslockedfeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas )
   : mFeatureId( featureId )

@@ -11,7 +11,6 @@
 
 
 
-
 class QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")
@@ -64,9 +63,18 @@ with this symbol.
 %End
 
     enum class Property /BaseType=IntEnum/
-      {
+    {
       Height,
       ExtrusionHeight,
+      ScaleX,
+      ScaleY,
+      ScaleZ,
+      TranslationX,
+      TranslationY,
+      TranslationZ,
+      RotationX,
+      RotationY,
+      RotationZ,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -95,8 +103,17 @@ Sets default properties for the symbol based on a layer's configuration.
 .. versionadded:: 3.26
 %End
 
-  protected:
 
+    virtual void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ ) = 0;
+%Docstring
+Sets the material settings used for shading of the symbol.
+
+Ownership of ``materialSettings`` is transferred to the symbol.
+
+.. versionadded:: 4.2
+%End
+
+  protected:
     virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
 %Docstring
 Copies base class settings from this object to a ``destination`` object.

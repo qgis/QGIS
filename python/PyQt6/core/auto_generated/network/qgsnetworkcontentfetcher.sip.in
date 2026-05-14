@@ -29,12 +29,11 @@ URL redirects are automatically handled.
 #include "qgsnetworkcontentfetcher.h"
 %End
   public:
-
     QgsNetworkContentFetcher();
 
     ~QgsNetworkContentFetcher();
 
-    void fetchContent( const QUrl &url, const QString &authcfg = QString() );
+    void fetchContent( const QUrl &url, const QString &authcfg = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
 %Docstring
 Fetches content from a remote URL and handles redirects. The
 :py:func:`~QgsNetworkContentFetcher.finished` signal will be emitted
@@ -42,6 +41,8 @@ when content has been fetched.
 
 :param url: URL to fetch
 :param authcfg: optional authentication configuration
+:param headers: optional HTTP headers to add to the request (since QGIS
+                3.44.8)
 %End
 
     void fetchContent( const QNetworkRequest &request, const QString &authcfg = QString() );

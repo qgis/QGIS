@@ -33,8 +33,11 @@
 #include <QMouseEvent>
 #include <QPointer>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspropertyoverridebutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent, const QgsVectorLayer *layer )
   : QToolButton( parent )
@@ -260,8 +263,7 @@ void QgsPropertyOverrideButton::registerExpressionWidget( QWidget *widget )
 void QgsPropertyOverrideButton::mouseReleaseEvent( QMouseEvent *event )
 {
   // Ctrl-click to toggle activated state
-  if ( ( event->modifiers() & ( Qt::ControlModifier ) )
-       || event->button() == Qt::RightButton )
+  if ( ( event->modifiers() & ( Qt::ControlModifier ) ) || event->button() == Qt::RightButton )
   {
     setActivePrivate( !mProperty.isActive() );
     updateGui();
@@ -417,8 +419,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
 
   bool colorActive = false;
   mColorsMenu->clear();
-  if ( mDefinition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha
-       || mDefinition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha )
+  if ( mDefinition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha || mDefinition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha )
   {
     // project colors menu
     QAction *colorTitleAct = mDefineMenu->addAction( tr( "Project Color" ) );
@@ -671,8 +672,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
   // build sensible initial expression text - see https://github.com/qgis/QGIS/issues/26526
-  QString currentExpression = ( mProperty.propertyType() == Qgis::PropertyType::Static && !mProperty.staticValue().isValid() ) ? QString()
-                                                                                                                               : mProperty.asExpression();
+  QString currentExpression = ( mProperty.propertyType() == Qgis::PropertyType::Static && !mProperty.staticValue().isValid() ) ? QString() : mProperty.asExpression();
 
   QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer *>( mVectorLayer ), currentExpression, this, u"generic"_s, context );
   d.setExpectedOutputFormat( mInputDescription );

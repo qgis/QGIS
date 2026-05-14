@@ -27,7 +27,6 @@ directly, but rather accessed through a :py:class:`QgsProject` via
 #include "qgssensormanager.h"
 %End
   public:
-
     explicit QgsSensorManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSensorManager, with the specified ``parent`` object.

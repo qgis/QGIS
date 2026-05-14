@@ -20,7 +20,6 @@ start_app()
 
 
 class TestQgsMultiPoint(QgisTestCase):
-
     def testFuzzyComparisons(self):
         ######
         # 2D #

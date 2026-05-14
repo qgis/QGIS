@@ -18,6 +18,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void ParametricLine::add( ParametricLine *pl )
 {
   Q_UNUSED( pl )

@@ -22,6 +22,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy paint effect for testing
 class DummyPaintEffect : public QgsPaintEffect
@@ -71,12 +74,10 @@ void TestQgsPaintEffectRegistry::cleanupTestCase()
 }
 
 void TestQgsPaintEffectRegistry::init()
-{
-}
+{}
 
 void TestQgsPaintEffectRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsPaintEffectRegistry::metadata()
 {

@@ -14,27 +14,25 @@ import glob
 import os
 import shutil
 import tempfile
+import unittest
 from tempfile import TemporaryDirectory
-
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (
     Qgis,
-    QgsMapLayer,
+    QgsCoordinateReferenceSystem,
     QgsLayerMetadata,
     QgsLayerNotesUtils,
+    QgsMapLayer,
     QgsProject,
     QgsRasterLayer,
     QgsReadWriteContext,
     QgsVectorLayer,
-    QgsCoordinateReferenceSystem,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -43,7 +41,6 @@ start_app()
 
 
 class TestQgsMapLayer(QgisTestCase):
-
     def testUniqueId(self):
         """
         Test that layers created quickly with same name get a unique ID
@@ -576,6 +573,23 @@ class TestQgsMapLayer(QgisTestCase):
         vl = QgsVectorLayer("ErrorString", "test", "error")
         self.assertFalse(vl.isValid())
         self.assertEqual(vl.error().summary(), "")
+
+    def test_wgs84Extent(self):
+        moon_layer = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "non_earth_crs", "moon_crs.gpkg"),
+            "moon_data",
+            "memory",
+        )
+        self.assertTrue(moon_layer.wgs84Extent().isEmpty())
+
+        layer = QgsVectorLayer(
+            self.get_test_data_path("points_gpkg.gpkg").as_posix()
+            + "|layername=points_gpkg",
+            "test",
+            "ogr",
+        )
+
+        self.assertFalse(layer.wgs84Extent(True).isEmpty())
 
 
 if __name__ == "__main__":

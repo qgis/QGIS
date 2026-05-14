@@ -34,8 +34,11 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgscolorrampbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -344,10 +347,12 @@ void QgsColorRampButton::createColorRamp()
   rampTypeNames.reserve( rampTypes.size() );
   if ( mShowGradientOnly )
   {
-    rampTypes.erase( std::remove_if( rampTypes.begin(), rampTypes.end(), []( const QPair<QString, QString> &type ) {
-                       return type.first != QgsGradientColorRamp::typeString() && type.first != QgsCptCityColorRamp::typeString();
-                     } ),
-                     rampTypes.end() );
+    rampTypes.erase(
+      std::remove_if(
+        rampTypes.begin(), rampTypes.end(), []( const QPair<QString, QString> &type ) { return type.first != QgsGradientColorRamp::typeString() && type.first != QgsCptCityColorRamp::typeString(); }
+      ),
+      rampTypes.end()
+    );
   }
 
   for ( const QPair<QString, QString> &type : rampTypes )

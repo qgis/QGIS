@@ -22,13 +22,17 @@
 #include "qgis_core.h"
 #include "qgssymbollayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsLineSymbol;
 
 /**
  * \ingroup core
  * \brief A symbol layer class for displaying displacement arrows based on point layer attributes.
 */
-class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
+class CORE_EXPORT QgsVectorFieldSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
     enum VectorFieldType
@@ -144,5 +148,3 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYER_H
-
-

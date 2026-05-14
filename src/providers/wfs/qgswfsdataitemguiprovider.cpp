@@ -26,8 +26,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgswfsdataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {

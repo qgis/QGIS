@@ -16,7 +16,6 @@
 #ifndef QGSMODELINPUTREORDERWIDGET_H
 #define QGSMODELINPUTREORDERWIDGET_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsmodelinputreorderwidgetbase.h"
 
@@ -25,6 +24,8 @@
 #include "qgsprocessingmodelparameter.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QStandardItemModel;
 class QgsProcessingModelAlgorithm;

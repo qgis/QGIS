@@ -46,7 +46,6 @@
 class CORE_EXPORT QgsStatisticalSummary
 {
   public:
-
     /**
      * Constructor for QgsStatisticalSummary
      * \param stats flags for statistics to calculate
@@ -273,7 +272,6 @@ class CORE_EXPORT QgsStatisticalSummary
     static QString shortName( Qgis::Statistic statistic );
 
   private:
-
     Qgis::Statistics mStatistics;
 
     int mCount;

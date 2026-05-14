@@ -38,6 +38,9 @@
 #include "qgsvectortilelayerproperties.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class DummySourceWidget : public QgsProviderSourceWidget
 {
@@ -45,15 +48,11 @@ class DummySourceWidget : public QgsProviderSourceWidget
   public:
     DummySourceWidget( QWidget *parent )
       : QgsProviderSourceWidget( parent )
-    {
-    }
+    {}
 
     void setSourceUri( const QString &uri ) override { Q_UNUSED( uri ); }
 
-    QString sourceUri() const override
-    {
-      return newSource;
-    }
+    QString sourceUri() const override { return newSource; }
 
     QString newSource;
 };
@@ -83,10 +82,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       mTestDataDir = myDataDir + '/';
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void testValidVectorProperties()
     {

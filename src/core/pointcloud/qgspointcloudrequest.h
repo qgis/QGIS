@@ -20,6 +20,8 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgspointcloudattribute.h"
+#include "qgsrectangle.h"
 
 #include <QByteArray>
 #include <QPair>
@@ -27,10 +29,6 @@
 #include <QVector>
 
 #define SIP_NO_FILE
-
-#include "qgspointcloudattribute.h"
-
-#include "qgsrectangle.h"
 
 /**
  * \ingroup core
@@ -42,7 +40,6 @@
 class CORE_EXPORT QgsPointCloudRequest
 {
   public:
-
     QgsPointCloudRequest();
 
     bool operator==( const QgsPointCloudRequest &other ) const;
@@ -91,6 +88,11 @@ class CORE_EXPORT QgsPointCloudRequest
 };
 
 //! Hash function for QgsPointCloudRequest
-uint qHash( const QgsPointCloudRequest &request );
+inline size_t qHash( const QgsPointCloudRequest &request, size_t seed = 0 )
+{
+  const QgsRectangle r( request.filterRect() );
+  return qHashMulti( seed, r.xMinimum(), r.xMaximum(), r.yMinimum(), r.yMaximum(), request.attributes().pointRecordSize(), request.ignoreIndexFilterEnabled() );
+}
+
 
 #endif // QGSPOINTCLOUDREQUEST_H

@@ -32,16 +32,15 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QString>
 #include <QTextStream>
 #include <QToolBar>
 
 #include "moc_qgsgrassmapcalc.cpp"
 
-QgsGrassMapcalc::QgsGrassMapcalc(
-  QgsGrassTools *tools, QgsGrassModule *module,
-  QgisInterface *iface,
-  QWidget *parent, Qt::WindowFlags f
-)
+using namespace Qt::StringLiterals;
+
+QgsGrassMapcalc::QgsGrassMapcalc( QgsGrassTools *tools, QgsGrassModule *module, QgisInterface *iface, QWidget *parent, Qt::WindowFlags f )
   : QMainWindow( iface->mainWindow(), Qt::Dialog )
   , QgsGrassMapcalcBase()
   , QgsGrassModuleOptions( tools, module, iface, false )
@@ -454,10 +453,7 @@ QStringList QgsGrassMapcalc::checkOutput()
   if ( value.length() == 0 )
     return QStringList();
 
-  QString path = QgsGrass::getDefaultGisdbase() + "/"
-                 + QgsGrass::getDefaultLocation() + "/"
-                 + QgsGrass::getDefaultMapset()
-                 + "/cell/" + value;
+  QString path = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset() + "/cell/" + value;
 
   QFileInfo fi( path );
 
@@ -950,9 +946,7 @@ void QgsGrassMapcalc::autoGrow()
 void QgsGrassMapcalc::saveAs()
 {
   // Check/create 'mapcalc' directory in current mapset
-  QString ms = QgsGrass::getDefaultGisdbase() + "/"
-               + QgsGrass::getDefaultLocation() + "/"
-               + QgsGrass::getDefaultMapset();
+  QString ms = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset();
 
   QString mc = ms + "/mapcalc";
 
@@ -1013,10 +1007,7 @@ void QgsGrassMapcalc::save()
   setTool( Select );
 
   // Open file
-  QString path = QgsGrass::getDefaultGisdbase() + "/"
-                 + QgsGrass::getDefaultLocation() + "/"
-                 + QgsGrass::getDefaultMapset()
-                 + "/mapcalc/" + mFileName;
+  QString path = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset() + "/mapcalc/" + mFileName;
 
   QFile out( path );
   if ( !out.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -1028,9 +1019,7 @@ void QgsGrassMapcalc::save()
   QTextStream stream( &out );
 
   stream << "<mapcalc>\n";
-  stream << "  <canvas width=\"" + QString::number( mCanvasScene->width() )
-              + "\" height=\"" + QString::number( mCanvasScene->height() )
-              + "\"/>\n";
+  stream << "  <canvas width=\"" + QString::number( mCanvasScene->width() ) + "\" height=\"" + QString::number( mCanvasScene->height() ) + "\"/>\n";
 
   QList<QGraphicsItem *> l = mCanvasScene->items();
 
@@ -1070,16 +1059,21 @@ void QgsGrassMapcalc::save()
         val.replace( ">"_L1, "&gt;"_L1 );
       }
 
-      stream << "  <object id=\"" + QString::number( obj->id() )
-                  + "\" x=\"" + QString::number( obj->center().x() )
-                  + "\" y=\"" + QString::number( obj->center().y() )
-                  + "\" type=\"" + type
-                  + "\" value=\"" + val + "\"";
+      stream << "  <object id=\""
+                  + QString::number( obj->id() )
+                  + "\" x=\""
+                  + QString::number( obj->center().x() )
+                  + "\" y=\""
+                  + QString::number( obj->center().y() )
+                  + "\" type=\""
+                  + type
+                  + "\" value=\""
+                  + val
+                  + "\"";
 
       if ( obj->type() == QgsGrassMapcalcObject::Function )
       {
-        stream << "  inputCount=\""
-                    + QString::number( obj->function().inputCount() ) + "\"";
+        stream << "  inputCount=\"" + QString::number( obj->function().inputCount() ) + "\"";
       }
       if ( obj->type() == QgsGrassMapcalcObject::Map )
       {
@@ -1089,19 +1083,14 @@ void QgsGrassMapcalc::save()
     }
     else if ( QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it ) )
     {
-      stream << "  <connector id=\"" + QString::number( con->id() )
-                  + "\">\n";
+      stream << "  <connector id=\"" + QString::number( con->id() ) + "\">\n";
 
       for ( int i = 0; i < 2; i++ )
       {
-        stream << "    <end x=\"" + QString::number( con->point( i ).x() )
-                    + "\" y=\"" + QString::number( con->point( i ).y() )
-                    + "\"";
+        stream << "    <end x=\"" + QString::number( con->point( i ).x() ) + "\" y=\"" + QString::number( con->point( i ).y() ) + "\"";
         if ( con->object( i ) )
         {
-          stream << " object=\""
-                      + QString::number( con->object( i )->id() )
-                      + "\" socketType=\"";
+          stream << " object=\"" + QString::number( con->object( i )->id() ) + "\" socketType=\"";
 
           if ( con->socketDirection( i ) == QgsGrassMapcalcObject::In )
           {
@@ -1112,9 +1101,7 @@ void QgsGrassMapcalc::save()
             stream << "out";
           }
 
-          stream << "\" socket=\""
-                      + QString::number( con->socket( i ) )
-                      + "\"";
+          stream << "\" socket=\"" + QString::number( con->socket( i ) ) + "\"";
         }
         stream << "/>\n";
       }
@@ -1134,8 +1121,7 @@ void QgsGrassMapcalc::load()
     return;
 
   // Open file
-  QString path = sel->gisdbase + "/" + sel->location + "/"
-                 + sel->mapset + "/mapcalc/" + sel->map;
+  QString path = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/mapcalc/" + sel->map;
 
   QFile file( path );
 
@@ -1159,8 +1145,7 @@ void QgsGrassMapcalc::load()
   file.close();
   if ( !parsed )
   {
-    QString errmsg = tr( "Cannot read mapcalc schema (%1):" ).arg( path )
-                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
+    QString errmsg = tr( "Cannot read mapcalc schema (%1):" ).arg( path ) + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     return;
   }

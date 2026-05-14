@@ -25,7 +25,6 @@ GeoJSON spec if either the source vector layer or source CRS is set.
 #include "qgsjsonutils.h"
 %End
   public:
-
     QgsJsonExporter( QgsVectorLayer *vectorLayer = 0, int precision = 6 );
 %Docstring
 Constructor for QgsJsonExporter.
@@ -253,10 +252,7 @@ values.
 .. versionadded:: 3.40
 %End
 
-    QString exportFeature( const QgsFeature &feature,
-                           const QVariantMap &extraProperties = QVariantMap(),
-                           const QVariant &id = QVariant(),
-                           int indent = -1 ) const;
+    QString exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), int indent = -1, const QString &featureType = QString() ) const;
 %Docstring
 Returns a GeoJSON string representation of a feature.
 
@@ -267,6 +263,8 @@ Returns a GeoJSON string representation of a feature.
            feature's ID. If omitted, feature's ID is used.
 :param indent: number of indentation spaces for generated JSON (defaults
                to none)
+:param featureType: optional feature type to pass, like the layer name.
+                    If omitted, it is not written (since QGIS 4.2)
 
 :return: GeoJSON string
 
@@ -321,7 +319,6 @@ Helper utilities for working with JSON and GeoJSON conversions.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields() );
 %Docstring
 Attempts to parse a GeoJSON ``string`` to a collection of features. It
@@ -365,8 +362,7 @@ quotations and escaping where required.
 :return: encoded value
 %End
 
-    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = 0,
-                                     const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
+    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = 0, const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 %Docstring
 Exports all attributes from a :py:class:`QgsFeature` as a JSON map type.
 
@@ -414,7 +410,6 @@ Returns a null geometry if the geometry could not be parsed.
 
 .. versionadded:: 3.36
 %End
-
 
 
 

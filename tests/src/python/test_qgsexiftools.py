@@ -12,12 +12,11 @@ __copyright__ = "Copyright 2018, The QGIS Project"
 
 import os
 import shutil
-
-from qgis.PyQt.QtCore import QDateTime, Qt, QTemporaryFile, QTime, QDate
-from qgis.core import QgsExifTools, QgsPointXY
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsExifTools, QgsPointXY
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTemporaryFile, QTime
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -26,7 +25,6 @@ start_app()
 
 
 class TestQgsExifUtils(QgisTestCase):
-
     def testReadTags(self):
         photos_folder = os.path.join(TEST_DATA_DIR, "photos")
 

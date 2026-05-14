@@ -125,11 +125,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
      * Registers an OGC API handler passing \a Args to the constructor
      * \note not available in Python bindings
      */
-    template<class T, typename... Args>
-    void registerHandler( Args... args )
-    {
-      mHandlers.emplace_back( std::make_shared<T>( args... ) );
-    }
+    template<class T, typename... Args> void registerHandler( Args... args ) { mHandlers.emplace_back( std::make_shared<T>( args... ) ); }
 #endif
 
     /**

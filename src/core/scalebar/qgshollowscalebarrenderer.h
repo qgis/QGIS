@@ -31,10 +31,9 @@
  * AKA "South African" style.
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsHollowScaleBarRenderer: public QgsScaleBarRenderer
+class CORE_EXPORT QgsHollowScaleBarRenderer : public QgsScaleBarRenderer
 {
   public:
-
     QgsHollowScaleBarRenderer() = default;
 
     QString id() const override;
@@ -43,9 +42,7 @@ class CORE_EXPORT QgsHollowScaleBarRenderer: public QgsScaleBarRenderer
     int sortKey() const override;
     QgsHollowScaleBarRenderer *clone() const override SIP_FACTORY;
 
-    void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
-               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
+    void draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
     bool applyDefaultSettings( QgsScaleBarSettings &settings ) const override;
 };
 

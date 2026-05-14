@@ -11,15 +11,15 @@ __date__ = "16/03/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 
-from qgis.gui import QgsMultiEditToolButton
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsMultiEditToolButton
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMultiEditToolButton(QgisTestCase):
-
     def test_state_logic(self):
         """
         Test that the logic involving button states is correct

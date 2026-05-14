@@ -30,14 +30,13 @@
 #ifndef PAL_UTIL_H
 #define PAL_UTIL_H
 
-#define SIP_NO_FILE
-
 
 #include <memory>
 #include <vector>
 
-#include <QLinkedList>
-#include <QList>
+#include <QVector>
+
+#define SIP_NO_FILE
 
 typedef struct GEOSGeom_t GEOSGeometry;
 
@@ -57,7 +56,6 @@ namespace pal
   class Feats
   {
     public:
-
       Feats() = default;
 
       FeaturePart *feature = nullptr;
@@ -69,14 +67,14 @@ namespace pal
 
   struct ElemTrans
   {
-    int feat;
-    int  old_label;
-    int  new_label;
+      int feat;
+      int old_label;
+      int new_label;
   };
 
   struct Point
   {
-    double x, y;
+      double x, y;
   };
 
 #define EPSILON 1e-9
@@ -90,12 +88,11 @@ namespace pal
   class Util
   {
     public:
-
-      static QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom );
+      static std::optional<QVector<const GEOSGeometry *>> unmulti( const GEOSGeometry *the_geom );
   };
 
 
-} // namespace
+} //namespace pal
 
 Q_DECLARE_TYPEINFO( pal::Point, Q_PRIMITIVE_TYPE );
 

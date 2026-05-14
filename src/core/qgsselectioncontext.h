@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsSelectionContext
 {
   public:
-
     /**
      * Returns the map scale at which the selection should occur.
      *
@@ -49,11 +48,7 @@ class CORE_EXPORT QgsSelectionContext
     void setScale( double scale );
 
   private:
-
     double mScale = 0;
 };
 
 #endif //QGSELECTIONCONTEXT_H
-
-
-

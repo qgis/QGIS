@@ -20,9 +20,12 @@
 #include "qgssettings.h"
 
 #include <QDesktopServices>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsideoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsIdeOptionsWidget
@@ -56,9 +59,7 @@ void QgsIdeOptionsWidget::apply()
 
 void QgsIdeOptionsWidget::generateGitHubToken()
 {
-  QDesktopServices::openUrl( QUrl(
-    u"https://github.com/settings/tokens/new?description=%1&scopes=gist"_s.arg( tr( "QGIS Code Editor" ) )
-  ) );
+  QDesktopServices::openUrl( QUrl( u"https://github.com/settings/tokens/new?description=%1&scopes=gist"_s.arg( tr( "QGIS Code Editor" ) ) ) );
 }
 
 //
@@ -67,8 +68,7 @@ void QgsIdeOptionsWidget::generateGitHubToken()
 
 QgsIdeOptionsFactory::QgsIdeOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "IDE" ), QIcon(), u"ide"_s )
-{
-}
+{}
 
 QIcon QgsIdeOptionsFactory::icon() const
 {

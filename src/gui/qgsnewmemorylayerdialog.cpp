@@ -31,9 +31,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsnewmemorylayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {
@@ -74,6 +77,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
     Qgis::WkbType::Triangle,
     Qgis::WkbType::PolyhedralSurface,
     Qgis::WkbType::TIN,
+    Qgis::WkbType::NurbsCurve,
   };
 
   for ( const auto type : geomTypes )
@@ -332,7 +336,9 @@ void QgsNewMemoryLayerDialog::accept()
     const QString currentFieldName = mFieldNameEdit->text();
     if ( fields().lookupField( currentFieldName ) == -1 )
     {
-      if ( QMessageBox::question( this, tr( "New Temporary Scratch Layer" ), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      if ( QMessageBox::
+             question( this, tr( "New Temporary Scratch Layer" ), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel )
+           != QMessageBox::Ok )
       {
         return;
       }

@@ -23,12 +23,15 @@
 #include "qgsgeocoderresult.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsBatchNominatimGeocodeAlgorithm::QgsBatchNominatimGeocodeAlgorithm()
   : QgsBatchGeocodeAlgorithm( &mNominatimGeocoder )
-{
-}
+{}
 
 QString QgsBatchNominatimGeocodeAlgorithm::name() const
 {
@@ -58,8 +61,10 @@ QgsBatchNominatimGeocodeAlgorithm *QgsBatchNominatimGeocodeAlgorithm::createInst
 
 QString QgsBatchNominatimGeocodeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm performs batch geocoding using the <a href=\"https://nominatim.qgis.org/\">Nominatim</a> service against an input layer string field.\n\n"
-                      "The output layer will have a point geometry reflecting the geocoded location as well as a number of attributes associated to the geocoded location." );
+  return QObject::tr(
+    "This algorithm performs batch geocoding using the <a href=\"https://nominatim.qgis.org/\">Nominatim</a> service against an input layer string field.\n\n"
+    "The output layer will have a point geometry reflecting the geocoded location as well as a number of attributes associated to the geocoded location."
+  );
 }
 
 QString QgsBatchNominatimGeocodeAlgorithm::shortDescription() const
@@ -69,8 +74,12 @@ QString QgsBatchNominatimGeocodeAlgorithm::shortDescription() const
 
 bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  feedback->pushInfo( QObject::tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors. "
-                                   "It is provided under the ODbL license which requires to share alike. Visit https://nominatim.org/ to learn more." ) );
+  feedback->pushInfo(
+    QObject::tr(
+      "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors. "
+      "It is provided under the ODbL license which requires to share alike. Visit https://nominatim.org/ to learn more."
+    )
+  );
   return QgsBatchGeocodeAlgorithm::prepareAlgorithm( parameters, context, feedback );
 }
 

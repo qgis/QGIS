@@ -26,17 +26,16 @@ import urllib.parse
 import urllib.request
 
 import osgeo.gdal  # NOQA
-
 from owslib.wms import WebMapService
 from qgis.core import (
-    QgsProject,
-    QgsMemoryProviderUtils,
-    QgsWkbTypes,
     QgsCoordinateReferenceSystem,
-    QgsFields,
     QgsField,
+    QgsFields,
+    QgsMemoryProviderUtils,
     QgsPalLayerSettings,
+    QgsProject,
     QgsVectorLayerSimpleLabeling,
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QUrl, QUrlQuery, QVariant
 from qgis.server import (
@@ -646,6 +645,25 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         body = response.body().data().decode("utf8").replace("\n", "")
         self.assertIn("<se:DisplacementX>-36</se:DisplacementX>", body)
         self.assertIn("<se:DisplacementY>-18</se:DisplacementY>", body)
+
+    def test_wms_getcapabilities_non_earth_crs(self):
+        """Test WMS GetCapabilities omits CRS:84 and EX_GeographicBoundingBox for non-Earth CRS layers"""
+        project = QgsProject()
+        layer = QgsMemoryProviderUtils.createMemoryLayer(
+            "moon_layer",
+            QgsFields(),
+            QgsWkbTypes.Type.Point,
+            QgsCoordinateReferenceSystem("IAU_2015:30100"),
+        )
+        project.addMapLayer(layer)
+
+        qs = "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities"
+        _, body = self._execute_request_project(qs, project)
+
+        # CRS:84 is Earth-specific and must not appear for non-Earth layers
+        self.assertNotIn(b"CRS:84", body)
+        # EX_GeographicBoundingBox is a WGS84 bounding box and must not appear for non-Earth layers
+        self.assertNotIn(b"EX_GeographicBoundingBox", body)
 
 
 if __name__ == "__main__":

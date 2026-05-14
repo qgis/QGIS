@@ -65,6 +65,11 @@ QgsPlot.DataDefinedProperty.__doc__ = """Data defined properties for different p
 """
 # --
 try:
+    QgsPlotAxis.copyProperties = staticmethod(QgsPlotAxis.copyProperties)
+    QgsPlotAxis.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
     QgsPlotDefaultSettings.axisLabelNumericFormat = staticmethod(QgsPlotDefaultSettings.axisLabelNumericFormat)
     QgsPlotDefaultSettings.axisGridMajorSymbol = staticmethod(QgsPlotDefaultSettings.axisGridMajorSymbol)
     QgsPlotDefaultSettings.axisGridMinorSymbol = staticmethod(QgsPlotDefaultSettings.axisGridMinorSymbol)
@@ -80,7 +85,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsPlot.__virtual_methods__ = ['type', 'writeXml', 'readXml']
+    QgsPlot.__virtual_methods__ = ['type', 'writeXml', 'readXml', 'initFromPlot']
     QgsPlot.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
@@ -111,9 +116,5 @@ except (NameError, AttributeError):
     pass
 try:
     QgsPlotData.__group__ = ['plot']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsPlotAxis.__group__ = ['plot']
 except (NameError, AttributeError):
     pass

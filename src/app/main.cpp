@@ -33,6 +33,8 @@
 #include <QLocale>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QQuickWindow>
+#include <QSGRendererInterface>
 #include <QScreen>
 #include <QSplashScreen>
 #include <QStandardPaths>
@@ -41,6 +43,8 @@
 #include <QStyle>
 #include <QStyleFactory>
 #include <QSurfaceFormat>
+
+using namespace Qt::StringLiterals;
 
 #if !defined( Q_OS_WIN )
 #include "sigwatch.h"
@@ -131,7 +135,9 @@ void usage( const QString &appName )
 
   msg
     << u"QGIS is a user friendly Open Source Geographic Information System.\n"_s
-    << u"Usage: "_s << appName << u" [OPTION] [FILE]\n"_s
+    << u"Usage: "_s
+    << appName
+    << u" [OPTION] [FILE]\n"_s
     << u"  OPTION:\n"_s
     << u"\t[-v, --version]\tdisplay version information and exit\n"_s
     << u"\t[-s, --snapshot filename]\temit snapshot of loaded datasets to given file\n"_s
@@ -223,6 +229,54 @@ void myPrint( const char *fmt, ... )
   vfprintf( stderr, fmt, ap );
 #endif
   va_end( ap );
+}
+
+void copyProfileNamesFromQgis3( const QString &configLocalStorageLocation )
+{
+  const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
+  const QDir qgis3ProfilesRootPath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles"_s ) ) );
+  const QDir qgis4ProfilesRootPath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles"_s ) ) );
+  if ( !qgis3ProfilesRootPath.exists() )
+  {
+    QgsDebugMsgLevel( u"No QGIS3 profiles path exists at %1, nothing to migrate"_s.arg( qgis3ProfilesRootPath.path() ), 2 );
+    return;
+  }
+
+  QgsDebugMsgLevel( u"Syncing profile list from %1 to %2"_s.arg( qgis3ProfilesRootPath.path(), qgis4ProfilesRootPath.path() ), 2 );
+  const QStringList qgis3Profiles = QDir( qgis3ProfilesRootPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+  if ( !qgis4ProfilesRootPath.exists() )
+  {
+    if ( !qgis4ProfilesRootPath.mkpath( "." ) )
+    {
+      QgsDebugError( u"Cannot create QGIS4 settings path, migrating profiles from QGIS3 cannot be performed"_s );
+      return;
+    }
+  }
+
+  // create new (empty) profile folders for all existing QGIS 3 profiles
+  for ( const QString &profile : qgis3Profiles )
+  {
+    const QString profilePath = qgis4ProfilesRootPath.filePath( profile );
+    if ( QFile::exists( profilePath ) )
+      continue;
+
+    QgsDebugMsgLevel( u"Creating empty profile %1 at %2"_s.arg( profile, profilePath ), 2 );
+    if ( !QDir( profilePath ).mkpath( "." ) )
+    {
+      QgsDebugError( u"Cannot create empty profile %1 at %2, skipping"_s.arg( profile, profilePath ) );
+      continue;
+    }
+  }
+
+  const QString qgis3ProfilesIniPath = QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/profiles.ini"_s ) );
+  const QString qgis4ProfilesIniPath = QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/profiles.ini"_s ) );
+  if ( QFile::exists( qgis3ProfilesIniPath ) && !QFile::exists( qgis4ProfilesIniPath ) )
+  {
+    if ( !QFile::copy( qgis3ProfilesIniPath, qgis4ProfilesIniPath ) )
+    {
+      QgsDebugError( u"Could not copy profiles.ini from %1 to %2, skipping"_s.arg( qgis3ProfilesIniPath, qgis4ProfilesIniPath ) );
+    }
+  }
 }
 
 static void dumpBacktrace( unsigned int depth )
@@ -402,22 +456,60 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
        * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
        */
       // TODO QGIS 5 reevaluate whether all these are still required on qt 6
-      if ( msg.contains( "QXcbClipboard"_L1, Qt::CaseInsensitive ) || msg.contains( "QGestureManager::deliverEvent"_L1, Qt::CaseInsensitive ) || msg.startsWith( "libpng warning: iCCP: known incorrect sRGB profile"_L1, Qt::CaseInsensitive ) || msg.contains( "Could not add child element to parent element because the types are incorrect"_L1, Qt::CaseInsensitive ) || msg.contains( "OpenType support missing for"_L1, Qt::CaseInsensitive ) ||
+      if ( msg.contains( "QXcbClipboard"_L1, Qt::CaseInsensitive )
+           || msg.contains( "QGestureManager::deliverEvent"_L1, Qt::CaseInsensitive )
+           || msg.startsWith( "libpng warning: iCCP: known incorrect sRGB profile"_L1, Qt::CaseInsensitive )
+           || msg.contains( "Could not add child element to parent element because the types are incorrect"_L1, Qt::CaseInsensitive )
+           || msg.contains( "OpenType support missing for"_L1, Qt::CaseInsensitive )
+           ||
 
            // warnings triggered by Wayland limitations, not our responsibility or anything we can fix
-           msg.contains( "Wayland does not support"_L1, Qt::CaseInsensitive ) ||
+           msg.contains( "Wayland does not support"_L1, Qt::CaseInsensitive )
+           ||
 
            // warnings triggered from KDE libraries, not related to QGIS
-           msg.contains( "This plugin supports grabbing the mouse only for popup windows"_L1, Qt::CaseInsensitive ) || msg.contains( "KLocalizedString"_L1, Qt::CaseInsensitive ) || msg.contains( "KServiceTypeTrader"_L1, Qt::CaseInsensitive ) || msg.contains( "No node found for item that was just removed"_L1, Qt::CaseInsensitive ) || msg.contains( "Audio notification requested"_L1, Qt::CaseInsensitive ) ||
+           msg.contains( "This plugin supports grabbing the mouse only for popup windows"_L1, Qt::CaseInsensitive )
+           || msg.contains( "KLocalizedString"_L1, Qt::CaseInsensitive )
+           || msg.contains( "KServiceTypeTrader"_L1, Qt::CaseInsensitive )
+           || msg.contains( "No node found for item that was just removed"_L1, Qt::CaseInsensitive )
+           || msg.contains( "Audio notification requested"_L1, Qt::CaseInsensitive )
+           ||
 
            // something from deep within Qt6 (looks like a malformed SVG in a platform theme), not related to us
-           msg.contains( "The requested buffer size is too big, ignoring"_L1 ) ||
+           msg.contains( "The requested buffer size is too big, ignoring"_L1 )
+           ||
 
            // coming from WebEngine:
            msg.contains( "An OpenGL Core Profile was requested, but it is not supported on the current platform"_L1, Qt::CaseInsensitive ) )
         break;
 
-      myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
+      const thread_local QRegularExpression problematicSourceCodeRx( u".*[pP]roblematic .* source code.*"_s );
+      if ( problematicSourceCodeRx.match( msg ).hasMatch() )
+      {
+        // add line numbers to dumped shader code, so that it's easier to understand where the error occurred:
+        const QStringList messageParts = msg.split( '\n' );
+        QStringList formattedMessageParts;
+        formattedMessageParts.reserve( messageParts.size() );
+        int currentLineNumber = 0;
+        for ( const QString &part : messageParts )
+        {
+          if ( currentLineNumber > 0 )
+          {
+            formattedMessageParts << u"%1: %2"_s.arg( currentLineNumber ).arg( part );
+          }
+          else
+          {
+            formattedMessageParts << part;
+          }
+          currentLineNumber++;
+        }
+        const QString formattedMessage = formattedMessageParts.join( '\n' );
+        myPrint( "%s\n", formattedMessage.toLocal8Bit().constData() );
+      }
+      else
+      {
+        myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
+      }
 
 #ifdef QGISDEBUG
       // Print all warnings except setNamedColor.
@@ -566,6 +658,7 @@ int main( int argc, char *argv[] )
   // save the image to disk and then exit
   QString mySnapshotFileName;
   QString configLocalStorageLocation;
+  bool preventSettingsMigration = false;
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
@@ -579,7 +672,7 @@ int main( int argc, char *argv[] )
 #endif
 
   bool myRestoreDefaultWindowState = false;
-  bool myCustomization = true;
+  bool enableCustomization = true;
 
   QString dxfOutputFile;
   Qgis::FeatureSymbologyExport dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerSymbolLayer;
@@ -680,7 +773,7 @@ int main( int argc, char *argv[] )
         }
         else if ( arg == "--nocustomization"_L1 || arg == "-C"_L1 )
         {
-          myCustomization = false;
+          enableCustomization = false;
         }
         else if ( i + 1 < argc && ( arg == "--profile"_L1 ) )
         {
@@ -689,6 +782,9 @@ int main( int argc, char *argv[] )
         else if ( i + 1 < argc && ( arg == "--profiles-path"_L1 || arg == "-S"_L1 ) )
         {
           configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+          // If an explicit profiles-path was specified, we don't do ANY settings migration logic.
+          // We'll instead leave that up to the system administrator to do.
+          preventSettingsMigration = true;
         }
         else if ( i + 1 < argc && ( arg == "--snapshot"_L1 || arg == "-s"_L1 ) )
         {
@@ -911,7 +1007,7 @@ int main( int argc, char *argv[] )
 #endif
 
 
-#if defined( Q_OS_UNIX ) && !defined( Q_OS_MAC ) && !defined( ANDROID )
+#if defined( Q_OS_UNIX ) && !defined( Q_OS_MACOS ) && !defined( ANDROID )
   bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
 #else
   bool myUseGuiFlag = true;
@@ -928,13 +1024,6 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
-  // GUI customization is enabled according to settings (loaded when instance is created)
-  // we force disabled here if --nocustomization argument is used
-  if ( !myCustomization )
-  {
-    QgsCustomization::instance()->setEnabled( false );
-  }
-
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
@@ -945,7 +1034,7 @@ int main( int argc, char *argv[] )
 #if !defined( QT_NO_OPENGL )
   QSurfaceFormat format;
   format.setRenderableType( QSurfaceFormat::OpenGL );
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
   format.setVersion( 4, 1 ); //OpenGL is deprecated on MacOS, use last supported version
   format.setProfile( QSurfaceFormat::CoreProfile );
 #else
@@ -963,6 +1052,14 @@ int main( int argc, char *argv[] )
 #if !defined( QT_NO_OPENGL )
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
 #endif
+
+  // Workaround upstream Qt issue (https://qt-project.atlassian.net/browse/QTBUG-139109) which
+  // causes QGIS' main window to flash on app launch and make the app completely
+  // unresponsive when editing an attribute form QML widget.
+  QQuickWindow::setGraphicsApi( QSGRendererInterface::Software );
+
+  // Accelerate speed of wheel scrolling
+  qputenv( "QT_QUICK_FLICKABLE_WHEEL_DECELERATION", "4500" );
 
   // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
@@ -994,7 +1091,9 @@ int main( int argc, char *argv[] )
 
   if ( !globalsettingsfile.isEmpty() )
   {
-    if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
+    bool ok = QgsSettings::setGlobalSettingsPath( globalsettingsfile );
+
+    if ( !ok )
     {
       preApplicationWarningMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), u"QGIS"_s;
     }
@@ -1010,11 +1109,17 @@ int main( int argc, char *argv[] )
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
     {
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+      // If an explicit QGIS_CUSTOM_CONFIG_PATH was specified, we don't do ANY settings migration logic.
+      // We'll instead leave that up to the system administrator to do.
+      preventSettingsMigration = true;
     }
     else if ( globalSettings.contains( u"core/profilesPath"_s ) )
     {
       configLocalStorageLocation = globalSettings.value( u"core/profilesPath"_s, "" ).toString();
       QgsDebugMsgLevel( u"Loading profiles path from global config at %1"_s.arg( configLocalStorageLocation ), 1 );
+      // If an explicit profilesPath was specified, we don't do ANY settings migration logic.
+      // We'll instead leave that up to the system administrator to do.
+      preventSettingsMigration = true;
     }
 
     // If it is still empty at this point we get it from the standard location.
@@ -1039,6 +1144,13 @@ int main( int argc, char *argv[] )
   else
   {
     QgsApplication::setTranslation( QLocale().name() );
+  }
+
+  if ( !preventSettingsMigration )
+  {
+    // before doing any profile management, sync the available SET of profiles to an existing QGIS3 set.
+    // This doesn't actually COPY any profiles, just makes them available for selection on QGIS 4
+    copyProfileNamesFromQgis3( configLocalStorageLocation );
   }
 
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
@@ -1183,35 +1295,37 @@ int main( int argc, char *argv[] )
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Info );
 
-  // Settings migration is only supported on the default profile for now.
-  if ( profileName == "default"_L1 )
+  const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
+  const QDir qgis3ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/%1"_s.arg( profileName ) ) ) );
+  const QDir qgis4ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/%1"_s.arg( profileName ) ) ) );
+  if ( !preventSettingsMigration && qgis3ProfilePath.exists() )
   {
-    // Note: this flag is ka version number so that we can reset it once we change the version.
-    // Note2: Is this a good idea can we do it better.
-    // Note3: Updated to only show if we have a migration from QGIS 2 - see https://github.com/qgis/QGIS/pull/38616
-    QString path = QSettings( "QGIS", "QGIS2" ).fileName();
-    if ( QFile::exists( path ) )
+    QgsDebugMsgLevel( u"Considering migration from %1 to %2"_s.arg( qgis3ProfilePath.path(), qgis4ProfilePath.path() ), 2 );
+    QgsSettings migSettings;
+    // don't show dialog for settings migration from 3->4
+#if 0
+    const int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
+    const bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
+#else
+    constexpr bool showWelcome = false;
+#endif
+    std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 30000, Qgis::versionInt() ) );
+    if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
     {
-      QgsSettings migSettings;
-      int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
-      bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
-      std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
-      if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
+      QgsDebugMsgLevel( u"Migration required!"_s, 2 );
+      bool runMigration = true;
+      if ( !settingsMigrationForce && showWelcome )
       {
-        bool runMigration = true;
-        if ( !settingsMigrationForce && showWelcome )
-        {
-          QgsFirstRunDialog dlg;
-          dlg.exec();
-          runMigration = dlg.migrateSettings();
-          migSettings.setValue( u"migration/firstRunVersionFlag"_s, Qgis::versionInt() );
-        }
+        QgsFirstRunDialog dlg;
+        dlg.exec();
+        runMigration = dlg.migrateSettings();
+        migSettings.setValue( u"migration/firstRunVersionFlag"_s, Qgis::versionInt() );
+      }
 
-        if ( runMigration )
-        {
-          QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
-          migration->runMigration();
-        }
+      if ( runMigration )
+      {
+        QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
+        migration->runMigration( qgis3ProfilePath.path(), qgis4ProfilePath.path() );
       }
     }
   }
@@ -1306,32 +1420,12 @@ int main( int argc, char *argv[] )
   QgsDebugMsgLevel( u"Rewritten macOS QCoreApplication::libraryPaths: %1"_s.arg( QCoreApplication::libraryPaths().join( " " ) ), 4 );
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
   QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
 #else
   QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 #endif
-
-  // TODO: use QgsSettings
-  QSettings *customizationsettings = nullptr;
-
-  if ( !customizationfile.isEmpty() )
-  {
-    // Using the customizationfile option always overrides the option and config path options.
-    QgsCustomization::instance()->setEnabled( true );
-  }
-  else
-  {
-    // Use the default file location
-    customizationfile = profileFolder + QDir::separator() + u"QGIS"_s + QDir::separator() + u"QGISCUSTOMIZATION3.ini"_s;
-  }
-
-  customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
-
-  // Load and set possible default customization, must be done after QgsApplication init and QgsSettings ( QCoreApplication ) init
-  QgsCustomization::instance()->setSettings( customizationsettings );
-  QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACOS
   if ( !getenv( "GDAL_DRIVER_PATH" ) )
@@ -1349,9 +1443,10 @@ int main( int argc, char *argv[] )
   if ( !getenv( "GDAL_DATA" ) )
   {
     QStringList gdalShares;
-    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
-               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
+    gdalShares
+      << QCoreApplication::applicationDirPath().append( "/share/gdal" )
+      << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
+      << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
     const auto constGdalShares = gdalShares;
     for ( const QString &gdalShare : constGdalShares )
     {
@@ -1412,7 +1507,7 @@ int main( int argc, char *argv[] )
         if ( systemEnvVars.contains( envVarName ) && envVarApply == "unset"_L1 )
         {
 #ifdef Q_OS_WIN
-          putenv( QString( "%1=" ).arg( envVarName ).toUtf8().constData() );
+          _wputenv_s( envVarName.toStdWString().c_str(), L"" );
 #else
           unsetenv( envVarName.toUtf8().constData() );
 #endif
@@ -1421,7 +1516,7 @@ int main( int argc, char *argv[] )
         {
 #ifdef Q_OS_WIN
           if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
-            putenv( QString( "%1=%2" ).arg( envVarName ).arg( envVarValue ).toUtf8().constData() );
+            _wputenv_s( envVarName.toStdWString().c_str(), envVarValue.toStdWString().c_str() );
 #else
           setenv( envVarName.toUtf8().constData(), envVarValue.toUtf8().constData(), envVarApply == "undefined"_L1 ? 0 : 1 );
 #endif
@@ -1446,8 +1541,7 @@ int main( int argc, char *argv[] )
     }
   }
   const QString activeStyleName = QApplication::style()->metaObject()->className();
-  if ( desiredStyle.contains( "adwaita"_L1, Qt::CaseInsensitive )
-       || ( desiredStyle.isEmpty() && activeStyleName.contains( "adwaita"_L1, Qt::CaseInsensitive ) ) )
+  if ( desiredStyle.contains( "adwaita"_L1, Qt::CaseInsensitive ) || ( desiredStyle.isEmpty() && activeStyleName.contains( "adwaita"_L1, Qt::CaseInsensitive ) ) )
   {
     //never allow Adwaita themes - the Qt variants of these are VERY broken
     //for apps like QGIS. E.g. oversized controls like spinbox widgets prevent actually showing
@@ -1480,8 +1574,20 @@ int main( int argc, char *argv[] )
     QgsApplication::setAuthDatabaseDirPath( authdbdirectory );
   }
 
+  if ( customizationfile.isEmpty() )
+  {
+    // Use the default file location
+    customizationfile = profileFolder + QDir::separator() + u"QGIS"_s + QDir::separator() + u"QGISCUSTOMIZATION.xml"_s;
+  }
+
+  auto customization = std::make_unique<QgsCustomization>( customizationfile );
+  if ( !enableCustomization )
+  {
+    customization->setEnabled( false );
+  }
+
   //set up splash screen
-  QString splashPath( QgsCustomization::instance()->splashPath() );
+  QString splashPath( customization->splashPath() );
   QPixmap pixmap( splashPath + u"splash.png"_s );
 
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
@@ -1555,11 +1661,7 @@ int main( int argc, char *argv[] )
 
   QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( u"QgisApp"_s );
-
-  QgsApplication::connect(
-    &myApp, &QgsApplication::preNotify,
-    QgsCustomization::instance(), &QgsCustomization::preNotify
-  );
+  qgis->setCustomization( std::move( customization ) );
 
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified

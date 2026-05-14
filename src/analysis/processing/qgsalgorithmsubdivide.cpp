@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmsubdivide.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
@@ -56,12 +60,14 @@ QString QgsSubdivideAlgorithm::groupId() const
 
 QString QgsSubdivideAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm subdivides the geometry. The returned geometry will be a collection containing subdivided parts "
-                      "from the original geometry, where no part has more than the specified maximum number of nodes.\n\n"
-                      "This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially "
-                      "indexed and faster to perform further operations such as intersects on. The returned geometry parts may "
-                      "not be valid and may contain self-intersections.\n\n"
-                      "Curved geometries will be segmentized before subdivision." );
+  return QObject::tr(
+    "This algorithm subdivides the geometry. The returned geometry will be a collection containing subdivided parts "
+    "from the original geometry, where no part has more than the specified maximum number of nodes.\n\n"
+    "This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially "
+    "indexed and faster to perform further operations such as intersects on. The returned geometry parts may "
+    "not be valid and may contain self-intersections.\n\n"
+    "Curved geometries will be segmentized before subdivision."
+  );
 }
 
 QString QgsSubdivideAlgorithm::shortDescription() const
@@ -93,7 +99,7 @@ QgsFeatureList QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsPr
     if ( mDynamicMaxNodes )
       maxNodes = mMaxNodesProperty.valueAsDouble( context.expressionContext(), maxNodes );
 
-    feature.setGeometry( feature.geometry().subdivide( maxNodes ) );
+    feature.setGeometry( feature.geometry().subdivide( maxNodes, QgsGeometryParameters(), feedback ) );
     if ( !feature.hasGeometry() )
     {
       feedback->reportError( QObject::tr( "Error calculating subdivision for feature %1" ).arg( feature.id() ) );

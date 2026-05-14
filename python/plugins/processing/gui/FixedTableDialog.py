@@ -23,15 +23,14 @@ import os
 import warnings
 
 from qgis.gui import QgsGui
-
 from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QStandardItem, QStandardItemModel
 from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QPushButton,
     QAbstractItemView,
+    QDialog,
     QDialogButtonBox,
+    QPushButton,
 )
-from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -41,7 +40,6 @@ with warnings.catch_warnings():
 
 
 class FixedTableDialog(BASE, WIDGET):
-
     def __init__(self, param, table):
         """
         Constructor for FixedTableDialog

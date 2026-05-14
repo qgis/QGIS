@@ -18,15 +18,17 @@
 #include "qgsproperty.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsAbstractPropertyCollection
 //
 
 QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &name )
   : mName( name )
-{
-
-}
+{}
 
 QDateTime QgsAbstractPropertyCollection::valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
 {
@@ -111,7 +113,6 @@ bool QgsAbstractPropertyCollection::readXml( const QDomElement &collectionElem, 
   QVariant collection = QgsXmlUtils::readVariant( collectionElem.firstChild().toElement() );
   return loadVariant( collection.toMap(), definitions );
 }
-
 
 
 //
@@ -226,7 +227,7 @@ QgsProperty QgsPropertyCollection::property( int key ) const
 QgsProperty &QgsPropertyCollection::property( int key )
 {
   mDirty = true;
-  return mProperties[ key ];
+  return mProperties[key];
 }
 
 QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
@@ -267,6 +268,19 @@ QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionCont
     cols.unite( it.value().referencedFields( context, ignoreContext ) );
   }
   return cols;
+}
+
+QSet<QString> QgsPropertyCollection::referencedVariables() const
+{
+  QSet<QString> vars;
+  QHash<int, QgsProperty>::const_iterator it = mProperties.constBegin();
+  for ( ; it != mProperties.constEnd(); ++it )
+  {
+    if ( !it.value().isActive() )
+      continue;
+    vars.unite( it.value().referencedVariables() );
+  }
+  return vars;
 }
 
 bool QgsPropertyCollection::isActive( int key ) const
@@ -376,10 +390,7 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
     mCount++;
 
     mHasActiveProperties = mHasActiveProperties || prop.isActive();
-    mHasDynamicProperties = mHasDynamicProperties ||
-                            ( prop.isActive() &&
-                              ( prop.propertyType() == Qgis::PropertyType::Field ||
-                                prop.propertyType() == Qgis::PropertyType::Expression ) );
+    mHasDynamicProperties = mHasDynamicProperties || ( prop.isActive() && ( prop.propertyType() == Qgis::PropertyType::Field || prop.propertyType() == Qgis::PropertyType::Expression ) );
   }
   return true;
 }
@@ -394,7 +405,8 @@ QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
 }
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-  : QgsAbstractPropertyCollection( other ), mStack()
+  : QgsAbstractPropertyCollection( other )
+  , mStack()
 {
   clear();
 
@@ -520,6 +532,17 @@ QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressio
     cols.unite( collection->referencedFields( context, ignoreContext ) );
   }
   return cols;
+}
+
+QSet<QString> QgsPropertyCollectionStack::referencedVariables() const
+{
+  QSet<QString> vars;
+  const auto constMStack = mStack;
+  for ( QgsPropertyCollection *collection : constMStack )
+  {
+    vars.unite( collection->referencedVariables() );
+  }
+  return vars;
 }
 
 bool QgsPropertyCollectionStack::prepare( const QgsExpressionContext &context ) const

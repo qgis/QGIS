@@ -2,7 +2,7 @@
 try:
     QgsLineChartPlot.create = staticmethod(QgsLineChartPlot.create)
     QgsLineChartPlot.createDataGatherer = staticmethod(QgsLineChartPlot.createDataGatherer)
-    QgsLineChartPlot.__overridden_methods__ = ['type', 'renderContent', 'writeXml', 'readXml']
+    QgsLineChartPlot.__overridden_methods__ = ['type', 'renderContent', 'writeXml', 'readXml', 'initFromPlot']
     QgsLineChartPlot.__group__ = ['plot']
 except (NameError, AttributeError):
     pass

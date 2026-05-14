@@ -46,17 +46,15 @@ children of another layer.
     }
 %End
   public:
-
     struct LabelStyle
     {
+        QColor color;
 
-      QColor color;
+        QFont font;
 
-      QFont font;
+        bool overrideColor;
 
-      bool overrideColor;
-
-      bool overrideFont;
+        bool overrideFont;
 
 
 

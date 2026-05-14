@@ -27,7 +27,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QSignalSpy>
+#include <QString>
 #include <QTimeZone>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -38,7 +41,8 @@ class TestQgsGpsIntegration : public QgsTest
     Q_OBJECT
   public:
     TestQgsGpsIntegration()
-      : QgsTest( u"GPS Integration Tests"_s ) {}
+      : QgsTest( u"GPS Integration Tests"_s )
+    {}
 
   private slots:
     void initTestCase();
@@ -69,10 +73,6 @@ void TestQgsGpsIntegration::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-
-  QCoreApplication::setOrganizationName( u"QGISGpsTests"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   QgsSettings().clear();
 
   mQgisApp = new QgisApp();

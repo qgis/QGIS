@@ -25,7 +25,11 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgssourcefieldsproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -132,8 +136,7 @@ void QgsSourceFieldsProperties::updateExpression()
   const QString exp = mLayer->expressionField( index );
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, u"generic"_s, context );
 
@@ -237,15 +240,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     mFieldsList->setItem( row, AttrCommentCol, new QTableWidgetItem( field.comment() ) );
   }
 
-  QList<int> notEditableCols = QList<int>()
-                               << AttrIdCol
-                               << AttrNameCol
-                               << AttrAliasCol
-                               << AttrTypeCol
-                               << AttrTypeNameCol
-                               << AttrLengthCol
-                               << AttrPrecCol
-                               << AttrCommentCol;
+  QList<int> notEditableCols = QList<int>() << AttrIdCol << AttrNameCol << AttrAliasCol << AttrTypeCol << AttrTypeNameCol << AttrLengthCol << AttrPrecCol << AttrCommentCol;
 
   const auto constNotEditableCols = notEditableCols;
   for ( const int i : constNotEditableCols )
@@ -293,10 +288,15 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 
 void QgsSourceFieldsProperties::apply()
 {
+  applyToLayer( mLayer );
+}
+
+void QgsSourceFieldsProperties::applyToLayer( QgsVectorLayer *layer )
+{
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
     const int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
-    Qgis::FieldConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
+    Qgis::FieldConfigurationFlags flags = layer->fieldConfigurationFlags( idx );
 
     QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrConfigurationFlagsCol ) );
     if ( cb )
@@ -309,7 +309,7 @@ void QgsSourceFieldsProperties::apply()
         const bool active = model->data( index, Qt::CheckStateRole ).value<Qt::CheckState>() == Qt::Checked ? true : false;
         flags.setFlag( flag, active );
       }
-      mLayer->setFieldConfigurationFlags( idx, flags );
+      layer->setFieldConfigurationFlags( idx, flags );
     }
   }
 }

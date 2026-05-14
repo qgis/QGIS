@@ -25,7 +25,10 @@
 #include <QNetworkCookieJar>
 #include <QNetworkReply>
 #include <QObject>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 class BackgroundRequest : public QThread
 {
@@ -66,7 +69,13 @@ class BackgroundBlockingRequest : public QThread
     Q_OBJECT
 
   public:
-    BackgroundBlockingRequest( const QNetworkRequest &request, QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation, QNetworkReply::NetworkError expectedRes = QNetworkReply::NoError, const QByteArray &data = QByteArray(), const QByteArray &expectedData = QByteArray() )
+    BackgroundBlockingRequest(
+      const QNetworkRequest &request,
+      QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation,
+      QNetworkReply::NetworkError expectedRes = QNetworkReply::NoError,
+      const QByteArray &data = QByteArray(),
+      const QByteArray &expectedData = QByteArray()
+    )
       : mRequest( request )
       , mExpectedData( expectedData )
     {
@@ -166,11 +175,6 @@ class TestQgsNetworkAccessManager : public QgsTest
 
 void TestQgsNetworkAccessManager::initTestCase()
 {
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::init();
   QgsApplication::initQgis();
 
@@ -188,12 +192,10 @@ void TestQgsNetworkAccessManager::cleanupTestCase()
 }
 
 void TestQgsNetworkAccessManager::init()
-{
-}
+{}
 
 void TestQgsNetworkAccessManager::cleanup()
-{
-}
+{}
 
 void TestQgsNetworkAccessManager::testProxyExcludeList()
 {
@@ -1128,20 +1130,15 @@ class FunctionThread : public QThread
     Q_OBJECT
   public:
     FunctionThread( const std::function<bool()> &f )
-      : m_f( f ) {}
-    bool getResult() const
-    {
-      return m_result;
-    }
+      : m_f( f )
+    {}
+    bool getResult() const { return m_result; }
 
   private:
     std::function<bool()> m_f;
     bool m_result = false;
 
-    void run() override
-    {
-      m_result = m_f();
-    }
+    void run() override { m_result = m_f(); }
 };
 
 void TestQgsNetworkAccessManager::testCookieManagement()
@@ -1150,9 +1147,7 @@ void TestQgsNetworkAccessManager::testCookieManagement()
   // Set cookie in a thread and verify that it also set in main thread
   QEventLoop evLoop;
   FunctionThread thread1( [url] {
-    QgsNetworkAccessManager::instance()->cookieJar()->setCookiesFromUrl(
-      QList<QNetworkCookie>() << QNetworkCookie( "foo=bar" ), url
-    );
+    QgsNetworkAccessManager::instance()->cookieJar()->setCookiesFromUrl( QList<QNetworkCookie>() << QNetworkCookie( "foo=bar" ), url );
     return true;
   } );
   QObject::connect( &thread1, &QThread::finished, &evLoop, &QEventLoop::quit );
@@ -1168,9 +1163,7 @@ void TestQgsNetworkAccessManager::testCookieManagement()
 
   // Set cookie in main thread and verify that it is also set in other thread
   QCOMPARE( QgsNetworkAccessManager::instance()->cookieJar()->cookiesForUrl( url ).size(), 0 );
-  QgsNetworkAccessManager::instance()->cookieJar()->setCookiesFromUrl(
-    QList<QNetworkCookie>() << QNetworkCookie( "baz=yadda" ), url
-  );
+  QgsNetworkAccessManager::instance()->cookieJar()->setCookiesFromUrl( QList<QNetworkCookie>() << QNetworkCookie( "baz=yadda" ), url );
 
   FunctionThread thread2( [url] {
     QList<QNetworkCookie> cookies = QgsNetworkAccessManager::instance()->cookieJar()->cookiesForUrl( url );

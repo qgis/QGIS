@@ -78,7 +78,7 @@ Set the list (possibly a subset) of attributes to be cached.
 :param attributes: The attributes to be cached
 %End
 
-    QgsAttributeList cacheSubsetOfAttributes( ) const;
+    QgsAttributeList cacheSubsetOfAttributes() const;
 %Docstring
 Returns the list (possibly a subset) of cached attributes.
 
@@ -297,14 +297,13 @@ feature count is unknown.
     sipRes = true;
 %End
 
-    long long featureCount() const;
+      long long featureCount() const;
 %Docstring
 Returns the number of features contained in the source, or -1 if the
 feature count is unknown.
 %End
 
   protected:
-
     void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 %Docstring
 Gets called, whenever the full list of feature ids for a certain request

@@ -41,7 +41,8 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 
   public:
     QgsPaintEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr )
-      : QWidget( parent ) {}
+      : QWidget( parent )
+    {}
 
     /**
      * Sets the paint effect to modify with the widget

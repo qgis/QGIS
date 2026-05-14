@@ -9,7 +9,7 @@
 
 
 
-class QgsPointDisplacementRenderer: QgsPointDistanceRenderer
+class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
 {
 %Docstring(signature="appended")
 A renderer that automatically displaces points with the same geographic
@@ -20,7 +20,6 @@ location.
 #include "qgspointdisplacementrenderer.h"
 %End
   public:
-
     enum Placement /BaseType=IntEnum/
     {
       Ring,

@@ -11,23 +11,20 @@ __date__ = "06/04/2025"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt
-from qgis.PyQt.QtTest import QTest
+import unittest
+
 from qgis.core import QgsSettings
 from qgis.gui import QgsCodeEditorExpression
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtTest import QTest
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestQgsCodeEditorExpression(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsCodeEditorExpression.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsCodeEditorExpression")
         start_app()
 
     def setUp(self):

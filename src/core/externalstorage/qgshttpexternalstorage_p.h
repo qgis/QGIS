@@ -24,12 +24,13 @@
 #include <QPointer>
 #include <QUrl>
 
+#define SIP_NO_FILE
+
 class QgsFeedback;
 class QgsHttpExternalStorageStoreTask;
 class QgsFetchedContent;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 /**
  * \brief External storage implementation using the protocol WebDAV.
@@ -39,13 +40,11 @@ class QgsFetchedContent;
 class CORE_EXPORT QgsWebDavExternalStorage : public QgsExternalStorage
 {
   public:
-
     QString type() const override;
 
     QString displayName() const override;
 
   protected:
-
     QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
 
     QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;
@@ -59,13 +58,11 @@ class CORE_EXPORT QgsWebDavExternalStorage : public QgsExternalStorage
 class CORE_EXPORT QgsAwsS3ExternalStorage : public QgsExternalStorage
 {
   public:
-
     QString type() const override;
 
     QString displayName() const override;
 
   protected:
-
     QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
 
     QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;
@@ -76,12 +73,11 @@ class CORE_EXPORT QgsAwsS3ExternalStorage : public QgsExternalStorage
  *
  * \since QGIS 3.22
  */
-class QgsHttpExternalStorageStoredContent  : public QgsExternalStorageStoredContent
+class QgsHttpExternalStorageStoredContent : public QgsExternalStorageStoredContent
 {
     Q_OBJECT
 
   public:
-
     QgsHttpExternalStorageStoredContent( const QString &filePath, const QString &url, const QString &authcfg = QString() );
 
     void cancel() override;
@@ -93,7 +89,6 @@ class QgsHttpExternalStorageStoredContent  : public QgsExternalStorageStoredCont
     void setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > );
 
   private:
-
     std::function< void( QNetworkRequest &request, QFile *f ) > mPrepareRequestHandler = nullptr;
     QPointer<QgsHttpExternalStorageStoreTask> mUploadTask;
     QString mUrl;
@@ -109,7 +104,6 @@ class QgsHttpExternalStorageFetchedContent : public QgsExternalStorageFetchedCon
     Q_OBJECT
 
   public:
-
     QgsHttpExternalStorageFetchedContent( QgsFetchedContent *fetchedContent );
 
     QString filePath() const override;
@@ -123,7 +117,6 @@ class QgsHttpExternalStorageFetchedContent : public QgsExternalStorageFetchedCon
     void onFetched();
 
   private:
-
     QPointer<QgsFetchedContent> mFetchedContent;
 };
 
@@ -138,7 +131,6 @@ class QgsHttpExternalStorageStoreTask : public QgsTask
     Q_OBJECT
 
   public:
-
     QgsHttpExternalStorageStoreTask( const QUrl &url, const QString &filePath, const QString &authCfg );
 
     ~QgsHttpExternalStorageStoreTask() override;
@@ -152,7 +144,6 @@ class QgsHttpExternalStorageStoreTask : public QgsTask
     void setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > );
 
   private:
-
     std::function< void( QNetworkRequest &request, QFile *f ) > mPrepareRequestHandler = nullptr;
     const QUrl mUrl;
     const QString mFilePath;

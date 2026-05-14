@@ -17,12 +17,12 @@
 #define QGSWEBVIEW_H
 
 
-#define SIP_NO_FILE
-
 #include "qgswebpage.h"
 
 #include <QTextBrowser>
 #include <QWidget>
+
+#define SIP_NO_FILE
 
 class QPrinter;
 
@@ -37,54 +37,31 @@ class QPrinter;
  */
 class CORE_EXPORT QgsWebView : public QTextBrowser
 {
-
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = nullptr )
       : QTextBrowser( parent )
-      , mSettings( new QWebSettings() )
-      , mPage( new QWebPage( this ) )
+      , mSettings( std::make_unique<QWebSettings>() )
+      , mPage( std::make_unique<QWebPage>( this ) )
     {
       connect( this, &QTextBrowser::anchorClicked, this, &QgsWebView::linkClicked );
-      connect( this, &QgsWebView::pageLoadFinished, mPage, &QWebPage::loadFinished );
+      connect( this, &QgsWebView::pageLoadFinished, mPage.get(), &QWebPage::loadFinished );
     }
 
-    ~QgsWebView() override
-    {
-      delete mSettings;
-      delete mPage;
-    }
+    ~QgsWebView() override {}
 
-    void setUrl( const QUrl &url )
-    {
-      setSource( url );
-    }
+    void setUrl( const QUrl &url ) { setSource( url ); }
 
-    void load( const QUrl &url )
-    {
-      setSource( url );
-    }
+    void load( const QUrl &url ) { setSource( url ); }
 
-    QUrl url() const
-    {
-      return source();
-    }
+    QUrl url() const { return source(); }
 
-    QWebPage *page() const
-    {
-      return mPage;
-    }
+    QWebPage *page() const { return mPage.get(); }
 
-    QWebSettings *settings() const
-    {
-      return mSettings;
-    }
+    QWebSettings *settings() const { return mSettings.get(); }
 
-    virtual QgsWebView *createWindow( QWebPage::WebWindowType )
-    {
-      return new QgsWebView();
-    }
+    virtual QgsWebView *createWindow( QWebPage::WebWindowType ) { return new QgsWebView(); }
 
     void setContent( const QByteArray &data, const QString &contentType, const QUrl & )
     {
@@ -97,9 +74,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       emit pageLoadFinished( true );
     }
 
-    void print( QPrinter * )
-    {
-    }
+    void print( QPrinter * ) {}
 
   signals:
     void linkClicked( const QUrl &link );
@@ -121,10 +96,10 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     }
 
   private:
-    QWebSettings *mSettings = nullptr;
-    QWebPage *mPage = nullptr;
+    std::unique_ptr<QWebSettings> mSettings;
+    std::unique_ptr<QWebPage> mPage;
 
-/// @endcond
+    /// @endcond
 };
 
 #endif // QGSWEBVIEW_H

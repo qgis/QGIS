@@ -21,7 +21,10 @@
 #include "qgsxmlutils.h"
 
 #include <QDomNode>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QStringList QgsObjectCustomProperties::keys() const
 {
@@ -107,9 +110,7 @@ void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QStri
         {
           QStringList list;
 
-          for ( QDomElement itemElement = propElement.firstChildElement( u"value"_s );
-                !itemElement.isNull();
-                itemElement = itemElement.nextSiblingElement( u"value"_s ) )
+          for ( QDomElement itemElement = propElement.firstChildElement( u"value"_s ); !itemElement.isNull(); itemElement = itemElement.nextSiblingElement( u"value"_s ) )
           {
             list << itemElement.text();
           }

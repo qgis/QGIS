@@ -15,18 +15,18 @@ import hashlib
 import tempfile
 import unittest
 
-from qgis.PyQt.QtCore import QVariant, QCoreApplication, QDateTime, Qt, QDate, QTime
 from qgis.core import (
     Qgis,
-    QgsProviderRegistry,
-    QgsVectorLayer,
-    QgsSettings,
-    QgsSensorThingsUtils,
     QgsFeatureRequest,
+    QgsProviderRegistry,
     QgsRectangle,
     QgsSensorThingsExpansionDefinition,
+    QgsSensorThingsUtils,
+    QgsSettings,
+    QgsVectorLayer,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 
 
 def sanitize(endpoint, x):
@@ -50,11 +50,7 @@ def sanitize(endpoint, x):
         ">", "_"
     ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
         "/", "_"
-    ).replace(
-        "\n", "_"
-    ).replace(
-        "$", "_"
-    )
+    ).replace("\n", "_").replace("$", "_")
 
 
 class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
@@ -63,10 +59,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsSensorThingsProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsSensorThingsProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is
@@ -797,9 +789,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -872,9 +862,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -922,9 +910,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Things?$top=2&$skip=2"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -951,9 +937,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -1029,9 +1013,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -1098,9 +1080,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -1136,9 +1116,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -1225,9 +1203,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -1300,9 +1276,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -1341,9 +1315,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -1429,9 +1401,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -1498,9 +1468,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -1536,9 +1504,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
                 with open(
@@ -1592,9 +1558,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                   "HistoricalLocations@iot.navigationLink": "endpoint/Locations(3)/HistoricalLocations"
                 }
               ]
-            }""".replace(
-                            "endpoint", "http://" + endpoint
-                        )
+            }""".replace("endpoint", "http://" + endpoint)
                     )
 
             with open(
@@ -1630,9 +1594,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     }
               ]
-            }""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+            }""".replace("endpoint", "http://" + endpoint)
                 )
 
             vl = QgsVectorLayer(
@@ -1729,9 +1691,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -1796,9 +1756,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
   ]
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -1833,9 +1791,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                   "HistoricalLocations@iot.navigationLink": "endpoint/Locations(1)/HistoricalLocations"
                 }
               ]
-            }""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+            }""".replace("endpoint", "http://" + endpoint)
                 )
 
             vl = QgsVectorLayer(
@@ -1936,9 +1892,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -1994,9 +1948,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
     }
   ]
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -2031,9 +1983,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                   "HistoricalLocations@iot.navigationLink": "endpoint/Locations(1)/HistoricalLocations"
                 }
               ]
-            }""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+            }""".replace("endpoint", "http://" + endpoint)
                 )
 
             vl = QgsVectorLayer(
@@ -2141,9 +2091,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -2198,9 +2146,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                   "HistoricalLocations@iot.navigationLink": "endpoint/Locations(1)/HistoricalLocations"
                 }
               ]
-            }""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+            }""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -2256,9 +2202,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((0 0, 100 0, 100 150, 0 150, 0 0))'))"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
             # Note -- top param here should be replaced by "top=1", NOT be the "top=2" parameter from the previous page's iot.nextLink url!
@@ -2296,9 +2240,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Locations?$top=1&$skip=3"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
             vl = QgsVectorLayer(
@@ -2374,9 +2316,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -2413,9 +2353,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/HistoricalLocations?$top=2&$skip=2"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -2436,9 +2374,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -2522,9 +2458,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -2585,9 +2519,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Datastreams?$top=2&$skip=2"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -2620,9 +2552,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -2771,9 +2701,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -2822,9 +2750,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Sensors?$top=2&$skip=2"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -2851,9 +2777,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -2940,9 +2864,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -2989,9 +2911,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/ObservedProperties?$top=2&$skip=2"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -3017,9 +2937,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -3114,9 +3032,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -3169,9 +3085,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Observations?$top=2&$skip=2"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -3195,9 +3109,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -3326,9 +3238,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -3400,9 +3310,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/FeaturesOfInterest?$top=2&$skip=2&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -3441,9 +3349,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -3557,9 +3463,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -3625,9 +3529,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/MultiDatastreams?$top=2&$skip=2"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -3661,9 +3563,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -3840,9 +3740,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -3930,9 +3828,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/MultiDatastreams?$top=2&$skip=2&$filter=observedArea/type eq 'Polygon' or observedArea/geometry/type eq 'Polygon'"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -3977,9 +3873,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -4164,9 +4058,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -4354,9 +4246,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams)&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -4446,9 +4336,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(
@@ -4682,9 +4570,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "serverSettings": {
   }
-}""".replace(
-                        "endpoint", "http://" + endpoint
-                    )
+}""".replace("endpoint", "http://" + endpoint)
                 )
 
             with open(
@@ -4830,9 +4716,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
   ],
   "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2&$expand=Things($expand=Datastreams($top=1))&$filter=location/type eq 'Polygon' or location/geometry/type eq 'Polygon'"
 }
-                """.replace(
-                        "endpoint", "http://" + endpoint
-                    )
+                """.replace("endpoint", "http://" + endpoint)
                 )
 
                 with open(
@@ -4906,9 +4790,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 }
               ]
             }
-                            """.replace(
-                            "endpoint", "http://" + endpoint
-                        )
+                            """.replace("endpoint", "http://" + endpoint)
                     )
 
             vl = QgsVectorLayer(

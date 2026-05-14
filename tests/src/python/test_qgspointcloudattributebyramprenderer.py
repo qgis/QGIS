@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDir, QSize, Qt
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsColorRampLegendNode,
     QgsColorRampShader,
@@ -33,16 +33,15 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVector3D,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "pointcloudrenderer"
@@ -566,6 +565,57 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         self.assertTrue(
             self.render_map_settings_check(
                 "ramp_triangles", "ramp_triangles", mapsettings
+            )
+        )
+
+    @unittest.skipIf(
+        "ept" not in QgsProviderRegistry.instance().providerList(),
+        "EPT provider not available",
+    )
+    def testRenderExpression2(self):
+        layer = QgsPointCloudLayer(
+            unitTestDataPath() + "/point_clouds/ept/lone-star-laszip/ept.json",
+            "test",
+            "ept",
+        )
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudAttributeByRampRenderer()
+
+        renderer.setAttribute("Intensity")
+        renderer.setMinimum(17)
+        renderer.setMaximum(2744)
+        ramp = QgsStyle.defaultStyle().colorRamp("Spectral")
+        shader = QgsColorRampShader(17, 2744, ramp)
+        shader.classifyColorRamp()
+        renderer.setColorRampShader(shader)
+
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        from qgis.core import QgsProperty, QgsPropertyCollection
+
+        colorExpr = "@value * scale_linear(@OriginId, 0, 3, 0, 1)"
+        props = QgsPropertyCollection()
+        props.setProperty(
+            QgsPointCloudRenderer.Property.Color,
+            QgsProperty.fromExpression(colorExpr),
+        )
+        layer.renderer().setDataDefinedProperties(props)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(layer.extent())
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "ramp_expression",
+                "ramp_expression",
+                mapsettings,
             )
         )
 

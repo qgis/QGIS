@@ -48,7 +48,12 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
      * \param hostport Unique host:port to associate with the server certificate
      * \param connectionCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthSslConfigWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QSslCertificate &cert = QSslCertificate(), const QString &hostport = QString(), const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
+    explicit QgsAuthSslConfigWidget(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      const QSslCertificate &cert = QSslCertificate(),
+      const QString &hostport = QString(),
+      const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>()
+    );
 
     //! Access to the certificate's group box widget
     QGroupBox *certificateGroupBox();

@@ -22,11 +22,15 @@
 #include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
+#include <QString>
 #include <QThread>
 #include <QUrlQuery>
 #include <qurl.h>
 
 #include "moc_qgsauthconfigurationstoragedb.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings )
   : QgsAuthConfigurationStorage( settings )
@@ -40,15 +44,16 @@ QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QMap<QString
   mPassword = mConfiguration.value( u"password"_s ).toString();
   mConnectOptions = mConfiguration.value( u"options"_s ).toString();
   // Debug print all connection settings
-  QgsDebugMsgLevel( u"Auth db connection settings: driver=%1, database='%2', host=%3, port=%4, user='%5', schema=%6, options=%7"_s
-                    .arg( mDriver, mDatabase, mHost, QString::number( mPort ), mUser, mConnectOptions, mConfiguration.value( u"schema"_s ).toString() ), 2 );
-
+  QgsDebugMsgLevel(
+    u"Auth db connection settings: driver=%1, database='%2', host=%3, port=%4, user='%5', schema=%6, options=%7"_s
+      .arg( mDriver, mDatabase, mHost, QString::number( mPort ), mUser, mConnectOptions, mConfiguration.value( u"schema"_s ).toString() ),
+    2
+  );
 }
 
 QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QString &uri )
   : QgsAuthConfigurationStorageDb( uriToSettings( uri ) )
-{
-}
+{}
 
 QgsAuthConfigurationStorageDb::~QgsAuthConfigurationStorageDb()
 {
@@ -111,12 +116,17 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
       // Right about now is a good time to re-evaluate your selected career ;)
       // I've done that and I decided to become a musician. I'll probably be a better musician than a software developer.
-      QMetaObject::Connection connection = connect( QThread::currentThread(), &QThread::finished, this, [connectionName, this ]
-      {
-        QMutexLocker locker( &mMutex );
-        QSqlDatabase::removeDatabase( connectionName );
-        mConnectedThreads.remove( QThread::currentThread() ); // NOLINT(clang-analyzer-core.CallAndMessage)
-      }, Qt::DirectConnection );
+      QMetaObject::Connection connection = connect(
+        QThread::currentThread(),
+        &QThread::finished,
+        this,
+        [connectionName, this] {
+          QMutexLocker locker( &mMutex );
+          QSqlDatabase::removeDatabase( connectionName );
+          mConnectedThreads.remove( QThread::currentThread() ); // NOLINT(clang-analyzer-core.CallAndMessage)
+        },
+        Qt::DirectConnection
+      );
 
       mConnectedThreads.insert( QThread::currentThread(), connection );
     }
@@ -149,10 +159,8 @@ bool QgsAuthConfigurationStorageDb::authDbOpen() const
   {
     if ( !authdb.open() )
     {
-      const QString err = tr( "Unable to establish database connection\nDatabase: %1\nDriver error: %2\nDatabase error: %3" )
-                          .arg( mDatabase,
-                                authdb.lastError().driverText(),
-                                authdb.lastError().databaseText() );
+      const QString err
+        = tr( "Unable to establish database connection\nDatabase: %1\nDriver error: %2\nDatabase error: %3" ).arg( mDatabase, authdb.lastError().driverText(), authdb.lastError().databaseText() );
 
       const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( err );
       return false;
@@ -168,15 +176,20 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
   query->setForwardOnly( true );
   const bool result { sql.isEmpty() ? query->exec() : query->exec( sql ) };
 
-  auto boundQuery = []( const QSqlQuery * query ) -> QString
-  {
+  auto boundQuery = []( const QSqlQuery *query ) -> QString {
     QString str = query->lastQuery();
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 6, 0 )
     const QStringList keys = query->boundValueNames();
+#endif
     const QVariantList values = query->boundValues();
     QMap<QString, QVariant> boundValues;
-    for ( int i = 0; i < keys.count(); i++ )
+    for ( int i = 0; i < values.count(); i++ )
     {
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 6, 0 )
       boundValues.insert( keys.at( i ), values.at( i ).toString() );
+#else
+      boundValues.insert( query->record().fieldName( i ), values.at( i ).toString() );
+#endif
     }
     QMapIterator<QString, QVariant> it = QMapIterator<QString, QVariant>( boundValues );
     while ( it.hasNext() )
@@ -191,9 +204,8 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
   {
     if ( query->lastError().isValid() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db query FAILED: %1\nError: %2" )
-          .arg( sql.isEmpty() ? boundQuery( query ) : sql,
-                query->lastError().text() ), Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )
+        ->setError( tr( "Auth db query FAILED: %1\nError: %2" ).arg( sql.isEmpty() ? boundQuery( query ) : sql, query->lastError().text() ), Qgis::MessageLevel::Warning );
       QgsDebugMsgLevel( u"Auth db query FAILED: %1"_s.arg( sql.isEmpty() ? boundQuery( query ) : sql ), 2 );
       return false;
     }
@@ -222,7 +234,7 @@ bool QgsAuthConfigurationStorageDb::authDbTransactionQuery( QSqlQuery *query )
   if ( ok && !authDatabaseConnection().commit() )
   {
     setError( tr( "Auth db FAILED to rollback changes" ), Qgis::MessageLevel::Warning );
-    ( void )authDatabaseConnection().rollback();
+    ( void ) authDatabaseConnection().rollback();
     return false;
   }
 
@@ -251,10 +263,7 @@ bool QgsAuthConfigurationStorageDb::initialize()
     checkCapabilities();
 
     // Recompute capabilities if needed
-    connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool )
-    {
-      checkCapabilities();
-    } );
+    connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool ) { checkCapabilities(); } );
 
     return true;
   }
@@ -262,8 +271,7 @@ bool QgsAuthConfigurationStorageDb::initialize()
 
 QList<QgsAuthConfigurationStorage::SettingParameter> QgsAuthConfigurationStorageDb::settingsParameters() const
 {
-  return
-  {
+  return {
     { u"driver"_s, tr( "SQL Driver (see https://doc.qt.io/qt/sql-driver.html)" ), QVariant::String },
     { u"database"_s, tr( "Database" ), QVariant::String },
     { u"schema"_s, tr( "Schema for all tables" ), QVariant::String },
@@ -281,7 +289,7 @@ bool QgsAuthConfigurationStorageDb::storeCertIdentity( const QSslCertificate &ce
 {
   QMutexLocker locker( &mMutex );
 
-  const QString id{ QgsAuthCertUtils::shaHexForCert( cert ) };
+  const QString id { QgsAuthCertUtils::shaHexForCert( cert ) };
 
   if ( certIdentityExists( id ) )
   {
@@ -306,7 +314,7 @@ bool QgsAuthConfigurationStorageDb::storeCertIdentity( const QSslCertificate &ce
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  const QString certPem{ cert.toPem() };
+  const QString certPem { cert.toPem() };
 
   query.prepare( u"INSERT INTO %1 (id, key, cert) VALUES (:id, :key, :cert)"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
   query.bindValue( u":id"_s, id );
@@ -445,7 +453,7 @@ const QPair<QSslCertificate, QString> QgsAuthConfigurationStorageDb::loadCertIde
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieved more than one certificate identity for id: %1" ).arg( id ),  Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieved more than one certificate identity for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
       return bundle;
     }
     bundle = qMakePair( cert, key );
@@ -551,7 +559,7 @@ bool QgsAuthConfigurationStorageDb::certIdentityExists( const QString &id ) cons
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains more than one certificate bundles for id: %1" ).arg( id ),  Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Authentication database contains more than one certificate bundles for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
       return false;
     }
   }
@@ -609,7 +617,7 @@ bool QgsAuthConfigurationStorageDb::storeSslCertCustomConfig( const QgsAuthConfi
     checkCapability( Qgis::AuthConfigurationStorageCapability::CreateSslCertificateCustomConfig );
   }
 
-  if ( ! capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::CreateSslCertificateCustomConfig ) )
+  if ( !capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::CreateSslCertificateCustomConfig ) )
   {
     setError( tr( "Storage does not support creating SSL certificate custom configs" ), Qgis::MessageLevel::Critical );
     return false;
@@ -634,8 +642,7 @@ bool QgsAuthConfigurationStorageDb::storeSslCertCustomConfig( const QgsAuthConfi
   if ( !authDbQuery( &query ) )
     return false;
 
-  QgsDebugMsgLevel( u"Store SSL cert custom config SUCCESS for host:port, id: %1, %2"_s
-                    .arg( config.sslHostPort().trimmed(), id ), 2 );
+  QgsDebugMsgLevel( u"Store SSL cert custom config SUCCESS for host:port, id: %1, %2"_s.arg( config.sslHostPort().trimmed(), id ), 2 );
 
   emit sslCertCustomConfigChanged();
 
@@ -670,7 +677,6 @@ QStringList QgsAuthConfigurationStorageDb::sslCertCustomConfigIds() const
     }
   }
   return ids;
-
 }
 
 const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomConfig( const QString &id, const QString &hostport ) const
@@ -836,8 +842,7 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
     if ( query.next() )
     {
       QgsDebugError( u"Retrieved more than one SSL cert custom config for host:port, id: %1, %2"_s.arg( hostport, id ) );
-      emit messageLog( tr( "Authentication database contains more than one SSL cert custom configs for host:port, id: %1, %2" )
-                       .arg( hostport, id ), loggerTag(), Qgis::MessageLevel::Warning );
+      emit messageLog( tr( "Authentication database contains more than one SSL cert custom configs for host:port, id: %1, %2" ).arg( hostport, id ), loggerTag(), Qgis::MessageLevel::Warning );
       return false;
     }
   }
@@ -1096,7 +1101,7 @@ bool QgsAuthConfigurationStorageDb::removeCertAuthority( const QSslCertificate &
   return true;
 }
 
-const  QMap<QString, QgsAuthCertUtils::CertTrustPolicy> QgsAuthConfigurationStorageDb::caCertsPolicy() const
+const QMap<QString, QgsAuthCertUtils::CertTrustPolicy> QgsAuthConfigurationStorageDb::caCertsPolicy() const
 {
   QMutexLocker locker( &mMutex );
 
@@ -1124,7 +1129,7 @@ const  QMap<QString, QgsAuthCertUtils::CertTrustPolicy> QgsAuthConfigurationStor
       QString id( query.value( 0 ).toString() );
       int policy = query.value( 1 ).toInt();
       QgsAuthCertUtils::CertTrustPolicy trustPolicy = static_cast< QgsAuthCertUtils::CertTrustPolicy >( policy );
-      trustedCerts[ id ] = trustPolicy;
+      trustedCerts[id] = trustPolicy;
     }
   }
 
@@ -1551,23 +1556,29 @@ bool QgsAuthConfigurationStorageDb::createConfigTables()
   // create the tables
   QString qstr;
 
-  qstr = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1 (\n"
-                         "    salt TEXT NOT NULL,\n"
-                         "    civ TEXT NOT NULL\n"
-                         ", hash TEXT NOT NULL);" ).arg( quotedQualifiedIdentifier( masterPasswordTableName() ) );
+  qstr = QStringLiteral(
+           "CREATE TABLE IF NOT EXISTS %1 (\n"
+           "    salt TEXT NOT NULL,\n"
+           "    civ TEXT NOT NULL\n"
+           ", hash TEXT NOT NULL);"
+  )
+           .arg( quotedQualifiedIdentifier( masterPasswordTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
     return false;
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1 (\n"
-                         "    id TEXT NOT NULL,\n"
-                         "    name TEXT NOT NULL,\n"
-                         "    uri TEXT,\n"
-                         "    type TEXT NOT NULL,\n"
-                         "    version INTEGER NOT NULL\n"
-                         ", config TEXT NOT NULL);" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) );
+  qstr = QStringLiteral(
+           "CREATE TABLE IF NOT EXISTS %1 (\n"
+           "    id TEXT NOT NULL,\n"
+           "    name TEXT NOT NULL,\n"
+           "    uri TEXT,\n"
+           "    type TEXT NOT NULL,\n"
+           "    version INTEGER NOT NULL\n"
+           ", config TEXT NOT NULL);"
+  )
+           .arg( quotedQualifiedIdentifier( methodConfigTableName() ) );
   if ( !authDbQuery( &query, qstr ) )
     return false;
 
@@ -1580,9 +1591,7 @@ bool QgsAuthConfigurationStorageDb::createConfigTables()
 
   query.clear();
 
-  qstr = u"CREATE INDEX IF NOT EXISTS %1 ON %2 (uri ASC);"_s
-         .arg( quotedQualifiedIdentifier( u"uri_index"_s, true ),
-               quotedQualifiedIdentifier( methodConfigTableName() ) );
+  qstr = u"CREATE INDEX IF NOT EXISTS %1 ON %2 (uri ASC);"_s.arg( quotedQualifiedIdentifier( u"uri_index"_s, true ), quotedQualifiedIdentifier( methodConfigTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
     return false;
@@ -1607,19 +1616,25 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
   // create the tables
   QString qstr;
 
-  qstr = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1 (\n"
-                         "   setting TEXT NOT NULL\n"
-                         ", value TEXT);" ).arg( quotedQualifiedIdentifier( authSettingsTableName() ) );
+  qstr = QStringLiteral(
+           "CREATE TABLE IF NOT EXISTS %1 (\n"
+           "   setting TEXT NOT NULL\n"
+           ", value TEXT);"
+  )
+           .arg( quotedQualifiedIdentifier( authSettingsTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
     return false;
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1 (\n"
-                         "    id TEXT NOT NULL,\n"
-                         "    key TEXT NOT NULL\n"
-                         ", cert TEXT NOT NULL);" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) );
+  qstr = QStringLiteral(
+           "CREATE TABLE IF NOT EXISTS %1 (\n"
+           "    id TEXT NOT NULL,\n"
+           "    key TEXT NOT NULL\n"
+           ", cert TEXT NOT NULL);"
+  )
+           .arg( quotedQualifiedIdentifier( certIdentityTableName() ) );
 
 
   if ( !authDbQuery( &query, qstr ) )
@@ -1627,8 +1642,7 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
 
   query.clear();
 
-  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s
-         .arg( quotedQualifiedIdentifier( u"cert_ident_id_index"_s, true ), quotedQualifiedIdentifier( certIdentityTableName() ) );
+  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s.arg( quotedQualifiedIdentifier( u"cert_ident_id_index"_s, true ), quotedQualifiedIdentifier( certIdentityTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
     return false;
@@ -1636,11 +1650,14 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
   query.clear();
 
 
-  qstr = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1 (\n"
-                         "    id TEXT NOT NULL,\n"
-                         "    host TEXT NOT NULL,\n"
-                         "    cert TEXT\n"
-                         ", config TEXT NOT NULL);" ).arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) );
+  qstr = QStringLiteral(
+           "CREATE TABLE IF NOT EXISTS %1 (\n"
+           "    id TEXT NOT NULL,\n"
+           "    host TEXT NOT NULL,\n"
+           "    cert TEXT\n"
+           ", config TEXT NOT NULL);"
+  )
+           .arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
     return false;
@@ -1656,9 +1673,12 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
   query.clear();
 
 
-  qstr = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1 (\n"
-                         "    id TEXT NOT NULL\n"
-                         ", cert TEXT  NOT NULL);" ).arg( quotedQualifiedIdentifier( certAuthorityTableName() ) );
+  qstr = QStringLiteral(
+           "CREATE TABLE IF NOT EXISTS %1 (\n"
+           "    id TEXT NOT NULL\n"
+           ", cert TEXT  NOT NULL);"
+  )
+           .arg( quotedQualifiedIdentifier( certAuthorityTableName() ) );
 
 
   if ( !authDbQuery( &query, qstr ) )
@@ -1666,8 +1686,7 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
 
   query.clear();
 
-  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s
-         .arg( quotedQualifiedIdentifier( u"ca_id_index"_s, true ), quotedQualifiedIdentifier( certAuthorityTableName() ) );
+  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s.arg( quotedQualifiedIdentifier( u"ca_id_index"_s, true ), quotedQualifiedIdentifier( certAuthorityTableName() ) );
 
 
   if ( !authDbQuery( &query, qstr ) )
@@ -1675,17 +1694,19 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1 (\n"
-                         "    id TEXT NOT NULL\n"
-                         ", policy TEXT  NOT NULL);" ).arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) );
+  qstr = QStringLiteral(
+           "CREATE TABLE IF NOT EXISTS %1 (\n"
+           "    id TEXT NOT NULL\n"
+           ", policy TEXT  NOT NULL);"
+  )
+           .arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
     return false;
 
   query.clear();
 
-  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s
-         .arg( quotedQualifiedIdentifier( u"trust_id_index"_s, true ), quotedQualifiedIdentifier( certTrustPolicyTableName() ) );
+  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s.arg( quotedQualifiedIdentifier( u"trust_id_index"_s, true ), quotedQualifiedIdentifier( certTrustPolicyTableName() ) );
 
 
   if ( !authDbQuery( &query, qstr ) )
@@ -1698,14 +1719,13 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
 
 QgsAuthMethodConfigsMap QgsAuthConfigurationStorageDb::authMethodConfigs( const QStringList &allowedMethods ) const
 {
-
   QMutexLocker locker( &mMutex );
 
   checkCapability( Qgis::AuthConfigurationStorageCapability::ReadConfiguration );
 
   QgsAuthMethodConfigsMap baseConfigs;
 
-  if ( ! isEnabled() || !isReady() )
+  if ( !isEnabled() || !isReady() )
     return baseConfigs;
 
   if ( !authDbOpen() )
@@ -1743,19 +1763,17 @@ QgsAuthMethodConfigsMap QgsAuthConfigurationStorageDb::authMethodConfigs( const 
     }
   }
   return baseConfigs;
-
 }
 
-QgsAuthMethodConfigsMap QgsAuthConfigurationStorageDb::authMethodConfigsWithPayload( ) const
+QgsAuthMethodConfigsMap QgsAuthConfigurationStorageDb::authMethodConfigsWithPayload() const
 {
-
   QMutexLocker locker( &mMutex );
 
   checkCapability( Qgis::AuthConfigurationStorageCapability::ReadConfiguration );
 
   QgsAuthMethodConfigsMap baseConfigs;
 
-  if ( ! isEnabled() || !isReady() )
+  if ( !isEnabled() || !isReady() )
     return baseConfigs;
 
   if ( !authDbOpen() )
@@ -1796,7 +1814,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
 
   mCapabilities = Qgis::AuthConfigurationStorageCapabilities();
 
-  if ( ! isEnabled() || !isReady() )
+  if ( !isEnabled() || !isReady() )
     return;
 
   if ( !authDbOpen() )
@@ -1809,12 +1827,12 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
 
   static const QStringList existingTables = authDatabaseConnection().tables();
   QString schema { mConfiguration.value( u"schema"_s ).toString() };
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
     schema += '.';
   }
 
-  if ( existingTables.contains( schema.isEmpty() ? masterPasswordTableName( ) : schema + masterPasswordTableName( ) ) )
+  if ( existingTables.contains( schema.isEmpty() ? masterPasswordTableName() : schema + masterPasswordTableName() ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadMasterPassword;
     if ( !isReadOnly() )
@@ -1825,7 +1843,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
     }
   }
 
-  if ( existingTables.contains( schema.isEmpty() ? methodConfigTableName( ) : schema + methodConfigTableName( ) ) )
+  if ( existingTables.contains( schema.isEmpty() ? methodConfigTableName() : schema + methodConfigTableName() ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadConfiguration;
     if ( !isReadOnly() )
@@ -1836,7 +1854,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
     }
   }
 
-  if ( existingTables.contains( schema.isEmpty() ? authSettingsTableName( ) : schema + authSettingsTableName( ) ) )
+  if ( existingTables.contains( schema.isEmpty() ? authSettingsTableName() : schema + authSettingsTableName() ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadSetting;
     if ( !isReadOnly() )
@@ -1847,7 +1865,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
     }
   }
 
-  if ( existingTables.contains( schema.isEmpty() ? certIdentityTableName( ) : schema + certIdentityTableName( ) ) )
+  if ( existingTables.contains( schema.isEmpty() ? certIdentityTableName() : schema + certIdentityTableName() ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadCertificateIdentity;
     if ( !isReadOnly() )
@@ -1858,7 +1876,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
     }
   }
 
-  if ( existingTables.contains( schema.isEmpty() ? sslCertCustomConfigTableName( ) : schema +  sslCertCustomConfigTableName( ) ) )
+  if ( existingTables.contains( schema.isEmpty() ? sslCertCustomConfigTableName() : schema + sslCertCustomConfigTableName() ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig;
     if ( !isReadOnly() )
@@ -1869,7 +1887,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
     }
   }
 
-  if ( existingTables.contains( schema.isEmpty() ? certAuthorityTableName( ) : schema + certAuthorityTableName( ) ) )
+  if ( existingTables.contains( schema.isEmpty() ? certAuthorityTableName() : schema + certAuthorityTableName() ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadCertificateAuthority;
     if ( !isReadOnly() )
@@ -1880,7 +1898,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
     }
   }
 
-  if ( existingTables.contains( schema.isEmpty() ? certTrustPolicyTableName( ) : schema + certTrustPolicyTableName( ) ) )
+  if ( existingTables.contains( schema.isEmpty() ? certTrustPolicyTableName() : schema + certTrustPolicyTableName() ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ReadCertificateTrustPolicy;
     if ( !isReadOnly() )
@@ -1892,17 +1910,16 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
   }
 
   // Any delete capability will set ClearStorage
-  if ( ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword ) ||
-       ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteConfiguration ) ||
-       ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteSetting ) ||
-       ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity ) ||
-       ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteSslCertificateCustomConfig ) ||
-       ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority ) ||
-       ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateTrustPolicy ) )
+  if ( ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteConfiguration )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteSetting )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateIdentity )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteSslCertificateCustomConfig )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority )
+       || ( mCapabilities & Qgis::AuthConfigurationStorageCapability::DeleteCertificateTrustPolicy ) )
   {
     mCapabilities |= Qgis::AuthConfigurationStorageCapability::ClearStorage;
   }
-
 }
 
 QgsAuthMethodConfig QgsAuthConfigurationStorageDb::loadMethodConfig( const QString &id, QString &payload, bool full ) const
@@ -1985,7 +2002,7 @@ bool QgsAuthConfigurationStorageDb::storeMethodConfig( const QgsAuthMethodConfig
     return false;
   }
 
-  if ( ! config.isValid( true ) )
+  if ( !config.isValid( true ) )
   {
     setError( tr( "Store config: FAILED because config is invalid" ), Qgis::MessageLevel::Warning );
     return false;
@@ -2103,8 +2120,7 @@ bool QgsAuthConfigurationStorageDb::storeAuthSetting( const QString &key, const 
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( u"INSERT INTO %1 (setting, value) VALUES (:setting, :value)"_s
-                 .arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
+  query.prepare( u"INSERT INTO %1 (setting, value) VALUES (:setting, :value)"_s.arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
   query.bindValue( u":setting"_s, key );
   query.bindValue( u":value"_s, value );
 
@@ -2222,7 +2238,6 @@ bool QgsAuthConfigurationStorageDb::authSettingExists( const QString &key ) cons
 }
 
 
-
 bool QgsAuthConfigurationStorageDb::clearTables( const QStringList &tables )
 {
   QMutexLocker locker( &mMutex );
@@ -2237,9 +2252,8 @@ bool QgsAuthConfigurationStorageDb::clearTables( const QStringList &tables )
 
   for ( const auto &table : std::as_const( tables ) )
   {
-
     // Check if the table exists
-    if ( ! tableExists( table ) )
+    if ( !tableExists( table ) )
     {
       setError( tr( "Failed to empty table '%1': table does not exist" ).arg( table ), Qgis::MessageLevel::Warning );
       continue;
@@ -2294,7 +2308,7 @@ bool QgsAuthConfigurationStorageDb::clearTables( const QStringList &tables )
 bool QgsAuthConfigurationStorageDb::tableExists( const QString &table ) const
 {
   QString schema { mConfiguration.value( u"schema"_s ).toString() };
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
     schema += '.';
   }
@@ -2313,16 +2327,14 @@ const QMap<QString, QVariant> QgsAuthConfigurationStorageDb::uriToSettings( cons
     settings.insert( u"port"_s, QString::number( url.port() ) );
     QString path { url.path() };
     // Remove leading slash from the path unless the driver is QSQLITE or QSPATIALITE
-    if ( path.startsWith( '/'_L1 ) &&
-         !( settings.value( u"driver"_s ) == "QSQLITE"_L1 ||
-            settings.value( u"driver"_s ) == "QSPATIALITE"_L1 ) )
+    if ( path.startsWith( '/'_L1 ) && !( settings.value( u"driver"_s ) == "QSQLITE"_L1 || settings.value( u"driver"_s ) == "QSPATIALITE"_L1 ) )
     {
       path = path.mid( 1 );
     }
     settings.insert( u"database"_s, path );
     settings.insert( u"user"_s, url.userName() );
     settings.insert( u"password"_s, url.password() );
-    QUrlQuery query{ url };
+    QUrlQuery query { url };
 
     // Extract the schema from the query string
     QString schemaName { query.queryItemValue( u"schema"_s ) };
@@ -2331,7 +2343,7 @@ const QMap<QString, QVariant> QgsAuthConfigurationStorageDb::uriToSettings( cons
       schemaName = query.queryItemValue( u"SCHEMA"_s );
     }
 
-    if ( ! schemaName.isEmpty() )
+    if ( !schemaName.isEmpty() )
     {
       settings.insert( u"schema"_s, schemaName );
       query.removeAllQueryItems( u"schema"_s );
@@ -2345,7 +2357,7 @@ const QMap<QString, QVariant> QgsAuthConfigurationStorageDb::uriToSettings( cons
 
 bool QgsAuthConfigurationStorageDb::clearMethodConfigs()
 {
-  if ( clearTables( {{ methodConfigTableName( ) }} ) )
+  if ( clearTables( { { methodConfigTableName() } } ) )
   {
     emit methodConfigChanged();
     return true;
@@ -2358,20 +2370,13 @@ bool QgsAuthConfigurationStorageDb::clearMethodConfigs()
 
 bool QgsAuthConfigurationStorageDb::erase()
 {
-
   checkCapability( Qgis::AuthConfigurationStorageCapability::ClearStorage );
 
-  if ( clearTables( {{
-    methodConfigTableName(),
-      authSettingsTableName(),
-      certIdentityTableName(),
-      sslCertCustomConfigTableName(),
-      certAuthorityTableName(),
-      certTrustPolicyTableName(),
-      masterPasswordTableName()
-    }} ) )
+  if ( clearTables(
+         { { methodConfigTableName(), authSettingsTableName(), certIdentityTableName(), sslCertCustomConfigTableName(), certAuthorityTableName(), certTrustPolicyTableName(), masterPasswordTableName() } }
+       ) )
   {
-    emit storageChanged( id( ) );
+    emit storageChanged( id() );
     return true;
   }
   else

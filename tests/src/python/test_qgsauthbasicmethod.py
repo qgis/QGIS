@@ -12,15 +12,15 @@ the Free Software Foundation; either version 2 of the License, or
 import base64
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QFileInfo, QUrl
-from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QFileInfo, QUrl
+from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.testing import QgisTestCase, start_app
 
 AUTHDBDIR = tempfile.mkdtemp()
 os.environ["QGIS_AUTH_DB_DIR_PATH"] = AUTHDBDIR
@@ -34,7 +34,6 @@ qgis_app = start_app()
 
 
 class TestAuthManager(QgisTestCase):
-
     @classmethod
     def setUpAuth(cls, username, password):
         """Run before all tests and set up authentication"""

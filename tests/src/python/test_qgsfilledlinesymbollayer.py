@@ -19,24 +19,24 @@ __author__ = "Nyall Dawson"
 __date__ = "November 2023"
 __copyright__ = "(C) 2023, Nyall Dawson"
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
+import unittest
+
 from qgis.core import (
+    QgsCentroidFillSymbolLayer,
     QgsFeature,
+    QgsFilledLineSymbolLayer,
+    QgsFillSymbol,
     QgsGeometry,
     QgsLineSymbol,
     QgsMapSettings,
-    QgsRenderContext,
-    QgsFilledLineSymbolLayer,
-    QgsFillSymbol,
-    QgsSimpleFillSymbolLayer,
     QgsMarkerSymbol,
+    QgsRenderContext,
+    QgsSimpleFillSymbolLayer,
     QgsSimpleMarkerSymbolLayer,
-    QgsCentroidFillSymbolLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -44,7 +44,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsFilledLineSymbolLayer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_filledline"

@@ -22,6 +22,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsValueMapConfigDlg : public QObject
 {
     Q_OBJECT
@@ -51,12 +55,10 @@ void TestQgsValueMapConfigDlg::cleanupTestCase()
 }
 
 void TestQgsValueMapConfigDlg::init()
-{
-}
+{}
 
 void TestQgsValueMapConfigDlg::cleanup()
-{
-}
+{}
 
 void TestQgsValueMapConfigDlg::testLoadFromCSV()
 {

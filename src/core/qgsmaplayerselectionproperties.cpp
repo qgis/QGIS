@@ -21,5 +21,4 @@
 
 QgsMapLayerSelectionProperties::QgsMapLayerSelectionProperties( QObject *parent )
   : QObject( parent )
-{
-}
+{}

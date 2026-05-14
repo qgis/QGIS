@@ -36,10 +36,24 @@
 #include <QColorDialog>
 #include <QDialogButtonBox>
 #include <QFontDatabase>
+#include <QString>
 
 #include "moc_qgslabelpropertydialog.cpp"
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
+using namespace Qt::StringLiterals;
+
+QgsLabelPropertyDialog::QgsLabelPropertyDialog(
+  const QString &layerId,
+  const QString &providerId,
+  QgsFeatureId featureId,
+  const QFont &labelFont,
+  const QString &labelText,
+  bool isPinned,
+  const QgsPalLayerSettings &layerSettings,
+  QgsMapCanvas *canvas,
+  QWidget *parent,
+  Qt::WindowFlags f
+)
   : QDialog( parent, f )
   , mCanvas( canvas )
   , mLabelFont( labelFont )
@@ -49,7 +63,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   QgsGui::enableAutoGeometryRestore( this );
 
   // set defaults to layer defaults
-  mLabelAllPartsCheckBox->setChecked( layerSettings.labelPerPart );
+  mLabelAllPartsCheckBox->setChecked( layerSettings.placementSettings().multiPartBehavior() == Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel );
 
   connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsLabelPropertyDialog::buttonBox_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelPropertyDialog::showHelp );

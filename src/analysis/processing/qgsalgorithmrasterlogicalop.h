@@ -18,12 +18,13 @@
 #ifndef QGSALGORITHMRASTERLOGICALOP_H
 #define QGSALGORITHMRASTERLOGICALOP_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsrasteranalysisutils.h"
 #include "qgsrasterprojector.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

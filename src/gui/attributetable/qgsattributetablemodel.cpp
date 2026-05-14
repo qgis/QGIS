@@ -38,10 +38,13 @@
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
 #include <QUuid>
 #include <QVariant>
 
 #include "moc_qgsattributetablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent )
   : QAbstractTableModel( parent )
@@ -673,7 +676,9 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !mLayer || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::ToolTipRole && role != Qt::EditRole && role != static_cast<int>( CustomRole::FeatureId ) && role != static_cast<int>( CustomRole::FieldIndex ) && role != Qt::BackgroundRole && role != Qt::ForegroundRole && role != Qt::DecorationRole && role != Qt::FontRole && role < static_cast<int>( CustomRole::Sort ) ) )
+  if ( !index.isValid()
+       || !mLayer
+       || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::ToolTipRole && role != Qt::EditRole && role != static_cast<int>( CustomRole::FeatureId ) && role != static_cast<int>( CustomRole::FieldIndex ) && role != Qt::BackgroundRole && role != Qt::ForegroundRole && role != Qt::DecorationRole && role != Qt::FontRole && role < static_cast<int>( CustomRole::Sort ) ) )
     return QVariant();
 
   const QgsFeatureId rowId = rowToId( index.row() );
@@ -806,7 +811,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       {
         if ( role == Qt::BackgroundRole && style.validBackgroundColor() )
           return style.backgroundColor();
-        if ( role == Qt::ForegroundRole )
+        if ( role == Qt::ForegroundRole && style.validTextColor() )
           return style.textColor();
         if ( role == Qt::DecorationRole )
           return style.icon();
@@ -1046,7 +1051,9 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
     widgetData = getWidgetData( cache.sortFieldIndex );
   }
 
-  const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest ).setFlags( cache.sortCacheExpression.needsGeometry() ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( cache.sortCacheAttributes );
+  const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
+                                      .setFlags( cache.sortCacheExpression.needsGeometry() ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry )
+                                      .setSubsetOfAttributes( cache.sortCacheAttributes );
 
   QgsFeatureIterator it = mLayerCache->getFeatures( request );
 

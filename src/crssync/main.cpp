@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsconfig.h"
 
 #include <cpl_error.h>
 #include <iostream>
@@ -24,18 +23,17 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 
-#include <QRegExp>
 #include <QSettings>
+#include <QString>
 #include <QTemporaryDir>
+
+using namespace Qt::StringLiterals;
 
 void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 {
   Q_UNUSED( errClass )
-  const QRegExp re( "EPSG PCS/GCS code \\d+ not found in EPSG support files.  Is this a valid\nEPSG coordinate system?" );
-  if ( errNo != 6 && !re.exactMatch( msg ) )
-  {
-    std::cerr << msg;
-  }
+  Q_UNUSED( errNo )
+  std::cerr << msg;
 }
 
 int main( int argc, char **argv )

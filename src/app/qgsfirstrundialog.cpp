@@ -17,7 +17,11 @@
 
 #include "qgis.h"
 
+#include <QString>
+
 #include "moc_qgsfirstrundialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent )
   : QDialog( parent )

@@ -26,8 +26,7 @@ QgsSensorThingsConnectionPropertiesTask::QgsSensorThingsConnectionPropertiesTask
   : QgsTask( tr( "Querying SensorThings connection" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
   , mUri( uri )
   , mEntity( entity )
-{
-}
+{}
 
 bool QgsSensorThingsConnectionPropertiesTask::run()
 {

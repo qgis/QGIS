@@ -56,9 +56,12 @@
 #include <QPoint>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QString>
 #include <QToolTip>
 
 #include "moc_characterwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 CharacterWidget::CharacterWidget( QWidget *parent )
   : QWidget( parent )

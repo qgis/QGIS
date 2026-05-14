@@ -22,6 +22,9 @@
 #include "qgsunittypes.h"
 
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 Qgis::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
@@ -88,7 +91,6 @@ QgsRectangle QgsXmlUtils::readRectangle( const QDomElement &element )
 
   return aoi;
 }
-
 
 
 QDomElement QgsXmlUtils::writeMapUnits( Qgis::DistanceUnit units, QDomDocument &doc )
@@ -288,8 +290,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       }
       else
       {
-        Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", u"unsupported %1variant type %2"_s
-                    .arg( value.userType() >= QMetaType::Type::User ? "user " : QString() ).arg( value.metaType().name() ).toLocal8Bit() );
+        Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", u"unsupported %1variant type %2"_s.arg( value.userType() >= QMetaType::Type::User ? "user " : QString() ).arg( value.metaType().name() ).toLocal8Bit() );
       }
       break;
   }

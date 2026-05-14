@@ -41,10 +41,7 @@ class QgsTableEditorTextEdit : public QPlainTextEdit
      */
     void setWeakEditorMode( bool weakEditorMode );
 
-    void setWidgetOwnsGeometry( bool value )
-    {
-      mWidgetOwnsGeometry = value;
-    }
+    void setWidgetOwnsGeometry( bool value ) { mWidgetOwnsGeometry = value; }
 
   public slots:
 

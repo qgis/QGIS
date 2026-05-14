@@ -11,15 +11,15 @@ __date__ = "18/4/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 
-from qgis.core import QgsEllipsoidUtils
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsEllipsoidUtils
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsEllipsoidUtils(QgisTestCase):
-
     def testParams(self):
         """
         Test fetching ellipsoid parameters

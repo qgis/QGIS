@@ -29,7 +29,6 @@ also available.
 %End
   public:
 
-
  virtual bool isFilterThreadSafe() const /Deprecated="Since 4.0. "/;
 %Docstring
 Returns ``True`` if the filterFeature function is thread safe, which

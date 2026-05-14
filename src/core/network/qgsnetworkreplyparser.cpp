@@ -28,10 +28,13 @@
 
 #include "moc_qgsnetworkreplyparser.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   : mReply( reply )
 {
-  if ( !mReply ) return;
+  if ( !mReply )
+    return;
 
   // Content type examples:
   //   multipart/mixed; boundary=wcs
@@ -109,7 +112,8 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       {
         if ( part.at( pos ) == '\n' && ( part.at( pos + 1 ) == '\n' || part.at( pos + 1 ) == '\r' ) )
         {
-          if ( part.at( pos + 1 ) == '\r' ) pos++;
+          if ( part.at( pos + 1 ) == '\r' )
+            pos++;
           pos += 2;
           break;
         }
@@ -140,7 +144,8 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
 
 bool QgsNetworkReplyParser::isMultipart( QNetworkReply *reply )
 {
-  if ( !reply ) return false;
+  if ( !reply )
+    return false;
 
   const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
   QgsDebugMsgLevel( "contentType: " + contentType, 2 );

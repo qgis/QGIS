@@ -73,17 +73,13 @@ QgsHanaConnectionPool::~QgsHanaConnectionPool()
 
 QgsHanaConnectionRef::QgsHanaConnectionRef( const QgsDataSourceUri &uri )
 {
-  mConnection = std::unique_ptr<QgsHanaConnection>(
-    QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( uri ) )
-  );
+  mConnection = std::unique_ptr<QgsHanaConnection>( QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( uri ) ) );
 }
 
 QgsHanaConnectionRef::QgsHanaConnectionRef( const QString &name )
 {
   QgsHanaSettings settings( name, true );
-  mConnection = std::unique_ptr<QgsHanaConnection>(
-    QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( settings.toDataSourceUri() ) )
-  );
+  mConnection = std::unique_ptr<QgsHanaConnection>( QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( settings.toDataSourceUri() ) ) );
 }
 
 QgsHanaConnectionRef::~QgsHanaConnectionRef()

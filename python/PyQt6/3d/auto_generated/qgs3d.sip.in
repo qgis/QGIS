@@ -10,6 +10,8 @@
 
 
 
+
+
 class Qgs3D
 {
 %Docstring(signature="appended")
@@ -23,6 +25,7 @@ related to 3D classes.
 #include "qgs3d.h"
 %End
   public:
+
 
     static Qgs3D *instance();
 %Docstring
@@ -45,6 +48,7 @@ Returns the material registry, used for managing 3D materials.
 %Docstring
 Returns the terrain registry, used for managing 3D terrains.
 %End
+
 
   private:
     Qgs3D( const Qgs3D &other );

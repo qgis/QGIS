@@ -18,8 +18,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QColorDialog>
+#include <QString>
 
 #include "moc_qgsarrowsymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )

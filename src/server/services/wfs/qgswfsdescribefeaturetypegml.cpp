@@ -28,13 +28,19 @@
 #include "qgswfsparameters.h"
 #include "qgswfsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace QgsWfs;
 
 QgsWfsDescribeFeatureTypeGml::QgsWfsDescribeFeatureTypeGml( const QgsWfsParameters wfsParams )
   : wfsParameters( wfsParams )
 {}
 
-void QgsWfsDescribeFeatureTypeGml::writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response ) const
+void QgsWfsDescribeFeatureTypeGml::writeDescribeFeatureType(
+  QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response
+) const
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsAccessControl *accessControl = serverIface->accessControls();

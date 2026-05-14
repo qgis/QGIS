@@ -20,9 +20,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgssearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilterFlags()
 {
@@ -45,8 +48,7 @@ QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilte
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::nonExclusiveFilterFlags()
 {
-  return QList<FilterFlag>()
-         << CaseInsensitive;
+  return QList<FilterFlag>() << CaseInsensitive;
 }
 
 QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag flag )
@@ -91,8 +93,7 @@ QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx
   : QgsWidgetWrapper( vl, nullptr, parent )
   , mExpression( QString() )
   , mFieldIdx( fieldIdx )
-{
-}
+{}
 
 QgsSearchWidgetWrapper::FilterFlags QgsSearchWidgetWrapper::supportedFlags() const
 {

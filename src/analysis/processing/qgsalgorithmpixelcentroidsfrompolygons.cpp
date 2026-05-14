@@ -20,6 +20,10 @@
 #include "qgsgeos.h"
 #include "qgsrasteranalysisutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPixelCentroidsFromPolygonsAlgorithm::name() const
@@ -49,8 +53,10 @@ QString QgsPixelCentroidsFromPolygonsAlgorithm::groupId() const
 
 QString QgsPixelCentroidsFromPolygonsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm generates pixel centroids for the raster area falling inside polygons. Used to generate points "
-                      "for further raster sampling." );
+  return QObject::tr(
+    "This algorithm generates pixel centroids for the raster area falling inside polygons. Used to generate points "
+    "for further raster sampling."
+  );
 }
 
 QString QgsPixelCentroidsFromPolygonsAlgorithm::shortDescription() const
