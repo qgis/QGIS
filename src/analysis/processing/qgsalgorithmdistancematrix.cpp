@@ -134,6 +134,19 @@ bool QgsDistanceMatrixAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
   mSourceField = parameterAsString( parameters, u"INPUT_FIELD"_s, context );
   mTargetField = parameterAsString( parameters, u"TARGET_FIELD"_s, context );
+
+  const int sourceFieldIndex = mSource->fields().lookupField( mSourceField );
+  if ( sourceFieldIndex < 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Missing field %1 in source layer" ).arg( mSourceField ) );
+  }
+
+  const int targetFieldIndex = mTarget->fields().lookupField( mTargetField );
+  if ( targetFieldIndex < 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Missing field %1 in target layer" ).arg( mTargetField ) );
+  }
+
   mMatrixType = static_cast<MatrixType>( parameterAsEnum( parameters, u"MATRIX_TYPE"_s, context ) );
   mSameLayer = ( parameters.value( u"INPUT"_s ) == parameters.value( u"TARGET"_s ) );
 
