@@ -137,9 +137,6 @@ vec4 classification()
 
 void main(void)
 {
-#ifdef STYLE_NO_RENDERING
-  color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-#endif
 #ifdef STYLE_SINGLE_COLOR
     color = vec4(u_singleColor, 1.0f);
 #endif
