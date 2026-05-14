@@ -155,7 +155,7 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      *
      * The \a flags argument controls which per-instance attributes are active.
      *
-     * The default implementation returns nullptr.
+     * The default implementation returns NULLPTR.
      *
      * Subclasses that support instancing must override this method to construct the material with the
      * correct shader from the start.
