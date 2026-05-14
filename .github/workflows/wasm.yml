@@ -41,7 +41,7 @@ jobs:
           persist-credentials: false
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@ea83089aa35e08e459464341fe24ad024ee2466f # latest
+        uses: lukka/get-cmake@7bfc9baacbbdcb5e37957ad05c3546b3e222be3c # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098

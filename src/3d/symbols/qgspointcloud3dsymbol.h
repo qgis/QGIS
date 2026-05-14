@@ -165,6 +165,16 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 
     void copyBaseSettings( QgsAbstract3DSymbol *destination ) const override;
 
+    /**
+     * This function has no effect.
+     *
+     * This function performs no operation and always throws an exception
+     * when called.
+     *
+     * \throws QgsSettingsException
+     */
+    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER ) override SIP_SKIP;
+
   protected:
     float mPointSize = 3.0;
     bool mRenderAsTriangles = false;

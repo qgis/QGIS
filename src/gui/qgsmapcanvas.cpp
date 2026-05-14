@@ -52,6 +52,7 @@ email                : sherman at mrcc.com
 #include "qgsmapthemecollection.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptopixel.h"
+#include "qgsmessagebar.h"
 #include "qgsmessagelog.h"
 #include "qgsmimedatautils.h"
 #include "qgsoverlaywidgetlayout.h"
@@ -73,6 +74,7 @@ email                : sherman at mrcc.com
 #include "qgssymbollayerutils.h"
 #include "qgstemporalcontroller.h"
 #include "qgstemporalnavigationobject.h"
+#include "qgsuserinputwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
@@ -525,7 +527,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 
   // try to reproject current extent to the new one
   QgsRectangle rect;
-  if ( !mSettings.visibleExtent().isEmpty() )
+  if ( !mSettings.visibleExtent().isEmpty() && crs.isSameCelestialBody( mSettings.destinationCrs() ) )
   {
     const QgsCoordinateTransform
       transform( mSettings.destinationCrs(), crs, QgsProject::instance(), Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate | Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
@@ -1064,6 +1066,26 @@ void QgsMapCanvas::setStatusBar( QgsStatusBar *bar )
   mStatusBar = bar;
 }
 
+void QgsMapCanvas::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsMapCanvas::messageBar()
+{
+  return mMessageBar.data();
+}
+
+void QgsMapCanvas::setUserInputWidget( QgsUserInputWidget *userInputWidget )
+{
+  mUserInputWidget = userInputWidget;
+}
+
+QgsUserInputWidget *QgsMapCanvas::userInputWidget()
+{
+  return mUserInputWidget.data();
+}
+
 bool QgsMapCanvas::previewJobsEnabled() const
 {
   return mUsePreviewJobs;
@@ -1281,7 +1303,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
   addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), mSettings.destinationCrs() );
   QgsCoordinateReferenceSystem wgs84( u"EPSG:4326"_s );
-  if ( mSettings.destinationCrs() != wgs84 )
+  if ( mSettings.destinationCrs() != wgs84 && mSettings.destinationCrs().isSameCelestialBody( wgs84 ) )
     addCoordinateFormat( wgs84.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ), wgs84 );
 
   QgsSettings settings;
@@ -1946,6 +1968,48 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
   zoomToFeatureExtent( selectionExtent );
 }
 
+void QgsMapCanvas::zoomToLayers( const QList<QgsMapLayer *> &layers )
+{
+  QgsRectangle extent;
+  extent.setNull();
+
+  for ( QgsMapLayer *mapLayer : layers )
+  {
+    QgsRectangle layerExtent = mapLayer->extent();
+
+    QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+    if ( vLayer )
+    {
+      if ( vLayer->geometryType() == Qgis::GeometryType::Null )
+        continue;
+
+      if ( layerExtent.isEmpty() )
+      {
+        vLayer->updateExtents();
+        layerExtent = vLayer->extent();
+      }
+    }
+
+    if ( layerExtent.isNull() )
+      continue;
+
+    //transform extent
+    layerExtent = mapSettings().layerExtentToOutputExtent( mapLayer, layerExtent );
+
+    extent.combineExtentWith( layerExtent );
+  }
+
+  if ( extent.isNull() )
+    return;
+
+  // Increase bounding box with 5%, so that layer is a bit inside the borders
+  extent.scale( 1.05 );
+
+  //zoom to bounding box
+  setExtent( extent, true );
+  refresh();
+}
+
 QgsDoubleRange QgsMapCanvas::zRange() const
 {
   return mSettings.zRange();
@@ -2281,9 +2345,6 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
     else
     {
       rb->setStrokeColor( c );
-      QColor c = rb->secondaryStrokeColor();
-      c.setAlpha( c.alpha() );
-      rb->setSecondaryStrokeColor( c );
     }
     rb->update();
   } );

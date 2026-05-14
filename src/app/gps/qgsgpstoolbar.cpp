@@ -202,6 +202,9 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [this]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
   setAddVertexButtonEnabled( !QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
 
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGpsToolBar::onCanvasCrsChanged );
+  onCanvasCrsChanged();
+
   adjustSize();
 }
 
@@ -508,4 +511,18 @@ void QgsGpsToolBar::adjustSize()
     setFixedWidth( sizeHint().width() );
   else
     setFixedWidth( QWIDGETSIZE_MAX );
+}
+
+void QgsGpsToolBar::onCanvasCrsChanged()
+{
+  if ( mCanvas->mapSettings().destinationCrs().isEarthCrs() )
+  {
+    setEnabled( true );
+    setToolTip( tr( "GPS Toolbar" ) );
+  }
+  else
+  {
+    setEnabled( false );
+    setToolTip( tr( "GPS Toolbar is not available for non-Earth coordinate reference systems" ) );
+  }
 }

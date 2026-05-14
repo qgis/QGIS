@@ -4,6 +4,7 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
+      "featureType": "as-areas-short-name-query-copy",
       "geometry": null,
       "id": "as-areas-short-name-query-copy.18",
       "properties": {

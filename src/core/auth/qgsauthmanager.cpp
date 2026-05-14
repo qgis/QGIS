@@ -256,7 +256,9 @@ bool QgsAuthManager::ensureInitialized() const
 #endif
 }
 
+#ifdef HAVE_AUTH
 static char *sPassFileEnv = nullptr;
+#endif
 
 bool QgsAuthManager::initPrivate( const QString &pluginPath )
 {

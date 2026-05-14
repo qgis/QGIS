@@ -53,6 +53,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeDigitizing = treeRoot()->createChildNode( u"digitizing"_s );
     static inline QgsSettingsTreeNode *sTreeElevationProfile = treeRoot()->createChildNode( u"elevation-profile"_s );
     static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildNode( u"fonts"_s );
+    static inline QgsSettingsTreeNode *sTreeGdal = treeRoot()->createChildNode( u"gdal"_s );
     static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( u"geometry_validation"_s );
     static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildNode( u"gps"_s );
     static inline QgsSettingsTreeNode *sTreeGradientEditor = treeRoot()->createChildNode( u"gradient-editor"_s );
@@ -68,6 +69,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildNode( u"plugins"_s );
     static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildNode( u"processing"_s );
     static inline QgsSettingsTreeNode *sTreeProfile = treeRoot()->createChildNode( u"profile"_s );
+    static inline QgsSettingsTreeNode *sTreeProject = treeRoot()->createChildNode( u"project"_s );
     static inline QgsSettingsTreeNode *sTreeProxy = treeRoot()->createChildNode( u"proxy"_s );
     static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildNode( u"raster"_s );
     static inline QgsSettingsTreeNode *sTreeRendering = treeRoot()->createChildNode( u"rendering"_s );
@@ -95,13 +97,24 @@ class CORE_EXPORT QgsSettingsTree
     static const QgsSettingsTreeNode *node( const QString &key ) { return treeRoot()->childNode( key ); }
 
     /**
-     * Creates a settings tree node for the given \a pluginName
+     * Creates a settings tree node for the given \a pluginName.
+     *
+     * \note Since QGIS 4.2 for Python plugins, the node is created automatically by QGIS
+     * when the plugin is started and is exposed as the
+     * ``QGIS_PLUGIN_SETTINGS_NODE`` attribute on the plugin package.
+     * Plugin authors should retrieve it with
+     * ``from <my_plugin> import SETTINGS_NODE`` rather than
+     * calling this method directly.
      */
     static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );
 
 
     /**
-     * Unregisters the tree node for the given plugin
+     * Unregisters the tree node for the given plugin.
+     *
+     * \note Since QGIS 4.2 for Python plugins, the node is unregistered automatically by
+     * QGIS when the plugin is unloaded; plugins do not need to call this
+     * method themselves.
      */
     static void unregisterPluginTreeNode( const QString &pluginName );
 };

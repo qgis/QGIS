@@ -214,7 +214,7 @@ class QgsArcGisFeatureServiceItem : public QgsDataCollectionItem
 };
 
 /**
- * Represents a ArcGIS REST "Map Service" (or "Image Service") item.
+ * Represents a ArcGIS REST "Map Service" item.
  *
  * Usually has no child items, but sometimes services are nested and will contain other QgsArcGisMapServiceItem children
  * or QgsArcGisRestFolderItem children.
@@ -224,15 +224,7 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsArcGisMapServiceItem(
-      QgsDataItem *parent,
-      const QString &name,
-      const QString &path,
-      const QString &baseUrl,
-      const QString &authcfg,
-      const QgsHttpHeaders &headers,
-      const QString &urlPrefix,
-      Qgis::ArcGisRestServiceType serviceType,
-      bool forceRefresh
+      QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, bool forceRefresh
     );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
@@ -245,10 +237,36 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
     QString mUrlPrefix;
-    Qgis::ArcGisRestServiceType mServiceType = Qgis::ArcGisRestServiceType::Unknown;
     bool mForceRefresh = false;
     QgsMimeDataUtils::Uri mAllLayersMapServerUri;
 };
+
+
+/**
+ * Represents a ArcGIS REST "Image Service" item.
+ *
+ * Usually has no child items, but sometimes services are nested and will contain other QgsArcGisImageServiceItem children
+ * or QgsArcGisRestFolderItem children.
+ */
+class QgsArcGisImageServiceItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsArcGisImageServiceItem(
+      QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, bool forceRefresh
+    );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mFolder;
+    QString mBaseUrl;
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
+    bool mForceRefresh = false;
+};
+
 
 /**
  * Represents a ArcGIS REST "Scene Service"
@@ -347,7 +365,7 @@ class QgsArcGisFeatureServiceLayerItem : public QgsArcGisRestLayerItem
 };
 
 /**
- * Represents a ArcGIS REST "Map Service" (or "Image Service") layer item.
+ * Represents a ArcGIS REST "Map Service" layer item.
  */
 
 class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
@@ -376,6 +394,27 @@ class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
   private:
     QString mSupportedFormats;
     bool mIsMapServerWithQueryCapability = false;
+};
+
+
+/**
+ * Represents a ArcGIS REST "Image Service" layer item.
+ */
+
+class QgsArcGisImageServiceLayerItem : public QgsArcGisRestLayerItem
+{
+    Q_OBJECT
+
+  public:
+    QgsArcGisImageServiceLayerItem(
+      QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix
+    );
+
+    void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
+    QString supportedFormats() const { return mSupportedFormats; }
+
+  private:
+    QString mSupportedFormats;
 };
 
 /**

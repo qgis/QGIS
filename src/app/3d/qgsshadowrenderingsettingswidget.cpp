@@ -16,6 +16,8 @@
 #include "qgsshadowrenderingsettingswidget.h"
 
 #include "qgis.h"
+#include "qgs3d.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QCheckBox>
 #include <QLineEdit>
@@ -29,7 +31,6 @@ QgsShadowRenderingSettingsWidget::QgsShadowRenderingSettingsWidget( QWidget *par
 
   shadowRenderinMaximumDistanceSpinBox->setClearValue( 1500.00 );
   shadowBiasSpinBox->setClearValue( 0.000010 );
-  shadowMapResolutionSpinBox->setClearValue( 2048 );
 }
 
 void QgsShadowRenderingSettingsWidget::setShadowSettings( const QgsShadowSettings &shadowSettings )
@@ -37,7 +38,6 @@ void QgsShadowRenderingSettingsWidget::setShadowSettings( const QgsShadowSetting
   usedDirectionalLightComboBox->setCurrentIndex( shadowSettings.selectedDirectionalLight() );
   shadowRenderinMaximumDistanceSpinBox->setValue( shadowSettings.maximumShadowRenderingDistance() );
   shadowBiasSpinBox->setValue( shadowSettings.shadowBias() );
-  shadowMapResolutionSpinBox->setValue( shadowSettings.shadowMapResolution() );
 }
 
 QgsShadowSettings QgsShadowRenderingSettingsWidget::toShadowSettings()
@@ -46,7 +46,7 @@ QgsShadowSettings QgsShadowRenderingSettingsWidget::toShadowSettings()
   settings.setSelectedDirectionalLight( usedDirectionalLightComboBox->currentIndex() );
   settings.setMaximumShadowRenderingDistance( shadowRenderinMaximumDistanceSpinBox->value() );
   settings.setShadowBias( shadowBiasSpinBox->value() );
-  settings.setShadowMapResolution( shadowMapResolutionSpinBox->value() );
+  settings.setShadowQuality( Qgs3D::settingShadowQuality->value() );
   return settings;
 }
 

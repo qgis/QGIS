@@ -36,6 +36,7 @@
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryBool *QgsNewsFeedParser::settingsFeedDisabled = new QgsSettingsEntryBool( u"disabled"_s, sTreeNewsFeed, false, u"Whether the news feed is disabled"_s );
 const QgsSettingsEntryInteger64 *QgsNewsFeedParser::settingsFeedLastFetchTime
   = new QgsSettingsEntryInteger64( u"last-fetch-time"_s, sTreeNewsFeed, 0, u"Feed last fetch time"_s, Qgis::SettingsOptions(), 0 );
 const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedLanguage = new QgsSettingsEntryString( u"lang"_s, sTreeNewsFeed, QString(), u"Feed language"_s );
@@ -60,7 +61,7 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   , mFeedKey( keyForFeed( mBaseUrl ) )
 {
   // Synchronize enabled/disabled state
-  mEnabled = !QgsSettings().value( u"%1/disabled"_s.arg( mFeedKey ), false, QgsSettings::Core ).toBool();
+  mEnabled = !settingsFeedDisabled->value( mFeedKey );
 
   // first thing we do is populate with existing entries
   readStoredEntries();
@@ -119,7 +120,7 @@ void QgsNewsFeedParser::setEnabled( bool enabled )
   mEnabled = enabled;
   emit enabledChanged();
 
-  QgsSettings().setValue( u"%1/disabled"_s.arg( mFeedKey ), !mEnabled, QgsSettings::Core );
+  settingsFeedDisabled->setValue( !mEnabled, { mFeedKey } );
 }
 
 QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const

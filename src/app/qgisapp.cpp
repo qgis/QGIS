@@ -653,18 +653,18 @@ static QgsMessageOutput *messageOutputViewer_()
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
 {
-  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  const Qgis::UnknownLayerCrsBehavior mode = QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value();
   switch ( mode )
   {
-    case QgsOptions::UnknownLayerCrsBehavior::NoAction:
+    case Qgis::UnknownLayerCrsBehavior::NoAction:
       return;
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
-      srs.createFromOgcWmsCrs( QgsSettings().value( u"Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString() );
+    case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
+      srs.createFromOgcWmsCrs( QgsSettingsRegistryCore::settingsLayerDefaultCrs->value() );
       break;
 
-    case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
-    case QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs:
+    case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseProjectCrs:
       // can't take any action immediately for these -- we may be in a background thread
       break;
   }
@@ -910,21 +910,21 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 {
   static QString sAuthId = QString();
 
-  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  const Qgis::UnknownLayerCrsBehavior mode = QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value();
   switch ( mode )
   {
-    case QgsOptions::UnknownLayerCrsBehavior::NoAction:
+    case Qgis::UnknownLayerCrsBehavior::NoAction:
       break;
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
     {
-      srs.createFromOgcWmsCrs( QgsSettings().value( u"Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettingsRegistryCore::settingsLayerDefaultCrs->value() );
       sAuthId = srs.authid();
       visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::MessageLevel::Warning );
       break;
     }
 
-    case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
+    case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
     {
       // \note this class is not a descendent of QWidget so we can't pass
       // it in the ctor of the layer projection selector
@@ -964,7 +964,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       break;
     }
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseProjectCrs:
     {
       // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
       srs = QgsProject::instance()->crs();
@@ -1033,9 +1033,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 
-  QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea dockArea, QDockWidget *dock, const QStringList &tabSiblings, bool raiseTab ) {
-    QgisApp::instance()->addTabifiedDockWidget( dockArea, dock, tabSiblings, raiseTab );
-  };
   QgsDockableWidgetHelper::sAppStylesheetFunction = []() -> QString { return QgisApp::instance()->styleSheet(); };
   QgsDockableWidgetHelper::sOwnerWindow = QgisApp::instance();
 
@@ -1138,6 +1135,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mUserInputDockWidget->setAnchorWidget( mMapCanvas );
   mUserInputDockWidget->setAnchorWidgetPoint( QgsFloatingWidget::TopRight );
   mUserInputDockWidget->setAnchorPoint( QgsFloatingWidget::TopRight );
+
+  mMapCanvas->setUserInputWidget( mUserInputDockWidget );
 
   endProfile();
 
@@ -1245,6 +1244,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
   mMapCanvas->setStatusBar( mStatusBar );
+  mMapCanvas->setMessageBar( mInfoBar );
 
   applyDefaultSettingsToCanvas( mMapCanvas );
 
@@ -2113,6 +2113,9 @@ QgisApp::QgisApp()
 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+
+  mMapCanvas->setUserInputWidget( mUserInputDockWidget );
+  mMapCanvas->setMessageBar( mInfoBar );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
   // More tests may need more members to be initialized
@@ -4645,22 +4648,9 @@ void QgisApp::createOverview()
   mLayerTreeCanvasBridge->setOverviewCanvas( mOverviewCanvas );
 }
 
-void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget *thepDockWidget )
+void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget )
 {
-  QMainWindow::addDockWidget( area, thepDockWidget );
-  // Make the right and left docks consume all vertical space and top
-  // and bottom docks nest between them
-  setCorner( Qt::TopLeftCorner, Qt::LeftDockWidgetArea );
-  setCorner( Qt::BottomLeftCorner, Qt::LeftDockWidgetArea );
-  setCorner( Qt::TopRightCorner, Qt::RightDockWidgetArea );
-  setCorner( Qt::BottomRightCorner, Qt::RightDockWidgetArea );
-  // add to the Panel submenu
-  mPanelMenu->addAction( thepDockWidget->toggleViewAction() );
-
-  thepDockWidget->show();
-
-  // refresh the map canvas
-  refreshMapCanvas();
+  QgsGuiUtils::addDockWidget( this, area, dockWidget );
 }
 
 void QgisApp::removeDockWidget( QDockWidget *thepDockWidget )
@@ -4743,6 +4733,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   mapCanvas->setObjectName( name );
   mapCanvas->setProject( QgsProject::instance() );
   mapCanvas->setStatusBar( mStatusBar );
+  mapCanvas->setMessageBar( mInfoBar );
 
   connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );
@@ -12825,6 +12816,12 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     for ( Qgs3DMapCanvasWidget *canvas3D : std::as_const( mOpen3DMapViews ) )
     {
       canvas3D->measurementLineTool()->updateSettings();
+      canvas3D->mapCanvas3D()->mapSettings()->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+      canvas3D->mapCanvas3D()->mapSettings()->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
+
+      QgsShadowSettings shadowSettings = canvas3D->mapCanvas3D()->mapSettings()->shadowSettings();
+      shadowSettings.setShadowQuality( Qgs3D::settingShadowQuality->value() );
+      canvas3D->mapCanvas3D()->mapSettings()->setShadowSettings( shadowSettings );
     }
 #endif
 
@@ -13589,6 +13586,11 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
     map->setProjectionType( defaultProjection );
     map->setFieldOfView( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
+    map->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+    map->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
+    QgsShadowSettings shadowSettings = map->shadowSettings();
+    shadowSettings.setShadowQuality( Qgs3D::settingShadowQuality->value() );
+    map->setShadowSettings( shadowSettings );
 
     map->setTransformContext( QgsProject::instance()->transformContext() );
     map->setPathResolver( QgsProject::instance()->pathResolver() );
@@ -16540,6 +16542,11 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
   map->setSelectionColor( mMapCanvas->selectionColor() );
   map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+  map->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+  map->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
+  QgsShadowSettings shadowSettings = map->shadowSettings();
+  shadowSettings.setShadowQuality( Qgs3D::settingShadowQuality->value() );
+  map->setShadowSettings( shadowSettings );
 
   QgsVector3D savedOrigin = map->origin();
 
@@ -17629,86 +17636,7 @@ void QgisApp::triggerCrashHandler()
 
 void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith, bool raiseTab )
 {
-  QList<QDockWidget *> dockWidgetsInArea;
-  const QList<QDockWidget *> allDockWidgets = findChildren<QDockWidget *>();
-  for ( QDockWidget *w : allDockWidgets )
-  {
-    if ( w->isVisible() && dockWidgetArea( w ) == area )
-    {
-      dockWidgetsInArea << w;
-    }
-  }
-
-  addDockWidget( area, dockWidget ); // First add the dock widget, then attempt to tabify
-  if ( dockWidgetsInArea.empty() )
-    return;
-
-  // Get the base dock widget that we'll use to tabify our new dockWidget
-  QDockWidget *tabifyWithDockWidget = nullptr;
-  for ( const QString &targetName : tabifyWith )
-  {
-    auto it = std::find_if( dockWidgetsInArea.begin(), dockWidgetsInArea.end(), [&targetName]( QDockWidget *cw ) {
-      return cw->objectName() == targetName || cw->property( "dock_uuid" ).toString() == targetName;
-    } );
-
-    if ( it != dockWidgetsInArea.end() )
-    {
-      tabifyWithDockWidget = *it;
-      break;
-    }
-  }
-
-  if ( !tabifyWithDockWidget )
-  {
-    // fallback to the first available dock widget if no matches were found, or if no tabifyWith names were specified
-    tabifyWithDockWidget = dockWidgetsInArea.at( 0 );
-  }
-  if ( tabifyWithDockWidget == dockWidget )
-    return;
-
-  // find the currently active dock widget so that we can restore that if we're not raising the new tab
-  QTabBar *existingTabBar = nullptr;
-  int currentTabIndex = -1;
-  if ( !raiseTab && dockWidgetsInArea.length() > 1 )
-  {
-    // Chances are we've already got a tabBar, if so, get
-    // currentTabIndex to restore status after inserting our new tab
-    const QList<QTabBar *> tabBars = findChildren<QTabBar *>( QString(), Qt::FindDirectChildrenOnly );
-    bool tabBarFound = false;
-    for ( QTabBar *tabBar : tabBars )
-    {
-      for ( int i = 0; i < tabBar->count(); i++ )
-      {
-        if ( tabBar->tabText( i ) == tabifyWithDockWidget->windowTitle() )
-        {
-          existingTabBar = tabBar;
-          currentTabIndex = tabBar->currentIndex();
-          tabBarFound = true;
-          break;
-        }
-      }
-      if ( tabBarFound )
-      {
-        break;
-      }
-    }
-  }
-
-  // Now we can put the new dockWidget on top of tabifyWith
-  tabifyDockWidget( tabifyWithDockWidget, dockWidget );
-
-  // Should we restore dock widgets status?
-  if ( !raiseTab )
-  {
-    if ( existingTabBar )
-    {
-      existingTabBar->setCurrentIndex( currentTabIndex );
-    }
-    else
-    {
-      tabifyWithDockWidget->raise(); // Single base dock widget, we can just raise it
-    }
-  }
+  QgsGuiUtils::addTabifiedDockWidget( this, area, dockWidget, tabifyWith, raiseTab );
 }
 
 QgsAttributeEditorContext QgisApp::createAttributeEditorContext()

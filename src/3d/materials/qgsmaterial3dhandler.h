@@ -33,15 +33,13 @@ class QgsReadWriteContext;
 class QgsLineMaterial;
 class QgsExpressionContext;
 class QgsAbstractMaterialSettings;
+class Qgs3DRenderContext;
 
 namespace Qt3DCore
 {
   class QGeometry;
 }
-namespace Qt3DExtras
-{
-  class Qt3DWindow;
-}
+
 
 /**
  * \ingroup qgis_3d
@@ -55,6 +53,13 @@ namespace Qt3DExtras
 class _3D_EXPORT QgsMaterialContext
 {
   public:
+    /**
+     * Constructs a material context from the settings in a 3D render \a context.
+     *
+     * \since QGIS 4.2
+    */
+    static QgsMaterialContext fromRenderContext( const Qgs3DRenderContext &context );
+
     /**
      * Returns TRUE if the material should represent a selected state.
      *
@@ -99,11 +104,28 @@ class _3D_EXPORT QgsMaterialContext
      */
     void setIsHighlighted( bool isHighlighted ) { mIsHighlighted = isHighlighted; }
 
+    /**
+     * Returns the texture filtering quality.
+     *
+     * \see setTextureFilterQuality()
+     * \since QGIS 4.2
+     */
+    Qgis::TextureFilterQuality textureFilterQuality() const { return mTextureFilterQuality; }
+
+    /**
+     * Sets the texture filtering \a quality.
+     *
+     * \see textureFilterQuality()
+     * \since QGIS 4.2
+     */
+    void setTextureFilterQuality( Qgis::TextureFilterQuality quality ) { mTextureFilterQuality = quality; }
+
   private:
     bool mIsSelected = false;
     bool mIsHighlighted = false;
 
     QColor mSelectedColor;
+    Qgis::TextureFilterQuality mTextureFilterQuality = Qgis::TextureFilterQuality::Trilinear;
 };
 
 
@@ -192,9 +214,7 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      *
      * This method can be overridden to customize the lighting or mesh for a specific material.
      */
-    virtual Qt3DCore::QEntity *createPreviewScene(
-      const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent
-    ) const;
+    virtual Qt3DCore::QEntity *createPreviewScene( const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, QWindow *window, Qt3DCore::QEntity *parent ) const;
 
     /**
      * Updates an existing material preview scene with new material \a settings.

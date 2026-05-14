@@ -71,9 +71,21 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsCanvasBridge::gpsSettingsChanged );
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] {
-    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    if ( mCanvas->mapSettings().destinationCrs().isEarthCrs() )
+    {
+      mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    }
+    else
+    {
+      if ( mConnection->isConnected() )
+      {
+        mConnection->disconnectGps();
+      }
+    }
   } );
+
   connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] {
     mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   } );

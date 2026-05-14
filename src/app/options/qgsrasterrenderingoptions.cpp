@@ -116,43 +116,35 @@ void QgsRasterRenderingOptionsWidget::apply()
 
 void QgsRasterRenderingOptionsWidget::initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal )
 {
-  QgsSettings settings;
-
   //add items to the color enhanceContrast combo boxes
   cbox->addItem( tr( "No Stretch" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::NoEnhancement ) );
   cbox->addItem( tr( "Stretch to MinMax" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchToMinimumMaximum ) );
   cbox->addItem( tr( "Stretch and Clip to MinMax" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ) );
   cbox->addItem( tr( "Clip to MinMax" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::ClipToMinimumMaximum ) );
 
-  QString contrastEnhancement = settings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();
+  const QString contrastEnhancement = QgsRasterLayer::settingsRasterDefaultContrastEnhancementAlgorithm->valueWithDefaultOverride( defaultVal, { name } );
   cbox->setCurrentIndex( cbox->findData( contrastEnhancement ) );
 }
 
 void QgsRasterRenderingOptionsWidget::saveContrastEnhancement( QComboBox *cbox, const QString &name )
 {
-  QgsSettings settings;
-  QString value = cbox->currentData().toString();
-  settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
+  QgsRasterLayer::settingsRasterDefaultContrastEnhancementAlgorithm->setValue( cbox->currentData().toString(), { name } );
 }
 
 void QgsRasterRenderingOptionsWidget::initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal )
 {
-  QgsSettings settings;
-
   //add items to the color limitsContrast combo boxes
   cbox->addItem( tr( "Cumulative Pixel Count Cut" ), QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::CumulativeCut ) );
   cbox->addItem( tr( "Minimum / Maximum" ), QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::MinimumMaximum ) );
   cbox->addItem( tr( "Mean +/- Standard Deviation" ), QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::StdDev ) );
 
-  QString contrastLimits = settings.value( "/Raster/defaultContrastEnhancementLimits/" + name, defaultVal ).toString();
+  const QString contrastLimits = QgsRasterLayer::settingsRasterDefaultContrastEnhancementLimits->valueWithDefaultOverride( defaultVal, { name } );
   cbox->setCurrentIndex( cbox->findData( contrastLimits ) );
 }
 
 void QgsRasterRenderingOptionsWidget::saveMinMaxLimits( QComboBox *cbox, const QString &name )
 {
-  QgsSettings settings;
-  QString value = cbox->currentData().toString();
-  settings.setValue( "/Raster/defaultContrastEnhancementLimits/" + name, value );
+  QgsRasterLayer::settingsRasterDefaultContrastEnhancementLimits->setValue( cbox->currentData().toString(), { name } );
 }
 
 

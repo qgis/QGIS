@@ -11,6 +11,7 @@
 %Include auto_generated/qgsannotationlayer3drenderer.sip
 %Include auto_generated/qgscameracontroller.sip
 %Include auto_generated/qgscamerapose.sip
+%Include auto_generated/qgscategorized3drenderer.sip
 %Include auto_generated/qgsfonttextureatlasgenerator.sip
 %Include auto_generated/qgslayoutitem3dmap.sip
 %Include auto_generated/qgsraycastcontext.sip
@@ -19,6 +20,8 @@
 %Include auto_generated/qgsrulebased3drenderer.sip
 %Include auto_generated/qgstiledscenelayer3drenderer.sip
 %Include auto_generated/qgsvectorlayer3drenderer.sip
+%Include auto_generated/qgsabstract3dmapbackgroundsettings.sip
+%Include auto_generated/qgsfixedgradientbackgroundsettings.sip
 %Include auto_generated/qgspointcloudlayer3drenderer.sip
 %Include auto_generated/qgstextureatlasgenerator.sip
 %Include auto_generated/lights/qgsdirectionallightsettings.sip

@@ -84,6 +84,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex : public QgsAbstractPointCloudIndex
      */
     QVariantMap extraMetadata() const override;
 
+    bool needsHierarchyFetching( const QgsPointCloudNodeId &n ) const override;
+
   protected:
     bool loadSchema( QgsLazInfo &lazInfo );
     bool loadHierarchy() const;
@@ -94,7 +96,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex : public QgsAbstractPointCloudIndex
     /**
      * Fetches the COPC hierarchy page at offset \a offset and of size \a byteSize into memory
      */
-    virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
+    void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
 
     void populateHierarchy( const char *hierarchyPageData, uint64_t byteSize ) const;
 

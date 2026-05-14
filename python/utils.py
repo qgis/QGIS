@@ -35,7 +35,13 @@ import traceback
 import warnings
 from typing import Optional
 
-from qgis.core import Qgis, QgsMessageLog, QgsMessageOutput, qgsfunction
+from qgis.core import (
+    Qgis,
+    QgsMessageLog,
+    QgsMessageOutput,
+    QgsSettingsTree,
+    qgsfunction,
+)
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
@@ -472,10 +478,29 @@ def _startPlugin(packageName: str) -> bool:
 
     package = sys.modules[packageName]
 
+    # Create the plugin's settings tree node and expose it as a module-level
+    # attribute so the plugin can access it during classFactory and at module
+    # import time. The node lives at "plugins/<packageName>" in the settings
+    # tree and is automatically removed in unloadPlugin().
+    try:
+        package.SETTINGS_NODE = QgsSettingsTree.createPluginTreeNode(packageName)
+    except Exception:
+        QgsMessageLog.logMessage(
+            f"Could not create settings tree node for plugin '{packageName}':\n{traceback.format_exc()}",
+            "Plugins",
+            Qgis.MessageLevel.Warning,
+        )
+
     # create an instance of the plugin
     try:
         plugins[packageName] = package.classFactory(iface)
     except:
+        # classFactory failed: drop the just-created settings node so we don't
+        # leave a stale empty node behind.
+        try:
+            QgsSettingsTree.unregisterPluginTreeNode(packageName)
+        except Exception:
+            pass
         _unloadPluginModules(packageName)
         errMsg = QCoreApplication.translate(
             "Python", "Couldn't load plugin '{0}'"
@@ -657,6 +682,16 @@ def unloadPlugin(packageName: str) -> bool:
             messagebar=True,
         )
         return False
+    finally:
+        # Always remove the plugin's settings tree node, even if unload() raised.
+        try:
+            QgsSettingsTree.unregisterPluginTreeNode(packageName)
+        except Exception:
+            QgsMessageLog.logMessage(
+                f"Could not unregister settings tree node for plugin '{packageName}':\n{traceback.format_exc()}",
+                "Plugins",
+                Qgis.MessageLevel.Warning,
+            )
 
 
 def _unloadPluginModules(packageName: str):

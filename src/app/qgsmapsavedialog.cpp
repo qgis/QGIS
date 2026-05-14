@@ -302,7 +302,7 @@ void QgsMapSaveDialog::updateOutputSize()
 
 void QgsMapSaveDialog::checkOutputSize()
 {
-  // check if image size does not exceed QPainter limitation https://doc.qt.io/qt-5/qpainter.html#limitations
+  // check if image size does not exceed QPainter limitation https://doc.qt.io/qt-6/qpainter.html#limitations
   if ( mSize.width() > 32768 || mSize.height() > 32768 )
   {
     mMessageBar->pushWarning( QString(), tr( "Output will be truncated, as image width or height is larger than 32768 pixels." ) );

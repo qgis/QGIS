@@ -55,44 +55,65 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     explicit QgsMetalRoughMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsMetalRoughMaterial() override;
 
-    QVariant baseColor() const;
-    QVariant metalness() const;
-    QVariant roughness() const;
-    QVariant ambientOcclusion() const;
-    QVariant normal() const;
-    float textureScale() const;
+  public slots:
+    //! Must be an SRGB color
+    void setBaseColor( const QColor &baseColor );
 
     /**
-     * When flat shading is enabled, we do not use vertex normals from the geometry,
-     * and rather generate the normals on the fly in shader code.
+     * Sets the base color texture. Takes ownership.
      *
-     * \note This is especially useful with some GLTF models that do not include normals,
-     * and the spec requires the viewer to use flat shading.
+     * \warning Make sure the texture format is correctly set, eg by setting to SRGB format wherever appropriate.
      */
-    bool flatShadingEnabled() const;
+    void setBaseColorTexture( Qt3DRender::QAbstractTexture *baseColor );
 
-  public slots:
-    void setBaseColor( const QVariant &baseColor );
-    void setMetalness( const QVariant &metalness );
-    void setRoughness( const QVariant &roughness );
-    void setAmbientOcclusion( const QVariant &ambientOcclusion );
-    void setNormal( const QVariant &normal );
+    //! Set constant metalness value (between 0 - 1.0)
+    void setMetalness( float metalness );
+
+    //! Sets the metalness texture. Takes ownership
+    void setMetalnessTexture( Qt3DRender::QAbstractTexture *metalness );
+
+    //! Set constant roughness value (between 0 - 1.0)
+    void setRoughness( float roughness );
+
+    //! Sets the roughness texture. Takes ownership
+    void setRoughnessTexture( Qt3DRender::QAbstractTexture *roughness );
+
+    //! Sets the ambient occlusion texture. Takes ownership. Set to NULLPTR to remove.
+    void setAmbientOcclusionTexture( Qt3DRender::QAbstractTexture *ambientOcclusion );
+
+    //! Sets the normal texture map. Takes ownership. Set to NULLPTR to remove.
+    void setNormalTexture( Qt3DRender::QAbstractTexture *normal );
+
+    //! Sets the height texture map. Takes ownership. Set to NULLPTR to remove.
+    void setHeightTexture( Qt3DRender::QAbstractTexture *height );
+    //! Sets the parallax \a scale factor, which impacts the effect the height texture map has on the material.
+    void setParallaxScale( double scale );
+
+    /**
+     * Sets the emission texture map. Takes ownership. Set to NULLPTR to remove.
+     *
+     * \warning Make sure the texture format is correctly set, eg by setting to SRGB format wherever appropriate.
+     */
+    void setEmissionTexture( Qt3DRender::QAbstractTexture *emission );
+
+    //! Sets the emission strength factor
+    void setEmissionFactor( double factor );
+
+    /**
+     * When instancing is enabled, the vertex shader uses per-instance
+     * translation, rotation, and scale attributes for GPU instancing.
+     */
+    void setInstancingEnabled( bool enabled );
+
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
     void setFlatShadingEnabled( bool enabled );
 
-  signals:
-    void baseColorChanged( const QVariant &baseColor );
-    void metalnessChanged( const QVariant &metalness );
-    void roughnessChanged( const QVariant &roughness );
-    void ambientOcclusionChanged( const QVariant &ambientOcclusion );
-    void normalChanged( const QVariant &normal );
-    void textureScaleChanged( float textureScale );
+    void setOpacity( float opacity );
 
   private:
     void init();
 
-    void handleTextureScaleChanged( const QVariant &var );
     void updateFragmentShader();
 
     Qt3DRender::QParameter *mBaseColorParameter = nullptr;
@@ -103,8 +124,13 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mRoughnessMapParameter = nullptr;
     Qt3DRender::QParameter *mAmbientOcclusionMapParameter = nullptr;
     Qt3DRender::QParameter *mNormalMapParameter = nullptr;
+    Qt3DRender::QParameter *mHeightMapParameter = nullptr;
+    Qt3DRender::QParameter *mParallaxScaleParameter = nullptr;
+    Qt3DRender::QParameter *mEmissionMapParameter = nullptr;
+    Qt3DRender::QParameter *mEmissionFactorParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mTextureRotationParameter = nullptr;
+    Qt3DRender::QParameter *mOpacityParameter = nullptr;
     Qt3DRender::QEffect *mMetalRoughEffect = nullptr;
     Qt3DRender::QTechnique *mMetalRoughGL3Technique = nullptr;
     Qt3DRender::QRenderPass *mMetalRoughGL3RenderPass = nullptr;
@@ -115,7 +141,12 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingRoughnessMap = false;
     bool mUsingAmbientOcclusionMap = false;
     bool mUsingNormalMap = false;
+    bool mUsingHeightMap = false;
+    bool mUsingEmissionMap = false;
     bool mFlatShading = false;
+    bool mInstancingEnabled = false;
+
+    friend class TestQgsGltf3DUtils;
 };
 
 ///@endcond PRIVATE

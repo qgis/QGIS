@@ -811,7 +811,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       {
         if ( role == Qt::BackgroundRole && style.validBackgroundColor() )
           return style.backgroundColor();
-        if ( role == Qt::ForegroundRole )
+        if ( role == Qt::ForegroundRole && style.validTextColor() )
           return style.textColor();
         if ( role == Qt::DecorationRole )
           return style.icon();

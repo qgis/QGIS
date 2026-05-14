@@ -2604,8 +2604,7 @@ QVariant QgsProcessingParameterDefinition::defaultGuiValueFromSetting() const
 {
   if ( mAlgorithm )
   {
-    QgsSettings s;
-    QVariant settingValue = s.value( u"/Processing/DefaultGuiParam/%1/%2"_s.arg( mAlgorithm->id() ).arg( mName ) );
+    const QVariant settingValue = QgsProcessing::settingsDefaultGuiParam->value( { mAlgorithm->id(), mName } );
     if ( settingValue.isValid() )
     {
       return settingValue;

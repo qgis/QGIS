@@ -31,13 +31,16 @@
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgscategorized3drenderer.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
+#include "qgsgradientbackgroundentity.h"
 #include "qgshighlightsrenderview.h"
 #include "qgslightsource.h"
 #include "qgslinematerial_p.h"
@@ -48,6 +51,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmessageoutput.h"
+#include "qgsmetalroughmaterial.h"
 #include "qgsoverlaytexturerenderview.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
@@ -147,13 +151,12 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
-  connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapScene::onDebugShadowMapSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::msaaEnabledChanged, this, &Qgs3DMapScene::onMsaaEnabledChanged );
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
@@ -207,17 +210,19 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
 
-  onSkyboxSettingsChanged();
+  connect( &map, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapScene::onBackgroundSettingsChanged );
+  onBackgroundSettingsChanged();
 
   // force initial update of chunked entities
   onCameraChanged();
   // force initial update of eye dome shading
   onEyeDomeShadingSettingsChanged();
   // force initial update of debugging setting of preview quads
-  onDebugShadowMapSettingsChanged();
   onDebugDepthMapSettingsChanged();
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
+  // force initial update of MSAA setting
+  onMsaaEnabledChanged();
 
   // timer used to refresh the map overlay every 250 ms while the camera is moving.
   // schedule2DMapOverlayUpdate() is called to schedule the update.
@@ -540,7 +545,7 @@ void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoi
     {
       mMapOverlayEntity.reset();
     }
-    overlayRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
+    overlayRenderView.setEnabled( mMap.debugDepthMapEnabled() );
     return;
   }
 
@@ -808,7 +813,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer classes are not available.
-    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 ) )
+    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 || renderer->type() == "categorized"_L1 ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
       if ( renderer->type() == "vector"_L1 )
@@ -829,6 +834,19 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         for ( auto rule : rules )
         {
           const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
+          if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
+          {
+            mModelVectorLayers.append( layer );
+            break;
+          }
+        }
+      }
+      else if ( renderer->type() == "categorized"_L1 )
+      {
+        const Qgs3DCategoryList categories = static_cast<QgsCategorized3DRenderer *>( renderer )->categories();
+        for ( const Qgs3DRendererCategory &category : categories )
+        {
+          const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( category.symbol() );
           if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
@@ -1126,36 +1144,35 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::onSkyboxSettingsChanged()
+void Qgs3DMapScene::onBackgroundSettingsChanged()
 {
-  QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
-  if ( mSkybox )
+  const QgsAbstract3DMapBackgroundSettings *settings = mMap.backgroundSettings();
+  if ( !settings )
   {
-    mSkybox->deleteLater();
-    mSkybox = nullptr;
-  }
-
-  mEngine->setFrustumCullingEnabled( !mMap.isSkyboxEnabled() );
-
-  if ( mMap.isSkyboxEnabled() )
-  {
-    QMap<QString, QString> faces;
-    switch ( skyboxSettings.skyboxType() )
+    if ( mBackgroundEntity )
     {
-      case Qgis::SkyboxType::DistinctTextures:
-        faces = skyboxSettings.cubeMapFacesPaths();
-        mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
-        break;
-#if 0 // this is broken for z-up coordinate system
-      case Qgis::SkyboxType::Panoramic:
-        mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
-        break;
-#endif
+      mBackgroundEntity->deleteLater();
+      mBackgroundEntity = nullptr;
     }
-
-    QgsFrameGraph *frameGraph = mEngine->frameGraph();
-    mSkybox->addComponent( frameGraph->forwardRenderView().renderLayer() );
+    return;
   }
+
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+
+  if ( settings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox )
+  {
+    const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( settings );
+    const QMap<QString, QString> faces = skyboxSettings->cubeMapFacesPaths();
+    mBackgroundEntity = new QgsCubeFacesSkyboxEntity( skyboxSettings->cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
+  }
+  else if ( settings->type() == Qgis::Map3DBackgroundType::FixedGradientBackground )
+  {
+    const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( settings );
+    mBackgroundEntity = new QgsGradientBackgroundEntity( gradientSettings->topColor(), gradientSettings->bottomColor(), this );
+  }
+
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
 }
 
 void Qgs3DMapScene::onShadowSettingsChanged()
@@ -1166,11 +1183,6 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 {
   mEngine->frameGraph()->updateAmbientOcclusionSettings( mMap.ambientOcclusionSettings() );
-}
-
-void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
-{
-  mEngine->frameGraph()->updateDebugShadowMapSettings( mMap );
 }
 
 void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
@@ -1187,6 +1199,11 @@ void Qgs3DMapScene::onDebugOverlayEnabledChanged()
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
   mEngine->frameGraph()->updateEyeDomeSettings( mMap );
+}
+
+void Qgs3DMapScene::onMsaaEnabledChanged()
+{
+  mEngine->frameGraph()->setMsaaEnabled( mMap.isMsaaEnabled() );
 }
 
 void Qgs3DMapScene::onShowMapOverlayChanged()
@@ -1245,7 +1262,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   if ( mTerrain )
     exporter.parseTerrain( mTerrain, "Terrain" );
 
-  const bool sceneSaved = exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
+  const bool sceneSaved = exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath(), exportSettings.exportFormat() );
   if ( !sceneSaved )
   {
     return false;

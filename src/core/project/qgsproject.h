@@ -91,6 +91,7 @@ class QgsPropertyCollection;
 class QgsMapViewsManager;
 class QgsProjectElevationProperties;
 class QgsProjectGpsSettings;
+class QgsSettingsEntryBool;
 class QgsSensorManager;
 class QgsObjectEntityVisitorInterface;
 class QgsObjectVisitorContext;
@@ -135,6 +136,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( Qgis::ScaleCalculationMethod scaleMethod READ scaleMethod WRITE setScaleMethod NOTIFY scaleMethodChanged )
 
   public:
+    static const QgsSettingsEntryBool *settingsAnonymizeNewProjects SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsAnonymizeSavedProjects SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsDefaultProjectPathsRelative SIP_SKIP;
+
     // *INDENT-OFF*
 
     /**

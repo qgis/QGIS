@@ -26,6 +26,8 @@ set(QGIS_3D_SRCS
   qgs3dwiredmesh_p.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
+  qgscategorized3drenderer.cpp
+  qgscategorizedchunkloader_p.cpp
   qgsfeature3dhandler_p.cpp
   qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
@@ -50,6 +52,8 @@ set(QGIS_3D_SRCS
   qgsvectorlayerchunkloader_p.cpp
   qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
+  qgsfixedgradientbackgroundsettings.cpp
+  qgsgradientbackgroundentity.cpp
   qgsskyboxentity.cpp
   qgsskyboxsettings.cpp
   qgsshadowsettings.cpp
@@ -74,6 +78,7 @@ set(QGIS_3D_SRCS
   lights/qgspointlightsettings.cpp
 
   materials/qgsglobematerial.cpp
+  materials/qgsgoochmaterial.cpp
   materials/qgsgoochmaterial3dhandler.cpp
   materials/qgshighlightmaterial.cpp
   materials/qgsmaterial.cpp
@@ -82,6 +87,7 @@ set(QGIS_3D_SRCS
   materials/qgsmetalroughmaterial3dhandler.cpp
   materials/qgsmetalroughtexturedmaterial3dhandler.cpp
   materials/qgsnullmaterial3dhandler.cpp
+  materials/qgsphongmaterial.cpp
   materials/qgsphongmaterial3dhandler.cpp
   materials/qgsphongtexturedmaterial.cpp
   materials/qgsphongtexturedmaterial3dhandler.cpp
@@ -108,6 +114,7 @@ set(QGIS_3D_SRCS
   framegraph/qgsframegraph.cpp
   framegraph/qgsframegraphutils.cpp
 
+  symbols/qgs3dsymbolutils.cpp
   symbols/qgsbillboardgeometry.cpp
   symbols/qgsline3dsymbol.cpp
   symbols/qgsline3dsymbol_p.cpp
@@ -174,6 +181,8 @@ set(QGIS_3D_HDRS
   qgsannotationlayerchunkloader_p.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgscategorized3drenderer.h
+  qgscategorizedchunkloader_p.h
   qgsfonttextureatlasgenerator.h
   qgsgeotransform.h
   qgsglobechunkedentity.h
@@ -194,6 +203,9 @@ set(QGIS_3D_HDRS
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
   qgswindow3dengine.h
+  qgsabstract3dmapbackgroundsettings.h
+  qgsfixedgradientbackgroundsettings.h
+  qgsgradientbackgroundentity.h
   qgsskyboxentity.h
   qgsskyboxsettings.h
   qgsshadowsettings.h
@@ -206,6 +218,7 @@ set(QGIS_3D_HDRS
   lights/qgspointlightsettings.h
 
   materials/qgsglobematerial.h
+  materials/qgsgoochmaterial.h
   materials/qgsgoochmaterial3dhandler.h
   materials/qgshighlightmaterial.h
   materials/qgsmaterial.h
@@ -214,6 +227,7 @@ set(QGIS_3D_HDRS
   materials/qgsmetalroughmaterial3dhandler.h
   materials/qgsmetalroughtexturedmaterial3dhandler.h
   materials/qgsnullmaterial3dhandler.h
+  materials/qgsphongmaterial.h
   materials/qgsphongmaterial3dhandler.h
   materials/qgsphongtexturedmaterial.h
   materials/qgsphongtexturedmaterial3dhandler.h
@@ -237,6 +251,7 @@ set(QGIS_3D_HDRS
   framegraph/qgsrenderpassquad.h
   framegraph/qgsshadowrenderview.h
 
+  symbols/qgs3dsymbolutils.h
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
   symbols/qgsmesh3dsymbol.h

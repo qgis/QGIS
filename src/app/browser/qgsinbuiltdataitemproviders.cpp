@@ -1117,7 +1117,7 @@ int QgsLayerItemGuiProvider::precedenceWhenPopulatingMenus() const
 
 bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( !item || item->type() != Qgis::BrowserItemType::Layer )
+  if ( !item )
     return false;
 
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
@@ -1126,10 +1126,7 @@ bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemG
     QgisApp::instance()->handleDropUriList( layerUriList );
     return true;
   }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &items )

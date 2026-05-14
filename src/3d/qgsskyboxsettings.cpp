@@ -15,6 +15,7 @@
 
 #include "qgsskyboxsettings.h"
 
+#include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 
@@ -23,12 +24,19 @@
 
 using namespace Qt::StringLiterals;
 
+QgsSkyboxSettings *QgsSkyboxSettings::clone() const
+{
+  return new QgsSkyboxSettings( *this );
+}
+
+
 QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
-  : mSkyboxType( other.mSkyboxType )
 #if ENABLE_PANORAMIC_SKYBOX
-  , mPanoramicTexturePath( other.mPanoramicTexturePath )
-#endif
+  : mPanoramicTexturePath( other.mPanoramicTexturePath )
   , mCubeMapping( other.mCubeMapping )
+#else
+  : mCubeMapping( other.mCubeMapping )
+#endif
   , mCubeMapFacesPaths( other.mCubeMapFacesPaths )
 {}
 
@@ -37,7 +45,6 @@ QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
   if ( &rhs == this )
     return *this;
 
-  this->mSkyboxType = rhs.mSkyboxType;
 #if ENABLE_PANORAMIC_SKYBOX
   this->mPanoramicTexturePath = rhs.mPanoramicTexturePath;
 #endif
@@ -49,12 +56,7 @@ QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
 void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QgsPathResolver &pathResolver = context.pathResolver();
-  const QString skyboxTypeStr = element.attribute( u"skybox-type"_s );
-  if ( skyboxTypeStr == "Distinct Faces"_L1 )
-    mSkyboxType = Qgis::SkyboxType::DistinctTextures;
 #if ENABLE_PANORAMIC_SKYBOX
-  else if ( skyboxTypeStr == "Panoramic Texture"_L1 )
-    mSkyboxType = Qgis::SkyboxType::Panoramic;
   mPanoramicTexturePath = pathResolver.readPath( element.attribute( u"panoramic-texture-path"_s ) );
 #endif
   mCubeMapFacesPaths.clear();
@@ -69,19 +71,6 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
 
 void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  switch ( mSkyboxType )
-  {
-    case Qgis::SkyboxType::DistinctTextures:
-      element.setAttribute( u"skybox-type"_s, u"Distinct Faces"_s );
-      break;
-
-#if ENABLE_PANORAMIC_SKYBOX
-    case Qgis::SkyboxType::Panoramic:
-      element.setAttribute( u"skybox-type"_s, u"Panoramic Texture"_s );
-      break;
-#endif
-  }
-
   const QgsPathResolver &pathResolver = context.pathResolver();
 #if ENABLE_PANORAMIC_SKYBOX
   element.setAttribute( u"panoramic-texture-path"_s, pathResolver.writePath( mPanoramicTexturePath ) );

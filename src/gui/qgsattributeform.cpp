@@ -74,6 +74,7 @@
 #include <QSvgWidget>
 #include <QTextStream>
 #include <QToolButton>
+#include <QToolTip>
 #include <QUiLoader>
 
 #include "moc_qgsattributeform.cpp"
@@ -1318,18 +1319,18 @@ void QgsAttributeForm::updateLabels()
 
       for ( auto it = mCustomCommentDataDefinedProperties.constBegin(); it != mCustomCommentDataDefinedProperties.constEnd(); ++it )
       {
-        QLabel *label { it.key() };
+        QWidget *labelWidget { it.key() };
         bool ok;
         const QString value { it->valueAsString( context, QString(), &ok ) };
         if ( ok && !value.isEmpty() )
         {
-          const QString fieldName = label->objectName();
+          const QString fieldName = labelWidget->objectName();
           const QgsFields fields = mLayer->fields();
           int idx = fields.lookupField( fieldName );
 
           if ( idx >= 0 )
           {
-            label->setToolTip( QgsFieldModel::fieldToolTipExtended( fields.at( idx ), mLayer, value ) );
+            labelWidget->setToolTip( QgsFieldModel::fieldToolTipExtended( fields.at( idx ), mLayer, value ) );
           }
         }
       }
@@ -1607,6 +1608,27 @@ QgsRelationWidgetWrapper *QgsAttributeForm::setupRelationWidgetWrapper( const QS
   rww->setContext( context );
 
   return rww;
+}
+
+QToolButton *QgsAttributeForm::createCommentInfoButton( QWidget *labelWidget )
+{
+  QToolButton *infoButton = new QToolButton( labelWidget );
+  infoButton->setIcon( QgsApplication::getThemeIcon( u"/mIndicatorFieldComment.svg"_s, QgsApplication::palette().color( QPalette::WindowText ) ) );
+  infoButton->setFocusPolicy( Qt::NoFocus );
+  // looks like an icon, but on click the tooltip of the label appears
+  infoButton->setAutoRaise( true );
+  infoButton->setStyleSheet(
+    "QToolButton { "
+    "  border: none; "
+    "  background-color: transparent; "
+    "  padding: 0px; "
+    "}"
+  );
+  // connect button to label (for the label's tooltip)
+  connect( infoButton, &QToolButton::clicked, labelWidget, [labelWidget]() { QToolTip::showText( QCursor::pos(), labelWidget->toolTip(), labelWidget ); } );
+  // invisible per default
+  infoButton->setVisible( false );
+  return infoButton;
 }
 
 void QgsAttributeForm::preventFeatureRefresh()
@@ -2022,7 +2044,8 @@ void QgsAttributeForm::init()
         hasRootFields = true;
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
-        QLabel *label = new QLabel( widgetInfo.labelText );
+        QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
+        QLabel *label = new QLabel( widgetInfo.labelText, labelWidget );
 
         if ( widgetInfo.labelStyle.overrideColor )
         {
@@ -2037,7 +2060,7 @@ void QgsAttributeForm::init()
           label->setFont( widgetInfo.labelStyle.font );
         }
 
-        label->setToolTip( widgetInfo.toolTip );
+        labelWidget->setToolTip( widgetInfo.toolTip );
         if ( columnCount > 1 && !widgetInfo.labelOnTop )
         {
           label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -2045,12 +2068,23 @@ void QgsAttributeForm::init()
 
         label->setBuddy( widgetInfo.widget );
 
+        // Indicator button when a comment is available for the field
+        QToolButton *commentInfoButton = createCommentInfoButton( labelWidget );
+        // Only visible when there is a comment available
+        if ( !widgetInfo.hint.isEmpty() )
+          commentInfoButton->setVisible( true );
+
         // If at least one expanding widget is present do not add a spacer
         if ( widgetInfo.widget
              && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Fixed
              && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Maximum
              && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Preferred )
           addSpacer = false;
+
+        QHBoxLayout *labelLayout = new QHBoxLayout( labelWidget );
+        labelLayout->addWidget( label );
+        labelLayout->addWidget( commentInfoButton );
+        labelLayout->setContentsMargins( 0, 0, 0, 0 );
 
         if ( !widgetInfo.showLabel )
         {
@@ -2075,7 +2109,7 @@ void QgsAttributeForm::init()
         {
           QVBoxLayout *c = new QVBoxLayout();
           label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-          c->addWidget( label );
+          c->addWidget( labelWidget );
           c->addWidget( widgetInfo.widget );
           layout->addLayout( c, row, column, 1, 2 );
 
@@ -2094,7 +2128,7 @@ void QgsAttributeForm::init()
         else
         {
           const int widgetColumn = column + 1;
-          layout->addWidget( label, row, column++ );
+          layout->addWidget( labelWidget, row, column++ );
           layout->addWidget( widgetInfo.widget, row, column++ );
 
           if ( widgDef->verticalStretch() > 0 && widgDef->verticalStretch() > layout->rowStretch( row ) )
@@ -2126,12 +2160,14 @@ void QgsAttributeForm::init()
                 mLabelDataDefinedProperties[label] = property;
               }
             }
+            labelWidget->setObjectName( fieldName );
             if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment ) )
             {
               const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::CustomComment ) };
               if ( property.isActive() )
               {
-                mCustomCommentDataDefinedProperties[label] = property;
+                mCustomCommentDataDefinedProperties[labelWidget] = property;
+                commentInfoButton->setVisible( true );
               }
             }
             if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Editable ) )
@@ -2237,10 +2273,18 @@ void QgsAttributeForm::init()
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
-      QLabel *label = new QLabel( labelText );
+      QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
+      QLabel *label = new QLabel( labelText, labelWidget );
       label->setObjectName( fieldName );
 
-      label->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
+      labelWidget->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
+
+      // Indicator button when a comment is available for the field
+      QToolButton *commentInfoButton = createCommentInfoButton( labelWidget );
+      // Only visible when there is a comment available (not visible when custom comment is an empty string)
+      if ( !field.customComment().isEmpty() || ( field.customComment().isNull() && !field.comment().isEmpty() ) )
+        commentInfoButton->setVisible( true );
+
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
 
@@ -2252,12 +2296,14 @@ void QgsAttributeForm::init()
           mLabelDataDefinedProperties[label] = property;
         }
       }
+      labelWidget->setObjectName( fieldName );
       if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment ) )
       {
         const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::CustomComment ) };
         if ( property.isActive() )
         {
-          mCustomCommentDataDefinedProperties[label] = property;
+          mCustomCommentDataDefinedProperties[labelWidget] = property;
+          commentInfoButton->setVisible( true );
         }
       }
 
@@ -2319,17 +2365,23 @@ void QgsAttributeForm::init()
         mIconMap[eww->widget()] = i;
       }
 
+      QHBoxLayout *labelLayout = new QHBoxLayout( labelWidget );
+      labelLayout->addWidget( label );
+      labelLayout->addWidget( commentInfoButton );
+      labelLayout->setContentsMargins( 0, 0, 0, 0 );
+
       if ( labelOnTop )
       {
-        gridLayout->addWidget( label, row++, 0, 1, 2 );
+        gridLayout->addWidget( labelWidget, row++, 0, 1, 2 );
         gridLayout->addWidget( w, row++, 0, 1, 2 );
         gridLayout->addWidget( i, row++, 0, 1, 2 );
       }
       else
       {
-        gridLayout->addWidget( label, row, 0 );
-        gridLayout->addWidget( w, row, 1 );
-        gridLayout->addWidget( i, row++, 2 );
+        int widgetColumn = 0;
+        gridLayout->addWidget( labelWidget, row, widgetColumn++ );
+        gridLayout->addWidget( w, row, widgetColumn++ );
+        gridLayout->addWidget( i, row++, widgetColumn++ );
       }
     }
 
@@ -2683,14 +2735,15 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         mWidgets.append( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
-        newWidgetInfo.hint = ( QgsFieldModel::fieldToolTipExtended( fields.at( fldIdx ), mLayer ) );
+        const QString customComment = fields.at( fldIdx ).customComment();
+        newWidgetInfo.hint = customComment.isNull() ? fields.at( fldIdx ).comment() : customComment;
       }
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );
       newWidgetInfo.labelText = mLayer->attributeDisplayName( fldIdx );
       newWidgetInfo.labelText.replace( '&', "&&"_L1 ); // need to escape '&' or they'll be replace by _ in the label text
 
-      newWidgetInfo.toolTip = ( newWidgetInfo.hint.isEmpty() ? u"<b>%1</b>"_s.arg( mLayer->attributeDisplayName( fldIdx ) ) : newWidgetInfo.hint );
+      newWidgetInfo.toolTip = ( QgsFieldModel::fieldToolTipExtended( fields.at( fldIdx ), mLayer ) );
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;
@@ -2849,7 +2902,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         }
         else
         {
-          QLabel *mypLabel = new QLabel( widgetInfo.labelText );
+          QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
+          QLabel *mypLabel = new QLabel( widgetInfo.labelText, labelWidget );
 
           if ( widgetInfo.labelStyle.overrideColor )
           {
@@ -2863,6 +2917,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           {
             mypLabel->setFont( widgetInfo.labelStyle.font );
           }
+
+          // Indicator button when a comment is available for the field
+          QToolButton *commentInfoButton = createCommentInfoButton( labelWidget );
+          // Only visible when there is a comment available
+          if ( !widgetInfo.hint.isEmpty() )
+            commentInfoButton->setVisible( true );
 
           // Alias DD overrides
           if ( childDef->type() == Qgis::AttributeEditorType::Field )
@@ -2891,18 +2951,19 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
                   mEditableDataDefinedProperties[widgetInfo.widget] = property;
                 }
               }
+              labelWidget->setObjectName( fieldName );
               if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment ) )
               {
                 const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::CustomComment ) };
                 if ( property.isActive() )
                 {
-                  mCustomCommentDataDefinedProperties[mypLabel] = property;
+                  mCustomCommentDataDefinedProperties[labelWidget] = property;
                 }
               }
             }
           }
 
-          mypLabel->setToolTip( widgetInfo.toolTip );
+          labelWidget->setToolTip( widgetInfo.toolTip );
           if ( columnCount > 1 && !widgetInfo.labelOnTop )
           {
             mypLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -2910,12 +2971,17 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
           mypLabel->setBuddy( widgetInfo.widget );
 
+          QHBoxLayout *labelLayout = new QHBoxLayout( labelWidget );
+          labelLayout->addWidget( mypLabel );
+          labelLayout->addWidget( commentInfoButton );
+          labelLayout->setContentsMargins( 0, 0, 0, 0 );
+
           if ( widgetInfo.labelOnTop )
           {
             widgetColumn = column + 1;
             QVBoxLayout *c = new QVBoxLayout();
             mypLabel->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-            c->layout()->addWidget( mypLabel );
+            c->addWidget( labelWidget );
             c->layout()->addWidget( widgetInfo.widget );
             gbLayout->addLayout( c, row, column, 1, 2 );
             column += 2;
@@ -2923,7 +2989,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           else
           {
             widgetColumn = column + 1;
-            gbLayout->addWidget( mypLabel, row, column++ );
+            gbLayout->addWidget( labelWidget, row, column++ );
             gbLayout->addWidget( widgetInfo.widget, row, column++ );
           }
         }

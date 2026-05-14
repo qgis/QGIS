@@ -197,6 +197,7 @@ the model, with an additional margin arounds items.
 .. versionadded:: 4.0
 %End
 
+
   signals:
 
     void rebuildRequired();

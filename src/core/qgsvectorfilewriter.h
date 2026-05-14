@@ -773,9 +773,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param fileName file name to write to
      * \param transformContext coordinate transform context
      * \param options save options
+     * \param errorMessage will be set to the error message text, if an error occurs while writing the layer
      * \param newFilename potentially modified file name (output parameter)
      * \param newLayer potentially modified layer name (output parameter)
-     * \param errorMessage will be set to the error message text, if an error occurs while writing the layer
      * \returns Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
      * \since QGIS 3.20
      */

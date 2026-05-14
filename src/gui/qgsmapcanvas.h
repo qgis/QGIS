@@ -66,6 +66,7 @@ class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
+class QgsMessageBar;
 class QgsSnappingUtils;
 class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
@@ -74,6 +75,7 @@ class QgsRenderedItemResults;
 class QgsTemporaryCursorOverride;
 class QgsOverlayWidgetLayout;
 class QgsStatusBar;
+class QgsUserInputWidget;
 
 class QgsTemporalController;
 class QgsScreenHelper;
@@ -936,6 +938,48 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     void setStatusBar( QgsStatusBar *bar );
 
+    /**
+     * Sets a message \a bar to use alongside the map canvas.
+     *
+     * Setting this allows items to utilize the message bar to provide non-blocking feedback to users, e.g.
+     * success or failure of actions.
+     *
+     * \see messageBar()
+     * \since QGIS 4.2
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the map canvas.
+     *
+     * May be NULLPTR if not set.
+     *
+     * \see setMessageBar()
+     * \since QGIS 4.2
+     */
+    QgsMessageBar *messageBar();
+
+    /**
+     * Sets a \a userInputWidget, a floating widget that can be used to display additional widgets for user inputs.
+     *
+     * Setting this allows items associated with a map canvas to add widgets to it, e.g. in a QgsMapTool.
+     *
+     * \see userInputWidget()
+     * \since QGIS 4.2
+     */
+    void setUserInputWidget( QgsUserInputWidget *userInputWidget );
+
+
+    /**
+     * Returns the user input widget associated with the map canvas.
+     *
+     * May be NULLPTR if not set.
+     *
+     * \see setUserInputWidget()
+     * \since QGIS 4.2
+     */
+    QgsUserInputWidget *userInputWidget();
+
     static const QgsSettingsEntryString *settingsCustomCoordinateCrs SIP_SKIP;
 
   public slots:
@@ -1027,6 +1071,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 3.18
      */
     void zoomToSelected( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Zoom to the combined extent of a set of \a layers.
+     * \since QGIS 4.2
+     */
+    void zoomToLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
@@ -1521,6 +1571,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QPointer<QgsAbstract2DMapController> mMapController;
 
     QPointer< QgsStatusBar > mStatusBar;
+
+    QPointer< QgsMessageBar > mMessageBar;
+
+    QPointer< QgsUserInputWidget > mUserInputWidget;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

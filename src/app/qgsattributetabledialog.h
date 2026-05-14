@@ -22,6 +22,7 @@
 #include <ctime>
 
 #include "qgis_app.h"
+#include "qgsattributetableconfig.h"
 
 #include <QDialog>
 #include <QItemSelectionModel>
@@ -36,12 +37,15 @@ class QgsAttributeTableFilterModel;
 class QgsRubberBand;
 struct QgsStoredExpression;
 class QgsDockableWidgetHelper;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryEnumFlag<QgsAttributeTableConfig::AddFeatureMethod> *settingsDefaultAddFeatureMethod SIP_SKIP;
+
     //! Settings entry autosize columns by default when opening attribute table
     static const QgsSettingsEntryBool *settingsAutosizeAttributeTable SIP_SKIP;
 
@@ -197,7 +201,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     /**
      * add feature
      */
-    void mActionAddFeature_triggered();
     void mActionAddFeatureViaAttributeTable_triggered();
     void mActionAddFeatureViaAttributeForm_triggered();
 
@@ -242,6 +245,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
   private:
     QMenu *mMenuActions = nullptr;
     QToolButton *mActionFeatureActions = nullptr;
+    QToolButton *mAddFeatureButton = nullptr;
 
     QDialog *mDialog = nullptr;
 

@@ -48,6 +48,7 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
     updateWidgetState();
     emit changed();
   } );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughMaterialWidget::changed );
 
   connect( this, &QgsMetalRoughMaterialWidget::changed, this, &QgsMetalRoughMaterialWidget::updatePreview );
 }
@@ -68,6 +69,7 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   mButtonBaseColor->setColor( material->baseColor() );
   mMetalnessWidget->setValue( material->metalness() );
   mRoughnessWidget->setValue( material->roughness() );
+  mOpacityWidget->setOpacity( material->opacity() );
 
   mPropertyCollection = settings->dataDefinedProperties();
 
@@ -81,6 +83,7 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialWidget::settin
   m->setBaseColor( mButtonBaseColor->color() );
   m->setMetalness( mMetalnessWidget->value() );
   m->setRoughness( mRoughnessWidget->value() );
+  m->setOpacity( mOpacityWidget->opacity() );
   m->setDataDefinedProperties( mPropertyCollection );
   return m;
 }

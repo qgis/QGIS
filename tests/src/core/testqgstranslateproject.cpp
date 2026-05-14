@@ -385,7 +385,7 @@ void TestQgsTranslateProject::translateProject()
   const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" }; //#spellok
   const QList<QVariant> valueList = lines_fields.field( u"Name"_s ).editorWidgetSetup().config().value( u"map"_s ).toList();
   QList<QString> stringValueList;
-  for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+  for ( int i = 0; i < valueList.count(); i++ )
   {
     stringValueList.append( valueList[i].toMap().constBegin().key() );
   }

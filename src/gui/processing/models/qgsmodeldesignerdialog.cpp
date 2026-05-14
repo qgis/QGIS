@@ -34,9 +34,10 @@
 #include "qgsmodelviewtoolselect.h"
 #include "qgspanelwidget.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessinghelpeditorwidget.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelfeedback.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingregistry.h"
@@ -540,6 +541,13 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 QgsModelGraphicsScene *QgsModelDesignerDialog::modelScene()
 {
   return mScene;
+}
+
+QgsProcessingFeedback *QgsModelDesignerDialog::createFeedback()
+{
+  auto result = std::make_unique< QgsProcessingModelFeedback >();
+  mScene->setupFeedbackConnections( result.get() );
+  return result.release();
 }
 
 void QgsModelDesignerDialog::activate()
@@ -1112,50 +1120,95 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     }
   }
 
-  std::unique_ptr<QgsProcessingAlgorithmDialogBase> dialog( createExecutionDialog() );
-  if ( !dialog )
-    return;
+  if ( mAlgorithmWidget && mAlgorithmWidget->isRunning() )
+  {
+    QMessageBox messageBox;
+    messageBox.setWindowTitle( tr( "Run Model" ) );
+    messageBox.setText( tr( "This model is already running." ) );
+    messageBox.setStandardButtons( QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::RestoreDefaults | QMessageBox::StandardButton::Ok );
 
-  dialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
-  dialog->setParameters( mModel->designerParameterValues() );
+    QAbstractButton *buttonShowRunningAlg = messageBox.button( QMessageBox::StandardButton::Ok );
+    buttonShowRunningAlg->setText( tr( "Show Progress" ) );
 
-  connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [this, &childAlgorithmSubset]( QgsProcessingContext *context ) {
-    if ( !childAlgorithmSubset.empty() )
+    QAbstractButton *buttonReRun = messageBox.button( QMessageBox::StandardButton::RestoreDefaults );
+    buttonReRun->setText( tr( "Cancel and Restart Model" ) );
+
+    int r = messageBox.exec();
+
+    switch ( r )
     {
-      // start from previous state
-      auto modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
-      modelConfig->setChildAlgorithmSubset( childAlgorithmSubset );
-      modelConfig->setPreviouslyExecutedChildAlgorithms( mLastResult.executedChildIds() );
-      modelConfig->setInitialChildInputs( mLastResult.rawChildInputs() );
-      modelConfig->setInitialChildOutputs( mLastResult.rawChildOutputs() );
+      case QMessageBox::StandardButton::Cancel:
+        return;
+      case QMessageBox::StandardButton::RestoreDefaults:
+        mAlgorithmWidget->cancel();
+        mAlgorithmWidget->forceClose();
 
-      // add copies of layers from previous runs to context's layer store, so that they can be used
-      // when running the subset
-      const QMap<QString, QgsMapLayer *> previousOutputLayers = mLayerStore.temporaryLayerStore()->mapLayers();
-      auto previousResultStore = std::make_unique<QgsMapLayerStore>();
-      for ( auto it = previousOutputLayers.constBegin(); it != previousOutputLayers.constEnd(); ++it )
-      {
-        std::unique_ptr<QgsMapLayer> clone( it.value()->clone() );
-        clone->setId( it.value()->id() );
-        previousResultStore->addMapLayer( clone.release() );
-      }
-      previousResultStore->moveToThread( nullptr );
-      modelConfig->setPreviousLayerStore( std::move( previousResultStore ) );
-      context->setModelInitialRunConfig( std::move( modelConfig ) );
+        //Stop tracking change to the previous dialog in the QPointer
+        mAlgorithmWidget.clear();
+        break;
+      case QMessageBox::StandardButton::Ok:
+        mAlgorithmWidget->showWidget();
+        return;
+        break;
+      default:
+        break;
     }
-  } );
+  }
+  else if ( mAlgorithmWidget )
+  {
+    // Close and create a new one
+    mAlgorithmWidget->close();
+    //Stop tracking change to the previous widget in the QPointer
+    mAlgorithmWidget.clear();
+  }
 
-  connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & ) {
-    QgsProcessingContext *context = dialog->processingContext();
-    // take child output layers
-    mLayerStore.temporaryLayerStore()->removeAllMapLayers();
-    mLayerStore.takeResultsFrom( *context );
+  if ( !mAlgorithmWidget )
+  {
+    mAlgorithmWidget = createExecutionWidget();
 
-    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
-    setLastRunResult( context->modelResult() );
-  } );
+    mAlgorithmWidget->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
+    mAlgorithmWidget->setParameters( mModel->designerParameterValues() );
 
-  dialog->exec();
+    Qt::WindowFlags flags = Qt::Window;
+    mAlgorithmWidget->setWindowFlags( flags );
+
+    connect( mAlgorithmWidget.get(), &QgsProcessingAlgorithmWidgetBase::algorithmAboutToRun, this, [this, childAlgorithmSubset]( QgsProcessingContext *context ) {
+      if ( !childAlgorithmSubset.empty() )
+      {
+        // start from previous state
+        auto modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
+        modelConfig->setChildAlgorithmSubset( childAlgorithmSubset );
+        modelConfig->setPreviouslyExecutedChildAlgorithms( mLastResult.executedChildIds() );
+        modelConfig->setInitialChildInputs( mLastResult.rawChildInputs() );
+        modelConfig->setInitialChildOutputs( mLastResult.rawChildOutputs() );
+
+        // add copies of layers from previous runs to context's layer store, so that they can be used
+        // when running the subset
+        const QMap<QString, QgsMapLayer *> previousOutputLayers = mLayerStore.temporaryLayerStore()->mapLayers();
+        auto previousResultStore = std::make_unique<QgsMapLayerStore>();
+        for ( auto it = previousOutputLayers.constBegin(); it != previousOutputLayers.constEnd(); ++it )
+        {
+          std::unique_ptr<QgsMapLayer> clone( it.value()->clone() );
+          clone->setId( it.value()->id() );
+          previousResultStore->addMapLayer( clone.release() );
+        }
+        previousResultStore->moveToThread( nullptr );
+        modelConfig->setPreviousLayerStore( std::move( previousResultStore ) );
+        context->setModelInitialRunConfig( std::move( modelConfig ) );
+      }
+    } );
+
+    connect( mAlgorithmWidget, &QgsProcessingAlgorithmWidgetBase::algorithmFinished, this, [this]( bool, const QVariantMap & ) {
+      QgsProcessingContext *context = mAlgorithmWidget->processingContext();
+      // take child output layers
+      mLayerStore.temporaryLayerStore()->removeAllMapLayers();
+      mLayerStore.takeResultsFrom( *context );
+
+      mModel->setDesignerParameterValues( mAlgorithmWidget->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
+      setLastRunResult( context->modelResult() );
+    } );
+  }
+  mAlgorithmWidget->showWidget();
 }
 
 void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )

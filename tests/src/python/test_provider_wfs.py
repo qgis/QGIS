@@ -8996,6 +8996,59 @@ Can't recognize service requested.
         )
         self.assertTrue(vl.isValid())
 
+        # test with geometry held in a Spatial Sampling Feature
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_WFS_complex_features_spatial_sampling_feature"
+        )
+        shutil.copy(
+            os.path.join(
+                TEST_DATA_DIR,
+                "provider",
+                "wfs",
+                "spatial_sampling_features_complexfeatures",
+                "getcapabilities.xml",
+            ),
+            sanitize(endpoint, "?SERVICE=WFS?REQUEST=GetCapabilities&VERSION=2.0.0"),
+        )
+        shutil.copy(
+            os.path.join(
+                TEST_DATA_DIR,
+                "provider",
+                "wfs",
+                "spatial_sampling_features_complexfeatures",
+                "describefeaturetype.xml",
+            ),
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=sams:SF_SpatialSamplingFeature",
+            ),
+        )
+
+        # Test with simpleFeature featureMode
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='sams:SF_SpatialSamplingFeature' version='2.0.0' featureMode='simpleFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        assert not vl.isSpatial()
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Null)
+
+        # Test with complexFeatures featureMode
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='sams:SF_SpatialSamplingFeature' version='2.0.0' featureMode='complexFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        assert vl.isSpatial()
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Point)
+
 
 class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
     """

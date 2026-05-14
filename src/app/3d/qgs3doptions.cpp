@@ -16,8 +16,10 @@
 #include "qgs3doptions.h"
 
 #include "qgis.h"
+#include "qgs3d.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QString>
 #include <Qt3DRender/QCamera>
@@ -47,6 +49,18 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mInvertVerticalAxisCombo->addItem( tr( "Only When Dragging" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenDragging ) );
   mInvertVerticalAxisCombo->addItem( tr( "Always" ), QVariant::fromValue( Qgis::VerticalAxisInversion::Always ) );
 
+  mTextureFilterQualityCombo->addItem( tr( "Off (Trilinear)" ), QVariant::fromValue( Qgis::TextureFilterQuality::Trilinear ) );
+  mTextureFilterQualityCombo->addItem( tr( "2×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic2x ) );
+  mTextureFilterQualityCombo->addItem( tr( "4×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic4x ) );
+  mTextureFilterQualityCombo->addItem( tr( "8×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic8x ) );
+  mTextureFilterQualityCombo->addItem( tr( "16×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic16x ) );
+
+  mShadowQualityCombo->addItem( tr( "Low" ), QVariant::fromValue( Qgis::ShadowQuality::Low ) );
+  mShadowQualityCombo->addItem( tr( "Medium" ), QVariant::fromValue( Qgis::ShadowQuality::Medium ) );
+  mShadowQualityCombo->addItem( tr( "High" ), QVariant::fromValue( Qgis::ShadowQuality::High ) );
+  mShadowQualityCombo->addItem( tr( "Very High" ), QVariant::fromValue( Qgis::ShadowQuality::VeryHigh ) );
+  mShadowQualityCombo->addItem( tr( "Extreme" ), QVariant::fromValue( Qgis::ShadowQuality::Extreme ) );
+
   mCameraMovementSpeed->setClearValue( 4 );
   spinCameraFieldOfView->setClearValue( 45.0 );
 
@@ -65,6 +79,11 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
 
   mGpuMemoryLimit->setClearValue( 500 );
   mGpuMemoryLimit->setValue( settings.value( u"map3d/gpuMemoryLimit"_s, 500.0, QgsSettings::App ).toDouble() );
+
+  mMSAA->setChecked( Qgs3D::settingMsaaEnabled->value() );
+
+  mTextureFilterQualityCombo->setCurrentIndex( mTextureFilterQualityCombo->findData( QVariant::fromValue( Qgs3D::settingTextureFilterQuality->value() ) ) );
+  mShadowQualityCombo->setCurrentIndex( mShadowQualityCombo->findData( QVariant::fromValue( Qgs3D::settingShadowQuality->value() ) ) );
 }
 
 QString Qgs3DOptionsWidget::helpKey() const
@@ -83,6 +102,10 @@ void Qgs3DOptionsWidget::apply()
   settings.setValue( u"map3d/defaultFieldOfView"_s, spinCameraFieldOfView->value(), QgsSettings::App );
 
   settings.setValue( u"map3d/gpuMemoryLimit"_s, mGpuMemoryLimit->value(), QgsSettings::App );
+
+  Qgs3D::settingMsaaEnabled->setValue( mMSAA->isChecked() );
+  Qgs3D::settingTextureFilterQuality->setValue( mTextureFilterQualityCombo->currentData().value< Qgis::TextureFilterQuality >() );
+  Qgs3D::settingShadowQuality->setValue( mShadowQualityCombo->currentData().value< Qgis::ShadowQuality >() );
 }
 
 

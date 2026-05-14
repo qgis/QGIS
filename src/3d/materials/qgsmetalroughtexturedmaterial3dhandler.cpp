@@ -15,6 +15,7 @@
 
 #include "qgsmetalroughtexturedmaterial3dhandler.h"
 
+#include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgshighlightmaterial.h"
 #include "qgsimagecache.h"
@@ -50,7 +51,7 @@ QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toMaterial( const QgsAbstra
 
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial();
       material->setObjectName( u"metalRoughTexturedMaterial"_s );
-      applySettingsToMaterial( texturedSettings, material );
+      applySettingsToMaterial( texturedSettings, material, context );
 
       return material;
     }
@@ -69,7 +70,7 @@ QMap<QString, QString> QgsMetalRoughTexturedMaterial3DHandler::toExportParameter
 void QgsMetalRoughTexturedMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
 {}
 
-bool QgsMetalRoughTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
+bool QgsMetalRoughTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
 {
   const QgsMetalRoughTexturedMaterialSettings *metalRoughTexturedSettings = qgis::down_cast< const QgsMetalRoughTexturedMaterialSettings * >( settings );
 
@@ -77,11 +78,11 @@ bool QgsMetalRoughTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEnti
   if ( !material || material->objectName() != "metalRoughTexturedMaterial"_L1 )
     return false;
 
-  applySettingsToMaterial( metalRoughTexturedSettings, material );
+  applySettingsToMaterial( metalRoughTexturedSettings, material, context );
   return true;
 }
 
-Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( const QString &path )
+Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( const QString &path, bool isSrgb, const QgsMaterialContext &context )
 {
   if ( path.isEmpty() )
     return nullptr;
@@ -91,30 +92,37 @@ Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( con
   if ( image.isNull() )
     return nullptr;
 
-  QgsImageTexture *textureImage = new QgsImageTexture( image );
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
-  // texture takes ownership of textureImage
-  texture->addTextureImage( textureImage );
+
+  if ( isSrgb )
+  {
+    texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+  }
+  else
+  {
+    texture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
+  }
 
   texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
   texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-  texture->setGenerateMipMaps( true );
-  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setMinificationFilter( Qt3DRender::QTexture2D::LinearMipMapLinear );
+  Qgs3DUtils::setTextureFiltering( texture, context );
+
+  // texture takes ownership of textureImage
+  texture->addTextureImage( new QgsImageTexture( image ) );
 
   return texture;
 }
 
-void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoughTexturedMaterialSettings *texturedSettings, QgsMetalRoughMaterial *material )
+void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoughTexturedMaterialSettings *texturedSettings, QgsMetalRoughMaterial *material, const QgsMaterialContext &context )
 {
   material->setTextureScale( static_cast<float>( texturedSettings->textureScale() ) );
   material->setTextureRotation( static_cast<float>( texturedSettings->textureRotation() ) );
 
   // base color
-  if ( Qt3DRender::QTexture2D *baseTex = loadTexture( texturedSettings->baseColorTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *baseTex = loadTexture( texturedSettings->baseColorTexturePath(), true, context ) )
   {
     // takes ownership of texture
-    material->setBaseColor( QVariant::fromValue( baseTex ) );
+    material->setBaseColorTexture( baseTex );
   }
   else
   {
@@ -123,10 +131,10 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   }
 
   // metalness
-  if ( Qt3DRender::QTexture2D *metalTex = loadTexture( texturedSettings->metalnessTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *metalTex = loadTexture( texturedSettings->metalnessTexturePath(), false, context ) )
   {
     // takes ownership of texture
-    material->setMetalness( QVariant::fromValue( metalTex ) );
+    material->setMetalnessTexture( metalTex );
   }
   else
   {
@@ -135,10 +143,10 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   }
 
   // roughness
-  if ( Qt3DRender::QTexture2D *roughTex = loadTexture( texturedSettings->roughnessTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *roughTex = loadTexture( texturedSettings->roughnessTexturePath(), false, context ) )
   {
     // takes ownership of texture
-    material->setRoughness( QVariant::fromValue( roughTex ) );
+    material->setRoughnessTexture( roughTex );
   }
   else
   {
@@ -146,26 +154,50 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
     material->setRoughness( 0.5 );
   }
 
-  if ( Qt3DRender::QTexture2D *normalTex = loadTexture( texturedSettings->normalTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *normalTex = loadTexture( texturedSettings->normalTexturePath(), false, context ) )
   {
     // takes ownership of texture
-    material->setNormal( QVariant::fromValue( normalTex ) );
+    material->setNormalTexture( normalTex );
   }
   else
   {
     // default to none
-    material->setNormal( QVariant() );
+    material->setNormalTexture( nullptr );
   }
 
-  // ambient occlusion
-  if ( Qt3DRender::QTexture2D *aoTex = loadTexture( texturedSettings->ambientOcclusionTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *heightTex = loadTexture( texturedSettings->heightTexturePath(), false, context ) )
   {
-    // takes ownership of texture
-    material->setAmbientOcclusion( QVariant::fromValue( aoTex ) );
+    material->setHeightTexture( heightTex );
   }
   else
   {
     // default to none
-    material->setAmbientOcclusion( QVariant() );
+    material->setHeightTexture( nullptr );
   }
+  material->setParallaxScale( texturedSettings->parallaxScale() );
+
+  // ambient occlusion
+  if ( Qt3DRender::QTexture2D *aoTex = loadTexture( texturedSettings->ambientOcclusionTexturePath(), false, context ) )
+  {
+    // takes ownership of texture
+    material->setAmbientOcclusionTexture( aoTex );
+  }
+  else
+  {
+    // default to none
+    material->setAmbientOcclusionTexture( nullptr );
+  }
+
+  if ( Qt3DRender::QTexture2D *emissionTex = loadTexture( texturedSettings->emissionTexturePath(), true, context ) )
+  {
+    material->setEmissionTexture( emissionTex );
+  }
+  else
+  {
+    // default to none
+    material->setEmissionTexture( nullptr );
+  }
+
+  material->setEmissionFactor( texturedSettings->emissionFactor() );
+  material->setOpacity( static_cast< float >( texturedSettings->opacity() ) );
 };

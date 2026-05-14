@@ -20,6 +20,7 @@
 
 #include "qgis_3d.h"
 #include "qgs3daxissettings.h"
+#include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgsambientocclusionsettings.h"
 #include "qgscoordinatereferencesystem.h"
@@ -197,6 +198,23 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setBackgroundColor( const QColor &color );
     //! Returns background color of the 3D map view
     QColor backgroundColor() const;
+
+    /**
+     * Returns the background settings for the 3D scene, or null if no background is set.
+     *
+     * \see setBackgroundSettings()
+     * \since QGIS 4.2
+     */
+    const QgsAbstract3DMapBackgroundSettings *backgroundSettings() const;
+
+    /**
+     * Sets the background \a settings for the 3D scene. Ownership is transferred.
+     *
+     * \see backgroundSettings()
+     * \see backgroundSettingsChanged()
+     * \since QGIS 4.2
+     */
+    void setBackgroundSettings( QgsAbstract3DMapBackgroundSettings *settings SIP_TRANSFER );
 
     //! Sets color used for selected features
     void setSelectionColor( const QColor &color );
@@ -504,15 +522,27 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \see debugShadowMapEnabled()
      * \see debugShadowMapCorner()
      * \see debugShadowMapSize()
-     * \since QGIS 3.18
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
      */
-    void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
-    //! Returns whether the shadow map debugging is enabled
-    bool debugShadowMapEnabled() const;
-    //! Returns the corner where the shadow map preview is displayed
-    Qt::Corner debugShadowMapCorner() const;
-    //! Returns the size of the shadow map preview
-    double debugShadowMapSize() const;
+    Q_DECL_DEPRECATED void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size ) SIP_DEPRECATED;
+
+    /**
+     * Returns whether the shadow map debugging is enabled.
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
+     */
+    Q_DECL_DEPRECATED bool debugShadowMapEnabled() const SIP_DEPRECATED;
+
+    /**
+     * Returns the corner where the shadow map preview is displayed
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
+     */
+    Q_DECL_DEPRECATED Qt::Corner debugShadowMapCorner() const SIP_DEPRECATED;
+
+    /**
+     * Returns the size of the shadow map preview.
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
+     */
+    Q_DECL_DEPRECATED double debugShadowMapSize() const SIP_DEPRECATED;
 
     /**
      * Sets the debugging settings of the depth map
@@ -614,8 +644,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Returns the current configuration of the skybox
      * \since QGIS 3.16
+     * \deprecated QGIS 4.2. Use backgroundSettings() instead.
      */
-    QgsSkyboxSettings skyboxSettings() const SIP_SKIP;
+    Q_DECL_DEPRECATED QgsSkyboxSettings skyboxSettings() const SIP_SKIP;
 
     /**
      * Returns the current configuration of shadows
@@ -632,8 +663,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Sets the current configuration of the skybox
      * \since QGIS 3.16
+     * \deprecated QGIS 4.2. Use setBackgroundSettings() instead.
      */
-    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
+    Q_DECL_DEPRECATED void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
 
     /**
      * Sets the current configuration of shadow rendering
@@ -651,15 +683,17 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Returns whether the skybox is enabled.
      * \see setIsSkyboxEnabled()
      * \since QGIS 3.16
+     * \deprecated QGIS 4.2. Use backgroundSettings() instead.
      */
-    bool isSkyboxEnabled() const;
+    Q_DECL_DEPRECATED bool isSkyboxEnabled() const SIP_DEPRECATED;
 
     /**
      * Sets whether the skybox is enabled.
      * \see isSkyboxEnabled()
      * \since QGIS 3.16
+     * \deprecated QGIS 4.2. Use setBackgroundSettings() instead.
      */
-    void setIsSkyboxEnabled( bool enabled );
+    Q_DECL_DEPRECATED void setIsSkyboxEnabled( bool enabled ) SIP_DEPRECATED;
 
     /**
      * Returns whether FPS counter label is enabled
@@ -803,6 +837,35 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setIs2DMapOverlayEnabled( bool enabled );
 
+    /**
+     * Sets whether multisample anti-aliasing (MSAA) is enabled
+     * \see isMsaaEnabled()
+     * \since QGIS 4.2
+     */
+    void setMsaaEnabled( bool enabled );
+
+    /**
+     * Returns whether multisample anti-aliasing (MSAA) is enabled
+     * \see setMsaaEnabled()
+     * \since QGIS 4.2
+     */
+    bool isMsaaEnabled() const;
+
+    /**
+     * Returns the texture filtering quality.
+     *
+     * \see setTextureFilterQuality()
+     * \since QGIS 4.2
+     */
+    Qgis::TextureFilterQuality textureFilterQuality() const { return mTextureFilterQuality; }
+
+    /**
+     * Sets the texture filtering \a quality.
+     *
+     * \see textureFilterQuality()
+     * \since QGIS 4.2
+     */
+    void setTextureFilterQuality( Qgis::TextureFilterQuality quality ) { mTextureFilterQuality = quality; }
 
   signals:
 
@@ -937,10 +1000,16 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void eyeDomeLightingDistanceChanged();
 
     /**
-     * Emitted when shadow map debugging has changed
-     * \since QGIS 3.18
+     * Emitted when the MSAA enabled flag has changed
+     * \since QGIS 4.2
      */
-    void debugShadowMapSettingsChanged();
+    void msaaEnabledChanged();
+
+    /**
+     * Emitted when shadow map debugging has changed
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
+     */
+    Q_DECL_DEPRECATED void debugShadowMapSettingsChanged() SIP_DEPRECATED;
 
     /**
      * Emitted when depth map debugging has changed
@@ -993,8 +1062,15 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Emitted when skybox settings are changed
      * \since QGIS 3.16
+     * \deprecated QGIS 4.2. Use backgroundSettingsChanged() instead.
      */
-    void skyboxSettingsChanged();
+    Q_DECL_DEPRECATED void skyboxSettingsChanged() SIP_DEPRECATED;
+
+    /**
+     * Emitted when background settings are changed.
+     * \since QGIS 4.2
+     */
+    void backgroundSettingsChanged();
 
     /**
      * Emitted when shadow rendering settings are changed
@@ -1110,21 +1186,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDpi = 96;                            //!< Dot per inch value for the screen / painter
     bool mIsFpsCounterEnabled = false;
 
-    bool mIsSkyboxEnabled = false;                         //!< Whether the skybox is enabled
-    QgsSkyboxSettings mSkyboxSettings;                     //!< Skybox related configuration
-    QgsShadowSettings mShadowSettings;                     //!< Shadow rendering related settings
-    QgsAmbientOcclusionSettings mAmbientOcclusionSettings; //!< Screen Space Ambient Occlusion related settings
+    std::unique_ptr<QgsAbstract3DMapBackgroundSettings> mBackgroundSettings; //!< Stores background settings
+    QgsShadowSettings mShadowSettings;                                       //!< Shadow rendering related settings
+    QgsAmbientOcclusionSettings mAmbientOcclusionSettings;                   //!< Screen Space Ambient Occlusion related settings
 
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
 
+    bool mMsaaEnabled = false;
+    Qgis::TextureFilterQuality mTextureFilterQuality = Qgis::TextureFilterQuality::Trilinear;
+
     Qgis::ViewSyncModeFlags mViewSyncMode;
     bool mVisualizeViewFrustum = false;
-
-    bool mDebugShadowMapEnabled = false;
-    Qt::Corner mDebugShadowMapCorner = Qt::Corner::TopLeftCorner;
-    double mDebugShadowMapSize = 0.2;
 
     bool mDebugDepthMapEnabled = false;
     Qt::Corner mDebugDepthMapCorner = Qt::Corner::BottomLeftCorner;

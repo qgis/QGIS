@@ -178,8 +178,8 @@ void QgsWelcomeScreen::refreshGeometry()
 {
   if ( QWidget *parentWidget = qobject_cast<QWidget *>( parent() ) )
   {
-    const int adjustedWidth = std::min( mOriginalWidth, parentWidget->width() - 80 );
-    const int adjustedHeight = std::min( mOriginalHeight, parentWidget->height() - 80 );
+    const int adjustedWidth = std::min( mOriginalWidth, parentWidget->width() - 10 );
+    const int adjustedHeight = std::min( mOriginalHeight, parentWidget->height() - 60 );
     const int adjustedX = ( parentWidget->width() - adjustedWidth ) / 2;
     const int adjustedY = ( parentWidget->height() - adjustedHeight ) / 2;
     setGeometry( adjustedX, adjustedY, adjustedWidth, adjustedHeight );

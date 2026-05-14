@@ -4,6 +4,7 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
+      "featureType": "as_areas",
       "geometry": null,
       "id": "as_areas.18",
       "properties": {
