@@ -33,7 +33,9 @@ in float vertexSize; //contains overridden pointSize for classification renderin
 flat out int classParameter;
 #endif
 
+#if defined(TRIANGULATE) || defined(CLIPPING)
 out vec3 worldPosition;
+#endif
 
 #ifdef CLIPPING
     #pragma include clipplane.shaderinc
@@ -43,7 +45,9 @@ void main(void)
 {
     gl_Position = modelViewProjection * vec4(vertexPosition, 1);
 
+#if defined(TRIANGULATE) || defined(CLIPPING)
     worldPosition = vec3 (modelMatrix * vec4 (vertexPosition,1));
+#endif
 
 #ifdef TRIANGULATE
     vertNorm = vertexNormal;
