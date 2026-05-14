@@ -35,7 +35,6 @@
 #include "qgstessellator.h"
 #include "qgsvectorlayer.h"
 
-#include <Qt3DExtras/QDiffuseMapMaterial>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAbstractTextureImage>
 #include <Qt3DRender/QCullFace>
