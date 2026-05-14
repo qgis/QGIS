@@ -19,6 +19,7 @@
 #include "qgsaabb.h"
 #include "qgsbox3d.h"
 #include "qgsgeotransform.h"
+#include "qgsphongmaterial.h"
 
 #include <Qt3DExtras/QPhongMaterial>
 
@@ -33,8 +34,9 @@ QgsChunkBoundsEntity::QgsChunkBoundsEntity( const QgsVector3D &vertexDataOrigin,
   mAabbMesh = new Qgs3DWiredMesh;
   addComponent( mAabbMesh );
 
-  Qt3DExtras::QPhongMaterial *bboxesMaterial = new Qt3DExtras::QPhongMaterial;
+  auto *bboxesMaterial = new QgsPhongMaterial();
   bboxesMaterial->setAmbient( Qt::red );
+  bboxesMaterial->setCastsShadows( false );
   addComponent( bboxesMaterial );
 
   QgsGeoTransform *transform = new QgsGeoTransform;
