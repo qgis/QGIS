@@ -16,11 +16,14 @@
 #ifndef QGSMAPTOOLSELECTIONHANDLER_H
 #define QGSMAPTOOLSELECTIONHANDLER_H
 
+#include "qgis_gui.h"
 #include "qgsgeometry.h"
 
 #include <QObject>
 #include <QTimer>
 #include <QWidget>
+
+#define SIP_NO_FILE
 
 class QHBoxLayout;
 class QKeyEvent;
@@ -31,6 +34,7 @@ class QgsMapMouseEvent;
 class QgsRubberBand;
 class QgsSnapIndicator;
 class QgsIdentifyMenu;
+
 
 /// @cond private
 
@@ -78,7 +82,7 @@ class QgsDistanceWidget : public QWidget
  * \brief Utility class for handling various methods to create geometry for selection in layers.
  * \since QGIS 3.2
  */
-class QgsMapToolSelectionHandler : public QObject
+class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 {
     Q_OBJECT
 
@@ -129,6 +133,7 @@ class QgsMapToolSelectionHandler : public QObject
     //! Handles escape press event - returns true if the even has been processed
     bool keyReleaseEvent( QKeyEvent *e );
 
+    //! Sets the selected geometry
     void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   signals:

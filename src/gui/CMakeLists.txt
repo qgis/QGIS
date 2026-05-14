@@ -375,6 +375,9 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolidentify.cpp
   maptools/qgsmaptoolidentifyfeature.cpp
   maptools/qgsmaptoolpan.cpp
+  maptools/qgsmaptoolselect.cpp
+  maptools/qgsmaptoolselectionhandler.cpp
+  maptools/qgsmaptoolselectutils.cpp
   maptools/qgsmaptoolshapeabstract.cpp
   maptools/qgsmaptoolshaperegistry.cpp
   maptools/qgsmaptoolzoom.cpp
@@ -1399,6 +1402,9 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolidentify.h
   maptools/qgsmaptoolidentifyfeature.h
   maptools/qgsmaptoolpan.h
+  maptools/qgsmaptoolselect.h
+  maptools/qgsmaptoolselectionhandler.h
+  maptools/qgsmaptoolselectutils.h
   maptools/qgsmaptoolshapeabstract.h
   maptools/qgsmaptoolshaperegistry.h
   maptools/qgsmaptoolzoom.h

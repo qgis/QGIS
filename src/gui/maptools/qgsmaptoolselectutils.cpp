@@ -19,12 +19,12 @@ email                : jpalmer at linz dot govt dot nz
 #include <memory>
 
 #include "qgis.h"
-#include "qgisapp.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgshighlight.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -41,6 +41,7 @@ email                : jpalmer at linz dot govt dot nz
 
 #include <QAction>
 #include <QApplication>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QString>
 #include <QtConcurrentRun>
@@ -74,7 +75,10 @@ QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas 
 
   if ( !layer )
   {
-    QgisApp::instance()->messageBar()->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+    if ( QgsMessageBar *messageBar = canvas->messageBar() )
+    {
+      messageBar->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+    }
   }
   return layer;
 }
@@ -204,7 +208,6 @@ bool transformSelectGeometry( const QgsGeometry &selectGeometry, QgsGeometry &se
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
     QgsDebugError( u"Caught CRS exception "_s );
-    QgisApp::instance()->messageBar()->pushMessage( QObject::tr( "CRS Exception" ), QObject::tr( "Selection extends beyond layer's coordinate system" ), Qgis::MessageLevel::Warning );
     return false;
   }
 }
@@ -263,6 +266,10 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
       QgsGeometry selectGeomTrans;
       if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
       {
+        if ( QgsMessageBar *messageBar = canvas->messageBar() )
+        {
+          messageBar->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+        }
         break;
       }
 
@@ -320,6 +327,10 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
       QgsGeometry selectGeomTrans;
       if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
       {
+        if ( QgsMessageBar *messageBar = canvas->messageBar() )
+        {
+          messageBar->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+        }
         break;
       }
 
@@ -364,7 +375,13 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   QgsGeometry selectGeomTrans;
   QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs(), QgsProject::instance() );
   if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
+  {
+    if ( QgsMessageBar *messageBar = canvas->messageBar() )
+    {
+      messageBar->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+    }
     return newSelectedFeatures;
+  }
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
   QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
@@ -568,8 +585,10 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
   QgsGeometry selectGeomTrans = data->selectGeometry;
 
   if ( !transformSelectGeometry( data->selectGeometry, selectGeomTrans, data->ct ) )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning, true );
     return newSelectedFeatures;
-
+  }
   // make sure the selection geometry is valid, or intersection tests won't work correctly...
   if ( !selectGeomTrans.isGeosValid() )
   {

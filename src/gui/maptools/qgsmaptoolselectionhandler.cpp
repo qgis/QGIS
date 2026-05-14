@@ -15,14 +15,15 @@
 
 #include "qgsmaptoolselectionhandler.h"
 
-#include "qgisapp.h"
 #include "qgsdoublespinbox.h"
 #include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsrubberband.h"
 #include "qgssnapindicator.h"
+#include "qgsuserinputwidget.h"
 
+#include <QApplication>
 #include <QBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
@@ -422,7 +423,10 @@ void QgsMapToolSelectionHandler::createDistanceWidget()
   deleteDistanceWidget();
 
   mDistanceWidget = new QgsDistanceWidget( tr( "Selection radius:" ) );
-  QgisApp::instance()->addUserInputWidget( mDistanceWidget );
+  if ( QgsUserInputWidget *userInputWidget = mCanvas->userInputWidget() )
+  {
+    userInputWidget->addUserInputWidget( mDistanceWidget );
+  }
   mDistanceWidget->setFocus( Qt::TabFocusReason );
 
   connect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectionHandler::updateRadiusRubberband );

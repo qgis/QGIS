@@ -16,19 +16,30 @@
 #ifndef QGSMAPTOOLSELECT_H
 #define QGSMAPTOOLSELECT_H
 
-#include "qgis_app.h"
 #include "qgsmaptool.h"
 #include "qgsmaptoolselectionhandler.h"
+
+#define SIP_NO_FILE
+
+// no bindings for now, not stable yet. Previously lived in src/app
 
 class QgsMapCanvas;
 class QgsHighlight;
 
 class QMouseEvent;
 
-class APP_EXPORT QgsMapToolSelect : public QgsMapTool
+/**
+ * \ingroup gui
+ * \brief A map tool for selecting features on a map canvas.
+ * \see QgsMapTool
+ *
+ * \since QGIS 4.2
+ */
+class GUI_EXPORT QgsMapToolSelect : public QgsMapTool
 {
     Q_OBJECT
   public:
+    //! Define selection modes used by the different combinations of modifiers.
     enum Mode
     {
       GeometryIntersectsSetSelection,
@@ -43,6 +54,7 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
 
     QgsMapToolSelect( QgsMapCanvas *canvas );
 
+    //! Sets the current selection mode
     void setSelectionMode( QgsMapToolSelectionHandler::SelectionMode selectionMode );
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
@@ -56,7 +68,7 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
 
   signals:
-
+    //! Emitted when the selection mode changes, usually when qt modifiers are changed
     void modeChanged( QgsMapToolSelect::Mode mode );
 
   private slots:
