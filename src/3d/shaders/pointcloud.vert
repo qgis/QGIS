@@ -6,7 +6,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewportMatrix;
 uniform mat4 modelMatrix;
 
-#if defined(STYLE_COLOR_RAMP) || defined(STYLE_SINGLE_COLOR) || defined(STYLE_RGB) || defined(STYLE_NO_RENDERING)
+#if defined(STYLE_COLOR_RAMP) || defined(STYLE_SINGLE_COLOR) || defined(STYLE_RGB)
 uniform float u_pointSize;
 #endif
 
@@ -49,7 +49,7 @@ void main(void)
     vertNorm = vertexNormal;
 #endif
 
-#if defined(STYLE_COLOR_RAMP) || defined(STYLE_SINGLE_COLOR) || defined(STYLE_RGB) || defined(STYLE_NO_RENDERING)
+#if defined(STYLE_COLOR_RAMP) || defined(STYLE_SINGLE_COLOR) || defined(STYLE_RGB)
     gl_PointSize = u_pointSize;
 #endif
 
