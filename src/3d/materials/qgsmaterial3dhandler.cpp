@@ -43,6 +43,8 @@ QgsMaterialContext QgsMaterialContext::fromRenderContext( const Qgs3DRenderConte
 QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
 {
   Q_UNUSED( flags )
+  Q_UNUSED( settings )
+  Q_UNUSED( context )
   return nullptr;
 }
 
