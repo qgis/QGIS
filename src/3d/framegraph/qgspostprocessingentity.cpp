@@ -66,6 +66,10 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   const QVariantList csmMatrices = QVariantList( Qgs3D::NUM_SHADOW_CASCADES, QVariant::fromValue( QMatrix4x4() ) );
   mCsmMatricesParameter = new Qt3DRender::QParameter( QString( "csmMatrices[0]" ), csmMatrices );
   mMaterial->addParameter( mCsmMatricesParameter );
+  mCsmBoundsMatricesParameter = new Qt3DRender::QParameter( QString( "csmBoundsMatrices[0]" ), csmMatrices );
+  mMaterial->addParameter( mCsmBoundsMatricesParameter );
+  mMaxShadowDistanceParameter = new Qt3DRender::QParameter( u"maxShadowDistance"_s, QVariant::fromValue( 0.0f ) );
+  mMaterial->addParameter( mMaxShadowDistanceParameter );
 
   mFarPlaneParameter = new Qt3DRender::QParameter( u"farPlane"_s, mMainCamera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
@@ -137,7 +141,12 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   const float cameraFov = mMainCamera->fieldOfView();
   const float cameraAspect = mMainCamera->aspectRatio();
 
+  // we are building two matrix lists, one containing the exact bounds of each
+  // cascade, and the other which is an exact match for the actual camera used
+  // for each cascade's texture. These differ, as we pull back the camera's
+  // near plane for reasons described below...
   QVariantList csmMatrices( Qgs3D::NUM_SHADOW_CASCADES, QVariant() );
+  QVariantList csmBoundsMatrices( Qgs3D::NUM_SHADOW_CASCADES, QVariant() );
   for ( int i = 0; i < Qgs3D::NUM_SHADOW_CASCADES; ++i )
   {
     const float zNear = cascadeSplits[i];
@@ -166,6 +175,22 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     float lightCameraFarPlane = 0;
     Qgs3DUtils::calculateViewSpaceOrthographicBounds( worldFrustumCorners, lightView, lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
 
+    // we pad a little to guarantee some overlap exists between cascades, to avoid
+    // any chance of gaps between seams
+    constexpr float CASCADE_VIEW_PADDING_FACTOR = 0.05f;
+    const float paddingX = ( lightCameraRight - lightCameraLeft ) * CASCADE_VIEW_PADDING_FACTOR;
+    const float paddingY = ( lightCameraTop - lightCameraBottom ) * CASCADE_VIEW_PADDING_FACTOR;
+    const float paddingZ = ( lightCameraFarPlane - lightCameraNearPlane ) * CASCADE_VIEW_PADDING_FACTOR;
+    lightCameraLeft -= paddingX;
+    lightCameraRight += paddingX;
+    lightCameraBottom -= paddingY;
+    lightCameraTop += paddingY;
+    lightCameraNearPlane -= paddingZ;
+    lightCameraFarPlane += paddingZ;
+
+    mLightCameras[i]->lens()->setOrthographicProjection( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
+    csmBoundsMatrices[i] = QVariant::fromValue( mLightCameras[i]->projectionMatrix() * lightView );
+
     // Pull the near plane way back to catch shadows from behind the camera
     // If we don't do this, then we'll lose the tops of shadows which should be cast by objects
     // which sit behind this cascade slice's frustrum
@@ -173,7 +198,6 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     lightCameraNearPlane -= NEAR_PLANE_RETREAT;
 
     // apply the corresponding Orthographic projection to the camera
-    mLightCameras[i]->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
     mLightCameras[i]->lens()->setOrthographicProjection( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
 
     // calculate combined light space matrix for the shader
@@ -181,6 +205,8 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   }
 
   mCsmMatricesParameter->setValue( csmMatrices );
+  mCsmBoundsMatricesParameter->setValue( csmBoundsMatrices );
+  mMaxShadowDistanceParameter->setValue( mainCameraFarPlane );
 }
 
 void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )

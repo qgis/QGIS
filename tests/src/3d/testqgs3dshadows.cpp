@@ -143,6 +143,7 @@ void TestQgs3DShadows::testFlatTerrain_data()
   QTest::newRow( "zoomed out looking down" ) << 210.0f << 30.0f << QgsVector3D( 0, -250, 0 ) << 300.0f << 35.0f << 130.0f << "shadows6";
   QTest::newRow( "very zoomed out" ) << 210.0f << 30.0f << QgsVector3D( 0, -250, 0 ) << 900.0f << 75.0f << 130.0f << "shadows7";
   QTest::newRow( "very zoomed out other side" ) << 210.0f << 20.0f << QgsVector3D( 0, -250, 0 ) << 900.0f << 55.0f << 310.0f << "shadows8";
+  QTest::newRow( "zoomed out beyond max distance" ) << 210.0f << 20.0f << QgsVector3D( 0, -250, 0 ) << 1500.0f << 55.0f << 310.0f << "shadows9";
 }
 
 void TestQgs3DShadows::testFlatTerrain()

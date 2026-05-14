@@ -7,7 +7,6 @@ uniform sampler2D depthTexture;
 uniform sampler2D ssaoTexture;
 
 // view camera uniforms
-uniform mat4 invertedCameraView;
 uniform mat4 invertedCameraProj;
 uniform float farPlane;
 uniform float nearPlane;
@@ -105,14 +104,13 @@ void main()
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
   if ( renderShadows != 0 && depth < 1.0 )
   {
-    int cascadeIndex = calcCascadeIndexMapBased(worldPosition);
-    float visibilityFactor = calcShadowFactor(cascadeIndex, worldPosition);
+    float visibilityFactor = calcVisibilityAfterShadowing(worldPosition);
 
     finalColor = finalColor * mix(0.5, 1.0, visibilityFactor);
 
 #ifdef TINT_CASCADES
     // for debugging: shade pixels by cascade index, to visualise cascade breaks
-    finalColor = mix(finalColor, cascadeTint(cascadeIndex), 0.5);
+    finalColor = mix(finalColor, calcCascadeTint(worldPosition), 0.5);
 #endif
   }
   if (edlEnabled != 0)

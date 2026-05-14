@@ -102,6 +102,7 @@ void QgsShadowRenderView::buildRenderPass()
   {
     mLightCameras[i] = new Qt3DRender::QCamera( mRootEntity );
     mLightCameras[i]->setObjectName( mViewName + QString( "::LightCamera_%1" ).arg( i ) );
+    mLightCameras[i]->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
 
     Qt3DRender::QCameraSelector *lightCameraSelector = new Qt3DRender::QCameraSelector( renderStateSet );
     lightCameraSelector->setObjectName( mViewName + QString( "::CameraSelector_%1" ).arg( i ) );

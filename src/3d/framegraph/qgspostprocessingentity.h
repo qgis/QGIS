@@ -92,6 +92,8 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
 
     Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
     Qt3DRender::QParameter *mCsmMatricesParameter = nullptr;
+    Qt3DRender::QParameter *mCsmBoundsMatricesParameter = nullptr;
+    Qt3DRender::QParameter *mMaxShadowDistanceParameter = nullptr;
 
     Qt3DRender::QParameter *mRenderShadowsParameter = nullptr;
     Qt3DRender::QParameter *mShadowBiasParameter = nullptr;
