@@ -43,7 +43,7 @@ QgsMaterialContext QgsMaterialContext::fromRenderContext( const Qgs3DRenderConte
 QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
 {
   Q_UNUSED( flags )
-  return toMaterial( settings, Qgis::MaterialRenderingTechnique::InstancedPoints, context );
+  return nullptr;
 }
 
 QByteArray QgsAbstractMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
