@@ -152,15 +152,18 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
 
     /**
      * Creates a QgsMaterial for instanced point rendering.
-     * \a flags controls which per-instance attributes are active: setting
-     * DataDefinedScale injects USE_INSTANCE_SCALE
-     * DataDefinedRotation injects USE_INSTANCE_ROTATION
-     * into the vertex shader.
-     * The default implementation delegates to toMaterial() with InstancedPoints technique.
-     * Subclasses that support instancing override this to construct the material with the
+     *
+     * The \a flags argument controls which per-instance attributes are active:
+     *
+     * - Qgis::InstancedMaterialFlag::DataDefinedScale injects ``USE_INSTANCE_SCALE`` into the vertex shader.
+     * - Qgis::InstancedMaterialFlag::DataDefinedRotation injects ``USE_INSTANCE_ROTATION`` into the vertex shader.
+     *
+     * The default implementation delegates to toMaterial() with the Qgis::MaterialRenderingTechnique::InstancedPoints technique.
+     *
+     * Subclasses that support instancing must override this method to construct the material with the
      * correct shader from the start.
      */
-    virtual QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const SIP_FACTORY;
+    virtual QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const;
 
     /**
      * Returns the parameters to be exported to .mtl file

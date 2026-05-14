@@ -46,7 +46,7 @@ class _3D_EXPORT QgsGoochMaterial3DHandler : public QgsAbstractMaterial3DHandler
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 
   private:
-    QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const override SIP_FACTORY;
+    QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const override;
     static void applySettingsToMaterial( const QgsGoochMaterialSettings *settings, QgsGoochMaterial *material );
 };
 
