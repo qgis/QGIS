@@ -79,7 +79,6 @@
 #include <QUrl>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
@@ -87,6 +86,7 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QRenderSettings>
@@ -977,20 +977,22 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
   // this is probably not the best place for material-specific configuration,
   // maybe this could be more generalized when other materials need some specific treatment
-  const QList<QgsLineMaterial *> childLineMaterials = newEntity->findChildren<QgsLineMaterial *>();
-  for ( QgsLineMaterial *lm : childLineMaterials )
-  {
-    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this] { lm->setViewportSize( mEngine->size() ); } );
+  const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
 
-    lm->setViewportSize( mEngine->size() );
-  }
-  // configure billboard's viewport when the viewport is changed.
-  const QList<QgsPoint3DBillboardMaterial *> childBillboardMaterials = newEntity->findChildren<QgsPoint3DBillboardMaterial *>();
-  for ( QgsPoint3DBillboardMaterial *bm : childBillboardMaterials )
+  // first pass over materials -- setup viewport sizing logic for ALL materials that require it
+  // (this needs to apply to all materials, includes those for highlight entities)
+  for ( Qt3DRender::QMaterial *material : childMaterials )
   {
-    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this] { bm->setViewportSize( mEngine->size() ); } );
-
-    bm->setViewportSize( mEngine->size() );
+    if ( auto lm = qobject_cast< QgsLineMaterial * >( material ) )
+    {
+      connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this] { lm->setViewportSize( mEngine->size() ); } );
+      lm->setViewportSize( mEngine->size() );
+    }
+    else if ( auto bm = qobject_cast< QgsPoint3DBillboardMaterial * >( material ) )
+    {
+      connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this] { bm->setViewportSize( mEngine->size() ); } );
+      bm->setViewportSize( mEngine->size() );
+    }
   }
 
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
@@ -1003,22 +1005,46 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
   // Add the required QLayers to the entity
   newEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
-  newEntity->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
 
-  // Finalize adding the 3D transparent objects by adding the layer components to the entities
+  Qt3DRender::QLayer *shadowCastingEntityLayer = frameGraph->shadowRenderView().entityCastingShadowsLayer();
   Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView().transparentObjectLayer();
-  const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
   for ( Qt3DRender::QMaterial *material : childMaterials )
   {
+    // find the specific entity this material belongs to -- it may be a child of the parent entity
+    // being finalized
+    auto materialEntity = qobject_cast<Qt3DCore::QEntity *>( material->parent() );
+    if ( !materialEntity )
+      continue;
+
+    bool materialCastsShadows = false;
+    if ( auto qgsMaterial = qobject_cast< QgsMaterial * >( material ) )
+    {
+      if ( qgsMaterial->castsShadows() )
+      {
+        materialCastsShadows = true;
+      }
+    }
+    else
+    {
+      // for non QgsMaterial materials we assume they need shadows
+      materialCastsShadows = true;
+    }
+
+    if ( materialCastsShadows && !materialEntity->components().contains( shadowCastingEntityLayer ) )
+    {
+      materialEntity->addComponent( shadowCastingEntityLayer );
+    }
+
+    // Finalize adding the 3D transparent objects by adding the layer components to the entities
+
     // This handles the phong material without data defined properties.
-    if ( Qt3DExtras::QDiffuseSpecularMaterial *ph = qobject_cast<Qt3DExtras::QDiffuseSpecularMaterial *>( material ) )
+    if ( auto ph = qobject_cast<Qt3DExtras::QDiffuseSpecularMaterial *>( material ) )
     {
       if ( ph->diffuse().value<QColor>().alphaF() != 1.0f )
       {
-        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
-        if ( entity && !entity->components().contains( transparentLayer ) )
+        if ( !materialEntity->components().contains( transparentLayer ) )
         {
-          entity->addComponent( transparentLayer );
+          materialEntity->addComponent( transparentLayer );
         }
       }
     }
@@ -1039,36 +1065,40 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
      * Consider enabling if/when we have some workaround for the stacking issue,
      * eg CPU based sorting on camera movement...
      */
-    else if ( QgsPoint3DBillboardMaterial *billboardMaterial = qobject_cast<QgsPoint3DBillboardMaterial *>( material ) )
+    else if ( auto billboardMaterial = qobject_cast<QgsPoint3DBillboardMaterial *>( material ) )
     {
       Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( billboardMaterial->parent() );
-      if ( entity && !entity->components().contains( transparentLayer ) )
+      if ( !materialEntity->components().contains( transparentLayer ) )
       {
-        entity->addComponent( transparentLayer );
+        materialEntity->addComponent( transparentLayer );
       }
     }
 #endif
     else
     {
       // This handles the phong material with data defined properties, the textured case and point (instanced) symbols.
-      Qt3DRender::QEffect *effect = material->effect();
-      if ( effect )
+      if ( Qt3DRender::QEffect *effect = material->effect() )
       {
         const QVector<Qt3DRender::QParameter *> parameters = effect->parameters();
         for ( const Qt3DRender::QParameter *parameter : parameters )
         {
           if ( parameter->name() == "opacity" && parameter->value() != 1.0f )
           {
-            Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( material->parent() );
-            if ( entity && !entity->components().contains( transparentLayer ) )
+            if ( !materialEntity->components().contains( transparentLayer ) )
             {
-              entity->addComponent( transparentLayer );
+              materialEntity->addComponent( transparentLayer );
             }
             break;
           }
         }
       }
     }
+  }
+
+  if ( childMaterials.empty() )
+  {
+    // handle shadows for entities without materials -- eg point models
+    newEntity->addComponent( shadowCastingEntityLayer );
   }
 }
 
