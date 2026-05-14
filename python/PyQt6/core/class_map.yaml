@@ -17247,7 +17247,7 @@ QgsSfcgalGeometry.area: src/core/geometry/qgssfcgalgeometry.h#L348
 QgsSfcgalGeometry.asWkb: src/core/geometry/qgssfcgalgeometry.h#L158
 QgsSfcgalGeometry.asWkt: src/core/geometry/qgssfcgalgeometry.h#L177
 QgsSfcgalGeometry.centroid: src/core/geometry/qgssfcgalgeometry.h#L400
-QgsSfcgalGeometry.clearCache: src/core/geometry/qgssfcgalgeometry.h#L749
+QgsSfcgalGeometry.clearCache: src/core/geometry/qgssfcgalgeometry.h#L820
 QgsSfcgalGeometry.covers: src/core/geometry/qgssfcgalgeometry.h#L587
 QgsSfcgalGeometry.dimension: src/core/geometry/qgssfcgalgeometry.h#L236
 QgsSfcgalGeometry.dropMValue: src/core/geometry/qgssfcgalgeometry.h#L295
@@ -17261,9 +17261,9 @@ QgsSfcgalGeometry.isSimple: src/core/geometry/qgssfcgalgeometry.h#L388
 QgsSfcgalGeometry.isValid: src/core/geometry/qgssfcgalgeometry.h#L313
 QgsSfcgalGeometry.length: src/core/geometry/qgssfcgalgeometry.h#L374
 QgsSfcgalGeometry.partCount: src/core/geometry/qgssfcgalgeometry.h#L249
-QgsSfcgalGeometry.primitiveParameter: src/core/geometry/qgssfcgalgeometry.h#L716
-QgsSfcgalGeometry.primitiveSetParameter: src/core/geometry/qgssfcgalgeometry.h#L726
-QgsSfcgalGeometry.primitiveTransform: src/core/geometry/qgssfcgalgeometry.h#L742
+QgsSfcgalGeometry.primitiveParameter: src/core/geometry/qgssfcgalgeometry.h#L787
+QgsSfcgalGeometry.primitiveSetParameter: src/core/geometry/qgssfcgalgeometry.h#L797
+QgsSfcgalGeometry.primitiveTransform: src/core/geometry/qgssfcgalgeometry.h#L813
 QgsSfcgalGeometry.swapXy: src/core/geometry/qgssfcgalgeometry.h#L305
 QgsSfcgalGeometry.volume: src/core/geometry/qgssfcgalgeometry.h#L361
 QgsSfcgalGeometry.wkbType: src/core/geometry/qgssfcgalgeometry.h#L121
