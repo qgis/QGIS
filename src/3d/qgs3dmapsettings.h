@@ -23,6 +23,7 @@
 #include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgsambientocclusionsettings.h"
+#include "qgsbloomsettings.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
 #include "qgsphongmaterialsettings.h"
@@ -661,6 +662,15 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsAmbientOcclusionSettings ambientOcclusionSettings() const SIP_SKIP;
 
     /**
+     * Returns the current configuration of the bloom lighting effect.
+     *
+     * \see setBloomSettings()
+     * \see bloomSettingsChanged()
+     * \since QGIS 4.2
+     */
+    QgsBloomSettings bloomSettings() const SIP_SKIP;
+
+    /**
      * Sets the current configuration of the skybox
      * \since QGIS 3.16
      * \deprecated QGIS 4.2. Use setBackgroundSettings() instead.
@@ -678,6 +688,15 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.28
      */
     void setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &ambientOcclusionSettings ) SIP_SKIP;
+
+    /**
+     * Sets the current configuration of bloom lighting effect.
+     *
+     * \see bloomSettings()
+     * \see bloomSettingsChanged()
+     * \since QGIS 4.2
+     */
+    void setBloomSettings( const QgsBloomSettings &settings ) SIP_SKIP;
 
     /**
      * Returns whether the skybox is enabled.
@@ -1078,12 +1097,20 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void shadowSettingsChanged();
 
-
     /**
      * Emitted when ambient occlusion rendering settings are changed
      * \since QGIS 3.28
      */
     void ambientOcclusionSettingsChanged();
+
+    /**
+     * Emitted when the bloom lighting effect settings are changed.
+     *
+     * \see bloomSettings()
+     * \see setBloomSettings()
+     * \since QGIS 4.2
+     */
+    void bloomSettingsChanged();
 
     /**
      * Emitted when the FPS counter is enabled or disabled
@@ -1189,6 +1216,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     std::unique_ptr<QgsAbstract3DMapBackgroundSettings> mBackgroundSettings; //!< Stores background settings
     QgsShadowSettings mShadowSettings;                                       //!< Shadow rendering related settings
     QgsAmbientOcclusionSettings mAmbientOcclusionSettings;                   //!< Screen Space Ambient Occlusion related settings
+    QgsBloomSettings mBloomSettings;                                         //!< Bloom effect settings
 
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;

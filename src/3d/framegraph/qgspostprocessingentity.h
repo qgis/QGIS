@@ -78,6 +78,18 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setAmbientOcclusionEnabled( bool enabled );
 
+    /**
+     * Sets whether physically based bloom is enabled
+     */
+    void setBloomEnabled( bool enabled );
+
+    /**
+     * Sets the bloom \a factor, which controls the strength of the bloom effect.
+     *
+     * The default factor is 0.05.
+     */
+    void setBloomFactor( float factor );
+
   private:
     Qt3DRender::QCamera *mMainCamera = nullptr;
 
@@ -102,6 +114,10 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mEyeDomeLightingDistanceParameter = nullptr;
 
     Qt3DRender::QParameter *mAmbientOcclusionEnabledParameter = nullptr;
+
+    Qt3DRender::QParameter *mBloomTextureParameter = nullptr;
+    Qt3DRender::QParameter *mBloomEnabledParameter = nullptr;
+    Qt3DRender::QParameter *mBloomFactorParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

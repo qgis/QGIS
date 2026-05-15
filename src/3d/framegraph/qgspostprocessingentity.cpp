@@ -17,6 +17,7 @@
 
 #include "qgs3dutils.h"
 #include "qgsambientocclusionrenderview.h"
+#include "qgsbloomrenderview.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
@@ -44,6 +45,7 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   QgsShadowRenderView &shadowRenderView = frameGraph->shadowRenderView();
   QgsForwardRenderView &forwardRenderView = frameGraph->forwardRenderView();
   QgsAmbientOcclusionRenderView &aoRenderView = frameGraph->ambientOcclusionRenderView();
+  QgsBloomRenderView &bloomRenderView = frameGraph->bloomRenderView();
 
   mColorTextureParameter = new Qt3DRender::QParameter( u"colorTexture"_s, forwardRenderView.colorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( u"depthTexture"_s, forwardRenderView.depthTexture() );
@@ -102,6 +104,15 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
 
   mAmbientOcclusionEnabledParameter = new Qt3DRender::QParameter( u"ssaoEnabled"_s, QVariant::fromValue( 0 ) );
   mMaterial->addParameter( mAmbientOcclusionEnabledParameter );
+
+  mBloomTextureParameter = new Qt3DRender::QParameter( u"bloomTexture"_s, bloomRenderView.bloomTexture() );
+  mMaterial->addParameter( mBloomTextureParameter );
+
+  mBloomEnabledParameter = new Qt3DRender::QParameter( u"bloomEnabled"_s, QVariant::fromValue( 1 ) );
+  mMaterial->addParameter( mBloomEnabledParameter );
+
+  mBloomFactorParameter = new Qt3DRender::QParameter( u"bloomFactor"_s, 0.05 );
+  mMaterial->addParameter( mBloomFactorParameter );
 
   const QString vertexShaderPath = u"qrc:/shaders/postprocess.vert"_s;
   const QString fragmentShaderPath = u"qrc:/shaders/postprocess.frag"_s;
@@ -252,4 +263,14 @@ void QgsPostprocessingEntity::setEyeDomeLightingDistance( int distance )
 void QgsPostprocessingEntity::setAmbientOcclusionEnabled( bool enabled )
 {
   mAmbientOcclusionEnabledParameter->setValue( enabled );
+}
+
+void QgsPostprocessingEntity::setBloomEnabled( bool enabled )
+{
+  mBloomEnabledParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
+}
+
+void QgsPostprocessingEntity::setBloomFactor( float factor )
+{
+  mBloomFactorParameter->setValue( factor );
 }

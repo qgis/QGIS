@@ -60,7 +60,8 @@ class QgsPostprocessingEntity;
 class QgsRectangle;
 class QgsShadowRenderView;
 class QgsShadowSettings;
-
+class QgsBloomRenderView;
+class QgsBloomSettings;
 
 /**
  * \ingroup qgis_3d
@@ -215,6 +216,12 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     QgsAmbientOcclusionRenderView &ambientOcclusionRenderView();
 
     /**
+     * Returns the bloom render view.
+     * \since QGIS 4.2
+     */
+    QgsBloomRenderView &bloomRenderView();
+
+    /**
      * Returns overlay texture renderview
      * \since QGIS 4.0
      */
@@ -250,6 +257,12 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
      */
     void updateEyeDomeSettings( const Qgs3DMapSettings &settings );
 
+    /**
+     * Updates settings for the bloom lighting effect.
+     * \since QGIS 4.2
+     */
+    void updateBloomSettings( const QgsBloomSettings &settings );
+
     static const QString FORWARD_RENDERVIEW;
     static const QString SHADOW_RENDERVIEW;
     static const QString AXIS3D_RENDERVIEW;
@@ -257,6 +270,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     static const QString OVERLAY_RENDERVIEW;
     //! Ambient occlusion render view name
     static const QString AMBIENT_OCCLUSION_RENDERVIEW;
+    static const QString BLOOM_RENDERVIEW;
     static const QString HIGHLIGHTS_RENDERVIEW;
 
   private:
@@ -306,6 +320,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();
+    void constructBloomRenderPass();
     Qt3DRender::QFrameGraphNode *constructRubberBandsPass();
     void constructMsaaBlitNodes();
 
