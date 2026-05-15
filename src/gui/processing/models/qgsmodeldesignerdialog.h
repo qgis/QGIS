@@ -224,6 +224,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessi
     void showChildAlgorithmLog( const QString &childId );
     void onItemFocused( QgsModelComponentGraphicItem *item );
 
+    void cancelRunningModel();
+
   private:
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 

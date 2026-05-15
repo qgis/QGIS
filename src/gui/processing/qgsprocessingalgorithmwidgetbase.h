@@ -366,6 +366,11 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsPr
      */
     void hideShortHelp();
 
+    /**
+     * Returns the widget's message bar.
+     */
+    QgsMessageBar *messageBar();
+
   protected:
     void closeEvent( QCloseEvent *e ) override;
 
@@ -450,11 +455,6 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsPr
      * the algorithm is running.
      */
     virtual void blockAdditionalControlsWhileRunning();
-
-    /**
-     * Returns the widget's message bar.
-     */
-    QgsMessageBar *messageBar();
 
     /**
      * Sets the current \a task running in the widget. The task will automatically be started
