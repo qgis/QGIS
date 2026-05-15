@@ -1200,6 +1200,8 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   if ( !mAlgorithmWidget )
   {
     mAlgorithmWidget = createExecutionWidget();
+    mAlgorithmWidget->hideShortHelp();
+    mAlgorithmWidget->setTitle( tr( "Run Model" ) );
 
     mAlgorithmWidget->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmWidget->setParameters( mModel->designerParameterValues() );

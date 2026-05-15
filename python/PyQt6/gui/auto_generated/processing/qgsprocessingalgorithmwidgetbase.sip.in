@@ -207,6 +207,13 @@ Sets the parameter ``values`` to show in the widget.
 .. versionadded:: 3.24
 %End
 
+    void setTitle( const QString &title );
+%Docstring
+Sets the window (or dock) ``title``.
+
+.. versionadded:: 4.2
+%End
+
   public slots:
 
     void exec();
@@ -348,6 +355,11 @@ THEN closing the widget.
 
     void reject();
 
+    void hideShortHelp();
+%Docstring
+Hides the short help panel.
+%End
+
   protected:
     virtual void closeEvent( QCloseEvent *e );
 
@@ -443,11 +455,6 @@ the algorithm is running.
     QgsMessageBar *messageBar();
 %Docstring
 Returns the widget's message bar.
-%End
-
-    void hideShortHelp();
-%Docstring
-Hides the short help panel.
 %End
 
     void setCurrentTask( QgsProcessingAlgRunnerTask *task /Transfer/ );

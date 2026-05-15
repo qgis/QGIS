@@ -227,6 +227,13 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsPr
      */
     virtual void setParameters( const QVariantMap &values );
 
+    /**
+     * Sets the window (or dock) \a title.
+     *
+     * \since QGIS 4.2
+     */
+    void setTitle( const QString &title );
+
   public slots:
 
     /**
@@ -354,6 +361,11 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsPr
 
     void reject();
 
+    /**
+     * Hides the short help panel.
+     */
+    void hideShortHelp();
+
   protected:
     void closeEvent( QCloseEvent *e ) override;
 
@@ -443,11 +455,6 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsPr
      * Returns the widget's message bar.
      */
     QgsMessageBar *messageBar();
-
-    /**
-     * Hides the short help panel.
-     */
-    void hideShortHelp();
 
     /**
      * Sets the current \a task running in the widget. The task will automatically be started
