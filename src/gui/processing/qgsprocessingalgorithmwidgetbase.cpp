@@ -308,6 +308,11 @@ QgsProcessingAlgorithmWidgetBase::~QgsProcessingAlgorithmWidgetBase()
 void QgsProcessingAlgorithmWidgetBase::setParameters( const QVariantMap & )
 {}
 
+void QgsProcessingAlgorithmWidgetBase::setTitle( const QString &title )
+{
+  mDockableWidgetHelper->setWindowTitle( title );
+}
+
 void QgsProcessingAlgorithmWidgetBase::exec()
 {
   // when forcing the widget to show as a dialog, we use a distinct setting key
