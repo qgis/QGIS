@@ -45,7 +45,6 @@ namespace QgsWms
   QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request )
   {
     const QgsServerRequest::Parameters parameters = request.parameters();
-    const QgsWmsParameters wmsParameters = request.wmsParameters();
 
     if ( !parameters.contains( u"SLD_VERSION"_s ) )
     {
@@ -77,8 +76,8 @@ namespace QgsWms
     }
 
     // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result
-    QHash<QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
-    collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *project, project->layerTreeRoot(), layersList, QStringList() );
+    QHash<const QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
+    collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *project, layersList );
     auto firstFoundInacceptableLayer = std::find_if( layersList.cbegin(), layersList.cend(), [&]( const QString &layerName ) {
       //return when the requested layer has not been found as a acceptable layer
       return !std::any_of( acceptableLayersAndRequestNames.cbegin(), acceptableLayersAndRequestNames.cend(), [&]( const QStringList &requestedNames ) { return requestedNames.contains( layerName ); } );

@@ -45,7 +45,7 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup &other )
   , mWmsHasTimeDimension( other.mWmsHasTimeDimension )
   , mGroupLayer( other.mGroupLayer )
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
-  , mWmsGroupVisibility( other.mWmsGroupVisibility )
+  , mWmsGroupRequestMode( other.mWmsGroupRequestMode )
 {
   other.serverProperties()->copyTo( mServerProperties.get() );
 
@@ -523,7 +523,7 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
 
   groupNode->mWmsHasTimeDimension = element.attribute( u"wms-has-time-dimension"_s, u"0"_s ) == "1"_L1;
 
-  groupNode->mWmsGroupVisibility = { qgsEnumKeyToValue( element.attribute( u"wms-group-visibility"_s ), Qgis::WmsGroupVisibility::Visible ) };
+  groupNode->mWmsGroupRequestMode = { qgsEnumKeyToValue( element.attribute( u"wms-group-request-mode"_s ), Qgis::WmsGroupRequestMode::Normal ) };
 
   groupNode->mGroupLayer = QgsMapLayerRef( element.attribute( u"groupLayer"_s ) );
 
@@ -587,7 +587,7 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
     elem.setAttribute( u"wms-has-time-dimension"_s, u"1"_s );
   }
 
-  elem.setAttribute( u"wms-group-visibility"_s, qgsEnumValueToKey( mWmsGroupVisibility ) );
+  elem.setAttribute( u"wms-group-request-mode"_s, qgsEnumValueToKey( mWmsGroupRequestMode ) );
 
   elem.setAttribute( u"groupLayer"_s, mGroupLayer.layerId );
 
@@ -872,12 +872,12 @@ bool QgsLayerTreeGroup::hasWmsTimeDimension() const
   return mWmsHasTimeDimension;
 }
 
-Qgis::WmsGroupVisibility QgsLayerTreeGroup::wmsGroupVisibility() const
+Qgis::WmsGroupRequestMode QgsLayerTreeGroup::wmsGroupRequestMode() const
 {
-  return mWmsGroupVisibility;
+  return mWmsGroupRequestMode;
 }
 
-void QgsLayerTreeGroup::setWmsGroupVisibility( Qgis::WmsGroupVisibility groupVisibility )
+void QgsLayerTreeGroup::setWmsGroupRequestMode( Qgis::WmsGroupRequestMode groupRequestMode )
 {
-  mWmsGroupVisibility = groupVisibility;
+  mWmsGroupRequestMode = groupRequestMode;
 }

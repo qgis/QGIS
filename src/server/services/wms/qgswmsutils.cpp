@@ -177,13 +177,21 @@ namespace QgsWms
     }
   }
 
-  void collectAcceptableLayersAndRequestNames(
-    QHash<QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames,
+  /**
+   * Collects the \a acceptableLayersAndRequestNames recursively, a hash of all the layers that can be rendered and for each a list of the layer names requesting it.
+   * It needs the \a project for properties and the \a group to analyze the current layer tree. Also the \a requestedLayerNames. If no \a requestedLayerNames are passed,
+   * you will receive back all the layers except the ones hidden in an opaque group.
+   * When an opaque group is in the \a requestedLayerNames, the children of this opaque group are passed back as well.
+   * The \a requestedParentNames are used for the recursive collecting of the list of requested layers and groups.
+   * When the \a groupIsAnOpaqueChild, it should continue to allow the layers to be rendered but not add the following group and layer names to the list of requested names.
+  */
+  void _collectAcceptableLayersAndRequestNames(
+    QHash<const QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames,
     const QgsProject &project,
+    const QStringList &requestedLayerNames,
     const QgsLayerTreeGroup *group,
-    const QStringList &layerParameters,
-    QStringList requestedParentNames,
-    bool groupIsAnOpaqueChild
+    QStringList requestedParentNames = QStringList(),
+    bool groupIsAnOpaqueChild = false
   )
   {
     //get group nickname
@@ -191,30 +199,30 @@ namespace QgsWms
     if ( groupName.isEmpty() )
       groupName = group->name();
 
-    bool projectIsRequested = ( layerParameters.contains( QgsServerProjectUtils::wmsRootName( project ) ) || layerParameters.contains( project.title() ) );
-    bool groupIsRequested = layerParameters.contains( groupName );
+    bool projectIsRequested = ( requestedLayerNames.contains( QgsServerProjectUtils::wmsRootName( project ) ) || requestedLayerNames.contains( project.title() ) );
+    bool groupIsRequested = requestedLayerNames.contains( groupName );
 
     // append the group to the list, when it's explicitly requested and it's not already a child of an opaque group
     if ( groupIsRequested && !groupIsAnOpaqueChild )
       requestedParentNames << groupName;
 
     // the group should not be opaque or explicitly requested (by the groupname or by the project name)
-    if ( ( group->wmsGroupVisibility() != Qgis::WmsGroupVisibility::Opaque ) || groupIsRequested || projectIsRequested )
+    if ( ( group->wmsGroupRequestMode() != Qgis::WmsGroupRequestMode::Opaque ) || groupIsRequested || projectIsRequested )
     {
       // when the current group is opaque or the previous groups have been opaque it is an opaque child and should not be requestable
-      bool isOpaqueChild = ( group->wmsGroupVisibility() == Qgis::WmsGroupVisibility::Opaque ) || groupIsAnOpaqueChild;
+      bool isOpaqueChild = ( group->wmsGroupRequestMode() == Qgis::WmsGroupRequestMode::Opaque ) || groupIsAnOpaqueChild;
 
       for ( QgsLayerTreeNode *child : group->children() )
       {
         if ( QgsLayerTree::isGroup( child ) )
         {
           auto subgroup = static_cast<const QgsLayerTreeGroup *>( child );
-          collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, project, subgroup, layerParameters, requestedParentNames, isOpaqueChild );
+          _collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, project, requestedLayerNames, subgroup, requestedParentNames, isOpaqueChild );
         }
         else if ( QgsLayerTree::isLayer( child ) )
         {
           auto layernode = static_cast<const QgsLayerTreeLayer *>( child );
-          QgsMapLayer *layer = layernode->layer();
+          const QgsMapLayer *layer = layernode->layer();
           if ( !layer )
             continue;
 
@@ -231,14 +239,22 @@ namespace QgsWms
 
           QStringList requestedNames = requestedParentNames;
           // when the layer is explicitly requested and it's not an opaque child, then add it to the requested names
-          if ( layerParameters.contains( name ) && !isOpaqueChild )
+          if ( requestedLayerNames.contains( name ) && !isOpaqueChild )
           {
             requestedNames << name;
           }
-          acceptableLayersAndRequestNames.insert( layer, requestedNames );
+          // we add the layer to the map when it's requested (or no requestedLayerNames are passed)
+          if ( !requestedNames.isEmpty() || requestedLayerNames.isEmpty() || projectIsRequested )
+            acceptableLayersAndRequestNames.insert( layer, requestedNames );
         }
       }
     }
+  }
+
+  void collectAcceptableLayersAndRequestNames( QHash<const QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames, const QgsProject &project, const QStringList &requestedLayerNames )
+  {
+    //Call function used for recursive collect based on the layer tree root
+    _collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, project, requestedLayerNames, project.layerTreeRoot() );
   }
 
 } // namespace QgsWms

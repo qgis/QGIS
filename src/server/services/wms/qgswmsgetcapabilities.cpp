@@ -791,7 +791,7 @@ namespace QgsWms
     appendLayerCrsExtents( doc, parentLayer, crsExtents );
 
     // when the group is opaque we should not append any child layers
-    if ( layerTreeGroup->wmsGroupVisibility() != Qgis::WmsGroupVisibility::Opaque )
+    if ( layerTreeGroup->wmsGroupRequestMode() != Qgis::WmsGroupRequestMode::Opaque )
       appendLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, layerTreeGroup, wmsLayerInfos, projectSettings, parentDateRanges );
   }
 
@@ -1189,7 +1189,7 @@ namespace QgsWms
           if ( projectSettings )
           {
             layerElem.setAttribute( u"mutuallyExclusive"_s, treeGroupChild->isMutuallyExclusive() );
-            layerElem.setAttribute( u"opaque"_s, ( treeGroupChild->wmsGroupVisibility() == Qgis::WmsGroupVisibility::Opaque ) );
+            layerElem.setAttribute( u"opaque"_s, ( treeGroupChild->wmsGroupRequestMode() == Qgis::WmsGroupRequestMode::Opaque ) );
           }
 
           const QString shortName = treeGroupChild->serverProperties()->shortName();
@@ -1235,7 +1235,7 @@ namespace QgsWms
           }
 
           // Check if child layer elements have been added - anyway opaque groups are added even without any children
-          if ( ( treeGroupChild->wmsGroupVisibility() != Qgis::WmsGroupVisibility::Opaque ) && layerElem.elementsByTagName( u"Layer"_s ).length() == 0 )
+          if ( ( treeGroupChild->wmsGroupRequestMode() != Qgis::WmsGroupRequestMode::Opaque ) && layerElem.elementsByTagName( u"Layer"_s ).length() == 0 )
           {
             continue;
           }
@@ -1618,8 +1618,8 @@ namespace QgsWms
 
       QStringList layerList;
 
-      QHash<QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
-      collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *project, project->layerTreeRoot(), QStringList(), QStringList() );
+      QHash<const QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
+      collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *project );
 
       const QgsLayerTree *projectLayerTreeRoot = project->layerTreeRoot();
       QList<QgsMapLayer *> projectLayerOrder = projectLayerTreeRoot->layerOrder();

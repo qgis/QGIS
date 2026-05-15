@@ -114,29 +114,29 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
     bool hasTimeDimension() const;
 
     /**
-     * Returns the visibility of the group.
+     * Returns the request mode of the group.
      * When it's opaque, WMS treats it as a single opaque layer instead
      * of a collection of individual layers.
      * Its child layers are hidden from GetCapabilities requests.
      * Any direct requests (like GetMap or GetFeatureInfo etc.) for a child layer will result in an error.
      * Child layers are rendered whenever a request is made for the group itself.
      *
-     * \see setGroupVisibility()
-     * \see QgsLayerTreeGroup::setWmsGroupVisibility
+     * \see setGroupRequestMode()
+     * \see QgsLayerTreeGroup::setWmsGroupRequestMode
      * \since QGIS 4.2
      */
-    Qgis::WmsGroupVisibility groupVisibility() const;
+    Qgis::WmsGroupRequestMode groupRequestMode() const;
 
     /**
-     * Sets the visibility of the group.
-     * \param groupVisibility On Opaque, WMS treats it as a single opaque layer instead
-     * of a collection of individual layers. On Visible it behaves as a standard group.
+     * Sets the request mode of the group.
+     * \param groupRequestMode On Opaque, WMS treats it as a single opaque layer instead
+     * of a collection of individual layers. On Normal it behaves as a standard group.
      *
-     * \see groupVisibility()
-     * \see QgsLayerTreeGroup::wmsGroupVisibility
+     * \see groupRequestMode()
+     * \see QgsLayerTreeGroup::wmsGroupRequestMode
      * \since QGIS 4.2
      */
-    void setGroupVisibility( Qgis::WmsGroupVisibility groupVisibility );
+    void setGroupRequestMode( Qgis::WmsGroupRequestMode groupRequestMode );
 
     /**
      * Returns QGIS Server Properties for the layer tree group

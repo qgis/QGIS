@@ -73,18 +73,11 @@ namespace QgsWms
 
   /**
    * Collects the \a acceptableLayersAndRequestNames, a hash of all the layers that can be rendered and for each a list of the layer names requesting it.
-   * It needs the \a project and the \a group to analyse the current layer tree and the \a layerParameters passed as layers. If no layerParameters are passed, you will receive back all the layers except the ones hidden in an opaque group.
-   * When an opaque group is in the layerParameters, the children of this opaque group are passed back as well. The \a requestedParentNames are used for the recursive collecting of the list of requested layers and groups.
-   * When the \a groupIsAnOpaqueChild, it should continue to allow the layers to be rendered but not add the following group and layer names to the list of requested names.
-  */
-  void collectAcceptableLayersAndRequestNames(
-    QHash<QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames,
-    const QgsProject &project,
-    const QgsLayerTreeGroup *group,
-    const QStringList &layerParameters,
-    QStringList requestedParentNames,
-    bool groupIsAnOpaqueChild = false
-  );
+   * It needs the \a project for properties and the layer tree root to start with parsing. Also the \a requestedLayerNames.
+   * If no \a requestedLayerNames are passed, you will receive back all the layers except the ones hidden in an opaque group.
+   * When an opaque group is in the \a requestedLayerNames, the children of this opaque group are passed back as well.
+   */
+  void collectAcceptableLayersAndRequestNames( QHash<const QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames, const QgsProject &project, const QStringList &requestedLayerNames = QStringList() );
 
 
 } // namespace QgsWms

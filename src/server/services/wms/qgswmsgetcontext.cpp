@@ -248,7 +248,7 @@ namespace QgsWms
           }
 
           // when the group is opaque we should not append any child layers
-          if ( layerTreeGroup->wmsGroupVisibility() != Qgis::WmsGroupVisibility::Opaque )
+          if ( treeGroupChild->wmsGroupRequestMode() != Qgis::WmsGroupRequestMode::Opaque )
             appendOwsLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, treeGroupChild, combinedBBox, group );
         }
         else

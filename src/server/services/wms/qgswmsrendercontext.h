@@ -288,7 +288,7 @@ namespace QgsWms
       void searchLayersToRenderSld();
       void searchLayersToRenderStyle();
       void removeUnwantedLayers();
-      QHash<QgsMapLayer *, QStringList> acceptableLayers( const QStringList &requestedLayerNames ) const;
+      QHash<const QgsMapLayer *, QStringList> acceptableLayers( const QStringList &requestedLayerNames ) const;
 
       /**
        * Adds the layer to the list of layers to be rendered if the layer is readable

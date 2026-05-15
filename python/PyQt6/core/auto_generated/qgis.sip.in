@@ -3750,9 +3750,9 @@ The development version
       Earcut
     };
 
-    enum class WmsGroupVisibility /BaseType=IntEnum/
+    enum class WmsGroupRequestMode /BaseType=IntEnum/
     {
-      Visible,
+      Normal,
       Opaque,
     };
 

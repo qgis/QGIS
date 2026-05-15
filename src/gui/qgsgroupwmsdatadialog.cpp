@@ -34,8 +34,8 @@ QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( const QgsMapLayerServerProperties 
   QgsGui::enableAutoGeometryRestore( this );
 
   //init widgets
-  mGroupVisbilityCombo->addItem( tr( "Visible" ), QVariant::fromValue( Qgis::WmsGroupVisibility::Visible ) );
-  mGroupVisbilityCombo->addItem( tr( "Opaque" ), QVariant::fromValue( Qgis::WmsGroupVisibility::Opaque ) );
+  mGroupRequestModeCombo->addItem( tr( "Normal" ), QVariant::fromValue( Qgis::WmsGroupRequestMode::Normal ) );
+  mGroupRequestModeCombo->addItem( tr( "Opaque" ), QVariant::fromValue( Qgis::WmsGroupRequestMode::Opaque ) );
 
   serverProperties.copyTo( mServerProperties.get() );
 
@@ -105,12 +105,12 @@ void QgsGroupWmsDataDialog::setHasTimeDimension( bool hasTimeDimension )
   mComputeTimeDimension->setCheckState( hasTimeDimension ? Qt::Checked : Qt::Unchecked );
 }
 
-Qgis::WmsGroupVisibility QgsGroupWmsDataDialog::groupVisibility() const
+Qgis::WmsGroupRequestMode QgsGroupWmsDataDialog::groupRequestMode() const
 {
-  return mGroupVisbilityCombo->currentData().value<Qgis::WmsGroupVisibility>();
+  return mGroupRequestModeCombo->currentData().value<Qgis::WmsGroupRequestMode>();
 }
 
-void QgsGroupWmsDataDialog::setGroupVisibility( Qgis::WmsGroupVisibility groupVisibility )
+void QgsGroupWmsDataDialog::setGroupRequestMode( Qgis::WmsGroupRequestMode groupRequestMode )
 {
-  mGroupVisbilityCombo->setCurrentIndex( mGroupVisbilityCombo->findData( QVariant::fromValue( groupVisibility ) ) );
+  mGroupRequestModeCombo->setCurrentIndex( mGroupRequestModeCombo->findData( QVariant::fromValue( groupRequestMode ) ) );
 }

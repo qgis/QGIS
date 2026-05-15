@@ -121,7 +121,6 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         xml_result = body.decode("utf-8")
 
         received_layernames = []
-        received_opaquelayernames = []
         root = ET.fromstring(xml_result)
         for layer in root.iter("{http://www.opengis.net/wms}Layer"):
             name_elem = layer.find("{*}Name")
@@ -151,32 +150,48 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         """
         Test getcontext response.
 
+        GetContext returns all the layers of the project that are requestable. Means no excluded layers and no layers in
+        opaque groups.
+
         We will find there
-        - trafficsign as layer
-        - street-group as group with layer objects:
-            - streetline as layer
-            - streetarea as layer
-        - road-group as layer without any layer objects
-        - way-group as layer without any layer objects
-        - smallway-group as layer without any layer objects
-        - sign-group as layer without any layer objects
-        - anothersign as one layer (without any layer objects) and no duplicate
+        - trafficsign as layer in main group
+        - streetline as layer in street-group
+        - streetarea as layer in street-group
+        - anothersign as layer in main group
 
         We will not find there
+        - groups: street-group, road-group, way-group, smallway-group, sign-group
         - roadline
         - roadarea
         - wayline
         - wayarea
         - smallwayline
-
-        The following groups should be marked as opaque:
-        - road-group
-        - way-group
-        - smallway-group
-        - sign-group
-        - anothersign
         """
-        pass
+
+        (_, body, request) = self.wms_request("GetContext", project=self.project)
+
+        xml_result = body.decode("utf-8")
+
+        received_layernames = []
+        root = ET.fromstring(xml_result)
+        for layer in root.iter("{http://www.opengis.net/ows-context}Layer"):
+            name_attribute = layer.get("name")
+            if name_attribute is not None:
+                # add the id to the list
+                received_layernames.append(name_attribute)
+
+        expected_layernames = {
+            "trafficsign",
+            "streetline",
+            "streetarea",
+            "anothersign",
+        }
+        # Check if the right layers are in the result
+        self.assertEqual(
+            set(received_layernames),
+            expected_layernames,
+            f"\nIncorrect set of layernames found in GetContext:\n\n{request}\nResult:\n{xml_result}",
+        )
 
     def testGetProjectSettings(self):
         """
@@ -321,6 +336,10 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             "there should be no server exception for the normal layer group: street-group",
         )
 
+        self._img_diff_error(
+            r, h, "WMS_GetMap_opaque_normalgroup", max_size_diff=QSize(1, 1)
+        )
+
         # Request on opaque group
         qs = "?" + "&".join(
             [
@@ -350,6 +369,10 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             b'<ServiceException code="LayerNotDefined">',
             r,
             "there should be no server exception for the opaque layer group: road-group",
+        )
+
+        self._img_diff_error(
+            r, h, "WMS_GetMap_opaque_opaquegroup", max_size_diff=QSize(1, 1)
         )
 
         # Request on opaque group with a excluded layers
@@ -559,16 +582,53 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         r, h = self._result(self._execute_request(qs))
-        # self._img_diff_error(
-        #     r, h, "WMS_GetMap_OpaqueGroup_trafficsign", max_size_diff=QSize(1, 1)
-        # )
+
         self.assertNotIn(
             b'<ServiceException code="LayerNotDefined">',
             r,
             "there should be no server exception for a layer with a samenamed layer inside an opaque group: trafficsign",
         )
 
-        # Request on same-named layer as an opaque group - should render both
+        self._img_diff_error(
+            r, h, "WMS_GetMap_opaque_singlelayer", max_size_diff=QSize(1, 1)
+        )
+
+        # Request on an opaque group with layer that have same-named layers outside the group - should only render the layer in the opaque group
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.project),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.3.0",
+                        "REQUEST": "GetMap",
+                        "LAYERS": "sign-group",
+                        "TRANSPARENT": "true",
+                        "STYLES": "",
+                        "FORMAT": "image/png",
+                        "BBOX": "47.51411822721124167,8.76265867349436078,47.51802447721124167,8.76723198210506993",
+                        "HEIGHT": "600",
+                        "WIDTH": "600",
+                        "CRS": "EPSG:4326",
+                    }.items()
+                )
+            ]
+        )
+
+        r, h = self._result(self._execute_request(qs))
+
+        self.assertNotIn(
+            b'<ServiceException code="LayerNotDefined">',
+            r,
+            "there should be no server exception for a layer with a samenamed layer inside an opaque group: trafficsign",
+        )
+
+        self._img_diff_error(
+            r, h, "WMS_GetMap_opaque_with_same_named_layer", max_size_diff=QSize(1, 1)
+        )
+
+        # Request on same-named layer as an opaque group - should render both, but this does not work, it's a bug https://github.com/qgis/QGIS/issues/66134
         qs = "?" + "&".join(
             [
                 "%s=%s" % i
@@ -592,14 +652,15 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         r, h = self._result(self._execute_request(qs))
-        # self._img_diff_error(
-        #     r, h, "WMS_GetMap_OpaqueGroup_anothersign", max_size_diff=QSize(1, 1)
-        # )
+
         self.assertNotIn(
             b'<ServiceException code="LayerNotDefined">',
             r,
             "there should be no server exception for a layer with a samenamed opaque group: anothersign",
         )
+
+        # Don't image compare because it's not working (neither on normal groups) https://github.com/qgis/QGIS/issues/66134
+        # self._img_diff_error(r, h, "WMS_GetMap_opaque_singlelayer", max_size_diff=QSize(1, 1))
 
     def testGetFeatureInfo(self):
         """
@@ -652,6 +713,26 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             "there should be no server exception for the normal layer group: street-group",
         )
 
+        feature_per_layer = {}
+        xml_result = r.decode("utf-8")
+        root = ET.fromstring(xml_result)
+        for layer in root.findall(".//Layer"):
+            layer_name = layer.get("name")
+            feature_count = len(layer.findall("Feature"))
+            if layer_name:
+                feature_per_layer[layer_name] = feature_count
+
+        self.assertEqual(
+            feature_per_layer.get("streetline", 0),
+            2,
+            "there should be 2 features for streetline",
+        )
+        self.assertEqual(
+            feature_per_layer.get("streetarea", 0),
+            2,
+            "there should be 2 features for streetarea",
+        )
+
         # Request on opaque group
         qs = "?" + "&".join(
             [
@@ -688,6 +769,26 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             b'<ServiceException code="LayerNotDefined">',
             r,
             "there should be no server exception for the opaque layer group: road-group",
+        )
+
+        feature_per_layer = {}
+        xml_result = r.decode("utf-8")
+        root = ET.fromstring(xml_result)
+        for layer in root.findall(".//Layer"):
+            layer_name = layer.get("name")
+            feature_count = len(layer.findall("Feature"))
+            if layer_name:
+                feature_per_layer[layer_name] = feature_count
+
+        self.assertEqual(
+            feature_per_layer.get("roadline", 0),
+            2,
+            "there should be 2 features for roadline",
+        )
+        self.assertEqual(
+            feature_per_layer.get("roadarea", 0),
+            1,
+            "there should be 1 feature for roadarea",
         )
 
         # Request on opaque group with a excluded layers
@@ -729,6 +830,18 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             r,
             "there should be no server exception for the opaque layer group: way-group",
         )
+
+        feature_per_layer = {}
+        xml_result = r.decode("utf-8")
+        root = ET.fromstring(xml_result)
+        for layer in root.findall(".//Layer"):
+            layer_name = layer.get("name")
+            feature_count = len(layer.findall("Feature"))
+            if layer_name:
+                feature_per_layer[layer_name] = feature_count
+        
+        self.assertEqual(feature_per_layer.get("wayline", 0), 1, "there should be 1 feature for wayline")
+        self.assertEqual(feature_per_layer.get("wayarea", 0), 2, "there should be 2 features for wayarea")
         """
 
         # check if excluded layer is not there
@@ -769,6 +882,21 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             b'<ServiceException code="LayerNotDefined">',
             r,
             "there should be no server exception for the opaque layer group: smallway-group",
+        )
+
+        feature_per_layer = {}
+        xml_result = r.decode("utf-8")
+        root = ET.fromstring(xml_result)
+        for layer in root.findall(".//Layer"):
+            layer_name = layer.get("name")
+            feature_count = len(layer.findall("Feature"))
+            if layer_name:
+                feature_per_layer[layer_name] = feature_count
+
+        self.assertEqual(
+            feature_per_layer.get("smallwayline", 0),
+            3,
+            "there should be 3 features for smallwayline",
         )
 
         # Request on group in opaque groups - should OGC_LayerNotDefined
@@ -845,6 +973,21 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             b'<ServiceException code="LayerNotDefined">',
             r,
             "there should be no server exception for a layer inside a normal layer group: streetline",
+        )
+
+        feature_per_layer = {}
+        xml_result = r.decode("utf-8")
+        root = ET.fromstring(xml_result)
+        for layer in root.findall(".//Layer"):
+            layer_name = layer.get("name")
+            feature_count = len(layer.findall("Feature"))
+            if layer_name:
+                feature_per_layer[layer_name] = feature_count
+
+        self.assertEqual(
+            feature_per_layer.get("streetline", 0),
+            2,
+            "there should be 2 features for streetline",
         )
 
         # Request on layer in opaque group - should OGC_LayerNotDefined
@@ -961,6 +1104,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         # check if only feature of the layer based on point1 (and not the samenamed in opaque (based on point2, and point3 and point1 again)) are here
+        # self.assertEqual(feature_per_layer.get("trafficsign", 0), 2, "there should be 2 features for trafficsign")
         # we cannot test this due to https://github.com/qgis/QGIS/issues/65989
 
         # Request on same-named layer as an opaque group
@@ -1002,6 +1146,8 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         # check if all features are there (layer + opaque group)
+        # self.assertEqual(feature_per_layer.get("anothersign", 0), 2, "there should be 2 features for anothersign")
+        # self.assertEqual(feature_per_layer.get("trafficsign", 0), 2, "there should be 2 features for trafficsign")
         # we cannot test this due to https://github.com/qgis/QGIS/issues/65989
 
     def testGetLegendGraphics(self):

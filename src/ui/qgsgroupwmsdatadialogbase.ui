@@ -55,18 +55,18 @@
         <widget class="QgsMapLayerServerPropertiesWidget" name="mMapLayerServerPropertiesWidget" native="true"/>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="group_visibility_layout">
+        <layout class="QHBoxLayout" name="group_request_layout">
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Group visibility mode</string>
+            <string>Group request mode</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="mGroupVisbilityCombo">
+          <widget class="QComboBox" name="mGroupRequestModeCombo">
            <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;An opaque layer group behaves like a single layer. It is requestable, but its children are not. The children are still rendered in GetMap, GetFeatureInfo, etc. when requesting the opaque layer group.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;An &lt;span style=&quot; font-weight:700;&quot;&gt;opaque&lt;/span&gt; layer group behaves like a single layer. It can be requested, but its children cannot. Still the children are rendered in GetMap, GetFeatureInfo, etc. when requesting the opaque layer group.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>

@@ -452,40 +452,22 @@ void QgsWmsRenderContext::searchLayersToRender()
     searchLayersToRenderStyle();
   }
 
+  QStringList nicknames;
   if ( mFlags & AddQueryLayers )
-  {
-    // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
-    QHash<QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.queryLayersNickname() );
-    const QStringList queryLayerNames = flattenedQueryLayers( mParameters.queryLayersNickname() );
-    for ( const QString &layerName : queryLayerNames )
-    {
-      const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
-
-      for ( QgsMapLayer *lyr : layers )
-      {
-        if ( !mLayersToRender.contains( lyr ) )
-        {
-          if ( !acceptableLayersForRender.contains( lyr ) )
-          {
-            continue;
-          }
-          if ( !addLayerToRender( lyr ) )
-          {
-            throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( lyr->name() ) );
-          }
-        }
-      }
-    }
-  }
+    nicknames << mParameters.queryLayersNickname();
 
   if ( mFlags & AddAllLayers )
+    nicknames << mParameters.allLayersNickname();
+
+  if ( !nicknames.isEmpty() )
   {
     // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
-    QHash<QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.allLayersNickname() );
-    const QStringList queryLayerNames = flattenedQueryLayers( mParameters.allLayersNickname() );
+    QHash<const QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( nicknames );
+    const QStringList queryLayerNames = flattenedQueryLayers( nicknames );
     for ( const QString &layerName : queryLayerNames )
     {
       const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
+
       for ( QgsMapLayer *lyr : layers )
       {
         if ( !mLayersToRender.contains( lyr ) )
@@ -496,7 +478,7 @@ void QgsWmsRenderContext::searchLayersToRender()
           }
           if ( !addLayerToRender( lyr ) )
           {
-            throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( lyr->name() ) );
+            throw QgsSecurityException( u"You are not allowed to access the layer %1"_s.arg( lyr->name() ) );
           }
         }
       }
@@ -534,7 +516,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
   }
 
   // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
-  QHash<QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.queryLayersNickname() );
+  QHash<const QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.queryLayersNickname() );
 
   for ( int i = 0; i < named.size(); ++i )
   {
@@ -553,7 +535,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
           }
           if ( !addLayerToRender( layer ) )
           {
-            throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( layer->name() ) );
+            throw QgsSecurityException( u"You are not allowed to access the layer %1"_s.arg( layer->name() ) );
           }
         }
       }
@@ -604,7 +586,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
 void QgsWmsRenderContext::searchLayersToRenderStyle()
 {
   // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
-  QHash<QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.allLayersNickname() );
+  QHash<const QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.allLayersNickname() );
 
   for ( const QgsWmsParametersLayer &param : mParameters.layersParameters() )
   {
@@ -622,7 +604,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         auto lyr = mExternalLayers.last();
         if ( !addLayerToRender( lyr ) )
         {
-          throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( lyr->name() ) );
+          throw QgsSecurityException( u"You are not allowed to access the layer %1"_s.arg( lyr->name() ) );
         }
       }
     }
@@ -641,7 +623,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         }
         if ( !addLayerToRender( layer ) )
         {
-          throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( layer->name() ) );
+          throw QgsSecurityException( u"You are not allowed to access the layer %1"_s.arg( layer->name() ) );
         }
       }
     }
@@ -945,15 +927,15 @@ void QgsWmsRenderContext::removeUnwantedLayers()
   mLayersToRender = layers;
 }
 
-QHash<QgsMapLayer *, QStringList> QgsWmsRenderContext::acceptableLayers( const QStringList &requestedLayerNames ) const
+QHash<const QgsMapLayer *, QStringList> QgsWmsRenderContext::acceptableLayers( const QStringList &requestedLayerNames ) const
 {
-  // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result
-  QHash<QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
-  collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *mProject, mProject->layerTreeRoot(), requestedLayerNames, QStringList() );
+  QHash<const QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
+  collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *mProject, requestedLayerNames );
   bool projectIsRequested = ( requestedLayerNames.contains( QgsServerProjectUtils::wmsRootName( *mProject ) ) || requestedLayerNames.contains( mProject->title() ) );
 
   if ( !projectIsRequested )
   {
+    // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result
     auto firstFoundInacceptableLayer = std::find_if( requestedLayerNames.cbegin(), requestedLayerNames.cend(), [&]( const QString &layerName ) {
       //return when the requested layer has not been found as a acceptable layer
       return !std::any_of( acceptableLayersAndRequestNames.cbegin(), acceptableLayersAndRequestNames.cend(), [&]( const QStringList &requestedNames ) {
