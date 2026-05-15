@@ -736,6 +736,8 @@ pixels Default value is 96
 
 
 
+
+
  bool isSkyboxEnabled() const /Deprecated="Since 4.2. Use backgroundSettings() instead."/;
 %Docstring
 Returns whether the skybox is enabled.
@@ -1225,12 +1227,22 @@ Emitted when shadow rendering settings are changed
 .. versionadded:: 3.16
 %End
 
-
     void ambientOcclusionSettingsChanged();
 %Docstring
 Emitted when ambient occlusion rendering settings are changed
 
 .. versionadded:: 3.28
+%End
+
+    void bloomSettingsChanged();
+%Docstring
+Emitted when the bloom lighting effect settings are changed.
+
+.. seealso:: :py:func:`bloomSettings`
+
+.. seealso:: :py:func:`setBloomSettings`
+
+.. versionadded:: 4.2
 %End
 
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );

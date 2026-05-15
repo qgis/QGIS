@@ -18,6 +18,7 @@
 #include "qgs3dutils.h"
 #include "qgsabstractrenderview.h"
 #include "qgsambientocclusionrenderview.h"
+#include "qgsbloomrenderview.h"
 #include "qgsdepthrenderview.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsforwardrenderview.h"
@@ -50,6 +51,7 @@ const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 const QString QgsFrameGraph::DEPTH_RENDERVIEW = "depth";
 const QString QgsFrameGraph::OVERLAY_RENDERVIEW = "overlay_texture";
 const QString QgsFrameGraph::AMBIENT_OCCLUSION_RENDERVIEW = "ambient_occlusion";
+const QString QgsFrameGraph::BLOOM_RENDERVIEW = "bloom";
 const QString QgsFrameGraph::HIGHLIGHTS_RENDERVIEW = "highlights";
 
 void QgsFrameGraph::constructForwardRenderPass()
@@ -155,6 +157,14 @@ void QgsFrameGraph::constructAmbientOcclusionRenderPass()
 
   QgsAmbientOcclusionRenderView *aorv = new QgsAmbientOcclusionRenderView( AMBIENT_OCCLUSION_RENDERVIEW, mMainCamera, mSize, forwardDepthTexture, mRootEntity );
   registerRenderView( std::unique_ptr<QgsAmbientOcclusionRenderView>( aorv ), AMBIENT_OCCLUSION_RENDERVIEW );
+}
+
+void QgsFrameGraph::constructBloomRenderPass()
+{
+  Qt3DRender::QTexture2D *forwardColorTexture = forwardRenderView().colorTexture();
+
+  QgsBloomRenderView *rv = new QgsBloomRenderView( BLOOM_RENDERVIEW, forwardColorTexture, mSize, mRootEntity );
+  registerRenderView( std::unique_ptr<QgsBloomRenderView>( rv ), BLOOM_RENDERVIEW );
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
@@ -296,6 +306,8 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   // Ambient occlusion factor render pass
   constructAmbientOcclusionRenderPass();
 
+  constructBloomRenderPass();
+
   // post process
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mGlobalParamsStorage );
@@ -370,6 +382,13 @@ void QgsFrameGraph::updateEyeDomeSettings( const Qgs3DMapSettings &settings )
   mPostprocessingEntity->setEyeDomeLightingEnabled( settings.eyeDomeLightingEnabled() );
   mPostprocessingEntity->setEyeDomeLightingStrength( settings.eyeDomeLightingStrength() );
   mPostprocessingEntity->setEyeDomeLightingDistance( settings.eyeDomeLightingDistance() );
+}
+
+void QgsFrameGraph::updateBloomSettings( const QgsBloomSettings &settings )
+{
+  mPostprocessingEntity->setBloomEnabled( settings.isEnabled() );
+  mPostprocessingEntity->setBloomFactor( static_cast< float >( settings.intensity() ) );
+  bloomRenderView().setFilterRadius( static_cast< float >( settings.radius() ) );
 }
 
 void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources )
@@ -573,6 +592,12 @@ QgsAmbientOcclusionRenderView &QgsFrameGraph::ambientOcclusionRenderView()
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::AMBIENT_OCCLUSION_RENDERVIEW].get();
   return *( dynamic_cast<QgsAmbientOcclusionRenderView *>( rv ) );
+}
+
+QgsBloomRenderView &QgsFrameGraph::bloomRenderView()
+{
+  QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::BLOOM_RENDERVIEW].get();
+  return *( dynamic_cast<QgsBloomRenderView *>( rv ) );
 }
 
 QgsHighlightsRenderView &QgsFrameGraph::highlightsRenderView()

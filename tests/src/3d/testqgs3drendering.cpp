@@ -2875,6 +2875,18 @@ void TestQgs3DRendering::testAmbientOcclusion()
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QString actualFG = engine.dumpFrameGraph();
+
+  // enable to update expected frame graph
+#if 0
+  {
+    QFile f( testDataPath( u"control_files/3d/expected_ambient_occlusion_1/expected_framegraph.txt"_s ) );
+    QVERIFY( f.open( QFile::WriteOnly | QFile::Truncate ) );
+    QTextStream ts( &f );
+    ts << actualFG;
+    f.close();
+  }
+#endif
+
   QGSCOMPARELONGSTR( "ambient_occlusion_1", "framegraph.txt", actualFG.toUtf8() );
   QGSVERIFYIMAGECHECK( "ambient_occlusion_1", "ambient_occlusion_1", img, QString(), 40, QSize( 0, 0 ), 15 );
 
@@ -2884,6 +2896,16 @@ void TestQgs3DRendering::testAmbientOcclusion()
 
   img = Qgs3DUtils::captureSceneImage( engine, scene );
   actualFG = engine.dumpFrameGraph();
+  // enable to update expected frame graph
+#if 0
+  {
+    QFile f( testDataPath( u"control_files/3d/expected_ambient_occlusion_2/expected_framegraph.txt"_s ) );
+    QVERIFY( f.open( QFile::WriteOnly | QFile::Truncate ) );
+    QTextStream ts( &f );
+    ts << actualFG;
+    f.close();
+  }
+#endif
   // the framegraph dump is currently the same when enabled or disabled
   QGSCOMPARELONGSTR( "ambient_occlusion_2", "framegraph.txt", actualFG.toUtf8() );
   QGSVERIFYIMAGECHECK( "ambient_occlusion_2", "ambient_occlusion_2", img, QString(), 40, QSize( 0, 0 ), 15 );
