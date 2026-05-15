@@ -3773,7 +3773,7 @@ The development version
       Normal,
       Opaque,
     };
-    
+
     enum class DockableWidgetInitialState /BaseType=IntEnum/
     {
       RestorePreviousState,

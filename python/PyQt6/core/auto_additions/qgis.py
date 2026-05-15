@@ -12703,6 +12703,7 @@ Child layers are rendered whenever a request is made for the group itself.
 * ``Opaque``: Group can be requested, children cannot (appears like a single layer)
 
 """
+# --
 Qgis.WmsGroupRequestMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.DockableWidgetInitialState.RestorePreviousState.__doc__ = "Restore the previous state of this dock"
