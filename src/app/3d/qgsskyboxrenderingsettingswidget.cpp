@@ -33,9 +33,9 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
 {
   setupUi( this );
 #if ENABLE_PANORAMIC_SKYBOX
-  skyboxTypeComboBox->addItem( tr( "Panoramic Texture" ), QVariant::fromValue( Qgis::SkyboxType::Panoramic ) );
+  skyboxTypeComboBox->addItem( tr( "Panoramic Texture" ), QVariant::fromValue( Qgis::Map3DBackgroundType::NoBackground ) ); // this will have to fixed when panoramic skybox is fixed
 #endif
-  skyboxTypeComboBox->addItem( tr( "Distinct Faces" ), QVariant::fromValue( Qgis::SkyboxType::DistinctTextures ) );
+  skyboxTypeComboBox->addItem( tr( "Distinct Faces" ), QVariant::fromValue( Qgis::Map3DBackgroundType::DistinctTextureSkybox ) );
   connect( skyboxTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSkyboxRenderingSettingsWidget::showSkyboxSettings );
 
   mMappingComboBox->addItem( tr( "Native (Z-Up)" ), QVariant::fromValue( Qgis::SkyboxCubeMapping::NativeZUp ) );
@@ -48,7 +48,7 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
 
 void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
-  skyboxTypeComboBox->setCurrentIndex( skyboxTypeComboBox->findData( QVariant::fromValue( skyboxSettings.skyboxType() ) ) );
+  skyboxTypeComboBox->setCurrentIndex( skyboxTypeComboBox->findData( QVariant::fromValue( skyboxSettings.type() ) ) );
 
 #if ENABLE_PANORAMIC_SKYBOX
   panoramicTextureImageSource->setSource( skyboxSettings.panoramicTexturePath() );
@@ -67,7 +67,6 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
 QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 {
   QgsSkyboxSettings settings;
-  settings.setSkyboxType( skyboxTypeComboBox->currentData().value< Qgis::SkyboxType >() );
 #if ENABLE_PANORAMIC_SKYBOX
   settings.setPanoramicTexturePath( panoramicTextureImageSource->source() );
 #endif
@@ -77,24 +76,29 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
   settings.setCubeMapFace( u"negX"_s, negXImageSource->source() );
   settings.setCubeMapFace( u"negY"_s, negYImageSource->source() );
   settings.setCubeMapFace( u"negZ"_s, negZImageSource->source() );
-  settings.setCubeMapping( mMappingComboBox->currentData().value< Qgis::SkyboxCubeMapping >() );
+  settings.setCubeMapping( mMappingComboBox->currentData().value<Qgis::SkyboxCubeMapping>() );
   return settings;
 }
 
 void QgsSkyboxRenderingSettingsWidget::showSkyboxSettings( int )
 {
-  const Qgis::SkyboxType type = skyboxTypeComboBox->currentData().value< Qgis::SkyboxType >();
+  const Qgis::Map3DBackgroundType type = skyboxTypeComboBox->currentData().value<Qgis::Map3DBackgroundType>();
   bool showPanoramicWidgets = false;
   bool showDistinctFacesWidgets = false;
+
+
   switch ( type )
   {
 #if ENABLE_PANORAMIC_SKYBOX
-    case Qgis::SkyboxType::Panoramic:
+    case Qgis::Map3DBackgroundType::NoBackground: // this needs fixing when panoramic skybox is fixed
       showPanoramicWidgets = true;
       break;
 #endif
-    case Qgis::SkyboxType::DistinctTextures:
+    case Qgis::Map3DBackgroundType::DistinctTextureSkybox:
       showDistinctFacesWidgets = true;
+      break;
+    case Qgis::Map3DBackgroundType::NoBackground:
+    case Qgis::Map3DBackgroundType::FixedGradientBackground:
       break;
   }
 

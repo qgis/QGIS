@@ -23,6 +23,7 @@
 #include <QFileInfo>
 #include <QObject>
 #include <QQueue>
+#include <QSignalSpy>
 #include <QStandardPaths>
 #include <QString>
 #include <QStringList>
@@ -378,7 +379,9 @@ void TestQgsVirtualPointCloudProvider::testLazyLoading()
 
   QgsRenderContext ctx;
   ctx.setMapExtent( QgsRectangle( -498160, -1205380, -498090, -1205330 ) );
+  QSignalSpy spy( layer.get(), &QgsMapLayer::dataChanged );
   layer->loadIndexesForRenderContext( ctx );
+  spy.wait( 100 );
   subIndexes = layer->dataProvider()->subIndexes();
   for ( const auto &si : subIndexes )
     if ( si.index() )

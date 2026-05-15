@@ -21,6 +21,8 @@ try:
     QgsCesiumUtils.extractGltfFromB3dm = staticmethod(QgsCesiumUtils.extractGltfFromB3dm)
     QgsCesiumUtils.extractGltfFromTileContent = staticmethod(QgsCesiumUtils.extractGltfFromTileContent)
     QgsCesiumUtils.extractTileContent = staticmethod(QgsCesiumUtils.extractTileContent)
+    QgsCesiumUtils.boundingVolumeFromRegion = staticmethod(QgsCesiumUtils.boundingVolumeFromRegion)
+    QgsCesiumUtils.appendQueryFromBaseUrl = staticmethod(QgsCesiumUtils.appendQueryFromBaseUrl)
     QgsCesiumUtils.__group__ = ['tiledscene']
 except (NameError, AttributeError):
     pass

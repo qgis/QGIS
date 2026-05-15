@@ -21,6 +21,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerstore.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudlayer.h"
 #include "qgsproject.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
@@ -57,6 +59,7 @@ class TestQgsExpressionContext : public QObject
     void globalScope();
     void projectScope();
     void layerScope();
+    void layerScopePointCloud();
     void featureBasedContext();
 
     void cache();
@@ -891,6 +894,43 @@ void TestQgsExpressionContext::layerScope()
   QCOMPARE( layerScope->variable( "var1" ).toString(), QString( "val1" ) );
   QCOMPARE( layerScope->variable( "var2" ).toString(), QString( "val2" ) );
   delete layerScope;
+}
+
+void TestQgsExpressionContext::layerScopePointCloud()
+{
+  const QString dataPath = QString( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json";
+  auto pcLayer = std::make_unique<QgsPointCloudLayer>( dataPath, u"test pc"_s, u"ept"_s );
+  QVERIFY( pcLayer->isValid() );
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::layerScope( pcLayer.get() );
+
+  // some standard layer variables should be present
+  QCOMPARE( context.variable( "layer_name" ).toString(), pcLayer->name() );
+  QCOMPARE( context.variable( "layer_id" ).toString(), pcLayer->id() );
+
+  // point cloud attributes should be present in the context
+  const QgsPointCloudAttributeCollection attributes = pcLayer->attributes();
+  QVERIFY( attributes.count() > 0 );
+  for ( const QgsPointCloudAttribute &attr : attributes.attributes() )
+  {
+    const QVariant value = context.variable( attr.name() );
+    QVERIFY( value.isValid() );
+    switch ( attr.type() )
+    {
+      case QgsPointCloudAttribute::Int64:
+      case QgsPointCloudAttribute::UInt64:
+        QCOMPARE( value.toLongLong(), static_cast<qlonglong>( 0 ) );
+        break;
+      case QgsPointCloudAttribute::Float:
+      case QgsPointCloudAttribute::Double:
+        QCOMPARE( value.toDouble(), 0.0 );
+        break;
+      default:
+        QCOMPARE( value.toInt(), 0 );
+        break;
+    }
+  }
 }
 
 void TestQgsExpressionContext::featureBasedContext()

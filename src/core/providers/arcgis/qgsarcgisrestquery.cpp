@@ -414,6 +414,12 @@ QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url, bool *isTestEndpoint )
     }
 #endif
     modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
+
+    if ( modifiedUrlString.contains( "tile/" ) )
+    {
+      modifiedUrlString = modifiedUrlString.left( modifiedUrlString.indexOf( "tile/" ) + 4 ) + modifiedUrlString.mid( modifiedUrlString.indexOf( "tile/" ) + 4 ).replace( '/', '_' );
+    }
+
     QgsDebugMsgLevel( u"Get %1 (after laundering)"_s.arg( modifiedUrlString ), 2 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
     if ( !QFile::exists( modifiedUrlString ) )

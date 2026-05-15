@@ -313,7 +313,8 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       QLineEdit *title = new QLineEdit( itemName );
 
       //qmlCode
-      QgsCodeEditor *qmlCode = new QgsCodeEditor( this );
+      QgsCodeEditor *qmlCode = new QgsCodeEditor( this, QString(), true, true, QgsCodeEditor::Flag::CodeFolding, QgsCodeEditor::Mode::ScriptEditor );
+      qmlCode->setLineNumbersVisible( true );
       qmlCode->setEditingTimeoutInterval( 250 );
       qmlCode->setText( itemData.qmlElementEditorConfiguration().qmlCode );
 
@@ -321,20 +322,13 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       QgsFeature previewFeature;
       mLayer->getFeatures().nextFeature( previewFeature );
 
-      //update preview on text change
-      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature] {
-        qmlWrapper->setQmlCode( qmlCode->text() );
-        qmlWrapper->reinitWidget();
-        qmlWrapper->setFeature( previewFeature );
-      } );
-
       //templates
       QComboBox *qmlObjectTemplate = new QComboBox();
       qmlObjectTemplate->addItem( tr( "Free Text…" ) );
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
-      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [qmlCode]( int index ) {
+      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::currentIndexChanged ), qmlCode, [qmlCode]( int index ) {
         qmlCode->clear();
         switch ( index )
         {
@@ -456,9 +450,37 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addFieldButton );
       expressionWidgetBox->layout()->addWidget( editExpressionButton );
-      expressionWidgetBox->layout()->addWidget( editExpressionButton );
       layout->addWidget( qmlCodeBox );
       layout->addWidget( qmlCode );
+
+      QTextEdit *errorFeedbackWidget = new QTextEdit();
+      errorFeedbackWidget->setMaximumHeight( 90 );
+      layout->addWidget( errorFeedbackWidget );
+
+      //update preview on text change
+      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature, errorFeedbackWidget] {
+        qmlWrapper->setQmlCode( qmlCode->text() );
+        qmlWrapper->reinitWidget();
+        qmlWrapper->setFeature( previewFeature );
+        if ( QQuickWidget *qmlWidget = dynamic_cast<QQuickWidget *>( qmlWrapper->widget() ) )
+        {
+          const QList<QQmlError> errors = qmlWidget->errors();
+          if ( !errors.isEmpty() )
+          {
+            QStringList errorStrings;
+            for ( const QQmlError &error : errors )
+            {
+              errorStrings << u"%1:%2: %3"_s.arg( QString::number( error.line() ), QString::number( error.column() ), error.description() );
+            }
+            errorFeedbackWidget->setText( errorStrings.join( "\n" ) );
+          }
+          else
+          {
+            errorFeedbackWidget->setText( QObject::tr( "Valid code" ) );
+          }
+        }
+      } );
+
       QScrollArea *qmlPreviewBox = new QgsScrollArea();
       qmlPreviewBox->setMinimumWidth( 200 );
       qmlPreviewBox->setWidget( qmlWrapper->widget() );

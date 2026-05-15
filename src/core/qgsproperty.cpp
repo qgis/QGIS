@@ -515,6 +515,13 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
   return QSet<QString>();
 }
 
+QSet<QString> QgsProperty::referencedVariables() const
+{
+  if ( !d->active || d->type != Qgis::PropertyType::Expression )
+    return {};
+  return d->expression.referencedVariables();
+}
+
 bool QgsProperty::isProjectColor() const
 {
   const thread_local QRegularExpression rx( u"^project_color(_object|)\\('.*'\\)$"_s );

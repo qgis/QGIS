@@ -318,6 +318,14 @@ the collection.
                       not be known beforehand.
 %End
 
+    virtual QSet<QString> referencedVariables() const = 0;
+%Docstring
+Returns the set of any variables referenced by the active expression
+properties in the collection.
+
+.. versionadded:: 4.2
+%End
+
     virtual bool isActive( int key ) const = 0;
 %Docstring
 Returns ``True`` if the collection contains an active property with the
@@ -467,6 +475,15 @@ exists.
 
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const final;
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const final;
+
+    QSet<QString> referencedVariables() const final;
+%Docstring
+Returns the set of any variables referenced by the active expression
+properties in the collection.
+
+.. versionadded:: 4.2
+%End
+
     bool isActive( int key ) const final;
 
 
@@ -649,6 +666,16 @@ the stack.
                       tiles where the actual available field names may
                       not be known beforehand.
 %End
+
+    virtual QSet<QString> referencedVariables() const;
+
+%Docstring
+Returns the set of any variables referenced by the active expression
+properties in the stack.
+
+.. versionadded:: 4.2
+%End
+
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
 

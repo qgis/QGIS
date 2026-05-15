@@ -32,6 +32,7 @@ class TestQgsProcessingFeedback(unittest.TestCase):
         multi_feedback = QgsProcessingMultiStepFeedback(2, f)
 
         progress_spy = QSignalSpy(f.progressChanged)
+        multi_progress_spy = QSignalSpy(multi_feedback.progressChanged)
 
         # first step: 0% to 50%
         multi_feedback.setCurrentStep(0)
@@ -41,20 +42,29 @@ class TestQgsProcessingFeedback(unittest.TestCase):
         # halfway through first step of 2 => 25%
         self.assertEqual(f.progress(), 25.0)
         self.assertEqual(progress_spy[-1][0], 25.0)
+        self.assertEqual(multi_progress_spy[-1][0], 50.0)
 
         multi_feedback.setProgress(100)
         self.assertEqual(f.progress(), 50.0)
+        self.assertEqual(progress_spy[-1][0], 50.0)
+        self.assertEqual(multi_progress_spy[-1][0], 100.0)
 
         # second step: 50% to 100%
         multi_feedback.setCurrentStep(1)
         self.assertEqual(f.progress(), 50.0)
+        self.assertEqual(progress_spy[-1][0], 50.0)
+        self.assertEqual(multi_progress_spy[-1][0], 0.0)
 
         multi_feedback.setProgress(50)
         # halfway through second step of two => 75%
         self.assertEqual(f.progress(), 75.0)
+        self.assertEqual(progress_spy[-1][0], 75.0)
+        self.assertEqual(multi_progress_spy[-1][0], 50.0)
 
         multi_feedback.setProgress(100)
         self.assertEqual(f.progress(), 100.0)
+        self.assertEqual(progress_spy[-1][0], 100.0)
+        self.assertEqual(multi_progress_spy[-1][0], 100.0)
 
     def test_multi_step_feedback_with_weights(self):
         """

@@ -139,6 +139,11 @@ void QgsLightsWidget::setPointLightCrs( const QgsCoordinateReferenceSystem &crs 
   labelPointLightCrs->setToolTip( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) );
 }
 
+void QgsLightsWidget::setMapExtent( const QgsRectangle &extent )
+{
+  mMapExtent = extent;
+}
+
 void QgsLightsWidget::selectedLightChanged( const QItemSelection &selected, const QItemSelection & )
 {
   if ( selected.empty() )
@@ -226,7 +231,14 @@ void QgsLightsWidget::onAddLight()
     return;
   }
 
-  const QModelIndex newIndex = mLightsModel->addPointLight( QgsPointLightSettings() );
+  QgsPointLightSettings settings;
+  if ( !mMapExtent.isEmpty() )
+  {
+    // default to placing a new light at the center of the map
+    settings.setPosition( QgsVector3D( mMapExtent.center().x(), mMapExtent.center().y(), 250 ) );
+  }
+
+  const QModelIndex newIndex = mLightsModel->addPointLight( settings );
   mLightsListView->selectionModel()->select( newIndex, QItemSelectionModel::ClearAndSelect );
   emit lightsAdded();
 }

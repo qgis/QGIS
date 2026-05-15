@@ -86,11 +86,11 @@ QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
   return mCrs;
 }
 
-QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, int indent ) const
+QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, int indent, const QString &featureType ) const
 {
   try
   {
-    return QString::fromStdString( exportFeatureToJsonObject( feature, extraProperties, id ).dump( indent ) );
+    return QString::fromStdString( exportFeatureToJsonObject( feature, extraProperties, id, featureType ).dump( indent ) );
   }
   catch ( json::type_error &ex )
   {
@@ -104,11 +104,15 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
   }
 }
 
-json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
+json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, const QString &featureType ) const
 {
   json featureJson {
     { "type", "Feature" },
   };
+  if ( !featureType.isEmpty() )
+  {
+    featureJson["featureType"] = featureType.toStdString();
+  }
   if ( id.isValid() )
   {
     bool ok = false;

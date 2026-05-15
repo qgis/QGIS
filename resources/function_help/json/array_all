@@ -2,12 +2,12 @@
   "name": "array_all",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns TRUE if an array contains all the values of a given array.",
+  "description": "Returns TRUE if an array contains all the values of a second array.",
   "arguments": [{
-    "arg": "array_a",
+    "arg": "array1",
     "description": "an array"
   }, {
-    "arg": "array_b",
+    "arg": "array2",
     "description": "the array of values to search"
   }],
   "examples": [{

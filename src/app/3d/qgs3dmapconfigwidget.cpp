@@ -23,6 +23,7 @@
 #include "qgsambientocclusionsettingswidget.h"
 #include "qgscolorbutton.h"
 #include "qgsdemterrainsettings.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
@@ -36,6 +37,7 @@
 #include "qgssettings.h"
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgsskyboxrenderingsettingswidget.h"
+#include "qgsskyboxsettings.h"
 #include "qgsstackedwidget.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
@@ -185,6 +187,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   widgetLights->setLights( mMap->lightSources() );
   widgetLights->setPointLightCrs( mMap->crs() );
+  widgetLights->setMapExtent( mMap->extent() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
@@ -200,16 +203,19 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   connect( comboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stackedWidget, &QStackedWidget::setCurrentIndex );
   stackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
-  mBtnGradientTopColor->setColor( mMap->gradientBackgroundTopColor() );
-  mBtnGradientBottomColor->setColor( mMap->gradientBackgroundBottomColor() );
+  const QgsAbstract3DMapBackgroundSettings *bgSettings = mMap->backgroundSettings();
+  const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( bgSettings );
+  const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( bgSettings );
+
+  mBtnGradientTopColor->setColor( gradientSettings ? gradientSettings->topColor() : QColor( 0, 128, 255 ) );
+  mBtnGradientBottomColor->setColor( gradientSettings ? gradientSettings->bottomColor() : Qt::black );
 
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
-  mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
+  mSkyboxSettingsWidget->setSkyboxSettings( skyboxSettings ? *skyboxSettings : QgsSkyboxSettings() );
   pageSkybox->layout()->addWidget( mSkyboxSettingsWidget );
 
-  const Qgs3DMapSettings::BackgroundType bgType = mMap->backgroundType();
-  groupBoxBackground->setChecked( bgType != Qgs3DMapSettings::BackgroundType::NoBackground );
-  comboBox->setCurrentIndex( bgType == Qgs3DMapSettings::BackgroundType::Skybox ? 1 : 0 );
+  groupBoxBackground->setChecked( bgSettings ? true : false );
+  comboBox->setCurrentIndex( skyboxSettings ? 1 : 0 );
 
   // ==================
   // Page: Shadows
@@ -378,14 +384,20 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setLightSources( widgetLights->lightSources() );
 
   if ( !groupBoxBackground->isChecked() )
-    mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::NoBackground );
+  {
+    mMap->setBackgroundSettings( nullptr ); // null disables background
+  }
   else if ( comboBox->currentIndex() == 1 )
-    mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::Skybox );
+  {
+    mMap->setBackgroundSettings( mSkyboxSettingsWidget->toSkyboxSettings().clone() );
+  }
   else
-    mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::Gradient );
-  mMap->setGradientBackgroundTopColor( mBtnGradientTopColor->color() );
-  mMap->setGradientBackgroundBottomColor( mBtnGradientBottomColor->color() );
-  mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
+  {
+    auto gradient = std::make_unique<QgsFixedGradientBackgroundSettings>();
+    gradient->setTopColor( mBtnGradientTopColor->color() );
+    gradient->setBottomColor( mBtnGradientBottomColor->color() );
+    mMap->setBackgroundSettings( gradient.release() );
+  }
 
   QgsShadowSettings shadowSettings = mShadowSettingsWidget->toShadowSettings();
   shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );

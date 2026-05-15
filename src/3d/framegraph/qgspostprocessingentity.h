@@ -16,6 +16,7 @@
 #ifndef QGSPOSTPROCESSINGENTITY_H
 #define QGSPOSTPROCESSINGENTITY_H
 
+#include "qgs3d.h"
 #include "qgsrenderpassquad.h"
 
 #define SIP_NO_FILE
@@ -46,12 +47,16 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
   public:
     //! Constructor
     QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
-    //! Sets the parts of the scene where objects cast shadows
-    void setupShadowRenderingExtent( float minX, float maxX, float minY, float maxY );
-    //! Sets up a directional light that is used to render shadows
-    void setupDirectionalLight( QVector3D position, QVector3D direction );
     //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
+
+    /**
+     * Sets whether the splits between cascading shadow map boundaries should be shown.
+     *
+     * \warning For testing purposes only!
+     */
+    void setShowCascadingShadowSplits( bool enabled );
+
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
     //! Sets whether eye dome lighting is enabled
@@ -85,17 +90,10 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
     Qt3DRender::QParameter *mMainCameraInvProjMatrixParameter = nullptr;
 
-    Qt3DRender::QCamera *mLightCamera = nullptr;
-    Qt3DRender::QParameter *mLightFarPlaneParameter = nullptr;
-    Qt3DRender::QParameter *mLightNearPlaneParameter = nullptr;
-
-    Qt3DRender::QParameter *mLightPosition = nullptr;
-    Qt3DRender::QParameter *mLightDirection = nullptr;
-
-    Qt3DRender::QParameter *mShadowMinX = nullptr;
-    Qt3DRender::QParameter *mShadowMaxX = nullptr;
-    Qt3DRender::QParameter *mShadowMinY = nullptr;
-    Qt3DRender::QParameter *mShadowMaxY = nullptr;
+    Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
+    Qt3DRender::QParameter *mCsmMatricesParameter = nullptr;
+    Qt3DRender::QParameter *mCsmBoundsMatricesParameter = nullptr;
+    Qt3DRender::QParameter *mMaxShadowDistanceParameter = nullptr;
 
     Qt3DRender::QParameter *mRenderShadowsParameter = nullptr;
     Qt3DRender::QParameter *mShadowBiasParameter = nullptr;

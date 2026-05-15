@@ -99,9 +99,17 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Sets the emission strength factor
     void setEmissionFactor( double factor );
 
+    /**
+     * When instancing is enabled, the vertex shader uses per-instance
+     * translation, rotation, and scale attributes for GPU instancing.
+     */
+    void setInstancingEnabled( bool enabled );
+
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
     void setFlatShadingEnabled( bool enabled );
+
+    void setOpacity( float opacity );
 
   private:
     void init();
@@ -122,6 +130,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mEmissionFactorParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mTextureRotationParameter = nullptr;
+    Qt3DRender::QParameter *mOpacityParameter = nullptr;
     Qt3DRender::QEffect *mMetalRoughEffect = nullptr;
     Qt3DRender::QTechnique *mMetalRoughGL3Technique = nullptr;
     Qt3DRender::QRenderPass *mMetalRoughGL3RenderPass = nullptr;
@@ -135,6 +144,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingHeightMap = false;
     bool mUsingEmissionMap = false;
     bool mFlatShading = false;
+    bool mInstancingEnabled = false;
 
     friend class TestQgsGltf3DUtils;
 };

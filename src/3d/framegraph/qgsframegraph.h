@@ -35,6 +35,7 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QRenderTarget>
@@ -96,6 +97,9 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     //! Returns the render capture object used to take an image of the depth buffer of the scene
     Qt3DRender::QRenderCapture *depthRenderCapture();
+
+    //! Adds additional global \a parameters to the graph
+    void addGlobalParameters( const QList<Qt3DRender::QParameter *> &parameters );
 
     //! Sets whether frustum culling is enabled
     void setFrustumCullingEnabled( bool enabled );
@@ -229,12 +233,6 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources );
 
     /**
-     * Updates settings for shadows debug map
-     * \since QGIS 3.44
-     */
-    void updateDebugShadowMapSettings( const Qgs3DMapSettings &settings );
-
-    /**
      * Updates settings for depth debug map
      * \since QGIS 3.44
      */
@@ -267,6 +265,12 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DRender::QCamera *mMainCamera = nullptr;
 
+    // Storage for global parameters
+    // QRenderPassFilter has dual usage -- one for storage of filtering keys,
+    // the other for storage of parameters for use in shaders. Here we are
+    // using it for storage of parameters only, not for filtering!
+    Qt3DRender::QRenderPassFilter *mGlobalParamsStorage = nullptr;
+
     // Post processing pass branch nodes:
     Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
     Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
@@ -292,8 +296,6 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
-    //! shadow texture debugging
-    QgsOverlayTextureEntity *mShadowTextureDebugging = nullptr;
     //! depth texture debugging
     QgsOverlayTextureEntity *mDepthTextureDebugging = nullptr;
 

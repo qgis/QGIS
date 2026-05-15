@@ -233,20 +233,65 @@ void TestQgsProcessingCheckGeometry::holeAlg()
   parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
-  bool ok = false;
-  QgsProcessingFeedback feedback;
-  const std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  // test without threshold area
+  {
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    const std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
 
-  QVariantMap results;
-  results = alg->run( parameters, *context, &feedback, &ok );
-  QVERIFY( ok );
+    QVariantMap results;
+    results = alg->run( parameters, *context, &feedback, &ok );
+    QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
-  QVERIFY( outputLayer->isValid() );
-  QVERIFY( errorsLayer->isValid() );
-  QCOMPARE( outputLayer->featureCount(), 1 );
-  QCOMPARE( errorsLayer->featureCount(), 1 );
+    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
+    QVERIFY( outputLayer->isValid() );
+    QVERIFY( errorsLayer->isValid() );
+    QCOMPARE( outputLayer->featureCount(), 1 );
+    QCOMPARE( errorsLayer->featureCount(), 1 );
+  }
+
+  // test with threshold area higher than the hole area
+  {
+    parameters.insert( u"AREA_THRESHOLD"_s, 0.014 );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    const std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+
+    QVariantMap results;
+    results = alg->run( parameters, *context, &feedback, &ok );
+    QVERIFY( ok );
+
+    parameters.remove( u"AREA_THRESHOLD"_s );
+
+    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
+    QVERIFY( outputLayer->isValid() );
+    QVERIFY( errorsLayer->isValid() );
+    QCOMPARE( outputLayer->featureCount(), 1 );
+    QCOMPARE( errorsLayer->featureCount(), 1 );
+  }
+
+  // test with threshold area lower than the hole area
+  {
+    parameters.insert( u"AREA_THRESHOLD"_s, 0.012 );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    const std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+
+    QVariantMap results;
+    results = alg->run( parameters, *context, &feedback, &ok );
+    QVERIFY( ok );
+
+    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
+    QVERIFY( outputLayer->isValid() );
+    QVERIFY( errorsLayer->isValid() );
+    QCOMPARE( outputLayer->featureCount(), 0 );
+    QCOMPARE( errorsLayer->featureCount(), 0 );
+  }
 }
 
 void TestQgsProcessingCheckGeometry::missingVertexAlg()

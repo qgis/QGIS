@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsdockwidget.h"
+#include "qgsguiutils.h"
 
 #include <QAction>
 #include <QLayout>
@@ -35,8 +36,6 @@ const QgsSettingsEntryVariant *QgsDockableWidgetHelper::sSettingsDialogGeometry 
 const QgsSettingsEntryEnumFlag<Qt::DockWidgetArea> *QgsDockableWidgetHelper::sSettingsDockArea
   = new QgsSettingsEntryEnumFlag<Qt::DockWidgetArea>( u"dock-area"_s, QgsDockableWidgetHelper::sTtreeDockConfigs, Qt::RightDockWidgetArea );
 
-std::function<void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool )> QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction =
-  []( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) {};
 std::function<QString()> QgsDockableWidgetHelper::sAppStylesheetFunction = [] { return QString(); };
 QMainWindow *QgsDockableWidgetHelper::sOwnerWindow = nullptr;
 
@@ -46,7 +45,7 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper(
   QMainWindow *ownerWindow,
   const QString &dockId,
   const QStringList &tabifyWith,
-  OpeningMode openingMode,
+  Qgis::DockableWidgetInitialState openingMode,
   bool defaultIsDocked,
   Qt::DockWidgetArea defaultDockArea,
   Options options
@@ -61,11 +60,19 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper(
   , mUuid( QUuid::createUuid().toString() )
   , mSettingKeyDockId( dockId )
 {
-  bool isDocked = sSettingsIsDocked->valueWithDefaultOverride( defaultIsDocked, mSettingKeyDockId );
-  if ( openingMode == OpeningMode::ForceDocked )
-    isDocked = true;
-  else if ( openingMode == OpeningMode::ForceDialog )
-    isDocked = false;
+  bool isDocked = true;
+  switch ( openingMode )
+  {
+    case Qgis::DockableWidgetInitialState::RestorePreviousState:
+      isDocked = sSettingsIsDocked->valueWithDefaultOverride( defaultIsDocked, mSettingKeyDockId );
+      break;
+    case Qgis::DockableWidgetInitialState::ForceDocked:
+      isDocked = true;
+      break;
+    case Qgis::DockableWidgetInitialState::ForceDialog:
+      isDocked = false;
+      break;
+  }
 
   mDockArea = sSettingsDockArea->valueWithDefaultOverride( defaultDockArea, mSettingKeyDockId );
   mIsDockFloating = mDockArea == Qt::DockWidgetArea::NoDockWidgetArea;
@@ -360,15 +367,29 @@ void QgsDockableWidgetHelper::setUserVisible( bool visible )
       mDialog->raise();
       mDialog->setWindowState( mDialog->windowState() & ~Qt::WindowMinimized );
       mDialog->activateWindow();
+      emit visibilityChanged( true );
     }
     else
     {
       mDialog->hide();
+      emit visibilityChanged( false );
     }
   }
   if ( mDock )
   {
     mDock->setUserVisible( visible );
+  }
+}
+
+void QgsDockableWidgetHelper::reject()
+{
+  if ( mDialog )
+  {
+    mDialog->reject();
+  }
+  else if ( mDock )
+  {
+    mDock->close();
   }
 }
 
@@ -403,6 +424,11 @@ QString QgsDockableWidgetHelper::dockObjectName() const
   return mObjectName;
 }
 
+void QgsDockableWidgetHelper::setSettingKeyDockId( const QString &id )
+{
+  mSettingKeyDockId = id;
+}
+
 bool QgsDockableWidgetHelper::isUserVisible() const
 {
   if ( mDialog )
@@ -429,13 +455,13 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
     const int initialDockSize = fm.horizontalAdvance( '0' ) * 75;
     mDockGeometry = QRect( static_cast<int>( mOwnerWindow->rect().width() * 0.75 ), static_cast<int>( mOwnerWindow->rect().height() * 0.5 ), initialDockSize, initialDockSize );
   }
-  if ( !tabSiblings.isEmpty() )
+  if ( mOwnerWindow && !tabSiblings.isEmpty() )
   {
-    sAddTabifiedDockWidgetFunction( mDockArea, mDock, tabSiblings, false );
+    QgsGuiUtils::addTabifiedDockWidget( mOwnerWindow, mDockArea, mDock, tabSiblings, false );
   }
-  else if ( mOptions.testFlag( Option::RaiseTab ) )
+  else if ( mOwnerWindow && mOptions.testFlag( Option::RaiseTab ) )
   {
-    sAddTabifiedDockWidgetFunction( mDockArea, mDock, mTabifyWith, true );
+    QgsGuiUtils::addTabifiedDockWidget( mOwnerWindow, mDockArea, mDock, mTabifyWith, true );
   }
   else if ( mOwnerWindow )
   {

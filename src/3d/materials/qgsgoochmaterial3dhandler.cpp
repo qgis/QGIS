@@ -16,19 +16,14 @@
 #include "qgsgoochmaterial3dhandler.h"
 
 #include "qgs3dutils.h"
+#include "qgsgoochmaterial.h"
 #include "qgsgoochmaterialsettings.h"
 #include "qgshighlightmaterial.h"
 
 #include <QString>
-#include <QUrl>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-#include <Qt3DExtras/QGoochMaterial>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QTechnique>
 
 using namespace Qt::StringLiterals;
 
@@ -160,26 +155,11 @@ bool QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
 {
   const QgsGoochMaterialSettings *goochSettings = qgis::down_cast< const QgsGoochMaterialSettings * >( settings );
 
-  QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
-  if ( material->objectName() != "goochMaterial"_L1 )
+  QgsGoochMaterial *material = sceneRoot->findChild<QgsGoochMaterial *>();
+  if ( !material || material->objectName() != "goochMaterial"_L1 )
     return false;
 
-  Qt3DRender::QEffect *effect = material->effect();
-
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"kd"_s ) )
-    p->setValue( Qgs3DUtils::srgbToLinear( goochSettings->diffuse() ) );
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"ks"_s ) )
-    p->setValue( Qgs3DUtils::srgbToLinear( goochSettings->specular() ) );
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"kblue"_s ) )
-    p->setValue( Qgs3DUtils::srgbToLinear( goochSettings->cool() ) );
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"kyellow"_s ) )
-    p->setValue( Qgs3DUtils::srgbToLinear( goochSettings->warm() ) );
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"shininess"_s ) )
-    p->setValue( goochSettings->shininess() );
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"alpha"_s ) )
-    p->setValue( goochSettings->alpha() );
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"beta"_s ) )
-    p->setValue( goochSettings->beta() );
+  applySettingsToMaterial( goochSettings, material );
 
   return true;
 }
@@ -190,58 +170,24 @@ QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
   Q_ASSERT( goochSettings );
   const QgsPropertyCollection &dataDefinedProperties = goochSettings->dataDefinedProperties();
 
-  QgsMaterial *material = new QgsMaterial;
+  QgsGoochMaterial *material = new QgsGoochMaterial;
   material->setObjectName( u"goochMaterial"_s );
 
-  Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
-
-  Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
-  technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
-  technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
-  technique->graphicsApiFilter()->setMajorVersion( 3 );
-  technique->graphicsApiFilter()->setMinorVersion( 3 );
-  Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey();
-  filterKey->setName( u"renderingStyle"_s );
-  filterKey->setValue( u"forward"_s );
-  technique->addFilterKey( filterKey );
-
-  Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
-  Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
-
-  const QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/gooch.frag"_s ) );
-
-  if ( dataDefinedProperties.hasActiveProperties() )
-  {
-    //Load shader programs
-    const QUrl urlVert( u"qrc:/shaders/goochDataDefined.vert"_s );
-    shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-
-    const QByteArray finalFragmentShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, QStringList( { "DATA_DEFINED" } ) );
-    shaderProgram->setFragmentShaderCode( finalFragmentShaderCode );
-  }
-  else
-  {
-    //Load shader programs
-    const QUrl urlVert( u"qrc:/shaders/default.vert"_s );
-    shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-    shaderProgram->setFragmentShaderCode( fragmentShaderCode );
-
-    const QColor diffuseColor = context.isSelected() ? context.selectionColor() : goochSettings->diffuse();
-    effect->addParameter( new Qt3DRender::QParameter( u"kd"_s, Qgs3DUtils::srgbToLinear( diffuseColor ) ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"ks"_s, Qgs3DUtils::srgbToLinear( goochSettings->specular() ) ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"kblue"_s, Qgs3DUtils::srgbToLinear( goochSettings->cool() ) ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"kyellow"_s, Qgs3DUtils::srgbToLinear( goochSettings->warm() ) ) );
-  }
-
-  renderPass->setShaderProgram( shaderProgram );
-  technique->addRenderPass( renderPass );
-
-  technique->addParameter( new Qt3DRender::QParameter( u"shininess"_s, goochSettings->shininess() ) );
-  technique->addParameter( new Qt3DRender::QParameter( u"alpha"_s, goochSettings->alpha() ) );
-  technique->addParameter( new Qt3DRender::QParameter( u"beta"_s, goochSettings->beta() ) );
-
-  effect->addTechnique( technique );
-  material->setEffect( effect );
+  applySettingsToMaterial( goochSettings, material );
+  if ( context.isSelected() )
+    material->setDiffuse( context.selectionColor() );
+  material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
 
   return material;
+}
+
+void QgsGoochMaterial3DHandler::applySettingsToMaterial( const QgsGoochMaterialSettings *settings, QgsGoochMaterial *material )
+{
+  material->setDiffuse( settings->diffuse() );
+  material->setSpecular( settings->specular() );
+  material->setCool( settings->cool() );
+  material->setWarm( settings->warm() );
+  material->setShininess( static_cast<float>( settings->shininess() ) );
+  material->setAlpha( static_cast<float>( settings->alpha() ) );
+  material->setBeta( static_cast<float>( settings->beta() ) );
 }

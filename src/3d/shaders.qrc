@@ -41,5 +41,6 @@
         <file>shaders/singlecolor.frag</file>
         <file>shaders/gradient_static.vert</file>
         <file>shaders/gradient_background.frag</file>
+        <file>shaders/shadows.inc.frag</file>
     </qresource>
 </RCC>

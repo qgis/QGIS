@@ -2439,17 +2439,35 @@ The development version
       Billboards,
     };
 
+    enum class TextureFilterQuality /BaseType=IntEnum/
+    {
+      Trilinear,
+      Anisotropic2x,
+      Anisotropic4x,
+      Anisotropic8x,
+      Anisotropic16x,
+    };
+
+    enum class ShadowQuality /BaseType=IntEnum/
+    {
+      Low,
+      Medium,
+      High,
+      VeryHigh,
+      Extreme,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,
       Directional,
     };
 
-    enum class SkyboxType /BaseType=IntEnum/
+    enum class Map3DBackgroundType /BaseType=IntEnum/
     {
-      DistinctTextures,
-      // this is currently broken for z-up coordinate system
-      //Panoramic, //!< Panoramic texture
+      NoBackground,
+      FixedGradientBackground,
+      DistinctTextureSkybox,
     };
 
     enum class SkyboxCubeMapping /BaseType=IntEnum/
@@ -3754,6 +3772,13 @@ The development version
     {
       Normal,
       Opaque,
+    };
+    
+    enum class DockableWidgetInitialState /BaseType=IntEnum/
+    {
+      RestorePreviousState,
+      ForceDocked,
+      ForceDialog,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

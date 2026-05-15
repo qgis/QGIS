@@ -22,6 +22,8 @@
 #define SIP_NO_FILE
 
 class QgsMaterial;
+class QgsGoochMaterial;
+class QgsGoochMaterialSettings;
 
 /**
  * \ingroup qgis_3d
@@ -46,6 +48,8 @@ class _3D_EXPORT QgsGoochMaterial3DHandler : public QgsAbstractMaterial3DHandler
   private:
     //! Constructs a material from shader files
     QgsMaterial *buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const;
+
+    static void applySettingsToMaterial( const QgsGoochMaterialSettings *settings, QgsGoochMaterial *material );
 };
 
 

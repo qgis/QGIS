@@ -461,10 +461,10 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class EmbeddedScriptType : int
     {
-      Macro = 0,              //! Project macros
-      ExpressionFunction = 1, //! Expression functions
-      Action = 2,             //! Map layers' action \since QGIS 4.0
-      FormInitCode = 3,       //! Attribute forms' initiation code \since QGIS 4.0
+      Macro = 0,              //!< Project macros
+      ExpressionFunction = 1, //!< Expression functions
+      Action = 2,             //!< Map layers' action \since QGIS 4.0
+      FormInitCode = 3,       //!< Attribute forms' initiation code \since QGIS 4.0
     };
     Q_ENUM( EmbeddedScriptType )
 
@@ -474,9 +474,9 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class ProjectTrustStatus : int
     {
-      Undetermined = 0, //! The project trust has not yet been determined by the user
-      Trusted = 1,      //! The project has been determined by the user as trusted
-      Untrusted = 2,    //! The project has been determined by the user as untrusted
+      Undetermined = 0, //!< The project trust has not yet been determined by the user
+      Trusted = 1,      //!< The project has been determined by the user as trusted
+      Untrusted = 2,    //!< The project has been determined by the user as untrusted
     };
     Q_ENUM( ProjectTrustStatus )
 
@@ -4352,6 +4352,36 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( MaterialRenderingTechnique )
 
     /**
+     * Texture filtering qualities.
+     *
+     * \since QGIS 4.2
+     */
+    enum class TextureFilterQuality : int
+    {
+      Trilinear,      //!< Trilinear (LinearMipmapLinear)
+      Anisotropic2x,  //!< Anisotropic filtering (2x)
+      Anisotropic4x,  //!< Anisotropic filtering (4x)
+      Anisotropic8x,  //!< Anisotropic filtering (8x)
+      Anisotropic16x, //!< Anisotropic filtering (16x)
+    };
+    Q_ENUM( TextureFilterQuality )
+
+    /**
+     * Shadow texture quality.
+     *
+     * \since QGIS 4.2
+     */
+    enum class ShadowQuality : int
+    {
+      Low,      //!< Low quality
+      Medium,   //!< Medium quality
+      High,     //!< High quality
+      VeryHigh, //!< Very high quality
+      Extreme,  //!< Extremely high quality
+    };
+    Q_ENUM( ShadowQuality )
+
+    /**
      * Light source types for 3D scenes.
      *
      * \since QGIS 3.26
@@ -4364,17 +4394,16 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( LightSourceType )
 
     /**
-     * Skybox types for 3D scenes.
-     *
+     * Background types for 3D map view.
      * \since QGIS 4.2
      */
-    enum class SkyboxType : int
+    enum class Map3DBackgroundType : int
     {
-      DistinctTextures, //!< Cube map built from distinct textures
-      // this is currently broken for z-up coordinate system
-      //Panoramic, //!< Panoramic texture
+      NoBackground,            //!< No background
+      FixedGradientBackground, //!< Two color gradient, fixed in place
+      DistinctTextureSkybox,   //!< Skybox with 6 distinct textures for different faces
     };
-    Q_ENUM( SkyboxType )
+    Q_ENUM( Map3DBackgroundType )
 
     /**
      * Skybox texture cube mapping for distinct texture skyboxes.
@@ -6710,6 +6739,19 @@ int QgisEvent = QEvent::User + 1;
       Opaque, //!< Group can be requested, children cannot (appears like a single layer)
     };
     Q_ENUM( WmsGroupRequestMode )
+
+    /**
+     * Dockable widget initial states.
+     *
+     * \since QGIS 4.2
+     */
+    enum class DockableWidgetInitialState : int
+    {
+      RestorePreviousState, //!< Restore the previous state of this dock
+      ForceDocked,          //!< Force the widget to be docked
+      ForceDialog,          //!< Force the widget to be shown in a dialog
+    };
+    Q_ENUM( DockableWidgetInitialState )
 
     /**
      * Identify search radius in mm

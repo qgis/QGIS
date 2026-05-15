@@ -139,6 +139,14 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     double textureRotation() const { return mTextureRotation; }
 
     /**
+     * Returns the opacity of the surface
+     *
+     * \see setOpacity()
+     * \since QGIS 4.2
+     */
+    double opacity() const { return mOpacity; }
+
+    /**
      * Sets the \a path to the base color texture map.
      *
      * \see baseColorTexturePath()
@@ -224,10 +232,40 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      */
     void setTextureRotation( double rotation ) { mTextureRotation = rotation; }
 
+    /**
+     * Sets the \a opacity of the surface.
+     *
+     * \see opacity()
+     * \since QGIS 4.2
+     */
+    void setOpacity( double opacity ) { mOpacity = opacity; }
+
     bool requiresTextureCoordinates() const override;
     bool requiresTangents() const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * This function returns an approximation of the
+     * material's appearance based on the average color of the base color texture and the
+     * emission texture.
+     * Other texture maps are not taken into account.
+     */
+    QColor averageColor() const override;
+
+    /**
+     * Decomposes a base color into the material's color components, and sets the material's colors accordingly.
+     *
+     * This method has no effect for QgsMetalRoughTexturedMaterialSettings, as the material
+     * is fully defined by texture maps.
+     *
+     * \param baseColor The color to decompose (ignored)
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
 
     bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const
     {
@@ -242,8 +280,12 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
              && qgsDoubleNear( mTextureRotation, other.mTextureRotation )
              && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
              && qgsDoubleNear( mParallaxScale, other.mParallaxScale )
+             && qgsDoubleNear( mOpacity, other.mOpacity )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
+
+  private:
+    QColor textureAverageColor( const QString &texturePath ) const;
 
   private:
     QString mBaseColorTexturePath;
@@ -260,6 +302,9 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
 
     double mTextureScale { 1.0 };
     double mTextureRotation { 0.0 };
+    double mOpacity { 1.0 };
+
+    mutable std::optional<QColor> mAverageColor;
 };
 
 

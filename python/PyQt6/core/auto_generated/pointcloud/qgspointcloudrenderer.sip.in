@@ -194,6 +194,11 @@ Abstract base class for 2d point cloud renderers.
 %End
   public:
 
+    enum class Property /BaseType=IntEnum/
+    {
+      Color,
+    };
+
     QgsPointCloudRenderer();
 
     virtual ~QgsPointCloudRenderer();
@@ -663,6 +668,37 @@ Sets the shading ``renderer`` used to render shading on the layer.
 .. versionadded:: 4.2
 %End
 
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the property definitions for data defined properties used by the
+renderer.
+
+.. versionadded:: 4.2
+%End
+
+    const QgsPropertyCollection &dataDefinedProperties() const;
+%Docstring
+Returns the renderer's property collection, used for data defined
+overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 4.2
+%End
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the renderer's property collection, used for data defined
+overrides.
+
+:param collection: property collection. Existing properties will be
+                   replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 4.2
+%End
+
   protected:
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
 %Docstring
@@ -718,6 +754,7 @@ to the specified DOM ``element``.
 
 .. seealso:: :py:func:`restoreCommonProperties`
 %End
+
 
   private:
     QgsPointCloudRenderer( const QgsPointCloudRenderer &other );

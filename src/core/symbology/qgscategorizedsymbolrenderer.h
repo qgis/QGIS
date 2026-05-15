@@ -181,6 +181,9 @@ typedef QList<QgsRendererCategory> QgsCategoryList;
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
+    using Category = QgsRendererCategory;
+    using Categories = QgsCategoryList;
+
     /**
      * Constructor for QgsCategorizedSymbolRenderer.
      *
@@ -489,6 +492,9 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum = -1;
+
+    //! whether the attribute is numeric (derived from attribute name in startRender)
+    bool mAttrIsNumeric = false;
 
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbol *> mSymbolHash;

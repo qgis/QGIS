@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgscesiumimplicittiling.h"
 #include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgsellipsoidutils.h"
@@ -64,28 +65,6 @@ using namespace Qt::StringLiterals;
 #define PROVIDER_DESCRIPTION u"Cesium 3D Tiles data provider"_s
 
 
-// This is to support a case seen with Google's tiles. Root URL is something like this:
-// https://tile.googleapis.com/.../root.json?key=123
-// The returned JSON contains relative links with "session" (e.g. "/.../abc.json?session=456")
-// When fetching such abc.json, we have to include also "key" from the original URL!
-// Then the content of abc.json contains relative links (e.g. "/.../xyz.glb") and we
-// need to add both "key" and "session" (otherwise requests fail).
-//
-// This function simply copies any query items from the base URL to the content URI.
-static QString appendQueryFromBaseUrl( const QString &contentUri, const QUrl &baseUrl )
-{
-  QUrlQuery contentQuery( QUrl( contentUri ).query() );
-  const QList<QPair<QString, QString>> baseUrlQueryItems = QUrlQuery( baseUrl.query() ).queryItems();
-  for ( const QPair<QString, QString> &kv : baseUrlQueryItems )
-  {
-    contentQuery.addQueryItem( kv.first, kv.second );
-  }
-  QUrl newContentUrl( contentUri );
-  newContentUrl.setQuery( contentQuery );
-  return newContentUrl.toString();
-}
-
-
 class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
 {
   public:
@@ -118,6 +97,14 @@ class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
       NotJson, // TODO: refine this to actual content types when/if needed!
     };
 
+    void populateSubtreeRecursively(
+      QgsTiledSceneNode *node,
+      const QgsCesiumImplicitTiling::TileCoordinate &coord,
+      long long implicitRootTileId,
+      QgsCesiumImplicitTiling::Root &tilingData,
+      const QgsCesiumImplicitTiling::TileCoordinate &subtreeCoord
+    );
+
     mutable QRecursiveMutex mLock;
     QgsCoordinateTransformContext mTransformContext;
     std::unique_ptr< QgsTiledSceneNode > mRootNode;
@@ -126,6 +113,23 @@ class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
     long long mNextTileId = 0;
+
+    // Implicit tiling related
+
+    //! All root implicit tiling nodes and their definitions
+    QMap<long long, QgsCesiumImplicitTiling::Root> mImplicitTilingRoots;
+
+    //! Information we keep about every tile that's within implicit tiling
+    struct ImplicitTileInfo
+    {
+        //! To which root node does the tile belong (see mImplicitTilingRoots)
+        long long implicitRootTileId = 0;
+        //! Coordinates of the tile within implicit tiling definition
+        QgsCesiumImplicitTiling::TileCoordinate coord;
+    };
+
+    //! Per-tile information in case it belongs to implicit tiling
+    QMap<long long, ImplicitTileInfo> mImplicitTileIndex;
 };
 
 class QgsCesiumTilesDataProviderSharedData
@@ -225,49 +229,10 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
   QgsTiledSceneBoundingVolume volume;
   if ( boundingVolume.contains( "region" ) )
   {
-    QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( boundingVolume["region"] );
-    if ( !rootRegion.isNull() )
+    const QgsBox3D region = QgsCesiumUtils::parseRegion( boundingVolume["region"] );
+    if ( !region.isNull() )
     {
-      if ( rootRegion.width() > 20 || rootRegion.height() > 20 )
-      {
-        // treat very large regions as global -- these will not transform to EPSG:4978
-      }
-      else
-      {
-        // we need to transform regions from EPSG:4979 to EPSG:4978
-        QVector< QgsVector3D > corners = rootRegion.corners();
-
-        QVector< double > x;
-        x.reserve( 8 );
-        QVector< double > y;
-        y.reserve( 8 );
-        QVector< double > z;
-        z.reserve( 8 );
-        for ( int i = 0; i < 8; ++i )
-        {
-          const QgsVector3D &corner = corners[i];
-          x.append( corner.x() );
-          y.append( corner.y() );
-          z.append( corner.z() );
-        }
-        QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4979"_s ), QgsCoordinateReferenceSystem( u"EPSG:4978"_s ), mTransformContext );
-        ct.setBallparkTransformsAreAppropriate( true );
-        try
-        {
-          ct.transformInPlace( x, y, z );
-        }
-        catch ( QgsCsException & )
-        {
-          QgsDebugError( u"Cannot transform region bounding volume"_s );
-        }
-
-        const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
-        const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
-        const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
-        volume = QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) ) );
-
-        // note that matrix transforms are NOT applied to region bounding volumes!
-      }
+      volume = QgsCesiumUtils::boundingVolumeFromRegion( region, mTransformContext );
     }
   }
   else if ( boundingVolume.contains( "box" ) )
@@ -323,7 +288,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
       contentUri = baseUrl.resolved( QUrl( relativeUri ) ).toString();
 
       if ( baseUrl.hasQuery() && QUrl( relativeUri ).isRelative() )
-        contentUri = appendQueryFromBaseUrl( contentUri, baseUrl );
+        contentUri = QgsCesiumUtils::appendQueryFromBaseUrl( contentUri, baseUrl );
     }
     else if ( contentJson.contains( "url" ) && !contentJson["url"].is_null() )
     {
@@ -331,7 +296,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
       contentUri = baseUrl.resolved( QUrl( relativeUri ) ).toString();
 
       if ( baseUrl.hasQuery() && QUrl( relativeUri ).isRelative() )
-        contentUri = appendQueryFromBaseUrl( contentUri, baseUrl );
+        contentUri = QgsCesiumUtils::appendQueryFromBaseUrl( contentUri, baseUrl );
     }
     if ( !contentUri.isEmpty() )
     {
@@ -348,7 +313,17 @@ std::unique_ptr<QgsTiledSceneNode> QgsCesiumTiledSceneIndex::nodeFromJson( const
   auto newNode = std::make_unique< QgsTiledSceneNode >( tile.release() );
   mNodeMap.insert( newNode->tile()->id(), newNode.get() );
 
-  if ( json.contains( "children" ) )
+  if ( json.contains( "implicitTiling" ) )
+  {
+    QgsCesiumImplicitTiling::Root tilingData;
+    if ( QgsCesiumImplicitTiling::parseImplicitTiling( json, newNode.get(), baseUrl, gltfUpAxis, tilingData ) )
+    {
+      const long long rootTileId = newNode->tile()->id();
+      mImplicitTilingRoots.insert( rootTileId, tilingData );
+      mImplicitTileIndex.insert( rootTileId, { rootTileId, { 0, 0, 0 } } );
+    }
+  }
+  else if ( json.contains( "children" ) )
   {
     for ( const auto &childJson : json["children"] )
     {
@@ -553,6 +528,22 @@ Qgis::TileChildrenAvailability QgsCesiumTiledSceneIndex::childAvailability( long
     if ( it == mNodeMap.constEnd() )
       return Qgis::TileChildrenAvailability::NoChildren;
 
+    // Check if this is an implicit tile
+    auto implicitIt = mImplicitTileIndex.constFind( id );
+    if ( implicitIt != mImplicitTileIndex.constEnd() )
+    {
+      const ImplicitTileInfo &info = implicitIt.value();
+      const auto tilingDataIt = mImplicitTilingRoots.constFind( info.implicitRootTileId );
+      if ( tilingDataIt == mImplicitTilingRoots.constEnd() )
+        return Qgis::TileChildrenAvailability::NoChildren;
+      const QgsCesiumImplicitTiling::Root &tilingData = tilingDataIt.value();
+
+      if ( !it.value()->children().isEmpty() )
+        return Qgis::TileChildrenAvailability::Available; // children have been populated already
+
+      return QgsCesiumImplicitTiling::childAvailability( tilingData, info.coord );
+    }
+
     if ( !it.value()->children().isEmpty() )
       return Qgis::TileChildrenAvailability::Available;
 
@@ -598,12 +589,88 @@ Qgis::TileChildrenAvailability QgsCesiumTiledSceneIndex::childAvailability( long
   return Qgis::TileChildrenAvailability::NeedFetching;
 }
 
+void QgsCesiumTiledSceneIndex::populateSubtreeRecursively(
+  QgsTiledSceneNode *node, const QgsCesiumImplicitTiling::TileCoordinate &coord, long long implicitRootTileId, QgsCesiumImplicitTiling::Root &tilingData, const QgsCesiumImplicitTiling::TileCoordinate &subtreeCoord
+)
+{
+  if ( !node->children().isEmpty() )
+    return; // already populated
+
+  // Add immediate children
+  QMap<QgsCesiumImplicitTiling::TileCoordinate, QgsTiledSceneNode *> children = QgsCesiumImplicitTiling::createImplicitTilingChildren( node, coord, tilingData, subtreeCoord, mTransformContext, mNextTileId );
+  for ( auto it = children.constBegin(); it != children.constEnd(); ++it )
+  {
+    long long childId = it.value()->tile()->id();
+    mImplicitTileIndex.insert( childId, { implicitRootTileId, it.key() } );
+    mNodeMap.insert( childId, it.value() );
+  }
+
+  // Recurse into children that are still within the current subtree (not child subtree roots)
+  for ( QgsTiledSceneNode *child : node->children() )
+  {
+    const auto childIt = mImplicitTileIndex.constFind( child->tile()->id() );
+    if ( childIt == mImplicitTileIndex.constEnd() )
+      continue;
+
+    const QgsCesiumImplicitTiling::TileCoordinate &childCoord = childIt->coord;
+    const int childLocalLevel = childCoord.level - subtreeCoord.level;
+
+    // Only recurse for children within this subtree, not for child subtree roots
+    if ( childLocalLevel < tilingData.subtreeLevels )
+      populateSubtreeRecursively( child, childCoord, implicitRootTileId, tilingData, subtreeCoord );
+  }
+}
+
+
 bool QgsCesiumTiledSceneIndex::fetchHierarchy( long long id, QgsFeedback *feedback )
 {
   QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
   if ( it == mNodeMap.constEnd() )
     return false;
+
+  // Handle implicit tiles
+  auto implicitIt = mImplicitTileIndex.constFind( id );
+  if ( implicitIt != mImplicitTileIndex.constEnd() )
+  {
+    const ImplicitTileInfo &info = implicitIt.value();
+    QgsCesiumImplicitTiling::Root &tilingData = mImplicitTilingRoots[info.implicitRootTileId];
+
+    if ( !it.value()->children().isEmpty() )
+      return true;
+
+    const QgsCesiumImplicitTiling::TileCoordinate subtreeCoord = QgsCesiumImplicitTiling::tileCoordinateToParentSubtree( info.coord, tilingData.subtreeLevels );
+    Q_ASSERT( info.coord.level == subtreeCoord.level );
+
+    // Check whether we have subtree data - may need to fetch a subtree
+    if ( !tilingData.subtreeCache.contains( subtreeCoord ) )
+    {
+      const QString subtreeUri = QgsCesiumImplicitTiling::expandTemplateUri( tilingData.subtreeUriTemplate, tilingData.baseUrl, subtreeCoord );
+
+      locker.unlock();
+      const QByteArray data = retrieveContent( subtreeUri, feedback );
+      locker.relock();
+
+      QgsCesiumImplicitTiling::Subtree subtree = QgsCesiumImplicitTiling::parseSubtree( tilingData, data );
+      tilingData.subtreeCache.insert( subtreeCoord, subtree );
+    }
+    const QgsCesiumImplicitTiling::Subtree &subtree = tilingData.subtreeCache[subtreeCoord];
+
+    // resolve this tile's own content
+    if ( it.value()->tile()->resources().isEmpty() && !tilingData.contentUriTemplate.isEmpty() )
+    {
+      const int rootBitIdx = QgsCesiumImplicitTiling::subtreeBitIndex( 0, 0, 0 );
+      if ( rootBitIdx < subtree.contentAvailability.size() && subtree.contentAvailability.testBit( rootBitIdx ) )
+      {
+        const QString rootContentUri = QgsCesiumImplicitTiling::expandTemplateUri( tilingData.contentUriTemplate, tilingData.baseUrl, info.coord );
+        it.value()->tile()->setResources( { { u"content"_s, rootContentUri } } );
+      }
+    }
+
+    populateSubtreeRecursively( it.value(), info.coord, info.implicitRootTileId, tilingData, subtreeCoord );
+
+    return !it.value()->children().isEmpty();
+  }
 
   {
     // maybe we already know what content type this tile has. If so, and it's not json, then

@@ -23,12 +23,14 @@
 
 #include <QVariantMap>
 
+class QgsMapLayer;
+
 class QgsArcGisImageServerSourceWidget : public QgsProviderSourceWidget, private Ui::QgsArcGisImageServerSourceWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsArcGisImageServerSourceWidget( const QString &providerKey, QWidget *parent = nullptr );
+    QgsArcGisImageServerSourceWidget( QgsMapLayer *layer, QWidget *parent = nullptr );
 
     void setSourceUri( const QString &uri ) override;
     QString sourceUri() const override;

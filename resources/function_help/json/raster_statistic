@@ -11,7 +11,7 @@
     "description": "integer representing the band number from the raster layer, starting at 1"
   }, {
     "arg": "property",
-    "description": "a string corresponding to the property to return. Valid options are:<br /><ul><li>min: minimum value</li><li>max: maximum value</li><li>avg: average (mean) value</li><li>stdev: standard deviation of values</li><li>range: range of values (max - min)</li><li>sum: sum of all values from raster</li></ul>"
+    "description": "a string corresponding to the property to return. Valid options are:<ul><li>min: minimum value</li><li>max: maximum value</li><li>avg: average (mean) value</li><li>stdev: standard deviation of values</li><li>range: range of values (max - min)</li><li>sum: sum of all values from raster</li></ul>"
   }],
   "examples": [{
     "expression": "raster_statistic('lc',1,'avg')",

@@ -56,14 +56,14 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         self.close()
 
         alg_instance = self.algorithm().create()
-        dlg = alg_instance.createCustomParametersWidget(parent=iface.mainWindow())
-        if not dlg:
-            from processing.gui.AlgorithmDialog import AlgorithmDialog
+        widget = alg_instance.createCustomParametersWidget(parent=iface.mainWindow())
+        if not widget:
+            from processing.gui.algorithm_widget import AlgorithmWidget
 
-            dlg = AlgorithmDialog(alg_instance, parent=iface.mainWindow())
+            widget = AlgorithmWidget(alg_instance, parent=iface.mainWindow())
 
-        dlg.show()
-        dlg.exec()
+        widget.show()
+        widget.exec()
 
     def processingContext(self):
         if self.context is None:

@@ -73,7 +73,7 @@ class CORE_EXPORT QgsStacAsset
      *
      * \param authcfg Optional authentication configuration ID (since QGIS 4.0).
      *
-     * If the optional @authcfg parameter is set the authentication configuration ID will be encoded in the returned URI.
+     * If the optional \a authcfg parameter is set the authentication configuration ID will be encoded in the returned URI.
      *
      * \since QGIS 3.42
      */

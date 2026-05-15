@@ -184,7 +184,7 @@ void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
   mBrowserView->expand( mProxyModel->index( 0, 0 ) );
   mBrowserView->setHeaderHidden( true );
 
-  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << u"AFS"_s << u"arcgisfeatureserver"_s << u"AMS"_s << u"arcgismapserver"_s << u"I3S"_s << u"esrii3s"_s );
+  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << u"AFS"_s << u"arcgisfeatureserver"_s << u"AMS"_s << u"arcgismapserver"_s << u"I3S"_s << u"esrii3s"_s << u"arcgisimageserver"_s );
 
   const QModelIndex afsSourceIndex = mBrowserModel->findPath( u"arcgisfeatureserver:"_s );
   mBrowserView->setRootIndex( mProxyModel->mapFromSource( afsSourceIndex ) );
@@ -591,6 +591,10 @@ QString QgsArcGisRestSourceSelect::indexToUri( const QModelIndex &proxyIndex, QS
       uri.removeParam( u"format"_s );
       uri.setParam( u"format"_s, getSelectedImageEncoding() );
       serviceType = Qgis::ArcGisRestServiceType::MapServer;
+    }
+    else if ( qobject_cast<QgsArcGisImageServiceLayerItem *>( layerItem ) )
+    {
+      serviceType = Qgis::ArcGisRestServiceType::ImageServer;
     }
     else if ( qobject_cast<QgsArcGisSceneServiceLayerItem *>( layerItem ) )
     {

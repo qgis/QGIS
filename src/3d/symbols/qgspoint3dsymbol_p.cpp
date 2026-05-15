@@ -264,8 +264,9 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
         maxZ *= zScale;
       }
 
-      minZ += pos.z();
-      maxZ += pos.z();
+      // as we are relative to chunk center elevation we have to add mChunkOrigin.z()
+      minZ += pos.z() + mChunkOrigin.z();
+      maxZ += pos.z() + mChunkOrigin.z();
 
       if ( minZ < mZMin )
         mZMin = static_cast< float >( minZ );
@@ -286,9 +287,8 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   }
 
   // build the default material
-  QgsMaterialContext materialContext;
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
   materialContext.setIsSelected( selected );
-  materialContext.setSelectionColor( context.selectionColor() );
   materialContext.setIsHighlighted( mHighlightingEnabled );
   QgsMaterial *mat = material( mSymbol.get(), materialContext, !out.scales.empty(), !out.rotations.empty() );
 
@@ -683,8 +683,9 @@ void QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
 
   // the elevation offset is applied separately in QTransform added to sub-entities
   const float symbolHeight = mSymbol->transform().data()[14];
-  mZMin += symbolHeight;
-  mZMax += symbolHeight;
+  // as we are relative to chunk center elevation we have to add mChunkOrigin.z()
+  mZMin += static_cast<float>( symbolHeight + mChunkOrigin.z() );
+  mZMax += static_cast<float>( symbolHeight + mChunkOrigin.z() );
 }
 
 void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
@@ -818,9 +819,8 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities(
   if ( !source.isEmpty() )
   {
     // build the default material
-    QgsMaterialContext materialContext;
+    QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
     materialContext.setIsSelected( areSelected );
-    materialContext.setSelectionColor( context.selectionColor() );
     materialContext.setIsHighlighted( areHighlighted );
 
     QgsMaterial *mat = Qgs3D::toMaterial( symbol->materialSettings(), Qgis::MaterialRenderingTechnique::Triangles, materialContext );
@@ -936,8 +936,9 @@ void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
   // the elevation offset is applied externally through a QTransform of QEntity so let's account for it
   const float billboardHeight = mSymbol->billboardHeight();
-  mZMin += billboardHeight;
-  mZMax += billboardHeight;
+  // as we are relative to chunk center elevation we have to add mChunkOrigin.z()
+  mZMin += static_cast<float>( billboardHeight + mChunkOrigin.z() );
+  mZMax += static_cast<float>( billboardHeight + mChunkOrigin.z() );
 }
 
 void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
@@ -990,7 +991,7 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 namespace Qgs3DSymbolImpl
 {
 
-  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+  QgsFeature3DHandler *handlerForPoint3DSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
     const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
     if ( !pointSymbol )

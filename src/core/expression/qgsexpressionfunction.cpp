@@ -1509,6 +1509,7 @@ static QVariant fcnGetTimeZone( const QVariantList &values, const QgsExpressionC
   }
   return QVariant();
 #else
+  Q_UNUSED( values )
   parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnGetTimeZone" ) );
   return QVariant();
 #endif
@@ -1526,6 +1527,7 @@ static QVariant fcnSetTimeZone( const QVariantList &values, const QgsExpressionC
   }
   return QVariant();
 #else
+  Q_UNUSED( values )
   parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnSetTimeZone" ) );
   return QVariant();
 #endif
@@ -1542,6 +1544,7 @@ static QVariant fcnConvertTimeZone( const QVariantList &values, const QgsExpress
   }
   return QVariant();
 #else
+  Q_UNUSED( values )
   parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnConvertTimeZone" ) );
   return QVariant();
 #endif
@@ -1557,6 +1560,7 @@ static QVariant fcnTimeZoneToId( const QVariantList &values, const QgsExpression
   }
   return QVariant();
 #else
+  Q_UNUSED( values )
   parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnTimeZoneToId" ) );
   return QVariant();
 #endif
@@ -9130,18 +9134,18 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"sqrt"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnSqrt, u"Math"_s )
       << new QgsStaticExpressionFunction( u"radians"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"degrees"_s ), fcnRadians, u"Math"_s )
       << new QgsStaticExpressionFunction( u"degrees"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"radians"_s ), fcnDegrees, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"azimuth"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point_a"_s ) << QgsExpressionFunction::Parameter( u"point_b"_s ), fcnAzimuth, u"GeometryGroup"_s )
+      << new QgsStaticExpressionFunction( u"azimuth"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnAzimuth, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction(
            u"bearing"_s,
            QgsExpressionFunction::ParameterList()
-             << QgsExpressionFunction::Parameter( u"point_a"_s )
-             << QgsExpressionFunction::Parameter( u"point_b"_s )
+             << QgsExpressionFunction::Parameter( u"point1"_s )
+             << QgsExpressionFunction::Parameter( u"point2"_s )
              << QgsExpressionFunction::Parameter( u"source_crs"_s, true, QVariant() )
              << QgsExpressionFunction::Parameter( u"ellipsoid"_s, true, QVariant() ),
            fcnBearing,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"inclination"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point_a"_s ) << QgsExpressionFunction::Parameter( u"point_b"_s ), fcnInclination, u"GeometryGroup"_s )
+      << new QgsStaticExpressionFunction( u"inclination"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnInclination, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction(
            u"project"_s,
            QgsExpressionFunction::ParameterList()
@@ -10764,7 +10768,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"array_length"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayLength, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_contains"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayContains, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_count"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayCount, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_all"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array_a"_s ) << QgsExpressionFunction::Parameter( u"array_b"_s ), fcnArrayAll, u"Arrays"_s )
+      << new QgsStaticExpressionFunction( u"array_all"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array1"_s ) << QgsExpressionFunction::Parameter( u"array2"_s ), fcnArrayAll, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_find"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayFind, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_get"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"pos"_s ), fcnArrayGet, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_first"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayFirst, u"Arrays"_s )
@@ -10798,7 +10802,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            true
          )
       << new QgsStaticExpressionFunction( u"array_replace"_s, -1, fcnArrayReplace, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_prioritize"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"array_prioritize"_s ), fcnArrayPrioritize, u"Arrays"_s )
+      << new QgsStaticExpressionFunction( u"array_prioritize"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"priority"_s ), fcnArrayPrioritize, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_cat"_s, -1, fcnArrayCat, u"Arrays"_s )
       << new QgsStaticExpressionFunction(
            u"array_slice"_s,

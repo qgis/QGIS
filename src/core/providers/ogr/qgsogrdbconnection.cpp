@@ -23,9 +23,7 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionPath = new QgsSettingsEntryString( u"providers/ogr/%1/connections/%2/path"_s, QString(), QString() );
-
-const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionSelected = new QgsSettingsEntryString( u"providers/ogr/%1/connections/selected"_s, QString() );
+const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionPath = new QgsSettingsEntryString( u"path"_s, sTreeOgrConnectionItems );
 
 ///@cond PRIVATE
 
@@ -67,19 +65,17 @@ bool QgsOgrDbConnection::allowProjectsInDatabase()
 
 const QStringList QgsOgrDbConnection::connectionList( const QString &driverName )
 {
-  QgsSettings settings;
-  settings.beginGroup( u"providers/ogr/%1/connections"_s.arg( driverName ) );
-  return settings.childGroups();
+  return sTreeOgrConnectionItems->items( { driverName } );
 }
 
 QString QgsOgrDbConnection::selectedConnection( const QString &driverName )
 {
-  return settingsOgrConnectionSelected->value( driverName );
+  return sTreeOgrConnectionItems->selectedItem( { driverName } );
 }
 
 void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const QString &driverName )
 {
-  settingsOgrConnectionSelected->setValue( connName, { driverName } );
+  sTreeOgrConnectionItems->setSelectedItem( connName, { driverName } );
 }
 
 void QgsOgrDbConnection::deleteConnection( const QString &connName )

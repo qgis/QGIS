@@ -35,7 +35,7 @@
       "arg": "backend",
       "optional": true,
       "default": "'QGIS'",
-      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'. Both internal implementation uses fuzzy comparison with very low (1e-8) tolerance.<ul><li>'QGIS' works on 2D, 3D and 4D</li><li>'GEOS' works only on 2D components (Z or M components are ignored)</li></ul>."
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'. Both internal implementation uses fuzzy comparison with very low (1e-8) tolerance.<ul><li>'QGIS' works on 2D, 3D and 4D</li><li>'GEOS' works only on 2D components (Z or M components are ignored).</li></ul>"
     }
   ],
   "examples": [

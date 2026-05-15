@@ -36,6 +36,7 @@ class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItem
     QString name() override { return u"STAC"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 
   private:
     static void newConnection( QgsDataItem *item );

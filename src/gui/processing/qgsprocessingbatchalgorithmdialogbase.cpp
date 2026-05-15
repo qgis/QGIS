@@ -31,8 +31,8 @@
 using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
-QgsProcessingBatchAlgorithmDialogBase::QgsProcessingBatchAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags )
-  : QgsProcessingAlgorithmDialogBase( parent, flags, QgsProcessingAlgorithmDialogBase::DialogMode::Batch )
+QgsProcessingBatchAlgorithmDialogBase::QgsProcessingBatchAlgorithmDialogBase( QWidget *parent )
+  : QgsProcessingAlgorithmWidgetBase( parent, QgsProcessingAlgorithmWidgetBase::WidgetMode::Batch )
 {
   mButtonRunSingle = new QPushButton( tr( "Run as Single Process…" ) );
   connect( mButtonRunSingle, &QPushButton::clicked, this, &QgsProcessingBatchAlgorithmDialogBase::runAsSingle );
@@ -140,7 +140,7 @@ void QgsProcessingBatchAlgorithmDialogBase::executeNext()
 void QgsProcessingBatchAlgorithmDialogBase::algExecuted( bool successful, const QVariantMap &results )
 {
   // parent class cleanup first!
-  QgsProcessingAlgorithmDialogBase::algExecuted( successful, results );
+  QgsProcessingAlgorithmWidgetBase::algExecuted( successful, results );
   onTaskComplete( successful, results );
 }
 

@@ -11,7 +11,6 @@
 
 
 
-
 class QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")
@@ -102,6 +101,16 @@ overrides.
 Sets default properties for the symbol based on a layer's configuration.
 
 .. versionadded:: 3.26
+%End
+
+
+    virtual void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ ) = 0;
+%Docstring
+Sets the material settings used for shading of the symbol.
+
+Ownership of ``materialSettings`` is transferred to the symbol.
+
+.. versionadded:: 4.2
 %End
 
   protected:

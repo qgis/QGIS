@@ -68,7 +68,7 @@ class GPKGDBPlugin(DBPlugin):
 
     @classmethod
     def connectionSettingsKey(self):
-        return "providers/ogr/GPKG/connections"
+        return "connections/ogr/driver/items/GPKG/connection/items"
 
     def databasesFactory(self, connection, uri):
         return GPKGDatabase(connection, uri)

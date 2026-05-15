@@ -18,8 +18,8 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
-#include "qgsblanksegmentutils.h"
 #include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPen>
 #include <QVector>
@@ -1031,9 +1031,9 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     int mRingIndex = 0; // current ring index while rendering
 
   private:
-    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
-    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
-    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
+    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsSymbolLayerUtils::BlankSegments &blankSegments );
+    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsSymbolLayerUtils::BlankSegments &blankSegments );
+    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsSymbolLayerUtils::BlankSegments &blankSegments );
 
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
@@ -1051,7 +1051,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setOffsetAlongLineUnit
      */
     void renderOffsetVertexAlongLine(
-      const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments
+      const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsSymbolLayerUtils::BlankSegments &blankSegments
     );
 
 
@@ -1086,6 +1086,10 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mTrimDistanceEnd = 0;
     Qgis::RenderUnit mTrimDistanceEndUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mTrimDistanceEndMapUnitScale;
+
+    // We need to block render extra items. When rendering a multi geometry
+    // we have to render extra items only once
+    bool mBlockExtraItemsRendering = false;
 
     friend class TestQgsMarkerLineSymbol;
 };

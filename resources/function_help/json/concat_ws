@@ -8,7 +8,7 @@
     "arg": "separator",
     "description": "separator to use when concatenating non-null values"
   }, {
-    "arg": "string",
+    "arg": "string1",
     "syntaxOnly": true
   }, {
     "arg": "string2",

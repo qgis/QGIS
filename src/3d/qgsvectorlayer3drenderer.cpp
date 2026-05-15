@@ -18,6 +18,7 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
+#include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgsxmlutils.h"
@@ -96,4 +97,41 @@ void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
   mSymbol.reset( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
   if ( mSymbol )
     mSymbol->readXml( elemSymbol, context );
+}
+
+std::unique_ptr<QgsVectorLayer3DRenderer> QgsVectorLayer3DRenderer::convertFromRenderer( const QgsAbstractVectorLayer3DRenderer *renderer, QgsVectorLayer * )
+{
+  std::unique_ptr< QgsVectorLayer3DRenderer > r;
+  if ( renderer->type() == "vector"_L1 )
+  {
+    r.reset( dynamic_cast<const QgsVectorLayer3DRenderer *>( renderer )->clone() );
+  }
+  else if ( renderer->type() == "rulebased"_L1 )
+  {
+    const QgsRuleBased3DRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBased3DRenderer *>( renderer );
+    if ( !ruleBasedRenderer->rootRule()->children().isEmpty() )
+    {
+      std::unique_ptr< QgsAbstract3DSymbol > origSymbol;
+      const QList< QgsRuleBased3DRenderer::Rule * > children = ruleBasedRenderer->rootRule()->children();
+      for ( const QgsRuleBased3DRenderer::Rule *child : children )
+      {
+        if ( child->symbol() )
+        {
+          origSymbol.reset( child->symbol()->clone() );
+          break;
+        }
+      }
+      if ( origSymbol )
+      {
+        r = std::make_unique< QgsVectorLayer3DRenderer >( origSymbol.release() );
+      }
+    }
+  }
+
+  if ( r )
+  {
+    renderer->copyBaseProperties( r.get() );
+  }
+
+  return r;
 }

@@ -24,6 +24,7 @@
 #include "qgsmodelgraphicitem.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingmodelfeedback.h"
 #include "qgsprocessingmodelgroupbox.h"
 #include "qgsvectorlayer.h"
 
@@ -96,6 +97,11 @@ void QgsModelGraphicsScene::updateBounds()
   }
 
   setSceneRect( bounds );
+}
+
+void QgsModelGraphicsScene::setupFeedbackConnections( QgsProcessingModelFeedback * )
+{
+  // TODO
 }
 
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const

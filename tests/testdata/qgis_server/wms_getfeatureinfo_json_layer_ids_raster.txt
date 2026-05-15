@@ -4,6 +4,7 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
+      "featureType": "landsat_a7d15b35_ca83_4b23_a9fb_af3fbdd60d15",
       "id": "landsat_a7d15b35_ca83_4b23_a9fb_af3fbdd60d15",
       "properties": {
         "Band 1": "127",

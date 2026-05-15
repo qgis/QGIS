@@ -87,6 +87,14 @@ class TestQgsMatrix4x4(QgisTestCase):
                 ),
             )
 
+        matA = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+        matB = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16.0001)
+        self.assertNotEqual(matA, matB)
+        self.assertTrue(matA.fuzzyEqual(matB, 1e-4))
+        self.assertTrue(matB.fuzzyEqual(matA, 1e-4))
+        self.assertFalse(matA.fuzzyEqual(matB, 1e-5))
+        self.assertFalse(matB.fuzzyEqual(matA, 1e-5))
+
     def test_translate(self):
         """
         Test translating a matrix
@@ -270,6 +278,48 @@ class TestQgsMatrix4x4(QgisTestCase):
         expected_result = [0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         for value, expected in zip(mat.data(), expected_result):
             self.assertAlmostEqual(value, expected)
+
+    def test_determinant(self):
+        mat = QgsMatrix4x4()
+        self.assertEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.translate(QgsVector3D(10.0, 20.0, 30.0))
+        self.assertEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.rotate(45.0, QgsVector3D(0.0, 0.0, 1.0))
+        self.assertAlmostEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+        self.assertEqual(mat.determinant(), 24.0)
+
+        mat = QgsMatrix4x4()
+        mat.translate(QgsVector3D(5.0, 5.0, 5.0))
+        mat.rotate(30.0, QgsVector3D(1, 0, 0))
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+        self.assertAlmostEqual(mat.determinant(), 24.0)
+
+    def test_mapVector(self):
+        mat = QgsMatrix4x4()
+
+        mat.translate(QgsVector3D(10.0, 20.0, 30.0))
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+
+        vector = QgsVector3D(1.0, 2.0, 3.0)
+
+        # map() includes translation
+        mapped = mat.map(vector)
+        self.assertEqual(mapped.x(), 12.0)
+        self.assertEqual(mapped.y(), 26.0)
+        self.assertEqual(mapped.z(), 42.0)
+
+        # mapVector() ignores translation
+        mapped_vector = mat.mapVector(vector)
+        self.assertEqual(mapped_vector.x(), 2.0)
+        self.assertEqual(mapped_vector.y(), 6.0)
+        self.assertEqual(mapped_vector.z(), 12.0)
 
 
 if __name__ == "__main__":
