@@ -470,9 +470,6 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
   QgsFeatureIterator features;
   const QgsFeatureIds selectedIds = mLayer->selectedFeatureIds();
 
-  // deactivate preserving circular if the curve contains only straight segments to avoid transforming Polygon to CurvePolygon
-  preserveCircular &= curve->hasCurvedSegments();
-
   if ( !selectedIds.isEmpty() ) //consider only the selected features if there is a selection
   {
     features = mLayer->getSelectedFeatures();
@@ -513,6 +510,8 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
   QgsVectorLayerUtils::QgsFeaturesDataList featuresDataToAdd;
 
   const int fieldCount = mLayer->fields().count();
+  const bool splitCurveContainsCurves = curve->hasCurvedSegments();
+  bool preserveCircularForGeom = false;
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
@@ -525,7 +524,13 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
     QgsPointSequence featureTopologyTestPoints;
     const QgsGeometry originalGeom = feat.geometry();
     QgsGeometry featureGeom = originalGeom;
-    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircular, topologicalEditing, featureTopologyTestPoints );
+
+    // For the current geometry, make sure preserveCircular is not forced, unless
+    // the input param is true and one of the involved geometries contains curves
+    preserveCircularForGeom = preserveCircular; // reset for each geometry
+    preserveCircularForGeom &= ( splitCurveContainsCurves || featureGeom.constGet()->hasCurvedSegments() );
+    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircularForGeom, topologicalEditing, featureTopologyTestPoints );
+
     topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success )
     {
