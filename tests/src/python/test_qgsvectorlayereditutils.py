@@ -59,6 +59,10 @@ def createEmptyMultiPolygonLayer():
     return createEmptyLayer("MultiPolygon")
 
 
+def createEmptyCurvePolygonLayer():
+    return createEmptyLayer("CurvePolygon")
+
+
 class TestQgsVectorLayerEditUtils(QgisTestCase):
     def testAddRing(self):
         # test adding ring to a vector layer
@@ -571,7 +575,7 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
 
         self.assertEqual(layer.featureCount(), 2)
 
-        # Check that no curves are present in the splitted geometries
+        # Check that no curves are present in the split geometries
         for feature in layer.getFeatures():
             self.assertFalse(feature.geometry().constGet().hasCurvedSegments())
 
@@ -607,7 +611,7 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
 
         self.assertEqual(layer.featureCount(), 2)
 
-        # Check that curves ARE present in the splitted geometries
+        # Check that curves ARE present in the split geometries
         any_curve = False
         for feature in layer.getFeatures():
             if feature.geometry().constGet().hasCurvedSegments():
@@ -617,9 +621,89 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
         self.assertTrue(any_curve)
         layer.rollBack()
         # NOTE: we test the result of the split operation, not the final geometry
-        # stored in the layer when comitting changes. This because GeoPackage and
+        # stored in the layer when committing changes. This because GeoPackage and
         # memory layers behave differently when saving: GeoPackage converts to non-curve,
         # whereas memory layers CAN store compound curves in a QgsPolygon!!!
+
+    def testSplitCurvePolygonFeaturesWithSegment(self):
+        layer = createEmptyCurvePolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        # Add one CurvePolygon feature
+        f = QgsFeature(layer.fields(), 1)
+        f.setGeometry(
+            QgsGeometry.fromWkt(
+                "CurvePolygon (CompoundCurve ((0.48176100628930829 -0.0691823899371069, 0.95974842767295598 -0.07169811320754715),CircularString (0.95974842767295598 -0.07169811320754715, 1.01509433962264151 0.07672955974842777, 0.92452830188679247 0.23773584905660383),(0.92452830188679247 0.23773584905660383, 0.48176100628930829 -0.0691823899371069)))"
+            )
+        )
+        assert layer.addFeatures([f])
+        layer.commitChanges(stopEditing=False)
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        split_curve = QgsLineString()
+        split_curve.fromWkt(
+            "LineString (0.61079395915591483 0.40485712994934753, 0.69909271296411513 -1.02999761943391199)"
+        )
+
+        result, _ = vle.splitFeatures(
+            split_curve, preserveCircular=True, topologicalEditing=False
+        )
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+
+        self.assertEqual(layer.featureCount(), 2)
+
+        # Check that curves ARE present in the split geometries
+        any_curve = False
+        for feature in layer.getFeatures():
+            if feature.geometry().constGet().hasCurvedSegments():
+                any_curve = True
+                break
+
+        self.assertTrue(any_curve)
+        layer.rollBack()
+
+    def testSplitCurvePolygonFeaturesWithCurve(self):
+        layer = createEmptyCurvePolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        # Add one CurvePolygon feature (same geom used in the split with segment case)
+        f = QgsFeature(layer.fields(), 1)
+        f.setGeometry(
+            QgsGeometry.fromWkt(
+                "CurvePolygon (CompoundCurve ((0.48176100628930829 -0.0691823899371069, 0.95974842767295598 -0.07169811320754715),CircularString (0.95974842767295598 -0.07169811320754715, 1.01509433962264151 0.07672955974842777, 0.92452830188679247 0.23773584905660383),(0.92452830188679247 0.23773584905660383, 0.48176100628930829 -0.0691823899371069)))"
+            )
+        )
+        assert layer.addFeatures([f])
+        layer.commitChanges(stopEditing=False)
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        split_curve = QgsCompoundCurve()
+        split_curve.fromWkt(
+            "CompoundCurve (CircularString (0.58871927070386443 0.34967040881922218, 0.78739146677231586 -0.46157439179362081, 0.66598068028604018 -1.16244575014621354))"
+        )
+
+        result, _ = vle.splitFeatures(
+            split_curve, preserveCircular=True, topologicalEditing=False
+        )
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+
+        self.assertEqual(layer.featureCount(), 2)
+
+        # Check that curves ARE present in the split geometries
+        any_curve = False
+        for feature in layer.getFeatures():
+            if feature.geometry().constGet().hasCurvedSegments():
+                any_curve = True
+                break
+
+        self.assertTrue(any_curve)
+        layer.rollBack()
 
     def testSplitParts(self):
         layer = createEmptyMultiPolygonLayer()
