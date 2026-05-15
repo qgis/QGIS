@@ -601,6 +601,43 @@ void QgsModelDesignerDialog::setDirty( bool dirty )
 {
   mHasChanged = dirty;
   updateWindowTitle();
+  if ( mAlgorithmWidget )
+  {
+    if ( QgsMessageBar *messageBar = mAlgorithmWidget->messageBar() )
+    {
+      QgsMessageBarItem *messageBarItem = messageBar->createMessage( QString(), tr( "The model has changed, this panel should be reloaded." ) );
+      auto reloadButton = new QPushButton( tr( "Reload Now" ) );
+      connect( reloadButton, &QPushButton::clicked, reloadButton, [this] {
+        if ( mAlgorithmWidget && mAlgorithmWidget->isRunning() )
+        {
+          QMessageBox messageBox;
+          messageBox.setIcon( QMessageBox::Icon::Warning );
+          messageBox.setWindowTitle( tr( "Run Model" ) );
+          messageBox.setText( tr( "This model is currently running." ) );
+          messageBox.setStandardButtons( QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::RestoreDefaults );
+
+          QAbstractButton *buttonReRun = messageBox.button( QMessageBox::StandardButton::RestoreDefaults );
+          buttonReRun->setText( tr( "Terminate and Reload" ) );
+
+          int r = messageBox.exec();
+
+          switch ( r )
+          {
+            case QMessageBox::StandardButton::Cancel:
+              return;
+            case QMessageBox::StandardButton::RestoreDefaults:
+              break;
+            default:
+              break;
+          }
+        }
+        cancelRunningModel();
+        run();
+      } );
+      messageBarItem->layout()->addWidget( reloadButton );
+      messageBar->pushWidget( messageBarItem, Qgis::MessageLevel::Warning );
+    }
+  }
 }
 
 bool QgsModelDesignerDialog::validateSave( SaveAction action )
@@ -1087,6 +1124,30 @@ void QgsModelDesignerDialog::runFromChild( const QString &id )
   run( children );
 }
 
+void QgsModelDesignerDialog::cancelRunningModel()
+{
+  if ( !mAlgorithmWidget )
+    return;
+
+  // these checks are wrong - mAlgorithmWidget is a QPointer, and we explicitly want to check
+  // if it gets deleted in the cancel/forceClose dance!
+  // cppcheck-suppress nullPointerRedundantCheck
+  mAlgorithmWidget->cancel();
+  // cppcheck-suppress nullPointerRedundantCheck
+  mAlgorithmWidget->forceClose();
+
+  //Stop tracking change to the previous dialog in the QPointer
+  if ( mAlgorithmWidget )
+  {
+    // this is a work around for the MESSY ownership issues associated with the python subclass
+    // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+    // to destruction of this window, and we can't be sure that python will have actually
+    // deleted the widget when we asked...
+    mAlgorithmWidgetsToCleanUp << mAlgorithmWidget;
+  }
+  mAlgorithmWidget.clear();
+}
+
 void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
 {
   QStringList errors;
@@ -1139,6 +1200,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   if ( mAlgorithmWidget && mAlgorithmWidget->isRunning() )
   {
     QMessageBox messageBox;
+    messageBox.setIcon( QMessageBox::Icon::Warning );
     messageBox.setWindowTitle( tr( "Run Model" ) );
     messageBox.setText( tr( "This model is already running." ) );
     messageBox.setStandardButtons( QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::RestoreDefaults | QMessageBox::StandardButton::Ok );
@@ -1156,23 +1218,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       case QMessageBox::StandardButton::Cancel:
         return;
       case QMessageBox::StandardButton::RestoreDefaults:
-        // these checks are wrong - mAlgorithmWidget is a QPointer, and we explicitly want to check
-        // if it gets deleted in the cancel/forceClose dance!
-        // cppcheck-suppress nullPointerRedundantCheck
-        mAlgorithmWidget->cancel();
-        // cppcheck-suppress nullPointerRedundantCheck
-        mAlgorithmWidget->forceClose();
-
-        //Stop tracking change to the previous dialog in the QPointer
-        if ( mAlgorithmWidget )
-        {
-          // this is a work around for the MESSY ownership issues associated with the python subclass
-          // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
-          // to destruction of this window, and we can't be sure that python will have actually
-          // deleted the widget when we asked...
-          mAlgorithmWidgetsToCleanUp << mAlgorithmWidget;
-        }
-        mAlgorithmWidget.clear();
+        cancelRunningModel();
         break;
       case QMessageBox::StandardButton::Ok:
         mAlgorithmWidget->showWidget();

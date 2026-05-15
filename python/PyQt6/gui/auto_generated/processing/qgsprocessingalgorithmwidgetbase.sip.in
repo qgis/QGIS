@@ -360,6 +360,11 @@ THEN closing the widget.
 Hides the short help panel.
 %End
 
+    QgsMessageBar *messageBar();
+%Docstring
+Returns the widget's message bar.
+%End
+
   protected:
     virtual void closeEvent( QCloseEvent *e );
 
@@ -450,11 +455,6 @@ algorithm is running.
 %Docstring
 For subclasses to register their own GUI controls to be blocked while
 the algorithm is running.
-%End
-
-    QgsMessageBar *messageBar();
-%Docstring
-Returns the widget's message bar.
 %End
 
     void setCurrentTask( QgsProcessingAlgRunnerTask *task /Transfer/ );
