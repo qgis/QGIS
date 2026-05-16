@@ -667,7 +667,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
-bool QgsGeometry::deleteVertices( const QList<int> &atVertices )
+bool QgsGeometry::deleteVertices( const QSet<int> &atVertices )
 {
   if ( !d->geometry )
   {
@@ -684,14 +684,14 @@ bool QgsGeometry::deleteVertices( const QList<int> &atVertices )
     return true;
   }
 
-  QList<QgsVertexId> vertexIds;
+  QSet<QgsVertexId> vertexIds;
   for ( int vertex : atVertices )
   {
     QgsVertexId id;
     if ( !vertexIdFromVertexNr( vertex, id ) )
       return false;
 
-    vertexIds.append( id );
+    vertexIds.insert( id );
   }
 
   // create a copy of the original geometry to restore it in case of failure

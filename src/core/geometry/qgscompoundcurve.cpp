@@ -924,7 +924,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
   return success;
 }
 
-bool QgsCompoundCurve::deleteVertices( const QList<QgsVertexId> &positions )
+bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   // we create a list of vertices to delete for each curve
   QMap<int, QList<QgsVertexId >> curveVertices;
@@ -997,7 +997,7 @@ bool QgsCompoundCurve::deleteVertices( const QList<QgsVertexId> &positions )
           // first we delete all the vertices that come before it in this circularstring
           if ( !circularVerticesToDelete.isEmpty() )
           {
-            if ( !curve->deleteVertices( circularVerticesToDelete ) )
+            if ( !curve->deleteVertices( QSet<QgsVertexId>( circularVerticesToDelete.begin(), circularVerticesToDelete.end() ) ) )
               return false;
           }
           circularVerticesToDelete.clear();
@@ -1040,13 +1040,13 @@ bool QgsCompoundCurve::deleteVertices( const QList<QgsVertexId> &positions )
       // remove any remaining circular vertices to delete
       if ( !circularVerticesToDelete.isEmpty() )
       {
-        if ( !curve->deleteVertices( circularVerticesToDelete ) )
+        if ( !curve->deleteVertices( QSet<QgsVertexId>( circularVerticesToDelete.begin(), circularVerticesToDelete.end() ) ) )
           return false;
       }
       continue; // circularstring handled, continue to next curve
     }
 
-    if ( !curve->deleteVertices( vertices ) )
+    if ( !curve->deleteVertices( QSet<QgsVertexId>( vertices.begin(), vertices.end() ) ) )
       return false;
   }
 

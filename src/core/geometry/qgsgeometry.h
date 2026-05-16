@@ -963,9 +963,9 @@ class CORE_EXPORT QgsGeometry
      * \returns FALSE if any of the given atVertices does not correspond to a valid vertex
      * on this geometry or if any vertices fail to be deleted
      * \see deleteVertex()
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
-    bool deleteVertices( const QList<int> &atVertices );
+    bool deleteVertices( const QSet<int> &atVertices );
 
     /**
      * Converts the vertex at the given position from/to circular

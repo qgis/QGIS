@@ -939,7 +939,7 @@ LineString with less than 2 vertices), the geometry is cleared instead.
          vertex was successfully deleted or the geometry was cleared.
 %End
 
-    bool deleteVertices( const QList<int> &atVertices );
+    bool deleteVertices( const QSet<int> &atVertices );
 %Docstring
 Deletes vertices at the given positions (first number is index 0)
 
@@ -956,7 +956,7 @@ cleared instead.
 
 .. seealso:: :py:func:`deleteVertex`
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     bool toggleCircularAtVertex( int atVertex );

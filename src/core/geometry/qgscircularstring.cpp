@@ -1312,7 +1312,7 @@ void QgsCircularString::deleteVertex( int i )
   clearCache();
 }
 
-bool QgsCircularString::deleteVertices( const QList<QgsVertexId> &positions )
+bool QgsCircularString::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   if ( positions.empty() )
   {
@@ -1321,7 +1321,7 @@ bool QgsCircularString::deleteVertices( const QList<QgsVertexId> &positions )
 
   int nVertices = this->numPoints();
 
-  QList<QgsVertexId> vertices = positions;
+  QList<QgsVertexId> vertices( positions.begin(), positions.end() );
 
   std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex < b.vertex; } );
 

@@ -759,22 +759,22 @@ bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
   return success;
 }
 
-bool QgsPolyhedralSurface::deleteVertices( const QList<QgsVertexId> &positions )
+bool QgsPolyhedralSurface::deleteVertices( const QSet<QgsVertexId> &positions )
 {
-  QMap<int, QList<QgsVertexId >> partVertices;
+  QMap<int, QSet<QgsVertexId>> partVertices;
   for ( QgsVertexId pos : positions )
   {
-    partVertices[pos.part].append( pos );
+    partVertices[pos.part].insert( pos );
   }
 
-  QMapIterator<int, QList<QgsVertexId >> partVerticesIt( partVertices );
+  QMapIterator<int, QSet<QgsVertexId>> partVerticesIt( partVertices );
   partVerticesIt.toBack();
   while ( partVerticesIt.hasPrevious() )
   {
     partVerticesIt.previous();
 
     int part = partVerticesIt.key();
-    QList<QgsVertexId> vertexMap = partVerticesIt.value();
+    QSet<QgsVertexId> vertexMap = partVerticesIt.value();
     if ( part < 0 || part >= partCount() )
       continue;
 

@@ -2083,14 +2083,14 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
   return true;
 }
 
-bool QgsLineString::deleteVertices( const QList<QgsVertexId> &vertices )
+bool QgsLineString::deleteVertices( const QSet<QgsVertexId> &vertices )
 {
   if ( vertices.isEmpty() )
   {
     return false;
   }
 
-  QList<QgsVertexId> positions = vertices;
+  QList<QgsVertexId> positions( vertices.begin(), vertices.end() );
 
   std::sort( positions.begin(), positions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex > b.vertex; } );
 

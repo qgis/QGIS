@@ -679,21 +679,21 @@ bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
   return success;
 }
 
-bool QgsGeometryCollection::deleteVertices( const QList<QgsVertexId> &positions )
+bool QgsGeometryCollection::deleteVertices( const QSet<QgsVertexId> &positions )
 {
-  QMap<int, QList<QgsVertexId >> partVertices;
+  QMap<int, QSet<QgsVertexId>> partVertices;
   for ( QgsVertexId pos : positions )
   {
-    partVertices[pos.part].append( pos );
+    partVertices[pos.part].insert( pos );
   }
 
-  QMapIterator<int, QList<QgsVertexId >> partVerticesIt( partVertices );
+  QMapIterator<int, QSet<QgsVertexId>> partVerticesIt( partVertices );
   partVerticesIt.toBack();
   while ( partVerticesIt.hasPrevious() )
   {
     partVerticesIt.previous();
     int part = partVerticesIt.key();
-    QList<QgsVertexId> partVertices = partVerticesIt.value();
+    QSet<QgsVertexId> partVertices = partVerticesIt.value();
     QgsAbstractGeometry *geom = mGeometries.at( part );
     if ( !geom )
     {

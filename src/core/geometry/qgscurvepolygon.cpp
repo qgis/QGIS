@@ -1286,7 +1286,7 @@ bool QgsCurvePolygon::deleteVertex( QgsVertexId vId )
   return success;
 }
 
-bool QgsCurvePolygon::deleteVertices( const QList<QgsVertexId> &positions )
+bool QgsCurvePolygon::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   QMap<int, QList<QgsVertexId >> ringVertices;
   for ( const QgsVertexId &pos : positions )
@@ -1344,7 +1344,7 @@ bool QgsCurvePolygon::deleteVertices( const QList<QgsVertexId> &positions )
       continue;
     }
 
-    if ( !ring->deleteVertices( vertices ) )
+    if ( !ring->deleteVertices( QSet<QgsVertexId>( vertices.begin(), vertices.end() ) ) )
     {
       return false;
     }
