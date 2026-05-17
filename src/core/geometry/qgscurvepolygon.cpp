@@ -1322,6 +1322,9 @@ double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
 
 int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const
 {
+  if ( !mExteriorRing || ring < 0 || ring >= 1 + mInteriorRings.size() )
+    return 0;
+
   return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
 }
 
@@ -1337,6 +1340,9 @@ int QgsCurvePolygon::partCount() const
 
 QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const
 {
+  if ( !mExteriorRing || id.ring < 0 || id.ring >= 1 + mInteriorRings.size() )
+    return QgsPoint();
+
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }
 
@@ -1493,7 +1499,9 @@ int QgsCurvePolygon::childCount() const
 
 QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
 {
-  if ( index == 0 )
+  if ( index < 0 || index >= 1 + mInteriorRings.size() )
+    return nullptr;
+  else if ( index == 0 )
     return mExteriorRing.get();
   else
     return mInteriorRings.at( index - 1 );
