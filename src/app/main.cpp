@@ -42,6 +42,7 @@
 #include <QStringList>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QStyleHints>
 #include <QSurfaceFormat>
 
 using namespace Qt::StringLiterals;
@@ -1527,6 +1528,12 @@ int main( int argc, char *argv[] )
 
 #ifdef QGISDEBUG
   QgsFontUtils::loadStandardTestFonts( QStringList() << u"Roman"_s << u"Bold"_s );
+#endif
+
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+  // Force light color scheme to avoid issues with dark color scheme, see #33079
+  // Temporary workaround until QGIS and themes fully supports dark color scheme
+  qApp->styleHints()->setColorScheme( Qt::ColorScheme::Light );
 #endif
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
