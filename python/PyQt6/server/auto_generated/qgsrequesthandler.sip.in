@@ -79,7 +79,7 @@ Retrieve request header value
 
     QMap<QString, QString> requestHeaders() const;
 %Docstring
-Returns the the Request headers
+Returns the Request headers
 %End
 
     void clear();

@@ -209,7 +209,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     //! Emitted when the 3D map canvas was successfully saved as image
     void savedAsImage( const QString &fileName );
 
-    //! Emitted when the the map setting is changed
+    //! Emitted when the map setting is changed
     void mapSettingsChanged();
 
     //! Emitted when the FPS count changes (at most every frame)

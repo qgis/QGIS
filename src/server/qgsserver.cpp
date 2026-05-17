@@ -59,7 +59,7 @@ using namespace Qt::StringLiterals;
 
 // Server status static initializers.
 // Default values are for C++, SIP bindings will override their
-// options in in init()
+// options in init()
 
 QString *QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache *QgsServer::sCapabilitiesCache = nullptr;
