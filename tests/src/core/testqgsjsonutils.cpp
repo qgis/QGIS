@@ -284,14 +284,14 @@ void TestQgsJsonUtils::testExportFeatureJson()
     "{\"bbox\":[1.12,1.12,5.45,5.33],\"featureType\":\"anotherForestLayer\",\"geometry\":{\"coordinates\":"
     "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
     "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
-    ",\"id\":123,\"justAnotherDummy\":\"dum di da di dum di da\",\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+    ",\"id\":123,\"justAnotherDummy\":\"dum di da di dum di da\",\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}" //#spellok
     ",\"requestedWmsName\":\"theForestGroup\",\"type\":\"Feature\"}"
   ) };
 
   QVariantMap moreExtraMembers;
   moreExtraMembers["featureType"] = u"anotherForestLayer"_s;
   moreExtraMembers["requestedWmsName"] = u"theForestGroup"_s;
-  moreExtraMembers["justAnotherDummy"] = u"dum di da di dum di da"_s;
+  moreExtraMembers["justAnotherDummy"] = u"dum di da di dum di da"_s; //#spellok
 
   const auto jForeignMembers( exporter.exportFeatureToJsonObject( feature, QVariantMap(), QVariant(), moreExtraMembers ) );
   QCOMPARE( QString::fromStdString( jForeignMembers.dump() ), expectedJsonForeignMembers );
