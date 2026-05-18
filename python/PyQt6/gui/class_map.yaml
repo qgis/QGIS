@@ -3379,13 +3379,15 @@ QgsGroupBoxCollapseButton.setAltDown: src/gui/qgscollapsiblegroupbox.h#L48
 QgsGroupBoxCollapseButton.setShiftDown: src/gui/qgscollapsiblegroupbox.h#L51
 QgsGroupBoxCollapseButton.shiftDown: src/gui/qgscollapsiblegroupbox.h#L50
 QgsGroupBoxCollapseButton: src/gui/qgscollapsiblegroupbox.h#L38
-QgsGroupWmsDataDialog.accept: src/gui/qgsgroupwmsdatadialog.h#L128
+QgsGroupWmsDataDialog.accept: src/gui/qgsgroupwmsdatadialog.h#L153
 QgsGroupWmsDataDialog.groupAbstract: src/gui/qgsgroupwmsdatadialog.h#L71
+QgsGroupWmsDataDialog.groupRequestMode: src/gui/qgsgroupwmsdatadialog.h#L128
 QgsGroupWmsDataDialog.groupShortName: src/gui/qgsgroupwmsdatadialog.h#L64
 QgsGroupWmsDataDialog.groupTitle: src/gui/qgsgroupwmsdatadialog.h#L57
 QgsGroupWmsDataDialog.hasTimeDimension: src/gui/qgsgroupwmsdatadialog.h#L114
-QgsGroupWmsDataDialog.serverProperties: src/gui/qgsgroupwmsdatadialog.h#L120
+QgsGroupWmsDataDialog.serverProperties: src/gui/qgsgroupwmsdatadialog.h#L145
 QgsGroupWmsDataDialog.setGroupAbstract: src/gui/qgsgroupwmsdatadialog.h#L92
+QgsGroupWmsDataDialog.setGroupRequestMode: src/gui/qgsgroupwmsdatadialog.h#L139
 QgsGroupWmsDataDialog.setGroupShortName: src/gui/qgsgroupwmsdatadialog.h#L85
 QgsGroupWmsDataDialog.setGroupTitle: src/gui/qgsgroupwmsdatadialog.h#L78
 QgsGroupWmsDataDialog.setHasTimeDimension: src/gui/qgsgroupwmsdatadialog.h#L103
