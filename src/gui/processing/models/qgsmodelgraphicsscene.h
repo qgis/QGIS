@@ -131,6 +131,16 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 
     /**
+     * Resets the status of child algorithm items.
+     *
+     * If the optional \a childAlgorithmSubset is specified, only the matching
+     * items are reset.
+     *
+     * \since QGIS 4.2
+     */
+    void resetChildAlgorithmItems( const QSet<QString> &childAlgorithmSubset = QSet<QString>() );
+
+    /**
      * Returns the QgsModelComponentGraphicItem corresponding to the specified parameter name
      *
      * \since QGIS 3.44
