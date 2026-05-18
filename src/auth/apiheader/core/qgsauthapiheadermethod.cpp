@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgsgdalutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
@@ -45,13 +46,21 @@ QMap<QString, QgsAuthMethodConfig> QgsAuthApiHeaderMethod::sAuthConfigCache = QM
 QgsAuthApiHeaderMethod::QgsAuthApiHeaderMethod()
 {
   setVersion( 2 );
-  setExpansions( QgsAuthMethod::NetworkRequest );
+  Expansions exp( QgsAuthMethod::NetworkRequest );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 11, 0 )
+  exp |= QgsAuthMethod::DataSourceUri;
+#endif
+  setExpansions( exp );
   setDataProviders(
     QStringList()
     << u"ows"_s
     << u"wfs"_s // convert to lowercase
     << u"wcs"_s
     << u"wms"_s
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 11, 0 )
+    << u"gdal"_s
+    << u"ogr"_s
+#endif
   );
 }
 
@@ -97,6 +106,66 @@ bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, con
     else
     {
       QgsDebugError( u"The header key was empty, we shouldn't have empty header keys at this point"_s );
+    }
+  }
+
+  return true;
+}
+
+bool QgsAuthApiHeaderMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg, const QString &dataprovider )
+{
+  const QgsAuthMethodConfig config = getMethodConfig( authcfg );
+  if ( !config.isValid() )
+  {
+    QgsDebugError( u"Update request config FAILED for authcfg: %1: config invalid"_s.arg( authcfg ) );
+    return false;
+  }
+
+  if ( dataprovider == "ogr"_L1 || dataprovider == "gdal"_L1 )
+  {
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION( 3, 11, 0 )
+    Q_UNUSED( connectionItems )
+
+    QgsDebugError( u"Update request config FAILED for authcfg: %1: GDAL 3.11 is required for API Header auth method"_s.arg( authcfg ) );
+    return false;
+#endif
+
+    const QString uri( connectionItems.first() );
+    const QStringList uriParts( uri.split( '/', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
+    QString prefixes;
+    for ( const QString &part : uriParts )
+    {
+      prefixes += '/' + part;
+      if ( QgsGdalUtils::isVsiArchivePrefix( part ) )
+        continue;
+
+      if ( QgsGdalUtils::vsiHandlerType( part ) == Qgis::VsiHandlerType::Network )
+        break;
+
+      QgsDebugError( u"Update request config FAILED for authcfg: %1: Only network requests support API Header auth cfg"_s.arg( authcfg ) );
+      return false;
+    }
+
+    const QString url( QUrl::toPercentEncoding( uri.mid( prefixes.length() + 1 ) ) );
+
+    QString headers;
+    QMapIterator<QString, QString> i( config.configMap() );
+    while ( i.hasNext() )
+    {
+      const QString delim = i.hasPrevious() ? u"&"_s : QString();
+
+      i.next();
+
+      const QString headerKey( QUrl::toPercentEncoding( i.key() ) );
+      const QString headerValue( QUrl::toPercentEncoding( i.value() ) );
+
+      headers.append( u"%1header.%2=%3"_s.arg( delim, headerKey, headerValue ) );
+    }
+
+    if ( !headers.isEmpty() )
+    {
+      const QString newUri( u"%1?%2&url=%3"_s.arg( prefixes, headers, url ) );
+      connectionItems.replace( 0, newUri );
     }
   }
 
