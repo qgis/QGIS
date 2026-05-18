@@ -60,7 +60,6 @@ QgsGeometryChecker::~QgsGeometryChecker()
     }
     delete it.value();
   }
-  delete mContext;
 }
 
 QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
