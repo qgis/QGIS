@@ -92,8 +92,6 @@ class QgsBloomRenderView : public QgsAbstractRenderView
 
     std::vector<Qt3DRender::QTexture2D *> mTextures;
 
-    std::vector<QgsBloomUpsampleEntity *> mUpsampleQuads;
-
     Qt3DRender::QParameter *mFilterRadiusParameter = nullptr;
     Qt3DRender::QParameter *mAspectRatioParameter = nullptr;
 };
