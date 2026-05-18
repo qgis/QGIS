@@ -112,7 +112,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsGpsToolsInterface *gpsTools() = 0;
 
     /**
-     * Add action to context menu for layers in the layer tree.
+     * Adds an \a action to context menu for layers in the layer tree.
      * If allLayers is TRUE, then the action will be available for all layers of given type,
      * otherwise the action will be available only for specific layers added with addCustomActionForLayer()
      * after this call.
@@ -126,7 +126,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers ) = 0;
 
     /**
-     * Add action to context menu for a specific layer in the layer tree.
+     * Adds an \a action to context menu for a specific layer in the layer tree.
      * It is necessary to first call addCustomActionForLayerType() with allLayers=false
      * in order for this method to have any effect.
      * \see addCustomActionForLayerType()
@@ -134,7 +134,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
 
     /**
-     * Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
+     * Removes \a action for layers in the layer tree previously added with addCustomActionForLayerType()
      * \see addCustomActionForLayerType()
      */
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
@@ -145,7 +145,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QList<QgsMapCanvas *> mapCanvases() = 0;
 
     /**
-     * Create a new map canvas with the specified unique \a name.
+     * Creates a new map canvas with the specified unique \a name.
      * \see closeMapCanvas()
      */
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
@@ -163,7 +163,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QList<Qgs3DMapCanvas *> mapCanvases3D() = 0;
 
     /**
-     * Create a new 3D map canvas with the specified unique \a name.
+     * Creates a new 3D map canvas with the specified unique \a name.
      * \note Scene mode (local or globe) can be selected since QGIS 3.44.
      * \see closeMapCanvas3D()
      * \since QGIS 3.36
@@ -260,7 +260,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addProjectImportAction( QAction *action ) = 0;
 
     /**
-     * Adds an \a action to the QGIS "Import project" menu.
+     * Removes an \a action from the QGIS "Import project" menu.
      *
      * \see addProjectImportAction()
      * \see removeProjectExportAction()
@@ -278,7 +278,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addProjectExportAction( QAction *action ) = 0;
 
     /**
-     * Adds an \a action to the QGIS "Export project" menu.
+     * Removes an \a action from the the QGIS "Export project" menu.
      *
      * \see addProjectExportAction()
      * \see removeProjectImportAction()
@@ -493,10 +493,10 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Returns the native Project Properties action.
     virtual QAction *actionProjectProperties() = 0;
 
-    //! Create new print layout action
+    //! Creates new print layout action
     virtual QAction *actionCreatePrintLayout() = 0;
 
-    //! Show layout manager action
+    //! Shows layout manager action
     virtual QAction *actionShowLayoutManager() = 0;
     //! Returns the Exit QGIS action.
     virtual QAction *actionExit() = 0;
@@ -970,11 +970,11 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
 
-    //! Add an icon to the plugins toolbar
+    //! Adds an action (icon only, no text) to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 
     /**
-     * Add a widget to the plugins toolbar.
+     * Adds a widget to the plugins toolbar.
      * To remove this widget again, call removeToolBarIcon()
      * with the returned QAction.
      *
@@ -983,11 +983,11 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Remove an action (icon) from the plugin toolbar
+    //! Removes an action (icon only, no text) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
 
     /**
-     * Add a widget to the raster toolbar.
+     * Adds a widget to the raster toolbar.
      * To remove this widget again, call removeRasterToolBarIcon()
      * with the returned QAction.
      *
@@ -996,17 +996,17 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addRasterToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Add an icon to the Raster toolbar
+    //! Adds an action (icon only, no text) to the Raster toolbar
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
 
-    //! Remove an action (icon) from the Raster toolbar
+    //! Removes an action (icon only, no text) from the Raster toolbar
     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
 
-    //! Add an icon to the Vector toolbar
+    //! Adds an action (icon only, no text) to the Vector toolbar
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
 
     /**
-     * Add a widget to the vector toolbar.
+     * Adds a widget to the vector toolbar.
      * To remove this widget again, call removeVectorToolBarIcon()
      * with the returned QAction.
      *
@@ -1015,14 +1015,14 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addVectorToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Remove an action (icon) from the Vector toolbar
+    //! Removes an action (icon only, no text) from the Vector toolbar
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
 
-    //! Add an icon to the Database toolbar
+    //! Adds an action (icon only, no text) to the Database toolbar
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 
     /**
-     * Add a widget to the database toolbar.
+     * Adds a widget to the database toolbar.
      * To remove this widget again, call removeDatabaseToolBarIcon()
      * with the returned QAction.
      *
@@ -1031,14 +1031,14 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Remove an action (icon) from the Database toolbar
+    //! Removes an action (icon only, no text) from the Database toolbar
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
 
-    //! Add an icon to the Web toolbar
+    //! Adds an action (icon only, no text) to the Web toolbar
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
 
     /**
-     * Add a widget to the web toolbar.
+     * Adds a widget to the web toolbar.
      * To remove this widget again, call removeWebToolBarIcon()
      * with the returned QAction.
      *
@@ -1047,14 +1047,14 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addWebToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Remove an action (icon) from the Web toolbar
+    //! Removes an action (icon only, no text) from the Web toolbar
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
-    //! Add toolbar with specified name
+    //! Adds toolbar with specified name
     virtual QToolBar *addToolBar( const QString &name ) = 0 SIP_FACTORY;
 
     /**
-     * Add a toolbar
+     * Adds a toolbar
      */
     virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
@@ -1099,54 +1099,54 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void buildStyleSheet( const QMap<QString, QVariant> &opts ) = 0;
 
-    //! Save changed default option keys/values to user settings
+    //! Saves changed default option keys/values to user settings
     virtual void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) = 0;
 
-    //! Add action to the plugins menu
+    //! Adds an \a action to the plugins menu
     virtual void addPluginToMenu( const QString &name, QAction *action ) = 0;
 
-    //! Remove action from the plugins menu
+    //! Removes \a action from the plugins menu
     virtual void removePluginMenu( const QString &name, QAction *action ) = 0;
 
-    //! Add "add layer" action to layer menu
+    //! Adds "add layer" \a action to layer menu
     virtual void insertAddLayerAction( QAction *action ) = 0;
 
-    //! Remove "add layer" action from layer menu
+    //! Removes "add layer" \a action from layer menu
     virtual void removeAddLayerAction( QAction *action ) = 0;
 
-    //! Add action to the Database menu
+    //! Adds an \a action to the Database menu
     virtual void addPluginToDatabaseMenu( const QString &name, QAction *action ) = 0;
 
-    //! Remove action from the Database menu
+    //! Removes \a action from the Database menu
     virtual void removePluginDatabaseMenu( const QString &name, QAction *action ) = 0;
 
-    //! Add action to the Raster menu
+    //! Adds an \a action to the Raster menu
     virtual void addPluginToRasterMenu( const QString &name, QAction *action ) = 0;
 
-    //! Remove action from the Raster menu
+    //! Removes \a action from the Raster menu
     virtual void removePluginRasterMenu( const QString &name, QAction *action ) = 0;
 
-    //! Add action to the Vector menu
+    //! Adds an \a action to the Vector menu
     virtual void addPluginToVectorMenu( const QString &name, QAction *action ) = 0;
 
-    //! Remove action from the Vector menu
+    //! Removes \a action from the Vector menu
     virtual void removePluginVectorMenu( const QString &name, QAction *action ) = 0;
 
-    //! Add action to the Web menu
+    //! Adds an \a action to the Web menu
     virtual void addPluginToWebMenu( const QString &name, QAction *action ) = 0;
 
-    //! Remove action from the Web menu
+    //! Removes \a action from the Web menu
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 
     /**
-     * Add action to the Mesh menu
+     * Adds an \a action to the Mesh menu
      *
      * \since QGIS 3.24
      */
     virtual void addPluginToMeshMenu( const QString &name, QAction *action ) = 0;
 
     /**
-     * Remove action from the Mesh menu
+     * Removes \a action from the Mesh menu
      *
      * \since QGIS 3.24
      */
@@ -1161,7 +1161,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 
     /**
-     * Add a dock widget to the given area and tabify it (if other dock widgets
+     * Adds a dock widget to the given area and tabify it (if other dock widgets
      * exist in the same \a area). The new tab will be below other tabs unless
      * \a raiseTab is passed as TRUE.
      *
@@ -1222,7 +1222,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;
 
     /**
-     * Add window to Window menu. The action title is the window title
+     * Adds window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window.
     */
     virtual void addWindow( QAction *action ) = 0;
@@ -1233,14 +1233,14 @@ class GUI_EXPORT QgisInterface : public QObject
     */
     virtual void removeWindow( QAction *action ) = 0;
 
-    //! Register action to the shortcuts manager so its shortcut can be changed in GUI
+    //! Registers an \a action to the shortcuts manager so its shortcut can be changed in GUI
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
 
-    //! Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
+    //! Unregisters a previously registered \a action. (e.g. when plugin is going to be unloaded)
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 
     /**
-     * Register a new tab in the map layer properties dialog.
+     * Registers a new tab in the map layer properties dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see QgsMapLayerConfigWidgetFactory
@@ -1249,14 +1249,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /**
-     * Unregister a previously registered tab in the map layer properties dialog.
+     * Unregisters a previously registered tab in the map layer properties dialog.
      * \see QgsMapLayerConfigWidgetFactory
      * \see registerMapLayerConfigWidgetFactory()
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /**
-     * Register a new tab in the options dialog.
+     * Registers a new tab in the options dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see QgsOptionsWidgetFactory
@@ -1265,14 +1265,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
-     * Unregister a previously registered tab in the options dialog.
+     * Unregisters a previously registered tab in the options dialog.
      * \see QgsOptionsWidgetFactory
      * \see registerOptionsWidgetFactory()
     */
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
-     * Register a new tab in the project properties dialog.
+     * Registers a new tab in the project properties dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see QgsOptionsWidgetFactory
@@ -1282,7 +1282,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
-     * Unregister a previously registered tab in the options dialog.
+     * Unregisters a previously registered tab in the options dialog.
      * \see QgsOptionsWidgetFactory
      * \see registerProjectPropertiesWidgetFactory()
      * \since QGIS 3.16
@@ -1290,7 +1290,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
-     * Register a new tool in the development/debugging tools dock.
+     * Registers a new tool in the development/debugging tools dock.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see unregisterDevToolWidgetFactory()
@@ -1299,7 +1299,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 
     /**
-     * Unregister a previously registered tool factory from the development/debugging tools dock.
+     * Unregisters a previously registered tool factory from the development/debugging tools dock.
      * \see registerDevToolWidgetFactory()
      * \since QGIS 3.14
     */
@@ -1321,7 +1321,7 @@ class GUI_EXPORT QgisInterface : public QObject
     ) = 0;
 
     /**
-     * Register a new application exit blocker, which can be used to prevent the QGIS application
+     * Registers a new application exit blocker, which can be used to prevent the QGIS application
      * from exiting while a plugin or script has unsaved changes.
      *
      * \note Ownership of \a blocker is not transferred, and the blocker must
@@ -1333,14 +1333,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 
     /**
-     * Unregister a previously registered application exit \a blocker.
+     * Unregisters a previously registered application exit \a blocker.
      * \see registerApplicationExitBlocker()
      * \since QGIS 3.16
     */
     virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 
     /**
-     * Register a new application map tool \a handler, which can be used to automatically setup all connections
+     * Registers a new application map tool \a handler, which can be used to automatically setup all connections
      * and logic required to switch to a custom map tool whenever the state of the QGIS application
      * permits.
      *
@@ -1354,14 +1354,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 
     /**
-     * Unregister a previously registered map tool \a handler.
+     * Unregisters a previously registered map tool \a handler.
      * \see registerMapToolHandler()
      * \since QGIS 3.16
     */
     virtual void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 
     /**
-     * Register a new custom drop \a handler.
+     * Registers a new custom drop \a handler.
      * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsCustomDropHandler
@@ -1370,14 +1370,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
-     * Unregister a previously registered custom drop \a handler.
+     * Unregisters a previously registered custom drop \a handler.
      * \see QgsCustomDropHandler
      * \see registerCustomDropHandler()
      */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
-     * Register a new custom project open \a handler.
+     * Registers a new custom project open \a handler.
      * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsCustomProjectOpenHandler
@@ -1387,7 +1387,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
 
     /**
-     * Unregister a previously registered custom project open \a handler.
+     * Unregisters a previously registered custom project open \a handler.
      * \see QgsCustomDropHandler
      * \see registerCustomProjectOpenHandler()
      * \since QGIS 3.14
@@ -1395,7 +1395,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
 
     /**
-     * Register a new custom drop \a handler for layout windows.
+     * Registers a new custom drop \a handler for layout windows.
      * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsLayoutCustomDropHandler
@@ -1404,7 +1404,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 
     /**
-     * Unregister a previously registered custom drop \a handler for layout windows.
+     * Unregisters a previously registered custom drop \a handler for layout windows.
      * \see QgsLayoutCustomDropHandler
      * \see registerCustomLayoutDropHandler()
      */
@@ -1413,7 +1413,7 @@ class GUI_EXPORT QgisInterface : public QObject
     // TODO is this deprecated in favour of QgsContextHelp?
 
     /**
-     * Open a url in the users browser. By default the QGIS doc directory is used
+     * Opens a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to FALSE.
      * \param url URL to open

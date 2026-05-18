@@ -48,11 +48,11 @@ Returns an interface to allow plugins to use QGIS GPS tools.
 
     virtual void addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers ) = 0;
 %Docstring
-Add action to context menu for layers in the layer tree. If allLayers is
-``True``, then the action will be available for all layers of given
-type, otherwise the action will be available only for specific layers
-added with :py:func:`~QgisInterface.addCustomActionForLayer` after this
-call.
+Adds an ``action`` to context menu for layers in the layer tree. If
+allLayers is ``True``, then the action will be available for all layers
+of given type, otherwise the action will be available only for specific
+layers added with :py:func:`~QgisInterface.addCustomActionForLayer`
+after this call.
 
 If menu argument is not empty, the action will be also added to a menu
 within the main window, creating menu with the given name if it does not
@@ -65,8 +65,8 @@ exist yet.
 
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
 %Docstring
-Add action to context menu for a specific layer in the layer tree. It is
-necessary to first call
+Adds an ``action`` to context menu for a specific layer in the layer
+tree. It is necessary to first call
 :py:func:`~QgisInterface.addCustomActionForLayerType` with
 allLayers=false in order for this method to have any effect.
 
@@ -75,7 +75,7 @@ allLayers=false in order for this method to have any effect.
 
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
 %Docstring
-Remove action for layers in the layer tree previously added with
+Removes ``action`` for layers in the layer tree previously added with
 :py:func:`~QgisInterface.addCustomActionForLayerType`
 
 .. seealso:: :py:func:`addCustomActionForLayerType`
@@ -88,7 +88,7 @@ Returns a list of all map canvases open in the app.
 
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
 %Docstring
-Create a new map canvas with the specified unique ``name``.
+Creates a new map canvas with the specified unique ``name``.
 
 .. seealso:: :py:func:`closeMapCanvas`
 %End
@@ -109,7 +109,7 @@ Returns a list of all 3D map canvases open in the app.
 
     virtual Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode = Qgis::SceneMode::Local ) = 0;
 %Docstring
-Create a new 3D map canvas with the specified unique ``name``.
+Creates a new 3D map canvas with the specified unique ``name``.
 
 .. note::
 
@@ -228,7 +228,7 @@ Adds an ``action`` to the QGIS "Import project" menu.
 
     virtual void removeProjectImportAction( QAction *action ) = 0;
 %Docstring
-Adds an ``action`` to the QGIS "Import project" menu.
+Removes an ``action`` from the QGIS "Import project" menu.
 
 .. seealso:: :py:func:`addProjectImportAction`
 
@@ -250,7 +250,7 @@ Adds an ``action`` to the QGIS "Export project" menu.
 
     virtual void removeProjectExportAction( QAction *action ) = 0;
 %Docstring
-Adds an ``action`` to the QGIS "Export project" menu.
+Removes an ``action`` from the the QGIS "Export project" menu.
 
 .. seealso:: :py:func:`addProjectExportAction`
 
@@ -483,12 +483,12 @@ Returns the native Project Properties action.
 
     virtual QAction *actionCreatePrintLayout() = 0;
 %Docstring
-Create new print layout action
+Creates new print layout action
 %End
 
     virtual QAction *actionShowLayoutManager() = 0;
 %Docstring
-Show layout manager action
+Shows layout manager action
 %End
     virtual QAction *actionExit() = 0;
 %Docstring
@@ -1163,12 +1163,12 @@ Paste features from clipboard to the layer
 
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the plugins toolbar
+Adds an action (icon) to the plugins toolbar
 %End
 
     virtual QAction *addToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the plugins toolbar. To remove this widget again, call
+Adds a widget to the plugins toolbar. To remove this widget again, call
 :py:func:`~QgisInterface.removeToolBarIcon` with the returned QAction.
 
 :param widget: widget to add. The toolbar will take ownership of this
@@ -1179,12 +1179,12 @@ Add a widget to the plugins toolbar. To remove this widget again, call
 
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the plugin toolbar
+Removes an action (icon) from the plugin toolbar
 %End
 
     virtual QAction *addRasterToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the raster toolbar. To remove this widget again, call
+Adds a widget to the raster toolbar. To remove this widget again, call
 :py:func:`~QgisInterface.removeRasterToolBarIcon` with the returned
 QAction.
 
@@ -1196,22 +1196,22 @@ QAction.
 
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the Raster toolbar
+Adds an action (icon) to the Raster toolbar
 %End
 
     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the Raster toolbar
+Removes an action (icon) from the Raster toolbar
 %End
 
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the Vector toolbar
+Adds an action (icon) to the Vector toolbar
 %End
 
     virtual QAction *addVectorToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the vector toolbar. To remove this widget again, call
+Adds a widget to the vector toolbar. To remove this widget again, call
 :py:func:`~QgisInterface.removeVectorToolBarIcon` with the returned
 QAction.
 
@@ -1223,17 +1223,17 @@ QAction.
 
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the Vector toolbar
+Removes an action (icon) from the Vector toolbar
 %End
 
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the Database toolbar
+Adds an action (icon) to the Database toolbar
 %End
 
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the database toolbar. To remove this widget again, call
+Adds a widget to the database toolbar. To remove this widget again, call
 :py:func:`~QgisInterface.removeDatabaseToolBarIcon` with the returned
 QAction.
 
@@ -1245,17 +1245,17 @@ QAction.
 
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the Database toolbar
+Removes an action (icon) from the Database toolbar
 %End
 
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the Web toolbar
+Adds an action (icon) to the Web toolbar
 %End
 
     virtual QAction *addWebToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the web toolbar. To remove this widget again, call
+Adds a widget to the web toolbar. To remove this widget again, call
 :py:func:`~QgisInterface.removeWebToolBarIcon` with the returned
 QAction.
 
@@ -1267,17 +1267,17 @@ QAction.
 
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the Web toolbar
+Removes an action (icon) from the Web toolbar
 %End
 
     virtual QToolBar *addToolBar( const QString &name ) = 0 /Factory/;
 %Docstring
-Add toolbar with specified name
+Adds toolbar with specified name
 %End
 
     virtual void addToolBar( QToolBar *toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 %Docstring
-Add a toolbar
+Adds a toolbar
 %End
 
     virtual void openMessageLog( const QString &tabName = QString() ) = 0;
@@ -1328,79 +1328,79 @@ Generate stylesheet
 
     virtual void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) = 0;
 %Docstring
-Save changed default option keys/values to user settings
+Saves changed default option keys/values to user settings
 %End
 
     virtual void addPluginToMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the plugins menu
+Adds an ``action`` to the plugins menu
 %End
 
     virtual void removePluginMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the plugins menu
+Removes ``action`` from the plugins menu
 %End
 
     virtual void insertAddLayerAction( QAction *action ) = 0;
 %Docstring
-Add "add layer" action to layer menu
+Adds "add layer" ``action`` to layer menu
 %End
 
     virtual void removeAddLayerAction( QAction *action ) = 0;
 %Docstring
-Remove "add layer" action from layer menu
+Removes "add layer" ``action`` from layer menu
 %End
 
     virtual void addPluginToDatabaseMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Database menu
+Adds an ``action`` to the Database menu
 %End
 
     virtual void removePluginDatabaseMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Database menu
+Removes ``action`` from the Database menu
 %End
 
     virtual void addPluginToRasterMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Raster menu
+Adds an ``action`` to the Raster menu
 %End
 
     virtual void removePluginRasterMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Raster menu
+Removes ``action`` from the Raster menu
 %End
 
     virtual void addPluginToVectorMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Vector menu
+Adds an ``action`` to the Vector menu
 %End
 
     virtual void removePluginVectorMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Vector menu
+Removes ``action`` from the Vector menu
 %End
 
     virtual void addPluginToWebMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Web menu
+Adds an ``action`` to the Web menu
 %End
 
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Web menu
+Removes ``action`` from the Web menu
 %End
 
     virtual void addPluginToMeshMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Mesh menu
+Adds an ``action`` to the Mesh menu
 
 .. versionadded:: 3.24
 %End
 
     virtual void removePluginMeshMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Mesh menu
+Removes ``action`` from the Mesh menu
 
 .. versionadded:: 3.24
 %End
@@ -1417,9 +1417,9 @@ Adds a ``dock`` widget to the main window, in the specified dock
 
     virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) = 0;
 %Docstring
-Add a dock widget to the given area and tabify it (if other dock widgets
-exist in the same ``area``). The new tab will be below other tabs unless
-``raiseTab`` is passed as ``True``.
+Adds a dock widget to the given area and tabify it (if other dock
+widgets exist in the same ``area``). The new tab will be below other
+tabs unless ``raiseTab`` is passed as ``True``.
 
 ``tabifyWith`` is a list of dock widget object names, ordered by
 priority, with which the new dock widget should be tabified. Only the
@@ -1486,7 +1486,7 @@ Open attribute table dialog
 
     virtual void addWindow( QAction *action ) = 0;
 %Docstring
-Add window to Window menu. The action title is the window title and the
+Adds window to Window menu. The action title is the window title and the
 action should raise, unminimize and activate the window.
 %End
 
@@ -1498,19 +1498,19 @@ windows which are hidden rather than deleted when closed.
 
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
 %Docstring
-Register action to the shortcuts manager so its shortcut can be changed
-in GUI
+Registers an ``action`` to the shortcuts manager so its shortcut can be
+changed in GUI
 %End
 
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 %Docstring
-Unregister a previously registered action. (e.g. when plugin is going to
-be unloaded)
+Unregisters a previously registered ``action``. (e.g. when plugin is
+going to be unloaded)
 %End
 
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tab in the map layer properties dialog.
+Registers a new tab in the map layer properties dialog.
 
 .. note::
 
@@ -1524,7 +1524,7 @@ Register a new tab in the map layer properties dialog.
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tab in the map layer properties
+Unregisters a previously registered tab in the map layer properties
 dialog.
 
 .. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
@@ -1534,7 +1534,7 @@ dialog.
 
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tab in the options dialog.
+Registers a new tab in the options dialog.
 
 .. note::
 
@@ -1548,7 +1548,7 @@ Register a new tab in the options dialog.
 
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tab in the options dialog.
+Unregisters a previously registered tab in the options dialog.
 
 .. seealso:: :py:class:`QgsOptionsWidgetFactory`
 
@@ -1557,7 +1557,7 @@ Unregister a previously registered tab in the options dialog.
 
     virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tab in the project properties dialog.
+Registers a new tab in the project properties dialog.
 
 .. note::
 
@@ -1573,7 +1573,7 @@ Register a new tab in the project properties dialog.
 
     virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tab in the options dialog.
+Unregisters a previously registered tab in the options dialog.
 
 .. seealso:: :py:class:`QgsOptionsWidgetFactory`
 
@@ -1584,7 +1584,7 @@ Unregister a previously registered tab in the options dialog.
 
     virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tool in the development/debugging tools dock.
+Registers a new tool in the development/debugging tools dock.
 
 .. note::
 
@@ -1598,7 +1598,7 @@ Register a new tool in the development/debugging tools dock.
 
     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tool factory from the
+Unregisters a previously registered tool factory from the
 development/debugging tools dock.
 
 .. seealso:: :py:func:`registerDevToolWidgetFactory`
@@ -1626,7 +1626,7 @@ Show a page of the API documentation
 
     virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 %Docstring
-Register a new application exit blocker, which can be used to prevent
+Registers a new application exit blocker, which can be used to prevent
 the QGIS application from exiting while a plugin or script has unsaved
 changes.
 
@@ -1642,7 +1642,7 @@ changes.
 
     virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 %Docstring
-Unregister a previously registered application exit ``blocker``.
+Unregisters a previously registered application exit ``blocker``.
 
 .. seealso:: :py:func:`registerApplicationExitBlocker`
 
@@ -1651,7 +1651,7 @@ Unregister a previously registered application exit ``blocker``.
 
     virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 %Docstring
-Register a new application map tool ``handler``, which can be used to
+Registers a new application map tool ``handler``, which can be used to
 automatically setup all connections and logic required to switch to a
 custom map tool whenever the state of the QGIS application permits.
 
@@ -1669,7 +1669,7 @@ custom map tool whenever the state of the QGIS application permits.
 
     virtual void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered map tool ``handler``.
+Unregisters a previously registered map tool ``handler``.
 
 .. seealso:: :py:func:`registerMapToolHandler`
 
@@ -1678,7 +1678,7 @@ Unregister a previously registered map tool ``handler``.
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
-Register a new custom drop ``handler``.
+Registers a new custom drop ``handler``.
 
 .. note::
 
@@ -1692,7 +1692,7 @@ Register a new custom drop ``handler``.
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered custom drop ``handler``.
+Unregisters a previously registered custom drop ``handler``.
 
 .. seealso:: :py:class:`QgsCustomDropHandler`
 
@@ -1701,7 +1701,7 @@ Unregister a previously registered custom drop ``handler``.
 
     virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
 %Docstring
-Register a new custom project open ``handler``.
+Registers a new custom project open ``handler``.
 
 .. note::
 
@@ -1717,7 +1717,7 @@ Register a new custom project open ``handler``.
 
     virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered custom project open ``handler``.
+Unregisters a previously registered custom project open ``handler``.
 
 .. seealso:: :py:class:`QgsCustomDropHandler`
 
@@ -1728,7 +1728,7 @@ Unregister a previously registered custom project open ``handler``.
 
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
-Register a new custom drop ``handler`` for layout windows.
+Registers a new custom drop ``handler`` for layout windows.
 
 .. note::
 
@@ -1742,7 +1742,7 @@ Register a new custom drop ``handler`` for layout windows.
 
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered custom drop ``handler`` for layout
+Unregisters a previously registered custom drop ``handler`` for layout
 windows.
 
 .. seealso:: :py:class:`QgsLayoutCustomDropHandler`
@@ -1754,7 +1754,7 @@ windows.
 
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated="Since 3.40. Use QDesktopServices instead."/;
 %Docstring
-Open a url in the users browser. By default the QGIS doc directory is
+Opens a url in the users browser. By default the QGIS doc directory is
 used as the base for the URL. To open a URL that is not relative to the
 installed QGIS documentation, set useQgisDocDirectory to ``False``.
 
