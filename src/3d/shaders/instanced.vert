@@ -2,6 +2,9 @@
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+#ifdef USE_TEXTURE
+in vec2 vertexTexCoord;
+#endif
 in vec3 instanceTranslation;
 #ifdef USE_INSTANCE_SCALE
 in vec3 instanceScale;
@@ -12,6 +15,9 @@ in vec4 instanceRotation;
 
 out vec3 worldPosition;
 out vec3 worldNormal;
+#ifdef USE_TEXTURE
+out vec2 texCoord;
+#endif
 
 uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
@@ -86,6 +92,9 @@ void main()
     // Transform position and normal to world space
     worldPosition = vec3(modelMatrix * vec4(vertexPositionChunk, 1.0));
     worldNormal = normalize(modelNormalMatrix * vertexNormalObject);
+#ifdef USE_TEXTURE
+    texCoord = vertexTexCoord;
+#endif
 
     // Calculate vertex position in clip coordinates
     gl_Position = mvp * vec4(vertexPositionChunk, 1.0);
