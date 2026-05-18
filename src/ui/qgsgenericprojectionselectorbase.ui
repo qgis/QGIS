@@ -141,25 +141,25 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="mLabelTopoBaseCrs">
-             <property name="text">
-              <string>Base CRS:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QgsProjectionSelectionTreeWidget" name="mTopocentricBaseSelector" native="true"/>
-           </item>
-           <item>
             <layout class="QFormLayout" name="formLayoutTopoOrigin">
              <item row="0" column="0">
+              <widget class="QLabel" name="mLabelTopoBaseCrs">
+               <property name="text">
+                <string>Base CRS:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QgsProjectionSelectionWidget" name="mTopocentricBaseSelector"/>
+             </item>
+             <item row="1" column="0">
               <widget class="QLabel" name="mLabelTopoLat">
                <property name="text">
                 <string>Origin latitude:</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item row="1" column="1">
               <widget class="QgsDoubleSpinBox" name="mSpinBoxTopoLat">
                <property name="minimum">
                 <double>-90.000000000000000</double>
@@ -175,14 +175,14 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
+             <item row="2" column="0">
               <widget class="QLabel" name="mLabelTopoLon">
                <property name="text">
                 <string>Origin longitude:</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="2" column="1">
               <widget class="QgsDoubleSpinBox" name="mSpinBoxTopoLon">
                <property name="minimum">
                 <double>-180.000000000000000</double>
@@ -234,6 +234,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

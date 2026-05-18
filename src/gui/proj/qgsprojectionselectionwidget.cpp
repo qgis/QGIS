@@ -291,10 +291,18 @@ bool CombinedCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceR
     case Qgis::CrsType::Other:
       break;
 
-    case Qgis::CrsType::Geodetic:
     case Qgis::CrsType::Geocentric:
-    case Qgis::CrsType::Geographic2d:
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterGeocentric ) )
+        return false;
+      break;
+
     case Qgis::CrsType::Geographic3d:
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterGeographic3d ) )
+        return false;
+      break;
+
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geographic2d:
     case Qgis::CrsType::Projected:
     case Qgis::CrsType::Temporal:
     case Qgis::CrsType::Engineering:
@@ -522,6 +530,11 @@ bool QgsProjectionSelectionWidget::optionVisible( QgsProjectionSelectionWidget::
   return !matches.empty();
 }
 
+void QgsProjectionSelectionWidget::setAllowTopocentricCrs( bool allow )
+{
+  mAllowTopocentricCrs = allow;
+}
+
 void QgsProjectionSelectionWidget::selectCrs()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
@@ -547,6 +560,9 @@ void QgsProjectionSelectionWidget::selectCrs()
       mActivePanel->setNotSetText( mModel->combinedModel()->notSetText() );
 
     mActivePanel->setPanelTitle( mDialogTitle );
+
+    if ( !mAllowTopocentricCrs )
+      mActivePanel->setAllowTopocentricCrs( false );
 
     if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
     {
@@ -582,6 +598,9 @@ void QgsProjectionSelectionWidget::selectCrs()
       dlg.setOgcWmsCrsFilter( ogcFilter );
     dlg.setCrs( crs() );
     dlg.setWindowTitle( mDialogTitle );
+
+    if ( !mAllowTopocentricCrs )
+      dlg.setAllowTopocentricCrs( false );
 
     if ( !mModel->combinedModel()->notSetText().isEmpty() )
       dlg.setNotSetText( mModel->combinedModel()->notSetText() );

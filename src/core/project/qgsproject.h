@@ -469,6 +469,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsCoordinateReferenceSystem verticalCrs() const;
 
     /**
+     * Returns the base CRS for the topocentric CRS, or an invalid CRS
+     * if the project CRS is not topocentric.
+     *
+     * \see crs()
+     * \see setCrs()
+     */
+    QgsCoordinateReferenceSystem topocentricBaseCrs() const;
+
+    /**
+     * Sets the base CRS for the topocentric CRS.
+     *
+     * \see topocentricBaseCrs()
+     */
+    void setTopocentricBaseCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
      * Sets the project's vertical coordinate reference system.
      *
      * The verticalCrsChanged() signal will be raised if the vertical CRS is changed.
@@ -2611,6 +2627,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateReferenceSystem mVerticalCrs;
     QgsCoordinateReferenceSystem mCrs3D;
+    QgsCoordinateReferenceSystem mTopocentricBaseCrs;
 
     bool mDirty = false; // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;

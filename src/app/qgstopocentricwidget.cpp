@@ -15,6 +15,7 @@
 
 #include "qgstopocentricwidget.h"
 
+#include "qgis.h"
 #include "qgsdoublespinbox.h"
 
 #include <QGridLayout>

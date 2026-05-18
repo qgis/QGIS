@@ -14691,18 +14691,6 @@ void QgisApp::removeWebToolBarIcon( QAction *qAction )
   mWebToolBar->removeAction( qAction );
 }
 
-static bool allowTopocentricConversion( const QgsCoordinateReferenceSystem &crs )
-{
-  if ( !crs.isValid() )
-    return false;
-  if ( crs.horizontalCrs().type() == Qgis::CrsType::Geocentric )
-    return true;
-  if ( crs.type() == Qgis::CrsType::Geographic3d )
-    return true;
-  double lat = 0.0, lon = 0.0;
-  return crs.topocentricOrigin( lat, lon );
-}
-
 void QgisApp::updateCrsStatusBar()
 {
   const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
@@ -14723,18 +14711,8 @@ void QgisApp::updateCrsStatusBar()
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "Current CRS: %1" ).arg( projectCrs.userFriendlyIdentifier() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( u"mIconProjectionEnabled.svg"_s ) );
 
-    if ( allowTopocentricConversion( projectCrs ) )
+    if ( isTopocentric )
     {
-      if ( !isTopocentric )
-      {
-        const QgsCoordinateReferenceSystem topoCrs = projectCrs.toTopocentricCrs( 0.0, 0.0 );
-        if ( topoCrs.isValid() )
-        {
-          QgsProject::instance()->setCrs( topoCrs );
-          return;
-        }
-      }
-
       if ( !mTopocentricMenu )
       {
         mTopocentricMenu = new QMenu( mOnTheFlyProjectionStatusButton );

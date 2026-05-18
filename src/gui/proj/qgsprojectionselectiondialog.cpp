@@ -21,6 +21,8 @@
 #include "qgscoordinatereferencesystemmodel.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectionwidget.h"
 #include "qgssettings.h"
 
 #include <QApplication>
@@ -45,7 +47,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
   //we will show this only when a message is set
   textEdit->hide();
 
-  mNotSetText = tr( "No CRS (or unknown/non-Earth projection)" );
+  mNotSetText = tr( "No CRS (or unknown)" );
   mLabelNoCrs->setText( tr( "Use this option to treat all coordinates as Cartesian coordinates in an unknown reference system." ) );
 
   mComboCrsType->addItem( tr( "Predefined CRS" ), static_cast<int>( CrsType::Predefined ) );
@@ -53,6 +55,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
   mComboCrsType->addItem( tr( "Topocentric CRS" ), static_cast<int>( CrsType::Topocentric ) );
 
   mTopocentricBaseSelector->setFilters( QgsCoordinateReferenceSystemProxyModel::FilterGeocentric | QgsCoordinateReferenceSystemProxyModel::FilterGeographic3d );
+  mTopocentricBaseSelector->setAllowTopocentricCrs( false );
 
   mStackedWidget->setCurrentWidget( mPageDatabase );
   mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Predefined ) ) );
@@ -110,9 +113,10 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
     }
   } );
 
-  connect( mTopocentricBaseSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [this]() {
+  connect( mTopocentricBaseSelector, &QgsProjectionSelectionWidget::crsChanged, this, [this]( const QgsCoordinateReferenceSystem &newBase ) {
     if ( !mBlockSignals )
     {
+      QgsProject::instance()->setTopocentricBaseCrs( newBase );
       emit crsChanged();
       emit hasValidSelectionChanged( hasValidSelection() );
     }
@@ -210,8 +214,7 @@ bool QgsCrsSelectionWidget::hasValidSelection() const
       {
         const QgsCoordinateReferenceSystem baseCrs = mTopocentricBaseSelector->crs();
         double tmpLat = 0.0, tmpLon = 0.0;
-        return mTopocentricBaseSelector->hasValidSelection()
-               && ( baseCrs.horizontalCrs().type() == Qgis::CrsType::Geocentric || baseCrs.type() == Qgis::CrsType::Geographic3d || baseCrs.topocentricOrigin( tmpLat, tmpLon ) );
+        return baseCrs.isValid() && ( baseCrs.horizontalCrs().type() == Qgis::CrsType::Geocentric || baseCrs.type() == Qgis::CrsType::Geographic3d || baseCrs.topocentricOrigin( tmpLat, tmpLon ) );
       }
     }
     BUILTIN_UNREACHABLE
@@ -226,6 +229,19 @@ QgsCoordinateReferenceSystemProxyModel::Filters QgsCrsSelectionWidget::filters()
 void QgsCrsSelectionWidget::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
 {
   projectionSelector->setFilters( filters );
+}
+
+void QgsCrsSelectionWidget::setAllowTopocentricCrs( bool allow )
+{
+  if ( allow == mAllowTopocentricCrs )
+    return;
+  mAllowTopocentricCrs = allow;
+
+  const int idx = mComboCrsType->findData( static_cast<int>( CrsType::Topocentric ) );
+  if ( !allow && idx >= 0 )
+    mComboCrsType->removeItem( idx );
+  else if ( allow && idx < 0 )
+    mComboCrsType->addItem( tr( "Topocentric CRS" ), static_cast<int>( CrsType::Topocentric ) );
 }
 
 QgsCoordinateReferenceSystem QgsCrsSelectionWidget::crs() const
@@ -271,6 +287,7 @@ void QgsCrsSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
     {
       mSpinBoxTopoLat->setValue( topoLat );
       mSpinBoxTopoLon->setValue( topoLon );
+      mTopocentricBaseSelector->setCrs( QgsProject::instance()->topocentricBaseCrs() );
       mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Topocentric ) ) );
       mStackedWidget->setCurrentWidget( mPageTopocentric );
     }
@@ -386,6 +403,11 @@ QgsCoordinateReferenceSystemProxyModel::Filters QgsProjectionSelectionDialog::fi
 void QgsProjectionSelectionDialog::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
 {
   mCrsWidget->setFilters( filters );
+}
+
+void QgsProjectionSelectionDialog::setAllowTopocentricCrs( bool allow )
+{
+  mCrsWidget->setAllowTopocentricCrs( allow );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const

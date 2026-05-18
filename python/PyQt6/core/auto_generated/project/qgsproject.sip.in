@@ -438,6 +438,23 @@ The returned CRS will be invalid if the project has no vertical CRS.
 .. versionadded:: 3.38
 %End
 
+    QgsCoordinateReferenceSystem topocentricBaseCrs() const;
+%Docstring
+Returns the base CRS for the topocentric CRS, or an invalid CRS if the
+project CRS is not topocentric.
+
+.. seealso:: :py:func:`crs`
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setTopocentricBaseCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the base CRS for the topocentric CRS.
+
+.. seealso:: :py:func:`topocentricBaseCrs`
+%End
+
     bool setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage /Out/ = 0 );
 %Docstring
 Sets the project's vertical coordinate reference system.
