@@ -774,7 +774,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->enumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKT ) ) );
   leNullValue->setText( QgsApplication::nullRepresentation() );
 
-  cmbLegendDoubleClickAction->setCurrentIndex( mSettings->value( u"/qgis/legendDoubleClickAction"_s, 0 ).toInt() );
+  cmbLegendDoubleClickAction->setCurrentIndex( static_cast<int>( QgisApp::settingsLegendDoubleClickAction->value() ) );
 
   mLayerTreeInsertionMethod->addItem( tr( "Above currently selected layer" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
   mLayerTreeInsertionMethod->addItem( tr( "Always on top of the layer tree" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::TopOfTree ) );
@@ -1662,7 +1662,7 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( u"/qgis/copyFeatureFormat"_s, ( QgsClipboard::CopyFormat ) mComboCopyFeatureFormat->currentData().toInt() );
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
-  mSettings->setValue( u"/qgis/legendDoubleClickAction"_s, cmbLegendDoubleClickAction->currentIndex() );
+  QgisApp::settingsLegendDoubleClickAction->setValue( static_cast<Qgis::LegendLayerDoubleClickAction>( cmbLegendDoubleClickAction->currentIndex() ) );
   QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->setValue( mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
 
   // project
