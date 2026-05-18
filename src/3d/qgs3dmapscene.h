@@ -360,6 +360,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onShadowSettingsChanged();
     void onAmbientOcclusionSettingsChanged();
     void onBloomSettingsChanged();
+    void onColorGradingSettingsChanged();
     void onEyeDomeShadingSettingsChanged();
     void onMsaaEnabledChanged();
     void onDebugDepthMapSettingsChanged();

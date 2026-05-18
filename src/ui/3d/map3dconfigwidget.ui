@@ -217,8 +217,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>649</height>
+                <width>811</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -350,8 +350,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>649</height>
+                <width>811</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -565,8 +565,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>649</height>
+                <width>811</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -649,8 +649,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>649</height>
+                <width>811</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -816,6 +816,55 @@
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="groupBox_2">
+                 <property name="title">
+                  <string>Color Grading</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_3">
+                  <item row="1" column="1">
+                   <widget class="QgsDoubleSpinBox" name="mSpinExposure">
+                    <property name="minimum">
+                     <double>-5.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>5.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.050000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>0.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_8">
+                    <property name="toolTip">
+                     <string>Adjusts the overall brightness of the 3D scene. A value of 0.0 leaves the original brightness unchanged. Positive values will brighten the scene, while negative values will darken it.</string>
+                    </property>
+                    <property name="text">
+                     <string>Exposure adjustment</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>Tone mapping</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="mComboToneMapping">
+                    <property name="toolTip">
+                     <string>Determines how extremely bright, High Dynamic Range (HDR) colors are displayed on a standard monitor.</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacerShadow">
                  <property name="orientation">
                   <enum>Qt::Orientation::Vertical</enum>
@@ -858,8 +907,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>649</height>
+                <width>385</width>
+                <height>579</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -1066,8 +1115,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>649</height>
+                <width>359</width>
+                <height>312</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
@@ -1220,12 +1269,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -1234,6 +1277,12 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
@@ -1311,7 +1360,6 @@
   <tabstop>edlDistanceSpinBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -81,6 +81,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShadowSettings( other.mShadowSettings )
   , mAmbientOcclusionSettings( other.mAmbientOcclusionSettings )
   , mBloomSettings( other.mBloomSettings )
+  , mColorGradingSettings( other.mColorGradingSettings )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
@@ -289,6 +290,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     mBloomSettings.readXml( elemBloom, context );
   }
 
+  {
+    QDomElement elemColorGrading = elem.firstChildElement( u"color-grading"_s );
+    mColorGradingSettings.readXml( elemColorGrading, context );
+  }
+
   QDomElement elemEyeDomeLighting = elem.firstChildElement( u"eye-dome-lighting"_s );
   mEyeDomeLightingEnabled = elemEyeDomeLighting.attribute( "enabled", u"0"_s ).toInt();
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", u"1000.0"_s ).toDouble();
@@ -435,6 +441,12 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
     QDomElement elemBloom = doc.createElement( u"bloom"_s );
     mBloomSettings.writeXml( elemBloom, context );
     elem.appendChild( elemBloom );
+  }
+
+  {
+    QDomElement elemColorGrading = doc.createElement( u"color-grading"_s );
+    mColorGradingSettings.writeXml( elemColorGrading, context );
+    elem.appendChild( elemColorGrading );
   }
 
   QDomElement elemDebug = doc.createElement( u"debug"_s );
@@ -1329,6 +1341,13 @@ QgsBloomSettings Qgs3DMapSettings::bloomSettings() const
   return mBloomSettings;
 }
 
+QgsColorGradingSettings Qgs3DMapSettings::colorGradingSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mColorGradingSettings;
+}
+
 void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1358,6 +1377,14 @@ void Qgs3DMapSettings::setBloomSettings( const QgsBloomSettings &settings )
 
   mBloomSettings = settings;
   emit bloomSettingsChanged();
+}
+
+void Qgs3DMapSettings::setColorGradingSettings( const QgsColorGradingSettings &settings )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mColorGradingSettings = settings;
+  emit colorGradingSettingsChanged();
 }
 
 bool Qgs3DMapSettings::isSkyboxEnabled() const
