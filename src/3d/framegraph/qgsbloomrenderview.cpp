@@ -41,7 +41,9 @@ QgsBloomRenderView::QgsBloomRenderView( const QString &viewName, Qt3DRender::QTe
   : QgsAbstractRenderView( viewName )
 {
   mFilterRadiusParameter = new Qt3DRender::QParameter( u"filterRadius"_s, 0.005f, rootEntity );
-  mAspectRatioParameter = new Qt3DRender::QParameter( u"aspectRatio"_s, 1.0f, rootEntity );
+
+  const float aspectRatio = static_cast<float>( size.width() ) / static_cast<float>( size.height() );
+  mAspectRatioParameter = new Qt3DRender::QParameter( u"aspectRatio"_s, aspectRatio, rootEntity );
 
   buildRenderPasses( sourceColorTexture, size, rootEntity );
 }
