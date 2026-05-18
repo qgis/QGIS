@@ -90,7 +90,7 @@ class _3D_EXPORT QgsBloomSettings
     void setRadius( double radius ) { mRadius = radius; }
 
     /**
-     * Returns tthe filter radius for the bloom.
+     * Returns the filter radius for the bloom.
      *
      * \see setRadius()
      */
