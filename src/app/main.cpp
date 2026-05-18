@@ -1607,7 +1607,7 @@ int main( int argc, char *argv[] )
     mypSplash->move( currentDesktopsCenter - mypSplash->rect().center() );
   }
 
-  if ( !takeScreenShots && !myHideSplash && !settings.value( u"qgis/hideSplash"_s ).toBool() )
+  if ( !takeScreenShots && !myHideSplash && !QgisApp::settingsHideSplash->value() )
   {
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( pixmap.mask() );

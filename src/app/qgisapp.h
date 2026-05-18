@@ -244,6 +244,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryBool *settingsAskToDeleteFeatures;
     static const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *settingsLegendDoubleClickAction SIP_SKIP;
     static const QgsSettingsEntryBool *settingsEnableEventTracing SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsHideSplash SIP_SKIP;
 
     //! Constructor
     QgisApp(
