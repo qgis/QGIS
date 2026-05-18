@@ -16,6 +16,7 @@
 #ifndef QGSPHONGTEXTUREDMATERIAL_H
 #define QGSPHONGTEXTUREDMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -28,6 +29,7 @@
 namespace Qt3DRender
 {
   class QParameter;
+  class QShaderProgram;
 
 } // namespace Qt3DRender
 
@@ -48,6 +50,14 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
      */
     explicit QgsPhongTexturedMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsPhongTexturedMaterial() override;
+
+    /**
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader with
+     * texture coordinate support. \a flags controls which per-instance attributes
+     * (scale, rotation) are active.
+     */
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
 
   public slots:
     //! Sets ambient color, must be a SRGB color
@@ -70,6 +80,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
 
   private:
     void init();
+    void updateShaders();
 
     Qt3DRender::QParameter *mAmbientParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureParameter = nullptr;
@@ -78,6 +89,9 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     Qt3DRender::QParameter *mSpecularParameter = nullptr;
     Qt3DRender::QParameter *mShininessParameter = nullptr;
     Qt3DRender::QParameter *mOpacityParameter = nullptr;
+    Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
 };
 
 ///@endcond PRIVATE

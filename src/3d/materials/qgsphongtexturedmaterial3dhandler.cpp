@@ -109,6 +109,43 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
   return nullptr;
 }
 
+QgsMaterial *QgsPhongTexturedMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+{
+  const QgsPhongTexturedMaterialSettings *phongSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( settings );
+  Q_ASSERT( phongSettings );
+
+  QgsPhongTexturedMaterial *material = new QgsPhongTexturedMaterial();
+  material->setObjectName( u"phongTexturedMaterial"_s );
+  material->setInstancingEnabled( true, flags );
+
+  const int opacity = static_cast<int>( phongSettings->opacity() * 255.0 );
+  const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
+  material->setAmbient( QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) );
+  const QColor specular = phongSettings->specular();
+  material->setSpecular( QColor( specular.red(), specular.green(), specular.blue(), opacity ) );
+  material->setShininess( static_cast<float>( phongSettings->shininess() ) );
+  material->setOpacity( static_cast<float>( phongSettings->opacity() ) );
+
+  bool fitsInCache = false;
+  const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache );
+  ( void ) fitsInCache;
+
+  if ( !textureSourceImage.isNull() )
+  {
+    Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
+    texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
+    texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
+    texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+    Qgs3DUtils::setTextureFiltering( texture, context );
+    texture->addTextureImage( new QgsImageTexture( textureSourceImage ) );
+    material->setDiffuseTexture( texture );
+    material->setDiffuseTextureScale( static_cast<float>( phongSettings->textureScale() ) );
+    material->setDiffuseTextureRotation( static_cast<float>( phongSettings->textureRotation() ) );
+  }
+
+  return material;
+}
+
 QMap<QString, QString> QgsPhongTexturedMaterial3DHandler::toExportParameters( const QgsAbstractMaterialSettings *settings ) const
 {
   const QgsPhongTexturedMaterialSettings *phongSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( settings );
