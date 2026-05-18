@@ -770,12 +770,22 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         childResult.setHtmlLog( thisAlgorithmHtmlLog + formattedException + formattedRunTime );
         context.modelResult().childResults().insert( childId, childResult );
 
+        if ( modelFeedback )
+        {
+          modelFeedback->reportChildResult( childId, childResult );
+        }
+
         throw QgsProcessingException( error );
       }
       else
       {
         childResult.setHtmlLog( thisAlgorithmHtmlLog );
         context.modelResult().childResults().insert( childId, childResult );
+
+        if ( modelFeedback )
+        {
+          modelFeedback->reportChildResult( childId, childResult );
+        }
       }
     }
 

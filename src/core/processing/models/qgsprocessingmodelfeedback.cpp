@@ -62,6 +62,11 @@ void QgsProcessingModelFeedback::reportChildExecutionSuccess( const QString &chi
   emit childExecutionSucceeded( childId, childResults );
 }
 
+void QgsProcessingModelFeedback::reportChildResult( const QString &childId, const QgsProcessingModelChildAlgorithmResult &result )
+{
+  emit childResultReported( childId, result );
+}
+
 void QgsProcessingModelFeedback::reportChildPruned( const QString &childId )
 {
   mPrunedChildren.insert( childId );
