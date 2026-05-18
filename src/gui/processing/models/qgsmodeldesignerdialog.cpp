@@ -1379,7 +1379,18 @@ void QgsModelDesignerDialog::showChildAlgorithmLog( const QString &childId )
 {
   const QString childDescription = mModel->childAlgorithm( childId ).description();
 
-  const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
+  QgsProcessingModelChildAlgorithmResult result;
+  // prefer to fetch the log from the item itself -- if we are currently mid-way through
+  // running the model, it will have the LATEST log available
+  if ( QgsModelChildAlgorithmGraphicItem *item = mScene->childAlgorithmItem( childId ) )
+  {
+    result = item->results();
+  }
+  if ( result.htmlLog().isEmpty() )
+  {
+    result = mLastResult.childResults().value( childId );
+  }
+
   if ( result.htmlLog().isEmpty() )
   {
     mMessageBar->pushWarning( QString(), tr( "No log is available for %1" ).arg( childDescription ) );
