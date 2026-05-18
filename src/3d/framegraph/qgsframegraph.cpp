@@ -386,9 +386,12 @@ void QgsFrameGraph::updateEyeDomeSettings( const Qgs3DMapSettings &settings )
 
 void QgsFrameGraph::updateBloomSettings( const QgsBloomSettings &settings )
 {
+  QgsBloomRenderView &renderView = bloomRenderView();
+
+  renderView.setEnabled( settings.isEnabled() );
   mPostprocessingEntity->setBloomEnabled( settings.isEnabled() );
   mPostprocessingEntity->setBloomFactor( static_cast< float >( settings.intensity() ) );
-  bloomRenderView().setFilterRadius( static_cast< float >( settings.radius() ) );
+  renderView.setFilterRadius( static_cast< float >( settings.radius() ) );
 }
 
 void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources )
