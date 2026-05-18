@@ -37,6 +37,7 @@ Map canvas is a class for displaying all GIS data types on a canvas.
       sipType = nullptr;
 %End
   public:
+
     QgsMapCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
