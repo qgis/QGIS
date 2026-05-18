@@ -247,6 +247,11 @@ QList<QgsMapLayer *> QgsWmsRenderContext::layers() const
   return mNicknameLayers.values();
 }
 
+QHash<const QgsMapLayer *, QStringList> QgsWmsRenderContext::acceptableLayersToRender() const
+{
+  return mAcceptableLayersToRender;
+}
+
 double QgsWmsRenderContext::scaleDenominator() const
 {
   double denominator = -1;
@@ -462,7 +467,7 @@ void QgsWmsRenderContext::searchLayersToRender()
   if ( !nicknames.isEmpty() )
   {
     // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
-    QHash<const QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( nicknames );
+    mAcceptableLayersToRender = acceptableLayers( nicknames );
     const QStringList queryLayerNames = flattenedQueryLayers( nicknames );
     for ( const QString &layerName : queryLayerNames )
     {
@@ -472,7 +477,7 @@ void QgsWmsRenderContext::searchLayersToRender()
       {
         if ( !mLayersToRender.contains( lyr ) )
         {
-          if ( !acceptableLayersForRender.contains( lyr ) )
+          if ( !mAcceptableLayersToRender.contains( lyr ) )
           {
             continue;
           }
@@ -516,7 +521,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
   }
 
   // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
-  QHash<const QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.queryLayersNickname() );
+  mAcceptableLayersToRender = acceptableLayers( requestedSldLayerNames );
 
   for ( int i = 0; i < named.size(); ++i )
   {
@@ -529,7 +534,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
         mSlds[lname] = namedElem;
         for ( const auto layer : mNicknameLayers.values( lname ) )
         {
-          if ( !acceptableLayersForRender.contains( layer ) )
+          if ( !mAcceptableLayersToRender.contains( layer ) )
           {
             continue;
           }
@@ -551,7 +556,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
         bool layerAdded = false;
         for ( QgsMapLayer *layer : mLayerGroups[lname] )
         {
-          if ( !acceptableLayersForRender.contains( layer ) )
+          if ( !mAcceptableLayersToRender.contains( layer ) )
           {
             continue;
           }
@@ -586,7 +591,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
 void QgsWmsRenderContext::searchLayersToRenderStyle()
 {
   // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
-  QHash<const QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.allLayersNickname() );
+  mAcceptableLayersToRender = acceptableLayers( mParameters.allLayersNickname() );
 
   for ( const QgsWmsParametersLayer &param : mParameters.layersParameters() )
   {
@@ -617,7 +622,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
       for ( const auto layer : mNicknameLayers.values( nickname ) )
       {
-        if ( !acceptableLayersForRender.contains( layer ) )
+        if ( !mAcceptableLayersToRender.contains( layer ) )
         {
           continue;
         }
@@ -652,7 +657,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
       {
         for ( const auto layer : mNicknameLayers.values( name ) )
         {
-          if ( !acceptableLayersForRender.contains( layer ) )
+          if ( !mAcceptableLayersToRender.contains( layer ) )
           {
             continue;
           }

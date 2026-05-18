@@ -100,6 +100,12 @@ namespace QgsWms
       QList<QgsMapLayer *> layers() const;
 
       /**
+       * Returns a hash of all the layers that can be rendered and for each a list of the layer names, group names, etc. requesting it.
+       * The list differs from layersToRender by not containing external layers etc.
+       */
+      QHash<const QgsMapLayer *, QStringList> acceptableLayersToRender() const;
+
+      /**
        * Returns a list of all layers to actually render according to the
        * current configuration.
        */
@@ -315,6 +321,9 @@ namespace QgsWms
 
       // map of layers to use for rendering
       QList<QgsMapLayer *> mLayersToRender;
+
+      // map of layers that can be rendered and for each a list of the layer names, group names, etc. requesting it
+      QHash<const QgsMapLayer *, QStringList> mAcceptableLayersToRender;
 
       // list of layers which are not usable
       QStringList mRestrictedLayers;
