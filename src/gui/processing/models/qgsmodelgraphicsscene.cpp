@@ -400,6 +400,27 @@ QgsModelChildAlgorithmGraphicItem *QgsModelGraphicsScene::childAlgorithmItem( co
   return mChildAlgorithmItems.value( childId );
 }
 
+void QgsModelGraphicsScene::resetChildAlgorithmItems( const QSet<QString> &childAlgorithmSubset )
+{
+  if ( !childAlgorithmSubset.isEmpty() )
+  {
+    for ( const QString &childId : childAlgorithmSubset )
+    {
+      if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+      {
+        item->setResults( QgsProcessingModelChildAlgorithmResult() );
+      }
+    }
+  }
+  else
+  {
+    for ( auto it = mChildAlgorithmItems.constBegin(); it != mChildAlgorithmItems.constEnd(); ++it )
+    {
+      it.value()->setResults( QgsProcessingModelChildAlgorithmResult() );
+    }
+  }
+}
+
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::parameterItem( const QString &name )
 {
   return mParameterItems.value( name );

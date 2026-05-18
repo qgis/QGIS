@@ -1275,6 +1275,13 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
         previousResultStore->moveToThread( nullptr );
         modelConfig->setPreviousLayerStore( std::move( previousResultStore ) );
         context->setModelInitialRunConfig( std::move( modelConfig ) );
+
+        mScene->resetChildAlgorithmItems( childAlgorithmSubset );
+      }
+      else
+      {
+        // reset all child algorithm results
+        mScene->resetChildAlgorithmItems();
       }
     } );
 
