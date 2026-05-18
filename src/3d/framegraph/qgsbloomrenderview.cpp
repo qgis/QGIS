@@ -39,13 +39,16 @@ using namespace Qt::StringLiterals;
 
 QgsBloomRenderView::QgsBloomRenderView( const QString &viewName, Qt3DRender::QTexture2D *sourceColorTexture, const QSize &size, Qt3DCore::QEntity *rootEntity )
   : QgsAbstractRenderView( viewName )
+  , mBaseSize( size )
 {
   mFilterRadiusParameter = new Qt3DRender::QParameter( u"filterRadius"_s, 0.005f, rootEntity );
 
   const float aspectRatio = static_cast<float>( size.width() ) / static_cast<float>( size.height() );
   mAspectRatioParameter = new Qt3DRender::QParameter( u"aspectRatio"_s, aspectRatio, rootEntity );
 
-  buildRenderPasses( sourceColorTexture, size, rootEntity );
+  // bloom is disabled by default
+  QgsAbstractRenderView::setEnabled( false );
+  buildRenderPasses( sourceColorTexture, rootEntity );
 }
 
 QgsBloomRenderView::~QgsBloomRenderView() = default;
@@ -65,11 +68,9 @@ void QgsBloomRenderView::setAspectRatio( float ratio )
   mAspectRatioParameter->setValue( ratio );
 }
 
-void QgsBloomRenderView::buildRenderPasses( Qt3DRender::QTexture2D *sourceTexture, const QSize &baseSize, Qt3DCore::QEntity *rootEntity )
+void QgsBloomRenderView::buildRenderPasses( Qt3DRender::QTexture2D *sourceTexture, Qt3DCore::QEntity *rootEntity )
 {
   Qt3DRender::QTexture2D *currentInputTexture = sourceTexture;
-
-  QSize currentSize = baseSize;
 
   // following CoD: Advanced Warfare approach, from ACM Siggraph 2014
   // see also https://learnopengl.com/Guest-Articles/2022/Phys.-Based-Bloom by Jorge Jimenez
@@ -82,9 +83,6 @@ void QgsBloomRenderView::buildRenderPasses( Qt3DRender::QTexture2D *sourceTextur
   // downsample
   for ( int i = 0; i < MIP_PASSES; ++i )
   {
-    // "If you go too small, make sure that you stop when you reach 1x1 in mip size" (Jorge Jimenez)
-    currentSize = QSize( std::max( 1, currentSize.width() / 2 ), std::max( 1, currentSize.height() / 2 ) );
-
     auto passLayer = new Qt3DRender::QLayer( rootEntity );
     passLayer->setRecursive( true );
     passLayer->setObjectName( mViewName + u"::Layer(DownsamplePass%1)"_s.arg( i + 1 ) );
@@ -97,7 +95,8 @@ void QgsBloomRenderView::buildRenderPasses( Qt3DRender::QTexture2D *sourceTextur
     auto mipTexture = new Qt3DRender::QTexture2D( colorOutput );
     // "we are downscaling an HDR color buffer, so we need a float texture format" (Jorge Jimenez)
     mipTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA16F );
-    mipTexture->setSize( currentSize.width(), currentSize.height() );
+    // minimize VRAM during build -- if the effect is disabled, we don't want to waste resources
+    mipTexture->setSize( 1, 1 );
     mipTexture->setGenerateMipMaps( false );
     // "we must enable linear filtering and edge-clamping for all mips" (Jorge Jimenez)
     mipTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -169,15 +168,34 @@ void QgsBloomRenderView::buildRenderPasses( Qt3DRender::QTexture2D *sourceTextur
 
 void QgsBloomRenderView::updateWindowResize( int width, int height )
 {
+  mBaseSize = QSize( width, height );
+
+  const bool enabled = isEnabled();
+
   int currentWidth = width;
   int currentHeight = height;
   for ( int i = 0; i < MIP_PASSES; ++i )
   {
+    // "If you go too small, make sure that you stop when you reach 1x1 in mip size" (Jorge Jimenez)
     currentWidth = std::max( 1, currentWidth / 2 );
     currentHeight = std::max( 1, currentHeight / 2 );
-    mTextures[i]->setSize( currentWidth, currentHeight );
+    if ( enabled )
+    {
+      mTextures[i]->setSize( currentWidth, currentHeight );
+    }
+    else
+    {
+      // minimize VRAM when disabled
+      mTextures[i]->setSize( 1, 1 );
+    }
   }
 
   const float aspectRatio = static_cast<float>( width ) / static_cast<float>( height );
   mAspectRatioParameter->setValue( aspectRatio );
+}
+
+void QgsBloomRenderView::setEnabled( bool enabled )
+{
+  QgsAbstractRenderView::setEnabled( enabled );
+  updateWindowResize( mBaseSize.width(), mBaseSize.height() );
 }

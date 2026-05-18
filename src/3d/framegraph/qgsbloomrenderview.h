@@ -18,6 +18,8 @@
 
 #include "qgsabstractrenderview.h"
 
+#include <QSize>
+
 #define SIP_NO_FILE
 
 class QgsRenderPassQuad;
@@ -82,13 +84,16 @@ class QgsBloomRenderView : public QgsAbstractRenderView
     void setAspectRatio( float ratio );
 
     void updateWindowResize( int width, int height ) override;
+    void setEnabled( bool enabled ) override;
 
   private:
-    void buildRenderPasses( Qt3DRender::QTexture2D *sourceTexture, const QSize &baseSize, Qt3DCore::QEntity *rootEntity );
+    void buildRenderPasses( Qt3DRender::QTexture2D *sourceTexture, Qt3DCore::QEntity *rootEntity );
 
     // from https://learnopengl.com/Guest-Articles/2022/Phys.-Based-Bloom
     // "You may go as small as you wish, though 5 or 6 is usually good enough" (Jorge Jimenez)
     static const int MIP_PASSES = 5;
+
+    QSize mBaseSize;
 
     std::vector<Qt3DRender::QTexture2D *> mTextures;
 
