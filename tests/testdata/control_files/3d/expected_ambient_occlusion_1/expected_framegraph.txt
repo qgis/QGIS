@@ -63,8 +63,8 @@
           (Qt3DRender::QRenderStateSet{176/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
             (Qt3DRender::QLayerFilter{179/<no_name>}) [ (AcceptAnyMatchingLayers:[ {145/ambient_occlusion::Layer(Blur)} ]) ]
               (Qt3DRender::QRenderTargetSelector{183/ambient_occlusion::RenderTargetSelector(Blur)}) [ (outputs:[ (Color0:{181[R32F]/ambient_occlusion::ColorTarget(blur)) ]) ]
-      (Qt3DRender::QNoDraw{196/bloom::NoDraw}) [D]
-        (Qt3DRender::QSubtreeEnabler{197/bloom::SubtreeEnabler})
+      (Qt3DRender::QNoDraw{196/bloom::NoDraw})
+        (Qt3DRender::QSubtreeEnabler{197/bloom::SubtreeEnabler}) [D]
           (Qt3DRender::QRenderStateSet{200/<no_name>}) [  ]
             (Qt3DRender::QRenderTargetSelector{205/<no_name>}) [ (outputs:[ (Color0:{204[RGBA16F]/<no_name>) ]) ]
               (Qt3DRender::QClearBuffers{206/<no_name>})
