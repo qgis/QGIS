@@ -273,6 +273,18 @@ The default implementation does nothing.
 %End
 
   protected:
+    virtual void paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+%Docstring
+Paints the background part of the graphic item.
+
+Subclasses may override this to customize the background appearance.
+%End
+
+    void paintOutline( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+%Docstring
+Paints the outline part of the graphic item.
+%End
+
     QString truncatedTextForItem( const QString &text ) const;
 %Docstring
 Truncates a ``text`` string so that it fits nicely within the item's
@@ -443,6 +455,11 @@ execution through the dialog.
 
 .. versionadded:: 4.0
 %End
+    void setProgress( double progress );
+%Docstring
+Sets the child's ``progress``.
+%End
+
     void setStarted();
 %Docstring
 Flags the algorithm as having started.
@@ -483,6 +500,9 @@ algorithm.
 %End
 
   protected:
+    virtual void paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
+
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
