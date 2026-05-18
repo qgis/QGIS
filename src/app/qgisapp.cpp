@@ -766,14 +766,13 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
 
 void QgisApp::toggleEventTracing()
 {
-  QgsSettings settings;
-  if ( !settings.value( u"qgis/enableEventTracing"_s, false ).toBool() )
+  if ( !settingsEnableEventTracing->value() )
   {
     // make sure the setting is available in Options > Advanced
-    if ( !settings.contains( u"qgis/enableEventTracing"_s ) )
-      settings.setValue( u"qgis/enableEventTracing"_s, false );
+    if ( !settingsEnableEventTracing->exists() )
+      settingsEnableEventTracing->setValue( false );
 
-    messageBar()->pushWarning( tr( "Event Tracing" ), tr( "Tracing is not enabled. Look for \"enableEventTracing\" in Options > Advanced." ) );
+    messageBar()->pushWarning( tr( "Event Tracing" ), tr( "Tracing is not enabled. Look for \"enable-event-tracing\" in Options > Advanced." ) );
     return;
   }
 
@@ -990,6 +989,8 @@ const QgisApp::AppOptions QgisApp::DEFAULT_OPTIONS = QgisApp::AppOptions( QgisAp
 const QgsSettingsEntryBool *QgisApp::settingsAskToDeleteFeatures = new QgsSettingsEntryBool( u"ask-to-delete-features"_s, QgsSettingsTree::sTreeApp, true );
 const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *QgisApp::settingsLegendDoubleClickAction
   = new QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction>( u"legend-double-click-action"_s, QgsSettingsTree::sTreeApp, Qgis::LegendLayerDoubleClickAction::LayerProperties, u"Action performed when double-clicking a layer in the legend"_s );
+const QgsSettingsEntryBool *QgisApp::settingsEnableEventTracing
+  = new QgsSettingsEntryBool( u"enable-event-tracing"_s, QgsSettingsTree::sTreeApp, false, u"Whether event tracing is enabled for performance diagnostics"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
