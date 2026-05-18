@@ -2917,7 +2917,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
   canvas->enableAntiAliasing( QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
   double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
   canvas->setWheelFactor( zoomFactor );
-  canvas->setCachingEnabled( settings.value( u"qgis/enable_render_caching"_s, true ).toBool() );
+  canvas->setCachingEnabled( QgsMapCanvas::settingsEnableRenderCaching->value() );
   canvas->setParallelRenderingEnabled( settings.value( u"qgis/parallel_rendering"_s, true ).toBool() );
   canvas->setMapUpdateInterval( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
   canvas->setSegmentationTolerance( QgsSettingsRegistryGui::settingsSegmentationTolerance->value() );

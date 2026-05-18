@@ -109,6 +109,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
   public:
     static const QgsSettingsEntryBool *settingsMainCanvasPreviewJobs SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsEnableRenderCaching SIP_SKIP;
 
     //! Constructor
     QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr );
