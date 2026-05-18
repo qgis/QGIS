@@ -691,10 +691,9 @@ void QgisApp::emitCustomCrsValidation( QgsCoordinateReferenceSystem &srs )
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
 {
   Q_UNUSED( index )
-  QgsSettings settings;
-  switch ( settings.value( u"qgis/legendDoubleClickAction"_s, 0 ).toInt() )
+  switch ( settingsLegendDoubleClickAction->value() )
   {
-    case 0:
+    case Qgis::LegendLayerDoubleClickAction::LayerProperties:
     {
       //show properties
       if ( mLayerTreeView )
@@ -725,14 +724,14 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
       QgisApp::instance()->layerProperties();
       break;
     }
-    case 1:
+    case Qgis::LegendLayerDoubleClickAction::AttributeTable:
     {
       QgsSettings settings;
       QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll );
       QgisApp::instance()->attributeTable( initialMode );
       break;
     }
-    case 2:
+    case Qgis::LegendLayerDoubleClickAction::LayerStyling:
       mapStyleDock( true );
       break;
     default:
@@ -989,6 +988,8 @@ QgisApp *QgisApp::sInstance = nullptr;
 const QgisApp::AppOptions QgisApp::DEFAULT_OPTIONS = QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins ) | QgisApp::AppOption::EnablePython;
 
 const QgsSettingsEntryBool *QgisApp::settingsAskToDeleteFeatures = new QgsSettingsEntryBool( u"ask-to-delete-features"_s, QgsSettingsTree::sTreeApp, true );
+const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *QgisApp::settingsLegendDoubleClickAction
+  = new QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction>( u"legend-double-click-action"_s, QgsSettingsTree::sTreeApp, Qgis::LegendLayerDoubleClickAction::LayerProperties, u"Action performed when double-clicking a layer in the legend"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )

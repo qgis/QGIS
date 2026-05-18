@@ -115,6 +115,8 @@ class Qgs3DMapCanvasWidget;
 class QgsVertexEditor;
 class QgsMapLayerActionContext;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 class QDomDocument;
 class QNetworkReply;
@@ -240,6 +242,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const AppOptions DEFAULT_OPTIONS;
 
     static const QgsSettingsEntryBool *settingsAskToDeleteFeatures;
+    static const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *settingsLegendDoubleClickAction SIP_SKIP;
 
     //! Constructor
     QgisApp(

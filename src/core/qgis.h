@@ -4870,6 +4870,19 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( LayerTreeInsertionMethod )
 
     /**
+     * Action performed when double-clicking a layer in the legend.
+     *
+     * \since QGIS 4.0
+     */
+    enum class LegendLayerDoubleClickAction : int
+    {
+      LayerProperties = 0, //!< Open the layer properties dialog
+      AttributeTable = 1,  //!< Open the attribute table
+      LayerStyling = 2,    //!< Open the layer styling dock
+    };
+    Q_ENUM( LegendLayerDoubleClickAction )
+
+    /**
      * Layer tree filter flags.
      *
      * \since QGIS 3.32
