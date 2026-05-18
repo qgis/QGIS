@@ -228,6 +228,9 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
+
     void setAllLayersMapServerUri( const QgsMimeDataUtils::Uri &uri ) { mAllLayersMapServerUri = uri; }
     const QgsMimeDataUtils::Uri &allLayersMapServerUri() const { return mAllLayersMapServerUri; }
 
