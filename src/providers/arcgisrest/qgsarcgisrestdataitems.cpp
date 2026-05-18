@@ -746,6 +746,19 @@ bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
+bool QgsArcGisMapServiceItem::hasDragEnabled() const
+{
+  return mAllLayersMapServerUri.isValid();
+}
+
+QgsMimeDataUtils::UriList QgsArcGisMapServiceItem::mimeUris() const
+{
+  QgsMimeDataUtils::UriList res;
+  if ( mAllLayersMapServerUri.isValid() )
+    res << mAllLayersMapServerUri;
+  return res;
+}
+
 
 //
 // QgsArcGisImageServiceItem
