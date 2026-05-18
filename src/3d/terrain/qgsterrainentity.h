@@ -32,6 +32,7 @@
 
 #include "qgschunkedentity.h"
 #include "qgschunkqueuejob.h"
+#include "qgslayerstylewatcher.h"
 #include "qobjectuniqueptr.h"
 
 #define SIP_NO_FILE
@@ -47,7 +48,6 @@ class QgsCoordinateTransform;
 class QgsMapLayer;
 class QgsTerrainGenerator;
 class TerrainMapUpdateJobFactory;
-class QgsLayerStyleWatcher;
 
 /**
  * \ingroup qgis_3d
