@@ -397,6 +397,11 @@ void QgsFrameGraph::updateBloomSettings( const QgsBloomSettings &settings )
   renderView.setFilterRadius( static_cast< float >( settings.radius() ) );
 }
 
+void QgsFrameGraph::updateColorGradingSettings( const QgsColorGradingSettings &settings )
+{
+  mPostprocessingEntity->updateColorGradingSettings( settings );
+}
+
 void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources )
 {
   if ( shadowSettings.renderShadows() )

@@ -24,6 +24,7 @@
 class QgsFrameGraph;
 class QgsShadowRenderView;
 class QgsDirectionalLightSettings;
+class QgsColorGradingSettings;
 
 namespace Qt3DRender
 {
@@ -96,6 +97,13 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setBloomFactor( float factor );
 
+    /**
+     * Updates settings for color grading.
+     *
+     * \since QGIS 4.2
+     */
+    void updateColorGradingSettings( const QgsColorGradingSettings &settings );
+
   private:
     Qt3DRender::QCamera *mMainCamera = nullptr;
 
@@ -127,6 +135,9 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mBloomTextureParameter = nullptr;
     Qt3DRender::QParameter *mBloomEnabledParameter = nullptr;
     Qt3DRender::QParameter *mBloomFactorParameter = nullptr;
+
+    Qt3DRender::QParameter *mExposureParameter = nullptr;
+    Qt3DRender::QParameter *mToneMappingParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

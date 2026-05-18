@@ -119,6 +119,11 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mBloomFactorParameter = new Qt3DRender::QParameter( u"bloomFactor"_s, 0.05 );
   mMaterial->addParameter( mBloomFactorParameter );
 
+  mExposureParameter = new Qt3DRender::QParameter( u"exposureAdjustment"_s, 0.0f );
+  mMaterial->addParameter( mExposureParameter );
+  mToneMappingParameter = new Qt3DRender::QParameter( u"toneMapping"_s, 1 );
+  mMaterial->addParameter( mToneMappingParameter );
+
   const QString vertexShaderPath = u"qrc:/shaders/postprocess.vert"_s;
   const QString fragmentShaderPath = u"qrc:/shaders/postprocess.frag"_s;
 
@@ -309,4 +314,10 @@ void QgsPostprocessingEntity::setBloomEnabled( bool enabled )
 void QgsPostprocessingEntity::setBloomFactor( float factor )
 {
   mBloomFactorParameter->setValue( factor );
+}
+
+void QgsPostprocessingEntity::updateColorGradingSettings( const QgsColorGradingSettings &settings )
+{
+  mExposureParameter->setValue( static_cast< float >( settings.exposureAdjustment() ) );
+  mToneMappingParameter->setValue( static_cast< int >( settings.toneMapping() ) );
 }

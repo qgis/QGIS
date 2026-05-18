@@ -67,6 +67,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( mMap->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased ) );
   mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
 
+  mComboToneMapping->addItem( tr( "Clamp HDR to SDR" ), QVariant::fromValue( Qgis::ToneMappingMethod::Clamp ) );
+  mComboToneMapping->addItem( tr( "ACES (Film Look)" ), QVariant::fromValue( Qgis::ToneMappingMethod::Aces ) );
+  mSpinExposure->setClearValue( 0 );
+
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
   int tabIndex = settings.value( u"Windows/3DMapConfig/Tab"_s, 0 ).toInt();
@@ -275,6 +279,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // we arbitrarily scale the radius by 1000 to make the sizes look more reasonable in the UI
   mSpinBloomRadius->setValue( map->bloomSettings().radius() * 1000 );
 
+  mComboToneMapping->setCurrentIndex( mComboToneMapping->findData( QVariant::fromValue( map->colorGradingSettings().toneMapping() ) ) );
+  mSpinExposure->setValue( map->colorGradingSettings().exposureAdjustment() );
+
   // ==================
   // Page: General
 
@@ -416,6 +423,11 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
 
   mMap->setAmbientOcclusionSettings( mAmbientOcclusionSettingsWidget->toAmbientOcclusionSettings() );
+
+  QgsColorGradingSettings colorSettings = mMap->colorGradingSettings();
+  colorSettings.setExposureAdjustment( mSpinExposure->value() );
+  colorSettings.setToneMapping( mComboToneMapping->currentData().value< Qgis::ToneMappingMethod >() );
+  mMap->setColorGradingSettings( colorSettings );
 
   QgsBloomSettings bloomSettings = mMap->bloomSettings();
   bloomSettings.setEnabled( mBloomGroupBox->isChecked() );

@@ -2507,6 +2507,12 @@ The development version
       Always,
     };
 
+    enum class ToneMappingMethod /BaseType=IntEnum/
+    {
+      Clamp,
+      Aces,
+    };
+
     enum class Export3DSceneFormat /BaseType=IntEnum/
     {
       Obj,

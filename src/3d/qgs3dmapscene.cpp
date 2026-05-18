@@ -154,6 +154,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::bloomSettingsChanged, this, &Qgs3DMapScene::onBloomSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::colorGradingSettingsChanged, this, &Qgs3DMapScene::onColorGradingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
@@ -226,6 +227,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   onMsaaEnabledChanged();
   // initial state of bloom setting
   onBloomSettingsChanged();
+  // initial state of color grading
+  onColorGradingSettingsChanged();
 
   // timer used to refresh the map overlay every 250 ms while the camera is moving.
   // schedule2DMapOverlayUpdate() is called to schedule the update.
@@ -1220,6 +1223,11 @@ void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 void Qgs3DMapScene::onBloomSettingsChanged()
 {
   mEngine->frameGraph()->updateBloomSettings( mMap.bloomSettings() );
+}
+
+void Qgs3DMapScene::onColorGradingSettingsChanged()
+{
+  mEngine->frameGraph()->updateColorGradingSettings( mMap.colorGradingSettings() );
 }
 
 void Qgs3DMapScene::onDebugDepthMapSettingsChanged()

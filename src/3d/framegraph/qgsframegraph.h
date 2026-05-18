@@ -62,6 +62,7 @@ class QgsShadowRenderView;
 class QgsShadowSettings;
 class QgsBloomRenderView;
 class QgsBloomSettings;
+class QgsColorGradingSettings;
 
 /**
  * \ingroup qgis_3d
@@ -262,6 +263,13 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 4.2
      */
     void updateBloomSettings( const QgsBloomSettings &settings );
+
+    /**
+     * Updates settings for color grading.
+     *
+     * \since QGIS 4.2
+     */
+    void updateColorGradingSettings( const QgsColorGradingSettings &settings );
 
     static const QString FORWARD_RENDERVIEW;
     static const QString SHADOW_RENDERVIEW;

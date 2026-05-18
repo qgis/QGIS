@@ -738,6 +738,8 @@ pixels Default value is 96
 
 
 
+
+
  bool isSkyboxEnabled() const /Deprecated="Since 4.2. Use backgroundSettings() instead."/;
 %Docstring
 Returns whether the skybox is enabled.
@@ -1241,6 +1243,17 @@ Emitted when the bloom lighting effect settings are changed.
 .. seealso:: :py:func:`bloomSettings`
 
 .. seealso:: :py:func:`setBloomSettings`
+
+.. versionadded:: 4.2
+%End
+
+    void colorGradingSettingsChanged();
+%Docstring
+Emitted when the color grading settings are changed.
+
+.. seealso:: :py:func:`colorGradingSettings`
+
+.. seealso:: :py:func:`setColorGradingSettings`
 
 .. versionadded:: 4.2
 %End
