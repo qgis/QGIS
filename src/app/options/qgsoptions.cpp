@@ -760,7 +760,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   cbxLegendClassifiers->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
-  cbxHideSplash->setChecked( mSettings->value( u"/qgis/hideSplash"_s, false ).toBool() );
+  cbxHideSplash->setChecked( QgisApp::settingsHideSplash->value() );
   cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( u"/qgis/checkVersion"_s, true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( u"/qgis/allowVersionCheck"_s, true ).toBool() );
@@ -1633,7 +1633,7 @@ void QgsOptions::saveOptions()
   bool showLegendClassifiers = QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value();
   QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->setValue( cbxLegendClassifiers->isChecked() );
   QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->setValue( mShowFeatureCountByDefaultCheckBox->isChecked() );
-  mSettings->setValue( u"/qgis/hideSplash"_s, cbxHideSplash->isChecked() );
+  QgisApp::settingsHideSplash->setValue( cbxHideSplash->isChecked() );
   mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
 
   mSettings->setValue( u"/qgis/checkVersion"_s, cbxCheckVersion->isChecked() );

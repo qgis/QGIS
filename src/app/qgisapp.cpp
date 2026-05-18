@@ -991,6 +991,7 @@ const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *QgisApp::set
   = new QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction>( u"legend-double-click-action"_s, QgsSettingsTree::sTreeApp, Qgis::LegendLayerDoubleClickAction::LayerProperties, u"Action performed when double-clicking a layer in the legend"_s );
 const QgsSettingsEntryBool *QgisApp::settingsEnableEventTracing
   = new QgsSettingsEntryBool( u"enable-event-tracing"_s, QgsSettingsTree::sTreeApp, false, u"Whether event tracing is enabled for performance diagnostics"_s );
+const QgsSettingsEntryBool *QgisApp::settingsHideSplash = new QgsSettingsEntryBool( u"hide-splash"_s, QgsSettingsTree::sTreeApp, false, u"Whether the splash screen is hidden at QGIS startup"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
