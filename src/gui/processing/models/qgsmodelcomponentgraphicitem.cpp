@@ -317,7 +317,19 @@ QRectF QgsModelComponentGraphicItem::boundingRect() const
 
   const double hUp = linksAbove == 0 ? 0 : fm.height() * 1.2 * ( ( mComponent->linksCollapsed( Qt::TopEdge ) ? 0 : linksAbove ) + 2 );
   const double hDown = linksBelow == 0 ? 0 : fm.height() * 1.2 * ( ( mComponent->linksCollapsed( Qt::BottomEdge ) ? 0 : linksBelow ) + 2 );
-  return QRectF( -( itemSize().width() ) / 2 - RECT_PEN_SIZE, -( itemSize().height() ) / 2 - hUp - RECT_PEN_SIZE, itemSize().width() + 2 * RECT_PEN_SIZE, itemSize().height() + hDown + hUp + 2 * RECT_PEN_SIZE );
+
+  double outlineSize = 0;
+  if ( outlineColor().isValid() )
+  {
+    outlineSize = RECT_OUTLINE_SIZE + 0.5; // 0.5 for antialiasing
+  }
+
+  return QRectF(
+    -( itemSize().width() ) / 2 - RECT_PEN_SIZE - outlineSize,
+    -( itemSize().height() ) / 2 - hUp - RECT_PEN_SIZE - outlineSize,
+    itemSize().width() + 2 * RECT_PEN_SIZE + outlineSize * 2,
+    itemSize().height() + hDown + hUp + 2 * RECT_PEN_SIZE + outlineSize * 2
+  );
 }
 
 bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
@@ -364,6 +376,21 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
     color = fillColor( state() );
     stroke = strokeColor( state() );
     foreColor = textColor( state() );
+  }
+
+  const QColor outline = outlineColor();
+  if ( outline.isValid() )
+  {
+    // outline may be sub-pixel sized, which looks ugly without antialiasing.
+    const bool wasAntiAliased = painter->testRenderHint( QPainter::RenderHint::Antialiasing );
+    painter->setRenderHint( QPainter::RenderHint::Antialiasing );
+    QPen strokePen = QPen( outline, 10.0 );
+    strokePen.setJoinStyle( Qt::MiterJoin );
+    strokePen.setStyle( strokeStyle( state() ) );
+    painter->setPen( strokePen );
+    painter->setBrush( Qt::NoBrush );
+    painter->drawRect( rect );
+    painter->setRenderHint( QPainter::RenderHint::Antialiasing, wasAntiAliased );
   }
 
   QPen strokePen = QPen( stroke, 0 ); // 0 width "cosmetic" pen
@@ -1098,6 +1125,24 @@ QColor QgsModelChildAlgorithmGraphicItem::strokeColor( QgsModelComponentGraphicI
 QColor QgsModelChildAlgorithmGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
 {
   return mIsValid ? ( qgis::down_cast<const QgsProcessingModelChildAlgorithm *>( component() )->isActive() ? Qt::black : Qt::gray ) : QColor( 255, 255, 255 );
+}
+
+QColor QgsModelChildAlgorithmGraphicItem::outlineColor() const
+{
+  switch ( mResults.executionStatus() )
+  {
+    case Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted:
+      if ( mStarted )
+      {
+        return QColor( 150, 150, 150 );
+      }
+      return QColor();
+    case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success:
+      return QColor( 55, 160, 55 );
+    case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed:
+      return QColor( 208, 0, 0 );
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QPixmap QgsModelChildAlgorithmGraphicItem::iconPixmap() const

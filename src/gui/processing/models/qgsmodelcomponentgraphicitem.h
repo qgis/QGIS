@@ -347,6 +347,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual Qt::PenStyle strokeStyle( State state ) const;
 
     /**
+     * Returns the optional color for an outline effect around the item.
+     *
+     * Returns an invalid color if the outline effect is not required.
+     */
+    virtual QColor outlineColor() const { return QColor(); }
+
+    /**
      * Returns the title alignment
      */
     virtual Qt::Alignment titleAlignment() const;
@@ -409,6 +416,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     static constexpr double BUTTON_MARGIN = 2;
     static constexpr double TEXT_MARGIN = 4;
     static constexpr double RECT_PEN_SIZE = 2;
+    static constexpr double RECT_OUTLINE_SIZE = 10;
     QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
 
     QFont mFont;
@@ -497,6 +505,12 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     QgsProcessingModelChildAlgorithmResult results() { return mResults; };
 
+    /**
+     * Flags the algorithm as having started.
+     *
+     * \since QGIS 4.2
+     */
+    void setStarted();
 
   signals:
 
@@ -532,6 +546,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
+    QColor outlineColor() const override;
     QPixmap iconPixmap() const override;
     QPicture iconPicture() const override;
 
@@ -550,6 +565,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
   private:
     QPicture mPicture;
     QPixmap mPixmap;
+    bool mStarted = false;
     QgsProcessingModelChildAlgorithmResult mResults;
     bool mIsValid = true;
 };
