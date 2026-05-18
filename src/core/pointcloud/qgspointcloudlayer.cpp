@@ -74,6 +74,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri, const QString &baseN
   connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
   connect( undoStack(), &QUndoStack::indexChanged, this, &QgsMapLayer::layerModified );
   connect( this, &QgsMapLayer::layerModified, this, [this] { triggerRepaint(); } );
+  connect( this, &QgsMapLayer::dataChanged, this, [this] { triggerRepaint(); } );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer()
@@ -959,7 +960,7 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
 
         if ( subIndex.at( i ).extent().intersects( renderExtent ) && ( renderExtent.width() < widthThreshold || renderExtent.height() < heightThreshold ) )
         {
-          mDataProvider->loadSubIndex( i );
+          mDataProvider->loadSubIndex( i, true );
         }
       }
     }

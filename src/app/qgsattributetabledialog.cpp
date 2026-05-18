@@ -309,10 +309,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [] { QgisApp::instance()->saveEdits(); } );
 
-  QgsDockableWidgetHelper::OpeningMode openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? QgsDockableWidgetHelper::OpeningMode::ForceDocked
-                                                                                                                           : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
+  Qgis::DockableWidgetInitialState openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? Qgis::DockableWidgetInitialState::ForceDocked
+                                                                                                                       : Qgis::DockableWidgetInitialState::ForceDialog;
   if ( initiallyDocked )
-    openingMode = *initiallyDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
+    openingMode = *initiallyDocked ? Qgis::DockableWidgetInitialState::ForceDocked : Qgis::DockableWidgetInitialState::ForceDialog;
   mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), u"attribute-table"_s, QStringList(), openingMode, false, Qt::BottomDockWidgetArea );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { close(); } );

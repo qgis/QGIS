@@ -252,7 +252,7 @@ values.
 .. versionadded:: 3.40
 %End
 
-    QString exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), int indent = -1 ) const;
+    QString exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), int indent = -1, const QString &featureType = QString() ) const;
 %Docstring
 Returns a GeoJSON string representation of a feature.
 
@@ -263,6 +263,8 @@ Returns a GeoJSON string representation of a feature.
            feature's ID. If omitted, feature's ID is used.
 :param indent: number of indentation spaces for generated JSON (defaults
                to none)
+:param featureType: optional feature type to pass, like the layer name.
+                    If omitted, it is not written (since QGIS 4.2)
 
 :return: GeoJSON string
 

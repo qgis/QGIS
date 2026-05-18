@@ -78,3 +78,13 @@ void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
+
+QColor QgsSimpleLineMaterialSettings::averageColor() const
+{
+  return ambient();
+}
+
+void QgsSimpleLineMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setAmbient( baseColor );
+}

@@ -27,7 +27,7 @@ QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &dockId, bool us
     options.setFlag( QgsDockableWidgetHelper::Option::PermanentWidget );
 
   mDockableWidgetHelper = std::make_unique<
-    QgsDockableWidgetHelper>( tr( "Code Editor" ), this, QgsDockableWidgetHelper::sOwnerWindow, dockId, QStringList(), QgsDockableWidgetHelper::OpeningMode::RespectSetting, true, Qt::BottomDockWidgetArea, options );
+    QgsDockableWidgetHelper>( tr( "Code Editor" ), this, QgsDockableWidgetHelper::sOwnerWindow, dockId, QStringList(), Qgis::DockableWidgetInitialState::RestorePreviousState, true, Qt::BottomDockWidgetArea, options );
 
   mDockToggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   mDockToggleButton->setToolTip( tr( "Dock Code Editor" ) );

@@ -725,7 +725,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
  "maxRecordCount": 1000,
  "maxDownloadImageCount": 20,
  "maxMosaicImageCount": 20,
- "singleFusedMapCache": true,
+ "singleFusedMapCache": false,
  "tileInfo": {
   "rows": 256,
   "cols": 256,
@@ -1343,7 +1343,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
   "sortField" : "",
   "sortValue" : null,
   "sortAscending" : true,
-  "singleFusedMapCache" : true,
+  "singleFusedMapCache" : false,
   "tileInfo" : {
     "rows" : 256,
     "cols" : 256,
@@ -1862,6 +1862,170 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
                 [6, 31, 106587346.0, 179, 174, 163, "Barren Land"],
             ],
         )
+
+    def test_fetch_block_tiled_one_tile(self):
+        """
+        Test fetching data from a tiled service, one tile required only
+        """
+        endpoint = self.basetestpath + "/fetch_tiled_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U16",
+  "capabilities": "Image",
+  "singleFusedMapCache": true,
+  "serviceDataType": "esriImageServiceDataTypeElevation",
+  "minLOD": 0,
+  "maxLOD": 0,
+  "fullExtent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {"wkid": 4326}
+  },
+  "bandCount": 1,
+  "type": "ImageServer",
+  "tileInfo": {
+    "rows": 2,
+    "cols": 2,
+    "format": "TIFF",
+    "origin": {"x": 0, "y": 10},
+    "spatialReference": {"wkid": 4326},
+    "lods": [
+      {"level": 0, "resolution": 5.0, "scale": 10000}
+    ]
+  }
+}"""
+            )
+
+        # 2x2 TIFF for tile at /tile/0/0/0
+        mem_ds = gdal.GetDriverByName("MEM").Create("", 2, 2, 1, gdal.GDT_UInt16)
+        mem_ds.GetRasterBand(1).WriteRaster(
+            0, 0, 2, 2, struct.pack("H" * 4, 11, 22, 33, 44)
+        )
+        gdal.GetDriverByName("GTiff").CreateCopy("/vsimem/test_tile.tif", mem_ds)
+        vsi_file = gdal.VSIFOpenL("/vsimem/test_tile.tif", "rb")
+        gdal.VSIFSeekL(vsi_file, 0, 2)
+        size = gdal.VSIFTellL(vsi_file)
+        gdal.VSIFSeekL(vsi_file, 0, 0)
+        tiff_blob = gdal.VSIFReadL(1, size, vsi_file)
+        gdal.VSIFCloseL(vsi_file)
+        gdal.Unlink("/vsimem/test_tile.tif")
+
+        with open(self.sanitize_local_url(endpoint, "/tile/0/0/0"), "wb") as f:
+            f.write(tiff_blob)
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        block = rl.dataProvider().block(1, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block.isValid())
+
+        self.assertEqual(block.value(0, 0), 11)
+        self.assertEqual(block.value(0, 1), 22)
+        self.assertEqual(block.value(1, 0), 33)
+        self.assertEqual(block.value(1, 1), 44)
+
+    def test_fetch_block_tiled_multiple(self):
+        """
+        Test fetching a block from a tiled service that requires downloading
+        and stitching multiple tiles together
+        """
+        endpoint = self.basetestpath + "/fetch_tiled_multi_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U16",
+  "capabilities": "Image",
+  "singleFusedMapCache": true,
+  "serviceDataType": "esriImageServiceDataTypeElevation",
+  "minLOD": 0,
+  "maxLOD": 0,
+  "fullExtent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 20,
+    "ymax": 20,
+    "spatialReference": {"wkid": 4326}
+  },
+  "bandCount": 1,
+  "type": "ImageServer",
+  "tileInfo": {
+    "rows": 2,
+    "cols": 2,
+    "format": "TIFF",
+    "origin": {"x": 0, "y": 20},
+    "spatialReference": {"wkid": 4326},
+    "lods": [
+      {"level": 0, "resolution": 5.0, "scale": 10000}
+    ]
+  }
+}"""
+            )
+
+        def create_tile(vals):
+            mem_ds = gdal.GetDriverByName("MEM").Create("", 2, 2, 1, gdal.GDT_UInt16)
+            mem_ds.GetRasterBand(1).WriteRaster(0, 0, 2, 2, struct.pack("H" * 4, *vals))
+            gdal.GetDriverByName("GTiff").CreateCopy("/vsimem/test_tile.tif", mem_ds)
+            vsi_file = gdal.VSIFOpenL("/vsimem/test_tile.tif", "rb")
+            gdal.VSIFSeekL(vsi_file, 0, 2)
+            size = gdal.VSIFTellL(vsi_file)
+            gdal.VSIFSeekL(vsi_file, 0, 0)
+            blob = gdal.VSIFReadL(1, size, vsi_file)
+            gdal.VSIFCloseL(vsi_file)
+            gdal.Unlink("/vsimem/test_tile.tif")
+            return blob
+
+        # mock the 4 tiles required to build the full 20x20 extent
+        with open(
+            self.sanitize_local_url(endpoint, "/tile/0/0/0"), "wb"
+        ) as f:  # Top-Left
+            f.write(create_tile([1, 2, 3, 4]))
+        with open(
+            self.sanitize_local_url(endpoint, "/tile/0/0/1"), "wb"
+        ) as f:  # Top-Right
+            f.write(create_tile([5, 6, 7, 8]))
+        with open(
+            self.sanitize_local_url(endpoint, "/tile/0/1/0"), "wb"
+        ) as f:  # Bottom-Left
+            f.write(create_tile([9, 10, 11, 12]))
+        with open(
+            self.sanitize_local_url(endpoint, "/tile/0/1/1"), "wb"
+        ) as f:  # Bottom-Right
+            f.write(create_tile([13, 14, 15, 16]))
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        block = rl.dataProvider().block(
+            1, QgsRectangle(0.001, 0.001, 19.999, 19.999), 4, 4
+        )
+        self.assertTrue(block.isValid())
+        self.assertEqual(block.value(0, 0), 1)
+        self.assertEqual(block.value(0, 1), 2)
+        self.assertEqual(block.value(0, 2), 5)
+        self.assertEqual(block.value(0, 3), 6)
+        self.assertEqual(block.value(1, 0), 3)
+        self.assertEqual(block.value(1, 1), 4)
+        self.assertEqual(block.value(1, 2), 7)
+        self.assertEqual(block.value(1, 3), 8)
+        self.assertEqual(block.value(2, 0), 9)
+        self.assertEqual(block.value(2, 1), 10)
+        self.assertEqual(block.value(2, 2), 13)
+        self.assertEqual(block.value(2, 3), 14)
+        self.assertEqual(block.value(3, 0), 11)
+        self.assertEqual(block.value(3, 1), 12)
+        self.assertEqual(block.value(3, 2), 15)
+        self.assertEqual(block.value(3, 3), 16)
 
 
 if __name__ == "__main__":

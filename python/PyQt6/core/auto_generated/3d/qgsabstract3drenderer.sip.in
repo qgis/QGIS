@@ -36,6 +36,8 @@ store large amount of data within a renderer (e.g. arrays of vertices).
 
     if ( sipCpp->type() == QLatin1String( "annotation" ) )
       sipType = sipFindType( "QgsAnnotationLayer3DRenderer" );
+    else if ( sipCpp->type() == QLatin1String( "categorized" ) )
+      sipType = sipFindType( "QgsCategorized3DRenderer" );
     else if ( sipCpp->type() == QLatin1String( "pointcloud" ) )
       sipType = sipFindType( "QgsPointCloudLayer3DRenderer" );
     else if ( sipCpp->type() == QLatin1String( "rulebased" ) )

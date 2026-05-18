@@ -17,6 +17,7 @@
   }, {
     "arg": "concatenator",
     "optional": true,
+    "default": "''",
     "description": "optional string to use to join values. Empty by default."
   }, {
     "arg": "order_by",

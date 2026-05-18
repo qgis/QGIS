@@ -79,7 +79,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
 
   mBboxesEntity = new QgsChunkBoundsEntity( boundsEntityOrigin, this );
   updateBboxEntity();
-  connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
+  connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), [p = provider()]( int i ) { p->loadSubIndex( i ); }, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
 }
 

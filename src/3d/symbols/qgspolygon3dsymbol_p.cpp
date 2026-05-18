@@ -35,7 +35,6 @@
 #include "qgstessellator.h"
 #include "qgsvectorlayer.h"
 
-#include <Qt3DExtras/QDiffuseMapMaterial>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAbstractTextureImage>
 #include <Qt3DRender/QCullFace>
@@ -423,9 +422,8 @@ static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, QgsMaterial *
 
 QgsMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const
 {
-  QgsMaterialContext materialContext;
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
   materialContext.setIsSelected( isSelected );
-  materialContext.setSelectionColor( context.selectionColor() );
   materialContext.setIsHighlighted( mHighlightingEnabled );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
@@ -442,7 +440,7 @@ namespace Qgs3DSymbolImpl
 {
 
 
-  QgsFeature3DHandler *handlerForPolygon3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+  QgsFeature3DHandler *handlerForPolygon3DSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
     const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
     if ( !polygonSymbol )

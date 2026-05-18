@@ -64,7 +64,8 @@ QString QgsGeometryCheckHoleAlgorithm::shortHelpString() const
 {
   return QObject::tr(
     "This algorithm checks the holes of polygon geometries.\n"
-    "Holes are errors."
+    "If the area threshold is provided, only holes smaller than the threshold are errors, "
+    "otherwise all holes are errors.\n"
   );
 }
 
@@ -84,6 +85,7 @@ void QgsGeometryCheckHoleAlgorithm::initAlgorithm( const QVariantMap &configurat
 
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterArea( u"AREA_THRESHOLD"_s, QObject::tr( "Area threshold" ), QVariant(), u"INPUT"_s, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"ERRORS"_s, QObject::tr( "Holes errors" ), Qgis::ProcessingSourceType::VectorPoint ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Polygons with holes" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false ) );
@@ -152,7 +154,11 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  const QgsGeometryHoleCheck check( &checkContext, QVariantMap() );
+  const double areaThreshold = parameterAsDouble( parameters, u"AREA_THRESHOLD"_s, context );
+
+  QVariantMap configurationCheck;
+  configurationCheck.insert( "areaThreshold", areaThreshold );
+  const QgsGeometryHoleCheck check( &checkContext, configurationCheck );
 
   multiStepFeedback.setCurrentStep( 1 );
   feedback->setProgressText( QObject::tr( "Preparing features…" ) );

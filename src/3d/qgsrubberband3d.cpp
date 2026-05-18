@@ -139,7 +139,8 @@ void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
   polygonMaterialSettings.setAmbient( mColor );
   polygonMaterialSettings.setDiffuse( mColor );
   polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
-  mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, QgsMaterialContext() );
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
+  mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, materialContext );
   mPolygonEntity->addComponent( mPolygonMaterial );
 
   mPolygonTransform = new QgsGeoTransform;
@@ -252,7 +253,8 @@ void QgsRubberBand3D::setColor( const QColor color )
       polygonMaterialSettings.setAmbient( mColor );
       polygonMaterialSettings.setDiffuse( mColor );
       polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
-      mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, QgsMaterialContext() );
+      QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
+      mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, materialContext );
       mPolygonEntity->addComponent( mPolygonMaterial );
     }
   }

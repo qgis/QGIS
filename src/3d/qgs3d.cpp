@@ -22,6 +22,7 @@
 #include "qgs3dterrainregistry.h"
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
+#include "qgscategorized3drenderer.h"
 #include "qgsgoochmaterial3dhandler.h"
 #include "qgsline3dsymbol.h"
 #include "qgsline3dsymbol_p.h"
@@ -38,6 +39,9 @@
 #include "qgspolygon3dsymbol.h"
 #include "qgspolygon3dsymbol_p.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssimplelinematerial3dhandler.h"
 #include "qgsstyle.h"
 #include "qgstiledscenelayer3drenderer.h"
@@ -46,6 +50,12 @@
 #include <QString>
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *Qgs3D::settingMsaaEnabled = new QgsSettingsEntryBool( u"msaa-enabled"_s, QgsSettingsTree::sTree3DMap, true, u"Whether MSAA is enabled for 3D map rendering"_s );
+const QgsSettingsEntryEnumFlag<Qgis::TextureFilterQuality> *Qgs3D::settingTextureFilterQuality
+  = new QgsSettingsEntryEnumFlag<Qgis::TextureFilterQuality>( u"texture-filter"_s, QgsSettingsTree::sTree3DMap, Qgis::TextureFilterQuality::Anisotropic16x, u"Texture filter quality"_s );
+const QgsSettingsEntryEnumFlag<Qgis::ShadowQuality> *Qgs3D::settingShadowQuality
+  = new QgsSettingsEntryEnumFlag<Qgis::ShadowQuality>( u"shadow-quality"_s, QgsSettingsTree::sTree3DMap, Qgis::ShadowQuality::High, u"Shadow rendering quality"_s );
 
 Qgs3D *Qgs3D::instance()
 {
@@ -96,6 +106,7 @@ void Qgs3D::initialize()
 
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
+  QgsApplication::renderer3DRegistry()->addRenderer( new QgsCategorized3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsPointCloudLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsTiledSceneLayer3DRendererMetadata );

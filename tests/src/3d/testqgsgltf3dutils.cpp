@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgs3drendercontext.h"
 #include "qgsgltf3dutils.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgstest.h"
@@ -67,14 +68,16 @@ void TestQgsGltf3DUtils::testInvalid()
 {
   QgsGltf3DUtils::EntityTransform transform;
 
+  Qgs3DRenderContext context;
+
   QStringList errors1;
-  Qt3DCore::QEntity *entity1 = QgsGltf3DUtils::gltfToEntity( QByteArray(), transform, QString(), &errors1 );
+  Qt3DCore::QEntity *entity1 = QgsGltf3DUtils::gltfToEntity( QByteArray(), transform, QString(), context, &errors1 );
   QVERIFY( !entity1 );
   QCOMPARE( errors1.count(), 1 );
   QVERIFY( errors1.first().contains( "GLTF load error: JSON string too short." ) );
 
   QStringList errors2;
-  Qt3DCore::QEntity *entity2 = QgsGltf3DUtils::gltfToEntity( QByteArray( "hello" ), transform, QString(), &errors2 );
+  Qt3DCore::QEntity *entity2 = QgsGltf3DUtils::gltfToEntity( QByteArray( "hello" ), transform, QString(), context, &errors2 );
   QVERIFY( !entity2 );
   QCOMPARE( errors2.count(), 1 );
   QVERIFY( errors2.first().contains( "GLTF load error:" ) && errors2.first().contains( "error while parsing value" ) );
@@ -90,7 +93,9 @@ void TestQgsGltf3DUtils::testBox()
   QFile f( dataFile );
   QVERIFY( f.open( QIODevice::ReadOnly ) );
 
-  Qt3DCore::QEntity *entity = QgsGltf3DUtils::gltfToEntity( f.readAll(), transform, QString(), nullptr );
+  Qgs3DRenderContext context;
+
+  Qt3DCore::QEntity *entity = QgsGltf3DUtils::gltfToEntity( f.readAll(), transform, QString(), context, nullptr );
   QVERIFY( entity );
 
   QCOMPARE( entity->children().count(), 1 ); // there's one primitive to render
@@ -146,7 +151,8 @@ void TestQgsGltf3DUtils::testBoxTextured()
   QFile f( dataFile );
   QVERIFY( f.open( QIODevice::ReadOnly ) );
 
-  Qt3DCore::QEntity *entity = QgsGltf3DUtils::gltfToEntity( f.readAll(), transform, QString(), nullptr );
+  Qgs3DRenderContext context;
+  Qt3DCore::QEntity *entity = QgsGltf3DUtils::gltfToEntity( f.readAll(), transform, QString(), context, nullptr );
   QVERIFY( entity );
 
   QCOMPARE( entity->children().count(), 1 ); // there's one primitive to render
@@ -226,9 +232,11 @@ void TestQgsGltf3DUtils::testTransforms()
   QByteArray gltfData = f.readAll();
   QVector3D v1, v2, v3;
 
+  Qgs3DRenderContext context;
+
   // with no transforms, coordinates are not modified
   QgsGltf3DUtils::EntityTransform transform1;
-  Qt3DCore::QEntity *entity1 = QgsGltf3DUtils::gltfToEntity( gltfData, transform1, QString(), nullptr );
+  Qt3DCore::QEntity *entity1 = QgsGltf3DUtils::gltfToEntity( gltfData, transform1, QString(), context, nullptr );
   extractTriangleCoordinates( entity1, v1, v2, v3 );
   QCOMPARE( v1, QVector3D( 0, 0, 0 ) );
   QCOMPARE( v2, QVector3D( 1, 0, 0 ) );
@@ -237,7 +245,7 @@ void TestQgsGltf3DUtils::testTransforms()
 
   QgsGltf3DUtils::EntityTransform transform2;
   transform2.chunkOriginTargetCrs = QgsVector3D( -10, -20, 0 );
-  Qt3DCore::QEntity *entity2 = QgsGltf3DUtils::gltfToEntity( gltfData, transform2, QString(), nullptr );
+  Qt3DCore::QEntity *entity2 = QgsGltf3DUtils::gltfToEntity( gltfData, transform2, QString(), context, nullptr );
   extractTriangleCoordinates( entity2, v1, v2, v3 );
   QCOMPARE( v1, QVector3D( 10, 20, 0 ) );
   QCOMPARE( v2, QVector3D( 11, 20, 0 ) );
@@ -247,7 +255,7 @@ void TestQgsGltf3DUtils::testTransforms()
   QgsGltf3DUtils::EntityTransform transform3;
   transform3.tileTransform = QgsMatrix4x4( 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1 );
   transform3.chunkOriginTargetCrs = QgsVector3D( -10, -20, 0 );
-  Qt3DCore::QEntity *entity3 = QgsGltf3DUtils::gltfToEntity( gltfData, transform3, QString(), nullptr );
+  Qt3DCore::QEntity *entity3 = QgsGltf3DUtils::gltfToEntity( gltfData, transform3, QString(), context, nullptr );
   extractTriangleCoordinates( entity3, v1, v2, v3 );
   QCOMPARE( v1, QVector3D( 10, 20, 0 ) );
   QCOMPARE( v2, QVector3D( 12, 20, 0 ) );

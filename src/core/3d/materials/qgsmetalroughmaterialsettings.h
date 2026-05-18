@@ -74,6 +74,26 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     double roughness() const { return mRoughness; }
 
     /**
+     * Returns the opacity of the surface
+     *
+     * \see setOpacity()
+     * \since QGIS 4.2
+     */
+    double opacity() const { return mOpacity; }
+
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * Since this material contains only a single color, this function
+     * simply returns baseColor().
+     *
+     * \see baseColor()
+     *
+     * \since QGIS 4.2
+     */
+    QColor averageColor() const override;
+
+    /**
      * Sets the base material \a color.
      *
      * \see baseColor()
@@ -94,18 +114,45 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      */
     void setRoughness( double roughness ) { mRoughness = roughness; }
 
+    /**
+     * Sets the \a opacity of the surface.
+     *
+     * \see opacity()
+     * \since QGIS 4.2
+     */
+    void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    /**
+     * Decomposes a base color into the material's color components, and sets the material's color accordingly.
+     *
+     * Since this material contains only a single color, this function
+     * is equivalent to calling setBaseColor(baseColor).
+     *
+     * \param baseColor The color to decompose
+     *
+     * \see setBaseColor()
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
     bool operator==( const QgsMetalRoughMaterialSettings &other ) const
     {
-      return mBaseColor == other.mBaseColor && qgsDoubleNear( mMetalness, other.mMetalness ) && qgsDoubleNear( mRoughness, other.mRoughness ) && dataDefinedProperties() == other.dataDefinedProperties();
+      return mBaseColor == other.mBaseColor
+             && qgsDoubleNear( mMetalness, other.mMetalness )
+             && qgsDoubleNear( mRoughness, other.mRoughness )
+             && qgsDoubleNear( mOpacity, other.mOpacity )
+             && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
     QColor mBaseColor { QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) };
     double mMetalness = 0.0;
     double mRoughness = 0.5;
+    double mOpacity = 1.0;
 };
 
 

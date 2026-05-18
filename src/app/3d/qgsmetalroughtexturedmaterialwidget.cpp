@@ -53,6 +53,7 @@ QgsMetalRoughTexturedMaterialWidget::QgsMetalRoughTexturedMaterialWidget( QWidge
   connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
   connect( textureScaleSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
   connect( textureRotationSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
 
   connect( this, &QgsMetalRoughTexturedMaterialWidget::changed, this, &QgsMetalRoughTexturedMaterialWidget::updatePreview );
 
@@ -83,6 +84,7 @@ void QgsMetalRoughTexturedMaterialWidget::setSettings( const QgsAbstractMaterial
   mEmissionStrengthSpinBox->setValue( metalRoughMaterial->emissionFactor() * 100 );
   textureScaleSpinBox->setValue( 100.0 / metalRoughMaterial->textureScale() );
   textureRotationSpinBox->setValue( metalRoughMaterial->textureRotation() );
+  mOpacityWidget->setOpacity( metalRoughMaterial->opacity() );
 
   mParallaxScaleSpinBox->setEnabled( !mHeightTextureWidget->source().isEmpty() );
   mEmissionStrengthSpinBox->setEnabled( !mEmissionTextureWidget->source().isEmpty() );
@@ -106,6 +108,7 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughTexturedMaterialWidget
   m->setEmissionFactor( mEmissionStrengthSpinBox->value() / 100.0 );
   m->setTextureScale( 100.0 / textureScaleSpinBox->value() );
   m->setTextureRotation( textureRotationSpinBox->value() );
+  m->setOpacity( mOpacityWidget->opacity() );
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m;

@@ -25,6 +25,7 @@
 #include "qgseventtracing.h"
 #include "qgsgeotransform.h"
 #include "qgsglobematerial.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
@@ -49,7 +50,16 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 static Qt3DCore::QEntity *makeGlobeMesh(
-  double lonMin, double lonMax, double latMin, double latMax, int lonSliceCount, int latSliceCount, const QgsCoordinateTransform &globeCrsToLatLon, QImage textureQImage, QString textureDebugText
+  double lonMin,
+  double lonMax,
+  double latMin,
+  double latMax,
+  int lonSliceCount,
+  int latSliceCount,
+  const QgsCoordinateTransform &globeCrsToLatLon,
+  QImage textureQImage,
+  QString textureDebugText,
+  const QgsMaterialContext &context
 )
 {
   double lonRange = lonMax - lonMin;
@@ -189,9 +199,8 @@ static Qt3DCore::QEntity *makeGlobeMesh(
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( textureQImage, QgsRectangle( lonMin, latMin, lonMax, latMax ), textureDebugText, entity );
 
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
+  Qgs3DUtils::setTextureFiltering( texture, context );
   texture->addTextureImage( textureImage );
-  texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
   QgsGlobeMaterial *material = new QgsGlobeMaterial( entity );
@@ -264,8 +273,9 @@ static QgsBox3D globeNodeIdToBox3D( QgsChunkNodeId n, const QgsCoordinateTransfo
 // ---------------
 
 
-QgsGlobeChunkLoader::QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon )
+QgsGlobeChunkLoader::QgsGlobeChunkLoader( QgsChunkNode *node, const Qgs3DRenderContext &context, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon )
   : QgsChunkLoader( node )
+  , mRenderContext( context )
   , mTextureGenerator( textureGenerator )
   , mGlobeCrsToLatLon( globeCrsToLatLon )
 {}
@@ -311,7 +321,9 @@ Qt3DCore::QEntity *QgsGlobeChunkLoader::createEntity( Qt3DCore::QEntity *parent 
   else
     slices = 2;
 
-  Qt3DCore::QEntity *e = makeGlobeMesh( lonMin, lonMax, latMin, latMax, slices, slices, mGlobeCrsToLatLon, mTexture, mNode->tileId().text() );
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( mRenderContext );
+
+  Qt3DCore::QEntity *e = makeGlobeMesh( lonMin, lonMax, latMin, latMax, slices, slices, mGlobeCrsToLatLon, mTexture, mNode->tileId().text(), materialContext );
   e->setParent( parent );
   return e;
 }
@@ -342,7 +354,7 @@ QgsGlobeChunkLoaderFactory::~QgsGlobeChunkLoaderFactory()
 
 QgsChunkLoader *QgsGlobeChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsGlobeChunkLoader( node, mTextureGenerator, mGlobeCrsToLatLon );
+  return new QgsGlobeChunkLoader( node, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mTextureGenerator, mGlobeCrsToLatLon );
 }
 
 QgsChunkNode *QgsGlobeChunkLoaderFactory::createRootNode() const

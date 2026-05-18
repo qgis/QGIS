@@ -53,8 +53,10 @@ class QgsApproximateMedialAxisAlgorithm : public QgsProcessingFeatureBasedAlgori
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+#ifdef WITH_SFCGAL
   private:
     bool mExtendToEdges = false;
+#endif
 };
 
 ///@endcond PRIVATE

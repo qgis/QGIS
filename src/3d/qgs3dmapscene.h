@@ -356,13 +356,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onBackgroundColorChanged();
     void updateLights();
     void updateCameraLens();
-    void onSkyboxSettingsChanged();
-    void onGradientBackgroundChanged();
+    void onBackgroundSettingsChanged();
     void onShadowSettingsChanged();
     void onAmbientOcclusionSettingsChanged();
     void onEyeDomeShadingSettingsChanged();
     void onMsaaEnabledChanged();
-    void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
     void onCameraMovementSpeedChanged();
     void onCameraNavigationModeChanged();
@@ -418,8 +416,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     //! List of lights in the scene
     QList<Qt3DCore::QEntity *> mLightEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
-    QgsSkyboxEntity *mSkybox = nullptr;
-    QgsGradientBackgroundEntity *mGradientBackground = nullptr;
+    Qt3DCore::QEntity *mBackgroundEntity = nullptr; // used for skybox and gradient background
     //! Entity that shows rotation center = useful for debugging camera issues
     Qt3DCore::QEntity *mEntityRotationCenter = nullptr;
 

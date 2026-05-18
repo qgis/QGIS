@@ -31,9 +31,11 @@
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgscategorized3drenderer.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
@@ -49,6 +51,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmessageoutput.h"
+#include "qgsmetalroughmaterial.h"
 #include "qgsoverlaytexturerenderview.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
@@ -76,7 +79,6 @@
 #include <QUrl>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
@@ -84,6 +86,7 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QRenderSettings>
@@ -148,16 +151,12 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
-  connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::backgroundTypeChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::backgroundTypeChanged, this, &Qgs3DMapScene::onGradientBackgroundChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::msaaEnabledChanged, this, &Qgs3DMapScene::onMsaaEnabledChanged );
-  connect( &map, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapScene::onDebugShadowMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
@@ -211,15 +210,14 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
 
-  onSkyboxSettingsChanged();
-  onGradientBackgroundChanged();
+  connect( &map, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapScene::onBackgroundSettingsChanged );
+  onBackgroundSettingsChanged();
 
   // force initial update of chunked entities
   onCameraChanged();
   // force initial update of eye dome shading
   onEyeDomeShadingSettingsChanged();
   // force initial update of debugging setting of preview quads
-  onDebugShadowMapSettingsChanged();
   onDebugDepthMapSettingsChanged();
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
@@ -547,7 +545,7 @@ void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoi
     {
       mMapOverlayEntity.reset();
     }
-    overlayRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
+    overlayRenderView.setEnabled( mMap.debugDepthMapEnabled() );
     return;
   }
 
@@ -815,7 +813,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer classes are not available.
-    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 ) )
+    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 || renderer->type() == "categorized"_L1 ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
       if ( renderer->type() == "vector"_L1 )
@@ -836,6 +834,19 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         for ( auto rule : rules )
         {
           const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
+          if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
+          {
+            mModelVectorLayers.append( layer );
+            break;
+          }
+        }
+      }
+      else if ( renderer->type() == "categorized"_L1 )
+      {
+        const Qgs3DCategoryList categories = static_cast<QgsCategorized3DRenderer *>( renderer )->categories();
+        for ( const Qgs3DRendererCategory &category : categories )
+        {
+          const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( category.symbol() );
           if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
@@ -966,20 +977,22 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
   // this is probably not the best place for material-specific configuration,
   // maybe this could be more generalized when other materials need some specific treatment
-  const QList<QgsLineMaterial *> childLineMaterials = newEntity->findChildren<QgsLineMaterial *>();
-  for ( QgsLineMaterial *lm : childLineMaterials )
-  {
-    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this] { lm->setViewportSize( mEngine->size() ); } );
+  const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
 
-    lm->setViewportSize( mEngine->size() );
-  }
-  // configure billboard's viewport when the viewport is changed.
-  const QList<QgsPoint3DBillboardMaterial *> childBillboardMaterials = newEntity->findChildren<QgsPoint3DBillboardMaterial *>();
-  for ( QgsPoint3DBillboardMaterial *bm : childBillboardMaterials )
+  // first pass over materials -- setup viewport sizing logic for ALL materials that require it
+  // (this needs to apply to all materials, includes those for highlight entities)
+  for ( Qt3DRender::QMaterial *material : childMaterials )
   {
-    connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this] { bm->setViewportSize( mEngine->size() ); } );
-
-    bm->setViewportSize( mEngine->size() );
+    if ( auto lm = qobject_cast< QgsLineMaterial * >( material ) )
+    {
+      connect( mEngine, &QgsAbstract3DEngine::sizeChanged, lm, [lm, this] { lm->setViewportSize( mEngine->size() ); } );
+      lm->setViewportSize( mEngine->size() );
+    }
+    else if ( auto bm = qobject_cast< QgsPoint3DBillboardMaterial * >( material ) )
+    {
+      connect( mEngine, &QgsAbstract3DEngine::sizeChanged, bm, [bm, this] { bm->setViewportSize( mEngine->size() ); } );
+      bm->setViewportSize( mEngine->size() );
+    }
   }
 
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
@@ -992,22 +1005,46 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
   // Add the required QLayers to the entity
   newEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
-  newEntity->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
 
-  // Finalize adding the 3D transparent objects by adding the layer components to the entities
+  Qt3DRender::QLayer *shadowCastingEntityLayer = frameGraph->shadowRenderView().entityCastingShadowsLayer();
   Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView().transparentObjectLayer();
-  const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
   for ( Qt3DRender::QMaterial *material : childMaterials )
   {
+    // find the specific entity this material belongs to -- it may be a child of the parent entity
+    // being finalized
+    auto materialEntity = qobject_cast<Qt3DCore::QEntity *>( material->parent() );
+    if ( !materialEntity )
+      continue;
+
+    bool materialCastsShadows = false;
+    if ( auto qgsMaterial = qobject_cast< QgsMaterial * >( material ) )
+    {
+      if ( qgsMaterial->castsShadows() )
+      {
+        materialCastsShadows = true;
+      }
+    }
+    else
+    {
+      // for non QgsMaterial materials we assume they need shadows
+      materialCastsShadows = true;
+    }
+
+    if ( materialCastsShadows && !materialEntity->components().contains( shadowCastingEntityLayer ) )
+    {
+      materialEntity->addComponent( shadowCastingEntityLayer );
+    }
+
+    // Finalize adding the 3D transparent objects by adding the layer components to the entities
+
     // This handles the phong material without data defined properties.
-    if ( Qt3DExtras::QDiffuseSpecularMaterial *ph = qobject_cast<Qt3DExtras::QDiffuseSpecularMaterial *>( material ) )
+    if ( auto ph = qobject_cast<Qt3DExtras::QDiffuseSpecularMaterial *>( material ) )
     {
       if ( ph->diffuse().value<QColor>().alphaF() != 1.0f )
       {
-        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
-        if ( entity && !entity->components().contains( transparentLayer ) )
+        if ( !materialEntity->components().contains( transparentLayer ) )
         {
-          entity->addComponent( transparentLayer );
+          materialEntity->addComponent( transparentLayer );
         }
       }
     }
@@ -1028,36 +1065,40 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
      * Consider enabling if/when we have some workaround for the stacking issue,
      * eg CPU based sorting on camera movement...
      */
-    else if ( QgsPoint3DBillboardMaterial *billboardMaterial = qobject_cast<QgsPoint3DBillboardMaterial *>( material ) )
+    else if ( auto billboardMaterial = qobject_cast<QgsPoint3DBillboardMaterial *>( material ) )
     {
       Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( billboardMaterial->parent() );
-      if ( entity && !entity->components().contains( transparentLayer ) )
+      if ( !materialEntity->components().contains( transparentLayer ) )
       {
-        entity->addComponent( transparentLayer );
+        materialEntity->addComponent( transparentLayer );
       }
     }
 #endif
     else
     {
       // This handles the phong material with data defined properties, the textured case and point (instanced) symbols.
-      Qt3DRender::QEffect *effect = material->effect();
-      if ( effect )
+      if ( Qt3DRender::QEffect *effect = material->effect() )
       {
         const QVector<Qt3DRender::QParameter *> parameters = effect->parameters();
         for ( const Qt3DRender::QParameter *parameter : parameters )
         {
           if ( parameter->name() == "opacity" && parameter->value() != 1.0f )
           {
-            Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( material->parent() );
-            if ( entity && !entity->components().contains( transparentLayer ) )
+            if ( !materialEntity->components().contains( transparentLayer ) )
             {
-              entity->addComponent( transparentLayer );
+              materialEntity->addComponent( transparentLayer );
             }
             break;
           }
         }
       }
     }
+  }
+
+  if ( childMaterials.empty() )
+  {
+    // handle shadows for entities without materials -- eg point models
+    newEntity->addComponent( shadowCastingEntityLayer );
   }
 }
 
@@ -1133,51 +1174,34 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::onSkyboxSettingsChanged()
+void Qgs3DMapScene::onBackgroundSettingsChanged()
 {
-  QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
-  if ( mSkybox )
+  if ( mBackgroundEntity )
   {
-    mSkybox->deleteLater();
-    mSkybox = nullptr;
+    mBackgroundEntity->deleteLater();
+    mBackgroundEntity = nullptr;
   }
 
-  if ( mMap.backgroundType() == Qgs3DMapSettings::BackgroundType::Skybox )
-  {
-    QMap<QString, QString> faces;
-    switch ( skyboxSettings.skyboxType() )
-    {
-      case Qgis::SkyboxType::DistinctTextures:
-        faces = skyboxSettings.cubeMapFacesPaths();
-        mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
-        break;
-#if 0 // this is broken for z-up coordinate system
-      case Qgis::SkyboxType::Panoramic:
-        mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
-        break;
-#endif
-    }
-    QgsFrameGraph *frameGraph = mEngine->frameGraph();
-    mSkybox->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
-    mSkybox->addComponent( frameGraph->forwardRenderView().renderLayer() );
-  }
-}
+  const QgsAbstract3DMapBackgroundSettings *settings = mMap.backgroundSettings();
+  if ( !settings )
+    return;
 
-void Qgs3DMapScene::onGradientBackgroundChanged()
-{
-  if ( mGradientBackground )
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+
+  if ( settings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox )
   {
-    mGradientBackground->deleteLater();
-    mGradientBackground = nullptr;
+    const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( settings );
+    const QMap<QString, QString> faces = skyboxSettings->cubeMapFacesPaths();
+    mBackgroundEntity = new QgsCubeFacesSkyboxEntity( skyboxSettings->cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
+  }
+  else if ( settings->type() == Qgis::Map3DBackgroundType::FixedGradientBackground )
+  {
+    const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( settings );
+    mBackgroundEntity = new QgsGradientBackgroundEntity( gradientSettings->topColor(), gradientSettings->bottomColor(), this );
   }
 
-  if ( mMap.backgroundType() == Qgs3DMapSettings::BackgroundType::Gradient )
-  {
-    mGradientBackground = new QgsGradientBackgroundEntity( mMap.gradientBackgroundTopColor(), mMap.gradientBackgroundBottomColor(), this );
-    QgsFrameGraph *frameGraph = mEngine->frameGraph();
-    mGradientBackground->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
-    mGradientBackground->addComponent( frameGraph->forwardRenderView().renderLayer() );
-  }
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
 }
 
 void Qgs3DMapScene::onShadowSettingsChanged()
@@ -1188,11 +1212,6 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 {
   mEngine->frameGraph()->updateAmbientOcclusionSettings( mMap.ambientOcclusionSettings() );
-}
-
-void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
-{
-  mEngine->frameGraph()->updateDebugShadowMapSettings( mMap );
 }
 
 void Qgs3DMapScene::onDebugDepthMapSettingsChanged()

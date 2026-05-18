@@ -154,6 +154,22 @@ class _3D_EXPORT Qgs3DRenderContext
      */
     const QgsExpressionContext &expressionContext() const SIP_SKIP { return mExpressionContext; }
 
+    /**
+     * Returns the texture filtering quality.
+     *
+     * \see setTextureFilterQuality()
+     * \since QGIS 4.2
+     */
+    Qgis::TextureFilterQuality textureFilterQuality() const { return mTextureFilterQuality; }
+
+    /**
+     * Sets the texture filtering \a quality.
+     *
+     * \see textureFilterQuality()
+     * \since QGIS 4.2
+     */
+    void setTextureFilterQuality( Qgis::TextureFilterQuality quality ) { mTextureFilterQuality = quality; }
+
   private:
     QgsCoordinateReferenceSystem mCrs; //!< Destination coordinate system of the world
     //! Coordinate transform context
@@ -169,6 +185,8 @@ class _3D_EXPORT Qgs3DRenderContext
     std::unique_ptr<QgsAbstractTerrainSettings> mTerrainSettings;
     //! Expression context
     QgsExpressionContext mExpressionContext;
+
+    Qgis::TextureFilterQuality mTextureFilterQuality = Qgis::TextureFilterQuality::Trilinear;
 
     // not owned, currently a pointer to the Qgs3DMapSettings terrain generator.
     // TODO -- fix during implementation of https://github.com/qgis/QGIS-Enhancement-Proposals/issues/301

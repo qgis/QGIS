@@ -139,6 +139,7 @@ jobs:
         id: artifact-win64-qt6
         with:
           name: qgis-windows-qt6
+          archive: false
           path: |
             build/*-win64.zip
 
@@ -151,5 +152,7 @@ jobs:
           body: |
             ### 🪟 Windows Qt6 builds
             Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
+            To execute locally, unzip the downloaded zip file and run `bin\qgis-bin.exe` in the extracted directory.
+            You might be prompted by Windows Defender click "Run anyway"
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}

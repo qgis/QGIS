@@ -134,10 +134,6 @@ QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity(
   reloadTexture();
 }
 
-Qgis::SkyboxType QgsCubeFacesSkyboxEntity::type() const
-{
-  return Qgis::SkyboxType::DistinctTextures;
-}
 
 void QgsCubeFacesSkyboxEntity::init()
 {

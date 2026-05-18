@@ -64,8 +64,8 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     //! Constructor
     QgsSkyboxEntity( QNode *parent = nullptr );
 
-    //! Returns the type of the skybox
-    virtual Qgis::SkyboxType type() const = 0;
+    //! Returns the background type of skybox entity
+    virtual Qgis::Map3DBackgroundType type() const = 0;
 
   protected:
     Qt3DRender::QEffect *mEffect = nullptr;
@@ -97,8 +97,7 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 
     //! Returns the path of the current texture in use
     QString texturePath() const { return mTexturePath; }
-    //! Returns the type of the current skybox
-    Qgis::SkyboxType type() const override { return Qgis::SkyboxType::Panoramic; }
+    Qgis::Map3DBackgroundType type() const override { return Qgis::Map3DBackgroundType::NoBackground; } // this will have to be changed if panoramic skybox is fixed
 
   private:
     void reloadTexture();
@@ -126,7 +125,7 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
     QgsCubeFacesSkyboxEntity(
       Qgis::SkyboxCubeMapping mapping, const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr
     );
-    Qgis::SkyboxType type() const override;
+    Qgis::Map3DBackgroundType type() const override { return Qgis::Map3DBackgroundType::DistinctTextureSkybox; }
 
   private:
     void init();

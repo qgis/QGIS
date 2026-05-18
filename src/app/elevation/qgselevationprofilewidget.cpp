@@ -546,7 +546,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   setLayout( layout );
 
   mDockableWidgetHelper
-    = new QgsDockableWidgetHelper( mProfile->name(), this, QgisApp::instance(), mProfile->name(), QStringList(), QgsDockableWidgetHelper::OpeningMode::RespectSetting, true, Qt::DockWidgetArea::BottomDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
+    = new QgsDockableWidgetHelper( mProfile->name(), this, QgisApp::instance(), mProfile->name(), QStringList(), Qgis::DockableWidgetInitialState::RestorePreviousState, true, Qt::DockWidgetArea::BottomDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
 
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock Elevation Profile View" ) );

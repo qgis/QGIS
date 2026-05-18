@@ -27,6 +27,7 @@
 #include "qgspolygon.h"
 #include "qgsvector3d.h"
 
+#include <QFileInfo>
 #include <QMatrix4x4>
 #include <QString>
 
@@ -319,7 +320,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
   tinygltf::Model model;
   QString errors;
   QString warnings;
-  if ( !QgsGltfUtils::loadGltfModel( fileContent, model, &errors, &warnings ) )
+  if ( !QgsGltfUtils::loadGltfModel( fileContent, model, &errors, &warnings, QFileInfo( path ).absolutePath() ) )
   {
     throw QgsProcessingException( QObject::tr( "Error loading GLTF model: %1" ).arg( errors ) );
   }

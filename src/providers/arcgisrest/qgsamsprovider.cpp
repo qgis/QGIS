@@ -227,9 +227,15 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   {
     extentData = mLayerInfo.value( u"extent"_s ).toMap();
   }
-  else
+  else if ( mLayerInfo.contains( u"fullExtent"_s ) )
   {
     extentData = mLayerInfo.value( u"fullExtent"_s ).toMap();
+  }
+
+  // tile services may not include layer-level extent info - fall back to service-level extent
+  if ( extentData.isEmpty() )
+  {
+    extentData = mServiceInfo.value( u"fullExtent"_s ).toMap();
   }
   mExtent.setXMinimum( extentData[u"xmin"_s].toDouble() );
   mExtent.setYMinimum( extentData[u"ymin"_s].toDouble() );

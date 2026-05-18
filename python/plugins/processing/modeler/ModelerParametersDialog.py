@@ -66,8 +66,8 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
+from processing.core.exceptions import InvalidParameterValue
 from processing.gui.wrappers import (
-    InvalidParameterValue,
     WidgetWrapper,
     WidgetWrapperFactory,
 )

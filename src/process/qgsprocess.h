@@ -37,7 +37,7 @@ class ConsoleFeedback : public QgsProcessingFeedback
 
   public:
     /**
-     * Constructor for QgsProcessingAlgorithmDialogFeedback.
+     * Constructor for ConsoleFeedback.
      */
     ConsoleFeedback( bool useJson );
 

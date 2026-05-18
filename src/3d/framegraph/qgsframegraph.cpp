@@ -64,7 +64,7 @@ void QgsFrameGraph::constructHighlightsPass()
 
 void QgsFrameGraph::constructShadowRenderPass()
 {
-  registerRenderView( std::make_unique<QgsShadowRenderView>( SHADOW_RENDERVIEW ), SHADOW_RENDERVIEW );
+  registerRenderView( std::make_unique<QgsShadowRenderView>( SHADOW_RENDERVIEW, mRootEntity ), SHADOW_RENDERVIEW );
 }
 
 void QgsFrameGraph::constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *topNode )
@@ -74,11 +74,7 @@ void QgsFrameGraph::constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *to
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForProcessing()
 {
-  Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector;
-  cameraSelector->setObjectName( "Sub pass Postprocessing" );
-  cameraSelector->setCamera( shadowRenderView().lightCamera() );
-
-  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
+  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter();
 
   // could be the first of this branch
   new Qt3DRender::QClearBuffers( layerFilter );
@@ -88,7 +84,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForProcessing()
   layerFilter->addLayer( postProcessingLayer );
   mPostprocessingEntity->setObjectName( "PostProcessingPassEntity" );
 
-  return cameraSelector;
+  return layerFilter;
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForRenderCapture()
@@ -394,44 +390,19 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
 
     if ( light )
     {
-      shadowRenderView().setMapSize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
+      const int size = shadowSettings.qualityToMapResolution( shadowSettings.shadowQuality() );
+      shadowRenderView().setMapSize( size, size );
       shadowRenderView().setEnabled( true );
       mPostprocessingEntity->setShadowRenderingEnabled( true );
       mPostprocessingEntity->setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
       mPostprocessingEntity->updateShadowSettings( *light, static_cast<float>( shadowSettings.maximumShadowRenderingDistance() ) );
+      mPostprocessingEntity->setShowCascadingShadowSplits( shadowSettings.showCascadeSplits() );
     }
   }
   else
   {
     shadowRenderView().setEnabled( false );
     mPostprocessingEntity->setShadowRenderingEnabled( false );
-  }
-}
-
-void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settings )
-{
-  QgsOverlayTextureRenderView *debugRenderView = dynamic_cast<QgsOverlayTextureRenderView *>( mRenderViewMap[OVERLAY_RENDERVIEW].get() );
-  if ( !debugRenderView )
-    return;
-
-  if ( !mShadowTextureDebugging && settings.debugShadowMapEnabled() )
-  {
-    Qt3DRender::QTexture2D *shadowDepthTexture = shadowRenderView().mapTexture();
-    mShadowTextureDebugging = new QgsOverlayTextureEntity( shadowDepthTexture, debugRenderView->overlayLayer(), this );
-  }
-
-  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
-
-  if ( mShadowTextureDebugging )
-  {
-    mShadowTextureDebugging->setEnabled( settings.debugShadowMapEnabled() );
-    if ( settings.debugShadowMapEnabled() )
-      mShadowTextureDebugging->setPosition( settings.debugShadowMapCorner(), settings.debugShadowMapSize() );
-    else
-    {
-      delete mShadowTextureDebugging;
-      mShadowTextureDebugging = nullptr;
-    }
   }
 }
 
@@ -447,7 +418,7 @@ void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &setting
     mDepthTextureDebugging = new QgsOverlayTextureEntity( forwardDepthTexture, debugRenderView->overlayLayer(), this );
   }
 
-  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
+  debugRenderView->setEnabled( settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
 
   if ( mDepthTextureDebugging )
   {

@@ -31,6 +31,9 @@ class QgsAbstractMaterialSettings;
 class QgsMaterial;
 class QgsMaterialContext;
 class QgsExpressionContext;
+class QgsSettingsEntryBool;
+template<class T> class QgsSettingsEntryEnumFlag;
+
 #ifndef SIP_RUN
 namespace Qt3DCore
 {
@@ -52,6 +55,10 @@ namespace Qt3DRender
 class _3D_EXPORT Qgs3D
 {
   public:
+    static const QgsSettingsEntryBool *settingMsaaEnabled SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<Qgis::TextureFilterQuality> *settingTextureFilterQuality SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<Qgis::ShadowQuality> *settingShadowQuality SIP_SKIP;
+
     Qgs3D( const Qgs3D &other ) = delete;
     Qgs3D &operator=( const Qgs3D &other ) = delete;
 
@@ -122,6 +129,10 @@ class _3D_EXPORT Qgs3D
      * Returns the handler to use for a material \a settings.
      */
     static const QgsAbstractMaterial3DHandler *handlerForMaterialSettings( const QgsAbstractMaterialSettings *settings );
+
+    // if you change this, also update the corresponding constant in shadows.inc.frag!
+    //! Number of shadow map cascades
+    static constexpr int NUM_SHADOW_CASCADES = 4;
 
 #endif
 

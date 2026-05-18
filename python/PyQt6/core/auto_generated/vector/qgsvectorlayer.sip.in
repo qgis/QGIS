@@ -1240,15 +1240,15 @@ Deletes a vertex from a feature.
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
-    bool deleteSelectedFeatures( int *deletedCount = 0, QgsVectorLayer::DeleteContext *context = 0 );
+    bool deleteSelectedFeatures( int *deletedCount /Out/ = 0, QgsVectorLayer::DeleteContext *context = 0 );
 %Docstring
 Deletes the selected features
 
-:param deletedCount: The number of successfully deleted features
 :param context: The chain of features who will be deleted for feedback
                 and to avoid endless recursions
 
-:return: ``True`` in case of success and ``False`` otherwise
+:return: - ``True`` in case of success and ``False`` otherwise
+         - deletedCount: The number of successfully deleted features
 %End
 
  Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = 0 ) /Deprecated="Since 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;

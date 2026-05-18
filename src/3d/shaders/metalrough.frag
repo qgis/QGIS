@@ -56,6 +56,8 @@ uniform float emissiveFactor = 1;
 in vec2 texCoord;
 #endif
 
+uniform float opacity;
+
 const float PI = 3.14159265359;
 
 #pragma include light.inc.frag
@@ -226,8 +228,17 @@ vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
 {
     // Calculate the Fresnel effect value
     vec3 f = color;
-    vec3 F = f + (1.0 - f) * pow(1.0 - cosineFactor, 5.0);
+    vec3 F = f + (1.0 - f) * pow(clamp(1.0 - cosineFactor, 0.0, 1.0), 5.0);
     return clamp(F, f, vec3(1.0));
+}
+
+// A modified Fresnel function that respects surface roughness
+// It explicitly injects the roughness value into the Fresnel equation to forcefully clamp
+// the maximum reflectivity at grazing angles based on how rough the material is.
+// ** Only applicable for image based lighting **
+vec3 fresnelSchlickRoughness(const in vec3 F0, const in float cosTheta, const in float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
 float geometrySchlickGGX(const in float nDotV, const in float k)
@@ -284,7 +295,7 @@ vec3 specularModel(const in vec3 F0,
     float sDotNPrime = max(sDotN, 0.001);
     float vDotNPrime = max(vDotN, 0.001);
 
-    vec3 F = fresnelFactor(F0, sDotH);
+    vec3 F = isIBL ? fresnelSchlickRoughness(F0, sDotH, roughness) : fresnelFactor(F0, sDotH);
     float G = geometricModel(sDotNPrime, vDotNPrime, roughness, isIBL);
 
     vec3 cSpec = F * G / (4.0 * sDotNPrime * vDotNPrime);
@@ -427,7 +438,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
 
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
-    vec3 kS = fresnelFactor(F0, lDotH);
+    vec3 kS = fresnelSchlickRoughness(F0, max(vDotN, 0.0), roughness);
     vec3 color = specular + diffuse * (vec3(1.0) - kS);
 
     // Reduce by ambient occlusion amount
@@ -552,8 +563,8 @@ void main()
 #endif
 #endif
 
-    fragColor = metalRoughFunction(c, m, r, ao,
+    fragColor = vec4(metalRoughFunction(c, m, r, ao,
                                    worldPosition,
                                    worldView,
-                                   n, activeTexCoord);
+                                   n, activeTexCoord).rgb, opacity);
 }
