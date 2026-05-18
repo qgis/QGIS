@@ -126,7 +126,6 @@ void QgsBloomRenderView::buildRenderPasses( Qt3DRender::QTexture2D *sourceTextur
   }
 
   // upsample
-  mUpsampleQuads.reserve( MIP_PASSES );
   for ( int i = MIP_PASSES - 2; i >= 0; --i )
   {
     auto passLayer = new Qt3DRender::QLayer( rootEntity );
@@ -160,7 +159,6 @@ void QgsBloomRenderView::buildRenderPasses( Qt3DRender::QTexture2D *sourceTextur
     // owned by rootEntity
     auto quad = new QgsBloomUpsampleEntity( currentInputTexture, passLayer, rootEntity );
     quad->addParameters( { mFilterRadiusParameter, mAspectRatioParameter } );
-    mUpsampleQuads.push_back( quad );
 
     auto layerFilter = new Qt3DRender::QLayerFilter( blendStateSet );
     layerFilter->addLayer( passLayer );
