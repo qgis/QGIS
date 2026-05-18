@@ -101,6 +101,13 @@ void QgsModelGraphicsScene::updateBounds()
 
 void QgsModelGraphicsScene::setupFeedbackConnections( QgsProcessingModelFeedback *feedback )
 {
+  connect( feedback, &QgsProcessingModelFeedback::childStarted, this, [this]( const QString &childId ) {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+    {
+      item->setStarted();
+    }
+  } );
+
   connect( feedback, &QgsProcessingModelFeedback::childResultReported, this, [this]( const QString &childId, const QgsProcessingModelChildAlgorithmResult &result ) {
     if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
     {
