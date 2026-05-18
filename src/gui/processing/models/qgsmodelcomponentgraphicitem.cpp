@@ -347,12 +347,11 @@ bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
   return true;
 }
 
-void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+void QgsModelComponentGraphicItem::paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
   const QRectF rect = itemRect();
   QColor color;
   QColor stroke;
-  QColor foreColor;
   if ( mComponent->color().isValid() )
   {
     color = mComponent->color();
@@ -369,35 +368,68 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         break;
     }
     stroke = color.darker( 110 );
-    foreColor = color.lightness() > 150 ? QColor( 0, 0, 0 ) : QColor( 255, 255, 255 );
   }
   else
   {
     color = fillColor( state() );
     stroke = strokeColor( state() );
-    foreColor = textColor( state() );
   }
 
-  const QColor outline = outlineColor();
-  if ( outline.isValid() )
-  {
-    // outline may be sub-pixel sized, which looks ugly without antialiasing.
-    const bool wasAntiAliased = painter->testRenderHint( QPainter::RenderHint::Antialiasing );
-    painter->setRenderHint( QPainter::RenderHint::Antialiasing );
-    QPen strokePen = QPen( outline, 10.0 );
-    strokePen.setJoinStyle( Qt::MiterJoin );
-    strokePen.setStyle( strokeStyle( state() ) );
-    painter->setPen( strokePen );
-    painter->setBrush( Qt::NoBrush );
-    painter->drawRect( rect );
-    painter->setRenderHint( QPainter::RenderHint::Antialiasing, wasAntiAliased );
-  }
+  paintOutline( painter, option, widget );
 
   QPen strokePen = QPen( stroke, 0 ); // 0 width "cosmetic" pen
   strokePen.setStyle( strokeStyle( state() ) );
   painter->setPen( strokePen );
   painter->setBrush( QBrush( color, Qt::SolidPattern ) );
   painter->drawRect( rect );
+}
+
+void QgsModelComponentGraphicItem::paintOutline( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  const QColor outline = outlineColor();
+  if ( outline.isValid() )
+  {
+    // outline may be sub-pixel sized, which looks ugly without antialiasing.
+    const bool wasAntiAliased = painter->testRenderHint( QPainter::RenderHint::Antialiasing );
+    painter->setRenderHint( QPainter::RenderHint::Antialiasing );
+    QPen strokePen = QPen( outline, RECT_OUTLINE_SIZE );
+    strokePen.setJoinStyle( Qt::MiterJoin );
+    strokePen.setStyle( strokeStyle( state() ) );
+    painter->setPen( strokePen );
+    painter->setBrush( Qt::NoBrush );
+    const QRectF rect = itemRect();
+    painter->drawRect( rect );
+    painter->setRenderHint( QPainter::RenderHint::Antialiasing, wasAntiAliased );
+  }
+}
+
+void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+{
+  paintBackground( painter, option, widget );
+
+  const QRectF rect = itemRect();
+  QColor foreColor;
+  if ( mComponent->color().isValid() )
+  {
+    QColor color = mComponent->color();
+    switch ( state() )
+    {
+      case Selected:
+        color = color.darker( 110 );
+        break;
+      case Hover:
+        color = color.darker( 105 );
+        break;
+
+      case Normal:
+        break;
+    }
+    foreColor = color.lightness() > 150 ? QColor( 0, 0, 0 ) : QColor( 255, 255, 255 );
+  }
+  else
+  {
+    foreColor = textColor( state() );
+  }
   painter->setFont( font() );
   painter->setPen( QPen( foreColor ) );
 
@@ -787,6 +819,7 @@ QgsModelDesignerSocketGraphicItem *QgsModelComponentGraphicItem::outSocketAt( in
   }
   return mOutSockets.at( index );
 }
+
 
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( parameter, model, parent )
@@ -1342,8 +1375,87 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
     return;
 
   mResults = results;
+  mStarted = false;
   update();
   emit updateArrowPaths();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setProgress( double progress )
+{
+  if ( mProgress == progress )
+    return;
+
+  mProgress = progress;
+  update();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setStarted()
+{
+  mStarted = true;
+  update();
+}
+
+void QgsModelChildAlgorithmGraphicItem::paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+{
+  if ( mProgress < 0 )
+  {
+    QgsModelComponentGraphicItem::paintBackground( painter, option, widget );
+    return;
+  }
+
+  paintOutline( painter, option, widget );
+
+  const QRectF rect = itemRect();
+  QColor color;
+  QColor stroke;
+  if ( component()->color().isValid() )
+  {
+    color = component()->color();
+    switch ( state() )
+    {
+      case Selected:
+        color = color.darker( 110 );
+        break;
+      case Hover:
+        color = color.darker( 105 );
+        break;
+
+      case Normal:
+        break;
+    }
+    stroke = color.darker( 110 );
+  }
+  else
+  {
+    color = fillColor( state() );
+    stroke = strokeColor( state() );
+  }
+
+  QPen strokePen = QPen( stroke, 0 );
+  strokePen.setStyle( strokeStyle( state() ) );
+  painter->setPen( strokePen );
+
+  const QColor colorLeft = color.darker( 120 );
+  QColor colorRight = color;
+
+  constexpr double fadeSize = 5;
+  const double fadeSizeProportionRect = fadeSize / rect.width();
+
+  if ( mProgress < 98 )
+  {
+    QLinearGradient gradient( rect.topLeft(), rect.topRight() );
+    gradient.setColorAt( 0.0, colorLeft );
+    gradient.setColorAt( std::max( 0.0, mProgress / 100 - fadeSizeProportionRect / 2 ), colorLeft );
+    gradient.setColorAt( std::min( 1.0, mProgress / 100 + fadeSizeProportionRect / 2 ), colorRight );
+    gradient.setColorAt( 1.0, colorRight );
+
+    painter->setBrush( QBrush( gradient ) );
+  }
+  else
+  {
+    painter->setBrush( QBrush( colorLeft ) );
+  }
+  painter->drawRect( rect );
 }
 
 void QgsModelChildAlgorithmGraphicItem::deleteComponent()
