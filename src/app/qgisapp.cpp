@@ -1094,12 +1094,12 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
 
-  if ( !settings.value( u"qgis/main_canvas_preview_jobs"_s ).isValid() )
+  if ( !QgsMapCanvas::settingsMainCanvasPreviewJobs->exists() )
   {
     // So that it appears in advanced settings
-    settings.setValue( u"qgis/main_canvas_preview_jobs"_s, true );
+    QgsMapCanvas::settingsMainCanvasPreviewJobs->setValue( true );
   }
-  mMapCanvas->setPreviewJobsEnabled( settings.value( u"qgis/main_canvas_preview_jobs"_s, true ).toBool() );
+  mMapCanvas->setPreviewJobsEnabled( QgsMapCanvas::settingsMainCanvasPreviewJobs->value() );
   // record profiling time on the main canvas only
   mMapCanvas->mapSettings().setFlag( Qgis::MapSettingsFlag::RecordProfile );
 
