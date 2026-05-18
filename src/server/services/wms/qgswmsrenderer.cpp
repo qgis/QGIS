@@ -3157,7 +3157,19 @@ namespace QgsWms
           {
             extraProperties.insert( u"display_name"_s, fidDisplayNameMap.value( feature.id() ) );
           }
-          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id, layerName ) );
+          QVariantMap extraMembers;
+          extraMembers["featureType"] = layerName;
+
+          // check if the layers have been requested by something other than their layer name (like the group)
+          // and if so, add the highest ancestor to extra members
+          QStringList requestedWmsName = mContext.acceptableLayersToRender().value( layer );
+          requestedWmsName.removeAll( layerName );
+          if ( !requestedWmsName.isEmpty() )
+          {
+            extraMembers["requestedWmsName"] = requestedWmsName.first();
+          }
+
+          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id, extraMembers ) );
         }
       }
       else // raster layer

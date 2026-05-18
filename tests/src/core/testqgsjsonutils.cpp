@@ -267,13 +267,35 @@ void TestQgsJsonUtils::testExportFeatureJson()
     ",\"type\":\"Feature\"}"
   ) };
   QString layerName( u"theForestLayer"_s );
+  QVariantMap extraMembers;
+  extraMembers["featureType"] = layerName;
+
   QString genericFeatureId( u"theForestLayer-1337"_s );
   QVariantMap extraProperties;
   extraProperties.insert( u"andAnExtraProperty"_s, 1337 );
 
-  const auto jFeatureType( exporter.exportFeatureToJsonObject( feature, extraProperties, genericFeatureId, layerName ) );
+  const auto jFeatureType( exporter.exportFeatureToJsonObject( feature, extraProperties, genericFeatureId, extraMembers ) );
   QCOMPARE( QString::fromStdString( jFeatureType.dump() ), expectedJsonFeatureTypeAndIdAndExtraProperties );
-  const auto jsonFeatureType = exporter.exportFeature( feature, extraProperties, genericFeatureId, -1, layerName );
+  const auto jsonFeatureType = exporter.exportFeature( feature, extraProperties, genericFeatureId, -1, extraMembers );
+  QCOMPARE( jsonFeatureType, expectedJsonFeatureTypeAndIdAndExtraProperties );
+
+  const QgsJsonExporter exporterForeignMembers { &vl };
+  const auto expectedJsonForeignMembers { QStringLiteral(
+    "{\"bbox\":[1.12,1.12,5.45,5.33],\"featureType\":\"anotherForestLayer\",\"geometry\":{\"coordinates\":"
+    "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+    ",\"id\":123,\"justAnotherDummy\":\"dum di da di dum di da\",\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+    ",\"requestedWmsName\":\"theForestGroup\",\"type\":\"Feature\"}"
+  ) };
+
+  QVariantMap moreExtraMembers;
+  moreExtraMembers["featureType"] = u"anotherForestLayer"_s;
+  moreExtraMembers["requestedWmsName"] = u"theForestGroup"_s;
+  moreExtraMembers["justAnotherDummy"] = u"dum di da di dum di da"_s;
+
+  const auto jForeignMembers( exporter.exportFeatureToJsonObject( feature, QVariantMap(), QVariant(), moreExtraMembers ) );
+  QCOMPARE( QString::fromStdString( jForeignMembers.dump() ), expectedJsonForeignMembers );
+  const auto jsonForeignMembers = exporter.exportFeature( feature, QVariantMap(), QVariant(), -1, moreExtraMembers );
   QCOMPARE( jsonFeatureType, expectedJsonFeatureTypeAndIdAndExtraProperties );
 }
 

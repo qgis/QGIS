@@ -4,9 +4,9 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
-      "featureType": "as-areas-short-name",
+      "featureType": "as-areas-short-name-query-copy",
       "geometry": null,
-      "id": "as-areas-short-name.18",
+      "id": "as-areas-short-name-query-copy.18",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",
@@ -31,22 +31,7 @@ Content-Type: application/json; charset=utf-8
         "umrisstyp": "durchgezogen",
         "veranstaltung": ""
       },
-      "requestedWmsName": "areas and symbols",
-      "type": "Feature"
-    },
-    {
-      "featureType": "cdb_lines",
-      "geometry": null,
-      "id": "cdb_lines.13",
-      "properties": {
-        "fid": 13,
-        "id": 12,
-        "id_long": null,
-        "name": "Fallersleben",
-        "ortsrat": "Fallersleben/Sülfeld",
-        "typ": "Ortsteil"
-      },
-      "requestedWmsName": "city and district boundaries",
+      "requestedWmsName": "child_ok",
       "type": "Feature"
     }
   ],
