@@ -18,7 +18,7 @@ Content-Type: application/json; charset=utf-8
         "name": "one",
         "utf8nameè": "one èé"
       },
-      "requestedWmsName": "group_name",
+      "qgis:requestedWmsName": "group_name",
       "type": "Feature"
     }
   ],

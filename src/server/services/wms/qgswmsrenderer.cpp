@@ -3174,7 +3174,7 @@ namespace QgsWms
           // if existing, add the requestedWmsName to extra members
           if ( !requestedWmsName.isEmpty() )
           {
-            extraMembers["requestedWmsName"] = requestedWmsName;
+            extraMembers["qgis:requestedWmsName"] = requestedWmsName;
           }
 
           jsonCollection["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id, extraMembers ) );
@@ -3202,7 +3202,7 @@ namespace QgsWms
 
         if ( !requestedWmsName.isEmpty() )
         {
-          jsonFeature["requestedWmsName"] = requestedWmsName.toStdString();
+          jsonFeature["qgis:requestedWmsName"] = requestedWmsName.toStdString();
         }
         jsonCollection["features"].push_back( jsonFeature );
       }
