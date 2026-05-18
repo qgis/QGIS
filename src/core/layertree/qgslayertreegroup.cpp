@@ -45,6 +45,7 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup &other )
   , mWmsHasTimeDimension( other.mWmsHasTimeDimension )
   , mGroupLayer( other.mGroupLayer )
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
+  , mWmsGroupRequestMode( other.mWmsGroupRequestMode )
 {
   other.serverProperties()->copyTo( mServerProperties.get() );
 
@@ -522,6 +523,8 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
 
   groupNode->mWmsHasTimeDimension = element.attribute( u"wms-has-time-dimension"_s, u"0"_s ) == "1"_L1;
 
+  groupNode->mWmsGroupRequestMode = { qgsEnumKeyToValue( element.attribute( u"wms-group-request-mode"_s ), Qgis::WmsGroupRequestMode::Normal ) };
+
   groupNode->mGroupLayer = QgsMapLayerRef( element.attribute( u"groupLayer"_s ) );
 
   readLegacyServerProperties( groupNode );
@@ -583,6 +586,8 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
   {
     elem.setAttribute( u"wms-has-time-dimension"_s, u"1"_s );
   }
+
+  elem.setAttribute( u"wms-group-request-mode"_s, qgsEnumValueToKey( mWmsGroupRequestMode ) );
 
   elem.setAttribute( u"groupLayer"_s, mGroupLayer.layerId );
 
@@ -865,4 +870,14 @@ void QgsLayerTreeGroup::setHasWmsTimeDimension( const bool hasWmsTimeDimension )
 bool QgsLayerTreeGroup::hasWmsTimeDimension() const
 {
   return mWmsHasTimeDimension;
+}
+
+Qgis::WmsGroupRequestMode QgsLayerTreeGroup::wmsGroupRequestMode() const
+{
+  return mWmsGroupRequestMode;
+}
+
+void QgsLayerTreeGroup::setWmsGroupRequestMode( Qgis::WmsGroupRequestMode groupRequestMode )
+{
+  mWmsGroupRequestMode = groupRequestMode;
 }

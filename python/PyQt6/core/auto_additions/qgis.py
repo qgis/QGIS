@@ -12703,6 +12703,25 @@ Qgis.TriangulationAlgorithm.__doc__ = """Triangulation algorithms.
 # --
 Qgis.TriangulationAlgorithm.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.WmsGroupRequestMode.Normal.__doc__ = "Group and children can be requested"
+Qgis.WmsGroupRequestMode.Opaque.__doc__ = "Group can be requested, children cannot (appears like a single layer)"
+Qgis.WmsGroupRequestMode.__doc__ = """Request mode of groups in a WMS context.
+
+When a group is opaque, WMS treats it as a single opaque layer instead
+of a collection of individual layers.
+Its child layers are hidden from GetCapabilities requests.
+Any direct requests (like GetMap or GetFeatureInfo etc.) for a child layer will result in an error.
+Child layers are rendered whenever a request is made for the group itself.
+
+.. versionadded:: 4.2
+
+* ``Normal``: Group and children can be requested
+* ``Opaque``: Group can be requested, children cannot (appears like a single layer)
+
+"""
+# --
+Qgis.WmsGroupRequestMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DockableWidgetInitialState.RestorePreviousState.__doc__ = "Restore the previous state of this dock"
 Qgis.DockableWidgetInitialState.ForceDocked.__doc__ = "Force the widget to be docked"
 Qgis.DockableWidgetInitialState.ForceDialog.__doc__ = "Force the widget to be shown in a dialog"

@@ -12358,12 +12358,15 @@ void QgisApp::legendGroupSetWmsData()
 
   QgsGroupWmsDataDialog dlg( *currentGroup->serverProperties(), this );
   dlg.setHasTimeDimension( currentGroup->hasWmsTimeDimension() );
-  if ( dlg.exec() && ( *dlg.serverProperties() != *currentGroup->serverProperties() || dlg.hasTimeDimension() != currentGroup->hasWmsTimeDimension() ) )
+  dlg.setGroupRequestMode( currentGroup->wmsGroupRequestMode() );
+  if ( dlg.exec()
+       && ( *dlg.serverProperties() != *currentGroup->serverProperties() || dlg.hasTimeDimension() != currentGroup->hasWmsTimeDimension() || dlg.groupRequestMode() != currentGroup->wmsGroupRequestMode() ) )
   {
     QgsProject::instance()->setDirty( true );
 
     dlg.serverProperties()->copyTo( currentGroup->serverProperties() );
     currentGroup->setHasWmsTimeDimension( dlg.hasTimeDimension() );
+    currentGroup->setWmsGroupRequestMode( dlg.groupRequestMode() );
   }
 }
 

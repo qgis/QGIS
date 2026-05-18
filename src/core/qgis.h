@@ -6737,6 +6737,24 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( TriangulationAlgorithm )
 
     /**
+     * Request mode of groups in a WMS context.
+     *
+     * When a group is opaque, WMS treats it as a single opaque layer instead
+     * of a collection of individual layers.
+     * Its child layers are hidden from GetCapabilities requests.
+     * Any direct requests (like GetMap or GetFeatureInfo etc.) for a child layer will result in an error.
+     * Child layers are rendered whenever a request is made for the group itself.
+     *
+     * \since QGIS 4.2
+    */
+    enum class WmsGroupRequestMode : int
+    {
+      Normal, //!< Group and children can be requested
+      Opaque, //!< Group can be requested, children cannot (appears like a single layer)
+    };
+    Q_ENUM( WmsGroupRequestMode )
+
+    /**
      * Dockable widget initial states.
      *
      * \since QGIS 4.2

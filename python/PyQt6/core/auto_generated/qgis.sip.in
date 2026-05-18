@@ -3776,6 +3776,12 @@ The development version
       Earcut
     };
 
+    enum class WmsGroupRequestMode /BaseType=IntEnum/
+    {
+      Normal,
+      Opaque,
+    };
+
     enum class DockableWidgetInitialState /BaseType=IntEnum/
     {
       RestorePreviousState,
