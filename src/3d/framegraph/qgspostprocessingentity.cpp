@@ -152,12 +152,18 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   const float cameraFov = mMainCamera->fieldOfView();
   const float cameraAspect = mMainCamera->aspectRatio();
 
+  const float shadowMapResolution = static_cast< float >( mShadowMapResolution );
+
   // we are building two matrix lists, one containing the exact bounds of each
   // cascade, and the other which is an exact match for the actual camera used
   // for each cascade's texture. These differ, as we pull back the camera's
   // near plane for reasons described below...
   QVariantList csmMatrices( Qgs3D::NUM_SHADOW_CASCADES, QVariant() );
   QVariantList csmBoundsMatrices( Qgs3D::NUM_SHADOW_CASCADES, QVariant() );
+
+  // here we are calculating the cascades using bounding spheres, in order to stabilise the
+  // matrices and avoid shadow shimmer when the camera is moved or rotated
+  // see eg https://media.gdcvault.com/gdc09/slides/100_Handout%203.pdf from slide 21
   for ( int i = 0; i < Qgs3D::NUM_SHADOW_CASCADES; ++i )
   {
     const float zNear = cascadeSplits[i];
@@ -168,36 +174,48 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     QVector3D worldFrustrumCenter;
     Qgs3DUtils::calculateFrustumSliceCorners( zNear, zFar, cameraFov, cameraAspect, invertedCameraView, worldFrustumCorners, worldFrustrumCenter );
 
+    // calculate the bounding sphere radius around the frustum center
+    float rawRadius = 0.0f;
+    for ( int j = 0; j < 8; ++j )
+    {
+      rawRadius = std::max( rawRadius, ( worldFrustumCorners[j] - worldFrustrumCenter ).length() );
+    }
+
+    // round up slightly to stabilize against floating point inaccuracies
+    // use dynamic step size based on the raw radius so we round larger radius to coarser increments
+    const float stepSize = std::max( std::pow( 2.0f, std::floor( std::log2( rawRadius ) ) - 4.0f ), 0.01f );
+    const float radius = std::ceil( rawRadius / stepSize ) * stepSize;
+
+    // project the actual world frustum center into this rotation-aligned light space
+    QMatrix4x4 lightRotation;
+    lightRotation.lookAt( QVector3D( 0, 0, 0 ), lightDirection, up );
+    QVector3D centerLightSpace = lightRotation * worldFrustrumCenter;
+
+    // snap to texels
+    // calculate how many world units are represented by a single texel
+    const float worldUnitsPerTexel = ( 2.0f * radius ) / shadowMapResolution;
+    // snap the light center to the nearest texel
+    centerLightSpace.setX( std::floor( centerLightSpace.x() / worldUnitsPerTexel ) * worldUnitsPerTexel );
+    centerLightSpace.setY( std::floor( centerLightSpace.y() / worldUnitsPerTexel ) * worldUnitsPerTexel );
+    const QVector3D snappedWorldCenter = lightRotation.inverted() * centerLightSpace;
+
     // create the light view matrix
     QMatrix4x4 lightView;
-    const QVector3D lightPos = worldFrustrumCenter - lightDirection;
-    lightView.lookAt( lightPos, worldFrustrumCenter, up );
+    const QVector3D lightPos = snappedWorldCenter - ( lightDirection * radius );
+    lightView.lookAt( lightPos, snappedWorldCenter, up );
 
     // apply to the specific light camera
     mLightCameras[i]->setPosition( lightPos );
-    mLightCameras[i]->setViewCenter( worldFrustrumCenter );
+    mLightCameras[i]->setViewCenter( snappedWorldCenter );
     mLightCameras[i]->setUpVector( up );
 
-    float lightCameraLeft = 0;
-    float lightCameraRight = 0;
-    float lightCameraBottom = 0;
-    float lightCameraTop = 0;
-    float lightCameraNearPlane = 0;
-    float lightCameraFarPlane = 0;
-    Qgs3DUtils::calculateViewSpaceOrthographicBounds( worldFrustumCorners, lightView, lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
-
-    // we pad a little to guarantee some overlap exists between cascades, to avoid
-    // any chance of gaps between seams
-    constexpr float CASCADE_VIEW_PADDING_FACTOR = 0.05f;
-    const float paddingX = ( lightCameraRight - lightCameraLeft ) * CASCADE_VIEW_PADDING_FACTOR;
-    const float paddingY = ( lightCameraTop - lightCameraBottom ) * CASCADE_VIEW_PADDING_FACTOR;
-    const float paddingZ = ( lightCameraFarPlane - lightCameraNearPlane ) * CASCADE_VIEW_PADDING_FACTOR;
-    lightCameraLeft -= paddingX;
-    lightCameraRight += paddingX;
-    lightCameraBottom -= paddingY;
-    lightCameraTop += paddingY;
-    lightCameraNearPlane -= paddingZ;
-    lightCameraFarPlane += paddingZ;
+    float lightCameraLeft = -radius;
+    float lightCameraRight = radius;
+    float lightCameraBottom = -radius;
+    float lightCameraTop = radius;
+    // the Z-bounds must cover the entire bounding sphere
+    float lightCameraNearPlane = -radius;
+    float lightCameraFarPlane = radius * 2.0f;
 
     QMatrix4x4 orthoBoundsMatrix;
     orthoBoundsMatrix.ortho( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
