@@ -96,6 +96,11 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
      */
     void setEmissionTexture( Qt3DRender::QAbstractTexture *emission );
 
+    /**
+     * Sets the solid emissive \a color.
+     */
+    void setEmissionColor( const QColor &color );
+
     //! Sets the emission strength factor
     void setEmissionFactor( double factor );
 
@@ -127,6 +132,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mHeightMapParameter = nullptr;
     Qt3DRender::QParameter *mParallaxScaleParameter = nullptr;
     Qt3DRender::QParameter *mEmissionMapParameter = nullptr;
+    Qt3DRender::QParameter *mEmissiveColorParameter = nullptr;
     Qt3DRender::QParameter *mEmissionFactorParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mTextureRotationParameter = nullptr;

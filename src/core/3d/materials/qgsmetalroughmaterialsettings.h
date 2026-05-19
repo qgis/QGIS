@@ -74,6 +74,25 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     double roughness() const { return mRoughness; }
 
     /**
+     * Returns the material's emissive color.
+     *
+     * \see setEmissionColor()
+     * \since QGIS 4.2
+     */
+    QColor emissionColor() const { return mEmissiveColor; }
+
+    /**
+     * Returns the emission factor, which dictates the strength of the emission effect.
+     *
+     * A value of 1.0 indicates that the emission color values should be used directly.
+     * Larger values result in more light emission.
+     *
+     * \see setEmissionFactor()
+     * \see emissionColor()
+     */
+    double emissionFactor() const { return mEmissionFactor; }
+
+    /**
      * Returns the opacity of the surface
      *
      * \see setOpacity()
@@ -123,6 +142,25 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     void setOpacity( double opacity ) { mOpacity = opacity; }
 
     /**
+     * Sets the material's emissive \a color.
+     *
+     * \see emissionColor()
+     * \since QGIS 4.2
+     */
+    void setEmissionColor( const QColor &color ) { mEmissiveColor = color; }
+
+    /**
+     * Sets the emission \a factor, which dictates the strength of the emission effect.
+     *
+     * A value of 1.0 indicates that the emission color values should be used directly.
+     * Larger values result in more light emission.
+     *
+     * \see emissionFactor()
+     * \see setEmissionColor()
+     */
+    void setEmissionFactor( double factor ) { mEmissionFactor = factor; }
+
+    /**
      * Decomposes a base color into the material's color components, and sets the material's color accordingly.
      *
      * Since this material contains only a single color, this function
@@ -142,16 +180,20 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     bool operator==( const QgsMetalRoughMaterialSettings &other ) const
     {
       return mBaseColor == other.mBaseColor
+             && mEmissiveColor == other.mEmissiveColor
              && qgsDoubleNear( mMetalness, other.mMetalness )
              && qgsDoubleNear( mRoughness, other.mRoughness )
              && qgsDoubleNear( mOpacity, other.mOpacity )
+             && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
     QColor mBaseColor { QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) };
+    QColor mEmissiveColor;
     double mMetalness = 0.0;
     double mRoughness = 0.5;
+    double mEmissionFactor = 1.0;
     double mOpacity = 1.0;
 };
 
