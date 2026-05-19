@@ -96,8 +96,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     Type type() const { return mType; }
 
     //set left node
-    void setLeft( QgsRasterCalcNode *left ) { mLeft.reset( left ); }
-    void setRight( QgsRasterCalcNode *right ) { mRight.reset( right ); }
+    void setLeft( QgsRasterCalcNode *left SIP_TRANSFER ) { mLeft.reset( left ); }
+    void setRight( QgsRasterCalcNode *right SIP_TRANSFER ) { mRight.reset( right ); }
 
     /**
      * Calculates result of raster calculation (might be real matrix or single number).
