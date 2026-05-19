@@ -245,6 +245,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *settingsLegendDoubleClickAction SIP_SKIP;
     static const QgsSettingsEntryBool *settingsEnableEventTracing SIP_SKIP;
     static const QgsSettingsEntryBool *settingsHideSplash SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsMapTipsEnabled SIP_SKIP;
 
     //! Constructor
     QgisApp(

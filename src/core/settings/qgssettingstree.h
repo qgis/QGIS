@@ -64,6 +64,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildNode( u"layout"_s );
     static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildNode( u"locale"_s );
     static inline QgsSettingsTreeNode *sTreeMap = treeRoot()->createChildNode( u"map"_s );
+    static inline QgsSettingsTreeNode *sTreeMapTips = treeRoot()->createChildNode( u"map-tips"_s );
     static inline QgsSettingsTreeNode *sTreeNetwork = treeRoot()->createChildNode( u"network"_s );
     static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildNode( u"qgis"_s );
     static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildNode( u"plugins"_s );
