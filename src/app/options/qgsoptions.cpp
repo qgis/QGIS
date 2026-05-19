@@ -762,7 +762,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
   cbxHideSplash->setChecked( QgisApp::settingsHideSplash->value() );
   cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
-  cbxCheckVersion->setChecked( mSettings->value( u"/qgis/checkVersion"_s, true ).toBool() );
+  cbxCheckVersion->setChecked( QgsWelcomeScreen::settingsCheckVersion->value() );
   cbxCheckVersion->setVisible( mSettings->value( u"/qgis/allowVersionCheck"_s, true ).toBool() );
   cbxAttributeTableDocked->setChecked( QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() );
   cbxAutosizeAttributeTable->setChecked( QgsAttributeTableDialog::settingsAutosizeAttributeTable->value() );
@@ -1636,7 +1636,7 @@ void QgsOptions::saveOptions()
   QgisApp::settingsHideSplash->setValue( cbxHideSplash->isChecked() );
   mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
 
-  mSettings->setValue( u"/qgis/checkVersion"_s, cbxCheckVersion->isChecked() );
+  QgsWelcomeScreen::settingsCheckVersion->setValue( cbxCheckVersion->isChecked() );
   QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->setValue( cbxAttributeTableDocked->isChecked() );
   QgsAttributeTableDialog::settingsAutosizeAttributeTable->setValue( cbxAutosizeAttributeTable->isChecked() );
   mSettings->setEnumValue( u"/qgis/attributeTableBehavior"_s, ( QgsAttributeTableFilterModel::FilterMode ) cmbAttrTableBehavior->currentData().toInt() );
