@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProcessingFeedback : QgsFeedback
 {
 %Docstring(signature="appended")
@@ -197,6 +198,32 @@ pushed to the feedback object.
 .. versionadded:: 3.14
 %End
 
+    void featureAddedToSink( const QString &sinkId );
+%Docstring
+Reports that a feature was added to a sink.
+
+.. seealso:: :py:func:`sinkFeatureCountChanged`
+
+.. seealso:: :py:func:`featureSinkFinalized`
+
+.. versionadded:: 4.2
+%End
+
+    void featureSinkFinalized( const QString &sinkId );
+%Docstring
+Reports that a feature was has been finalized.
+
+This will cause an immediate emission of
+:py:func:`~QgsProcessingFeedback.sinkFeatureCountChanged` signal with
+the final sink size.
+
+.. seealso:: :py:func:`featureAddedToSink`
+
+.. seealso:: :py:func:`sinkFeatureCountChanged`
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void progressTextChanged( const QString &text );
@@ -267,6 +294,22 @@ Emitted when console information ``text`` is pushed.
 Emitted when a formatted ``html`` message is pushed.
 
 .. seealso:: :py:func:`pushFormattedMessage`
+
+.. versionadded:: 4.2
+%End
+
+    void sinkFeatureCountChanged( const QString &sinkId, long long featureCount );
+%Docstring
+Emitted when the count of features pushed to a sink has changed.
+
+.. note::
+
+   For performance, this signal is not emitted for every individual feature
+   added to the sink. It is instead emitted only once for every 100 features added.
+
+.. seealso:: :py:func:`featureAddedToSink`
+
+.. seealso:: :py:func:`featureSinkFinalized`
 
 .. versionadded:: 4.2
 %End

@@ -1527,6 +1527,50 @@ void TestQgsProcessing::feedback()
 
   QCOMPARE( f.htmlLog(), u"info<br/><span style=\"color:red\">error</span><br/><span style=\"color:#777\">debug</span><br/><code>command</code><br/><code style=\"color:#777\">console</code><br/>"_s );
   QCOMPARE( f.textLog(), u"info\nerror\ndebug\ncommand\nconsole\n"_s );
+
+
+  QSignalSpy sinkCountChanged( &f, &QgsProcessingFeedback::sinkFeatureCountChanged );
+  // this signal should be batched, only emitted once per block of features
+  for ( int i = 1; i < 100; ++i )
+  {
+    f.featureAddedToSink( u"sink1"_s );
+  }
+  QCOMPARE( sinkCountChanged.size(), 0 );
+  f.featureAddedToSink( u"sink1"_s );
+  QCOMPARE( sinkCountChanged.size(), 1 );
+  QCOMPARE( sinkCountChanged.at( 0 ).at( 0 ), u"sink1"_s );
+  QCOMPARE( sinkCountChanged.at( 0 ).at( 1 ), 100 );
+
+  for ( int i = 1; i < 100; ++i )
+  {
+    f.featureAddedToSink( u"sink1"_s );
+  }
+  QCOMPARE( sinkCountChanged.size(), 1 );
+
+  for ( int i = 1; i <= 100; ++i )
+  {
+    f.featureAddedToSink( u"sink2"_s );
+  }
+  QCOMPARE( sinkCountChanged.size(), 2 );
+  QCOMPARE( sinkCountChanged.at( 1 ).at( 0 ), u"sink2"_s );
+  QCOMPARE( sinkCountChanged.at( 1 ).at( 1 ), 100 );
+
+  f.featureAddedToSink( u"sink1"_s );
+  QCOMPARE( sinkCountChanged.size(), 3 );
+  QCOMPARE( sinkCountChanged.at( 2 ).at( 0 ), u"sink1"_s );
+  QCOMPARE( sinkCountChanged.at( 2 ).at( 1 ), 200 );
+
+  f.featureAddedToSink( u"sink1"_s );
+  QCOMPARE( sinkCountChanged.size(), 3 );
+  f.featureSinkFinalized( u"sink1"_s );
+  QCOMPARE( sinkCountChanged.size(), 4 );
+  QCOMPARE( sinkCountChanged.at( 3 ).at( 0 ), u"sink1"_s );
+  QCOMPARE( sinkCountChanged.at( 3 ).at( 1 ), 201 );
+
+  f.featureSinkFinalized( u"sink3"_s );
+  QCOMPARE( sinkCountChanged.size(), 5 );
+  QCOMPARE( sinkCountChanged.at( 4 ).at( 0 ), u"sink3"_s );
+  QCOMPARE( sinkCountChanged.at( 4 ).at( 1 ), 0 );
 }
 
 void TestQgsProcessing::mapLayers()
