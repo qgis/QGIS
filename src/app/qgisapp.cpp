@@ -1002,6 +1002,8 @@ const QgsSettingsEntryBool *QgisApp::settingsNewProjectDefault
   = new QgsSettingsEntryBool( u"new-project-default"_s, QgsSettingsTree::sTreeProject, false, u"Whether new projects open from the default project template"_s );
 const QgsSettingsEntryInteger *QgisApp::settingsProjOpenAtLaunch
   = new QgsSettingsEntryInteger( u"proj-open-at-launch"_s, QgsSettingsTree::sTreeProject, 0, u"Behavior when QGIS launches: 0=new project, 1=most recent, 2=welcome page, 3=specific project"_s );
+const QgsSettingsEntryString *QgisApp::settingsProjOpenAtLaunchPath
+  = new QgsSettingsEntryString( u"proj-open-at-launch-path"_s, QgsSettingsTree::sTreeProject, QString(), u"Path of the specific project to open at launch"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -6068,7 +6070,7 @@ void QgisApp::fileOpenAfterLaunch()
   }
   if ( mProjOpen == 2 ) // specific project
   {
-    projPath = settings.value( u"qgis/projOpenAtLaunchPath"_s ).toString();
+    projPath = settingsProjOpenAtLaunchPath->value();
   }
 
   // whether last auto-opening of a project failed

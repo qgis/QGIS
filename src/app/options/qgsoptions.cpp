@@ -819,7 +819,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   int projOpen = QgisApp::settingsProjOpenAtLaunch->value();
   mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
-  mProjectOnLaunchLineEdit->setText( mSettings->value( u"/qgis/projOpenAtLaunchPath"_s ).toString() );
+  mProjectOnLaunchLineEdit->setText( QgisApp::settingsProjOpenAtLaunchPath->value() );
   mProjectOnLaunchLineEdit->setEnabled( projOpen == 2 );
   mProjectOnLaunchPushBtn->setEnabled( projOpen == 2 );
   connect( mProjectOnLaunchPushBtn, &QAbstractButton::pressed, this, &QgsOptions::selectProjectOnLaunch );
@@ -1667,7 +1667,7 @@ void QgsOptions::saveOptions()
 
   // project
   QgisApp::settingsProjOpenAtLaunch->setValue( mProjectOnLaunchCmbBx->currentIndex() );
-  mSettings->setValue( u"/qgis/projOpenAtLaunchPath"_s, mProjectOnLaunchLineEdit->text() );
+  QgisApp::settingsProjOpenAtLaunchPath->setValue( mProjectOnLaunchLineEdit->text() );
 
   QgisApp::settingsAskToSaveProjectChanges->setValue( chbAskToSaveProjectChanges->isChecked() );
   mSettings->setValue( u"qgis/askToDeleteLayers"_s, mLayerDeleteConfirmationChkBx->isChecked() );
