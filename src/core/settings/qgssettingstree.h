@@ -101,7 +101,7 @@ class CORE_EXPORT QgsSettingsTree
      *
      * \note Since QGIS 4.2 for Python plugins, the node is created automatically by QGIS
      * when the plugin is started and is exposed as the
-     * ``QGIS_PLUGIN_SETTINGS_NODE`` attribute on the plugin package.
+     * ``SETTINGS_NODE`` attribute on the plugin package.
      * Plugin authors should retrieve it with
      * ``from <my_plugin> import SETTINGS_NODE`` rather than
      * calling this method directly.
