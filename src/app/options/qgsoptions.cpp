@@ -522,7 +522,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAttrTableViewComboBox->addItem( tr( "Remember Last View" ), -1 );
   mAttrTableViewComboBox->addItem( tr( "Table View" ), QgsDualView::AttributeTable );
   mAttrTableViewComboBox->addItem( tr( "Form View" ), QgsDualView::AttributeEditor );
-  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( mSettings->value( u"/qgis/attributeTableView"_s, -1 ).toInt() ) );
+  const int currentAttrTableView = QgsAttributeTableDialog::settingsAttributeTableRememberLastView->value()
+                                     ? -1
+                                     : static_cast<int>( QgsAttributeTableDialog::settingsAttributeTableView->value() );
+  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( currentAttrTableView ) );
 
   spinBoxAttrTableRowCache->setValue( mSettings->value( u"/qgis/attributeTableRowCache"_s, 10000 ).toInt() );
   spinBoxAttrTableRowCache->setClearValue( 10000 );
@@ -1640,7 +1643,16 @@ void QgsOptions::saveOptions()
   QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->setValue( cbxAttributeTableDocked->isChecked() );
   QgsAttributeTableDialog::settingsAutosizeAttributeTable->setValue( cbxAutosizeAttributeTable->isChecked() );
   mSettings->setEnumValue( u"/qgis/attributeTableBehavior"_s, ( QgsAttributeTableFilterModel::FilterMode ) cmbAttrTableBehavior->currentData().toInt() );
-  mSettings->setValue( u"/qgis/attributeTableView"_s, mAttrTableViewComboBox->currentData() );
+  const int selectedAttrTableView = mAttrTableViewComboBox->currentData().toInt();
+  if ( selectedAttrTableView < 0 )
+  {
+    QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( true );
+  }
+  else
+  {
+    QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( false );
+    QgsAttributeTableDialog::settingsAttributeTableView->setValue( static_cast<QgsDualView::ViewMode>( selectedAttrTableView ) );
+  }
   mSettings->setValue( u"/qgis/attributeTableRowCache"_s, spinBoxAttrTableRowCache->value() );
   mSettings->setEnumValue( u"/qgis/promptForSublayers"_s, static_cast<Qgis::SublayerPromptMode>( cmbPromptSublayers->currentData().toInt() ) );
 

@@ -19,6 +19,7 @@
 
 #include "qgisapp.h"
 #include "qgsattributetabledialog.h"
+#include "qgsdualview.h"
 #include "qgsgui.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsimagewarper.h"
@@ -98,6 +99,29 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"qgis/restoreDefaultWindowState"_s, true );
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"/qgis/restoreDefaultWindowState"_s, true );
   QgsMapLayerStyleCommand::settingsStyleUndoMergeTimeout->copyValueFromKey( u"UI/styleUndoMergeTimeout"_s, true );
+  // Legacy qgis/attributeTableView used -1 as a sentinel meaning "remember last view";
+  // split into two new settings (an enum view + a boolean remember-last-view flag).
+  {
+    QgsSettings legacySettings;
+    QVariant legacyAttrTableView = legacySettings.value( u"qgis/attributeTableView"_s );
+    if ( !legacyAttrTableView.isValid() )
+      legacyAttrTableView = legacySettings.value( u"/qgis/attributeTableView"_s );
+    if ( legacyAttrTableView.isValid() )
+    {
+      const int legacyValue = legacyAttrTableView.toInt();
+      if ( legacyValue < 0 )
+      {
+        QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( true );
+      }
+      else
+      {
+        QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( false );
+        QgsAttributeTableDialog::settingsAttributeTableView->setValue( static_cast<QgsDualView::ViewMode>( legacyValue ) );
+      }
+      legacySettings.remove( u"qgis/attributeTableView"_s );
+      legacySettings.remove( u"/qgis/attributeTableView"_s );
+    }
+  }
   QgisApp::settingsAskToDeleteFeatures->copyValueFromKey( u"app/askToDeleteFeatures"_s, true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( u"plugins/automatically-check-for-updates"_s, true );
   QgsPluginManager::settingsAllowExperimental->copyValueFromKey( u"app/plugin_installer/allowExperimental"_s, true );
