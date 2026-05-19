@@ -131,19 +131,34 @@ bool QgsAuthApiHeaderMethod::updateDataSourceUriItems( QStringList &connectionIt
 #endif
 
     const QString uri( connectionItems.first() );
-    const QStringList uriParts( uri.split( '/', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
+    const QStringList uriParts( uri.split( '/' ) );
     QString prefixes;
     for ( const QString &part : uriParts )
     {
-      prefixes += '/' + part;
-      if ( QgsGdalUtils::isVsiArchivePrefix( part ) )
+      // skip the first leading slash, it will be added by the next part
+      if ( prefixes.isEmpty() && part.isEmpty() )
         continue;
 
-      if ( QgsGdalUtils::vsiHandlerType( part ) == Qgis::VsiHandlerType::Network )
-        break;
+      prefixes += '/' + part;
 
-      QgsDebugError( u"Update request config FAILED for authcfg: %1: Only network requests support API Header auth cfg"_s.arg( authcfg ) );
-      return false;
+      // skip if it's a second slash in a row
+      if ( part.isEmpty() )
+        continue;
+
+      switch ( QgsGdalUtils::vsiHandlerType( part ) )
+      {
+        case Qgis::VsiHandlerType::Cloud:
+        case Qgis::VsiHandlerType::Invalid:
+        case Qgis::VsiHandlerType::Memory:
+        case Qgis::VsiHandlerType::Other:
+          QgsDebugError( u"Update request config FAILED for authcfg: %1: Only network requests support API Header auth cfg"_s.arg( authcfg ) );
+          return false;
+        case Qgis::VsiHandlerType::Archive:
+          continue;
+        case Qgis::VsiHandlerType::Network:
+          break;
+      }
+      break;
     }
 
     const QString url( QUrl::toPercentEncoding( uri.mid( prefixes.length() + 1 ) ) );
