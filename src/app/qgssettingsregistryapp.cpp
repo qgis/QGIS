@@ -87,6 +87,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgisApp::settingsProjOpenAtLaunch->copyValueFromKey( u"/qgis/projOpenAtLaunch"_s, true );
   QgisApp::settingsProjOpenAtLaunchPath->copyValueFromKey( u"qgis/projOpenAtLaunchPath"_s, true );
   QgisApp::settingsProjOpenAtLaunchPath->copyValueFromKey( u"/qgis/projOpenAtLaunchPath"_s, true );
+  QgisApp::settingsProjOpenedOKAtLaunch->copyValueFromKey( u"qgis/projOpenedOKAtLaunch"_s, true );
+  QgisApp::settingsProjOpenedOKAtLaunch->copyValueFromKey( u"/qgis/projOpenedOKAtLaunch"_s, true );
   QgisApp::settingsAskToDeleteFeatures->copyValueFromKey( u"app/askToDeleteFeatures"_s, true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( u"plugins/automatically-check-for-updates"_s, true );
   QgsPluginManager::settingsAllowExperimental->copyValueFromKey( u"app/plugin_installer/allowExperimental"_s, true );

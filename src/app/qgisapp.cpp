@@ -1004,6 +1004,8 @@ const QgsSettingsEntryInteger *QgisApp::settingsProjOpenAtLaunch
   = new QgsSettingsEntryInteger( u"proj-open-at-launch"_s, QgsSettingsTree::sTreeProject, 0, u"Behavior when QGIS launches: 0=new project, 1=most recent, 2=welcome page, 3=specific project"_s );
 const QgsSettingsEntryString *QgisApp::settingsProjOpenAtLaunchPath
   = new QgsSettingsEntryString( u"proj-open-at-launch-path"_s, QgsSettingsTree::sTreeProject, QString(), u"Path of the specific project to open at launch"_s );
+const QgsSettingsEntryBool *QgisApp::settingsProjOpenedOKAtLaunch
+  = new QgsSettingsEntryBool( u"project-opened-ok-at-launch"_s, QgsSettingsTree::sTreeProject, true, u"Whether the project specified to open at launch was opened successfully last time"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -5957,7 +5959,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // don't open template if last auto-opening of a project failed
   if ( !forceBlank )
   {
-    forceBlank = !settings.value( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) ).toBool();
+    forceBlank = !settingsProjOpenedOKAtLaunch->value();
   }
 
   if ( !forceBlank && settingsNewProjectDefault->value() )
@@ -6074,7 +6076,7 @@ void QgisApp::fileOpenAfterLaunch()
   }
 
   // whether last auto-opening of a project failed
-  bool projOpenedOK = settings.value( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) ).toBool();
+  bool projOpenedOK = settingsProjOpenedOKAtLaunch->value();
 
   // notify user if last attempt at auto-opening a project failed
 
@@ -6086,7 +6088,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( !projOpenedOK )
   {
     // only show the following 'auto-open project failed' message once, at launch
-    settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) );
+    settingsProjOpenedOKAtLaunch->setValue( true );
 
     // set auto-open project back to 'New' to avoid re-opening bad project
     settingsProjOpenAtLaunch->setValue( 0 );
@@ -6122,7 +6124,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( projectIsFromStorage || QFile::exists( projPath ) )
   {
     // set flag to check on next app launch if the following project opened OK
-    settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( false ) );
+    settingsProjOpenedOKAtLaunch->setValue( false );
 
     if ( !addProject( projPath ) )
     {
@@ -6142,8 +6144,7 @@ void QgisApp::fileOpenAfterLaunch()
 
 void QgisApp::fileOpenedOKAfterLaunch()
 {
-  QgsSettings settings;
-  settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) );
+  settingsProjOpenedOKAtLaunch->setValue( true );
 }
 
 void QgisApp::fileNewFromTemplateAction( QAction *qAction )
