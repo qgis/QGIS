@@ -91,6 +91,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgisApp::settingsProjOpenedOKAtLaunch->copyValueFromKey( u"/qgis/projOpenedOKAtLaunch"_s, true );
   QgsWelcomeScreen::settingsCheckVersion->copyValueFromKey( u"qgis/checkVersion"_s, true );
   QgsWelcomeScreen::settingsCheckVersion->copyValueFromKey( u"/qgis/checkVersion"_s, true );
+  QgisApp::settingsShowScriptWarning->copyValueFromKey( u"UI/showScriptWarning"_s, true );
   QgisApp::settingsAskToDeleteFeatures->copyValueFromKey( u"app/askToDeleteFeatures"_s, true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( u"plugins/automatically-check-for-updates"_s, true );
   QgsPluginManager::settingsAllowExperimental->copyValueFromKey( u"app/plugin_installer/allowExperimental"_s, true );
