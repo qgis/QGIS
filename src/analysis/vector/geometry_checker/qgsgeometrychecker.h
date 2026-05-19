@@ -49,6 +49,12 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
 {
     Q_OBJECT
   public:
+    /**
+     * Constructor
+     * \param checks list of geometry checks
+     * \param context geometry check context
+     * \param featurePools map of feature pools
+     */
     QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, std::unique_ptr<QgsGeometryCheckContext> context, const QMap<QString, QgsFeaturePool *> &featurePools );
     ~QgsGeometryChecker() override;
     QFuture<void> execute( int *totalSteps = nullptr );
