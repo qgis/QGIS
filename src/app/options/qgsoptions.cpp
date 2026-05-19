@@ -817,7 +817,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   pbnMeasureColor->setContext( u"gui"_s );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
 
-  int projOpen = mSettings->value( u"/qgis/projOpenAtLaunch"_s, 0 ).toInt();
+  int projOpen = QgisApp::settingsProjOpenAtLaunch->value();
   mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
   mProjectOnLaunchLineEdit->setText( mSettings->value( u"/qgis/projOpenAtLaunchPath"_s ).toString() );
   mProjectOnLaunchLineEdit->setEnabled( projOpen == 2 );
@@ -1666,7 +1666,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->setValue( mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
 
   // project
-  mSettings->setValue( u"/qgis/projOpenAtLaunch"_s, mProjectOnLaunchCmbBx->currentIndex() );
+  QgisApp::settingsProjOpenAtLaunch->setValue( mProjectOnLaunchCmbBx->currentIndex() );
   mSettings->setValue( u"/qgis/projOpenAtLaunchPath"_s, mProjectOnLaunchLineEdit->text() );
 
   QgisApp::settingsAskToSaveProjectChanges->setValue( chbAskToSaveProjectChanges->isChecked() );
