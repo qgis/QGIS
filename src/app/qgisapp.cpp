@@ -1010,6 +1010,8 @@ const QgsSettingsEntryBool *QgisApp::settingsShowScriptWarning
   = new QgsSettingsEntryBool( u"show-script-warning"_s, QgsSettingsTree::sTreeApp, true, u"Whether to warn the user before running a Python script embedded in a project"_s );
 const QgsSettingsEntryBool *QgisApp::settingsDisplayWaylandWarning
   = new QgsSettingsEntryBool( u"display-wayland-warning"_s, QgsSettingsTree::sTreeGui, true, u"Whether to show the warning dialog when running QGIS under Wayland"_s );
+const QgsSettingsEntryBool *QgisApp::settingsRestoreDefaultWindowState
+  = new QgsSettingsEntryBool( u"restore-default-window-state"_s, QgsSettingsTree::sTreeApp, false, u"Whether to restore the default window state on next QGIS startup"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
