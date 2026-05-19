@@ -186,18 +186,21 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
 
   if ( field.isNumeric() )
   {
-    outputs = calculateNumericStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback );
+    outputs = calculateNumericStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback, destId );
   }
   else if ( field.isDateOrTime() )
   {
-    outputs = calculateDateTimeStatistics( parameters, fieldIndex, field, features, count, sink.get(), data, feedback );
+    outputs = calculateDateTimeStatistics( parameters, fieldIndex, field, features, count, sink.get(), data, feedback, destId );
   }
   else
   {
-    outputs = calculateStringStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback );
+    outputs = calculateStringStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback, destId );
   }
   if ( sink )
+  {
     sink->finalize();
+    feedback->featureSinkFinalized( destId );
+  }
 
   if ( !outputHtml.isEmpty() )
   {
@@ -225,7 +228,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
 }
 
 QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
-  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback, const QString &destId
 )
 {
   const double step = count > 0 ? 100.0 / count : 1;
@@ -314,13 +317,25 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
     }
+    else
+    {
+      feedback->featureAddedToSink( destId );
+    }
   }
 
   return outputs;
 }
 
 QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
-  const QVariantMap &parameters, const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+  const QVariantMap &parameters,
+  const int fieldIndex,
+  QgsField field,
+  QgsFeatureIterator features,
+  const long long count,
+  QgsFeatureSink *sink,
+  QStringList &data,
+  QgsProcessingFeedback *feedback,
+  const QString &destId
 )
 {
   const double step = count > 0 ? 100.0 / count : 1;
@@ -377,13 +392,17 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
     }
+    else
+    {
+      feedback->featureAddedToSink( destId );
+    }
   }
 
   return outputs;
 }
 
 QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics(
-  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback, const QString &destId
 )
 {
   const double step = count > 0 ? 100.0 / count : 1;
@@ -451,6 +470,10 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics(
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
+    }
+    else
+    {
+      feedback->featureAddedToSink( destId );
     }
   }
 

@@ -265,6 +265,10 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
         {
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         }
+        else
+        {
+          feedback->featureAddedToSink( destId );
+        }
       }
     }
 
@@ -278,6 +282,8 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
   }
   if ( sink )
   {
+    sink->finalize();
+    feedback->featureSinkFinalized( destId );
     results.insert( u"OUTPUT"_s, destId );
   }
   return results;

@@ -188,9 +188,17 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       {
         throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, u"OUTPUT_LINES"_s ) );
       }
+      else if ( linesSink )
+      {
+        feedback->featureAddedToSink( linesDest );
+      }
       if ( pointsSink && !pointsSink->addFeature( spokeFeature, QgsFeatureSink::Flag::FastInsert ) )
       {
         throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT_POINTS"_s ) );
+      }
+      else if ( pointsSink )
+      {
+        feedback->featureAddedToSink( pointsDest );
       }
       continue;
     }
@@ -224,6 +232,10 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       {
         throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, u"OUTPUT_LINES"_s ) );
       }
+      else
+      {
+        feedback->featureAddedToSink( linesDest );
+      }
     }
 
     if ( pointsSink )
@@ -233,16 +245,22 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       {
         throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT_POINTS"_s ) );
       }
+      else
+      {
+        feedback->featureAddedToSink( pointsDest );
+      }
     }
   }
 
   if ( linesSink )
   {
     linesSink->finalize();
+    feedback->featureSinkFinalized( linesDest );
   }
   if ( pointsSink )
   {
     pointsSink->finalize();
+    feedback->featureSinkFinalized( pointsDest );
   }
 
   QVariantMap results;

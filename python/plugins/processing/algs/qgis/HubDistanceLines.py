@@ -197,6 +197,7 @@ class HubDistanceLines(QgisAlgorithm):
 
             if not f.hasGeometry():
                 sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
+                feedback.featureAddedToSink(dest_id)
                 continue
             src = f.geometry().boundingBox().center()
 
@@ -234,7 +235,9 @@ class HubDistanceLines(QgisAlgorithm):
             feat.setGeometry(QgsGeometry.fromPolylineXY([src, closest]))
 
             sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
+            feedback.featureAddedToSink(dest_id)
             feedback.setProgress(int(current * total))
 
         sink.finalize()
+        feedback.featureSinkFinalized(dest_id)
         return {self.OUTPUT: dest_id}

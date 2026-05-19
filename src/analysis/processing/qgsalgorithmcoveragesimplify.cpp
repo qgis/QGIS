@@ -193,7 +193,8 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
     outFeature.setGeometry( QgsGeometry( *partsIt ? ( *partsIt )->clone() : nullptr ) );
     if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
-
+    else
+      feedback->featureAddedToSink( sinkId );
 
     feedback->setProgress( featureIndex * step * 0.2 + 80 );
     featureIndex++;
@@ -203,9 +204,12 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
     QgsFeature outFeature = feature;
     if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( sinkId );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( sinkId );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, sinkId );

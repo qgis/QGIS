@@ -239,10 +239,14 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
     f.setGeometry( error->geometry() );
     if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+    else if ( sink_output )
+      feedback->featureAddedToSink( dest_output );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
+    else
+      feedback->featureAddedToSink( dest_errors );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -260,6 +264,14 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
   {
     delete error;
   }
+
+  if ( sink_output )
+  {
+    sink_output->finalize();
+    feedback->featureSinkFinalized( dest_output );
+  }
+  sink_errors->finalize();
+  feedback->featureSinkFinalized( dest_errors );
 
   QVariantMap outputs;
   if ( sink_output )

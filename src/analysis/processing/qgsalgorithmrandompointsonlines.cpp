@@ -340,6 +340,8 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           }
           if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+          else
+            feedback->featureAddedToSink( ldest );
           totNPoints++;
           pointsAddedForThisFeature++;
           pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature - distCheckIterations );
@@ -373,6 +375,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   );
 
   sink->finalize();
+  feedback->featureSinkFinalized( ldest );
 
   QVariantMap outputs;
   outputs.insert( OUTPUT, ldest );

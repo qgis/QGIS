@@ -206,6 +206,8 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
         }
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( dest );
       }
       feedback->setProgress( 50 + i * step );
       i++;
@@ -213,6 +215,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   return dest;
 }
@@ -289,11 +292,14 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
       f.setAttributes( QgsAttributes() << i );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest );
       feedback->setProgress( i * step );
     }
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   return dest;
 }

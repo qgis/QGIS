@@ -149,6 +149,8 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
       {
         if ( !dupesSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( dupesSink.get(), parameters, u"DUPLICATES"_s ) );
+        else
+          feedback->featureAddedToSink( dupeSinkId );
       }
     }
     else
@@ -158,6 +160,8 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
       matched.insert( dupeKey );
       if ( !noDupeSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( noDupeSink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( noDupeSinkId );
     }
 
     feedback->setProgress( current * step );
@@ -165,7 +169,10 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
   }
 
   if ( noDupeSink )
+  {
     noDupeSink->finalize();
+    feedback->featureSinkFinalized( noDupeSinkId );
+  }
 
   QVariantMap outputs;
   outputs.insert( u"RETAINED_COUNT"_s, keptCount );
@@ -174,6 +181,7 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
   if ( dupesSink )
   {
     dupesSink->finalize();
+    feedback->featureSinkFinalized( dupeSinkId );
     outputs.insert( u"DUPLICATES"_s, dupeSinkId );
   }
   return outputs;

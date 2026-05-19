@@ -176,6 +176,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
             self.ovals(sink, source, width, height, rotation, segments, feedback)
 
         sink.finalize()
+        feedback.featureSinkFinalized(dest_id)
         return {self.OUTPUT: dest_id}
 
     def rectangles(self, sink, source, width, height, rotation, feedback):

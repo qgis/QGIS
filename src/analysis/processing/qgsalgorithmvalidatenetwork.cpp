@@ -277,6 +277,10 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
             {
               throw QgsProcessingException( writeFeatureError( networkErrorSink.get(), parameters, u"OUTPUT_INVALID_NETWORK"_s ) );
             }
+            else
+            {
+              feedback->featureAddedToSink( networkErrorDest );
+            }
           }
           countInvalidFeatures++;
         }
@@ -289,6 +293,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( networkErrorSink )
     {
       networkErrorSink->finalize();
+      feedback->featureSinkFinalized( networkErrorDest );
     }
   }
 
@@ -494,6 +499,8 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
           nodeErrorFeature.setAttributes( QgsAttributes() << QObject::tr( "Node too close to adjacent node (%1 < %2)" ).arg( closestError.distance ).arg( toleranceNodeToNode ) );
           if ( !nodeErrorSink->addFeature( nodeErrorFeature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nodeErrorSink.get(), parameters, u"OUTPUT_INVALID_NODES"_s ) );
+          else
+            feedback->featureAddedToSink( nodeErrorDest );
         }
         countInvalidNodes++;
       }
@@ -544,6 +551,8 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
           nodeErrorFeature.setAttributes( QgsAttributes() << QObject::tr( "Node too close to non-noded segment (%1 < %2)" ).arg( closestError.distance ).arg( toleranceNodeToSegment ) );
           if ( !nodeErrorSink->addFeature( nodeErrorFeature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nodeErrorSink.get(), parameters, u"OUTPUT_INVALID_NODES"_s ) );
+          else
+            feedback->featureAddedToSink( nodeErrorDest );
         }
         countInvalidNodes++;
       }
@@ -555,6 +564,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( nodeErrorSink )
   {
     nodeErrorSink->finalize();
+    feedback->featureSinkFinalized( nodeErrorDest );
   }
 
   feedback->setProgress( 100 );

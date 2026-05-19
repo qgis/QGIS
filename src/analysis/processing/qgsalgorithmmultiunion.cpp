@@ -141,6 +141,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     QgsOverlayUtils::resolveOverlaps( *sourceA, *sink, feedback );
     sink->finalize();
+    feedback->featureSinkFinalized( dest );
     return outputs;
   }
   else
@@ -188,6 +189,8 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
 
         outputs.insert( u"OUTPUT"_s, dest );
         ok = makeUnion( *unionLayer, *overlayLayer, *sink, context, &multiStepFeedback );
+        sink->finalize();
+        feedback->featureSinkFinalized( dest );
         if ( !ok )
           throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
       }

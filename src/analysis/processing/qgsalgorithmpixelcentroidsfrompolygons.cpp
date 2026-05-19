@@ -161,6 +161,8 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
           feature.setAttributes( QgsAttributes() << fid << i << pointId );
           if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+          else
+            feedback->featureAddedToSink( dest );
 
           fid++;
           pointId++;
@@ -175,6 +177,7 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

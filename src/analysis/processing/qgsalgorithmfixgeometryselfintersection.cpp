@@ -209,6 +209,8 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
       reportFeature.setAttributes( errorFeature.attributes() << QObject::tr( "Source feature not found or invalid" ) << false );
       if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
+      else
+        feedback->featureAddedToSink( dest_report );
       continue;
     }
 
@@ -278,6 +280,8 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
+    else
+      feedback->featureAddedToSink( dest_report );
   }
   multiStepFeedback.setProgress( 100 );
 
@@ -296,8 +300,16 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( dest_output );
   }
   multiStepFeedback.setProgress( 100 );
+
+  sink_output->finalize();
+  feedback->featureSinkFinalized( dest_output );
+
+  sink_report->finalize();
+  feedback->featureSinkFinalized( dest_report );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest_output );

@@ -156,6 +156,8 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
           {
             if ( !pointSink->addFeature( f, QgsFeatureSink::FastInsert ) )
               throw QgsProcessingException( writeFeatureError( pointSink.get(), parameters, u"POINTS"_s ) );
+            else
+              feedback->featureAddedToSink( pointSinkId );
           }
           pointCount++;
           break;
@@ -164,6 +166,8 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
           {
             if ( !lineSink->addFeature( f, QgsFeatureSink::FastInsert ) )
               throw QgsProcessingException( writeFeatureError( lineSink.get(), parameters, u"LINES"_s ) );
+            else
+              feedback->featureAddedToSink( lineSinkId );
           }
           lineCount++;
           break;
@@ -172,6 +176,8 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
           {
             if ( !polygonSink->addFeature( f, QgsFeatureSink::FastInsert ) )
               throw QgsProcessingException( writeFeatureError( polygonSink.get(), parameters, u"POLYGONS"_s ) );
+            else
+              feedback->featureAddedToSink( polygonSinkId );
           }
           polygonCount++;
           break;
@@ -186,6 +192,8 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
       {
         if ( !noGeomSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( noGeomSink.get(), parameters, u"NO_GEOMETRY"_s ) );
+        else
+          feedback->featureAddedToSink( noGeomSinkId );
       }
       nullCount++;
     }
@@ -199,20 +207,24 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
   if ( pointSink )
   {
     pointSink->finalize();
+    feedback->featureSinkFinalized( pointSinkId );
     outputs.insert( u"POINTS"_s, pointSinkId );
   }
   if ( lineSink )
   {
     lineSink->finalize();
+    feedback->featureSinkFinalized( lineSinkId );
     outputs.insert( u"LINES"_s, lineSinkId );
   }
   if ( polygonSink )
   {
     polygonSink->finalize();
+    feedback->featureSinkFinalized( polygonSinkId );
     outputs.insert( u"POLYGONS"_s, polygonSinkId );
   }
   if ( noGeomSink )
   {
+    feedback->featureSinkFinalized( noGeomSinkId );
     noGeomSink->finalize();
     outputs.insert( u"NO_GEOMETRY"_s, noGeomSinkId );
   }

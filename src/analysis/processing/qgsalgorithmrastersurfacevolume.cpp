@@ -232,7 +232,10 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
     f.setAttributes( QgsAttributes() << volume << area << count );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT_TABLE"_s ) );
+    else
+      feedback->featureAddedToSink( tableDest );
     sink->finalize();
+    feedback->featureSinkFinalized( tableDest );
     outputs.insert( u"OUTPUT_TABLE"_s, tableDest );
   }
   outputs.insert( u"VOLUME"_s, volume );
