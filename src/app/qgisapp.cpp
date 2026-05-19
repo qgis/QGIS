@@ -994,6 +994,8 @@ const QgsSettingsEntryBool *QgisApp::settingsEnableEventTracing
 const QgsSettingsEntryBool *QgisApp::settingsHideSplash = new QgsSettingsEntryBool( u"hide-splash"_s, QgsSettingsTree::sTreeApp, false, u"Whether the splash screen is hidden at QGIS startup"_s );
 const QgsSettingsEntryBool *QgisApp::settingsMapTipsEnabled = new QgsSettingsEntryBool( u"enabled"_s, QgsSettingsTree::sTreeMapTips, false, u"Whether map tips are enabled"_s );
 const QgsSettingsEntryInteger *QgisApp::settingsMapTipsDelay = new QgsSettingsEntryInteger( u"delay"_s, QgsSettingsTree::sTreeMapTips, 850, u"Delay in milliseconds before a map tip is displayed"_s );
+const QgsSettingsEntryBool *QgisApp::settingsAskToSaveProjectChanges
+  = new QgsSettingsEntryBool( u"ask-to-save-project-changes"_s, QgsSettingsTree::sTreeProject, true, u"Whether to ask the user to save project changes when closing"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -13734,7 +13736,7 @@ bool QgisApp::saveDirty()
   QgsCanvasRefreshBlocker refreshBlocker;
 
   QgsSettings settings;
-  bool askThem = settings.value( u"qgis/askToSaveProjectChanges"_s, true ).toBool();
+  bool askThem = settingsAskToSaveProjectChanges->value();
 
   if ( askThem && QgsProject::instance()->isDirty() )
   {
