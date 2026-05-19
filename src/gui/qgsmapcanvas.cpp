@@ -1264,10 +1264,10 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
       QAction *copyCoordinateAction = new QAction( u"%5 (%1%2, %3%4)"_s.arg( firstNumber, firstSuffix, secondNumber, secondSuffix, identifier ), &menu );
 
-      connect( copyCoordinateAction, &QAction::triggered, this, [firstNumber, firstSuffix, secondNumber, secondSuffix, transformedPoint] {
+      connect( copyCoordinateAction, &QAction::triggered, this, [firstNumber, secondNumber, transformedPoint] {
         QClipboard *clipboard = QApplication::clipboard();
 
-        const QString coordinates = u"%1%2, %3%4"_s.arg( firstNumber, firstSuffix, secondNumber, secondSuffix );
+        const QString coordinates = firstNumber + ',' + secondNumber;
 
         //if we are on x11 system put text into selection ready for middle button pasting
         if ( clipboard->supportsSelection() )
