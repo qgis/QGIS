@@ -131,7 +131,8 @@ git config --global --add safe.directory ${CTEST_BUILD_DIR}
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
+ninja qgis_core
+#ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
 echo "::endgroup::"
 
 ########################
