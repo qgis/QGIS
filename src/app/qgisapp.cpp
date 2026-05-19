@@ -1008,6 +1008,8 @@ const QgsSettingsEntryBool *QgisApp::settingsProjOpenedOKAtLaunch
   = new QgsSettingsEntryBool( u"project-opened-ok-at-launch"_s, QgsSettingsTree::sTreeProject, true, u"Whether the project specified to open at launch was opened successfully last time"_s );
 const QgsSettingsEntryBool *QgisApp::settingsShowScriptWarning
   = new QgsSettingsEntryBool( u"show-script-warning"_s, QgsSettingsTree::sTreeApp, true, u"Whether to warn the user before running a Python script embedded in a project"_s );
+const QgsSettingsEntryBool *QgisApp::settingsDisplayWaylandWarning
+  = new QgsSettingsEntryBool( u"display-wayland-warning"_s, QgsSettingsTree::sTreeGui, true, u"Whether to show the warning dialog when running QGIS under Wayland"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -1998,7 +2000,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   if ( QGuiApplication::platformName() == "wayland"_L1 )
   {
-    const bool displayWaylandWarning = settings.value( u"/UI/displayWaylandWarning"_s, true ).toBool();
+    const bool displayWaylandWarning = settingsDisplayWaylandWarning->value();
     if ( displayWaylandWarning )
     {
       const QString shortMessage = tr( "Wayland session detected: User experience will be degraded" );
@@ -2027,7 +2029,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
       QPushButton *ignoreButton = new QPushButton( tr( "Ignore" ) );
       connect( ignoreButton, &QPushButton::clicked, this, [this, messageWidget] {
-        QgsSettings().setValue( u"/UI/displayWaylandWarning"_s, false );
+        QgisApp::settingsDisplayWaylandWarning->setValue( false );
         messageBar()->popWidget( messageWidget );
       } );
       messageWidget->layout()->addWidget( ignoreButton );
