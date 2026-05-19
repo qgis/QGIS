@@ -69,6 +69,28 @@ Returns the material's roughness, as a value between 0 and 1.
 .. seealso:: :py:func:`setRoughness`
 %End
 
+    QColor emissionColor() const;
+%Docstring
+Returns the material's emissive color.
+
+.. seealso:: :py:func:`setEmissionColor`
+
+.. versionadded:: 4.2
+%End
+
+    double emissionFactor() const;
+%Docstring
+Returns the emission factor, which dictates the strength of the emission
+effect.
+
+A value of 1.0 indicates that the emission color values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`setEmissionFactor`
+
+.. seealso:: :py:func:`emissionColor`
+%End
+
     double opacity() const;
 %Docstring
 Returns the opacity of the surface
@@ -119,6 +141,28 @@ Sets the ``opacity`` of the surface.
 .. seealso:: :py:func:`opacity`
 
 .. versionadded:: 4.2
+%End
+
+    void setEmissionColor( const QColor &color );
+%Docstring
+Sets the material's emissive ``color``.
+
+.. seealso:: :py:func:`emissionColor`
+
+.. versionadded:: 4.2
+%End
+
+    void setEmissionFactor( double factor );
+%Docstring
+Sets the emission ``factor``, which dictates the strength of the
+emission effect.
+
+A value of 1.0 indicates that the emission color values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`emissionFactor`
+
+.. seealso:: :py:func:`setEmissionColor`
 %End
 
     virtual void setColorsFromBase( const QColor &baseColor );

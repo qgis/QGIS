@@ -44,6 +44,7 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mHeightMapParameter( new Qt3DRender::QParameter( u"heightMap"_s, QVariant(), this ) )
   , mParallaxScaleParameter( new Qt3DRender::QParameter( u"parallaxScale"_s, 0.1f, this ) )
   , mEmissionMapParameter( new Qt3DRender::QParameter( u"emissionMap"_s, QVariant(), this ) )
+  , mEmissiveColorParameter( new Qt3DRender::QParameter( u"emissiveColor"_s, Qgs3DUtils::srgbToLinear( QColor( 0, 0, 0 ) ), this ) )
   , mEmissionFactorParameter( new Qt3DRender::QParameter( u"emissiveFactor"_s, 1.0f, this ) )
   , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
   , mTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f, this ) )
@@ -214,15 +215,31 @@ void QgsMetalRoughMaterial::setParallaxScale( double scale )
   mParallaxScaleParameter->setValue( scale );
 }
 
+void QgsMetalRoughMaterial::setEmissionColor( const QColor &color )
+{
+  mEmissiveColorParameter->setValue( Qgs3DUtils::srgbToLinear( color ) );
+  const bool oldUsingEmissionMap = mUsingEmissionMap;
+
+  mUsingEmissionMap = false;
+  if ( mMetalRoughEffect->parameters().contains( mEmissionMapParameter ) )
+    mMetalRoughEffect->removeParameter( mEmissionMapParameter );
+  mMetalRoughEffect->addParameter( mEmissiveColorParameter );
+
+  if ( oldUsingEmissionMap != mUsingEmissionMap )
+    updateFragmentShader();
+}
+
 void QgsMetalRoughMaterial::setEmissionTexture( Qt3DRender::QAbstractTexture *emission )
 {
-  bool oldUsingEmissionMap = mUsingEmissionMap;
+  const bool oldUsingEmissionMap = mUsingEmissionMap;
 
   if ( emission )
   {
     mEmissionMapParameter->setValue( QVariant::fromValue( emission ) );
     mUsingEmissionMap = true;
     mMetalRoughEffect->addParameter( mEmissionMapParameter );
+    if ( mMetalRoughEffect->parameters().contains( mEmissiveColorParameter ) )
+      mMetalRoughEffect->removeParameter( mEmissiveColorParameter );
   }
   else
   {
@@ -230,6 +247,7 @@ void QgsMetalRoughMaterial::setEmissionTexture( Qt3DRender::QAbstractTexture *em
     mUsingEmissionMap = false;
     if ( mMetalRoughEffect->parameters().contains( mEmissionMapParameter ) )
       mMetalRoughEffect->removeParameter( mEmissionMapParameter );
+    mMetalRoughEffect->addParameter( mEmissiveColorParameter );
   }
 
   if ( oldUsingEmissionMap != mUsingEmissionMap )
@@ -286,6 +304,7 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughEffect->addParameter( mMetalnessParameter );
   mMetalRoughEffect->addParameter( mRoughnessParameter );
   mMetalRoughEffect->addParameter( mParallaxScaleParameter );
+  mMetalRoughEffect->addParameter( mEmissiveColorParameter );
   mMetalRoughEffect->addParameter( mEmissionFactorParameter );
   mMetalRoughEffect->addParameter( mTextureScaleParameter );
   mMetalRoughEffect->addParameter( mTextureRotationParameter );

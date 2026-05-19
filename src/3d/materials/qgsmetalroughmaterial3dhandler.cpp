@@ -81,6 +81,8 @@ bool QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *scen
 void QgsMetalRoughMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoughMaterialSettings *metalRoughSettings, QgsMetalRoughMaterial *material, const QgsMaterialContext &context )
 {
   material->setBaseColor( context.isSelected() ? context.selectionColor() : metalRoughSettings->baseColor() );
+  material->setEmissionColor( metalRoughSettings->emissionColor().isValid() ? metalRoughSettings->emissionColor() : QColor( 0, 0, 0 ) );
+  material->setEmissionFactor( metalRoughSettings->emissionColor().isValid() ? static_cast< float>( metalRoughSettings->emissionFactor() ) : 0 );
   material->setMetalness( static_cast< float >( metalRoughSettings->metalness() ) );
   material->setRoughness( static_cast< float >( metalRoughSettings->roughness() ) );
   material->setOpacity( static_cast< float >( metalRoughSettings->opacity() ) );

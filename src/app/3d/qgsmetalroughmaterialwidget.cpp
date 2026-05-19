@@ -39,6 +39,10 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   mMetalnessWidget->spinBox()->setShowClearButton( false );
   mRoughnessWidget->spinBox()->setShowClearButton( false );
 
+  mEmissionStrengthSpinBox->setClearValue( 100 );
+  mEmissionStrengthSpinBox->setEnabled( false );
+  mButtonEmissionColor->setShowNull( true, tr( "No Emission" ) );
+
   connect( mButtonBaseColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
   connect( mMetalnessWidget, &QgsPercentageWidget::valueChanged, this, [this] {
     updateWidgetState();
@@ -49,6 +53,9 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
     emit changed();
   } );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, [this] { mEmissionStrengthSpinBox->setEnabled( mButtonEmissionColor->color().isValid() ); } );
 
   connect( this, &QgsMetalRoughMaterialWidget::changed, this, &QgsMetalRoughMaterialWidget::updatePreview );
 }
@@ -70,6 +77,9 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   mMetalnessWidget->setValue( material->metalness() );
   mRoughnessWidget->setValue( material->roughness() );
   mOpacityWidget->setOpacity( material->opacity() );
+  mButtonEmissionColor->setColor( material->emissionColor() );
+  mEmissionStrengthSpinBox->setValue( material->emissionFactor() * 100 );
+  mEmissionStrengthSpinBox->setEnabled( mButtonEmissionColor->color().isValid() );
 
   mPropertyCollection = settings->dataDefinedProperties();
 
@@ -84,6 +94,8 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialWidget::settin
   m->setMetalness( mMetalnessWidget->value() );
   m->setRoughness( mRoughnessWidget->value() );
   m->setOpacity( mOpacityWidget->opacity() );
+  m->setEmissionColor( mButtonEmissionColor->color() );
+  m->setEmissionFactor( mEmissionStrengthSpinBox->value() / 100.0 );
   m->setDataDefinedProperties( mPropertyCollection );
   return m;
 }

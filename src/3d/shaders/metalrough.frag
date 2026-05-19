@@ -49,8 +49,10 @@ uniform float parallaxScale = 0.1;
 
 #ifdef EMISSION_MAP
 uniform sampler2D emissionMap;
-uniform float emissiveFactor = 1;
+#else
+uniform vec3 emissiveColor;
 #endif
+uniform float emissiveFactor = 1;
 
 #if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP)|| defined(HEIGHT_MAP) || defined(EMISSION_MAP)
 in vec2 texCoord;
@@ -486,6 +488,8 @@ vec4 metalRoughFunction(const in vec4 baseColor,
 #ifdef EMISSION_MAP
     vec3 emission = texture(emissionMap, activeTexCoord).rgb * emissiveFactor;
     cLinear += emission;
+#else
+    cLinear += emissiveColor * emissiveFactor;
 #endif
     return vec4(cLinear, 1.0);
 }
