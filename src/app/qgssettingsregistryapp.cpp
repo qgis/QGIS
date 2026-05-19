@@ -20,6 +20,7 @@
 #include "qgisapp.h"
 #include "qgsattributetabledialog.h"
 #include "qgsdualview.h"
+#include "qgsdxfexportdialog.h"
 #include "qgsgui.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsimagewarper.h"
@@ -99,6 +100,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"qgis/restoreDefaultWindowState"_s, true );
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"/qgis/restoreDefaultWindowState"_s, true );
   QgsMapLayerStyleCommand::settingsStyleUndoMergeTimeout->copyValueFromKey( u"UI/styleUndoMergeTimeout"_s, true );
+<<<<<<< HEAD
   // Legacy qgis/attributeTableView used -1 as a sentinel meaning "remember last view";
   // split into two new settings (an enum view + a boolean remember-last-view flag).
   {
@@ -122,6 +124,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
       legacySettings.remove( u"/qgis/attributeTableView"_s );
     }
   }
+  QgsDxfExportDialog::settingsLastDxfDir->copyValueFromKey( u"qgis/lastDxfDir"_s, true );
+  QgsDxfExportDialog::settingsLastDxfDir->copyValueFromKey( u"/qgis/lastDxfDir"_s, true );
   QgisApp::settingsAskToDeleteFeatures->copyValueFromKey( u"app/askToDeleteFeatures"_s, true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( u"plugins/automatically-check-for-updates"_s, true );
   QgsPluginManager::settingsAllowExperimental->copyValueFromKey( u"app/plugin_installer/allowExperimental"_s, true );
