@@ -83,7 +83,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     Qt3DCore::QTransform *mTerrainTransform = nullptr;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
-    QObjectUniquePtr<QgsLayerStyleWatcher> mLayerWatcher = nullptr;
+    QObjectUniquePtr<QgsLayerStyleWatcher> mLayerWatcher;
 };
 
 
