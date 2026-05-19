@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
 {
     Q_OBJECT
   public:
-    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context SIP_TRANSFER, const QMap<QString, QgsFeaturePool *> &featurePools );
+    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, std::unique_ptr<QgsGeometryCheckContext> context, const QMap<QString, QgsFeaturePool *> &featurePools );
     ~QgsGeometryChecker() override;
     QFuture<void> execute( int *totalSteps = nullptr );
     bool fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint = false );
