@@ -248,6 +248,11 @@ void QgsPostprocessingEntity::setShadowBias( float shadowBias )
   mShadowBiasParameter->setValue( QVariant::fromValue( shadowBias ) );
 }
 
+void QgsPostprocessingEntity::setShadowMapResolution( int resolution )
+{
+  mShadowMapResolution = resolution;
+}
+
 void QgsPostprocessingEntity::setEyeDomeLightingEnabled( bool enabled )
 {
   mEyeDomeLightingEnabledParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );

@@ -416,6 +416,7 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
       shadowRenderView().setMapSize( size, size );
       shadowRenderView().setEnabled( true );
       mPostprocessingEntity->setShadowRenderingEnabled( true );
+      mPostprocessingEntity->setShadowMapResolution( size );
       mPostprocessingEntity->setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
       mPostprocessingEntity->updateShadowSettings( *light, static_cast<float>( shadowSettings.maximumShadowRenderingDistance() ) );
       mPostprocessingEntity->setShowCascadingShadowSplits( shadowSettings.showCascadeSplits() );

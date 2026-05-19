@@ -59,6 +59,10 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
 
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
+
+    //! Sets the shadow texture map resolution
+    void setShadowMapResolution( int resolution );
+
     //! Sets whether eye dome lighting is enabled
     void setEyeDomeLightingEnabled( bool enabled );
     //! Sets the eye dome lighting strength
@@ -92,6 +96,8 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
 
   private:
     Qt3DRender::QCamera *mMainCamera = nullptr;
+
+    int mShadowMapResolution = 512;
 
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
