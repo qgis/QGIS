@@ -93,6 +93,14 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
     void reportChildProgress( const QString &childId, double progress );
 
     /**
+     * Reports that the count of features pushed to a child algorithm's sink has changed.
+     *
+     * \see childSinkFeatureCountChanged()
+     * \since QGIS 4.2
+     */
+    void reportChildSinkFeatureCountChanged( const QString &childId, const QString &sinkId, long long featureCount );
+
+    /**
      * Report an error which occurred while executing a child algorithm.
      *
      * \see childExecutionFailed()
@@ -169,6 +177,16 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
      * \see reportChildProgress()
      */
     void childProgressChanged( const QString &childId, double progress );
+
+    /**
+     * Emitted when the count of features pushed to a child's sink has changed.
+     *
+     * \note For performance, this signal is not emitted for every individual feature
+     * added to the sink. It is instead emitted only once for every 100 features added.
+     *
+     * \see reportChildSinkFeatureCountChanged()
+     */
+    void childSinkFeatureCountChanged( const QString &childId, const QString &sinkId, long long featureCount );
 
     /**
      * Emitted when an error occurred while executing a child algorithm.
