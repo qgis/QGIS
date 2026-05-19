@@ -22,6 +22,7 @@
 #include "qgsgui.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsimagewarper.h"
+#include "qgslayerstylingwidget.h"
 #include "qgspluginmanager.h"
 #include "qgssettings.h"
 #include "qgssettingseditorwidgetregistry.h"
@@ -96,6 +97,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgisApp::settingsDisplayWaylandWarning->copyValueFromKey( u"/UI/displayWaylandWarning"_s, true );
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"qgis/restoreDefaultWindowState"_s, true );
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"/qgis/restoreDefaultWindowState"_s, true );
+  QgsMapLayerStyleCommand::settingsStyleUndoMergeTimeout->copyValueFromKey( u"UI/styleUndoMergeTimeout"_s, true );
   QgisApp::settingsAskToDeleteFeatures->copyValueFromKey( u"app/askToDeleteFeatures"_s, true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( u"plugins/automatically-check-for-updates"_s, true );
   QgsPluginManager::settingsAllowExperimental->copyValueFromKey( u"app/plugin_installer/allowExperimental"_s, true );
