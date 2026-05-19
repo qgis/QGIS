@@ -998,6 +998,8 @@ const QgsSettingsEntryBool *QgisApp::settingsAskToSaveProjectChanges
   = new QgsSettingsEntryBool( u"ask-to-save-project-changes"_s, QgsSettingsTree::sTreeProject, true, u"Whether to ask the user to save project changes when closing"_s );
 const QgsSettingsEntryBool *QgisApp::settingsWarnOldProjectVersion
   = new QgsSettingsEntryBool( u"warn-old-project-version"_s, QgsSettingsTree::sTreeProject, true, u"Whether to warn when opening a project saved with an older QGIS version"_s );
+const QgsSettingsEntryBool *QgisApp::settingsNewProjectDefault
+  = new QgsSettingsEntryBool( u"new-project-default"_s, QgsSettingsTree::sTreeProject, false, u"Whether new projects open from the default project template"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -5449,7 +5451,7 @@ void QgisApp::updateProjectFromTemplates()
   }
 
   // add <blank> entry, which loads a blank template (regardless of "default template")
-  if ( settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+  if ( settingsNewProjectDefault->value() )
     mProjectFromTemplateMenu->addAction( tr( "< Blank >" ) );
 }
 
@@ -5954,7 +5956,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
     forceBlank = !settings.value( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) ).toBool();
   }
 
-  if ( !forceBlank && settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+  if ( !forceBlank && settingsNewProjectDefault->value() )
   {
     fileNewFromDefaultTemplate();
   }
@@ -6092,7 +6094,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( mProjOpen == 3 ) // new project
   {
     // open default template, if defined
-    if ( settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+    if ( settingsNewProjectDefault->value() )
     {
       fileNewFromDefaultTemplate();
     }

@@ -864,7 +864,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mFileFormatQgsButton->setChecked( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgs );
 
   // templates
-  cbxProjectDefaultNew->setChecked( mSettings->value( u"/qgis/newProjectDefault"_s, QVariant( false ) ).toBool() );
+  cbxProjectDefaultNew->setChecked( QgisApp::settingsNewProjectDefault->value() );
   QString templateDirName = mSettings->value( u"/qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
   // make dir if it doesn't exist - should just be called once
   QDir templateDir;
@@ -1672,9 +1672,9 @@ void QgsOptions::saveOptions()
   QgisApp::settingsAskToSaveProjectChanges->setValue( chbAskToSaveProjectChanges->isChecked() );
   mSettings->setValue( u"qgis/askToDeleteLayers"_s, mLayerDeleteConfirmationChkBx->isChecked() );
   QgisApp::settingsWarnOldProjectVersion->setValue( chbWarnOldProjectVersion->isChecked() );
-  if ( ( mSettings->value( u"/qgis/projectTemplateDir"_s ).toString() != leTemplateFolder->text() ) || ( mSettings->value( u"/qgis/newProjectDefault"_s ).toBool() != cbxProjectDefaultNew->isChecked() ) )
+  if ( ( mSettings->value( u"/qgis/projectTemplateDir"_s ).toString() != leTemplateFolder->text() ) || ( QgisApp::settingsNewProjectDefault->value() != cbxProjectDefaultNew->isChecked() ) )
   {
-    mSettings->setValue( u"/qgis/newProjectDefault"_s, cbxProjectDefaultNew->isChecked() );
+    QgisApp::settingsNewProjectDefault->setValue( cbxProjectDefaultNew->isChecked() );
     mSettings->setValue( u"/qgis/projectTemplateDir"_s, leTemplateFolder->text() );
     QgisApp::instance()->updateProjectFromTemplates();
   }

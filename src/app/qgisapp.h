@@ -249,6 +249,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryInteger *settingsMapTipsDelay SIP_SKIP;
     static const QgsSettingsEntryBool *settingsAskToSaveProjectChanges SIP_SKIP;
     static const QgsSettingsEntryBool *settingsWarnOldProjectVersion SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsNewProjectDefault SIP_SKIP;
 
     //! Constructor
     QgisApp(
