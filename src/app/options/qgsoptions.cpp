@@ -824,7 +824,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mProjectOnLaunchPushBtn->setEnabled( projOpen == 2 );
   connect( mProjectOnLaunchPushBtn, &QAbstractButton::pressed, this, &QgsOptions::selectProjectOnLaunch );
 
-  chbAskToSaveProjectChanges->setChecked( mSettings->value( u"qgis/askToSaveProjectChanges"_s, QVariant( true ) ).toBool() );
+  chbAskToSaveProjectChanges->setChecked( QgisApp::settingsAskToSaveProjectChanges->value() );
   mLayerDeleteConfirmationChkBx->setChecked( mSettings->value( u"qgis/askToDeleteLayers"_s, true ).toBool() );
   chbWarnOldProjectVersion->setChecked( mSettings->value( u"/qgis/warnOldProjectVersion"_s, QVariant( true ) ).toBool() );
 
@@ -1669,7 +1669,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/projOpenAtLaunch"_s, mProjectOnLaunchCmbBx->currentIndex() );
   mSettings->setValue( u"/qgis/projOpenAtLaunchPath"_s, mProjectOnLaunchLineEdit->text() );
 
-  mSettings->setValue( u"/qgis/askToSaveProjectChanges"_s, chbAskToSaveProjectChanges->isChecked() );
+  QgisApp::settingsAskToSaveProjectChanges->setValue( chbAskToSaveProjectChanges->isChecked() );
   mSettings->setValue( u"qgis/askToDeleteLayers"_s, mLayerDeleteConfirmationChkBx->isChecked() );
   mSettings->setValue( u"/qgis/warnOldProjectVersion"_s, chbWarnOldProjectVersion->isChecked() );
   if ( ( mSettings->value( u"/qgis/projectTemplateDir"_s ).toString() != leTemplateFolder->text() ) || ( mSettings->value( u"/qgis/newProjectDefault"_s ).toBool() != cbxProjectDefaultNew->isChecked() ) )

@@ -247,6 +247,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryBool *settingsHideSplash SIP_SKIP;
     static const QgsSettingsEntryBool *settingsMapTipsEnabled SIP_SKIP;
     static const QgsSettingsEntryInteger *settingsMapTipsDelay SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsAskToSaveProjectChanges SIP_SKIP;
 
     //! Constructor
     QgisApp(
