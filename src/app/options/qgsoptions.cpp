@@ -793,7 +793,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLegendGraphicResolutionSpinBox->setValue( mSettings->value( u"/qgis/defaultLegendGraphicResolution"_s, 0 ).toInt() );
 
   // Map Tips delay
-  mMapTipsDelaySpinBox->setValue( mSettings->value( u"qgis/mapTipsDelay"_s, 850 ).toInt() );
+  mMapTipsDelaySpinBox->setValue( QgisApp::settingsMapTipsDelay->value() );
   mMapTipsDelaySpinBox->setClearValue( 850 );
 
   mRespectScreenDpiCheckBox->setChecked( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() );
@@ -1656,7 +1656,7 @@ void QgsOptions::saveOptions()
   QgsSymbolLegendNode::MAXIMUM_SIZE = mLegendSymbolMaximumSizeSpinBox->value();
 
   mSettings->setValue( u"/qgis/defaultLegendGraphicResolution"_s, mLegendGraphicResolutionSpinBox->value() );
-  mSettings->setValue( u"/qgis/mapTipsDelay"_s, mMapTipsDelaySpinBox->value() );
+  QgisApp::settingsMapTipsDelay->setValue( mMapTipsDelaySpinBox->value() );
   QgsSettingsRegistryGui::settingsRespectScreenDPI->setValue( mRespectScreenDpiCheckBox->isChecked() );
 
   mSettings->setEnumValue( u"/qgis/copyFeatureFormat"_s, ( QgsClipboard::CopyFormat ) mComboCopyFeatureFormat->currentData().toInt() );
