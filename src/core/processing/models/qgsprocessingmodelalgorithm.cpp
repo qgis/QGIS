@@ -542,13 +542,18 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       try
       {
         QgsScopedConnection childProgressConnection;
+        QgsScopedConnection childSinkCountChangedConnection;
         if ( modelFeedback )
         {
-          // this is a scoped connection -- we only want it to exist for the duration that we're actually running THIS
+          // these are scoped connections -- we only want them to exist for the duration that we're actually running THIS
           // particular child algorithm
           childProgressConnection = QObject::connect( &childAlgorithmFeedback, &QgsFeedback::progressChanged, &childAlgorithmFeedback, [&modelFeedback, &childId]( double progress ) {
             modelFeedback->reportChildProgress( childId, progress );
           } );
+          childSinkCountChangedConnection
+            = QObject::connect( &childAlgorithmFeedback, &QgsProcessingFeedback::sinkFeatureCountChanged, &childAlgorithmFeedback, [&modelFeedback, &childId]( const QString &sinkId, long long featureCount ) {
+                modelFeedback->reportChildSinkFeatureCountChanged( childId, sinkId, featureCount );
+              } );
         }
 
         if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
