@@ -255,6 +255,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryBool *settingsProjOpenedOKAtLaunch SIP_SKIP;
     static const QgsSettingsEntryBool *settingsShowScriptWarning SIP_SKIP;
     static const QgsSettingsEntryBool *settingsDisplayWaylandWarning SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsRestoreDefaultWindowState SIP_SKIP;
 
     //! Constructor
     QgisApp(

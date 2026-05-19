@@ -1616,11 +1616,11 @@ int main( int argc, char *argv[] )
 
   // optionally restore default window state
   // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
-  if ( myRestoreDefaultWindowState || settings.value( u"qgis/restoreDefaultWindowState"_s, false ).toBool() )
+  if ( myRestoreDefaultWindowState || QgisApp::settingsRestoreDefaultWindowState->value() )
   {
     QgsDebugMsgLevel( u"Resetting /UI/state settings!"_s, 2 );
     settings.remove( u"/UI/state"_s );
-    settings.remove( u"/qgis/restoreDefaultWindowState"_s );
+    QgisApp::settingsRestoreDefaultWindowState->remove();
   }
 
   if ( hideBrowser )

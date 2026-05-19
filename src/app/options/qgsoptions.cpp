@@ -2046,7 +2046,7 @@ void QgsOptions::restoreDefaultWindowState()
   // richard
   if ( QMessageBox::warning( this, tr( "Restore UI Defaults" ), tr( "Are you sure to reset the UI to default (needs restart)?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
     return;
-  mSettings->setValue( u"/qgis/restoreDefaultWindowState"_s, true );
+  QgisApp::settingsRestoreDefaultWindowState->setValue( true );
 }
 
 void QgsOptions::mCustomVariablesChkBx_toggled( bool chkd )
