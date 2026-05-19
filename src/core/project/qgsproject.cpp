@@ -121,6 +121,13 @@ const QgsSettingsEntryBool *QgsProject::settingsAnonymizeSavedProjects = new Qgs
 const QgsSettingsEntryBool *QgsProject::settingsDefaultProjectPathsRelative = new QgsSettingsEntryBool( u"default-project-paths-relative"_s, QgsSettingsTree::sTreeCore, true );
 
 
+enum BAD_ENUM_NAME
+{
+  BAD_ENUM_VALUE,
+  BAD_ENUM_OTHER_VALUE,
+  BAD_ENUM_THIRD_VALUE,
+};
+
 /**
  * Takes the given scope and key and convert them to a string list of key
  * tokens that will be used to navigate through a Property hierarchy
