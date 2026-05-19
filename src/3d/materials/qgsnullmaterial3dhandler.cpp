@@ -42,6 +42,7 @@ QgsMaterial *QgsNullMaterial3DHandler::toMaterial( const QgsAbstractMaterialSett
       {
         QgsHighlightMaterial *mat = new QgsHighlightMaterial();
         mat->setInstancingEnabled( true, Qgis::InstancedMaterialFlags() );
+        return mat;
         break;
       }
       case Qgis::MaterialRenderingTechnique::Lines:
