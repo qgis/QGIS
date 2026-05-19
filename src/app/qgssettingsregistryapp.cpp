@@ -75,6 +75,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgisApp::settingsHideSplash->copyValueFromKey( u"/qgis/hideSplash"_s, true );
   QgisApp::settingsMapTipsEnabled->copyValueFromKey( u"qgis/enableMapTips"_s, true );
   QgisApp::settingsMapTipsEnabled->copyValueFromKey( u"/qgis/enableMapTips"_s, true );
+  QgisApp::settingsMapTipsDelay->copyValueFromKey( u"qgis/mapTipsDelay"_s, true );
+  QgisApp::settingsMapTipsDelay->copyValueFromKey( u"/qgis/mapTipsDelay"_s, true );
   QgisApp::settingsAskToDeleteFeatures->copyValueFromKey( u"app/askToDeleteFeatures"_s, true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( u"plugins/automatically-check-for-updates"_s, true );
   QgsPluginManager::settingsAllowExperimental->copyValueFromKey( u"app/plugin_installer/allowExperimental"_s, true );

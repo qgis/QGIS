@@ -993,6 +993,7 @@ const QgsSettingsEntryBool *QgisApp::settingsEnableEventTracing
   = new QgsSettingsEntryBool( u"enable-event-tracing"_s, QgsSettingsTree::sTreeApp, false, u"Whether event tracing is enabled for performance diagnostics"_s );
 const QgsSettingsEntryBool *QgisApp::settingsHideSplash = new QgsSettingsEntryBool( u"hide-splash"_s, QgsSettingsTree::sTreeApp, false, u"Whether the splash screen is hidden at QGIS startup"_s );
 const QgsSettingsEntryBool *QgisApp::settingsMapTipsEnabled = new QgsSettingsEntryBool( u"enabled"_s, QgsSettingsTree::sTreeMapTips, false, u"Whether map tips are enabled"_s );
+const QgsSettingsEntryInteger *QgisApp::settingsMapTipsDelay = new QgsSettingsEntryInteger( u"delay"_s, QgsSettingsTree::sTreeMapTips, 850, u"Delay in milliseconds before a map tip is displayed"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -5156,7 +5157,7 @@ void QgisApp::createMapTips()
   // set the delay to 0.850 seconds or time defined in the Settings
   // timer will be started next time the mouse moves
   QgsSettings settings;
-  int timerInterval = settings.value( u"qgis/mapTipsDelay"_s, 850 ).toInt();
+  int timerInterval = settingsMapTipsDelay->value();
   mpMapTipsTimer->setInterval( timerInterval );
   mpMapTipsTimer->setSingleShot( true );
 
