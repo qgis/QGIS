@@ -826,7 +826,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   chbAskToSaveProjectChanges->setChecked( QgisApp::settingsAskToSaveProjectChanges->value() );
   mLayerDeleteConfirmationChkBx->setChecked( mSettings->value( u"qgis/askToDeleteLayers"_s, true ).toBool() );
-  chbWarnOldProjectVersion->setChecked( mSettings->value( u"/qgis/warnOldProjectVersion"_s, QVariant( true ) ).toBool() );
+  chbWarnOldProjectVersion->setChecked( QgisApp::settingsWarnOldProjectVersion->value() );
 
   Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
   mProjectTrustBehaviorComboBox->setCurrentIndex( mProjectTrustBehaviorComboBox->findData( QVariant::fromValue( embeddedScriptMode ) ) );
@@ -1671,7 +1671,7 @@ void QgsOptions::saveOptions()
 
   QgisApp::settingsAskToSaveProjectChanges->setValue( chbAskToSaveProjectChanges->isChecked() );
   mSettings->setValue( u"qgis/askToDeleteLayers"_s, mLayerDeleteConfirmationChkBx->isChecked() );
-  mSettings->setValue( u"/qgis/warnOldProjectVersion"_s, chbWarnOldProjectVersion->isChecked() );
+  QgisApp::settingsWarnOldProjectVersion->setValue( chbWarnOldProjectVersion->isChecked() );
   if ( ( mSettings->value( u"/qgis/projectTemplateDir"_s ).toString() != leTemplateFolder->text() ) || ( mSettings->value( u"/qgis/newProjectDefault"_s ).toBool() != cbxProjectDefaultNew->isChecked() ) )
   {
     mSettings->setValue( u"/qgis/newProjectDefault"_s, cbxProjectDefaultNew->isChecked() );
