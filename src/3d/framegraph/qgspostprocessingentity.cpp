@@ -199,8 +199,9 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     lightCameraNearPlane -= paddingZ;
     lightCameraFarPlane += paddingZ;
 
-    mLightCameras[i]->lens()->setOrthographicProjection( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
-    csmBoundsMatrices[i] = QVariant::fromValue( mLightCameras[i]->projectionMatrix() * lightView );
+    QMatrix4x4 orthoBoundsMatrix;
+    orthoBoundsMatrix.ortho( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
+    csmBoundsMatrices[i] = QVariant::fromValue( orthoBoundsMatrix * lightView );
 
     // Pull the near plane way back to catch shadows from behind the camera
     // If we don't do this, then we'll lose the tops of shadows which should be cast by objects
@@ -212,7 +213,9 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     mLightCameras[i]->lens()->setOrthographicProjection( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
 
     // calculate combined light space matrix for the shader
-    csmMatrices[i] = QVariant::fromValue( mLightCameras[i]->projectionMatrix() * lightView );
+    QMatrix4x4 orthoMatrix;
+    orthoMatrix.ortho( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
+    csmMatrices[i] = QVariant::fromValue( orthoMatrix * lightView );
   }
 
   mCsmMatricesParameter->setValue( csmMatrices );
