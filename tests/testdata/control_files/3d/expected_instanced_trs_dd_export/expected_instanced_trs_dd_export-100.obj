@@ -1,4 +1,4 @@
-mtllib instanced_trs_dd_export.mtl
+mtllib instanced_trs_dd_export-100.mtl
 o points Z_instance_point
 usemtl points Z_instance_point_material
 s off
