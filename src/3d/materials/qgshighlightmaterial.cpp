@@ -24,6 +24,8 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgshighlightmaterial.cpp"
@@ -32,15 +34,15 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-QgsHighlightMaterial::QgsHighlightMaterial( Qgis::MaterialRenderingTechnique technique, QNode *parent )
+QgsHighlightMaterial::QgsHighlightMaterial( QNode *parent )
   : QgsMaterial( parent )
 {
-  init( technique );
+  init();
 }
 
 QgsHighlightMaterial::~QgsHighlightMaterial() = default;
 
-void QgsHighlightMaterial::init( Qgis::MaterialRenderingTechnique renderingTechnique )
+void QgsHighlightMaterial::init()
 {
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
@@ -51,34 +53,10 @@ void QgsHighlightMaterial::init( Qgis::MaterialRenderingTechnique renderingTechn
 
   Qt3DRender::QRenderPass *pass = new Qt3DRender::QRenderPass;
 
-  Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
-  switch ( renderingTechnique )
-  {
-    case Qgis::MaterialRenderingTechnique::Triangles:
-    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
-    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
-    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
-    {
-      shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
-      break;
-    }
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
-    {
-      shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) ) );
-      break;
-    }
-    case Qgis::MaterialRenderingTechnique::Lines:
-    case Qgis::MaterialRenderingTechnique::Points:
-    case Qgis::MaterialRenderingTechnique::Billboards:
-    {
-      // Lines are single color and do not need the highlight material
-      // Billboards are not supported yet
-      break;
-    }
-  }
+  mShaderProgram = new Qt3DRender::QShaderProgram();
+  pass->setShaderProgram( mShaderProgram );
 
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) ) );
-  pass->setShaderProgram( shaderProgram );
+  mShaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) ) );
 
   const QgsSettings settings;
   const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
@@ -90,6 +68,34 @@ void QgsHighlightMaterial::init( Qgis::MaterialRenderingTechnique renderingTechn
   technique->addRenderPass( pass );
   effect->addTechnique( technique );
   setEffect( effect );
+
+
+  updateShaders();
+}
+
+void QgsHighlightMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
+{
+  mInstanced = enabled;
+  mInstanceFlags = flags;
+  updateShaders();
+}
+
+void QgsHighlightMaterial::updateShaders()
+{
+  if ( mInstanced )
+  {
+    QStringList defines;
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
+  }
+  else
+  {
+    mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
+  }
 }
 
 ///@endcond PRIVATE

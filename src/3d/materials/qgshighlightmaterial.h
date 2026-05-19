@@ -22,6 +22,12 @@
 
 #define SIP_NO_FILE
 
+namespace Qt3DRender
+{
+  class QShaderProgram;
+} // namespace Qt3DRender
+
+
 ///@cond PRIVATE
 
 /**
@@ -38,11 +44,19 @@ class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
     /**
      * Constructor for QgsHighlightMaterial, using the specified \a technique and \a parent node.
      */
-    explicit QgsHighlightMaterial( Qgis::MaterialRenderingTechnique technique, Qt3DCore::QNode *parent = nullptr );
+    explicit QgsHighlightMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsHighlightMaterial() override;
 
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+
   private:
-    void init( Qgis::MaterialRenderingTechnique technique );
+    void init();
+    void updateShaders();
+
+    Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
+    Qgis::MaterialRenderingTechnique mRenderingTechnique;
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
 };
 
 ///@endcond PRIVATE
