@@ -1000,6 +1000,8 @@ const QgsSettingsEntryBool *QgisApp::settingsWarnOldProjectVersion
   = new QgsSettingsEntryBool( u"warn-old-project-version"_s, QgsSettingsTree::sTreeProject, true, u"Whether to warn when opening a project saved with an older QGIS version"_s );
 const QgsSettingsEntryBool *QgisApp::settingsNewProjectDefault
   = new QgsSettingsEntryBool( u"new-project-default"_s, QgsSettingsTree::sTreeProject, false, u"Whether new projects open from the default project template"_s );
+const QgsSettingsEntryInteger *QgisApp::settingsProjOpenAtLaunch
+  = new QgsSettingsEntryInteger( u"proj-open-at-launch"_s, QgsSettingsTree::sTreeProject, 0, u"Behavior when QGIS launches: 0=new project, 1=most recent, 2=welcome page, 3=specific project"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -1120,7 +1122,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   endProfile();
 
   // what type of project to auto-open
-  mProjOpen = settings.value( u"qgis/projOpenAtLaunch"_s, 0 ).toInt();
+  mProjOpen = settingsProjOpenAtLaunch->value();
 
   // a bar to warn the user with non-blocking messages
   startProfile( tr( "Message bar" ) );
@@ -6085,7 +6087,7 @@ void QgisApp::fileOpenAfterLaunch()
     settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) );
 
     // set auto-open project back to 'New' to avoid re-opening bad project
-    settings.setValue( u"qgis/projOpenAtLaunch"_s, QVariant( 0 ) );
+    settingsProjOpenAtLaunch->setValue( 0 );
 
     visibleMessageBar()->pushMessage( autoOpenMsgTitle, tr( "Failed to open: %1" ).arg( projPath ), Qgis::MessageLevel::Critical );
     return;
