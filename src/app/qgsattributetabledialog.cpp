@@ -68,6 +68,10 @@ const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefau
 
 const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( u"autosize-attribute-table"_s, QgsSettingsTree::sTreeAttributeTable, false );
 
+const QgsSettingsEntryEnumFlag<QgsDualView::ViewMode> *QgsAttributeTableDialog::settingsAttributeTableView = new QgsSettingsEntryEnumFlag<QgsDualView::ViewMode>( u"attribute-table-view"_s, QgsSettingsTree::sTreeAttributeTable, QgsDualView::AttributeTable, u"Initial attribute table view"_s );
+
+const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableRememberLastView = new QgsSettingsEntryBool( u"remember-last-view"_s, QgsSettingsTree::sTreeAttributeTable, true, u"Whether to remember the last used attribute table view when reopening it."_s );
+
 const QgsSettingsEntryEnumFlag<QgsAttributeTableConfig::AddFeatureMethod> *QgsAttributeTableDialog::settingsDefaultAddFeatureMethod = new QgsSettingsEntryEnumFlag<
   QgsAttributeTableConfig::AddFeatureMethod>( u"default-add-feature-method"_s, QgsSettingsTree::sTreeAttributeTable, QgsAttributeTableConfig::AddFeatureMethod::Table, u"Default method used to add a new feature from the attribute table when no per-layer method is set."_s );
 
@@ -428,10 +432,14 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
     mUpdateExpressionText->setLayer( mLayer );
     mUpdateExpressionText->setLeftHandButtonStyle( true );
 
-    int initialView = settings.value( u"qgis/attributeTableView"_s, -1 ).toInt();
-    if ( initialView < 0 )
+    int initialView;
+    if ( QgsAttributeTableDialog::settingsAttributeTableRememberLastView->value() )
     {
       initialView = settings.value( u"qgis/attributeTableLastView"_s, QgsDualView::AttributeTable ).toInt();
+    }
+    else
+    {
+      initialView = QgsAttributeTableDialog::settingsAttributeTableView->value();
     }
     mMainView->setView( static_cast<QgsDualView::ViewMode>( initialView ) );
     mMainViewButtonGroup->button( initialView )->setChecked( true );
