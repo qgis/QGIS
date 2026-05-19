@@ -1006,6 +1006,8 @@ const QgsSettingsEntryString *QgisApp::settingsProjOpenAtLaunchPath
   = new QgsSettingsEntryString( u"proj-open-at-launch-path"_s, QgsSettingsTree::sTreeProject, QString(), u"Path of the specific project to open at launch"_s );
 const QgsSettingsEntryBool *QgisApp::settingsProjOpenedOKAtLaunch
   = new QgsSettingsEntryBool( u"project-opened-ok-at-launch"_s, QgsSettingsTree::sTreeProject, true, u"Whether the project specified to open at launch was opened successfully last time"_s );
+const QgsSettingsEntryBool *QgisApp::settingsShowScriptWarning
+  = new QgsSettingsEntryBool( u"show-script-warning"_s, QgsSettingsTree::sTreeApp, true, u"Whether to warn the user before running a Python script embedded in a project"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -7019,7 +7021,7 @@ void QgisApp::runScript( const QString &filePath )
     return;
 
   QgsSettings settings;
-  bool showScriptWarning = settings.value( u"UI/showScriptWarning"_s, true ).toBool();
+  bool showScriptWarning = settingsShowScriptWarning->value();
 
   QMessageBox msgbox;
   if ( showScriptWarning )
@@ -7033,7 +7035,7 @@ void QgisApp::runScript( const QString &filePath )
     QCheckBox *cb = new QCheckBox( tr( "Don't show this again." ) );
     msgbox.setCheckBox( cb );
     msgbox.exec();
-    settings.setValue( u"UI/showScriptWarning"_s, !msgbox.checkBox()->isChecked() );
+    settingsShowScriptWarning->setValue( !msgbox.checkBox()->isChecked() );
   }
 
   if ( !showScriptWarning || msgbox.result() == QMessageBox::Yes )
