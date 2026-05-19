@@ -51,7 +51,7 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return new QgsHighlightMaterial();
       }
 
       const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );

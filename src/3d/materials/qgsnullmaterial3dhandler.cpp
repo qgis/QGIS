@@ -27,7 +27,33 @@ using namespace Qt::StringLiterals;
 QgsMaterial *QgsNullMaterial3DHandler::toMaterial( const QgsAbstractMaterialSettings *, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   if ( context.isHighlighted() )
-    return new QgsHighlightMaterial( technique );
+  {
+    switch ( technique )
+    {
+      case Qgis::MaterialRenderingTechnique::Triangles:
+      case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
+      case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
+      case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
+      {
+        return new QgsHighlightMaterial();
+        break;
+      }
+      case Qgis::MaterialRenderingTechnique::InstancedPoints:
+      {
+        QgsHighlightMaterial *mat = new QgsHighlightMaterial();
+        mat->setInstancingEnabled( true, Qgis::InstancedMaterialFlags() );
+        break;
+      }
+      case Qgis::MaterialRenderingTechnique::Lines:
+      case Qgis::MaterialRenderingTechnique::Points:
+      case Qgis::MaterialRenderingTechnique::Billboards:
+      {
+        // Lines are single color and do not need the highlight material
+        // Billboards are not supported yet
+        break;
+      }
+    }
+  }
 
   return nullptr;
 }

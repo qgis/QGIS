@@ -46,7 +46,7 @@ QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toMaterial( const QgsAbstra
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return new QgsHighlightMaterial();
       }
 
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial();

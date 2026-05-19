@@ -50,7 +50,7 @@ QgsMaterial *QgsPhongMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return new QgsHighlightMaterial();
       }
 
       const QgsPhongMaterialSettings *phongSettings = dynamic_cast< const QgsPhongMaterialSettings * >( settings );
