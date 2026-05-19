@@ -21,6 +21,8 @@
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 
+#include <QMap>
+
 class QgsProcessingProvider;
 class QgsProcessingAlgorithm;
 class QgsProcessingContext;
@@ -176,6 +178,26 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      */
     virtual QString textLog() const;
 
+    /**
+     * Reports that a feature was added to a sink.
+     *
+     * \see sinkFeatureCountChanged()
+     * \see featureSinkFinalized()
+     * \since QGIS 4.2
+     */
+    void featureAddedToSink( const QString &sinkId );
+
+    /**
+     * Reports that a feature was has been finalized.
+     *
+     * This will cause an immediate emission of sinkFeatureCountChanged() signal with the final sink size.
+     *
+     * \see featureAddedToSink()
+     * \see sinkFeatureCountChanged()
+     * \since QGIS 4.2
+     */
+    void featureSinkFinalized( const QString &sinkId );
+
   signals:
 
     /**
@@ -242,6 +264,18 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      */
     void formattedMessagePushed( const QString &html );
 
+    /**
+     * Emitted when the count of features pushed to a sink has changed.
+     *
+     * \note For performance, this signal is not emitted for every individual feature
+     * added to the sink. It is instead emitted only once for every 100 features added.
+     *
+     * \see featureAddedToSink()
+     * \see featureSinkFinalized()
+     * \since QGIS 4.2
+     */
+    void sinkFeatureCountChanged( const QString &sinkId, long long featureCount );
+
   private:
     void log( const QString &htmlMessage, const QString &textMessage );
 
@@ -249,6 +283,14 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     QString mHtmlLog;
     QString mTextLog;
     int mMessageLoggedCount = 0;
+
+    struct SinkStats
+    {
+        long long featureCount = 0;
+        long long countAtLastSignal = 0;
+    };
+
+    QMap< QString, SinkStats > mSinkFeatureCounts;
 };
 
 

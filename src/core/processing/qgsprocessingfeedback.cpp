@@ -224,6 +224,47 @@ QString QgsProcessingFeedback::textLog() const
   return mTextLog;
 }
 
+void QgsProcessingFeedback::featureAddedToSink( const QString &sinkId )
+{
+  long long countAtLastSignal = 0;
+  long long previousCount = 0;
+  auto it = mSinkFeatureCounts.find( sinkId );
+  if ( it == mSinkFeatureCounts.end() )
+  {
+    it = mSinkFeatureCounts.insert( sinkId, SinkStats() );
+  }
+  else
+  {
+    countAtLastSignal = it.value().countAtLastSignal;
+    previousCount = it.value().featureCount;
+  }
+
+  const long long newCount = previousCount + 1;
+  it.value().featureCount = newCount;
+  if ( newCount - countAtLastSignal >= 100 )
+  {
+    emit sinkFeatureCountChanged( sinkId, newCount );
+    it.value().countAtLastSignal = newCount;
+  }
+}
+
+void QgsProcessingFeedback::featureSinkFinalized( const QString &sinkId )
+{
+  long long previousCount = 0;
+  auto it = mSinkFeatureCounts.find( sinkId );
+  if ( it == mSinkFeatureCounts.end() )
+  {
+    it = mSinkFeatureCounts.insert( sinkId, SinkStats() );
+  }
+  else
+  {
+    previousCount = it.value().featureCount;
+  }
+
+  emit sinkFeatureCountChanged( sinkId, previousCount );
+  it.value().countAtLastSignal = previousCount;
+}
+
 
 QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
   : mChildSteps( childAlgorithmCount )
