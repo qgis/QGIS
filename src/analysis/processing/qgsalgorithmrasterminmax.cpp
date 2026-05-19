@@ -210,6 +210,8 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
       f.setGeometry( QgsGeometry::fromPointXY( rasterMinPoint ) );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest );
     }
     if ( !std::isnan( rasterMaximum ) )
     {
@@ -217,7 +219,11 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
       f.setGeometry( QgsGeometry::fromPointXY( rasterMaxPoint ) );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest );
     }
+    sink->finalize();
+    feedback->featureSinkFinalized( dest );
     outputs.insert( u"OUTPUT"_s, dest );
   }
   outputs.insert( u"MINIMUM"_s, !std::isnan( rasterMinimum ) ? QVariant::fromValue( rasterMinimum ) : QVariant() );

@@ -195,12 +195,15 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
         outFeat.setGeometry( calcTransect( pt, azimuth, evaluatedLength, mOrientation, evaluatedAngle, mDirection ) );
         if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( dest );
         number++;
       }
     }
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

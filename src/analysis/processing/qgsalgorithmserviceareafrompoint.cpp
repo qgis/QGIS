@@ -240,6 +240,8 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
     feat.setAttributes( QgsAttributes() << u"within"_s << startPoint.toString() );
     if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( pointsSinkId );
 
     if ( includeBounds )
     {
@@ -274,14 +276,19 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
       feat.setAttributes( QgsAttributes() << u"upper"_s << startPoint.toString() );
       if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( pointsSinkId );
 
       feat.setGeometry( geomLower );
       feat.setAttributes( QgsAttributes() << u"lower"_s << startPoint.toString() );
       if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( pointsSinkId );
     } // includeBounds
 
     pointsSink->finalize();
+    feedback->featureSinkFinalized( pointsSinkId );
   }
 
   QString linesSinkId;
@@ -295,7 +302,10 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
     feat.setAttributes( QgsAttributes() << u"lines"_s << startPoint.toString() );
     if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, u"OUTPUT_LINES"_s ) );
+    else
+      feedback->featureAddedToSink( linesSinkId );
     linesSink->finalize();
+    feedback->featureSinkFinalized( linesSinkId );
   }
 
   return outputs;

@@ -156,6 +156,8 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
       outFeat.setAttributes( attrs );
       if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest );
     }
   }
 
@@ -163,6 +165,7 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
   if ( sink )
   {
     sink->finalize();
+    feedback->featureSinkFinalized( dest );
     outputs.insert( u"OUTPUT"_s, dest );
   }
   return outputs;

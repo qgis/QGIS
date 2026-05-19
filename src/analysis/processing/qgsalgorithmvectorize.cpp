@@ -115,6 +115,8 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
           f.setAttributes( QgsAttributes() << value );
           if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+          else
+            feedback->featureAddedToSink( dest );
         }
         currentX += mRasterUnitsPerPixelX;
       }
@@ -123,6 +125,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

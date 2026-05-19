@@ -351,9 +351,12 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
       outFeature.setGeometry( line );
       if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest );
     }
   }
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

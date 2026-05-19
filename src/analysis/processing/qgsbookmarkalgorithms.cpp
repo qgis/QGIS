@@ -157,11 +157,14 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
 
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( dest );
 
     feedback->setProgress( current++ * step );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

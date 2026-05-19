@@ -347,6 +347,8 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     outputFeature.setAttributes( attrs );
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( dest );
 
     if ( !textDir.isEmpty() )
     {
@@ -387,6 +389,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

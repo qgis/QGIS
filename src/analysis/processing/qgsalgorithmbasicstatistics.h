@@ -55,13 +55,21 @@ class QgsBasicStatisticsAlgorithm : public QgsProcessingAlgorithm
 
   private:
     QVariantMap calculateNumericStatistics(
-      const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+      const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback, const QString &destId
     );
     QVariantMap calculateDateTimeStatistics(
-      const QVariantMap &parameters, const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+      const QVariantMap &parameters,
+      const int fieldIndex,
+      QgsField field,
+      QgsFeatureIterator features,
+      const long long count,
+      QgsFeatureSink *sink,
+      QStringList &data,
+      QgsProcessingFeedback *feedback,
+      const QString &destId
     );
     QVariantMap calculateStringStatistics(
-      const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+      const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback, const QString &destId
     );
 };
 

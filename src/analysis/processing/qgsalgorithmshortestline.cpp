@@ -190,6 +190,8 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
       f.setGeometry( shortestLine );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest );
     }
 
     i++;
@@ -197,6 +199,7 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

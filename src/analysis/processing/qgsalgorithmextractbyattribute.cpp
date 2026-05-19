@@ -215,6 +215,8 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
 
       if ( !matchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( matchingSinkId );
 
       feedback->setProgress( current * step );
       current++;
@@ -240,11 +242,15 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
       {
         if ( !matchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( matchingSinkId );
       }
       else
       {
         if ( !nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( nonMatchingSink.get(), parameters, u"FAIL_OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( nonMatchingSinkId );
       }
 
       feedback->setProgress( current * step );
@@ -253,9 +259,15 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   }
 
   if ( matchingSink )
+  {
     matchingSink->finalize();
+    feedback->featureSinkFinalized( matchingSinkId );
+  }
   if ( nonMatchingSink )
+  {
     nonMatchingSink->finalize();
+    feedback->featureSinkFinalized( nonMatchingSinkId );
+  }
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, matchingSinkId );

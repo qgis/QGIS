@@ -168,8 +168,11 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
       f.setAttributes( *it );
       if ( !sink->addFeature( f, QgsFeatureSink::Flag::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest );
     }
     sink->finalize();
+    feedback->featureSinkFinalized( dest );
     outputs.insert( u"OUTPUT"_s, dest );
   }
 

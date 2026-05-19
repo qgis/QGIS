@@ -160,6 +160,8 @@ QVariantMap QgsFixGeometryDeleteFeaturesAlgorithm::processAlgorithm( const QVari
       reportFeature.setAttributes( errorFeature.attributes() << u"Feature deleted"_s << true );
       if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
+      else
+        feedback->featureAddedToSink( dest_report );
     }
     else
     {
@@ -167,9 +169,16 @@ QVariantMap QgsFixGeometryDeleteFeaturesAlgorithm::processAlgorithm( const QVari
       // Just add it to the output sink.
       if ( !sink_output->addFeature( inputFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest_output );
     }
   }
   feedback->setProgress( 100 );
+
+  sink_report->finalize();
+  feedback->featureSinkFinalized( dest_report );
+  sink_output->finalize();
+  feedback->featureSinkFinalized( dest_output );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest_output );

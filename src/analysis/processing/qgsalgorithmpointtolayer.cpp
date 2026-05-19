@@ -71,8 +71,11 @@ QVariantMap QgsPointToLayerAlgorithm::processAlgorithm( const QVariantMap &param
   f.setGeometry( geom );
   if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+  else
+    feedback->featureAddedToSink( dest );
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   feedback->setProgress( 100 );
 

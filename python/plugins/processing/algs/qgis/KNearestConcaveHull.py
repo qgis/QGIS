@@ -209,6 +209,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                             # Give the polygon the same attribute as the point grouping attribute
                             out_feature.setAttributes([fid, unique])
                             sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
+                            feedback.featureAddedToSink(dest_id)
                             success = True  # at least one polygon created
                     fid += 1
                 if not success:
@@ -216,6 +217,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                         "No hulls could be created. Most likely there were not at least three unique points in any of the groups."
                     )
                 sink.finalize()
+                feedback.featureSinkFinalized(dest_id)
             else:
                 # Field parameter provided but can't read from it
                 raise QgsProcessingException("Unable to find grouping field")
@@ -260,6 +262,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                     out_feature.setGeometry(poly)
                     out_feature.setAttributes([0])
                     sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
+                    feedback.featureAddedToSink(dest_id)
                 else:
                     # the_hull returns None only when there are less than three points after cleaning
                     raise QgsProcessingException(
@@ -271,6 +274,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                 )
 
             sink.finalize()
+            feedback.featureSinkFinalized(dest_id)
 
         return {self.OUTPUT: dest_id}
 

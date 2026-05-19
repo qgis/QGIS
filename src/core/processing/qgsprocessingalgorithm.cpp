@@ -1257,6 +1257,10 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
       {
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
       }
+      else
+      {
+        feedback->featureAddedToSink( dest );
+      }
     }
 
     feedback->setProgress( current * step );
@@ -1264,6 +1268,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   mSource.reset();
 

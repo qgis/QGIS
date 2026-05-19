@@ -185,9 +185,12 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
     outFeature.setAttributes( outAttributes );
     if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( sinkId );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( sinkId );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, sinkId );

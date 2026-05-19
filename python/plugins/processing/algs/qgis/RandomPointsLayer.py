@@ -200,6 +200,7 @@ class RandomPointsLayer(QgisAlgorithm):
                         f.setAttribute("id", nPoints)
                         f.setGeometry(geom)
                         sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
+                        feedback.featureAddedToSink(dest_id)
                         index.addFeature(f)
                         points[nPoints] = p
                         nPoints += 1
@@ -215,4 +216,5 @@ class RandomPointsLayer(QgisAlgorithm):
             )
 
         sink.finalize()
+        feedback.featureSinkFinalized(dest_id)
         return {self.OUTPUT: dest_id}

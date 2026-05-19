@@ -389,6 +389,8 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       {
         if ( !unchangedSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( unchangedSink.get(), parameters, u"UNCHANGED"_s ) );
+        else
+          feedback->featureAddedToSink( unchangedDestId );
       }
     }
     else
@@ -398,6 +400,8 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       {
         if ( !deletedSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( deletedSink.get(), parameters, u"DELETED"_s ) );
+        else
+          feedback->featureAddedToSink( deletedDestId );
       }
       deleted++;
     }
@@ -425,6 +429,8 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       // added feature
       if ( !addedSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( addedSink.get(), parameters, u"ADDED"_s ) );
+      else
+        feedback->featureAddedToSink( addedDestId );
 
       current++;
       feedback->setProgress( 0.10 * current * step + 90 ); // takes about 10% of time
@@ -437,11 +443,20 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   feedback->pushInfo( QObject::tr( "%n feature(s) deleted", nullptr, deleted ) );
 
   if ( unchangedSink )
+  {
     unchangedSink->finalize();
+    feedback->featureSinkFinalized( unchangedDestId );
+  }
   if ( addedSink )
+  {
     addedSink->finalize();
+    feedback->featureSinkFinalized( addedDestId );
+  }
   if ( deletedSink )
+  {
     deletedSink->finalize();
+    feedback->featureSinkFinalized( deletedDestId );
+  }
 
   QVariantMap outputs;
   outputs.insert( u"UNCHANGED"_s, unchangedDestId );

@@ -179,6 +179,10 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
             {
               throw QgsProcessingException( writeFeatureError( errorSink.get(), parameters, u"ERROR_OUTPUT"_s ) );
             }
+            else
+            {
+              feedback->featureAddedToSink( errorSinkId );
+            }
           }
           errorCount++;
           reasons.append( error.what() );
@@ -202,6 +206,10 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
       {
         throw QgsProcessingException( writeFeatureError( validSink.get(), parameters, u"VALID_OUTPUT"_s ) );
       }
+      else if ( validSink )
+      {
+        feedback->featureAddedToSink( validSinkId );
+      }
       validCount++;
     }
     else
@@ -209,6 +217,10 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
       if ( invalidSink && !invalidSink->addFeature( f, QgsFeatureSink::FastInsert ) )
       {
         throw QgsProcessingException( writeFeatureError( invalidSink.get(), parameters, u"INVALID_OUTPUT"_s ) );
+      }
+      else if ( invalidSink )
+      {
+        feedback->featureAddedToSink( invalidSinkId );
       }
       invalidCount++;
     }
@@ -220,14 +232,17 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
   if ( validSink )
   {
     validSink->finalize();
+    feedback->featureSinkFinalized( validSinkId );
   }
   if ( invalidSink )
   {
     invalidSink->finalize();
+    feedback->featureSinkFinalized( invalidSinkId );
   }
   if ( errorSink )
   {
     errorSink->finalize();
+    feedback->featureSinkFinalized( errorSinkId );
   }
 
   QVariantMap outputs;

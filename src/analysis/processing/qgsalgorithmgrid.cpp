@@ -187,6 +187,7 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );
   return outputs;

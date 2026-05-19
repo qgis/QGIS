@@ -175,11 +175,14 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
 
     if ( !sink->addFeature( f ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( dest );
     feedback->setProgress( current * step );
     current++;
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

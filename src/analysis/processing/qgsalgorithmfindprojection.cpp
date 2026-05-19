@@ -166,6 +166,8 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
         f.setAttributes( QgsAttributes() << candidateCrs.authid() );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( dest );
 
         foundResults++;
       }
@@ -185,6 +187,7 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( dest );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

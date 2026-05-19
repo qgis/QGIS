@@ -191,6 +191,8 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
           feat.setAttributes( attributes );
           if ( !nonRoutableSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nonRoutableSink.get(), parameters, u"OUTPUT_NON_ROUTABLE"_s ) );
+          else
+            feedback->featureAddedToSink( nonRoutableSinkId );
         }
 
         feedback->setProgress( i * step );
@@ -210,6 +212,8 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
       feat.setAttributes( attributes );
       if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( dest );
       continue;
     }
 
@@ -234,18 +238,24 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
     feat.setGeometry( geom );
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( dest );
 
     feedback->setProgress( i * step );
   }
 
   if ( sink )
+  {
     sink->finalize();
+    feedback->featureSinkFinalized( dest );
+  }
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );
   if ( nonRoutableSink )
   {
     nonRoutableSink->finalize();
+    feedback->featureSinkFinalized( nonRoutableSinkId );
     outputs.insert( u"OUTPUT_NON_ROUTABLE"_s, nonRoutableSinkId );
   }
   return outputs;
