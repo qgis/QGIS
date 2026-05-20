@@ -71,12 +71,132 @@ runs:
         echo "failed-ports=${ports}" >> "$GITHUB_OUTPUT"
         echo "Detected ${count} vcpkg port build failure(s): ${ports:-<none>}"
 
+    # Echo each failing port's key error lines inside a ::group:: block so the
+    # workflow log itself becomes browsable evidence (no artifact download
+    # needed). The deep link to this step is captured below and surfaced in
+    # the report footer.
+    - name: 📜 Inline failing-port logs
+      id: inline-logs
+      if: steps.parse.outputs.failure-count != '0'
+      shell: bash
+      env:
+        FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
+      run: |
+        set -euo pipefail
+        python3 - <<'PY'
+        import json, os
+        failures = json.load(open(os.environ["FAILURES_JSON"], encoding="utf-8"))
+        for f in failures:
+            print(f"::group::{f['port']} ({f.get('triplet', '?')})")
+            for ex in f.get("excerpts", []):
+                print(f"---- {ex['source']} ----")
+                for line in ex.get("lines", []):
+                    print(line)
+            print("::endgroup::")
+        PY
+
+    # Stage one subdirectory per failing port containing only its *.log files,
+    # then upload as a single artifact. Smaller and more navigable than the
+    # full build-logs-<triplet> artifact, which still contains everything.
+    - name: 📦 Package failing-port logs
+      id: package-port-logs
+      if: steps.parse.outputs.failure-count != '0'
+      shell: bash
+      env:
+        BUILDTREES_DIR: ${{ inputs.buildtrees-dir }}
+        FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
+      run: |
+        set -euo pipefail
+        pkg_root="${RUNNER_TEMP//\\//}/failing-port-logs"
+        rm -rf "${pkg_root}"
+        mkdir -p "${pkg_root}"
+        echo "path=${pkg_root}" >> "$GITHUB_OUTPUT"
+        python3 - "$FAILURES_JSON" "$BUILDTREES_DIR" "$pkg_root" <<'PY'
+        import json, shutil, sys
+        from pathlib import Path
+        failures_json, src_root, dst_root = sys.argv[1:]
+        src = Path(src_root)
+        dst = Path(dst_root)
+        for f in json.load(open(failures_json, encoding="utf-8")):
+            port_src = src / f["port"]
+            if not port_src.is_dir():
+                continue
+            port_dst = dst / f["port"]
+            port_dst.mkdir(parents=True, exist_ok=True)
+            for log in port_src.glob("*.log"):
+                shutil.copy2(log, port_dst / log.name)
+        PY
+
+    - name: 📤 Upload failing-port logs artifact
+      id: upload-port-logs
+      if: steps.parse.outputs.failure-count != '0'
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: failing-port-logs-${{ inputs.triplet }}
+        path: ${{ steps.package-port-logs.outputs.path }}
+        if-no-files-found: ignore
+
+    # Resolve a deep link to the "Inline failing-port logs" step so the
+    # report can point users straight at the step in the workflow log.
+    # GitHub collapses ::group:: blocks by default and line-precise anchors
+    # don't auto-expand them, so we only aim for the step-top anchor.
+    - name: 🔗 Resolve inline-logs deep link
+      id: inline-link
+      if: steps.parse.outputs.failure-count != '0'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        INLINE_STEP_NAME: 📜 Inline failing-port logs
+      run: |
+        set -euo pipefail
+        jobs_json="${RUNNER_TEMP//\\//}/vcpkg-failures-jobs.json"
+        if ! gh api -H "Accept: application/vnd.github+json" \
+            "/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs?per_page=100" \
+            > "${jobs_json}"; then
+          echo "::warning::Could not query jobs for inline-logs deep link"
+          echo "url=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        url=$(JOBS_JSON="${jobs_json}" python3 - <<'PY'
+        import json, os
+        data = json.loads(open(os.environ["JOBS_JSON"], encoding="utf-8").read())
+        runner = os.environ.get("RUNNER_NAME", "")
+        step_name = os.environ["INLINE_STEP_NAME"]
+        server = os.environ["GITHUB_SERVER_URL"]
+        repo = os.environ["GITHUB_REPOSITORY"]
+        run_id = os.environ["GITHUB_RUN_ID"]
+        # Our own job is the in-progress one running on this runner.
+        candidates = [j for j in data.get("jobs", [])
+                      if j.get("runner_name") == runner
+                      and j.get("status") == "in_progress"]
+        # Fall back to any job on this runner if the API hasn't flipped our
+        # status yet.
+        if not candidates:
+            candidates = [j for j in data.get("jobs", [])
+                          if j.get("runner_name") == runner]
+        for job in candidates:
+            for step in job.get("steps", []):
+                if step.get("name") == step_name and step.get("number"):
+                    print(f"{server}/{repo}/actions/runs/{run_id}"
+                          f"/job/{job['id']}#step:{step['number']}:1")
+                    raise SystemExit(0)
+        PY
+        )
+        echo "url=${url}" >> "$GITHUB_OUTPUT"
+        if [ -n "${url}" ]; then
+          echo "Inline-logs deep link: ${url}"
+        else
+          echo "::warning::Could not resolve inline-logs deep link"
+        fi
+
     - name: Render markdown report
       id: render
       shell: bash
       env:
         TRIPLET: ${{ inputs.triplet }}
         ARTIFACT_URL: ${{ inputs.artifact-url }}
+        PORT_LOGS_URL: ${{ steps.upload-port-logs.outputs.artifact-url }}
+        INLINE_LOGS_URL: ${{ steps.inline-link.outputs.url }}
         DIFF_REPORT: ${{ inputs.diff-report-json }}
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
@@ -88,6 +208,12 @@ runs:
         args=( "${FAILURES_JSON}" --triplet "${TRIPLET}" --run-url "${RUN_URL}" --output "${out_md}" )
         if [ -n "${ARTIFACT_URL}" ]; then
           args+=( --artifact-url "${ARTIFACT_URL}" )
+        fi
+        if [ -n "${PORT_LOGS_URL}" ]; then
+          args+=( --per-port-artifact-url "${PORT_LOGS_URL}" )
+        fi
+        if [ -n "${INLINE_LOGS_URL}" ]; then
+          args+=( --inline-logs-url "${INLINE_LOGS_URL}" )
         fi
         if [ -n "${DIFF_REPORT}" ] && [ -f "${DIFF_REPORT}" ]; then
           args+=( --diff-report "${DIFF_REPORT}" )

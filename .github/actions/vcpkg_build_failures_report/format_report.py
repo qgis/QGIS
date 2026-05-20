@@ -66,6 +66,8 @@ def render(
     *,
     changed_ports: set[str] | None = None,
     artifact_url: str | None = None,
+    per_port_artifact_url: str | None = None,
+    inline_logs_url: str | None = None,
     run_url: str | None = None,
 ) -> str:
     changed_ports = changed_ports or set()
@@ -102,6 +104,12 @@ def render(
         lines.append("")
 
     footer: list[str] = []
+    if inline_logs_url:
+        footer.append(f"📜 [View inline logs in workflow]({inline_logs_url})")
+    if per_port_artifact_url:
+        footer.append(
+            f"📦 [Download `failing-port-logs-{triplet}` artifact]({per_port_artifact_url})"
+        )
     if artifact_url:
         footer.append(
             f"📑 [Download full `build-logs-{triplet}` artifact]({artifact_url})"
@@ -139,6 +147,18 @@ def main() -> int:
         help="Optional URL to the uploaded build-logs artifact.",
     )
     parser.add_argument(
+        "--per-port-artifact-url",
+        default=None,
+        help="Optional URL to the failing-port-logs-<triplet> artifact "
+        "(focused per-port log subset).",
+    )
+    parser.add_argument(
+        "--inline-logs-url",
+        default=None,
+        help="Optional deep link to the workflow step that echoed each "
+        "failing port's logs inline (::group:: blocks).",
+    )
+    parser.add_argument(
         "--run-url",
         default=None,
         help="Optional URL to the GitHub Actions run.",
@@ -159,6 +179,8 @@ def main() -> int:
         args.triplet,
         changed_ports=changed,
         artifact_url=args.artifact_url,
+        per_port_artifact_url=args.per_port_artifact_url,
+        inline_logs_url=args.inline_logs_url,
         run_url=args.run_url,
     )
 
