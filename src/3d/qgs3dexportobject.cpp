@@ -114,7 +114,13 @@ void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesB
 void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 {
   mMaterialParameters.clear();
-  QMap<QString, QString> parameters = Qgs3D::toMaterialExportParameters( material );
+
+  QMap<QString, QString> parameters;
+  if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( material ) )
+  {
+    parameters = handler->toExportParameters( material );
+  }
+
   for ( auto it = parameters.begin(); it != parameters.end(); ++it )
   {
     mMaterialParameters[it.key()] = it.value();

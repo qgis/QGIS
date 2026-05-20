@@ -158,32 +158,6 @@ QgsMaterial *Qgs3D::toMaterial( const QgsAbstractMaterialSettings *settings, Qgi
   return nullptr;
 }
 
-QMap<QString, QString> Qgs3D::toMaterialExportParameters( const QgsAbstractMaterialSettings *settings )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->toExportParameters( settings );
-  }
-  return {};
-}
-
-void Qgs3D::applyMaterialDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    handler->applyDataDefinedToGeometry( settings, geometry, vertexCount, dataDefinedBytes );
-  }
-}
-
-QByteArray Qgs3D::materialDataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->dataDefinedVertexColorsAsByte( settings, expressionContext );
-  }
-  return QByteArray();
-}
-
 Qgs3D::Qgs3D()
 {
   mTerrainRegistry = new Qgs3DTerrainRegistry();
