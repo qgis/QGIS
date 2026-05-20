@@ -229,7 +229,6 @@ void TestQgs3DBackgrounds::testSkyboxRendering()
   engine.setRootEntity( scene );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 10, pitch, yaw );
-  QTest::qWait( 1000 );
 
   Qgs3DUtils::captureSceneImage( engine, scene );
   QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
