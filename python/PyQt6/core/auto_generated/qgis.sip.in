@@ -2710,6 +2710,13 @@ The development version
       OptimalInInsertionGroup,
     };
 
+    enum class LegendLayerDoubleClickAction /BaseType=IntEnum/
+    {
+      LayerProperties,
+      AttributeTable,
+      LayerStyling,
+    };
+
     enum class LayerTreeFilterFlag /BaseType=IntFlag/
     {
       SkipVisibilityCheck,
