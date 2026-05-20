@@ -53,6 +53,7 @@ class CORE_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 
     QgsGoochMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     //! Returns warm color component
     QColor warm() const { return mWarm; }

@@ -61,6 +61,11 @@ QPointF QgsAbstractMaterialSettings::textureOffset() const
   return QPointF( 0, 0 );
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsAbstractMaterialSettings::supportedProperties() const
+{
+  return {};
+}
+
 void QgsAbstractMaterialSettings::setDataDefinedProperties( const QgsPropertyCollection &collection )
 {
   mDataDefinedProperties = collection;

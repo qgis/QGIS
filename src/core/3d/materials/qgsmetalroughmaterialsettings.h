@@ -38,6 +38,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     QgsMetalRoughMaterialSettings() = default;
 
     QString type() const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     /**
      * Returns TRUE if the specified \a technique is supported by the metal rough material.
