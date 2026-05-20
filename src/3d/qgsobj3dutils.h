@@ -43,6 +43,11 @@ class _3D_EXPORT QgsObj3DUtils
         QgsMaterial *material = nullptr;
     };
 
+    /**
+     * Loads an OBJ file from \a filePath and returns one geometry/material pair
+     * per material group. If no textures exists for the mesh, the material is a NULLPTR. 
+     * Empty vector when file cannot be parsed.
+     */
     static QVector<ObjMaterialMesh> buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext );
 };
 

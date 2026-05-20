@@ -820,6 +820,11 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
           texMat->setInstancingEnabled( true, instancedFlags );
         mat = mesh.material;
       }
+      if ( !mat )
+      {
+        if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
+          mat = handler->toInstancedMaterial( settings, materialContext, instancedFlags );
+      }
     }
 
     if ( !mat )

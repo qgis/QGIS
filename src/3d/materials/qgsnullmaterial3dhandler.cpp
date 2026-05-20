@@ -36,14 +36,12 @@ QgsMaterial *QgsNullMaterial3DHandler::toMaterial( const QgsAbstractMaterialSett
       case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
       {
         return new QgsHighlightMaterial();
-        break;
       }
       case Qgis::MaterialRenderingTechnique::InstancedPoints:
       {
         QgsHighlightMaterial *mat = new QgsHighlightMaterial();
         mat->setInstancingEnabled( true, Qgis::InstancedMaterialFlags() );
         return mat;
-        break;
       }
       case Qgis::MaterialRenderingTechnique::Lines:
       case Qgis::MaterialRenderingTechnique::Points:

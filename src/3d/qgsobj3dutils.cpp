@@ -95,7 +95,7 @@ QVector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( const
         data.push_back( attrib.vertices[3 * size_t( idx.vertex_index ) + 1] );
         data.push_back( attrib.vertices[3 * size_t( idx.vertex_index ) + 2] );
 
-        if ( hasNormals && idx.normal_index >= 0 )
+        if ( hasNormals )
         {
           if ( idx.normal_index >= 0 )
           {
@@ -111,7 +111,7 @@ QVector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( const
           }
         }
 
-        if ( hasTexCoords && idx.texcoord_index >= 0 )
+        if ( hasTexCoords )
         {
           if ( idx.texcoord_index >= 0 )
           {
