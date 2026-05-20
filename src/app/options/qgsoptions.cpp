@@ -522,12 +522,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAttrTableViewComboBox->addItem( tr( "Remember Last View" ), -1 );
   mAttrTableViewComboBox->addItem( tr( "Table View" ), QgsDualView::AttributeTable );
   mAttrTableViewComboBox->addItem( tr( "Form View" ), QgsDualView::AttributeEditor );
-  const int currentAttrTableView = QgsAttributeTableDialog::settingsAttributeTableRememberLastView->value()
-                                     ? -1
-                                     : static_cast<int>( QgsAttributeTableDialog::settingsAttributeTableView->value() );
+  const int currentAttrTableView = QgsAttributeTableDialog::settingsAttributeTableRememberLastView->value() ? -1 : static_cast<int>( QgsAttributeTableDialog::settingsAttributeTableView->value() );
   mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( currentAttrTableView ) );
 
-  spinBoxAttrTableRowCache->setValue( mSettings->value( u"/qgis/attributeTableRowCache"_s, 10000 ).toInt() );
+  spinBoxAttrTableRowCache->setValue( QgsDualView::settingsAttributeTableRowCache->value() );
   spinBoxAttrTableRowCache->setClearValue( 10000 );
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
 
@@ -1653,7 +1651,7 @@ void QgsOptions::saveOptions()
     QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( false );
     QgsAttributeTableDialog::settingsAttributeTableView->setValue( static_cast<QgsDualView::ViewMode>( selectedAttrTableView ) );
   }
-  mSettings->setValue( u"/qgis/attributeTableRowCache"_s, spinBoxAttrTableRowCache->value() );
+  QgsDualView::settingsAttributeTableRowCache->setValue( spinBoxAttrTableRowCache->value() );
   mSettings->setEnumValue( u"/qgis/promptForSublayers"_s, static_cast<Qgis::SublayerPromptMode>( cmbPromptSublayers->currentData().toInt() ) );
 
   QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->setValue( cmbScanItemsInBrowser->currentData().toString() );

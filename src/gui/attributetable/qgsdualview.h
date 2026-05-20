@@ -32,6 +32,7 @@ class QgsMapLayerAction;
 class QgsScrollArea;
 class QgsFieldConditionalFormatWidget;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
 class QgsSettingsEntryVariant;
 
 /**
@@ -88,6 +89,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \since QGIS 4.0.1
      */
     static const QgsSettingsEntryBool *settingsFeatureListHighlightFeature;
+
+    /**
+     * Settings entry for the maximum number of rows to cache in the attribute table.
+     * A value of 0 means cache all rows.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryInteger *settingsAttributeTableRowCache;
 
 #endif
 

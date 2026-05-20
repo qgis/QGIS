@@ -60,6 +60,9 @@ using namespace Qt::StringLiterals;
 const QgsSettingsEntryBool *QgsDualView::settingsFeatureListHighlightFeature
   = new QgsSettingsEntryBool( u"feature-list-highlight-feature"_s, QgsSettingsTree::sTreeAttributeTable, true, QObject::tr( "Whether to highlight/flash features in the feature list view" ) );
 
+const QgsSettingsEntryInteger *QgsDualView::settingsAttributeTableRowCache
+  = new QgsSettingsEntryInteger( u"row-cache"_s, QgsSettingsTree::sTreeAttributeTable, 10000, QObject::tr( "Maximum number of rows to cache in the attribute table (0 means cache all rows)" ) );
+
 const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionalFormattingSplitterState = std::make_unique<
   QgsSettingsEntryVariant>( u"attribute-table-splitter-state"_s, QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), u"State of conditional formatting splitter's layout so it could be restored when opening attribute table view."_s );
 const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::attributeEditorSplitterState = std::make_unique<
@@ -459,8 +462,7 @@ void QgsDualView::setSelectedOnTop( bool selectedOnTop )
 void QgsDualView::initLayerCache( bool cacheGeometry )
 {
   // Initialize the cache
-  const QgsSettings settings;
-  const int cacheSize = settings.value( u"qgis/attributeTableRowCache"_s, "10000" ).toInt();
+  const int cacheSize = settingsAttributeTableRowCache->value();
   mLayerCache = new QgsVectorLayerCache( mLayer, cacheSize, this );
   mLayerCache->setCacheSubsetOfAttributes( requiredAttributes( mLayer ) );
   mLayerCache->setCacheGeometry( cacheGeometry );
