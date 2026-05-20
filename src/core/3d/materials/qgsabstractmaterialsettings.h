@@ -170,6 +170,11 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     // *INDENT-ON*
 
     /**
+     * Returns the set of properties supported by this material.
+     */
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
+    /**
      * Sets the material property collection, used for data defined overrides.
      * \since QGIS 4.2
      */

@@ -66,6 +66,11 @@ bool QgsMetalRoughTexturedMaterialSettings::equals( const QgsAbstractMaterialSet
   return *this == *otherMetal;
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsMetalRoughTexturedMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::TextureRotation, QgsAbstractMaterialSettings::Property::TextureScale, QgsAbstractMaterialSettings::Property::TextureOffset };
+}
+
 bool QgsMetalRoughTexturedMaterialSettings::requiresTextureCoordinates() const
 {
   return true;

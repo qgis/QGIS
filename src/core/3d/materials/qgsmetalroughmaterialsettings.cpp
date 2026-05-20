@@ -26,6 +26,11 @@ QString QgsMetalRoughMaterialSettings::type() const
   return u"metalrough"_s;
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsMetalRoughMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::BaseColor, QgsAbstractMaterialSettings::Property::EmissionColor };
+}
+
 bool QgsMetalRoughMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechnique technique )
 {
   switch ( technique )

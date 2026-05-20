@@ -48,6 +48,8 @@ Returns a new instance of QgsMetalRoughTexturedMaterialSettings.
 
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
 
     QString baseColorTexturePath() const;
 %Docstring
