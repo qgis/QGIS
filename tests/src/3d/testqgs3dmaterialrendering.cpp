@@ -84,6 +84,8 @@ class TestQgs3DMaterialRendering : public QgsTest
     void testExtrudedPolygonsMetalRoughTexturedShadingEmission();
     void testExtrudedPolygonsMetalRoughTexturedShadingDisplacement();
     void testExtrudedPolygonsMetalRoughTexturedShadingOpacity();
+    void testExtrudedPolygonsDataDefinedMetalRoughBase();
+    void testExtrudedPolygonsDataDefinedMetalRoughEmission();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -978,6 +980,111 @@ void TestQgs3DMaterialRendering::testExtrudedPolygonsMetalRoughTexturedShadingOp
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough_opacity", "polygon3d_extrusion_textured_metalrough_opacity", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DMaterialRendering::testExtrudedPolygonsDataDefinedMetalRoughBase()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughMaterialSettings materialSettings;
+  materialSettings.setBaseColor( QColor( 255, 0, 255 ) );
+  materialSettings.setMetalness( 0.5 );
+  materialSettings.setRoughness( 0.3 );
+
+  QgsPropertyCollection propertyCollection;
+  QgsProperty baseColor;
+  baseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  propertyCollection.setProperty( QgsAbstractMaterialSettings::Property::BaseColor, baseColor );
+  materialSettings.setDataDefinedProperties( propertyCollection );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.9 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 300, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "metal_rough_dd_base", "metal_rough_dd_base", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DMaterialRendering::testExtrudedPolygonsDataDefinedMetalRoughEmission()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughMaterialSettings materialSettings;
+  materialSettings.setBaseColor( QColor( 255, 0, 255 ) );
+  materialSettings.setMetalness( 0.0 );
+  materialSettings.setRoughness( 1.0 );
+  materialSettings.setEmissionFactor( 150 );
+
+  QgsPropertyCollection propertyCollection;
+  QgsProperty emissionColor;
+  emissionColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  propertyCollection.setProperty( QgsAbstractMaterialSettings::Property::EmissionColor, emissionColor );
+  materialSettings.setDataDefinedProperties( propertyCollection );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.9 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 300, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "metal_rough_dd_emission", "metal_rough_dd_emission", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DMaterialRendering::testExtrudedPolygonsMetalRoughTexturedShadingNormals()

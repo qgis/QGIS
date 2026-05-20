@@ -116,10 +116,17 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
 
     void setOpacity( float opacity );
 
+    /**
+     * Switches between data-defined (per-vertex attribute) and uniform color mode.
+     * When \a enabled is TRUE, the metalroughDataDefined.vert shader is used and
+     * the DATA_DEFINED define is injected into the fragment shader.
+     */
+    void setDataDefinedEnabled( bool enabled );
+
   private:
     void init();
 
-    void updateFragmentShader();
+    void updateShaders();
 
     Qt3DRender::QParameter *mBaseColorParameter = nullptr;
     Qt3DRender::QParameter *mMetalnessParameter = nullptr;
@@ -151,6 +158,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingEmissionMap = false;
     bool mFlatShading = false;
     bool mInstancingEnabled = false;
+
+    bool mDataDefinedEnabled = false;
 
     friend class TestQgsGltf3DUtils;
 };
