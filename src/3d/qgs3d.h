@@ -95,25 +95,6 @@ class _3D_EXPORT Qgs3D
     static QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context );
 
     /**
-     * Returns the parameters to be exported to .mtl file
-     * \since QGIS 4.2
-     */
-    static QMap<QString, QString> toMaterialExportParameters( const QgsAbstractMaterialSettings *settings );
-
-    /**
-     * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
-     * \since QGIS 4.2
-     */
-    static void applyMaterialDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes );
-
-    /**
-     * Returns byte array corresponding to the data defined colors depending of the \a expressionContext,
-     * used to fill the specific vertex buffer used for rendering the geometry
-     * \since QGIS 4.2
-     */
-    static QByteArray materialDataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext );
-
-    /**
      * Returns the handler to use for a material \a settings.
      */
     static const QgsAbstractMaterial3DHandler *handlerForMaterialSettings( const QgsAbstractMaterialSettings *settings );
