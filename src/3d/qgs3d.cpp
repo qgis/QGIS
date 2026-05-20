@@ -167,14 +167,6 @@ QMap<QString, QString> Qgs3D::toMaterialExportParameters( const QgsAbstractMater
   return {};
 }
 
-void Qgs3D::addMaterialParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    handler->addParametersToEffect( effect, settings, materialContext );
-  }
-}
-
 void Qgs3D::applyMaterialDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes )
 {
   if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
@@ -190,15 +182,6 @@ QByteArray Qgs3D::materialDataDefinedVertexColorsAsByte( const QgsAbstractMateri
     return handler->dataDefinedVertexColorsAsByte( settings, expressionContext );
   }
   return QByteArray();
-}
-
-int Qgs3D::materialDataDefinedByteStride( const QgsAbstractMaterialSettings *settings )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->dataDefinedByteStride( settings );
-  }
-  return 0;
 }
 
 Qgs3D::Qgs3D()
