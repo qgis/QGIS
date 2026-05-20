@@ -89,6 +89,8 @@ directly. Larger values result in more light emission.
 .. seealso:: :py:func:`setEmissionFactor`
 
 .. seealso:: :py:func:`emissionColor`
+
+.. versionadded:: 4.2
 %End
 
     double opacity() const;
@@ -163,6 +165,8 @@ directly. Larger values result in more light emission.
 .. seealso:: :py:func:`emissionFactor`
 
 .. seealso:: :py:func:`setEmissionColor`
+
+.. versionadded:: 4.2
 %End
 
     virtual void setColorsFromBase( const QColor &baseColor );
