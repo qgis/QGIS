@@ -15,17 +15,11 @@
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #define TINYOBJLOADER_USE_MAPBOX_EARCUT
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Winvalid-constexpr"
-#pragma GCC diagnostic ignored "-Wunused-function"
-#endif
-#include <tiny_obj_loader.h>
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-
 #include "qgsobj3dutils.h"
+
+#include <array>
+#include <tiny_obj_loader.h>
+#include <unordered_map>
 
 #include "qgs3dutils.h"
 #include "qgsimagetexture.h"
@@ -38,9 +32,6 @@
 #include <QImage>
 #include <QString>
 #include <QVector3D>
-
-#include <array>
-#include <unordered_map>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>

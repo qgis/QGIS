@@ -863,7 +863,7 @@ inline void fill(ForwardIt first, ForwardIt last, const T &value) {
 
 // --- distance ---
 template <typename It>
-inline typename conditional<true, long long, It>::type
+constexpr inline typename conditional<true, long long, It>::type
 distance(It first, It last) {
   return last - first;
 }
@@ -6315,6 +6315,7 @@ static inline texture_type_t parseTextureType(
   return ty;
 }
 
+#if !defined(TINYOBJLOADER_USE_MAPBOX_EARCUT)
 static tag_sizes parseTagTriple(const char **token) {
   tag_sizes ts;
 
@@ -6426,6 +6427,7 @@ static vertex_index_t parseRawTriple(const char **token) {
   (*token) += strcspn((*token), "/ \t\r");
   return vi;
 }
+#endif  // !defined(TINYOBJLOADER_USE_MAPBOX_EARCUT)
 
 // --- Stream-based parse functions ---
 
