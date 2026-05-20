@@ -55,7 +55,15 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughMaterialWidget::changed );
   connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughMaterialWidget::changed );
   connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, [this] { mEmissionStrengthSpinBox->setEnabled( mButtonEmissionColor->color().isValid() ); } );
+  connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, [this] {
+    mEmissionStrengthSpinBox->setEnabled( mButtonEmissionColor->color().isValid() || mEmissionColorDataDefinedButton->isActive() );
+  } );
+  connect( mEmissionColorDataDefinedButton, &QgsPropertyOverrideButton::activated, this, [this] {
+    mEmissionStrengthSpinBox->setEnabled( mButtonEmissionColor->color().isValid() || mEmissionColorDataDefinedButton->isActive() );
+  } );
+
+  connect( mBaseColorDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mEmissionColorDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughMaterialWidget::changed );
 
   connect( this, &QgsMetalRoughMaterialWidget::changed, this, &QgsMetalRoughMaterialWidget::updatePreview );
 }
@@ -65,10 +73,36 @@ QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()
   return new QgsMetalRoughMaterialWidget();
 }
 
-void QgsMetalRoughMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique )
-{}
+void QgsMetalRoughMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
+{
+  switch ( technique )
+  {
+    case Qgis::MaterialRenderingTechnique::Triangles:
+    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
+    case Qgis::MaterialRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
+    {
+      mBaseColorDataDefinedButton->setVisible( false );
+      mEmissionColorDataDefinedButton->setVisible( false );
+      break;
+    }
 
-void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
+    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
+    {
+      mBaseColorDataDefinedButton->setVisible( true );
+      mEmissionColorDataDefinedButton->setVisible( true );
+      break;
+    }
+
+    case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Billboards:
+      // not supported
+      break;
+  }
+}
+
+void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
   const QgsMetalRoughMaterialSettings *material = dynamic_cast<const QgsMetalRoughMaterialSettings *>( settings );
   if ( !material )
@@ -83,6 +117,9 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
 
   mPropertyCollection = settings->dataDefinedProperties();
 
+  mBaseColorDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::BaseColor ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mEmissionColorDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::EmissionColor ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+
   updateWidgetState();
   updatePreview();
 }
@@ -96,6 +133,10 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialWidget::settin
   m->setOpacity( mOpacityWidget->opacity() );
   m->setEmissionColor( mButtonEmissionColor->color() );
   m->setEmissionFactor( mEmissionStrengthSpinBox->value() / 100.0 );
+
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::BaseColor, mBaseColorDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::EmissionColor, mEmissionColorDataDefinedButton->toProperty() );
+
   m->setDataDefinedProperties( mPropertyCollection );
   return m;
 }

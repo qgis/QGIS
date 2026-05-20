@@ -1,7 +1,7 @@
 // Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
-#version 140
+#version 150 core
 
 // defines are added here as a pre-processing step
 
@@ -11,11 +11,17 @@ in vec3 worldPosition;
 in vec3 worldNormal;
 #endif
 
-#ifdef BASE_COLOR_MAP
+#ifdef DATA_DEFINED
+in DataColor {
+    vec3 base;
+    vec3 emission;
+} vs_in;
+#elif defined(BASE_COLOR_MAP)
 uniform sampler2D baseColorMap;
 #else
 uniform vec4 baseColor;
 #endif
+
 
 #ifdef METALNESS_MAP
 uniform sampler2D metalnessMap;
@@ -46,7 +52,9 @@ uniform sampler2D heightMap;
 uniform float parallaxScale = 0.1;
 #endif
 
-#ifdef EMISSION_MAP
+#ifdef DATA_DEFINED
+// DataColor has emission color
+#elif defined(EMISSION_MAP)
 uniform sampler2D emissionMap;
 #else
 uniform vec3 emissiveColor;
@@ -490,7 +498,9 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                             ambientOcclusion);
     }
 
-#ifdef EMISSION_MAP
+#ifdef DATA_DEFINED
+    cLinear += vs_in.emission * emissiveFactor;
+#elif defined(EMISSION_MAP)
     vec3 emission = texture(emissionMap, activeTexCoord).rgb * emissiveFactor;
     cLinear += emission;
 #else
@@ -535,7 +545,9 @@ void main()
     activeTexCoord = applyContactRefinementParallaxCoordsAndHeight(texCoord, tangentView).xy;
 #endif
 
-#ifdef BASE_COLOR_MAP
+#ifdef DATA_DEFINED
+    vec4 c = vec4(vs_in.base, 1.0);
+#elif defined(BASE_COLOR_MAP)
     vec4 c = texture(baseColorMap, activeTexCoord);
 #else
     vec4 c = baseColor;

@@ -2,7 +2,7 @@
 # monkey patching scoped based enum
 QgsAbstractMaterialSettings.Diffuse = QgsAbstractMaterialSettings.Property.Diffuse
 QgsAbstractMaterialSettings.Diffuse.is_monkey_patched = True
-QgsAbstractMaterialSettings.Diffuse.__doc__ = "Diffuse color"
+QgsAbstractMaterialSettings.Diffuse.__doc__ = "Diffuse color (phong material)"
 QgsAbstractMaterialSettings.Ambient = QgsAbstractMaterialSettings.Property.Ambient
 QgsAbstractMaterialSettings.Ambient.is_monkey_patched = True
 QgsAbstractMaterialSettings.Ambient.__doc__ = "Ambient color (phong material)"
@@ -15,13 +15,27 @@ QgsAbstractMaterialSettings.Cool.__doc__ = "Cool color (gooch material)"
 QgsAbstractMaterialSettings.Specular = QgsAbstractMaterialSettings.Property.Specular
 QgsAbstractMaterialSettings.Specular.is_monkey_patched = True
 QgsAbstractMaterialSettings.Specular.__doc__ = "Specular color"
+QgsAbstractMaterialSettings.BaseColor = QgsAbstractMaterialSettings.Property.BaseColor
+QgsAbstractMaterialSettings.BaseColor.is_monkey_patched = True
+QgsAbstractMaterialSettings.BaseColor.__doc__ = "Base color (metal-rough material) \n.. versionadded:: 4.2"
+QgsAbstractMaterialSettings.EmissionColor = QgsAbstractMaterialSettings.Property.EmissionColor
+QgsAbstractMaterialSettings.EmissionColor.is_monkey_patched = True
+QgsAbstractMaterialSettings.EmissionColor.__doc__ = "Emission color (metal-rough material) \n.. versionadded:: 4.2"
 QgsAbstractMaterialSettings.Property.__doc__ = """Data definable properties.
 
-* ``Diffuse``: Diffuse color
+* ``Diffuse``: Diffuse color (phong material)
 * ``Ambient``: Ambient color (phong material)
 * ``Warm``: Warm color (gooch material)
 * ``Cool``: Cool color (gooch material)
 * ``Specular``: Specular color
+* ``BaseColor``: Base color (metal-rough material)
+
+  .. versionadded:: 4.2
+
+* ``EmissionColor``: Emission color (metal-rough material)
+
+  .. versionadded:: 4.2
+
 
 """
 # --

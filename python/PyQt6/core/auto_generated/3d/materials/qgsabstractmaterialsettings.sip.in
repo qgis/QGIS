@@ -113,7 +113,9 @@ triangulation.
       Ambient,
       Warm,
       Cool,
-      Specular
+      Specular,
+      BaseColor,
+      EmissionColor
     };
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );

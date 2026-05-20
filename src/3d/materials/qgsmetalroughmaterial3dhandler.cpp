@@ -15,12 +15,16 @@
 
 #include "qgsmetalroughmaterial3dhandler.h"
 
+#include "qgs3dutils.h"
 #include "qgshighlightmaterial.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgsmetalroughmaterialsettings.h"
 
 #include <QString>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
+#include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QParameter>
 
 using namespace Qt::StringLiterals;
@@ -45,6 +49,10 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
       material->setObjectName( u"metalRoughMaterial"_s );
       applySettingsToMaterial( metalRoughSettings, material, context );
+      material->setDataDefinedEnabled(
+        metalRoughSettings->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::BaseColor )
+        || metalRoughSettings->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::EmissionColor )
+      );
       return material;
     }
 
@@ -75,11 +83,72 @@ bool QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *scen
   return true;
 }
 
+QByteArray QgsMetalRoughMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
+{
+  const QgsMetalRoughMaterialSettings *metalRoughSettings = dynamic_cast< const QgsMetalRoughMaterialSettings * >( settings );
+  Q_ASSERT( metalRoughSettings );
+  const QgsPropertyCollection &dataDefinedProperties = metalRoughSettings->dataDefinedProperties();
+  const QColor base = Qgs3DUtils::srgbToLinear( dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::BaseColor, expressionContext, metalRoughSettings->baseColor() ) );
+  const QColor rawEmissionColor = dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::EmissionColor, expressionContext, metalRoughSettings->emissionColor() );
+  const QColor emission = rawEmissionColor.isValid() ? Qgs3DUtils::srgbToLinear( rawEmissionColor ) : QColor();
+
+  QByteArray array;
+  array.resize( sizeof( float ) * 6 );
+  float *fptr = reinterpret_cast<float *>( array.data() );
+
+  *fptr++ = base.redF();
+  *fptr++ = base.greenF();
+  *fptr++ = base.blueF();
+
+  if ( emission.isValid() )
+  {
+    *fptr++ = emission.redF();
+    *fptr++ = emission.greenF();
+    *fptr++ = emission.blueF();
+  }
+  else
+  {
+    *fptr++ = 0.0f;
+    *fptr++ = 0.0f;
+    *fptr++ = 0.0f;
+  }
+  return array;
+}
+
+void QgsMetalRoughMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
+{
+  Qt3DCore::QBuffer *dataBuffer = new Qt3DCore::QBuffer( geometry );
+
+  Qt3DCore::QAttribute *baseColorAttribute = new Qt3DCore::QAttribute( geometry );
+  baseColorAttribute->setName( u"dataDefinedBaseColor"_s );
+  baseColorAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  baseColorAttribute->setVertexSize( 3 );
+  baseColorAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  baseColorAttribute->setBuffer( dataBuffer );
+  baseColorAttribute->setByteStride( 6 * sizeof( float ) );
+  baseColorAttribute->setByteOffset( 0 );
+  baseColorAttribute->setCount( vertexCount );
+  geometry->addAttribute( baseColorAttribute );
+
+  Qt3DCore::QAttribute *emissionColorAttribute = new Qt3DCore::QAttribute( geometry );
+  emissionColorAttribute->setName( u"dataDefinedEmissionColor"_s );
+  emissionColorAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  emissionColorAttribute->setVertexSize( 3 );
+  emissionColorAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  emissionColorAttribute->setBuffer( dataBuffer );
+  emissionColorAttribute->setByteStride( 6 * sizeof( float ) );
+  emissionColorAttribute->setByteOffset( 3 * sizeof( float ) );
+  emissionColorAttribute->setCount( vertexCount );
+  geometry->addAttribute( emissionColorAttribute );
+
+  dataBuffer->setData( data );
+}
+
 void QgsMetalRoughMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoughMaterialSettings *metalRoughSettings, QgsMetalRoughMaterial *material, const QgsMaterialContext &context )
 {
   material->setBaseColor( context.isSelected() ? context.selectionColor() : metalRoughSettings->baseColor() );
   material->setEmissionColor( metalRoughSettings->emissionColor().isValid() ? metalRoughSettings->emissionColor() : QColor( 0, 0, 0 ) );
-  material->setEmissionFactor( metalRoughSettings->emissionColor().isValid() ? static_cast< float>( metalRoughSettings->emissionFactor() ) : 0 );
+  material->setEmissionFactor( static_cast< float>( metalRoughSettings->emissionFactor() ) );
   material->setMetalness( static_cast< float >( metalRoughSettings->metalness() ) );
   material->setRoughness( static_cast< float >( metalRoughSettings->roughness() ) );
   material->setOpacity( static_cast< float >( metalRoughSettings->opacity() ) );
