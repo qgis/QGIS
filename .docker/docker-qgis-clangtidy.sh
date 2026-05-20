@@ -35,6 +35,9 @@ cd ${SRCDIR}
 echo "${bold}Disable unity build...${endbold}"
 cmake . -B build -DENABLE_UNITY_BUILDS=OFF
 
+echo "${bold}Update build time...${endbold}"
+find build -exec touch -h {} +
+
 echo "${bold}Run clang-tidy on modifications...${endbold}"
 
 # We need to add build/src/test dir as extra include directories because when clang-tidy tries to process qgstest.h
