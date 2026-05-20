@@ -218,7 +218,7 @@ void TestQgs3DBackgrounds::testSkyboxRendering()
   skyboxSettings.setCubeMapFace( u"negX"_s, testDataPath( "/3d/skybox/skybox_left.jpg" ) );
   skyboxSettings.setCubeMapFace( u"negY"_s, testDataPath( "/3d/skybox/skybox_back.jpg" ) );
   skyboxSettings.setCubeMapFace( u"negZ"_s, testDataPath( "/3d/skybox/skybox_down.jpg" ) );
-  mapSettings->setBackgroundSettings( &skyboxSettings );
+  mapSettings->setBackgroundSettings( skyboxSettings.clone() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
@@ -234,6 +234,9 @@ void TestQgs3DBackgrounds::testSkyboxRendering()
   Qgs3DUtils::captureSceneImage( engine, scene );
   QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( reference, reference, imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+
+  delete scene;
+  delete mapSettings;
 }
 
 QGSTEST_MAIN( TestQgs3DBackgrounds )
