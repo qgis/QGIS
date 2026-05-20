@@ -115,7 +115,10 @@ triangulation.
       Cool,
       Specular,
       BaseColor,
-      EmissionColor
+      EmissionColor,
+      TextureScale,
+      TextureRotation,
+      TextureOffset,
     };
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
