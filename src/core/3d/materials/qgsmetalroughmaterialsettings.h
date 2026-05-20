@@ -89,6 +89,8 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      *
      * \see setEmissionFactor()
      * \see emissionColor()
+     *
+     * \since QGIS 4.2
      */
     double emissionFactor() const { return mEmissionFactor; }
 
@@ -157,6 +159,8 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      *
      * \see emissionFactor()
      * \see setEmissionColor()
+     *
+     * \since QGIS 4.2
      */
     void setEmissionFactor( double factor ) { mEmissionFactor = factor; }
 
