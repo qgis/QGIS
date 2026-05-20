@@ -1018,6 +1018,24 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   {
     if ( !mStringCash.isEmpty() )
     {
+      // If the attribute name is the geometryAttribute, we try to parse the text value as WKT
+      if ( localNameLen == static_cast<int>( mGeometryAttributeUTF8Len ) && memcmp( pszLocalName, mGeometryAttributePtr, localNameLen ) == 0 )
+      {
+        QgsGeometry g;
+        g = QgsGeometry::fromWkt( mStringCash );
+        if ( !g.isNull() )
+        {
+          if ( mInvertAxisOrientation )
+          {
+            g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
+          }
+          Q_ASSERT( mCurrentFeature );
+          mCurrentFeature->setGeometry( g );
+          mCurrentWKB = g.asWkb();
+        }
+      }
+
+      // We still add the nested child to the JSON structure
       auto &jsonParent = *( mAttributeJsonCurrentStack.top() );
       if ( jsonParent.type() == json::value_t::object && jsonParent.empty() )
       {
@@ -1029,7 +1047,6 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       }
       mStringCash.clear();
     }
-
     mAttributeJsonCurrentStack.pop();
   }
 

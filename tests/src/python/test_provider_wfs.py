@@ -9049,6 +9049,59 @@ Can't recognize service requested.
         assert vl.isSpatial()
         self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Point)
 
+        # test with geometry held in inherited feature (geologic feature)
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_WFS_complex_features_geologic_feature"
+        )
+        shutil.copy(
+            os.path.join(
+                TEST_DATA_DIR,
+                "provider",
+                "wfs",
+                "geologic_unit_complexfeatures",
+                "getcapabilities.xml",
+            ),
+            sanitize(endpoint, "?SERVICE=WFS?REQUEST=GetCapabilities&VERSION=1.1.0"),
+        )
+        shutil.copy(
+            os.path.join(
+                TEST_DATA_DIR,
+                "provider",
+                "wfs",
+                "geologic_unit_complexfeatures",
+                "describefeaturetype.xml",
+            ),
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=gwml2:GW_Aquifer",
+            ),
+        )
+
+        # Test with simpleFeature featureMode
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='gwml2:GW_Aquifer' version='1.1.0' featureMode='simpleFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        assert not vl.isSpatial()
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Null)
+
+        # Test with complexFeatures featureMode
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='gwml2:GW_Aquifer' version='1.1.0' featureMode='complexFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        assert vl.isSpatial()
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Polygon)
+
 
 class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
     """

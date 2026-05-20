@@ -648,7 +648,38 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
       sharedData->mFieldNameToXPathAndIsNestedContentMap[fieldName] = QPair<QString, bool>( fieldXPath, true );
     }
   }
+  if ( geometryAttribute.isEmpty() )
+  {
+    // When we have not found any geometry field in this layer, we check for geometries in referencing layers.
+    // We go one level deep by checking all layers in the dataset for foreign keys to the current layer.
+    int nLayerCount = GDALDatasetGetLayerCount( hDS );
+    for ( int i = 0; i < nLayerCount; i++ )
+    {
+      OGRLayerH hLayer = GDALDatasetGetLayer( hDS, i );
+      if ( !hLayer )
+        continue;
 
+      bool foundGeometry = false;
+      OGRFeatureDefnH hDefn = OGR_L_GetLayerDefn( hLayer );
+      int nFieldCount = OGR_FD_GetFieldCount( hDefn );
+      for ( int j = 0; j < nFieldCount; j++ )
+      {
+        OGRFieldDefnH hFieldDefn = OGR_FD_GetFieldDefn( hDefn, j );
+        QString fkNameToCurrentLayer = u"specification_abstractfeature_%1_pkid"_s.arg( layerName.toLower() );
+        if ( OGR_Fld_GetNameRef( hFieldDefn ) == fkNameToCurrentLayer )
+        {
+          geometryAttribute = OGR_L_GetGeometryColumn( hLayer );
+          geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) );
+          if ( geomType != Qgis::WkbType::Point )
+            geomType = QgsWkbTypes::multiType( geomType );
+          foundGeometry = true;
+          break;
+        }
+      }
+      if ( foundGeometry )
+        break;
+    }
+  }
   return true;
 }
 
