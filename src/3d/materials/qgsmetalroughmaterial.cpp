@@ -54,6 +54,7 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mClearCoatRoughnessParameter( new Qt3DRender::QParameter( u"clearCoatRoughness"_s, 0.0f, this ) )
   , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
   , mTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f, this ) )
+  , mTextureOffsetParameter( new Qt3DRender::QParameter( u"texCoordOffset"_s, QVariant::fromValue( QVector2D( 0, 0 ) ), this ) )
   , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
   , mMetalRoughEffect( new Qt3DRender::QEffect( this ) )
   , mMetalRoughGL3Technique( new Qt3DRender::QTechnique( this ) )
@@ -362,6 +363,11 @@ void QgsMetalRoughMaterial::setTextureRotation( float textureRotation )
   mTextureRotationParameter->setValue( textureRotation );
 }
 
+void QgsMetalRoughMaterial::setTextureOffset( float textureOffsetX, float textureOffsetY )
+{
+  mTextureOffsetParameter->setValue( QVariant::fromValue( QVector2D( textureOffsetX, textureOffsetY ) ) );
+}
+
 void QgsMetalRoughMaterial::init()
 {
   mMetalRoughGL3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
@@ -400,6 +406,7 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughEffect->addParameter( mEmissionFactorParameter );
   mMetalRoughEffect->addParameter( mTextureScaleParameter );
   mMetalRoughEffect->addParameter( mTextureRotationParameter );
+  mMetalRoughEffect->addParameter( mTextureOffsetParameter );
   mMetalRoughEffect->addParameter( mOpacityParameter );
 
   setEffect( mMetalRoughEffect );
@@ -454,7 +461,11 @@ void QgsMetalRoughMaterial::updateShaders()
   else
   {
     const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
-    const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, { "TEXTURE_ROTATION" } );
+    QStringList defines { u"TEXTURE_ROTATION"_s, u"TEXTURE_OFFSET"_s };
+    if ( mDataDefinedTextureTransformEnabled )
+      defines << u"DATA_DEFINED_TEXTURE_TRANSFORMS"_s;
+
+    const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, defines );
     mMetalRoughGL3Shader->setVertexShaderCode( finalVertexShaderCode );
   }
 
@@ -481,6 +492,15 @@ void QgsMetalRoughMaterial::setDataDefinedEnabled( bool enabled )
   if ( enabled != mDataDefinedEnabled )
   {
     mDataDefinedEnabled = enabled;
+    updateShaders();
+  }
+}
+
+void QgsMetalRoughMaterial::setDataDefinedTextureTransformEnabled( bool enabled )
+{
+  if ( enabled != mDataDefinedTextureTransformEnabled )
+  {
+    mDataDefinedTextureTransformEnabled = enabled;
     updateShaders();
   }
 }
