@@ -52,12 +52,21 @@ runs:
         BUILDTREES_DIR: ${{ inputs.buildtrees-dir }}
       run: |
         set -euo pipefail
+        # Use $RUNNER_TEMP rather than /tmp because Git Bash on Windows can
+        # map /tmp differently between separate `shell: bash` invocations.
+        out_json="${RUNNER_TEMP//\\//}/vcpkg-failures.json"
+        echo "json-path=${out_json}" >> "$GITHUB_OUTPUT"
+
+        echo "Scanning buildtrees: ${BUILDTREES_DIR}"
+        ls -1 "${BUILDTREES_DIR}" 2>/dev/null | head -20 || \
+          echo "(buildtrees directory does not exist or is empty)"
+
         python3 "${GITHUB_ACTION_PATH}/parse_failures.py" \
           "${BUILDTREES_DIR}" \
-          --output /tmp/vcpkg-failures.json
+          --output "${out_json}"
 
-        count=$(python3 -c 'import json,sys; print(len(json.load(open("/tmp/vcpkg-failures.json"))))')
-        ports=$(python3 -c 'import json; print(",".join(f["port"] for f in json.load(open("/tmp/vcpkg-failures.json"))))')
+        count=$(python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" "${out_json}")
+        ports=$(python3 -c "import json,sys; print(','.join(f['port'] for f in json.load(open(sys.argv[1]))))" "${out_json}")
         echo "failure-count=${count}" >> "$GITHUB_OUTPUT"
         echo "failed-ports=${ports}" >> "$GITHUB_OUTPUT"
         echo "Detected ${count} vcpkg port build failure(s): ${ports:-<none>}"
@@ -70,9 +79,13 @@ runs:
         ARTIFACT_URL: ${{ inputs.artifact-url }}
         DIFF_REPORT: ${{ inputs.diff-report-json }}
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
       run: |
         set -euo pipefail
-        args=( "/tmp/vcpkg-failures.json" --triplet "${TRIPLET}" --run-url "${RUN_URL}" --output /tmp/vcpkg-failures.md )
+        out_md="${RUNNER_TEMP//\\//}/vcpkg-failures.md"
+        echo "md-path=${out_md}" >> "$GITHUB_OUTPUT"
+
+        args=( "${FAILURES_JSON}" --triplet "${TRIPLET}" --run-url "${RUN_URL}" --output "${out_md}" )
         if [ -n "${ARTIFACT_URL}" ]; then
           args+=( --artifact-url "${ARTIFACT_URL}" )
         fi
@@ -85,18 +98,20 @@ runs:
         # post_sticky_comment step can consume it.
         {
           echo "body<<__VCPKG_FAILURES_EOF__"
-          cat /tmp/vcpkg-failures.md
+          cat "${out_md}"
           echo "__VCPKG_FAILURES_EOF__"
         } >> "$GITHUB_OUTPUT"
 
     - name: Append report to step summary
       shell: bash
+      env:
+        MD_PATH: ${{ steps.render.outputs.md-path }}
       run: |
         {
           echo ""
           echo "## 🧮 vcpkg build failures"
           echo ""
-          cat /tmp/vcpkg-failures.md
+          cat "${MD_PATH}"
         } >> "$GITHUB_STEP_SUMMARY"
 
     - name: Emit workflow annotations for failing ports
@@ -104,15 +119,17 @@ runs:
       shell: bash
       env:
         TRIPLET: ${{ inputs.triplet }}
+        FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
       run: |
         set -euo pipefail
-        python3 -c '
+        python3 - <<'PY'
         import json, os
         triplet = os.environ["TRIPLET"]
-        for f in json.load(open("/tmp/vcpkg-failures.json")):
+        path = os.environ["FAILURES_JSON"]
+        for f in json.load(open(path)):
             print(f"::error file=vcpkg/vcpkg.json,title=vcpkg port build failure::"
-                  f"{f[\"port\"]} failed on {triplet}")
-        '
+                  f"{f['port']} failed on {triplet}")
+        PY
 
     - name: Schedule sticky comment update
       if: inputs.pr != ''
