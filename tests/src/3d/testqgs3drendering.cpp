@@ -199,6 +199,20 @@ QImage TestQgs3DRendering::convertDepthImageToGrayscaleImage( const QImage &dept
 void TestQgs3DRendering::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
+  QSurfaceFormat format;
+  format.setRenderableType( QSurfaceFormat::OpenGL );
+#ifdef Q_OS_MACOS
+  format.setVersion( 4, 1 ); //OpenGL is deprecated on MacOS, use last supported version
+  format.setProfile( QSurfaceFormat::CoreProfile );
+#else
+  format.setVersion( 4, 3 );
+  format.setProfile( QSurfaceFormat::CompatibilityProfile );
+#endif
+  format.setDepthBufferSize( 24 );
+  format.setSamples( 4 );
+  format.setStencilBufferSize( 8 );
+  QSurfaceFormat::setDefaultFormat( format );
+
   QgsApplication::init();
   QgsApplication::initQgis();
   Qgs3D::initialize();
