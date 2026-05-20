@@ -13100,9 +13100,9 @@ QgsProcessingModelParameter.setComment: src/core/processing/models/qgsprocessing
 QgsProcessingModelParameter.setParameterName: src/core/processing/models/qgsprocessingmodelparameter.h#L56
 QgsProcessingModelParameter.toVariant: src/core/processing/models/qgsprocessingmodelparameter.h#L62
 QgsProcessingModelParameter: src/core/processing/models/qgsprocessingmodelparameter.h#L33
-QgsProcessingModelResult.clear: src/core/processing/models/qgsprocessingmodelresult.h#L120
-QgsProcessingModelResult.mergeWith: src/core/processing/models/qgsprocessingmodelresult.h#L127
-QgsProcessingModelResult: src/core/processing/models/qgsprocessingmodelresult.h#L112
+QgsProcessingModelResult.clear: src/core/processing/models/qgsprocessingmodelresult.h#L122
+QgsProcessingModelResult.mergeWith: src/core/processing/models/qgsprocessingmodelresult.h#L129
+QgsProcessingModelResult: src/core/processing/models/qgsprocessingmodelresult.h#L114
 QgsProcessingMultiStepFeedback.htmlLog: src/core/processing/qgsprocessingfeedback.h#L308
 QgsProcessingMultiStepFeedback.pushCommandInfo: src/core/processing/qgsprocessingfeedback.h#L303
 QgsProcessingMultiStepFeedback.pushConsoleInfo: src/core/processing/qgsprocessingfeedback.h#L305
