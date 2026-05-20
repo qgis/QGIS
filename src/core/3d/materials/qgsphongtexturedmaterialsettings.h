@@ -69,19 +69,9 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
      */
     QString diffuseTexturePath() const { return mDiffuseTexturePath; }
 
-    /**
-     * Returns the texture scale
-     * The texture scale changes the size of the displayed texture in the 3D scene
-     * If the texture scale is less than 1 the texture will be stretched
-     */
-    double textureScale() const { return mTextureScale; }
-
+    double textureScale() const override;
+    double textureRotation() const override;
     bool requiresTextureCoordinates() const override;
-
-    /**
-     * Returns the texture rotation, in degrees.
-     */
-    double textureRotation() const;
 
     /**
      * Returns the opacity of the surface

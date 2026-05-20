@@ -69,20 +69,12 @@ Returns the diffuse texture path.
 .. seealso:: :py:func:`setDiffuseTexturePath`
 %End
 
-    double textureScale() const;
-%Docstring
-Returns the texture scale The texture scale changes the size of the
-displayed texture in the 3D scene If the texture scale is less than 1
-the texture will be stretched
-%End
+    virtual double textureScale() const;
+
+    virtual double textureRotation() const;
 
     virtual bool requiresTextureCoordinates() const;
 
-
-    double textureRotation() const;
-%Docstring
-Returns the texture rotation, in degrees.
-%End
 
     double opacity() const;
 %Docstring

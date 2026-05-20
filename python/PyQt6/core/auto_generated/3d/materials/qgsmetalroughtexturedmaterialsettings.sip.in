@@ -123,23 +123,9 @@ Returns the path to the ambient occlusion texture map.
 .. seealso:: :py:func:`setAmbientOcclusionTexturePath`
 %End
 
-    double textureScale() const;
-%Docstring
-Returns the texture scale.
-
-The texture scale changes the size of the displayed texture in the 3D
-scene. If the texture scale is less than 1, the texture will be
-stretched.
-
-.. seealso:: :py:func:`setTextureScale`
-%End
-
-    double textureRotation() const;
-%Docstring
-Returns the texture rotation, in degrees.
-
-.. seealso:: :py:func:`setTextureRotation`
-%End
+    virtual double textureScale() const;
+    virtual double textureRotation() const;
+    virtual QPointF textureOffset() const;
 
     double opacity() const;
 %Docstring
@@ -240,6 +226,13 @@ stretched.
 Sets the texture ``rotation``, in degrees.
 
 .. seealso:: :py:func:`textureRotation`
+%End
+
+    void setTextureOffset( QPointF offset );
+%Docstring
+Sets the texture ``offset``.
+
+.. seealso:: :py:func:`textureOffset`
 %End
 
     void setOpacity( double opacity );
