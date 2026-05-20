@@ -21,6 +21,7 @@
 #include "qgscameracontroller.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsfixedgradientbackgroundsettings.h"
+#include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsframegraph.h"
 #include "qgsoffscreen3dengine.h"
@@ -55,6 +56,8 @@ class TestQgs3DBackgrounds : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testGradientBackground_data();
     void testGradientBackground();
+    void testSkyboxRendering_data();
+    void testSkyboxRendering();
 
   private:
     std::unique_ptr<QgsProject> mProject;
@@ -178,6 +181,59 @@ void TestQgs3DBackgrounds::testGradientBackground()
 
   delete scene;
   delete map;
+}
+
+void TestQgs3DBackgrounds::testSkyboxRendering_data()
+{
+  QTest::addColumn<double>( "pitch" );
+  QTest::addColumn<double>( "yaw" );
+  QTest::addColumn<QString>( "reference" );
+
+  QTest::newRow( "skybox 1" ) << 90.0 << 0.0 << "skybox1";
+  QTest::newRow( "skybox 2" ) << 90.0 << 90.0 << "skybox2";
+  QTest::newRow( "skybox 3" ) << 90.0 << 180.0 << "skybox3";
+  QTest::newRow( "skybox 4" ) << 90.0 << 270.0 << "skybox4";
+  QTest::newRow( "skybox 5" ) << 0.0 << 0.0 << "skybox5";
+  QTest::newRow( "skybox 6" ) << 180.0 << 0.0 << "skybox6";
+}
+
+void TestQgs3DBackgrounds::testSkyboxRendering()
+{
+  QFETCH( double, pitch );
+  QFETCH( double, yaw );
+  QFETCH( QString, reference );
+
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setTerrainRenderingEnabled( false );
+
+  QgsSkyboxSettings skyboxSettings;
+  skyboxSettings.setCubeMapping( Qgis::SkyboxCubeMapping::LeftHandedYUpMirrored );
+  skyboxSettings.setCubeMapFace( u"posX"_s, testDataPath( "/3d/skybox/skybox_right.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"posY"_s, testDataPath( "/3d/skybox/skybox_front.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"posZ"_s, testDataPath( "/3d/skybox/skybox_up.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negX"_s, testDataPath( "/3d/skybox/skybox_left.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negY"_s, testDataPath( "/3d/skybox/skybox_back.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negZ"_s, testDataPath( "/3d/skybox/skybox_down.jpg" ) );
+  mapSettings->setBackgroundSettings( &skyboxSettings );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 10, pitch, yaw );
+  QTest::qWait( 1000 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( reference, reference, imgModel, QString(), 80, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DBackgrounds )
