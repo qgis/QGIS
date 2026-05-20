@@ -42,7 +42,7 @@ def _load_diff_changed_ports(diff_report_path: Path | None) -> set[str]:
     if diff_report_path is None or not diff_report_path.exists():
         return set()
     try:
-        data = json.loads(diff_report_path.read_text())
+        data = json.loads(diff_report_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return set()
     changed: set[str] = set()
@@ -152,7 +152,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    failures = json.loads(args.failures_json.read_text())
+    failures = json.loads(args.failures_json.read_text(encoding="utf-8"))
     changed = _load_diff_changed_ports(args.diff_report)
     markdown = render(
         failures,
@@ -163,7 +163,7 @@ def main() -> int:
     )
 
     if args.output:
-        args.output.write_text(markdown)
+        args.output.write_text(markdown, encoding="utf-8")
     else:
         sys.stdout.write(markdown)
     return 0

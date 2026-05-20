@@ -60,7 +60,7 @@ _KEY_LINES_MAX = 15
 
 def _read(path: Path) -> str:
     try:
-        return path.read_text(errors="replace")
+        return path.read_text(encoding="utf-8", errors="replace")
     except OSError as exc:
         return f"<<could not read {path}: {exc}>>"
 
@@ -190,7 +190,7 @@ def main() -> int:
     failures = parse_buildtrees(args.buildtrees)
     payload = json.dumps(failures, indent=2)
     if args.output:
-        args.output.write_text(payload)
+        args.output.write_text(payload, encoding="utf-8")
     else:
         sys.stdout.write(payload + "\n")
     return 0
