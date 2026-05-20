@@ -875,6 +875,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         self.assertEqual(settings.textureScale(), 1.0)
         self.assertEqual(settings.textureRotation(), 0.0)
         self.assertEqual(settings.opacity(), 1.0)
+        self.assertEqual(settings.textureOffset(), QPointF(0, 0))
 
         # Test setters/getters
         settings.setAmbient(QColor(255, 0, 0))
@@ -898,6 +899,9 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setOpacity(0.7)
         self.assertEqual(settings.opacity(), 0.7)
 
+        settings.setTextureOffset(QPointF(10, -5))
+        self.assertEqual(settings.textureOffset(), QPointF(10, -5))
+
     def test_clone(self):
         settings = QgsPhongTexturedMaterialSettings()
         settings.setAmbient(QColor(255, 0, 0))
@@ -907,6 +911,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setTextureScale(2.0)
         settings.setTextureRotation(45.0)
         settings.setOpacity(0.7)
+        settings.setTextureOffset(QPointF(10, -5))
 
         cloned = settings.clone()
         self.assertIsInstance(cloned, QgsPhongTexturedMaterialSettings)
@@ -917,6 +922,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         self.assertEqual(cloned.textureScale(), 2.0)
         self.assertEqual(cloned.textureRotation(), 45.0)
         self.assertEqual(cloned.opacity(), 0.7)
+        self.assertEqual(cloned.textureOffset(), QPointF(10, -5))
 
     def test_equality(self):
         settings1 = QgsPhongTexturedMaterialSettings()
@@ -959,6 +965,11 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings1.setOpacity(0.7)
         self.assertEqual(settings1, settings2)
 
+        settings2.setTextureOffset(QPointF(10, -5))
+        self.assertNotEqual(settings1, settings2)
+        settings1.setTextureOffset(QPointF(10, -5))
+        self.assertEqual(settings1, settings2)
+
     def test_equals_method(self):
         settings1 = QgsPhongTexturedMaterialSettings()
         settings2 = QgsPhongTexturedMaterialSettings()
@@ -980,6 +991,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setTextureScale(2.0)
         settings.setTextureRotation(45.0)
         settings.setOpacity(0.7)
+        settings.setTextureOffset(QPointF(10, -5))
 
         doc = QDomDocument("settings")
         element = doc.createElement("settings")

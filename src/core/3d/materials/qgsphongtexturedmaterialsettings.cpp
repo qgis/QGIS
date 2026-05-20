@@ -19,6 +19,7 @@
 #include "qgscolorutils.h"
 #include "qgsimagecache.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgssymbollayerutils.h"
 
 #include <QImage>
 #include <QMap>
@@ -69,6 +70,11 @@ bool QgsPhongTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings
   return *this == *otherPhong;
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsPhongTexturedMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::TextureRotation, QgsAbstractMaterialSettings::Property::TextureScale, QgsAbstractMaterialSettings::Property::TextureOffset };
+}
+
 double QgsPhongTexturedMaterialSettings::textureScale() const
 {
   return mTextureScale;
@@ -82,6 +88,11 @@ bool QgsPhongTexturedMaterialSettings::requiresTextureCoordinates() const
 double QgsPhongTexturedMaterialSettings::textureRotation() const
 {
   return mTextureRotation;
+}
+
+QPointF QgsPhongTexturedMaterialSettings::textureOffset() const
+{
+  return mTextureOffset;
 }
 
 QColor QgsPhongTexturedMaterialSettings::averageColor() const
@@ -196,6 +207,7 @@ void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const Q
   mDiffuseTexturePath = elem.attribute( u"diffuse_texture_path"_s, QString() );
   mTextureScale = elem.attribute( u"texture_scale"_s, QString( "1.0" ) ).toDouble();
   mTextureRotation = elem.attribute( u"texture-rotation"_s, QString( "0.0" ) ).toDouble();
+  mTextureOffset = QgsSymbolLayerUtils::decodePoint( elem.attribute( u"texture_offset"_s ) );
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -209,6 +221,8 @@ void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsRea
   elem.setAttribute( u"diffuse_texture_path"_s, mDiffuseTexturePath );
   elem.setAttribute( u"texture_scale"_s, mTextureScale );
   elem.setAttribute( u"texture-rotation"_s, mTextureRotation );
+  if ( !qgsDoubleNear( mTextureOffset.x(), 0 ) || !qgsDoubleNear( mTextureOffset.y(), 0 ) )
+    elem.setAttribute( u"texture_offset"_s, QgsSymbolLayerUtils::encodePoint( mTextureOffset ) );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }

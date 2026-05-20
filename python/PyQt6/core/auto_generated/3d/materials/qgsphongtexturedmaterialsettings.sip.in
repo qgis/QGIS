@@ -75,6 +75,8 @@ Returns the diffuse texture path.
 
     virtual double textureRotation() const;
 
+    virtual QPointF textureOffset() const;
+
     virtual bool requiresTextureCoordinates() const;
 
 
@@ -116,6 +118,15 @@ the texture will be stretched
     void setTextureRotation( double rotation );
 %Docstring
 Sets the texture rotation in degrees
+%End
+
+    void setTextureOffset( QPointF offset );
+%Docstring
+Sets the texture ``offset``.
+
+.. seealso:: :py:func:`textureOffset`
+
+.. versionadded:: 4.2
 %End
 
     void setOpacity( double opacity );
