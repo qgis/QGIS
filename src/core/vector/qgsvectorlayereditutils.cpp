@@ -511,7 +511,6 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
 
   const int fieldCount = mLayer->fields().count();
   const bool splitCurveContainsCurves = curve->hasCurvedSegments();
-  bool preserveCircularForGeom = false;
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
@@ -527,7 +526,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
 
     // For the current geometry, make sure preserveCircular is not forced, unless
     // the input param is true and one of the involved geometries contains curves
-    preserveCircularForGeom = preserveCircular; // reset for each geometry
+    bool preserveCircularForGeom = preserveCircular;
     preserveCircularForGeom &= ( splitCurveContainsCurves || featureGeom.constGet()->hasCurvedSegments() );
     splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircularForGeom, topologicalEditing, featureTopologyTestPoints );
 
