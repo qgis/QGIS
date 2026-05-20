@@ -4,9 +4,9 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
-      "featureType": "as-areas-short-name",
+      "featureType": "as-areas-short-name-query-copy",
       "geometry": null,
-      "id": "as-areas-short-name.18",
+      "id": "as-areas-short-name-query-copy.18",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",
@@ -31,7 +31,7 @@ Content-Type: application/json; charset=utf-8
         "umrisstyp": "durchgezogen",
         "veranstaltung": ""
       },
-      "qgis:requestedWmsName": "areas and symbols",
+      "qgis:requestedWmsName": "child_ok",
       "type": "Feature"
     }
   ],
