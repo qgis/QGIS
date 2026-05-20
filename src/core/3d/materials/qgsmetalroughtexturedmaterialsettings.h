@@ -121,22 +121,9 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      */
     QString ambientOcclusionTexturePath() const { return mAmbientOcclusionTexturePath; }
 
-    /**
-     * Returns the texture scale.
-     *
-     * The texture scale changes the size of the displayed texture in the 3D scene.
-     * If the texture scale is less than 1, the texture will be stretched.
-     *
-     * \see setTextureScale()
-     */
-    double textureScale() const { return mTextureScale; }
-
-    /**
-     * Returns the texture rotation, in degrees.
-     *
-     * \see setTextureRotation()
-     */
-    double textureRotation() const { return mTextureRotation; }
+    double textureScale() const override { return mTextureScale; }
+    double textureRotation() const override { return mTextureRotation; }
+    QPointF textureOffset() const override { return mTextureOffset; }
 
     /**
      * Returns the opacity of the surface
@@ -233,6 +220,13 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     void setTextureRotation( double rotation ) { mTextureRotation = rotation; }
 
     /**
+     * Sets the texture \a offset.
+     *
+     * \see textureOffset()
+     */
+    void setTextureOffset( QPointF offset ) { mTextureOffset = offset; }
+
+    /**
      * Sets the \a opacity of the surface.
      *
      * \see opacity()
@@ -280,6 +274,8 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
              && qgsDoubleNear( mTextureRotation, other.mTextureRotation )
              && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
              && qgsDoubleNear( mParallaxScale, other.mParallaxScale )
+             && qgsDoubleNear( mTextureOffset.x(), other.mTextureOffset.x() )
+             && qgsDoubleNear( mTextureOffset.y(), other.mTextureOffset.y() )
              && qgsDoubleNear( mOpacity, other.mOpacity )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
@@ -302,6 +298,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
 
     double mTextureScale { 1.0 };
     double mTextureRotation { 0.0 };
+    QPointF mTextureOffset { 0.0, 0.0 };
     double mOpacity { 1.0 };
 
     mutable std::optional<QColor> mAverageColor;

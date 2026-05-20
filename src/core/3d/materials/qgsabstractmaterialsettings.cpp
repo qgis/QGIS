@@ -46,6 +46,21 @@ bool QgsAbstractMaterialSettings::requiresTangents() const
   return false;
 }
 
+double QgsAbstractMaterialSettings::textureScale() const
+{
+  return 1.0;
+}
+
+double QgsAbstractMaterialSettings::textureRotation() const
+{
+  return 0.0;
+}
+
+QPointF QgsAbstractMaterialSettings::textureOffset() const
+{
+  return QPointF( 0, 0 );
+}
+
 void QgsAbstractMaterialSettings::setDataDefinedProperties( const QgsPropertyCollection &collection )
 {
   mDataDefinedProperties = collection;

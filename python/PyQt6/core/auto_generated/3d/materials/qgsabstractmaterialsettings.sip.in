@@ -107,6 +107,44 @@ triangulation.
 .. versionadded:: 4.2
 %End
 
+    virtual double textureScale() const;
+%Docstring
+Returns the texture scale.
+
+The texture scale changes the size of the material's textures in the 3D
+scene.
+
+If the texture scale is less than 1 the textures will be stretched.
+
+.. note::
+
+   Not all materials support textures.
+
+.. versionadded:: 4.2
+%End
+
+    virtual double textureRotation() const;
+%Docstring
+Returns the texture rotation, in degrees.
+
+.. note::
+
+   Not all materials support textures.
+
+.. versionadded:: 4.2
+%End
+
+    virtual QPointF textureOffset() const;
+%Docstring
+Returns the texture offset.
+
+.. note::
+
+   Not all materials support textures.
+
+.. versionadded:: 4.2
+%End
+
     enum class Property /BaseType=IntEnum/
     {
       Diffuse,

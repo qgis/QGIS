@@ -69,6 +69,11 @@ bool QgsPhongTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings
   return *this == *otherPhong;
 }
 
+double QgsPhongTexturedMaterialSettings::textureScale() const
+{
+  return mTextureScale;
+}
+
 bool QgsPhongTexturedMaterialSettings::requiresTextureCoordinates() const
 {
   return !mDiffuseTexturePath.isEmpty();

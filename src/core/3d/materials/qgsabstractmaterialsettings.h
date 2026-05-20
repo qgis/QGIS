@@ -121,6 +121,37 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      */
     virtual bool requiresTangents() const;
 
+    /**
+     * Returns the texture scale.
+     *
+     * The texture scale changes the size of the material's textures in the 3D scene.
+     *
+     * If the texture scale is less than 1 the textures will be stretched.
+     *
+     * \note Not all materials support textures.
+     *
+     * \since QGIS 4.2
+     */
+    virtual double textureScale() const;
+
+    /**
+     * Returns the texture rotation, in degrees.
+     *
+     * \note Not all materials support textures.
+     *
+     * \since QGIS 4.2
+     */
+    virtual double textureRotation() const;
+
+    /**
+     * Returns the texture offset.
+     *
+     * \note Not all materials support textures.
+     *
+     * \since QGIS 4.2
+     */
+    virtual QPointF textureOffset() const;
+
     // *INDENT-OFF*
     //! Data definable properties.
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractMaterialSettings, Property ) : int
