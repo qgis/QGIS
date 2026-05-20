@@ -116,14 +116,19 @@ if(VCPKG_TARGET_IS_WINDOWS)
     # zlib >=1.3 from upstream's CMake installs the shared import lib as
     # `z.lib` on MSVC (OUTPUT_NAME is `z`, not `zlib`). Older vcpkg ports and
     # other distributions still ship `zlib.lib` / `zlibd.lib`, so accept both.
-    # REQUIRED ensures we fail fast at portfile-execute time rather than
-    # passing `ZLIB_RELEASE-NOTFOUND` to MSBuild's AdditionalDependencies
-    # (which silently turns into `ZLIB_RELEASE-NOTFOUND.obj` and an
-    # incomprehensible LNK1181 error).
+    # REQUIRED on the release lookup ensures we fail fast at portfile-execute
+    # time rather than passing `ZLIB_RELEASE-NOTFOUND` to MSBuild's
+    # AdditionalDependencies (which silently turns into
+    # `ZLIB_RELEASE-NOTFOUND.obj` and an incomprehensible LNK1181 error).
+    # The debug lookup is skipped entirely on release-only triplets
+    # (VCPKG_BUILD_TYPE=release), where ${CURRENT_INSTALLED_DIR}/debug/lib does
+    # not exist.
     find_library(ZLIB_RELEASE NAMES zlib z PATHS "${CURRENT_INSTALLED_DIR}/lib" NO_DEFAULT_PATH REQUIRED)
-    find_library(ZLIB_DEBUG NAMES zlib zlibd zd PATHS "${CURRENT_INSTALLED_DIR}/debug/lib" NO_DEFAULT_PATH REQUIRED)
     list(APPEND add_libs_rel "${ZLIB_RELEASE}")
-    list(APPEND add_libs_dbg "${ZLIB_DEBUG}")
+    if(NOT VCPKG_BUILD_TYPE STREQUAL "release")
+        find_library(ZLIB_DEBUG NAMES zlib zlibd zd PATHS "${CURRENT_INSTALLED_DIR}/debug/lib" NO_DEFAULT_PATH REQUIRED)
+        list(APPEND add_libs_dbg "${ZLIB_DEBUG}")
+    endif()
 
     configure_file("${SOURCE_PATH}/PC/pyconfig.h" "${SOURCE_PATH}/PC/pyconfig.h")
     configure_file("${CMAKE_CURRENT_LIST_DIR}/python_vcpkg.props.in" "${SOURCE_PATH}/PCbuild/python_vcpkg.props")
