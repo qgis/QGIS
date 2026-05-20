@@ -32,6 +32,7 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgssettingsproxy.h"
+#include "qgswelcomescreen.h"
 
 #include <QString>
 
@@ -100,7 +101,6 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"qgis/restoreDefaultWindowState"_s, true );
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"/qgis/restoreDefaultWindowState"_s, true );
   QgsMapLayerStyleCommand::settingsStyleUndoMergeTimeout->copyValueFromKey( u"UI/styleUndoMergeTimeout"_s, true );
-<<<<<<< HEAD
   // Legacy qgis/attributeTableView used -1 as a sentinel meaning "remember last view";
   // split into two new settings (an enum view + a boolean remember-last-view flag).
   {
