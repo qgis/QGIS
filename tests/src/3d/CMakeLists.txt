@@ -20,6 +20,7 @@ include_directories(SYSTEM
 add_subdirectory(sandbox)
 
 set(TESTS
+  testqgs3dbackgrounds.cpp
   testqgs3dcameracontroller.cpp
   testqgs3deffects.cpp
   testqgs3dexporter.cpp
