@@ -112,6 +112,9 @@ using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {
+  constexpr const char *MEMBERNAME_FEATURETYPE = "featureType";                     // name of the JSON-FG member describing the layer name
+  constexpr const char *MEMBERNAME_QGIS_REQUESTEDWMSNAME = "qgis:requestedWmsName"; // name of the QGIS member describing the name of the group that requested this layer
+
   QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
     : mContext( context )
   {
@@ -3169,12 +3172,12 @@ namespace QgsWms
             extraProperties.insert( u"display_name"_s, fidDisplayNameMap.value( feature.id() ) );
           }
           QVariantMap extraMembers;
-          extraMembers["featureType"] = layerName;
+          extraMembers[MEMBERNAME_FEATURETYPE] = layerName;
 
           // if existing, add the requestedWmsName to extra members
           if ( !requestedWmsName.isEmpty() )
           {
-            extraMembers["qgis:requestedWmsName"] = requestedWmsName;
+            extraMembers[MEMBERNAME_QGIS_REQUESTEDWMSNAME] = requestedWmsName;
           }
 
           jsonCollection["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id, extraMembers ) );
@@ -3198,11 +3201,11 @@ namespace QgsWms
           properties[name.toStdString()] = value.toStdString();
         }
 
-        json jsonFeature = { { "type", "Feature" }, { "featureType", layerName.toStdString() }, { "id", layerName.toStdString() }, { "properties", properties } };
+        json jsonFeature = { { "type", "Feature" }, { MEMBERNAME_FEATURETYPE, layerName.toStdString() }, { "id", layerName.toStdString() }, { "properties", properties } };
 
         if ( !requestedWmsName.isEmpty() )
         {
-          jsonFeature["qgis:requestedWmsName"] = requestedWmsName.toStdString();
+          jsonFeature[MEMBERNAME_QGIS_REQUESTEDWMSNAME] = requestedWmsName.toStdString();
         }
         jsonCollection["features"].push_back( jsonFeature );
       }

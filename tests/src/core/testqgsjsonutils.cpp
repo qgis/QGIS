@@ -281,16 +281,16 @@ void TestQgsJsonUtils::testExportFeatureJson()
 
   const QgsJsonExporter exporterForeignMembers { &vl };
   const auto expectedJsonForeignMembers { QStringLiteral(
-    "{\"bbox\":[1.12,1.12,5.45,5.33],\"featureType\":\"anotherForestLayer\",\"geometry\":{\"coordinates\":"
+    "{\"bbox\":[1.12,1.12,5.45,5.33],\"featureType\":\"anotherForestLayer\",\"geometry\":{\"coordinates\":" //#spellok
     "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
     "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
     ",\"id\":123,\"justAnotherDummy\":\"dum di da di dum di da\",\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}" //#spellok
-    ",\"qgis:requestedWmsName\":\"theForestGroup\",\"type\":\"Feature\"}"
+    ",\"qgis:requestedWmsName\":\"theForestGroup\",\"type\":\"Feature\"}"                                                             //#spellok
   ) };
 
   QVariantMap moreExtraMembers;
-  moreExtraMembers["featureType"] = u"anotherForestLayer"_s;
-  moreExtraMembers["qgis:requestedWmsName"] = u"theForestGroup"_s;
+  moreExtraMembers["featureType"] = u"anotherForestLayer"_s;          //#spellok
+  moreExtraMembers["qgis:requestedWmsName"] = u"theForestGroup"_s;    //#spellok
   moreExtraMembers["justAnotherDummy"] = u"dum di da di dum di da"_s; //#spellok
 
   const auto jForeignMembers( exporterForeignMembers.exportFeatureToJsonObject( feature, QVariantMap(), QVariant(), moreExtraMembers ) );
