@@ -480,5 +480,6 @@ jobs:
           -v $(pwd):/root/QGIS \
           -v /home/runner/QGIS/.ccache:/root/.ccache \
           --env-file .docker/docker-variables.env \
+          --env BRANCH_BASE_REF=${GITHUB_BASE_REF} \
           qgis3-build-deps-binary-image \
           /root/QGIS/.docker/docker-qgis-clangtidy.sh
