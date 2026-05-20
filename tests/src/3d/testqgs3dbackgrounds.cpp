@@ -185,22 +185,22 @@ void TestQgs3DBackgrounds::testGradientBackground()
 
 void TestQgs3DBackgrounds::testSkyboxRendering_data()
 {
-  QTest::addColumn<double>( "pitch" );
-  QTest::addColumn<double>( "yaw" );
+  QTest::addColumn<float>( "pitch" );
+  QTest::addColumn<float>( "yaw" );
   QTest::addColumn<QString>( "reference" );
 
-  QTest::newRow( "skybox 1" ) << 90.0 << 0.0 << "skybox1";
-  QTest::newRow( "skybox 2" ) << 90.0 << 90.0 << "skybox2";
-  QTest::newRow( "skybox 3" ) << 90.0 << 180.0 << "skybox3";
-  QTest::newRow( "skybox 4" ) << 90.0 << 270.0 << "skybox4";
-  QTest::newRow( "skybox 5" ) << 0.0 << 0.0 << "skybox5";
-  QTest::newRow( "skybox 6" ) << 180.0 << 0.0 << "skybox6";
+  QTest::newRow( "skybox 1" ) << 90.0f << 0.0f << "skybox1";
+  QTest::newRow( "skybox 2" ) << 90.0f << 90.0f << "skybox2";
+  QTest::newRow( "skybox 3" ) << 90.0f << 180.0f << "skybox3";
+  QTest::newRow( "skybox 4" ) << 90.0f << 270.0f << "skybox4";
+  QTest::newRow( "skybox 5" ) << 0.0f << 0.0f << "skybox5";
+  QTest::newRow( "skybox 6" ) << 180.0f << 0.0f << "skybox6";
 }
 
 void TestQgs3DBackgrounds::testSkyboxRendering()
 {
-  QFETCH( double, pitch );
-  QFETCH( double, yaw );
+  QFETCH( float, pitch );
+  QFETCH( float, yaw );
   QFETCH( QString, reference );
 
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
