@@ -63,11 +63,6 @@ void QgsAbstractMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstract
   Q_UNUSED( dataDefinedBytes )
 }
 
-int QgsAbstractMaterial3DHandler::dataDefinedByteStride( const QgsAbstractMaterialSettings * ) const
-{
-  return 0;
-}
-
 QList<QgsAbstractMaterial3DHandler::PreviewMeshType> QgsAbstractMaterial3DHandler::previewMeshTypes() const
 {
   PreviewMeshType sphere;

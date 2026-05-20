@@ -101,12 +101,6 @@ class _3D_EXPORT Qgs3D
     static QMap<QString, QString> toMaterialExportParameters( const QgsAbstractMaterialSettings *settings );
 
     /**
-     * Adds parameters from the material \a settings to a destination \a effect.
-     * \since QGIS 4.2
-     */
-    static void addMaterialParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext );
-
-    /**
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
      * \since QGIS 4.2
      */
@@ -118,12 +112,6 @@ class _3D_EXPORT Qgs3D
      * \since QGIS 4.2
      */
     static QByteArray materialDataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext );
-
-    /**
-     * Returns byte stride of the data defined colors,used to fill the vertex colors data defined buffer for rendering
-     * \since QGIS 4.2
-     */
-    static int materialDataDefinedByteStride( const QgsAbstractMaterialSettings *settings );
 
     /**
      * Returns the handler to use for a material \a settings.

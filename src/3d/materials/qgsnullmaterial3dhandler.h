@@ -36,7 +36,6 @@ class _3D_EXPORT QgsNullMaterial3DHandler : public QgsAbstractMaterial3DHandler
     QgsNullMaterial3DHandler() = default;
     QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const override;
     QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
-    void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 };
 
