@@ -66,6 +66,7 @@ jobs:
           ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
       - name: 🌱 Install dependencies and generate project files
+        id: cmake-configure
         shell: bash
         env:
           X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
@@ -142,6 +143,8 @@ jobs:
           triplet: x64-windows
           pr: ${{ github.event.number }}
           artifact-url: ${{ steps.upload-build-logs.outputs.artifact-url }}
+          build-status: ${{ job.status }}
+          manifest-install-log: ${{ github.workspace }}/build/vcpkg-manifest-install.log
 
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

@@ -36,6 +36,21 @@ _LOG_REF_RE = re.compile(
     r"See logs for more information:\s*\n\s*(\S+\.log)", re.MULTILINE
 )
 
+# Top-level error in vcpkg-manifest-install.log when a portfile aborts before
+# any buildtree is produced (e.g. CMake Error at portfile.cmake / find_library
+# REQUIRED, vcpkg_extract_source_archive failures, fail_port_install). Captures
+# port name and triplet.
+_MANIFEST_BUILD_FAILED_RE = re.compile(
+    r"^error: building (?P<port>[A-Za-z0-9._+\-]+):(?P<triplet>[A-Za-z0-9._+\-]+) failed with: BUILD_FAILED\s*$",
+    re.MULTILINE,
+)
+# Match a CMake Error block whose call-stack mentions a specific port's
+# portfile, so we can attribute portfile-execute aborts to the right port even
+# when no BUILD_FAILED line follows (e.g. early abort before vcpkg's reporter).
+_MANIFEST_PORTFILE_ERROR_RE = re.compile(
+    r"CMake Error at (?:[^\n]*?[/\\])?ports[/\\](?P<port>[A-Za-z0-9._+\-]+)[/\\]portfile\.cmake:\d+",
+)
+
 # The CMake Error block runs until the "Call Stack" footer or EOF.
 _ERROR_BLOCK_RE = re.compile(
     r"(CMake Error at [^\n]+\(message\):.*?)(?=\n\nCall Stack|\Z)",
@@ -170,6 +185,82 @@ def parse_buildtrees(buildtrees: Path) -> list[dict]:
     return failures
 
 
+def _extract_block_around(
+    text: str, start: int, *, before: int = 5, after: int = 35
+) -> list[str]:
+    """Return up to ``before+after`` lines around the byte offset ``start``."""
+    lines = text.splitlines()
+    # Translate byte offset to line index.
+    consumed = 0
+    line_idx = 0
+    for i, line in enumerate(lines):
+        consumed += len(line) + 1  # +1 for newline
+        if consumed > start:
+            line_idx = i
+            break
+    lo = max(0, line_idx - before)
+    hi = min(len(lines), line_idx + after)
+    return [ln.rstrip() for ln in lines[lo:hi]]
+
+
+def parse_manifest_install_log(log_path: Path, *, known_ports: set[str]) -> list[dict]:
+    """Synthesize failure records from ``vcpkg-manifest-install.log``.
+
+    Used to surface portfile-execute aborts (e.g. ``find_library`` REQUIRED
+    failures, ``vcpkg_extract_source_archive`` failures) that abort before
+    vcpkg ever creates a buildtree directory, so the regular buildtrees scan
+    finds nothing. Skips ports already represented in ``known_ports`` to
+    avoid duplicating the buildtrees-based record.
+    """
+    if not log_path.is_file():
+        return []
+    text = _read(log_path)
+
+    # Map port -> (triplet, anchor_offset) from BUILD_FAILED lines.
+    failed: dict[str, tuple[str, int]] = {}
+    for m in _MANIFEST_BUILD_FAILED_RE.finditer(text):
+        port = m.group("port")
+        if port in known_ports or port in failed:
+            continue
+        # Anchor at the *first* portfile-error preceding this line, so the
+        # excerpt centers on the actionable CMake Error rather than on the
+        # generic "building X failed" footer.
+        anchor = m.start()
+        for em in _MANIFEST_PORTFILE_ERROR_RE.finditer(text, 0, m.start()):
+            if em.group("port") == port:
+                anchor = em.start()
+        failed[port] = (m.group("triplet"), anchor)
+
+    # Also catch portfile-error blocks without a trailing BUILD_FAILED line
+    # (rare, but possible if vcpkg itself crashed before its own reporter
+    # ran). Use "unknown" triplet as we can't infer it from the block alone.
+    for em in _MANIFEST_PORTFILE_ERROR_RE.finditer(text):
+        port = em.group("port")
+        if port in known_ports or port in failed:
+            continue
+        failed[port] = ("", em.start())
+
+    out: list[dict] = []
+    for port, (triplet, anchor) in failed.items():
+        excerpt_lines = _extract_block_around(text, anchor)
+        out.append(
+            {
+                "port": port,
+                "triplet": triplet,
+                "stdout_log": log_path.name,
+                "referenced_logs": [],
+                "excerpts": [
+                    {
+                        "source": f"{log_path.name} (portfile-execute abort)",
+                        "lines": excerpt_lines,
+                    }
+                ],
+                "source": "manifest-install-log",
+            }
+        )
+    return out
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -185,9 +276,22 @@ def main() -> int:
         default=None,
         help="Write JSON output to this file (default: stdout).",
     )
+    parser.add_argument(
+        "--manifest-install-log",
+        type=Path,
+        default=None,
+        help="Optional path to vcpkg-manifest-install.log. Used to surface "
+        "portfile-execute aborts (e.g. CMake Error in portfile.cmake) that "
+        "abort before vcpkg creates a buildtree directory.",
+    )
     args = parser.parse_args()
 
     failures = parse_buildtrees(args.buildtrees)
+    if args.manifest_install_log:
+        known = {f["port"] for f in failures}
+        failures.extend(
+            parse_manifest_install_log(args.manifest_install_log, known_ports=known)
+        )
     payload = json.dumps(failures, indent=2)
     if args.output:
         args.output.write_text(payload, encoding="utf-8")

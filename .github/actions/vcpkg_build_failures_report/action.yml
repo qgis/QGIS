@@ -33,6 +33,25 @@ inputs:
     required: false
     default: ''
     type: string
+  build-status:
+    description: >-
+      Outcome of the upstream vcpkg/configure step. Pass `${{ job.status }}`
+      or the configure step's `outcome`. When set to `failure` and no
+      per-port failures are parsed (e.g. portfile-execute aborts before
+      buildtrees exist), the report shows a 'vcpkg failed before producing
+      per-port logs' banner instead of a misleading 'all ports built' line.
+    required: false
+    default: ''
+    type: string
+  manifest-install-log:
+    description: >-
+      Optional path to vcpkg-manifest-install.log (typically
+      `<build-dir>/vcpkg-manifest-install.log`). Scanned for portfile-execute
+      aborts (e.g. `find_library` REQUIRED failures) that abort before vcpkg
+      ever creates a buildtree directory.
+    required: false
+    default: ''
+    type: string
 
 outputs:
   failed-ports:
@@ -50,6 +69,7 @@ runs:
       shell: bash
       env:
         BUILDTREES_DIR: ${{ inputs.buildtrees-dir }}
+        MANIFEST_INSTALL_LOG: ${{ inputs.manifest-install-log }}
       run: |
         set -euo pipefail
         # Use $RUNNER_TEMP rather than /tmp because Git Bash on Windows can
@@ -61,9 +81,15 @@ runs:
         ls -1 "${BUILDTREES_DIR}" 2>/dev/null | head -20 || \
           echo "(buildtrees directory does not exist or is empty)"
 
-        python3 "${GITHUB_ACTION_PATH}/parse_failures.py" \
-          "${BUILDTREES_DIR}" \
-          --output "${out_json}"
+        args=( "${BUILDTREES_DIR}" --output "${out_json}" )
+        if [ -n "${MANIFEST_INSTALL_LOG}" ] && [ -f "${MANIFEST_INSTALL_LOG}" ]; then
+          echo "Including manifest-install log: ${MANIFEST_INSTALL_LOG}"
+          args+=( --manifest-install-log "${MANIFEST_INSTALL_LOG}" )
+        elif [ -n "${MANIFEST_INSTALL_LOG}" ]; then
+          echo "::warning::manifest-install-log not found at ${MANIFEST_INSTALL_LOG}"
+        fi
+
+        python3 "${GITHUB_ACTION_PATH}/parse_failures.py" "${args[@]}"
 
         count=$(python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" "${out_json}")
         ports=$(python3 -c "import json,sys; print(','.join(f['port'] for f in json.load(open(sys.argv[1]))))" "${out_json}")
@@ -200,6 +226,7 @@ runs:
         DIFF_REPORT: ${{ inputs.diff-report-json }}
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
+        BUILD_STATUS: ${{ inputs.build-status }}
       run: |
         set -euo pipefail
         out_md="${RUNNER_TEMP//\\//}/vcpkg-failures.md"
@@ -214,6 +241,9 @@ runs:
         fi
         if [ -n "${INLINE_LOGS_URL}" ]; then
           args+=( --inline-logs-url "${INLINE_LOGS_URL}" )
+        fi
+        if [ -n "${BUILD_STATUS}" ]; then
+          args+=( --build-status "${BUILD_STATUS}" )
         fi
         if [ -n "${DIFF_REPORT}" ] && [ -f "${DIFF_REPORT}" ]; then
           args+=( --diff-report "${DIFF_REPORT}" )

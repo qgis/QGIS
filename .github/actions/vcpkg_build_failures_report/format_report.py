@@ -69,39 +69,57 @@ def render(
     per_port_artifact_url: str | None = None,
     inline_logs_url: str | None = None,
     run_url: str | None = None,
+    build_status: str = "",
 ) -> str:
     changed_ports = changed_ports or set()
     emoji = _platform_emoji(triplet)
     lines: list[str] = []
 
     if not failures:
-        lines.append(f"### {emoji} `{triplet}` &mdash; ✅ all ports built")
-        return "\n".join(lines) + "\n"
-
-    lines.append(f"### {emoji} `{triplet}` &mdash; ❌ {len(failures)} port(s) failed")
-    lines.append("")
-
-    failed_ports = ", ".join(f"`{f['port']}`" for f in failures)
-    lines.append(f"**Failed:** {failed_ports}")
-    lines.append("")
-
-    for failure in failures:
-        port = failure["port"]
-        marker = (
-            " &nbsp;🔵 _updated in this PR_"
-            if port in changed_ports
-            else " &nbsp;⚪ _unchanged in this PR_"
-            if changed_ports
-            else ""
-        )
-        lines.append("<details>")
-        lines.append(f"<summary>📦 <code>{port}</code>{marker}</summary>")
-        lines.append("")
-        for excerpt in failure.get("excerpts", []):
-            lines.extend(_render_excerpt(excerpt["source"], excerpt["lines"]))
+        if build_status.lower() == "failure":
+            lines.append(
+                f"### {emoji} `{triplet}` &mdash; \u26a0\ufe0f vcpkg failed before producing per-port logs"
+            )
             lines.append("")
-        lines.append("</details>")
+            lines.append(
+                "vcpkg returned a non-zero exit code but no port left a parseable buildtree. "
+                "This usually means a portfile-execute abort (e.g. `find_library` REQUIRED, "
+                "`vcpkg_extract_source_archive` download failure), or a vcpkg-internal error "
+                "such as a missing tool or registry/baseline mismatch."
+            )
+            lines.append("")
+            lines.append("Look at the artifacts and the workflow log:")
+            lines.append("")
+        else:
+            lines.append(f"### {emoji} `{triplet}` &mdash; \u2705 all ports built")
+            return "\n".join(lines) + "\n"
+    else:
+        lines.append(
+            f"### {emoji} `{triplet}` &mdash; \u274c {len(failures)} port(s) failed"
+        )
         lines.append("")
+
+        failed_ports = ", ".join(f"`{f['port']}`" for f in failures)
+        lines.append(f"**Failed:** {failed_ports}")
+        lines.append("")
+
+        for failure in failures:
+            port = failure["port"]
+            marker = (
+                " &nbsp;\U0001f535 _updated in this PR_"
+                if port in changed_ports
+                else " &nbsp;\u26aa _unchanged in this PR_"
+                if changed_ports
+                else ""
+            )
+            lines.append("<details>")
+            lines.append(f"<summary>\U0001f4e6 <code>{port}</code>{marker}</summary>")
+            lines.append("")
+            for excerpt in failure.get("excerpts", []):
+                lines.extend(_render_excerpt(excerpt["source"], excerpt["lines"]))
+                lines.append("")
+            lines.append("</details>")
+            lines.append("")
 
     footer: list[str] = []
     if inline_logs_url:
@@ -164,6 +182,14 @@ def main() -> int:
         help="Optional URL to the GitHub Actions run.",
     )
     parser.add_argument(
+        "--build-status",
+        default="",
+        help="Optional outcome of the upstream build/configure step "
+        "('success' or 'failure'). When 'failure' and no per-port failures "
+        "were parsed, render a 'vcpkg failed before producing per-port logs' "
+        "banner instead of the misleading 'all ports built' line.",
+    )
+    parser.add_argument(
         "-o",
         "--output",
         type=Path,
@@ -182,6 +208,7 @@ def main() -> int:
         per_port_artifact_url=args.per_port_artifact_url,
         inline_logs_url=args.inline_logs_url,
         run_url=args.run_url,
+        build_status=args.build_status,
     )
 
     if args.output:
