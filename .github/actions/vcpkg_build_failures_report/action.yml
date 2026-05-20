@@ -1,0 +1,124 @@
+name: Vcpkg build failures report
+description: >-
+  Scans a vcpkg buildtrees directory for failed port builds and surfaces a
+  curated summary into the GitHub Actions step summary, as workflow
+  annotations, and (optionally) as a sticky PR comment section.
+
+inputs:
+  buildtrees-dir:
+    description: Path to the vcpkg buildtrees directory.
+    required: true
+    type: string
+  triplet:
+    description: Triplet label used in headings, marker, and emoji selection.
+    required: true
+    type: string
+  pr:
+    description: >-
+      Pull request number. If set, a sticky-comment artifact is uploaded so the
+      build_artifact_comment workflow can update the sticky comment with this
+      section (marker `vcpkg-failures-<triplet>`).
+    required: false
+    default: ''
+    type: string
+  artifact-url:
+    description: Optional URL to the uploaded build-logs-<triplet> artifact.
+    required: false
+    default: ''
+    type: string
+  diff-report-json:
+    description: >-
+      Optional path to a JSON file with `added`/`updated` port lists used to
+      tag each failure as updated/unchanged in this PR.
+    required: false
+    default: ''
+    type: string
+
+outputs:
+  failed-ports:
+    description: Comma-separated list of port names that failed.
+    value: ${{ steps.parse.outputs.failed-ports }}
+  failure-count:
+    description: Number of failing ports detected.
+    value: ${{ steps.parse.outputs.failure-count }}
+
+runs:
+  using: composite
+  steps:
+    - name: Parse vcpkg buildtrees for failures
+      id: parse
+      shell: bash
+      env:
+        BUILDTREES_DIR: ${{ inputs.buildtrees-dir }}
+      run: |
+        set -euo pipefail
+        python3 "${GITHUB_ACTION_PATH}/parse_failures.py" \
+          "${BUILDTREES_DIR}" \
+          --output /tmp/vcpkg-failures.json
+
+        count=$(python3 -c 'import json,sys; print(len(json.load(open("/tmp/vcpkg-failures.json"))))')
+        ports=$(python3 -c 'import json; print(",".join(f["port"] for f in json.load(open("/tmp/vcpkg-failures.json"))))')
+        echo "failure-count=${count}" >> "$GITHUB_OUTPUT"
+        echo "failed-ports=${ports}" >> "$GITHUB_OUTPUT"
+        echo "Detected ${count} vcpkg port build failure(s): ${ports:-<none>}"
+
+    - name: Render markdown report
+      id: render
+      shell: bash
+      env:
+        TRIPLET: ${{ inputs.triplet }}
+        ARTIFACT_URL: ${{ inputs.artifact-url }}
+        DIFF_REPORT: ${{ inputs.diff-report-json }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        set -euo pipefail
+        args=( "/tmp/vcpkg-failures.json" --triplet "${TRIPLET}" --run-url "${RUN_URL}" --output /tmp/vcpkg-failures.md )
+        if [ -n "${ARTIFACT_URL}" ]; then
+          args+=( --artifact-url "${ARTIFACT_URL}" )
+        fi
+        if [ -n "${DIFF_REPORT}" ] && [ -f "${DIFF_REPORT}" ]; then
+          args+=( --diff-report "${DIFF_REPORT}" )
+        fi
+        python3 "${GITHUB_ACTION_PATH}/format_report.py" "${args[@]}"
+
+        # Expose the rendered markdown as a multi-line step output so the
+        # post_sticky_comment step can consume it.
+        {
+          echo "body<<__VCPKG_FAILURES_EOF__"
+          cat /tmp/vcpkg-failures.md
+          echo "__VCPKG_FAILURES_EOF__"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Append report to step summary
+      shell: bash
+      run: |
+        {
+          echo ""
+          echo "## 🧮 vcpkg build failures"
+          echo ""
+          cat /tmp/vcpkg-failures.md
+        } >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Emit workflow annotations for failing ports
+      if: steps.parse.outputs.failure-count != '0'
+      shell: bash
+      env:
+        TRIPLET: ${{ inputs.triplet }}
+      run: |
+        set -euo pipefail
+        python3 -c '
+        import json, os
+        triplet = os.environ["TRIPLET"]
+        for f in json.load(open("/tmp/vcpkg-failures.json")):
+            print(f"::error file=vcpkg/vcpkg.json,title=vcpkg port build failure::"
+                  f"{f[\"port\"]} failed on {triplet}")
+        '
+
+    - name: Schedule sticky comment update
+      if: inputs.pr != ''
+      uses: ./.github/actions/post_sticky_comment
+      with:
+        marker: vcpkg-failures-${{ inputs.triplet }}
+        body: ${{ steps.render.outputs.body }}
+        pr: ${{ inputs.pr }}
+        key: vcpkg-failures-${{ inputs.triplet }}
