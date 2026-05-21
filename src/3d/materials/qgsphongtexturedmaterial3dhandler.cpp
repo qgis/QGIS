@@ -118,11 +118,11 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toInstancedMaterial( const QgsAb
   material->setObjectName( u"phongTexturedMaterial"_s );
   material->setInstancingEnabled( true, flags );
 
-  const int opacity = static_cast<int>( phongSettings->opacity() * 255.0 );
-  const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
-  material->setAmbient( QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) );
+  const float opacity = static_cast<float>( phongSettings->opacity() );
+  QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
+  material->setAmbient( QColor::fromRgbF( ambient.redF(), ambient.greenF(), ambient.blueF(), opacity ) );
   const QColor specular = phongSettings->specular();
-  material->setSpecular( QColor( specular.red(), specular.green(), specular.blue(), opacity ) );
+  material->setSpecular( QColor::fromRgbF( specular.redF(), specular.greenF(), specular.blueF(), opacity ) );
   material->setShininess( static_cast<float>( phongSettings->shininess() ) );
   material->setOpacity( static_cast<float>( phongSettings->opacity() ) );
 
