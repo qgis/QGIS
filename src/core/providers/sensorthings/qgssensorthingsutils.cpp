@@ -280,6 +280,10 @@ Qgis::SensorThingsEntity QgsSensorThingsUtils::stringToEntity( const QString &ty
     return Qgis::SensorThingsEntity::FeatureOfInterest;
   if ( trimmed.compare( "MultiDatastream"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::MultiDatastream;
+  if ( trimmed.compare( "Feature"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::Feature;
+  if ( trimmed.compare( "FeatureType"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::FeatureType;
   if ( trimmed.compare( "Deployment"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Deployment;
   if ( trimmed.compare( "ObservingProcedure"_L1, Qt::CaseInsensitive ) == 0 )
@@ -332,6 +336,10 @@ QString QgsSensorThingsUtils::displayString( Qgis::SensorThingsEntity type, bool
       return plural ? QObject::tr( "Features of Interest" ) : QObject::tr( "Feature of Interest" );
     case Qgis::SensorThingsEntity::MultiDatastream:
       return plural ? QObject::tr( "MultiDatastreams" ) : QObject::tr( "MultiDatastream" );
+    case Qgis::SensorThingsEntity::Feature:
+      return plural ? QObject::tr( "Features" ) : QObject::tr( "Feature" );
+    case Qgis::SensorThingsEntity::FeatureType:
+      return plural ? QObject::tr( "Feature Types" ) : QObject::tr( "Feature Type" );
     case Qgis::SensorThingsEntity::Deployment:
       return plural ? QObject::tr( "Deployments" ) : QObject::tr( "Deployment" );
     case Qgis::SensorThingsEntity::ObservingProcedure:
@@ -381,6 +389,10 @@ Qgis::SensorThingsEntity QgsSensorThingsUtils::entitySetStringToEntity( const QS
     return Qgis::SensorThingsEntity::FeatureOfInterest;
   if ( trimmed.compare( "MultiDatastreams"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::MultiDatastream;
+  if ( trimmed.compare( "Features"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::Feature;
+  if ( trimmed.compare( "FeatureTypes"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::FeatureType;
   if ( trimmed.compare( "Deployments"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Deployment;
   if ( trimmed.compare( "ObservingProcedures"_L1, Qt::CaseInsensitive ) == 0 )
@@ -433,6 +445,10 @@ QString QgsSensorThingsUtils::entityToSetString( Qgis::SensorThingsEntity type )
       return u"FeaturesOfInterest"_s;
     case Qgis::SensorThingsEntity::MultiDatastream:
       return u"MultiDatastreams"_s;
+    case Qgis::SensorThingsEntity::Feature:
+      return u"Features"_s;
+    case Qgis::SensorThingsEntity::FeatureType:
+      return u"FeatureTypes"_s;
     case Qgis::SensorThingsEntity::Deployment:
       return u"Deployments"_s;
     case Qgis::SensorThingsEntity::ObservingProcedure:

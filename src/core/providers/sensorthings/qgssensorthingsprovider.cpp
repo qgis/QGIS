@@ -21,6 +21,7 @@
 
 #include "qgsapplication.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsreadwritelocker.h"
 #include "qgssensorthingsconnection.h"

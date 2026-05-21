@@ -12491,6 +12491,8 @@ Qgis.SensorThingsEntity.ObservedProperty.__doc__ = "An ObservedProperty specifie
 Qgis.SensorThingsEntity.Observation.__doc__ = "An Observation is the act of measuring or otherwise determining the value of a property"
 Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ = "In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed"
 Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\". \n.. versionadded:: 3.38"
+Qgis.SensorThingsEntity.Feature.__doc__ = "A Feature is an abstraction of real-world phenomena. It acts as an independent entity that can represent the proximate feature (e.g., a physical sample) or the ultimate real-world object being observed, replacing the v1.1 FeatureOfInterest. \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.FeatureType.__doc__ = "A FeatureType provides the classification and schema definition for a Feature, describing the common properties and structure expected for a specific category of Features. \n.. versionadded:: 4.2"
 Qgis.SensorThingsEntity.Deployment.__doc__ = "A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
 Qgis.SensorThingsEntity.ObservingProcedure.__doc__ = "An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
 Qgis.SensorThingsEntity.Sampling.__doc__ = "The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
@@ -12519,6 +12521,14 @@ Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 * ``MultiDatastream``: A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\".
 
   .. versionadded:: 3.38
+
+* ``Feature``: A Feature is an abstraction of real-world phenomena. It acts as an independent entity that can represent the proximate feature (e.g., a physical sample) or the ultimate real-world object being observed, replacing the v1.1 FeatureOfInterest.
+
+  .. versionadded:: 4.2
+
+* ``FeatureType``: A FeatureType provides the classification and schema definition for a Feature, describing the common properties and structure expected for a specific category of Features.
+
+  .. versionadded:: 4.2
 
 * ``Deployment``: A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\".
 
