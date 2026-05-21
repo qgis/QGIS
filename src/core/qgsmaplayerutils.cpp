@@ -25,9 +25,11 @@
 #include "qgsmaplayer.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssldexportcontext.h"
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
@@ -289,4 +291,49 @@ QString QgsMapLayerUtils::layerToolTip( const QgsMapLayer *layer )
     return parts.join( "<br/>"_L1 );
   }
   return QString();
+}
+
+QgsMapLayer::SaveStyleResults QgsMapLayerUtils::saveLayerStyleToDatabase(
+  QgsMapLayer *layer,
+  const QString &providerKey,
+  const QString &dataSource,
+  const QString &name,
+  const QString &description,
+  bool useAsDefault,
+  const QString &uiFileContent,
+  QString &msgError,
+  QgsMapLayer::StyleCategories categories
+)
+{
+  QgsMapLayer::SaveStyleResults results;
+
+  QString sldStyle, qmlStyle;
+  QDomDocument qmlDocument;
+  QgsReadWriteContext context;
+  layer->exportNamedStyle( qmlDocument, msgError, context, categories );
+  if ( !msgError.isEmpty() )
+  {
+    results.setFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed );
+  }
+  else
+  {
+    qmlStyle = qmlDocument.toString();
+  }
+
+  QgsSldExportContext sldContext;
+  QDomDocument sldDocument = layer->exportSldStyleV3( sldContext );
+  if ( !sldContext.errors().empty() )
+  {
+    results.setFlag( QgsMapLayer::SaveStyleResult::SldGenerationFailed );
+  }
+  else
+  {
+    sldStyle = sldDocument.toString();
+  }
+
+  if ( !QgsProviderRegistry::instance()->saveStyle( providerKey, dataSource, qmlStyle, sldStyle, name, description, uiFileContent, useAsDefault, msgError ) )
+  {
+    results.setFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed );
+  }
+  return results;
 }
