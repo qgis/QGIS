@@ -35,11 +35,12 @@ inputs:
     type: string
   build-status:
     description: >-
-      Outcome of the upstream vcpkg/configure step. Pass `${{ job.status }}`
-      or the configure step's `outcome`. When set to `failure` and no
-      per-port failures are parsed (e.g. portfile-execute aborts before
-      buildtrees exist), the report shows a 'vcpkg failed before producing
-      per-port logs' banner instead of a misleading 'all ports built' line.
+      Outcome of the upstream vcpkg/configure step. Callers should pass the
+      job status expression (job.status) or a step's outcome. When set to
+      'failure' and no per-port failures are parsed (e.g. portfile-execute
+      aborts before buildtrees exist), the report shows a 'vcpkg failed
+      before producing per-port logs' banner instead of a misleading 'all
+      ports built' line.
     required: false
     default: ''
     type: string
