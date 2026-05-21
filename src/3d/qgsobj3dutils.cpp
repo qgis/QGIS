@@ -39,6 +39,7 @@
 
 using namespace Qt::StringLiterals;
 
+///@cond PRIVATE
 
 std::vector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext )
 {
@@ -220,3 +221,5 @@ std::vector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( c
 
   return result;
 }
+
+///@endcond
