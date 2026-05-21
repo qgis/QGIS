@@ -11,5 +11,6 @@ try:
     QgsMapLayerUtils.isOpenStreetMapUri = staticmethod(QgsMapLayerUtils.isOpenStreetMapUri)
     QgsMapLayerUtils.layerTypeToString = staticmethod(QgsMapLayerUtils.layerTypeToString)
     QgsMapLayerUtils.layerToolTip = staticmethod(QgsMapLayerUtils.layerToolTip)
+    QgsMapLayerUtils.saveLayerStyleToDatabase = staticmethod(QgsMapLayerUtils.saveLayerStyleToDatabase)
 except (NameError, AttributeError):
     pass
