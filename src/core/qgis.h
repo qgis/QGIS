@@ -5948,6 +5948,7 @@ int QgisEvent = QEvent::User + 1;
       SetTableComment = 1 << 2,   //!< Can set comments for tables via setTableComment() \since QGIS 3.44
       EditFieldDomain = 1 << 3,   //!< Can edit existing field domain \since QGIS 4.0
       DeleteFieldDomain = 1 << 4, //!< Can delete existing field domain \since QGIS 4.0
+      StyleStorage = 1 << 5,      //!< Can save/load styles to/from the database \since QGIS 4.2
     };
     Q_ENUM( DatabaseProviderConnectionCapability2 )
     Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )

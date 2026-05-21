@@ -3322,6 +3322,7 @@ The development version
       SetTableComment,
       EditFieldDomain,
       DeleteFieldDomain,
+      StyleStorage,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 

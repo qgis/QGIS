@@ -11424,6 +11424,7 @@ Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set alia
 Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
 Qgis.DatabaseProviderConnectionCapability2.EditFieldDomain.__doc__ = "Can edit existing field domain \n.. versionadded:: 4.0"
 Qgis.DatabaseProviderConnectionCapability2.DeleteFieldDomain.__doc__ = "Can delete existing field domain \n.. versionadded:: 4.0"
+Qgis.DatabaseProviderConnectionCapability2.StyleStorage.__doc__ = "Can save/load styles to/from the database \n.. versionadded:: 4.2"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
@@ -11441,6 +11442,10 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum repr
 * ``DeleteFieldDomain``: Can delete existing field domain
 
   .. versionadded:: 4.0
+
+* ``StyleStorage``: Can save/load styles to/from the database
+
+  .. versionadded:: 4.2
 
 
 """
