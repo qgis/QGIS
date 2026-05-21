@@ -36,6 +36,14 @@ cd ${SRCDIR}
 # directly add this option to clang-tidy-diff call
 echo "WarningsAsErrors: '*'" >> .clang-tidy
 
+# Since we get build directory from previous CI build job and we download source code again
+# in clang-tidy CI job, source code date is before build one. So we re-build precompiled header
+# to avoid noisy cland-tidy errors
+echo "${bold}Update pch file to avoid clang-diagnostic-error...${endbold}"
+pushd build &> /dev/null
+find . -name "*.pch" -exec cmake --build .  --target {} +
+popd &> /dev/null
+
 echo "${bold}Run clang-tidy on modifications...${endbold}"
 
 # We need to add build/src/test dir as extra include directories because when clang-tidy tries to process qgstest.h
