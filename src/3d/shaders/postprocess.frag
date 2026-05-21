@@ -26,6 +26,8 @@ in vec2 texCoord;
 
 out vec4 fragColor;
 
+uniform mat4 invertedCameraView;
+
 // Exposure correction
 uniform float exposure = 0.0;
 
@@ -106,8 +108,9 @@ void main()
   if ( renderShadows != 0 && depth < 1.0 )
   {
     vec3 worldPosition = WorldPosFromDepth( depth );
+    vec3 cameraPosition = invertedCameraView[3].xyz;
     // for debugging: shade pixels by cascade index, to visualise cascade breaks
-    finalColor = mix(finalColor, calcCascadeTint(worldPosition), 0.5);
+    finalColor = mix(finalColor, calcCascadeTint(worldPosition, cameraPosition), 0.5);
   }
 #endif
   

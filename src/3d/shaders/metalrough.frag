@@ -5,7 +5,6 @@
 
 // defines are added here as a pre-processing step
 
-uniform vec3 eyePosition;
 in vec3 worldPosition;
 
 #ifndef FLAT_SHADING
