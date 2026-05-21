@@ -589,6 +589,11 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
     }
   }
 
+  if ( mDriverName == "GPKG"_L1 || mDriverName == "SQLite"_L1 )
+  {
+    mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::StyleStorage;
+  }
+
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 5, 0 )
   if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_FIELD_DOMAINS, false ) )
   {
