@@ -815,6 +815,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.featureCount(), 4962)
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Locations"', vl.htmlMetadata())
+            # we assume version 1.1 if we can't determine exactly
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 1.1)
 
             # As multipoint
             vl = QgsVectorLayer(
@@ -842,6 +844,184 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.wkbType(), Qgis.WkbType.MultiPolygonZ)
+
+    def test_layer_conformance_1_1(self):
+        """
+        Test construction of a basic layer using a with conformance array,
+        for a version 1.1 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Datastreams",
+      "url": "endpoint/Datastreams"
+    },
+    {
+      "name": "MultiDatastreams",
+      "url": "endpoint/MultiDatastreams"
+    },
+    {
+      "name": "FeaturesOfInterest",
+      "url": "endpoint/FeaturesOfInterest"
+    },
+    {
+      "name": "HistoricalLocations",
+      "url": "endpoint/HistoricalLocations"
+    },
+    {
+      "name": "Locations",
+      "url": "endpoint/Locations"
+    },
+    {
+      "name": "Observations",
+      "url": "endpoint/Observations"
+    },
+    {
+      "name": "ObservedProperties",
+      "url": "endpoint/ObservedProperties"
+    },
+    {
+      "name": "Sensors",
+      "url": "endpoint/Sensors"
+    },
+    {
+      "name": "Things",
+      "url": "endpointThings"
+    }
+  ],
+  "serverSettings": {
+"conformance": [
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/batch-request/batch-request",
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/create-observations-via-mqtt/observations-creation",
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/create-update-delete",
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/data-array/data-array",
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/datamodel",
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/multi-datastream",
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/receive-updates-via-mqtt/receive-updates",
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/request-data",
+  "http://www.opengis.net/spec/iot_sensing/1.1/req/resource-path/resource-path-to-entities"
+]
+}
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/Locations?$top=0&$count=true&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write("""{"@iot.count":4962,"value":[]}""")
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='Location'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertIn("SensorThings Version</td><td>1.1</td>", vl.htmlMetadata())
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 1.1)
+
+    def test_layer_conformance_2(self):
+        """
+        Test construction of a basic layer using a with conformance array,
+        for a version 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Datastreams",
+      "url": "endpoint/Datastreams"
+    },
+    {
+      "name": "MultiDatastreams",
+      "url": "endpoint/MultiDatastreams"
+    },
+    {
+      "name": "FeaturesOfInterest",
+      "url": "endpoint/FeaturesOfInterest"
+    },
+    {
+      "name": "HistoricalLocations",
+      "url": "endpoint/HistoricalLocations"
+    },
+    {
+      "name": "Locations",
+      "url": "endpoint/Locations"
+    },
+    {
+      "name": "Observations",
+      "url": "endpoint/Observations"
+    },
+    {
+      "name": "ObservedProperties",
+      "url": "endpoint/ObservedProperties"
+    },
+    {
+      "name": "Sensors",
+      "url": "endpoint/Sensors"
+    },
+    {
+      "name": "Things",
+      "url": "endpointThings"
+    }
+  ],
+  "serverSettings": {
+"conformance": [
+"http://www.opengis.net/spec/iot_sensing/1.1/req/batch-request/batch-request",
+      "http://www.opengis.net/spec/iot_sensing/1.1/req/data-array/data-array",
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/api/cud",
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/api/read",
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/binding/http",
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/binding/mqtt",
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/api/cud/deep_update",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/api/cud/json_patch",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/api/cud/replace",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/api/read/options/select_distinct",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/binding/http/request_response",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/binding/mqtt/pub_sub",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/binding/mqtt/pub_sub/expand",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/binding/mqtt/pub_sub/select",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/binding/mqtt/request_response",
+      "http://www.opengis.net/spec/sensorthings/2.0/req/binding/mqtt/simple_create"
+]
+}
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/Locations?$top=0&$count=true&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write("""{"@iot.count":4962,"value":[]}""")
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ entity='Location'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertIn("SensorThings Version</td><td>2.0</td>", vl.htmlMetadata())
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
 
     def test_thing(self):
         """
