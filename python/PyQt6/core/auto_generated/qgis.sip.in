@@ -3684,6 +3684,9 @@ The development version
       Observation,
       FeatureOfInterest,
       MultiDatastream,
+      // version 2.0
+      Feature,
+      FeatureType,
       Deployment,
       ObservingProcedure,
       Sampling,
