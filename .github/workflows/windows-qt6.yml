@@ -145,6 +145,7 @@ jobs:
           artifact-url: ${{ steps.upload-build-logs.outputs.artifact-url }}
           build-status: ${{ job.status }}
           manifest-install-log: ${{ github.workspace }}/build/vcpkg-manifest-install.log
+          commit-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

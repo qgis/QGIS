@@ -53,6 +53,15 @@ inputs:
     required: false
     default: ''
     type: string
+  commit-sha:
+    description: >-
+      Optional commit SHA the report is for (typically the head SHA of the
+      pull request, or github.sha for push events). When set, the report
+      links the SHA to a commit URL so reviewers know which revision the
+      sticky comment reflects.
+    required: false
+    default: ''
+    type: string
 
 outputs:
   failed-ports:
@@ -228,6 +237,8 @@ runs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
         BUILD_STATUS: ${{ inputs.build-status }}
+        COMMIT_SHA: ${{ inputs.commit-sha }}
+        COMMIT_URL_BASE: ${{ github.server_url }}/${{ github.repository }}/commit
       run: |
         set -euo pipefail
         out_md="${RUNNER_TEMP//\\//}/vcpkg-failures.md"
@@ -245,6 +256,9 @@ runs:
         fi
         if [ -n "${BUILD_STATUS}" ]; then
           args+=( --build-status "${BUILD_STATUS}" )
+        fi
+        if [ -n "${COMMIT_SHA}" ]; then
+          args+=( --commit-sha "${COMMIT_SHA}" --commit-url "${COMMIT_URL_BASE}/${COMMIT_SHA}" )
         fi
         if [ -n "${DIFF_REPORT}" ] && [ -f "${DIFF_REPORT}" ]; then
           args+=( --diff-report "${DIFF_REPORT}" )

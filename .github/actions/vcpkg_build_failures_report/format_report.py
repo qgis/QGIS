@@ -70,6 +70,8 @@ def render(
     inline_logs_url: str | None = None,
     run_url: str | None = None,
     build_status: str = "",
+    commit_sha: str = "",
+    commit_url: str = "",
 ) -> str:
     changed_ports = changed_ports or set()
     emoji = _platform_emoji(triplet)
@@ -134,6 +136,12 @@ def render(
         )
     if run_url:
         footer.append(f"🔧 [Workflow run]({run_url})")
+    if commit_sha:
+        short = commit_sha[:7]
+        if commit_url:
+            footer.append(f"📌 [Commit `{short}`]({commit_url})")
+        else:
+            footer.append(f"📌 Commit `{short}`")
     if footer:
         lines.append(" &middot; ".join(footer))
 
@@ -190,6 +198,16 @@ def main() -> int:
         "banner instead of the misleading 'all ports built' line.",
     )
     parser.add_argument(
+        "--commit-sha",
+        default="",
+        help="Optional commit SHA the report is for; surfaced in the footer.",
+    )
+    parser.add_argument(
+        "--commit-url",
+        default="",
+        help="Optional URL the commit SHA links to.",
+    )
+    parser.add_argument(
         "-o",
         "--output",
         type=Path,
@@ -209,6 +227,8 @@ def main() -> int:
         inline_logs_url=args.inline_logs_url,
         run_url=args.run_url,
         build_status=args.build_status,
+        commit_sha=args.commit_sha,
+        commit_url=args.commit_url,
     )
 
     if args.output:

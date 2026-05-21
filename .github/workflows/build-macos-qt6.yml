@@ -155,6 +155,7 @@ jobs:
           artifact-url: ${{ steps.upload-build-logs.outputs.artifact-url }}
           build-status: ${{ job.status }}
           manifest-install-log: ${{ github.workspace }}/build/vcpkg-manifest-install.log
+          commit-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Create SDK
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
