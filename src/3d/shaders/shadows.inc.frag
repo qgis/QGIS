@@ -1,7 +1,7 @@
 uniform sampler2DArray shadowTexture;
 uniform float shadowBias;
 uniform float maxShadowDistance;
-uniform mat4 invertedCameraView;
+uniform vec3 eyePosition;
 
 uniform int renderShadows;
 uniform int shadowLightIndex;
@@ -146,8 +146,7 @@ float calcVisibilityAfterShadowing(vec3 worldPosition)
   }
 
   // fade off as global distance to shadow approaches maximum shadow rendering distance
-  vec3 cameraPos = invertedCameraView[3].xyz;
-  float distToCamera = length(worldPosition - cameraPos);
+  float distToCamera = length(worldPosition - eyePosition);
   float fadeStartDistance = maxShadowDistance * (1.0 - MAX_SHADOW_DISTANCE_FADE_OVER);
   float distanceFade = smoothstep(fadeStartDistance, maxShadowDistance, distToCamera);
 
@@ -172,7 +171,7 @@ vec3 cascadeTint(int cascadeIndex)
   return colors[clamp(cascadeIndex, 0, 8)];
 }
 
-vec3 calcCascadeTint(vec3 worldPosition) {
+vec3 calcCascadeTint(vec3 worldPosition, vec3 cameraPosition) {
   CascadeInfo info = calcCascadeInfo(worldPosition);
   if ( info.index1 < 0 )
   {
@@ -187,8 +186,7 @@ vec3 calcCascadeTint(vec3 worldPosition) {
   }
 
   // fade off as global distance to shadow approaches maximum shadow rendering distance
-  vec3 cameraPos = invertedCameraView[3].xyz;
-  float distToCamera = length(worldPosition - cameraPos);
+  float distToCamera = length(worldPosition - cameraPosition);
   float fadeStartDistance = maxShadowDistance * (1.0-MAX_SHADOW_DISTANCE_FADE_OVER);
   float distanceFade = smoothstep(fadeStartDistance, maxShadowDistance, distToCamera);
 
