@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-*
+      - vcpkg-feature-qtwebengine
   pull_request:
   release:
     types: ['published']
@@ -19,11 +20,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-15-intel
-            triplet: x64-osx-dynamic-release
-            deployment-target: "10.15"
-            osx-architecture: "x86_64"
-          - os: macos-15
+#           - os: macos-15-intel
+#            triplet: x64-osx-dynamic-release
+#            deployment-target: "10.15"
+#            osx-architecture: "x86_64"
+          - os: macos-15-xlarge
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
             osx-architecture: "arm64"
