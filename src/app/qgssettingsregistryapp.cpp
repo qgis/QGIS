@@ -102,7 +102,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"/qgis/restoreDefaultWindowState"_s, true );
   QgsMapLayerStyleCommand::settingsStyleUndoMergeTimeout->copyValueFromKey( u"UI/styleUndoMergeTimeout"_s, true );
   // Legacy qgis/attributeTableView used -1 as a sentinel meaning "remember last view";
-  // split into two new settings (an enum view + a boolean remember-last-view flag).
+  // migrate to the new enum-based setting (with RememberLast as a sentinel value).
   {
     QgsSettings legacySettings;
     QVariant legacyAttrTableView = legacySettings.value( u"qgis/attributeTableView"_s );
@@ -111,15 +111,12 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
     if ( legacyAttrTableView.isValid() )
     {
       const int legacyValue = legacyAttrTableView.toInt();
+      QgsAttributeTableDialog::InitialView newValue;
       if ( legacyValue < 0 )
-      {
-        QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( true );
-      }
+        newValue = QgsAttributeTableDialog::RememberLast;
       else
-      {
-        QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( false );
-        QgsAttributeTableDialog::settingsAttributeTableView->setValue( static_cast<QgsDualView::ViewMode>( legacyValue ) );
-      }
+        newValue = static_cast<QgsAttributeTableDialog::InitialView>( legacyValue );
+      QgsAttributeTableDialog::settingsAttributeTableInitialView->setValue( newValue );
       legacySettings.remove( u"qgis/attributeTableView"_s );
       legacySettings.remove( u"/qgis/attributeTableView"_s );
     }

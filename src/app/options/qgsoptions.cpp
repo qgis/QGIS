@@ -519,11 +519,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->enumValue( u"/qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll ) ) );
 
   mAttrTableViewComboBox->clear();
-  mAttrTableViewComboBox->addItem( tr( "Remember Last View" ), -1 );
-  mAttrTableViewComboBox->addItem( tr( "Table View" ), QgsDualView::AttributeTable );
-  mAttrTableViewComboBox->addItem( tr( "Form View" ), QgsDualView::AttributeEditor );
-  const int currentAttrTableView = QgsAttributeTableDialog::settingsAttributeTableRememberLastView->value() ? -1 : static_cast<int>( QgsAttributeTableDialog::settingsAttributeTableView->value() );
-  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( currentAttrTableView ) );
+  mAttrTableViewComboBox->addItem( tr( "Remember Last View" ), QgsAttributeTableDialog::RememberLast );
+  mAttrTableViewComboBox->addItem( tr( "Table View" ), QgsAttributeTableDialog::AttributeTable );
+  mAttrTableViewComboBox->addItem( tr( "Form View" ), QgsAttributeTableDialog::AttributeEditor );
+  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( static_cast<int>( QgsAttributeTableDialog::settingsAttributeTableInitialView->value() ) ) );
 
   spinBoxAttrTableRowCache->setValue( QgsDualView::settingsAttributeTableRowCache->value() );
   spinBoxAttrTableRowCache->setClearValue( 10000 );
@@ -1641,16 +1640,7 @@ void QgsOptions::saveOptions()
   QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->setValue( cbxAttributeTableDocked->isChecked() );
   QgsAttributeTableDialog::settingsAutosizeAttributeTable->setValue( cbxAutosizeAttributeTable->isChecked() );
   mSettings->setEnumValue( u"/qgis/attributeTableBehavior"_s, ( QgsAttributeTableFilterModel::FilterMode ) cmbAttrTableBehavior->currentData().toInt() );
-  const int selectedAttrTableView = mAttrTableViewComboBox->currentData().toInt();
-  if ( selectedAttrTableView < 0 )
-  {
-    QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( true );
-  }
-  else
-  {
-    QgsAttributeTableDialog::settingsAttributeTableRememberLastView->setValue( false );
-    QgsAttributeTableDialog::settingsAttributeTableView->setValue( static_cast<QgsDualView::ViewMode>( selectedAttrTableView ) );
-  }
+  QgsAttributeTableDialog::settingsAttributeTableInitialView->setValue( static_cast<QgsAttributeTableDialog::InitialView>( mAttrTableViewComboBox->currentData().toInt() ) );
   QgsDualView::settingsAttributeTableRowCache->setValue( spinBoxAttrTableRowCache->value() );
   mSettings->setEnumValue( u"/qgis/promptForSublayers"_s, static_cast<Qgis::SublayerPromptMode>( cmbPromptSublayers->currentData().toInt() ) );
 
