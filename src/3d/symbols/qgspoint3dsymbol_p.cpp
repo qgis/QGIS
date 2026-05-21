@@ -526,15 +526,13 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
 
   private:
     static void addInstancedEntities(
-      const Qgs3DRenderContext &context,
       const QVector<QVector3D> &positions,
       const QVector<QVector3D> &scales,
       const QVector<QQuaternion> &rotations,
       const QgsVector3D &chunkOrigin,
       const QgsPoint3DSymbol *symbol,
       Qt3DCore::QEntity *parent,
-      bool areSelected,
-      bool areHighlighted,
+      const QgsMaterialContext &materialContext,
       bool useEmbeddedTexture
     );
 
@@ -670,7 +668,12 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   const QgsAbstractMaterialSettings *settings = mSymbol->materialSettings();
   const bool useEmbeddedTexture = !mSymbol->shapeProperty( u"overwriteMaterial"_s ).toBool() && ( !settings || settings->type() == "null"_L1 );
-  addInstancedEntities( context, out.positions, out.scales, out.rotations, mChunkOrigin, mSymbol.get(), parent, selected, mHighlightingEnabled, useEmbeddedTexture );
+
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
+  materialContext.setIsSelected( selected );
+  materialContext.setIsHighlighted( mHighlightingEnabled );
+
+  addInstancedEntities( out.positions, out.scales, out.rotations, mChunkOrigin, mSymbol.get(), parent, materialContext, useEmbeddedTexture );
 }
 
 QVector3D stringToAxis( const QString &axis )
@@ -707,21 +710,17 @@ QMatrix4x4 createZUpTransform( const QString &upAxis, const QString &forwardAxis
 }
 
 void QgsModelPoint3DSymbolHandler::addInstancedEntities(
-  const Qgs3DRenderContext &context,
   const QVector<QVector3D> &positions,
   const QVector<QVector3D> &scales,
   const QVector<QQuaternion> &rotations,
   const QgsVector3D &chunkOrigin,
   const QgsPoint3DSymbol *symbol,
   Qt3DCore::QEntity *parent,
-  bool areSelected,
-  bool areHighlighted,
+  const QgsMaterialContext &materialContext,
   bool useEmbeddedTexture
 )
 {
   const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( u"model"_s ).toString() );
-
-  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
 
   std::vector<QgsObj3DUtils::ObjMaterialMesh> meshes = QgsObj3DUtils::buildObjGeometries( source, materialContext );
   if ( meshes.empty() )
@@ -806,7 +805,7 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
     geom->addAttribute( rotationAttribute );
 
     QgsMaterial *mat = nullptr;
-    if ( areHighlighted || areSelected )
+    if ( materialContext.isHighlighted() )
     {
       QgsHighlightMaterial *highlightMaterial = new QgsHighlightMaterial();
       highlightMaterial->setInstancingEnabled( true, instancedFlags );
@@ -814,7 +813,7 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
     }
     else if ( useEmbeddedTexture )
     {
-      if ( mesh.material )
+      if ( !materialContext.isSelected() && mesh.material )
       {
         if ( QgsPhongTexturedMaterial *texMat = qobject_cast<QgsPhongTexturedMaterial *>( mesh.material.get() ) )
           texMat->setInstancingEnabled( true, instancedFlags );
