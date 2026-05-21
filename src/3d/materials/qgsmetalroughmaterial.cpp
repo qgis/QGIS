@@ -295,7 +295,7 @@ void QgsMetalRoughMaterial::init()
 {
   mMetalRoughGL3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   mMetalRoughGL3Technique->graphicsApiFilter()->setMajorVersion( 3 );
-  mMetalRoughGL3Technique->graphicsApiFilter()->setMinorVersion( 1 );
+  mMetalRoughGL3Technique->graphicsApiFilter()->setMinorVersion( 3 );
   mMetalRoughGL3Technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
 
   mFilterKey->setParent( this );
