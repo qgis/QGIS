@@ -15,6 +15,8 @@
 
 #include "qgspoint3dsymbol_p.h"
 
+#include <memory>
+
 #include "qgs3d.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
@@ -25,6 +27,8 @@
 #include "qgshighlightmaterial.h"
 #include "qgsmaterial3dhandler.h"
 #include "qgsobj3dutils.h"
+#include "qgsphongmaterial3dhandler.h"
+#include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
@@ -719,14 +723,20 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
 
   QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
 
-  const QVector<QgsObj3DUtils::ObjMaterialMesh> meshes = QgsObj3DUtils::buildObjGeometries( source, materialContext );
-  if ( meshes.isEmpty() )
+  std::vector<QgsObj3DUtils::ObjMaterialMesh> meshes = QgsObj3DUtils::buildObjGeometries( source, materialContext );
+  if ( meshes.empty() )
     return;
 
   const int count = positions.size();
 
   QByteArray translationData( reinterpret_cast<const char *>( positions.constData() ), static_cast<qsizetype>( count * sizeof( QVector3D ) ) );
-  QByteArray scaleData( reinterpret_cast<const char *>( scales.constData() ), static_cast<qsizetype>( count * sizeof( QVector3D ) ) );
+
+  // corrected order for the instanced.vert shader
+  QVector<QVector3D> correctedScales( count );
+  for ( int i = 0; i < count; ++i )
+    correctedScales[i] = QVector3D( scales[i].x(), scales[i].z(), scales[i].y() );
+
+  QByteArray scaleData( reinterpret_cast<const char *>( correctedScales.constData() ), static_cast<qsizetype>( count * sizeof( QVector3D ) ) );
 
   const QString upAxis = symbol->shapeProperty( u"upAxis"_s ).toString();
   const QString forwardAxis = symbol->shapeProperty( u"forwardAxis"_s ).toString();
@@ -754,9 +764,9 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
   Qt3DCore::QBuffer *rotationBufferData = new Qt3DCore::QBuffer( parent );
   rotationBufferData->setData( rotationData );
 
-  for ( const QgsObj3DUtils::ObjMaterialMesh &mesh : meshes )
+  for ( QgsObj3DUtils::ObjMaterialMesh &mesh : meshes )
   {
-    Qt3DCore::QGeometry *geom = mesh.geometry;
+    Qt3DCore::QGeometry *geom = mesh.geometry.release();
 
     Qt3DCore::QAttribute *translationAttribute = new Qt3DCore::QAttribute;
     translationAttribute->setName( u"instanceTranslation"_s );
@@ -795,10 +805,6 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
     rotationAttribute->setBuffer( rotationBufferData );
     geom->addAttribute( rotationAttribute );
 
-    Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setGeometry( geom );
-    renderer->setInstanceCount( static_cast<int>( count ) );
-
     QgsMaterial *mat = nullptr;
     if ( areHighlighted || areSelected )
     {
@@ -806,29 +812,34 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
       highlightMaterial->setInstancingEnabled( true, instancedFlags );
       mat = highlightMaterial;
     }
-    else
+    else if ( useEmbeddedTexture )
     {
-      const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
-      if ( !useEmbeddedTexture )
+      if ( mesh.material )
       {
-        if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
-          mat = handler->toInstancedMaterial( settings, materialContext, instancedFlags );
-      }
-      if ( !mat && mesh.material )
-      {
-        if ( QgsPhongTexturedMaterial *texMat = qobject_cast<QgsPhongTexturedMaterial *>( mesh.material ) )
+        if ( QgsPhongTexturedMaterial *texMat = qobject_cast<QgsPhongTexturedMaterial *>( mesh.material.get() ) )
           texMat->setInstancingEnabled( true, instancedFlags );
-        mat = mesh.material;
+        mat = mesh.material.release();
       }
       if ( !mat )
       {
-        if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
-          mat = handler->toInstancedMaterial( settings, materialContext, instancedFlags );
+        QgsPhongMaterialSettings phongSettings;
+        if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( &phongSettings ) )
+          mat = handler->toInstancedMaterial( &phongSettings, materialContext, instancedFlags );
       }
+    }
+    else
+    {
+      const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
+      if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
+        mat = handler->toInstancedMaterial( settings, materialContext, instancedFlags );
     }
 
     if ( !mat )
       continue;
+
+    Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
+    renderer->setGeometry( geom );
+    renderer->setInstanceCount( static_cast<int>( count ) );
 
     QgsGeoTransform *geoTransform = new QgsGeoTransform;
     geoTransform->setGeoTranslation( chunkOrigin );

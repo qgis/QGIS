@@ -40,7 +40,7 @@
 using namespace Qt::StringLiterals;
 
 
-QVector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext )
+std::vector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext )
 {
   tinyobj::ObjReaderConfig config;
   config.triangulate = true;
@@ -120,8 +120,8 @@ QVector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( const
     }
   }
 
-  QVector<ObjMaterialMesh> result;
-  result.reserve( static_cast<int>( matDataMap.size() ) );
+  std::vector<ObjMaterialMesh> result;
+  result.reserve( matDataMap.size() );
 
   for ( auto &[matId, vertices] : matDataMap )
   {
@@ -215,7 +215,7 @@ QVector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( const
       mat = texMat;
     }
 
-    result.append( { geom, mat } );
+    result.push_back( ObjMaterialMesh { std::unique_ptr<Qt3DCore::QGeometry>( geom ), std::unique_ptr<QgsMaterial>( mat ) } );
   }
 
   return result;

@@ -19,36 +19,45 @@
 ///@cond PRIVATE
 
 
-#include "qgis_3d.h"
+#include <memory>
+#include <vector>
 
-#include <QVector>
+#include "qgis_3d.h"
+#include "qgsmaterial.h"
 
 #define SIP_NO_FILE
 
 class QString;
-class QgsMaterial;
 class QgsMaterialContext;
 
-namespace Qt3DCore
-{
-  class QGeometry;
-}
+#include <Qt3DCore/QGeometry>
 
+/**
+ * \ingroup qgis_3d
+ *
+ * Utility functions for dealing with OBJ models in 3D map views.
+ *
+ * \since QGIS 4.2
+ */
 class _3D_EXPORT QgsObj3DUtils
 {
   public:
+    //! Geometry and material pair for a single OBJ material group. Material is nullptr when the group has no texture.
     struct ObjMaterialMesh
     {
-        Qt3DCore::QGeometry *geometry = nullptr;
-        QgsMaterial *material = nullptr;
+        std::unique_ptr<Qt3DCore::QGeometry> geometry; //!< Geometry of the material group.
+        std::unique_ptr<QgsMaterial> material;         //!< Material of the material group, or nullptr if no texture.
     };
 
     /**
      * Loads an OBJ file from \a filePath and returns one geometry/material pair
-     * per material group. If no textures exists for the mesh, the material is a NULLPTR. 
-     * Empty vector when file cannot be parsed.
+     * per material group found in the file.
+     *
+     * \a materialContext is used to configure the created materials.
+     *
+     * If a group has no texture, the material remains a NULLPTR.
      */
-    static QVector<ObjMaterialMesh> buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext );
+    static std::vector<ObjMaterialMesh> buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext );
 };
 
 ///@endcond
