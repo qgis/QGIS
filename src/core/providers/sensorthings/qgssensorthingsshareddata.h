@@ -78,6 +78,7 @@ class QgsSensorThingsSharedData
 
     mutable QString mError;
 
+    double mVersion = 1.1;
     QString mEntityBaseUri;
     QString mSubsetString;
     QString mExpandQueryString;

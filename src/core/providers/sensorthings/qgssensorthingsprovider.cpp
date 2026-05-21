@@ -70,6 +70,34 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
   try
   {
     auto rootContent = json::parse( content.content().toStdString() );
+
+    // try to determine sensorthings version
+    if ( rootContent.contains( "serverSettings" ) && rootContent["serverSettings"].contains( "conformance" ) )
+    {
+      for ( const auto &valueJson : rootContent["serverSettings"]["conformance"] )
+      {
+        const QString conformance = QString::fromStdString( valueJson.get<std::string>() );
+        const thread_local QRegularExpression sDataModelRx( u".*/datamodel\\b"_s );
+        if ( sDataModelRx.match( conformance ).hasMatch() )
+        {
+          // extract version from datamodel value
+          const thread_local QRegularExpression sVersionRx( u"\\d+\\.\\d+"_s );
+          const QRegularExpressionMatch versionMatch = sVersionRx.match( conformance );
+          if ( versionMatch.hasMatch() )
+          {
+            const QString versionString = versionMatch.captured( 0 );
+            bool ok = false;
+            const double version = versionString.toDouble( &ok );
+            if ( ok )
+            {
+              mSharedData->mVersion = version;
+              break;
+            }
+          }
+        }
+      }
+    }
+
     if ( !rootContent.contains( "value" ) )
     {
       appendError( QgsErrorMessage( tr( "No 'value' array in response" ), u"SensorThings"_s ) );
@@ -203,10 +231,21 @@ QString QgsSensorThingsProvider::htmlMetadata() const
   QString metadata;
 
   QgsReadWriteLocker locker( mSharedData->mReadWriteLock, QgsReadWriteLocker::Read );
-
+  metadata += u"<tr><td class=\"highlight\">"_s % tr( "SensorThings Version" ) % u"</td><td>%1"_s.arg( mSharedData->mVersion, 0, 'f', 1 ) % u"</td></tr>\n"_s;
   metadata += u"<tr><td class=\"highlight\">"_s % tr( "Entity Type" ) % u"</td><td>%1"_s.arg( qgsEnumValueToKey( mSharedData->mEntityType ) ) % u"</td></tr>\n"_s;
   metadata += u"<tr><td class=\"highlight\">"_s % tr( "Endpoint" ) % u"</td><td><a href=\"%1\">%1</a>"_s.arg( mSharedData->mEntityBaseUri ) % u"</td></tr>\n"_s;
 
+  return metadata;
+}
+
+QVariantMap QgsSensorThingsProvider::metadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QVariantMap metadata;
+
+  QgsReadWriteLocker locker( mSharedData->mReadWriteLock, QgsReadWriteLocker::Read );
+  metadata.insert( u"SensorThingsVersion"_s, mSharedData->mVersion );
   return metadata;
 }
 
