@@ -146,7 +146,7 @@ void QgsMetalRoughMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstra
   geometry->addAttribute( baseColorAttribute );
 
   Qt3DCore::QAttribute *emissionColorAttribute = new Qt3DCore::QAttribute( geometry );
-  emissionColorAttribute->setName( u"dataDefinedEmissionColor"_s );
+  emissionColorAttribute->setName( u"dataDefinedSecondaryColor"_s );
   emissionColorAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   emissionColorAttribute->setVertexSize( 3 );
   emissionColorAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );

@@ -23,6 +23,7 @@
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscategorized3drenderer.h"
+#include "qgsclothmaterial3dhandler.h"
 #include "qgsgoochmaterial3dhandler.h"
 #include "qgsline3dsymbol.h"
 #include "qgsline3dsymbol_p.h"
@@ -72,6 +73,7 @@ Qgs3D::~Qgs3D()
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"simpleline"_s ) )->setHandler( nullptr );
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"gooch"_s ) )->setHandler( nullptr );
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalrough"_s ) )->setHandler( nullptr );
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"cloth"_s ) )->setHandler( nullptr );
 }
 
 void Qgs3D::initialize()
@@ -103,6 +105,9 @@ void Qgs3D::initialize()
 
   instance()->mMetalRoughTexturedMaterialHandler = std::make_unique< QgsMetalRoughTexturedMaterial3DHandler >();
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalroughtextured"_s ) )->setHandler( instance()->mMetalRoughTexturedMaterialHandler.get() );
+
+  instance()->mClothMaterialHandler = std::make_unique< QgsClothMaterial3DHandler >();
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"cloth"_s ) )->setHandler( instance()->mClothMaterialHandler.get() );
 
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );

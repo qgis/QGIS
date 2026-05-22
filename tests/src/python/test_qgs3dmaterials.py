@@ -10,6 +10,7 @@ import unittest
 from pathlib import Path
 
 from qgis.core import (
+    QgsClothMaterialSettings,
     QgsGoochMaterialSettings,
     QgsMetalRoughMaterialSettings,
     QgsMetalRoughTexturedMaterialSettings,
@@ -1074,6 +1075,86 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         self.assertEqual(specular.blue(), 66)
 
         self.assertAlmostEqual(settings.shininess(), 132.8, 1)
+
+
+class TestQgsClothMaterialSettings(unittest.TestCase):
+    def test_getters_setters(self):
+        settings = QgsClothMaterialSettings()
+
+        # Test default values
+        self.assertEqual(settings.baseColor(), QColor.fromRgbF(0.5, 0.5, 0.5, 1.0))
+        self.assertEqual(settings.roughness(), 0.5)
+        self.assertEqual(settings.sheenColor(), QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
+
+        # Test setters/getters
+        settings.setBaseColor(QColor(255, 0, 0))
+        self.assertEqual(settings.baseColor(), QColor(255, 0, 0))
+
+        settings.setRoughness(0.7)
+        self.assertEqual(settings.roughness(), 0.7)
+
+        settings.setSheenColor(QColor(0, 255, 0))
+        self.assertEqual(settings.sheenColor(), QColor(0, 255, 0))
+
+    def test_clone(self):
+        settings = QgsClothMaterialSettings()
+        settings.setBaseColor(QColor(255, 0, 0))
+        settings.setSheenColor(QColor(0, 255, 0))
+        settings.setRoughness(0.7)
+
+        cloned = settings.clone()
+        self.assertIsInstance(cloned, QgsClothMaterialSettings)
+        self.assertEqual(cloned.baseColor(), QColor(255, 0, 0))
+        self.assertEqual(cloned.roughness(), 0.7)
+        self.assertEqual(cloned.sheenColor(), QColor(0, 255, 0))
+
+    def test_equality(self):
+        settings1 = QgsClothMaterialSettings()
+        settings2 = QgsClothMaterialSettings()
+
+        self.assertEqual(settings1, settings2)
+
+        settings2.setBaseColor(QColor(255, 0, 0))
+        self.assertNotEqual(settings1, settings2)
+        settings1.setBaseColor(QColor(255, 0, 0))
+        self.assertEqual(settings1, settings2)
+
+        settings2.setRoughness(0.7)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setRoughness(0.7)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setSheenColor(QColor(0, 0, 255))
+        self.assertNotEqual(settings1, settings2)
+        settings1.setSheenColor(QColor(0, 0, 255))
+        self.assertEqual(settings1, settings2)
+
+    def test_equals_method(self):
+        settings1 = QgsClothMaterialSettings()
+        settings2 = QgsClothMaterialSettings()
+
+        self.assertTrue(settings1.equals(settings2))
+
+        settings2.setBaseColor(QColor(255, 0, 0))
+        self.assertFalse(settings1.equals(settings2))
+
+        settings1.setBaseColor(QColor(255, 0, 0))
+        self.assertTrue(settings1.equals(settings2))
+
+    def test_xml_roundtrip(self):
+        settings = QgsClothMaterialSettings()
+        settings.setBaseColor(QColor(255, 0, 0))
+        settings.setRoughness(0.7)
+        settings.setSheenColor(QColor(255, 0, 0))
+
+        doc = QDomDocument("settings")
+        element = doc.createElement("settings")
+        settings.writeXml(element, QgsReadWriteContext())
+
+        settings2 = QgsClothMaterialSettings()
+        settings2.readXml(element, QgsReadWriteContext())
+
+        self.assertEqual(settings, settings2)
 
 
 class TestQgsNullMaterialSettings(QgisTestCase):

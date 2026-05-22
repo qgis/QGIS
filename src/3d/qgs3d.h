@@ -122,6 +122,7 @@ class _3D_EXPORT Qgs3D
     std::unique_ptr< QgsAbstractMaterial3DHandler > mGoochMaterialHandler;
     std::unique_ptr< QgsAbstractMaterial3DHandler > mMetalRoughMaterialHandler;
     std::unique_ptr< QgsAbstractMaterial3DHandler > mMetalRoughTexturedMaterialHandler;
+    std::unique_ptr< QgsAbstractMaterial3DHandler > mClothMaterialHandler;
 };
 
 #endif // QGS3D_H

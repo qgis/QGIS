@@ -19,6 +19,7 @@
 #include "qgs3dicongenerator.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsapplication.h"
+#include "qgsclothmaterialwidget.h"
 #include "qgsgoochmaterialwidget.h"
 #include "qgsline3dsymbolwidget.h"
 #include "qgsmaterialregistry.h"
@@ -48,6 +49,7 @@ void Qgs3DAppUtils::initialize()
   qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"simpleline"_s ) )->setWidgetFunction( QgsSimpleLineMaterialWidget::create );
   qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"metalrough"_s ) )->setWidgetFunction( QgsMetalRoughMaterialWidget::create );
   qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"metalroughtextured"_s ) )->setWidgetFunction( QgsMetalRoughTexturedMaterialWidget::create );
+  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"cloth"_s ) )->setWidgetFunction( QgsClothMaterialWidget::create );
 
   QgsStyleModel::setIconGenerator( new Qgs3DIconGenerator( QgsApplication::defaultStyleModel() ) );
 }
