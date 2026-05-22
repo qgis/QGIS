@@ -44,12 +44,16 @@ class CORE_EXPORT QgsSettingsTree
     // only create first level here
     static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( u"app"_s );
     static inline QgsSettingsTreeNode *sTreeAttributeForm = treeRoot()->createChildNode( u"attribute-form"_s );
+    static inline QgsSettingsTreeNode *sTreeBrowser = treeRoot()->createChildNode( u"browser"_s );
+    static inline QgsSettingsTreeNode *sTreeColors = treeRoot()->createChildNode( u"colors"_s );
     static inline QgsSettingsTreeNode *sTreeColorWidgets = treeRoot()->createChildNode( u"color-widgets"_s );
     static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( u"connections"_s );
     static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( u"core"_s );
+    static inline QgsSettingsTreeNode *sTreeCrs = treeRoot()->createChildNode( u"crs"_s );
     static inline QgsSettingsTreeNode *sTreeDigitizing = treeRoot()->createChildNode( u"digitizing"_s );
     static inline QgsSettingsTreeNode *sTreeElevationProfile = treeRoot()->createChildNode( u"elevation-profile"_s );
     static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildNode( u"fonts"_s );
+    static inline QgsSettingsTreeNode *sTreeGdal = treeRoot()->createChildNode( u"gdal"_s );
     static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( u"geometry_validation"_s );
     static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildNode( u"gps"_s );
     static inline QgsSettingsTreeNode *sTreeGradientEditor = treeRoot()->createChildNode( u"gradient-editor"_s );
@@ -60,10 +64,13 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildNode( u"layout"_s );
     static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildNode( u"locale"_s );
     static inline QgsSettingsTreeNode *sTreeMap = treeRoot()->createChildNode( u"map"_s );
+    static inline QgsSettingsTreeNode *sTreeMapTips = treeRoot()->createChildNode( u"map-tips"_s );
     static inline QgsSettingsTreeNode *sTreeNetwork = treeRoot()->createChildNode( u"network"_s );
     static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildNode( u"qgis"_s );
     static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildNode( u"plugins"_s );
     static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildNode( u"processing"_s );
+    static inline QgsSettingsTreeNode *sTreeProfile = treeRoot()->createChildNode( u"profile"_s );
+    static inline QgsSettingsTreeNode *sTreeProject = treeRoot()->createChildNode( u"project"_s );
     static inline QgsSettingsTreeNode *sTreeProxy = treeRoot()->createChildNode( u"proxy"_s );
     static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildNode( u"raster"_s );
     static inline QgsSettingsTreeNode *sTreeRendering = treeRoot()->createChildNode( u"rendering"_s );
@@ -80,6 +87,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeRasterHistogram = sTreeRaster->createChildNode( u"histogram"_s );
     static inline QgsSettingsTreeNode *sTreeCad = sTreeDigitizing->createChildNode( u"cad"_s );
     static inline QgsSettingsTreeNode *sTreeSqlite3 = sTreeDatabase->createChildNode( u"sqlite3"_s );
+    static inline QgsSettingsTreeNode *sTreeLayoutGrid = sTreeLayout->createChildNode( u"grid"_s );
 
 #endif
 
@@ -90,13 +98,24 @@ class CORE_EXPORT QgsSettingsTree
     static const QgsSettingsTreeNode *node( const QString &key ) { return treeRoot()->childNode( key ); }
 
     /**
-     * Creates a settings tree node for the given \a pluginName
+     * Creates a settings tree node for the given \a pluginName.
+     *
+     * \note Since QGIS 4.2 for Python plugins, the node is created automatically by QGIS
+     * when the plugin is started and is exposed as the
+     * ``SETTINGS_NODE`` attribute on the plugin package.
+     * Plugin authors should retrieve it with
+     * ``from <my_plugin> import SETTINGS_NODE`` rather than
+     * calling this method directly.
      */
     static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );
 
 
     /**
-     * Unregisters the tree node for the given plugin
+     * Unregisters the tree node for the given plugin.
+     *
+     * \note Since QGIS 4.2 for Python plugins, the node is unregistered automatically by
+     * QGIS when the plugin is unloaded; plugins do not need to call this
+     * method themselves.
      */
     static void unregisterPluginTreeNode( const QString &pluginName );
 };

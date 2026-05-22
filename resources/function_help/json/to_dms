@@ -15,7 +15,7 @@
   }, {
     "arg": "formatting",
     "optional": true,
-    "default": "",
+    "default": "NULL",
     "description": "Designates the formatting type. Acceptable values are NULL (default), 'aligned' or 'suffix'."
   }],
   "examples": [{

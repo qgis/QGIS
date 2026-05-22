@@ -55,6 +55,7 @@ class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileBasicLabelingWidget;
 class QgsAnnotationLayer;
 class QgsLayerTreeGroup;
+class QgsSettingsEntryInteger;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -68,6 +69,8 @@ class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWid
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
   public:
+    static const QgsSettingsEntryInteger *settingsStyleUndoMergeTimeout SIP_SKIP;
+
     QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last, bool triggerRepaint = true );
 
     /**

@@ -57,7 +57,7 @@ from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.gui import TestTools
-from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute, execute_in_place
 from processing.gui.AlgorithmLocatorFilter import (
     AlgorithmLocatorFilter,
@@ -109,11 +109,8 @@ class ProcessingDropHandler(QgsCustomDropHandler):
             return False
 
         alg.setProvider(QgsApplication.processingRegistry().providerById("model"))
-        dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
-        dlg.show()
-        # do NOT remove!!!! if you do then sip forgets the python subclass of AlgorithmDialog and you get a broken
-        # dialog
-        dlg.exec()
+        widget = AlgorithmWidget(alg)
+        widget.exec()
         return True
 
     def customUriProviderKey(self):
@@ -456,8 +453,7 @@ class ProcessingPlugin(QObject):
             return
 
         if as_batch:
-            dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
-            dlg.show()
+            dlg = BatchAlgorithmDialog(alg)
             dlg.exec()
             return
 
@@ -486,23 +482,11 @@ class ProcessingPlugin(QObject):
             return
 
         if alg.countVisibleParameters() > 0:
-            dlg = alg.createCustomParametersWidget(parent)
+            widget = alg.createCustomParametersWidget(iface.mainWindow())
 
-            if not dlg:
-                dlg = AlgorithmDialog(alg, in_place, iface.mainWindow())
-            canvas = iface.mapCanvas()
-            prevMapTool = canvas.mapTool()
-            dlg.show()
-            dlg.exec()
-            if canvas.mapTool() != prevMapTool:
-                try:
-                    canvas.mapTool().reset()
-                except Exception:
-                    pass
-                try:
-                    canvas.setMapTool(prevMapTool)
-                except RuntimeError:
-                    pass
+            if not widget:
+                widget = AlgorithmWidget(alg, in_place)
+            widget.exec()
         else:
             feedback = MessageBarProgress(algname=alg.displayName())
             context = dataobjects.createContext(feedback)

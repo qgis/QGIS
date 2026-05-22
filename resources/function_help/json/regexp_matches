@@ -10,7 +10,7 @@
     "arg": "regex",
     "description": "the regular expression used to capture groups"
   }, {
-    "arg": "empty_value",
+    "arg": "emptyvalue",
     "optional": true,
     "default": "''",
     "description": "the optional string to use as replacement for empty (zero length) matches"

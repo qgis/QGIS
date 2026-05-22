@@ -2,7 +2,7 @@
   "name": "overlay_equals",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Alias for 'overlay_exactly_equals' function with default geometry backend QGIS. Returns whether the current feature's geometry is exactly equal to at least one feature's geometry from a target layer, or returns an array of expression-based results for the features in the target layer whose geometry is exactly equal to the current feature's geometry. Note that the order of vertices matters.",
+  "description": "Alias for 'overlay_equals_exact' function with default geometry backend QGIS. Returns whether the current feature's geometry is exactly equal to at least one feature's geometry from a target layer, or returns an array of expression-based results for the features in the target layer whose geometry is exactly equal to the current feature's geometry. Note that the order of vertices matters.",
   "arguments": [{
     "arg": "layer",
     "description": "the layer whose overlay is checked"

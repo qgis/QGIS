@@ -33,7 +33,9 @@ namespace Qt3DRender
   class QRenderTarget;
   class QClearBuffers;
   class QFrustumCulling;
+  class QMultiSampleAntiAliasing;
   class QRenderStateSet;
+  class QTexture2DMultisample;
   class QDebugOverlay;
 } // namespace Qt3DRender
 
@@ -57,6 +59,9 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     //! Returns a layer object used to indicate that the object is transparent
     Qt3DRender::QLayer *transparentObjectLayer() { return mTransparentObjectsLayer; }
 
+    //! Returns a layer object used for skybox and background gradient entities
+    Qt3DRender::QLayer *backgroundLayer() { return mBackgroundLayer; }
+
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
 
@@ -68,8 +73,17 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     //! Sets whether debug overlay is enabled
     void setDebugOverlayEnabled( bool enabled );
 
+    //! Sets whether multisample anti-aliasing (MSAA) is enabled
+    void setMsaaEnabled( bool enabled );
+
     //! Returns current render target selector
     Qt3DRender::QRenderTargetSelector *renderTargetSelector() { return mRenderTargetSelector; }
+
+    //! Returns the regular (single-sample) render target used as blit destination and postprocessing input
+    Qt3DRender::QRenderTarget *regularRenderTarget() const { return mRegularRenderTarget; }
+
+    //! Returns the multisampled render target used as blit source when MSAA is enabled
+    Qt3DRender::QRenderTarget *msaaRenderTarget() const { return mMsaaRenderTarget; }
 
     void updateWindowResize( int width, int height ) override;
 
@@ -108,6 +122,7 @@ class QgsForwardRenderView : public QgsAbstractRenderView
 
     Qt3DRender::QLayer *mRenderLayer = nullptr;
     Qt3DRender::QLayer *mTransparentObjectsLayer = nullptr;
+    Qt3DRender::QLayer *mBackgroundLayer = nullptr;
     Qt3DRender::QClearBuffers *mClearBuffers = nullptr;
     bool mFrustumCullingEnabled = true;
     Qt3DRender::QFrustumCulling *mFrustumCulling = nullptr;
@@ -116,16 +131,26 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     Qt3DRender::QTexture2D *mDepthTexture = nullptr;
     // QDebugOverlay added in the forward pass
     Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
+    // MSAA
+    Qt3DRender::QMultiSampleAntiAliasing *mMsaaRenderState = nullptr;
+    Qt3DRender::QRenderTarget *mRegularRenderTarget = nullptr;
+    Qt3DRender::QRenderTarget *mMsaaRenderTarget = nullptr;
+    Qt3DRender::QTexture2DMultisample *mColorTextureMS = nullptr;
+    Qt3DRender::QTexture2DMultisample *mDepthTextureMS = nullptr;
+
+    int mCurrentWidth = 0;
+    int mCurrentHeight = 0;
 
     /**
      * Builds the three forward passes needed by forward: one for solid objects, followed by two for transparent objects
      */
     void buildRenderPasses();
 
-    /**
-     * Build color and depth textures and add then to a new rendertarget
-     */
+    //! Builds the regular (single-sample) color and depth textures and render target.
     Qt3DRender::QRenderTarget *buildTextures();
+
+    //! Builds the multisampled color and depth textures and render target
+    Qt3DRender::QRenderTarget *buildMsaaTarget();
 };
 
 #endif // QGSFORWARDRENDERVIEW_H

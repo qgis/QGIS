@@ -532,7 +532,7 @@ int main( int argc, char *argv[] )
 
   if ( ipAddress.isEmpty() )
   {
-    ipAddress = u"localhost"_s;
+    ipAddress = u"127.0.0.1"_s;
   }
 
   QCommandLineParser parser;

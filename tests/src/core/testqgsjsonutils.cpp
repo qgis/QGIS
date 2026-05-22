@@ -230,7 +230,6 @@ void TestQgsJsonUtils::testExportFeatureJson()
   feature.setAttributes( QgsAttributes() << u"a value"_s << 1 << 2.0 );
 
   const QgsJsonExporter exporter { &vl };
-
   const auto expectedJson { QStringLiteral(
     "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":"
     "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
@@ -245,8 +244,6 @@ void TestQgsJsonUtils::testExportFeatureJson()
   QCOMPARE( json, expectedJson );
 
   const QgsJsonExporter exporterPrecision { &vl, 1 };
-
-
   const auto expectedJsonPrecision { QStringLiteral(
     "{\"bbox\":[1.1,1.1,5.5,5.3],\"geometry\":{\"coordinates\":"
     "[[[1.1,1.3],[5.5,1.1],[5.3,5.3],[1.6,5.2],[1.1,1.3]],"
@@ -260,6 +257,46 @@ void TestQgsJsonUtils::testExportFeatureJson()
   QCOMPARE( QString::fromStdString( jPrecision.dump() ), expectedJsonPrecision );
   const auto jsonPrecision { exporterPrecision.exportFeature( feature ) };
   QCOMPARE( jsonPrecision, expectedJsonPrecision );
+
+  const QgsJsonExporter exporterFeatureTypeAndIdAndExtraProperties { &vl };
+  const auto expectedJsonFeatureTypeAndIdAndExtraProperties { QStringLiteral(
+    "{\"bbox\":[1.12,1.12,5.45,5.33],\"featureType\":\"theForestLayer\",\"geometry\":{\"coordinates\":"
+    "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+    ",\"id\":\"theForestLayer-1337\",\"properties\":{\"andAnExtraProperty\":1337,\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}"
+    ",\"type\":\"Feature\"}"
+  ) };
+  QString layerName( u"theForestLayer"_s );
+  QVariantMap extraMembers;
+  extraMembers["featureType"] = layerName;
+
+  QString genericFeatureId( u"theForestLayer-1337"_s );
+  QVariantMap extraProperties;
+  extraProperties.insert( u"andAnExtraProperty"_s, 1337 );
+
+  const auto jFeatureType( exporterFeatureTypeAndIdAndExtraProperties.exportFeatureToJsonObject( feature, extraProperties, genericFeatureId, extraMembers ) );
+  QCOMPARE( QString::fromStdString( jFeatureType.dump() ), expectedJsonFeatureTypeAndIdAndExtraProperties );
+  const auto jsonFeatureType = exporterFeatureTypeAndIdAndExtraProperties.exportFeature( feature, extraProperties, genericFeatureId, -1, extraMembers );
+  QCOMPARE( jsonFeatureType, expectedJsonFeatureTypeAndIdAndExtraProperties );
+
+  const QgsJsonExporter exporterForeignMembers { &vl };
+  const auto expectedJsonForeignMembers { QStringLiteral(
+    "{\"bbox\":[1.12,1.12,5.45,5.33],\"featureType\":\"anotherForestLayer\",\"geometry\":{\"coordinates\":" //#spellok
+    "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+    ",\"id\":123,\"justAnotherDummy\":\"dum di da di dum di da\",\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}" //#spellok
+    ",\"qgis:requestedWmsName\":\"theForestGroup\",\"type\":\"Feature\"}"                                                             //#spellok
+  ) };
+
+  QVariantMap moreExtraMembers;
+  moreExtraMembers["featureType"] = u"anotherForestLayer"_s;          //#spellok
+  moreExtraMembers["qgis:requestedWmsName"] = u"theForestGroup"_s;    //#spellok
+  moreExtraMembers["justAnotherDummy"] = u"dum di da di dum di da"_s; //#spellok
+
+  const auto jForeignMembers( exporterForeignMembers.exportFeatureToJsonObject( feature, QVariantMap(), QVariant(), moreExtraMembers ) );
+  QCOMPARE( QString::fromStdString( jForeignMembers.dump() ), expectedJsonForeignMembers );
+  const auto jsonForeignMembers = exporterForeignMembers.exportFeature( feature, QVariantMap(), QVariant(), -1, moreExtraMembers );
+  QCOMPARE( jsonForeignMembers, expectedJsonForeignMembers );
 }
 
 void TestQgsJsonUtils::testExportFeatureJsonCrs()

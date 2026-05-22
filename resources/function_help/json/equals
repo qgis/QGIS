@@ -2,7 +2,7 @@
   "name": "equals",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Alias for 'exactly_equals' function with default geometry backend QGIS. Tests whether two geometries are equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is exactly equal to geometry2.",
+  "description": "Alias for 'equals_exact' function with default geometry backend QGIS. Tests whether two geometries are point-by-point exactly equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is exactly equal to geometry2.",
   "arguments": [{
     "arg": "geometry1",
     "description": "a geometry"
@@ -26,5 +26,5 @@
     "expression": "equals( geom_from_wkt( 'POLYGON(( 0 0, 0 1, 1 1, 0 0 ))' ), geom_from_wkt( 'POLYGON(( 0 0, 1 1, 0 1, 0 0 ))' ) )",
     "returns": "FALSE"
   }],
-  "tags": ["tests", "equal", "equals", "exactly"]
+  "tags": ["tests", "equal", "equals", "equals_exact"]
 }

@@ -50,15 +50,15 @@ QgsHighlightsRenderView::QgsHighlightsRenderView( const QString &viewName, Qt3DR
 
 void QgsHighlightsRenderView::buildRenderPasses()
 {
-  Qt3DRender::QRenderTargetSelector *highlightsRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mRendererEnabler );
-  highlightsRenderTargetSelector->setTarget( mRenderTarget );
+  mHighlightsRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mRendererEnabler );
+  mHighlightsRenderTargetSelector->setTarget( mRenderTarget );
 
   // Step 1: draw semi-transparent highlight
   //
   // Clear stencil and render all Highlights Layer's entities as semi-transparent, with no depth test,
   // while writing to the stencil buffer. Depth buffer is not modified.
   {
-    Qt3DRender::QRenderStateSet *stateSet = new Qt3DRender::QRenderStateSet( highlightsRenderTargetSelector );
+    Qt3DRender::QRenderStateSet *stateSet = new Qt3DRender::QRenderStateSet( mHighlightsRenderTargetSelector );
 
     // we need to allow writing to the stencil buffer before clearing it
     Qt3DRender::QStencilMask *forceWriteMask = new Qt3DRender::QStencilMask( stateSet );
@@ -120,7 +120,7 @@ void QgsHighlightsRenderView::buildRenderPasses()
   // Render the highlights entities offseted by x pixels on each of 4 directions using stencil test
   // to only paint around the existing semi-transparent highlight entities.
   {
-    Qt3DRender::QRenderStateSet *stateSet = new Qt3DRender::QRenderStateSet( highlightsRenderTargetSelector );
+    Qt3DRender::QRenderStateSet *stateSet = new Qt3DRender::QRenderStateSet( mHighlightsRenderTargetSelector );
 
     // we need to allow writing to the stencil buffer before clearing it
     Qt3DRender::QStencilMask *stencilReadMask = new Qt3DRender::QStencilMask( stateSet );
@@ -187,4 +187,10 @@ void QgsHighlightsRenderView::updateViewportSizes( int width, int height )
 void QgsHighlightsRenderView::updateWindowResize( int width, int height )
 {
   updateViewportSizes( width, height );
+}
+
+void QgsHighlightsRenderView::setRenderTarget( Qt3DRender::QRenderTarget *target )
+{
+  mRenderTarget = target;
+  mHighlightsRenderTargetSelector->setTarget( mRenderTarget );
 }

@@ -434,8 +434,6 @@ void QgsAttributeTableModel::loadAttributes()
 
   QgsAttributeList attributes;
 
-  mWidgetDatas.clear();
-
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     attributes << idx;
@@ -454,6 +452,7 @@ void QgsAttributeTableModel::loadAttributes()
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
+  mWidgetDatas.clear();
   mWidgetDatas.resize( mFieldCount );
 
   for ( SortCache &cache : mSortCaches )
@@ -811,7 +810,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       {
         if ( role == Qt::BackgroundRole && style.validBackgroundColor() )
           return style.backgroundColor();
-        if ( role == Qt::ForegroundRole )
+        if ( role == Qt::ForegroundRole && style.validTextColor() )
           return style.textColor();
         if ( role == Qt::DecorationRole )
           return style.icon();

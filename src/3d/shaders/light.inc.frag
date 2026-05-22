@@ -28,6 +28,8 @@ struct EnvironmentLight {
 uniform EnvironmentLight envLight;
 uniform int envLightCount = 0;
 
+#pragma include shadows.inc.frag
+
 void adsModelNormalMapped(const in vec3 worldPos,
                           const in vec3 tsNormal,
                           const in vec3 worldEye,
@@ -47,6 +49,7 @@ void adsModelNormalMapped(const in vec3 worldPos,
     for (int i = 0; i < lightCount; ++i) {
         float att = 1.0;
         float sDotN = 0.0;
+        float visibilityFactor = 1.0;
 
         if (lights[i].type != TYPE_DIRECTIONAL) {
             // Point and Spot lights
@@ -82,6 +85,11 @@ void adsModelNormalMapped(const in vec3 worldPos,
             // The light direction is in world space, convert to tangent space
             s = normalize(tangentMatrix * -lights[i].direction);
             sDotN = dot(s, n);
+
+            if (renderShadows == 1 && i == shadowLightIndex)
+            {
+                visibilityFactor = calcVisibilityAfterShadowing(worldPos);
+            }
         }
 
         // Calculate the diffuse factor
@@ -96,8 +104,8 @@ void adsModelNormalMapped(const in vec3 worldPos,
         }
 
         // Accumulate the diffuse and specular contributions
-        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
-        specularColor += att * lights[i].intensity * specular * lights[i].color;
+        diffuseColor += visibilityFactor * att * lights[i].intensity * diffuse * lights[i].color;
+        specularColor += visibilityFactor * att * lights[i].intensity * specular * lights[i].color;
     }
 }
 
@@ -118,6 +126,7 @@ void adsModel(const in vec3 worldPos,
     for (int i = 0; i < lightCount; ++i) {
         float att = 1.0;
         float sDotN = 0.0;
+        float visibilityFactor = 1.0;
 
         if (lights[i].type != TYPE_DIRECTIONAL) {
             // Point and Spot lights
@@ -151,6 +160,11 @@ void adsModel(const in vec3 worldPos,
             // The light direction is in world space already
             s = normalize(-lights[i].direction);
             sDotN = dot(s, n);
+
+            if (renderShadows == 1 && i == shadowLightIndex)
+            {
+                visibilityFactor = calcVisibilityAfterShadowing(worldPos);
+            }
         }
 
         // Calculate the diffuse factor
@@ -165,8 +179,8 @@ void adsModel(const in vec3 worldPos,
         }
 
         // Accumulate the diffuse and specular contributions
-        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
-        specularColor += att * lights[i].intensity * specular * lights[i].color;
+        diffuseColor += visibilityFactor * att * lights[i].intensity * diffuse * lights[i].color;
+        specularColor += visibilityFactor * att * lights[i].intensity * specular * lights[i].color;
     }
 }
 
@@ -183,6 +197,7 @@ void adModel(const in vec3 worldPos,
     for (int i = 0; i < lightCount; ++i) {
         float att = 1.0;
         float sDotN = 0.0;
+        float visibilityFactor = 1.0;
 
         if (lights[i].type != TYPE_DIRECTIONAL) {
             // Point and Spot lights
@@ -216,12 +231,17 @@ void adModel(const in vec3 worldPos,
             // The light direction is in world space already
             s = normalize(-lights[i].direction);
             sDotN = dot(s, n);
+
+            if (renderShadows == 1 && i == shadowLightIndex)
+            {
+                visibilityFactor = calcVisibilityAfterShadowing(worldPos);
+            }
         }
 
         // Calculate the diffuse factor
         float diffuse = max(sDotN, 0.0);
 
         // Accumulate the diffuse contributions
-        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
+        diffuseColor += visibilityFactor * att * lights[i].intensity * diffuse * lights[i].color;
     }
 }

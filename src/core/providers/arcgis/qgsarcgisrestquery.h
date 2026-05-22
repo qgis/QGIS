@@ -45,11 +45,23 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      */
     enum class ServiceTypeFilter
     {
-      AllTypes, //!< All types
-      Vector,   //!< Vector type
-      Raster,   //!< Raster type
-      Scene     //!< Scene
+      Vector = 1 << 0,
+      Raster = 1 << 1,
+      Scene = 1 << 2,
     };
+    Q_DECLARE_FLAGS( ServiceTypeFilters, ServiceTypeFilter );
+
+    /**
+     * Attempts to resolve the service type from a \a url.
+     *
+     * This may not be successful, e.g. when the service is sitting behind an internal proxy.
+     */
+    static Qgis::ArcGisRestServiceType sniffServiceTypeFromUrl( const QUrl &url );
+
+    /**
+     * Attempts to resolve the service type from a \a json definition.
+     */
+    static Qgis::ArcGisRestServiceType sniffServiceTypeFromJson( const QVariantMap &json );
 
     /**
      * Retrieves JSON service info for the specified base URL.
@@ -197,7 +209,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
         //! Parent layer ID
         QString parentLayerId;
         //! Service type
-        ServiceTypeFilter serviceType = ServiceTypeFilter::AllTypes;
+        Qgis::ArcGisRestServiceType serviceType = Qgis::ArcGisRestServiceType::Unknown;
         //! Geometry type
         Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown;
         //! Layer ID
@@ -224,11 +236,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      * Calls the specified \a visitor function on all layer items found within the given service data.
      */
     static void addLayerItems(
-      const std::function<void( const LayerItemDetails &details )> &visitor,
-      const QVariantMap &serviceData,
-      const QString &parentUrl,
-      const QString &parentSupportedFormats,
-      const ServiceTypeFilter filter = ServiceTypeFilter::AllTypes
+      const std::function<void( const LayerItemDetails &details )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, Qgis::ArcGisRestServiceType serviceType
     );
 
     /**
@@ -281,6 +289,8 @@ class CORE_EXPORT QgsArcGisAsyncParallelQuery : public QObject
     QString mAuthCfg;
     QgsHttpHeaders mRequestHeaders;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsArcGisRestQueryUtils::ServiceTypeFilters )
 
 ///@endcond
 

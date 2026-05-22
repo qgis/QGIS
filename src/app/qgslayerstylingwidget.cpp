@@ -45,6 +45,8 @@
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsrendererrasterpropertieswidget.h"
 #include "qgsrendererregistry.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgsstyle.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsundowidget.h"
@@ -970,6 +972,10 @@ void QgsLayerStylingWidget::emitLayerStyleRenamed()
 }
 
 
+const QgsSettingsEntryInteger *QgsMapLayerStyleCommand::settingsStyleUndoMergeTimeout
+  = new QgsSettingsEntryInteger( u"style-undo-merge-timeout"_s, QgsSettingsTree::sTreeGui, 500, u"Timeout in milliseconds for merging successive style undo commands"_s );
+
+
 QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last, bool triggerRepaint )
   : QUndoCommand( text )
   , mLayer( layer )
@@ -1009,7 +1015,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
   // only merge commands if they are created shortly after each other
   // (e.g. user keeps modifying one property)
   QgsSettings settings;
-  int timeout = settings.value( u"UI/styleUndoMergeTimeout"_s, 500 ).toInt();
+  int timeout = settingsStyleUndoMergeTimeout->value();
   if ( mTime.msecsTo( otherCmd->mTime ) > timeout )
     return false;
 

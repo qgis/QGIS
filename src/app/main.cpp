@@ -1607,7 +1607,7 @@ int main( int argc, char *argv[] )
     mypSplash->move( currentDesktopsCenter - mypSplash->rect().center() );
   }
 
-  if ( !takeScreenShots && !myHideSplash && !settings.value( u"qgis/hideSplash"_s ).toBool() )
+  if ( !takeScreenShots && !myHideSplash && !QgisApp::settingsHideSplash->value() )
   {
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( pixmap.mask() );
@@ -1616,11 +1616,11 @@ int main( int argc, char *argv[] )
 
   // optionally restore default window state
   // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
-  if ( myRestoreDefaultWindowState || settings.value( u"qgis/restoreDefaultWindowState"_s, false ).toBool() )
+  if ( myRestoreDefaultWindowState || QgisApp::settingsRestoreDefaultWindowState->value() )
   {
     QgsDebugMsgLevel( u"Resetting /UI/state settings!"_s, 2 );
     settings.remove( u"/UI/state"_s );
-    settings.remove( u"/qgis/restoreDefaultWindowState"_s );
+    QgisApp::settingsRestoreDefaultWindowState->remove();
   }
 
   if ( hideBrowser )

@@ -7,10 +7,10 @@
     "variant": "Relationship variant",
     "variant_description": "Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the relationship between two geometries.",
     "arguments": [{
-      "arg": "geometry",
+      "arg": "geometry1",
       "description": "a geometry"
     }, {
-      "arg": "geometry",
+      "arg": "geometry2",
       "description": "a geometry"
     }],
     "examples": [{
@@ -21,10 +21,10 @@
     "variant": "Pattern match variant",
     "variant_description": "Tests whether the DE-9IM relationship between two geometries matches a specified pattern.",
     "arguments": [{
-      "arg": "geometry",
+      "arg": "geometry1",
       "description": "a geometry"
     }, {
-      "arg": "geometry",
+      "arg": "geometry2",
       "description": "a geometry"
     }, {
       "arg": "pattern",

@@ -280,6 +280,38 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     bool filterToAtlasFeature() const { return mFilterToAtlasIntersection; }
 
     /**
+     * Sets whether series' X axis will adopt categories generated from
+     * the source layer's symbology renderer.
+     *
+     * \since QGIS 4.2
+     */
+    void setGenerateCategoriesFromRenderer( bool generateCategoriesFromRenderer );
+
+    /**
+     * Returns TRUE if series' X axis will adopt categories generated from
+     * the source layer's symbology renderer.
+     *
+     * \since QGIS 4.2
+     */
+    bool generateCategoriesFromRenderer() const { return mGenerateCategoriesFromRenderer; }
+
+    /**
+     * Sets whether chart symbols will adopt the source layer's symbology
+     * renderer (e.g. colors).
+     *
+     * \since QGIS 4.2
+     */
+    void setApplyRendererStyle( bool applyRendererStyle );
+
+    /**
+     * Returns TRUE if chart symbols will adopt the source layer's symbology
+     * renderer (e.g. colors).
+     *
+     * \since QGIS 4.2
+     */
+    bool applyRendererStyle() const { return mApplyRendererStyle; }
+
+    /**
      * Returns a new chart item for the specified \a layout.
      *
      * The caller takes responsibility for deleting the returned object.
@@ -305,6 +337,9 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     void prepareGatherer();
 
+    void createRendererSeriesDetails( QString &rendererXExpression, QStringList &rendererCategories );
+    void applyRendererStyleToPlot( Qgs2DPlot *plot ) const;
+
     QgsLayoutItemChart() = delete;
     QgsLayoutItemChart( const QgsLayoutItemChart & ) = delete;
     QgsLayoutItemChart &operator=( const QgsLayoutItemChart & ) = delete;
@@ -318,6 +353,8 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     QString mSortExpression;
 
     QList<QgsLayoutItemChart::SeriesDetails> mSeriesList;
+    bool mGenerateCategoriesFromRenderer = false;
+    bool mApplyRendererStyle = true;
 
     QPointer< QgsLayoutItemMap > mMap = nullptr;
     QString mMapUuid;

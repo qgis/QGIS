@@ -21,6 +21,8 @@
 #include "qgis_sip.h"
 #include "qgsdatasourceuri.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgssettingstreenode.h"
 
 #include <QString>
 #include <QStringList>
@@ -39,8 +41,11 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     Q_OBJECT
 
   public:
+    static inline QgsSettingsTreeNode *sTreeOgrConnections = QgsSettingsTree::sTreeConnections->createChildNode( u"ogr"_s );
+    static inline QgsSettingsTreeNamedListNode *sTreeOgrDriverConnections = sTreeOgrConnections->createNamedListNode( u"driver"_s );
+    static inline QgsSettingsTreeNamedListNode *sTreeOgrConnectionItems = sTreeOgrDriverConnections->createNamedListNode( u"connection"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+
     static const QgsSettingsEntryString *settingsOgrConnectionPath;
-    static const QgsSettingsEntryString *settingsOgrConnectionSelected;
 
     //! Constructor
     explicit QgsOgrDbConnection( const QString &connName, const QString &settingsKey );

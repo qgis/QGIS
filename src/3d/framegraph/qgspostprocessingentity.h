@@ -16,6 +16,7 @@
 #ifndef QGSPOSTPROCESSINGENTITY_H
 #define QGSPOSTPROCESSINGENTITY_H
 
+#include "qgs3d.h"
 #include "qgsrenderpassquad.h"
 
 #define SIP_NO_FILE
@@ -46,14 +47,24 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
   public:
     //! Constructor
     QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
-    //! Sets the parts of the scene where objects cast shadows
-    void setupShadowRenderingExtent( float minX, float maxX, float minY, float maxY );
-    //! Sets up a directional light that is used to render shadows
-    void setupDirectionalLight( QVector3D position, QVector3D direction );
     //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
+
+    /**
+     * Sets whether the splits between cascading shadow map boundaries should be shown.
+     *
+     * \warning For testing purposes only!
+     */
+    void setShowCascadingShadowSplits( bool enabled );
+
+    //! Sets the index of the directional light that is casting shadows
+    void setShadowLightIndex( int index );
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
+
+    //! Sets the shadow texture map resolution
+    void setShadowMapResolution( int resolution );
+
     //! Sets whether eye dome lighting is enabled
     void setEyeDomeLightingEnabled( bool enabled );
     //! Sets the eye dome lighting strength
@@ -73,8 +84,22 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setAmbientOcclusionEnabled( bool enabled );
 
+    /**
+     * Sets whether physically based bloom is enabled
+     */
+    void setBloomEnabled( bool enabled );
+
+    /**
+     * Sets the bloom \a factor, which controls the strength of the bloom effect.
+     *
+     * The default factor is 0.05.
+     */
+    void setBloomFactor( float factor );
+
   private:
     Qt3DRender::QCamera *mMainCamera = nullptr;
+
+    int mShadowMapResolution = 512;
 
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
@@ -85,17 +110,11 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
     Qt3DRender::QParameter *mMainCameraInvProjMatrixParameter = nullptr;
 
-    Qt3DRender::QCamera *mLightCamera = nullptr;
-    Qt3DRender::QParameter *mLightFarPlaneParameter = nullptr;
-    Qt3DRender::QParameter *mLightNearPlaneParameter = nullptr;
-
-    Qt3DRender::QParameter *mLightPosition = nullptr;
-    Qt3DRender::QParameter *mLightDirection = nullptr;
-
-    Qt3DRender::QParameter *mShadowMinX = nullptr;
-    Qt3DRender::QParameter *mShadowMaxX = nullptr;
-    Qt3DRender::QParameter *mShadowMinY = nullptr;
-    Qt3DRender::QParameter *mShadowMaxY = nullptr;
+    Qt3DRender::QParameter *mShadowLightIndexParameter = nullptr;
+    Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
+    Qt3DRender::QParameter *mCsmMatricesParameter = nullptr;
+    Qt3DRender::QParameter *mCsmBoundsMatricesParameter = nullptr;
+    Qt3DRender::QParameter *mMaxShadowDistanceParameter = nullptr;
 
     Qt3DRender::QParameter *mRenderShadowsParameter = nullptr;
     Qt3DRender::QParameter *mShadowBiasParameter = nullptr;
@@ -104,6 +123,10 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mEyeDomeLightingDistanceParameter = nullptr;
 
     Qt3DRender::QParameter *mAmbientOcclusionEnabledParameter = nullptr;
+
+    Qt3DRender::QParameter *mBloomTextureParameter = nullptr;
+    Qt3DRender::QParameter *mBloomEnabledParameter = nullptr;
+    Qt3DRender::QParameter *mBloomFactorParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsauxiliarystorage.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptooleditblanksegments.h"
@@ -44,14 +45,16 @@ class TestQgsMapToolEditBlankSegments : public QgsTest
 
     void testSelectFeature();
     void testCreateBlankSegment();
+    void testAuxiliaryStorageAutoCreation();
 
   private:
-    void compareBlankSegments( const QString &strBlankSegments, const QList<QList<QgsBlankSegmentUtils::BlankSegments>> &expected );
+    void compareBlankSegments( const QString &strBlankSegments, const QList<QList<QgsSymbolLayerUtils::BlankSegments>> &expected );
     int nbRubberBandVisible() const;
 
     QObjectUniquePtr<QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>> mMapToolEditBlankSegments;
     std::unique_ptr<QgsMapCanvas> mCanvas;
     std::unique_ptr<QgsVectorLayer> mLayer;
+    std::unique_ptr<QgsPropertyOverrideButton> mPropertyButton;
     QgsMarkerLineSymbolLayer *mSymbolLayer = new QgsMarkerLineSymbolLayer();
 };
 
@@ -65,7 +68,7 @@ void TestQgsMapToolEditBlankSegments::initTestCase()
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
 
-  mLayer = std::make_unique<QgsVectorLayer>( u"MultiPolygon?field=pk:int&field=bas:string&crs=EPSG:3946"_s, u"polys"_s, u"memory"_s );
+  mLayer = std::make_unique<QgsVectorLayer>( u"MultiPolygon?field=pk:int&field=the_blank_segments:string&crs=EPSG:3946"_s, u"polys"_s, u"memory"_s );
   QVERIFY( mLayer->isValid() );
   QCOMPARE( mLayer->fields().count(), 2 );
 
@@ -92,6 +95,16 @@ void TestQgsMapToolEditBlankSegments::initTestCase()
   mSymbolLayer->setPlacements( Qgis::MarkerLinePlacement::Interval );
 
   renderer->symbol()->changeSymbolLayer( 0, mSymbolLayer );
+
+  // initialize data defined property
+  const int propertyKey = static_cast<int>( QgsSymbolLayer::Property::BlankSegments );
+  QgsPropertyCollection c = mSymbolLayer->dataDefinedProperties();
+  QgsProperty property = QgsProperty::fromField( "the_blank_segments", true );
+  c.setProperty( propertyKey, property );
+  mSymbolLayer->setDataDefinedProperties( c );
+
+  mPropertyButton = std::make_unique<QgsPropertyOverrideButton>( nullptr, mLayer.get() );
+  mPropertyButton->init( propertyKey, mSymbolLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mLayer.get(), true );
 }
 
 void TestQgsMapToolEditBlankSegments::cleanupTestCase()
@@ -99,7 +112,7 @@ void TestQgsMapToolEditBlankSegments::cleanupTestCase()
 
 void TestQgsMapToolEditBlankSegments::init()
 {
-  mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>( mCanvas.get(), mLayer.get(), mSymbolLayer, 1 ) );
+  mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>( mCanvas.get(), mLayer.get(), mSymbolLayer, mPropertyButton.get() ) );
   mCanvas->setMapTool( mMapToolEditBlankSegments );
 }
 
@@ -123,10 +136,10 @@ int TestQgsMapToolEditBlankSegments::nbRubberBandVisible() const
   return result;
 }
 
-void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBlankSegments, const QList<QList<QgsBlankSegmentUtils::BlankSegments>> &expectedBlankSegments )
+void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBlankSegments, const QList<QList<QgsSymbolLayerUtils::BlankSegments>> &expectedBlankSegments )
 {
   QString error;
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> blankSegments = QgsBlankSegmentUtils::parseBlankSegments( strBlankSegments, QgsRenderContext(), Qgis::RenderUnit::Pixels, error );
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> blankSegments = QgsSymbolLayerUtils::parseBlankSegments( strBlankSegments, QgsRenderContext(), Qgis::RenderUnit::Pixels, error );
   QVERIFY( error.isEmpty() );
 
   QVERIFY2(
@@ -136,8 +149,8 @@ void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBl
 
   for ( int iPart = 0; iPart < expectedBlankSegments.count(); iPart++ )
   {
-    const QList<QgsBlankSegmentUtils::BlankSegments> &expectedRings = expectedBlankSegments.at( iPart );
-    const QList<QgsBlankSegmentUtils::BlankSegments> &rings = blankSegments.at( iPart );
+    const QList<QgsSymbolLayerUtils::BlankSegments> &expectedRings = expectedBlankSegments.at( iPart );
+    const QList<QgsSymbolLayerUtils::BlankSegments> &rings = blankSegments.at( iPart );
     QVERIFY2(
       expectedRings.count() == rings.count(),
       u"Rings number differs (Actual: %1 != Expected: %2) for part %3. Returned blank segments: %4"_s.arg( rings.count() ).arg( expectedRings.count() ).arg( iPart ).arg( strBlankSegments ).toLatin1().constData()
@@ -145,8 +158,8 @@ void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBl
 
     for ( int iRing = 0; iRing < rings.count(); iRing++ )
     {
-      const QgsBlankSegmentUtils::BlankSegments &expectedSegments = expectedRings.at( iRing );
-      const QgsBlankSegmentUtils::BlankSegments &segments = rings.at( iRing );
+      const QgsSymbolLayerUtils::BlankSegments &expectedSegments = expectedRings.at( iRing );
+      const QgsSymbolLayerUtils::BlankSegments &segments = rings.at( iRing );
       QVERIFY2(
         expectedSegments.count() == segments.count(),
         u"Segments number differs (Actual: %1 != Expected: %2) for part %3 and ring %4. Returned blank segments: %5"_s.arg( segments.count() )
@@ -251,6 +264,92 @@ void TestQgsMapToolEditBlankSegments::testCreateBlankSegment()
 
   mLayer->rollBack();
 }
+
+void TestQgsMapToolEditBlankSegments::testAuxiliaryStorageAutoCreation()
+{
+  // reset currently set data defined property
+  QgsPropertyCollection c;
+  mSymbolLayer->setDataDefinedProperties( c );
+  const int propertyKey = static_cast<int>( QgsSymbolLayer::Property::BlankSegments );
+  mPropertyButton->init( propertyKey, mSymbolLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mLayer.get(), true );
+
+  QgsAuxiliaryStorage storage;
+  QgsAuxiliaryLayer *layer = storage.createAuxiliaryLayer( mLayer->fields().field( "pk" ), mLayer.get() );
+  layer->startEditing();
+  mLayer->setAuxiliaryLayer( layer );
+
+  TestQgsMapToolUtils utils( mMapToolEditBlankSegments.get() );
+
+  QVERIFY( FID_IS_NULL( mMapToolEditBlankSegments->mCurrentFeatureId ) );
+
+  utils.mouseClick( 0, 1, Qt::LeftButton );
+  QCOMPARE( mMapToolEditBlankSegments->mCurrentFeatureId, 1 );
+
+  int fieldIndex = mLayer->fields().lookupField( "auxiliary_storage_symbol_blanksegments" );
+  QCOMPARE( fieldIndex, 2 );
+  QCOMPARE( mMapToolEditBlankSegments->mBlankSegmentsFieldIndex, 2 );
+
+  QCOMPARE( layer->featureCount(), 0 );
+
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.mouseMove( 7, 1 );
+  utils.mouseClick( 7, 1, Qt::LeftButton );
+
+  QCOMPARE( layer->featureCount(), 1 );
+
+  QgsFeature feat = mLayer->getFeature( 1 );
+  QVERIFY( feat.isValid() );
+
+  compareBlankSegments( feat.attribute( fieldIndex ).toString(), { { { { 4, 7 } } } } );
+
+  // now test when property contains already an expression
+
+  c = mSymbolLayer->dataDefinedProperties();
+  const QgsProperty expressionProperty = QgsProperty::fromExpression( u"'(((5 5)))'"_s, true );
+  c.setProperty( propertyKey, expressionProperty );
+  mSymbolLayer->setDataDefinedProperties( c );
+  mPropertyButton->setToProperty( expressionProperty );
+  emit mPropertyButton->changed(); // setToProperty doesn't fire the changed signal
+
+  QCOMPARE( mMapToolEditBlankSegments->mBlankSegmentsFieldIndex, -1 );
+  QCOMPARE( nbRubberBandVisible(), 0 );
+  QVERIFY( FID_IS_NULL( mMapToolEditBlankSegments->mCurrentFeatureId ) );
+  QCOMPARE( mMapToolEditBlankSegments->mState, QgsMapToolEditBlankSegmentsBase::State::SelectFeature );
+
+  // select first feature
+  utils.mouseClick( 0, 1, Qt::LeftButton );
+  QCOMPARE( mMapToolEditBlankSegments->mCurrentFeatureId, 1 );
+  QCOMPARE( nbRubberBandVisible(), 0 );
+
+  fieldIndex = mLayer->fields().lookupField( "auxiliary_storage_symbol_blanksegments_2" );
+  QCOMPARE( fieldIndex, 3 );
+  QCOMPARE( mMapToolEditBlankSegments->mBlankSegmentsFieldIndex, 3 );
+
+  c = mSymbolLayer->dataDefinedProperties();
+  QgsProperty newProperty = c.property( propertyKey );
+  QVERIFY( newProperty.isActive() );
+  QCOMPARE( newProperty.propertyType(), Qgis::PropertyType::Expression );
+  QCOMPARE( newProperty.expressionString(), "coalesce(\"auxiliary_storage_symbol_blanksegments_2\",'(((5 5)))')" );
+
+  QCOMPARE( layer->featureCount(), 1 );
+
+  // create blank segment
+  utils.mouseClick( 11, 2, Qt::LeftButton );
+  utils.mouseMove( 9, 9 );
+  utils.mouseClick( 9, 9, Qt::LeftButton );
+
+  QCOMPARE( nbRubberBandVisible(), 2 ); // the one created + start point
+
+  QCOMPARE( layer->featureCount(), 1 );
+
+  feat = mLayer->getFeature( 1 );
+  QVERIFY( feat.isValid() );
+
+  compareBlankSegments( feat.attribute( fieldIndex ).toString(), { { { { 12, 32.8 } } } } );
+
+  mLayer->rollBack();
+}
+
 
 QGSTEST_MAIN( TestQgsMapToolEditBlankSegments )
 #include "testqgsmaptooleditblanksegments.moc"

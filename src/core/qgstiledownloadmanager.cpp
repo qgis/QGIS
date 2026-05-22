@@ -22,7 +22,6 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrangerequestcache.h"
-#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 
@@ -200,7 +199,6 @@ QgsTileDownloadManager::QgsTileDownloadManager()
 {
   mRangesCache = std::make_unique<QgsRangeRequestCache>();
 
-  const QgsSettings settings;
   QString cacheDirectory = QgsSettingsRegistryCore::settingsNetworkCacheDirectory->value();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );

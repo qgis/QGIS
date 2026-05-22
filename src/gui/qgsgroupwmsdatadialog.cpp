@@ -33,6 +33,10 @@ QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( const QgsMapLayerServerProperties 
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  //init widgets
+  mGroupRequestModeCombo->addItem( tr( "Normal" ), QVariant::fromValue( Qgis::WmsGroupRequestMode::Normal ) );
+  mGroupRequestModeCombo->addItem( tr( "Opaque" ), QVariant::fromValue( Qgis::WmsGroupRequestMode::Opaque ) );
+
   serverProperties.copyTo( mServerProperties.get() );
 
   mMapLayerServerPropertiesWidget->setHasWfsTitle( false );
@@ -99,4 +103,14 @@ bool QgsGroupWmsDataDialog::hasTimeDimension() const
 void QgsGroupWmsDataDialog::setHasTimeDimension( bool hasTimeDimension )
 {
   mComputeTimeDimension->setCheckState( hasTimeDimension ? Qt::Checked : Qt::Unchecked );
+}
+
+Qgis::WmsGroupRequestMode QgsGroupWmsDataDialog::groupRequestMode() const
+{
+  return mGroupRequestModeCombo->currentData().value<Qgis::WmsGroupRequestMode>();
+}
+
+void QgsGroupWmsDataDialog::setGroupRequestMode( Qgis::WmsGroupRequestMode groupRequestMode )
+{
+  mGroupRequestModeCombo->setCurrentIndex( mGroupRequestModeCombo->findData( QVariant::fromValue( groupRequestMode ) ) );
 }

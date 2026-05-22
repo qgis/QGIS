@@ -906,9 +906,16 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
       }
       else
       {
+        errorMsg = QObject::tr( "Found attribute '%1' of unknown type" ).arg( name );
         mayTryWithGMLAS = true;
         fields.append( QgsField( name, QMetaType::Type::QString, type ) );
       }
+    }
+    else if ( !ref.isEmpty() )
+    {
+      // We don't have a name, but a ref and it didn't match yet on any geometry pattern
+      errorMsg = QObject::tr( "Found unresolved ref '%1'" ).arg( ref );
+      mayTryWithGMLAS = true;
     }
   }
   if ( !foundGeometryAttribute )

@@ -80,6 +80,13 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   connect( mReuseLastValuePolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateReuseLastValuePolicyLabel );
   updateReuseLastValuePolicyLabel();
 
+  // Behavior to have the provider comment as the null value and consider an empty string as a valid custom comment
+  const QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
+  mClearAction = new QAction( clearIcon, tr( "clear" ), this );
+  mClearAction->setCheckable( false );
+  connect( mClearAction, &QAction::triggered, this, [this]() { mDisplayedComment->setText( mComment ); } );
+  connect( mDisplayedComment, &QLineEdit::textChanged, this, &QgsAttributeTypeDialog::displayedCommentChanged );
+
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
 
@@ -97,6 +104,14 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Alias, mAliasExpressionButton->toProperty() );
   } );
+
+  mCustomCommentExpressionButton->registerExpressionContextGenerator( this );
+  mCustomCommentExpressionButton
+    ->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::CustomComment ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::CustomComment ), vl->editFormConfig().propertyDefinitions(), vl );
+  connect( mCustomCommentExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
+    mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment, mCustomCommentExpressionButton->toProperty() );
+  } );
+
 
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
   connect( mUniqueCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
@@ -491,6 +506,59 @@ QString QgsAttributeTypeDialog::alias() const
   return mAlias->text();
 }
 
+void QgsAttributeTypeDialog::setCustomComment( const QString &customComment )
+{
+  mCustomComment = customComment;
+
+  updateDisplayedComment();
+}
+
+QString QgsAttributeTypeDialog::customComment() const
+{
+  return mCustomComment;
+}
+
+void QgsAttributeTypeDialog::updateDisplayedComment()
+{
+  if ( mCustomComment.isNull() )
+  {
+    mDisplayedComment->setText( mComment );
+  }
+  else
+  {
+    mDisplayedComment->setText( mCustomComment );
+  }
+}
+
+void QgsAttributeTypeDialog::displayedCommentChanged()
+{
+  // The clear button should only be visible when there is a (possibly empty) custom comment
+  bool isActionAdded = mDisplayedComment->actions().contains( mClearAction );
+
+  if ( mDisplayedComment->text() == mComment )
+  {
+    // When the displayed comment text equals the provider comment, the custom comment should be reset
+    mCustomComment = QString();
+    // ...and the clear action should not be visible
+    if ( isActionAdded )
+    {
+      mDisplayedComment->removeAction( mClearAction );
+    }
+  }
+  else
+  {
+    // When the displayed comment text equals not the provider comment, the custom comment should be changed
+    mCustomComment = mDisplayedComment->text();
+
+    // ...and the clear action should be visible
+    if ( !isActionAdded )
+    {
+      mDisplayedComment->addAction( mClearAction, QLineEdit::TrailingPosition );
+    }
+  }
+}
+
+
 void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollection &properties )
 {
   mDataDefinedProperties = properties;
@@ -502,13 +570,17 @@ void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollecti
   {
     mEditableExpressionButton->setToProperty( properties.property( QgsEditFormConfig::DataDefinedProperty::Editable ) );
   }
+  if ( properties.hasProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment ) )
+  {
+    mCustomCommentExpressionButton->setToProperty( properties.property( QgsEditFormConfig::DataDefinedProperty::CustomComment ) );
+  }
 }
 
 void QgsAttributeTypeDialog::setComment( const QString &comment )
 {
-  laCommentContent->setText( comment );
-  laComment->setVisible( !comment.isEmpty() );
-  laCommentContent->setVisible( !comment.isEmpty() );
+  mComment = comment;
+
+  updateDisplayedComment();
 }
 
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )

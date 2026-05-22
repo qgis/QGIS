@@ -15,6 +15,7 @@
 
 #include "qgschunkedentity.h"
 
+#include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
 #include "qgschunklist_p.h"
@@ -22,6 +23,7 @@
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgsgeotransform.h"
+#include "qgsmaplayer.h"
 
 #include <QElapsedTimer>
 #include <QString>
@@ -33,7 +35,6 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-
 
 static float screenSpaceError( const QgsAABB &nodeBbox, float nodeError, const QgsChunkedEntity::SceneContext &sceneContext )
 {

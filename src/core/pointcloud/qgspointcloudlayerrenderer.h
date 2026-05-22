@@ -93,7 +93,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer : public QgsMapLayerRenderer
 
     bool mIsVpc = false;
     const QVector< QgsPointCloudSubIndex > mSubIndexes;
-    std::optional<QgsPointCloudIndex> mOverviewIndex;
+    QVector<QgsPointCloudIndex> mOverviewIndexes;
     double mAverageSubIndexWidth = 0;
     double mAverageSubIndexHeight = 0;
 

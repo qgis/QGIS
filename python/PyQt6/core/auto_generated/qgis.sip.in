@@ -1504,6 +1504,14 @@ The development version
       PreferredGdal,
     };
 
+    enum class UnknownLayerCrsBehavior /BaseType=IntEnum/
+    {
+      NoAction,
+      PromptUserForCrs,
+      UseProjectCrs,
+      UseDefaultCrs,
+    };
+
     enum class Axis /BaseType=IntEnum/
     {
       X,
@@ -2431,17 +2439,43 @@ The development version
       Billboards,
     };
 
+    enum class InstancedMaterialFlag /BaseType=IntFlag/
+    {
+      DataDefinedScale,
+      DataDefinedRotation,
+    };
+    typedef QFlags<Qgis::InstancedMaterialFlag> InstancedMaterialFlags;
+
+
+    enum class TextureFilterQuality /BaseType=IntEnum/
+    {
+      Trilinear,
+      Anisotropic2x,
+      Anisotropic4x,
+      Anisotropic8x,
+      Anisotropic16x,
+    };
+
+    enum class ShadowQuality /BaseType=IntEnum/
+    {
+      Low,
+      Medium,
+      High,
+      VeryHigh,
+      Extreme,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,
       Directional,
     };
 
-    enum class SkyboxType /BaseType=IntEnum/
+    enum class Map3DBackgroundType /BaseType=IntEnum/
     {
-      DistinctTextures,
-      // this is currently broken for z-up coordinate system
-      //Panoramic, //!< Panoramic texture
+      NoBackground,
+      FixedGradientBackground,
+      DistinctTextureSkybox,
     };
 
     enum class SkyboxCubeMapping /BaseType=IntEnum/
@@ -2471,6 +2505,12 @@ The development version
       Never,
       WhenDragging,
       Always,
+    };
+
+    enum class Export3DSceneFormat /BaseType=IntEnum/
+    {
+      Obj,
+      StlAscii
     };
 
     enum class ProfileSurfaceSymbology /BaseType=IntEnum/
@@ -2668,6 +2708,13 @@ The development version
       AboveInsertionPoint,
       TopOfTree,
       OptimalInInsertionGroup,
+    };
+
+    enum class LegendLayerDoubleClickAction /BaseType=IntEnum/
+    {
+      LayerProperties,
+      AttributeTable,
+      LayerStyling,
     };
 
     enum class LayerTreeFilterFlag /BaseType=IntFlag/
@@ -3736,6 +3783,19 @@ The development version
       Earcut
     };
 
+    enum class WmsGroupRequestMode /BaseType=IntEnum/
+    {
+      Normal,
+      Opaque,
+    };
+
+    enum class DockableWidgetInitialState /BaseType=IntEnum/
+    {
+      RestorePreviousState,
+      ForceDocked,
+      ForceDialog,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -4074,6 +4134,8 @@ QFlags<Qgis::MapGridFrameSideFlag> operator|(Qgis::MapGridFrameSideFlag f1, QFla
 QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapability f1, QFlags<Qgis::SymbolConverterCapability> f2);
 
 QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapability f1, QFlags<Qgis::ArcGisRestServiceCapability> f2);
+
+QFlags<Qgis::InstancedMaterialFlag> operator|(Qgis::InstancedMaterialFlag f1, QFlags<Qgis::InstancedMaterialFlag> f2);
 
 
 

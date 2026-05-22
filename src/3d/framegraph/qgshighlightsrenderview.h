@@ -50,6 +50,9 @@ class QgsHighlightsRenderView : public QgsAbstractRenderView
     //! Returns a layer that should be attached to entities meant to be rendered by QgsHighlightsRenderView
     Qt3DRender::QLayer *highlightsLayer() { return mHighlightsLayer; }
 
+    //! Switches the render target (called when toggling MSAA on/off)
+    void setRenderTarget( Qt3DRender::QRenderTarget *target );
+
     //! Returns the width of the generated silhouette effect in pixels
     static int silhouetteWidth() { return 3; }
 
@@ -65,6 +68,7 @@ class QgsHighlightsRenderView : public QgsAbstractRenderView
 
     Qt3DRender::QRenderTarget *mRenderTarget = nullptr;
     Qt3DRender::QCamera *mMainCamera = nullptr;
+    Qt3DRender::QRenderTargetSelector *mHighlightsRenderTargetSelector = nullptr;
     //! Four viewports displaced by pixel offset, for rendering the silhouette
     Qt3DRender::QViewport *mViewportUp = nullptr;
     Qt3DRender::QViewport *mViewportDown = nullptr;

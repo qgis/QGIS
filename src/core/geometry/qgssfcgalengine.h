@@ -431,6 +431,23 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static bool isSimple( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
+
+    /**
+     * Returns the geometry component of a geometry collection at the specified index.
+     *
+     * - For geometries composed of multiple elements (e.g. GeometryColletion, MultiPoint,
+     *   MultiLineString, MultiPolygon), this method returns the sub-geometry at the given index.
+     * - For singular geometries, return the geometry itself when index is 0.
+     *
+     * \param geom geometry to perform the operation
+     * \param index index of geometry to return
+     * \param errorMsg Error message returned by SFGCAL
+     * \return the sub-geometry or a nullptr if the operation failed
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom geometryN( const sfcgal::geometry *geom, unsigned int index, QString *errorMsg = nullptr );
+
     /**
      * Calculate the boundary of \a geom
      *
@@ -668,9 +685,11 @@ class CORE_EXPORT QgsSfcgalEngine
      * The output is a 2D multilinestring
      *
      * \param geom geometry to perform the operation
+     * \param extendToEdges whether to extend the medial axis endpoints to the polygon boundary (since QGIS 4.2).
+     *        This parameter has no effect when using SFCGAL versions earlier than 2.3.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, bool extendToEdges = false, QString *errorMsg = nullptr );
 
     /**
      * Converts a PolyhedralSurface geometry to a Solid geometry.
@@ -710,6 +729,22 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_geom transform( const sfcgal::geometry *geom, const QgsMatrix4x4 &mat, QString *errorMsg = nullptr );
 
     /**
+     * Splits the given geometry with a plane defined by a point \a planePoint and a normal vector \a planeNormal.
+     *
+     * \param geom the 3D geometry on which to perform the operation: a PolyhedralSurface or a TIN
+     * \param planePoint a point belonging to the splitting plane
+     * \param planeNormal the normal vector of the splitting plane
+     * \param closeGeometries If true, ensures resulting geometries are closed.
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \return A GeometryCollection containing the split geometries, or an empty
+     *         GeometryCollection if the plane does not intersect the geometry
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom split3D( const sfcgal::geometry *geom, const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries, QString *errorMsg = nullptr );
+
+    /**
      * Creates a SFGAL geometry from a shared SFCGAL primitive (from SFCGAL library).
      *
      * \param prim primitive to perform the operation
@@ -718,11 +753,87 @@ class CORE_EXPORT QgsSfcgalEngine
     static std::unique_ptr< QgsSfcgalGeometry > toSfcgalGeometry( sfcgal::shared_prim &prim, sfcgal::primitiveType type, QString *errorMsg = nullptr );
 
     /**
+     * Create a box primitive
+     *
+     * \param sizeX the box width
+     * \param sizeY the box depth
+     * \param sizeZ the box height
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createBox( double sizeX, double sizeY, double sizeZ, QString *errorMsg = nullptr );
+
+    /**
+     * Create a cone primitive
+     *
+     * \param bottomRadius The bottom face radius of the cone
+     * \param height The height of the cone
+     * \param topRadius The top face radius of the cone
+     * \param radial The number of radial divisions
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createCone( double bottomRadius, double height, double topRadius, unsigned int radial, QString *errorMsg = nullptr );
+
+    /**
      * Create a cube primitive
      * \param size the cube size
      * \param errorMsg Error message returned by SFGCAL
      */
     static sfcgal::shared_prim createCube( double size, QString *errorMsg = nullptr );
+
+    /**
+     * Create a cylinder primitive
+     *
+     * \param radius The radius of the cylinder
+     * \param height The height of the cylinder
+     * \param radial The number of radial divisions
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createCylinder( double radius, double height, unsigned int radial, QString *errorMsg = nullptr );
+
+    /**
+     * Create a sphere primitive
+     *
+     * \param radius The radius of the sphere
+     * \param subdivisions The number of icosahedron subdivisions (0=12 vertices, 1=42, 2=162, etc.)
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createSphere( double radius, unsigned int subdivisions, QString *errorMsg = nullptr );
+
+    /**
+     * Create a torus primitive
+     *
+     * \param mainRadius The main radius of the torus
+     * \param tubeRadius The tube radius of the torus
+     * \param mainRadial The number of main radial divisions
+     * \param tubeRadial The number of tube radial divisions
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createTorus( double mainRadius, double tubeRadius, unsigned int mainRadial, unsigned int tubeRadial, QString *errorMsg = nullptr );
 
     /**
      * Clones \a prim.
@@ -756,23 +867,25 @@ class CORE_EXPORT QgsSfcgalEngine
      * Computes the area of \a prim.
      *
      * \param prim primitive to perform the operation
+     * \param primTransform a transformation matrix
      * \param withDiscretization If true, the area is computed
      * using the real discretization with radial segments. If false, the area is
      * computed for a perfect primitive. Defaults to false.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static double primitiveArea( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
+    static double primitiveArea( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform = QgsMatrix4x4(), bool withDiscretization = false, QString *errorMsg = nullptr );
 
     /**
      * Computes the volume of \a prim.
      *
      * \param prim primitive to perform the operation
+     * \param primTransform a transformation matrix
      * \param withDiscretization If true, the volume is computed
      * using the real discretization with radial segments. If false, the volume is
      * computed for a perfect primitive. Defaults to false.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static double primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
+    static double primitiveVolume( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform = QgsMatrix4x4(), bool withDiscretization = false, QString *errorMsg = nullptr );
 
     /**
      * Returns the list of available parameter description for this primitive.

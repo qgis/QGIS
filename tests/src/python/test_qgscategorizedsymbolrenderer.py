@@ -1781,6 +1781,63 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         self.assertEqual(layer.featureCount(cat_b_id), 2)
         self.assertEqual(layer.featureCount(cat_default_id), 1)
 
+    def test_layer_counts_other_categories(self):
+        """Test that features with values that don't match any category are counted in the
+        fallback 'else' category"""
+
+        def _test(type, values, fallback_value):
+            layer = QgsVectorLayer(
+                f"Point?field=test_field:{type}", "test_layer", "memory"
+            )
+            self.assertTrue(layer.isValid())
+            fields = layer.fields()
+            layer.startEditing()
+
+            # add test values
+            values.append(None)
+            for attr_value in values:
+                f = QgsFeature(fields)
+                f.setAttributes([attr_value])
+                self.assertTrue(layer.addFeature(f))
+
+            self.assertEqual(layer.featureCount(), 3)
+            layer.commitChanges()
+
+            renderer = QgsCategorizedSymbolRenderer()
+            renderer.setClassAttribute("test_field")
+
+            renderer.addCategory(
+                QgsRendererCategory(
+                    str(values[0]), createMarkerSymbol(), str(values[0])
+                )
+            )
+            cat_a_id = renderer.categories()[-1].uuid()
+            renderer.addCategory(
+                QgsRendererCategory(
+                    fallback_value, createMarkerSymbol(), "other values"
+                )
+            )
+            cat_other_id = renderer.categories()[-1].uuid()
+
+            self.assertEqual(renderer.legendKeys(), {cat_a_id, cat_other_id})
+
+            ctx = QgsRenderContext()
+            renderer.startRender(ctx, layer.fields())
+
+            self.assertEqual(
+                renderer.legendKeysForFeature(layer.getFeature(1), ctx), {cat_a_id}
+            )
+            self.assertEqual(
+                renderer.legendKeysForFeature(layer.getFeature(3), ctx), {cat_other_id}
+            )
+            self.assertEqual(
+                renderer.legendKeysForFeature(layer.getFeature(2), ctx), {cat_other_id}
+            )
+
+        _test("string", ["a", "b"], QVariant())
+        _test("int", [1, 2], QVariant())
+        _test("int", [1, 2], "")
+
 
 if __name__ == "__main__":
     unittest.main()

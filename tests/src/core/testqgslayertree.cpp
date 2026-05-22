@@ -28,7 +28,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsproject.h"
 #include "qgsrulebasedrenderer.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
@@ -321,8 +321,7 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   QgsSymbolLegendNode::MINIMUM_SIZE = -1;
   QgsSymbolLegendNode::MAXIMUM_SIZE = -1;
 
-  QgsSettings settings;
-  settings.setValue( "/qgis/legendsymbolMaximumSize", maxSize );
+  QgsSymbolLegendNode::settingsLegendSymbolMaximumSize->setValue( maxSize );
 
   //new memory layer
   QgsVectorLayer *vl = new QgsVectorLayer( u"Point?field=col1:integer"_s, u"vl"_s, u"memory"_s );
@@ -377,8 +376,7 @@ void TestQgsLayerTree::testRestrictedSymbolSizeWithGeometryGenerator()
   QgsSymbolLegendNode::MINIMUM_SIZE = -1;
   QgsSymbolLegendNode::MAXIMUM_SIZE = -1;
 
-  QgsSettings settings;
-  settings.setValue( "/qgis/legendsymbolMaximumSize", maxSize );
+  QgsSymbolLegendNode::settingsLegendSymbolMaximumSize->setValue( maxSize );
 
   //new memory layer
   QgsVectorLayer *vl = new QgsVectorLayer( u"Point?field=col1:integer"_s, u"vl"_s, u"memory"_s );

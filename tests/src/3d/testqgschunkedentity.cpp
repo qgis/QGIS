@@ -17,6 +17,8 @@
 
 #include "qgs3d.h"
 #include "qgs3dmapsettings.h"
+#include "qgscategorized3drenderer.h"
+#include "qgscategorizedchunkloader_p.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -44,6 +46,7 @@ class TestQgsChunkedEntity : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void vectorLayerChunkedEntityElevationOffset();
     void ruleBasedChunkedEntityElevationOffset();
+    void categorizedChunkedEntityElevationOffset();
 
   private:
     std::unique_ptr<QgsProject> mProject;
@@ -190,6 +193,66 @@ void TestQgsChunkedEntity::ruleBasedChunkedEntityElevationOffset()
   rule2->setSymbol( symbolTerrain->clone() );
 
   entity.reset( renderer3d->createEntity( map ) );
+  QVERIFY( entity );
+  trs = entity->componentsOfType<Qt3DCore::QTransform>();
+  QVERIFY( trs.size() == 1 );
+  QVERIFY( trs.constFirst()->translation() == QVector3D( 0.0f, 0.0f, 0.0f ) );
+}
+
+void TestQgsChunkedEntity::categorizedChunkedEntityElevationOffset()
+{
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+
+  auto symbolAbsolute = std::make_unique<QgsPolygon3DSymbol>();
+  symbolAbsolute->setAltitudeClamping( Qgis::AltitudeClamping::Absolute );
+
+  Qgs3DCategoryList categories;
+  categories.append( Qgs3DRendererCategory( QVariant( "industrial" ), symbolAbsolute->clone() ) );
+  categories.append( Qgs3DRendererCategory( QVariant( "commercial" ), symbolAbsolute->clone() ) );
+  categories.append( Qgs3DRendererCategory( QVariant( "residential" ), symbolAbsolute->clone() ) );
+  QgsCategorized3DRenderer *renderer3d = new QgsCategorized3DRenderer( QString( "type" ), categories );
+
+
+  renderer3d->setLayer( mLayerBuildings );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  std::unique_ptr<Qt3DCore::QEntity> entity( renderer3d->createEntity( mapSettings ) );
+  QVERIFY( entity );
+  QVector<Qt3DCore::QTransform *> trs = entity->componentsOfType<Qt3DCore::QTransform>();
+  QVERIFY( trs.size() == 1 );
+  QVERIFY( trs.constFirst()->translation() == QVector3D( 0.0f, 0.0f, 0.0f ) );
+
+  // set an elevation offset, no change if clamping is absolute for all rules
+  const float offset = 42.f;
+  QgsAbstractTerrainSettings *terrainSettings = mapSettings->terrainSettings()->clone();
+  terrainSettings->setElevationOffset( offset );
+  mapSettings->setTerrainSettings( terrainSettings );
+
+  entity.reset( renderer3d->createEntity( mapSettings ) );
+  QVERIFY( entity );
+  trs = entity->componentsOfType<Qt3DCore::QTransform>();
+  QVERIFY( trs.size() == 1 );
+  QVERIFY( trs.constFirst()->translation() == QVector3D( 0.0f, 0.0f, 0.0f ) );
+
+  // if clamping is terrain for all rules, offset is applied
+  std::unique_ptr<QgsPolygon3DSymbol> symbolTerrain( static_cast<QgsPolygon3DSymbol *>( symbolAbsolute->clone() ) );
+  symbolTerrain->setAltitudeClamping( Qgis::AltitudeClamping::Terrain );
+  for ( int i = 0; i < categories.size(); ++i )
+  {
+    renderer3d->updateCategorySymbol( i, symbolTerrain->clone() );
+  }
+
+  entity.reset( renderer3d->createEntity( mapSettings ) );
+  QVERIFY( entity );
+  trs = entity->componentsOfType<Qt3DCore::QTransform>();
+  QVERIFY( trs.size() == 1 );
+  QVERIFY( trs.constFirst()->translation() == QVector3D( 0.0f, 0.0f, offset ) );
+
+  // if clamping is absolute in at least one category, offset is zero
+  renderer3d->updateCategorySymbol( 0, symbolAbsolute->clone() );
+
+  entity.reset( renderer3d->createEntity( mapSettings ) );
   QVERIFY( entity );
   trs = entity->componentsOfType<Qt3DCore::QTransform>();
   QVERIFY( trs.size() == 1 );

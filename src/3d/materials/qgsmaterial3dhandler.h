@@ -33,15 +33,13 @@ class QgsReadWriteContext;
 class QgsLineMaterial;
 class QgsExpressionContext;
 class QgsAbstractMaterialSettings;
+class Qgs3DRenderContext;
 
 namespace Qt3DCore
 {
   class QGeometry;
 }
-namespace Qt3DExtras
-{
-  class Qt3DWindow;
-}
+
 
 /**
  * \ingroup qgis_3d
@@ -55,6 +53,13 @@ namespace Qt3DExtras
 class _3D_EXPORT QgsMaterialContext
 {
   public:
+    /**
+     * Constructs a material context from the settings in a 3D render \a context.
+     *
+     * \since QGIS 4.2
+    */
+    static QgsMaterialContext fromRenderContext( const Qgs3DRenderContext &context );
+
     /**
      * Returns TRUE if the material should represent a selected state.
      *
@@ -99,11 +104,28 @@ class _3D_EXPORT QgsMaterialContext
      */
     void setIsHighlighted( bool isHighlighted ) { mIsHighlighted = isHighlighted; }
 
+    /**
+     * Returns the texture filtering quality.
+     *
+     * \see setTextureFilterQuality()
+     * \since QGIS 4.2
+     */
+    Qgis::TextureFilterQuality textureFilterQuality() const { return mTextureFilterQuality; }
+
+    /**
+     * Sets the texture filtering \a quality.
+     *
+     * \see textureFilterQuality()
+     * \since QGIS 4.2
+     */
+    void setTextureFilterQuality( Qgis::TextureFilterQuality quality ) { mTextureFilterQuality = quality; }
+
   private:
     bool mIsSelected = false;
     bool mIsHighlighted = false;
 
     QColor mSelectedColor;
+    Qgis::TextureFilterQuality mTextureFilterQuality = Qgis::TextureFilterQuality::Trilinear;
 };
 
 
@@ -129,14 +151,21 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
     virtual QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
 
     /**
+     * Creates a QgsMaterial for instanced point rendering.
+     *
+     * The \a flags argument controls which per-instance attributes are active.
+     *
+     * The default implementation returns NULLPTR.
+     *
+     * Subclasses that support instancing must override this method to construct the material with the
+     * correct shader from the start.
+     */
+    virtual QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const;
+
+    /**
      * Returns the parameters to be exported to .mtl file
      */
     virtual QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const = 0;
-
-    /**
-     * Adds parameters from the material \a settings to a destination \a effect.
-     */
-    virtual void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const = 0;
 
     /**
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
@@ -150,12 +179,6 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      * \since QGIS 3.18
      */
     virtual QByteArray dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const;
-
-    /**
-     * Returns byte stride of the data defined colors,used to fill the vertex colors data defined buffer for rendering
-     * \since QGIS 3.18
-     */
-    virtual int dataDefinedByteStride( const QgsAbstractMaterialSettings *settings ) const;
 
     /**
      * Encapsulates information about available preview meshes.
@@ -192,9 +215,7 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      *
      * This method can be overridden to customize the lighting or mesh for a specific material.
      */
-    virtual Qt3DCore::QEntity *createPreviewScene(
-      const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent
-    ) const;
+    virtual Qt3DCore::QEntity *createPreviewScene( const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, QWindow *window, Qt3DCore::QEntity *parent ) const;
 
     /**
      * Updates an existing material preview scene with new material \a settings.

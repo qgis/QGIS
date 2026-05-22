@@ -38,6 +38,7 @@ Constructor for QgsImageCache, with the specified ``parent`` object.
 
     ~QgsImageCache();
 
+
     long maximumSize() const;
 %Docstring
 Returns the maximum size of the cache, in bytes.

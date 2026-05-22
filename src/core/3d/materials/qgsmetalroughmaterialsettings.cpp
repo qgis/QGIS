@@ -67,8 +67,14 @@ bool QgsMetalRoughMaterialSettings::equals( const QgsAbstractMaterialSettings *o
 void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mBaseColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( u"base"_s, u"125,125,125"_s ) );
+  if ( elem.hasAttribute( u"emission_color"_s ) )
+    mEmissiveColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( u"emission_color"_s ) );
+  else
+    mEmissiveColor = QColor();
+  mEmissionFactor = elem.attribute( u"emission_factor"_s, u"1.0"_s ).toDouble();
   mMetalness = elem.attribute( u"metalness"_s, u"0.0"_s ).toDouble();
   mRoughness = elem.attribute( u"roughness"_s, u"0.5"_s ).toDouble();
+  mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -78,6 +84,26 @@ void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
   elem.setAttribute( u"base"_s, QgsSymbolLayerUtils::encodeColor( mBaseColor ) );
   elem.setAttribute( u"metalness"_s, mMetalness );
   elem.setAttribute( u"roughness"_s, mRoughness );
+  if ( mEmissiveColor.isValid() )
+    elem.setAttribute( u"emission_color"_s, QgsSymbolLayerUtils::encodeColor( mEmissiveColor ) );
+  if ( !qgsDoubleNear( mEmissionFactor, 1.0 ) )
+  {
+    elem.setAttribute( u"emission_factor"_s, mEmissionFactor );
+  }
+  if ( !qgsDoubleNear( mOpacity, 1 ) )
+  {
+    elem.setAttribute( u"opacity"_s, mOpacity );
+  }
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
+}
+
+QColor QgsMetalRoughMaterialSettings::averageColor() const
+{
+  return baseColor();
+}
+
+void QgsMetalRoughMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setBaseColor( baseColor );
 }

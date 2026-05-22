@@ -4,6 +4,7 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
+      "featureType": "testlayer èé",
       "geometry": null,
       "id": "testlayer èé.1",
       "properties": {
@@ -14,6 +15,7 @@ Content-Type: application/json; charset=utf-8
       "type": "Feature"
     },
     {
+      "featureType": "testlayer èé",
       "geometry": null,
       "id": "testlayer èé.2",
       "properties": {

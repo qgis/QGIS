@@ -23,6 +23,7 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapexportsettings.h"
+#include "qgs3dmapexportwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
@@ -34,6 +35,7 @@
 #include "qgs3dutils.h"
 #include "qgsannotationlayer.h"
 #include "qgsapplication.h"
+#include "qgsbloomsettings.h"
 #include "qgscameracontroller.h"
 #include "qgscrosssection.h"
 #include "qgscurve.h"
@@ -45,7 +47,6 @@
 #include "qgshelp.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgslinestring.h"
-#include "qgsmap3dexportwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptoolclippingplanes.h"
@@ -372,6 +373,15 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mEffectsMenu->addAction( mActionEnableAmbientOcclusion );
 
+  mActionEnableBloom = new QAction( tr( "Show Bloom Lighting Effect" ), this );
+  mActionEnableBloom->setCheckable( true );
+  connect( mActionEnableBloom, &QAction::triggered, this, [this]( bool enabled ) {
+    QgsBloomSettings bloomSettings = mCanvas->mapSettings()->bloomSettings();
+    bloomSettings.setEnabled( enabled );
+    mCanvas->mapSettings()->setBloomSettings( bloomSettings );
+  } );
+  mEffectsMenu->addAction( mActionEnableBloom );
+
   // Options Menu
   QAction *configureAction = new QAction( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ), tr( "Configure…" ), this );
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configure );
@@ -468,7 +478,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   onTotalPendingJobsCountChanged();
 
   mDockableWidgetHelper
-    = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::RespectSetting );
+    = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? Qgis::DockableWidgetInitialState::ForceDocked : Qgis::DockableWidgetInitialState::RestorePreviousState );
 
   if ( QDialog *dialog = mDockableWidgetHelper->dialog() )
   {
@@ -924,7 +934,7 @@ void Qgs3DMapCanvasWidget::exportScene()
   QgsGui::enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapExportSettings exportSettings;
-  QgsMap3DExportWidget exportWidget( mCanvas->scene(), &exportSettings );
+  Qgs3DMapExportWidget exportWidget( mCanvas->scene(), &exportSettings );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, &dlg );
 
@@ -938,16 +948,14 @@ void Qgs3DMapCanvasWidget::exportScene()
   if ( dlg.exec() )
   {
     const bool success = exportWidget.exportScene();
-    const QString exportFilePath = QDir( exportSettings.sceneFolderPath() ).filePath( exportSettings.sceneName() + u".obj"_s );
+    const QString exportFileUri = exportSettings.exportFileUri();
     if ( success )
     {
-      mMessageBar
-        ->pushMessage( tr( "Export 3D scene" ), tr( "Successfully exported scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Success, 0 );
+      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Successfully exported scene to <a href=\"%1\">%2</a>" ).arg( exportFileUri, QDir::toNativeSeparators( exportFileUri ) ), Qgis::MessageLevel::Success, 0 );
     }
     else
     {
-      mMessageBar
-        ->pushMessage( tr( "Export 3D scene" ), tr( "Unable to export scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Warning, 0 );
+      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Unable to export scene to <a href=\"%1\">%2</a>" ).arg( exportFileUri, QDir::toNativeSeparators( exportFileUri ) ), Qgis::MessageLevel::Warning, 0 );
     }
   }
 }
@@ -1412,6 +1420,7 @@ void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSe
   whileBlocking( mActionEnableShadows )->setChecked( mapSettings->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( mapSettings->eyeDomeLightingEnabled() );
   whileBlocking( mActionEnableAmbientOcclusion )->setChecked( mapSettings->ambientOcclusionSettings().isEnabled() );
+  whileBlocking( mActionEnableBloom )->setChecked( mapSettings->bloomSettings().isEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolygon )->setChecked( mapSettings->viewFrustumVisualizationEnabled() );

@@ -22,6 +22,7 @@
 #include <ctime>
 
 #include "qgis_app.h"
+#include "qgsattributetableconfig.h"
 
 #include <QDialog>
 #include <QItemSelectionModel>
@@ -36,17 +37,37 @@ class QgsAttributeTableFilterModel;
 class QgsRubberBand;
 struct QgsStoredExpression;
 class QgsDockableWidgetHelper;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryEnumFlag<QgsAttributeTableConfig::AddFeatureMethod> *settingsDefaultAddFeatureMethod SIP_SKIP;
+
     //! Settings entry autosize columns by default when opening attribute table
     static const QgsSettingsEntryBool *settingsAutosizeAttributeTable SIP_SKIP;
 
     //! Settings entry whether attribute tables are docked by default
     static const QgsSettingsEntryBool *settingsAttributeTableDefaultDocked SIP_SKIP;
+
+    /**
+     * Initial attribute table view used when opening the dialog.
+     *
+     * Mirrors QgsDualView::ViewMode but adds a sentinel value to
+     * mean "reuse the view last used in the dialog".
+     */
+    enum InitialView
+    {
+      RememberLast = -1,                              //!< Reuse the view last used in the dialog
+      AttributeTable = QgsDualView::AttributeTable,   //!< Table layout
+      AttributeEditor = QgsDualView::AttributeEditor, //!< Form layout
+    };
+    Q_ENUM( InitialView )
+
+    //! Settings entry for the initial attribute table view (table, form or remember last)
+    static const QgsSettingsEntryEnumFlag<QgsAttributeTableDialog::InitialView> *settingsAttributeTableInitialView SIP_SKIP;
 
     /**
      * Constructor
@@ -197,7 +218,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     /**
      * add feature
      */
-    void mActionAddFeature_triggered();
     void mActionAddFeatureViaAttributeTable_triggered();
     void mActionAddFeatureViaAttributeForm_triggered();
 
@@ -242,6 +262,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
   private:
     QMenu *mMenuActions = nullptr;
     QToolButton *mActionFeatureActions = nullptr;
+    QToolButton *mAddFeatureButton = nullptr;
 
     QDialog *mDialog = nullptr;
 

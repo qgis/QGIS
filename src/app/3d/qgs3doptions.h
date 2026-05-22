@@ -19,6 +19,8 @@
 
 #include "qgsoptionswidgetfactory.h"
 
+class QgsSettingsEntryBool;
+
 /**
  * \ingroup app
  * \class Qgs3DOptionsWidget

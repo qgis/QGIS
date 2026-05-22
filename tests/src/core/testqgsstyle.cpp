@@ -140,6 +140,7 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
     }
     void readXml( const QDomElement &elem, const QgsReadWriteContext & ) override { id = elem.attribute( u"id"_s ); }
     void writeXml( QDomElement &elem, const QgsReadWriteContext & ) const override { elem.setAttribute( u"id"_s, id ); }
+    void setMaterialSettings( QgsAbstractMaterialSettings * ) override {};
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Line; }
 
     QString id;

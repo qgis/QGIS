@@ -369,11 +369,15 @@ set(QGIS_GUI_SRCS
 
   maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooleditblanksegments.cpp
+  maptools/qgsmaptoolextraitem.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp
   maptools/qgsmaptoolidentify.cpp
   maptools/qgsmaptoolidentifyfeature.cpp
   maptools/qgsmaptoolpan.cpp
+  maptools/qgsmaptoolselect.cpp
+  maptools/qgsmaptoolselectionhandler.cpp
+  maptools/qgsmaptoolselectutils.cpp
   maptools/qgsmaptoolshapeabstract.cpp
   maptools/qgsmaptoolshaperegistry.cpp
   maptools/qgsmaptoolzoom.cpp
@@ -422,7 +426,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingaggregatewidgets.cpp
   processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
-  processing/qgsprocessingalgorithmdialogbase.cpp
+  processing/qgsprocessingalgorithmwidgetbase.cpp
   processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
   processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
@@ -1392,11 +1396,15 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
   maptools/qgsmaptooleditblanksegments.h
+  maptools/qgsmaptoolextraitem.h
   maptools/qgsmaptoolemitpoint.h
   maptools/qgsmaptoolextent.h
   maptools/qgsmaptoolidentify.h
   maptools/qgsmaptoolidentifyfeature.h
   maptools/qgsmaptoolpan.h
+  maptools/qgsmaptoolselect.h
+  maptools/qgsmaptoolselectionhandler.h
+  maptools/qgsmaptoolselectutils.h
   maptools/qgsmaptoolshapeabstract.h
   maptools/qgsmaptoolshaperegistry.h
   maptools/qgsmaptoolzoom.h
@@ -1445,7 +1453,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingaggregatewidgets.h
   processing/qgsprocessingaggregatewidgetwrapper.h
   processing/qgsprocessingalgorithmconfigurationwidget.h
-  processing/qgsprocessingalgorithmdialogbase.h
+  processing/qgsprocessingalgorithmwidgetbase.h
   processing/qgsprocessingbatchalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
@@ -1639,6 +1647,7 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolselectordialog.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
+  symbology/qgstemplatedcategorizedrendererwidget_p.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 
   sensor/qgssensorguiregistry.h

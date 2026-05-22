@@ -270,6 +270,8 @@ class TestQgsTessellator : public QgsTest
     void narrowPolygon();
     void testOutputZUp();
     void testDuplicatePoints();
+    void testRoofs();
+    void testFloorsAndRoofs();
 
   private:
 };
@@ -1220,6 +1222,212 @@ void TestQgsTessellator::testDuplicatePoints()
   tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesZEarcut.addPolygon( polygonZ, 0 );
   QVERIFY( checkTriangleOutput( extractTriangles( tesZEarcut, false ), trianglesZEarcut ) );
+}
+
+void TestQgsTessellator::testRoofs()
+{
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
+
+  QgsPolygon polygonZflat;
+  polygonZflat.fromWkt( "POLYGONZ((1 1 3, 2 1 3, 3 2 3, 1 2 3, 1 1 3))" );
+
+  // this is a more complicated polygon with Z coordinates where the "roof" is not in one plane
+  QgsPolygon polygonZnonFlat;
+  polygonZnonFlat.fromWkt( "POLYGONZ((1 1 1, 2 1 2, 3 2 3, 1 2 4, 1 1 1))" );
+
+  {
+    // polygon CD
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 2, 10 ), QVector3D( 1, 1, 10 ), QVector3D( 2, 1, 10 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 10 ), QVector3D( 2, 1, 10 ), QVector3D( 3, 2, 10 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::ConstrainedDelaunay );
+    t.addPolygon( polygon, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // polygon Earcut
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 1, 10 ), QVector3D( 2, 1, 10 ), QVector3D( 3, 2, 10 ) );
+    tc << TriangleCoords( QVector3D( 3, 2, 10 ), QVector3D( 1, 2, 10 ), QVector3D( 1, 1, 10 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+    t.addPolygon( polygon, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // flat polygon Z CD
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 2, 13 ), QVector3D( 1, 1, 13 ), QVector3D( 2, 1, 13 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 13 ), QVector3D( 2, 1, 13 ), QVector3D( 3, 2, 13 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::ConstrainedDelaunay );
+    t.addPolygon( polygonZflat, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // flat polygon Z Earcut
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 1, 13 ), QVector3D( 2, 1, 13 ), QVector3D( 3, 2, 13 ) );
+    tc << TriangleCoords( QVector3D( 3, 2, 13 ), QVector3D( 1, 2, 13 ), QVector3D( 1, 1, 13 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+    t.addPolygon( polygonZflat, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // polygon Z CD
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 13 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 12 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::ConstrainedDelaunay );
+    t.addPolygon( polygonZnonFlat, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // polygon Z Earcut
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 3, 2, 13 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 11 ) );
+    tc << TriangleCoords( QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 13 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+    t.addPolygon( polygonZnonFlat, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+}
+
+void TestQgsTessellator::testFloorsAndRoofs()
+{
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
+
+  QgsPolygon polygonZflat;
+  polygonZflat.fromWkt( "POLYGONZ((1 1 3, 2 1 3, 3 2 3, 1 2 3, 1 1 3))" );
+
+  // this is a more complicated polygon with Z coordinates where the "roof" is not in one plane
+  QgsPolygon polygonZnonFlat;
+  polygonZnonFlat.fromWkt( "POLYGONZ((1 1 1, 2 1 2, 3 2 3, 1 2 4, 1 1 1))" );
+
+  {
+    // polygon CD
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 10 ), QVector3D( 1, 1, 10 ), QVector3D( 2, 1, 10 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 10 ), QVector3D( 2, 1, 10 ), QVector3D( 3, 2, 10 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Floor | Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::ConstrainedDelaunay );
+    t.addPolygon( polygon, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // polygon Earcut
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
+    tc << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ) );
+    tc << TriangleCoords( QVector3D( 1, 1, 10 ), QVector3D( 2, 1, 10 ), QVector3D( 3, 2, 10 ) );
+    tc << TriangleCoords( QVector3D( 3, 2, 10 ), QVector3D( 1, 2, 10 ), QVector3D( 1, 1, 10 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Floor | Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+    t.addPolygon( polygon, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // flat polygon Z CD
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 13 ), QVector3D( 1, 1, 13 ), QVector3D( 2, 1, 13 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 13 ), QVector3D( 2, 1, 13 ), QVector3D( 3, 2, 13 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Floor | Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::ConstrainedDelaunay );
+    t.addPolygon( polygonZflat, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // flat polygon Z Earcut
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
+    tc << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ) );
+    tc << TriangleCoords( QVector3D( 1, 1, 13 ), QVector3D( 2, 1, 13 ), QVector3D( 3, 2, 13 ) );
+    tc << TriangleCoords( QVector3D( 3, 2, 13 ), QVector3D( 1, 2, 13 ), QVector3D( 1, 1, 13 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Floor | Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+    t.addPolygon( polygonZflat, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // polygon Z CD
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 1, 2, 4 ), QVector3D( 2, 1, 2 ), QVector3D( 3, 2, 3 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 4 ), QVector3D( 1, 1, 1 ), QVector3D( 2, 1, 2 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 13 ) );
+    tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 12 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Floor | Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::ConstrainedDelaunay );
+    t.addPolygon( polygonZnonFlat, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+
+  {
+    // polygon Z Earcut
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 1, 2, 4 ), QVector3D( 1, 1, 1 ) );
+    tc << TriangleCoords( QVector3D( 1, 1, 1 ), QVector3D( 2, 1, 2 ), QVector3D( 3, 2, 3 ) );
+    tc << TriangleCoords( QVector3D( 3, 2, 13 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 11 ) );
+    tc << TriangleCoords( QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 13 ) );
+
+    QgsTessellator t;
+    t.setExtrusionFaces( Qgis::ExtrusionFace::Floor | Qgis::ExtrusionFace::Roof );
+    t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+    t.addPolygon( polygonZnonFlat, 10 );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsTessellator )

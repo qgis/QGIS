@@ -1832,6 +1832,71 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
             rendered_image,
         )
 
+    def testExtraItems(self):
+        """
+        Test with data defined extra items
+        """
+
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        sl = QgsMarkerLineSymbolLayer()
+        sl.setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.Interval))
+        sl.setDataDefinedProperty(
+            QgsSymbolLayer.Property.ExtraItems,
+            QgsProperty.fromExpression("'3 3 0, 3 6 45, 8 8 90'"),
+        )
+
+        markerSl = sl.subSymbol().symbolLayers()[0]
+        self.assertTrue(markerSl)
+        markerSl.setShape(Qgis.MarkerShape.HalfSquare)
+        markerSl.setStrokeStyle(Qt.PenStyle.NoPen)
+        s.appendSymbolLayer(sl)
+
+        g = QgsGeometry.fromWkt("""MultiPolygon(((0 0, 10 0, 10 10, 0 10, 0 0)))""")
+
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_extraitems",
+                "markerline_extraitems",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # Same test with line
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        sl = QgsMarkerLineSymbolLayer()
+        sl.setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.Interval))
+        sl.setDataDefinedProperty(
+            QgsSymbolLayer.Property.ExtraItems,
+            QgsProperty.fromExpression("'3 3 0, 3 6 45, 8 8 90'"),
+        )
+
+        markerSl = sl.subSymbol().symbolLayers()[0]
+        self.assertTrue(markerSl)
+        markerSl.setShape(Qgis.MarkerShape.HalfSquare)
+        markerSl.setStrokeStyle(Qt.PenStyle.NoPen)
+        s.appendSymbolLayer(sl)
+
+        g = QgsGeometry.fromWkt("""LineString((0 0, 10 0, 10 10, 0 10, 0 0))""")
+
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_extraitems",
+                "markerline_extraitems",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)

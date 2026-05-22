@@ -57,6 +57,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
+    QgsVirtualLayerDefinition,
     QgsWkbTypes,
 )
 from qgis.gui import QgsAttributeForm, QgsGui
@@ -4180,6 +4181,78 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             test_for_pk_combinations(
                 ["view", "mat_view"], ["id_all_null_uuid", col_name], 7
+            )
+
+    def testVirtualLayerJoinOnUuidPk(self):
+        """joining a virtual layer on a uuid PK used to
+        return no rows because the VL provider pushed `=` constraints
+        down as setFilterFid(sqlite3_value_int(uuid_text)) == 0.
+        See QgsVirtualLayerSqliteModule::VTable::init_().
+        """
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test."uuid_join_child" CASCADE')
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test."uuid_join_parent" CASCADE')
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."uuid_join_parent" (id uuid PRIMARY KEY)'
+        )
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."uuid_join_child" '
+            "(id uuid PRIMARY KEY, fk_parent uuid)"
+        )
+        self.execSQLCommand(
+            'INSERT INTO qgis_test."uuid_join_parent" VALUES '
+            "('00000000-0000-0000-0000-000000000001'), "
+            "('00000000-0000-0000-0000-000000000002')"
+        )
+        self.execSQLCommand(
+            'INSERT INTO qgis_test."uuid_join_child" VALUES '
+            "('11111111-0000-0000-0000-000000000001', "
+            "'00000000-0000-0000-0000-000000000001'), "
+            "('11111111-0000-0000-0000-000000000002', "
+            "'00000000-0000-0000-0000-000000000002')"
+        )
+
+        def pg_layer(table):
+            vl = QgsVectorLayer(
+                self.dbconn
+                + f' sslmode=disable key=\'id\' table="qgis_test"."{table}" sql=',
+                table,
+                "postgres",
+            )
+            self.assertTrue(vl.isValid())
+            return vl
+
+        parent = pg_layer("uuid_join_parent")
+        child = pg_layer("uuid_join_child")
+        # Sanity check: the uuid `id` column must be reported as the PK,
+        # otherwise the regression scenario isn't reproduced.
+        self.assertEqual(parent.dataProvider().pkAttributeIndexes(), [0])
+
+        QgsProject.instance().addMapLayers([parent, child])
+        try:
+            d = QgsVirtualLayerDefinition()
+            d.setQuery(
+                f'SELECT p.id AS pid FROM "{child.id()}" c '
+                f'LEFT JOIN "{parent.id()}" p ON p.id = c.fk_parent'
+            )
+            d.setGeometryField("")
+            vl = QgsVectorLayer(d.toString(), "vl_join", "virtual")
+            self.assertTrue(vl.isValid(), vl.dataProvider().error().message())
+            pids = sorted(f["pid"] for f in vl.getFeatures())
+            self.assertEqual(
+                pids,
+                [
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                ],
+            )
+        finally:
+            QgsProject.instance().removeMapLayer(parent)
+            QgsProject.instance().removeMapLayer(child)
+            self.execSQLCommand(
+                'DROP TABLE IF EXISTS qgis_test."uuid_join_child" CASCADE'
+            )
+            self.execSQLCommand(
+                'DROP TABLE IF EXISTS qgis_test."uuid_join_parent" CASCADE'
             )
 
     def testChangeAttributeWithDefaultValue(self):

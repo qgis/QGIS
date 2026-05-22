@@ -1303,12 +1303,12 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
   }
   averageOver = context.renderContext().convertToPainterUnits( averageOver, mAverageAngleLengthUnit, mAverageAngleLengthMapUnitScale ) / 2.0;
 
-  QgsBlankSegmentUtils::BlankSegments blankSegments;
+  QgsSymbolLayerUtils::BlankSegments blankSegments;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::BlankSegments ) )
   {
     const QString strBlankSegments = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::BlankSegments, context.renderContext().expressionContext() );
     QString error;
-    QList<QList<QgsBlankSegmentUtils::BlankSegments>> allBlankSegments = QgsBlankSegmentUtils::parseBlankSegments( strBlankSegments, context.renderContext(), blankSegmentsUnit(), error );
+    QList<QList<QgsSymbolLayerUtils::BlankSegments>> allBlankSegments = QgsSymbolLayerUtils::parseBlankSegments( strBlankSegments, context.renderContext(), blankSegmentsUnit(), error );
 
     if ( !error.isEmpty() )
     {
@@ -1381,6 +1381,31 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
         renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::SegmentCenter, blankSegments );
     }
   }
+
+  QgsSymbolLayerUtils::ExtraItems extraItems;
+  if ( !mBlockExtraItemsRendering && mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ExtraItems ) )
+  {
+    const QString strExtraItems = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::ExtraItems, context.renderContext().expressionContext() );
+    QString error;
+    extraItems = QgsSymbolLayerUtils::parseExtraItems( strExtraItems, error );
+
+    if ( !error.isEmpty() )
+    {
+      QgsDebugError( u"Badly formatted extra items '%1', skip it: %2"_s.arg( strExtraItems ).arg( error ) );
+    }
+    else
+    {
+      const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
+      for ( std::pair<QPointF, double> &extraItem : extraItems )
+      {
+        mtp.transformInPlace( extraItem.first.rx(), extraItem.first.ry() );
+
+        setSymbolLineAngle( extraItem.second );
+
+        renderSymbol( extraItem.first, context.feature(), context.renderContext(), -1, shouldRenderUsingSelectionColor( context ) );
+      }
+    }
+  }
 }
 
 void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
@@ -1409,6 +1434,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
         scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
 
       renderPolyline( points, context );
+      mBlockExtraItemsRendering = true; // render extra items only once
       break;
     }
     case InteriorRingsOnly:
@@ -1434,6 +1460,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
             scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, i + 1, true ) );
 
           renderPolyline( rings->at( i ), context );
+          mBlockExtraItemsRendering = true; // render extra items only once
         }
         mOffset = -mOffset;
         mRingIndex = 0;
@@ -1443,6 +1470,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
         break;
     }
   }
+
+  mBlockExtraItemsRendering = false;
 }
 
 Qgis::RenderUnit QgsTemplatedLineSymbolLayerBase::outputUnit() const
@@ -1683,7 +1712,7 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
 class BlankSegmentsWalker
 {
   public:
-    BlankSegmentsWalker( const QPolygonF &points, const QgsBlankSegmentUtils::BlankSegments &blankSegments )
+    BlankSegmentsWalker( const QPolygonF &points, const QgsSymbolLayerUtils::BlankSegments &blankSegments )
       : mBlankSegments( blankSegments )
       , mPoints( points )
       , mItBlankSegment( blankSegments.cbegin() )
@@ -1729,17 +1758,17 @@ class BlankSegmentsWalker
     }
 
   private:
-    const QgsBlankSegmentUtils::BlankSegments &mBlankSegments;
+    const QgsSymbolLayerUtils::BlankSegments &mBlankSegments;
     const QPolygonF &mPoints;
     QList<double> mDistances;
-    QgsBlankSegmentUtils::BlankSegments::const_iterator mItBlankSegment;
+    QgsSymbolLayerUtils::BlankSegments::const_iterator mItBlankSegment;
 };
 
 
 ///@endcond PRIVATE
 
 
-void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments )
+void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageOver, const QgsSymbolLayerUtils::BlankSegments &blankSegments )
 {
   if ( points.isEmpty() )
     return;
@@ -1963,7 +1992,7 @@ static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
 }
 
 void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex(
-  const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments
+  const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsSymbolLayerUtils::BlankSegments &blankSegments
 )
 {
   if ( points.isEmpty() )
@@ -2250,7 +2279,7 @@ double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bo
 }
 
 void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine(
-  const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments
+  const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsSymbolLayerUtils::BlankSegments &blankSegments
 )
 {
   if ( points.isEmpty() )
@@ -2428,7 +2457,7 @@ void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints(
   }
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments )
+void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsSymbolLayerUtils::BlankSegments &blankSegments )
 {
   if ( !points.isEmpty() )
   {
