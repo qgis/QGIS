@@ -4083,6 +4083,177 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [{"owner": "owner 1"}, {"owner": "owner 2"}, {"owner": "owner 3"}],
             )
 
+    def test_sensor_2_0(self):
+        """
+        Test a layer retrieving 'Sensor' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Sensors",
+      "url": "endpoint/Sensors"
+    }
+  ],
+  "serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(endpoint, "/Sensors?$top=0&$count=true"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Sensors","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(endpoint, "/Sensors?$top=2&$count=false"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Sensors",
+  "value": [
+    {
+      "@id": "endpoint/Sensors(1)",
+      "id": 1,
+      "name": "Datastream 1",
+      "description": "Desc 1",
+      "encodingType": "application/pdf",
+      "metadata": "http://www.a.at/fileadmin/site/umweltthemen/luft/PM_Aequivalenz_Dokumentation.pdf",
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things@navigationLink": "endpoint/Datastreams(1)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Datastreams(1)/HistoricalLocations"
+    },
+    {
+      "@id": "endpoint/Sensors(2)",
+      "id": 2,
+      "name": "Datastream 2",
+      "description": "Desc 2",
+      "encodingType": "application/pdf",
+      "metadata": "http://www.b.at/fileadmin/site/umweltthemen/luft/PM_Aequivalenz_Dokumentation.pdf",
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@navigationLink": "endpoint/Datastreams(2)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Datastreams(2)/HistoricalLocations"
+
+    }
+  ],
+  "@nextLink": "endpoint/Sensors?$top=2&$skip=2"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(endpoint, "/Sensors?$top=2&$skip=2"),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+            "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Sensors",
+              "value": [
+                {
+                  "@id": "endpoint/Sensors(3)",
+                  "id": 3,
+                  "name": "Datastream 3",
+                  "description": "Desc 3",
+                  "encodingType": "application/pdf",
+                  "metadata": "http://www.c.at/fileadmin/site/umweltthemen/luft/PM_Aequivalenz_Dokumentation.pdf",
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@navigationLink": "endpoint/Datastreams(3)/Things",
+                  "HistoricalLocations@navigationLink": "endpoint/Datastreams(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 type=PointZ entity='Sensor'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertFalse(vl.crs().isValid())
+            self.assertIn("Entity Type</td><td>Sensor</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Sensors"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "description",
+                    "metadata",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-11:] for f in features],
+                ["/Sensors(1)", "/Sensors(2)", "/Sensors(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Datastream 1", "Datastream 2", "Datastream 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features], ["Desc 1", "Desc 2", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["metadata"] for f in features],
+                [
+                    "http://www.a.at/fileadmin/site/umweltthemen/luft/PM_Aequivalenz_Dokumentation.pdf",
+                    "http://www.b.at/fileadmin/site/umweltthemen/luft/PM_Aequivalenz_Dokumentation.pdf",
+                    "http://www.c.at/fileadmin/site/umweltthemen/luft/PM_Aequivalenz_Dokumentation.pdf",
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 2"}, {"owner": "owner 3"}],
+            )
+
     def test_observed_property(self):
         """
         Test a layer retrieving 'Observed Property' entities from a service
