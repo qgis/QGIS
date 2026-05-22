@@ -144,7 +144,7 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
         case Qgis::SensorThingsEntity::Sensor:
         case Qgis::SensorThingsEntity::ObservedProperty:
         case Qgis::SensorThingsEntity::Observation:
-        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::Feature:
           appendError( QgsErrorMessage( tr( "Could not find url for %1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ), u"SensorThings"_s ) );
           QgsMessageLog::logMessage( tr( "Could not find url for %1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ), tr( "SensorThings" ) );
           break;
@@ -152,6 +152,76 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
         case Qgis::SensorThingsEntity::MultiDatastream:
           appendError( QgsErrorMessage( tr( "MultiDatastreams are not supported by this connection" ), u"SensorThings"_s ) );
           QgsMessageLog::logMessage( tr( "MultiDatastreams are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+          appendError( QgsErrorMessage( tr( "FeaturesOfInterest are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "FeaturesOfInterest are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::FeatureType:
+          appendError( QgsErrorMessage( tr( "FeatureTypes are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "FeatureTypes are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::Deployment:
+          appendError( QgsErrorMessage( tr( "Deployments are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "Deployments are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::ObservingProcedure:
+          appendError( QgsErrorMessage( tr( "ObservingProcedures are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "ObservingProcedures are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::Sampling:
+          appendError( QgsErrorMessage( tr( "Samplings are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "Samplings are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+          appendError( QgsErrorMessage( tr( "SamplingProcedures are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "SamplingProcedures are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::Sampler:
+          appendError( QgsErrorMessage( tr( "Samplers are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "Samplers are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::PreparationStep:
+          appendError( QgsErrorMessage( tr( "PreparationSteps are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "PreparationSteps are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+          appendError( QgsErrorMessage( tr( "PreparationProcedures are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "PreparationProcedures are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::ThingRelation:
+          appendError( QgsErrorMessage( tr( "ThingRelations are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "ThingRelations are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::RelationRole:
+          appendError( QgsErrorMessage( tr( "RelationRoles are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "RelationRoles are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::FeatureRelation:
+          appendError( QgsErrorMessage( tr( "FeatureRelations are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "FeatureRelations are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::DatastreamRelation:
+          appendError( QgsErrorMessage( tr( "DatastreamRelations are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "DatastreamRelations are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::ObservationRelation:
+          appendError( QgsErrorMessage( tr( "ObservationRelations are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "ObservationRelations are not supported by this connection" ), tr( "SensorThings" ) );
           break;
       }
 

@@ -151,6 +151,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             QgsSensorThingsUtils.stringToEntity(" MultiDataStream "),
             Qgis.SensorThingsEntity.MultiDatastream,
         )
+        self.assertEqual(
+            QgsSensorThingsUtils.stringToEntity(" Feature "),
+            Qgis.SensorThingsEntity.Feature,
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.stringToEntity(" FeatureType "),
+            Qgis.SensorThingsEntity.FeatureType,
+        )
 
     def test_utils_string_to_entityset(self):
         self.assertEqual(
@@ -188,6 +196,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         self.assertEqual(
             QgsSensorThingsUtils.entitySetStringToEntity(" FeaturesOfInterest "),
             Qgis.SensorThingsEntity.FeatureOfInterest,
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entitySetStringToEntity(" Features "),
+            Qgis.SensorThingsEntity.Feature,
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entitySetStringToEntity(" FeatureTypes "),
+            Qgis.SensorThingsEntity.FeatureType,
         )
         self.assertEqual(
             QgsSensorThingsUtils.entitySetStringToEntity(" MultidataStreams "),
@@ -236,6 +252,14 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 Qgis.SensorThingsEntity.FeatureOfInterest
             ),
             "FeaturesOfInterest",
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.Feature),
+            "Features",
+        )
+        self.assertEqual(
+            QgsSensorThingsUtils.entityToSetString(Qgis.SensorThingsEntity.FeatureType),
+            "FeatureTypes",
         )
         self.assertEqual(
             QgsSensorThingsUtils.entityToSetString(
@@ -5209,6 +5233,239 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [f["description"] for f in features],
                 [
                     "Air quality sample SAM.09.LAA.822.7.1",
+                    None,
+                    "Air quality sample SAM.09.LOB.824.1.1",
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt(1) for f in features],
+                ["Point (16.4 48.2)", "Point (16.5 48.2)", "Point (16.5 48.2)"],
+            )
+
+    def test_features_2_0(self):
+        """
+        Test a layer retrieving 'Features' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Features",
+      "url": "endpoint/Features"
+    }
+  ],
+"serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Features?$top=0&$count=true&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Features","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Features?$top=2&$count=false&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Features",
+  "value": [
+    {
+      "@id": "endpoint/Features(1)",
+      "id": 1,
+      "description": "Central Basin Testing Site",
+      "encodingType": "application/geo+json",
+      "feature": {
+        "type": "Point",
+        "coordinates": [
+          16.3929202777778,
+          48.1610363888889
+        ]
+      },
+      "name": "Lake Burley Griffin",
+      "properties": {
+        "localId": "SAM.09.LAA.822.7.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+      "FeatureTypes@navigationLink": "endpoint/Features(1)/FeatureTypes",
+      "Observations@navigationLink": "endpoint/Features(1)/Observations"
+    },
+    {
+      "@id": "endpoint/Features(2)",
+      "id": 2,
+      "encodingType": "application/geo+json",
+      "feature": {
+        "type": "Point",
+        "coordinates": [
+          16.5256138888889,
+          48.1620694444444
+        ]
+      },
+      "name": "Lake Burley Griffin - West Basin",
+      "properties": {
+        "localId": "SAM.09.LOB.823.7.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+      "FeatureTypes@navigationLink": "endpoint/Features(2)/FeatureTypes",
+      "Observations@navigationLink": "endpoint/Features(2)/Observations"
+    }
+  ],
+  "@nextLink": "endpoint/Features?$top=2&$skip=2&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/Features?$top=2&$skip=2&$filter=feature/type eq 'Point' or feature/geometry/type eq 'Point'",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+            "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Features",
+              "value": [
+                {
+                  "@id": "endpoint/Features(3)",
+                  "id": 3,
+"description": "Air quality sample SAM.09.LOB.824.1.1",
+      "encodingType": "application/geo+json",
+      "feature": {
+        "type": "Point",
+        "coordinates": [
+          16.5256138888889,
+          48.1620694444444
+        ]
+      },
+      "name": "Molonglo River Reach",
+      "properties": {
+        "localId": "SAM.09.LOB.824.1.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+       "FeatureTypes@navigationLink": "endpoint/Features(3)/FeatureTypes",
+      "Observations@navigationLink": "endpoint/Features(3)/Observations"
+                     }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 type=PointZ entity='Features'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertEqual(vl.crs().authid(), "EPSG:4326")
+            self.assertIn("Entity Type</td><td>Feature</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Features"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-12:] for f in features],
+                [
+                    "/Features(1)",
+                    "/Features(2)",
+                    "/Features(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                [
+                    "Lake Burley Griffin",
+                    "Lake Burley Griffin - West Basin",
+                    "Molonglo River Reach",
+                ],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "Central Basin Testing Site",
                     None,
                     "Air quality sample SAM.09.LOB.824.1.1",
                 ],

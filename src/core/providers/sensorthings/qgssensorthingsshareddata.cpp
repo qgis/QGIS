@@ -722,6 +722,10 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                     attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
                     break;
 
+                  case Qgis::SensorThingsEntity::Feature:
+                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties;
+                    break;
+
                   case Qgis::SensorThingsEntity::MultiDatastream:
                   {
                     std::pair< QVariant, QVariant > phenomenonTime = getDateTimeRange( entityData, "phenomenonTime" );
