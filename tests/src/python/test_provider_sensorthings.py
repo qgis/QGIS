@@ -6715,6 +6715,1075 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+    def test_sampler_2_0(self):
+        """
+        Test a layer retrieving 'Samplers' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "Samplers",
+          "url": "endpoint/Samplers"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Samplers?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Samplers","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Samplers?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Samplers",
+      "value": [
+        {
+          "@id": "endpoint/Samplers(1)",
+          "id": 1,
+          "description": "A standard 1-Liter vertical water sampler.",
+          "name": "Kemmerer Bottle",
+          "properties": {
+            "localId": "SAM.09.LAA.822.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "SamplingProcedures@navigationLink": "endpoint/Samplers(1)/SamplingProcedures"
+        },
+        {
+          "@id": "endpoint/Samplers(2)",
+          "id": 2,
+          "name": "Field Technician Alice",
+          "properties": {
+            "localId": "SAM.09.LOB.823.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "SamplingProcedures@navigationLink": "endpoint/Samplers(2)/SamplingProcedures"
+        }
+      ],
+      "@nextLink": "endpoint/Samplers?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/Samplers?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Samplers",
+                  "value": [
+                    {
+                      "@id": "endpoint/Samplers(3)",
+                      "id": 3,
+    "description": "Description 2",
+          "name": "Field Technician Bob",
+          "description": "Senior field technician responsible for manual grab samples.",
+          "samplerType": "human",
+          "properties": {
+            "localId": "SAM.09.LOB.824.1.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "SamplingProcedures@navigationLink": "endpoint/Samplers(3)/SamplingProcedures"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='Samplers'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn("Entity Type</td><td>Sampler</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Samplers"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ["id", "selfLink", "name", "description", "properties", "samplerType"],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.String,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-12:] for f in features],
+                [
+                    "/Samplers(1)",
+                    "/Samplers(2)",
+                    "/Samplers(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Kemmerer Bottle", "Field Technician Alice", "Field Technician Bob"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "A standard 1-Liter vertical water sampler.",
+                    None,
+                    "Senior field technician responsible for manual grab samples.",
+                ],
+            )
+            self.assertEqual(
+                [f["samplerType"] for f in features],
+                [None, None, "human"],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
+    def test_sampling_procedures_2_0(self):
+        """
+        Test a layer retrieving 'SamplingProcedures' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "SamplingProcedures",
+          "url": "endpoint/SamplingProcedures"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/SamplingProcedures?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#SamplingProcedures","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/SamplingProcedures?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#SamplingProcedures",
+      "value": [
+        {
+          "@id": "endpoint/SamplingProcedures(1)",
+          "id": 1,
+          "description": "Standard operating procedure for collecting surface water into sterile vials.",
+          "name": "EPA Surface Water Grab Sampling",
+          "definition": "https://example.com/epa-grab-sample-sop.pdf",
+          "properties": {
+            "localId": "SAM.09.LAA.822.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Samplers@navigationLink": "endpoint/SamplingProcedures(1)/Samplers"
+        },
+        {
+          "@id": "endpoint/SamplingProcedures(2)",
+          "id": 2,
+          "name": "EPA Surface Water Net Sampling",
+          "properties": {
+            "localId": "SAM.09.LOB.823.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Samplers@navigationLink": "endpoint/SamplingProcedures(2)/Samplers"
+        }
+      ],
+      "@nextLink": "endpoint/SamplingProcedures?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/SamplingProcedures?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#SamplingProcedures",
+                  "value": [
+                    {
+                      "@id": "endpoint/SamplingProcedures(3)",
+                      "id": 3,
+          "description": "Another description.",
+          "name": "EPA Surface Air Grab Sampling",
+          "definition": "A pdf",
+          "properties": {
+            "localId": "SAM.09.LOB.824.1.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Samplers@navigationLink": "endpoint/SamplingProcedures(3)/Samplers"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='SamplingProcedures'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn(
+                "Entity Type</td><td>SamplingProcedure</td>", vl.htmlMetadata()
+            )
+            self.assertIn(
+                f'href="http://{endpoint}/SamplingProcedures"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ["id", "selfLink", "name", "definition", "description", "properties"],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-22:] for f in features],
+                [
+                    "/SamplingProcedures(1)",
+                    "/SamplingProcedures(2)",
+                    "/SamplingProcedures(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                [
+                    "EPA Surface Water Grab Sampling",
+                    "EPA Surface Water Net Sampling",
+                    "EPA Surface Air Grab Sampling",
+                ],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "Standard operating procedure for collecting surface water into sterile vials.",
+                    None,
+                    "Another description.",
+                ],
+            )
+            self.assertEqual(
+                [f["definition"] for f in features],
+                ["https://example.com/epa-grab-sample-sop.pdf", None, "A pdf"],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
+    def test_sampling_2_0(self):
+        """
+        Test a layer retrieving 'Samplings' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "Samplings",
+          "url": "endpoint/Samplings"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Samplings?$top=0&$count=true&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Samplings","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Samplings?$top=2&$count=false&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Samplings",
+      "value": [
+        {
+          "@id": "endpoint/Samplings(1)",
+          "id": 1,
+          "description": "The physical act of drawing the water sample from the lake.",
+          "name": "Extraction of Vial #001",
+          "time": {
+        "start": "2026-05-21T08:00:00Z"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [148.124, -34.294]
+      },
+          "properties": {
+            "localId": "SAM.09.LAA.822.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Samplers@navigationLink": "endpoint/Samplings(1)/Samplers"
+        },
+        {
+          "@id": "endpoint/Samplings(2)",
+          "id": 2,
+          "name": "Morning Grab Sample Event",
+          "description": "Pulling the 8:00 AM sample from the central basin.",
+          "location": {
+        "type": "Point",
+        "coordinates": [149.124, -35.294]
+      },
+      "time": {
+        "start": "2026-05-22T08:00:00Z"
+      },
+          "properties": {
+            "localId": "SAM.09.LOB.823.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Samplers@navigationLink": "endpoint/Samplings(2)/Samplers"
+        }
+      ],
+      "@nextLink": "endpoint/Samplings?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/Samplings?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Samplings",
+                  "value": [
+                    {
+                      "@id": "endpoint/Samplings(3)",
+                      "id": 3,
+          "description": "Another description.",
+          "name": "Extraction of Vial #002",
+          "definition": "A pdf",
+          "time": {
+        "start": "2026-05-22T08:00:00Z"
+      },
+        "location": {
+        "type": "Point",
+        "coordinates": [149.224, -35.394]
+      },
+          "properties": {
+            "localId": "SAM.09.LOB.824.1.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Samplers@navigationLink": "endpoint/Samplings(3)/Samplers"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 type=PointZ entity='Samplings'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn("Entity Type</td><td>Sampling</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Samplings"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "definition",
+                    "description",
+                    "properties",
+                    "timeStart",
+                    "timeEnd",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                [
+                    "/Samplings(1)",
+                    "/Samplings(2)",
+                    "/Samplings(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                [
+                    "Extraction of Vial #001",
+                    "Morning Grab Sample Event",
+                    "Extraction of Vial #002",
+                ],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "The physical act of drawing the water sample from the lake.",
+                    "Pulling the 8:00 AM sample from the central basin.",
+                    "Another description.",
+                ],
+            )
+            self.assertEqual(
+                [f["definition"] for f in features],
+                [None, None, "A pdf"],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt(1) for f in features],
+                ["Point (148.1 -34.3)", "Point (149.1 -35.3)", "Point (149.2 -35.4)"],
+            )
+
+    def test_preparation_procedures_2_0(self):
+        """
+        Test a layer retrieving 'PreparationProcedures' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "PreparationProcedures",
+          "url": "endpoint/PreparationProcedures"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/PreparationProcedures?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#PreparationProcedures","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/PreparationProcedures?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#PreparationProcedures",
+      "value": [
+        {
+          "@id": "endpoint/PreparationProcedures(1)",
+          "id": 1,
+          "description": "Filtering the sample through a 0.45 micron membrane to remove suspended solids prior to analysis.",
+          "name": "0.45µm Membrane Filtration",
+          "definition": "https://example.com/lab-filtration-method.pdf",
+          "properties": {
+            "localId": "SAM.09.LAA.822.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "PreparationSteps@navigationLink": "endpoint/PreparationProcedures(1)/PreparationSteps"
+        },
+        {
+          "@id": "endpoint/PreparationProcedures(2)",
+          "id": 2,
+          "name": "0.65µm Membrane Filtration",
+          "properties": {
+            "localId": "SAM.09.LOB.823.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "PreparationSteps@navigationLink": "endpoint/PreparationProcedures(2)/PreparationSteps"
+        }
+      ],
+      "@nextLink": "endpoint/PreparationProcedures?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/PreparationProcedures?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#PreparationProcedures",
+                  "value": [
+                    {
+                      "@id": "endpoint/PreparationProcedures(3)",
+                      "id": 3,
+          "description": "Filtering the sample through a 0.95 micron membrane to remove suspended solids prior to analysis.",
+          "name": "0.95µm Membrane Filtration",
+          "definition": "https://example.com/lab-filtration-method95.pdf",
+          "properties": {
+            "localId": "SAM.09.LOB.824.1.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "PreparationSteps@navigationLink": "endpoint/PreparationProcedures(3)/PreparationSteps"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='PreparationProcedures'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn(
+                "Entity Type</td><td>PreparationProcedure</td>", vl.htmlMetadata()
+            )
+            self.assertIn(
+                f'href="http://{endpoint}/PreparationProcedures"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ["id", "selfLink", "name", "description", "definition", "properties"],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-25:] for f in features],
+                [
+                    "/PreparationProcedures(1)",
+                    "/PreparationProcedures(2)",
+                    "/PreparationProcedures(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                [
+                    "0.45µm Membrane Filtration",
+                    "0.65µm Membrane Filtration",
+                    "0.95µm Membrane Filtration",
+                ],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "Filtering the sample through a 0.45 micron membrane to remove suspended solids prior to analysis.",
+                    None,
+                    "Filtering the sample through a 0.95 micron membrane to remove suspended solids prior to analysis.",
+                ],
+            )
+            self.assertEqual(
+                [f["definition"] for f in features],
+                [
+                    "https://example.com/lab-filtration-method.pdf",
+                    None,
+                    "https://example.com/lab-filtration-method95.pdf",
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
+    def test_preparation_steps_2_0(self):
+        """
+        Test a layer retrieving 'PreparationSteps' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "PreparationSteps",
+          "url": "endpoint/PreparationSteps"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/PreparationSteps?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#PreparationSteps","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/PreparationSteps?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#PreparationSteps",
+      "value": [
+        {
+          "@id": "endpoint/PreparationSteps(1)",
+          "id": 1,
+          "description": "Filtering the morning lake water sample in the lab.",
+          "name": "Filtration of Vial #001",
+          "definition": "https://example.com/lab-filtration-method.pdf",
+           "time": "2026-05-22T10:30:00Z",
+          "properties": {
+            "localId": "SAM.09.LAA.822.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "PreparedSample@navigationLink": "endpoint/PreparationSteps(1)/PreparedSample"
+        },
+        {
+          "@id": "endpoint/PreparationSteps(2)",
+          "id": 2,
+          "name": "Filtration of Vial #002",
+          "properties": {
+            "localId": "SAM.09.LOB.823.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "PreparedSample@navigationLink": "endpoint/PreparationSteps(2)/PreparedSample"
+        }
+      ],
+      "@nextLink": "endpoint/PreparationSteps?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/PreparationSteps?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#PreparationSteps",
+                  "value": [
+                    {
+                      "@id": "endpoint/PreparationSteps(3)",
+                      "id": 3,
+          "description": "Filtering the afternoon lake water sample in the lab.",
+          "name": "Filtration of Vial #003",
+           "time": "2026-05-23T10:30:00Z",
+          "definition": "https://example.com/lab-filtration-method95.pdf",
+          "properties": {
+            "localId": "SAM.09.LOB.824.1.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "PreparedSample@navigationLink": "endpoint/PreparationSteps(3)/PreparedSample"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='PreparationSteps'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn("Entity Type</td><td>PreparationStep</td>", vl.htmlMetadata())
+            self.assertIn(
+                f'href="http://{endpoint}/PreparationSteps"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "description",
+                    "definition",
+                    "properties",
+                    "timeStart",
+                    "timeEnd",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-20:] for f in features],
+                [
+                    "/PreparationSteps(1)",
+                    "/PreparationSteps(2)",
+                    "/PreparationSteps(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                [
+                    "Filtration of Vial #001",
+                    "Filtration of Vial #002",
+                    "Filtration of Vial #003",
+                ],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "Filtering the morning lake water sample in the lab.",
+                    None,
+                    "Filtering the afternoon lake water sample in the lab.",
+                ],
+            )
+            self.assertEqual(
+                [f["definition"] for f in features],
+                [
+                    "https://example.com/lab-filtration-method.pdf",
+                    None,
+                    "https://example.com/lab-filtration-method95.pdf",
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
     def test_feature_expansion(self):
         """
         Test a layer using feature expansion

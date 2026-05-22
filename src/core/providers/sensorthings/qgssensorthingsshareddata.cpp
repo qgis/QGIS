@@ -762,6 +762,54 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                     attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "definition" ) << getString( entityData, "description" ) << properties;
                     break;
                   }
+
+                  case Qgis::SensorThingsEntity::Sampling:
+                  {
+                    std::pair< QVariant, QVariant > time = getDateTimeRange( entityData, "time" );
+                    attributes
+                      << iotId
+                      << selfLink
+                      << getString( entityData, "name" )
+                      << getString( entityData, "definition" )
+                      << getString( entityData, "description" )
+                      << properties
+                      << time.first
+                      << time.second;
+                    break;
+                  }
+
+                  case Qgis::SensorThingsEntity::SamplingProcedure:
+                  {
+                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "definition" ) << getString( entityData, "description" ) << properties;
+                    break;
+                  }
+
+                  case Qgis::SensorThingsEntity::Sampler:
+                  {
+                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties << getString( entityData, "samplerType" );
+                    break;
+                  }
+
+                  case Qgis::SensorThingsEntity::PreparationStep:
+                  {
+                    std::pair< QVariant, QVariant > time = getDateTimeRange( entityData, "time" );
+                    attributes
+                      << iotId
+                      << selfLink
+                      << getString( entityData, "name" )
+                      << getString( entityData, "description" )
+                      << getString( entityData, "definition" )
+                      << properties
+                      << time.first
+                      << time.second;
+                    break;
+                  }
+
+                  case Qgis::SensorThingsEntity::PreparationProcedure:
+                  {
+                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getString( entityData, "definition" ) << properties;
+                    break;
+                  }
                 }
                 // NOLINTEND(bugprone-branch-clone)
               };
