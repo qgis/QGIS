@@ -581,6 +581,16 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
         u"properties"_s,
       };
 
+    case Qgis::SensorThingsEntity::FeatureType:
+      // TODO -- link to final 2.0 definition
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
+
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
       return {
@@ -806,6 +816,13 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
+    case Qgis::SensorThingsEntity::FeatureType:
+      // TODO -- insert link to final 2.0 spec
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      break;
+
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
@@ -858,6 +875,7 @@ QString QgsSensorThingsUtils::geometryFieldForEntityType( Qgis::SensorThingsEnti
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
+    case Qgis::SensorThingsEntity::FeatureType:
       return QString();
 
     case Qgis::SensorThingsEntity::Location:
@@ -884,6 +902,7 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
+    case Qgis::SensorThingsEntity::FeatureType:
       return false;
 
     case Qgis::SensorThingsEntity::Datastream:
@@ -906,6 +925,7 @@ Qgis::GeometryType QgsSensorThingsUtils::geometryTypeForEntity( Qgis::SensorThin
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
+    case Qgis::SensorThingsEntity::FeatureType:
       return Qgis::GeometryType::Null;
 
     case Qgis::SensorThingsEntity::Datastream:
