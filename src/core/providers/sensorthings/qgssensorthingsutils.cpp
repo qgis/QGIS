@@ -57,6 +57,8 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDe
     case Qgis::SensorThingsEntity::HistoricalLocation:
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
+    case Qgis::SensorThingsEntity::Feature:
+    case Qgis::SensorThingsEntity::FeatureType:
       // no special defaults for these entities
       return QgsSensorThingsExpansionDefinition( entity );
 
@@ -1158,6 +1160,12 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       return { Qgis::SensorThingsEntity::Observation };
 
+    case Qgis::SensorThingsEntity::Feature:
+      return { Qgis::SensorThingsEntity::Observation, Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::FeatureType, Qgis::SensorThingsEntity::PreparationStep, Qgis::SensorThingsEntity::Sampling, Qgis::SensorThingsEntity::FeatureRelation };
+
+    case Qgis::SensorThingsEntity::FeatureType:
+      return {};
+
     case Qgis::SensorThingsEntity::MultiDatastream:
       return { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Sensor, Qgis::SensorThingsEntity::ObservedProperty, Qgis::SensorThingsEntity::Observation };
   }
@@ -1192,6 +1200,8 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::ObservedProperty:
         case Qgis::SensorThingsEntity::Observation:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
           break;
       }
       break;
@@ -1212,6 +1222,8 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Observation:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
         case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
           break;
       }
       break;
@@ -1239,6 +1251,8 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Observation:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
         case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
           break;
       }
 
@@ -1252,6 +1266,7 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Thing:
         case Qgis::SensorThingsEntity::Sensor:
         case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Feature:
           return Qgis::RelationshipCardinality::ManyToOne;
 
         case Qgis::SensorThingsEntity::Observation:
@@ -1263,6 +1278,7 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Datastream:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
         case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::FeatureType:
           break;
       }
 
@@ -1285,6 +1301,8 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Sensor:
         case Qgis::SensorThingsEntity::ObservedProperty:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
           break;
       }
 
@@ -1309,6 +1327,8 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::ObservedProperty:
         case Qgis::SensorThingsEntity::Observation:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
           break;
       }
       break;
@@ -1321,6 +1341,7 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Datastream:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
         case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Feature:
           return Qgis::RelationshipCardinality::ManyToOne;
 
         case Qgis::SensorThingsEntity::Invalid:
@@ -1330,6 +1351,7 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Sensor:
         case Qgis::SensorThingsEntity::ObservedProperty:
         case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::FeatureType:
           break;
       }
       break;
@@ -1351,6 +1373,58 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::ObservedProperty:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
         case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::Feature:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::Datastream:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::FeatureType:
+          return Qgis::RelationshipCardinality::ManyToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Feature:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::FeatureType:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Feature:
+          return Qgis::RelationshipCardinality::ManyToMany;
+
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::Datastream:
           break;
       }
 
@@ -1377,6 +1451,8 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Datastream:
         case Qgis::SensorThingsEntity::FeatureOfInterest:
         case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
           break;
       }
       break;
