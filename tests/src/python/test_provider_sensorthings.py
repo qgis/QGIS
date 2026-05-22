@@ -5499,6 +5499,202 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ["Point (16.4 48.2)", "Point (16.5 48.2)", "Point (16.5 48.2)"],
             )
 
+    def test_featuretypes_2_0(self):
+        """
+        Test a layer retrieving 'FeatureTypes' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "FeatureTypes",
+      "url": "endpoint/FeatureTypes"
+    }
+  ],
+"serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/FeatureTypes?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#FeatureTypes","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/FeatureTypes?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#FeatureTypes",
+  "value": [
+    {
+      "@id": "endpoint/FeatureTypes(1)",
+      "id": 1,
+      "description": "A physical volume of water extracted for testing, typically stored in a vial or bottle.",
+      "name": "Physical Water Sample",
+      "properties": {
+        "localId": "SAM.09.LAA.822.7.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+      "Features@navigationLink": "endpoint/FeatureTypes(1)/Features"
+    },
+    {
+      "@id": "endpoint/FeatureTypes(2)",
+      "id": 2,
+      "name": "Point Geometry",
+      "properties": {
+        "localId": "SAM.09.LOB.823.7.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+      "Features@navigationLink": "endpoint/FeatureTypes(2)/Features"
+    }
+  ],
+  "@nextLink": "endpoint/FeatureTypes?$top=2&$skip=2"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/FeatureTypes?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+            "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#FeatureTypes",
+              "value": [
+                {
+                  "@id": "endpoint/FeatureTypes(3)",
+                  "id": 3,
+"description": "Features that are represented by a single spatial coordinate (Point).",
+      "name": "Point Geometry 2",
+      "properties": {
+        "localId": "SAM.09.LOB.824.1.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+      "Features@navigationLink": "endpoint/FeatureTypes(3)/Features"
+                     }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='FeatureTypes'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn("Entity Type</td><td>FeatureType</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/FeatureTypes"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-16:] for f in features],
+                [
+                    "/FeatureTypes(1)",
+                    "/FeatureTypes(2)",
+                    "/FeatureTypes(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Physical Water Sample", "Point Geometry", "Point Geometry 2"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "A physical volume of water extracted for testing, typically stored in a vial or bottle.",
+                    None,
+                    "Features that are represented by a single spatial coordinate (Point).",
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
     def test_multidatastream_no_geometry(self):
         """
         Test a layer retrieving 'MultiDatastream' entities from a service without geometry
