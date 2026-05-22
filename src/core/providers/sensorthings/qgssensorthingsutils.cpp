@@ -61,6 +61,12 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDe
     case Qgis::SensorThingsEntity::FeatureType:
     case Qgis::SensorThingsEntity::Deployment:
     case Qgis::SensorThingsEntity::ObservingProcedure:
+    case Qgis::SensorThingsEntity::Sampling:
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+    case Qgis::SensorThingsEntity::Sampler:
+    case Qgis::SensorThingsEntity::PreparationStep:
+    case Qgis::SensorThingsEntity::PreparationProcedure:
+
       // no special defaults for these entities
       return QgsSensorThingsExpansionDefinition( entity );
 
@@ -640,7 +646,6 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
         u"definition"_s,
         u"description"_s,
         u"encodingType"_s,
-        u"location"_s,
         u"properties"_s,
         u"time"_s,
       };
@@ -650,9 +655,11 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
       return {
         u"id"_s,
         u"name"_s,
-        u"definition"_s,
         u"description"_s,
+        u"encodingType"_s,
+        u"location"_s,
         u"properties"_s,
+        u"time"_s,
       };
 
     case Qgis::SensorThingsEntity::Sampler:
@@ -660,7 +667,6 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
       return {
         u"id"_s,
         u"name"_s,
-        u"definition"_s,
         u"description"_s,
         u"properties"_s,
         u"samplerType"_s,
@@ -861,6 +867,56 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
+
+    case Qgis::SensorThingsEntity::Sampling:
+      // https://hylkevds.github.io/24-046/24-046.html#_20a589d4-cc3d-88f9-2e13-2292194061c9
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      if ( includeRangeFieldProxies )
+      {
+        fields.append( QgsField( u"timeStart"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"timeEnd"_s, QMetaType::Type::QDateTime ) );
+      }
+      break;
+
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+      // https://hylkevds.github.io/24-046/24-046.html#_98197442-7c4a-d97c-5cfd-67e2382f8012
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      break;
+
+    case Qgis::SensorThingsEntity::Sampler:
+      // https://hylkevds.github.io/24-046/24-046.html#_6d3c932c-3d6c-e4d4-ccdf-8c63e03d503a
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"samplerType"_s, QMetaType::Type::QString ) );
+      break;
+
+    case Qgis::SensorThingsEntity::PreparationStep:
+      // https://hylkevds.github.io/24-046/24-046.html#_6ec4909c-d8de-111a-721b-ff0b24e834f9
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      if ( includeRangeFieldProxies )
+      {
+        fields.append( QgsField( u"timeStart"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"timeEnd"_s, QMetaType::Type::QDateTime ) );
+      }
+      break;
+
+    case Qgis::SensorThingsEntity::PreparationProcedure:
+      // https://hylkevds.github.io/24-046/24-046.html#_48e9f88b-b0be-dff8-9e0b-1134e953ae57
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      break;
   }
 
   return fields;
@@ -899,9 +955,14 @@ QString QgsSensorThingsUtils::geometryFieldForEntityType( Qgis::SensorThingsEnti
     case Qgis::SensorThingsEntity::ObservedProperty:
     case Qgis::SensorThingsEntity::FeatureType:
     case Qgis::SensorThingsEntity::ObservingProcedure:
+    case Qgis::SensorThingsEntity::Sampler:
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+    case Qgis::SensorThingsEntity::PreparationStep:
+    case Qgis::SensorThingsEntity::PreparationProcedure:
       return QString();
 
     case Qgis::SensorThingsEntity::Location:
+    case Qgis::SensorThingsEntity::Sampling:
       return u"location"_s;
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
@@ -930,6 +991,10 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
     case Qgis::SensorThingsEntity::ObservedProperty:
     case Qgis::SensorThingsEntity::FeatureType:
     case Qgis::SensorThingsEntity::ObservingProcedure:
+    case Qgis::SensorThingsEntity::Sampler:
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+    case Qgis::SensorThingsEntity::PreparationStep:
+    case Qgis::SensorThingsEntity::PreparationProcedure:
       return false;
 
     case Qgis::SensorThingsEntity::Datastream:
@@ -938,6 +1003,7 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
     case Qgis::SensorThingsEntity::Feature:
     case Qgis::SensorThingsEntity::MultiDatastream:
     case Qgis::SensorThingsEntity::Deployment:
+    case Qgis::SensorThingsEntity::Sampling:
       return true;
   }
   BUILTIN_UNREACHABLE
@@ -955,6 +1021,10 @@ Qgis::GeometryType QgsSensorThingsUtils::geometryTypeForEntity( Qgis::SensorThin
     case Qgis::SensorThingsEntity::ObservedProperty:
     case Qgis::SensorThingsEntity::FeatureType:
     case Qgis::SensorThingsEntity::ObservingProcedure:
+    case Qgis::SensorThingsEntity::Sampler:
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+    case Qgis::SensorThingsEntity::PreparationStep:
+    case Qgis::SensorThingsEntity::PreparationProcedure:
       return Qgis::GeometryType::Null;
 
     case Qgis::SensorThingsEntity::Datastream:
@@ -963,6 +1033,7 @@ Qgis::GeometryType QgsSensorThingsUtils::geometryTypeForEntity( Qgis::SensorThin
     case Qgis::SensorThingsEntity::Feature:
     case Qgis::SensorThingsEntity::MultiDatastream:
     case Qgis::SensorThingsEntity::Deployment:
+    case Qgis::SensorThingsEntity::Sampling:
       return Qgis::GeometryType::Unknown;
   }
   BUILTIN_UNREACHABLE
@@ -1202,6 +1273,21 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
 
     case Qgis::SensorThingsEntity::ObservingProcedure:
       return { Qgis::SensorThingsEntity::Sensor, Qgis::SensorThingsEntity::ObservedProperty, Qgis::SensorThingsEntity::Datastream };
+
+    case Qgis::SensorThingsEntity::Sampling:
+      return { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::SamplingProcedure, Qgis::SensorThingsEntity::Sampler, Qgis::SensorThingsEntity::Feature };
+
+    case Qgis::SensorThingsEntity::Sampler:
+      return { Qgis::SensorThingsEntity::SamplingProcedure };
+
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+      return { Qgis::SensorThingsEntity::Sampler };
+
+    case Qgis::SensorThingsEntity::PreparationStep:
+      return { Qgis::SensorThingsEntity::PreparationProcedure };
+
+    case Qgis::SensorThingsEntity::PreparationProcedure:
+      return { Qgis::SensorThingsEntity::PreparationStep };
   }
   // NOLINTEND(bugprone-branch-clone)
 
@@ -1227,6 +1313,7 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Datastream:
         case Qgis::SensorThingsEntity::MultiDatastream:
         case Qgis::SensorThingsEntity::Deployment:
+        case Qgis::SensorThingsEntity::Sampling:
           return Qgis::RelationshipCardinality::OneToMany;
 
         case Qgis::SensorThingsEntity::Invalid:
@@ -1238,6 +1325,10 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Feature:
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
       break;
@@ -1262,6 +1353,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::Deployment:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
       break;
@@ -1293,6 +1389,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::Deployment:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
 
@@ -1323,6 +1424,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::FeatureOfInterest:
         case Qgis::SensorThingsEntity::MultiDatastream:
         case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
 
@@ -1351,6 +1457,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::FeatureOfInterest:
         case Qgis::SensorThingsEntity::Feature:
         case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
 
@@ -1379,6 +1490,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Feature:
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::Deployment:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
       break;
@@ -1404,6 +1520,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::Deployment:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
       break;
@@ -1429,6 +1550,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::Deployment:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
 
@@ -1444,6 +1570,7 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
           return Qgis::RelationshipCardinality::OneToMany;
 
         case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::Sampling:
           return Qgis::RelationshipCardinality::ManyToMany;
 
         case Qgis::SensorThingsEntity::Invalid:
@@ -1457,6 +1584,10 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Feature:
         case Qgis::SensorThingsEntity::Deployment:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
 
@@ -1483,6 +1614,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Datastream:
         case Qgis::SensorThingsEntity::Deployment:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
 
@@ -1513,6 +1649,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::Deployment:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
       break;
@@ -1540,6 +1681,11 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Feature:
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
           break;
       }
 
@@ -1568,6 +1714,170 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
         case Qgis::SensorThingsEntity::Feature:
         case Qgis::SensorThingsEntity::FeatureType:
         case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::Sampler:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Sampling:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+          return Qgis::RelationshipCardinality::ManyToOne;
+
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::Deployment:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::Sampling:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::Sampler:
+          return Qgis::RelationshipCardinality::ManyToOne;
+
+        case Qgis::SensorThingsEntity::Feature:
+          return Qgis::RelationshipCardinality::ManyToMany;
+
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::Deployment:
+        case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
+        case Qgis::SensorThingsEntity::Sampling:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::Sampler:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::Deployment:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::PreparationProcedure:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::PreparationStep:
+          return Qgis::RelationshipCardinality::OneToMany;
+
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::Deployment:
+        case Qgis::SensorThingsEntity::Feature:
+        case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::Sampler:
+          break;
+      }
+
+      break;
+    }
+
+    case Qgis::SensorThingsEntity::PreparationStep:
+    {
+      switch ( relatedType )
+      {
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+        case Qgis::SensorThingsEntity::Feature:
+          return Qgis::RelationshipCardinality::ManyToOne;
+
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+        case Qgis::SensorThingsEntity::Sensor:
+        case Qgis::SensorThingsEntity::ObservedProperty:
+        case Qgis::SensorThingsEntity::Datastream:
+        case Qgis::SensorThingsEntity::Invalid:
+        case Qgis::SensorThingsEntity::Thing:
+        case Qgis::SensorThingsEntity::Location:
+        case Qgis::SensorThingsEntity::HistoricalLocation:
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::MultiDatastream:
+        case Qgis::SensorThingsEntity::Observation:
+        case Qgis::SensorThingsEntity::Deployment:
+        case Qgis::SensorThingsEntity::FeatureType:
+        case Qgis::SensorThingsEntity::ObservingProcedure:
+        case Qgis::SensorThingsEntity::PreparationStep:
+        case Qgis::SensorThingsEntity::Sampling:
+        case Qgis::SensorThingsEntity::Sampler:
           break;
       }
 
@@ -1582,6 +1892,9 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
 QString QgsSensorThingsUtils::asQueryString( Qgis::SensorThingsEntity baseType, const QList<QgsSensorThingsExpansionDefinition> &expansions )
 {
   QString res;
+  if ( expansions.empty() )
+    return res;
+
   for ( int i = expansions.size() - 1; i >= 0; i-- )
   {
     const QgsSensorThingsExpansionDefinition &expansion = expansions.at( i );
