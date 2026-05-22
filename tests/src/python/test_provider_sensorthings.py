@@ -4803,6 +4803,220 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [{"a": 1, "b": 2}, {"a": 3, "b": 4}, None],
             )
 
+    def test_observation_2_0(self):
+        """
+        Test a layer retrieving 'Observation' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Observations",
+      "url": "endpoint/Observations"
+    }
+  ],
+"serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(endpoint, "/Observations?$top=0&$count=true"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Observations","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(endpoint, "/Observations?$top=2&$count=false"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Observations",
+  "value": [
+    {
+      "@id": "endpoint/Observations(1)",
+      "id": 1,
+      "phenomenonTime": "2017-12-31T23:00:00Z/2018-01-01T00:00:00Z",
+      "result": 12.5962142944,
+      "resultTime": "2017-12-31T23:00:30Z",
+      "resultQuality": "good",
+      "validTime": "2017-12-31T23:00:00Z/2018-12-31T00:00:00Z",
+      "parameters":{
+      "a":1,
+      "b":2
+      },
+      "Things@navigationLink": "endpoint/Datastreams(1)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Datastreams(1)/HistoricalLocations"
+    },
+    {
+      "@id": "endpoint/Observations(2)",
+      "id": 2,
+      "phenomenonTime": "2018-01-01T00:00:00Z/2018-01-01T01:00:00Z",
+      "result": 7.7946872711,
+      "resultTime": "2018-01-01T00:30:00Z",
+      "validTime": "2018-12-31T23:00:00Z/2019-12-31T00:00:00Z",
+      "resultQuality": ["good", "fair"],
+      "parameters":{
+      "a":3,
+      "b":4
+      },
+      "Things@navigationLink": "endpoint/Datastreams(2)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Datastreams(2)/HistoricalLocations"
+
+    }
+  ],
+  "@nextLink": "endpoint/Observations?$top=2&$skip=2"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(endpoint, "/Observations?$top=2&$skip=2"),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+            "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Observations",
+              "value": [
+                {
+                  "@id": "endpoint/Observations(3)",
+                  "id": 3,
+                  "phenomenonTime": "2018-01-01T02:00:00Z/2018-01-01T02:30:00Z",
+                  "result": 4.1779522896,
+                  "resultTime": "2018-01-01T02:30:00Z",
+                  "validTime": "2019-12-31T23:00:00Z/2020-12-31T00:00:00Z",
+                  "Things@navigationLink": "endpoint/Datastreams(3)/Things",
+                  "HistoricalLocations@navigationLink": "endpoint/Datastreams(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 type=PointZ entity='Observation'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertFalse(vl.crs().isValid())
+            self.assertIn("Entity Type</td><td>Observation</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Observations"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "phenomenonTimeStart",
+                    "phenomenonTimeEnd",
+                    "result",
+                    "resultTime",
+                    "resultQuality",
+                    "validTimeStart",
+                    "validTimeEnd",
+                    "parameters",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.String,
+                    QVariant.DateTime,
+                    QVariant.StringList,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-16:] for f in features],
+                ["/Observations(1)", "/Observations(2)", "/Observations(3)"],
+            )
+            self.assertEqual(
+                [f["phenomenonTimeStart"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(2, 0, 0, 0), Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["phenomenonTimeEnd"] for f in features],
+                [
+                    QDateTime(QDate(2018, 1, 1), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(1, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(2, 30, 0, 0), Qt.TimeSpec(1)),
+                ],
+            )
+            # TODO -- these should be doubles
+            self.assertEqual(
+                [f["result"] for f in features],
+                ["12.5962", "7.79469", "4.17795"],
+            )
+            self.assertEqual(
+                [f["resultTime"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 30, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(0, 30, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(2, 30, 0, 0), Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["resultQuality"] for f in features],
+                [["good"], ["good", "fair"], None],
+            )
+            self.assertEqual(
+                [f["validTimeStart"] for f in features],
+                [
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2019, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["validTimeEnd"] for f in features],
+                [
+                    QDateTime(QDate(2018, 12, 31), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2019, 12, 31), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                ],
+            )
+            self.assertEqual(
+                [f["parameters"] for f in features],
+                [{"a": 1, "b": 2}, {"a": 3, "b": 4}, None],
+            )
+
     def test_feature_of_interest(self):
         """
         Test a layer retrieving 'Features of Interest' entities from a service
