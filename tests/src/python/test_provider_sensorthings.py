@@ -3276,6 +3276,156 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+    def test_historical_location_2_0(self):
+        """
+        Test a layer retrieving 'Historical Location' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "HistoricalLocations",
+      "url": "endpoint/HistoricalLocations"
+    }
+  ],
+  "serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(endpoint, "/HistoricalLocations?$top=0&$count=true"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#HistoricalLocations","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(endpoint, "/HistoricalLocations?$top=2&$count=false"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#HistoricalLocations",
+  "value": [
+    {
+      "@id": "endpoint/HistoricalLocations(1)",
+      "id": 1,
+      "time": "2020-03-20T16:35:23.383586Z",
+      "Things@navigationLink": "endpoint/HistoricalLocations(1)/Things",
+      "Locations@navigationLink": "endpoint/HistoricalLocations(1)/Locations"
+    },
+    {
+      "@id": "endpoint/HistoricalLocations(2)",
+      "id": 2,
+      "time": "2021-03-20T16:35:23.383586Z",
+      "Things@navigationLink": "endpoint/HistoricalLocations(2)/Things",
+      "Locations@navigationLink": "endpoint/HistoricalLocations(2)/Locations"
+
+    }
+  ],
+  "@nextLink": "endpoint/HistoricalLocations?$top=2&$skip=2"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(endpoint, "/HistoricalLocations?$top=2&$skip=2"),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#HistoricalLocations",
+              "value": [
+                {
+                  "@id": "endpoint/HistoricalLocations(3)",
+                  "id": 3,
+                  "time": "2022-03-20T16:35:23.383586Z",
+                  "Things@navigationLink": "endpoint/HistoricalLocations(3)/Things",
+                  "Locations@navigationLink": "endpoint/HistoricalLocations(3)/Locations"
+                }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ pageSize=2 entity='HistoricalLocation'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertFalse(vl.crs().isValid())
+            self.assertIn(
+                "Entity Type</td><td>HistoricalLocation</td>", vl.htmlMetadata()
+            )
+            self.assertIn(
+                f'href="http://{endpoint}/HistoricalLocations"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "time",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.DateTime,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-23:] for f in features],
+                [
+                    "/HistoricalLocations(1)",
+                    "/HistoricalLocations(2)",
+                    "/HistoricalLocations(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["time"] for f in features],
+                [
+                    QDateTime(
+                        QDate(2020, 3, 20), QTime(16, 35, 23, 384), Qt.TimeSpec(1)
+                    ),
+                    QDateTime(
+                        QDate(2021, 3, 20), QTime(16, 35, 23, 384), Qt.TimeSpec(1)
+                    ),
+                    QDateTime(
+                        QDate(2022, 3, 20), QTime(16, 35, 23, 384), Qt.TimeSpec(1)
+                    ),
+                ],
+            )
+
     def test_datastream(self):
         """
         Test a layer retrieving 'Datastream' entities from a service
