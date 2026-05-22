@@ -193,7 +193,7 @@ QString QgsServerOgcApi::contentTypeToExtension( const ContentType &ct )
   const QString extension { contentTypeToString( ct ).toLower() };
   // Special case for flatgeobuf, which is a bit too long for
   // an extension and has a widely used alternative (fgb)
-  if ( extension.compare( u"flatgeobuf"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  if ( extension.compare( u"flatgeobuf" s_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
   {
     return u"fgb"_s;
   }

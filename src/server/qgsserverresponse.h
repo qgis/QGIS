@@ -70,8 +70,9 @@ class SERVER_EXPORT QgsServerResponse
     /**
      * Returns a single header value for a given \a key
      * \note if multiple values are set for the same key, the last one is returned
+     * \deprecated QGIS 4.2. Use fullHeader() instead.
      */
-    virtual QString header( const QString &key ) const = 0;
+    Q_DECL_DEPRECATED virtual QString header( const QString &key ) const = 0 SIP_DEPRECATED;
 
     /**
      * Returns a (possibly empty) list of all the header values for the given \a key
@@ -83,8 +84,9 @@ class SERVER_EXPORT QgsServerResponse
     /**
      * Returns the header values as a map: only the last value is returned if multiple values are set for the same header
      * \see fullHeaders() to get all the values for all the headers
+     * \deprecated QGIS 4.2. Use fullHeaders() instead.
      */
-    virtual QMap<QString, QString> headers() const = 0;
+    Q_DECL_DEPRECATED virtual QMap<QString, QString> headers() const = 0 SIP_DEPRECATED;
 
     /**
      * Returns all the header values

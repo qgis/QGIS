@@ -61,9 +61,11 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
     void removeHeader( const QString &key ) override;
 
     /**
-     * Returns the header value
+     * Returns a single header value, or an empty string if the header is not set.
+     * If multiple values are set for the same header, only the last value is returned.
+     * \deprecated QGIS 4.2. Use fullHeader() instead.
      */
-    QString header( const QString &key ) const override;
+    Q_DECL_DEPRECATED QString header( const QString &key ) const override SIP_DEPRECATED;
 
     /**
      * Returns all the headers
@@ -76,9 +78,10 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
     virtual QList<QString> fullHeader( const QString &key ) const override;
 
     /**
-     * Returns all the headers as a map: only the first value is returned if multiple values are set for the same header
+     * Returns all the headers as a map: only the last value is returned if multiple values are set for the same header name.
+     * \deprecated QGIS 4.2. Use fullHeaders() instead.
      */
-    QMap<QString, QString> headers() const override;
+    Q_DECL_DEPRECATED QMap<QString, QString> headers() const override SIP_DEPRECATED;
 
     /**
      * Returns TRUE if the headers have already been sent

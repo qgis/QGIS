@@ -55,13 +55,17 @@ Clear all header values for the given ``key`` Undo a previous
 'setHeader' call
 %End
 
-    virtual QString header( const QString &key ) const = 0;
+ virtual QString header( const QString &key ) const = 0 /Deprecated="Since 4.2. Use fullHeader() instead."/;
 %Docstring
 Returns a single header value for a given ``key``
 
 .. note::
 
    if multiple values are set for the same key, the last one is returned
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~QgsServerResponse.fullHeader` instead.
 %End
 
     virtual QList<QString> fullHeader( const QString &key ) const = 0;
@@ -74,12 +78,16 @@ Returns a (possibly empty) list of all the header values for the given
 .. versionadded:: 4.2
 %End
 
-    virtual QMap<QString, QString> headers() const = 0;
+ virtual QMap<QString, QString> headers() const = 0 /Deprecated="Since 4.2. Use fullHeaders() instead."/;
 %Docstring
 Returns the header values as a map: only the last value is returned if
 multiple values are set for the same header
 
 .. seealso:: :py:func:`fullHeaders` to get all the values for all the headers
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~QgsServerResponse.fullHeaders` instead.
 %End
 
     virtual QMap<QString, QList<QString>> fullHeaders() const = 0;

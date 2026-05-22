@@ -1206,6 +1206,10 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.driverName = u"FlatGeobuf"_s;
+  if ( !mapLayer->isSpatial() )
+  {
+    saveOptions.datasourceOptions = u"SPATIAL_INDEX=NO"_s;
+  }
 
   if ( featureRequest.destinationCrs() != mapLayer->crs() )
   {
@@ -1330,14 +1334,10 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   }
 
   // Retrieve data from the buffer and send it
-  vsi_l_offset pnDataLength;
-  const char *dataPtr = reinterpret_cast<char *>( VSIGetMemFileBuffer( destination.toStdString().c_str(), &pnDataLength, false ) );
+  vsi_l_offset nDataLength = 0;
+  const char *dataPtr = reinterpret_cast<char *>( VSIGetMemFileBuffer( destination.toStdString().c_str(), &nDataLength, false ) );
 
-  // Check that pnDataLength fits in qsizetype
-  if ( pnDataLength > std::numeric_limits<qsizetype>::max() )
-  {
-    throw QgsServerApiInternalServerError( u"Exported data is too large to be sent in the response"_s );
-  }
+  Q_ASSERT( pnDataLength <= std::numeric_limits<qsizetype>::max() );
 
   const QByteArray data { QByteArray::fromRawData( dataPtr, static_cast<qsizetype>( pnDataLength ) ) };
   apiContext.response()->write( data );

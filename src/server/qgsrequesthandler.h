@@ -65,8 +65,11 @@ class SERVER_EXPORT QgsRequestHandler
     //! Retrieve response header value
     QString responseHeader( const QString &name ) const;
 
-    //! Returns the response headers: note that if multiple values are set for the same header, only the first one is returned
-    QMap<QString, QString> responseHeaders() const;
+    /**
+     *  Returns the response headers: note that if multiple values are set for the same header, only the last one is returned
+     *  \deprecated QGIS 4.2. Use fullResponseHeaders() instead.
+     */
+    Q_DECL_DEPRECATED QMap<QString, QString> responseHeaders() const SIP_DEPRECATED;
 
     /**
      * Returns the list of response headers for a given header \a name
@@ -86,7 +89,7 @@ class SERVER_EXPORT QgsRequestHandler
     //! Remove an HTTP request header
     void removeRequestHeader( const QString &name );
 
-    //! Retrieve request header value: note that if multiple values are set for the same header, only the first one is returned
+    //! Retrieve request header value
     QString requestHeader( const QString &name ) const;
 
     //! Returns the Request headers
