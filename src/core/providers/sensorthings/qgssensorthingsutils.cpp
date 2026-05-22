@@ -1082,13 +1082,17 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
       try
       {
         auto rootContent = nlohmann::json::parse( content.content().toStdString() );
-        if ( !rootContent.contains( "@iot.count" ) )
+        if ( rootContent.contains( "@iot.count" ) )
         {
-          QgsDebugError( u"No '@iot.count' value in response"_s );
-          return -1;
+          return rootContent["@iot.count"].get<long long>();
+        }
+        else if ( rootContent.contains( "@count" ) )
+        {
+          return rootContent["@count"].get<long long>();
         }
 
-        return rootContent["@iot.count"].get<long long>();
+        QgsDebugError( u"No 'count' value in response"_s );
+        return -1;
       }
       catch ( const nlohmann::json::parse_error &ex )
       {
