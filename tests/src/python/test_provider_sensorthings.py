@@ -2209,6 +2209,306 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ["/Locations(1)", "/Locations(3)", "/Locations(2)"],
             )
 
+    def test_filter_rect_2_0(self):
+        """
+        Test retrieving features using feature requests with filter
+        rectangles set, server version 2.0
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Locations",
+      "url": "endpoint/Locations"
+    }
+  ],
+"serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Locations?$top=0&$count=true&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Locations","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Locations?$top=2&$count=false&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Locations",
+  "value": [
+    {
+      "@id": "endpoint/Locations(1)",
+      "id": 1,
+      "name": "Location 1",
+      "description": "Desc 1",
+      "encodingType": "application/geo+json",
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          1.623373,
+          52.132017
+        ]
+      },
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things@navigationLink": "endpoint/Locations(1)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Locations(1)/HistoricalLocations"
+    },
+    {
+      "@id": "endpoint/Locations(2)",
+      "id": 2,
+      "name": "Location 2",
+      "description": "Desc 2",
+      "encodingType": "application/geo+json",
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          12.623373,
+          53.132017
+        ]
+      },
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@navigationLink": "endpoint/Locations(2)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Locations(2)/HistoricalLocations"
+
+    }
+  ],
+  "@nextLink": "endpoint/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/Locations?$top=2&$skip=2&$filter=location/type eq 'Point' or location/geometry/type eq 'Point'",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Locations",
+              "value": [
+                {
+                  "@id": "endpoint/Locations(3)",
+                  "id": 3,
+                  "name": "Location 3",
+                  "description": "Desc 3",
+                  "encodingType": "application/geo+json",
+                  "location": {
+                    "type": "Point",
+                    "coordinates": [
+                      3.623373,
+                      55.132017
+                    ]
+                  },
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@navigationLink": "endpoint/Locations(3)/Things",
+                  "HistoricalLocations@navigationLink": "endpoint/Locations(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((1 0, 10 0, 10 80, 1 80, 1 0))'))",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Locations",
+              "value": [
+                          {
+                  "@id": "endpoint/Locations(1)",
+                  "id": 1,
+                  "name": "Location 1",
+                  "description": "Desc 1",
+                  "encodingType": "application/geo+json",
+                  "location": {
+                    "type": "Point",
+                    "coordinates": [
+                      1.623373,
+                      52.132017
+                    ]
+                  },
+                  "properties": {
+                    "owner": "owner 1"
+                  },
+                  "Things@navigationLink": "endpoint/Locations(1)/Things",
+                  "HistoricalLocations@navigationLink": "endpoint/Locations(1)/HistoricalLocations"
+                },
+                {
+                  "@id": "endpoint/Locations(3)",
+                  "id": 3,
+                  "name": "Location 3",
+                  "description": "Desc 3",
+                  "encodingType": "application/geo+json",
+                  "location": {
+                    "type": "Point",
+                    "coordinates": [
+                      3.623373,
+                      55.132017
+                    ]
+                  },
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@navigationLink": "endpoint/Locations(3)/Things",
+                  "HistoricalLocations@navigationLink": "endpoint/Locations(3)/HistoricalLocations"
+                }
+              ]
+            }""".replace("endpoint", "http://" + endpoint)
+                    )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Locations?$top=2&$count=false&$filter=(location/type eq 'Point' or location/geometry/type eq 'Point') and (geo.intersects(location, geography'Polygon ((10 0, 20 0, 20 80, 10 80, 10 0))'))",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+            {
+              "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Locations",
+              "value": [
+                              {
+      "@id": "endpoint/Locations(2)",
+      "id": 2,
+      "name": "Location 2",
+      "description": "Desc 2",
+      "encodingType": "application/geo+json",
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          12.623373,
+          53.132017
+        ]
+      },
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@navigationLink": "endpoint/Locations(2)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Locations(2)/HistoricalLocations"
+
+    }
+              ]
+            }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ pageSize=2 entity='Location'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertEqual(vl.crs().authid(), "EPSG:4326")
+            self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Locations"', vl.htmlMetadata())
+
+            # test retrieving subset of features from a filter rect only
+            request = QgsFeatureRequest()
+            request.setFilterRect(QgsRectangle(1, 0, 10, 80))
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual([f["id"] for f in features], ["1", "3"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(1)", "/Locations(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Location 1", "Location 3"],
+            )
+            self.assertEqual([f["description"] for f in features], ["Desc 1", "Desc 3"])
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 3"}],
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt(1) for f in features],
+                ["Point (1.6 52.1)", "Point (3.6 55.1)"],
+            )
+
+            # test retrieving a different subset with a different extent
+            request = QgsFeatureRequest()
+            request.setFilterRect(QgsRectangle(10, 0, 20, 80))
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual([f["id"] for f in features], ["2"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(2)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Location 2"],
+            )
+            self.assertEqual([f["description"] for f in features], ["Desc 2"])
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 2"}],
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt(1) for f in features],
+                ["Point (12.6 53.1)"],
+            )
+
+            # a filter rect which covers all features
+            request = QgsFeatureRequest()
+            request.setFilterRect(QgsRectangle(0, 0, 20, 80))
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual([f["id"] for f in features], ["1", "3", "2"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(1)", "/Locations(3)", "/Locations(2)"],
+            )
+
     def test_extent_limit(self):
         """
         Test a layer with a hardcoded extent limit set at the provider level
