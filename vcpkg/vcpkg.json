@@ -103,6 +103,15 @@
     "qtsvg",
     "qt5compat",
     "qtkeychain-qt6",
+    {
+      "name": "tiff",
+      "features": [
+        "lerc",
+        "libdeflate",
+        "webp",
+        "zstd"
+      ]
+    },
     "zlib",
     "zstd"
   ],
