@@ -4422,6 +4422,181 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 [{"owner": "owner 1"}, {"owner": "owner 2"}, {"owner": "owner 3"}],
             )
 
+    def test_observed_property_2_0(self):
+        """
+        Test a layer retrieving 'Observed Property' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "ObservedProperties",
+      "url": "endpoint/ObservedProperties"
+    }
+  ],
+  "serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(endpoint, "/ObservedProperties?$top=0&$count=true"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservedProperties","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(endpoint, "/ObservedProperties?$top=2&$count=false"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservedProperties",
+  "value": [
+    {
+      "@id": "endpoint/ObservedProperties(1)",
+      "id": 1,
+      "name": "Datastream 1",
+      "description": "Desc 1",
+      "definition": "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1",
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things@navigationLink": "endpoint/Datastreams(1)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Datastreams(1)/HistoricalLocations"
+    },
+    {
+      "@id": "endpoint/ObservedProperties(2)",
+      "id": 2,
+      "name": "Datastream 2",
+      "definition": "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2",
+      "description": "Desc 2",
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@navigationLink": "endpoint/Datastreams(2)/Things",
+      "HistoricalLocations@navigationLink": "endpoint/Datastreams(2)/HistoricalLocations"
+
+    }
+  ],
+  "@nextLink": "endpoint/ObservedProperties?$top=2&$skip=2"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(endpoint, "/ObservedProperties?$top=2&$skip=2"),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+            "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservedProperties",
+              "value": [
+                {
+                  "@id": "endpoint/ObservedProperties(3)",
+                  "id": 3,
+                  "name": "Datastream 3",
+                  "description": "Desc 3",
+                  "definition": "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/3",
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@navigationLink": "endpoint/Datastreams(3)/Things",
+                  "HistoricalLocations@navigationLink": "endpoint/Datastreams(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ pageSize=2 entity='ObservedProperty'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertFalse(vl.crs().isValid())
+            self.assertIn(
+                "Entity Type</td><td>ObservedProperty</td>", vl.htmlMetadata()
+            )
+            self.assertIn(
+                f'href="http://{endpoint}/ObservedProperties"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "definition",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-22:] for f in features],
+                [
+                    "/ObservedProperties(1)",
+                    "/ObservedProperties(2)",
+                    "/ObservedProperties(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Datastream 1", "Datastream 2", "Datastream 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features], ["Desc 1", "Desc 2", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["definition"] for f in features],
+                [
+                    "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1",
+                    "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/2",
+                    "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/3",
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 2"}, {"owner": "owner 3"}],
+            )
+
     def test_observation(self):
         """
         Test a layer retrieving 'Observation' entities from a service
