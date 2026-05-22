@@ -1012,7 +1012,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     "w",
                     encoding="utf8",
                 ) as f:
-                    f.write("""{"@iot.count":4962,"value":[]}""")
+                    f.write("""{"@count":4962,"value":[]}""")
 
             vl = QgsVectorLayer(
                 f"url='http://{endpoint}' type=PointZ entity='Location'",
@@ -1129,6 +1129,164 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertTrue(vl.extent().isNull())
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertFalse(vl.crs().isValid())
+            self.assertIn("Entity Type</td><td>Thing</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Things"', vl.htmlMetadata())
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-10:] for f in features],
+                ["/Things(1)", "/Things(2)", "/Things(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features], ["Thing 1", "Thing 2", "Thing 3"]
+            )
+            self.assertEqual(
+                [f["description"] for f in features], ["Desc 1", "Desc 2", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"}, {"owner": "owner 2"}, {"owner": "owner 3"}],
+            )
+
+    def test_thing_2_0(self):
+        """
+        Test a layer retrieving 'Thing' entities from a service, 2.0 version
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Things",
+      "url": "endpoint/Things"
+    }
+  ],
+  "serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(endpoint, "/Things?$top=0&$count=true"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Things","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(endpoint, "/Things?$top=2&$count=false"),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Things",
+  "value": [
+    {
+      "@id": "endpoint/Things(1)",
+      "id": 1,
+      "name": "Thing 1",
+      "description": "Desc 1",
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Locations@navigationLink": "endpoint/Things(1)/Locations",
+      "HistoricalLocations@navigationLink": "endpoint/Things(1)/HistoricalLocations",
+      "Datastreams@navigationLink": "endpoint/Things(1)/Datastreams",
+      "MultiDatastreams@navigationLink": "endpoint/Things(1)/MultiDatastreams"
+    },
+    {
+      "@id": "endpoint/Things(2)",
+      "id": 2,
+      "name": "Thing 2",
+      "description": "Desc 2",
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Locations@navigationLink": "endpoint/Things(2)/Locations",
+      "HistoricalLocations@navigationLink": "endpoint/Things(2)/HistoricalLocations",
+      "Datastreams@navigationLink": "endpoint/Things(2)/Datastreams",
+      "MultiDatastreams@navigationLink": "endpoint/Things(2)/MultiDatastreams"
+    }
+  ],
+  "@nextLink": "endpoint/Things?$top=2&$skip=2"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(endpoint, "/Things?$top=2&$skip=2"),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@id": "endpoint/Things(3)",
+                  "id": 3,
+                  "name": "Thing 3",
+                  "description": "Desc 3",
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Locations@iot.navigationLink": "endpoint/Things(3)/Locations",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Things(3)/HistoricalLocations",
+                  "Datastreams@iot.navigationLink": "endpoint/Things(3)/Datastreams",
+                  "MultiDatastreams@iot.navigationLink": "endpoint/Things(3)/MultiDatastreams"
+                }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ pageSize=2 entity='Thing'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
             self.assertTrue(vl.extent().isNull())
             self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
