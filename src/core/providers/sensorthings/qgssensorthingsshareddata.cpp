@@ -280,9 +280,9 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
   {
     locker.changeMode( QgsReadWriteLocker::Write );
 
-    int thisPageSize = mMaximumPageSize;
-    if ( mFeatureLimit > 0 && ( mCachedFeatures.size() + thisPageSize ) > mFeatureLimit )
-      thisPageSize = mFeatureLimit - mCachedFeatures.size();
+    std::size_t thisPageSize = mMaximumPageSize;
+    if ( mFeatureLimit > 0 && ( mCachedFeatures.size() + thisPageSize ) > static_cast< std::size_t >( mFeatureLimit ) )
+      thisPageSize = static_cast< std::size_t >( mFeatureLimit ) - mCachedFeatures.size();
 
     mNextPage = u"%1?$top=%2&$count=false%3"_s.arg( mEntityBaseUri ).arg( thisPageSize ).arg( !mExpandQueryString.isEmpty() ? ( u"&"_s + mExpandQueryString ) : QString() );
     const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
@@ -333,7 +333,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   QString filterString = QgsSensorThingsUtils::combineFilters( { typeFilter, extentFilter, mSubsetString } );
   if ( !filterString.isEmpty() )
     filterString = u"&$filter="_s + filterString;
-  int thisPageSize = mMaximumPageSize;
+  std::size_t thisPageSize = mMaximumPageSize;
   QString queryUrl;
   if ( !thisPage.isEmpty() )
   {
@@ -342,8 +342,8 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
     const QRegularExpressionMatch match = topRe.match( queryUrl );
     if ( match.hasMatch() )
     {
-      if ( mFeatureLimit > 0 && ( mCachedFeatures.size() + thisPageSize ) > mFeatureLimit )
-        thisPageSize = mFeatureLimit - mCachedFeatures.size();
+      if ( mFeatureLimit > 0 && ( mCachedFeatures.size() + thisPageSize ) > static_cast< std::size_t >( mFeatureLimit ) )
+        thisPageSize = static_cast< std::size_t >( mFeatureLimit ) - mCachedFeatures.size();
       queryUrl = queryUrl.left( match.capturedStart( 0 ) ) + u"$top=%1"_s.arg( thisPageSize ) + queryUrl.mid( match.capturedEnd( 0 ) );
     }
   }
@@ -513,7 +513,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                   else if ( obj.is_array() )
                   {
                     QStringList results;
-                    results.reserve( obj.size() );
+                    results.reserve( static_cast< qsizetype >( obj.size() ) );
                     for ( const auto &item : obj )
                     {
                       bool itemOk = false;
@@ -747,6 +747,19 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                       << phenomenonTime.second
                       << resultTime.first
                       << resultTime.second;
+                    break;
+                  }
+
+                  case Qgis::SensorThingsEntity::Deployment:
+                  {
+                    std::pair< QVariant, QVariant > time = getDateTimeRange( entityData, "time" );
+                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties << time.first << time.second;
+                    break;
+                  }
+
+                  case Qgis::SensorThingsEntity::ObservingProcedure:
+                  {
+                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "definition" ) << getString( entityData, "description" ) << properties;
                     break;
                   }
                 }

@@ -6290,6 +6290,431 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+    def test_deployments_2_0(self):
+        """
+        Test a layer retrieving 'Deployments' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Deployments",
+      "url": "endpoint/Deployments"
+    }
+  ],
+"serverSettings": {
+  "conformance": [
+  "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+  ]
+  }
+}""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Deployments?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Deployments","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/Deployments?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Deployments",
+  "value": [
+    {
+      "@id": "endpoint/Deployments(1)",
+      "id": 1,
+      "description": "Mounting the digital pH probe to the primary water quality buoy for the summer monitoring campaign.",
+      "name": "Summer 2026 Buoy Deployment",
+      "properties": {
+        "localId": "SAM.09.LAA.822.7.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+      "time": {
+        "start": "2026-05-01T00:00:00Z",
+        "end": "2026-09-01T00:00:00Z"
+      },
+      "Datastreams@navigationLink": "endpoint/Deployments(1)/Datastreams"
+    },
+    {
+      "@id": "endpoint/Deployments(2)",
+      "id": 2,
+      "name": "Summer 2025 Buoy Deployment",
+      "properties": {
+        "localId": "SAM.09.LOB.823.7.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+            "time": {
+        "start": "2025-05-01T00:00:00Z",
+        "end": "2025-09-01T00:00:00Z"
+      },
+      "Datastreams@navigationLink": "endpoint/Deployments(2)/Datastreams"
+    }
+  ],
+  "@nextLink": "endpoint/Deployments?$top=2&$skip=2"
+}
+                """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/Deployments?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+            "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#Deployments",
+              "value": [
+                {
+                  "@id": "endpoint/Deployments(3)",
+                  "id": 3,
+"description": "2024 summer period.",
+      "name": "Summer 2024 Buoy Deployment",
+      "properties": {
+        "localId": "SAM.09.LOB.824.1.1",
+        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+        "namespace": "AT.0008.20.AQ",
+        "owner": "http://luft.umweltbundesamt.at"
+      },
+            "time": {
+        "start": "2024-05-01T00:00:00Z",
+        "end": "2024-09-01T00:00:00Z"
+      },
+      "Datastreams@navigationLink": "endpoint/Deployments(3)/Datastreams"
+                     }
+              ]
+            }
+                            """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='Deployments'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn("Entity Type</td><td>Deployment</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Deployments"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "description",
+                    "properties",
+                    "timeStart",
+                    "timeEnd",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                    QVariant.DateTime,
+                    QVariant.DateTime,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-15:] for f in features],
+                [
+                    "/Deployments(1)",
+                    "/Deployments(2)",
+                    "/Deployments(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                [
+                    "Summer 2026 Buoy Deployment",
+                    "Summer 2025 Buoy Deployment",
+                    "Summer 2024 Buoy Deployment",
+                ],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "Mounting the digital pH probe to the primary water quality buoy for the summer monitoring campaign.",
+                    None,
+                    "2024 summer period.",
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
+    def test_observing_procedures_2_0(self):
+        """
+        Test a layer retrieving 'ObservingProcedures' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "ObservingProcedures",
+          "url": "endpoint/ObservingProcedures"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/ObservingProcedures?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservingProcedures","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/ObservingProcedures?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservingProcedures",
+      "value": [
+        {
+          "@id": "endpoint/ObservingProcedures(1)",
+          "id": 1,
+          "description": "Electrometric measurement of pH in drinking, surface, and saline waters.",
+          "name": "Standard EPA Method 150.1",
+          "definition": "https://www.epa.gov/sites/default/files/2015-08/documents/method_150-1_1982.pdf",
+          "properties": {
+            "localId": "SAM.09.LAA.822.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Sensors@navigationLink": "endpoint/ObservingProcedures(1)/Sensors"
+        },
+        {
+          "@id": "endpoint/ObservingProcedures(2)",
+          "id": 2,
+          "name": "Standard EPA Method 160.1",
+          "properties": {
+            "localId": "SAM.09.LOB.823.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Sensors@navigationLink": "endpoint/ObservingProcedures(2)/Sensors"
+        }
+      ],
+      "@nextLink": "endpoint/ObservingProcedures?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/ObservingProcedures?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservingProcedures",
+                  "value": [
+                    {
+                      "@id": "endpoint/ObservingProcedures(3)",
+                      "id": 3,
+    "description": "Description 2",
+          "name": "Standard EPA Method 170.1",
+          "definition": "other pdf",
+          "properties": {
+            "localId": "SAM.09.LOB.824.1.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "Sensors@navigationLink": "endpoint/ObservingProcedures(3)/Sensors"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='ObservingProcedures'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn(
+                "Entity Type</td><td>ObservingProcedure</td>", vl.htmlMetadata()
+            )
+            self.assertIn(
+                f'href="http://{endpoint}/ObservingProcedures"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ["id", "selfLink", "name", "definition", "description", "properties"],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-23:] for f in features],
+                [
+                    "/ObservingProcedures(1)",
+                    "/ObservingProcedures(2)",
+                    "/ObservingProcedures(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                [
+                    "Standard EPA Method 150.1",
+                    "Standard EPA Method 160.1",
+                    "Standard EPA Method 170.1",
+                ],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "Electrometric measurement of pH in drinking, surface, and saline waters.",
+                    None,
+                    "Description 2",
+                ],
+            )
+            self.assertEqual(
+                [f["definition"] for f in features],
+                [
+                    "https://www.epa.gov/sites/default/files/2015-08/documents/method_150-1_1982.pdf",
+                    None,
+                    "other pdf",
+                ],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
     def test_feature_expansion(self):
         """
         Test a layer using feature expansion
