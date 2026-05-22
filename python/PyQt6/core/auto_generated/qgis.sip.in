@@ -2710,6 +2710,13 @@ The development version
       OptimalInInsertionGroup,
     };
 
+    enum class LegendLayerDoubleClickAction /BaseType=IntEnum/
+    {
+      LayerProperties,
+      AttributeTable,
+      LayerStyling,
+    };
+
     enum class LayerTreeFilterFlag /BaseType=IntFlag/
     {
       SkipVisibilityCheck,
@@ -3774,6 +3781,12 @@ The development version
     {
       ConstrainedDelaunay,
       Earcut
+    };
+
+    enum class WmsGroupRequestMode /BaseType=IntEnum/
+    {
+      Normal,
+      Opaque,
     };
 
     enum class DockableWidgetInitialState /BaseType=IntEnum/

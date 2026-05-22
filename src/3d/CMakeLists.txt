@@ -24,6 +24,7 @@ set(QGIS_3D_SRCS
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
   qgs3dwiredmesh_p.cpp
+  qgsbloomsettings.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgscategorized3drenderer.cpp
@@ -35,6 +36,7 @@ set(QGIS_3D_SRCS
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
+  qgslayerstylewatcher.cpp
   qgsmapoverlayentity.cpp
   qgsmapoverlaytexturegenerator_p.cpp
   qgsobj3dutils.cpp
@@ -103,6 +105,9 @@ set(QGIS_3D_SRCS
   framegraph/qgsambientocclusionrenderentity.cpp
   framegraph/qgsambientocclusionrenderview.cpp
   framegraph/qgsambientocclusionblurentity.cpp
+  framegraph/qgsbloomdownsampleentity.cpp
+  framegraph/qgsbloomrenderview.cpp
+  framegraph/qgsbloomupsampleentity.cpp
   framegraph/qgsdepthentity.cpp
   framegraph/qgsdepthrenderview.cpp
   framegraph/qgsforwardrenderview.cpp
@@ -180,6 +185,7 @@ set(QGIS_3D_HDRS
   qgsabstractvectorlayer3drenderer.h
   qgsannotationlayer3drenderer.h
   qgsannotationlayerchunkloader_p.h
+  qgsbloomsettings.h
   qgscameracontroller.h
   qgscamerapose.h
   qgscategorized3drenderer.h
@@ -189,6 +195,7 @@ set(QGIS_3D_HDRS
   qgsglobechunkedentity.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
+  qgslayerstylewatcher.h
   qgsmapoverlayentity.h
   qgsmapoverlaytexturegenerator_p.h
   qgsmeshlayer3drenderer.h
@@ -241,6 +248,9 @@ set(QGIS_3D_HDRS
   framegraph/qgsambientocclusionrenderentity.h
   framegraph/qgsambientocclusionrenderview.h
   framegraph/qgsambientocclusionblurentity.h
+  framegraph/qgsbloomdownsampleentity.h
+  framegraph/qgsbloomrenderview.h
+  framegraph/qgsbloomupsampleentity.h
   framegraph/qgsdepthentity.h
   framegraph/qgsdepthrenderview.h
   framegraph/qgsforwardrenderview.h

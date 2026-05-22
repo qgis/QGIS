@@ -77,7 +77,7 @@ class SERVER_EXPORT QgsRequestHandler
     //! Retrieve request header value
     QString requestHeader( const QString &name ) const;
 
-    //! Returns the the Request headers
+    //! Returns the Request headers
     QMap<QString, QString> requestHeaders() const;
 
     //! Clears the response body and headers

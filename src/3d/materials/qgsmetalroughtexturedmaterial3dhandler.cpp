@@ -67,9 +67,6 @@ QMap<QString, QString> QgsMetalRoughTexturedMaterial3DHandler::toExportParameter
   return parameters;
 }
 
-void QgsMetalRoughTexturedMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
-{}
-
 bool QgsMetalRoughTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
 {
   const QgsMetalRoughTexturedMaterialSettings *metalRoughTexturedSettings = qgis::down_cast< const QgsMetalRoughTexturedMaterialSettings * >( settings );

@@ -475,18 +475,18 @@ void QgsGeometryCheckerSetupTab::runChecks()
     featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
   }
 
-  QgsGeometryCheckContext *context = new QgsGeometryCheckContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext(), QgsProject::instance() );
+  auto context = std::make_unique<QgsGeometryCheckContext>( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext(), QgsProject::instance() );
 
   QList<QgsGeometryCheck *> checks;
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
-    QgsGeometryCheck *check = factory->createInstance( context, ui );
+    QgsGeometryCheck *check = factory->createInstance( context.get(), ui );
     if ( check )
     {
       checks.append( check );
     }
   }
-  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, context, featurePools );
+  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, std::move( context ), featurePools );
 
   emit checkerStarted( checker );
 

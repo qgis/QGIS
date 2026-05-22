@@ -75,9 +75,6 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
   return nullptr;
 }
 
-void QgsGoochMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
-{}
-
 QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
   const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
@@ -109,11 +106,6 @@ QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAb
   *fptr++ = static_cast<unsigned char>( specular.blue() );
 
   return array;
-}
-
-int QgsGoochMaterial3DHandler::dataDefinedByteStride( const QgsAbstractMaterialSettings * ) const
-{
-  return 12 * sizeof( unsigned char );
 }
 
 void QgsGoochMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const

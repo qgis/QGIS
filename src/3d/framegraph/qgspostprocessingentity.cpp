@@ -17,6 +17,7 @@
 
 #include "qgs3dutils.h"
 #include "qgsambientocclusionrenderview.h"
+#include "qgsbloomrenderview.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
@@ -44,15 +45,18 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   QgsShadowRenderView &shadowRenderView = frameGraph->shadowRenderView();
   QgsForwardRenderView &forwardRenderView = frameGraph->forwardRenderView();
   QgsAmbientOcclusionRenderView &aoRenderView = frameGraph->ambientOcclusionRenderView();
+  QgsBloomRenderView &bloomRenderView = frameGraph->bloomRenderView();
 
   mColorTextureParameter = new Qt3DRender::QParameter( u"colorTexture"_s, forwardRenderView.colorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( u"depthTexture"_s, forwardRenderView.depthTexture() );
-  mShadowMapParameter = new Qt3DRender::QParameter( u"shadowTexture"_s, shadowRenderView.mapTextureArray() );
   mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( u"ssaoTexture"_s, aoRenderView.blurredFactorMapTexture() );
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
-  mMaterial->addParameter( mShadowMapParameter );
   mMaterial->addParameter( mAmbientOcclusionTextureParameter );
+
+  QList<Qt3DRender::QParameter *> globalShadowParams;
+  mShadowMapParameter = new Qt3DRender::QParameter( u"shadowTexture"_s, shadowRenderView.mapTextureArray() );
+  globalShadowParams << mShadowMapParameter;
 
   mMainCamera = frameGraph->mainCamera();
 
@@ -65,11 +69,11 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   // We must take care that the parameter value is always a variant list of equal length!
   const QVariantList csmMatrices = QVariantList( Qgs3D::NUM_SHADOW_CASCADES, QVariant::fromValue( QMatrix4x4() ) );
   mCsmMatricesParameter = new Qt3DRender::QParameter( QString( "csmMatrices[0]" ), csmMatrices );
-  mMaterial->addParameter( mCsmMatricesParameter );
+  globalShadowParams << mCsmMatricesParameter;
   mCsmBoundsMatricesParameter = new Qt3DRender::QParameter( QString( "csmBoundsMatrices[0]" ), csmMatrices );
-  mMaterial->addParameter( mCsmBoundsMatricesParameter );
+  globalShadowParams << mCsmBoundsMatricesParameter;
   mMaxShadowDistanceParameter = new Qt3DRender::QParameter( u"maxShadowDistance"_s, QVariant::fromValue( 0.0f ) );
-  mMaterial->addParameter( mMaxShadowDistanceParameter );
+  globalShadowParams << mMaxShadowDistanceParameter;
 
   mFarPlaneParameter = new Qt3DRender::QParameter( u"farPlane"_s, mMainCamera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
@@ -88,10 +92,13 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   connect( mMainCamera, &Qt3DRender::QCamera::viewMatrixChanged, mMainCameraInvViewMatrixParameter, [&]() { mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() ); } );
 
   mRenderShadowsParameter = new Qt3DRender::QParameter( u"renderShadows"_s, QVariant::fromValue( 0 ) );
-  mMaterial->addParameter( mRenderShadowsParameter );
-
+  globalShadowParams << mRenderShadowsParameter;
+  mShadowLightIndexParameter = new Qt3DRender::QParameter( u"shadowLightIndex"_s, QVariant::fromValue( 0 ) );
+  globalShadowParams << mShadowLightIndexParameter;
   mShadowBiasParameter = new Qt3DRender::QParameter( u"shadowBias"_s, QVariant::fromValue( 0.00001f ) );
-  mMaterial->addParameter( mShadowBiasParameter );
+  globalShadowParams << mShadowBiasParameter;
+
+  frameGraph->addGlobalParameters( globalShadowParams );
 
   mEyeDomeLightingEnabledParameter = new Qt3DRender::QParameter( u"edlEnabled"_s, QVariant::fromValue( 0 ) );
   mEyeDomeLightingStrengthParameter = new Qt3DRender::QParameter( u"edlStrength"_s, QVariant::fromValue( 1000.0f ) );
@@ -102,6 +109,15 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
 
   mAmbientOcclusionEnabledParameter = new Qt3DRender::QParameter( u"ssaoEnabled"_s, QVariant::fromValue( 0 ) );
   mMaterial->addParameter( mAmbientOcclusionEnabledParameter );
+
+  mBloomTextureParameter = new Qt3DRender::QParameter( u"bloomTexture"_s, bloomRenderView.bloomTexture() );
+  mMaterial->addParameter( mBloomTextureParameter );
+
+  mBloomEnabledParameter = new Qt3DRender::QParameter( u"bloomEnabled"_s, QVariant::fromValue( 1 ) );
+  mMaterial->addParameter( mBloomEnabledParameter );
+
+  mBloomFactorParameter = new Qt3DRender::QParameter( u"bloomFactor"_s, 0.05 );
+  mMaterial->addParameter( mBloomFactorParameter );
 
   const QString vertexShaderPath = u"qrc:/shaders/postprocess.vert"_s;
   const QString fragmentShaderPath = u"qrc:/shaders/postprocess.frag"_s;
@@ -141,12 +157,18 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   const float cameraFov = mMainCamera->fieldOfView();
   const float cameraAspect = mMainCamera->aspectRatio();
 
+  const float shadowMapResolution = static_cast< float >( mShadowMapResolution );
+
   // we are building two matrix lists, one containing the exact bounds of each
   // cascade, and the other which is an exact match for the actual camera used
   // for each cascade's texture. These differ, as we pull back the camera's
   // near plane for reasons described below...
   QVariantList csmMatrices( Qgs3D::NUM_SHADOW_CASCADES, QVariant() );
   QVariantList csmBoundsMatrices( Qgs3D::NUM_SHADOW_CASCADES, QVariant() );
+
+  // here we are calculating the cascades using bounding spheres, in order to stabilise the
+  // matrices and avoid shadow shimmer when the camera is moved or rotated
+  // see eg https://media.gdcvault.com/gdc09/slides/100_Handout%203.pdf from slide 21
   for ( int i = 0; i < Qgs3D::NUM_SHADOW_CASCADES; ++i )
   {
     const float zNear = cascadeSplits[i];
@@ -157,39 +179,52 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     QVector3D worldFrustrumCenter;
     Qgs3DUtils::calculateFrustumSliceCorners( zNear, zFar, cameraFov, cameraAspect, invertedCameraView, worldFrustumCorners, worldFrustrumCenter );
 
+    // calculate the bounding sphere radius around the frustum center
+    float rawRadius = 0.0f;
+    for ( int j = 0; j < 8; ++j )
+    {
+      rawRadius = std::max( rawRadius, ( worldFrustumCorners[j] - worldFrustrumCenter ).length() );
+    }
+
+    // round up slightly to stabilize against floating point inaccuracies
+    // use dynamic step size based on the raw radius so we round larger radius to coarser increments
+    const float stepSize = std::max( std::pow( 2.0f, std::floor( std::log2( rawRadius ) ) - 4.0f ), 0.01f );
+    const float radius = std::ceil( rawRadius / stepSize ) * stepSize;
+
+    // project the actual world frustum center into this rotation-aligned light space
+    QMatrix4x4 lightRotation;
+    lightRotation.lookAt( QVector3D( 0, 0, 0 ), lightDirection, up );
+    QVector3D centerLightSpace = lightRotation * worldFrustrumCenter;
+
+    // snap to texels
+    // calculate how many world units are represented by a single texel
+    const float worldUnitsPerTexel = ( 2.0f * radius ) / shadowMapResolution;
+    // snap the light center to the nearest texel
+    centerLightSpace.setX( std::floor( centerLightSpace.x() / worldUnitsPerTexel ) * worldUnitsPerTexel );
+    centerLightSpace.setY( std::floor( centerLightSpace.y() / worldUnitsPerTexel ) * worldUnitsPerTexel );
+    const QVector3D snappedWorldCenter = lightRotation.inverted() * centerLightSpace;
+
     // create the light view matrix
     QMatrix4x4 lightView;
-    const QVector3D lightPos = worldFrustrumCenter - lightDirection;
-    lightView.lookAt( lightPos, worldFrustrumCenter, up );
+    const QVector3D lightPos = snappedWorldCenter - ( lightDirection * radius );
+    lightView.lookAt( lightPos, snappedWorldCenter, up );
 
     // apply to the specific light camera
     mLightCameras[i]->setPosition( lightPos );
-    mLightCameras[i]->setViewCenter( worldFrustrumCenter );
+    mLightCameras[i]->setViewCenter( snappedWorldCenter );
     mLightCameras[i]->setUpVector( up );
 
-    float lightCameraLeft = 0;
-    float lightCameraRight = 0;
-    float lightCameraBottom = 0;
-    float lightCameraTop = 0;
-    float lightCameraNearPlane = 0;
-    float lightCameraFarPlane = 0;
-    Qgs3DUtils::calculateViewSpaceOrthographicBounds( worldFrustumCorners, lightView, lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
+    float lightCameraLeft = -radius;
+    float lightCameraRight = radius;
+    float lightCameraBottom = -radius;
+    float lightCameraTop = radius;
+    // the Z-bounds must cover the entire bounding sphere
+    float lightCameraNearPlane = -radius;
+    float lightCameraFarPlane = radius * 2.0f;
 
-    // we pad a little to guarantee some overlap exists between cascades, to avoid
-    // any chance of gaps between seams
-    constexpr float CASCADE_VIEW_PADDING_FACTOR = 0.05f;
-    const float paddingX = ( lightCameraRight - lightCameraLeft ) * CASCADE_VIEW_PADDING_FACTOR;
-    const float paddingY = ( lightCameraTop - lightCameraBottom ) * CASCADE_VIEW_PADDING_FACTOR;
-    const float paddingZ = ( lightCameraFarPlane - lightCameraNearPlane ) * CASCADE_VIEW_PADDING_FACTOR;
-    lightCameraLeft -= paddingX;
-    lightCameraRight += paddingX;
-    lightCameraBottom -= paddingY;
-    lightCameraTop += paddingY;
-    lightCameraNearPlane -= paddingZ;
-    lightCameraFarPlane += paddingZ;
-
-    mLightCameras[i]->lens()->setOrthographicProjection( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
-    csmBoundsMatrices[i] = QVariant::fromValue( mLightCameras[i]->projectionMatrix() * lightView );
+    QMatrix4x4 orthoBoundsMatrix;
+    orthoBoundsMatrix.ortho( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
+    csmBoundsMatrices[i] = QVariant::fromValue( orthoBoundsMatrix * lightView );
 
     // Pull the near plane way back to catch shadows from behind the camera
     // If we don't do this, then we'll lose the tops of shadows which should be cast by objects
@@ -201,7 +236,9 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     mLightCameras[i]->lens()->setOrthographicProjection( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
 
     // calculate combined light space matrix for the shader
-    csmMatrices[i] = QVariant::fromValue( mLightCameras[i]->projectionMatrix() * lightView );
+    QMatrix4x4 orthoMatrix;
+    orthoMatrix.ortho( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
+    csmMatrices[i] = QVariant::fromValue( orthoMatrix * lightView );
   }
 
   mCsmMatricesParameter->setValue( csmMatrices );
@@ -229,9 +266,19 @@ void QgsPostprocessingEntity::setShowCascadingShadowSplits( bool enabled )
   }
 }
 
+void QgsPostprocessingEntity::setShadowLightIndex( int index )
+{
+  mShadowLightIndexParameter->setValue( QVariant::fromValue( index ) );
+}
+
 void QgsPostprocessingEntity::setShadowBias( float shadowBias )
 {
   mShadowBiasParameter->setValue( QVariant::fromValue( shadowBias ) );
+}
+
+void QgsPostprocessingEntity::setShadowMapResolution( int resolution )
+{
+  mShadowMapResolution = resolution;
 }
 
 void QgsPostprocessingEntity::setEyeDomeLightingEnabled( bool enabled )
@@ -252,4 +299,14 @@ void QgsPostprocessingEntity::setEyeDomeLightingDistance( int distance )
 void QgsPostprocessingEntity::setAmbientOcclusionEnabled( bool enabled )
 {
   mAmbientOcclusionEnabledParameter->setValue( enabled );
+}
+
+void QgsPostprocessingEntity::setBloomEnabled( bool enabled )
+{
+  mBloomEnabledParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
+}
+
+void QgsPostprocessingEntity::setBloomFactor( float factor )
+{
+  mBloomFactorParameter->setValue( factor );
 }

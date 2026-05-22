@@ -19,8 +19,6 @@ uniform float alpha;        // Fraction of diffuse added to kblue
 uniform float beta;         // Fraction of diffuse added to kyellow
 uniform float shininess;    // Specular shininess factor
 
-uniform vec3 eyePosition;
-
 in vec3 worldPosition;
 in vec3 worldNormal;
 

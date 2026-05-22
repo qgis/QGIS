@@ -359,6 +359,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onBackgroundSettingsChanged();
     void onShadowSettingsChanged();
     void onAmbientOcclusionSettingsChanged();
+    void onBloomSettingsChanged();
     void onEyeDomeShadingSettingsChanged();
     void onMsaaEnabledChanged();
     void onDebugDepthMapSettingsChanged();

@@ -126,6 +126,7 @@ class WrappersTest(QgisTestCase):
         wrapper.widget.deleteLater()
         del wrapper.widget
         del wrapper
+        alg_widget.deleteLater()
 
         alg = QgsApplication.processingRegistry().createAlgorithmById(
             "native:centroids"
@@ -137,6 +138,7 @@ class WrappersTest(QgisTestCase):
         self.assertIsInstance(wrapper, expected_wrapper_class)
         self.assertEqual(wrapper.dialog, dlg)
         self.assertIsNotNone(wrapper.widget)
+        dlg.deleteLater()
 
         alg = QgsApplication.processingRegistry().createAlgorithmById(
             "native:centroids"
@@ -153,6 +155,7 @@ class WrappersTest(QgisTestCase):
 
         wrapper.widget.deleteLater()
         del wrapper.widget
+        dlg.deleteLater()
 
     def testBoolean(self):
         self.checkConstructWrapper(
@@ -258,6 +261,7 @@ class WrappersTest(QgisTestCase):
 
         widget.deleteLater()
         del widget
+        alg_widget.deleteLater()
 
     def testRange(self):
         # minimal test to check if wrapper generate GUI for each processign context
@@ -324,6 +328,7 @@ class WrappersTest(QgisTestCase):
         self.assertEqual(widget.getValue(), "50.0,50.0")
         widget.spnMin.setValue(100.1)
         self.assertEqual(widget.getValue(), "100.0,100.0")
+        alg_widget.deleteLater()
 
     def testMapLayer(self):
         self.checkConstructWrapper(
@@ -433,6 +438,7 @@ class WrappersTest(QgisTestCase):
         self.assertEqual(widget.getValue(), 5)
 
         widget.deleteLater()
+        alg_widget.deleteLater()
 
     def testMatrix(self):
         self.checkConstructWrapper(
@@ -458,6 +464,7 @@ class WrappersTest(QgisTestCase):
         self.assertEqual(wrapper.value(), [[1, 2], [3, 4]])
 
         widget.deleteLater()
+        alg_widget.deleteLater()
 
     def testNumber(self):
         self.checkConstructWrapper(

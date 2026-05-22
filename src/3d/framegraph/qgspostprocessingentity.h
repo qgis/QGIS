@@ -57,8 +57,14 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setShowCascadingShadowSplits( bool enabled );
 
+    //! Sets the index of the directional light that is casting shadows
+    void setShadowLightIndex( int index );
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
+
+    //! Sets the shadow texture map resolution
+    void setShadowMapResolution( int resolution );
+
     //! Sets whether eye dome lighting is enabled
     void setEyeDomeLightingEnabled( bool enabled );
     //! Sets the eye dome lighting strength
@@ -78,8 +84,22 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setAmbientOcclusionEnabled( bool enabled );
 
+    /**
+     * Sets whether physically based bloom is enabled
+     */
+    void setBloomEnabled( bool enabled );
+
+    /**
+     * Sets the bloom \a factor, which controls the strength of the bloom effect.
+     *
+     * The default factor is 0.05.
+     */
+    void setBloomFactor( float factor );
+
   private:
     Qt3DRender::QCamera *mMainCamera = nullptr;
+
+    int mShadowMapResolution = 512;
 
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
@@ -90,6 +110,7 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
     Qt3DRender::QParameter *mMainCameraInvProjMatrixParameter = nullptr;
 
+    Qt3DRender::QParameter *mShadowLightIndexParameter = nullptr;
     Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
     Qt3DRender::QParameter *mCsmMatricesParameter = nullptr;
     Qt3DRender::QParameter *mCsmBoundsMatricesParameter = nullptr;
@@ -102,6 +123,10 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mEyeDomeLightingDistanceParameter = nullptr;
 
     Qt3DRender::QParameter *mAmbientOcclusionEnabledParameter = nullptr;
+
+    Qt3DRender::QParameter *mBloomTextureParameter = nullptr;
+    Qt3DRender::QParameter *mBloomEnabledParameter = nullptr;
+    Qt3DRender::QParameter *mBloomFactorParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

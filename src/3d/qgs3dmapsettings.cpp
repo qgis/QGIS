@@ -80,6 +80,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mIsFpsCounterEnabled( other.mIsFpsCounterEnabled )
   , mShadowSettings( other.mShadowSettings )
   , mAmbientOcclusionSettings( other.mAmbientOcclusionSettings )
+  , mBloomSettings( other.mBloomSettings )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
@@ -283,6 +284,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemAmbientOcclusion = elem.firstChildElement( u"screen-space-ambient-occlusion"_s );
   mAmbientOcclusionSettings.readXml( elemAmbientOcclusion, context );
 
+  {
+    QDomElement elemBloom = elem.firstChildElement( u"bloom"_s );
+    mBloomSettings.readXml( elemBloom, context );
+  }
+
   QDomElement elemEyeDomeLighting = elem.firstChildElement( u"eye-dome-lighting"_s );
   mEyeDomeLightingEnabled = elemEyeDomeLighting.attribute( "enabled", u"0"_s ).toInt();
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", u"1000.0"_s ).toDouble();
@@ -424,6 +430,12 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemAmbientOcclusion = doc.createElement( u"screen-space-ambient-occlusion"_s );
   mAmbientOcclusionSettings.writeXml( elemAmbientOcclusion, context );
   elem.appendChild( elemAmbientOcclusion );
+
+  {
+    QDomElement elemBloom = doc.createElement( u"bloom"_s );
+    mBloomSettings.writeXml( elemBloom, context );
+    elem.appendChild( elemBloom );
+  }
 
   QDomElement elemDebug = doc.createElement( u"debug"_s );
   elemDebug.setAttribute( u"bounding-boxes"_s, mShowTerrainBoundingBoxes ? 1 : 0 );
@@ -1310,6 +1322,13 @@ QgsAmbientOcclusionSettings Qgs3DMapSettings::ambientOcclusionSettings() const
   return mAmbientOcclusionSettings;
 }
 
+QgsBloomSettings Qgs3DMapSettings::bloomSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mBloomSettings;
+}
+
 void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1331,6 +1350,14 @@ void Qgs3DMapSettings::setAmbientOcclusionSettings( const QgsAmbientOcclusionSet
 
   mAmbientOcclusionSettings = ambientOcclusionSettings;
   emit ambientOcclusionSettingsChanged();
+}
+
+void Qgs3DMapSettings::setBloomSettings( const QgsBloomSettings &settings )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mBloomSettings = settings;
+  emit bloomSettingsChanged();
 }
 
 bool Qgs3DMapSettings::isSkyboxEnabled() const

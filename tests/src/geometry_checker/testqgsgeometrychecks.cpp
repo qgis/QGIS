@@ -1551,7 +1551,7 @@ void TestQgsGeometryChecks::testChecker()
       << static_cast<QgsGeometryCheck *>( &angle_check )
       << static_cast<QgsGeometryCheck *>( &multipart_check )
       << static_cast<QgsGeometryCheck *>( &dangle_check ),
-    testContext.first,
+    std::unique_ptr<QgsGeometryCheckContext>( testContext.first ),
     testContext.second
   );
 

@@ -32,6 +32,8 @@
 
 #include "qgschunkedentity.h"
 #include "qgschunkqueuejob.h"
+#include "qgslayerstylewatcher.h"
+#include "qobjectuniqueptr.h"
 
 #define SIP_NO_FILE
 
@@ -46,6 +48,7 @@ class QgsCoordinateTransform;
 class QgsMapLayer;
 class QgsTerrainGenerator;
 class TerrainMapUpdateJobFactory;
+class QgsLayerStyleWatcher;
 
 /**
  * \ingroup qgis_3d
@@ -74,19 +77,14 @@ class QgsTerrainEntity : public QgsChunkedEntity
   private slots:
     void onShowBoundingBoxesChanged();
     void invalidateMapImages();
-    void onLayersChanged();
     void onTerrainElevationOffsetChanged();
 
   private:
-    void connectToLayersRepaintRequest();
-
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
     Qt3DCore::QTransform *mTerrainTransform = nullptr;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
-
-    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
-    QList<QgsMapLayer *> mLayers;
+    QObjectUniquePtr<QgsLayerStyleWatcher> mLayerWatcher;
 };
 
 

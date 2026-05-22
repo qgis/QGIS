@@ -379,6 +379,22 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
 QgsModelDesignerDialog::~QgsModelDesignerDialog()
 {
+  if ( mAlgorithmWidget )
+  {
+    delete mAlgorithmWidget;
+  }
+  for ( const QPointer<QgsProcessingAlgorithmWidgetBase> &widget : std::as_const( mAlgorithmWidgetsToCleanUp ) )
+  {
+    // this is a work around for the MESSY ownership issues associated with the python subclass
+    // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+    // to destruction of this window, and we can't be sure that python will have actually
+    // deleted the widget when we asked...
+    if ( widget )
+    {
+      delete widget;
+    }
+  }
+
   QgsSettings settings;
   if ( !mPanelStatus.isEmpty() )
   {
@@ -585,6 +601,43 @@ void QgsModelDesignerDialog::setDirty( bool dirty )
 {
   mHasChanged = dirty;
   updateWindowTitle();
+  if ( mAlgorithmWidget )
+  {
+    if ( QgsMessageBar *messageBar = mAlgorithmWidget->messageBar() )
+    {
+      QgsMessageBarItem *messageBarItem = messageBar->createMessage( QString(), tr( "The model has changed, this panel should be reloaded." ) );
+      auto reloadButton = new QPushButton( tr( "Reload Now" ) );
+      connect( reloadButton, &QPushButton::clicked, reloadButton, [this] {
+        if ( mAlgorithmWidget && mAlgorithmWidget->isRunning() )
+        {
+          QMessageBox messageBox;
+          messageBox.setIcon( QMessageBox::Icon::Warning );
+          messageBox.setWindowTitle( tr( "Run Model" ) );
+          messageBox.setText( tr( "This model is currently running." ) );
+          messageBox.setStandardButtons( QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::RestoreDefaults );
+
+          QAbstractButton *buttonReRun = messageBox.button( QMessageBox::StandardButton::RestoreDefaults );
+          buttonReRun->setText( tr( "Terminate and Reload" ) );
+
+          int r = messageBox.exec();
+
+          switch ( r )
+          {
+            case QMessageBox::StandardButton::Cancel:
+              return;
+            case QMessageBox::StandardButton::RestoreDefaults:
+              break;
+            default:
+              break;
+          }
+        }
+        cancelRunningModel();
+        run();
+      } );
+      messageBarItem->layout()->addWidget( reloadButton );
+      messageBar->pushWidget( messageBarItem, Qgis::MessageLevel::Warning );
+    }
+  }
 }
 
 bool QgsModelDesignerDialog::validateSave( SaveAction action )
@@ -1071,6 +1124,30 @@ void QgsModelDesignerDialog::runFromChild( const QString &id )
   run( children );
 }
 
+void QgsModelDesignerDialog::cancelRunningModel()
+{
+  if ( !mAlgorithmWidget )
+    return;
+
+  // these checks are wrong - mAlgorithmWidget is a QPointer, and we explicitly want to check
+  // if it gets deleted in the cancel/forceClose dance!
+  // cppcheck-suppress nullPointerRedundantCheck
+  mAlgorithmWidget->cancel();
+  // cppcheck-suppress nullPointerRedundantCheck
+  mAlgorithmWidget->forceClose();
+
+  //Stop tracking change to the previous dialog in the QPointer
+  if ( mAlgorithmWidget )
+  {
+    // this is a work around for the MESSY ownership issues associated with the python subclass
+    // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+    // to destruction of this window, and we can't be sure that python will have actually
+    // deleted the widget when we asked...
+    mAlgorithmWidgetsToCleanUp << mAlgorithmWidget;
+  }
+  mAlgorithmWidget.clear();
+}
+
 void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
 {
   QStringList errors;
@@ -1123,6 +1200,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   if ( mAlgorithmWidget && mAlgorithmWidget->isRunning() )
   {
     QMessageBox messageBox;
+    messageBox.setIcon( QMessageBox::Icon::Warning );
     messageBox.setWindowTitle( tr( "Run Model" ) );
     messageBox.setText( tr( "This model is already running." ) );
     messageBox.setStandardButtons( QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::RestoreDefaults | QMessageBox::StandardButton::Ok );
@@ -1140,16 +1218,11 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       case QMessageBox::StandardButton::Cancel:
         return;
       case QMessageBox::StandardButton::RestoreDefaults:
-        mAlgorithmWidget->cancel();
-        mAlgorithmWidget->forceClose();
-
-        //Stop tracking change to the previous dialog in the QPointer
-        mAlgorithmWidget.clear();
+        cancelRunningModel();
         break;
       case QMessageBox::StandardButton::Ok:
         mAlgorithmWidget->showWidget();
         return;
-        break;
       default:
         break;
     }
@@ -1158,6 +1231,14 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   {
     // Close and create a new one
     mAlgorithmWidget->close();
+    if ( mAlgorithmWidget )
+    {
+      // this is a work around for the MESSY ownership issues associated with the python subclass
+      // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+      // to destruction of this window, and we can't be sure that python will have actually
+      // deleted the widget when we asked...
+      mAlgorithmWidgetsToCleanUp << mAlgorithmWidget;
+    }
     //Stop tracking change to the previous widget in the QPointer
     mAlgorithmWidget.clear();
   }
@@ -1165,12 +1246,11 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   if ( !mAlgorithmWidget )
   {
     mAlgorithmWidget = createExecutionWidget();
+    mAlgorithmWidget->hideShortHelp();
+    mAlgorithmWidget->setTitle( tr( "Run Model" ) );
 
     mAlgorithmWidget->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmWidget->setParameters( mModel->designerParameterValues() );
-
-    Qt::WindowFlags flags = Qt::Window;
-    mAlgorithmWidget->setWindowFlags( flags );
 
     connect( mAlgorithmWidget.get(), &QgsProcessingAlgorithmWidgetBase::algorithmAboutToRun, this, [this, childAlgorithmSubset]( QgsProcessingContext *context ) {
       if ( !childAlgorithmSubset.empty() )
@@ -1195,6 +1275,13 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
         previousResultStore->moveToThread( nullptr );
         modelConfig->setPreviousLayerStore( std::move( previousResultStore ) );
         context->setModelInitialRunConfig( std::move( modelConfig ) );
+
+        mScene->resetChildAlgorithmItems( childAlgorithmSubset );
+      }
+      else
+      {
+        // reset all child algorithm results
+        mScene->resetChildAlgorithmItems();
       }
     } );
 
@@ -1208,7 +1295,6 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       setLastRunResult( context->modelResult() );
     } );
   }
-  mAlgorithmWidget->showWidget();
 }
 
 void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )
@@ -1293,7 +1379,18 @@ void QgsModelDesignerDialog::showChildAlgorithmLog( const QString &childId )
 {
   const QString childDescription = mModel->childAlgorithm( childId ).description();
 
-  const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
+  QgsProcessingModelChildAlgorithmResult result;
+  // prefer to fetch the log from the item itself -- if we are currently mid-way through
+  // running the model, it will have the LATEST log available
+  if ( QgsModelChildAlgorithmGraphicItem *item = mScene->childAlgorithmItem( childId ) )
+  {
+    result = item->results();
+  }
+  if ( result.htmlLog().isEmpty() )
+  {
+    result = mLastResult.childResults().value( childId );
+  }
+
   if ( result.htmlLog().isEmpty() )
   {
     mMessageBar->pushWarning( QString(), tr( "No log is available for %1" ).arg( childDescription ) );

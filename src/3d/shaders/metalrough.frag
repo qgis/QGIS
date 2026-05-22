@@ -1,22 +1,27 @@
 // Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
-#version 140
+#version 330
 
 // defines are added here as a pre-processing step
 
-uniform vec3 eyePosition;
 in vec3 worldPosition;
 
 #ifndef FLAT_SHADING
 in vec3 worldNormal;
 #endif
 
-#ifdef BASE_COLOR_MAP
+#ifdef DATA_DEFINED
+in DataColor {
+    vec3 base;
+    vec3 emission;
+} vs_in;
+#elif defined(BASE_COLOR_MAP)
 uniform sampler2D baseColorMap;
 #else
 uniform vec4 baseColor;
 #endif
+
 
 #ifdef METALNESS_MAP
 uniform sampler2D metalnessMap;
@@ -47,10 +52,14 @@ uniform sampler2D heightMap;
 uniform float parallaxScale = 0.1;
 #endif
 
-#ifdef EMISSION_MAP
+#ifdef DATA_DEFINED
+// DataColor has emission color
+#elif defined(EMISSION_MAP)
 uniform sampler2D emissionMap;
-uniform float emissiveFactor = 1;
+#else
+uniform vec3 emissiveColor;
 #endif
+uniform float emissiveFactor = 1;
 
 #if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP)|| defined(HEIGHT_MAP) || defined(EMISSION_MAP)
 in vec2 texCoord;
@@ -322,6 +331,7 @@ vec3 pbrModel(const in int lightIndex,
     float sDotN = 0.0;
     float sDotH = 0.0;
     float att = 1.0;
+    float visibilityFactor = 1.0;
 
     if (lights[lightIndex].type != TYPE_DIRECTIONAL) {
         // Point and Spot lights
@@ -352,6 +362,11 @@ vec3 pbrModel(const in int lightIndex,
         // The light direction is in world space already
         s = normalize(-lights[lightIndex].direction);
         sDotN = dot(s, n);
+
+        if (renderShadows == 1 && lightIndex == shadowLightIndex)
+        {
+            visibilityFactor = calcVisibilityAfterShadowing(wPosition);
+        }
     }
 
     h = normalize(s + v);
@@ -375,7 +390,7 @@ vec3 pbrModel(const in int lightIndex,
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
     vec3 kS = fresnelFactor(F0, sDotH);
-    vec3 color = att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
+    vec3 color = visibilityFactor * att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
@@ -483,9 +498,13 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                             ambientOcclusion);
     }
 
-#ifdef EMISSION_MAP
+#ifdef DATA_DEFINED
+    cLinear += vs_in.emission * emissiveFactor;
+#elif defined(EMISSION_MAP)
     vec3 emission = texture(emissionMap, activeTexCoord).rgb * emissiveFactor;
     cLinear += emission;
+#else
+    cLinear += emissiveColor * emissiveFactor;
 #endif
     return vec4(cLinear, 1.0);
 }
@@ -526,7 +545,9 @@ void main()
     activeTexCoord = applyContactRefinementParallaxCoordsAndHeight(texCoord, tangentView).xy;
 #endif
 
-#ifdef BASE_COLOR_MAP
+#ifdef DATA_DEFINED
+    vec4 c = vec4(vs_in.base, 1.0);
+#elif defined(BASE_COLOR_MAP)
     vec4 c = texture(baseColorMap, activeTexCoord);
 #else
     vec4 c = baseColor;

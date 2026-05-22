@@ -321,6 +321,18 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
   protected:
     /**
+     * Paints the background part of the graphic item.
+     *
+     * Subclasses may override this to customize the background appearance.
+     */
+    virtual void paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
+
+    /**
+     * Paints the outline part of the graphic item.
+     */
+    void paintOutline( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
+
+    /**
      * Truncates a \a text string so that it fits nicely within the item's width,
      * accounting for margins and interactive buttons.
      */
@@ -345,6 +357,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the stroke style to use while rendering the outline of the item.
      */
     virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    /**
+     * Returns the optional color for an outline effect around the item.
+     *
+     * Returns an invalid color if the outline effect is not required.
+     */
+    virtual QColor outlineColor() const { return QColor(); }
 
     /**
      * Returns the title alignment
@@ -409,6 +428,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     static constexpr double BUTTON_MARGIN = 2;
     static constexpr double TEXT_MARGIN = 4;
     static constexpr double RECT_PEN_SIZE = 2;
+    static constexpr double RECT_OUTLINE_SIZE = 10;
     QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
 
     QFont mFont;
@@ -497,6 +517,17 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     QgsProcessingModelChildAlgorithmResult results() { return mResults; };
 
+    /**
+     * Sets the child's \a progress.
+     */
+    void setProgress( double progress );
+
+    /**
+     * Flags the algorithm as having started.
+     *
+     * \since QGIS 4.2
+     */
+    void setStarted();
 
   signals:
 
@@ -529,9 +560,12 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void showLog();
 
   protected:
+    void paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
+    QColor outlineColor() const override;
     QPixmap iconPixmap() const override;
     QPicture iconPicture() const override;
 
@@ -550,7 +584,9 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
   private:
     QPicture mPicture;
     QPixmap mPixmap;
+    bool mStarted = false;
     QgsProcessingModelChildAlgorithmResult mResults;
+    double mProgress = -1;
     bool mIsValid = true;
 };
 

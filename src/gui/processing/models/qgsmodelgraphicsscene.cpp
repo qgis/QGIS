@@ -99,9 +99,28 @@ void QgsModelGraphicsScene::updateBounds()
   setSceneRect( bounds );
 }
 
-void QgsModelGraphicsScene::setupFeedbackConnections( QgsProcessingModelFeedback * )
+void QgsModelGraphicsScene::setupFeedbackConnections( QgsProcessingModelFeedback *feedback )
 {
-  // TODO
+  connect( feedback, &QgsProcessingModelFeedback::childProgressChanged, this, [this]( const QString &childId, double progress ) {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+    {
+      item->setProgress( progress );
+    }
+  } );
+
+  connect( feedback, &QgsProcessingModelFeedback::childStarted, this, [this]( const QString &childId ) {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+    {
+      item->setStarted();
+    }
+  } );
+
+  connect( feedback, &QgsProcessingModelFeedback::childResultReported, this, [this]( const QString &childId, const QgsProcessingModelChildAlgorithmResult &result ) {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+    {
+      item->setResults( result );
+    }
+  } );
 }
 
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
@@ -398,6 +417,27 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::groupBoxItem( const QString
 QgsModelChildAlgorithmGraphicItem *QgsModelGraphicsScene::childAlgorithmItem( const QString &childId )
 {
   return mChildAlgorithmItems.value( childId );
+}
+
+void QgsModelGraphicsScene::resetChildAlgorithmItems( const QSet<QString> &childAlgorithmSubset )
+{
+  if ( !childAlgorithmSubset.isEmpty() )
+  {
+    for ( const QString &childId : childAlgorithmSubset )
+    {
+      if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+      {
+        item->setResults( QgsProcessingModelChildAlgorithmResult() );
+      }
+    }
+  }
+  else
+  {
+    for ( auto it = mChildAlgorithmItems.constBegin(); it != mChildAlgorithmItems.constEnd(); ++it )
+    {
+      it.value()->setResults( QgsProcessingModelChildAlgorithmResult() );
+    }
+  }
 }
 
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::parameterItem( const QString &name )

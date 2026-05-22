@@ -24,6 +24,8 @@
 
 #define SIP_NO_FILE
 
+class QgsProcessingModelChildAlgorithmResult;
+
 /**
  * \ingroup core
  * \brief A Processing feedback class with extra signals and properties specific to feedback from Processing model execution.
@@ -115,6 +117,11 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
     QSet< QString > successfulChildren() const { return mSuccessfullyExecutedChildren; }
 
     /**
+     * Reports the \a result of the execution of a child algorithm.
+     */
+    void reportChildResult( const QString &childId, const QgsProcessingModelChildAlgorithmResult &result );
+
+    /**
      * Report that a child algorithm was pruned from the pending children (i.e. it does not need to execute).
      *
      * \see childPruned()
@@ -176,6 +183,11 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
      * \see reportChildExecutionSuccess()
      */
     void childExecutionSucceeded( const QString &childId, const QVariantMap &childResults );
+
+    /**
+     * Emitted when the \a result of a child algorithm has been reported.
+     */
+    void childResultReported( const QString &childId, const QgsProcessingModelChildAlgorithmResult &result );
 
     /**
      * Emitted when a child algorithm was pruned from the pending children (i.e. it does not need to execute).

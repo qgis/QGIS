@@ -40,8 +40,10 @@ class _3D_EXPORT QgsMetalRoughMaterial3DHandler : public QgsAbstractMaterial3DHa
 
     QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const override;
     QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
-    void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
+
+    QByteArray dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const override;
+    void applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
 
   private:
     static void applySettingsToMaterial( const QgsMetalRoughMaterialSettings *metalRoughSettings, QgsMetalRoughMaterial *material, const QgsMaterialContext &context );

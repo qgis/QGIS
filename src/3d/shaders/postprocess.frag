@@ -11,18 +11,22 @@ uniform mat4 invertedCameraProj;
 uniform float farPlane;
 uniform float nearPlane;
 
-uniform int renderShadows;
-
 uniform int edlEnabled;
 uniform float edlStrength;
 uniform int edlDistance;
 
 uniform int ssaoEnabled;
+
+uniform sampler2D bloomTexture;
+uniform int bloomEnabled;
+uniform float bloomFactor;
 #endif
 
 in vec2 texCoord;
 
 out vec4 fragColor;
+
+uniform mat4 invertedCameraView;
 
 // Exposure correction
 uniform float exposure = 0.0;
@@ -98,21 +102,18 @@ void main()
   vec3 finalColor = linearColor;
 
 #ifdef ENABLE_EFFECTS
-  float depth = texture(depthTexture, texCoord).r;
-  vec3 worldPosition = WorldPosFromDepth( depth );
-
-  // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
-  if ( renderShadows != 0 && depth < 1.0 )
-  {
-    float visibilityFactor = calcVisibilityAfterShadowing(worldPosition);
-
-    finalColor = finalColor * mix(0.5, 1.0, visibilityFactor);
 
 #ifdef TINT_CASCADES
+  float depth = texture(depthTexture, texCoord).r;
+  if ( renderShadows != 0 && depth < 1.0 )
+  {
+    vec3 worldPosition = WorldPosFromDepth( depth );
+    vec3 cameraPosition = invertedCameraView[3].xyz;
     // for debugging: shade pixels by cascade index, to visualise cascade breaks
-    finalColor = mix(finalColor, calcCascadeTint(worldPosition), 0.5);
-#endif
+    finalColor = mix(finalColor, calcCascadeTint(worldPosition, cameraPosition), 0.5);
   }
+#endif
+  
   if (edlEnabled != 0)
   {
     float shade = exp(-edlFactor(texCoord) * edlStrength);
@@ -126,6 +127,16 @@ void main()
 
   // Apply exposure correction -- currently a no-op, because exposure is hardcoded to 0
   // finalColor *= exp2(exposure);
+
+#ifdef ENABLE_EFFECTS
+  // bloom comes AFTER exposure, but must be BEFORE tone mapping (we require HDR ranges for
+  // bloom)
+  if ( bloomEnabled != 0 )
+  {
+    vec3 bloom = texture(bloomTexture, texCoord).rgb;
+    finalColor += bloom * bloomFactor;
+  }
+#endif
 
   // Apply tonemap transform to get into LDR range [0, 1]
   // (aces looks great with exposure ~0.5, but maybe not wanted for GIS applications? could be an option...)

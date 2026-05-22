@@ -273,6 +273,18 @@ The default implementation does nothing.
 %End
 
   protected:
+    virtual void paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+%Docstring
+Paints the background part of the graphic item.
+
+Subclasses may override this to customize the background appearance.
+%End
+
+    void paintOutline( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+%Docstring
+Paints the outline part of the graphic item.
+%End
+
     QString truncatedTextForItem( const QString &text ) const;
 %Docstring
 Truncates a ``text`` string so that it fits nicely within the item's
@@ -297,6 +309,13 @@ Returns the label text color for the item for the specified ``state``.
     virtual Qt::PenStyle strokeStyle( State state ) const;
 %Docstring
 Returns the stroke style to use while rendering the outline of the item.
+%End
+
+    virtual QColor outlineColor() const;
+%Docstring
+Returns the optional color for an outline effect around the item.
+
+Returns an invalid color if the outline effect is not required.
 %End
 
     virtual Qt::Alignment titleAlignment() const;
@@ -436,6 +455,17 @@ execution through the dialog.
 
 .. versionadded:: 4.0
 %End
+    void setProgress( double progress );
+%Docstring
+Sets the child's ``progress``.
+%End
+
+    void setStarted();
+%Docstring
+Flags the algorithm as having started.
+
+.. versionadded:: 4.2
+%End
 
   signals:
 
@@ -470,11 +500,16 @@ algorithm.
 %End
 
   protected:
+    virtual void paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
+
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
 
     virtual QColor textColor( State state ) const;
+
+    virtual QColor outlineColor() const;
 
     virtual QPixmap iconPixmap() const;
 

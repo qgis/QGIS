@@ -21,6 +21,7 @@
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgsambientocclusionsettingswidget.h"
+#include "qgsbloomsettings.h"
 #include "qgscolorbutton.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsfixedgradientbackgroundsettings.h"
@@ -104,6 +105,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   terrainElevationOffsetSpinBox->setEnabled( map->sceneMode() == Qgis::SceneMode::Local );
   edlStrengthSpinBox->setClearValue( 1000 );
   edlDistanceSpinBox->setClearValue( 1 );
+  mSpinBloomIntensity->setClearValue( 0.05 );
+  mSpinBloomRadius->setClearValue( 5 );
 
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
@@ -267,6 +270,11 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // Ambient occlusion
   mAmbientOcclusionSettingsWidget->setAmbientOcclusionSettings( map->ambientOcclusionSettings() );
 
+  mBloomGroupBox->setChecked( map->bloomSettings().isEnabled() );
+  mSpinBloomIntensity->setValue( map->bloomSettings().intensity() );
+  // we arbitrarily scale the radius by 1000 to make the sizes look more reasonable in the UI
+  mSpinBloomRadius->setValue( map->bloomSettings().radius() * 1000 );
+
   // ==================
   // Page: General
 
@@ -408,6 +416,13 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
 
   mMap->setAmbientOcclusionSettings( mAmbientOcclusionSettingsWidget->toAmbientOcclusionSettings() );
+
+  QgsBloomSettings bloomSettings = mMap->bloomSettings();
+  bloomSettings.setEnabled( mBloomGroupBox->isChecked() );
+  bloomSettings.setIntensity( mSpinBloomIntensity->value() );
+  // we arbitrarily scale the radius by 1000 to make the sizes look more reasonable in the UI
+  bloomSettings.setRadius( mSpinBloomRadius->value() / 1000.0 );
+  mMap->setBloomSettings( bloomSettings );
 
   Qgis::ViewSyncModeFlags viewSyncMode;
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D, mSync2DTo3DCheckbox->isChecked() );
