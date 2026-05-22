@@ -810,6 +810,29 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                     attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getString( entityData, "definition" ) << properties;
                     break;
                   }
+
+                  case Qgis::SensorThingsEntity::RelationRole:
+                  {
+                    attributes
+                      << iotId
+                      << selfLink
+                      << getString( entityData, "name" )
+                      << getString( entityData, "definition" )
+                      << getString( entityData, "inverseName" )
+                      << getString( entityData, "inverseDefinition" )
+                      << getString( entityData, "description" )
+                      << properties;
+                    break;
+                  }
+
+                  case Qgis::SensorThingsEntity::ThingRelation:
+                  case Qgis::SensorThingsEntity::FeatureRelation:
+                  case Qgis::SensorThingsEntity::DatastreamRelation:
+                  case Qgis::SensorThingsEntity::ObservationRelation:
+                  {
+                    attributes << iotId << selfLink << getString( entityData, "externalTarget" );
+                    break;
+                  }
                 }
                 // NOLINTEND(bugprone-branch-clone)
               };

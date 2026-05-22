@@ -7784,6 +7784,788 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                 ],
             )
 
+    def test_relation_role_2_0(self):
+        """
+        Test a layer retrieving 'RelationRoles' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "RelationRoles",
+          "url": "endpoint/RelationRoles"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/RelationRoles?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#RelationRoles","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/RelationRoles?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#RelationRoles",
+      "value": [
+        {
+          "@id": "endpoint/RelationRoles(1)",
+          "id": 1,
+            "name": "Sub-component",
+            "inverseName": "Parent",
+            "description": "Indicates that the subject is a physical sub-component or part of the object.",
+          "properties": {
+            "localId": "SAM.09.LAA.822.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "FeatureRelations@navigationLink": "endpoint/RelationRoles(1)/FeatureRelations"
+        },
+        {
+          "@id": "endpoint/RelationRoles(2)",
+          "id": 2,
+"name": "Upstream Of",
+          "properties": {
+            "localId": "SAM.09.LOB.823.7.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "FeatureRelations@navigationLink": "endpoint/RelationRoles(2)/FeatureRelations"
+        }
+      ],
+      "@nextLink": "endpoint/RelationRoles?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/RelationRoles?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#RelationRoles",
+                  "value": [
+                    {
+                      "@id": "endpoint/RelationRoles(3)",
+                      "id": 3,
+ "name": "Derived From",
+      "inverseName": "Source Of",
+      "description": "Indicates that the subject data was calculated, corrected, or derived from the object data.",
+          "properties": {
+            "localId": "SAM.09.LOB.824.1.1",
+            "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+            "namespace": "AT.0008.20.AQ",
+            "owner": "http://luft.umweltbundesamt.at"
+          },
+          "FeatureRelations@navigationLink": "endpoint/RelationRoles(3)/FeatureRelations"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='RelationRoles'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn("Entity Type</td><td>RelationRole</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/RelationRoles"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "definition",
+                    "inverseName",
+                    "inverseDefinition",
+                    "description",
+                    "properties",
+                ],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.Map,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-17:] for f in features],
+                [
+                    "/RelationRoles(1)",
+                    "/RelationRoles(2)",
+                    "/RelationRoles(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Sub-component", "Upstream Of", "Derived From"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                [
+                    "Indicates that the subject is a physical sub-component or part of the object.",
+                    None,
+                    "Indicates that the subject data was calculated, corrected, or derived from the object data.",
+                ],
+            )
+            self.assertEqual(
+                [f["inverseName"] for f in features],
+                ["Parent", None, "Source Of"],
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [
+                    {
+                        "localId": "SAM.09.LAA.822.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.823.7.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                    {
+                        "localId": "SAM.09.LOB.824.1.1",
+                        "metadata": "http://luft.umweltbundesamt.at/inspire/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=aqd:AQD_Sample",
+                        "namespace": "AT.0008.20.AQ",
+                        "owner": "http://luft.umweltbundesamt.at",
+                    },
+                ],
+            )
+
+    def test_thing_relation(self):
+        """
+        Test a layer retrieving 'ThingRelations' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+        {
+          "value": [
+            {
+              "name": "ThingRelations",
+              "url": "endpoint/ThingRelations"
+            }
+          ],
+        "serverSettings": {
+          "conformance": [
+          "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+          ]
+          }
+        }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/ThingRelations?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ThingRelations","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/ThingRelations?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+        {
+          "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ThingRelations",
+          "value": [
+            {
+              "@id": "endpoint/ThingRelations(1)",
+              "id": 1,
+               "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-8842",
+              "RelationRole@navigationLink": "endpoint/ThingRelations(1)/RelationRole"
+            },
+            {
+              "@id": "endpoint/ThingRelations(2)",
+              "id": 2,
+              "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-111",
+              "RelationRole@navigationLink": "endpoint/ThingRelations(2)/RelationRole"
+            }
+          ],
+          "@nextLink": "endpoint/ThingRelations?$top=2&$skip=2"
+        }
+                        """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/ThingRelations?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                    {
+                    "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ThingRelations",
+                      "value": [
+                        {
+                          "@id": "endpoint/ThingRelations(3)",
+                          "id": 3,
+     "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-333",
+              "RelationRole@navigationLink": "endpoint/ThingRelations(3)/RelationRole"
+                             }
+                      ]
+                    }
+                                    """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='ThingRelations'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn("Entity Type</td><td>ThingRelation</td>", vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/ThingRelations"', vl.htmlMetadata())
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ["id", "selfLink", "externalTarget"],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-18:] for f in features],
+                [
+                    "/ThingRelations(1)",
+                    "/ThingRelations(2)",
+                    "/ThingRelations(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["externalTarget"] for f in features],
+                [
+                    "https://national-buoy-registry.example.gov/equipment/buoy-8842",
+                    "https://national-buoy-registry.example.gov/equipment/buoy-111",
+                    "https://national-buoy-registry.example.gov/equipment/buoy-333",
+                ],
+            )
+
+    def test_datastream_relation(self):
+        """
+        Test a layer retrieving 'DatastreamRelations' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "DatastreamRelations",
+          "url": "endpoint/DatastreamRelations"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/DatastreamRelations?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#DatastreamRelations","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/DatastreamRelations?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#DatastreamRelations",
+      "value": [
+        {
+          "@id": "endpoint/DatastreamRelations(1)",
+          "id": 1,
+           "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-8842",
+          "RelationRole@navigationLink": "endpoint/DatastreamRelations(1)/RelationRole"
+        },
+        {
+          "@id": "endpoint/DatastreamRelations(2)",
+          "id": 2,
+          "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-111",
+          "RelationRole@navigationLink": "endpoint/DatastreamRelations(2)/RelationRole"
+        }
+      ],
+      "@nextLink": "endpoint/DatastreamRelations?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/DatastreamRelations?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#DatastreamRelations",
+                  "value": [
+                    {
+                      "@id": "endpoint/DatastreamRelations(3)",
+                      "id": 3,
+ "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-333",
+          "RelationRole@navigationLink": "endpoint/DatastreamRelations(3)/RelationRole"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='DatastreamRelations'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn(
+                "Entity Type</td><td>DatastreamRelation</td>", vl.htmlMetadata()
+            )
+            self.assertIn(
+                f'href="http://{endpoint}/DatastreamRelations"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ["id", "selfLink", "externalTarget"],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-23:] for f in features],
+                [
+                    "/DatastreamRelations(1)",
+                    "/DatastreamRelations(2)",
+                    "/DatastreamRelations(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["externalTarget"] for f in features],
+                [
+                    "https://national-buoy-registry.example.gov/equipment/buoy-8842",
+                    "https://national-buoy-registry.example.gov/equipment/buoy-111",
+                    "https://national-buoy-registry.example.gov/equipment/buoy-333",
+                ],
+            )
+
+    def test_feature_relation(self):
+        """
+        Test a layer retrieving 'FeatureRelations' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "FeatureRelations",
+          "url": "endpoint/FeatureRelations"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/FeatureRelations?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#FeatureRelations","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/FeatureRelations?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#FeatureRelations",
+      "value": [
+        {
+          "@id": "endpoint/FeatureRelations(1)",
+          "id": 1,
+           "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-8842",
+          "RelationRole@navigationLink": "endpoint/FeatureRelations(1)/RelationRole"
+        },
+        {
+          "@id": "endpoint/FeatureRelations(2)",
+          "id": 2,
+          "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-111",
+          "RelationRole@navigationLink": "endpoint/FeatureRelations(2)/RelationRole"
+        }
+      ],
+      "@nextLink": "endpoint/FeatureRelations?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/FeatureRelations?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#FeatureRelations",
+                  "value": [
+                    {
+                      "@id": "endpoint/FeatureRelations(3)",
+                      "id": 3,
+ "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-333",
+          "RelationRole@navigationLink": "endpoint/FeatureRelations(3)/RelationRole"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='FeatureRelations'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn("Entity Type</td><td>FeatureRelation</td>", vl.htmlMetadata())
+            self.assertIn(
+                f'href="http://{endpoint}/FeatureRelations"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ["id", "selfLink", "externalTarget"],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-20:] for f in features],
+                [
+                    "/FeatureRelations(1)",
+                    "/FeatureRelations(2)",
+                    "/FeatureRelations(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["externalTarget"] for f in features],
+                [
+                    "https://national-buoy-registry.example.gov/equipment/buoy-8842",
+                    "https://national-buoy-registry.example.gov/equipment/buoy-111",
+                    "https://national-buoy-registry.example.gov/equipment/buoy-333",
+                ],
+            )
+
+    def test_observation_relation(self):
+        """
+        Test a layer retrieving 'ObservationRelations' entities from a 2.0 service
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "w", encoding="utf8") as f:
+                f.write(
+                    """
+    {
+      "value": [
+        {
+          "name": "ObservationRelations",
+          "url": "endpoint/ObservationRelations"
+        }
+      ],
+    "serverSettings": {
+      "conformance": [
+      "http://www.opengis.net/spec/sensorthings/2.0/req-class/datamodel/core"
+      ]
+      }
+    }""".replace("endpoint", "http://" + endpoint)
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/ObservationRelations?$top=0&$count=true",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """{"@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservationRelations","@count":3,"value":[]}"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    "/ObservationRelations?$top=2&$count=false",
+                ),
+                "w",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+    {
+      "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservationRelations",
+      "value": [
+        {
+          "@id": "endpoint/ObservationRelations(1)",
+          "id": 1,
+           "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-8842",
+          "RelationRole@navigationLink": "endpoint/ObservationRelations(1)/RelationRole"
+        },
+        {
+          "@id": "endpoint/ObservationRelations(2)",
+          "id": 2,
+          "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-111",
+          "RelationRole@navigationLink": "endpoint/ObservationRelations(2)/RelationRole"
+        }
+      ],
+      "@nextLink": "endpoint/ObservationRelations?$top=2&$skip=2"
+    }
+                    """.replace("endpoint", "http://" + endpoint)
+                )
+
+                with open(
+                    sanitize(
+                        endpoint,
+                        "/ObservationRelations?$top=2&$skip=2",
+                    ),
+                    "w",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+                {
+                "@context":"https://ogc-demo.xxx.de/yyy/v2.0/$metadata#ObservationRelations",
+                  "value": [
+                    {
+                      "@id": "endpoint/ObservationRelations(3)",
+                      "id": 3,
+ "externalTarget": "https://national-buoy-registry.example.gov/equipment/buoy-333",
+          "RelationRole@navigationLink": "endpoint/ObservationRelations(3)/RelationRole"
+                         }
+                  ]
+                }
+                                """.replace("endpoint", "http://" + endpoint)
+                    )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' pageSize=2 entity='ObservationRelations'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            # basic layer properties tests
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertIn(
+                "Entity Type</td><td>ObservationRelation</td>", vl.htmlMetadata()
+            )
+            self.assertIn(
+                f'href="http://{endpoint}/ObservationRelations"', vl.htmlMetadata()
+            )
+
+            self.assertEqual(
+                [f.name() for f in vl.fields()],
+                ["id", "selfLink", "externalTarget"],
+            )
+            self.assertEqual(
+                [f.type() for f in vl.fields()],
+                [
+                    QVariant.String,
+                    QVariant.String,
+                    QVariant.String,
+                ],
+            )
+
+            # test retrieving all features from layer
+            features = list(vl.getFeatures())
+            self.assertEqual([f.id() for f in features], [0, 1, 2])
+            self.assertEqual([f["id"] for f in features], ["1", "2", "3"])
+            self.assertEqual(
+                [f["selfLink"][-24:] for f in features],
+                [
+                    "/ObservationRelations(1)",
+                    "/ObservationRelations(2)",
+                    "/ObservationRelations(3)",
+                ],
+            )
+            self.assertEqual(
+                [f["externalTarget"] for f in features],
+                [
+                    "https://national-buoy-registry.example.gov/equipment/buoy-8842",
+                    "https://national-buoy-registry.example.gov/equipment/buoy-111",
+                    "https://national-buoy-registry.example.gov/equipment/buoy-333",
+                ],
+            )
+
     def test_feature_expansion(self):
         """
         Test a layer using feature expansion
