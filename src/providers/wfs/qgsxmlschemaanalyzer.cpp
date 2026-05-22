@@ -652,6 +652,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   {
     // When we have not found any geometry field in this layer, we check for geometries in referencing layers.
     // We go one level deep by checking all layers in the dataset for foreign keys to the current layer.
+    // We pick the first geometry found. Even if multiple related features contain geometries and even if they contain multiple geometries.
     int nLayerCount = GDALDatasetGetLayerCount( hDS );
     for ( int i = 0; i < nLayerCount; i++ )
     {
@@ -665,15 +666,19 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
       for ( int j = 0; j < nFieldCount; j++ )
       {
         OGRFieldDefnH hFieldDefn = OGR_FD_GetFieldDefn( hDefn, j );
-        QString fkNameToCurrentLayer = u"specification_abstractfeature_%1_pkid"_s.arg( layerName.toLower() );
-        if ( OGR_Fld_GetNameRef( hFieldDefn ) == fkNameToCurrentLayer )
+        QString fkNamePartToCurrentLayer = u"_%1_pkid"_s.arg( layerName.toLower() );
+        if ( QString::fromUtf8( OGR_Fld_GetNameRef( hFieldDefn ) ).endsWith( fkNamePartToCurrentLayer ) )
         {
           geometryAttribute = OGR_L_GetGeometryColumn( hLayer );
-          geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) );
-          if ( geomType != Qgis::WkbType::Point )
-            geomType = QgsWkbTypes::multiType( geomType );
-          foundGeometry = true;
-          break;
+          // Check if we found a geometry and it's not an abstract geometry
+          if ( !geometryAttribute.isEmpty() && geometryAttribute != "abstractgeometry"_L1 )
+          {
+            geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) );
+            if ( geomType != Qgis::WkbType::Point )
+              geomType = QgsWkbTypes::multiType( geomType );
+            foundGeometry = true;
+            break;
+          }
         }
       }
       if ( foundGeometry )
