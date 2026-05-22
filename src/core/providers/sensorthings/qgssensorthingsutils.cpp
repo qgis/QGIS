@@ -571,6 +571,16 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
         u"properties"_s,
       };
 
+    case Qgis::SensorThingsEntity::Feature:
+      // TODO -- link to final 2.0 definition
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
+
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
       return {
@@ -789,6 +799,13 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
+    case Qgis::SensorThingsEntity::Feature:
+      // TODO -- insert link to final 2.0 spec
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      break;
+
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
@@ -847,6 +864,7 @@ QString QgsSensorThingsUtils::geometryFieldForEntityType( Qgis::SensorThingsEnti
       return u"location"_s;
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
+    case Qgis::SensorThingsEntity::Feature:
       return u"feature"_s;
 
     case Qgis::SensorThingsEntity::Datastream:
@@ -871,6 +889,7 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
     case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Location:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
+    case Qgis::SensorThingsEntity::Feature:
     case Qgis::SensorThingsEntity::MultiDatastream:
       return true;
   }
@@ -892,6 +911,7 @@ Qgis::GeometryType QgsSensorThingsUtils::geometryTypeForEntity( Qgis::SensorThin
     case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Location:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
+    case Qgis::SensorThingsEntity::Feature:
     case Qgis::SensorThingsEntity::MultiDatastream:
       return Qgis::GeometryType::Unknown;
   }
