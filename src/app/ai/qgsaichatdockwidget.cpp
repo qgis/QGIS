@@ -1325,14 +1325,9 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
 
     bool ok = false;
-    const QString code = QInputDialog::getText(
-                           &dialog,
-                           QObject::tr( "Claude OAuth" ),
-                           QObject::tr( "After approving Claude in the browser, paste the authorization code or callback URL:" ),
-                           QLineEdit::Normal,
-                           QString(),
-                           &ok
-    ).trimmed();
+    const QString code
+      = QInputDialog::getText( &dialog, QObject::tr( "Claude OAuth" ), QObject::tr( "After approving Claude in the browser, paste the authorization code or callback URL:" ), QLineEdit::Normal, QString(), &ok )
+          .trimmed();
     if ( !ok || code.isEmpty() )
       return;
 
