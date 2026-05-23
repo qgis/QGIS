@@ -62,6 +62,9 @@ class CORE_EXPORT QgsNmeaConnection : public QgsGpsConnection
     void processHdtSentence( const char *data, int len );
     //! process HCHDG sentence
     void processHchdgSentence( const char *data, int len );
+
+  private:
+    Qgis::GpsQualityIndicator mLastGGAQualityIndicator = Qgis::GpsQualityIndicator::Invalid;
 };
 
 #endif // QGSNMEACONNECTION_H
