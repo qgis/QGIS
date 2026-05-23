@@ -112,16 +112,13 @@ img {
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  font-size: 1rem;
-  letter-spacing: -0.01em;
+  line-height: 0;
 }
 
 .nav-brand img {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
 }
 
 .nav-links {
