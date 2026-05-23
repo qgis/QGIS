@@ -3040,6 +3040,32 @@ class HandlerException(QgsServerOgcApiHandler):
 class QgsServerOgcAPITest(QgsServerAPITestBase):
     """QGIS OGC API server tests"""
 
+    def testQgsServerOgcApiHandlerLink(self):
+        """Test OGC API handlers header link function"""
+
+        h = Handler1()
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/services/api1/handlerone?value1=42"
+        )
+        response = QgsBufferServerResponse()
+        project = QgsProject()
+        ctx = QgsServerApiContext(
+            "/services/api1", request, response, project, self.server.serverInterface()
+        )
+        title = 'a title with special chars: èé and "quotes" and back \\ slash'
+        hlink = h.headerLink(
+            ctx,
+            QgsServerOgcApi.Rel.alternate,
+            QgsServerOgcApi.ContentType.JSON,
+            QgsServerOgcApi.Profile.NONE,
+            title,
+        )
+
+        self.assertEqual(
+            hlink,
+            '<http://server.qgis.org/services/api1/handlerone.json?value1=42>; rel="alternate"; title="a title with special chars: èé and \\"quotes\\" and back \\\\ slash"; type="application/json"',
+        )
+
     def testOgcApi(self):
         """Test OGC API"""
 

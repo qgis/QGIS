@@ -224,13 +224,17 @@ QString QgsServerOgcApiHandler::headerLink(
 
   if ( !profileStr.isEmpty() )
   {
-    hrefStr += "&profile=" + profileStr;
+    hrefStr += u"&profile="_s + profileStr;
   }
+
+  QString titleStr = !title.isEmpty() ? title : QString::fromStdString( linkTitle() );
+  titleStr.replace( '\\', "\\\\"_L1 );
+  titleStr.replace( '"', "\\\""_L1 );
 
   QString linkStr = u"<%1>; rel=\"%2\"; title=\"%3\"; type=\"%4\""_s.arg(
     QString::fromStdString( href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) ),
     QString::fromStdString( QgsServerOgcApi::relToString( linkType ) ),
-    !title.isEmpty() ? title : QString::fromStdString( linkTitle() ),
+    titleStr,
     QString::fromStdString( QgsServerOgcApi::mimeType( contentType ) )
   );
 

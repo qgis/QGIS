@@ -60,9 +60,19 @@ class QgsFilterResponseDecorator : public QgsServerResponse
 
     void removeHeader( const QString &key ) override { mResponse.removeHeader( key ); }
 
-    QString header( const QString &key ) const override { return mResponse.header( key ); }
+    Q_DECL_DEPRECATED QString header( const QString &key ) const override
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      return mResponse.header( key );
+      Q_NOWARN_DEPRECATED_POP
+    }
 
-    QMap<QString, QString> headers() const override { return mResponse.headers(); }
+    Q_DECL_DEPRECATED QMap<QString, QString> headers() const override
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      return mResponse.headers();
+      Q_NOWARN_DEPRECATED_POP
+    }
 
     virtual QList<QString> fullHeader( const QString &key ) const override { return mResponse.fullHeader( key ); }
 
