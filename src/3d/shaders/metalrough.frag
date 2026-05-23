@@ -218,13 +218,12 @@ float alphaToMipLevel(float alpha)
     return mipLevel;
 }
 
-float normalDistribution(const in vec3 n, const in vec3 h, const in float alpha)
+float normalDistribution(const in float nDotH, const in float alpha)
 {
     // Trowbridge-Reitz GGX
     // see https://google.github.io/filament/Filament.md.html, "Normal distribution function (specular D)"
     // https://learnopengl.com/PBR/Theory, "Normal distribution function"
     float alpha2 = alpha * alpha;
-    float nDotH = max(dot(n, h), 0.0);
     float nDotH2 = nDotH * nDotH;
 
     float denom = (nDotH2 * (alpha2 - 1.0) + 1.0);
@@ -313,7 +312,7 @@ vec3 specularModel(const in vec3 F0,
 
 vec3 pbrModel(const in int lightIndex,
               const in vec3 wPosition,
-              const in vec3 wNormal,
+              const in vec3 n, // NORMALIZED world normal
               const in vec3 wView,
               const in vec3 baseColor,
               const in float metalness,
@@ -322,75 +321,31 @@ vec3 pbrModel(const in int lightIndex,
               const in float ambientOcclusion)
 {
     // Calculate some useful quantities
-    vec3 n = wNormal;
-    vec3 s = vec3(0.0);
     vec3 v = wView;
-    vec3 h = vec3(0.0);
 
     float vDotN = dot(v, n);
-    float sDotN = 0.0;
-    float sDotH = 0.0;
-    float att = 1.0;
-    float visibilityFactor = 1.0;
 
-    if (lights[lightIndex].type != TYPE_DIRECTIONAL) {
-        // Point and Spot lights
-        vec3 sUnnormalized = vec3(lights[lightIndex].position) - wPosition;
-        s = normalize(sUnnormalized);
-
-        // Calculate the attenuation factor
-        sDotN = dot(s, n);
-        if (sDotN > 0.0) {
-            if (lights[lightIndex].constantAttenuation != 0.0
-             || lights[lightIndex].linearAttenuation != 0.0
-             || lights[lightIndex].quadraticAttenuation != 0.0) {
-                float dist = length(sUnnormalized);
-                att = 1.0 / (lights[lightIndex].constantAttenuation +
-                             lights[lightIndex].linearAttenuation * dist +
-                             lights[lightIndex].quadraticAttenuation * dist * dist);
-            }
-
-            // The light direction is in world space already
-            if (lights[lightIndex].type == TYPE_SPOT) {
-                // Check if fragment is inside or outside of the spot light cone
-                if (degrees(acos(dot(-s, lights[lightIndex].direction))) > lights[lightIndex].cutOffAngle)
-                    sDotN = 0.0;
-            }
-        }
-    } else {
-        // Directional lights
-        // The light direction is in world space already
-        s = normalize(-lights[lightIndex].direction);
-        sDotN = dot(s, n);
-
-        if (renderShadows == 1 && lightIndex == shadowLightIndex)
-        {
-            visibilityFactor = calcVisibilityAfterShadowing(wPosition);
-        }
-    }
-
-    h = normalize(s + v);
-    sDotH = dot(s, h);
+    LightParams light = calculateLightParams(lightIndex, wPosition, n, wView);
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor * lights[lightIndex].color;
-    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / PI;
+    vec3 diffuse = diffuseColor * light.sDotN / PI;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = vec3(0.0);
-    if (sDotN > 0.0) {
-        specularFactor = specularModel(F0, sDotH, sDotN, vDotN, n, h, roughness, false);
-        specularFactor *= normalDistribution(n, h, alpha);
+    if (light.sDotN > 0.0) {
+        specularFactor = specularModel(F0, light.sDotH, light.sDotN, vDotN, n, light.h, roughness, false);
+        specularFactor *= normalDistribution(light.nDotH, alpha);
     }
     vec3 specularColor = lights[lightIndex].color;
-    vec3 specular = specularColor * specularFactor * max(sDotN, 0.0);
+    vec3 specular = specularColor * specularFactor * light.sDotN;
 
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
-    vec3 kS = fresnelFactor(F0, sDotH);
-    vec3 color = visibilityFactor * att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
+    vec3 kS = fresnelFactor(F0, light.sDotH);
+    vec3 color = light.visibilityFactor * light.att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
