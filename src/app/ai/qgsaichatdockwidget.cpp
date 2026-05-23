@@ -33,6 +33,7 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QApplication>
 #include <QCheckBox>
 #include <QColor>
 #include <QDesktopServices>
@@ -46,7 +47,6 @@
 #include <QFormLayout>
 #include <QFrame>
 #include <QHBoxLayout>
-#include <QHostAddress>
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QLabel>
@@ -61,13 +61,10 @@
 #include <QRegularExpression>
 #include <QSet>
 #include <QString>
-#include <QTcpServer>
-#include <QTcpSocket>
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextEdit>
 #include <QToolButton>
-#include <QUrlQuery>
 #include <QVBoxLayout>
 #include <QVariant>
 
@@ -1225,9 +1222,28 @@ void QgsAiChatDockWidget::openProviderSettings()
   rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
   indexingForm->addRow( QString(), rebuildLayerIndexButton );
 
-  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, indexStatusLabel]() {
+  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, indexStatusLabel, openAiKey]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
+
+    const QString pendingOpenAiKey = openAiKey->text().trimmed();
+    if ( !pendingOpenAiKey.isEmpty() )
+    {
+      QString keyError;
+      if ( !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::OpenAi, pendingOpenAiKey, &keyError ) )
+      {
+        QMessageBox::warning( &dialog, tr( "OpenAI API key" ), keyError.isEmpty() ? tr( "Unable to save the OpenAI API key." ) : keyError );
+        return;
+      }
+      openAiKey->clear();
+      openAiKey->setPlaceholderText( tr( "Saved locally — enter a new key only to replace it" ) );
+    }
+    else if ( !mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) && qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed().isEmpty() )
+    {
+      QMessageBox::warning( &dialog, tr( "OpenAI API key" ), tr( "Enter an OpenAI API key, or set OPENAI_API_KEY, before rebuilding the layer index." ) );
+      return;
+    }
+
     QApplication::setOverrideCursor( Qt::WaitCursor );
     QString err;
     const bool ok = mSessionManager->workspaceIndex()->reindexLayers( &err );
@@ -1301,61 +1317,24 @@ void QgsAiChatDockWidget::openProviderSettings()
   } );
 
   connect( claudeLoginButton, &QPushButton::clicked, &dialog, [&dialog, claudeOAuthStatus, claudeUseOAuth]() {
-    QString callbackCode;
-    QTcpServer callbackServer;
-    const bool hasLocalCallback = callbackServer.listen( QHostAddress::LocalHost, 0 );
-    const QString redirectUri = hasLocalCallback ? u"http://127.0.0.1:%1/callback"_s.arg( callbackServer.serverPort() ) : QString();
-    const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = hasLocalCallback ? QgsAiClaudeOAuthClient::buildAuthorizationRequest( redirectUri )
-                                                                                      : QgsAiClaudeOAuthClient::buildAuthorizationRequest();
+    const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = QgsAiClaudeOAuthClient::buildAuthorizationRequest();
 
-    if ( hasLocalCallback )
+    if ( !QDesktopServices::openUrl( authRequest.authorizationUrl ) )
     {
-      QEventLoop callbackLoop;
-      QTimer timeout;
-      timeout.setSingleShot( true );
-      QObject::connect( &timeout, &QTimer::timeout, &callbackLoop, &QEventLoop::quit );
-      QObject::connect( &callbackServer, &QTcpServer::newConnection, &dialog, [&callbackServer, &callbackLoop, &callbackCode]() {
-        QTcpSocket *socket = callbackServer.nextPendingConnection();
-        if ( !socket )
-          return;
-        if ( !socket->waitForReadyRead( 3000 ) )
-        {
-          socket->deleteLater();
-          return;
-        }
-
-        const QByteArray requestLine = socket->readLine();
-        const QList<QByteArray> parts = requestLine.split( ' ' );
-        if ( parts.size() >= 2 )
-        {
-          const QUrl callbackUrl( QString::fromLatin1( parts.at( 1 ) ) );
-          callbackCode = QUrlQuery( callbackUrl ).queryItemValue( u"code"_s ).trimmed();
-        }
-
-        const QByteArray body = "<html><body><h3>Claude login completed.</h3>You can return to QGIS_AI.</body></html>";
-        socket->write( "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\nContent-Length: " + QByteArray::number( body.size() ) + "\r\n\r\n" + body );
-        socket->disconnectFromHost();
-        socket->deleteLater();
-        callbackLoop.quit();
-      } );
-      timeout.start( 120000 );
-      QDesktopServices::openUrl( authRequest.authorizationUrl );
-      callbackLoop.exec();
-      callbackServer.close();
-    }
-    else
-    {
-      QDesktopServices::openUrl( authRequest.authorizationUrl );
+      QMessageBox::information( &dialog, QObject::tr( "Claude OAuth" ), QObject::tr( "Open this URL in your browser:\n\n%1" ).arg( authRequest.authorizationUrl.toString() ) );
     }
 
-    QString code = callbackCode;
-    if ( code.isEmpty() )
-    {
-      bool ok = false;
-      code = QInputDialog::getText( &dialog, QObject::tr( "Claude OAuth" ), QObject::tr( "After approving Claude, paste the authorization code or callback URL:" ), QLineEdit::Normal, QString(), &ok ).trimmed();
-      if ( !ok || code.isEmpty() )
-        return;
-    }
+    bool ok = false;
+    const QString code = QInputDialog::getText(
+                           &dialog,
+                           QObject::tr( "Claude OAuth" ),
+                           QObject::tr( "After approving Claude in the browser, paste the authorization code or callback URL:" ),
+                           QLineEdit::Normal,
+                           QString(),
+                           &ok
+    ).trimmed();
+    if ( !ok || code.isEmpty() )
+      return;
 
     QString error;
     if ( !QgsAiClaudeOAuthClient::exchangeAuthorizationCode( code, authRequest.codeVerifier, authRequest.redirectUri, &error ) )
@@ -1385,25 +1364,25 @@ void QgsAiChatDockWidget::openProviderSettings()
   if ( dialog.exec() != QDialog::Accepted )
     return;
 
+  const QString pendingOpenAiKey = openAiKey->text().trimmed();
+  const QString pendingClaudeKey = claudeKey->text().trimmed();
+  const QString pendingPlanToken = planToken->text().trimmed();
+
+  QString errorMessages;
+  QString error;
+
   QgsAiModelRouter::ProviderSettings openAiSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenAi );
   openAiSettings.endpoint = openAiEndpoint->text().trimmed();
   openAiSettings.model = openAiModel->text().trimmed();
+  openAiSettings.enabled = !pendingOpenAiKey.isEmpty() || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) || !qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed().isEmpty();
   mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::OpenAi, openAiSettings );
 
   QgsAiModelRouter::ProviderSettings codexSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex );
   codexSettings.endpoint = codexEndpoint->text().trimmed();
   codexSettings.model = codexModel->text().trimmed();
   codexSettings.credentialMode = QgsAiModelRouter::CredentialMode::OAuth;
-  codexSettings.enabled = QgsAiCodexOAuthClient::hasRefreshToken() || codexSettings.enabled;
+  codexSettings.enabled = QgsAiCodexOAuthClient::hasRefreshToken();
   mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Codex, codexSettings );
-
-  QgsAiModelRouter::ProviderSettings claudeSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude );
-  claudeSettings.endpoint = claudeEndpoint->text().trimmed();
-  claudeSettings.model = claudeModel->text().trimmed();
-  claudeSettings.credentialMode = claudeUseOAuth->isChecked() ? QgsAiModelRouter::CredentialMode::OAuth : QgsAiModelRouter::CredentialMode::ApiKey;
-  if ( claudeSettings.credentialMode == QgsAiModelRouter::CredentialMode::OAuth )
-    claudeSettings.enabled = QgsAiClaudeOAuthClient::hasRefreshToken() || claudeSettings.enabled;
-  mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Claude, claudeSettings );
 
   QgsAiModelRouter::ProviderSettings planSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan );
   planSettings.endpoint = planEndpoint->text().trimmed();
@@ -1411,14 +1390,36 @@ void QgsAiChatDockWidget::openProviderSettings()
   mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
   mModelRouter->setPlanAuthConfigId( planAuthCfg->text().trimmed() );
 
-  QString errorMessages;
-  QString error;
-  if ( !openAiKey->text().trimmed().isEmpty() && !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::OpenAi, openAiKey->text().trimmed(), &error ) )
+  if ( !pendingOpenAiKey.isEmpty() && !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::OpenAi, pendingOpenAiKey, &error ) )
     errorMessages += error + '\n';
-  if ( !claudeKey->text().trimmed().isEmpty() && !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::Claude, claudeKey->text().trimmed(), &error ) )
+  if ( !pendingClaudeKey.isEmpty() && !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::Claude, pendingClaudeKey, &error ) )
     errorMessages += error + '\n';
-  if ( !planToken->text().trimmed().isEmpty() && !mModelRouter->setPlanSessionToken( planToken->text().trimmed(), &error ) )
+  if ( !pendingPlanToken.isEmpty() && !mModelRouter->setPlanSessionToken( pendingPlanToken, &error ) )
     errorMessages += error + '\n';
+
+  QgsAiModelRouter::ProviderSettings claudeSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude );
+  claudeSettings.endpoint = claudeEndpoint->text().trimmed();
+  claudeSettings.model = claudeModel->text().trimmed();
+  const bool claudeOAuthRequested = claudeUseOAuth->isChecked();
+  const bool claudeOAuthAvailable = QgsAiClaudeOAuthClient::hasRefreshToken();
+  const bool claudeApiKeyAvailable = !pendingClaudeKey.isEmpty() || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude );
+  if ( claudeOAuthRequested && claudeOAuthAvailable )
+  {
+    claudeSettings.credentialMode = QgsAiModelRouter::CredentialMode::OAuth;
+    claudeSettings.enabled = true;
+  }
+  else
+  {
+    if ( claudeOAuthRequested && !claudeOAuthAvailable )
+    {
+      errorMessages += ( claudeApiKeyAvailable ? tr( "Claude OAuth login was not completed; Claude will keep using API key mode." )
+                                               : tr( "Claude OAuth login was not completed; Claude is disabled until you complete login or configure an API key." ) )
+                       + '\n';
+    }
+    claudeSettings.credentialMode = QgsAiModelRouter::CredentialMode::ApiKey;
+    claudeSettings.enabled = claudeApiKeyAvailable;
+  }
+  mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Claude, claudeSettings );
 
   if ( mSessionManager )
   {
