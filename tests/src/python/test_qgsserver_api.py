@@ -1068,6 +1068,39 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertAlmostEqual(geom.asPoint().x(), 8.20345, 4)
         self.assertAlmostEqual(geom.asPoint().y(), 44.90139, 4)
 
+    def test_wfs3_collection_items_aspatial_flatgeobuf(self):
+        """Test flatgeobuf output for non spatial layer"""
+
+        fields = QgsFields()
+        fields.append(QgsField("name", QtCore.QMetaType.Type.QString))
+        layer = QgsMemoryProviderUtils.createMemoryLayer("aspatial", fields)
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.isSpatial())
+
+        f = QgsFeature(fields)
+        f.setAttribute("name", "feature 123")
+        layer.dataProvider().addFeatures([f])
+
+        p = QgsProject()
+        p.addMapLayer(layer)
+        p.writeEntry("WFSLayers", "/", [layer.id()])
+
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/aspatial/items.fgb?limit=1"
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, p)
+
+        temp_dir = QtCore.QTemporaryDir()
+        temp_path = temp_dir.path()
+        path = os.path.join(temp_path, "aspatial.fgb")
+        with open(path.encode("utf8"), "wb") as f:
+            f.write(response.body())
+        v = QgsVectorLayer(path, "aspatial", "ogr")
+        self.assertTrue(v.isValid())
+        f = next(v.getFeatures())
+        self.assertEqual(f["name"], "feature 123")
+
     def test_invalid_args(self):
         """Test wrong args"""
         project = QgsProject()

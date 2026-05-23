@@ -1208,7 +1208,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   saveOptions.driverName = u"FlatGeobuf"_s;
   if ( !mapLayer->isSpatial() )
   {
-    saveOptions.datasourceOptions = u"SPATIAL_INDEX=NO"_s;
+    saveOptions.layerOptions.append( u"SPATIAL_INDEX=NO"_s );
   }
 
   if ( featureRequest.destinationCrs() != mapLayer->crs() )
@@ -1337,9 +1337,9 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   vsi_l_offset nDataLength = 0;
   const char *dataPtr = reinterpret_cast<char *>( VSIGetMemFileBuffer( destination.toStdString().c_str(), &nDataLength, false ) );
 
-  Q_ASSERT( pnDataLength <= std::numeric_limits<qsizetype>::max() );
+  Q_ASSERT( nDataLength <= std::numeric_limits<qsizetype>::max() );
 
-  const QByteArray data { QByteArray::fromRawData( dataPtr, static_cast<qsizetype>( pnDataLength ) ) };
+  const QByteArray data { QByteArray::fromRawData( dataPtr, static_cast<qsizetype>( nDataLength ) ) };
   apiContext.response()->write( data );
 }
 
