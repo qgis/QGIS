@@ -32,7 +32,11 @@ uniform int u_colorRampType;
 uniform int u_colorRampCount;
 #endif
 
+#ifdef TRIANGULATE
+#pragma include phong.inc.frag
+#else
 #pragma include light.inc.frag
+#endif
 
 #ifdef STYLE_COLOR_RAMP
 vec4 linearColorRamp()
