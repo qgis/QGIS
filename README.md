@@ -1,5 +1,7 @@
 <img src="images/README-md/main_logo.png" width="300">
 
+> Sito: **[francemazzi.github.io/QGIS_AI](https://francemazzi.github.io/QGIS_AI)**
+
 # QGIS_AI — Download
 
 QGIS_AI è un fork di QGIS con un assistente AI integrato nativamente. Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**.

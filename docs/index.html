@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fork di QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace.">
+  <title data-i18n="meta.title">QGIS_AI — QGIS con AI nativa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="icon" href="./assets/logo.png" type="image/png">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="container">
+      <a href="#" class="nav-brand">
+        <img src="./assets/logo.png" alt="QGIS_AI logo" width="28" height="28">
+        QGIS_AI
+      </a>
+
+      <div class="nav-links">
+        <a href="#problems" data-i18n="nav.problems">Problemi</a>
+        <a href="#features" data-i18n="nav.features">Feature</a>
+        <a href="#setup" data-i18n="nav.setup">Setup</a>
+        <a href="#download" data-i18n="nav.download">Download</a>
+      </div>
+
+      <div class="nav-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" data-lang="it" aria-pressed="true">IT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-primary" data-i18n="nav.downloadBtn">Scarica</a>
+        <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <span class="hero-badge" data-i18n="hero.badge">Fork QGIS 4.1 · AI nativa</span>
+        <h1>
+          <span data-i18n="hero.title">QGIS con AI nativa.</span>
+          <span class="hero-accent" data-i18n="hero.titleAccent">Fai GIS 10× più veloce.</span>
+        </h1>
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
+          Assistente integrato nel pannello laterale — non un plugin esterno. Chiedi in linguaggio naturale, l'agente ispeziona layer, esegue PyQGIS e salva workflow con la tua approvazione.
+        </p>
+        <div class="hero-cta">
+          <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-primary btn-lg" data-i18n="hero.ctaPrimary">Scarica QGIS_AI</a>
+          <a href="#setup" class="btn btn-secondary btn-lg" data-i18n="hero.ctaSecondary">Come configurarlo</a>
+        </div>
+      </div>
+
+      <div class="mockup" aria-hidden="true">
+        <div class="mockup-toolbar">
+          <span class="mockup-dot"></span>
+          <span class="mockup-dot"></span>
+          <span class="mockup-dot"></span>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-map">
+            <div class="mockup-map-shapes"></div>
+            <span class="mockup-map-label" data-i18n="mockup.mapLabel">Mappa QGIS</span>
+          </div>
+          <div class="mockup-chat">
+            <div class="mockup-chat-header" data-i18n="mockup.chatTitle">AI Assistant</div>
+            <div class="mockup-modes">
+              <span class="mockup-mode" data-i18n="mockup.modePlan">Plan</span>
+              <span class="mockup-mode active" data-i18n="mockup.modeAgent">Agent</span>
+              <span class="mockup-mode" data-i18n="mockup.modeAsk">Ask</span>
+            </div>
+            <div class="mockup-messages">
+              <div class="mockup-bubble user" data-i18n="mockup.userMsg">Fai buffer 500m sui comuni e esporta GeoJSON</div>
+              <div class="mockup-bubble ai" data-i18n="mockup.aiMsg">Ho ispezionato il layer comuni, eseguito il buffer e salvato output/buffer_500m.geojson. Vuoi rivedere la proposta?</div>
+            </div>
+            <div class="mockup-input" data-i18n="mockup.input">Chiedi, tagga file con @, o invia /patch…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problems -->
+  <section class="section" id="problems">
+    <div class="container">
+      <div class="problems-header">
+        <span class="section-label" data-i18n="problems.label">Problemi comuni</span>
+        <h2 class="section-title" data-i18n="problems.title">Conosci questi ostacoli in QGIS?</h2>
+        <p class="section-subtitle" data-i18n="problems.subtitle">
+          Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. QGIS_AI risolve il gap tra domanda e azione nel tuo progetto.
+        </p>
+      </div>
+
+      <div class="problems-grid">
+        <article class="problem-card">
+          <div class="problem-icon">⌨</div>
+          <h3 data-i18n="problems.1.title">PyQGIS difficile</h3>
+          <p data-i18n="problems.1.desc">Copiare snippet da ChatGPT senza contesto del progetto. Errori di sintassi, API sbagliate, ore perse.</p>
+          <p class="problem-fix" data-i18n="problems.1.fix">L'agente esegue PyQGIS in-session con dialog di approvazione.</p>
+        </article>
+
+        <article class="problem-card">
+          <div class="problem-icon">🗂</div>
+          <h3 data-i18n="problems.2.title">Ispezione layer laboriosa</h3>
+          <p data-i18n="problems.2.desc">Capire campi, CRS e estensioni richiede script manuali o round-trip nella console Python.</p>
+          <p class="problem-fix" data-i18n="problems.2.fix">Tool nativi describe_layer e list_project_layers.</p>
+        </article>
+
+        <article class="problem-card">
+          <div class="problem-icon">📦</div>
+          <h3 data-i18n="problems.3.title">Dipendenze Python mancanti</h3>
+          <p data-i18n="problems.3.desc">geopandas, osmnx, pandas… spesso non installati nell'ambiente QGIS.</p>
+          <p class="problem-fix" data-i18n="problems.3.fix">install_python_package con approvazione pip controllata.</p>
+        </article>
+
+        <article class="problem-card">
+          <div class="problem-icon">🌐</div>
+          <h3 data-i18n="problems.4.title">Scaricare dati è lento</h3>
+          <p data-i18n="problems.4.desc">Overpass, GeoJSON, GADM — fetch manuale, salvataggio, import layer.</p>
+          <p class="problem-fix" data-i18n="problems.4.fix">download_file direttamente nel workspace con una sola approval.</p>
+        </article>
+
+        <article class="problem-card">
+          <div class="problem-icon">🔍</div>
+          <h3 data-i18n="problems.5.title">Contesto disperso</h3>
+          <p data-i18n="problems.5.desc">File di progetto, script, layer e attributi sparsi — l'AI generica non li vede.</p>
+          <p class="problem-fix" data-i18n="problems.5.fix">RAG workspace, @ file mentions e snapshot layer nel prompt.</p>
+        </article>
+
+        <article class="problem-card">
+          <div class="problem-icon">⚠</div>
+          <h3 data-i18n="problems.6.title">Modifiche senza controllo</h3>
+          <p data-i18n="problems.6.desc">Script che sovrascrivono file o eseguono codice pericoloso senza review.</p>
+          <p class="problem-fix" data-i18n="problems.6.fix">Review diff side-by-side + approval PyQGIS e pip.</p>
+        </article>
+
+        <article class="problem-card">
+          <div class="problem-icon">🔌</div>
+          <h3 data-i18n="problems.7.title">Plugin AI disconnessi</h3>
+          <p data-i18n="problems.7.desc">Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.</p>
+          <p class="problem-fix" data-i18n="problems.7.fix">Integrazione nativa nel fork desktop QGIS_AI.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution -->
+  <section class="section" id="solution">
+    <div class="container">
+      <span class="section-label" data-i18n="solution.label">Soluzione</span>
+      <h2 class="section-title" data-i18n="solution.title">Chat laterale + Agente integrato</h2>
+      <p class="section-subtitle" data-i18n="solution.subtitle">
+        Tutto ciò che serve per lavorare nel tuo progetto QGIS, senza uscire dall'app.
+      </p>
+
+      <div class="solution-grid">
+        <article class="solution-card">
+          <h3 data-i18n="solution.chat.title">Pannello AI Assistant</h3>
+          <p data-i18n="solution.chat.desc">
+            Dock widget a destra con streaming delle risposte, cronologia chat, attach file, tag @ per menzionare file del workspace e Review Proposals per accettare o rifiutare modifiche.
+          </p>
+          <ul class="solution-features">
+            <li data-i18n="solution.chat.f1">Streaming in tempo reale</li>
+            <li data-i18n="solution.chat.f2">History per workspace</li>
+            <li data-i18n="solution.chat.f3">Review Proposals con diff</li>
+          </ul>
+        </article>
+
+        <article class="solution-card">
+          <h3 data-i18n="solution.agent.title">Tre modalità agente</h3>
+          <p data-i18n="solution.agent.desc">
+            Stile Cursor: Plan per pianificare, Agent per eseguire e modificare, Ask per domande e review. Rules & Skills personalizzabili.
+          </p>
+          <ul class="solution-features">
+            <li data-i18n="solution.agent.f1">Plan · Agent · Ask</li>
+            <li data-i18n="solution.agent.f2">19 tool GIS integrati</li>
+            <li data-i18n="solution.agent.f3">Rules & Skills (.qgis_ai/)</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Speed -->
+  <section class="section speed-section" id="speed">
+    <div class="container">
+      <span class="section-label" data-i18n="speed.label">10× più veloce</span>
+      <h2 class="section-title" data-i18n="speed.title">Da ore a minuti</h2>
+      <p class="section-subtitle" data-i18n="speed.subtitle">Esempio reale: ispeziona 5 layer, buffer, export GeoJSON.</p>
+
+      <div class="speed-compare">
+        <article class="speed-card">
+          <div class="speed-card-header">
+            <h3 data-i18n="speed.before">Prima</h3>
+            <span class="speed-time" data-i18n="speed.beforeTime">~45 min</span>
+          </div>
+          <p data-i18n="speed.beforeSteps">
+            Aprire console Python, scrivere script per ogni layer, cercare API su StackExchange, installare dipendenze, debuggare path, export manuale.
+          </p>
+        </article>
+
+        <article class="speed-card highlight">
+          <div class="speed-card-header">
+            <h3 data-i18n="speed.after">Con QGIS_AI</h3>
+            <span class="speed-time" data-i18n="speed.afterTime">~5 min</span>
+          </div>
+          <p data-i18n="speed.afterSteps">
+            Una richiesta in linguaggio naturale. L'agente ispeziona, propone codice, chiede approval, esegue e salva nel workspace.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" id="features">
+    <div class="container">
+      <span class="section-label" data-i18n="features.label">Feature</span>
+      <h2 class="section-title" data-i18n="features.title">Tutto ciò che serve, integrato</h2>
+      <p class="section-subtitle" data-i18n="features.subtitle">
+        Potenza di QGIS 4.1 più un assistente che conosce il tuo progetto.
+      </p>
+
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-number">01</div>
+          <h3 data-i18n="features.1.title">19 tool integrati</h3>
+          <p data-i18n="features.1.desc">read_file, search_files, describe_layer, propose_edit, run_python, pip install, download_file, reindex e altro.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-number">02</div>
+          <h3 data-i18n="features.2.title">Rules & Skills</h3>
+          <p data-i18n="features.2.desc">Regole inline e cartelle .qgis_ai/rules e .qgis_ai/skills per guidare l'agente come in Cursor.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-number">03</div>
+          <h3 data-i18n="features.3.title">RAG workspace</h3>
+          <p data-i18n="features.3.desc">Indicizza .py, .qgs, .geojson, .md con embeddings OpenAI. Chunk e vettori in SQLite locale.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-number">04</div>
+          <h3 data-i18n="features.4.title">Layer indexing opt-in</h3>
+          <p data-i18n="features.4.desc">Attributi e bounding box inviati a embeddings solo con consenso esplicito. Auto-reindex su edit layer.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-number">05</div>
+          <h3 data-i18n="features.5.title">Multi-provider</h3>
+          <p data-i18n="features.5.desc">OpenAI API key, Claude API/OAuth, Codex/ChatGPT OAuth device flow. Scegli il modello dal dropdown.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-number">06</div>
+          <h3 data-i18n="features.6.title">Privacy locale</h3>
+          <p data-i18n="features.6.desc">Chiavi in QgsSettings locali. Token OAuth cifrati nell'auth store QGIS. Nessun server intermedio.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Setup -->
+  <section class="section" id="setup">
+    <div class="container">
+      <span class="section-label" data-i18n="setup.label">Setup</span>
+      <h2 class="section-title" data-i18n="setup.title">Credenziali e indicizzazione</h2>
+      <p class="section-subtitle" data-i18n="setup.subtitle">
+        Configura l'AI al primo avvio e capisci come funziona il RAG sul tuo workspace.
+      </p>
+
+      <div class="setup-grid">
+        <div class="setup-block">
+          <h3 data-i18n="setup.creds.title">Credenziali e login</h3>
+          <ol class="setup-steps">
+            <li>
+              <span class="step-num">1</span>
+              <span data-i18n="setup.creds.1">Apri QGIS_AI → menu Visualizza → Pannelli → AI Assistant.</span>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <span data-i18n="setup.creds.2">Clicca sull'icona ⚙ impostazioni in alto a destra del pannello.</span>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <span>
+                <strong data-i18n="setup.creds.3.title">Scegli il provider:</strong>
+                <ul class="setup-sublist">
+                  <li data-i18n="setup.creds.3.openai">OpenAI / Anthropic: incolla la API key (platform.openai.com o console.anthropic.com).</li>
+                  <li data-i18n="setup.creds.3.codex">Codex/ChatGPT: Get Codex device code → apri la pagina → Complete Codex login.</li>
+                  <li data-i18n="setup.creds.3.claude">Claude OAuth: attiva Use Claude OAuth → Login with Claude → incolla il codice.</li>
+                </ul>
+              </span>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <span data-i18n="setup.creds.4">Seleziona il modello dal dropdown (GPT-4o, Claude Sonnet, Codex GPT-5.4, …).</span>
+            </li>
+            <li>
+              <span class="step-num">5</span>
+              <span data-i18n="setup.creds.5">Opzionale: abilita Allow custom agent actions (tool use) — default OFF per sicurezza.</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="setup-block">
+          <h3 data-i18n="setup.index.title">Indicizzazione (RAG)</h3>
+          <ul class="index-list">
+            <li data-i18n="setup.index.1">Workspace RAG: indicizza automaticamente i file testo del workspace. Chunk e vettori salvati in SQLite locale. La ricerca semantica viene iniettata nel prompt come Retrieved context.</li>
+            <li data-i18n="setup.index.2">Layer indexing: disabilitato di default. Con Enable layer indexing, attributi e bounding box vengono inviati a OpenAI text-embedding-3-small. Auto-reindex su add/remove/edit layer.</li>
+            <li data-i18n="setup.index.3">Requisito: serve una API key OpenAI (o variabile OPENAI_API_KEY) per ricostruire gli embeddings.</li>
+            <li data-i18n="setup.index.4">Stato visibile nel dialog ⚙: Indexed: N file chunks, M layer chunks (last sync: …).</li>
+          </ul>
+          <div class="privacy-box" data-i18n="setup.index.privacy">
+            I dati dei layer vengono inviati al provider embeddings solo se abiliti esplicitamente l'indexing.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download -->
+  <section class="section" id="download">
+    <div class="container">
+      <div class="download-header">
+        <span class="section-label" data-i18n="download.label">Download</span>
+        <h2 class="section-title" data-i18n="download.title">Scarica QGIS_AI</h2>
+        <p class="section-subtitle" data-i18n="download.subtitle">
+          Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.
+        </p>
+        <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-primary btn-lg" data-i18n="download.cta">Vai alle Releases</a>
+      </div>
+
+      <div class="download-grid">
+        <article class="download-card">
+          <div class="download-os" aria-hidden="true">🍎</div>
+          <h3 data-i18n="download.macos.title">macOS</h3>
+          <p class="download-sub" data-i18n="download.macos.sub">Intel + Apple Silicon</p>
+          <p class="download-file" data-i18n="download.macos.file">File .dmg</p>
+          <p class="download-note" data-i18n="download.macos.note">Trascina QGIS_AI in Applicazioni. Poi: xattr -d com.apple.quarantine /Applications/QGIS_AI.app</p>
+          <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+        </article>
+
+        <article class="download-card">
+          <div class="download-os" aria-hidden="true">🪟</div>
+          <h3 data-i18n="download.windows.title">Windows</h3>
+          <p class="download-sub" data-i18n="download.windows.sub">10/11 x64</p>
+          <p class="download-file" data-i18n="download.windows.file">File -win64.zip</p>
+          <p class="download-note" data-i18n="download.windows.note">Estrai ovunque, lancia bin/qgis.exe. SmartScreen: Maggiori informazioni → Esegui comunque.</p>
+          <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+        </article>
+
+        <article class="download-card">
+          <div class="download-os" aria-hidden="true">🐧</div>
+          <h3 data-i18n="download.linux.title">Linux</h3>
+          <p class="download-sub" data-i18n="download.linux.sub">x86_64</p>
+          <p class="download-file" data-i18n="download.linux.file">File .AppImage</p>
+          <p class="download-note" data-i18n="download.linux.note">chmod +x QGIS_AI-*.AppImage && ./QGIS_AI-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.</p>
+          <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <strong>QGIS_AI</strong>
+        <span data-i18n="footer.tagline">Fork QGIS con assistente AI nativo.</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/francemazzi/QGIS_AI" data-i18n="footer.github">GitHub</a>
+        <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" data-i18n="nav.download">Download</a>
+        <a href="mailto:francemazzi@gmail.com" data-i18n="footer.contact">Contatto</a>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" data-lang="it" aria-pressed="true">IT</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./js/i18n.js"></script>
+</body>
+</html>
