@@ -1411,6 +1411,11 @@ QgsAdvancedDigitizingFloater QLabel {
     background-color: rgba(255,255,255,64);
 }
 
+QgsAdvancedDigitizingFloater QLineEdit {
+    border: none;
+    border-radius: 0;
+}
+
 QgsLocatorResultsView::item:disabled {
     color: @text;
 }
