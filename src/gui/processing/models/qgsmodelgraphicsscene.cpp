@@ -664,16 +664,22 @@ void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgori
 void QgsModelGraphicsScene::addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId )
 {
   if ( mFlags & FlagHideFeatureCount )
-    return;
-
-  if ( !mLastResultCount.contains( layerId ) )
   {
+    arrow->setShowBadge( false );
     return;
   }
 
-  QString numberFeatureText = u"[%1]"_s.arg( mLastResultCount.value( layerId ) );
-  QgsModelDesignerFeatureCountGraphicItem *featureCount = new QgsModelDesignerFeatureCountGraphicItem( arrow, numberFeatureText );
-  addItem( featureCount );
+  if ( !mLastResultCount.contains( layerId ) )
+  {
+    arrow->setShowBadge( false );
+    return;
+  }
+
+  arrow->setShowBadge( true );
+  if ( QgsModelDesignerArrowBadgeItem *badge = arrow->badgeItem() )
+  {
+    badge->setValue( mLastResultCount.value( layerId ) );
+  }
 }
 
 
