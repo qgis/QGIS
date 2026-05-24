@@ -9780,6 +9780,21 @@ class TestQgsGeometry(QgisTestCase):
         assert not geom.deleteVertex(-1)
         assert not geom.deleteVertex(5)
 
+        # test invalid range deletion on abstract geometry
+        p1 = QgsPoint(0, 0)
+        p2 = QgsPoint(1, 1)
+        p3 = QgsPoint(2, 0)
+
+        c = QgsCircularString()
+
+        c.setPoints([p1, p2, p3])
+
+        invalidVertex1 = QgsVertexId(0, 0, -1)
+        invalidVertex2 = QgsVertexId(0, 0, 3)
+
+        assert not c.deleteVertex(invalidVertex1)
+        assert not c.deleteVertex(invalidVertex2)
+
     def testDeleteVertexCompoundCurve(self):
 
         wkt = "CompoundCurve ((0 0,1 1))"
