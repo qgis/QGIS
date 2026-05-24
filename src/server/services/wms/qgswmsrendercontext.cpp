@@ -64,6 +64,39 @@ bool QgsWmsRenderContext::addLayerToRender( QgsMapLayer *layer )
   return allowed;
 }
 
+bool QgsWmsRenderContext::addGroupLayersToRender( const QString &groupName,
+                                                  const QString &style,
+                                                  const QDomElement &sld )
+{
+  QList<QgsMapLayer *> layersFromGroup = mLayerGroups.value( groupName );
+  std::reverse( layersFromGroup.begin(), layersFromGroup.end() );
+
+  bool layerAdded = false;
+  for ( QgsMapLayer *layer : layersFromGroup )
+  {
+    if ( !mAcceptableLayersToRender.contains( layer ) || mLayersToRender.contains( layer ) )
+    {
+      continue;
+    }
+
+    if ( addLayerToRender( layer ) )
+    {
+      const QString name = layerNickname( *layer );
+      if ( !style.isEmpty() )
+      {
+        mStyles[name] = style;
+      }
+      if ( !sld.isNull() )
+      {
+        mSlds[name] = sld;
+      }
+      layerAdded = true;
+    }
+  }
+
+  return layerAdded;
+}
+
 
 void QgsWmsRenderContext::setFlag( const Flag flag, const bool on )
 {
@@ -543,6 +576,11 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
             throw QgsSecurityException( u"You are not allowed to access the layer %1"_s.arg( layer->name() ) );
           }
         }
+
+        if ( mLayerGroups.contains( lname ) && !QgsServerProjectUtils::wmsSkipNameForGroup( *mProject ) )
+        {
+          addGroupLayersToRender( lname, QString(), namedElem );
+        }
       }
       else if ( mLayerGroups.contains( lname ) )
       {
@@ -630,6 +668,11 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         {
           throw QgsSecurityException( u"You are not allowed to access the layer %1"_s.arg( layer->name() ) );
         }
+      }
+
+      if ( mLayerGroups.contains( nickname ) && !QgsServerProjectUtils::wmsSkipNameForGroup( *mProject ) )
+      {
+        addGroupLayersToRender( nickname, style );
       }
     }
     else if ( mLayerGroups.contains( nickname ) )

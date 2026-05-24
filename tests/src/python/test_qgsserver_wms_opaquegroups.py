@@ -628,7 +628,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             r, h, "WMS_GetMap_opaque_with_same_named_layer", max_size_diff=QSize(1, 1)
         )
 
-        # Request on same-named layer as an opaque group - should render both, but this does not work, it's a bug https://github.com/qgis/QGIS/issues/66134
+        # Request on same-named layer as an opaque group - should render both
         qs = "?" + "&".join(
             [
                 "%s=%s" % i
@@ -659,8 +659,12 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             "there should be no server exception for a layer with a samenamed opaque group: anothersign",
         )
 
-        # Don't image compare because it's not working (neither on normal groups) https://github.com/qgis/QGIS/issues/66134
-        # self._img_diff_error(r, h, "WMS_GetMap_opaque_singlelayer", max_size_diff=QSize(1, 1))
+        self._img_diff_error(
+            r,
+            h,
+            "WMS_GetMap_opaque_same_named_layer_group",
+            max_size_diff=QSize(1, 1),
+        )
 
     def testGetFeatureInfo(self):
         """

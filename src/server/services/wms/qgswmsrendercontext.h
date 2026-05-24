@@ -303,6 +303,14 @@ namespace QgsWms
       bool addLayerToRender( QgsMapLayer *layer );
 
       /**
+       * Adds the acceptable layers from a group to the list of layers to be rendered.
+       * Returns true if at least one layer was added, false otherwise.
+       */
+      bool addGroupLayersToRender( const QString &groupName,
+                                   const QString &style = QString(),
+                                   const QDomElement &sld = QDomElement() );
+
+      /**
        * Check layer read permissions
        * Returns true if the layer is readable, false otherwise
        */
