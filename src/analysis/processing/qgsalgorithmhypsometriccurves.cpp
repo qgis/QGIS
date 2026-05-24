@@ -206,6 +206,10 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
       {
         return;
       }
+      if ( std::isnan( value ) )
+      {
+        return;
+      }
       elevations.append( value );
     };
 
