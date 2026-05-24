@@ -1402,6 +1402,15 @@ QWidget#mCadWidget QLineEdit:disabled {
     color: @text;
 }
 
+QgsAdvancedDigitizingFloater QLabel,
+QgsAdvancedDigitizingFloater QLineEdit {
+    color: #000000;
+}
+
+QgsAdvancedDigitizingFloater QLabel {
+    background-color: rgba(255,255,255,64);
+}
+
 QgsLocatorResultsView::item:disabled {
     color: @text;
 }
