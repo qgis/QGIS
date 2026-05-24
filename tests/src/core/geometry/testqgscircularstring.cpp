@@ -1057,7 +1057,7 @@ void TestQgsCircularString::deleteVertex()
   //empty line
   QgsCircularString cs;
 
-  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cs.isEmpty() );
 
   //valid line
@@ -1079,7 +1079,7 @@ void TestQgsCircularString::deleteVertex()
   QCOMPARE( cs.numPoints(), 0 );
   QVERIFY( cs.isEmpty() );
 
-  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cs.isEmpty() );
 
   //removing a vertex from a 3 point circular string should remove the whole line
