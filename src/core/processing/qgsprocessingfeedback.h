@@ -188,9 +188,10 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     void featureAddedToSink( const QString &sinkId );
 
     /**
-     * Reports that a feature was has been finalized.
+     * Reports that a feature sink has been finalized.
      *
-     * This will cause an immediate emission of sinkFeatureCountChanged() signal with the final sink size.
+     * This will cause an immediate emission of sinkFeatureCountChanged() signal with the final sink size,
+     * even if it is zero.
      *
      * \see featureAddedToSink()
      * \see sinkFeatureCountChanged()

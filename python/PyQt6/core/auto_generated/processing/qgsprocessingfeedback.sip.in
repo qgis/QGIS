@@ -211,11 +211,11 @@ Reports that a feature was added to a sink.
 
     void featureSinkFinalized( const QString &sinkId );
 %Docstring
-Reports that a feature was has been finalized.
+Reports that a feature sink has been finalized.
 
 This will cause an immediate emission of
 :py:func:`~QgsProcessingFeedback.sinkFeatureCountChanged` signal with
-the final sink size.
+the final sink size, even if it is zero.
 
 .. seealso:: :py:func:`featureAddedToSink`
 

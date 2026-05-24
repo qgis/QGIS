@@ -96,7 +96,6 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
      * Reports that the count of features pushed to a child algorithm's sink has changed.
      *
      * \see childSinkFeatureCountChanged()
-     * \since QGIS 4.2
      */
     void reportChildSinkFeatureCountChanged( const QString &childId, const QString &sinkId, long long featureCount );
 
