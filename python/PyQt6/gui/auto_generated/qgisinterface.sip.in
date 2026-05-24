@@ -1163,7 +1163,7 @@ Paste features from clipboard to the layer
 
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Adds an icon to the plugins toolbar
+Adds an action (icon) to the plugins toolbar
 %End
 
     virtual QAction *addToolBarWidget( QWidget *widget /Transfer/ ) = 0;
@@ -1179,7 +1179,7 @@ Adds a widget to the plugins toolbar. To remove this widget again, call
 
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Removes an ``action`` (icon) from the plugin toolbar
+Removes an action (icon) from the plugin toolbar
 %End
 
     virtual QAction *addRasterToolBarWidget( QWidget *widget /Transfer/ ) = 0;
@@ -1196,17 +1196,17 @@ QAction.
 
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Adds an icon to the Raster toolbar
+Adds an action (icon) to the Raster toolbar
 %End
 
     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Removes an ``action`` (icon) from the Raster toolbar
+Removes an action (icon) from the Raster toolbar
 %End
 
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Adds an icon to the Vector toolbar
+Adds an action (icon) to the Vector toolbar
 %End
 
     virtual QAction *addVectorToolBarWidget( QWidget *widget /Transfer/ ) = 0;
@@ -1223,12 +1223,12 @@ QAction.
 
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Removes an ``action`` (icon) from the Vector toolbar
+Removes an action (icon) from the Vector toolbar
 %End
 
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Adds an icon to the Database toolbar
+Adds an action (icon) to the Database toolbar
 %End
 
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget /Transfer/ ) = 0;
@@ -1245,12 +1245,12 @@ QAction.
 
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Removes an ``action`` (icon) from the Database toolbar
+Removes an action (icon) from the Database toolbar
 %End
 
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Adds an icon to the Web toolbar
+Adds an action (icon) to the Web toolbar
 %End
 
     virtual QAction *addWebToolBarWidget( QWidget *widget /Transfer/ ) = 0;
@@ -1267,7 +1267,7 @@ QAction.
 
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Removes an ``action`` (icon) from the Web toolbar
+Removes an action (icon) from the Web toolbar
 %End
 
     virtual QToolBar *addToolBar( const QString &name ) = 0 /Factory/;
@@ -1343,12 +1343,12 @@ Removes ``action`` from the plugins menu
 
     virtual void insertAddLayerAction( QAction *action ) = 0;
 %Docstring
-Adds "add layer" action to layer menu
+Adds "add layer" ``action`` to layer menu
 %End
 
     virtual void removeAddLayerAction( QAction *action ) = 0;
 %Docstring
-Removes "add layer" action from layer menu
+Removes "add layer" ``action`` from layer menu
 %End
 
     virtual void addPluginToDatabaseMenu( const QString &name, QAction *action ) = 0;
@@ -1498,14 +1498,14 @@ windows which are hidden rather than deleted when closed.
 
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
 %Docstring
-Register action to the shortcuts manager so its shortcut can be changed
-in GUI
+Registers an ``action`` to the shortcuts manager so its shortcut can be
+changed in GUI
 %End
 
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 %Docstring
-Unregister a previously registered action. (e.g. when plugin is going to
-be unloaded)
+Unregisters a previously registered ``action``. (e.g. when plugin is
+going to be unloaded)
 %End
 
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;

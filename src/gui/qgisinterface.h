@@ -970,7 +970,7 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
 
-    //! Adds an icon to the plugins toolbar
+    //! Adds an action (icon) to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -983,7 +983,7 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Removes an \a action (icon) from the plugin toolbar
+    //! Removes an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -996,13 +996,13 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addRasterToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Adds an icon to the Raster toolbar
+    //! Adds an action (icon) to the Raster toolbar
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
 
-    //! Removes an \a action (icon) from the Raster toolbar
+    //! Removes an action (icon) from the Raster toolbar
     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
 
-    //! Adds an icon to the Vector toolbar
+    //! Adds an action (icon) to the Vector toolbar
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -1015,10 +1015,10 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addVectorToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Removes an \a action (icon) from the Vector toolbar
+    //! Removes an action (icon) from the Vector toolbar
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
 
-    //! Adds an icon to the Database toolbar
+    //! Adds an action (icon) to the Database toolbar
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -1031,10 +1031,10 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Removes an \a action (icon) from the Database toolbar
+    //! Removes an action (icon) from the Database toolbar
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
 
-    //! Adds an icon to the Web toolbar
+    //! Adds an action (icon) to the Web toolbar
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -1047,7 +1047,7 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addWebToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Removes an \a action (icon) from the Web toolbar
+    //! Removes an action (icon) from the Web toolbar
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Adds toolbar with specified name
@@ -1108,10 +1108,10 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Removes \a action from the plugins menu
     virtual void removePluginMenu( const QString &name, QAction *action ) = 0;
 
-    //! Adds "add layer" action to layer menu
+    //! Adds "add layer" \a action to layer menu
     virtual void insertAddLayerAction( QAction *action ) = 0;
 
-    //! Removes "add layer" action from layer menu
+    //! Removes "add layer" \a action from layer menu
     virtual void removeAddLayerAction( QAction *action ) = 0;
 
     //! Adds an \a action to the Database menu
@@ -1233,10 +1233,10 @@ class GUI_EXPORT QgisInterface : public QObject
     */
     virtual void removeWindow( QAction *action ) = 0;
 
-    //! Register action to the shortcuts manager so its shortcut can be changed in GUI
+    //! Registers an \a action to the shortcuts manager so its shortcut can be changed in GUI
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
 
-    //! Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
+    //! Unregisters a previously registered \a action. (e.g. when plugin is going to be unloaded)
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 
     /**
