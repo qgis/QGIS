@@ -224,14 +224,14 @@ QString QgsProcessingFeedback::textLog() const
   return mTextLog;
 }
 
-void QgsProcessingFeedback::featureAddedToSink( const QString &sinkId )
+void QgsProcessingFeedback::featureAddedToSink( const QString &output )
 {
   long long countAtLastSignal = 0;
   long long previousCount = 0;
-  auto it = mSinkFeatureCounts.find( sinkId );
+  auto it = mSinkFeatureCounts.find( output );
   if ( it == mSinkFeatureCounts.end() )
   {
-    it = mSinkFeatureCounts.insert( sinkId, SinkStats() );
+    it = mSinkFeatureCounts.insert( output, SinkStats() );
   }
   else
   {
@@ -243,25 +243,25 @@ void QgsProcessingFeedback::featureAddedToSink( const QString &sinkId )
   it.value().featureCount = newCount;
   if ( newCount - countAtLastSignal >= 100 )
   {
-    emit sinkFeatureCountChanged( sinkId, newCount );
+    emit sinkFeatureCountChanged( output, newCount );
     it.value().countAtLastSignal = newCount;
   }
 }
 
-void QgsProcessingFeedback::featureSinkFinalized( const QString &sinkId )
+void QgsProcessingFeedback::featureSinkFinalized( const QString &output )
 {
   long long previousCount = 0;
-  auto it = mSinkFeatureCounts.find( sinkId );
+  auto it = mSinkFeatureCounts.find( output );
   if ( it == mSinkFeatureCounts.end() )
   {
-    it = mSinkFeatureCounts.insert( sinkId, SinkStats() );
+    it = mSinkFeatureCounts.insert( output, SinkStats() );
   }
   else
   {
     previousCount = it.value().featureCount;
   }
 
-  emit sinkFeatureCountChanged( sinkId, previousCount );
+  emit sinkFeatureCountChanged( output, previousCount );
   it.value().countAtLastSignal = previousCount;
 }
 

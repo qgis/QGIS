@@ -95,9 +95,11 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
     /**
      * Reports that the count of features pushed to a child algorithm's sink has changed.
      *
+     * The \a childOutput argument specifies the associated child algorithm output name.
+     *
      * \see childSinkFeatureCountChanged()
      */
-    void reportChildSinkFeatureCountChanged( const QString &childId, const QString &sinkId, long long featureCount );
+    void reportChildSinkFeatureCountChanged( const QString &childId, const QString &childOutput, long long featureCount );
 
     /**
      * Report an error which occurred while executing a child algorithm.
@@ -180,12 +182,14 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
     /**
      * Emitted when the count of features pushed to a child's sink has changed.
      *
+     * The \a output argument specifies the associated child algorithm output name.
+     *
      * \note For performance, this signal is not emitted for every individual feature
      * added to the sink. It is instead emitted only once for every 100 features added.
      *
      * \see reportChildSinkFeatureCountChanged()
      */
-    void childSinkFeatureCountChanged( const QString &childId, const QString &sinkId, long long featureCount );
+    void childSinkFeatureCountChanged( const QString &childId, const QString &childOutput, long long featureCount );
 
     /**
      * Emitted when an error occurred while executing a child algorithm.

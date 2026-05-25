@@ -179,16 +179,18 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     virtual QString textLog() const;
 
     /**
-     * Reports that a feature was added to a sink.
+     * Reports that a feature was added to the the sink associated with the specified algorithm \a output.
      *
      * \see sinkFeatureCountChanged()
      * \see featureSinkFinalized()
      * \since QGIS 4.2
      */
-    void featureAddedToSink( const QString &sinkId );
+    void featureAddedToSink( const QString &output );
 
     /**
      * Reports that a feature sink has been finalized.
+     *
+     * The \a output argument specifies the associated algorithm output name.
      *
      * This will cause an immediate emission of sinkFeatureCountChanged() signal with the final sink size,
      * even if it is zero.
@@ -197,7 +199,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see sinkFeatureCountChanged()
      * \since QGIS 4.2
      */
-    void featureSinkFinalized( const QString &sinkId );
+    void featureSinkFinalized( const QString &output );
 
   signals:
 
@@ -268,6 +270,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     /**
      * Emitted when the count of features pushed to a sink has changed.
      *
+     * The \a output argument specifies the associated algorithm output name.
+     *
      * \note For performance, this signal is not emitted for every individual feature
      * added to the sink. It is instead emitted only once for every 100 features added.
      *
@@ -275,7 +279,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see featureSinkFinalized()
      * \since QGIS 4.2
      */
-    void sinkFeatureCountChanged( const QString &sinkId, long long featureCount );
+    void sinkFeatureCountChanged( const QString &output, long long featureCount );
 
   private:
     void log( const QString &htmlMessage, const QString &textMessage );
