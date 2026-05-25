@@ -368,12 +368,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
             self.wrappers[output.name()] = widget
 
-            item = QgsFilterLineEdit()
-            if hasattr(item, "setPlaceholderText"):
-                item.setPlaceholderText(
-                    self.tr("[Enter name if this is a final result]")
-                )
-
             label = widget.createLabel()
             if label is not None:
                 self.verticalLayout.addWidget(label)
