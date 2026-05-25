@@ -204,7 +204,6 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     item->setPos( it.value().position().x(), it.value().position().y() );
 
     const QString childId = it.value().childId();
-    item->setResults( mLastResult.childResults().value( childId ) );
     mChildAlgorithmItems.insert( childId, item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
@@ -269,11 +268,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             }
             addItem( arrow );
 
-            if ( QgsModelChildAlgorithmGraphicItem *childAlgItem = mChildAlgorithmItems.value( it.value().childId() ) )
-            {
-              QString layerId = childAlgItem->results().inputs().value( parameter->name() ).toString();
-              addFeatureCountItemForArrow( arrow, layerId );
-            }
+            const QString layerId = mLastResult.childResults().value( it.value().childId() ).inputs().value( parameter->name() ).toString();
+            addFeatureCountItemForArrow( arrow, layerId );
           }
         }
         if ( parameter->isDestination() )
@@ -366,15 +362,22 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       QgsModelArrowItem *arrow = new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, QgsModelArrowItem::Marker::Circle, item, QgsModelArrowItem::Marker::Circle );
       addItem( arrow );
 
-      if ( QgsModelChildAlgorithmGraphicItem *childItem = mChildAlgorithmItems.value( it.value().childId() ) )
-      {
-        QString layerId = childItem->results().outputs().value( outputIt.value().childOutputName() ).toString();
-        addFeatureCountItemForArrow( arrow, layerId );
-      }
+      QString layerId = mLastResult.childResults().value( it.value().childId() ).outputs().value( outputIt.value().childOutputName() ).toString();
+      addFeatureCountItemForArrow( arrow, layerId );
 
       addCommentItemForComponent( model, outputIt.value(), item );
     }
     mOutputItems.insert( it.value().childId(), outputItems );
+  }
+
+  // update last results -- this MUST happen after all arrows have been created
+  for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
+  {
+    const QString childId = it.value().childId();
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( it.key() ) )
+    {
+      item->setResults( mLastResult.childResults().value( childId ) );
+    }
   }
 }
 
