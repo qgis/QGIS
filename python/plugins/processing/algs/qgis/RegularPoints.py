@@ -197,7 +197,7 @@ class RegularPoints(QgisAlgorithm):
                     f.setAttributes([id])
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
-                    feedback.featureAddedToSink(dest_id)
+                    feedback.featureAddedToSink(self.OUTPUT)
                     x += pSpacing
                     id += 1
 
@@ -207,5 +207,5 @@ class RegularPoints(QgisAlgorithm):
             y = y - pSpacing
 
         sink.finalize()
-        feedback.featureSinkFinalized(dest_id)
+        feedback.featureSinkFinalized(self.OUTPUT)
         return {self.OUTPUT: dest_id}

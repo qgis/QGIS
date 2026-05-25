@@ -135,7 +135,7 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA, geometryParameters, QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint );
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
   return outputs;
 }
 

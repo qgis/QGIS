@@ -152,7 +152,7 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA, geometryParameters );
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   return outputs;
 }

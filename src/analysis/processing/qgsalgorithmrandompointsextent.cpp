@@ -168,7 +168,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
         if ( !index.addFeature( f ) || !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
         i++;
         distCheckIterations = 0; //reset distCheckIterations if a point is added
         feedback->setProgress( static_cast<int>( static_cast<double>( i ) / static_cast<double>( mNumPoints ) * 100 ) );
@@ -198,7 +198,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

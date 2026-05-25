@@ -250,7 +250,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
           if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
           else
-            feedback->featureAddedToSink( dest );
+            feedback->featureAddedToSink( u"OUTPUT"_s );
         }
       }
     }
@@ -262,14 +262,14 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
         if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
       if ( sinkNonMatching1 )
       {
         if ( !sinkNonMatching1->addFeature( feat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sinkNonMatching1.get(), parameters, u"NON_MATCHING"_s ) );
         else
-          feedback->featureAddedToSink( destNonMatching1 );
+          feedback->featureAddedToSink( u"NON_MATCHING"_s );
       }
       unjoinedCount++;
     }
@@ -283,7 +283,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( sink )
   {
     sink->finalize();
-    feedback->featureSinkFinalized( dest );
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, dest );
   }
   outputs.insert( u"JOINED_COUNT"_s, joinedCount );
@@ -291,7 +291,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( sinkNonMatching1 )
   {
     sinkNonMatching1->finalize();
-    feedback->featureSinkFinalized( destNonMatching1 );
+    feedback->featureSinkFinalized( u"NON_MATCHING"_s );
     outputs.insert( u"NON_MATCHING"_s, destNonMatching1 );
   }
   return outputs;

@@ -254,7 +254,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       else
-        feedback->featureAddedToSink( dest );
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
     else
     {
@@ -270,7 +270,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
       else
       {
@@ -298,7 +298,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
     }
   }
@@ -306,7 +306,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
   if ( sink )
   {
     sink->finalize();
-    feedback->featureSinkFinalized( dest );
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
   }
 
   const bool applySymbology = parameterAsBool( parameters, u"APPLY_SYMBOLOGY"_s, context );

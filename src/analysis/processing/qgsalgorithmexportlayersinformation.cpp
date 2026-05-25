@@ -172,11 +172,11 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
     if ( !outputSink->addFeature( feature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, u"OUTPUT"_s ) );
     else
-      feedback->featureAddedToSink( outputDest );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
 
   outputSink->finalize();
-  feedback->featureSinkFinalized( outputDest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, outputDest );

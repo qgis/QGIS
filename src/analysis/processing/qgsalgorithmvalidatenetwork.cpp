@@ -279,7 +279,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
             }
             else
             {
-              feedback->featureAddedToSink( networkErrorDest );
+              feedback->featureAddedToSink( u"OUTPUT_INVALID_NETWORK"_s );
             }
           }
           countInvalidFeatures++;
@@ -293,7 +293,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( networkErrorSink )
     {
       networkErrorSink->finalize();
-      feedback->featureSinkFinalized( networkErrorDest );
+      feedback->featureSinkFinalized( u"OUTPUT_INVALID_NETWORK"_s );
     }
   }
 
@@ -500,7 +500,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
           if ( !nodeErrorSink->addFeature( nodeErrorFeature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nodeErrorSink.get(), parameters, u"OUTPUT_INVALID_NODES"_s ) );
           else
-            feedback->featureAddedToSink( nodeErrorDest );
+            feedback->featureAddedToSink( u"OUTPUT_INVALID_NODES"_s );
         }
         countInvalidNodes++;
       }
@@ -552,7 +552,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
           if ( !nodeErrorSink->addFeature( nodeErrorFeature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nodeErrorSink.get(), parameters, u"OUTPUT_INVALID_NODES"_s ) );
           else
-            feedback->featureAddedToSink( nodeErrorDest );
+            feedback->featureAddedToSink( u"OUTPUT_INVALID_NODES"_s );
         }
         countInvalidNodes++;
       }
@@ -564,7 +564,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( nodeErrorSink )
   {
     nodeErrorSink->finalize();
-    feedback->featureSinkFinalized( nodeErrorDest );
+    feedback->featureSinkFinalized( u"OUTPUT_INVALID_NODES"_s );
   }
 
   feedback->setProgress( 100 );

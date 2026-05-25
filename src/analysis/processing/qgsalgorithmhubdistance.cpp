@@ -190,7 +190,7 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       }
       else if ( linesSink )
       {
-        feedback->featureAddedToSink( linesDest );
+        feedback->featureAddedToSink( u"OUTPUT_LINES"_s );
       }
       if ( pointsSink && !pointsSink->addFeature( spokeFeature, QgsFeatureSink::Flag::FastInsert ) )
       {
@@ -198,7 +198,7 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       }
       else if ( pointsSink )
       {
-        feedback->featureAddedToSink( pointsDest );
+        feedback->featureAddedToSink( u"OUTPUT_POINTS"_s );
       }
       continue;
     }
@@ -234,7 +234,7 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       }
       else
       {
-        feedback->featureAddedToSink( linesDest );
+        feedback->featureAddedToSink( u"OUTPUT_LINES"_s );
       }
     }
 
@@ -247,7 +247,7 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
       }
       else
       {
-        feedback->featureAddedToSink( pointsDest );
+        feedback->featureAddedToSink( u"OUTPUT_POINTS"_s );
       }
     }
   }
@@ -255,12 +255,12 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( linesSink )
   {
     linesSink->finalize();
-    feedback->featureSinkFinalized( linesDest );
+    feedback->featureSinkFinalized( u"OUTPUT_LINES"_s );
   }
   if ( pointsSink )
   {
     pointsSink->finalize();
-    feedback->featureSinkFinalized( pointsDest );
+    feedback->featureSinkFinalized( u"OUTPUT_POINTS"_s );
   }
 
   QVariantMap results;

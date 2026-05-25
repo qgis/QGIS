@@ -235,7 +235,7 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
     }
     else
     {
-      feedback->featureAddedToSink( dest );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     }
 
     i++;
@@ -243,7 +243,7 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

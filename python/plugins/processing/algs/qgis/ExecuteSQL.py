@@ -239,8 +239,8 @@ class ExecuteSQL(QgisAlgorithm):
                 break
 
             sink.addFeature(inFeat, QgsFeatureSink.Flag.FastInsert)
-            feedback.featureAddedToSink(dest_id)
+            feedback.featureAddedToSink(self.OUTPUT)
             feedback.setProgress(int(current * total))
         sink.finalize()
-        feedback.featureSinkFinalized(dest_id)
+        feedback.featureSinkFinalized(self.OUTPUT)
         return {self.OUTPUT: dest_id}

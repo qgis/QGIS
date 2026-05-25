@@ -204,12 +204,12 @@ class TopoColor(QgisAlgorithm):
             output_feature.setAttributes(attributes)
 
             sink.addFeature(output_feature, QgsFeatureSink.Flag.FastInsert)
-            feedback.featureAddedToSink(dest_id)
+            feedback.featureAddedToSink(self.OUTPUT)
             current += 1
             feedback.setProgress(80 + int(current * total))
 
         sink.finalize()
-        feedback.featureSinkFinalized(dest_id)
+        feedback.featureSinkFinalized(self.OUTPUT)
         return {self.OUTPUT: dest_id}
 
     @staticmethod

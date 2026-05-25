@@ -220,7 +220,7 @@ QVariantMap QgsGeometryCheckPointCoveredByLineAlgorithm::processAlgorithm( const
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
     else
-      feedback->featureAddedToSink( dest_errors );
+      feedback->featureAddedToSink( u"ERRORS"_s );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -234,7 +234,7 @@ QVariantMap QgsGeometryCheckPointCoveredByLineAlgorithm::processAlgorithm( const
 
   QVariantMap outputs;
   sink_errors->finalize();
-  feedback->featureSinkFinalized( dest_errors );
+  feedback->featureSinkFinalized( u"ERRORS"_s );
   outputs.insert( u"ERRORS"_s, dest_errors );
 
   return outputs;

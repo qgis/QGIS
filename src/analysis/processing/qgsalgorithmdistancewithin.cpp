@@ -405,12 +405,12 @@ QVariantMap QgsExtractWithinDistanceAlgorithm::processAlgorithm( const QVariantM
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     else
-      feedback->featureAddedToSink( dest );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   };
   process( context, input.get(), referenceSource.get(), distance, distanceProperty, addToSink, false, feedback, expressionContext );
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

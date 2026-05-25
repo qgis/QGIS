@@ -364,7 +364,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       if ( !invalidSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( invalidSink.get(), parameters, u"INVALID"_s ) );
       else
-        feedback->featureAddedToSink( invalidDest );
+        feedback->featureAddedToSink( u"INVALID"_s );
     }
   };
 
@@ -427,7 +427,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       f.setAttributes( attributes );
       if ( !outputSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, u"OUTPUT"_s ) );
-      feedback->featureSinkFinalized( outputDest );
+      feedback->featureSinkFinalized( u"OUTPUT"_s );
     }
   }
 
@@ -435,7 +435,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   if ( outputSink )
   {
     outputSink->finalize();
-    feedback->featureSinkFinalized( outputDest );
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, outputDest );
 
     if ( context.willLoadLayerOnCompletion( outputDest ) )
@@ -447,7 +447,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   if ( invalidSink )
   {
     invalidSink->finalize();
-    feedback->featureSinkFinalized( invalidDest );
+    feedback->featureSinkFinalized( u"INVALID"_s );
     outputs.insert( u"INVALID"_s, invalidDest );
   }
   return outputs;

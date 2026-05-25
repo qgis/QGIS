@@ -285,7 +285,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( ldest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
         totNPoints++;
         pointsAddedForThisFeature++;
         pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature );
@@ -368,7 +368,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( ldest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
         totNPoints++;
         pointsAddedForThisFeature++;
         pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature );
@@ -399,7 +399,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   );
 
   sink->finalize();
-  feedback->featureSinkFinalized( ldest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( OUTPUT, ldest );

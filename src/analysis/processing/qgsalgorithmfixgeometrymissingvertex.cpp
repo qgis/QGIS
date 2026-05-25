@@ -215,7 +215,7 @@ QVariantMap QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVaria
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
     else
-      feedback->featureAddedToSink( dest_report );
+      feedback->featureAddedToSink( u"REPORT"_s );
   }
   multiStepFeedback.setProgress( 100 );
 
@@ -235,14 +235,14 @@ QVariantMap QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVaria
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
     else
-      feedback->featureAddedToSink( dest_output );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
   multiStepFeedback.setProgress( 100 );
 
   sink_report->finalize();
-  feedback->featureSinkFinalized( dest_report );
+  feedback->featureSinkFinalized( u"REPORT"_s );
   sink_output->finalize();
-  feedback->featureSinkFinalized( dest_output );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest_output );
