@@ -1418,6 +1418,17 @@ void QgsModelDesignerDialog::onItemFocused( QgsModelComponentGraphicItem *item )
   else
   {
     mConfigWidget->showComponentConfig( item->component(), *context, widgetContext );
+
+    if ( auto childAlgorithmItem = qobject_cast< QgsModelChildAlgorithmGraphicItem * >( item ) )
+    {
+      connect( childAlgorithmItem, &QgsModelChildAlgorithmGraphicItem::rebuildConfigurationDockWidget, childAlgorithmItem, [this] {
+        QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+        widgetContext.registerProcessingContextGenerator( mProcessingContextGenerator );
+        widgetContext.setModelDesignerDialog( this );
+        QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
+        mConfigWidget->showComponentConfig( nullptr, *context, widgetContext );
+      } );
+    }
   }
 }
 

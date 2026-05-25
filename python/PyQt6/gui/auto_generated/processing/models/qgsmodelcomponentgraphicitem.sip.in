@@ -499,6 +499,14 @@ algorithm.
 .. versionadded:: 3.38
 %End
 
+    void rebuildConfigurationDockWidget();
+%Docstring
+Requests that any associated configuration dock widget is rebuilt to
+reflect the current state of the child algorithm.
+
+.. versionadded:: 4.2
+%End
+
   protected:
     virtual void paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 

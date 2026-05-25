@@ -559,6 +559,14 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     */
     void showLog();
 
+    /**
+     * Requests that any associated configuration dock widget is rebuilt to reflect the
+     * current state of the child algorithm.
+     *
+     * \since QGIS 4.2
+     */
+    void rebuildConfigurationDockWidget();
+
   protected:
     void paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
