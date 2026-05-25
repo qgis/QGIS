@@ -121,6 +121,13 @@ void QgsModelGraphicsScene::setupFeedbackConnections( QgsProcessingModelFeedback
       item->setResults( result );
     }
   } );
+
+  connect( feedback, &QgsProcessingModelFeedback::childSinkFeatureCountChanged, this, [this]( const QString &childId, const QString &outputName, long long featureCount ) {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+    {
+      item->setSinkFeatureCount( outputName, featureCount );
+    }
+  } );
 }
 
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const

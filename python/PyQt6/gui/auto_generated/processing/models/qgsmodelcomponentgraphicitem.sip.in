@@ -455,6 +455,16 @@ Sets the ``results`` obtained for this child algorithm for the last
 model execution through the dialog.
 %End
 
+    void setSinkFeatureCount( const QString &outputName, long long featureCount );
+%Docstring
+Sets the feature count for the sink attached to the specified output.
+
+This can be used to dynamically update the feature count badge for the
+matching arrow item.
+
+.. versionadded:: 4.2
+%End
+
     QgsProcessingModelChildAlgorithmResult results();
 %Docstring
 Returns the ``results`` for this child algorithm for the last model
