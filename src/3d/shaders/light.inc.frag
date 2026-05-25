@@ -19,13 +19,6 @@ struct Light {
 uniform Light lights[MAX_LIGHTS];
 uniform int lightCount;
 
-// Pre-convolved environment maps
-struct EnvironmentLight {
-    samplerCube irradiance; // For diffuse contribution
-    samplerCube specular; // For specular contribution
-        int specularMipLevels;
-};
-
 struct LightParams
 {
   vec3 s; // light direction vector (from surface to light source)
@@ -36,9 +29,6 @@ struct LightParams
   float sDotH; // Cosine of the angle between light direction and half-vector (L dot H). Clamped to >= 0.0.
   float nDotH; // Cosine of the angle between surface normal and half-vector (N dot H). Clamped to >= 0.0.
 };
-
-uniform EnvironmentLight envLight;
-uniform int envLightCount = 0;
 
 #pragma include shadows.inc.frag
 
