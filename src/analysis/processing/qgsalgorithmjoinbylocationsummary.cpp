@@ -563,12 +563,12 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       else
-        feedback->featureAddedToSink( destId );
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( destId );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
   sink.reset();
 
   QVariantMap results;

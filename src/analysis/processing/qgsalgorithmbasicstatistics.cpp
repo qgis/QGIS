@@ -199,7 +199,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( sink )
   {
     sink->finalize();
-    feedback->featureSinkFinalized( destId );
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
   }
 
   if ( !outputHtml.isEmpty() )
@@ -319,7 +319,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
     }
     else
     {
-      feedback->featureAddedToSink( destId );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     }
   }
 
@@ -394,7 +394,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
     }
     else
     {
-      feedback->featureAddedToSink( destId );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     }
   }
 
@@ -473,7 +473,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics(
     }
     else
     {
-      feedback->featureAddedToSink( destId );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     }
   }
 

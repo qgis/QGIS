@@ -256,7 +256,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
         if ( !nonMatchingCategoriesSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( nonMatchingCategoriesSink.get(), parameters, u"NON_MATCHING_CATEGORIES"_s ) );
         else
-          feedback->featureAddedToSink( nonMatchingCategoriesDest );
+          feedback->featureAddedToSink( u"NON_MATCHING_CATEGORIES"_s );
       }
     }
   }
@@ -275,7 +275,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
         if ( !nonMatchingSymbolsSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( nonMatchingSymbolsSink.get(), parameters, u"NON_MATCHING_SYMBOLS"_s ) );
         else
-          feedback->featureAddedToSink( nonMatchingSymbolsDest );
+          feedback->featureAddedToSink( u"NON_MATCHING_SYMBOLS"_s );
       }
     }
   }
@@ -286,12 +286,12 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   if ( nonMatchingCategoriesSink )
   {
     nonMatchingCategoriesSink->finalize();
-    feedback->featureSinkFinalized( nonMatchingCategoriesDest );
+    feedback->featureSinkFinalized( u"NON_MATCHING_CATEGORIES"_s );
   }
   if ( nonMatchingSymbolsSink )
   {
     nonMatchingSymbolsSink->finalize();
-    feedback->featureSinkFinalized( nonMatchingSymbolsDest );
+    feedback->featureSinkFinalized( u"NON_MATCHING_SYMBOLS"_s );
   }
 
   QVariantMap results;

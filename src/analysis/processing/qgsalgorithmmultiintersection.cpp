@@ -143,7 +143,7 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
     const long total = sourceA->featureCount();
     QgsOverlayUtils::intersection( *sourceA, *overlayLayer, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
 
-    feedback->featureSinkFinalized( dest );
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     sink->finalize();
   }
   else
@@ -198,7 +198,7 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
 
         QgsOverlayUtils::intersection( *intersectionLayer, *overlayLayer, *sink, context, &multiStepFeedback, count, intersectionLayer->featureCount(), fieldIndicesA, fieldIndicesB );
         sink->finalize();
-        feedback->featureSinkFinalized( dest );
+        feedback->featureSinkFinalized( u"OUTPUT"_s );
       }
       else
       {

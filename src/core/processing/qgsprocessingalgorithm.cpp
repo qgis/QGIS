@@ -1259,7 +1259,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
       }
       else
       {
-        feedback->featureAddedToSink( dest );
+        feedback->featureAddedToSink( u"OUTPUT"_s );
       }
     }
 
@@ -1268,7 +1268,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   mSource.reset();
 

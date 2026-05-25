@@ -139,14 +139,14 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
       if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       else
-        feedback->featureAddedToSink( dest );
+        feedback->featureAddedToSink( u"OUTPUT"_s );
       feedback->setProgress( 50 + part * step );
       polygonCount += 1;
     }
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

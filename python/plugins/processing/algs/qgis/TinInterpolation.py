@@ -233,5 +233,5 @@ class TinInterpolation(QgisAlgorithm):
         writer.writeFile(feedback)
         if triangulation_sink:
             triangulation_sink.finalize()
-            feedback.featureAddedToSink(triangulation_dest_id)
+            feedback.featureSinkFinalized(self.TRIANGULATION)
         return {self.OUTPUT: output, self.TRIANGULATION: triangulation_dest_id}

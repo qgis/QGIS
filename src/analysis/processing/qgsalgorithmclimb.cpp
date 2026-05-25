@@ -193,7 +193,7 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     }
     else
     {
-      feedback->featureAddedToSink( dest );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     }
 
     minElevation = std::min( minElevation, minElev );
@@ -204,7 +204,7 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   if ( !noGeometry.empty() )
   {

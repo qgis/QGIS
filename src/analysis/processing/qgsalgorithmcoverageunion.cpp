@@ -162,10 +162,10 @@ QVariantMap QgsCoverageUnionAlgorithm::processAlgorithm( const QVariantMap &para
   if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   else
-    feedback->featureAddedToSink( sinkId );
+    feedback->featureAddedToSink( u"OUTPUT"_s );
 
   sink->finalize();
-  feedback->featureSinkFinalized( sinkId );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, sinkId );

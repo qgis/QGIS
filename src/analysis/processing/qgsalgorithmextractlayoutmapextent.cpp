@@ -167,11 +167,11 @@ QVariantMap QgsLayoutMapExtentToLayerAlgorithm::processAlgorithm( const QVariant
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     else
-      feedback->featureAddedToSink( dest );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   feedback->setProgress( 100 );
 

@@ -280,7 +280,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     else
-      feedback->featureAddedToSink( destId );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     current++;
     feedback->setProgress( 50 + current * progressStep );
@@ -289,7 +289,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( destId );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, destId );

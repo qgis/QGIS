@@ -159,7 +159,7 @@ QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &p
             if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
               throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
             else
-              feedback->featureAddedToSink( sinkId );
+              feedback->featureAddedToSink( u"OUTPUT"_s );
           }
         }
       }
@@ -178,7 +178,7 @@ QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &p
   if ( sink )
   {
     sink->finalize();
-    feedback->featureSinkFinalized( sinkId );
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
   }
 
   QVariantMap outputs;

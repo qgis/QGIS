@@ -297,10 +297,10 @@ class FieldsPyculator(QgisAlgorithm):
             attrs.append(new_ns[self.RESULT_VAR_NAME])
             feat.setAttributes(attrs)
             sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
-            feedback.featureAddedToSink(dest_id)
+            feedback.featureAddedToSink(self.OUTPUT)
 
         sink.finalize()
-        feedback.featureSinkFinalized(dest_id)
+        feedback.featureSinkFinalized(self.OUTPUT)
         return {self.OUTPUT: dest_id}
 
     def checkParameterValues(self, parameters, context):

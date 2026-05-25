@@ -181,7 +181,7 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
             }
             else
             {
-              feedback->featureAddedToSink( errorSinkId );
+              feedback->featureAddedToSink( u"ERROR_OUTPUT"_s );
             }
           }
           errorCount++;
@@ -208,7 +208,7 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
       }
       else if ( validSink )
       {
-        feedback->featureAddedToSink( validSinkId );
+        feedback->featureAddedToSink( u"VALID_OUTPUT"_s );
       }
       validCount++;
     }
@@ -220,7 +220,7 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
       }
       else if ( invalidSink )
       {
-        feedback->featureAddedToSink( invalidSinkId );
+        feedback->featureAddedToSink( u"INVALID_OUTPUT"_s );
       }
       invalidCount++;
     }
@@ -232,17 +232,17 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
   if ( validSink )
   {
     validSink->finalize();
-    feedback->featureSinkFinalized( validSinkId );
+    feedback->featureSinkFinalized( u"VALID_OUTPUT"_s );
   }
   if ( invalidSink )
   {
     invalidSink->finalize();
-    feedback->featureSinkFinalized( invalidSinkId );
+    feedback->featureSinkFinalized( u"INVALID_OUTPUT"_s );
   }
   if ( errorSink )
   {
     errorSink->finalize();
-    feedback->featureSinkFinalized( errorSinkId );
+    feedback->featureSinkFinalized( u"ERROR_OUTPUT"_s );
   }
 
   QVariantMap outputs;

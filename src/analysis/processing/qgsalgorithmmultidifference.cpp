@@ -130,7 +130,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
     const long total = sourceA->featureCount();
     QgsOverlayUtils::difference( *sourceA, *overlayLayer, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
     sink->finalize();
-    feedback->featureSinkFinalized( dest );
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
   }
   else
   {
@@ -172,7 +172,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
 
         QgsOverlayUtils::difference( *differenceLayer, *overlayLayer, *sink, context, &multiStepFeedback, count, differenceLayer->featureCount(), QgsOverlayUtils::OutputA );
         sink->finalize();
-        feedback->featureSinkFinalized( dest );
+        feedback->featureSinkFinalized( u"OUTPUT"_s );
       }
       else
       {

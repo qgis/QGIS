@@ -333,7 +333,7 @@ class PointDistance(QgisAlgorithm):
                     out_feature.setGeometry(out_geom)
                     out_feature.setAttributes([inID, outID, dist])
                     sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
-                    feedback.featureAddedToSink(dest_id)
+                    feedback.featureAddedToSink(self.OUTPUT)
                 else:
                     distList.append(float(dist))
 
@@ -353,7 +353,7 @@ class PointDistance(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         sink.finalize()
-        feedback.featureSinkFinalized(dest_id)
+        feedback.featureSinkFinalized(self.OUTPUT)
         return {self.OUTPUT: dest_id}
 
     def regularMatrix(
@@ -441,7 +441,7 @@ class PointDistance(QgisAlgorithm):
             out_feature.setGeometry(inGeom)
             out_feature.setAttributes(data)
             sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
-            feedback.featureAddedToSink(dest_id)
+            feedback.featureAddedToSink(self.OUTPUT)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}

@@ -177,7 +177,7 @@ class PointsFromLines(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         sink.finalize()
-        feedback.featureAddedToSink(dest_id)
+        feedback.featureSinkFinalized(self.OUTPUT)
         return {self.OUTPUT: dest_id}
 
     def buildLine(self, startX, startY, endX, endY, geoTransform, writer, feature):

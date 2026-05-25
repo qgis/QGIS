@@ -207,7 +207,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     else
-      feedback->featureAddedToSink( destId );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     current++;
     feedback->setProgress( stepTime * static_cast<double>( current ) * step + 90 ); // takes about 5%-10% of time
@@ -216,7 +216,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
   feedback->pushInfo( QObject::tr( "%n duplicate feature(s) removed", nullptr, removed ) );
 
   sink->finalize();
-  feedback->featureSinkFinalized( destId );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   if ( dupesSink )
   {
@@ -237,14 +237,14 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
       if ( !dupesSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( dupesSink.get(), parameters, u"DUPLICATES"_s ) );
       else
-        feedback->featureAddedToSink( dupesSinkId );
+        feedback->featureAddedToSink( u"DUPLICATES"_s );
 
       current++;
       feedback->setProgress( 0.05 * static_cast<double>( current ) * step + 95 ); // takes about 5% of time
     }
 
     dupesSink->finalize();
-    feedback->featureSinkFinalized( dupesSinkId );
+    feedback->featureSinkFinalized( u"DUPLICATES"_s );
   }
 
   QVariantMap outputs;

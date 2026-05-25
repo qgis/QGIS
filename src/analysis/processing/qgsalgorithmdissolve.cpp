@@ -105,7 +105,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection(
       if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       else
-        feedback->featureAddedToSink( dest );
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
     else if ( !separateDisjoint )
     {
@@ -113,7 +113,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection(
       if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       else
-        feedback->featureAddedToSink( dest );
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
     else
     {
@@ -126,7 +126,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection(
         if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
     }
   }
@@ -195,7 +195,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection(
           if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
           else
-            feedback->featureAddedToSink( dest );
+            feedback->featureAddedToSink( u"OUTPUT"_s );
         }
         else
         {
@@ -207,7 +207,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection(
             if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
               throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
             else
-              feedback->featureAddedToSink( dest );
+              feedback->featureAddedToSink( u"OUTPUT"_s );
           }
         }
       }
@@ -216,7 +216,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection(
         if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
 
       feedback->setProgress( current * 100.0 / numberFeatures );
@@ -225,7 +225,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection(
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   return outputs;
 }

@@ -228,13 +228,13 @@ QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const Q
     if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
     else if ( sink_output )
-      feedback->featureAddedToSink( dest_output );
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
     else
-      feedback->featureAddedToSink( dest_errors );
+      feedback->featureAddedToSink( u"ERRORS"_s );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -257,11 +257,11 @@ QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const Q
   if ( sink_output )
   {
     sink_output->finalize();
-    feedback->featureSinkFinalized( dest_output );
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, dest_output );
   }
   sink_errors->finalize();
-  feedback->featureSinkFinalized( dest_errors );
+  feedback->featureSinkFinalized( u"ERRORS"_s );
   outputs.insert( u"ERRORS"_s, dest_errors );
 
   return outputs;

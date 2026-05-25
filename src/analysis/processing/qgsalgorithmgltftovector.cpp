@@ -379,7 +379,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
                   if ( !polygonSink->addFeature( f, QgsFeatureSink::FastInsert ) )
                     throw QgsProcessingException( writeFeatureError( polygonSink.get(), parameters, u"OUTPUT_POLYGONS"_s ) );
                   else
-                    feedback->featureAddedToSink( polygonDest );
+                    feedback->featureAddedToSink( u"OUTPUT_POLYGONS"_s );
                 }
               }
               break;
@@ -397,7 +397,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
                   if ( !lineSink->addFeature( f, QgsFeatureSink::FastInsert ) )
                     throw QgsProcessingException( writeFeatureError( lineSink.get(), parameters, u"OUTPUT_LINES"_s ) );
                   else
-                    feedback->featureAddedToSink( lineDest );
+                    feedback->featureAddedToSink( u"OUTPUT_LINES"_s );
                 }
               }
               break;
@@ -472,13 +472,13 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
   if ( polygonSink )
   {
     polygonSink->finalize();
-    feedback->featureSinkFinalized( polygonDest );
+    feedback->featureSinkFinalized( u"OUTPUT_POLYGONS"_s );
     outputs.insert( u"OUTPUT_POLYGONS"_s, polygonDest );
   }
   if ( lineSink )
   {
     lineSink->finalize();
-    feedback->featureSinkFinalized( lineDest );
+    feedback->featureSinkFinalized( u"OUTPUT_LINES"_s );
     outputs.insert( u"OUTPUT_LINES"_s, lineDest );
   }
   return outputs;

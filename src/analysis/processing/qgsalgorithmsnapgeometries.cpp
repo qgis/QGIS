@@ -172,14 +172,14 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
         if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
       else
       {
         if ( !sink->addFeature( f ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
       processed += 1;
       feedback->setProgress( processed * step );
@@ -242,7 +242,7 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
         if ( !sink->addFeature( outFeature ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         else
-          feedback->featureAddedToSink( dest );
+          feedback->featureAddedToSink( u"OUTPUT"_s );
 
         feedback->setProgress( processed * step );
       }
@@ -250,7 +250,7 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

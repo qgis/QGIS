@@ -152,7 +152,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       if ( !sink->addFeature( inFeatureA, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       else
-        feedback->featureAddedToSink( dest );
+        feedback->featureAddedToSink( u"OUTPUT"_s );
       continue;
     }
 
@@ -297,14 +297,14 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       else
-        feedback->featureAddedToSink( dest );
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
 
     feedback->setProgress( i * step );
   }
 
   sink->finalize();
-  feedback->featureSinkFinalized( dest );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

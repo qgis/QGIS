@@ -305,10 +305,10 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   else
-    feedback->featureAddedToSink( identifier );
+    feedback->featureAddedToSink( u"OUTPUT"_s );
 
   sink->finalize();
-  feedback->featureSinkFinalized( identifier );
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   if ( feedback )
   {
