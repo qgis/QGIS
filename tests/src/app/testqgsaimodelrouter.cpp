@@ -27,6 +27,7 @@
 #include <QRegularExpression>
 #include <QString>
 #include <QTimer>
+#include <QUrlQuery>
 
 using namespace Qt::StringLiterals;
 
