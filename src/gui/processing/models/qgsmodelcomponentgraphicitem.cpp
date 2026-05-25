@@ -1409,7 +1409,7 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
         {
           // don't show badges for output layers, these will just be the internal layer identifiers and we have logic elsewhere
           // to show actually useful information in the badges (feature counts)
-          if ( const QgsProcessingParameterDefinition *parameter = algorithm->parameterDefinition( it.key() ); parameter && parameter->isDestination() )
+          if ( const QgsProcessingOutputDefinition *outputDefinition = algorithm->outputDefinition( it.key() ); outputDefinition && outputDefinition->isMapLayer() )
             continue;
 
           const int index = indexForOutput( it.key() );
