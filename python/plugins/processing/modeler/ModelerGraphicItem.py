@@ -195,6 +195,7 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             self.component().childId(),
             self.component().configuration(),
         )
+        dlg.setModal(True)
         dlg.setComments(self.component().comment().description())
         dlg.setCommentColor(self.component().comment().color())
         if edit_comment:

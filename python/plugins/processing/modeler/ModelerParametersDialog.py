@@ -85,7 +85,6 @@ class ModelerParametersDialog(QDialog):
     ):
         super().__init__()
         self.setObjectName("ModelerParametersDialog")
-        self.setModal(True)
 
         if iface is not None:
             self.setStyleSheet(iface.mainWindow().styleSheet())
