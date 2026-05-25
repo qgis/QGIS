@@ -436,6 +436,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
           break;
       }
 
+      childAlgorithmFeedback.resetFeatureSinkCounts();
+
       if ( feedback && !skipGenericLogging )
       {
         feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
