@@ -186,15 +186,15 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
 
   if ( field.isNumeric() )
   {
-    outputs = calculateNumericStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback, destId );
+    outputs = calculateNumericStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback );
   }
   else if ( field.isDateOrTime() )
   {
-    outputs = calculateDateTimeStatistics( parameters, fieldIndex, field, features, count, sink.get(), data, feedback, destId );
+    outputs = calculateDateTimeStatistics( parameters, fieldIndex, field, features, count, sink.get(), data, feedback );
   }
   else
   {
-    outputs = calculateStringStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback, destId );
+    outputs = calculateStringStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback );
   }
   if ( sink )
   {
@@ -228,7 +228,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
 }
 
 QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
-  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback, const QString &destId
+  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
 )
 {
   const double step = count > 0 ? 100.0 / count : 1;
@@ -327,15 +327,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
 }
 
 QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
-  const QVariantMap &parameters,
-  const int fieldIndex,
-  QgsField field,
-  QgsFeatureIterator features,
-  const long long count,
-  QgsFeatureSink *sink,
-  QStringList &data,
-  QgsProcessingFeedback *feedback,
-  const QString &destId
+  const QVariantMap &parameters, const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
 )
 {
   const double step = count > 0 ? 100.0 / count : 1;
@@ -402,7 +394,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
 }
 
 QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics(
-  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback, const QString &destId
+  const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
 )
 {
   const double step = count > 0 ? 100.0 / count : 1;
