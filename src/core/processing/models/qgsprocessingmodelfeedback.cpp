@@ -50,9 +50,9 @@ void QgsProcessingModelFeedback::reportChildProgress( const QString &childId, do
   emit childProgressChanged( childId, progress );
 }
 
-void QgsProcessingModelFeedback::reportChildSinkFeatureCountChanged( const QString &childId, const QString &sinkId, long long featureCount )
+void QgsProcessingModelFeedback::reportChildSinkFeatureCountChanged( const QString &childId, const QString &childOutput, long long featureCount )
 {
-  emit childSinkFeatureCountChanged( childId, sinkId, featureCount );
+  emit childSinkFeatureCountChanged( childId, childOutput, featureCount );
 }
 
 void QgsProcessingModelFeedback::reportChildExecutionFailure( const QString &childId, const QString &error )
