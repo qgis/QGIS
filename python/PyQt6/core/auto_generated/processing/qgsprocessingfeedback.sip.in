@@ -227,6 +227,13 @@ the final sink size, even if it is zero.
 .. versionadded:: 4.2
 %End
 
+    void resetFeatureSinkCounts();
+%Docstring
+Resets all stored feature sink counts.
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void progressTextChanged( const QString &text );

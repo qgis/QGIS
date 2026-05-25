@@ -265,6 +265,10 @@ void QgsProcessingFeedback::featureSinkFinalized( const QString &output )
   it.value().countAtLastSignal = previousCount;
 }
 
+void QgsProcessingFeedback::resetFeatureSinkCounts()
+{
+  mSinkFeatureCounts.clear();
+}
 
 QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
   : mChildSteps( childAlgorithmCount )

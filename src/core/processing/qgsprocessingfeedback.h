@@ -201,6 +201,13 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      */
     void featureSinkFinalized( const QString &output );
 
+    /**
+     * Resets all stored feature sink counts.
+     *
+     * \since QGIS 4.2
+     */
+    void resetFeatureSinkCounts();
+
   signals:
 
     /**
