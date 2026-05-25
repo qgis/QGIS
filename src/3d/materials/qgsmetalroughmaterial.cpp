@@ -22,6 +22,7 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QSeamlessCubemap>
 #include <Qt3DRender/QShaderProgramBuilder>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
@@ -306,6 +307,10 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughGL3RenderPass->setShaderProgram( mMetalRoughGL3Shader );
   mMetalRoughGL3Technique->addRenderPass( mMetalRoughGL3RenderPass );
   mMetalRoughEffect->addTechnique( mMetalRoughGL3Technique );
+
+  // ensure IBL cubemaps are seamless -- this should be safe to do here, the only cubemap
+  // lookups happening in the metalrough shader is for IBL
+  mMetalRoughGL3RenderPass->addRenderState( new Qt3DRender::QSeamlessCubemap( this ) );
 
   // Given parameters a parent
   mBaseColorMapParameter->setParent( mMetalRoughEffect );
