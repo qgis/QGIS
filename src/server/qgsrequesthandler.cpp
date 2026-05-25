@@ -64,12 +64,16 @@ void QgsRequestHandler::removeResponseHeader( const QString &name )
 
 QString QgsRequestHandler::responseHeader( const QString &name ) const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return mResponse.header( name );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QMap<QString, QString> QgsRequestHandler::responseHeaders() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return mResponse.headers();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QList<QString> QgsRequestHandler::fullResponseHeader( const QString &name ) const
