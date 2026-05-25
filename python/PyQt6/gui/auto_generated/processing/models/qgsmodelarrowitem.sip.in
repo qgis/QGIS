@@ -130,20 +130,7 @@ Returns the index of the end item that arrow ends at.
 .. seealso:: :py:func:`startIndex`
 %End
 
-    QgsModelDesignerArrowBadgeItem *badgeItem();
-%Docstring
-Returns the optional badge item attached to the arrow.
 
-If :py:func:`~QgsModelArrowItem.setShowBadge` has not been called to
-show the item, the ``None`` will be returned.
-%End
-
-    void setShowBadge( bool visible );
-%Docstring
-Sets whether the arrow's badge item should be shown.
-
-.. seealso:: :py:func:`badgeItem` ;
-%End
 
   public slots:
 
