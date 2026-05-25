@@ -537,6 +537,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     void setStarted();
 
+    /**
+     * Returns the index for the output with the specified name, or -1 if the output could not be matched.
+     *
+     * \since QGIS 4.2
+     */
+    int indexForOutput( const QString &output ) const;
+
   signals:
 
     /**

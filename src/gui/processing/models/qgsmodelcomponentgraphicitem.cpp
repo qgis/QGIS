@@ -1390,12 +1390,42 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
   if ( mResults == results )
     return;
 
+  const QList< QgsModelArrowItem * > arrows = outgoingArrows();
   if ( results.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted )
   {
-    const QList< QgsModelArrowItem * > arrows = outgoingArrows();
     for ( QgsModelArrowItem *arrow : arrows )
     {
       arrow->setShowBadge( false );
+    }
+  }
+  else
+  {
+    if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+    {
+      if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+      {
+        const QVariantMap outputs = results.outputs();
+        for ( auto it = outputs.constBegin(); it != outputs.constEnd(); ++it )
+        {
+          // don't show badges for output layers, these will just be the internal layer identifiers and we have logic elsewhere
+          // to show actually useful information in the badges (feature counts)
+          if ( const QgsProcessingParameterDefinition *parameter = algorithm->parameterDefinition( it.key() ); parameter && parameter->isDestination() )
+            continue;
+
+          const int index = indexForOutput( it.key() );
+          if ( index >= 0 )
+          {
+            for ( QgsModelArrowItem *arrow : arrows )
+            {
+              if ( arrow->startIndex() == index && arrow->startEdge() == Qt::BottomEdge )
+              {
+                arrow->setShowBadge( true );
+                arrow->badgeItem()->setValue( it.value() );
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1418,6 +1448,18 @@ void QgsModelChildAlgorithmGraphicItem::setStarted()
 {
   mStarted = true;
   update();
+}
+
+int QgsModelChildAlgorithmGraphicItem::indexForOutput( const QString &output ) const
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  {
+    if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+    {
+      return QgsProcessingUtils::outputDefinitionIndex( algorithm, output );
+    }
+  }
+  return -1;
 }
 
 void QgsModelChildAlgorithmGraphicItem::paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
