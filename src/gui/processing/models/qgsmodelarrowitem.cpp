@@ -103,7 +103,17 @@ QVariant QgsModelDesignerArrowBadgeItem::value() const
 
 QString QgsModelDesignerArrowBadgeItem::textForValue( const QVariant &value )
 {
-  return QgsVariantUtils::isNull( value ) ? QString() : value.toString();
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  if ( QgsVariantUtils::isNumericType( static_cast< QMetaType::Type>( value.userType() ) ) )
+  {
+    return value.toString();
+  }
+
+  // limit size of badge
+  const QString stringValue = value.toString();
+  return QgsStringUtils::truncateMiddleOfString( stringValue, 10 );
 }
 
 void QgsModelDesignerArrowBadgeItem::resizeToContents()
