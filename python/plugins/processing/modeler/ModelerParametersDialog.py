@@ -363,6 +363,8 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             widget.setDialog(self.dialog)
             widget.setWidgetContext(widget_context)
             widget.registerProcessingContextGenerator(self.context_generator)
+            if isinstance(widget, QgsProcessingModelerParameterWidget):
+                widget.changed.connect(self.emit_changed_signal)
 
             self.wrappers[output.name()] = widget
 
