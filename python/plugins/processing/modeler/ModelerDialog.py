@@ -352,6 +352,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             return
 
         dlg = ModelerParametersDialog(alg, self.model())
+        dlg.setModal(True)
         if dlg.exec():
             alg = dlg.createAlgorithm()
             if pos is None or not pos:
