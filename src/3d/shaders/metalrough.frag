@@ -204,7 +204,7 @@ float alphaToMipLevel(float alpha)
     float glossiness = (pow(2.0, -10.0 / sqrt(specPower)) - k0) / k1;
 
     // Lookup the number of mips in the specular envmap
-    int mipLevels = envLight.specularMipLevels;
+    int mipLevels = 9; // envLight.specularMipLevels;
 
     // Offset of smallest miplevel we should use (corresponds to specular
     // power of 1). I.e. in the 32x32 sized mip.
@@ -376,7 +376,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor;
-    vec3 diffuse = diffuseColor * texture(envLight.irradiance, n).rgb;
+    vec3 diffuse = diffuseColor; // * texture(envLight.irradiance, n).rgb;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
@@ -403,7 +403,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
     else if (lod > 0.0)
         return vec3(1.0, 0.0, 1.0);
 #endif
-    vec3 specularSkyColor = textureLod(envLight.specular, l, lod).rgb;
+    vec3 specularSkyColor = vec3(1.0);//textureLod(envLight.specular, l, lod).rgb;
     vec3 specular = specularSkyColor * specularFactor;
 
     // Blend between diffuse and specular to conserve energy
@@ -431,15 +431,15 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     // Remap roughness for a perceptually more linear correspondence
     float alpha = remapRoughness(roughness);
 
-    for (int i = 0; i < envLightCount; ++i) {
-        cLinear += pbrIblModel(worldNormal,
-                               worldView,
-                               baseColor.rgb,
-                               metalness,
-                               roughness,
-                               alpha,
-                               ambientOcclusion);
-    }
+#if 0
+    cLinear += pbrIblModel(worldNormal,
+                           worldView,
+                           baseColor.rgb,
+                           metalness,
+                           roughness,
+                           alpha,
+                           ambientOcclusion);
+#endif
 
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,
