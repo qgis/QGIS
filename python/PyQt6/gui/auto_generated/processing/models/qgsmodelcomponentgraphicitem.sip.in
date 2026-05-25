@@ -474,6 +474,14 @@ Flags the algorithm as having started.
 .. versionadded:: 4.2
 %End
 
+    int indexForOutput( const QString &output ) const;
+%Docstring
+Returns the index for the output with the specified name, or -1 if the
+output could not be matched.
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void runFromHere();
