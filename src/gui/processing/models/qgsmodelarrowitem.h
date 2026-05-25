@@ -194,14 +194,14 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      *
      * If setShowBadge() has not been called to show the item, the NULLPTR will be returned.
      */
-    QgsModelDesignerArrowBadgeItem *badgeItem();
+    SIP_SKIP QgsModelDesignerArrowBadgeItem *badgeItem();
 
     /**
      * Sets whether the arrow's badge item should be shown.
      *
      * \see badgeItem();
      */
-    void setShowBadge( bool visible );
+    SIP_SKIP void setShowBadge( bool visible );
 
   public slots:
 

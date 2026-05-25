@@ -37,6 +37,7 @@ class QgsModelDesignerSocketGraphicItem;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
 class QgsProcessingModelGroupBox;
+class QgsModelArrowItem;
 
 ///@cond NOT_STABLE
 
@@ -270,6 +271,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * The default implementation does nothing.
      */
     virtual void deleteComponent() {}
+
+    /**
+     * Returns the list of outgoing arrow items originating at this item.
+     *
+     * \since QGIS 4.2
+     */
+    QList< QgsModelArrowItem * > outgoingArrows();
 
   signals:
 

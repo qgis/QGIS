@@ -820,6 +820,22 @@ QgsModelDesignerSocketGraphicItem *QgsModelComponentGraphicItem::outSocketAt( in
   return mOutSockets.at( index );
 }
 
+QList<QgsModelArrowItem *> QgsModelComponentGraphicItem::outgoingArrows()
+{
+  const QList<QGraphicsItem *> allItems = scene()->items();
+  QList<QgsModelArrowItem *> arrows;
+  for ( QGraphicsItem *item : allItems )
+  {
+    if ( auto arrowItem = dynamic_cast< QgsModelArrowItem * >( item ) )
+    {
+      if ( arrowItem->startItem() == this )
+      {
+        arrows << arrowItem;
+      }
+    }
+  }
+  return arrows;
+}
 
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( parameter, model, parent )
@@ -1373,6 +1389,15 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
 {
   if ( mResults == results )
     return;
+
+  if ( results.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted )
+  {
+    const QList< QgsModelArrowItem * > arrows = outgoingArrows();
+    for ( QgsModelArrowItem *arrow : arrows )
+    {
+      arrow->setShowBadge( false );
+    }
+  }
 
   mResults = results;
   mStarted = false;
