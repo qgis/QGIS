@@ -203,6 +203,7 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         if dlg.exec():
             alg = dlg.createAlgorithm()
             self.apply_new_alg(alg)
+            self.rebuildConfigurationDockWidget.emit()
 
     def apply_new_alg(self, alg):
         alg.setChildId(self.component().childId())
