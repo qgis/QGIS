@@ -6,6 +6,7 @@
 
 #include <memory>
 
+#include "ai/qgsaiclaudeoauthclient.h"
 #include "ai/qgsaicodexoauthclient.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/tools/qgsaiechotool.h"
@@ -91,6 +92,8 @@ class TestQgsAiModelRouter : public QObject
     void buildPayloadForCodexUsesGpt55();
     void codexModelFallback();
     void extractChatGptAccountIdFromIdToken();
+    void claudeAuthorizationUrlUsesCurrentPlatformEndpoints();
+    void claudeAuthorizationCodeParsing();
     void sanitizeSecrets();
     void storeApiKeyPersistsInSettings();
     void toolUseDisabledOmitsToolsFromOpenAiPayload();
@@ -174,6 +177,35 @@ void TestQgsAiModelRouter::extractChatGptAccountIdFromIdToken()
   const QString idToken = QString::fromLatin1( encode( QJsonObject( { { u"alg"_s, u"none"_s } } ) ) ) + '.'_L1 + QString::fromLatin1( encode( payload ) ) + u".signature"_s;
 
   QCOMPARE( QgsAiCodexOAuthClient::extractChatGptAccountId( idToken ), u"account-test-123"_s );
+}
+
+void TestQgsAiModelRouter::claudeAuthorizationUrlUsesCurrentPlatformEndpoints()
+{
+  const QgsAiClaudeOAuthClient::AuthorizationRequest request = QgsAiClaudeOAuthClient::buildAuthorizationRequest();
+  QCOMPARE( request.redirectUri, u"https://platform.claude.com/oauth/code/callback"_s );
+  QCOMPARE( request.authorizationUrl.scheme(), u"https"_s );
+  QCOMPARE( request.authorizationUrl.host(), u"platform.claude.com"_s );
+  QCOMPARE( request.authorizationUrl.path(), u"/oauth/authorize"_s );
+
+  const QUrlQuery query( request.authorizationUrl );
+  QCOMPARE( query.queryItemValue( u"client_id"_s ), u"9d1c250a-e61b-44d9-88ed-5944d1962f5e"_s );
+  QCOMPARE( query.queryItemValue( u"redirect_uri"_s ), request.redirectUri );
+  QCOMPARE( query.queryItemValue( u"code_challenge_method"_s ), u"S256"_s );
+  QVERIFY( query.queryItemValue( u"scope"_s ).contains( u"user:inference"_s ) );
+}
+
+void TestQgsAiModelRouter::claudeAuthorizationCodeParsing()
+{
+  QCOMPARE( QgsAiClaudeOAuthClient::authorizationCodeFromInput( u"manual-code"_s ), u"manual-code"_s );
+  QCOMPARE( QgsAiClaudeOAuthClient::authorizationCodeFromInput( u"manual-code#returned-state"_s ), u"manual-code"_s );
+  QCOMPARE(
+    QgsAiClaudeOAuthClient::authorizationCodeFromInput( u"https://platform.claude.com/oauth/code/callback?code=query-code&state=returned-state"_s ),
+    u"query-code"_s
+  );
+  QCOMPARE(
+    QgsAiClaudeOAuthClient::authorizationCodeFromInput( u"https://platform.claude.com/oauth/code/callback#code=fragment-code&state=returned-state"_s ),
+    u"fragment-code"_s
+  );
 }
 
 void TestQgsAiModelRouter::sanitizeSecrets()

@@ -59,7 +59,10 @@
 #include <QPalette>
 #include <QPushButton>
 #include <QRegularExpression>
+#include <QScreen>
+#include <QScrollArea>
 #include <QSet>
+#include <QSize>
 #include <QString>
 #include <QTextCursor>
 #include <QTextDocument>
@@ -1056,7 +1059,12 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QDialog dialog( this );
   dialog.setWindowTitle( tr( "AI Provider Settings" ) );
-  QVBoxLayout *layout = new QVBoxLayout( &dialog );
+  QVBoxLayout *dialogLayout = new QVBoxLayout( &dialog );
+  QScrollArea *scrollArea = new QScrollArea( &dialog );
+  scrollArea->setWidgetResizable( true );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  QWidget *settingsContent = new QWidget( scrollArea );
+  QVBoxLayout *layout = new QVBoxLayout( settingsContent );
   QFormLayout *form = new QFormLayout();
 
   QLineEdit *openAiEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenAi ).endpoint, &dialog );
@@ -1354,7 +1362,22 @@ void QgsAiChatDockWidget::openProviderSettings()
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog );
   connect( buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject );
-  layout->addWidget( buttons );
+  scrollArea->setWidget( settingsContent );
+  dialogLayout->addWidget( scrollArea );
+  dialogLayout->addWidget( buttons );
+
+  dialog.setMinimumSize( 480, 360 );
+  if ( const QScreen *screen = QApplication::primaryScreen() )
+  {
+    const QSize availableSize = screen->availableGeometry().size();
+    const int dialogWidth = std::min( 720, std::max( 480, availableSize.width() - 100 ) );
+    const int dialogHeight = std::min( 640, std::max( 360, availableSize.height() - 120 ) );
+    dialog.resize( dialogWidth, dialogHeight );
+  }
+  else
+  {
+    dialog.resize( 680, 620 );
+  }
 
   if ( dialog.exec() != QDialog::Accepted )
     return;

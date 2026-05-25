@@ -40,6 +40,7 @@ class APP_EXPORT QgsAiClaudeOAuthClient
 
     static AuthorizationRequest buildAuthorizationRequest();
     static AuthorizationRequest buildAuthorizationRequest( const QString &redirectUri );
+    static QString authorizationCodeFromInput( const QString &input );
     static bool exchangeAuthorizationCode( const QString &authorizationCode, const QString &codeVerifier, const QString &redirectUri, QString *errorMessage = nullptr );
     static bool refreshAccessToken( TokenSet &tokens, QString *errorMessage = nullptr );
     static bool hasRefreshToken();

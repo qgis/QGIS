@@ -37,9 +37,9 @@ using namespace Qt::StringLiterals;
 namespace
 {
   constexpr const char *CLAUDE_CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e";
-  constexpr const char *CLAUDE_AUTHORIZE_URL = "https://claude.ai/oauth/authorize";
-  constexpr const char *CLAUDE_TOKEN_URL = "https://console.anthropic.com/v1/oauth/token";
-  constexpr const char *CLAUDE_REDIRECT_URI = "https://console.anthropic.com/oauth/code/callback";
+  constexpr const char *CLAUDE_AUTHORIZE_URL = "https://platform.claude.com/oauth/authorize";
+  constexpr const char *CLAUDE_TOKEN_URL = "https://platform.claude.com/v1/oauth/token";
+  constexpr const char *CLAUDE_REDIRECT_URI = "https://platform.claude.com/oauth/code/callback";
   constexpr const char *CLAUDE_SCOPE = "org:create_api_key user:profile user:inference";
 
   QString base64Url( const QByteArray &value )
@@ -69,6 +69,7 @@ namespace
 
     QNetworkRequest request( QUrl( QString::fromUtf8( CLAUDE_TOKEN_URL ) ) );
     request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
+    request.setRawHeader( "anthropic-beta", "oauth-2025-04-20" );
     request.setTransferTimeout( timeoutMs );
 
     QNetworkReply *reply = nam->post( request, QJsonDocument( payload ).toJson( QJsonDocument::Compact ) );
@@ -183,15 +184,39 @@ QgsAiClaudeOAuthClient::AuthorizationRequest QgsAiClaudeOAuthClient::buildAuthor
   return request;
 }
 
-bool QgsAiClaudeOAuthClient::exchangeAuthorizationCode( const QString &authorizationCode, const QString &codeVerifier, const QString &redirectUri, QString *errorMessage )
+QString QgsAiClaudeOAuthClient::authorizationCodeFromInput( const QString &input )
 {
-  QString code = authorizationCode.trimmed();
+  QString code = input.trimmed();
+  code.replace( '\r', '\n' );
+  const int newlineIndex = code.indexOf( '\n' );
+  if ( newlineIndex >= 0 )
+    code = code.left( newlineIndex ).trimmed();
+
   if ( code.startsWith( "http://"_L1 ) || code.startsWith( "https://"_L1 ) )
   {
     const QUrl callbackUrl( code );
-    code = QUrlQuery( callbackUrl ).queryItemValue( u"code"_s ).trimmed();
+    QString parsedCode = QUrlQuery( callbackUrl ).queryItemValue( u"code"_s ).trimmed();
+    if ( parsedCode.isEmpty() )
+      parsedCode = QUrlQuery( callbackUrl.fragment() ).queryItemValue( u"code"_s ).trimmed();
+    if ( parsedCode.isEmpty() && !callbackUrl.fragment().contains( '='_L1 ) )
+      parsedCode = callbackUrl.fragment().trimmed();
+    return parsedCode;
   }
 
+  const QString queryCode = QUrlQuery( code ).queryItemValue( u"code"_s ).trimmed();
+  if ( !queryCode.isEmpty() )
+    return queryCode;
+
+  const int fragmentIndex = code.indexOf( '#'_L1 );
+  if ( fragmentIndex > 0 )
+    code = code.left( fragmentIndex ).trimmed();
+
+  return code;
+}
+
+bool QgsAiClaudeOAuthClient::exchangeAuthorizationCode( const QString &authorizationCode, const QString &codeVerifier, const QString &redirectUri, QString *errorMessage )
+{
+  const QString code = authorizationCodeFromInput( authorizationCode );
   if ( code.isEmpty() )
   {
     if ( errorMessage )
