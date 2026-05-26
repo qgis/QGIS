@@ -448,10 +448,26 @@ Returns a HTML formatted version of the help text encoded in a variant
 ``map`` for a specified ``algorithm``.
 %End
 
+    static int parameterDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) /HoldGIL/;
+%Docstring
+Returns the index of the parameter with matching ``name`` for a
+specified ``algorithm``.
+
+Matching is done in a case-insensitive manner.
+
+.. seealso:: :py:func:`outputDefinitionIndex`
+
+.. versionadded:: 4.2
+%End
+
     static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) /HoldGIL/;
 %Docstring
 Returns the index of the output matching ``name`` for a specified
-``algorithm``. Matching is done in a case-insensitive manner.
+``algorithm``.
+
+Matching is done in a case-insensitive manner.
+
+.. seealso:: :py:func:`parameterDefinitionIndex`
 
 .. versionadded:: 3.44
 %End

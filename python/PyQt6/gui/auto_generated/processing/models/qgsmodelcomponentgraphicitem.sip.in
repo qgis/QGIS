@@ -223,9 +223,20 @@ Called when the component should be deleted.
 The default implementation does nothing.
 %End
 
+    QList< QgsModelArrowItem * > incomingArrows();
+%Docstring
+Returns the list of incoming arrow items terminating at this item.
+
+.. seealso:: :py:func:`outgoingArrows`
+
+.. versionadded:: 4.2
+%End
+
     QList< QgsModelArrowItem * > outgoingArrows();
 %Docstring
 Returns the list of outgoing arrow items originating at this item.
+
+.. seealso:: :py:func:`incomingArrows`
 
 .. versionadded:: 4.2
 %End
@@ -484,10 +495,22 @@ Flags the algorithm as having started.
 .. versionadded:: 4.2
 %End
 
+    int indexForInput( const QString &parameterName ) const;
+%Docstring
+Returns the index for the input with the specified parameter name, or -1
+if the parameter could not be matched.
+
+.. seealso:: :py:func:`indexForOutput`
+
+.. versionadded:: 4.2
+%End
+
     int indexForOutput( const QString &output ) const;
 %Docstring
 Returns the index for the output with the specified name, or -1 if the
 output could not be matched.
+
+.. seealso:: :py:func:`indexForInput`
 
 .. versionadded:: 4.2
 %End

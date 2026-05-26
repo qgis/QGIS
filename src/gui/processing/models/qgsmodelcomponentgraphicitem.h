@@ -273,8 +273,17 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual void deleteComponent() {}
 
     /**
+     * Returns the list of incoming arrow items terminating at this item.
+     *
+     * \see outgoingArrows()
+     * \since QGIS 4.2
+     */
+    QList< QgsModelArrowItem * > incomingArrows();
+
+    /**
      * Returns the list of outgoing arrow items originating at this item.
      *
+     * \see incomingArrows()
      * \since QGIS 4.2
      */
     QList< QgsModelArrowItem * > outgoingArrows();
@@ -547,8 +556,17 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void setStarted();
 
     /**
+     * Returns the index for the input with the specified parameter name, or -1 if the parameter could not be matched.
+     *
+     * \see indexForOutput()
+     * \since QGIS 4.2
+     */
+    int indexForInput( const QString &parameterName ) const;
+
+    /**
      * Returns the index for the output with the specified name, or -1 if the output could not be matched.
      *
+     * \see indexForInput()
      * \since QGIS 4.2
      */
     int indexForOutput( const QString &output ) const;
