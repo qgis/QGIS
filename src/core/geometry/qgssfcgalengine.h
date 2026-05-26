@@ -847,10 +847,9 @@ class CORE_EXPORT QgsSfcgalEngine
      * Convert \a prim to Polyhedral geometry
      *
      * \param prim primitive to perform the operation
-     * \param mat a transformation matrix
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom primitiveAsPolyhedral( const sfcgal::primitive *prim, const QgsMatrix4x4 &mat = QgsMatrix4x4(), QString *errorMsg = nullptr );
+    static sfcgal::shared_geom primitiveAsPolyhedral( const sfcgal::primitive *prim, QString *errorMsg = nullptr );
 
     /**
      * Checks if \a primA and \a primB are equal.
@@ -867,25 +866,23 @@ class CORE_EXPORT QgsSfcgalEngine
      * Computes the area of \a prim.
      *
      * \param prim primitive to perform the operation
-     * \param primTransform a transformation matrix
      * \param withDiscretization If true, the area is computed
      * using the real discretization with radial segments. If false, the area is
      * computed for a perfect primitive. Defaults to false.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static double primitiveArea( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform = QgsMatrix4x4(), bool withDiscretization = false, QString *errorMsg = nullptr );
+    static double primitiveArea( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
 
     /**
      * Computes the volume of \a prim.
      *
      * \param prim primitive to perform the operation
-     * \param primTransform a transformation matrix
      * \param withDiscretization If true, the volume is computed
      * using the real discretization with radial segments. If false, the volume is
      * computed for a perfect primitive. Defaults to false.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static double primitiveVolume( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform = QgsMatrix4x4(), bool withDiscretization = false, QString *errorMsg = nullptr );
+    static double primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
 
     /**
      * Returns the list of available parameter description for this primitive.
@@ -916,6 +913,41 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static void primitiveSetParameter( sfcgal::primitive *prim, const QString &name, const QVariant &value, QString *errorMsg = nullptr );
 
+    /**
+     * Translate the primitive \a prim by vector \a translation.
+     *
+     * \param prim primitive to perform the operation
+     * \param translation translation vector
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim primitiveTranslate( const sfcgal::primitive *prim, const QgsVector3D &translation, QString *errorMsg = nullptr );
+
+    /**
+     * Rotation of primitive \a prim around axis \a axisVector by angle \a angle
+     *
+     * \param prim primitive to perform the operation
+     * \param angle rotation angle in radians
+     * \param axisVector rotation axis
+     * \param center optional parameter. If specified, rotation will be applied around axis and center point
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
+
+    /**
+     * Scale the primitive \a prim by vector \a scaleFactor.
+     *
+     * \param prim primitive to perform the operation
+     * \param scaleFactor scale factor vector (2D or 3D)
+     * \param center optional parameter. If specified, scaling will be performed relative to this center
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
 #endif
 };
 

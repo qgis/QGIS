@@ -16,6 +16,7 @@ from math import pi
 from qgis.core import (
     Qgis,
     QgsConstWkbPtr,
+    QgsMatrix4x4,
     QgsPoint,
     QgsPolyhedralSurface,
     QgsSfcgalException,
@@ -234,6 +235,23 @@ class TestQgsSFCGAL(QgisTestCase):
 
         param = cube.primitiveParameter("size")
         self.assertEqual(param, 5.0)
+
+    @unittest.skipIf(
+        not Qgis.hasSfcgal() or Qgis.sfcgalVersionInt() < 20300, "SFCGAL 2.3 required"
+    )
+    def test_primitive_transformation(self):
+        cylinder = QgsSfcgalGeometry.createCylinder(5, 12, 16)
+        self.assertEqual(cylinder.wkbType(), Qgis.WkbType.PolyhedralSurfaceZ)
+        self.assertEqual(cylinder.geometryType(), "cylinder")
+
+        transform = cylinder.primitiveTransform()
+        self.assertEqual(transform, QgsMatrix4x4())
+
+        cylinderTranslated = cylinder.translate(QgsVector3D(5, 3, 2))
+        transform = cylinderTranslated.primitiveTransform()
+        self.assertEqual(
+            transform, QgsMatrix4x4(1, 0, 0, 5, 0, 1, 0, 3, 0, 0, 1, 2, 0, 0, 0, 1)
+        )
 
     def test_geometry_n(self):
         # Singular geometry

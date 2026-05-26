@@ -1188,21 +1188,13 @@ sfcgal::shared_prim QgsSfcgalEngine::createTorus( double mainRadius, double tube
   return sfcgal::make_shared_prim( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, const QgsMatrix4x4 &mat, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, nullptr );
 
   sfcgal::geometry *result = sfcgal_primitive_as_polyhedral_surface( prim );
   CHECK_SUCCESS( errorMsg, nullptr );
-
-  if ( !mat.isIdentity() )
-  {
-    sfcgal::geometry *result2 = sfcgal_geometry_transform( result, mat.constData() );
-    sfcgal_geometry_delete( result );
-    result = result2;
-    CHECK_SUCCESS( errorMsg, nullptr );
-  }
 
   return sfcgal::make_shared_geom( result );
 }
@@ -1232,55 +1224,26 @@ sfcgal::shared_prim QgsSfcgalEngine::primitiveClone( const sfcgal::primitive *pr
   return sfcgal::make_shared_prim( result );
 }
 
-double QgsSfcgalEngine::primitiveArea( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform, bool withDiscretization, QString *errorMsg )
+double QgsSfcgalEngine::primitiveArea( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
 
-  // simple case - no scale
-  if ( primTransform.isIdentity() )
-  {
-    const double area = sfcgal_primitive_area( prim, withDiscretization );
-    CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
-    return area;
-  }
-
-  double baseArea = 0.0;
-  double scale = 1.0;
-
-  const double scaleX = primTransform.mapVector( QgsVector3D( 1, 0, 0 ) ).x();
-  const double scaleY = primTransform.mapVector( QgsVector3D( 0, 1, 0 ) ).y();
-  const double scaleZ = primTransform.mapVector( QgsVector3D( 0, 0, 1 ) ).z();
-
-  if ( !qgsDoubleNear( scaleX, scaleY ) || !qgsDoubleNear( scaleY, scaleZ ) )
-  {
-    // scale is not uniform - exact computation is not possible
-    // use a polyhedralsurface approximation
-    QgsDebugMsgLevel( u"The primitive has a non-uniform scale. Falling back to polyhedral surface approximation for computation."_s, 2 );
-    sfcgal::shared_geom phs = primitiveAsPolyhedral( prim, primTransform );
-    CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
-    baseArea = area( phs.get() );
-  }
-  else
-  {
-    // uniform scale - no approximation is needed
-    scale = std::cbrt( std::abs( primTransform.determinant() ) );
-    baseArea = sfcgal_primitive_area( prim, withDiscretization );
-  }
+  double area = sfcgal_primitive_area( prim, withDiscretization );
 
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
-  return baseArea * scale * scale;
+  return area;
 }
 
-double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform, bool withDiscretization, QString *errorMsg )
+double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
 
-  const double baseVolume = sfcgal_primitive_volume( prim, withDiscretization );
+  const double volume = sfcgal_primitive_volume( prim, withDiscretization );
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
 
-  return primTransform.isIdentity() ? baseVolume : baseVolume * std::abs( primTransform.determinant() );
+  return volume;
 }
 
 void sfcgal::to_json( json &j, const sfcgal::PrimitiveParameterDesc &p )
@@ -1447,6 +1410,34 @@ void QgsSfcgalEngine::primitiveSetParameter( sfcgal::primitive *prim, const QStr
   {
     sfcgal::errorHandler()->addText( u"Caught json exception"_s );
   }
+}
+
+sfcgal::shared_prim QgsSfcgalEngine::primitiveTranslate( const sfcgal::primitive *prim, const QgsVector3D &translation, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_translate( prim, translation.x(), translation.y(), translation.z() );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg )
+{
+  const QgsPoint rotationCenter = center.isEmpty() ? QgsPoint( 0, 0, 0 ) : center;
+
+  sfcgal::primitive *result = sfcgal_primitive_rotate( prim, angle, axisVector.x(), axisVector.y(), axisVector.z(), rotationCenter.x(), rotationCenter.y(), rotationCenter.z() );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center, QString *errorMsg )
+{
+  const QgsPoint scaleCenter = center.isEmpty() ? QgsPoint( 0, 0, 0 ) : center;
+
+  sfcgal::primitive *result = sfcgal_primitive_scale( prim, scaleFactor.x(), scaleFactor.y(), scaleFactor.z(), scaleCenter.x(), scaleCenter.y(), scaleCenter.z() );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
 }
 
 #endif
