@@ -68,6 +68,8 @@ static const bool DEFAULT_DXF_DATA_DEFINED_BLOCKS = true;
 class CORE_EXPORT QgsDxfExport : public QgsLabelSink
 {
 #endif
+    friend class TestQgsDxfExport;
+
   public:
 
     /**
@@ -666,7 +668,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     void writeSymbolTableBlockRef( const QString &blockName );
     void writeSymbolLayerBlock( const QString &blockName, const QgsMarkerSymbolLayer *ml, QgsSymbolRenderContext &ctx );
     void writePointBlockReference( const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize );
-    static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop );
+    static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop, const QgsExpressionContext &context );
 
     double dashSize() const;
     double dotSize() const;
