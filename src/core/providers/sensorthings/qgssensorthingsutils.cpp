@@ -1139,6 +1139,99 @@ QString QgsSensorThingsUtils::combineFilters( const QStringList &filters )
   return u"("_s + nonEmptyFilters.join( ") and ("_L1 ) + u")"_s;
 }
 
+QgsSensorThingsUtils::ServiceCapabilities QgsSensorThingsUtils::determineServiceCapabilities( const QString &uri, QgsFeedback *feedback, const QString &authCfg )
+{
+  QgsSensorThingsUtils::ServiceCapabilities res;
+  QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
+  QgsSetRequestInitiatorClass( request, u"QgsSensorThingsUtils"_s )
+
+    QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( authCfg );
+
+  switch ( networkRequest.get( request, false, feedback ) )
+  {
+    case QgsBlockingNetworkRequest::NoError:
+      break;
+
+    case QgsBlockingNetworkRequest::NetworkError:
+    case QgsBlockingNetworkRequest::TimeoutError:
+    case QgsBlockingNetworkRequest::ServerExceptionError:
+      QgsDebugError( u"Connection failed: %1"_s.arg( networkRequest.errorMessage() ) );
+      return res;
+  }
+
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  try
+  {
+    auto rootContent = nlohmann::json::parse( content.content().toStdString() );
+    if ( rootContent.contains( "serverSettings" ) && rootContent["serverSettings"].contains( "conformance" ) )
+    {
+      for ( const auto &valueJson : rootContent["serverSettings"]["conformance"] )
+      {
+        const QString conformance = QString::fromStdString( valueJson.get<std::string>() );
+        const thread_local QRegularExpression sDataModelRx( u".*/datamodel\\b"_s );
+        if ( sDataModelRx.match( conformance ).hasMatch() )
+        {
+          // extract version from datamodel value
+          const thread_local QRegularExpression sVersionRx( u"\\d+\\.\\d+"_s );
+          const QRegularExpressionMatch versionMatch = sVersionRx.match( conformance );
+          if ( versionMatch.hasMatch() )
+          {
+            const QString versionString = versionMatch.captured( 0 );
+            bool ok = false;
+            const double version = versionString.toDouble( &ok );
+            if ( ok )
+            {
+              if ( version < 2.0 )
+              {
+                res.version = Qgis::SensorThingsVersion::Version1_1;
+              }
+              else
+              {
+                res.version = Qgis::SensorThingsVersion::Version2_0;
+              }
+            }
+          }
+        }
+
+        const thread_local QRegularExpression sMultiDataStreamRx( u".*/req/multi-datastream\\b"_s );
+        const thread_local QRegularExpression sSensingOmRx( u".*/req/sensing-extension-om\\b"_s );
+        const thread_local QRegularExpression sSensingRelationsRx( u".*/req/sensing-extension-relations\\b"_s );
+        const thread_local QRegularExpression sSensingSamplingRx( u".*/req/sensing-extension-sampling\\b"_s );
+        if ( sMultiDataStreamRx.match( conformance ).hasMatch() )
+          res.availableExtensions.setFlag( Qgis::SensorThingsExtension::MultiDatastream );
+        else if ( sSensingOmRx.match( conformance ).hasMatch() )
+          res.availableExtensions.setFlag( Qgis::SensorThingsExtension::SensingExtensionObservationsMeasurements );
+        else if ( sSensingRelationsRx.match( conformance ).hasMatch() )
+          res.availableExtensions.setFlag( Qgis::SensorThingsExtension::SensingExtensionRelations );
+        else if ( sSensingSamplingRx.match( conformance ).hasMatch() )
+          res.availableExtensions.setFlag( Qgis::SensorThingsExtension::SensingExtensionSampling );
+      }
+    }
+    if ( rootContent.contains( "value" ) )
+    {
+      for ( const auto &valueJson : rootContent["value"] )
+      {
+        if ( valueJson.contains( "name" ) && valueJson.contains( "url" ) )
+        {
+          const QString name = QString::fromStdString( valueJson["name"].get<std::string>() );
+          const Qgis::SensorThingsEntity entityType = QgsSensorThingsUtils::entitySetStringToEntity( name );
+          if ( entityType != Qgis::SensorThingsEntity::Invalid )
+          {
+            res.availableEntities.insert( entityType );
+          }
+        }
+      }
+    }
+  }
+  catch ( const nlohmann::json::parse_error &ex )
+  {
+    QgsDebugError( u"Error parsing response: %1"_s.arg( ex.what() ) );
+    return {};
+  }
+  return res;
+}
+
 QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback, const QString &authCfg )
 {
   QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
