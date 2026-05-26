@@ -528,6 +528,15 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void setResults( const QgsProcessingModelChildAlgorithmResult &results );
 
     /**
+     * Sets the feature count for the source attached to the specified input.
+     *
+     * This can be used to dynamically update the feature count badge for the matching arrow item.
+     *
+     * \since QGIS 4.2
+     */
+    void setSourceFeatureCount( const QString &parameterName, long long featureCount );
+
+    /**
      * Sets the feature count for the sink attached to the specified output.
      *
      * This can be used to dynamically update the feature count badge for the matching arrow item.

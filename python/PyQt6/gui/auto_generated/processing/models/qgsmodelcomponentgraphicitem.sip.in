@@ -466,6 +466,16 @@ Sets the ``results`` obtained for this child algorithm for the last
 model execution through the dialog.
 %End
 
+    void setSourceFeatureCount( const QString &parameterName, long long featureCount );
+%Docstring
+Sets the feature count for the source attached to the specified input.
+
+This can be used to dynamically update the feature count badge for the
+matching arrow item.
+
+.. versionadded:: 4.2
+%End
+
     void setSinkFeatureCount( const QString &outputName, long long featureCount );
 %Docstring
 Sets the feature count for the sink attached to the specified output.

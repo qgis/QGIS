@@ -1452,6 +1452,23 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
   emit updateArrowPaths();
 }
 
+void QgsModelChildAlgorithmGraphicItem::setSourceFeatureCount( const QString &parameterName, long long featureCount )
+{
+  const int index = indexForInput( parameterName );
+  if ( index < 0 )
+    return;
+
+  const QList< QgsModelArrowItem * > arrows = incomingArrows();
+  for ( QgsModelArrowItem *arrow : arrows )
+  {
+    if ( arrow->endIndex() == index && arrow->endEdge() == Qt::TopEdge )
+    {
+      arrow->setShowBadge( true );
+      arrow->badgeItem()->setValue( featureCount );
+    }
+  }
+}
+
 void QgsModelChildAlgorithmGraphicItem::setSinkFeatureCount( const QString &outputName, long long featureCount )
 {
   const int index = indexForOutput( outputName );
