@@ -422,7 +422,7 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics(
       int64_t highestCount = 0;
       double valueWithLowestCount = 0;
       double valueWithHighestCount = 0;
-      for ( auto [value, count] : featureStats.valueCount )
+      for ( auto [value, count] : std::as_const( featureStats.valueCount ) )
       {
         if ( count < lowestCount )
         {
