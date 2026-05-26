@@ -463,7 +463,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     h = -( fm.height() * 1.2 );
     h = h - componentSize.height() / 2.0 + 5;
-    pt = QPointF( -componentSize.width() / 2 + 25, h );
+    pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN, h );
     painter->drawText( pt, QObject::tr( "In" ) );
     int i = 1;
     if ( !mComponent->linksCollapsed( Qt::TopEdge ) )
@@ -473,7 +473,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         text = linkPointText( Qt::TopEdge, idx );
         h = -( fm.height() * 1.2 ) * ( i + 1 );
         h = h - componentSize.height() / 2.0 + 5;
-        pt = QPointF( -componentSize.width() / 2 + 33, h );
+        pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN + 10, h );
         painter->drawText( pt, text );
         i += 1;
       }
@@ -483,7 +483,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     h = fm.height() * 1.1;
     h = h + componentSize.height() / 2.0;
-    pt = QPointF( -componentSize.width() / 2 + 25, h );
+    pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN, h );
     painter->drawText( pt, QObject::tr( "Out" ) );
     if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
     {
@@ -494,7 +494,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         h = h + componentSize.height() / 2.0;
         double w = fm.boundingRect( text ).width();
 
-        const double x = componentSize.width() / 2.0 - 33 - w;
+        const double x = componentSize.width() / 2.0 - w - SOCKET_MARGIN - 10;
 
         painter->drawText( QPointF( x, h ), text );
       }
@@ -530,13 +530,13 @@ QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text 
 {
   const QFontMetricsF fm( mFont );
   double width = fm.boundingRect( text ).width();
-  if ( width < itemSize().width() - 25 - mButtonSize.width() )
+  if ( width < itemSize().width() - SOCKET_MARGIN - mButtonSize.width() )
     return text;
 
   QString t = text;
   t = t.left( t.length() - 3 ) + QChar( 0x2026 );
   width = fm.boundingRect( t ).width();
-  while ( width > itemSize().width() - 25 - mButtonSize.width() )
+  while ( width > itemSize().width() - SOCKET_MARGIN - mButtonSize.width() )
   {
     if ( t.length() < 5 )
       break;
@@ -699,7 +699,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
         const QFontMetricsF fm( mFont );
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
         const double y = h + itemSize().height() / 2.0 + 6.4;
-        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( itemSize().width() / 2 - 33 + 10 ) : 10.4;
+        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( itemSize().width() / 2 - SOCKET_MARGIN ) : 10.4;
         return QPointF( x, y );
       }
       break;
@@ -709,7 +709,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
     {
       if ( linkPointCount( Qt::TopEdge ) )
       {
-        double offsetX = 25;
+        double offsetX = SOCKET_MARGIN;
         int paramIndex = index;
         if ( mComponent->linksCollapsed( Qt::TopEdge ) )
         {
