@@ -87,6 +87,22 @@ class _3D_EXPORT QgsSkyboxSettings : public QgsAbstract3DMapBackgroundSettings
      */
     void setCubeMapping( Qgis::SkyboxCubeMapping mapping );
 
+    /**
+     * Returns TRUE if the skybox should generate environmental lighting effects.
+     *
+     * \see setEnvironmentalLightingEnabled()
+     * \since QGIS 4.2
+     */
+    bool environmentalLightingEnabled() const { return mEnableEnvironmentalLighting; }
+
+    /**
+     * Sets whether the skybox should generate environmental lighting effects.
+     *
+     * \see environmentalLightingEnabled()
+     * \since QGIS 4.2
+     */
+    void setEnvironmentalLightingEnabled( bool enabled ) { mEnableEnvironmentalLighting = enabled; }
+
   private:
 #if ENABLE_PANORAMIC_SKYBOX
     QString mPanoramicTexturePath;
@@ -94,6 +110,7 @@ class _3D_EXPORT QgsSkyboxSettings : public QgsAbstract3DMapBackgroundSettings
 
     Qgis::SkyboxCubeMapping mCubeMapping = Qgis::SkyboxCubeMapping::NativeZUp;
     QMap<QString, QString> mCubeMapFacesPaths;
+    bool mEnableEnvironmentalLighting = true;
 };
 
 #endif // QGSSKYBOXSETTINGS_H

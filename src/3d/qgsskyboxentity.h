@@ -132,7 +132,15 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
   public:
     //! Constructs a skybox from 6 different images
     QgsCubeFacesSkyboxEntity(
-      Qgis::SkyboxCubeMapping mapping, const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr
+      Qgis::SkyboxCubeMapping mapping,
+      const QString &posX,
+      const QString &posY,
+      const QString &posZ,
+      const QString &negX,
+      const QString &negY,
+      const QString &negZ,
+      bool enableEnvironmentalLighting,
+      Qt3DCore::QNode *parent = nullptr
     );
     Qgis::Map3DBackgroundType type() const override { return Qgis::Map3DBackgroundType::DistinctTextureSkybox; }
     void updateEnvironmentLight( QgsEnvironmentLight *light ) const override;
@@ -158,6 +166,7 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
     QString mSourceNegX;
     QString mSourceNegY;
     QString mSourceNegZ;
+    bool mEnableEnvironmentalLighting = true;
 
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
     QVector<Qt3DRender::QAbstractTextureImage *> mFacesTextureImages;

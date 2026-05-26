@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>301</width>
-    <height>228</height>
+    <width>354</width>
+    <height>291</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
@@ -36,6 +36,38 @@
    <item row="2" column="1" colspan="2">
     <widget class="QWidget" name="mCubeMapWidget" native="true">
      <layout class="QGridLayout" name="faceTexturesLayout">
+      <item row="4" column="1">
+       <widget class="QgsImageSourceLineEdit" name="posXImageSource" native="true"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsImageSourceLineEdit" name="negYImageSource" native="true"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsImageSourceLineEdit" name="negXImageSource" native="true"/>
+      </item>
+      <item row="3" column="1">
+       <widget class="QgsImageSourceLineEdit" name="negZImageSource" native="true"/>
+      </item>
+      <item row="6" column="1">
+       <widget class="QgsImageSourceLineEdit" name="posZImageSource" native="true"/>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="posZImageSourceLabel">
+        <property name="text">
+         <string>Top (+Z)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QgsImageSourceLineEdit" name="posYImageSource" native="true"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="negYImageSourceLabel">
+        <property name="text">
+         <string>Back (-Y)</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="negXImageSourceLabel">
         <property name="text">
@@ -50,12 +82,6 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QgsImageSourceLineEdit" name="posXImageSource" native="true"/>
-      </item>
-      <item row="5" column="1">
-       <widget class="QgsImageSourceLineEdit" name="posYImageSource" native="true"/>
-      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="negZImageSourceLabel">
         <property name="text">
@@ -63,8 +89,8 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QgsImageSourceLineEdit" name="negYImageSource" native="true"/>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mMappingComboBox"/>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="posXImageSourceLabel">
@@ -73,36 +99,20 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="negYImageSourceLabel">
-        <property name="text">
-         <string>Back (-Y)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="posZImageSourceLabel">
-        <property name="text">
-         <string>Top (+Z)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsImageSourceLineEdit" name="negXImageSource" native="true"/>
-      </item>
-      <item row="3" column="1">
-       <widget class="QgsImageSourceLineEdit" name="negZImageSource" native="true"/>
-      </item>
-      <item row="6" column="1">
-       <widget class="QgsImageSourceLineEdit" name="posZImageSource" native="true"/>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="mMappingComboBox"/>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Convention</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckEnvironmentalLight">
+        <property name="toolTip">
+         <string>When checked, the scene's lighting will reflect the skybox appearance</string>
+        </property>
+        <property name="text">
+         <string>Enable environmental lighting effects</string>
         </property>
        </widget>
       </item>
