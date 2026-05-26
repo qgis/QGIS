@@ -1673,7 +1673,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         lerc_blob = gdal.VSIFReadL(1, size, vsi_file)
         gdal.VSIFCloseL(vsi_file)
         gdal.Unlink("/vsimem/test.lrc")
-        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpretation=RSP_BilinearInterpolation&pixelType=F32&lercVersion=2&compression=LERC&compressionTolerance=0&format=lerc"
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpolation=RSP_BilinearInterpolation&pixelType=F32&lercVersion=2&compression=LERC&compressionTolerance=0&format=lerc"
         with open(self.sanitize_local_url(endpoint, query), "wb") as f:
             f.write(lerc_blob)
 
@@ -1740,7 +1740,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         gdal.VSIFCloseL(vsi_file)
         gdal.Unlink("/vsimem/test.tif")
 
-        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpretation=RSP_BilinearInterpolation&pixelType=U16&format=tiff"
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpolation=RSP_BilinearInterpolation&pixelType=U16&format=tiff"
 
         with open(self.sanitize_local_url(endpoint, query), "wb") as f:
             f.write(tiff_blob)
@@ -1807,7 +1807,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         gdal.VSIFCloseL(vsi_file)
         gdal.Unlink("/vsimem/test.jpg")
 
-        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpretation=RSP_BilinearInterpolation&pixelType=U8&format=jpg"
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpolation=RSP_BilinearInterpolation&pixelType=U8&format=jpg"
         with open(self.sanitize_local_url(endpoint, query), "wb") as f:
             f.write(jpg_blob)
 
