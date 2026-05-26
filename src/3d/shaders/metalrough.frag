@@ -9,7 +9,7 @@ uniform samplerCube globalSpecularMap;
 uniform int globalSpecularMipLevels;
 uniform vec3 envLightSh[9];
 uniform int envLightMode; // 1 = Skybox IBL, 0 = Solid Background
-
+uniform float envLightStrength;
 in vec3 worldPosition;
 
 #ifndef FLAT_SHADING
@@ -429,7 +429,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     // Remap roughness for a perceptually more linear correspondence
     float alpha = remapRoughness(roughness);
 
-    if ( envLightMode == 1 )
+    if ( envLightMode == 1 && envLightStrength > 0 )
     {
         cLinear += pbrIblModelSphericalHarmonics(worldNormal,
                                worldView,
@@ -437,7 +437,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                                metalness,
                                roughness,
                                alpha,
-                               ambientOcclusion);
+                               ambientOcclusion) * envLightStrength;
     }
 
     for (int i = 0; i < lightCount; ++i) {

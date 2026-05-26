@@ -1208,6 +1208,7 @@ void Qgs3DMapScene::onBackgroundSettingsChanged()
     mBackgroundEntity
       = new QgsCubeFacesSkyboxEntity( skyboxSettings->cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], skyboxSettings->environmentalLightingEnabled(), this );
     qgis::down_cast< QgsSkyboxEntity * >( mBackgroundEntity )->updateEnvironmentLight( mEnvironmentLight );
+    mEnvironmentLight->setStrength( static_cast< float >( skyboxSettings->environmentalLightStrength() ) );
   }
   else if ( settings->type() == Qgis::Map3DBackgroundType::FixedGradientBackground )
   {
