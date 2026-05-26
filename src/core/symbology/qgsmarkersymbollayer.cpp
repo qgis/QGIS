@@ -2936,6 +2936,10 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
     p.rotate( angle );
     p.translate( -r.defaultSize().width() / 2.0, -r.defaultSize().height() / 2.0 );
   }
+  // Clip the SVG to its declared viewport so out-of-bounds content is not
+  // written to the DXF. The clip is set under the rotation transform so it
+  // rotates together with the marker content.
+  p.setClipRect( QRectF( QPointF( 0, 0 ), QSizeF( r.defaultSize() ) ) );
   pd.setShift( shift + QPointF( outputOffset.x(), -outputOffset.y() ) );
   pd.setOutputSize( QRectF( -outSize.width() / 2.0, -outSize.height() / 2.0, outSize.width(), outSize.height() ) );
   pd.setLayer( layerName );
