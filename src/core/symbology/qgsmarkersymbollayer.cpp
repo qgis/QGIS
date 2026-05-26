@@ -1590,14 +1590,14 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     }
   }
 
-  if ( mSizeUnit == Qgis::RenderUnit::Millimeters )
-  {
-    size *= mmMapUnitScaleFactor;
-  }
-
   if ( mSizeUnit == Qgis::RenderUnit::MapUnits )
   {
     e.clipValueToMapUnitScale( size, mSizeMapUnitScale, context.renderContext().scaleFactor() );
+  }
+  else
+  {
+    // mmMapUnitScaleFactor is the proper symbol-unit -> map-unit factor for mSizeUnit
+    size *= mmMapUnitScaleFactor;
   }
   const double halfSize = size / 2.0;
 
@@ -2865,11 +2865,9 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
 
   bool ok = true;
 
-  if ( mSizeUnit == Qgis::RenderUnit::Millimeters )
-  {
-    size *= mmMapUnitScaleFactor;
-    height *= mmMapUnitScaleFactor;
-  }
+  // mmMapUnitScaleFactor is in fact the symbol-unit -> map-unit factor for mSizeUnit
+  size *= mmMapUnitScaleFactor;
+  height *= mmMapUnitScaleFactor;
 
   //offset, angle
   QPointF offset = mOffset;

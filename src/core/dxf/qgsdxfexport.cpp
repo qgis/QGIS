@@ -2002,17 +2002,30 @@ QgsRenderContext QgsDxfExport::renderContext() const
 
 double QgsDxfExport::mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel )
 {
-  if ( symbolUnits == Qgis::RenderUnit::MapUnits )
+  switch ( symbolUnits )
   {
-    return 1.0;
-  }
-  else if ( symbolUnits == Qgis::RenderUnit::Millimeters )
-  {
-    return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 );
-  }
-  else if ( symbolUnits == Qgis::RenderUnit::Pixels )
-  {
-    return mapUnitsPerPixel;
+    case Qgis::RenderUnit::MapUnits:
+      return 1.0;
+
+    case Qgis::RenderUnit::Millimeters:
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 );
+
+    case Qgis::RenderUnit::Points:
+      // 1 pt = 25.4/72 mm
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 * 25.4 / 72.0 );
+
+    case Qgis::RenderUnit::Inches:
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 * 25.4 );
+
+    case Qgis::RenderUnit::MetersInMapUnits:
+      return QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits );
+
+    case Qgis::RenderUnit::Pixels:
+      return mapUnitsPerPixel;
+
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
+      break;
   }
   return 1.0;
 }
