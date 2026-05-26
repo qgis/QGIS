@@ -34,8 +34,10 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QBuffer>
+#include <QFileInfo>
 #include <QRegularExpression>
 #include <QString>
+#include <QTemporaryDir>
 #include <QTemporaryFile>
 
 using namespace Qt::StringLiterals;
@@ -78,6 +80,7 @@ class TestQgsDxfExport : public QObject
     void testDashedLine();
     void testTransform();
     void testDataDefinedPoints();
+    void testDataDefinedSvgRelativePath();
     void testExtent();
     void testSelectedPoints();
     void testSelectedLines();
@@ -1518,6 +1521,90 @@ void TestQgsDxfExport::testDataDefinedPoints()
     ),
     debugInfo.toUtf8().constData()
   );
+}
+
+void TestQgsDxfExport::testDataDefinedSvgRelativePath()
+{
+  // Regression test: DXF export must use the project's path resolver so that
+  // data-defined SVG names that are relative to the project file resolve
+  // correctly, instead of falling back to the "missing svg" placeholder.
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  // Copy a known SVG into the temp dir under a custom name, so we can
+  // reference it via a project-relative path.
+  const QString sourceSvg = QgsSymbolLayerUtils::svgSymbolNameToPath( u"/gpsicons/plane.svg"_s, QgsPathResolver() );
+  QVERIFY( !sourceSvg.isEmpty() );
+  const QString svgFileName = u"myicon.svg"_s;
+  const QString relocatedSvg = tempDir.filePath( svgFileName );
+  QVERIFY( QFile::copy( sourceSvg, relocatedSvg ) );
+
+  // Pretend the project file lives next to the SVG.
+  const QString projectFile = tempDir.filePath( u"project.qgs"_s );
+  QgsProject::instance()->setFileName( projectFile );
+
+  auto vl = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:2056"_s, u"points"_s, u"memory"_s );
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( u"POINT (2000000 1000000)"_s ) );
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+  vl->updateExtents();
+
+  auto *svgLayer = new QgsSvgMarkerSymbolLayer( svgFileName );
+  QgsPropertyCollection ddProps;
+  // Data-defined name is a *relative* path — only resolvable through the
+  // project's pathResolver.
+  ddProps.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( u"'%1'"_s.arg( svgFileName ) ) );
+  svgLayer->setDataDefinedProperties( ddProps );
+
+  QgsSymbolLayerList sll;
+  sll << svgLayer;
+  vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( QSize( 640, 480 ) );
+  mapSettings.setExtent( vl->extent().buffered( 100.0 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  // Sanity check: the project's path resolver can locate the SVG.
+  const QString resolved = QgsSymbolLayerUtils::svgSymbolNameToPath( svgFileName, QgsProject::instance()->pathResolver() );
+  QCOMPARE( QFileInfo( resolved ).canonicalFilePath(), QFileInfo( relocatedSvg ).canonicalFilePath() );
+
+  // Export with the project path resolver available -> real SVG is rendered.
+  QByteArray dxfWithResolver;
+  {
+    QBuffer buf( &dxfWithResolver );
+    buf.open( QIODevice::WriteOnly );
+    QgsDxfExport d;
+    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
+    d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
+    d.setMapSettings( mapSettings );
+    d.setExtent( mapSettings.extent() );
+    d.setSymbologyScale( 1000 );
+    QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
+  }
+
+  // Export without a project file -> relative path cannot be resolved, the
+  // missing-svg placeholder is rendered instead.
+  QgsProject::instance()->setFileName( QString() );
+  QByteArray dxfWithoutResolver;
+  {
+    QBuffer buf( &dxfWithoutResolver );
+    buf.open( QIODevice::WriteOnly );
+    QgsDxfExport d;
+    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
+    d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
+    d.setMapSettings( mapSettings );
+    d.setExtent( mapSettings.extent() );
+    d.setSymbologyScale( 1000 );
+    QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
+  }
+
+  // If the fix is in place, the two exports differ because the real SVG
+  // produces different (and more) geometry than the placeholder.
+  QVERIFY2( dxfWithResolver != dxfWithoutResolver, "DXF output unchanged: project pathResolver not plumbed into the export's render context" );
 }
 
 void TestQgsDxfExport::testExtent()
