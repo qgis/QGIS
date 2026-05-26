@@ -294,7 +294,6 @@ void QgsCubeFacesSkyboxEntity::updateEnvironmentLight( QgsEnvironmentLight *envL
     maxSize = std::max( maxSize, std::max( size.width(), size.height() ) );
   }
 
-  QList<Qt3DRender::QAbstractTextureImage *> newFaces;
   const QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, FaceTransformation> faceConfigs = generateFaceTransformation();
   const QSize faceSize( maxSize, maxSize );
 
