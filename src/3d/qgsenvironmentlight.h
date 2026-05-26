@@ -63,6 +63,11 @@ class _3D_EXPORT QgsEnvironmentLight : public Qt3DCore::QEntity
     void setMode( Mode mode );
 
     /**
+     * Sets the \a strength of the environmental light, as a factor between 0 and 1.
+     */
+    void setStrength( float strength );
+
+    /**
      * Sets the spherical \a harmonics for irradiant light.
      */
     void setSphericalHarmonics( const QVector<QVector3D> &harmonics );
@@ -73,7 +78,8 @@ class _3D_EXPORT QgsEnvironmentLight : public Qt3DCore::QEntity
     void setSpecularMap( Qt3DRender::QTextureCubeMap *specularTexture, int mipLevels );
 
   private:
-    Qt3DRender::QParameter *mEnvironmentLightModeParam = nullptr; // whether environmental lighting is enabled
+    Qt3DRender::QParameter *mEnvironmentLightModeParam = nullptr;     // whether environmental lighting is enabled
+    Qt3DRender::QParameter *mEnvironmentLightStrengthParam = nullptr; // whether environmental lighting is enabled
     Qt3DRender::QParameter *mShParam = nullptr;
     Qt3DRender::QParameter *mSpecularMapParam = nullptr;
     Qt3DRender::QParameter *mMipLevelsParam = nullptr;

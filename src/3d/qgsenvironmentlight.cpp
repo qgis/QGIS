@@ -44,7 +44,8 @@ QgsEnvironmentLight::QgsEnvironmentLight( QgsFrameGraph *frameGraph, QNode *pare
   mMipLevelsParam = new Qt3DRender::QParameter( u"globalSpecularMipLevels"_s, 1, this );
 
   mEnvironmentLightModeParam = new Qt3DRender::QParameter( u"envLightMode"_s, 0, this );
-  frameGraph->addGlobalParameters( { mShParam, mSpecularMapParam, mMipLevelsParam, mEnvironmentLightModeParam } );
+  mEnvironmentLightStrengthParam = new Qt3DRender::QParameter( u"envLightStrength"_s, 1, this );
+  frameGraph->addGlobalParameters( { mShParam, mSpecularMapParam, mMipLevelsParam, mEnvironmentLightModeParam, mEnvironmentLightStrengthParam } );
 }
 
 void QgsEnvironmentLight::setMode( Mode mode )
@@ -58,6 +59,11 @@ void QgsEnvironmentLight::setMode( Mode mode )
       mEnvironmentLightModeParam->setValue( 1 );
       break;
   }
+}
+
+void QgsEnvironmentLight::setStrength( float strength )
+{
+  mEnvironmentLightStrengthParam->setValue( strength );
 }
 
 void QgsEnvironmentLight::setSphericalHarmonics( const QVector<QVector3D> &harmonics )
