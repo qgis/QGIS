@@ -1605,9 +1605,34 @@ void TestQgsDxfExport::testDataDefinedSvgRelativePath()
     QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
   }
 
-  // If the fix is in place, the two exports differ because the real SVG
-  // produces different (and more) geometry than the placeholder.
-  QVERIFY2( dxfWithResolver != dxfWithoutResolver, "DXF output unchanged: project pathResolver not plumbed into the export's render context" );
+  // Count vertex group codes (10) in the BLOCKS section: plane.svg has many
+  // more path vertices than the missing-svg placeholder, so the resolver
+  // branch must produce strictly more vertices than the non-resolver one.
+  const auto countBlockVertices = []( const QByteArray &dxfBytes ) {
+    const QString dxf = QString::fromLatin1( dxfBytes );
+    const QStringList lines = dxf.split( '\n' );
+    bool inBlocks = false;
+    int count = 0;
+    for ( int i = 0; i < lines.size() - 1; ++i )
+    {
+      const QString trimmed = lines.at( i ).trimmed();
+      const QString next = lines.at( i + 1 ).trimmed();
+      if ( trimmed == "2"_L1 && next == "BLOCKS"_L1 )
+        inBlocks = true;
+      else if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
+        inBlocks = false;
+      if ( inBlocks && trimmed == "10"_L1 )
+        ++count;
+    }
+    return count;
+  };
+
+  const int verticesWithResolver = countBlockVertices( dxfWithResolver );
+  const int verticesWithoutResolver = countBlockVertices( dxfWithoutResolver );
+  QVERIFY2(
+    verticesWithResolver > verticesWithoutResolver + 10,
+    u"Expected resolver branch to render plane.svg (more vertices) than placeholder: with=%1 without=%2"_s.arg( verticesWithResolver ).arg( verticesWithoutResolver ).toUtf8().constData()
+  );
 }
 
 void TestQgsDxfExport::testSvgMarkerPaintDeviceMetrics()
