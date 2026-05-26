@@ -820,6 +820,23 @@ QgsModelDesignerSocketGraphicItem *QgsModelComponentGraphicItem::outSocketAt( in
   return mOutSockets.at( index );
 }
 
+QList<QgsModelArrowItem *> QgsModelComponentGraphicItem::incomingArrows()
+{
+  const QList<QGraphicsItem *> allItems = scene()->items();
+  QList<QgsModelArrowItem *> arrows;
+  for ( QGraphicsItem *item : allItems )
+  {
+    if ( auto arrowItem = dynamic_cast< QgsModelArrowItem * >( item ) )
+    {
+      if ( arrowItem->endItem() == this )
+      {
+        arrows << arrowItem;
+      }
+    }
+  }
+  return arrows;
+}
+
 QList<QgsModelArrowItem *> QgsModelComponentGraphicItem::outgoingArrows()
 {
   const QList<QGraphicsItem *> allItems = scene()->items();
@@ -1465,6 +1482,18 @@ void QgsModelChildAlgorithmGraphicItem::setStarted()
 {
   mStarted = true;
   update();
+}
+
+int QgsModelChildAlgorithmGraphicItem::indexForInput( const QString &parameterName ) const
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  {
+    if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+    {
+      return QgsProcessingUtils::parameterDefinitionIndex( algorithm, parameterName );
+    }
+  }
+  return -1;
 }
 
 int QgsModelChildAlgorithmGraphicItem::indexForOutput( const QString &output ) const

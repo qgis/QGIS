@@ -432,8 +432,21 @@ class CORE_EXPORT QgsProcessingUtils
     static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
 
     /**
-     * Returns the index of the output matching \a name for a specified \a algorithm.
+     * Returns the index of the parameter with matching \a name for a specified \a algorithm.
+     *
      * Matching is done in a case-insensitive manner.
+     *
+     * \see outputDefinitionIndex()
+     * \since QGIS 4.2
+     */
+    static int parameterDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) SIP_HOLDGIL;
+
+    /**
+     * Returns the index of the output matching \a name for a specified \a algorithm.
+     *
+     * Matching is done in a case-insensitive manner.
+     *
+     * \see parameterDefinitionIndex()
      * \since QGIS 3.44
      */
     static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) SIP_HOLDGIL;

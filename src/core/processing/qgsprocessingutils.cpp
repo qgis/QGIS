@@ -1364,6 +1364,18 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   return s;
 }
 
+int QgsProcessingUtils::parameterDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name )
+{
+  int index = 0;
+  for ( const QgsProcessingParameterDefinition *def : algorithm->parameterDefinitions() )
+  {
+    if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
+      return index;
+    index++;
+  }
+  return -1;
+}
+
 int QgsProcessingUtils::outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name )
 {
   int index = 0;
