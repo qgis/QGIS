@@ -12481,6 +12481,39 @@ Qgis.RasterBandStatistics = lambda flags=0: Qgis.RasterBandStatistic(flags)
 Qgis.RasterBandStatistics.baseClass = Qgis
 RasterBandStatistics = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.SensorThingsVersion.Version1_1.__doc__ = "1.1"
+Qgis.SensorThingsVersion.Version2_0.__doc__ = "2.0"
+Qgis.SensorThingsVersion.__doc__ = """OGC SensorThings API versions.
+
+.. versionadded:: 4.2
+
+* ``Version1_1``: 1.1
+* ``Version2_0``: 2.0
+
+"""
+# --
+Qgis.SensorThingsVersion.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SensorThingsExtension.MultiDatastream.__doc__ = "MultiDatastream extension"
+Qgis.SensorThingsExtension.SensingExtensionObservationsMeasurements.__doc__ = "Sensing Extension (Observations & Measurements)"
+Qgis.SensorThingsExtension.SensingExtensionSampling.__doc__ = "Sensing Extension (Sampling)"
+Qgis.SensorThingsExtension.SensingExtensionRelations.__doc__ = "Sensing Extension (Relations)"
+Qgis.SensorThingsExtension.__doc__ = """OGC SensorThings extensions.
+
+.. versionadded:: 4.2
+
+* ``MultiDatastream``: MultiDatastream extension
+* ``SensingExtensionObservationsMeasurements``: Sensing Extension (Observations & Measurements)
+* ``SensingExtensionSampling``: Sensing Extension (Sampling)
+* ``SensingExtensionRelations``: Sensing Extension (Relations)
+
+"""
+# --
+Qgis.SensorThingsExtension.baseClass = Qgis
+Qgis.SensorThingsExtensions = lambda flags=0: Qgis.SensorThingsExtension(flags)
+Qgis.SensorThingsExtensions.baseClass = Qgis
+SensorThingsExtensions = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SensorThingsEntity.Invalid.__doc__ = "An invalid/unknown entity"
 Qgis.SensorThingsEntity.Thing.__doc__ = "A Thing is an object of the physical world (physical things) or the information world (virtual things) that is capable of being identified and integrated into communication networks"
 Qgis.SensorThingsEntity.Location.__doc__ = "A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing"
