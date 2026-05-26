@@ -198,6 +198,16 @@ pushed to the feedback object.
 .. versionadded:: 3.14
 %End
 
+    void reportSourceLoaded( const QString &parameterName, long long featureCount );
+%Docstring
+Reports that a feature source was retrieved for the specified algorithm
+input parameter.
+
+.. seealso:: :py:func:`sourceLoaded`
+
+.. versionadded:: 4.2
+%End
+
     void featureAddedToSink( const QString &output );
 %Docstring
 Reports that a feature was added to the the sink associated with the
@@ -322,6 +332,16 @@ The ``output`` argument specifies the associated algorithm output name.
 .. seealso:: :py:func:`featureAddedToSink`
 
 .. seealso:: :py:func:`featureSinkFinalized`
+
+.. versionadded:: 4.2
+%End
+
+    void sourceLoaded( const QString &parameterName, long long featureCount );
+%Docstring
+Emitted when a feature source was retrieved for the specified algorithm
+input parameter.
+
+.. seealso:: :py:func:`reportSourceLoaded`
 
 .. versionadded:: 4.2
 %End
