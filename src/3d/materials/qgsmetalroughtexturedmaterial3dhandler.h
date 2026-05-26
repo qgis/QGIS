@@ -40,7 +40,7 @@ namespace Qt3DRender
 class _3D_EXPORT QgsMetalRoughTexturedMaterial3DHandler : public QgsAbstractMaterial3DHandler
 {
   public:
-    Q t;
+    QgsMetalRoughTexturedMaterial3DHandler() = default;
 
     QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const override;
     QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override;

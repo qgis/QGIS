@@ -40,12 +40,15 @@
 #include "qgsflatterrainsettings.h"
 #include "qgsfontutils.h"
 #include "qgsframegraph.h"
+#include "qgsgoochmaterialsettings.h"
 #include "qgsline3dsymbol.h"
 #include "qgslinestring.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsmetalroughmaterialsettings.h"
+#include "qgsmetalroughtexturedmaterialsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
@@ -1379,6 +1382,7 @@ void TestQgs3DRendering::testInstancedRendering()
   sphere3DSymbol = new QgsPoint3DSymbol();
   sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
   sphere3DSymbol->setShapeProperties( vmSphere );
+
   QgsMetalRoughTexturedMaterialSettings metalTexturedSettings;
   metalTexturedSettings.setBaseColorTexturePath( testDataPath( "/3d/materials/Metal005_Color.jpg" ) );
   metalTexturedSettings.setMetalnessTexturePath( testDataPath( "/3d/materials/Metal005_Metalness.jpg" ) );
