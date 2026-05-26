@@ -762,6 +762,11 @@ bool QgsImageServerProvider::readBlockInternal(
     requestFormat = dataSource.param( u"format"_s );
     vsiExtension.clear();
   }
+  else if ( mDataType == Qgis::DataType::Byte )
+  {
+     requestFormat = u"png8"_s;
+     vsiExtension = u".png"_s;
+  }
   else if ( mMaximumLercVersionSupported > 0 && ( mDataType == Qgis::DataType::Float32 || mDataType == Qgis::DataType::Float64 ) )
   {
     // if the data is floating point and both server and client support it, request LERC compression for smaller transfers

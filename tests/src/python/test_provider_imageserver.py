@@ -1640,6 +1640,72 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertAlmostEqual(block.value(1, 0), 150, delta=15)
         self.assertAlmostEqual(block.value(1, 1), 200, delta=15)
 
+    def test_fetch_block_png(self):
+        """
+        Test fetching a block for a U8 data type when no explicit format is specified
+        """
+        endpoint = self.basetestpath + "/fetch_png_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U8",
+  "extent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {
+      "wkid": 4326
+    }
+  },
+  "capabilities": "Image",
+  "bandCount": 1,
+  "type": "ImageServer",
+  "serviceSourceType": "esriImageServiceSourceTypeDataset",
+  "serviceDataType": "esriImageServiceDataTypeElevation",
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  }
+}"""
+            )
+
+        # 2x2 PNG blob
+        mem_ds = gdal.GetDriverByName("MEM").Create("", 2, 2, 1, gdal.GDT_Byte)
+        # raster data = 10, 20, 30, 40
+        mem_ds.GetRasterBand(1).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 10, 20, 30, 40)
+        )
+
+        gdal.GetDriverByName("PNG").CreateCopy("/vsimem/test.png", mem_ds)
+
+        vsi_file = gdal.VSIFOpenL("/vsimem/test.png", "rb")
+        gdal.VSIFSeekL(vsi_file, 0, 2)
+        size = gdal.VSIFTellL(vsi_file)
+        gdal.VSIFSeekL(vsi_file, 0, 0)
+        jpg_blob = gdal.VSIFReadL(1, size, vsi_file)
+        gdal.VSIFCloseL(vsi_file)
+        gdal.Unlink("/vsimem/test.png")
+
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpolation=RSP_BilinearInterpolation&pixelType=U8&format=png8"
+        with open(self.sanitize_local_url(endpoint, query), "wb") as f:
+            f.write(jpg_blob)
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        block = rl.dataProvider().block(1, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block.isValid())
+
+        self.assertEqual(block.value(0, 0), 10)
+        self.assertEqual(block.value(0, 1), 20)
+        self.assertEqual(block.value(1, 0), 30)
+        self.assertEqual(block.value(1, 1), 40)
+
     def test_raster_attribute_table(self):
         """
         Test fetching raster attribute table
