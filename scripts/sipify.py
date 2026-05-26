@@ -3420,7 +3420,7 @@ def process_comments():
         r"^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE",
         CONTEXT.current_line,
     ):
-        # support Docstring for template based classes in SIP 4.19.7+
+        # support Docstring for template based classes
         CONTEXT.comment_template_docstring = True
     elif CONTEXT.multiline_definition == MultiLineType.NotMultiline and (
         re.search(r"//", CONTEXT.current_line)
