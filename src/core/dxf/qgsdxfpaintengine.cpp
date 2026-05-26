@@ -393,11 +393,34 @@ QColor QgsDxfPaintEngine::penColor() const
 
 QColor QgsDxfPaintEngine::brushColor() const
 {
-  if ( qgsDoubleNear( mOpacity, 1.0 ) )
+  QColor c;
+  switch ( mBrush.style() )
   {
-    return mBrush.color();
+    // DXF doesn't support gradients — use the middle color as a fallback for
+    // the brush color
+    case Qt::LinearGradientPattern:
+    case Qt::RadialGradientPattern:
+    case Qt::ConicalGradientPattern:
+    {
+      const QGradientStops stops = mBrush.gradient() ? mBrush.gradient()->stops() : QGradientStops();
+      if ( !stops.isEmpty() )
+      {
+        c = stops.at( stops.size() / 2 ).second;
+      }
+      else
+      {
+        c = mBrush.color();
+      }
+      break;
+    }
+    default:
+      c = mBrush.color();
+      break;
   }
-  QColor c = mBrush.color();
-  c.setAlphaF( c.alphaF() * mOpacity );
+
+  if ( !qgsDoubleNear( mOpacity, 1.0 ) )
+  {
+    c.setAlphaF( c.alphaF() * mOpacity );
+  }
   return c;
 }
