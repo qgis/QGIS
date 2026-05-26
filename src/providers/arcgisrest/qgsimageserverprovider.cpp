@@ -602,7 +602,80 @@ QList<double> QgsImageServerProvider::nativeResolutions() const
   return mResolutions;
 }
 
+QgsRasterBlock *QgsImageServerProvider::block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback )
+{
+  auto block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+
+  bool useNoDataMask = true;
+  if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
+  {
+    block->setNoDataValue( sourceNoDataValue( bandNo ) );
+    useNoDataMask = false;
+  }
+
+  if ( block->isEmpty() )
+  {
+    QgsDebugError( u"Couldn't create raster block"_s );
+    block->setError( { tr( "Couldn't create raster block." ), u"Raster"_s } );
+    block->setValid( false );
+    return block.release();
+  }
+
+  if ( !mExtent.intersects( boundingBox ) )
+  {
+    // the requested extent is completely outside of the raster's extent - nothing to do
+    block->setIsNoData();
+    return block.release();
+  }
+  if ( !mExtent.contains( boundingBox ) )
+  {
+    QRect subRect = QgsRasterBlock::subRect( boundingBox, width, height, mExtent );
+    block->setIsNoDataExcept( subRect );
+  }
+
+  std::vector<GByte> maskData;
+  const qgssize dataSize = static_cast< qgssize >( width ) * static_cast< qgssize >( height );
+  if ( useNoDataMask )
+  {
+    maskData.resize( dataSize );
+  }
+
+  bool foundNoDataMask = false;
+  if ( !readBlockInternal( bandNo, boundingBox, width, height, block->bits(), useNoDataMask ? &maskData : nullptr, &foundNoDataMask, feedback ) )
+  {
+    if ( !feedback || !feedback->isCanceled() )
+    {
+      QgsDebugError( u"Error occurred while reading block"_s );
+      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+    }
+    block->setIsNoData();
+    block->setValid( false );
+    return block.release();
+  }
+  else if ( useNoDataMask && foundNoDataMask )
+  {
+    for ( qgssize i = 0; i < dataSize; ++i )
+    {
+      if ( maskData[i] == 0 )
+      {
+        block->setIsNoData( i );
+      }
+    }
+  }
+
+  block->applyScaleOffset( bandScale( bandNo ), bandOffset( bandNo ) );
+  block->applyNoDataValues( userNoDataValues( bandNo ) );
+  return block.release();
+}
+
 bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
+{
+  return readBlockInternal( bandNo, viewExtent, width, height, data, nullptr, nullptr, feedback );
+}
+
+bool QgsImageServerProvider::readBlockInternal(
+  int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, std::vector<GByte> *noDataMask, bool *foundNoDataMask, QgsRasterBlockFeedback *feedback
+)
 {
   if ( !mValid || width <= 0 || height <= 0 )
     return false;
@@ -773,7 +846,6 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
     return false;
   }
 
-
   if ( feedback && feedback->isCanceled() )
   {
     GDALClose( hDS );
@@ -797,6 +869,25 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   const GSpacing lineSpace = static_cast<GSpacing>( width ) * elementSize;
   const CPLErr err
     = GDALRasterIOEx( hBand, GF_Read, 0, 0, GDALGetRasterXSize( hDS ), GDALGetRasterYSize( hDS ), targetData, blockSubRectPixels.width(), blockSubRectPixels.height(), gdalType, pixelSpace, lineSpace, &extraArg );
+
+  if ( noDataMask )
+  {
+    *foundNoDataMask = false;
+    const int maskFlags = GDALGetMaskFlags( hBand );
+    if ( !( maskFlags & GMF_ALL_VALID ) )
+    {
+      if ( GDALRasterBandH hMaskBand = GDALGetMaskBand( hBand ) )
+      {
+        // Read the mask array
+        CPLErr err = GDALRasterIOEx( hMaskBand, GF_Read, 0, 0, GDALGetRasterXSize( hDS ), GDALGetRasterYSize( hDS ), noDataMask->data(), width, height, GDT_Byte, 0, 0, nullptr );
+
+        if ( err == CE_None )
+        {
+          *foundNoDataMask = true;
+        }
+      }
+    }
+  }
 
   GDALClose( hDS );
   VSIUnlink( vsimemFilename.toUtf8().constData() );
