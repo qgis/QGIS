@@ -1497,7 +1497,11 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
 
         # fetch block outside raster extent
         block = rl.dataProvider().block(1, QgsRectangle(20, 20, 30, 30), 2, 2)
-        self.assertFalse(block.isValid())
+        self.assertTrue(block.isValid())
+        # should be all no-data
+        for r in range(0, 2):
+            for c in range(0, 2):
+                self.assertTrue(block.isNoData(r, c))
 
         # invalid size
         block = rl.dataProvider().block(1, QgsRectangle(0, 0, 10, 10), 0, 0)
