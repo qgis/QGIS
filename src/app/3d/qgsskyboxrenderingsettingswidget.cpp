@@ -62,6 +62,7 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
   negZImageSource->setSource( cubeMapFaces[u"negZ"_s] );
 
   mMappingComboBox->setCurrentIndex( mMappingComboBox->findData( QVariant::fromValue( skyboxSettings.cubeMapping() ) ) );
+  mCheckEnvironmentalLight->setChecked( skyboxSettings.environmentalLightingEnabled() );
 }
 
 QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
@@ -77,6 +78,7 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
   settings.setCubeMapFace( u"negY"_s, negYImageSource->source() );
   settings.setCubeMapFace( u"negZ"_s, negZImageSource->source() );
   settings.setCubeMapping( mMappingComboBox->currentData().value<Qgis::SkyboxCubeMapping>() );
+  settings.setEnvironmentalLightingEnabled( mCheckEnvironmentalLight->isChecked() );
   return settings;
 }
 

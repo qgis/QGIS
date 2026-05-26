@@ -121,7 +121,15 @@ void QgsPanoramicSkyboxEntity::reloadTexture()
 // 6 faces skybox
 
 QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity(
-  Qgis::SkyboxCubeMapping mapping, const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent
+  Qgis::SkyboxCubeMapping mapping,
+  const QString &posX,
+  const QString &posY,
+  const QString &posZ,
+  const QString &negX,
+  const QString &negY,
+  const QString &negZ,
+  bool enableEnvironmentalLighting,
+  Qt3DCore::QNode *parent
 )
   : QgsSkyboxEntity( parent )
   , mMappingType( mapping )
@@ -131,6 +139,7 @@ QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity(
   , mSourceNegX( negX )
   , mSourceNegY( negY )
   , mSourceNegZ( negZ )
+  , mEnableEnvironmentalLighting( enableEnvironmentalLighting )
   , mGlShader( new Qt3DRender::QShaderProgram() )
 {
   init();
@@ -265,6 +274,12 @@ namespace
 } //namespace
 void QgsCubeFacesSkyboxEntity::updateEnvironmentLight( QgsEnvironmentLight *envLight ) const
 {
+  if ( !mEnableEnvironmentalLighting )
+  {
+    envLight->setMode( QgsEnvironmentLight::Mode::Disabled );
+    return;
+  }
+
   auto *lightCubeMap = new Qt3DRender::QTextureCubeMap( envLight );
   lightCubeMap->setMagnificationFilter( Qt3DRender::QTextureCubeMap::Linear );
   lightCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::LinearMipMapLinear );
