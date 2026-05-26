@@ -1102,13 +1102,9 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(rl.dataProvider().dataType(3), Qgis.DataType.UInt16)
         self.assertEqual(rl.dataProvider().dataType(4), Qgis.DataType.UInt16)
 
-        # we always populate nodata values for integers, so that we can
-        # safely pad raster blocks which were requested outside of the
-        # providers extent
         for i in range(1, 5):
-            self.assertTrue(rl.dataProvider().sourceHasNoDataValue(i))
-            self.assertTrue(rl.dataProvider().useSourceNoDataValue(i))
-            self.assertEqual(rl.dataProvider().sourceNoDataValue(i), 65535)
+            self.assertFalse(rl.dataProvider().sourceHasNoDataValue(i))
+            self.assertFalse(rl.dataProvider().useSourceNoDataValue(i))
 
         self.assertFalse(rl.elevationProperties().isEnabled())
 
