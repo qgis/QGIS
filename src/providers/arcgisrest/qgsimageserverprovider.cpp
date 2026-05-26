@@ -175,39 +175,6 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     }
   }
 
-  // for integer data types, we enforce that there is a nodata value for every band.
-  // we require this as we can't fallback to a nan value for padding raster blocks
-  // with nodata when required
-  switch ( mDataType )
-  {
-    case Qgis::DataType::UnknownDataType:
-      break;
-
-    case Qgis::DataType::Byte:
-    case Qgis::DataType::UInt16:
-    case Qgis::DataType::Int16:
-    case Qgis::DataType::UInt32:
-    case Qgis::DataType::Int32:
-    case Qgis::DataType::Int8:
-      while ( mSrcHasNoDataValue.size() < mBandCount )
-      {
-        mSrcNoDataValue.append( QgsArcGisRestUtils::defaultNoDataForDataType( mDataType, ok ) );
-        mSrcHasNoDataValue.append( true );
-        mUseSrcNoDataValue.append( true );
-      }
-      break;
-
-    case Qgis::DataType::Float32:
-    case Qgis::DataType::Float64:
-    case Qgis::DataType::CInt16:
-    case Qgis::DataType::CInt32:
-    case Qgis::DataType::CFloat32:
-    case Qgis::DataType::CFloat64:
-    case Qgis::DataType::ARGB32:
-    case Qgis::DataType::ARGB32_Premultiplied:
-      break;
-  }
-
   for ( const QVariant &min : mLayerInfo.value( u"minValues"_s ).toList() )
   {
     mMinValues.append( min.toDouble() );
