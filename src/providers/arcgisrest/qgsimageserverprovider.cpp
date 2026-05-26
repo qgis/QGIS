@@ -752,6 +752,8 @@ bool QgsImageServerProvider::readBlockInternal(
   query.addQueryItem( u"interpolation"_s, u"RSP_BilinearInterpolation"_s );
   query.addQueryItem( u"pixelType"_s, mPixelType );
 
+  int responseBandNumber = 1;
+
   // determine the request format
   // default to tiff as a safe option since it handles all bit depths and nodata.
   QString requestFormat = u"tiff"_s;
@@ -764,8 +766,18 @@ bool QgsImageServerProvider::readBlockInternal(
   }
   else if ( mDataType == Qgis::DataType::Byte )
   {
-     requestFormat = u"png8"_s;
-     vsiExtension = u".png"_s;
+    requestFormat = u"png8"_s;
+    vsiExtension = u".png"_s;
+    // hack to get around ImageServer pixel mask logic for RGB images
+    if ( mServiceInfo.value( u"serviceDataType"_s ).toString() == "esriImageServiceDataTypeRGB" )
+    {
+      // gross hack -- for RGB byte data, we need to force the service to return a PNG32 image so that we
+      // get the alpha mask.
+      // we'll throw away two of those unwanted bands shortly :o
+      requestFormat = u"png32"_s;
+      query.removeQueryItem( u"bandIds"_s );
+      responseBandNumber = bandNo;
+    }
   }
   else if ( mMaximumLercVersionSupported > 0 && ( mDataType == Qgis::DataType::Float32 || mDataType == Qgis::DataType::Float64 ) )
   {
@@ -821,8 +833,7 @@ bool QgsImageServerProvider::readBlockInternal(
     return false;
   }
 
-  // we'll always have a single-band raster, so we request the first band
-  GDALRasterBandH hBand = GDALGetRasterBand( hDS, 1 );
+  GDALRasterBandH hBand = GDALGetRasterBand( hDS, responseBandNumber );
   if ( !hBand || ( feedback && feedback->isCanceled() ) )
   {
     GDALClose( hDS );
