@@ -85,6 +85,9 @@ class TestQgsDxfExport : public QObject
     void testSvgMarkerPointsUnits();
     void testDataDefinedLayerEnabled();
     void testMarkerOffset();
+    void testSvgMarkerClipsOutOfViewport();
+    void testSvgMarkerClipPreservesInnerGroupTransform();
+    void testSvgMarkerClipPreservesRotatedContent();
     void testExtent();
     void testSelectedPoints();
     void testSelectedLines();
@@ -1832,6 +1835,155 @@ void TestQgsDxfExport::testMarkerOffset()
       QVERIFY2( maxAbsY > 4.0, u"svg anchor Y not applied: max|y|=%1"_s.arg( maxAbsY ).toUtf8().constData() );
     }
   }
+}
+
+namespace
+{
+  // Writes \a content to a new SVG file inside \a dir and returns the full path.
+  QString writeSvg( const QTemporaryDir &dir, const QString &fileName, const QString &content )
+  {
+    const QString path = dir.filePath( fileName );
+    QFile f( path );
+    if ( !f.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+      return QString();
+    f.write( content.toUtf8() );
+    f.close();
+    return path;
+  }
+
+  // Builds a single-feature point layer with one SVG marker symbol layer.
+  std::unique_ptr<QgsVectorLayer> makeSvgPointLayer( const QString &svgPath, double sizeMm, double angle = 0.0 )
+  {
+    auto vl = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:2056"_s, u"points"_s, u"memory"_s );
+    QgsFeature f;
+    f.setGeometry( QgsGeometry::fromWkt( u"POINT (2000000 1000000)"_s ) );
+    vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+    vl->updateExtents();
+
+    auto *svgLayer = new QgsSvgMarkerSymbolLayer( svgPath );
+    svgLayer->setSize( sizeMm );
+    svgLayer->setSizeUnit( Qgis::RenderUnit::Millimeters );
+    svgLayer->setAngle( angle );
+
+    QgsSymbolLayerList sll;
+    sll << svgLayer;
+    vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
+    return vl;
+  }
+} // namespace
+
+void TestQgsDxfExport::testSvgMarkerClipsOutOfViewport()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  const QString svgContent = uR"SVG(<?xml version="1.0"?>
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="-1000" y="-1000" width="3000" height="3000" fill="#aabbcc"/>
+  <rect x="10" y="10" width="80" height="80" fill="#cc3344"/>
+</svg>
+)SVG"_s;
+  const QString svgPath = writeSvg( tempDir, u"clip.svg"_s, svgContent );
+  QVERIFY( !svgPath.isEmpty() );
+
+  const double sizeMm = 10.0;
+  auto vl = makeSvgPointLayer( svgPath, sizeMm );
+  const double scale = 1000.0;
+  const QByteArray bytes = exportToBytes( vl.get(), makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) ), Qgis::FeatureSymbologyExport::PerFeature, scale );
+  QVERIFY( !bytes.isEmpty() );
+
+  const BlockVertices verts = scanBlockVertices( bytes );
+  QVERIFY( !verts.xs.isEmpty() && !verts.ys.isEmpty() );
+
+  // The SVG declares a 100x100 viewport. A 10 mm marker at 1:1000 maps to
+  // 10 m on the ground (the marker spans size*scale/1000 metres). The
+  // block content is centered around (0,0) with side <= 10 m, so the
+  // BLOCK vertex bounding box must fit comfortably inside a ~12 m square
+  // (some tolerance for stroke widths). If the giant 3000x3000 rect were
+  // not clipped, the bbox would be ~300 m on each side.
+  const auto xMM = std::minmax_element( verts.xs.constBegin(), verts.xs.constEnd() );
+  const auto yMM = std::minmax_element( verts.ys.constBegin(), verts.ys.constEnd() );
+  const double xRange = *xMM.second - *xMM.first;
+  const double yRange = *yMM.second - *yMM.first;
+  const double expectedSide = sizeMm * scale / 1000.0; // 10 m
+  QVERIFY2( xRange < expectedSide * 1.2, u"X range %1 exceeds declared viewport (expected <= %2 m)"_s.arg( xRange ).arg( expectedSide * 1.2 ).toUtf8().constData() );
+  QVERIFY2( yRange < expectedSide * 1.2, u"Y range %1 exceeds declared viewport (expected <= %2 m)"_s.arg( yRange ).arg( expectedSide * 1.2 ).toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testSvgMarkerClipPreservesInnerGroupTransform()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  // The inner group scales by 0.1, so the path with raw coords in
+  // [100..900] maps to viewport coords [10..90] - well within 100x100.
+  const QString svgContent = uR"SVG(<?xml version="1.0"?>
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(0.1,0,0,0.1,0,0)">
+    <path fill="#cc3344" d="M 100,100 L 900,100 L 900,900 L 100,900 Z"/>
+  </g>
+</svg>
+)SVG"_s;
+  const QString svgPath = writeSvg( tempDir, u"inner.svg"_s, svgContent );
+  QVERIFY( !svgPath.isEmpty() );
+
+  const double sizeMm = 10.0;
+  auto vl = makeSvgPointLayer( svgPath, sizeMm );
+  const double scale = 1000.0;
+  const QByteArray bytes = exportToBytes( vl.get(), makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) ), Qgis::FeatureSymbologyExport::PerFeature, scale );
+  QVERIFY( !bytes.isEmpty() );
+
+  const BlockVertices verts = scanBlockVertices( bytes );
+  QVERIFY2( verts.xs.size() >= 4, u"Inner-group content was clipped: only %1 X vertices"_s.arg( verts.xs.size() ).toUtf8().constData() );
+  QVERIFY2( verts.ys.size() >= 4, u"Inner-group content was clipped: only %1 Y vertices"_s.arg( verts.ys.size() ).toUtf8().constData() );
+
+  // The rect occupies 80% of the viewport, so the BLOCK bbox should be
+  // close to (0.8 * marker side) on each axis.
+  const auto xMM = std::minmax_element( verts.xs.constBegin(), verts.xs.constEnd() );
+  const auto yMM = std::minmax_element( verts.ys.constBegin(), verts.ys.constEnd() );
+  const double xRange = *xMM.second - *xMM.first;
+  const double yRange = *yMM.second - *yMM.first;
+  const double markerSideM = sizeMm * scale / 1000.0; // 10 m
+  const double expectedSide = 0.8 * markerSideM;      // 8 m
+  QVERIFY2( xRange > expectedSide * 0.8, u"Inner-group X range collapsed: %1 (expected ~%2)"_s.arg( xRange ).arg( expectedSide ).toUtf8().constData() );
+  QVERIFY2( yRange > expectedSide * 0.8, u"Inner-group Y range collapsed: %1 (expected ~%2)"_s.arg( yRange ).arg( expectedSide ).toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testSvgMarkerClipPreservesRotatedContent()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  const QString svgContent = uR"SVG(<?xml version="1.0"?>
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="10" width="80" height="80" fill="#cc3344"/>
+</svg>
+)SVG"_s;
+  const QString svgPath = writeSvg( tempDir, u"rot.svg"_s, svgContent );
+  QVERIFY( !svgPath.isEmpty() );
+
+  const double sizeMm = 10.0;
+  const double scale = 1000.0;
+  const double markerSideM = sizeMm * scale / 1000.0; // 10 m
+  const double expectedSide = 0.8 * markerSideM;      // 8 m
+
+  // Unrotated reference.
+  auto vlRef = makeSvgPointLayer( svgPath, sizeMm, 0.0 );
+  const BlockVertices refVerts = scanBlockVertices( exportToBytes( vlRef.get(), makeMapSettings( vlRef.get(), vlRef->extent().buffered( 100.0 ) ), Qgis::FeatureSymbologyExport::PerFeature, scale ) );
+  QVERIFY( !refVerts.xs.isEmpty() );
+
+  // 90° rotated: BLOCK bbox should still span the full rect side, not
+  // collapse to the intersection of the un-rotated and rotated rects.
+  auto vlRot = makeSvgPointLayer( svgPath, sizeMm, 90.0 );
+  const BlockVertices rotVerts = scanBlockVertices( exportToBytes( vlRot.get(), makeMapSettings( vlRot.get(), vlRot->extent().buffered( 100.0 ) ), Qgis::FeatureSymbologyExport::PerFeature, scale ) );
+  QVERIFY( !rotVerts.xs.isEmpty() );
+
+  const auto xMM = std::minmax_element( rotVerts.xs.constBegin(), rotVerts.xs.constEnd() );
+  const auto yMM = std::minmax_element( rotVerts.ys.constBegin(), rotVerts.ys.constEnd() );
+  const double xRange = *xMM.second - *xMM.first;
+  const double yRange = *yMM.second - *yMM.first;
+  QVERIFY2( xRange > expectedSide * 0.8, u"Rotated SVG X range collapsed: %1 (expected ~%2)"_s.arg( xRange ).arg( expectedSide ).toUtf8().constData() );
+  QVERIFY2( yRange > expectedSide * 0.8, u"Rotated SVG Y range collapsed: %1 (expected ~%2)"_s.arg( yRange ).arg( expectedSide ).toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testExtent()
