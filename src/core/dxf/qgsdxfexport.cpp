@@ -817,6 +817,9 @@ void QgsDxfExport::writeEntities()
               if ( !symbolLayer )
                 continue;
 
+              if ( !isSymbolLayerEnabled( symbolLayer, sctx ) )
+                continue;
+
               bool isGeometryGenerator = ( symbolLayer->layerType() == "GeometryGenerator"_L1 );
               if ( isGeometryGenerator )
               {
@@ -834,6 +837,11 @@ void QgsDxfExport::writeEntities()
           // take first symbollayer from first symbol
           QgsSymbol *s = symbolList.first();
           if ( !s || s->symbolLayerCount() < 1 )
+          {
+            continue;
+          }
+
+          if ( !isSymbolLayerEnabled( s->symbolLayer( 0 ), sctx ) )
           {
             continue;
           }
@@ -1005,10 +1013,14 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
 
       int llayer = item.layer();
       const QList<QgsFeature> &featureList = levelIt.value();
+      QgsSymbolLayer *symbolLayer = levelIt.key()->symbolLayer( llayer );
       for ( const QgsFeature &feature : featureList )
       {
         sctx.setFeature( &feature );
-        addFeature( sctx, ct, job->layerName, levelIt.key()->symbolLayer( llayer ), levelIt.key() );
+        sctx.renderContext().expressionContext().setFeature( feature );
+        if ( !isSymbolLayerEnabled( symbolLayer, sctx ) )
+          continue;
+        addFeature( sctx, ct, job->layerName, symbolLayer, levelIt.key() );
       }
     }
   }
@@ -2259,6 +2271,15 @@ bool QgsDxfExport::hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *
   }
 
   return blockBreak;
+}
+
+bool QgsDxfExport::isSymbolLayerEnabled( const QgsSymbolLayer *layer, QgsSymbolRenderContext &context )
+{
+  if ( !layer || !layer->enabled() )
+    return false;
+  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::Property::LayerEnabled, context.renderContext().expressionContext(), true ) )
+    return false;
+  return true;
 }
 
 double QgsDxfExport::dashSize() const
