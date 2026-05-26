@@ -1619,7 +1619,7 @@ void TestQgsDxfExport::testSvgMarkerPointsUnits()
   // Regression test for QgsDxfExport::mapUnitScaleFactor: when the marker's
   // sizeUnit is Points (or Inches/MetersInMapUnits), the factor must be
   // computed properly. Previously the function returned 1.0 (identity) for
-  // Points, producing miniscule blocks in map units.
+  // Points, producing tiny blocks in map units.
 
   auto vl = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:2056"_s, u"points"_s, u"memory"_s );
   QgsFeature f;
@@ -1640,7 +1640,7 @@ void TestQgsDxfExport::testSvgMarkerPointsUnits()
   const QByteArray bytes = exportToBytes( vl.get(), makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) ), Qgis::FeatureSymbologyExport::PerFeature, scale );
   QVERIFY( !bytes.isEmpty() );
 
-  // Expected size in map units for a 100 pt marker at scale 1:1000 in a metres CRS:
+  // Expected size in map units for a 100 pt marker at scale 1:1000 in a meters CRS:
   // 100 pt * 25.4 / 72 mm/pt * 1000 / 1000 m/mm  =  35.27 m (square side)
   const double expectedSide = 100.0 * 25.4 / 72.0 * scale / 1000.0;
 
@@ -1896,7 +1896,7 @@ void TestQgsDxfExport::testSvgMarkerClipsOutOfViewport()
   QVERIFY( !verts.xs.isEmpty() && !verts.ys.isEmpty() );
 
   // The SVG declares a 100x100 viewport. A 10 mm marker at 1:1000 maps to
-  // 10 m on the ground (the marker spans size*scale/1000 metres). The
+  // 10 m on the ground (the marker spans size*scale/1000 meters). The
   // block content is centered around (0,0) with side <= 10 m, so the
   // BLOCK vertex bounding box must fit comfortably inside a ~12 m square
   // (some tolerance for stroke widths). If the giant 3000x3000 rect were
