@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "1578c39e8b4ea53a16633fa235ecd97e0b75768c",
+        "baseline": "fd9efa6f609762cd99d7bd32f9a957ef3754303e",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
