@@ -676,7 +676,7 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
 
   query.addQueryItem( u"f"_s, u"image"_s );
   query.addQueryItem( u"bandIds"_s, QString::number( bandNo - 1 ) );
-  query.addQueryItem( u"interpretation"_s, u"RSP_BilinearInterpolation"_s );
+  query.addQueryItem( u"interpolation"_s, u"RSP_BilinearInterpolation"_s );
   query.addQueryItem( u"pixelType"_s, mPixelType );
 
   // determine the request format
