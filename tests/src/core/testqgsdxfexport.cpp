@@ -84,6 +84,7 @@ class TestQgsDxfExport : public QObject
     void testSvgMarkerPaintDeviceMetrics();
     void testSvgMarkerPointsUnits();
     void testDataDefinedLayerEnabled();
+    void testMarkerOffset();
     void testExtent();
     void testSelectedPoints();
     void testSelectedLines();
@@ -1681,6 +1682,153 @@ void TestQgsDxfExport::testDataDefinedLayerEnabled()
   QCOMPARE( countEntityInserts( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerFeature ) ), 1 );
   // PerSymbolLayer: same.
   QCOMPARE( countEntityInserts( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerSymbolLayer ) ), 1 );
+}
+
+void TestQgsDxfExport::testMarkerOffset()
+{
+  // Regression test: a marker symbol layer with a non-zero Offset must
+  // produce DXF geometry that is shifted from the feature's point by the
+  // offset (after applying the symbology scale and unit conversion).
+  // Previously the SVG-marker offset was being silently dropped, so the
+  // DXF marker landed directly on the feature point.
+
+  auto vl = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:2056"_s, u"points"_s, u"memory"_s );
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( u"POINT (2000000 1000000)"_s ) );
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+  vl->updateExtents();
+
+  const QgsMapSettings ms = makeMapSettings( vl.get(), vl->extent().buffered( 200.0 ) );
+  const double scale = 1000.0;
+
+  // Helper: max absolute x and y across BLOCK vertices, ignoring exact (0,0)
+  // pairs which are emitted as HATCH elevation/origin codes.
+  auto blockRange = []( const QByteArray &bytes ) {
+    const BlockVertices v = scanBlockVertices( bytes );
+    double maxAbsX = 0;
+    double maxAbsY = 0;
+    const int n = std::min( v.xs.size(), v.ys.size() );
+    for ( int i = 0; i < n; ++i )
+    {
+      // Skip HATCH/POLYLINE elevation reference points at the entity origin.
+      if ( qgsDoubleNear( v.xs[i], 0.0 ) && qgsDoubleNear( v.ys[i], 0.0 ) )
+        continue;
+      maxAbsX = std::max( maxAbsX, std::fabs( v.xs[i] ) );
+      maxAbsY = std::max( maxAbsY, std::fabs( v.ys[i] ) );
+    }
+    return QPointF( maxAbsX, maxAbsY );
+  };
+
+  // --- Simple marker -----------------------------------------------------
+  {
+    auto makeMarker = [] {
+      auto *m = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Square, 5.0 );
+      m->setSizeUnit( Qgis::RenderUnit::Millimeters );
+      m->setColor( QColor( 255, 0, 0 ) );
+      m->setStrokeColor( QColor( 0, 0, 0 ) );
+      return m;
+    };
+
+    // Baseline: no offset -> max |x|, |y| ~ halfSize = 2.5 m.
+    {
+      QgsSymbolLayerList sll;
+      sll << makeMarker();
+      vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
+      const QPointF r = blockRange( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerFeature, scale ) );
+      QVERIFY2( r.x() < 5.0 && r.y() < 5.0, u"simple baseline range too large: %1,%2"_s.arg( r.x() ).arg( r.y() ).toUtf8().constData() );
+    }
+    // With offset 50/30 mm at 1:1000 -> max |x| ~ 52.5, max |y| ~ 32.5.
+    {
+      auto *marker = makeMarker();
+      marker->setOffset( QPointF( 50.0, 30.0 ) );
+      marker->setOffsetUnit( Qgis::RenderUnit::Millimeters );
+      QgsSymbolLayerList sll;
+      sll << marker;
+      vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
+      const QPointF r = blockRange( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerFeature, scale ) );
+      QVERIFY2( r.x() > 45.0, u"simple offset X not applied: max|x|=%1"_s.arg( r.x() ).toUtf8().constData() );
+      QVERIFY2( r.y() > 25.0, u"simple offset Y not applied: max|y|=%1"_s.arg( r.y() ).toUtf8().constData() );
+    }
+  }
+
+  // --- SVG marker (user's actual scenario) -------------------------------
+  const QString svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( u"/gpsicons/plane.svg"_s, QgsPathResolver() );
+  QVERIFY( !svgPath.isEmpty() );
+  {
+    auto makeSvg = [&svgPath] {
+      auto *s = new QgsSvgMarkerSymbolLayer( svgPath );
+      s->setSize( 5.0 );
+      s->setSizeUnit( Qgis::RenderUnit::Millimeters );
+      return s;
+    };
+
+    // Baseline: no offset -> SVG vertices stay near origin (within ~halfSize).
+    {
+      QgsSymbolLayerList sll;
+      sll << makeSvg();
+      vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
+      const QPointF r = blockRange( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerFeature, scale ) );
+      QVERIFY2( r.x() < 10.0 && r.y() < 10.0, u"svg baseline range too large: %1,%2"_s.arg( r.x() ).arg( r.y() ).toUtf8().constData() );
+    }
+    // With offset 50/30 mm at 1:1000 -> max |x| ~ 50, max |y| ~ 30.
+    {
+      auto *svg = makeSvg();
+      svg->setOffset( QPointF( 50.0, 30.0 ) );
+      svg->setOffsetUnit( Qgis::RenderUnit::Millimeters );
+      QgsSymbolLayerList sll;
+      sll << svg;
+      vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
+      const QPointF r = blockRange( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerFeature, scale ) );
+      QVERIFY2( r.x() > 40.0, u"svg offset X not applied: max|x|=%1"_s.arg( r.x() ).toUtf8().constData() );
+      QVERIFY2( r.y() > 20.0, u"svg offset Y not applied: max|y|=%1"_s.arg( r.y() ).toUtf8().constData() );
+    }
+    // With offset + data-defined Name (block-breaking property): the DD block
+    // path also must apply the offset.
+    {
+      auto *svg = makeSvg();
+      svg->setOffset( QPointF( 50.0, 30.0 ) );
+      svg->setOffsetUnit( Qgis::RenderUnit::Millimeters );
+      QgsPropertyCollection ddProps;
+      ddProps.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( u"'%1'"_s.arg( svgPath ) ) );
+      svg->setDataDefinedProperties( ddProps );
+      QgsSymbolLayerList sll;
+      sll << svg;
+      vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
+      const QPointF r = blockRange( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerFeature, scale ) );
+      QVERIFY2( r.x() > 40.0, u"svg DD-name offset X not applied: max|x|=%1"_s.arg( r.x() ).toUtf8().constData() );
+      QVERIFY2( r.y() > 20.0, u"svg DD-name offset Y not applied: max|y|=%1"_s.arg( r.y() ).toUtf8().constData() );
+    }
+    // Anchor point (e.g. Top-Left) must also displace the SVG render in DXF.
+    // For a 5 mm marker anchored Top-Left, the SVG is rendered so that its
+    // top-left corner sits at the feature point -> center is at +halfSize/-halfSize
+    // in QGIS painter Y (down-positive), which maps to +halfSize/+halfSize in DXF Y.
+    {
+      auto *svg = makeSvg();
+      svg->setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint::Left );
+      svg->setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Top );
+      QgsSymbolLayerList sll;
+      sll << svg;
+      vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
+      const QByteArray bytes = exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerFeature, scale );
+      QVERIFY( !bytes.isEmpty() );
+      const BlockVertices v = scanBlockVertices( bytes );
+      // For a Top-Left anchor at 5 mm @ 1:1000, the SVG render is displaced
+      // by ~2.5 m in X and ~2.5 m in Y from origin (in absolute value).
+      double maxAbsX = 0, maxAbsY = 0;
+      const int n = std::min( v.xs.size(), v.ys.size() );
+      for ( int i = 0; i < n; ++i )
+      {
+        if ( qgsDoubleNear( v.xs[i], 0.0 ) && qgsDoubleNear( v.ys[i], 0.0 ) )
+          continue;
+        maxAbsX = std::max( maxAbsX, std::fabs( v.xs[i] ) );
+        maxAbsY = std::max( maxAbsY, std::fabs( v.ys[i] ) );
+      }
+      // With anchor applied: extent reaches roughly 0..5 m on each axis (max |coord| ~5).
+      // Without anchor: extent is roughly -2.5..+2.5 (max |coord| ~2.5).
+      QVERIFY2( maxAbsX > 4.0, u"svg anchor X not applied: max|x|=%1"_s.arg( maxAbsX ).toUtf8().constData() );
+      QVERIFY2( maxAbsY > 4.0, u"svg anchor Y not applied: max|y|=%1"_s.arg( maxAbsY ).toUtf8().constData() );
+    }
+  }
 }
 
 void TestQgsDxfExport::testExtent()

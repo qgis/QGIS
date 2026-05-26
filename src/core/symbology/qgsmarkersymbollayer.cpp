@@ -2863,27 +2863,15 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
   const double aspectRatio = calculateAspectRatio( context, size, hasDataDefinedAspectRatio );
   double height = size * ( !qgsDoubleNear( aspectRatio, 0.0 ) ? aspectRatio : mDefaultAspectRatio );
 
-  bool ok = true;
-
   // mmMapUnitScaleFactor is in fact the symbol-unit -> map-unit factor for mSizeUnit
   size *= mmMapUnitScaleFactor;
   height *= mmMapUnitScaleFactor;
 
-  //offset, angle
-  QPointF offset = mOffset;
-
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Offset ) )
-  {
-    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
-    const QVariant val = mDataDefinedProperties.value( QgsSymbolLayer::Property::Offset, context.renderContext().expressionContext(), QString() );
-    const QPointF res = QgsSymbolLayerUtils::toPoint( val, &ok );
-    if ( ok )
-      offset = res;
-  }
-  const double offsetX = offset.x();
-  const double offsetY = offset.y();
-
-  QPointF outputOffset( offsetX, offsetY );
+  double markerOffsetX = 0;
+  double markerOffsetY = 0;
+  markerOffset( context, size / mmMapUnitScaleFactor, height / mmMapUnitScaleFactor, markerOffsetX, markerOffsetY );
+  const double mupp = context.renderContext().mapToPixel().mapUnitsPerPixel();
+  QPointF outputOffset( markerOffsetX * mupp, markerOffsetY * mupp );
 
   double angle = mAngle + mLineAngle;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Angle ) )
@@ -2894,8 +2882,6 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
 
   if ( angle )
     outputOffset = _rotatedOffset( outputOffset, angle );
-
-  outputOffset *= QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), mOffsetUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
 
   QString path = mPath;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name ) )
