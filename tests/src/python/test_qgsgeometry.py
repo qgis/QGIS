@@ -9792,8 +9792,8 @@ class TestQgsGeometry(QgisTestCase):
         invalidVertex1 = QgsVertexId(0, 0, -1)
         invalidVertex2 = QgsVertexId(0, 0, 3)
 
-        assert not c.deleteVertex(invalidVertex1)
-        assert not c.deleteVertex(invalidVertex2)
+        self.assertFalse(c.deleteVertex(invalidVertex1))
+        self.assertFalse(c.deleteVertex(invalidVertex2))
 
     def testDeleteVertexCompoundCurve(self):
 
