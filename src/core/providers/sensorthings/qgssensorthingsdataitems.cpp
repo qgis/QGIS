@@ -62,8 +62,7 @@ QgsSensorThingsConnectionItem::QgsSensorThingsConnectionItem( QgsDataItem *paren
   , mConnName( name )
 {
   mIconName = u"mIconConnect.svg"_s;
-  mCapabilities |= Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::Fast;
-  populate();
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
 bool QgsSensorThingsConnectionItem::equal( const QgsDataItem *other )
@@ -80,18 +79,16 @@ QVector<QgsDataItem *> QgsSensorThingsConnectionItem::createChildren()
   const QString uri = QgsSensorThingsProviderConnection::encodedLayerUri( connectionData );
   const QVariantMap connectionUriParts = QgsProviderRegistry::instance()->decodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uri );
 
-  for ( Qgis::SensorThingsEntity entity : {
-          Qgis::SensorThingsEntity::Thing,
-          Qgis::SensorThingsEntity::Location,
-          Qgis::SensorThingsEntity::HistoricalLocation,
-          Qgis::SensorThingsEntity::Datastream,
-          Qgis::SensorThingsEntity::Sensor,
-          Qgis::SensorThingsEntity::ObservedProperty,
-          Qgis::SensorThingsEntity::Observation,
-          Qgis::SensorThingsEntity::FeatureOfInterest,
-          Qgis::SensorThingsEntity::MultiDatastream,
-        } )
+  const QgsSensorThingsUtils::ServiceCapabilities capabilities = QgsSensorThingsUtils::determineServiceCapabilities( connectionUriParts.value( u"url"_s ).toString() );
+
+  const QMetaEnum entities = QMetaEnum::fromType<Qgis::SensorThingsEntity>();
+  for ( qint32 i = 0, count = entities.keyCount(); i < count; i++ )
   {
+    const Qgis::SensorThingsEntity entity = static_cast< Qgis::SensorThingsEntity >( entities.value( i ) );
+
+    if ( !capabilities.availableEntities.contains( entity ) )
+      continue;
+
     QVariantMap entityUriParts = connectionUriParts;
     entityUriParts.insert( u"entity"_s, qgsEnumValueToKey( entity ) );
 
