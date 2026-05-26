@@ -470,7 +470,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         text = linkPointText( Qt::TopEdge, idx );
         h = -( fm.height() * 1.2 ) * ( i + 1 );
         h = h - componentSize.height() / 2.0 + 5;
-        pt = QPointF( -componentSize.width() / 2 + 33, h );
+        pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN + 10, h );
         painter->drawText( pt, text );
         i += 1;
       }
@@ -491,7 +491,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         h = h + componentSize.height() / 2.0;
         double w = fm.boundingRect( text ).width();
 
-        const double x = componentSize.width() / 2.0 - 33 - w;
+        const double x = componentSize.width() / 2.0 - w - SOCKET_MARGIN - 10;
 
         painter->drawText( QPointF( x, h ), text );
       }
@@ -696,7 +696,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
         const QFontMetricsF fm( mFont );
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
         const double y = h + itemSize().height() / 2.0 + 6.4;
-        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( itemSize().width() / 2 - 33 + 10 ) : 10.4;
+        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( itemSize().width() / 2 - SOCKET_MARGIN ) : 10.4;
         return QPointF( x, y );
       }
       break;
@@ -706,7 +706,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
     {
       if ( linkPointCount( Qt::TopEdge ) )
       {
-        double offsetX = 25;
+        double offsetX = SOCKET_MARGIN;
         int paramIndex = index;
         if ( mComponent->linksCollapsed( Qt::TopEdge ) )
         {
