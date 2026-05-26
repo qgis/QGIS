@@ -67,7 +67,8 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
       items,       //!< Refers to a resource that is comprised of members of the collection represented by the link’s context.
       conformance, //!< The target IRI points to a resource which represents the collection resource for the context IRI.
-      data         //!< The target IRI points to resource data
+      data,        //!< The target IRI points to resource data
+      schema       //!< "http://www.opengis.net/def/rel/ogc/0.0/schema"
     };
     Q_ENUM( Rel )
 
@@ -78,6 +79,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       GEOJSON,
       OPENAPI3, //!< "application/openapi+json;version=3.0"
       JSON,
+      SCHEMA_JSON, //! "application/schema+json"
       HTML,
       XML,
       FLATGEOBUF //!< "application/flatgeobuf"
@@ -165,7 +167,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     static QUrl sanitizeUrl( const QUrl &url );
 
     /**
-     * Returns the string representation of \a rel attribute.
+     * Returns the string representation of \a rel attribute, to be used or "rel" link attribute in an OGC API response.
      */
     static std::string relToString( const QgsServerOgcApi::Rel &rel );
 
