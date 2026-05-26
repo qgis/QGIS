@@ -394,6 +394,8 @@ class RestrictedLayerAccessControl(QgsAccessControlFilter):
 class QgsServerAPITest(QgsServerAPITestBase):
     """QGIS API server tests"""
 
+    regenerate_api_reference = False
+
     def setUp(self):
         super().setUp()
         # Default url has changed in QGIS 4 stick to /wfs3 for the tests

@@ -17,6 +17,11 @@
 
 #include "qgswfs3handlers.h"
 
+#include <optional>
+
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
+#include "qgsattributeeditorrelation.h"
 #include "qgsbufferserverrequest.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -33,6 +38,7 @@
 #include "qgsserverprojectutils.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
+#include "qgsvaluemapfieldformatter.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
@@ -230,6 +236,227 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
   return publishedFields;
 }
 
+json QgsWfs3AbstractItemsHandler::layerFieldsInfo( const QgsVectorLayer *mapLayer, const QgsServerApiContext &apiContext ) const
+{
+  const QgsFields constPublishedFields { publishedFields( mapLayer, apiContext ) };
+  json fieldsInfo = json::object();
+
+  struct CodelistInline
+  {
+      std::optional<std::string> title;
+      std::optional<std::string> description;
+      std::optional<QVariantMap> values;
+  };
+
+  struct FieldInfo
+  {
+      std::optional<int> seq;
+      std::optional<std::string> name;
+      std::optional<std::string> type;
+      std::optional<bool> readOnly;
+      std::optional<std::string> role;
+      std::optional<std::string> title;
+      std::optional<std::string> format;
+      std::optional<std::string> collectionId;
+      std::optional<std::string> unit;
+      std::optional<int> minimum;
+      std::optional<int> maximum;
+      std::optional<CodelistInline> codelist;
+  };
+
+  std::vector<FieldInfo> availableFieldInformations;
+
+  int seq = 0;
+
+  std::vector<int> requiredFieldIndexes;
+
+  // Primary key is always present, read-only and must be the first field
+  {
+    availableFieldInformations.push_back( { seq++, "id", "integer", true, "primary-key" } );
+  }
+
+  // If the layer is spatial, geometry is the second field, read-only and must be the second field
+  if ( mapLayer->isSpatial() )
+  {
+    requiredFieldIndexes.push_back( seq );
+    FieldInfo fInfo { seq++, "geometry" };
+    fInfo.role = "primary-geometry";
+    fInfo.format = "geometry-" + QgsWkbTypes::displayString( QgsWkbTypes::flatType( mapLayer->wkbType() ) ).toLower().toStdString();
+    availableFieldInformations.push_back( fInfo );
+  }
+
+  QList<QString> publishedFieldNames;
+  for ( const QgsField &f : std::as_const( constPublishedFields ) )
+  {
+    publishedFieldNames.push_back( f.name() );
+  }
+
+  QgsEditFormConfig config { mapLayer->editFormConfig() };
+
+  std::function< void( QgsAttributeEditorElement * )> traverseTab;
+  traverseTab = [&]( QgsAttributeEditorElement *element ) -> void {
+    switch ( element->type() )
+    {
+      case Qgis::AttributeEditorType::Field:
+      {
+        const QgsAttributeEditorField *fieldElement = static_cast<const QgsAttributeEditorField *>( element );
+        // it should not happen that the field element references a non-existing field
+        Q_ASSERT( mapLayer->fields().exists( fieldElement->idx() ) );
+        const QgsField field = mapLayer->fields().field( fieldElement->idx() );
+        const QString fieldName = field.name();
+
+        // Early check to skip non-published fields and avoid unnecessary processing
+        if ( !publishedFieldNames.contains( fieldName ) )
+        {
+          break;
+        }
+
+        // Skip primary key
+        if ( fieldName == "id"_L1 || ( mapLayer->isSpatial() && fieldName == "geometry" ) )
+        {
+          break;
+        }
+
+        if ( field.constraints().constraints().testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+        {
+          requiredFieldIndexes.push_back( seq );
+        }
+
+        FieldInfo fInfo { seq++, fieldName.toStdString() };
+        if ( config.readOnly( fieldElement->idx() ) )
+        {
+          fInfo.readOnly = true;
+        }
+
+        if ( !field.alias().isEmpty() )
+        {
+          fInfo.title = field.alias().toStdString();
+        }
+
+        // Get the widget configuration
+        const QVariantMap widgetConfig = config.widgetConfig( fieldName );
+        // Check for value map
+        if ( widgetConfig.contains( "map"_L1 ) )
+        {
+          const bool skipNull = false;
+          const QList<QVariant> valueList = widgetConfig.value( u"map"_s ).toList();
+          QVariantMap listValues;
+          if ( !valueList.empty() )
+          {
+            for ( const QVariant &value : std::as_const( valueList ) )
+            {
+              const QVariantMap valueMap = value.toMap();
+
+              if ( skipNull && valueMap.constBegin().value() == QgsValueMapFieldFormatter::NULL_VALUE )
+                continue;
+
+              listValues.insert( valueMap.constBegin().key(), valueMap.constBegin().value() );
+            }
+          }
+          else
+          {
+            const QVariantMap map = widgetConfig.value( u"map"_s ).toMap();
+            for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+            {
+              if ( skipNull && it.value() == QgsValueMapFieldFormatter::NULL_VALUE )
+                continue;
+
+              listValues.insert( it.key(), it.value() );
+            }
+          }
+
+          // TODO: title and description from name if not set?
+          fInfo.codelist = CodelistInline { fInfo.title, fInfo.title, listValues };
+        }
+        else
+        {
+          // Otherwise, use the field type
+          fInfo.format = field.typeName().toStdString();
+        }
+
+
+        availableFieldInformations.push_back( fInfo );
+
+        break;
+      }
+      case Qgis::AttributeEditorType::Relation:
+      {
+        const QgsAttributeEditorRelation *relationElement = qgis::down_cast<const QgsAttributeEditorRelation *>( element );
+        break;
+      }
+      case Qgis::AttributeEditorType::Container:
+      {
+        const QgsAttributeEditorContainer *containerElement = qgis::down_cast<const QgsAttributeEditorContainer *>( element );
+        const QList<QgsAttributeEditorElement *> children = containerElement->children();
+        for ( const auto &child : std::as_const( children ) )
+        {
+          traverseTab( child );
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
+  traverseTab( config.invisibleRootContainer() );
+
+  if ( !requiredFieldIndexes.empty() )
+  {
+    fieldsInfo["required"] = json::array();
+    for ( int idx : requiredFieldIndexes )
+    {
+      fieldsInfo["required"].push_back( idx );
+    }
+  }
+
+  fieldsInfo["properties"] = json::object();
+
+  for ( const auto &fInfo : availableFieldInformations )
+  {
+    const std::string fieldName = fInfo.name.value();
+    fieldsInfo["properties"][fieldName] = json::object();
+    if ( fInfo.type.has_value() )
+      fieldsInfo["properties"][fieldName]["type"] = fInfo.type.value();
+    if ( fInfo.title.has_value() )
+      fieldsInfo["properties"][fieldName]["title"] = fInfo.title.value();
+    if ( fInfo.readOnly.has_value() )
+      fieldsInfo["properties"][fieldName]["readOnly"] = fInfo.readOnly.value();
+    if ( fInfo.role.has_value() )
+      fieldsInfo["properties"][fieldName]["x-ogc-role"] = fInfo.role.value();
+    if ( fInfo.seq.has_value() )
+      fieldsInfo["properties"][fieldName]["x-ogc-propertySeq"] = fInfo.seq.value();
+    if ( fInfo.format.has_value() )
+      fieldsInfo["properties"][fieldName]["format"] = fInfo.format.value();
+    if ( fInfo.collectionId.has_value() )
+      fieldsInfo["properties"][fieldName]["x-ogc-collectionId"] = fInfo.collectionId.value();
+    if ( fInfo.unit.has_value() )
+      fieldsInfo["properties"][fieldName]["x-ogc-unit"] = fInfo.unit.value();
+    if ( fInfo.minimum.has_value() )
+      fieldsInfo["properties"][fieldName]["minimum"] = fInfo.minimum.value();
+    if ( fInfo.maximum.has_value() )
+      fieldsInfo["properties"][fieldName]["maximum"] = fInfo.maximum.value();
+    if ( fInfo.codelist.has_value() )
+    {
+      json codelistJson = json::object();
+      const CodelistInline &codelistInfo = fInfo.codelist.value();
+      if ( codelistInfo.title.has_value() )
+        codelistJson["title"] = codelistInfo.title.value();
+      if ( codelistInfo.description.has_value() )
+        codelistJson["description"] = codelistInfo.description.value();
+      codelistJson["oneOf"] = json::array();
+      const QVariantMap values = codelistInfo.values.value();
+      for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+      {
+        codelistJson["oneOf"].push_back( { { "title", it.key().toStdString() }, { "const", it.value().toString().toStdString() } } );
+      }
+      fieldsInfo["properties"][fieldName]["x-ogc-codelist"] = codelistJson;
+    }
+  }
+
+  return fieldsInfo;
+}
+
 const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiContext &context ) const
 {
   // resources/server/api + /ogc/templates/wfs3 + operationId + .html
@@ -383,7 +610,9 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
-        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas" } }
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/returnables-and-receivables",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/sortables" } }
   };
   json navigation = json::array();
   const QUrl url { context.request()->url() };
@@ -577,8 +806,16 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     );
   }
 
-  // TODO: add JSONFG and JSONFG-PLUS
+  // Add schemas
+  linksList.push_back(
+    { { "href", href( context, u"/schema"_s, QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::SCHEMA_JSON ) ) },
+      { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::schema ) },
+      { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::SCHEMA_JSON ) },
+      { "title", "Schema of features in '" + title + "'" } }
+  );
 
+
+  // Unsure we want to keep this after "schema" has been implemented but let's keep it for backward compatibility
   linksList.push_back(
     { { "href",
         parentLink( context.request()->url(), 3 ).toStdString() + "?request=DescribeFeatureType&typename=" + QUrlQuery( typeName ).toString( QUrl::EncodeSpaces ).toStdString() + "&service=WFS&version=2.0" },
@@ -586,6 +823,9 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::XML ) },
       { "title", "Schema for " + title } }
   );
+
+  // TODO: add JSONFG and JSONFG-PLUS
+
 
   json crss = json::array();
   for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
@@ -2279,4 +2519,97 @@ const QString QgsWfs3ConformanceHandler::templatePath( const QgsServerApiContext
   path += QString::fromStdString( operationId() );
   path += ".html"_L1;
   return path;
+}
+
+QgsWfs3CollectionsSchemaHandler::QgsWfs3CollectionsSchemaHandler()
+{
+  setContentTypes( { QgsServerOgcApi::ContentType::SCHEMA_JSON } );
+}
+
+void QgsWfs3CollectionsSchemaHandler::handleRequest( const QgsServerApiContext &context ) const
+{
+  switch ( context.request()->method() )
+  {
+    case QgsServerRequest::Method::GetMethod:
+    {
+      if ( !context.project() )
+      {
+        throw QgsServerApiImproperlyConfiguredException( u"Project is invalid or undefined"_s );
+      }
+      // Check collectionId
+      const QRegularExpressionMatch match { path().match( context.request()->url().path() ) };
+      if ( !match.hasMatch() )
+      {
+        throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+      }
+      const QString collectionId { match.captured( u"collectionId"_s ) };
+      // May throw if not found
+      QgsVectorLayer *mapLayer { layerFromCollectionId( context, collectionId ) };
+      Q_ASSERT( mapLayer );
+
+      const QgsProject *project = context.project();
+      const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+      if ( !wfsLayerIds.contains( mapLayer->id() ) )
+      {
+        throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+      }
+
+      // Check if the layer is published, raise not found if it is not
+      checkLayerIsAccessible( mapLayer, context );
+
+      // Use layer id for operationId
+      const QString layerId { mapLayer->id() };
+      const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
+
+      json data {
+        { "$schema", "https://json-schema.org/draft/2020-12/schema" },
+        { "$id", operationId() + '_' + layerId.toStdString() + '_' + "GET" },
+        { "title", title },
+        { "description", mapLayer->serverProperties()->abstract().toStdString() },
+        { "type", "object" },
+        // List of required fields
+        // TODO: determine required fields based on layer definition
+        { "required", {} },
+        // Object of fields with title, type x-ogc-role and x-ogc-propertySeq
+        { "properties", {} }
+      };
+
+      data["properties"] = layerFieldsInfo( mapLayer, context );
+
+      write( data, context );
+      break;
+    }
+    default:
+      throw QgsServerApiNotImplementedException( u"%1 method is not implemented."_s.arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
+  }
+}
+
+json QgsWfs3CollectionsSchemaHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  Q_ASSERT( context.project() );
+
+  const QVector<QgsVectorLayer *> layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context ) };
+  for ( const auto &mapLayer : layers )
+  {
+    const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
+    // Use layer id for operationId
+    const QString layerId { mapLayer->id() };
+    const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
+    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + u"/collections/%1/schema"_s.arg( shortName ), context.request()->url() ).toStdString() };
+
+    data[path] = {
+      { "get",
+        { { "tags", jsonTags() },
+          { "summary", "Retrieve the schema of the '" + title + "' feature collection" },
+          { "description", description() },
+          { "operationId", operationId() + '_' + layerId.toStdString() + '_' + "GET" },
+          { "responses",
+            { { "200",
+                { { "description", "Retrieve the schema of the '" + title + "' feature collection." },
+                  { "content", { { "application/schema+json", { { "schema", { { "$ref", "#/components/schemas/anyObject" } } } } } } } } },
+              { "default", defaultResponse() } } } } }
+    };
+  }
+  return data;
 }
