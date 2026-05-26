@@ -1896,6 +1896,119 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(block.value(1, 0), 30)
         self.assertEqual(block.value(1, 1), 40)
 
+    def test_fetch_block_rgb_alpha(self):
+        """
+        Test fetching a block for a RGB service, where we need the
+        source's nodata mask
+        """
+        endpoint = self.basetestpath + "/fetch_rgb_mask_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U8",
+  "extent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {
+      "wkid": 4326
+    }
+  },
+  "capabilities": "Image",
+  "bandCount": 3,
+  "type": "ImageServer",
+  "serviceSourceType": "esriImageServiceSourceTypeDataset",
+  "serviceDataType": "esriImageServiceDataTypeRGB",
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  }
+}"""
+            )
+
+        mem_ds = gdal.GetDriverByName("MEM").Create("", 2, 2, 4, gdal.GDT_Byte)
+
+        # checkerboard pattern of Valid/NoData
+        # Pixel 0,0: Valid (Alpha 255)
+        # Pixel 0,1: NoData (Alpha 0)
+        # Pixel 1,0: Valid (Alpha 255)
+        # Pixel 1,1: NoData (Alpha 0)
+
+        # Band 1 (Red) - values: 10, 0, 50, 0
+        mem_ds.GetRasterBand(1).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 10, 0, 50, 0)
+        )
+        # Band 2 (Green) - values: 20, 0, 60, 0
+        mem_ds.GetRasterBand(2).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 20, 0, 60, 0)
+        )
+        # Band 3 (Blue) - values: 30, 0, 70, 0
+        mem_ds.GetRasterBand(3).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 30, 0, 70, 0)
+        )
+        # Band 4 (Alpha Mask) - values: 255, 0, 255, 0
+        mem_ds.GetRasterBand(4).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 255, 0, 255, 0)
+        )
+
+        gdal.GetDriverByName("PNG").CreateCopy("/vsimem/test_rgba.png", mem_ds)
+
+        vsi_file = gdal.VSIFOpenL("/vsimem/test_rgba.png", "rb")
+        gdal.VSIFSeekL(vsi_file, 0, 2)
+        size = gdal.VSIFTellL(vsi_file)
+        gdal.VSIFSeekL(vsi_file, 0, 0)
+        png_blob = gdal.VSIFReadL(1, size, vsi_file)
+        gdal.VSIFCloseL(vsi_file)
+        gdal.Unlink("/vsimem/test_rgba.png")
+
+        # the query MUST NOT include &bandIds= because the image server provider logic strips it out
+        # and forces &format=png32 when serviceDataType == esriImageServiceDataTypeRGB
+        # See QgsImageServerProvider::readBlockInternal for further explanations
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&interpolation=RSP_BilinearInterpolation&pixelType=U8&format=png32"
+        with open(self.sanitize_local_url(endpoint, query), "wb") as f:
+            f.write(png_blob)
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        # Band 1 (Red)
+        block_b1 = rl.dataProvider().block(1, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block_b1.isValid())
+
+        self.assertFalse(block_b1.isNoData(0, 0))
+        self.assertEqual(block_b1.value(0, 0), 10)
+        self.assertTrue(block_b1.isNoData(0, 1))
+        self.assertFalse(block_b1.isNoData(1, 0))
+        self.assertEqual(block_b1.value(1, 0), 50)
+        self.assertTrue(block_b1.isNoData(1, 1))
+
+        # Band 2 (Green)
+        block_b2 = rl.dataProvider().block(2, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block_b2.isValid())
+
+        self.assertFalse(block_b2.isNoData(0, 0))
+        self.assertEqual(block_b2.value(0, 0), 20)
+        self.assertTrue(block_b2.isNoData(0, 1))
+        self.assertFalse(block_b2.isNoData(1, 0))
+        self.assertEqual(block_b2.value(1, 0), 60)
+        self.assertTrue(block_b2.isNoData(1, 1))
+
+        # Band 3 (Red)
+        block_b3 = rl.dataProvider().block(3, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block_b3.isValid())
+
+        self.assertFalse(block_b3.isNoData(0, 0))
+        self.assertEqual(block_b3.value(0, 0), 30)
+        self.assertTrue(block_b3.isNoData(0, 1))
+        self.assertFalse(block_b3.isNoData(1, 0))
+        self.assertEqual(block_b3.value(1, 0), 70)
+        self.assertTrue(block_b3.isNoData(1, 1))
+
     def test_raster_attribute_table(self):
         """
         Test fetching raster attribute table
