@@ -74,6 +74,17 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QPolygonF mCurrentPolygon;
     QList<QPointF> mCurrentCurve;
 
+    QPainterPath mClipPath; //in painter device coordinates
+    bool mClipEnabled = false;
+
+    /**
+     * Returns the input polygon (expressed in painter logical coordinates)
+     * clipped against the active clip path. If clipping is disabled or
+     * the clip path is empty, returns the original polygon unchanged.
+     * If the polygon is fully outside the clip an empty list is returned.
+     */
+    QList<QPolygonF> clipPolygonLogical( const QPolygonF &polyLogical ) const;
+
     QgsPoint toDxfCoordinates( QPointF pt ) const;
     double currentWidth() const;
 
