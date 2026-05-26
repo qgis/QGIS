@@ -1909,6 +1909,9 @@ void TestQgsProcessing::features()
   context.setProject( &p );
   // disable check for geometry validity
   context.setFlags( QgsProcessingContext::Flags() );
+  QgsProcessingFeedback feedback;
+  QSignalSpy sourceLoadedSpy( &feedback, &QgsProcessingFeedback::sourceLoaded );
+  context.setFeedback( &feedback );
 
   const std::function<QgsFeatureIds( QgsFeatureIterator it )> getIds = []( QgsFeatureIterator it ) {
     QgsFeature f;
@@ -1925,6 +1928,9 @@ void TestQgsProcessing::features()
   params.insert( u"layer"_s, layer->id() );
 
   std::unique_ptr<QgsFeatureSource> source( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
+  QCOMPARE( sourceLoadedSpy.count(), 1 );
+  QCOMPARE( sourceLoadedSpy.at( 0 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 0 ).at( 1 ), 5LL );
 
   // test with all features
   QgsFeatureIds ids = getIds( source->getFeatures() );
@@ -1939,6 +1945,10 @@ void TestQgsProcessing::features()
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
   QCOMPARE( source->featureCount(), 2L );
 
+  QCOMPARE( sourceLoadedSpy.count(), 2 );
+  QCOMPARE( sourceLoadedSpy.at( 1 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 1 ).at( 1 ), 2LL );
+
   // selection, but not using selected features
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
@@ -1946,6 +1956,10 @@ void TestQgsProcessing::features()
   ids = getIds( source->getFeatures() );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
   QCOMPARE( source->featureCount(), 5L );
+
+  QCOMPARE( sourceLoadedSpy.count(), 3 );
+  QCOMPARE( sourceLoadedSpy.at( 2 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 2 ).at( 1 ), 5LL );
 
   // using selected features, but no selection
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
@@ -1955,6 +1969,10 @@ void TestQgsProcessing::features()
   QVERIFY( ids.isEmpty() );
   QCOMPARE( source->featureCount(), 0L );
 
+  QCOMPARE( sourceLoadedSpy.count(), 4 );
+  QCOMPARE( sourceLoadedSpy.at( 3 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 3 ).at( 1 ), 0LL );
+
   // feature limit
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false, 3 ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
@@ -1962,12 +1980,20 @@ void TestQgsProcessing::features()
   QCOMPARE( ids.size(), 3 );
   QCOMPARE( source->featureCount(), 3L );
 
+  QCOMPARE( sourceLoadedSpy.count(), 5 );
+  QCOMPARE( sourceLoadedSpy.at( 4 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 4 ).at( 1 ), 3LL );
+
   // filter expression
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false, -1, Qgis::ProcessingFeatureSourceDefinitionFlags(), Qgis::InvalidGeometryCheck::AbortOnInvalid, u"$id<3"_s ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures() );
   QCOMPARE( ids.size(), 2 );
   QCOMPARE( source->featureCount(), -1L );
+
+  QCOMPARE( sourceLoadedSpy.count(), 6 );
+  QCOMPARE( sourceLoadedSpy.at( 5 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 5 ).at( 1 ), -1LL );
 
   // test that feature request is honored
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
