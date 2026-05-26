@@ -65,6 +65,13 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
     QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
     /**
+     * Returns the information about the available fields as a json object, to be used in the schema operation.
+     * \param layer the vector layer
+     * \param context the server api context
+     */
+    json layerFieldsInfo( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+
+    /**
      * Returns the HTML template path for the handler in the given \a context
      *
      * The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
@@ -227,7 +234,7 @@ class QgsWfs3DescribeCollectionHandler : public QgsWfs3AbstractItemsHandler
 
 /**
  * The CollectionsItemsHandler list all items in the collection
- * Path: /collections/{collectionId}
+ * Path: /collections/{collectionId}/items
  */
 class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
 {
@@ -269,6 +276,25 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
 
     // FlatGeobuf output
     void writeFlatGeobufOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &apiContext, const ExportContext &exportContext ) const;
+};
+
+/**
+ * The CollectionsSchemaHandler returns the JSON schema of the collection
+ * Path: /collections/{collectionId}/schema
+ */
+class QgsWfs3CollectionsSchemaHandler : public QgsWfs3AbstractItemsHandler
+{
+  public:
+    QgsWfs3CollectionsSchemaHandler();
+    void handleRequest( const QgsServerApiContext &context ) const override;
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/schema(\.json|\.html|/)?$)re" ); }
+    std::string operationId() const override { return "getCollectionSchema"; }
+    std::string description() const override { return "Return the JSON schema of the collection with ID {collectionId}."; }
+    std::string summary() const override { return "Return the JSON schema of the collection with ID {collectionId}."; }
+    std::string linkTitle() const override { return "Collection schema"; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
+    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::schema; }
+    json schema( const QgsServerApiContext &context ) const override;
 };
 
 
