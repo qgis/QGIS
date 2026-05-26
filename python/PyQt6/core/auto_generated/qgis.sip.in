@@ -3672,6 +3672,23 @@ The development version
     typedef QFlags<Qgis::RasterBandStatistic> RasterBandStatistics;
 
 
+    enum class SensorThingsVersion /BaseType=IntEnum/
+    {
+        Version1_1,
+        Version2_0,
+    };
+
+    enum class SensorThingsExtension /BaseType=IntFlag/
+    {
+      MultiDatastream,
+      SensingExtensionObservationsMeasurements,
+      SensingExtensionSampling,
+      SensingExtensionRelations,
+    };
+
+    typedef QFlags<Qgis::SensorThingsExtension> SensorThingsExtensions;
+
+
     enum class SensorThingsEntity /BaseType=IntEnum/
     {
       Invalid,
@@ -4172,6 +4189,8 @@ QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapab
 QFlags<Qgis::InstancedMaterialFlag> operator|(Qgis::InstancedMaterialFlag f1, QFlags<Qgis::InstancedMaterialFlag> f2);
 
 QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map3DDebugFlag> f2);
+
+QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QFlags<Qgis::SensorThingsExtension> f2);
 
 
 

@@ -6562,6 +6562,40 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( RasterBandStatistics )
 
     /**
+     * OGC SensorThings API versions.
+     *
+     * \since QGIS 4.2
+     */
+    enum class SensorThingsVersion : int
+    {
+        Version1_1, //!< 1.1
+        Version2_0, //!< 2.0
+    };
+    Q_ENUM( SensorThingsVersion );
+
+    /**
+     * OGC SensorThings extensions.
+     *
+     * \since QGIS 4.2
+     */
+    enum class SensorThingsExtension : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      MultiDatastream = 1 << 0,                          //!< MultiDatastream extension
+      SensingExtensionObservationsMeasurements = 1 << 1, //!< Sensing Extension (Observations & Measurements)
+      SensingExtensionSampling = 1 << 2,                 //!< Sensing Extension (Sampling)
+      SensingExtensionRelations = 1 << 3,                //!< Sensing Extension (Relations)
+    };
+    Q_ENUM( SensorThingsExtension );
+
+    /**
+     * OGC SensorThings extensions.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( SensorThingsExtensions, SensorThingsExtension )
+    Q_FLAG( SensorThingsExtensions )
+
+    /**
      * OGC SensorThings API entity types.
      *
      * \since QGIS 3.36
@@ -6570,12 +6604,12 @@ int QgisEvent = QEvent::User + 1;
     {
       Invalid, //!< An invalid/unknown entity
       Thing, //!< A Thing is an object of the physical world (physical things) or the information world (virtual things) that is capable of being identified and integrated into communication networks
-      Location, //!< A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing
+      Location,           //!< A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing
       HistoricalLocation, //!< A Thing’s HistoricalLocation entity set provides the times of the current (i.e., last known) and previous locations of the Thing
-      Datastream, //!< A Datastream groups a collection of Observations measuring the same ObservedProperty and produced by the same Sensor
-      Sensor, //!< A Sensor is an instrument that observes a property or phenomenon with the goal of producing an estimate of the value of the property
-      ObservedProperty, //!< An ObservedProperty specifies the phenomenon of an Observation
-      Observation, //!< An Observation is the act of measuring or otherwise determining the value of a property
+      Datastream,         //!< A Datastream groups a collection of Observations measuring the same ObservedProperty and produced by the same Sensor
+      Sensor,             //!< A Sensor is an instrument that observes a property or phenomenon with the goal of producing an estimate of the value of the property
+      ObservedProperty,   //!< An ObservedProperty specifies the phenomenon of an Observation
+      Observation,        //!< An Observation is the act of measuring or otherwise determining the value of a property
       FeatureOfInterest, //!< In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed
       MultiDatastream, //!< A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 "MultiDatastream extension". \since QGIS 3.38
       // version 2.0
@@ -6589,7 +6623,7 @@ int QgisEvent = QEvent::User + 1;
       PreparationStep, //!< When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the "Sampling Extension". \since QGIS 4.2
       PreparationProcedure, //!< After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the "Sampling Extension". \since QGIS 4.2
       ThingRelation, //!< A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the "Relations Extension". \since QGIS 4.2
-      RelationRole, //!< The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the "Relations Extension". \since QGIS 4.2
+      RelationRole,  //!< The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the "Relations Extension". \since QGIS 4.2
       FeatureRelation, //!< A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the "Relations Extension". \since QGIS 4.2
       DatastreamRelation, //!< A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the "Relations Extension". \since QGIS 4.2
       ObservationRelation, //!< A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the "Relations Extension". \since QGIS 4.2
@@ -7121,6 +7155,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ArcGisRestServiceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::InstancedMaterialFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Map3DDebugFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SensorThingsExtensions )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
