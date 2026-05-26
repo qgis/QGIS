@@ -354,7 +354,17 @@ void QgsMetalRoughMaterial::updateShaders()
   if ( mFlatShading )
     fragShaderDefines += "FLAT_SHADING";
 
-  if ( mDataDefinedEnabled )
+  if ( mInstanced )
+  {
+    QStringList defines = { u"HAS_TEXTURE"_s, u"HAS_TANGENT"_s };
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
+  }
+  else if ( mDataDefinedEnabled )
   {
     fragShaderDefines += "DATA_DEFINED";
     mMetalRoughGL3Shader->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/metalroughDataDefined.vert"_s ) ) );
@@ -384,26 +394,20 @@ void QgsMetalRoughMaterial::setOpacity( float opacity )
   mOpacityParameter->setValue( opacity );
 }
 
+void QgsMetalRoughMaterial::setDataDefinedEnabled( bool enabled )
+{
+  if ( enabled != mDataDefinedEnabled )
+  {
+    mDataDefinedEnabled = enabled;
+    updateShaders();
+  }
+}
+
 void QgsMetalRoughMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
 {
   mInstanced = enabled;
   mInstanceFlags = flags;
-
-  if ( mInstanced )
-  {
-    QStringList defines = { u"HAS_TEXTURE"_s, u"HAS_TANGENT"_s };
-    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
-      defines << u"USE_INSTANCE_SCALE"_s;
-    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
-      defines << u"USE_INSTANCE_ROTATION"_s;
-    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
-    mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
-  }
-  else
-  {
-    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
-    mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, { u"TEXTURE_ROTATION"_s } ) );
-  }
+  updateShaders();
 }
 
 ///@endcond PRIVATE
