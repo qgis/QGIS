@@ -25,7 +25,19 @@
    </property>
    <item row="0" column="1" colspan="2">
     <widget class="QWidget" name="mCubeMapWidget" native="true">
-     <layout class="QGridLayout" name="faceTexturesLayout">
+     <layout class="QGridLayout" name="faceTexturesLayout" columnstretch="0,1">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item row="6" column="0">
        <widget class="QLabel" name="posZImageSourceLabel">
         <property name="text">
