@@ -88,6 +88,7 @@ class TestQgsDxfExport : public QObject
     void testSvgMarkerClipsOutOfViewport();
     void testSvgMarkerClipPreservesInnerGroupTransform();
     void testSvgMarkerClipPreservesRotatedContent();
+    void testDataDefinedSymbolClassHashDynamicAttribute();
     void testExtent();
     void testSelectedPoints();
     void testSelectedLines();
@@ -1984,6 +1985,55 @@ void TestQgsDxfExport::testSvgMarkerClipPreservesRotatedContent()
   const double yRange = *yMM.second - *yMM.first;
   QVERIFY2( xRange > expectedSide * 0.8, u"Rotated SVG X range collapsed: %1 (expected ~%2)"_s.arg( xRange ).arg( expectedSide ).toUtf8().constData() );
   QVERIFY2( yRange > expectedSide * 0.8, u"Rotated SVG Y range collapsed: %1 (expected ~%2)"_s.arg( yRange ).arg( expectedSide ).toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testDataDefinedSymbolClassHashDynamicAttribute()
+{
+  // Regression test: when a data-defined property uses attribute() with a
+  // dynamically-built attribute name, two features whose statically
+  // referenced fields are identical but whose evaluated property values
+  // differ must produce different hashes — otherwise they collide into a
+  // single BLOCK and only one of the two distinct symbols is exported.
+
+  QgsFields fields;
+  fields.append( QgsField( u"dir"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"target_a"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"target_b"_s, QMetaType::QString ) );
+
+  QgsFeature f1( fields );
+  f1.setAttribute( u"dir"_s, u"a"_s );
+  f1.setAttribute( u"target_a"_s, u"shapeX"_s );
+  f1.setAttribute( u"target_b"_s, u"shapeY"_s );
+
+  QgsFeature f2( fields );
+  f2.setAttribute( u"dir"_s, u"a"_s );
+  f2.setAttribute( u"target_a"_s, u"shapeZ"_s );
+  f2.setAttribute( u"target_b"_s, u"shapeY"_s );
+
+  QgsPropertyCollection props;
+  props.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( uR"(attribute('target_' || "dir"))"_s ) );
+
+  QgsExpressionContext ctx;
+  QgsExpressionContextScope *fieldsScope = new QgsExpressionContextScope();
+  fieldsScope->setFields( fields );
+  ctx.appendScope( fieldsScope );
+  ctx.setFields( fields );
+
+  const uint h1 = QgsDxfExport::dataDefinedSymbolClassHash( f1, props, ctx );
+  const uint h2 = QgsDxfExport::dataDefinedSymbolClassHash( f2, props, ctx );
+  QVERIFY2( h1 != h2, u"Hash collision: features whose dynamically-resolved property values differ produced the same block hash (%1)"_s.arg( h1 ).toUtf8().constData() );
+
+  // Sanity: two features whose evaluated values DO match must collide.
+  QgsFeature f3( fields );
+  f3.setAttribute( u"dir"_s, u"b"_s );
+  f3.setAttribute( u"target_a"_s, u"shapeX"_s ); // unused
+  f3.setAttribute( u"target_b"_s, u"shapeY"_s ); // matches f1's evaluated value? no: f3 -> 'shapeY'
+  // Build a feature whose evaluation also yields 'shapeX' to assert equality.
+  QgsFeature f4( fields );
+  f4.setAttribute( u"dir"_s, u"b"_s );
+  f4.setAttribute( u"target_b"_s, u"shapeX"_s );
+  const uint h4 = QgsDxfExport::dataDefinedSymbolClassHash( f4, props, ctx );
+  QCOMPARE( h1, h4 );
 }
 
 void TestQgsDxfExport::testExtent()

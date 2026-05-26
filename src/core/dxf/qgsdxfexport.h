@@ -68,6 +68,8 @@ static const bool DEFAULT_DXF_DATA_DEFINED_BLOCKS = true;
 class CORE_EXPORT QgsDxfExport : public QgsLabelSink
 {
 #endif
+    friend class TestQgsDxfExport;
+
   public:
     /**
      * Encapsulates the properties of a vector layer containing features that will be exported to the DXF file.
@@ -694,7 +696,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     void writePointBlockReference(
       const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize
     );
-    static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop );
+    static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop, const QgsExpressionContext &context );
 
     double dashSize() const;
     double dotSize() const;

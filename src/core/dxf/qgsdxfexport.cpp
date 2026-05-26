@@ -1084,7 +1084,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
 
     QgsPropertyCollection props = symbolLayer->dataDefinedProperties();
 
-    uint ddSymbolHash = dataDefinedSymbolClassHash( *( ctx.feature() ), props );
+    uint ddSymbolHash = dataDefinedSymbolClassHash( *( ctx.feature() ), props, ctx.renderContext().expressionContext() );
     if ( symbolLayerDDBlocks.contains( ddSymbolHash ) )
     {
       const DataDefinedBlockInfo &info = symbolLayerDDBlocks[ddSymbolHash];
@@ -1127,26 +1127,31 @@ void QgsDxfExport::writePointBlockReference(
   writeGroup( 0, pt ); // Insertion point (in OCS)
 }
 
-uint QgsDxfExport::dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop )
+uint QgsDxfExport::dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop, const QgsExpressionContext &context )
 {
+  // Hash the evaluated result of each data-defined property that affects the
+  // BLOCK content, not only the source attribute values.
   uint hashValue = 0;
 
-  QgsPropertyCollection dxfProp = prop;
-  dxfProp.setProperty( QgsSymbolLayer::Property::Size, QgsProperty() );
-  dxfProp.setProperty( QgsSymbolLayer::Property::Angle, QgsProperty() );
-  QList< QString > fields = dxfProp.referencedFields().values();
-  std::sort( fields.begin(), fields.end() );
+  QgsExpressionContext ctx = context;
+  ctx.setFeature( fet );
+
+  QList<int> keys = prop.propertyKeys().values();
+  keys.removeAll( static_cast<int>( QgsSymbolLayer::Property::Size ) );
+  keys.removeAll( static_cast<int>( QgsSymbolLayer::Property::Angle ) );
+  std::sort( keys.begin(), keys.end() ); //ensure a stable order
+
   int i = 0;
-  for ( const auto &field : std::as_const( fields ) ) //convert set to list to have a well defined order
+  for ( int key : std::as_const( keys ) )
   {
-    QVariant attValue = fet.attribute( field );
+    const QVariant evaluated = prop.value( key, ctx );
     if ( i == 0 )
     {
-      hashValue = qHash( attValue );
+      hashValue = qHash( evaluated );
     }
     else
     {
-      hashValue = hashValue ^ qHash( attValue );
+      hashValue = hashValue ^ qHash( evaluated );
     }
     ++i;
   }
@@ -2699,7 +2704,7 @@ void QgsDxfExport::createDDBlockInfo()
         QgsFeature fet;
         while ( featureIt.nextFeature( fet ) )
         {
-          uint symbolHash = dataDefinedSymbolClassHash( fet, properties );
+          uint symbolHash = dataDefinedSymbolClassHash( fet, properties, sctx.renderContext().expressionContext() );
           if ( blockSymbolMap.contains( symbolHash ) )
           {
             blockSymbolMap[symbolHash].first += 1;
