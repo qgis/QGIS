@@ -2856,32 +2856,19 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
 bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
   //size
-  double size = mSize;
+  bool hasDataDefinedSize = false;
+  double size = calculateSize( context, hasDataDefinedSize );
 
-  const bool hasDataDefinedSize = mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Size );
+  bool hasDataDefinedAspectRatio = false;
+  const double aspectRatio = calculateAspectRatio( context, size, hasDataDefinedAspectRatio );
+  double height = size * ( !qgsDoubleNear( aspectRatio, 0.0 ) ? aspectRatio : mDefaultAspectRatio );
 
   bool ok = true;
-  if ( hasDataDefinedSize )
-  {
-    context.setOriginalValueVariable( mSize );
-    size = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Size, context.renderContext().expressionContext(), mSize, &ok );
-  }
-
-  if ( hasDataDefinedSize && ok )
-  {
-    switch ( mScaleMethod )
-    {
-      case Qgis::ScaleMethod::ScaleArea:
-        size = std::sqrt( size );
-        break;
-      case Qgis::ScaleMethod::ScaleDiameter:
-        break;
-    }
-  }
 
   if ( mSizeUnit == Qgis::RenderUnit::Millimeters )
   {
     size *= mmMapUnitScaleFactor;
+    height *= mmMapUnitScaleFactor;
   }
 
   //offset, angle
@@ -2946,7 +2933,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
 
   const QByteArray &svgContent
     = QgsApplication::svgCache()
-        ->svgContent( path, size, fillColor, strokeColor, strokeWidth, context.renderContext().scaleFactor(), mFixedAspectRatio, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
+        ->svgContent( path, size, fillColor, strokeColor, strokeWidth, context.renderContext().scaleFactor(), aspectRatio, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
 
   QSvgRenderer r( svgContent );
   if ( !r.isValid() )
@@ -2955,8 +2942,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
   QgsDxfPaintDevice pd( &e );
   pd.setDrawingSize( QSizeF( r.defaultSize() ) );
 
-  QSizeF outSize( r.defaultSize() );
-  outSize.scale( size, size, Qt::KeepAspectRatio );
+  QSizeF outSize( size, height );
 
   QPainter p;
   p.begin( &pd );
