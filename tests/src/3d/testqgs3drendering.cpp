@@ -1350,6 +1350,48 @@ void TestQgs3DRendering::testInstancedRendering()
   imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
 
+  sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  sphere3DSymbol->setShapeProperties( vmSphere );
+
+  QgsGoochMaterialSettings goochMaterialSettings;
+  sphere3DSymbol->setMaterialSettings( goochMaterialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering_gooch", "sphere_rendering_gooch", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  sphere3DSymbol->setShapeProperties( vmSphere );
+
+  QgsMetalRoughMaterialSettings metalRoughMaterialSettings;
+  sphere3DSymbol->setMaterialSettings( metalRoughMaterialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering_metal", "sphere_rendering_metal", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsMetalRoughTexturedMaterialSettings metalTexturedSettings;
+  metalTexturedSettings.setBaseColorTexturePath( testDataPath( "/3d/materials/Metal005_Color.jpg" ) );
+  metalTexturedSettings.setMetalnessTexturePath( testDataPath( "/3d/materials/Metal005_Metalness.jpg" ) );
+  metalTexturedSettings.setRoughnessTexturePath( testDataPath( "/3d/materials/Metal005_Roughness.jpg" ) );
+  metalTexturedSettings.setTextureScale( 0.02 );
+  sphere3DSymbol->setMaterialSettings( metalTexturedSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering_metaltextured", "sphere_rendering_metaltextured", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
   // ====================== CYLINDER
   QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
   cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
