@@ -882,6 +882,7 @@ void QgsDxfExport::prepareRenderers()
   Q_ASSERT( mJobs.empty() ); // If this fails, stopRenderers() was not called after the last job
 
   mRenderContext = QgsRenderContext();
+  mRenderContext.setPathResolver( mMapSettings.pathResolver() );
   mRenderContext.setRendererScale( mSymbologyScale );
   mRenderContext.setExtent( mMapSettings.extent() );
   QgsDistanceArea da;
