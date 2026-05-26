@@ -32,7 +32,15 @@ QgsEnvironmentLight::QgsEnvironmentLight( QgsFrameGraph *frameGraph, QNode *pare
   const QVariantList sh( 9, QVector3D( 0, 0, 0 ) );
   mShParam = new Qt3DRender::QParameter( u"envLightSh[0]"_s, QVariant::fromValue( sh ), this );
 
-  mSpecularMapParam = new Qt3DRender::QParameter( u"globalSpecularMap"_s, QVariant(), this );
+  mDummyCubeMap = new Qt3DRender::QTextureCubeMap( this );
+  mDummyCubeMap->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
+  mDummyCubeMap->setWidth( 1 );
+  mDummyCubeMap->setHeight( 1 );
+  mDummyCubeMap->setGenerateMipMaps( false );
+  mDummyCubeMap->setMagnificationFilter( Qt3DRender::QAbstractTexture::Nearest );
+  mDummyCubeMap->setMinificationFilter( Qt3DRender::QAbstractTexture::Nearest );
+
+  mSpecularMapParam = new Qt3DRender::QParameter( u"globalSpecularMap"_s, QVariant::fromValue( mDummyCubeMap ), this );
   mMipLevelsParam = new Qt3DRender::QParameter( u"globalSpecularMipLevels"_s, 1, this );
 
   mEnvironmentLightModeParam = new Qt3DRender::QParameter( u"envLightMode"_s, 0, this );
@@ -66,6 +74,6 @@ void QgsEnvironmentLight::setSphericalHarmonics( const QVector<QVector3D> &harmo
 
 void QgsEnvironmentLight::setSpecularMap( Qt3DRender::QTextureCubeMap *specularTexture, int mipLevels )
 {
-  mSpecularMapParam->setValue( QVariant::fromValue( specularTexture ) );
+  mSpecularMapParam->setValue( specularTexture ? QVariant::fromValue( specularTexture ) : QVariant::fromValue( mDummyCubeMap ) );
   mMipLevelsParam->setValue( mipLevels );
 }

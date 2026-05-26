@@ -30,6 +30,7 @@ namespace Qt3DRender
 {
   class QParameter;
   class QTextureCubeMap;
+  class QTexture2D;
 } //namespace Qt3DRender
 
 class QgsImageTexture;
@@ -76,6 +77,7 @@ class _3D_EXPORT QgsEnvironmentLight : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mShParam = nullptr;
     Qt3DRender::QParameter *mSpecularMapParam = nullptr;
     Qt3DRender::QParameter *mMipLevelsParam = nullptr;
+    Qt3DRender::QTextureCubeMap *mDummyCubeMap = nullptr;
 };
 
 
