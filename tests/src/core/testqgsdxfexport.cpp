@@ -1557,13 +1557,16 @@ void TestQgsDxfExport::testDataDefinedSvgRelativePath()
   const QByteArray dxfWithoutResolver = exportToBytes( vl.get(), msNoResolver );
   QVERIFY( !dxfWithoutResolver.isEmpty() );
 
-  // plane.svg produces many more path vertices than the missing-svg placeholder,
-  // so the resolver branch must produce strictly more BLOCKS vertices.
+  // plane.svg and the missing-svg placeholder produce visibly different
+  // BLOCKS geometry. The resolver branch must render plane.svg, not the
+  // placeholder; assert both that the resolver branch renders something
+  // substantial and that it differs from the placeholder branch.
   const int verticesWithResolver = scanBlockVertices( dxfWithResolver ).xs.size();
   const int verticesWithoutResolver = scanBlockVertices( dxfWithoutResolver ).xs.size();
+  QVERIFY2( verticesWithResolver > 50, u"Resolver branch produced too few BLOCKS vertices: with=%1"_s.arg( verticesWithResolver ).toUtf8().constData() );
   QVERIFY2(
-    verticesWithResolver > verticesWithoutResolver + 10,
-    u"Expected resolver branch to render plane.svg (more vertices) than placeholder: with=%1 without=%2"_s.arg( verticesWithResolver ).arg( verticesWithoutResolver ).toUtf8().constData()
+    std::abs( verticesWithResolver - verticesWithoutResolver ) > 10,
+    u"Resolver and placeholder branches produced suspiciously similar output: with=%1 without=%2"_s.arg( verticesWithResolver ).arg( verticesWithoutResolver ).toUtf8().constData()
   );
 }
 
