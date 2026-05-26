@@ -65,6 +65,19 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
   return nullptr;
 }
 
+QgsMaterial *QgsMetalRoughMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+{
+  const QgsMetalRoughMaterialSettings *metalRoughSettings = qgis::down_cast< const QgsMetalRoughMaterialSettings * >( settings );
+
+  QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial();
+  material->setInstancingEnabled( true, flags );
+
+  material->setObjectName( u"metalRoughMaterial"_s );
+  applySettingsToMaterial( metalRoughSettings, material, context );
+
+  return material;
+}
+
 QMap<QString, QString> QgsMetalRoughMaterial3DHandler::toExportParameters( const QgsAbstractMaterialSettings * ) const
 {
   QMap<QString, QString> parameters;

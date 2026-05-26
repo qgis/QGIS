@@ -384,25 +384,26 @@ void QgsMetalRoughMaterial::setOpacity( float opacity )
   mOpacityParameter->setValue( opacity );
 }
 
-void QgsMetalRoughMaterial::setDataDefinedEnabled( bool enabled )
+void QgsMetalRoughMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
 {
-  if ( enabled != mDataDefinedEnabled )
+  mInstanced = enabled;
+  mInstanceFlags = flags;
+
+  if ( mInstanced )
   {
-    mDataDefinedEnabled = enabled;
-    updateShaders();
+    QStringList defines = { u"HAS_TEXTURE"_s, u"HAS_TANGENT"_s };
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
   }
-}
-
-void QgsMetalRoughMaterial::setInstancingEnabled( bool enabled )
-{
-  if ( enabled == mInstancingEnabled )
-    return;
-  mInstancingEnabled = enabled;
-
-  QByteArray vertexCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
-  if ( enabled )
-    vertexCode = Qgs3DUtils::addDefinesToShaderCode( vertexCode, QStringList( { u"INSTANCING"_s } ) );
-  mMetalRoughGL3Shader->setVertexShaderCode( vertexCode );
+  else
+  {
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
+    mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, { u"TEXTURE_ROTATION"_s } ) );
+  }
 }
 
 ///@endcond PRIVATE

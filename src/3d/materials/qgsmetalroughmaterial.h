@@ -16,6 +16,7 @@
 #ifndef QGSMETALROUGHMATERIAL_H
 #define QGSMETALROUGHMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -105,10 +106,11 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     void setEmissionFactor( double factor );
 
     /**
-     * When instancing is enabled, the vertex shader uses per-instance
-     * translation, rotation, and scale attributes for GPU instancing.
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader.
+     * \a flags controls which per-instance attributes (scale, rotation) are active.
      */
-    void setInstancingEnabled( bool enabled );
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
 
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
@@ -157,7 +159,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingHeightMap = false;
     bool mUsingEmissionMap = false;
     bool mFlatShading = false;
-    bool mInstancingEnabled = false;
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
 
     bool mDataDefinedEnabled = false;
 
