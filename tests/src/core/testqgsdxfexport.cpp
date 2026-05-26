@@ -108,6 +108,21 @@ class TestQgsDxfExport : public QObject
     void setDefaultLabelParams( QgsPalLayerSettings &settings );
     QString getTempFileName( const QString &file ) const;
 
+    //! Builds standard 640x480 @ 96 dpi map settings using \a vl's CRS, with \a vl as only layer.
+    QgsMapSettings makeMapSettings( QgsVectorLayer *vl, const QgsRectangle &extent = QgsRectangle() ) const;
+    //! Runs a DXF export of \a vl with the given mode and scale, returning the raw bytes.
+    QByteArray exportToBytes( QgsVectorLayer *vl, const QgsMapSettings &ms, Qgis::FeatureSymbologyExport mode = Qgis::FeatureSymbologyExport::PerFeature, double scale = 1000.0 ) const;
+
+    struct BlockVertices
+    {
+        QList<double> xs;
+        QList<double> ys;
+    };
+    //! Returns all group-10/20 vertex coordinates inside the BLOCKS section.
+    static BlockVertices scanBlockVertices( const QByteArray &dxfBytes );
+    //! Counts INSERT entities inside the ENTITIES section.
+    static int countEntityInserts( const QByteArray &dxfBytes );
+
     bool fileContainsText( const QString &path, const QString &text, QString *debugInfo = nullptr ) const;
 };
 
@@ -227,15 +242,7 @@ void TestQgsDxfExport::testPoints()
   QgsDxfExport d;
   d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
-  QgsMapSettings mapSettings;
-  const QSize size( 640, 480 );
-  mapSettings.setOutputSize( size );
-  mapSettings.setExtent( mPointLayer->extent() );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayer );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( mPointLayer->crs() );
-
-  d.setMapSettings( mapSettings );
+  d.setMapSettings( makeMapSettings( mPointLayer ) );
   d.setSymbologyScale( 1000 );
 
   const QString file = getTempFileName( "point_dxf" );
@@ -257,15 +264,7 @@ void TestQgsDxfExport::testPointsDataDefinedSizeAngle()
   QgsDxfExport d;
   d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerDataDefinedSizeAngle ) );
 
-  QgsMapSettings mapSettings;
-  const QSize size( 640, 480 );
-  mapSettings.setOutputSize( size );
-  mapSettings.setExtent( mPointLayerDataDefinedSizeAngle->extent() );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerDataDefinedSizeAngle );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( mPointLayerDataDefinedSizeAngle->crs() );
-
-  d.setMapSettings( mapSettings );
+  d.setMapSettings( makeMapSettings( mPointLayerDataDefinedSizeAngle ) );
   d.setSymbologyScale( 2000000 );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
@@ -1091,15 +1090,7 @@ void TestQgsDxfExport::testGeometryGeneratorExport()
   QgsDxfExport d;
   d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerGeometryGenerator ) );
 
-  QgsMapSettings mapSettings;
-  const QSize size( 640, 480 );
-  mapSettings.setOutputSize( size );
-  mapSettings.setExtent( mPointLayerGeometryGenerator->extent() );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerGeometryGenerator );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( mPointLayerGeometryGenerator->crs() );
-
-  d.setMapSettings( mapSettings );
+  d.setMapSettings( makeMapSettings( mPointLayerGeometryGenerator ) );
   d.setSymbologyScale( 6000000 );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
@@ -1274,15 +1265,7 @@ void TestQgsDxfExport::testDashedLine()
   d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
 
-  QgsMapSettings mapSettings;
-  const QSize size( 640, 480 );
-  mapSettings.setOutputSize( size );
-  mapSettings.setExtent( vl->extent() );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( vl->crs() );
-
-  d.setMapSettings( mapSettings );
+  d.setMapSettings( makeMapSettings( vl.get() ) );
   d.setSymbologyScale( 1000 );
 
   const QString file = getTempFileName( "dashed_line_dxf" );
@@ -1476,15 +1459,7 @@ void TestQgsDxfExport::testDataDefinedPoints()
   d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
-  QgsMapSettings mapSettings;
-  const QSize size( 640, 480 );
-  mapSettings.setOutputSize( size );
-  mapSettings.setExtent( vl->extent().buffered( 100.0 ) );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( vl->crs() );
-
-  d.setMapSettings( mapSettings );
+  d.setMapSettings( makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) ) );
   d.setSymbologyScale( 1000 );
 
   const QString file = getTempFileName( "data_defined_points_dxf" );
@@ -1564,71 +1539,27 @@ void TestQgsDxfExport::testDataDefinedSvgRelativePath()
   sll << svgLayer;
   vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
 
-  QgsMapSettings mapSettings;
-  mapSettings.setOutputSize( QSize( 640, 480 ) );
-  mapSettings.setExtent( vl->extent().buffered( 100.0 ) );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( vl->crs() );
+  const QgsMapSettings ms = makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) );
 
   // Sanity check: the project's path resolver can locate the SVG.
   const QString resolved = QgsSymbolLayerUtils::svgSymbolNameToPath( svgFileName, QgsProject::instance()->pathResolver() );
   QCOMPARE( QFileInfo( resolved ).canonicalFilePath(), QFileInfo( relocatedSvg ).canonicalFilePath() );
 
   // Export with the project path resolver available -> real SVG is rendered.
-  QByteArray dxfWithResolver;
-  {
-    QBuffer buf( &dxfWithResolver );
-    buf.open( QIODevice::WriteOnly );
-    QgsDxfExport d;
-    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
-    d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
-    d.setMapSettings( mapSettings );
-    d.setExtent( mapSettings.extent() );
-    d.setSymbologyScale( 1000 );
-    QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
-  }
+  const QByteArray dxfWithResolver = exportToBytes( vl.get(), ms );
+  QVERIFY( !dxfWithResolver.isEmpty() );
 
   // Export without a project file -> relative path cannot be resolved, the
   // missing-svg placeholder is rendered instead.
   QgsProject::instance()->setFileName( QString() );
-  QByteArray dxfWithoutResolver;
-  {
-    QBuffer buf( &dxfWithoutResolver );
-    buf.open( QIODevice::WriteOnly );
-    QgsDxfExport d;
-    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
-    d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
-    d.setMapSettings( mapSettings );
-    d.setExtent( mapSettings.extent() );
-    d.setSymbologyScale( 1000 );
-    QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
-  }
+  const QgsMapSettings msNoResolver = makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) );
+  const QByteArray dxfWithoutResolver = exportToBytes( vl.get(), msNoResolver );
+  QVERIFY( !dxfWithoutResolver.isEmpty() );
 
-  // Count vertex group codes (10) in the BLOCKS section: plane.svg has many
-  // more path vertices than the missing-svg placeholder, so the resolver
-  // branch must produce strictly more vertices than the non-resolver one.
-  const auto countBlockVertices = []( const QByteArray &dxfBytes ) {
-    const QString dxf = QString::fromLatin1( dxfBytes );
-    const QStringList lines = dxf.split( '\n' );
-    bool inBlocks = false;
-    int count = 0;
-    for ( int i = 0; i < lines.size() - 1; ++i )
-    {
-      const QString trimmed = lines.at( i ).trimmed();
-      const QString next = lines.at( i + 1 ).trimmed();
-      if ( trimmed == "2"_L1 && next == "BLOCKS"_L1 )
-        inBlocks = true;
-      else if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
-        inBlocks = false;
-      if ( inBlocks && trimmed == "10"_L1 )
-        ++count;
-    }
-    return count;
-  };
-
-  const int verticesWithResolver = countBlockVertices( dxfWithResolver );
-  const int verticesWithoutResolver = countBlockVertices( dxfWithoutResolver );
+  // plane.svg produces many more path vertices than the missing-svg placeholder,
+  // so the resolver branch must produce strictly more BLOCKS vertices.
+  const int verticesWithResolver = scanBlockVertices( dxfWithResolver ).xs.size();
+  const int verticesWithoutResolver = scanBlockVertices( dxfWithoutResolver ).xs.size();
   QVERIFY2(
     verticesWithResolver > verticesWithoutResolver + 10,
     u"Expected resolver branch to render plane.svg (more vertices) than placeholder: with=%1 without=%2"_s.arg( verticesWithResolver ).arg( verticesWithoutResolver ).toUtf8().constData()
@@ -1660,67 +1591,18 @@ void TestQgsDxfExport::testSvgMarkerPaintDeviceMetrics()
   sll << svgLayer;
   vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
 
-  QgsMapSettings mapSettings;
-  mapSettings.setOutputSize( QSize( 640, 480 ) );
-  mapSettings.setExtent( vl->extent().buffered( 100.0 ) );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( vl->crs() );
-
-  QByteArray bytes;
-  {
-    QBuffer buf( &bytes );
-    buf.open( QIODevice::WriteOnly );
-    QgsDxfExport d;
-    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
-    d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
-    d.setMapSettings( mapSettings );
-    d.setExtent( mapSettings.extent() );
-    d.setSymbologyScale( 1000 );
-    QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
-  }
+  const QByteArray bytes = exportToBytes( vl.get(), makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) ) );
+  QVERIFY( !bytes.isEmpty() );
 
   // The SVG must produce vertices that span a non-zero range in both X and Y.
-  // Scan all group-code-10/20 lines that appear in the BLOCKS section.
-  const QString dxf = QString::fromLatin1( bytes );
-  const QStringList lines = dxf.split( '\n' );
-  bool inBlocks = false;
-  QList<double> xs;
-  QList<double> ys;
-  for ( int i = 0; i < lines.size() - 1; ++i )
-  {
-    const QString trimmed = lines.at( i ).trimmed();
-    const QString next = lines.at( i + 1 ).trimmed();
-    if ( trimmed == "2"_L1 && next == "BLOCKS"_L1 )
-      inBlocks = true;
-    else if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
-      inBlocks = false;
-    if ( !inBlocks )
-      continue;
-    bool ok = false;
-    const int code = trimmed.toInt( &ok );
-    if ( !ok )
-      continue;
-    if ( code == 10 )
-    {
-      const double v = next.toDouble( &ok );
-      if ( ok )
-        xs.append( v );
-    }
-    else if ( code == 20 )
-    {
-      const double v = next.toDouble( &ok );
-      if ( ok )
-        ys.append( v );
-    }
-  }
-  QVERIFY2( xs.size() > 4, "Not enough vertex group codes in BLOCKS section" );
-  QVERIFY2( ys.size() > 4, "Not enough vertex group codes in BLOCKS section" );
+  const BlockVertices verts = scanBlockVertices( bytes );
+  QVERIFY2( verts.xs.size() > 4, "Not enough vertex group codes in BLOCKS section" );
+  QVERIFY2( verts.ys.size() > 4, "Not enough vertex group codes in BLOCKS section" );
 
-  const auto xMinMax = std::minmax_element( xs.constBegin(), xs.constEnd() );
-  const auto yMinMax = std::minmax_element( ys.constBegin(), ys.constEnd() );
-  const double xRange = *xMinMax.second - *xMinMax.first;
-  const double yRange = *yMinMax.second - *yMinMax.first;
+  const auto xMM = std::minmax_element( verts.xs.constBegin(), verts.xs.constEnd() );
+  const auto yMM = std::minmax_element( verts.ys.constBegin(), verts.ys.constEnd() );
+  const double xRange = *xMM.second - *xMM.first;
+  const double yRange = *yMM.second - *yMM.first;
   QVERIFY2( xRange > 0.1, u"X range collapsed: %1"_s.arg( xRange ).toUtf8().constData() );
   QVERIFY2( yRange > 0.1, u"Y range collapsed: %1"_s.arg( yRange ).toUtf8().constData() );
 }
@@ -1747,70 +1629,21 @@ void TestQgsDxfExport::testSvgMarkerPointsUnits()
   sll << marker;
   vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
 
-  QgsMapSettings mapSettings;
-  mapSettings.setOutputSize( QSize( 640, 480 ) );
-  mapSettings.setExtent( vl->extent().buffered( 100.0 ) );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( vl->crs() );
-
   const double scale = 1000.0;
-
-  QByteArray bytes;
-  {
-    QBuffer buf( &bytes );
-    buf.open( QIODevice::WriteOnly );
-    QgsDxfExport d;
-    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
-    d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
-    d.setMapSettings( mapSettings );
-    d.setExtent( mapSettings.extent() );
-    d.setSymbologyScale( scale );
-    QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
-  }
+  const QByteArray bytes = exportToBytes( vl.get(), makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) ), Qgis::FeatureSymbologyExport::PerFeature, scale );
+  QVERIFY( !bytes.isEmpty() );
 
   // Expected size in map units for a 100 pt marker at scale 1:1000 in a metres CRS:
   // 100 pt * 25.4 / 72 mm/pt * 1000 / 1000 m/mm  =  35.27 m (square side)
   const double expectedSide = 100.0 * 25.4 / 72.0 * scale / 1000.0;
 
   // Scan vertices of the (single) symbol BLOCK and verify its bbox matches.
-  const QString dxf = QString::fromLatin1( bytes );
-  const QStringList lines = dxf.split( '\n' );
-  bool inBlocks = false;
-  QList<double> xs;
-  QList<double> ys;
-  for ( int i = 0; i < lines.size() - 1; ++i )
-  {
-    const QString trimmed = lines.at( i ).trimmed();
-    const QString next = lines.at( i + 1 ).trimmed();
-    if ( trimmed == "2"_L1 && next == "BLOCKS"_L1 )
-      inBlocks = true;
-    else if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
-      inBlocks = false;
-    if ( !inBlocks )
-      continue;
-    bool ok = false;
-    const int code = trimmed.toInt( &ok );
-    if ( !ok )
-      continue;
-    if ( code == 10 )
-    {
-      const double v = next.toDouble( &ok );
-      if ( ok )
-        xs.append( v );
-    }
-    else if ( code == 20 )
-    {
-      const double v = next.toDouble( &ok );
-      if ( ok )
-        ys.append( v );
-    }
-  }
-  QVERIFY( !xs.isEmpty() && !ys.isEmpty() );
-  const auto xMinMax = std::minmax_element( xs.constBegin(), xs.constEnd() );
-  const auto yMinMax = std::minmax_element( ys.constBegin(), ys.constEnd() );
-  const double xRange = *xMinMax.second - *xMinMax.first;
-  const double yRange = *yMinMax.second - *yMinMax.first;
+  const BlockVertices verts = scanBlockVertices( bytes );
+  QVERIFY( !verts.xs.isEmpty() && !verts.ys.isEmpty() );
+  const auto xMM = std::minmax_element( verts.xs.constBegin(), verts.xs.constEnd() );
+  const auto yMM = std::minmax_element( verts.ys.constBegin(), verts.ys.constEnd() );
+  const double xRange = *xMM.second - *xMM.first;
+  const double yRange = *yMM.second - *yMM.first;
   // Tolerate a few percent for vertex rounding inside the paint engine.
   QVERIFY2( std::fabs( xRange - expectedSide ) < expectedSide * 0.05, u"X range %1, expected ~%2"_s.arg( xRange ).arg( expectedSide ).toUtf8().constData() );
   QVERIFY2( std::fabs( yRange - expectedSide ) < expectedSide * 0.05, u"Y range %1, expected ~%2"_s.arg( yRange ).arg( expectedSide ).toUtf8().constData() );
@@ -1842,61 +1675,12 @@ void TestQgsDxfExport::testDataDefinedLayerEnabled()
   sll << marker;
   vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol( sll ) ) );
 
-  QgsMapSettings mapSettings;
-  mapSettings.setOutputSize( QSize( 640, 480 ) );
-  mapSettings.setExtent( vl->extent().buffered( 100.0 ) );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( vl->crs() );
-
-  const auto countInserts = []( const QByteArray &dxfBytes ) {
-    const QString dxf = QString::fromLatin1( dxfBytes );
-    const QStringList lines = dxf.split( '\n' );
-    bool inEntities = false;
-    int count = 0;
-    for ( int i = 0; i < lines.size() - 1; ++i )
-    {
-      const QString trimmed = lines.at( i ).trimmed();
-      const QString next = lines.at( i + 1 ).trimmed();
-      if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
-        inEntities = true;
-      else if ( trimmed == "0"_L1 && next == "ENDSEC"_L1 )
-        inEntities = false;
-      if ( inEntities && trimmed == "0"_L1 && next == "INSERT"_L1 )
-        ++count;
-    }
-    return count;
-  };
+  const QgsMapSettings ms = makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) );
 
   // PerFeature: should write only the feature where keep=1.
-  {
-    QByteArray bytes;
-    QBuffer buf( &bytes );
-    buf.open( QIODevice::WriteOnly );
-    QgsDxfExport d;
-    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
-    d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
-    d.setMapSettings( mapSettings );
-    d.setExtent( mapSettings.extent() );
-    d.setSymbologyScale( 1000 );
-    QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
-    QCOMPARE( countInserts( bytes ), 1 );
-  }
-
+  QCOMPARE( countEntityInserts( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerFeature ) ), 1 );
   // PerSymbolLayer: same.
-  {
-    QByteArray bytes;
-    QBuffer buf( &bytes );
-    buf.open( QIODevice::WriteOnly );
-    QgsDxfExport d;
-    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
-    d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
-    d.setMapSettings( mapSettings );
-    d.setExtent( mapSettings.extent() );
-    d.setSymbologyScale( 1000 );
-    QCOMPARE( d.writeToFile( &buf, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
-    QCOMPARE( countInserts( bytes ), 1 );
-  }
+  QCOMPARE( countEntityInserts( exportToBytes( vl.get(), ms, Qgis::FeatureSymbologyExport::PerSymbolLayer ) ), 1 );
 }
 
 void TestQgsDxfExport::testExtent()
@@ -1904,15 +1688,7 @@ void TestQgsDxfExport::testExtent()
   QgsDxfExport d;
   d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
 
-  QgsMapSettings mapSettings;
-  const QSize size( 640, 480 );
-  mapSettings.setOutputSize( size );
-  mapSettings.setExtent( mPolygonLayer->extent() );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << mPolygonLayer );
-  mapSettings.setOutputDpi( 96 );
-  mapSettings.setDestinationCrs( mPolygonLayer->crs() );
-
-  d.setMapSettings( mapSettings );
+  d.setMapSettings( makeMapSettings( mPolygonLayer ) );
   d.setSymbologyScale( 1000 );
   d.setExtent( QgsRectangle( -103.9, 25.0, -98.0, 29.8 ) );
 
@@ -2467,6 +2243,92 @@ void TestQgsDxfExport::testMetersAtScale()
   dxfFile.close();
   QString debugInfo;
   QVERIFY2( fileContainsText( file, "REGEX Biplane", &debugInfo ), debugInfo.toUtf8().constData() );
+}
+
+QgsMapSettings TestQgsDxfExport::makeMapSettings( QgsVectorLayer *vl, const QgsRectangle &extent ) const
+{
+  QgsMapSettings ms;
+  ms.setOutputSize( QSize( 640, 480 ) );
+  ms.setExtent( extent.isNull() ? vl->extent() : extent );
+  ms.setLayers( QList<QgsMapLayer *>() << vl );
+  ms.setOutputDpi( 96 );
+  ms.setDestinationCrs( vl->crs() );
+  ms.setPathResolver( QgsProject::instance()->pathResolver() );
+  return ms;
+}
+
+QByteArray TestQgsDxfExport::exportToBytes( QgsVectorLayer *vl, const QgsMapSettings &ms, Qgis::FeatureSymbologyExport mode, double scale ) const
+{
+  QByteArray bytes;
+  {
+    QBuffer buf( &bytes );
+    buf.open( QIODevice::WriteOnly );
+    QgsDxfExport d;
+    d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl ) );
+    d.setSymbologyExport( mode );
+    d.setMapSettings( ms );
+    d.setExtent( ms.extent() );
+    d.setSymbologyScale( scale );
+    if ( d.writeToFile( &buf, u"CP1252"_s ) != QgsDxfExport::ExportResult::Success )
+      return QByteArray();
+  }
+  return bytes;
+}
+
+TestQgsDxfExport::BlockVertices TestQgsDxfExport::scanBlockVertices( const QByteArray &dxfBytes )
+{
+  BlockVertices out;
+  const QString dxf = QString::fromLatin1( dxfBytes );
+  const QStringList lines = dxf.split( '\n' );
+  bool inBlocks = false;
+  for ( int i = 0; i < lines.size() - 1; ++i )
+  {
+    const QString trimmed = lines.at( i ).trimmed();
+    const QString next = lines.at( i + 1 ).trimmed();
+    if ( trimmed == "2"_L1 && next == "BLOCKS"_L1 )
+      inBlocks = true;
+    else if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
+      inBlocks = false;
+    if ( !inBlocks )
+      continue;
+    bool ok = false;
+    const int code = trimmed.toInt( &ok );
+    if ( !ok )
+      continue;
+    if ( code == 10 )
+    {
+      const double v = next.toDouble( &ok );
+      if ( ok )
+        out.xs.append( v );
+    }
+    else if ( code == 20 )
+    {
+      const double v = next.toDouble( &ok );
+      if ( ok )
+        out.ys.append( v );
+    }
+  }
+  return out;
+}
+
+int TestQgsDxfExport::countEntityInserts( const QByteArray &dxfBytes )
+{
+  const QString dxf = QString::fromLatin1( dxfBytes );
+  const QStringList lines = dxf.split( '\n' );
+  bool inEntities = false;
+  int count = 0;
+  for ( int i = 0; i < lines.size() - 1; ++i )
+  {
+    const QString trimmed = lines.at( i ).trimmed();
+    const QString next = lines.at( i + 1 ).trimmed();
+    if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
+      inEntities = true;
+    else if ( trimmed == "0"_L1 && next == "ENDSEC"_L1 )
+      inEntities = false;
+    if ( inEntities && trimmed == "0"_L1 && next == "INSERT"_L1 )
+      ++count;
+  }
+  return count;
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text, QString *debugInfo ) const
