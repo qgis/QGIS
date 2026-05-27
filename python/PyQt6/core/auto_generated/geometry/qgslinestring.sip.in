@@ -98,7 +98,7 @@ point in the sequence.
               double d = PyFloat_AsDouble( element );
               if ( PyErr_Occurred() )
               {
-                Py_DECREF( element );
+                Py_DECREF( value );
                 sipIsErr = 1;
                 break;
               }
