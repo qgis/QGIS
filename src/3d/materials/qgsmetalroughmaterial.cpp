@@ -32,7 +32,7 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
+QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent, bool disableEnvironmentalLight )
   : QgsMaterial( parent )
   , mBaseColorParameter( new Qt3DRender::QParameter( u"baseColor"_s, Qgs3DUtils::srgbToLinear( QColor( "grey" ) ), this ) )
   , mMetalnessParameter( new Qt3DRender::QParameter( u"metalness"_s, 0.0f, this ) )
@@ -55,6 +55,7 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
+  , mDisableEnvironmentalLighting( disableEnvironmentalLight )
 {
   init();
 }
@@ -358,6 +359,8 @@ void QgsMetalRoughMaterial::updateShaders()
     fragShaderDefines += "EMISSION_MAP";
   if ( mFlatShading )
     fragShaderDefines += "FLAT_SHADING";
+  if ( mDisableEnvironmentalLighting )
+    fragShaderDefines += "DISABLE_IBL";
 
   if ( mInstanced )
   {

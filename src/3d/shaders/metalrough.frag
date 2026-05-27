@@ -4,12 +4,14 @@
 #version 330
 
 // defines are added here as a pre-processing step
-
+#ifndef DISABLE_IBL
 uniform samplerCube globalSpecularMap;
 uniform int globalSpecularMipLevels;
 uniform vec3 envLightSh[9];
 uniform int envLightMode; // 1 = Skybox IBL, 0 = Solid Background
 uniform float envLightStrength;
+#endif
+
 in vec3 worldPosition;
 
 #ifndef FLAT_SHADING
@@ -330,12 +332,14 @@ vec3 pbrModel(const in int lightIndex,
     return color;
 }
 
+#ifndef DISABLE_IBL
 float roughnessToMipLevel(float roughness)
 {
   // as per https://google.github.io/filament/Filament.md.html, section 5.3.11.11
   float lod = float(globalSpecularMipLevels - 1) * roughness;
   return max(lod, 0.0);
 }
+#endif
 
 // analytical approximation of the split-sum for environment bidirectional reflectance distribution function
 // as per https://www.unrealengine.com/blog/physically-based-shading-on-mobile?lang=en-US
@@ -348,7 +352,7 @@ vec2 environmentBrdfApproximation(const in float roughness, const in float viewD
     vec2 ab = vec2(-1.04, 1.04) * a004 + r.zw;
     return ab;
 }
-
+#ifndef DISABLE_IBL
 vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
@@ -414,6 +418,7 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
 
     return color;
 }
+#endif
 
 vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float metalness,
@@ -428,7 +433,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
 
     // Remap roughness for a perceptually more linear correspondence
     float alpha = remapRoughness(roughness);
-
+#ifndef DISABLE_IBL
     if ( envLightMode == 1 && envLightStrength > 0 )
     {
         cLinear += pbrIblModelSphericalHarmonics(worldNormal,
@@ -439,6 +444,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                                alpha,
                                ambientOcclusion) * envLightStrength;
     }
+#endif
 
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,
