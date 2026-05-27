@@ -86,6 +86,8 @@ class TestQgs3DMaterialRendering : public QgsTest
     void testExtrudedPolygonsMetalRoughTexturedShadingOpacity();
     void testExtrudedPolygonsDataDefinedMetalRoughBase();
     void testExtrudedPolygonsDataDefinedMetalRoughEmission();
+    void testMetalRoughEnvironmentLight_data();
+    void testMetalRoughEnvironmentLight();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -1085,6 +1087,110 @@ void TestQgs3DMaterialRendering::testExtrudedPolygonsDataDefinedMetalRoughEmissi
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "metal_rough_dd_emission", "metal_rough_dd_emission", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DMaterialRendering::testMetalRoughEnvironmentLight_data()
+{
+  QTest::addColumn<double>( "metalness" );
+  QTest::addColumn<double>( "roughness" );
+  QTest::addColumn<QColor>( "baseColor" );
+  QTest::addColumn<double>( "strength" );
+  QTest::addColumn<QString>( "reference" );
+
+  QTest::newRow( "dielectric smooth" ) << 0.0 << 0.0 << QColor( 200, 255, 200 ) << 1.0 << "env_light1";
+  QTest::newRow( "dielectric 30% rough" ) << 0.0 << 0.3 << QColor( 200, 255, 200 ) << 1.0 << "env_light2";
+  QTest::newRow( "dielectric 60% rough" ) << 0.0 << 0.6 << QColor( 200, 255, 200 ) << 1.0 << "env_light3";
+  QTest::newRow( "dielectric 100% rough" ) << 0.0 << 1.0 << QColor( 200, 255, 200 ) << 1.0 << "env_light4";
+  QTest::newRow( "metal smooth" ) << 1.0 << 0.0 << QColor( 200, 255, 200 ) << 1.0 << "env_light5";
+  QTest::newRow( "metal 30% rough" ) << 1.0 << 0.3 << QColor( 200, 255, 200 ) << 1.0 << "env_light6";
+  QTest::newRow( "metal 60% rough" ) << 1.0 << 0.6 << QColor( 200, 255, 200 ) << 1.0 << "env_light7";
+  QTest::newRow( "metal 100% rough" ) << 1.0 << 1.0 << QColor( 200, 255, 200 ) << 1.0 << "env_light8";
+  QTest::newRow( "dielectric smooth dark" ) << 0.0 << 0.0 << QColor( 30, 30, 30 ) << 1.0 << "env_light9";
+  QTest::newRow( "dielectric smooth white" ) << 0.0 << 0.0 << QColor( 230, 230, 230 ) << 1.0 << "env_light10";
+  QTest::newRow( "metal smooth dark" ) << 1.0 << 0.0 << QColor( 30, 30, 30 ) << 1.0 << "env_light11";
+  QTest::newRow( "metal smooth white" ) << 1.0 << 0.0 << QColor( 230, 230, 230 ) << 1.0 << "env_light12";
+  QTest::newRow( "50% strength" ) << 1.0 << 0.0 << QColor( 230, 230, 230 ) << 0.5 << "env_light13";
+}
+
+void TestQgs3DMaterialRendering::testMetalRoughEnvironmentLight()
+{
+  QFETCH( double, metalness );
+  QFETCH( double, roughness );
+  QFETCH( QColor, baseColor );
+  QFETCH( double, strength );
+  QFETCH( QString, reference );
+
+  const QgsRectangle fullExtent( -100, -100, 100, 100 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:3857&field=field1:int&field=field2:int&field=field3:int", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 0, 0, 0 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+
+  f1.setAttributes( QgsAttributes() << 1 << 2 << 3 );
+  f1.setGeometry( QgsGeometry( p1 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Sphere );
+
+  QVariantMap props;
+  props[u"slices"_s] = 64;
+  props[u"rings"_s] = 64;
+
+  symbol->setShapeProperties( props );
+  QgsMetalRoughMaterialSettings materialSettings;
+  materialSettings.setMetalness( metalness );
+  materialSettings.setRoughness( roughness );
+  materialSettings.setBaseColor( baseColor );
+  symbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsDirectionalLightSettings directionalLight;
+  directionalLight.setDirection( QgsVector3D( 0.32, 0.27, -0.91 ) );
+  mapSettings->setLightSources( { directionalLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mProject->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+  mapSettings->setTerrainRenderingEnabled( false );
+
+  QgsSkyboxSettings skyboxSettings;
+  skyboxSettings.setCubeMapping( Qgis::SkyboxCubeMapping::LeftHandedYUpMirrored );
+  skyboxSettings.setCubeMapFace( u"posX"_s, testDataPath( "/3d/skybox/skybox_right.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"posY"_s, testDataPath( "/3d/skybox/skybox_front.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"posZ"_s, testDataPath( "/3d/skybox/skybox_up.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negX"_s, testDataPath( "/3d/skybox/skybox_left.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negY"_s, testDataPath( "/3d/skybox/skybox_back.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negZ"_s, testDataPath( "/3d/skybox/skybox_down.jpg" ) );
+  skyboxSettings.setEnvironmentalLightingEnabled( true );
+  skyboxSettings.setEnvironmentalLightStrength( strength );
+  mapSettings->setBackgroundSettings( skyboxSettings.clone() );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 30, 90, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  const QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( reference, reference, img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DMaterialRendering::testExtrudedPolygonsMetalRoughTexturedShadingNormals()
