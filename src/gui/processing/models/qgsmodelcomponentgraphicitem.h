@@ -565,6 +565,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void setStarted();
 
     /**
+     * Flags the algorithm as possibly being outdated (i.e. previous results are invalid due to changes elsewhere in the model).
+     *
+     * \since QGIS 4.2
+     */
+    void setOutdated();
+
+    /**
      * Returns the index for the input with the specified parameter name, or -1 if the parameter could not be matched.
      *
      * \see indexForOutput()
@@ -644,6 +651,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     QPicture mPicture;
     QPixmap mPixmap;
     bool mStarted = false;
+    bool mOutdated = false;
     QgsProcessingModelChildAlgorithmResult mResults;
     double mProgress = -1;
     bool mIsValid = true;

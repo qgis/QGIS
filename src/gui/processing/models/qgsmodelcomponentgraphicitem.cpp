@@ -1195,6 +1195,11 @@ QColor QgsModelChildAlgorithmGraphicItem::textColor( QgsModelComponentGraphicIte
 
 QColor QgsModelChildAlgorithmGraphicItem::outlineColor() const
 {
+  if ( mOutdated )
+  {
+    return QColor( 150, 150, 0 );
+  }
+
   switch ( mResults.executionStatus() )
   {
     case Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted:
@@ -1407,6 +1412,7 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
   if ( mResults == results )
     return;
 
+  mOutdated = false;
   const QList< QgsModelArrowItem * > arrows = outgoingArrows();
   if ( results.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted )
   {
@@ -1498,6 +1504,12 @@ void QgsModelChildAlgorithmGraphicItem::setProgress( double progress )
 void QgsModelChildAlgorithmGraphicItem::setStarted()
 {
   mStarted = true;
+  update();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setOutdated()
+{
+  mOutdated = true;
   update();
 }
 

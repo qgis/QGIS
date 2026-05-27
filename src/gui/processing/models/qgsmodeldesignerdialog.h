@@ -271,6 +271,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessi
     int mBlockRepaints = 0;
 
     QgsProcessingModelResult mLastResult;
+    QSet< QString > mOutdatedChildResults;
 
     bool isDirty() const;
 
