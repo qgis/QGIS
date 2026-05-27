@@ -82,6 +82,12 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Set constant reflectance value (between 0 - 1.0)
     void setReflectance( float reflectance );
 
+    //! Set constant anisotropy value (between 0 - 1.0)
+    void setAnisotropy( float anisotropy );
+
+    //! Set constant anisotropy rotation (in degrees)
+    void setAnisotropyRotation( float rotation );
+
     //! Sets the ambient occlusion texture. Takes ownership. Set to NULLPTR to remove.
     void setAmbientOcclusionTexture( Qt3DRender::QAbstractTexture *ambientOcclusion );
 
@@ -144,6 +150,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mMetalnessParameter = nullptr;
     Qt3DRender::QParameter *mRoughnessParameter = nullptr;
     Qt3DRender::QParameter *mReflectanceParameter = nullptr;
+    Qt3DRender::QParameter *mAnisotropyParameter = nullptr;
+    Qt3DRender::QParameter *mAnisotropyRotationParameter = nullptr;
     Qt3DRender::QParameter *mBaseColorMapParameter = nullptr;
     Qt3DRender::QParameter *mMetalnessMapParameter = nullptr;
     Qt3DRender::QParameter *mRoughnessMapParameter = nullptr;

@@ -52,13 +52,18 @@ uniform sampler2D ambientOcclusionMap;
 uniform sampler2D normalMap;
 #endif
 
-#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP) || defined(ANISOTROPY)
 in vec4 worldTangent;
 #endif
 
 #ifdef HEIGHT_MAP
 uniform sampler2D heightMap;
 uniform float parallaxScale = 0.1;
+#endif
+
+#ifdef ANISOTROPY
+uniform float anisotropy;
+uniform float anisotropyRotation;
 #endif
 
 #ifdef DATA_DEFINED
@@ -80,7 +85,7 @@ const float PI = 3.14159265359;
 
 #pragma include light.inc.frag
 
-#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP) || defined(ANISOTROPY)
 mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
     vec3 N = normalize(wNormal);
@@ -250,6 +255,35 @@ vec2 environmentBrdfApproximation(const in float roughness, const in float viewD
     return ab;
 }
 
+#ifdef ANISOTROPY
+// anisotropic normal distribution function
+float normalDistributionAnisotropic(const in float tDotH, const in float bDotH, const in float nDotH, const in float alphaT, const in float alphaB)
+{
+    float d = tDotH * tDotH / (alphaT * alphaT) + bDotH * bDotH / (alphaB * alphaB) + nDotH * nDotH;
+    return 1.0 / max(PI * alphaT * alphaB * d * d, 0.0001);
+}
+
+// anisotropic visibility function (replaces geometric and denominator terms)
+// as https://google.github.io/filament/Filament.md.html, 4.10.15 Anisotropic specular BRDF, Listing 16
+float visibilityAnisotropic(const in float nDotL, const in float nDotV, const in float tDotV, const in float bDotV, const in float tDotL, const in float bDotL, const in float alphaT, const in float alphaB)
+{
+    float lambdaV = nDotL * length(vec3(alphaT * tDotV, alphaB * bDotV, nDotV));
+    float lambdaL = nDotV * length(vec3(alphaT * tDotL, alphaB * bDotL, nDotL));
+    return max(0.5 / max(lambdaV + lambdaL, 0.0001), 0.0);
+}
+
+// bend reflection vector for anisotropic image based lighting
+// as https://google.github.io/filament/Filament.md.html, 5.3.13 Anisotropy, Listing 33
+vec3 bentAnisotropicReflection(const in vec3 v, const in vec3 n, const in vec3 t, const in vec3 b, const in float anisotropy)
+{
+    vec3 anisotropicDirection = anisotropy >= 0.0 ? b : t;
+    vec3 anisotropicTangent = cross(anisotropicDirection, v);
+    vec3 anisotropicNormal = cross(anisotropicTangent, anisotropicDirection);
+    vec3 bentNormal = normalize(mix(n, anisotropicNormal, anisotropy));
+    return reflect(-v, bentNormal);
+}
+#endif
+
 float geometricModel(const in float lDotN,
                      const in float vDotN,
                      const in float roughness,
@@ -307,12 +341,15 @@ vec3 pbrModel(const in int lightIndex,
               const in vec3 wPosition,
               const in vec3 n, // NORMALIZED world normal
               const in vec3 wView,
+              const in vec3 t,
+              const in vec3 b,
               const in vec3 baseColor,
               const in float metalness,
               const in float roughness,
               const in float reflectance,
               const in float alpha,
-              const in float ambientOcclusion)
+              const in float ambientOcclusion,
+              const in float anisotropy)
 {
     // Calculate some useful quantities
     vec3 v = wView;
@@ -330,8 +367,27 @@ vec3 pbrModel(const in int lightIndex,
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = vec3(0.0);
     if (light.sDotN > 0.0) {
+#ifdef ANISOTROPY
+        float alphaT = max(alpha * (1.0 + anisotropy), 0.0001);
+        float alphaB = max(alpha * (1.0 - anisotropy), 0.0001);
+
+        float tDotH = dot(t, light.h);
+        float bDotH = dot(b, light.h);
+        float nDotH = dot(n, light.h);
+        float tDotV = dot(t, v);
+        float bDotV = dot(b, v);
+        float tDotL = dot(t, light.s);
+        float bDotL = dot(b, light.s);
+
+        float D = normalDistributionAnisotropic(tDotH, bDotH, nDotH, alphaT, alphaB);
+        float V = visibilityAnisotropic(light.sDotN, vDotN, tDotV, bDotV, tDotL, bDotL, alphaT, alphaB);
+        vec3 F = fresnelFactor(F0, light.sDotH);
+
+        specularFactor = D * V * F;
+#else
         specularFactor = specularModel(F0, light.sDotH, light.sDotN, vDotN, n, light.h, roughness, false);
         specularFactor *= normalDistribution(light.nDotH, alpha);
+#endif
 
         // calculate multi-scatter energy compensation factor for direct light
         // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.5
@@ -364,12 +420,15 @@ float roughnessToMipLevel(float roughness)
 
 vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
                  const in vec3 wView,
+                 const in vec3 t,
+                 const in vec3 b,
                  const in vec3 baseColor,
                  const in float metalness,
                  const in float roughness,
                  const in float reflectance,
                  const in float alpha,
-                 const in float ambientOcclusion)
+                 const in float ambientOcclusion,
+                 const in float anisotropy)
 {
     // Calculate reflection direction of view vector about surface normal
     // vector in world space. This is used in the fragment shader to sample
@@ -377,7 +436,12 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
     // to the l vector for punctual light sources. Armed with this, calculate
     // the usual factors needed
     vec3 n = wNormal;
+#ifdef ANISOTROPY
+    // apply bent reflection for anisotropic ibl
+    vec3 l = bentAnisotropicReflection(wView, n, t, b, anisotropy);
+#else
     vec3 l = reflect(-wView, n); // r (filament)
+#endif
     vec3 v = wView;
     vec3 h = normalize(l + v);
     float vDotN = max(dot(v, n), 0.0); // NoV (filament)
@@ -441,9 +505,12 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float roughness,
                         const in float reflectance,
                         const in float ambientOcclusion,
+                        const in float anisotropy,
                         const in vec3 worldPosition,
                         const in vec3 worldView,
                         const in vec3 worldNormal,
+                        const in vec3 t,
+                        const in vec3 b,
                         const in vec2 activeTexCoord)
 {
     vec3 cLinear = vec3(0.0);
@@ -455,12 +522,14 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     {
         cLinear += pbrIblModelSphericalHarmonics(worldNormal,
                                worldView,
+                               t, b,
                                baseColor.rgb,
                                metalness,
                                roughness,
                                reflectance,
                                alpha,
-                               ambientOcclusion) * envLightStrength;
+                               ambientOcclusion,
+                               anisotropy) * envLightStrength;
     }
 #endif
 
@@ -469,12 +538,14 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                             worldPosition,
                             worldNormal,
                             worldView,
+                            t, b,
                             baseColor.rgb,
                             metalness,
                             roughness,
                             reflectance,
                             alpha,
-                            ambientOcclusion);
+                            ambientOcclusion,
+                            anisotropy);
     }
 
 #ifdef DATA_DEFINED
@@ -502,7 +573,7 @@ void main()
 
     vec3 worldView = normalize(eyePosition - worldPosition);
 
-#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP) || defined(ANISOTROPY)
     mat3 tangentToWorld;
     if (length(worldTangent.xyz) > 0.001)
     {
@@ -563,8 +634,20 @@ void main()
 #endif
 #endif
 
-    fragColor = vec4(metalRoughFunction(c, m, r, reflectance, ao,
+#ifdef ANISOTROPY
+    vec3 anisotropyDirection = vec3(cos(anisotropyRotation), sin(anisotropyRotation), 0.0);
+    vec3 t = normalize(tangentToWorld * anisotropyDirection);
+    t = normalize(t - dot(t, n) * n);
+    vec3 b = normalize(cross(n, t));
+    float aniso = anisotropy;
+#else
+    vec3 t = vec3(0.0);
+    vec3 b = vec3(0.0);
+    float aniso = 0;
+#endif
+
+    fragColor = vec4(metalRoughFunction(c, m, r, reflectance, ao, aniso,
                                    worldPosition,
                                    worldView,
-                                   n, activeTexCoord).rgb, opacity);
+                                   n, t, b, activeTexCoord).rgb, opacity);
 }

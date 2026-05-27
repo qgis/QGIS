@@ -64,6 +64,11 @@ bool QgsMetalRoughMaterialSettings::equals( const QgsAbstractMaterialSettings *o
   return *this == *otherMetal;
 }
 
+bool QgsMetalRoughMaterialSettings::requiresTangents() const
+{
+  return mAnisotropy > 0;
+}
+
 void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mBaseColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( u"base"_s, u"125,125,125"_s ) );
@@ -76,6 +81,8 @@ void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsR
   mRoughness = elem.attribute( u"roughness"_s, u"0.5"_s ).toDouble();
   mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
   mReflectance = elem.attribute( u"reflectance"_s, u"0.5"_s ).toDouble();
+  mAnisotropy = elem.attribute( u"anisotropy"_s, u"0.0"_s ).toDouble();
+  mAnisotropyRotation = elem.attribute( u"anisotropy_rotation"_s, u"0.0"_s ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -88,6 +95,14 @@ void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
   if ( !qgsDoubleNear( mReflectance, 0.5 ) )
   {
     elem.setAttribute( u"reflectance"_s, mReflectance );
+  }
+  if ( !qgsDoubleNear( mAnisotropy, 0.0 ) )
+  {
+    elem.setAttribute( u"anisotropy"_s, mAnisotropy );
+  }
+  if ( !qgsDoubleNear( mAnisotropyRotation, 0.0 ) )
+  {
+    elem.setAttribute( u"anisotropy_rotation"_s, mAnisotropyRotation );
   }
   if ( mEmissiveColor.isValid() )
     elem.setAttribute( u"emission_color"_s, QgsSymbolLayerUtils::encodeColor( mEmissiveColor ) );

@@ -39,6 +39,7 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   mMetalnessWidget->spinBox()->setShowClearButton( false );
   mRoughnessWidget->spinBox()->setShowClearButton( false );
   mReflectanceWidget->spinBox()->setClearValue( 50 );
+  mAnisotropyWidget->spinBox()->setClearValue( 0 );
 
   mEmissionStrengthSpinBox->setClearValue( 100 );
   mEmissionStrengthSpinBox->setEnabled( false );
@@ -53,7 +54,9 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
     updateWidgetState();
     emit changed();
   } );
-  connect( mReflectanceWidget, &QgsPercentageWidget::valueChanged, this, [this] { emit changed(); } );
+  connect( mReflectanceWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mAnisotropyWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mAnisotropyRotationWidget, &QSlider::valueChanged, this, &QgsMetalRoughMaterialWidget::changed );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughMaterialWidget::changed );
   connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughMaterialWidget::changed );
   connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
@@ -113,6 +116,8 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   mMetalnessWidget->setValue( material->metalness() );
   mRoughnessWidget->setValue( material->roughness() );
   mReflectanceWidget->setValue( material->reflectance() );
+  mAnisotropyWidget->setValue( material->anisotropy() );
+  mAnisotropyRotationWidget->setValue( material->anisotropyRotation() );
   mOpacityWidget->setOpacity( material->opacity() );
   mButtonEmissionColor->setColor( material->emissionColor() );
   mEmissionStrengthSpinBox->setValue( material->emissionFactor() * 100 );
@@ -134,6 +139,8 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialWidget::settin
   m->setMetalness( mMetalnessWidget->value() );
   m->setRoughness( mRoughnessWidget->value() );
   m->setReflectance( mReflectanceWidget->value() );
+  m->setAnisotropy( mAnisotropyWidget->value() );
+  m->setAnisotropyRotation( mAnisotropyRotationWidget->value() );
   m->setOpacity( mOpacityWidget->opacity() );
   m->setEmissionColor( mButtonEmissionColor->color() );
   m->setEmissionFactor( mEmissionStrengthSpinBox->value() / 100.0 );

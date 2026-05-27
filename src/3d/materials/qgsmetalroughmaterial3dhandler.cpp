@@ -167,5 +167,7 @@ void QgsMetalRoughMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoug
   material->setMetalness( static_cast< float >( metalRoughSettings->metalness() ) );
   material->setRoughness( static_cast< float >( metalRoughSettings->roughness() ) );
   material->setReflectance( static_cast< float >( metalRoughSettings->reflectance() ) );
+  material->setAnisotropy( static_cast< float >( metalRoughSettings->anisotropy() ) );
+  material->setAnisotropyRotation( static_cast< float >( metalRoughSettings->anisotropyRotation() ) );
   material->setOpacity( static_cast< float >( metalRoughSettings->opacity() ) );
 }
