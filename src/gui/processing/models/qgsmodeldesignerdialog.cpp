@@ -1252,6 +1252,12 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     mAlgorithmWidget->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmWidget->setParameters( mModel->designerParameterValues() );
 
+    if ( !childAlgorithmSubset.isEmpty() )
+    {
+      mAlgorithmWidget->runButton()->setText( tr( "Run Subset" ) );
+      mAlgorithmWidget->runButton()->setToolTip( tr( "Runs a subset of the child algorithms from this model" ) );
+    }
+
     connect( mAlgorithmWidget.get(), &QgsProcessingAlgorithmWidgetBase::algorithmAboutToRun, this, [this, childAlgorithmSubset]( QgsProcessingContext *context ) {
       if ( !childAlgorithmSubset.empty() )
       {
