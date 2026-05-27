@@ -417,18 +417,18 @@ typedef QgsTemporalRange< QDate > QgsDateRange;
 
 
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
-@DOCSTRINGSTEMPLATE@%Docstring
-@DOCSTRINGSTEMPLATE@:py:class:`QgsRange` which stores a range of date
-times. @DOCSTRINGSTEMPLATE@ @DOCSTRINGSTEMPLATE@Invalid QDateTimes as
-the beginning or end are permitted. In this case,
-@DOCSTRINGSTEMPLATE@the bound is considered to be infinite. E.g.
-QgsDateTimeRange(QDateTime(),QDateTime(2017,1,1)) @DOCSTRINGSTEMPLATE@is
-treated as a range containing all dates before 2017-1-1.
-@DOCSTRINGSTEMPLATE@QgsDateTimeRange(QDateTime(2017,1,1),QDateTime()) is
-treated as a range containing all dates after 2017-1-1.
-@DOCSTRINGSTEMPLATE@ @DOCSTRINGSTEMPLATE@.. seealso::
-:py:class:`QgsDateRange`
-@DOCSTRINGSTEMPLATE@%End
+%Docstring
+:py:class:`QgsRange` which stores a range of date times.
+
+Invalid QDateTimes as the beginning or end are permitted. In this case,
+the bound is considered to be infinite. E.g.
+QgsDateTimeRange(QDateTime(),QDateTime(2017,1,1)) is treated as a range
+containing all dates before 2017-1-1.
+QgsDateTimeRange(QDateTime(2017,1,1),QDateTime()) is treated as a range
+containing all dates after 2017-1-1.
+
+.. seealso:: :py:class:`QgsDateRange`
+%End
 
 
 /************************************************************************
