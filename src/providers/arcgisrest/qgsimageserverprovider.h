@@ -125,6 +125,13 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     int mMaximumLercVersionSupported = 0;
     bool mHasRat = false;
 
+    struct ServiceReply
+    {
+        QUrl requestUrl;
+        QByteArray response;
+    };
+    ServiceReply mLastReply;
+
     /**
      * Resets cached image
     */

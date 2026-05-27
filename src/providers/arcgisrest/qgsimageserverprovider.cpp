@@ -799,24 +799,41 @@ bool QgsImageServerProvider::readBlockInternal(
   queryUrl.setQuery( query );
 
   queryUrl = QgsArcGisRestQueryUtils::parseUrl( queryUrl );
-
-  QgsBlockingNetworkRequest networkRequest;
-  networkRequest.setAuthCfg( mAuthCfg );
-  QNetworkRequest req( queryUrl );
-  mRequestHeaders.updateNetworkRequest( req );
-  QgsSetRequestInitiatorClass( req, u"QgsImageServerProvider"_s );
-
-  if ( networkRequest.get( req, false, feedback ) != QgsBlockingNetworkRequest::NoError )
+  QByteArray rawData;
+  if ( queryUrl == mLastReply.requestUrl )
   {
-    if ( !feedback || !feedback->isCanceled() )
-    {
-      QgsDebugMsgLevel( u"Network request failed: %1"_s.arg( networkRequest.errorMessage() ), 2 );
-    }
-    return false;
+    // optimization -- if we are requesting the EXACT same data as the last request, just take the
+    // same reply. This helps with the RGB data situation, where QGIS requests three separate blocks
+    // for the different channels, yet we have to retrieve the data as a complete RGB request from
+    // ImageServer providers. (Otherwise we'd been requesting the RGB data for just the red channel and
+    // throwing away the green and blue, then requesting the RGB data again for the green channel and
+    // throwing away the red and blue, etc...)
+    rawData = mLastReply.response;
   }
+  else
+  {
+    mLastReply = ServiceReply();
 
-  const QgsNetworkReplyContent reply = networkRequest.reply();
-  QByteArray rawData = reply.content();
+    QgsBlockingNetworkRequest networkRequest;
+    networkRequest.setAuthCfg( mAuthCfg );
+    QNetworkRequest req( queryUrl );
+    mRequestHeaders.updateNetworkRequest( req );
+    QgsSetRequestInitiatorClass( req, u"QgsImageServerProvider"_s );
+
+    if ( networkRequest.get( req, false, feedback ) != QgsBlockingNetworkRequest::NoError )
+    {
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        QgsDebugMsgLevel( u"Network request failed: %1"_s.arg( networkRequest.errorMessage() ), 2 );
+      }
+      return false;
+    }
+
+    const QgsNetworkReplyContent reply = networkRequest.reply();
+    rawData = reply.content();
+    mLastReply.requestUrl = queryUrl;
+    mLastReply.response = rawData;
+  }
   if ( rawData.isEmpty() || ( feedback && feedback->isCanceled() ) )
     return false;
 
