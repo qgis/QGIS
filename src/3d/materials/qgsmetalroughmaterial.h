@@ -79,6 +79,9 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Sets the roughness texture. Takes ownership
     void setRoughnessTexture( Qt3DRender::QAbstractTexture *roughness );
 
+    //! Set constant reflectance value (between 0 - 1.0)
+    void setReflectance( float reflectance );
+
     //! Sets the ambient occlusion texture. Takes ownership. Set to NULLPTR to remove.
     void setAmbientOcclusionTexture( Qt3DRender::QAbstractTexture *ambientOcclusion );
 
@@ -140,6 +143,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mBaseColorParameter = nullptr;
     Qt3DRender::QParameter *mMetalnessParameter = nullptr;
     Qt3DRender::QParameter *mRoughnessParameter = nullptr;
+    Qt3DRender::QParameter *mReflectanceParameter = nullptr;
     Qt3DRender::QParameter *mBaseColorMapParameter = nullptr;
     Qt3DRender::QParameter *mMetalnessMapParameter = nullptr;
     Qt3DRender::QParameter *mRoughnessMapParameter = nullptr;

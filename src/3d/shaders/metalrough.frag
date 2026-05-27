@@ -42,6 +42,8 @@ uniform sampler2D roughnessMap;
 uniform float roughness;
 #endif
 
+uniform float reflectance;
+
 #ifdef AMBIENT_OCCLUSION_MAP
 uniform sampler2D ambientOcclusionMap;
 #endif
@@ -308,6 +310,7 @@ vec3 pbrModel(const in int lightIndex,
               const in vec3 baseColor,
               const in float metalness,
               const in float roughness,
+              const in float reflectance,
               const in float alpha,
               const in float ambientOcclusion)
 {
@@ -323,7 +326,7 @@ vec3 pbrModel(const in int lightIndex,
     vec3 diffuse = diffuseColor * light.sDotN / PI;
 
     // Calculate specular component
-    vec3 dielectricColor = vec3(0.04);
+    vec3 dielectricColor = vec3(0.16 * reflectance * reflectance);
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = vec3(0.0);
     if (light.sDotN > 0.0) {
@@ -364,6 +367,7 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
                  const in vec3 baseColor,
                  const in float metalness,
                  const in float roughness,
+                 const in float reflectance,
                  const in float alpha,
                  const in float ambientOcclusion)
 {
@@ -401,7 +405,7 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
     vec3 diffuse = diffuseColor * envIrradiance;
 
     // Calculate specular component
-    vec3 dielectricColor = vec3(0.04);
+    vec3 dielectricColor = vec3(0.16 * reflectance * reflectance);
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
 
     float lod = roughnessToMipLevel(roughness);
@@ -435,6 +439,7 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
 vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float metalness,
                         const in float roughness,
+                        const in float reflectance,
                         const in float ambientOcclusion,
                         const in vec3 worldPosition,
                         const in vec3 worldView,
@@ -453,6 +458,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                                baseColor.rgb,
                                metalness,
                                roughness,
+                               reflectance,
                                alpha,
                                ambientOcclusion) * envLightStrength;
     }
@@ -466,6 +472,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                             baseColor.rgb,
                             metalness,
                             roughness,
+                            reflectance,
                             alpha,
                             ambientOcclusion);
     }
@@ -556,7 +563,7 @@ void main()
 #endif
 #endif
 
-    fragColor = vec4(metalRoughFunction(c, m, r, ao,
+    fragColor = vec4(metalRoughFunction(c, m, r, reflectance, ao,
                                    worldPosition,
                                    worldView,
                                    n, activeTexCoord).rgb, opacity);
