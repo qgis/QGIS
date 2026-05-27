@@ -423,6 +423,12 @@ void QgsFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *sym
   delete symbol;
 }
 
+void QgsFeatureRenderer::setLegendSymbolItemLabel( const QString &key, const QString &label )
+{
+  Q_UNUSED( key )
+  Q_UNUSED( label )
+}
+
 QString QgsFeatureRenderer::legendKeyToExpression( const QString &, QgsVectorLayer *, bool &ok ) const
 {
   ok = false;

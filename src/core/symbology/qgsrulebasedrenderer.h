@@ -561,6 +561,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const override;
 
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
+    void setLegendSymbolItemLabel( const QString &key, const QString &label ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
     QString dump() const override;
     bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;

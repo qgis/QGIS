@@ -486,6 +486,8 @@ Set the ``method`` used for graduation (either size or color).
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
 
+    virtual void setLegendSymbolItemLabel( const QString &key, const QString &label );
+
     virtual QString legendClassificationAttribute() const;
 
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
