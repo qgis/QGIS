@@ -68,7 +68,6 @@ else()
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} ARM)
 endif()
 
-set(DEFAULTDOCSTRINGSIGNATURE "%DefaultDocstringSignature \"prepended\"")
 set(DOCSTRINGSTEMPLATE "")
 
 SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
