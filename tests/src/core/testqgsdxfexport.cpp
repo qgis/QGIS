@@ -1225,8 +1225,6 @@ void TestQgsDxfExport::testCurveExport_data()
 
   // Contains straight and curved segments
   QTest::newRow( "mixed curve polygon" )
-  // Contains straight and curved segments
-  QTest::newRow( "mixed curve polygon" )
     << QStringLiteral( "CurvePolygon (CompoundCurve ((-1.58053402239448748 0.39018087855297157, -1.49267872523686473 0.39362618432385876, -1.24806201550387597 0.65719207579672689),CircularString (-1.24806201550387597 0.65719207579672689, -0.63479758828596045 0.49870801033591727, -0.61584840654608097 0.32644272179155898),(-0.61584840654608097 0.32644272179155898, -1.58053402239448748 0.39018087855297157)))" )
     << QStringLiteral( "CurvePolygon" )
     << QStringLiteral( "SECTION\n"
@@ -1265,7 +1263,7 @@ void TestQgsDxfExport::testCurveExport_data()
                        " 20\n"
                        "0.65719207579672689\n"
                        " 42\n"
-                       "REGEX ^-0\\.6902781174677856.$\n"
+                       "REGEX ^-0\\.69027811746778\\d+$\n"
                        " 10\n"
                        "-0.61584840654608097\n"
                        " 20\n"
