@@ -1145,6 +1145,7 @@ void QgsOgrProvider::loadFields()
 
             QVariantMap editorConfig;
             editorConfig.insert( u"map"_s, valueConfig );
+            editorConfig.insert( u"isLocked"_s, true );
             newField.setEditorWidgetSetup( QgsEditorWidgetSetup( u"ValueMap"_s, editorConfig ) );
             break;
           }

@@ -50,6 +50,8 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
   connect( removeSelectedButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::removeSelectedButtonPushed );
   connect( loadFromLayerButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromLayerButtonPushed );
   connect( loadFromCSVButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromCSVButtonPushed );
+  connect( lockButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::setLocked );
+
   connect( tableWidget, &QTableWidget::cellChanged, this, &QgsValueMapConfigDlg::vCellChanged );
   tableWidget->installEventFilter( this );
 }
@@ -86,6 +88,7 @@ QVariantMap QgsValueMapConfigDlg::config()
 
   QVariantMap cfg;
   cfg.insert( u"map"_s, valueList );
+  cfg.insert( u"isLocked"_s, mIsLocked );
   return cfg;
 }
 
@@ -120,6 +123,10 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
   }
 
   updateMap( orderedList, false );
+
+  const bool locked = config.value( u"isLocked"_s, false ).toBool();
+  setLocked( locked );
+  lockButton->setChecked( locked );
 }
 
 void QgsValueMapConfigDlg::vCellChanged( int row, int column )
@@ -379,6 +386,19 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   if ( fileName.isNull() )
     return;
   loadMapFromCSV( fileName );
+}
+
+void QgsValueMapConfigDlg::setLocked( bool locked )
+{
+  mIsLocked = locked;
+  addNullButton->setDisabled( mIsLocked );
+  removeSelectedButton->setDisabled( mIsLocked );
+  loadFromLayerButton->setDisabled( mIsLocked );
+  loadFromCSVButton->setDisabled( mIsLocked );
+  tableWidget->setEditTriggers(
+    mIsLocked ? QAbstractItemView::EditTrigger::NoEditTriggers
+              : QAbstractItemView::EditTrigger::DoubleClicked | QAbstractItemView::EditTrigger::EditKeyPressed | QAbstractItemView::EditTrigger::AnyKeyPressed
+  );
 }
 
 void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )

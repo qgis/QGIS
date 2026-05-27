@@ -86,6 +86,8 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget,
      */
     QString checkValueLength( const QString &value );
 
+    bool mIsLocked = false;
+
 
   private slots:
     void copySelectionToClipboard();
@@ -94,6 +96,7 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget,
     void removeSelectedButtonPushed();
     void loadFromLayerButtonPushed();
     void loadFromCSVButtonPushed();
+    void setLocked( bool locked );
 
     friend class TestQgsValueMapConfigDlg;
 };

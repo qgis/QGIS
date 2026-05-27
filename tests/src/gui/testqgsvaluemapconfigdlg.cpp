@@ -40,6 +40,8 @@ class TestQgsValueMapConfigDlg : public QObject
 
     void testLoadFromCSV();
     void testTestTrimValues();
+    void testLockValues();
+    void testLockValuesForDomain();
 };
 
 void TestQgsValueMapConfigDlg::initTestCase()
@@ -116,6 +118,78 @@ void TestQgsValueMapConfigDlg::testTestTrimValues()
   valueList[u"33"_s] = u"Choice 33"_s;
   valueMapConfig->updateMap( valueList, false );
   QVERIFY( valueMapConfig->mValueMapErrorsLabel->text().contains( u"trimmed"_s ) );
+}
+
+void TestQgsValueMapConfigDlg::testLockValues()
+{
+  QgsVectorLayer vl( u"LineString?crs=epsg:3111&field=pk:int&field=name:string"_s, u"vl1"_s, u"memory"_s );
+
+  QList<QVariant> valueList;
+  QVariantMap value;
+  value.insert( u"Basic unquoted record"_s, QString( "1" ) );
+  valueList << value;
+  value.clear();
+  value.insert( u"Forest type"_s, QString( "2" ) );
+  valueList << value;
+  value.clear();
+  value.insert( u"So-called \"data\""_s, QString( "three" ) );
+  valueList << value;
+  value.clear();
+  value.insert( u"444"_s, QString( "4" ) );
+  valueList << value;
+  value.clear();
+  value.insert( u"five"_s, QString( "5" ) );
+  valueList << value;
+
+  QVariantMap map;
+  map.insert( u"map"_s, valueList );
+  std::unique_ptr<QgsValueMapConfigDlg> valueMapConfig;
+  valueMapConfig.reset( static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( u"ValueMap"_s, &vl, 1, nullptr ) ) );
+  valueMapConfig->setConfig( map );
+  QVERIFY( !valueMapConfig->mIsLocked );
+  QVERIFY( valueMapConfig->addNullButton->isEnabled() );
+  QVERIFY( valueMapConfig->removeSelectedButton->isEnabled() );
+  QVERIFY( valueMapConfig->loadFromLayerButton->isEnabled() );
+  QVERIFY( valueMapConfig->loadFromCSVButton->isEnabled() );
+  QCOMPARE( valueMapConfig->tableWidget->editTriggers(), QAbstractItemView::EditTrigger::DoubleClicked | QAbstractItemView::EditTrigger::EditKeyPressed | QAbstractItemView::EditTrigger::AnyKeyPressed );
+
+  map.insert( u"isLocked"_s, true );
+  valueMapConfig->setConfig( map );
+  QVERIFY( valueMapConfig->mIsLocked );
+  QVERIFY( !valueMapConfig->addNullButton->isEnabled() );
+  QVERIFY( !valueMapConfig->removeSelectedButton->isEnabled() );
+  QVERIFY( !valueMapConfig->loadFromLayerButton->isEnabled() );
+  QVERIFY( !valueMapConfig->loadFromCSVButton->isEnabled() );
+  QCOMPARE( valueMapConfig->tableWidget->editTriggers(), QAbstractItemView::EditTrigger::NoEditTriggers );
+}
+
+void TestQgsValueMapConfigDlg::testLockValuesForDomain()
+{
+  QgsVectorLayer vl( u"%1/domains.gpkg|layername=test"_s.arg( TEST_DATA_DIR ) );
+
+  const int domainField = vl.fields().indexFromName( u"with_enum_domain"_s );
+  std::unique_ptr<QgsValueMapConfigDlg> valueMapConfig;
+  valueMapConfig.reset( static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( u"ValueMap"_s, &vl, domainField, nullptr ) ) );
+
+  QgsEditorWidgetSetup setup = vl.fields().field( domainField ).editorWidgetSetup();
+  valueMapConfig->setConfig( setup.config() );
+
+  QCOMPARE( valueMapConfig->config().value( u"map"_s ).toList().size(), 2 );
+  QVERIFY( valueMapConfig->config().value( u"isLocked"_s, false ).toBool() );
+  QVERIFY( valueMapConfig->mIsLocked );
+  QVERIFY( !valueMapConfig->addNullButton->isEnabled() );
+  QVERIFY( !valueMapConfig->removeSelectedButton->isEnabled() );
+  QVERIFY( !valueMapConfig->loadFromLayerButton->isEnabled() );
+  QVERIFY( !valueMapConfig->loadFromCSVButton->isEnabled() );
+  QCOMPARE( valueMapConfig->tableWidget->editTriggers(), QAbstractItemView::EditTrigger::NoEditTriggers );
+
+  valueMapConfig->setLocked( false );
+  QVERIFY( !valueMapConfig->mIsLocked );
+  QVERIFY( valueMapConfig->addNullButton->isEnabled() );
+  QVERIFY( valueMapConfig->removeSelectedButton->isEnabled() );
+  QVERIFY( valueMapConfig->loadFromLayerButton->isEnabled() );
+  QVERIFY( valueMapConfig->loadFromCSVButton->isEnabled() );
+  QCOMPARE( valueMapConfig->tableWidget->editTriggers(), QAbstractItemView::EditTrigger::DoubleClicked | QAbstractItemView::EditTrigger::EditKeyPressed | QAbstractItemView::EditTrigger::AnyKeyPressed );
 }
 
 QGSTEST_MAIN( TestQgsValueMapConfigDlg )
