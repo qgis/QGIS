@@ -150,6 +150,17 @@ Returns the field definition.
     virtual bool equal( const QgsDataItem *other );
 
 
+    void setDomain( const QgsFieldDomain *domain );
+%Docstring
+Sets the domain for the field. The item will take ownership of the field
+domain.
+
+.. versionadded:: 4.2
+%End
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+
 };
 
 /************************************************************************

@@ -20,6 +20,8 @@
 #include <memory>
 
 #include "qgsapplication.h"
+#include "qgsdataitem.h"
+#include "qgsfielddomain.h"
 #include "qgsfieldmodel.h"
 #include "qgsiconutils.h"
 #include "qgslogger.h"
@@ -78,6 +80,14 @@ QVector<QgsDataItem *> QgsFieldsItem::createChildren()
         for ( const QgsField &f : mFields )
         {
           QgsFieldItem *fieldItem { new QgsFieldItem( this, f ) };
+          const QString domainName = f.constraints().domainName();
+          if ( !domainName.isEmpty() )
+          {
+            QgsFieldDomain *domain = conn->fieldDomain( domainName );
+            if ( domain )
+              fieldItem->setDomain( domain );
+          }
+
           fieldItem->setSortKey( i++ );
           children.push_back( fieldItem );
         }
@@ -170,7 +180,9 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
 }
 
 QgsFieldItem::~QgsFieldItem()
-{}
+{
+  delete mDomain;
+}
 
 QIcon QgsFieldItem::icon()
 {
@@ -218,4 +230,27 @@ bool QgsFieldItem::equal( const QgsDataItem *other )
     return false;
 
   return ( mPath == o->mPath && mName == o->mName && mField == o->mField && mField.comment() == o->mField.comment() );
+}
+
+void QgsFieldItem::setDomain( const QgsFieldDomain *domain )
+{
+  delete mDomain;
+  mDomain = domain;
+
+  mCapabilities.setFlag( Qgis::BrowserItemCapability::Fertile, mDomain != nullptr );
+
+  createChildren();
+  refresh();
+}
+
+QVector<QgsDataItem *> QgsFieldItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  if ( mDomain )
+  {
+    QgsDataItem *domainItem = new QgsDataItem( Qgis::BrowserItemType::Custom, this, u"Domain: %1"_s.arg( mDomain->name() ), QString(), QString() );
+    domainItem->setState( Qgis::BrowserItemState::Populated );
+    children.push_back( domainItem );
+  }
+  return children;
 }
