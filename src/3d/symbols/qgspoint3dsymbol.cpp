@@ -223,6 +223,22 @@ QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
           return 10;
         return radius;
       }
+      else if ( property == "rings"_L1 )
+      {
+        constexpr int DEFAULT_RINGS = 16;
+        const int rings = mShapeProperties.value( property, DEFAULT_RINGS ).toInt();
+        if ( rings == 0 )
+          return DEFAULT_RINGS;
+        return rings;
+      }
+      else if ( property == "slices"_L1 )
+      {
+        constexpr int DEFAULT_SLICES = 16;
+        const int slices = mShapeProperties.value( property, DEFAULT_SLICES ).toInt();
+        if ( slices == 0 )
+          return DEFAULT_SLICES;
+        return slices;
+      }
       break;
     }
     case Qgis::Point3DShape::Cone:
