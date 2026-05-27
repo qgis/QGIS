@@ -51,6 +51,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
 
     QgsMetalRoughMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    bool requiresTangents() const override;
 
     /**
      * Returns the base material color.
@@ -79,8 +80,31 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      * This controls the specular intensity for non-metals.
      *
      * \see setReflectance()
+     * \since QGIS 4.2
      */
     double reflectance() const { return mReflectance; }
+
+    /**
+     * Returns the material's anisotropy, as a value between 0 and 1.
+     *
+     * Anisotropic materials are those with properties are which vary in different directions.
+     *
+     * \see anisotropyDirection()
+     * \see setAnisotropy()
+     * \since QGIS 4.2
+     */
+    double anisotropy() const { return mAnisotropy; }
+
+    /**
+     * Returns the rotation of the material's anisotropy, as a angle in degrees.
+     *
+     * Anisotropic materials are those with properties are which vary in different directions.
+     *
+     * \see setAnisotropyRotation()
+     * \see anisotropy()
+     * \since QGIS 4.2
+     */
+    double anisotropyRotation() const { return mAnisotropyRotation; }
 
     /**
      * Returns the material's emissive color.
@@ -150,8 +174,31 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      * This controls the specular intensity for non-metals.
      *
      * \see reflectance()
+     * \since QGIS 4.2
      */
     void setReflectance( double reflectance ) { mReflectance = reflectance; }
+
+    /**
+     * Sets the material's \a anisotropy, as a value between 0 and 1.
+     *
+     * Anisotropic materials are those with properties are which vary in different directions.
+     *
+     * \see setAnisotropyRotation()
+     * \see anisotropy()
+     * \since QGIS 4.2
+     */
+    void setAnisotropy( double anisotropy ) { mAnisotropy = anisotropy; }
+
+    /**
+     * Sets the \a rotation of the material's anisotropy, as a angle in degrees.
+     *
+     * Anisotropic materials are those with properties are which vary in different directions.
+     *
+     * \see anisotropyRotation()
+     * \see setAnisotropy()
+     * \since QGIS 4.2
+     */
+    void setAnisotropyRotation( double rotation ) { mAnisotropyRotation = rotation; }
 
     /**
      * Sets the \a opacity of the surface.
@@ -206,6 +253,8 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
              && qgsDoubleNear( mMetalness, other.mMetalness )
              && qgsDoubleNear( mRoughness, other.mRoughness )
              && qgsDoubleNear( mReflectance, other.mReflectance )
+             && qgsDoubleNear( mAnisotropy, other.mAnisotropy )
+             && qgsDoubleNear( mAnisotropyRotation, other.mAnisotropyRotation )
              && qgsDoubleNear( mOpacity, other.mOpacity )
              && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
              && dataDefinedProperties() == other.dataDefinedProperties();
@@ -217,6 +266,8 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     double mMetalness = 0.0;
     double mRoughness = 0.5;
     double mReflectance = 0.5;
+    double mAnisotropy = 0.0;
+    double mAnisotropyRotation = 0.0;
     double mEmissionFactor = 1.0;
     double mOpacity = 1.0;
 };

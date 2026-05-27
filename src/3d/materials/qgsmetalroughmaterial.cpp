@@ -38,6 +38,8 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mMetalnessParameter( new Qt3DRender::QParameter( u"metalness"_s, 0.0f, this ) )
   , mRoughnessParameter( new Qt3DRender::QParameter( u"roughness"_s, 0.0f, this ) )
   , mReflectanceParameter( new Qt3DRender::QParameter( u"reflectance"_s, 0.5f, this ) )
+  , mAnisotropyParameter( new Qt3DRender::QParameter( u"anisotropy"_s, 0.0f, this ) )
+  , mAnisotropyRotationParameter( new Qt3DRender::QParameter( u"anisotropyRotation"_s, 0.0f, this ) )
   , mBaseColorMapParameter( new Qt3DRender::QParameter( u"baseColorMap"_s, QVariant(), this ) )
   , mMetalnessMapParameter( new Qt3DRender::QParameter( u"metalnessMap"_s, QVariant(), this ) )
   , mRoughnessMapParameter( new Qt3DRender::QParameter( u"roughnessMap"_s, QVariant(), this ) )
@@ -161,6 +163,36 @@ void QgsMetalRoughMaterial::setRoughnessTexture( Qt3DRender::QAbstractTexture *r
 void QgsMetalRoughMaterial::setReflectance( float reflectance )
 {
   mReflectanceParameter->setValue( QVariant::fromValue( reflectance ) );
+}
+
+void QgsMetalRoughMaterial::setAnisotropy( float anisotropy )
+{
+  const bool oldUsingAnisotropy = mMetalRoughEffect->parameters().contains( mAnisotropyParameter );
+  mAnisotropyParameter->setValue( anisotropy );
+  const bool newUsingAnisotropy = anisotropy > 0;
+  if ( newUsingAnisotropy )
+  {
+    if ( !oldUsingAnisotropy )
+    {
+      mMetalRoughEffect->addParameter( mAnisotropyParameter );
+      mMetalRoughEffect->addParameter( mAnisotropyRotationParameter );
+    }
+  }
+  else if ( oldUsingAnisotropy )
+  {
+    mMetalRoughEffect->removeParameter( mAnisotropyParameter );
+    mMetalRoughEffect->removeParameter( mAnisotropyRotationParameter );
+  }
+
+  if ( oldUsingAnisotropy != newUsingAnisotropy )
+  {
+    updateShaders();
+  }
+}
+
+void QgsMetalRoughMaterial::setAnisotropyRotation( float rotation )
+{
+  mAnisotropyRotationParameter->setValue( M_PI * rotation / 180.0 );
 }
 
 void QgsMetalRoughMaterial::setAmbientOcclusionTexture( Qt3DRender::QAbstractTexture *ambientOcclusion )
@@ -365,6 +397,8 @@ void QgsMetalRoughMaterial::updateShaders()
     fragShaderDefines += "EMISSION_MAP";
   if ( mFlatShading )
     fragShaderDefines += "FLAT_SHADING";
+  if ( mMetalRoughEffect->parameters().contains( mAnisotropyParameter ) )
+    fragShaderDefines += "ANISOTROPY";
   if ( mEnableEnvironmentalLighting )
     fragShaderDefines += "ENABLE_IBL";
 
