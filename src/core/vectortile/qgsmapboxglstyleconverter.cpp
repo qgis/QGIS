@@ -3941,6 +3941,12 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
 QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize )
 {
   QImage spriteImage;
+
+  if ( name.isEmpty() )
+  {
+    return QImage();
+  }
+
   QString category;
   QString actualName = name;
   const int categorySeparator = name.indexOf( ':' );
