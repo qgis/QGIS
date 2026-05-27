@@ -783,6 +783,32 @@ bool QgsLayerTreeView::hideValidLayers() const
   return mHideValidLayers;
 }
 
+void QgsLayerTreeView::mouseDoubleClickEvent( QMouseEvent *event )
+{
+  const QModelIndex index = indexAt( event->pos() );
+  if ( index.isValid() )
+  {
+    if ( index2legendNode( index ) )
+    {
+      QStyleOptionViewItem opt;
+      initViewItemOption( &opt );
+      opt.rect = visualRect( index );
+      opt.features |= QStyleOptionViewItem::HasDecoration | QStyleOptionViewItem::HasDisplay;
+      if ( model()->data( index, Qt::CheckStateRole ).isValid() )
+        opt.features |= QStyleOptionViewItem::HasCheckIndicator;
+
+      const QRect iconRect = style()->subElementRect( QStyle::SE_ItemViewItemDecoration, &opt, this );
+      event->accept();
+      if ( iconRect.contains( event->pos() ) )
+        emit doubleClicked( index );
+      else
+        edit( index );
+      return;
+    }
+  }
+  QgsLayerTreeViewBase::mouseDoubleClickEvent( event );
+}
+
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   QgsLayerTreeModel *layerModel = layerTreeModel();
