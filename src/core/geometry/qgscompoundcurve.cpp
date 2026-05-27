@@ -930,6 +930,11 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
   QMap<int, QList<QgsVertexId >> curveVertices;
   for ( QgsVertexId position : positions )
   {
+    if ( !hasVertex( position ) )
+    {
+      return false;
+    }
+
     const QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
 
     if ( curveIds.isEmpty() )
@@ -965,6 +970,7 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
       // of a middle vertex (see deleteVertex)
       std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex < b.vertex; } );
       QList<QgsVertexId> circularVerticesToDelete;
+      circularVerticesToDelete.reserve( vertices.size() );
 
       QListIterator<QgsVertexId> curveVerticesIt( vertices );
 
@@ -998,7 +1004,10 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
           if ( !circularVerticesToDelete.isEmpty() )
           {
             if ( !curve->deleteVertices( QSet<QgsVertexId>( circularVerticesToDelete.begin(), circularVerticesToDelete.end() ) ) )
+            {
+              Q_ASSERT( false ); // shouldn't happen after all the checks
               return false;
+            }
           }
           circularVerticesToDelete.clear();
 
@@ -1041,13 +1050,19 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
       if ( !circularVerticesToDelete.isEmpty() )
       {
         if ( !curve->deleteVertices( QSet<QgsVertexId>( circularVerticesToDelete.begin(), circularVerticesToDelete.end() ) ) )
+        {
+          Q_ASSERT( false );
           return false;
+        }
       }
       continue; // circularstring handled, continue to next curve
     }
 
     if ( !curve->deleteVertices( QSet<QgsVertexId>( vertices.begin(), vertices.end() ) ) )
+    {
+      Q_ASSERT( false );
       return false;
+    }
   }
 
   // remove any empty curves

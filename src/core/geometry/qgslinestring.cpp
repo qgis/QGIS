@@ -2083,23 +2083,32 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
   return true;
 }
 
-bool QgsLineString::deleteVertices( const QSet<QgsVertexId> &vertices )
+bool QgsLineString::deleteVertices( const QSet<QgsVertexId> &positions )
 {
-  if ( vertices.isEmpty() )
+  if ( positions.isEmpty() )
   {
     return false;
   }
 
-  QList<QgsVertexId> positions( vertices.begin(), vertices.end() );
+  QList<QgsVertexId> vertices( positions.begin(), positions.end() );
 
-  std::sort( positions.begin(), positions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex > b.vertex; } );
-
-  if ( positions.first().vertex >= mX.size() || positions.last().vertex < 0 )
+  for ( QgsVertexId pos : positions )
   {
-    return false;
+    if ( !hasVertex( pos ) )
+    {
+      return false;
+    }
   }
 
-  for ( QgsVertexId position : positions )
+  if ( numPoints() <= vertices.size() + 1 )
+  {
+    clear();
+    return true;
+  }
+
+  std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex > b.vertex; } );
+
+  for ( QgsVertexId position : vertices )
   {
     mX.remove( position.vertex );
     mY.remove( position.vertex );
@@ -2111,12 +2120,6 @@ bool QgsLineString::deleteVertices( const QSet<QgsVertexId> &vertices )
     {
       mM.remove( position.vertex );
     }
-  }
-
-  if ( numPoints() <= 1 )
-  {
-    clear();
-    return true;
   }
 
   clearCache(); //set bounding box invalid

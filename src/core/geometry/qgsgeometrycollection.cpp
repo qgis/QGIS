@@ -684,7 +684,10 @@ bool QgsGeometryCollection::deleteVertices( const QSet<QgsVertexId> &positions )
   QMap<int, QSet<QgsVertexId>> partVertices;
   for ( QgsVertexId pos : positions )
   {
-    partVertices[pos.part].insert( pos );
+    if ( !hasVertex( pos ) )
+      return false;
+
+    partVertices[pos.part].insert( QgsVertexId( 0, pos.ring, pos.vertex ) );
   }
 
   QMapIterator<int, QSet<QgsVertexId>> partVerticesIt( partVertices );
@@ -695,10 +698,6 @@ bool QgsGeometryCollection::deleteVertices( const QSet<QgsVertexId> &positions )
     int part = partVerticesIt.key();
     QSet<QgsVertexId> partVertices = partVerticesIt.value();
     QgsAbstractGeometry *geom = mGeometries.at( part );
-    if ( !geom )
-    {
-      return false;
-    }
 
     if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Point )
     {
@@ -709,6 +708,7 @@ bool QgsGeometryCollection::deleteVertices( const QSet<QgsVertexId> &positions )
     // quit if any vertex on any part fails to be deleted
     if ( !geom->deleteVertices( partVertices ) )
     {
+      Q_ASSERT( false );
       return false;
     }
 
@@ -720,6 +720,19 @@ bool QgsGeometryCollection::deleteVertices( const QSet<QgsVertexId> &positions )
   }
   clearCache(); // set bounding box invalid
   return true;
+}
+
+bool QgsGeometryCollection::hasVertex( QgsVertexId id ) const
+{
+  size_t parts = mGeometries.size();
+  if ( id.part < 0 || static_cast<size_t>( id.part ) >= parts )
+    return false;
+
+  QgsAbstractGeometry *geom = mGeometries.at( id.part );
+  if ( !geom )
+    return false;
+
+  return geom->hasVertex( QgsVertexId( 0, id.ring, id.vertex ) );
 }
 
 double QgsGeometryCollection::length() const

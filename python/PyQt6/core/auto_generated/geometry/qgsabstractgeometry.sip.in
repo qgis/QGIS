@@ -538,6 +538,14 @@ modified and invalid state
 .. versionadded:: 4.2
 %End
 
+    virtual bool hasVertex( QgsVertexId position ) const = 0;
+%Docstring
+Returns ``True`` if the geometry contains a vertex matching the given
+``position``.
+
+.. versionadded:: 4.2
+%End
+
     virtual double length() const;
 %Docstring
 Returns the planar, 2-dimensional length of the geometry.

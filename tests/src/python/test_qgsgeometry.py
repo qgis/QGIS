@@ -37,9 +37,11 @@ from qgis.core import (
     QgsMultiPoint,
     QgsMultiPolygon,
     QgsMultiSurface,
+    QgsNurbsCurve,
     QgsPoint,
     QgsPointXY,
     QgsPolygon,
+    QgsPolyhedralSurface,
     QgsProject,
     QgsRectangle,
     QgsTriangle,
@@ -15624,6 +15626,224 @@ class TestQgsGeometry(QgisTestCase):
             g.constGet().simplifiedTypeRef().asWkt(),
             "Polygon ((1 0, 1 4, 1 5, 1 9, 5 9, 6 9, 8 9, 9 5, 8 0, 6 0, 5 0, 1 0))",
         )
+
+    def testHasVertex(self):
+        """Test hasVertex for geometry types"""
+
+        cs = QgsCircularString()
+        cs.fromWkt("CIRCULARSTRING(0 0, 2 2, 4 0)")
+
+        # invalid range
+        self.assertFalse(cs.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(cs.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(cs.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(cs.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertFalse(cs.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(cs.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(cs.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(cs.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(cs.hasVertex(QgsVertexId(0, 0, 2)))
+
+        ls = QgsLineString()
+        ls.fromWkt("LINESTRING(0 0, 2 2, 4 0)")
+
+        # invalid range
+        self.assertFalse(ls.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(ls.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(ls.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(ls.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertFalse(ls.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(ls.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(ls.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(ls.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(ls.hasVertex(QgsVertexId(0, 0, 2)))
+
+        # POLYGON
+        poly1 = QgsPolygon()
+        poly1.fromWkt("POLYGON((0 0, 2 2, 4 0, 0 0))")
+
+        # invalid range
+        self.assertFalse(poly1.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(poly1.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(poly1.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(poly1.hasVertex(QgsVertexId(0, 0, 4)))
+        self.assertFalse(poly1.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(poly1.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(poly1.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(poly1.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(poly1.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(poly1.hasVertex(QgsVertexId(0, 0, 3)))
+
+        # POLYGON with a hole
+        poly2 = QgsPolygon()
+        poly2.fromWkt("POLYGON((0 0, 0 7, 7 7, 7 0),(1 1, 1 6, 6 6, 6 1))")
+
+        # invalid range
+        self.assertFalse(poly2.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(poly2.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(poly2.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(poly2.hasVertex(QgsVertexId(0, 0, 8)))
+        self.assertFalse(poly2.hasVertex(QgsVertexId(0, 2, 0)))
+        self.assertFalse(poly2.hasVertex(QgsVertexId(2, 0, 0)))
+
+        # valid range
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 1, 1)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 1, 2)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 1, 3)))
+
+        # MultilineString
+        mc = QgsMultiCurve()
+        mc.fromWkt("MultiCurve((0 0, 1 1, 2 2),(3 3, 4 4, 5 5))")
+
+        # invalid range
+        self.assertFalse(mc.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(mc.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(mc.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(mc.hasVertex(QgsVertexId(0, 0, 6)))
+        self.assertFalse(mc.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(mc.hasVertex(QgsVertexId(2, 0, 0)))
+
+        # valid range
+        self.assertTrue(mc.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(1, 0, 0)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(1, 0, 1)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(1, 0, 2)))
+
+        # MultiPolygon
+        mpoly = QgsMultiPolygon()
+        mpoly.fromWkt(
+            "MULTIPOLYGON("
+            "((0 0, 0 7, 7 7, 7 0),(1 1, 1 6, 6 6, 6 1)),"
+            "((14 14, 14 21, 21 21, 21 14),(15 15, 16 21, 21 21, 21 15))"
+            ")"
+        )
+
+        # invalid range
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(0, 2, 0)))
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(2, 0, 0)))
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(1, 2, 0)))
+
+        # valid range
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 0, 3)))
+
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 1, 1)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 1, 2)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 1, 3)))
+
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 0, 0)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 0, 1)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 0, 2)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 0, 3)))
+
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 1, 0)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 1, 1)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 1, 2)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 1, 3)))
+
+        # QgsPoint
+        pt = QgsPoint(1.0, 2.0)
+
+        # invalid range
+        self.assertFalse(pt.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(-1, 0, 0)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(pt.hasVertex(QgsVertexId(0, 0, 0)))
+
+        # CompoundCurve
+        cc = QgsCompoundCurve()
+        cc.fromWkt("CompoundCurve((0 0, 1 0, 2 0), CircularString(2 0, 3 1, 4 0))")
+
+        # invalid range
+        self.assertFalse(cc.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(-1, 0, 0)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(0, 0, 5)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 4)))
+
+        # PolyhedralSurface
+        phs = QgsPolyhedralSurface()
+        phs.fromWkt(
+            "POLYHEDRALSURFACE(((0 0, 0 1, 1 1, 1 0, 0 0)),((1 0, 1 1, 2 1, 2 0, 1 0)))"
+        )
+
+        # invalid range
+        self.assertFalse(phs.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(phs.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(phs.hasVertex(QgsVertexId(-1, 0, 0)))
+        self.assertFalse(phs.hasVertex(QgsVertexId(2, 0, 0)))
+        self.assertFalse(phs.hasVertex(QgsVertexId(0, 1, 0)))
+
+        # valid range
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 4)))
+
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 0)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 1)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 2)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 3)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 4)))
+
+        # NurbsCurve
+        nc = QgsNurbsCurve()
+        nc.fromWkt("NURBSCURVE (3, (0 0, 1 2, 2 0, 3 2, 4 0))")
+
+        # invalid
+        self.assertFalse(nc.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(nc.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(nc.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(nc.hasVertex(QgsVertexId(0, 0, 5)))
+        self.assertFalse(nc.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(nc.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 4)))
 
 
 if __name__ == "__main__":

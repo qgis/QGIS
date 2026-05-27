@@ -1288,18 +1288,24 @@ bool QgsCurvePolygon::deleteVertex( QgsVertexId vId )
 
 bool QgsCurvePolygon::deleteVertices( const QSet<QgsVertexId> &positions )
 {
-  QMap<int, QList<QgsVertexId >> ringVertices;
-  for ( const QgsVertexId &pos : positions )
+  if ( positions.empty() )
   {
-    const int interiorRingId = pos.ring - 1;
-    if ( !mExteriorRing || pos.ring < 0 || interiorRingId >= mInteriorRings.size() )
+    return false;
+  }
+
+  QMap<int, QList<QgsVertexId >> ringVertices;
+  for ( QgsVertexId pos : positions )
+  {
+    if ( !hasVertex( pos ) )
     {
       return false;
     }
-    ringVertices[pos.ring].append( pos );
+
+    ringVertices[pos.ring].append( QgsVertexId( 0, 0, pos.vertex ) );
   }
 
   QMapIterator<int, QList<QgsVertexId >> ringVerticesIt( ringVertices );
+
   ringVerticesIt.toBack();
   while ( ringVerticesIt.hasPrevious() )
   {
@@ -1346,6 +1352,7 @@ bool QgsCurvePolygon::deleteVertices( const QSet<QgsVertexId> &positions )
 
     if ( !ring->deleteVertices( QSet<QgsVertexId>( vertices.begin(), vertices.end() ) ) )
     {
+      Q_ASSERT( false );
       return false;
     }
 
@@ -1375,6 +1382,21 @@ bool QgsCurvePolygon::deleteVertices( const QSet<QgsVertexId> &positions )
 
   clearCache();
   return true;
+}
+
+bool QgsCurvePolygon::hasVertex( QgsVertexId id ) const
+{
+  if ( !mExteriorRing )
+    return false;
+
+  if ( id.part == 0 && id.ring >= 0 && id.ring < mInteriorRings.size() + 1 )
+  {
+    // cppcheck-suppress containerOutOfBounds
+    QgsCurve *ring = id.ring == 0 ? mExteriorRing.get() : mInteriorRings.at( id.ring - 1 );
+    return ring->hasVertex( QgsVertexId( 0, 0, id.vertex ) );
+  }
+
+  return false;
 }
 
 bool QgsCurvePolygon::hasCurvedSegments() const

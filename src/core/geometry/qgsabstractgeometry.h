@@ -549,6 +549,12 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool deleteVertices( const QSet<QgsVertexId> &positions ) = 0;
 
     /**
+     * Returns TRUE if the geometry contains a vertex matching the given \a position.
+     * \since QGIS 4.2
+     */
+    virtual bool hasVertex( QgsVertexId position ) const = 0;
+
+    /**
      * Returns the planar, 2-dimensional length of the geometry.
      *
      * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length

@@ -667,30 +667,29 @@ bool QgsNurbsCurve::deleteVertices( const QSet<QgsVertexId> &positions )
     return false;
   }
 
-  QList<QgsVertexId> sortedPositions( positions.begin(), positions.end() );
-  std::sort( sortedPositions.begin(), sortedPositions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex > b.vertex; } );
-
-  if ( sortedPositions.first().vertex >= mControlPoints.size() || sortedPositions.last().vertex < 0 )
+  for ( QgsVertexId pos : positions )
   {
-    return false;
-  }
-
-  for ( const QgsVertexId &position : sortedPositions )
-  {
-    const int idx = position.vertex;
-    if ( idx < 0 || idx >= mControlPoints.size() )
+    if ( !hasVertex( pos ) )
     {
       return false;
     }
-    mControlPoints.remove( idx );
-    if ( idx < mWeights.size() )
-      mWeights.remove( idx );
   }
 
-  if ( mControlPoints.size() <= mDegree )
+  if ( mControlPoints.size() - positions.size() <= mDegree )
   {
     clear();
     return true;
+  }
+
+  QList<QgsVertexId> sortedPositions( positions.begin(), positions.end() );
+  std::sort( sortedPositions.begin(), sortedPositions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex > b.vertex; } );
+
+  for ( QgsVertexId position : sortedPositions )
+  {
+    int idx = position.vertex;
+    mControlPoints.remove( idx );
+    if ( idx < mWeights.size() )
+      mWeights.remove( idx );
   }
 
   generateUniformKnots();

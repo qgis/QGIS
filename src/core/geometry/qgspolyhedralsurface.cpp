@@ -764,7 +764,12 @@ bool QgsPolyhedralSurface::deleteVertices( const QSet<QgsVertexId> &positions )
   QMap<int, QSet<QgsVertexId>> partVertices;
   for ( QgsVertexId pos : positions )
   {
-    partVertices[pos.part].insert( pos );
+    if ( !hasVertex( pos ) )
+    {
+      return false;
+    }
+
+    partVertices[pos.part].insert( QgsVertexId( 0, pos.ring, pos.vertex ) );
   }
 
   QMapIterator<int, QSet<QgsVertexId>> partVerticesIt( partVertices );
@@ -775,23 +780,35 @@ bool QgsPolyhedralSurface::deleteVertices( const QSet<QgsVertexId> &positions )
 
     int part = partVerticesIt.key();
     QSet<QgsVertexId> vertexMap = partVerticesIt.value();
-    if ( part < 0 || part >= partCount() )
-      continue;
-
     QgsPolygon *patch = mPatches.at( part );
 
-    if ( patch->deleteVertices( vertexMap ) )
+    if ( !patch->deleteVertices( vertexMap ) )
     {
-      // if the patch has lost its exterior ring, remove it
-      if ( !patch->exteriorRing() )
-      {
-        delete mPatches.takeAt( part );
-      }
-      clearCache();
+      Q_ASSERT( false );
+      return false;
+    }
+
+    if ( !patch->exteriorRing() )
+    {
+      delete mPatches.takeAt( part );
     }
   }
 
+  clearCache();
   return true;
+}
+
+bool QgsPolyhedralSurface::hasVertex( QgsVertexId id ) const
+{
+  size_t parts = partCount();
+  if ( id.part < 0 || static_cast<size_t>( id.part ) >= parts )
+    return false;
+
+  QgsAbstractGeometry *geom = mPatches.at( id.part );
+  if ( !geom )
+    return false;
+
+  return geom->hasVertex( QgsVertexId( 0, id.ring, id.vertex ) );
 }
 
 bool QgsPolyhedralSurface::hasCurvedSegments() const

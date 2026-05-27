@@ -1316,7 +1316,15 @@ bool QgsCircularString::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   if ( positions.empty() )
   {
-    return true;
+    return false;
+  }
+
+  for ( QgsVertexId pos : positions )
+  {
+    if ( !hasVertex( pos ) )
+    {
+      return false;
+    }
   }
 
   int nVertices = this->numPoints();
@@ -1342,7 +1350,6 @@ bool QgsCircularString::deleteVertices( const QSet<QgsVertexId> &positions )
         vertices.removeAt( i - 1 );
       }
 
-      nVertices -= 2;
       i--; // adjacent vertices handled, we can skip the next one as well
 
       if ( i == 0 )
@@ -1350,37 +1357,30 @@ bool QgsCircularString::deleteVertices( const QSet<QgsVertexId> &positions )
     }
   }
 
-  nVertices = this->numPoints();
+  // this check cannot be moved further up, we need to check adjacent vertices first
+  if ( nVertices - vertices.size() * 2 < 3 )
+  {
+    clear();
+    return true;
+  }
 
   QListIterator<QgsVertexId> positionsIt( vertices );
   positionsIt.toBack();
   while ( positionsIt.hasPrevious() )
   {
-    if ( nVertices < 4 ) //circular string must have at least 3 vertices
-    {
-      clear();
-      return true;
-    }
-
     int currentVertexNr = positionsIt.previous().vertex;
-
-    if ( currentVertexNr < 0 || currentVertexNr > ( nVertices - 1 ) )
-    {
-      return false;
-    }
 
     if ( currentVertexNr < nVertices - 2 )
     {
       deleteVertex( currentVertexNr + 1 );
       deleteVertex( currentVertexNr );
-      nVertices = nVertices - 2;
     }
     else
     {
       deleteVertex( currentVertexNr );
       deleteVertex( currentVertexNr - 1 );
-      nVertices = nVertices - 2;
     }
+    nVertices -= 2;
   }
 
   return true;

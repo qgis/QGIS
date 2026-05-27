@@ -375,6 +375,7 @@ class CORE_EXPORT QgsCurvePolygon : public QgsSurface
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
+    bool hasVertex( QgsVertexId position ) const override;
 
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;

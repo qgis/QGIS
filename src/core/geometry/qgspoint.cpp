@@ -500,6 +500,11 @@ bool QgsPoint::deleteVertices( const QSet<QgsVertexId> &positions )
   return false;
 }
 
+bool QgsPoint::hasVertex( QgsVertexId position ) const
+{
+  return position.part == 0 && position.ring == 0 && position.vertex == 0;
+}
+
 double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   Q_UNUSED( pt )
