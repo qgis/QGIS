@@ -593,6 +593,7 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
   protected:
     void contextMenuEvent( QContextMenuEvent *event ) override;
 
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
