@@ -46,7 +46,13 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
       QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
       connect( actionDuplicate, &QAction::triggered, this, [providerItem] { duplicateConnection( providerItem ); } );
       menu->addAction( actionDuplicate );
+
+      QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+      connect( actionRefresh, &QAction::triggered, this, [providerItem] { providerItem->refresh(); } );
+      menu->addAction( actionRefresh );
     }
+
+    menu->addSeparator();
 
     QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [stConnectionItems, item, context] {
@@ -57,11 +63,21 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
     } );
     menu->addAction( actionDelete );
   }
+  else if ( QgsGdalCloudDirectoryItem *directoryItem = qobject_cast<QgsGdalCloudDirectoryItem *>( item ) )
+  {
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+    connect( actionRefresh, &QAction::triggered, this, [directoryItem] { directoryItem->refresh(); } );
+    menu->addAction( actionRefresh );
+  }
   else if ( QgsGdalCloudProviderItem *providerItem = qobject_cast<QgsGdalCloudProviderItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [providerItem] { newConnection( providerItem, providerItem->vsiHandler() ); } );
     menu->addAction( actionNew );
+
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+    connect( actionRefresh, &QAction::triggered, this, [providerItem] { providerItem->refresh(); } );
+    menu->addAction( actionRefresh );
   }
   else if ( QgsGdalCloudRootItem *rootItem = qobject_cast<QgsGdalCloudRootItem *>( item ) )
   {
@@ -91,6 +107,12 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
     QAction *actionLoad = new QAction( tr( "Load Connections…" ), menu );
     connect( actionLoad, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
     menu->addAction( actionLoad );
+
+    menu->addSeparator();
+
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+    connect( actionRefresh, &QAction::triggered, this, [rootItem] { rootItem->refresh(); } );
+    menu->addAction( actionRefresh );
   }
 }
 
