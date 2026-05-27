@@ -110,6 +110,15 @@
       "platform": "windows"
     },
     "qtkeychain",
+    {
+      "name": "tiff",
+      "features": [
+        "lerc",
+        "libdeflate",
+        "webp",
+        "zstd"
+      ]
+    },
     "zlib"
   ],
   "features": {
