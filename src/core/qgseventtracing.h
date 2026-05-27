@@ -144,7 +144,7 @@ class CORE_EXPORT QgsEventTracing
      * ScopedEvent can be used to trace a single function duration - the constructor adds a "begin" event
      * and the destructor adds "end" event of the same name and category.
      */
-    class ScopedEvent
+    class CORE_EXPORT ScopedEvent
     {
       public:
         ScopedEvent( const QString &category, const QString &name )
