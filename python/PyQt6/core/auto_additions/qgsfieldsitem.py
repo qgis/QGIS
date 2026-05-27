@@ -5,7 +5,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsFieldItem.__overridden_methods__ = ['icon', 'equal']
+    QgsFieldItem.__overridden_methods__ = ['icon', 'equal', 'createChildren']
     QgsFieldItem.__group__ = ['browser']
 except (NameError, AttributeError):
     pass
