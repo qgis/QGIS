@@ -46,7 +46,7 @@ QgsArcGisRestRootItem::QgsArcGisRestRootItem( QgsDataItem *parent, const QString
   : QgsConnectionsRootItem( parent, name, path, u"AFS"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = u"mIconAfs.svg"_s;
+  mIconName = u"mIconEsriRest.svg"_s;
   populate();
 }
 
@@ -770,7 +770,7 @@ QgsArcGisImageServiceItem::QgsArcGisImageServiceItem(
   , mUrlPrefix( urlPrefix )
   , mForceRefresh( forceRefresh )
 {
-  mIconName = u"mIconAms.svg"_s;
+  mIconName = u"mIconImageServer.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( u"<p><b>ImageServer</b></p><p>%1</p>"_s.arg( path ) );
 }

@@ -1144,7 +1144,7 @@ QgsImageServerProviderMetadata::QgsImageServerProviderMetadata()
 
 QIcon QgsImageServerProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( u"mIconAms.svg"_s );
+  return QgsApplication::getThemeIcon( u"mIconImageServer.svg"_s );
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsImageServerProviderMetadata::providerCapabilities() const
