@@ -74,6 +74,15 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     double roughness() const { return mRoughness; }
 
     /**
+     * Returns the material's reflectance, as a value between 0 and 1.
+     *
+     * This controls the specular intensity for non-metals.
+     *
+     * \see setReflectance()
+     */
+    double reflectance() const { return mReflectance; }
+
+    /**
      * Returns the material's emissive color.
      *
      * \see setEmissionColor()
@@ -136,6 +145,15 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     void setRoughness( double roughness ) { mRoughness = roughness; }
 
     /**
+     * Sets the material's \a reflectance, as a value between 0 and 1.
+     *
+     * This controls the specular intensity for non-metals.
+     *
+     * \see reflectance()
+     */
+    void setReflectance( double reflectance ) { mReflectance = reflectance; }
+
+    /**
      * Sets the \a opacity of the surface.
      *
      * \see opacity()
@@ -187,6 +205,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
              && mEmissiveColor == other.mEmissiveColor
              && qgsDoubleNear( mMetalness, other.mMetalness )
              && qgsDoubleNear( mRoughness, other.mRoughness )
+             && qgsDoubleNear( mReflectance, other.mReflectance )
              && qgsDoubleNear( mOpacity, other.mOpacity )
              && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
              && dataDefinedProperties() == other.dataDefinedProperties();
@@ -197,6 +216,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     QColor mEmissiveColor;
     double mMetalness = 0.0;
     double mRoughness = 0.5;
+    double mReflectance = 0.5;
     double mEmissionFactor = 1.0;
     double mOpacity = 1.0;
 };

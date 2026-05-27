@@ -37,6 +37,7 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mBaseColorParameter( new Qt3DRender::QParameter( u"baseColor"_s, Qgs3DUtils::srgbToLinear( QColor( "grey" ) ), this ) )
   , mMetalnessParameter( new Qt3DRender::QParameter( u"metalness"_s, 0.0f, this ) )
   , mRoughnessParameter( new Qt3DRender::QParameter( u"roughness"_s, 0.0f, this ) )
+  , mReflectanceParameter( new Qt3DRender::QParameter( u"reflectance"_s, 0.5f, this ) )
   , mBaseColorMapParameter( new Qt3DRender::QParameter( u"baseColorMap"_s, QVariant(), this ) )
   , mMetalnessMapParameter( new Qt3DRender::QParameter( u"metalnessMap"_s, QVariant(), this ) )
   , mRoughnessMapParameter( new Qt3DRender::QParameter( u"roughnessMap"_s, QVariant(), this ) )
@@ -155,6 +156,11 @@ void QgsMetalRoughMaterial::setRoughnessTexture( Qt3DRender::QAbstractTexture *r
   {
     updateShaders();
   }
+}
+
+void QgsMetalRoughMaterial::setReflectance( float reflectance )
+{
+  mReflectanceParameter->setValue( QVariant::fromValue( reflectance ) );
 }
 
 void QgsMetalRoughMaterial::setAmbientOcclusionTexture( Qt3DRender::QAbstractTexture *ambientOcclusion )
@@ -324,6 +330,7 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughEffect->addParameter( mBaseColorParameter );
   mMetalRoughEffect->addParameter( mMetalnessParameter );
   mMetalRoughEffect->addParameter( mRoughnessParameter );
+  mMetalRoughEffect->addParameter( mReflectanceParameter );
   mMetalRoughEffect->addParameter( mParallaxScaleParameter );
   mMetalRoughEffect->addParameter( mEmissiveColorParameter );
   mMetalRoughEffect->addParameter( mEmissionFactorParameter );

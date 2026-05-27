@@ -166,5 +166,6 @@ void QgsMetalRoughMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoug
   material->setEmissionFactor( static_cast< float>( metalRoughSettings->emissionFactor() ) );
   material->setMetalness( static_cast< float >( metalRoughSettings->metalness() ) );
   material->setRoughness( static_cast< float >( metalRoughSettings->roughness() ) );
+  material->setReflectance( static_cast< float >( metalRoughSettings->reflectance() ) );
   material->setOpacity( static_cast< float >( metalRoughSettings->opacity() ) );
 }

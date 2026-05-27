@@ -534,6 +534,7 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         self.assertEqual(settings.roughness(), 0.5)
         self.assertEqual(settings.emissionFactor(), 1.0)
         self.assertFalse(settings.emissionColor().isValid())
+        self.assertEqual(settings.reflectance(), 0.5)
 
         # Test setters/getters
         settings.setBaseColor(QColor(255, 0, 0))
@@ -551,6 +552,9 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings.setEmissionColor(QColor(0, 255, 0))
         self.assertEqual(settings.emissionColor(), QColor(0, 255, 0))
 
+        settings.setReflectance(0.7)
+        self.assertEqual(settings.reflectance(), 0.7)
+
     def test_clone(self):
         settings = QgsMetalRoughMaterialSettings()
         settings.setBaseColor(QColor(255, 0, 0))
@@ -558,6 +562,7 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings.setRoughness(0.7)
         settings.setEmissionFactor(2.0)
         settings.setEmissionColor(QColor(0, 255, 0))
+        settings.setReflectance(0.7)
 
         cloned = settings.clone()
         self.assertIsInstance(cloned, QgsMetalRoughMaterialSettings)
@@ -566,6 +571,7 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         self.assertEqual(cloned.roughness(), 0.7)
         self.assertEqual(cloned.emissionFactor(), 2.0)
         self.assertEqual(cloned.emissionColor(), QColor(0, 255, 0))
+        self.assertEqual(cloned.reflectance(), 0.7)
 
     def test_equality(self):
         settings1 = QgsMetalRoughMaterialSettings()
@@ -598,6 +604,11 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings1.setEmissionColor(QColor(0, 0, 255))
         self.assertEqual(settings1, settings2)
 
+        settings2.setReflectance(0.7)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setReflectance(0.7)
+        self.assertEqual(settings1, settings2)
+
     def test_equals_method(self):
         settings1 = QgsMetalRoughMaterialSettings()
         settings2 = QgsMetalRoughMaterialSettings()
@@ -617,6 +628,7 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings.setRoughness(0.7)
         settings.setEmissionFactor(3.0)
         settings.setEmissionColor(QColor(255, 0, 0))
+        settings.setReflectance(0.7)
 
         doc = QDomDocument("settings")
         element = doc.createElement("settings")

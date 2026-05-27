@@ -1094,22 +1094,27 @@ void TestQgs3DMaterialRendering::testMetalRoughEnvironmentLight_data()
   QTest::addColumn<double>( "metalness" );
   QTest::addColumn<double>( "roughness" );
   QTest::addColumn<QColor>( "baseColor" );
+  QTest::addColumn<double>( "reflectance" );
   QTest::addColumn<double>( "strength" );
   QTest::addColumn<QString>( "reference" );
 
-  QTest::newRow( "dielectric smooth" ) << 0.0 << 0.0 << QColor( 200, 255, 200 ) << 1.0 << "env_light_dielectric_smooth";
-  QTest::newRow( "dielectric 30% rough" ) << 0.0 << 0.3 << QColor( 200, 255, 200 ) << 1.0 << "env_light_dielectric_30_rough";
-  QTest::newRow( "dielectric 60% rough" ) << 0.0 << 0.6 << QColor( 200, 255, 200 ) << 1.0 << "env_light_dielectric_60_rough";
-  QTest::newRow( "dielectric 100% rough" ) << 0.0 << 1.0 << QColor( 200, 255, 200 ) << 1.0 << "env_light_dielectric_100_rough";
-  QTest::newRow( "metal smooth" ) << 1.0 << 0.0 << QColor( 200, 255, 200 ) << 1.0 << "env_light_metal_smooth";
-  QTest::newRow( "metal 30% rough" ) << 1.0 << 0.3 << QColor( 200, 255, 200 ) << 1.0 << "env_light_metal_30_rough";
-  QTest::newRow( "metal 60% rough" ) << 1.0 << 0.6 << QColor( 200, 255, 200 ) << 1.0 << "env_light_metal_60_rough";
-  QTest::newRow( "metal 100% rough" ) << 1.0 << 1.0 << QColor( 200, 255, 200 ) << 1.0 << "env_light_metal_100_rough";
-  QTest::newRow( "dielectric smooth dark" ) << 0.0 << 0.0 << QColor( 30, 30, 30 ) << 1.0 << "env_light_dielectric_smooth_dark";
-  QTest::newRow( "dielectric smooth white" ) << 0.0 << 0.0 << QColor( 230, 230, 230 ) << 1.0 << "env_light_dielectric_smooth_light";
-  QTest::newRow( "metal smooth dark" ) << 1.0 << 0.0 << QColor( 30, 30, 30 ) << 1.0 << "env_light_metal_smooth_dark";
-  QTest::newRow( "metal smooth white" ) << 1.0 << 0.0 << QColor( 230, 230, 230 ) << 1.0 << "env_light_metal_smooth_light";
-  QTest::newRow( "50% strength" ) << 1.0 << 0.0 << QColor( 230, 230, 230 ) << 0.5 << "env_light_mid_strength";
+  QTest::newRow( "dielectric smooth" ) << 0.0 << 0.0 << QColor( 200, 255, 200 ) << 0.5 << 1.0 << "env_light_dielectric_smooth";
+  QTest::newRow( "dielectric 30% rough" ) << 0.0 << 0.3 << QColor( 200, 255, 200 ) << 0.5 << 1.0 << "env_light_dielectric_30_rough";
+  QTest::newRow( "dielectric 60% rough" ) << 0.0 << 0.6 << QColor( 200, 255, 200 ) << 0.5 << 1.0 << "env_light_dielectric_60_rough";
+  QTest::newRow( "dielectric 100% rough" ) << 0.0 << 1.0 << QColor( 200, 255, 200 ) << 0.5 << 1.0 << "env_light_dielectric_100_rough";
+  QTest::newRow( "metal smooth" ) << 1.0 << 0.0 << QColor( 200, 255, 200 ) << 0.5 << 1.0 << "env_light_metal_smooth";
+  QTest::newRow( "metal 30% rough" ) << 1.0 << 0.3 << QColor( 200, 255, 200 ) << 0.5 << 1.0 << "env_light_metal_30_rough";
+  QTest::newRow( "metal 60% rough" ) << 1.0 << 0.6 << QColor( 200, 255, 200 ) << 0.5 << 1.0 << "env_light_metal_60_rough";
+  QTest::newRow( "metal 100% rough" ) << 1.0 << 1.0 << QColor( 200, 255, 200 ) << 0.5 << 1.0 << "env_light_metal_100_rough";
+  QTest::newRow( "dielectric smooth dark" ) << 0.0 << 0.0 << QColor( 30, 30, 30 ) << 0.5 << 1.0 << "env_light_dielectric_smooth_dark";
+  QTest::newRow( "dielectric smooth white" ) << 0.0 << 0.0 << QColor( 230, 230, 230 ) << 0.5 << 1.0 << "env_light_dielectric_smooth_light";
+  QTest::newRow( "metal smooth dark" ) << 1.0 << 0.0 << QColor( 30, 30, 30 ) << 0.5 << 1.0 << "env_light_metal_smooth_dark";
+  QTest::newRow( "metal smooth white" ) << 1.0 << 0.0 << QColor( 230, 230, 230 ) << 0.5 << 1.0 << "env_light_metal_smooth_light";
+  QTest::newRow( "50% strength" ) << 1.0 << 0.0 << QColor( 230, 230, 230 ) << 0.5 << 0.5 << "env_light_mid_strength";
+
+  QTest::newRow( "dielectric reflectance 0.3 (low reflectance))" ) << 0.0 << 0.0 << QColor( 200, 0, 0 ) << 0.3 << 1.0 << "env_light14";
+  QTest::newRow( "dielectric reflectance 0.7 (gemstone)" ) << 0.0 << 0.0 << QColor( 200, 0, 0 ) << 0.7 << 1.0 << "env_light15";
+  QTest::newRow( "dielectric reflectance 1.0 (gemstone)" ) << 0.0 << 0.0 << QColor( 200, 0, 0 ) << 1.0 << 1.0 << "env_light16";
 }
 
 void TestQgs3DMaterialRendering::testMetalRoughEnvironmentLight()
@@ -1117,6 +1122,7 @@ void TestQgs3DMaterialRendering::testMetalRoughEnvironmentLight()
   QFETCH( double, metalness );
   QFETCH( double, roughness );
   QFETCH( QColor, baseColor );
+  QFETCH( double, reflectance );
   QFETCH( double, strength );
   QFETCH( QString, reference );
 
@@ -1147,6 +1153,7 @@ void TestQgs3DMaterialRendering::testMetalRoughEnvironmentLight()
   materialSettings.setMetalness( metalness );
   materialSettings.setRoughness( roughness );
   materialSettings.setBaseColor( baseColor );
+  materialSettings.setReflectance( reflectance );
   symbol->setMaterialSettings( materialSettings.clone() );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );

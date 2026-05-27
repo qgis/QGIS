@@ -38,6 +38,7 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   // clear has no meaning here
   mMetalnessWidget->spinBox()->setShowClearButton( false );
   mRoughnessWidget->spinBox()->setShowClearButton( false );
+  mReflectanceWidget->spinBox()->setClearValue( 50 );
 
   mEmissionStrengthSpinBox->setClearValue( 100 );
   mEmissionStrengthSpinBox->setEnabled( false );
@@ -52,6 +53,7 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
     updateWidgetState();
     emit changed();
   } );
+  connect( mReflectanceWidget, &QgsPercentageWidget::valueChanged, this, [this] { emit changed(); } );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughMaterialWidget::changed );
   connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughMaterialWidget::changed );
   connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
@@ -110,6 +112,7 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   mButtonBaseColor->setColor( material->baseColor() );
   mMetalnessWidget->setValue( material->metalness() );
   mRoughnessWidget->setValue( material->roughness() );
+  mReflectanceWidget->setValue( material->reflectance() );
   mOpacityWidget->setOpacity( material->opacity() );
   mButtonEmissionColor->setColor( material->emissionColor() );
   mEmissionStrengthSpinBox->setValue( material->emissionFactor() * 100 );
@@ -130,6 +133,7 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialWidget::settin
   m->setBaseColor( mButtonBaseColor->color() );
   m->setMetalness( mMetalnessWidget->value() );
   m->setRoughness( mRoughnessWidget->value() );
+  m->setReflectance( mReflectanceWidget->value() );
   m->setOpacity( mOpacityWidget->opacity() );
   m->setEmissionColor( mButtonEmissionColor->color() );
   m->setEmissionFactor( mEmissionStrengthSpinBox->value() / 100.0 );

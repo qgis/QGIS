@@ -69,6 +69,15 @@ Returns the material's roughness, as a value between 0 and 1.
 .. seealso:: :py:func:`setRoughness`
 %End
 
+    double reflectance() const;
+%Docstring
+Returns the material's reflectance, as a value between 0 and 1.
+
+This controls the specular intensity for non-metals.
+
+.. seealso:: :py:func:`setReflectance`
+%End
+
     QColor emissionColor() const;
 %Docstring
 Returns the material's emissive color.
@@ -134,6 +143,15 @@ Sets the material's ``metalness``, as a value between 0 and 1.
 Sets the material's ``roughness``, as a value between 0 and 1.
 
 .. seealso:: :py:func:`roughness`
+%End
+
+    void setReflectance( double reflectance );
+%Docstring
+Sets the material's ``reflectance``, as a value between 0 and 1.
+
+This controls the specular intensity for non-metals.
+
+.. seealso:: :py:func:`reflectance`
 %End
 
     void setOpacity( double opacity );
