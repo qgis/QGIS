@@ -505,6 +505,14 @@ Flags the algorithm as having started.
 .. versionadded:: 4.2
 %End
 
+    void setOutdated();
+%Docstring
+Flags the algorithm as possibly being outdated (i.e. previous results
+are invalid due to changes elsewhere in the model).
+
+.. versionadded:: 4.2
+%End
+
     int indexForInput( const QString &parameterName ) const;
 %Docstring
 Returns the index for the input with the specified parameter name, or -1

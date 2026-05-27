@@ -137,6 +137,17 @@ void QgsModelGraphicsScene::setupFeedbackConnections( QgsProcessingModelFeedback
   } );
 }
 
+void QgsModelGraphicsScene::flagChildrenAsOutdated( const QSet<QString> &children )
+{
+  for ( const QString &child : children )
+  {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( child ) )
+    {
+      item->setOutdated();
+    }
+  }
+}
+
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
 {
   return new QgsModelParameterGraphicItem( param, model, nullptr );
