@@ -46,7 +46,7 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
         return new QgsHighlightMaterial( technique );
       }
 
-      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
+      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial( nullptr, context.isPreview() );
       material->setObjectName( u"metalRoughMaterial"_s );
       applySettingsToMaterial( metalRoughSettings, material, context );
       material->setDataDefinedEnabled(

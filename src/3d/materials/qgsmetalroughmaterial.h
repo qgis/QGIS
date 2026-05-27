@@ -53,7 +53,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     /**
      * Constructor for QgsMetalRoughMaterial, with the specified \a parent node.
      */
-    explicit QgsMetalRoughMaterial( Qt3DCore::QNode *parent = nullptr );
+    explicit QgsMetalRoughMaterial( Qt3DCore::QNode *parent = nullptr, bool disableEnvironmentalLight = false );
     ~QgsMetalRoughMaterial() override;
 
   public slots:
@@ -163,6 +163,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qgis::InstancedMaterialFlags mInstanceFlags;
 
     bool mDataDefinedEnabled = false;
+    bool mDisableEnvironmentalLighting = false;
 
     friend class TestQgsGltf3DUtils;
 };
