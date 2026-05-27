@@ -236,6 +236,18 @@ float geometrySchlickGGX(const in float nDotV, const in float k)
     return nom / denom;
 }
 
+// analytical approximation of the split-sum for environment bidirectional reflectance distribution function
+// as per https://www.unrealengine.com/blog/physically-based-shading-on-mobile?lang=en-US
+vec2 environmentBrdfApproximation(const in float roughness, const in float viewDotNormal)
+{
+    vec4 c0 = vec4(-1.0, -0.0275, -0.572, 0.022);
+    vec4 c1 = vec4(1.0, 0.0425, 1.04, -0.04);
+    vec4 r = roughness * c0 + c1;
+    float a004 = min(r.x * r.x, exp2(-9.28 * viewDotNormal)) * r.x + r.y;
+    vec2 ab = vec2(-1.04, 1.04) * a004 + r.zw;
+    return ab;
+}
+
 float geometricModel(const in float lDotN,
                      const in float vDotN,
                      const in float roughness,
@@ -317,6 +329,13 @@ vec3 pbrModel(const in int lightIndex,
     if (light.sDotN > 0.0) {
         specularFactor = specularModel(F0, light.sDotH, light.sDotN, vDotN, n, light.h, roughness, false);
         specularFactor *= normalDistribution(light.nDotH, alpha);
+
+        // calculate multi-scatter energy compensation factor for direct light
+        // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.5
+        vec2 environmentBrdf = environmentBrdfApproximation(roughness, vDotN);
+        float directionalAlbedo = environmentBrdf.x + environmentBrdf.y;
+        vec3 energyCompensation = vec3(1.0) + F0 * (1.0 / max(directionalAlbedo, 0.001) - 1.0);
+        specularFactor *= energyCompensation;
     }
     vec3 specularColor = lights[lightIndex].color;
     vec3 specular = specularColor * specularFactor * light.sDotN;
@@ -339,20 +358,7 @@ float roughnessToMipLevel(float roughness)
   float lod = float(globalSpecularMipLevels - 1) * roughness;
   return max(lod, 0.0);
 }
-#endif
 
-// analytical approximation of the split-sum for environment bidirectional reflectance distribution function
-// as per https://www.unrealengine.com/blog/physically-based-shading-on-mobile?lang=en-US
-vec2 environmentBrdfApproximation(const in float roughness, const in float viewDotNormal)
-{
-    vec4 c0 = vec4(-1.0, -0.0275, -0.572, 0.022);
-    vec4 c1 = vec4(1.0, 0.0425, 1.04, -0.04);
-    vec4 r = roughness * c0 + c1;
-    float a004 = min(r.x * r.x, exp2(-9.28 * viewDotNormal)) * r.x + r.y;
-    vec2 ab = vec2(-1.04, 1.04) * a004 + r.zw;
-    return ab;
-}
-#ifdef ENABLE_IBL
 vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
@@ -407,6 +413,12 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
     // apply split-sum approximation for image based lighting specular
     vec2 environmentBrdf = environmentBrdfApproximation(roughness, vDotN);
     vec3 specular = indirectSpecular * (F0 * environmentBrdf.x + environmentBrdf.y);
+
+    // multi-scatter energy compensation factor for indirect light
+    // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.5
+    float directionalAlbedo = environmentBrdf.x + environmentBrdf.y;
+    vec3 energyCompensation = vec3(1.0) + F0 * (1.0 / max(directionalAlbedo, 0.001) - 1.0);
+    specular *= energyCompensation;
 
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
