@@ -46,11 +46,11 @@ bool QgsMaterialRegistry::populate()
     new QgsMaterialSettingsMetadata( u"null"_s, QObject::tr( "Embedded Textures" ), QgsNullMaterialSettings::create, QgsNullMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s ) )
   );
   addMaterialSettingsType(
-    new QgsMaterialSettingsMetadata( u"metalrough"_s, QObject::tr( "Physically Based (Metal/Rough)" ), QgsMetalRoughMaterialSettings::create, QgsMetalRoughMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) )
+    new QgsMaterialSettingsMetadata( u"metalrough"_s, QObject::tr( "Physically Based" ), QgsMetalRoughMaterialSettings::create, QgsMetalRoughMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) )
   );
   addMaterialSettingsType( new QgsMaterialSettingsMetadata(
     u"metalroughtextured"_s,
-    QObject::tr( "Physically Based with Textures (Metal/Rough)" ),
+    QObject::tr( "Physically Based (with textures)" ),
     QgsMetalRoughTexturedMaterialSettings::create,
     QgsMetalRoughTexturedMaterialSettings::supportsTechnique,
     nullptr,
@@ -64,7 +64,7 @@ bool QgsMaterialRegistry::populate()
     new QgsMaterialSettingsMetadata( u"phong"_s, QObject::tr( "Legacy (Phong)" ), QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongMaterial.svg"_s ) )
   );
   addMaterialSettingsType(
-    new QgsMaterialSettingsMetadata( u"phongtextured"_s, QObject::tr( "Legacy with Textures (Phong)" ), QgsPhongTexturedMaterialSettings::create, QgsPhongTexturedMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s ) )
+    new QgsMaterialSettingsMetadata( u"phongtextured"_s, QObject::tr( "Legacy Textured (Phong)" ), QgsPhongTexturedMaterialSettings::create, QgsPhongTexturedMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s ) )
   );
   addMaterialSettingsType(
     new QgsMaterialSettingsMetadata( u"simpleline"_s, QObject::tr( "Single Color (Unlit)" ), QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconSimpleLineMaterial.svg"_s ) )
