@@ -557,8 +557,16 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * \param symbolUnits the symbol output units
      * \param mapUnits the map units
      * \param mapUnitsPerPixel Map units per pixel
+     * \deprecated QGIS 4.2. Use the overload taking a QgsRenderContext instead.
     */
-    static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
+    Q_DECL_DEPRECATED static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 ) SIP_DEPRECATED;
+
+    /**
+     * Returns the scale factor for conversion of a symbol size in \a symbolUnits to map units,
+     * using the symbology scale and map-to-pixel transform from \a renderContext.
+     * \since QGIS 4.2
+    */
+    static double mapUnitScaleFactor( const QgsRenderContext &renderContext, Qgis::RenderUnit symbolUnits );
 
     /**
      * Clips value to scale minimum/maximum

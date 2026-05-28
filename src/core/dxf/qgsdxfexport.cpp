@@ -736,7 +736,7 @@ void QgsDxfExport::writeSymbolLayerBlock( const QString &blockName, const QgsMar
   writeGroup( 1, QString() );
 
   // maplayer 0 -> block receives layer from INSERT statement
-  ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), u"0"_s, ctx );
+  ml->writeDxf( *this, mapUnitScaleFactor( ctx.renderContext(), ml->sizeUnit() ), u"0"_s, ctx );
 
   writeGroup( 0, u"ENDBLK"_s );
   writeHandle();
@@ -1056,8 +1056,8 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
   if ( msl )
   {
-    double halfSize = msl->size() * mapUnitScaleFactor( mSymbologyScale,
-                      msl->sizeUnit(), mMapUnits ) / 2.0;
+    double halfSize = msl->size() * mapUnitScaleFactor( ctx.renderContext(),
+                      msl->sizeUnit() ) / 2.0;
     writeGroup( 0, "SOLID" );
     writeGroup( 8, layer );
     writeGroup( 62, 1 );
@@ -1097,7 +1097,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
   if ( msl && symbol )
   {
-    if ( msl->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
+    if ( msl->writeDxf( *this, mapUnitScaleFactor( ctx.renderContext(), msl->sizeUnit() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
     {
       return;
     }
@@ -2047,6 +2047,11 @@ double QgsDxfExport::mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUn
   return 1.0;
 }
 
+double QgsDxfExport::mapUnitScaleFactor( const QgsRenderContext &renderContext, Qgis::RenderUnit symbolUnits )
+{
+  return renderContext.convertToMapUnits( 1.0, symbolUnits );
+}
+
 void QgsDxfExport::clipValueToMapUnitScale( double &value, const QgsMapUnitScale &scale, double pixelToMMFactor ) const
 {
   if ( !scale.minSizeMMEnabled && !scale.maxSizeMMEnabled )
@@ -2191,7 +2196,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   double length = 0;
   for ( qreal size : pattern )
   {
-    length += ( size * mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() ) );
+    length += ( size * mapUnitScaleFactor( mRenderContext, u ) );
   }
 
   writeGroup( 0, u"LTYPE"_s );
@@ -2211,7 +2216,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   {
     // map units or mm?
     double segmentLength = ( isGap ? -size : size );
-    segmentLength *= mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() );
+    segmentLength *= mapUnitScaleFactor( mRenderContext, u );
     writeGroup( 49, segmentLength );
     writeGroup( 74, 0 );
     isGap = !isGap;

@@ -934,7 +934,7 @@ double QgsLineSymbolLayer::width( const QgsRenderContext &context ) const
 double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context )
-  return width() * QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  return width() * QgsDxfExport::mapUnitScaleFactor( context.renderContext(), widthUnit() );
 }
 
 
@@ -1075,7 +1075,7 @@ double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderCont
       }
     }
   }
-  return size * QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), mSizeUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  return size * QgsDxfExport::mapUnitScaleFactor( context.renderContext(), mSizeUnit );
 }
 
 double QgsMarkerSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
