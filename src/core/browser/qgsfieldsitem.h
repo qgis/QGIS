@@ -25,6 +25,10 @@
 
 #include <QString>
 
+class QgsFieldDomain;
+
+#include <QString>
+
 using namespace Qt::StringLiterals;
 
 /**
@@ -162,8 +166,17 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
 
     bool equal( const QgsDataItem *other ) override;
 
+    /**
+     * Sets the domain for the field. The item will take ownership of the domain
+     * and update its display name to include the domain name.
+     *
+     * \since QGIS 4.2
+     */
+    void setDomain( const QgsFieldDomain *domain );
+
   private:
     const QgsField mField;
+    const QgsFieldDomain *mDomain = nullptr;
 };
 
 #endif // QGSFIELDSITEM_H

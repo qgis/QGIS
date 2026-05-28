@@ -509,6 +509,12 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field, const QString &prede
     toolTip += u"<br><em>%1</em>"_s.arg( comment );
   }
 
+  QString domainName = field.constraints().domainName();
+  if ( !domainName.isEmpty() )
+  {
+    toolTip += u"<br>Domain: %1"_s.arg( domainName );
+  }
+
   return toolTip;
 }
 
