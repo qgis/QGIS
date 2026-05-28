@@ -1511,7 +1511,7 @@ Qgis::VectorEditResult QgsVectorLayer::deleteVertices( QgsFeatureId featureId, c
   QgsVectorLayerEditUtils utils( this );
   Qgis::VectorEditResult result = utils.deleteVertices( featureId, vertices );
 
-  if ( result == Qgis::VectorEditResult::Success )
+  if ( result == Qgis::VectorEditResult::Success || result == Qgis::VectorEditResult::EmptyGeometry )
     updateExtents();
   return result;
 }
