@@ -178,7 +178,7 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case Qgis::FieldOrigin::Expression:
-        if ( i == 7 )
+        if ( i == AttrCommentCol )
           continue;
         mFieldsList->item( row, i )->setBackground( expressionColor );
         break;
