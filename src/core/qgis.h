@@ -4485,13 +4485,36 @@ int QgisEvent = QEvent::User + 1;
      *
      * \since QGIS 3.30
      */
-    enum class VerticalAxisInversion : int
+    enum class VerticalAxisInversion : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Never,        //!< Never invert vertical axis movements
-      WhenDragging, //!< Invert vertical axis movements when dragging in first person modes
-      Always,       //!< Always invert vertical axis movements
+      /**
+       * When dragging with mouse button held in fly navigation
+       * \since QGIS 4.2
+       */
+      InFlyWhenDragging = 1 << 0,
+      /**
+       * When moving captured mouse in fly navigation
+       * \since QGIS 4.2
+       */
+      InFlyWhenCaptured = 1 << 1,
+      /**
+       * When in terrain navigation
+       * \since QGIS 4.2
+       */
+      InTerrain = 1 << 2,
+
+      // Legacy aliases for old flying-only enum:
+
+      //! Never invert vertical axis movements
+      Never = 0,
+      //! Invert vertical axis movements when dragging in first person modes
+      WhenDragging = InFlyWhenDragging,
+      //! Always invert vertical axis movements
+      Always = InFlyWhenDragging | InFlyWhenCaptured,
     };
     Q_ENUM( VerticalAxisInversion )
+    Q_DECLARE_FLAGS( VerticalAxisInversionFlags, VerticalAxisInversion )
+    Q_FLAG( VerticalAxisInversionFlags )
 
     /**
      * Defines the method used to map High Dynamic Range (HDR) scene colors
@@ -7089,6 +7112,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LoadStyleFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VerticalAxisInversionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )

@@ -7963,20 +7963,29 @@ Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
 # --
 Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
-Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
-Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements"
-Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D views.
+Qgis.VerticalAxisInversion.InFlyWhenDragging.__doc__ = ""
+Qgis.VerticalAxisInversion.InFlyWhenCaptured.__doc__ = ""
+Qgis.VerticalAxisInversion.InTerrain.__doc__ = ""
+Qgis.VerticalAxisInversion.Never.__doc__ = ""
+Qgis.VerticalAxisInversion.WhenDragging.__doc__ = ""
+Qgis.VerticalAxisInversion.Always.__doc__ = ""
+Qgis.VerticalAxisInversion.__doc__ = """When in terrain navigation
 
-.. versionadded:: 3.30
+.. versionadded:: 4.2
 
-* ``Never``: Never invert vertical axis movements
-* ``WhenDragging``: Invert vertical axis movements when dragging in first person modes
-* ``Always``: Always invert vertical axis movements
+* ``InFlyWhenDragging``: 
+* ``InFlyWhenCaptured``: 
+* ``InTerrain``: 
+* ``Never``: 
+* ``WhenDragging``: 
+* ``Always``: 
 
 """
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
+Qgis.VerticalAxisInversionFlags = lambda flags=0: Qgis.VerticalAxisInversion(flags)
+Qgis.VerticalAxisInversionFlags.baseClass = Qgis
+VerticalAxisInversionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ToneMappingMethod.Clamp.__doc__ = "Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail."
 Qgis.ToneMappingMethod.Aces.__doc__ = "Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness."

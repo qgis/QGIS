@@ -46,32 +46,18 @@ Sets the camera movement speed
 .. versionadded:: 3.18
 %End
 
-    Qgis::VerticalAxisInversion verticalAxisInversion() const;
+    Qgis::VerticalAxisInversionFlags verticalAxisInversion() const;
 %Docstring
 Returns the vertical axis inversion behavior for walk mode.
 
 .. versionadded:: 3.18
 %End
 
-    void setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
+    void setVerticalAxisInversion( Qgis::VerticalAxisInversionFlags inversion );
 %Docstring
 Sets the vertical axis ``inversion`` behavior for walk mode.
 
 .. versionadded:: 3.18
-%End
-
-    bool verticalAxisInversionTerrain() const;
-%Docstring
-Returns the vertical axis inversion behavior for terrain mode.
-
-.. versionadded:: 4.2
-%End
-
-    void setVerticalAxisInversionTerrain( bool inversion );
-%Docstring
-Sets the vertical axis ``inversion`` behavior for terrain mode.
-
-.. versionadded:: 4.2
 %End
 
     void frameTriggered( float dt );

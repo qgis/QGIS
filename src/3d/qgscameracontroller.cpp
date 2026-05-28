@@ -102,14 +102,9 @@ void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
   emit cameraMovementSpeedChanged( mCameraMovementSpeed );
 }
 
-void QgsCameraController::setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion )
+void QgsCameraController::setVerticalAxisInversion( Qgis::VerticalAxisInversionFlags inversion )
 {
-  mVerticalAxisInversionFlyMode = inversion;
-}
-
-void QgsCameraController::setVerticalAxisInversionTerrain( bool inversion )
-{
-  mVerticalAxisInversionTerrainMode = inversion;
+  mVerticalAxisInversion = inversion;
 }
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffHeading )
@@ -584,7 +579,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
     float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
 
-    if ( mVerticalAxisInversionTerrainMode )
+    if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::InTerrain )
       pitchDiff *= -1;
 
     if ( !mDepthBufferIsReady )
@@ -777,7 +772,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
     float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
     const float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
 
-    if ( mVerticalAxisInversionTerrainMode )
+    if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::InTerrain )
       pitchDiff *= -1;
 
     mCameraPose.setPitchAngle( mRotationPitch + pitchDiff );
@@ -1285,16 +1280,8 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     if ( mCaptureFpsMouseMovements )
     {
       float diffPitch = -0.2f * dy;
-      switch ( mVerticalAxisInversionFlyMode )
-      {
-        case Qgis::VerticalAxisInversion::Always:
-          diffPitch *= -1;
-          break;
-
-        case Qgis::VerticalAxisInversion::WhenDragging:
-        case Qgis::VerticalAxisInversion::Never:
-          break;
-      }
+      if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::InFlyWhenCaptured )
+        diffPitch *= -1;
 
       const float diffYaw = -0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
@@ -1302,16 +1289,8 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     else if ( mouse->buttons() & Qt::LeftButton )
     {
       float diffPitch = -0.2f * dy;
-      switch ( mVerticalAxisInversionFlyMode )
-      {
-        case Qgis::VerticalAxisInversion::Always:
-        case Qgis::VerticalAxisInversion::WhenDragging:
-          diffPitch *= -1;
-          break;
-
-        case Qgis::VerticalAxisInversion::Never:
-          break;
-      }
+      if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::InFlyWhenDragging )
+        diffPitch *= -1;
       const float diffYaw = -0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
     }
