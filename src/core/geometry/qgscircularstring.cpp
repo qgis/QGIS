@@ -1314,6 +1314,80 @@ void QgsCircularString::deleteVertex( int i )
   clearCache();
 }
 
+bool QgsCircularString::deleteVertices( const QSet<QgsVertexId> &positions )
+{
+  if ( positions.empty() )
+  {
+    return false;
+  }
+
+  for ( QgsVertexId pos : positions )
+  {
+    if ( !hasVertex( pos ) )
+    {
+      return false;
+    }
+  }
+
+  int nVertices = this->numPoints();
+
+  QList<QgsVertexId> vertices( positions.begin(), positions.end() );
+
+  std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex < b.vertex; } );
+
+  // remove adjacent vertices as deleting one will also delete the other
+  for ( size_t i = vertices.size() - 1; i >= 1; i-- )
+  {
+    int vertexNr = vertices[i].vertex;
+    int prevVertexNr = vertices[i - 1].vertex;
+
+    if ( vertexNr - 1 == prevVertexNr )
+    {
+      if ( vertexNr < nVertices - 2 )
+      {
+        vertices.removeAt( i );
+      }
+      else
+      {
+        vertices.removeAt( i - 1 );
+      }
+
+      i--; // adjacent vertices handled, we can skip the next one as well
+
+      if ( i == 0 )
+        break;
+    }
+  }
+
+  // this check cannot be moved further up, we need to check adjacent vertices first
+  if ( nVertices - vertices.size() * 2 < 3 )
+  {
+    clear();
+    return true;
+  }
+
+  QListIterator<QgsVertexId> positionsIt( vertices );
+  positionsIt.toBack();
+  while ( positionsIt.hasPrevious() )
+  {
+    int currentVertexNr = positionsIt.previous().vertex;
+
+    if ( currentVertexNr < nVertices - 2 )
+    {
+      deleteVertex( currentVertexNr + 1 );
+      deleteVertex( currentVertexNr );
+    }
+    else
+    {
+      deleteVertex( currentVertexNr );
+      deleteVertex( currentVertexNr - 1 );
+    }
+    nVertices -= 2;
+  }
+
+  return true;
+}
+
 double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   double minDist = std::numeric_limits<double>::max();

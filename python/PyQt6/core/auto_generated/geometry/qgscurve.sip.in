@@ -205,6 +205,8 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
+    virtual bool hasVertex( QgsVertexId position ) const;
+
     virtual QgsCurve *toCurveType() const /Factory/;
 
     void normalize() final /HoldGIL/;
