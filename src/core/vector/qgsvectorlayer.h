@@ -1279,6 +1279,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
     /**
+     * Deletes a set of vertices from a feature.
+     * \param featureId ID of feature to remove vertices from
+     * \param vertices set of vertex indices to delete
+     * \note Calls to deleteVertices() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     */
+    Qgis::VectorEditResult deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices );
+
+    /**
      * Deletes the selected features
      * \param deletedCount The number of successfully deleted features
      * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
