@@ -20,6 +20,7 @@
 #include <memory>
 
 #include "qgsapplication.h"
+#include "qgsfielddomain.h"
 #include "qgsfieldmodel.h"
 #include "qgsiconutils.h"
 #include "qgslogger.h"
@@ -78,6 +79,13 @@ QVector<QgsDataItem *> QgsFieldsItem::createChildren()
         for ( const QgsField &f : mFields )
         {
           QgsFieldItem *fieldItem { new QgsFieldItem( this, f ) };
+          const QString domainName = f.constraints().domainName();
+          if ( !domainName.isEmpty() )
+          {
+            QgsFieldDomain *domain = conn->fieldDomain( domainName );
+            if ( domain )
+              fieldItem->setDomain( domain );
+          }
           fieldItem->setSortKey( i++ );
           children.push_back( fieldItem );
         }
@@ -170,7 +178,17 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
 }
 
 QgsFieldItem::~QgsFieldItem()
-{}
+{
+  delete mDomain;
+}
+
+void QgsFieldItem::setDomain( const QgsFieldDomain *domain )
+{
+  delete mDomain;
+  mDomain = domain;
+  setName( u"%1 (Domain: %2)"_s.arg( mField.name(), mDomain->name() ) );
+  setToolTip( QgsFieldModel::fieldToolTip( mField ) );
+}
 
 QIcon QgsFieldItem::icon()
 {
