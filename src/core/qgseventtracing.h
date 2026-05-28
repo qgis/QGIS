@@ -36,7 +36,6 @@
 // version without notice, or even be removed.
 //
 
-
 /**
  * A utility class that provides event tracing functionality. When tracing
  * is enabled, events from different threads can be recorded and stored
@@ -139,28 +138,29 @@ class CORE_EXPORT QgsEventTracing
      * \note This method is thread-safe: it can be run from any thread.
      */
     static void setIntVariable( const char *name, int64_t value, bool continuous = false );
-
-    /**
-     * ScopedEvent can be used to trace a single function duration - the constructor adds a "begin" event
-     * and the destructor adds "end" event of the same name and category.
-     */
-    class CORE_EXPORT ScopedEvent
-    {
-      public:
-        ScopedEvent( const QString &category, const QString &name )
-          : mCat( category )
-          , mName( name )
-          , mId( QString::number( sNextId++ ) )
-        {
-          addEvent( Begin, mCat, mName, mId );
-        }
-        ~ScopedEvent() { addEvent( End, mCat, mName, mId ); }
-
-      private:
-        QString mCat, mName, mId;
-        static size_t sNextId;
-    };
 };
+
+/**
+ * ScopedEvent can be used to trace a single function duration - the constructor adds a "begin" event
+ * and the destructor adds "end" event of the same name and category.
+ */
+class CORE_EXPORT QgsScopedEvent
+{
+  public:
+    QgsScopedEvent( const QString &category, const QString &name )
+      : mCat( category )
+      , mName( name )
+      , mId( QString::number( sNextId++ ) )
+    {
+      QgsEventTracing::addEvent( QgsEventTracing::Begin, mCat, mName, mId );
+    }
+    ~QgsScopedEvent() { QgsEventTracing::addEvent( QgsEventTracing::End, mCat, mName, mId ); }
+
+  private:
+    QString mCat, mName, mId;
+    static size_t sNextId;
+};
+
 
 /// @endcond
 

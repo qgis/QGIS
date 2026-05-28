@@ -312,6 +312,6 @@ void QgsEventTracing::setIntVariable( const char *name, int64_t value, bool cont
 #endif
 }
 
-size_t QgsEventTracing::ScopedEvent::sNextId = 0;
+size_t QgsScopedEvent::sNextId = 0;
 
 ///@endcond

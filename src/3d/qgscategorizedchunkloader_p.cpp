@@ -181,7 +181,7 @@ void QgsCategorizedChunkLoader::start()
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [request, this] {
-    const QgsEventTracing::ScopedEvent event( u"3D"_s, u"Categorized chunk load"_s );
+    const QgsScopedEvent event( u"3D"_s, u"Categorized chunk load"_s );
     QgsFeature feature;
     QgsFeatureIterator featureIt = mSource->getFeatures( request );
     int featureCount = 0;

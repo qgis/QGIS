@@ -379,7 +379,7 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
     return false;
   }
 
-  QgsEventTracing::ScopedEvent traceEvent( u"3D"_s, forceUpdate ? u"Force update scene"_s : u"Update scene"_s );
+  QgsScopedEvent traceEvent( u"3D"_s, forceUpdate ? u"Force update scene"_s : u"Update scene"_s );
 
   Qgs3DMapSceneEntity::SceneContext sceneContext;
   Qt3DRender::QCamera *camera = mEngine->camera();

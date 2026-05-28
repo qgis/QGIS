@@ -90,7 +90,7 @@ void QgsRuleBasedChunkLoader::start()
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
-    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"RB chunk load"_s );
+    const QgsScopedEvent e( u"3D"_s, u"RB chunk load"_s );
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
