@@ -118,11 +118,13 @@ class TestQgsDxfExport : public QObject
     //! Runs a DXF export of \a vl with the given mode and scale, returning the raw bytes.
     QByteArray exportToBytes( QgsVectorLayer *vl, const QgsMapSettings &ms, Qgis::FeatureSymbologyExport mode = Qgis::FeatureSymbologyExport::PerFeature, double scale = 1000.0 ) const;
 
+    // NOLINTBEGIN(readability-identifier-naming)
     struct BlockVertices
     {
         QList<double> xs;
         QList<double> ys;
     };
+    // NOLINTEND(readability-identifier-naming)
     //! Returns all group-10/20 vertex coordinates inside the BLOCKS section.
     static BlockVertices scanBlockVertices( const QByteArray &dxfBytes );
     //! Counts INSERT entities inside the ENTITIES section.
@@ -1565,8 +1567,8 @@ void TestQgsDxfExport::testDataDefinedSvgRelativePath()
   // BLOCKS geometry. The resolver branch must render plane.svg, not the
   // placeholder; assert both that the resolver branch renders something
   // substantial and that it differs from the placeholder branch.
-  const int verticesWithResolver = scanBlockVertices( dxfWithResolver ).xs.size();
-  const int verticesWithoutResolver = scanBlockVertices( dxfWithoutResolver ).xs.size();
+  const qsizetype verticesWithResolver = scanBlockVertices( dxfWithResolver ).xs.size();
+  const qsizetype verticesWithoutResolver = scanBlockVertices( dxfWithoutResolver ).xs.size();
   QVERIFY2( verticesWithResolver > 50, u"Resolver branch produced too few BLOCKS vertices: with=%1"_s.arg( verticesWithResolver ).toUtf8().constData() );
   QVERIFY2(
     std::abs( verticesWithResolver - verticesWithoutResolver ) > 10,
@@ -1714,8 +1716,8 @@ void TestQgsDxfExport::testMarkerOffset()
     const BlockVertices v = scanBlockVertices( bytes );
     double maxAbsX = 0;
     double maxAbsY = 0;
-    const int n = std::min( v.xs.size(), v.ys.size() );
-    for ( int i = 0; i < n; ++i )
+    const qsizetype n = std::min( v.xs.size(), v.ys.size() );
+    for ( qsizetype i = 0; i < n; ++i )
     {
       // Skip HATCH/POLYLINE elevation reference points at the entity origin.
       if ( qgsDoubleNear( v.xs[i], 0.0 ) && qgsDoubleNear( v.ys[i], 0.0 ) )
@@ -1822,8 +1824,8 @@ void TestQgsDxfExport::testMarkerOffset()
       // For a Top-Left anchor at 5 mm @ 1:1000, the SVG render is displaced
       // by ~2.5 m in X and ~2.5 m in Y from origin (in absolute value).
       double maxAbsX = 0, maxAbsY = 0;
-      const int n = std::min( v.xs.size(), v.ys.size() );
-      for ( int i = 0; i < n; ++i )
+      const qsizetype n = std::min( v.xs.size(), v.ys.size() );
+      for ( qsizetype i = 0; i < n; ++i )
       {
         if ( qgsDoubleNear( v.xs[i], 0.0 ) && qgsDoubleNear( v.ys[i], 0.0 ) )
           continue;
