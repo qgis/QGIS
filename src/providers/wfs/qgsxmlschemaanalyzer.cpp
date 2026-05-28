@@ -666,7 +666,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
       for ( int j = 0; j < nFieldCount; j++ )
       {
         OGRFieldDefnH hFieldDefn = OGR_FD_GetFieldDefn( hDefn, j );
-        QString fkNamePartToCurrentLayer = u"_%1_pkid"_s.arg( layerName.toLower() );
+        const QString fkNamePartToCurrentLayer = u"_%1_pkid"_s.arg( layerName.toLower() );
         if ( QString::fromUtf8( OGR_Fld_GetNameRef( hFieldDefn ) ).endsWith( fkNamePartToCurrentLayer ) )
         {
           geometryAttribute = OGR_L_GetGeometryColumn( hLayer );
