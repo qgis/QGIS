@@ -708,7 +708,7 @@ void QgsDxfExport::writeBlocks()
     writeSymbolLayerBlock( block, ml, ctx );
 
     mPointSymbolBlocks.insert( ml, block );
-    mPointSymbolBlockSizes.insert( ml, ml->dxfSize( *this, ctx ) );
+    mPointSymbolBlockSizes.insert( ml, ml->dxfSize( ctx ) );
     mPointSymbolBlockAngles.insert( ml, ml->dxfAngle( ctx ) );
   }
   endSection();
@@ -1109,7 +1109,7 @@ void QgsDxfExport::writePointBlockReference(
   const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize
 )
 {
-  const double scale = symbolLayer->dxfSize( *this, ctx ) / blockSize;
+  const double scale = symbolLayer->dxfSize( ctx ) / blockSize;
 
   // insert block reference
   writeGroup( 0, u"INSERT"_s );
@@ -1772,8 +1772,8 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   double angle = 0.0;
   if ( mSymbologyExport != Qgis::FeatureSymbologyExport::NoSymbology && symbolLayer )
   {
-    width = symbolLayer->dxfWidth( *this, ctx );
-    offset = symbolLayer->dxfOffset( *this, ctx );
+    width = symbolLayer->dxfWidth( ctx );
+    offset = symbolLayer->dxfOffset( ctx );
     angle = symbolLayer->dxfAngle( ctx );
     penStyle = symbolLayer->dxfPenStyle();
     brushStyle = symbolLayer->dxfBrushStyle();
@@ -2722,7 +2722,7 @@ void QgsDxfExport::createDDBlockInfo()
           DataDefinedBlockInfo blockInfo;
           blockInfo.blockName = u"symbolLayer%1class%2"_s.arg( symbolLayerNr ).arg( symbolHash );
           blockInfo.angle = sl->dxfAngle( sctx );
-          blockInfo.size = sl->dxfSize( *this, sctx );
+          blockInfo.size = sl->dxfSize( sctx );
           blockInfo.feature = fet;
 
           blockSymbolMap.insert( symbolHash, qMakePair( 1, blockInfo ) );

@@ -177,7 +177,7 @@ Returns the map unit scale for the fill's offset.
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
 
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 
@@ -916,7 +916,7 @@ top left corner of the image fill is positioned relative to the feature.
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 
     virtual Qt::PenStyle dxfPenStyle() const;
 
