@@ -65,11 +65,12 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
     QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
     /**
-     * Returns the information about the available fields as a json object, to be used in the schema operation.
+     * Adds the information about the available fields as a json object, to be used in the schema operation.
+     * \param data the json object to be filled with the fields information
      * \param layer the vector layer
      * \param context the server api context
      */
-    json layerFieldsInfo( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+    void gatherLayerFieldsInfo( json &data, const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
     /**
      * Returns the HTML template path for the handler in the given \a context
@@ -175,11 +176,11 @@ class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
     std::string summary() const override { return "Information about standards that this API conforms to."; }
     std::string description() const override
     {
-      return "List all requirements classes specified in a standard (e.g., WFS 3.0 "
+      return "List all requirements classes specified in a standard (e.g., OGCAPI 1.0 "
              "Part 1: Core) that the server conforms to.";
     }
     QStringList tags() const override { return { u"Capabilities"_s }; }
-    std::string linkTitle() const override { return "WFS 3.0 conformance classes"; }
+    std::string linkTitle() const override { return "Conformance classes"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::conformance; }
     json schema( const QgsServerApiContext &context ) const override;
     const QString templatePath( const QgsServerApiContext &context ) const override;
