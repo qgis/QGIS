@@ -79,6 +79,9 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   configurationFlagsWi->setToolTip( tr( "Configures the field" ) );
   mFieldsList->setHorizontalHeaderItem( AttrConfigurationFlagsCol, configurationFlagsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
+  const auto fieldDomainWi = new QTableWidgetItem( tr( "Field Domain" ) );
+  fieldDomainWi->setToolTip( tr( "Field domain associated with the field" ) );
+  mFieldsList->setHorizontalHeaderItem( AttrFieldDomainCol, fieldDomainWi );
 
   mFieldsList->setSortingEnabled( true );
   mFieldsList->sortByColumn( 0, Qt::AscendingOrder );
@@ -107,6 +110,7 @@ void QgsSourceFieldsProperties::loadRows()
   for ( int i = 0; i < fields.count(); ++i )
     attributeAdded( i );
 
+  mFieldsList->setColumnHidden( AttrFieldDomainCol, !providerSupportsFieldDomains() );
   mFieldsList->resizeColumnsToContents();
   connect( mFieldsList, &QTableWidget::cellChanged, this, &QgsSourceFieldsProperties::attributesListCellChanged );
 
@@ -192,6 +196,8 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
 
   if ( sorted )
     mFieldsList->setSortingEnabled( true );
+
+  mFieldsList->setColumnHidden( AttrFieldDomainCol, !providerSupportsFieldDomains() );
 }
 
 
@@ -243,7 +249,9 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     mFieldsList->setItem( row, AttrCommentCol, new QTableWidgetItem( field.comment() ) );
   }
 
-  QList<int> notEditableCols = QList<int>() << AttrIdCol << AttrNameCol << AttrAliasCol << AttrTypeCol << AttrTypeNameCol << AttrLengthCol << AttrPrecCol << AttrCommentCol;
+  mFieldsList->setItem( row, AttrFieldDomainCol, new QTableWidgetItem( field.constraints().domainName() ) );
+
+  QList<int> notEditableCols = QList<int>() << AttrIdCol << AttrNameCol << AttrAliasCol << AttrTypeCol << AttrTypeNameCol << AttrLengthCol << AttrPrecCol << AttrCommentCol << AttrFieldDomainCol;
 
   const auto constNotEditableCols = notEditableCols;
   for ( const int i : constNotEditableCols )
