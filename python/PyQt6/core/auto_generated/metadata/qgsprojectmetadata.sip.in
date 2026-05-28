@@ -43,6 +43,9 @@ against the native QGIS metadata schema can be performed using
 #include "qgsprojectmetadata.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     QgsProjectMetadata();
 
     virtual QgsProjectMetadata *clone() const /Factory/;
