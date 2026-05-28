@@ -539,10 +539,11 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 
     /**
-     * Deletes vertices within the geometry
-     * If a vertex cannot be deleted, the method returns FALSE and the geometry may be left in a partially modified and invalid state
+     * Deletes vertices within the geometry.
+     * If \a positions contains vertices not belonging to the geometry, FALSE is returned and the geometry is not modified.
+     * If a vertex cannot be deleted, the method returns FALSE and the geometry may be left in a partially modified and invalid state.
      * \param positions set of vertex ids to delete
-     * \returns TRUE if all requested vertices were deleted, FALSE if a single vertex could not be deleted
+     * \returns TRUE if all requested vertices were deleted, FALSE if at least one vertex could not be deleted
      * \see deleteVertex
      * \since QGIS 4.2
      */
