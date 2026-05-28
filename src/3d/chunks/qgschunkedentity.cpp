@@ -643,7 +643,7 @@ void QgsChunkedEntity::onActiveJobFinished()
 
     addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Load"_s );
 
-    QgsEventTracing::ScopedEvent e( "3D", QString( "create" ) );
+    QgsScopedEvent e( "3D", QString( "create" ) );
     // mark as loaded + create entity
     Qt3DCore::QEntity *entity = node->loader()->createEntity( this );
 
