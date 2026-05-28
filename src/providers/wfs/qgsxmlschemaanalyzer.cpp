@@ -19,7 +19,6 @@
 #include "qgsxmlschemaanalyzer.h"
 
 #include <cpl_string.h>
-#include <gdal.h>
 #include <ogr_api.h>
 
 #include "qgsbackgroundcachedshareddata.h"
@@ -651,38 +650,14 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   if ( geometryAttribute.isEmpty() )
   {
     // When we have not found any geometry field in this layer, we check for geometries in referencing layers.
-    // We go one level deep by checking all layers in the dataset for foreign keys to the current layer.
-    // We pick the first geometry found. Even if multiple related features contain geometries and even if they contain multiple geometries.
-    int nLayerCount = GDALDatasetGetLayerCount( hDS );
-    for ( int i = 0; i < nLayerCount; i++ )
-    {
-      OGRLayerH hLayer = GDALDatasetGetLayer( hDS, i );
-      if ( !hLayer )
-        continue;
+    QList<QPair<QString, Qgis::WkbType>> geomInfoList = geometryInfoFromReferencingLayers( hDS, layerName );
 
-      bool foundGeometry = false;
-      OGRFeatureDefnH hDefn = OGR_L_GetLayerDefn( hLayer );
-      int nFieldCount = OGR_FD_GetFieldCount( hDefn );
-      for ( int j = 0; j < nFieldCount; j++ )
-      {
-        OGRFieldDefnH hFieldDefn = OGR_FD_GetFieldDefn( hDefn, j );
-        const QString fkNamePartToCurrentLayer = u"_%1_pkid"_s.arg( layerName.toLower() );
-        if ( QString::fromUtf8( OGR_Fld_GetNameRef( hFieldDefn ) ).endsWith( fkNamePartToCurrentLayer ) )
-        {
-          geometryAttribute = OGR_L_GetGeometryColumn( hLayer );
-          // Check if we found a geometry and it's not an abstract geometry
-          if ( !geometryAttribute.isEmpty() && geometryAttribute != "abstractgeometry"_L1 )
-          {
-            geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) );
-            if ( geomType != Qgis::WkbType::Point )
-              geomType = QgsWkbTypes::multiType( geomType );
-            foundGeometry = true;
-            break;
-          }
-        }
-      }
-      if ( foundGeometry )
-        break;
+    if ( !geomInfoList.isEmpty() )
+    {
+      // We pick the first geometry found, even if multiple related features contain geometries and even if they contain multiple geometries.
+      // This supports MappedFeatures of GeoSciML now and could be extended in the future.
+      geometryAttribute = geomInfoList.first().first;
+      geomType = geomInfoList.first().second;
     }
   }
   return true;
@@ -960,4 +935,40 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
   }
 
   return true;
+}
+
+QList<QPair<QString, Qgis::WkbType>> QgsXmlSchemaAnalyzer::geometryInfoFromReferencingLayers( GDALDatasetH dataset, const QString &layerName )
+{
+  // We go one level deep by checking all layers in the dataset for foreign keys to the current layer.
+  QList<QPair<QString, Qgis::WkbType>> geometryInfoFromReferencingLayers;
+  const QString fkNamePartToCurrentLayer = u"_%1_pkid"_s.arg( layerName.toLower() );
+  int nLayerCount = GDALDatasetGetLayerCount( dataset );
+  for ( int i = 0; i < nLayerCount; i++ )
+  {
+    OGRLayerH hLayer = GDALDatasetGetLayer( dataset, i );
+    if ( !hLayer )
+      continue;
+
+    OGRFeatureDefnH hDefn = OGR_L_GetLayerDefn( hLayer );
+    int nFieldCount = OGR_FD_GetFieldCount( hDefn );
+    for ( int j = 0; j < nFieldCount; j++ )
+    {
+      OGRFieldDefnH hFieldDefn = OGR_FD_GetFieldDefn( hDefn, j );
+      if ( QString::fromUtf8( OGR_Fld_GetNameRef( hFieldDefn ) ).endsWith( fkNamePartToCurrentLayer ) )
+      {
+        QString geometryAttribute = OGR_L_GetGeometryColumn( hLayer );
+        // Check if we found a geometry and it's not an abstract geometry
+        if ( !geometryAttribute.isEmpty() && geometryAttribute != "abstractgeometry"_L1 )
+        {
+          Qgis::WkbType geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) );
+          if ( geomType != Qgis::WkbType::Point )
+            geomType = QgsWkbTypes::multiType( geomType );
+
+          geometryInfoFromReferencingLayers.append( { geometryAttribute, geomType } );
+        }
+        break;
+      }
+    }
+  }
+  return geometryInfoFromReferencingLayers;
 }
