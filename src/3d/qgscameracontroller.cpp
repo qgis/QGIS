@@ -71,6 +71,11 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
     setCameraNavigationMode( mScene->mapSettings()->cameraNavigationMode() );
     mGlobeCrsToLatLon = QgsCoordinateTransform( mScene->mapSettings()->crs(), mScene->mapSettings()->crs().toGeographicCrs(), mScene->mapSettings()->transformContext() );
   }
+
+  mDepthBufferRefreshTimer = new QTimer( this );
+  mDepthBufferRefreshTimer->setSingleShot( true );
+  mDepthBufferRefreshTimer->setInterval( 250 );
+  connect( mDepthBufferRefreshTimer, &QTimer::timeout, this, [this]() { emit requestDepthBufferCapture(); } );
 }
 
 QgsCameraController::~QgsCameraController() = default;
@@ -221,6 +226,7 @@ void QgsCameraController::frameTriggered( float dt )
   {
     emit cameraChanged();
     mCameraChanged = false;
+    mDepthBufferRefreshTimer->start();
   }
 }
 

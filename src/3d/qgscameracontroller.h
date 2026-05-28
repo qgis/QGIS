@@ -335,6 +335,16 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void moveCenterPoint( const QVector3D &posDiff );
 
+    /**
+     * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
+     * Returned depth is in range [0..1] and it is returned as it was written to the
+     * depth buffer (not linearized, see Qgs3DUtils::screenPointToWorldPos() for conversion
+     * to linear depth). Returned value 1 means there void around that pixel (no 3D objects).
+     * \since QGIS 4.2
+     */
+    double sampleDepthBuffer( int px, int py );
+
+
   private:
 #ifdef SIP_RUN
     QgsCameraController();
@@ -433,14 +443,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     void handleTerrainNavigationWheelZoom();
 
-    /**
-     * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
-     * Returned depth is in range [0..1] and it is returned as it was written to the
-     * depth buffer (not linearized, see Qgs3DUtils::screenPointToWorldPos() for conversion
-     * to linear depth). Returned value 1 means there void around that pixel (no 3D objects).
-     */
-    double sampleDepthBuffer( int px, int py );
-
     // Returns the average depth of all non void pixels
     double depthBufferNonVoidAverage();
 
@@ -516,6 +518,8 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     //! Did camera change since last frame? Need to know if we should emit cameraChanged().
     bool mCameraChanged = false;
+
+    QTimer *mDepthBufferRefreshTimer = nullptr;
 
     // To test the cameracontroller
     friend class TestQgs3DRendering;
