@@ -9099,7 +9099,7 @@ Can't recognize service requested.
             "WFS",
         )
         self.assertTrue(vl.isValid())
-        assert vl.isSpatial()
+        self.assertTrue(vl.isSpatial())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Polygon)
 
 
