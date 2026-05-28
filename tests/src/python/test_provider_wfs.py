@@ -9087,7 +9087,7 @@ Can't recognize service requested.
             "WFS",
         )
         self.assertTrue(vl.isValid())
-        assert not vl.isSpatial()
+        self.assertFalse(vl.isSpatial())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Null)
 
         # Test with complexFeatures featureMode
