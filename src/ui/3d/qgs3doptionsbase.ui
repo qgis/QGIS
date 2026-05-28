@@ -69,6 +69,39 @@
            <string>Default Camera Settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
+           <item row="3" column="1" colspan="2">
+            <widget class="QComboBox" name="mCameraNavigationModeCombo"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="labelMovementSpeed">
+             <property name="text">
+              <string>Movement speed</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" colspan="2">
+            <widget class="QgsDoubleSpinBox" name="mCameraMovementSpeed">
+             <property name="minimum">
+              <double>0.010000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>5.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="labelInvertVerticalAxis">
+             <property name="text">
+              <string>Invert vertical axis</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::TextFormat::RichText</enum>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="1" colspan="2">
             <widget class="QComboBox" name="cboCameraProjectionType"/>
            </item>
@@ -103,59 +136,8 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="1" colspan="2">
-            <widget class="QComboBox" name="mCameraNavigationModeCombo"/>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="labelMovementSpeed">
-             <property name="text">
-              <string>Movement speed</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1" colspan="2">
-            <widget class="QgsDoubleSpinBox" name="mCameraMovementSpeed">
-             <property name="minimum">
-              <double>0.010000000000000</double>
-             </property>
-             <property name="singleStep">
-              <double>1.000000000000000</double>
-             </property>
-             <property name="value">
-              <double>5.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QLabel" name="labelInvertVerticalAxis">
-             <property name="text">
-              <string>Invert vertical axis (walk mode)</string>
-             </property>
-            </widget>
-           </item>
            <item row="5" column="1" colspan="2">
-            <widget class="QComboBox" name="mInvertVerticalAxisCombo"/>
-           </item>
-           <item row="6" column="0">
-            <widget class="QLabel" name="labelInvertVerticalAxisTerrain">
-             <property name="text">
-              <string>Invert vertical axis (terrain based)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="1" colspan="2">
-            <widget class="QComboBox" name="mInvertVerticalAxisTerrainCombo">
-             <item>
-              <property name="text">
-               <string>No</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Yes</string>
-              </property>
-             </item>
-            </widget>
+            <widget class="QgsCheckableComboBox" name="mVerticalAxisInversionComboBox"/>
            </item>
           </layout>
          </widget>
@@ -268,6 +250,11 @@
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsCheckableComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscheckablecombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
@@ -275,8 +262,6 @@
   <tabstop>spinCameraFieldOfView</tabstop>
   <tabstop>mCameraNavigationModeCombo</tabstop>
   <tabstop>mCameraMovementSpeed</tabstop>
-  <tabstop>mInvertVerticalAxisCombo</tabstop>
-  <tabstop>mInvertVerticalAxisTerrainCombo</tabstop>
   <tabstop>mGpuMemoryLimit</tabstop>
   <tabstop>mTextureFilterQualityCombo</tabstop>
   <tabstop>mShadowQualityCombo</tabstop>
