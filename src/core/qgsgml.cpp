@@ -1030,8 +1030,15 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
             g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
           }
           Q_ASSERT( mCurrentFeature );
+          // Always convert to multi-type
+          g.convertToMultiType();
+          // And append if a geometry already exists
+          QgsGeometry currentGeometry = mCurrentFeature->geometry();
+          if ( !currentGeometry.isNull() )
+          {
+            g = g.combine( currentGeometry );
+          }
           mCurrentFeature->setGeometry( g );
-          mCurrentWKB = g.asWkb();
         }
       }
 

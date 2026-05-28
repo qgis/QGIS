@@ -961,9 +961,8 @@ QList<QPair<QString, Qgis::WkbType>> QgsXmlSchemaAnalyzer::geometryInfoFromRefer
         if ( !geometryAttribute.isEmpty() && geometryAttribute != "abstractgeometry"_L1 )
         {
           Qgis::WkbType geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) );
-          if ( geomType != Qgis::WkbType::Point )
-            geomType = QgsWkbTypes::multiType( geomType );
-
+          // Always create a multitype because multiple referencing features might be possible
+          geomType = QgsWkbTypes::multiType( geomType );
           geometryInfoFromReferencingLayers.append( { geometryAttribute, geomType } );
         }
         break;
