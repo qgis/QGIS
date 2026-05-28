@@ -1344,7 +1344,7 @@ QgsRectangle Qgs3DMapScene::sceneExtent() const
   return mMap.extent();
 }
 
-QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain, const bool ignoreInactiveLayers ) const
+QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain ) const
 {
   double zMin = std::numeric_limits<double>::max();
   double zMax = std::numeric_limits<double>::lowest();
@@ -1357,9 +1357,6 @@ QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain, const bo
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
   {
-    if ( ignoreInactiveLayers && !it.value()->isEnabled() )
-      continue;
-
     QgsMapLayer *layer = it.key();
     switch ( layer->type() )
     {
