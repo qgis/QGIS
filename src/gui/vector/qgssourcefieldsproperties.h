@@ -94,6 +94,7 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
 
   private:
     void updateFieldRenamingStatus();
+    bool providerSupportsFieldDomains() const;
 
   signals:
     void toggleEditing();

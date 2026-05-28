@@ -16,6 +16,7 @@
 
 #include "qgssourcefieldsproperties.h"
 
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsaddattrdialog.h"
 #include "qgsapplication.h"
 #include "qgscheckablecombobox.h"
@@ -23,6 +24,8 @@
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
 
 #include <QString>
@@ -416,6 +419,23 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 void QgsSourceFieldsProperties::attributesListCellPressed( int /*row*/, int /*column*/ )
 {
   updateButtons();
+}
+
+bool QgsSourceFieldsProperties::providerSupportsFieldDomains() const
+{
+  if ( !mLayer )
+    return false;
+
+  QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( mLayer->providerType() );
+  if ( !md )
+    return false;
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( dynamic_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mLayer->source(), {} ) ) );
+
+  if ( !conn )
+    return false;
+
+  return conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains );
 }
 
 //NICE FUNCTIONS
