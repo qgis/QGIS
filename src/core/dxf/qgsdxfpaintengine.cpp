@@ -420,7 +420,7 @@ QColor QgsDxfPaintEngine::brushColor() const
 
   if ( !qgsDoubleNear( mOpacity, 1.0 ) )
   {
-    c.setAlphaF( c.alphaF() * mOpacity );
+    c.setAlphaF( static_cast<float>( c.alphaF() * mOpacity ) );
   }
   return c;
 }

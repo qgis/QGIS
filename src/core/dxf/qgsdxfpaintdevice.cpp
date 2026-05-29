@@ -58,7 +58,7 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
     case QPaintDevice::PdmDevicePixelRatio:
       return 1;
     case QPaintDevice::PdmDevicePixelRatioScaled:
-      return 1 * QPaintDevice::devicePixelRatioFScale();
+      return static_cast<int>( 1 * QPaintDevice::devicePixelRatioFScale() );
 #if ( QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 ) )
     case PdmDevicePixelRatioF_EncodedA:
       return QPaintDevice::encodeMetricF( PdmDevicePixelRatioF_EncodedA, 1.0 );
