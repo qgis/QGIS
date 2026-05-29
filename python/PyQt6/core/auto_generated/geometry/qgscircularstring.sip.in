@@ -11,7 +11,7 @@
 
 
 
-class QgsCircularString : QgsCurve
+class QgsCircularString : QgsSimpleCurve
 {
 %Docstring(signature="appended")
 Circular string geometry type.
@@ -112,14 +112,7 @@ winding the other way around the circle).
 
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
-    virtual int numPoints() const /HoldGIL/;
-
     int indexOf( const QgsPoint &point ) const final;
-
-    QgsPoint pointN( int i ) const /HoldGIL/;
-%Docstring
-Returns the point at index i within the circular string.
-%End
 
     virtual void points( QgsPointSequence &pts /Out/ ) const;
 

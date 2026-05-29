@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgssimplecurve.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsSimpleCurve : QgsCurve /Abstract/
+{
+%Docstring(signature="appended")
+Abstract base class for simple curved geometry type.
+
+This class is not part of the SQL/MM standard and only exists for
+implementation convenience.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgssimplecurve.h"
+%End
+  public:
+    QgsSimpleCurve();
+
+
+  SIP_PYOBJECT pointN( int i ) const /TypeHint="QgsPoint"/;
+%Docstring
+Returns the point at the specified index.
+
+- Indexes can be less than 0, in which case they correspond to positions
+  from the end of the simple curve. E.g. an index of -1
+
+corresponds to the last point in the simple curve.
+
+:raises IndexError: if no point with the specified index exists.
+%End
+%MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    std::unique_ptr< QgsPoint > p;
+    if ( a0 >= 0 )
+      p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+    else // negative index, count backwards from end
+      p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+    sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
+  }
+%End
+
+
+
+
+
+
+
+
+
+    virtual int numPoints() const /HoldGIL/;
+
+  virtual int nCoordinates() const /HoldGIL/;
+
+
+protected:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgssimplecurve.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscurve.h"
+#include "qgssimplecurve.h"
 
 #include <QString>
 #include <QVector>
@@ -32,7 +33,7 @@ using namespace Qt::StringLiterals;
  * \class QgsCircularString
  * \brief Circular string geometry type.
  */
-class CORE_EXPORT QgsCircularString : public QgsCurve
+class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
 {
   public:
     // clang-format off
@@ -231,13 +232,7 @@ class CORE_EXPORT QgsCircularString : public QgsCurve
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     bool isEmpty() const override SIP_HOLDGIL;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
-    int numPoints() const override SIP_HOLDGIL;
     int indexOf( const QgsPoint &point ) const final;
-
-    /**
-     * Returns the point at index i within the circular string.
-     */
-    QgsPoint pointN( int i ) const SIP_HOLDGIL;
 
     void points( QgsPointSequence &pts SIP_OUT ) const override;
 
@@ -356,11 +351,6 @@ class CORE_EXPORT QgsCircularString : public QgsCurve
     QgsBox3D calculateBoundingBox3D() const override;
 
   private:
-    QVector<double> mX;
-    QVector<double> mY;
-    QVector<double> mZ;
-    QVector<double> mM;
-
 #if 0
     static void arcTo( QPainterPath &path, QPointF pt1, QPointF pt2, QPointF pt3 );
 #endif
