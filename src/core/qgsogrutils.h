@@ -312,7 +312,7 @@ class CORE_EXPORT QgsOgrUtils
      *
      * \since QGIS 3.2
      */
-    static QStringList cStringListToQStringList( char **stringList );
+    static QStringList cStringListToQStringList( const char *const *stringList );
 
     /**
      * Converts a OGRwkbGeometryType to QgsWkbTypes::Type

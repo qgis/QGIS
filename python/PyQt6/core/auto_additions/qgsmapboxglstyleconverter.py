@@ -7,6 +7,7 @@ QgsMapBoxGlStyleConverter.PropertyType.Numeric.__doc__ = "Numeric property (e.g.
 QgsMapBoxGlStyleConverter.PropertyType.Opacity.__doc__ = "Opacity property"
 QgsMapBoxGlStyleConverter.PropertyType.Point.__doc__ = "Point/offset property"
 QgsMapBoxGlStyleConverter.PropertyType.NumericArray.__doc__ = "Numeric array for dash arrays or such"
+QgsMapBoxGlStyleConverter.PropertyType.DashArray.__doc__ = "Dash array. Like numeric array, but must be even length array. Odd length arrays are considered as having an additional 0 value. \n.. versionadded:: 4.2"
 QgsMapBoxGlStyleConverter.PropertyType.__doc__ = """Property types, for interpolated value conversion
 
 .. warning::
@@ -18,6 +19,10 @@ QgsMapBoxGlStyleConverter.PropertyType.__doc__ = """Property types, for interpol
 * ``Opacity``: Opacity property
 * ``Point``: Point/offset property
 * ``NumericArray``: Numeric array for dash arrays or such
+* ``DashArray``: Dash array. Like numeric array, but must be even length array. Odd length arrays are considered as having an additional 0 value.
+
+  .. versionadded:: 4.2
+
 
 """
 # --

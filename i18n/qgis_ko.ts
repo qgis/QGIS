@@ -3240,7 +3240,7 @@ columns</source>
     </message>
     <message>
         <source>{0} rows, {1:.3f} seconds</source>
-        <translation>{0} 개 행, {1:.1f} 초 {0}?} {1:.3f?}</translation>
+        <translation>{0} 개 행, {1:.3f} 초</translation>
     </message>
     <message>
         <source>There was an error creating the SQL layer, please check the logs for further information.</source>
@@ -43841,17 +43841,17 @@ If the time step is kept to its default value (0 hours), the time step used is t
         <translation>%1 경로에서 OpenCL 프로그램을 불러올 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsopenclutils.cpp" line="739"/>
+        <location filename="../src/core/qgsopenclutils.cpp" line="738"/>
         <source>Build logs not available!</source>
         <translation>빌드 로그를 사용할 수 없습니다!</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsopenclutils.cpp" line="740"/>
+        <location filename="../src/core/qgsopenclutils.cpp" line="739"/>
         <source>Error building OpenCL program: %1</source>
         <translation>OpenCL 프로그램 구성 도중 오류 발생: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsopenclutils.cpp" line="748"/>
+        <location filename="../src/core/qgsopenclutils.cpp" line="747"/>
         <source>Error %1 building OpenCL program in %2</source>
         <translation>%2에서 OpenCL 프로그램 구성 중 %1 오류 발생</translation>
     </message>
@@ -44072,14 +44072,19 @@ If desired, tables can also be output containing lists of the categories which c
         <translation>%1에 필요한 메모리를 할당할 수 없습니다</translation>
     </message>
     <message>
+        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="555"/>
+        <source>Error compiling OpenCL kernel: %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="179"/>
-        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="570"/>
+        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="579"/>
         <source>Could not obtain driver for %1</source>
         <translation>%1 드라이버를 가져올 수 없습니다</translation>
     </message>
     <message>
         <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="186"/>
-        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="577"/>
+        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="586"/>
         <source>Could not create output %1</source>
         <translation>%1 산출물을 생성할 수 없습니다</translation>
     </message>
@@ -50948,7 +50953,7 @@ The created point layer will be in the same spatial reference system as the sele
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="493"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="872"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="871"/>
         <source>%1: Style has no paint property, skipping</source>
         <translation>%1: 스타일에 그리기 속성(paint property)이 없습니다, 건너뜁니다</translation>
     </message>
@@ -50978,271 +50983,271 @@ The created point layer will be in the same spatial reference system as the sele
         <translation>%1: 지원하지 않는 라인 투명도(line-opacity) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="776"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="775"/>
         <source>%1: Skipping unsupported line-dasharray type (%2)</source>
         <translation>%1: 지원하지 않는 라인 대시 배열(line-dasharray) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="900"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="899"/>
         <source>%1: Skipping unsupported circle-color type (%2)</source>
         <translation>%1: 지원하지 않는 원 색상(circle-color) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="934"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="933"/>
         <source>%1: Skipping unsupported circle-radius type (%2)</source>
         <translation>%1: 지원하지 않는 원 반경(circle-radius) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="961"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="960"/>
         <source>%1: Skipping unsupported circle-opacity type (%2)</source>
         <translation>%1: 지원하지 않는 원 투명도(circle-opacity) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="991"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="990"/>
         <source>%1: Skipping unsupported circle-stroke-color type (%2)</source>
         <translation>%1: 지원하지 않는 원 획 색상(circle-stroke-color) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1020"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1019"/>
         <source>%1: Skipping unsupported circle-stroke-width type (%2)</source>
         <translation>%1: 지원하지 않는 원 획 너비(circle-stroke-width) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1047"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1046"/>
         <source>%1: Skipping unsupported circle-stroke-opacity type (%2)</source>
         <translation>%1: 지원하지 않는 원 획 투명도(circle-stroke-opacity) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1075"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1074"/>
         <source>%1: Skipping unsupported circle-translate type (%2)</source>
         <translation>%1: 지원하지 않는 원 변환(circle-translate) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1125"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2122"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1124"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2121"/>
         <source>%1: Style layer has no layout property, skipping</source>
         <translation>%1: 스타일에 조판 속성이 없습니다, 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1165"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1164"/>
         <source>%1: Skipping unsupported text-size type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 크기(text-size) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1200"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1199"/>
         <source>%1: Skipping unsupported text-max-width type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 최대 너비(text-max-width) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1232"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1231"/>
         <source>%1: Skipping unsupported text-letter-spacing type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 자간(text-letter-spacing) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1305"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1304"/>
         <source>%1: Skipping unsupported text-font type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 글꼴(text-font) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1335"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1344"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2763"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2772"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2814"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2822"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1334"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1343"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2762"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2771"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2813"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2821"/>
         <source>%1: Expressions in interpolation function are not supported, skipping.</source>
         <translation>%1: 보간 함수에 있는 표현식을 지원하지 않기 때문에, 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1362"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1376"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1428"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1361"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1375"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1427"/>
         <source>%1: Referenced font %2 is not available on system</source>
         <translation>%1: 시스템에서 참조된 %2 글꼴을 사용할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1452"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1451"/>
         <source>%1: Skipping unsupported text-color type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 색상(text-color) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1483"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1482"/>
         <source>%1: Skipping unsupported text-halo-color type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 후광 색상(text-halo-color) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1517"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1516"/>
         <source>%1: Skipping unsupported text-halo-width type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 후광 너비(text-halo-width) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1568"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1567"/>
         <source>%1: Skipping unsupported text-halo-blur type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 후광 흐리기(text-halo-blur) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1694"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1693"/>
         <source>%1: Skipping unsupported text-field dictionary</source>
         <translation>%1: 지원하지 않는 텍스트 필드 목록(text-field dictionary)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1700"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1699"/>
         <source>%1: Skipping unsupported text-field type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 필드(text-field) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1734"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1733"/>
         <source>%1: Skipping unsupported text-rotate map content (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1739"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1738"/>
         <source>%1: Skipping unsupported text-rotate type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1809"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1959"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1808"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1958"/>
         <source>%1: Skipping unsupported text-offset type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 오프셋(text-offset) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1863"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1862"/>
         <source>%1: Skipping unsupported text-justify type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 양 끝 정렬(text-justify) 유형을 건너뜁니다 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1916"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1915"/>
         <source>%1: Skipping unsupported text-anchor type (%2)</source>
         <translation>%1: 지원하지 않는 텍스트 앵커(text-anchor) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2089"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2153"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2088"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2152"/>
         <source>%1: Skipping unsupported symbol-spacing type (%2)</source>
         <translation>%1: 지원하지 않는 심볼 간격(symbol-spacing) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2200"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2384"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2199"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2383"/>
         <source>%1: Skipping unsupported icon-rotate type (%2)</source>
         <translation>%1: 지원하지 않는 아이콘 기울기(icon-rotate) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2009"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2260"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2343"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2008"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2259"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2342"/>
         <source>%1: Skipping non-implemented icon-size type (%2)</source>
         <translation>%1: 구현되지 않은 아이콘 크기(icon-size) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2411"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2410"/>
         <source>%1: Skipping unsupported icon-opacity type (%2)</source>
         <translation>%1: 지원하지 않는 아이콘 투명도(icon-opacity) 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2687"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2696"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2686"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2695"/>
         <source>%1: Skipping unsupported offset interpolation type (%2).</source>
         <translation>%1: 지원하지 않는 오프셋 보간 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2849"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2857"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2877"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2848"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2856"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2876"/>
         <source>%1: Lists in label interpolation function are not supported, skipping.</source>
         <translation>%1: 라벨 보간 함수에 있는 표현식을 지원하지 않기 때문에, 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2928"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3794"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2927"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3882"/>
         <source>%1: Could not interpret match list</source>
         <translation>%1: 매칭 목록을 해석할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3090"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3578"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3869"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3134"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3662"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3957"/>
         <source>%1: Could not interpret step list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3174"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3241"/>
         <source>%1: Could not interpret value list</source>
         <translation>%1: 값 목록을 해석할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3186"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3253"/>
         <source>%1: Cubic-bezier interpolation is not supported, linear used instead.</source>
         <translation>%1: 3차 베지에(cubic-bezier) 보간을 지원하지 않습니다, 대신 선형 보간을 사용합니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3191"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3258"/>
         <source>%1: Skipping not implemented interpolation method %2</source>
         <translation>%1: 구현되지 않은 %2 보간법을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3197"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3264"/>
         <source>%1: Skipping not implemented interpolation input %2</source>
         <translation>%1: 구현되지 않은 %2 보간 입력물을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3226"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3294"/>
         <source>%1: Skipping unsupported numeric array in interpolate</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3246"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3314"/>
         <source>%1: Could not parse non-string color %2, skipping</source>
         <translation>%1: 문자열이 아닌 %2 색상을 파싱할 수 없습니다, 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3343"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3411"/>
         <source>%1: Operator %2 requires exactly two operands, skipping extra operands</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3378"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3444"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3498"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3450"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3516"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3570"/>
         <source>%1: Skipping unsupported expression</source>
         <translation>%1: 지원하지 않는 표현식을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3601"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3689"/>
         <source>%1: Skipping unsupported expression &quot;%2&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3633"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3640"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3650"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3721"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3728"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3738"/>
         <source>%1: Could not retrieve sprite &apos;%2&apos;</source>
         <translation>%1: &apos;%2&apos; 스프라이트를 검색할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3918"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4006"/>
         <source>%1: Could not interpret sprite value list with method %2</source>
         <translation>%1: %2 메소드로 스프라이트 값 목록을 해석할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3832"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3924"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3920"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4012"/>
         <source>%1: Skipping unsupported sprite type (%2).</source>
         <translation>%1: 지원하지 않는 스프라이트 유형(%2)을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3962"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4050"/>
         <source>%1: Skipping unsupported expression part</source>
         <translation>%1: 지원하지 않는 표현식 부분을 건너뜁니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4114"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4202"/>
         <source>Invalid source type &quot;%1&quot; for source &quot;%2&quot;</source>
         <translation>&quot;%2&quot; 소스에 대한 &quot;%1&quot; 소스 유형이 무결하지 않습니다</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4275"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4363"/>
         <source>%1 scheme is not supported for raster source %2</source>
         <translation>%2 래스터 소스에 대해 %1 스키마를 지원하지 않습니다</translation>
     </message>
@@ -58905,12 +58910,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3276"/>
-        <location filename="../src/app/qgisapp.cpp" line="10698"/>
-        <location filename="../src/app/qgisapp.cpp" line="10841"/>
-        <location filename="../src/app/qgisapp.cpp" line="10927"/>
-        <location filename="../src/app/qgisapp.cpp" line="11090"/>
-        <location filename="../src/app/qgisapp.cpp" line="11117"/>
-        <location filename="../src/app/qgisapp.cpp" line="11140"/>
+        <location filename="../src/app/qgisapp.cpp" line="10703"/>
+        <location filename="../src/app/qgisapp.cpp" line="10846"/>
+        <location filename="../src/app/qgisapp.cpp" line="10932"/>
+        <location filename="../src/app/qgisapp.cpp" line="11095"/>
+        <location filename="../src/app/qgisapp.cpp" line="11122"/>
+        <location filename="../src/app/qgisapp.cpp" line="11145"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
@@ -58955,13 +58960,13 @@ Please contact the developers.
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3386"/>
-        <location filename="../src/app/qgisapp.cpp" line="16958"/>
+        <location filename="../src/app/qgisapp.cpp" line="16963"/>
         <source>Panels</source>
         <translation>패널</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3388"/>
-        <location filename="../src/app/qgisapp.cpp" line="16978"/>
+        <location filename="../src/app/qgisapp.cpp" line="16983"/>
         <source>Toolbars</source>
         <translation>툴바</translation>
     </message>
@@ -59114,220 +59119,220 @@ Please contact the developers.
         <translation>이 QGIS 버전은 디버그 작업 산출물을 작성합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7923"/>
+        <location filename="../src/app/qgisapp.cpp" line="7928"/>
         <source>Diagram Properties</source>
         <translation>다이어그램 속성</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7934"/>
+        <location filename="../src/app/qgisapp.cpp" line="7939"/>
         <source>Annotations</source>
         <translation>주석</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7938"/>
+        <location filename="../src/app/qgisapp.cpp" line="7943"/>
         <source>Annotations (%1)</source>
         <translation>주석 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8571"/>
+        <location filename="../src/app/qgisapp.cpp" line="8576"/>
         <source>Export failed</source>
         <translation>내보내기 실패</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8571"/>
+        <location filename="../src/app/qgisapp.cpp" line="8576"/>
         <source>A problem occurred while exporting: %1</source>
         <translation>내보내기 도중 문제가 발생했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8573"/>
+        <location filename="../src/app/qgisapp.cpp" line="8578"/>
         <source>Cannot open file</source>
         <translation>파일을 열 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8573"/>
+        <location filename="../src/app/qgisapp.cpp" line="8578"/>
         <source>Cannot open exported file: %1</source>
         <translation>내보낸 파일을 열 수 없습니다: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8649"/>
+        <location filename="../src/app/qgisapp.cpp" line="8654"/>
         <source>Some of the &lt;b&gt;%n&lt;/b&gt; selected feature(s) about to be deleted &lt;b&gt;are outside of the current map view&lt;/b&gt;. Would you still like to continue?</source>
         <translation><numerusform>곧 삭제될 선택한 피처 &lt;b&gt;%n&lt;/b&gt; 개 가운데 일부가 &lt;b&gt;현재 맵 뷰 바깥에 있습니다&lt;/b&gt;. 그래도 계속 하시겠습니까?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8650"/>
-        <location filename="../src/app/qgisapp.cpp" line="8672"/>
-        <location filename="../src/app/qgisapp.cpp" line="8686"/>
+        <location filename="../src/app/qgisapp.cpp" line="8655"/>
+        <location filename="../src/app/qgisapp.cpp" line="8677"/>
+        <location filename="../src/app/qgisapp.cpp" line="8691"/>
         <source>Delete %n Feature(s)</source>
         <translation><numerusform>피처 %n 개 삭제</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8667"/>
+        <location filename="../src/app/qgisapp.cpp" line="8672"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation><numerusform>&quot;%1&quot; 레이어에 있는 피처 %n 개,</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8687"/>
+        <location filename="../src/app/qgisapp.cpp" line="8692"/>
         <source>Don&apos;t show this message again</source>
         <translation>이 메시지를 다시 표시하지 않음</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8720"/>
+        <location filename="../src/app/qgisapp.cpp" line="8725"/>
         <source>%n feature(s) deleted: %1</source>
         <translation><numerusform>피처 %n 개를 삭제했습니다: %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9678"/>
-        <location filename="../src/app/qgisapp.cpp" line="9736"/>
+        <location filename="../src/app/qgisapp.cpp" line="9683"/>
+        <location filename="../src/app/qgisapp.cpp" line="9741"/>
         <source>Resulting geometry type (multipart) is incompatible with layer type (singlepart).</source>
         <translation>산출되는 도형 유형(다중 부분)이 레이어 유형(단일 부분)과 호환되지 않습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9687"/>
+        <location filename="../src/app/qgisapp.cpp" line="9692"/>
         <source>Merge Features</source>
         <translation>피처 병합</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10303"/>
+        <location filename="../src/app/qgisapp.cpp" line="10308"/>
         <source>%n geometries collapsed due to intersection avoidance.</source>
         <translation><numerusform>도형 %n 개가 교차 영역 회피로 인해 무너졌습니다.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10364"/>
+        <location filename="../src/app/qgisapp.cpp" line="10369"/>
         <source>Cannot copy style</source>
         <translation>스타일을 복사할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10387"/>
+        <location filename="../src/app/qgisapp.cpp" line="10392"/>
         <source>Cannot parse style</source>
         <translation>스타일을 파싱할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10399"/>
+        <location filename="../src/app/qgisapp.cpp" line="10404"/>
         <source>Cannot paste style</source>
         <translation>스타일을 붙여넣을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10555"/>
+        <location filename="../src/app/qgisapp.cpp" line="10560"/>
         <source>Layer cannot be edited</source>
         <translation>레이어를 편집할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10748"/>
+        <location filename="../src/app/qgisapp.cpp" line="10753"/>
         <source>Start Mesh Frame Edit</source>
         <translation>메시 프레임 편집 시작</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10748"/>
+        <location filename="../src/app/qgisapp.cpp" line="10753"/>
         <source>Starting editing the frame of this mesh layer will remove all dataset groups.
 Alternatively, you can create a new mesh layer from that one.</source>
         <translation>이 메시 레이어의 프레임을 편집하기 시작하면 모든 데이터셋 그룹이 제거될 것입니다.
 이를 피하려면, 이 메시 레이어로부터 새 메시 레이어를 생성하면 됩니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10752"/>
+        <location filename="../src/app/qgisapp.cpp" line="10757"/>
         <source>Edit Current Mesh</source>
         <translation>현재 메시 편집</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10753"/>
+        <location filename="../src/app/qgisapp.cpp" line="10758"/>
         <source>Edit a Copy</source>
         <translation>복사본 편집</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10800"/>
-        <location filename="../src/app/qgisapp.cpp" line="10826"/>
-        <location filename="../src/app/qgisapp.cpp" line="11020"/>
+        <location filename="../src/app/qgisapp.cpp" line="10805"/>
+        <location filename="../src/app/qgisapp.cpp" line="10831"/>
+        <location filename="../src/app/qgisapp.cpp" line="11025"/>
         <source>Mesh editing</source>
         <translation>메시 편집 작업</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10801"/>
+        <location filename="../src/app/qgisapp.cpp" line="10806"/>
         <source>Unable to start mesh editing for layer &quot;%1&quot;</source>
         <translation>&quot;%1&quot; 레이어의 메시 편집 작업을 시작할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10827"/>
-        <location filename="../src/app/qgisapp.cpp" line="10915"/>
-        <location filename="../src/app/qgisapp.cpp" line="11021"/>
-        <location filename="../src/app/qgisapp.cpp" line="11044"/>
+        <location filename="../src/app/qgisapp.cpp" line="10832"/>
+        <location filename="../src/app/qgisapp.cpp" line="10920"/>
+        <location filename="../src/app/qgisapp.cpp" line="11026"/>
+        <location filename="../src/app/qgisapp.cpp" line="11049"/>
         <source>Unable to save editing for layer &quot;%1&quot;</source>
         <translation>&quot;%1&quot; 레이어의 편집 내용을 저장할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11117"/>
-        <location filename="../src/app/qgisapp.cpp" line="11140"/>
+        <location filename="../src/app/qgisapp.cpp" line="11122"/>
+        <location filename="../src/app/qgisapp.cpp" line="11145"/>
         <source>Could not %1 changes to layer %2</source>
         <translation>%2 레이어에 %1  을[를] 변경할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11645"/>
+        <location filename="../src/app/qgisapp.cpp" line="11650"/>
         <source>No legend entries selected</source>
         <translation>선택한 범례 항목이 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11645"/>
+        <location filename="../src/app/qgisapp.cpp" line="11650"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>범례에서 제거하고자 하는 레이어 및 그룹을 선택하십시오.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11690"/>
+        <location filename="../src/app/qgisapp.cpp" line="11695"/>
         <source>(%n more hidden layer(s))</source>
         <comment>number of hidden layers not shown</comment>
         <translation><numerusform>(숨겨진 레이어가 %n 개 더 있습니다)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11692"/>
+        <location filename="../src/app/qgisapp.cpp" line="11697"/>
         <source>The following hidden layers will be removed:
 %1</source>
         <translation>다음 숨겨진 레이어들을 제거할 것입니다:
 %1 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11695"/>
+        <location filename="../src/app/qgisapp.cpp" line="11700"/>
         <source>Remove layers and groups</source>
         <translation>레이어 및 그룹 제거</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11683"/>
+        <location filename="../src/app/qgisapp.cpp" line="11688"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation><numerusform>범례 항목 %n 개를 제거하시겠습니까?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11714"/>
+        <location filename="../src/app/qgisapp.cpp" line="11719"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation><numerusform>범례 항목 %n 개를 제거했습니다.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11794"/>
+        <location filename="../src/app/qgisapp.cpp" line="11799"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 유형을 지원하지 않습니다)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11836"/>
+        <location filename="../src/app/qgisapp.cpp" line="11841"/>
         <source>Cannot copy style to duplicated layer.</source>
         <translation>복제된 레이어에 스타일을 복사할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13087"/>
+        <location filename="../src/app/qgisapp.cpp" line="13092"/>
         <source>Map %1</source>
         <translation>%1 맵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13285"/>
+        <location filename="../src/app/qgisapp.cpp" line="13290"/>
         <source>3D Map %1</source>
         <translation>%1 3D 지도</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13510"/>
+        <location filename="../src/app/qgisapp.cpp" line="13515"/>
         <source>Do you want to save the current project? %1</source>
         <translation>현재 프로젝트를 저장하시겠습니까? %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5759"/>
-        <location filename="../src/app/qgisapp.cpp" line="11636"/>
-        <location filename="../src/app/qgisapp.cpp" line="13718"/>
+        <location filename="../src/app/qgisapp.cpp" line="11641"/>
+        <location filename="../src/app/qgisapp.cpp" line="13723"/>
         <source>Active Tasks</source>
         <translation>활성화된 작업</translation>
     </message>
@@ -59402,92 +59407,92 @@ Alternatively, you can create a new mesh layer from that one.</source>
         <translation>래스터 표현식 계산 중…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6357"/>
+        <location filename="../src/app/qgisapp.cpp" line="6362"/>
         <source>Revert Project</source>
         <translation>프로젝트 되돌리기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6357"/>
+        <location filename="../src/app/qgisapp.cpp" line="6362"/>
         <source>Are you sure you want to discard all unsaved changes the current project?</source>
         <translation>현재 프로젝트에서 저장되지 않은 모든 변경 사항을 삭제하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6679"/>
+        <location filename="../src/app/qgisapp.cpp" line="6684"/>
         <source>Save Project As</source>
         <translation>프로젝트를 다른 이름으로 저장</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8111"/>
-        <location filename="../src/app/qgisapp.cpp" line="8370"/>
+        <location filename="../src/app/qgisapp.cpp" line="8116"/>
+        <location filename="../src/app/qgisapp.cpp" line="8375"/>
         <source>Layer Exported</source>
         <translation>내보낸 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8131"/>
+        <location filename="../src/app/qgisapp.cpp" line="8136"/>
         <source>Save Raster</source>
         <translation>래스터 저장</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8128"/>
+        <location filename="../src/app/qgisapp.cpp" line="8133"/>
         <source>Cannot write raster. Error code: %1</source>
         <translation>래스터를 작성할 수 없습니다. 오류 코드: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8777"/>
+        <location filename="../src/app/qgisapp.cpp" line="8782"/>
         <source>Merging features…</source>
         <translation>피처 병합 중…</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10265"/>
+        <location filename="../src/app/qgisapp.cpp" line="10270"/>
         <source>
 %n children on layer %1 duplicated</source>
         <translation><numerusform>
 %1 레이어에 있는 하위(children) 피처 %n 개 복제</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10294"/>
+        <location filename="../src/app/qgisapp.cpp" line="10299"/>
         <source>%n feature(s) were pasted.%1</source>
         <translation><numerusform>피처 %n 개를 붙여넣었습니다. %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10420"/>
+        <location filename="../src/app/qgisapp.cpp" line="10425"/>
         <source>Error copying layer</source>
         <translation>레이어를 복사하는 도중 오류 발생</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10456"/>
+        <location filename="../src/app/qgisapp.cpp" line="10461"/>
         <source>Error pasting layer</source>
         <translation>레이어를 붙여넣는 도중 오류 발생</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10663"/>
-        <location filename="../src/app/qgisapp.cpp" line="10813"/>
-        <location filename="../src/app/qgisapp.cpp" line="10901"/>
+        <location filename="../src/app/qgisapp.cpp" line="10668"/>
+        <location filename="../src/app/qgisapp.cpp" line="10818"/>
+        <location filename="../src/app/qgisapp.cpp" line="10906"/>
         <source>Stop Editing</source>
         <translation>편집 종료</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12770"/>
+        <location filename="../src/app/qgisapp.cpp" line="12775"/>
         <source>https://qgis.org/resources/support/bug-reporting/</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12777"/>
+        <location filename="../src/app/qgisapp.cpp" line="12782"/>
         <source>https://qgis.org/community/involve/</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12784"/>
+        <location filename="../src/app/qgisapp.cpp" line="12789"/>
         <source>https://qgis.org/funding/donate/</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12791"/>
+        <location filename="../src/app/qgisapp.cpp" line="12796"/>
         <source>https://qgis.org/resources/support/commercial-support/</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13718"/>
+        <location filename="../src/app/qgisapp.cpp" line="13723"/>
         <source>The following tasks are currently running which depend on layers in this project:
 
 %1
@@ -59500,42 +59505,42 @@ Please cancel these tasks and retry.</source>
 이 작업을 취소한 다음 다시 시도해보십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14440"/>
+        <location filename="../src/app/qgisapp.cpp" line="14445"/>
         <source>Current CRS: %1</source>
         <translation>현재 좌표계: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14447"/>
+        <location filename="../src/app/qgisapp.cpp" line="14452"/>
         <source>No projection</source>
         <translation>투영체 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15253"/>
+        <location filename="../src/app/qgisapp.cpp" line="15258"/>
         <source>Add Point Feature</source>
         <translation>포인트 피처 추가</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15283"/>
+        <location filename="../src/app/qgisapp.cpp" line="15288"/>
         <source>Add Line Feature</source>
         <translation>라인 피처 추가</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15302"/>
+        <location filename="../src/app/qgisapp.cpp" line="15307"/>
         <source>Add Polygon Feature</source>
         <translation>폴리곤 피처 추가</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15319"/>
+        <location filename="../src/app/qgisapp.cpp" line="15324"/>
         <source>Add Record</source>
         <translation>레코드 추가</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15875"/>
+        <location filename="../src/app/qgisapp.cpp" line="15880"/>
         <source>Map Views</source>
         <translation>맵 뷰</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15878"/>
+        <location filename="../src/app/qgisapp.cpp" line="15883"/>
         <source>A view with this name already exists</source>
         <translation>이 이름의 뷰가 이미 있습니다</translation>
     </message>
@@ -59585,12 +59590,12 @@ Please cancel these tasks and retry.</source>
         <translation>파일을 찾을 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6394"/>
+        <location filename="../src/app/qgisapp.cpp" line="6399"/>
         <source>Loading project: %1</source>
         <translation>프로젝트를 불러오는 중입니다: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6435"/>
+        <location filename="../src/app/qgisapp.cpp" line="6440"/>
         <source>Unable to open project</source>
         <translation>프로젝트를 열 수 없습니다</translation>
     </message>
@@ -59615,25 +59620,25 @@ Please cancel these tasks and retry.</source>
         <translation>레이어 패널 표시하기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6536"/>
+        <location filename="../src/app/qgisapp.cpp" line="6541"/>
         <source>Project loaded</source>
         <translation>불러온 프로젝트</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6569"/>
+        <location filename="../src/app/qgisapp.cpp" line="6574"/>
         <source>Choose a QGIS project file</source>
         <translation>QGIS 프로젝트 파일 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6632"/>
-        <location filename="../src/app/qgisapp.cpp" line="6720"/>
-        <location filename="../src/app/qgisapp.cpp" line="17287"/>
+        <location filename="../src/app/qgisapp.cpp" line="6637"/>
+        <location filename="../src/app/qgisapp.cpp" line="6725"/>
+        <location filename="../src/app/qgisapp.cpp" line="17292"/>
         <source>Saved project to: %1</source>
         <translation>다음 위치에 프로젝트를 저장했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6640"/>
-        <location filename="../src/app/qgisapp.cpp" line="6726"/>
+        <location filename="../src/app/qgisapp.cpp" line="6645"/>
+        <location filename="../src/app/qgisapp.cpp" line="6731"/>
         <source>Unable to save project %1</source>
         <translation>%1 프로젝트를 저장할 수 없습니다</translation>
     </message>
@@ -59877,24 +59882,25 @@ Please cancel these tasks and retry.</source>
         <location filename="../src/app/qgisapp.cpp" line="6226"/>
         <location filename="../src/app/qgisapp.cpp" line="6230"/>
         <location filename="../src/app/qgisapp.cpp" line="6234"/>
+        <location filename="../src/app/qgisapp.cpp" line="6238"/>
         <source>Raster calculator</source>
         <translation>래스터 계산기</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6207"/>
-        <location filename="../src/app/qgisapp.cpp" line="6270"/>
+        <location filename="../src/app/qgisapp.cpp" line="6275"/>
         <source>Calculation complete.</source>
         <translation>계산 완료.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6211"/>
-        <location filename="../src/app/qgisapp.cpp" line="6282"/>
+        <location filename="../src/app/qgisapp.cpp" line="6287"/>
         <source>Could not create destination file.</source>
         <translation>대상 파일을 생성할 수 없습니다.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6215"/>
-        <location filename="../src/app/qgisapp.cpp" line="6286"/>
+        <location filename="../src/app/qgisapp.cpp" line="6291"/>
         <source>Could not read input layer.</source>
         <translation>입력 레이어를 읽어올 수 없습니다.</translation>
     </message>
@@ -59905,7 +59911,7 @@ Please cancel these tasks and retry.</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6226"/>
-        <location filename="../src/app/qgisapp.cpp" line="6297"/>
+        <location filename="../src/app/qgisapp.cpp" line="6302"/>
         <source>Insufficient memory available for operation.</source>
         <translation>이 연산에 필요한 가용 메모리가 부족합니다.</translation>
     </message>
@@ -59915,55 +59921,55 @@ Please cancel these tasks and retry.</source>
         <translation>입력 레이어의 무결하지 않은 밴드 번호입니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6246"/>
+        <location filename="../src/app/qgisapp.cpp" line="6251"/>
         <source>Mesh Calculator</source>
         <translation>메시 계산기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6246"/>
+        <location filename="../src/app/qgisapp.cpp" line="6251"/>
         <source>Mesh calculator with mesh layer in edit mode is not supported.</source>
         <translation>편집 모드인 메시 레이어에 메시 계산기를 사용하는 것은 지원하지 않습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6255"/>
+        <location filename="../src/app/qgisapp.cpp" line="6260"/>
         <source>Calculating mesh expression…</source>
         <translation>메시 표현식 계산 중…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6270"/>
-        <location filename="../src/app/qgisapp.cpp" line="6274"/>
-        <location filename="../src/app/qgisapp.cpp" line="6278"/>
-        <location filename="../src/app/qgisapp.cpp" line="6282"/>
-        <location filename="../src/app/qgisapp.cpp" line="6286"/>
-        <location filename="../src/app/qgisapp.cpp" line="6293"/>
-        <location filename="../src/app/qgisapp.cpp" line="6297"/>
+        <location filename="../src/app/qgisapp.cpp" line="6275"/>
+        <location filename="../src/app/qgisapp.cpp" line="6279"/>
+        <location filename="../src/app/qgisapp.cpp" line="6283"/>
+        <location filename="../src/app/qgisapp.cpp" line="6287"/>
+        <location filename="../src/app/qgisapp.cpp" line="6291"/>
+        <location filename="../src/app/qgisapp.cpp" line="6298"/>
+        <location filename="../src/app/qgisapp.cpp" line="6302"/>
         <source>Mesh calculator</source>
         <translation>메시 계산기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6274"/>
+        <location filename="../src/app/qgisapp.cpp" line="6279"/>
         <source>Could not evaluate the formula.</source>
         <translation>식을 평가할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6278"/>
+        <location filename="../src/app/qgisapp.cpp" line="6283"/>
         <source>Invalid or incompatible datasets used.</source>
         <translation>무결하지 않거나 호환되지 않는 데이터셋이 사용되었습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6293"/>
+        <location filename="../src/app/qgisapp.cpp" line="6298"/>
         <source>Could not parse mesh formula.</source>
         <translation>메시 수식을 파싱할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6318"/>
-        <location filename="../src/app/qgisapp.cpp" line="6562"/>
-        <location filename="../src/app/qgisapp.cpp" line="6672"/>
+        <location filename="../src/app/qgisapp.cpp" line="6323"/>
+        <location filename="../src/app/qgisapp.cpp" line="6567"/>
+        <location filename="../src/app/qgisapp.cpp" line="6677"/>
         <source>QGIS Project Formats</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6424"/>
+        <location filename="../src/app/qgisapp.cpp" line="6429"/>
         <source>Do you want to open the backup file
 %1
 instead?</source>
@@ -59972,213 +59978,213 @@ instead?</source>
 백업 파일을 불러오시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6620"/>
+        <location filename="../src/app/qgisapp.cpp" line="6625"/>
         <source>Insufficient permissions</source>
         <translation>권한이 충분하지 않음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6620"/>
+        <location filename="../src/app/qgisapp.cpp" line="6625"/>
         <source>The project file is not writable.</source>
         <translation>프로젝트 파일을 작성할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6777"/>
+        <location filename="../src/app/qgisapp.cpp" line="6782"/>
         <source>Successfully exported DXF to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>DXF를 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt; 로 내보내는 데 성공했습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6825"/>
-        <location filename="../src/app/qgisapp.cpp" line="6832"/>
-        <location filename="../src/app/qgisapp.cpp" line="6859"/>
+        <location filename="../src/app/qgisapp.cpp" line="6830"/>
+        <location filename="../src/app/qgisapp.cpp" line="6837"/>
+        <location filename="../src/app/qgisapp.cpp" line="6864"/>
         <source>Load template</source>
         <translation>템플릿 불러오기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6825"/>
+        <location filename="../src/app/qgisapp.cpp" line="6830"/>
         <source>Could not read template file</source>
         <translation>템플릿 파일을 읽어올 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6832"/>
-        <location filename="../src/app/qgisapp.cpp" line="6859"/>
+        <location filename="../src/app/qgisapp.cpp" line="6837"/>
+        <location filename="../src/app/qgisapp.cpp" line="6864"/>
         <source>Could not load template file</source>
         <translation>템플릿 파일을 불러올 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7517"/>
+        <location filename="../src/app/qgisapp.cpp" line="7522"/>
         <source>No action selected</source>
         <translation>선택한 액션이 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7532"/>
-        <location filename="../src/app/qgisapp.cpp" line="7550"/>
+        <location filename="../src/app/qgisapp.cpp" line="7537"/>
+        <location filename="../src/app/qgisapp.cpp" line="7555"/>
         <source>Run feature action&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;</source>
         <translation>피처 액션 실행&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7642"/>
+        <location filename="../src/app/qgisapp.cpp" line="7647"/>
         <source>Original source URI: %1</source>
         <translation>소스 소스 URI: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7844"/>
+        <location filename="../src/app/qgisapp.cpp" line="7849"/>
         <source>Commit Errors</source>
         <translation>커밋 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7860"/>
+        <location filename="../src/app/qgisapp.cpp" line="7865"/>
         <source>Commit errors</source>
         <translation>커밋 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7840"/>
+        <location filename="../src/app/qgisapp.cpp" line="7845"/>
         <source>Could not commit changes to layer %1</source>
         <translation>레이어 %1에 변경 사항을 커밋할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7845"/>
+        <location filename="../src/app/qgisapp.cpp" line="7850"/>
         <source>Errors: %1
 </source>
         <translation>오류: %1
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7849"/>
+        <location filename="../src/app/qgisapp.cpp" line="7854"/>
         <source>Show more</source>
         <translation>자세히 보기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7923"/>
+        <location filename="../src/app/qgisapp.cpp" line="7928"/>
         <source>Please select a vector layer first</source>
         <translation>먼저 벡터 레이어를 선택해주십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8597"/>
-        <location filename="../src/app/qgisapp.cpp" line="12614"/>
-        <location filename="../src/app/qgisapp.cpp" line="12621"/>
-        <location filename="../src/app/qgisapp.cpp" line="12681"/>
-        <location filename="../src/app/qgisapp.cpp" line="12688"/>
-        <location filename="../src/app/qgisapp.cpp" line="12734"/>
-        <location filename="../src/app/qgisapp.cpp" line="12741"/>
+        <location filename="../src/app/qgisapp.cpp" line="8602"/>
+        <location filename="../src/app/qgisapp.cpp" line="12619"/>
+        <location filename="../src/app/qgisapp.cpp" line="12626"/>
+        <location filename="../src/app/qgisapp.cpp" line="12686"/>
+        <location filename="../src/app/qgisapp.cpp" line="12693"/>
+        <location filename="../src/app/qgisapp.cpp" line="12739"/>
+        <location filename="../src/app/qgisapp.cpp" line="12746"/>
         <source>No Layer Selected</source>
         <translation>선택한 레이어가 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8597"/>
+        <location filename="../src/app/qgisapp.cpp" line="8602"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>피처를 제거하려면, 범례에서 벡터 레이어를 선택하세요</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8604"/>
+        <location filename="../src/app/qgisapp.cpp" line="8609"/>
         <source>No Vector Layer Selected</source>
         <translation>벡터 레이어가 선택되어 있지 않습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8604"/>
+        <location filename="../src/app/qgisapp.cpp" line="8609"/>
         <source>Deleting features only works on vector layers</source>
         <translation>피처 삭제는 벡터 레이어에서만 동작합니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8610"/>
+        <location filename="../src/app/qgisapp.cpp" line="8615"/>
         <source>Provider does not support deletion</source>
         <translation>제공자가 삭제를 지원하지 않습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8610"/>
+        <location filename="../src/app/qgisapp.cpp" line="8615"/>
         <source>Data provider does not support deleting features</source>
         <translation>데이터 제공자가 피처 삭제를 지원하지 않습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8616"/>
-        <location filename="../src/app/qgisapp.cpp" line="9462"/>
-        <location filename="../src/app/qgisapp.cpp" line="9472"/>
-        <location filename="../src/app/qgisapp.cpp" line="9574"/>
-        <location filename="../src/app/qgisapp.cpp" line="9635"/>
-        <location filename="../src/app/qgisapp.cpp" line="10016"/>
-        <location filename="../src/app/qgisapp.cpp" line="10069"/>
+        <location filename="../src/app/qgisapp.cpp" line="8621"/>
+        <location filename="../src/app/qgisapp.cpp" line="9467"/>
+        <location filename="../src/app/qgisapp.cpp" line="9477"/>
+        <location filename="../src/app/qgisapp.cpp" line="9579"/>
+        <location filename="../src/app/qgisapp.cpp" line="9640"/>
+        <location filename="../src/app/qgisapp.cpp" line="10021"/>
+        <location filename="../src/app/qgisapp.cpp" line="10074"/>
         <source>Layer not editable</source>
         <translation>편집이 불가능한 레이어입니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8616"/>
-        <location filename="../src/app/qgisapp.cpp" line="10016"/>
-        <location filename="../src/app/qgisapp.cpp" line="10069"/>
+        <location filename="../src/app/qgisapp.cpp" line="8621"/>
+        <location filename="../src/app/qgisapp.cpp" line="10021"/>
+        <location filename="../src/app/qgisapp.cpp" line="10074"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>현재 레이어는 편집 가능한 상태가 아닙니다. 디지타이즈 작업 툴바에서 &apos;편집 시작&apos;을 선택하십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8624"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>No Features Selected</source>
         <translation>선택한 피처가 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8700"/>
+        <location filename="../src/app/qgisapp.cpp" line="8705"/>
         <source>Features deleted</source>
         <translation>삭제한 피처</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8705"/>
+        <location filename="../src/app/qgisapp.cpp" line="8710"/>
         <source>Problem deleting features</source>
         <translation>피처 삭제중 문제발생</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8723"/>
+        <location filename="../src/app/qgisapp.cpp" line="8728"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation><numerusform>%n 개의 피처가 삭제됨.</numerusform></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6191"/>
-        <location filename="../src/app/qgisapp.cpp" line="6255"/>
-        <location filename="../src/app/qgisapp.cpp" line="8777"/>
+        <location filename="../src/app/qgisapp.cpp" line="6260"/>
+        <location filename="../src/app/qgisapp.cpp" line="8782"/>
         <source>Abort</source>
         <translation>중단</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8878"/>
+        <location filename="../src/app/qgisapp.cpp" line="8883"/>
         <source>Title can not be empty!</source>
         <translation>제목을 비워두면 안 됩니다!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8861"/>
-        <location filename="../src/app/qgisapp.cpp" line="8889"/>
+        <location filename="../src/app/qgisapp.cpp" line="8866"/>
+        <location filename="../src/app/qgisapp.cpp" line="8894"/>
         <source>Title already exists!</source>
         <translation>제목이 이미 있습니다!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9454"/>
-        <location filename="../src/app/qgisapp.cpp" line="9554"/>
-        <location filename="../src/app/qgisapp.cpp" line="9616"/>
+        <location filename="../src/app/qgisapp.cpp" line="9459"/>
+        <location filename="../src/app/qgisapp.cpp" line="9559"/>
+        <location filename="../src/app/qgisapp.cpp" line="9621"/>
         <source>No active layer</source>
         <translation>활성 레이어가 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9454"/>
+        <location filename="../src/app/qgisapp.cpp" line="9459"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>활성화된 레이어가 없습니다. 레이어 목록에서 레이어를 선택해주십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9485"/>
-        <location filename="../src/app/qgisapp.cpp" line="9647"/>
-        <location filename="../src/app/qgisapp.cpp" line="9704"/>
+        <location filename="../src/app/qgisapp.cpp" line="9490"/>
+        <location filename="../src/app/qgisapp.cpp" line="9652"/>
+        <location filename="../src/app/qgisapp.cpp" line="9709"/>
         <source>Not enough features selected</source>
         <translation>피처를 충분히 선택하지 않았습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9648"/>
-        <location filename="../src/app/qgisapp.cpp" line="9705"/>
+        <location filename="../src/app/qgisapp.cpp" line="9653"/>
+        <location filename="../src/app/qgisapp.cpp" line="9710"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>병합 도구를 사용하기 위해서는 피처를 적어도 2개 선택해야 합니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9503"/>
+        <location filename="../src/app/qgisapp.cpp" line="9508"/>
         <source>Merged feature attributes</source>
         <translation>병합한 피처 속성</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5748"/>
-        <location filename="../src/app/qgisapp.cpp" line="11629"/>
-        <location filename="../src/app/qgisapp.cpp" line="13711"/>
+        <location filename="../src/app/qgisapp.cpp" line="11634"/>
+        <location filename="../src/app/qgisapp.cpp" line="13716"/>
         <source> • %1</source>
         <translation> • %1</translation>
     </message>
@@ -60196,23 +60202,23 @@ Do you want to try canceling these active tasks?</source>
 이 활성 작업을 취소해보시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8111"/>
+        <location filename="../src/app/qgisapp.cpp" line="8116"/>
         <source>Successfully saved raster layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;에 래스터 레이어를 성공적으로 저장했습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8225"/>
+        <location filename="../src/app/qgisapp.cpp" line="8230"/>
         <source>Error saving layer definition file</source>
         <translation>레이어 정의 파일을 저장하는 도중 오류 발생</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8370"/>
+        <location filename="../src/app/qgisapp.cpp" line="8375"/>
         <source>Successfully saved vector layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;에 벡터 레이어를 성공적으로 저장했습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8202"/>
-        <location filename="../src/app/qgisapp.cpp" line="8377"/>
+        <location filename="../src/app/qgisapp.cpp" line="8207"/>
+        <location filename="../src/app/qgisapp.cpp" line="8382"/>
         <source>Save Error</source>
         <translation>저장 오류</translation>
     </message>
@@ -60227,194 +60233,194 @@ Do you want to try canceling these active tasks?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6499"/>
+        <location filename="../src/app/qgisapp.cpp" line="6504"/>
         <source>Resolve vector layer dependencies</source>
         <translation>벡터 레이어 의존성 해결</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6563"/>
-        <location filename="../src/app/qgisapp.cpp" line="6673"/>
+        <location filename="../src/app/qgisapp.cpp" line="6568"/>
+        <location filename="../src/app/qgisapp.cpp" line="6678"/>
         <source>QGIS Bundled Project Format</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6564"/>
-        <location filename="../src/app/qgisapp.cpp" line="6674"/>
+        <location filename="../src/app/qgisapp.cpp" line="6569"/>
+        <location filename="../src/app/qgisapp.cpp" line="6679"/>
         <source>QGIS XML Project Format</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6614"/>
+        <location filename="../src/app/qgisapp.cpp" line="6619"/>
         <source>Project Has Changed on Disk</source>
         <translation>프로젝트가 디스크 상에서 변경되었습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6614"/>
+        <location filename="../src/app/qgisapp.cpp" line="6619"/>
         <source>The project file on the disk has been modified externally, saving the current project will overwrite any change. Do you still want to proceed?</source>
         <translation>디스크 상에 있는 프로젝트 파일이 외부로부터 변경되었기 때문에 현재 프로젝트를 저장하면 모든 변경 사항을 덮어쓰게 될 것입니다. 그래도 진행하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6777"/>
-        <location filename="../src/app/qgisapp.cpp" line="6797"/>
-        <location filename="../src/app/qgisapp.cpp" line="6801"/>
-        <location filename="../src/app/qgisapp.cpp" line="6805"/>
+        <location filename="../src/app/qgisapp.cpp" line="6782"/>
+        <location filename="../src/app/qgisapp.cpp" line="6802"/>
+        <location filename="../src/app/qgisapp.cpp" line="6806"/>
+        <location filename="../src/app/qgisapp.cpp" line="6810"/>
         <source>DXF export</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6786"/>
+        <location filename="../src/app/qgisapp.cpp" line="6791"/>
         <source>DXF Export</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6902"/>
+        <location filename="../src/app/qgisapp.cpp" line="6907"/>
         <source>Don&apos;t show this again.</source>
         <translation>다시 표시하지 않습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8194"/>
+        <location filename="../src/app/qgisapp.cpp" line="8199"/>
         <source>Layer Saved</source>
         <translation>레이어를 저장했습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8194"/>
+        <location filename="../src/app/qgisapp.cpp" line="8199"/>
         <source>Successfully saved scratch layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt; 에 스크래치 레이어를 성공적으로 저장했습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8203"/>
+        <location filename="../src/app/qgisapp.cpp" line="8208"/>
         <source>Could not make temporary scratch layer permanent.
 Error: %1</source>
         <translation>임시 스크래치 레이어를 영구적으로 바꿀 수 없습니다.
 오류: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8208"/>
+        <location filename="../src/app/qgisapp.cpp" line="8213"/>
         <source>Save Scratch Layer</source>
         <translation>스크래치 레이어 저장</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8378"/>
+        <location filename="../src/app/qgisapp.cpp" line="8383"/>
         <source>Export to vector file %1 failed.
 Error: %2</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8649"/>
-        <location filename="../src/app/qgisapp.cpp" line="8685"/>
+        <location filename="../src/app/qgisapp.cpp" line="8654"/>
+        <location filename="../src/app/qgisapp.cpp" line="8690"/>
         <source>Delete %n feature(s) from layer &quot;%1&quot;</source>
         <translation><numerusform>레이어 &quot;%1&quot;에서 피처 %N개 삭제</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8671"/>
+        <location filename="../src/app/qgisapp.cpp" line="8676"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8671"/>
+        <location filename="../src/app/qgisapp.cpp" line="8676"/>
         <source>Delete %n feature(s) on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8685"/>
+        <location filename="../src/app/qgisapp.cpp" line="8690"/>
         <source>&lt;b&gt;%n&lt;/b&gt; selected feature(s) are about to be deleted. Would you like to continue?</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8705"/>
+        <location filename="../src/app/qgisapp.cpp" line="8710"/>
         <source>A problem occurred during deletion from layer &quot;%1&quot;. %n feature(s) not deleted.</source>
         <translation><numerusform>레이어 &quot;%1&quot;에서 삭제 작업 도중 문제가 발생했습니다. 피처 %N개를 삭제할 수 없습니다.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8828"/>
+        <location filename="../src/app/qgisapp.cpp" line="8833"/>
         <source>print layout</source>
         <translation>조판 인쇄</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8832"/>
+        <location filename="../src/app/qgisapp.cpp" line="8837"/>
         <source>report</source>
         <translation>보고서</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8837"/>
+        <location filename="../src/app/qgisapp.cpp" line="8842"/>
         <source>Enter a unique %1 title</source>
         <translation>유일한 %1 제목 입력하기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8840"/>
+        <location filename="../src/app/qgisapp.cpp" line="8845"/>
         <source>(a title will be automatically generated if left empty)</source>
         <translation>(비워 놓을 경우 제목을 자동으로 생성할 것입니다)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8973"/>
+        <location filename="../src/app/qgisapp.cpp" line="8978"/>
         <source>%1 copy</source>
         <translation>%1 복사</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9008"/>
+        <location filename="../src/app/qgisapp.cpp" line="9013"/>
         <source>Set as atlas feature for %1</source>
         <translation>%1 을(를) 위한 지도책 피처로 지정</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9486"/>
+        <location filename="../src/app/qgisapp.cpp" line="9491"/>
         <source>The merge tool requires at least two selected features.</source>
         <translation>병합 도구를 사용하기 위해서는 피처를 적어도 2개 선택해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9529"/>
-        <location filename="../src/app/qgisapp.cpp" line="9759"/>
+        <location filename="../src/app/qgisapp.cpp" line="9534"/>
+        <location filename="../src/app/qgisapp.cpp" line="9764"/>
         <source>Invalid result</source>
         <translation>무결하지 않은 결과</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9575"/>
+        <location filename="../src/app/qgisapp.cpp" line="9580"/>
         <source>Modifying features can only be done for layers in editing mode.</source>
         <translation>레이어가 편집 모드일 경우에만 피처를 수정할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9664"/>
-        <location filename="../src/app/qgisapp.cpp" line="9677"/>
-        <location filename="../src/app/qgisapp.cpp" line="9722"/>
-        <location filename="../src/app/qgisapp.cpp" line="9735"/>
-        <location filename="../src/app/qgisapp.cpp" line="9751"/>
+        <location filename="../src/app/qgisapp.cpp" line="9669"/>
+        <location filename="../src/app/qgisapp.cpp" line="9682"/>
+        <location filename="../src/app/qgisapp.cpp" line="9727"/>
+        <location filename="../src/app/qgisapp.cpp" line="9740"/>
+        <location filename="../src/app/qgisapp.cpp" line="9756"/>
         <source>Merge failed</source>
         <translation>병합 실패</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9665"/>
-        <location filename="../src/app/qgisapp.cpp" line="9723"/>
+        <location filename="../src/app/qgisapp.cpp" line="9670"/>
+        <location filename="../src/app/qgisapp.cpp" line="9728"/>
         <source>An error occurred during the merge operation.</source>
         <translation>병합 작업 도중 오류가 발생했습니다.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2978"/>
-        <location filename="../src/app/qgisapp.cpp" line="9857"/>
-        <location filename="../src/app/qgisapp.cpp" line="9889"/>
-        <location filename="../src/app/qgisapp.cpp" line="9904"/>
-        <location filename="../src/app/qgisapp.cpp" line="9920"/>
-        <location filename="../src/app/qgisapp.cpp" line="9936"/>
-        <location filename="../src/app/qgisapp.cpp" line="9956"/>
+        <location filename="../src/app/qgisapp.cpp" line="9862"/>
+        <location filename="../src/app/qgisapp.cpp" line="9894"/>
+        <location filename="../src/app/qgisapp.cpp" line="9909"/>
+        <location filename="../src/app/qgisapp.cpp" line="9925"/>
+        <location filename="../src/app/qgisapp.cpp" line="9941"/>
+        <location filename="../src/app/qgisapp.cpp" line="9961"/>
         <source>No active vector layer</source>
         <translation>활성 벡터 레이어 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9905"/>
+        <location filename="../src/app/qgisapp.cpp" line="9910"/>
         <source>To invert selection, choose a vector layer in the legend</source>
         <translation>선택을 반전시키려면, 범례에서 벡터 레이어를 선택하십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10022"/>
+        <location filename="../src/app/qgisapp.cpp" line="10027"/>
         <source>Features cut</source>
         <translation>피처 잘라내기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10075"/>
+        <location filename="../src/app/qgisapp.cpp" line="10080"/>
         <source>Features pasted</source>
         <translation>붙여넣기 한 피처</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10305"/>
+        <location filename="../src/app/qgisapp.cpp" line="10310"/>
         <source>Paste features</source>
         <translation>피처 붙여넣기</translation>
     </message>
@@ -60636,7 +60642,7 @@ Delete these features?</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2025"/>
-        <location filename="../src/app/qgisapp.cpp" line="6782"/>
+        <location filename="../src/app/qgisapp.cpp" line="6787"/>
         <source>More Info</source>
         <translation>상세 정보</translation>
     </message>
@@ -60691,67 +60697,67 @@ Delete these features?</source>
         <translation>계산하는 도중 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6332"/>
+        <location filename="../src/app/qgisapp.cpp" line="6337"/>
         <source>All Project Files</source>
         <translation>모든 프로젝트 파일</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6339"/>
+        <location filename="../src/app/qgisapp.cpp" line="6344"/>
         <source>Open Project</source>
         <translation>프로젝트 열기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6797"/>
+        <location filename="../src/app/qgisapp.cpp" line="6802"/>
         <source>DXF export failed, device is not writable</source>
         <translation>DXF 내보내기 실패, 장치가 작성 가능한 상태가 아닙니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6801"/>
+        <location filename="../src/app/qgisapp.cpp" line="6806"/>
         <source>DXF export failed, the device is invalid</source>
         <translation>DXF 내보내기 실패, 장치가 무결하지 않습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6805"/>
+        <location filename="../src/app/qgisapp.cpp" line="6810"/>
         <source>DXF export failed, the extent could not be determined</source>
         <translation>DXF 내보내기 실패, 범위를 결정할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6896"/>
+        <location filename="../src/app/qgisapp.cpp" line="6901"/>
         <source>Security warning</source>
         <translation>보안 경고</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6897"/>
+        <location filename="../src/app/qgisapp.cpp" line="6902"/>
         <source>Executing a script from an untrusted source can harm your computer. Only continue if you trust the source of the script. Continue?</source>
         <translation>신뢰할 수 없는 소스로부터 스크립트를 실행하면 사용자 컴퓨터가 손상될 수 있습니다. 스크립트의 소스를 신뢰하는 경우에만 계속하십시오. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7617"/>
+        <location filename="../src/app/qgisapp.cpp" line="7622"/>
         <source>Repair Data Source</source>
         <translation>데이터소스 수리</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8121"/>
+        <location filename="../src/app/qgisapp.cpp" line="8126"/>
         <source>source provider</source>
         <translation>소스 제공자</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8123"/>
+        <location filename="../src/app/qgisapp.cpp" line="8128"/>
         <source>destination provider</source>
         <translation>대상 제공자</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8125"/>
+        <location filename="../src/app/qgisapp.cpp" line="8130"/>
         <source>data source creation</source>
         <translation>데이터소스 생성</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8127"/>
+        <location filename="../src/app/qgisapp.cpp" line="8132"/>
         <source>write error</source>
         <translation>작성 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8717"/>
+        <location filename="../src/app/qgisapp.cpp" line="8722"/>
         <source>%1 on layer %2. </source>
         <translation>%2 레이어에 있는 %1.</translation>
     </message>
@@ -60759,80 +60765,80 @@ Delete these features?</source>
         <location filename="../src/app/qgisapp.cpp" line="796"/>
         <location filename="../src/app/qgisapp.cpp" line="817"/>
         <location filename="../src/app/qgisapp.cpp" line="818"/>
-        <location filename="../src/app/qgisapp.cpp" line="8852"/>
+        <location filename="../src/app/qgisapp.cpp" line="8857"/>
         <source>Create %1</source>
         <translation>%1 생성</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9190"/>
+        <location filename="../src/app/qgisapp.cpp" line="9195"/>
         <source>Duplicate Feature</source>
         <translation>피처 복제</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9197"/>
+        <location filename="../src/app/qgisapp.cpp" line="9202"/>
         <source>Duplicate Feature and Digitize</source>
         <translation>피처 복제 및 디지타이징</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9218"/>
+        <location filename="../src/app/qgisapp.cpp" line="9223"/>
         <source>Set as Atlas Feature for %1</source>
         <translation>%1 을(를) 위한 지도책 피처로 지정</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9530"/>
+        <location filename="../src/app/qgisapp.cpp" line="9535"/>
         <source>Could not store value &apos;%1&apos; in field of type %2: %3</source>
         <translation>%2 유형의 필드에 &apos;%1&apos; 값을 저장할 수 없습니다: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9858"/>
-        <location filename="../src/app/qgisapp.cpp" line="9890"/>
+        <location filename="../src/app/qgisapp.cpp" line="9863"/>
+        <location filename="../src/app/qgisapp.cpp" line="9895"/>
         <source>To deselect all features, choose a vector layer in the legend</source>
         <translation>모든 피처를 선택 해제하려면, 범례에서 벡터 레이어를 선택하십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10290"/>
+        <location filename="../src/app/qgisapp.cpp" line="10295"/>
         <source>No features pasted.</source>
         <translation>붙여넣은 피처가 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10298"/>
+        <location filename="../src/app/qgisapp.cpp" line="10303"/>
         <source>%1 of %2 features could be pasted.</source>
         <translation>피처 %2 개 가운데 %1 개를 붙여넣을 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10303"/>
+        <location filename="../src/app/qgisapp.cpp" line="10308"/>
         <source> Geometry collapsed due to intersection avoidance.</source>
         <translation>도형이 교차 영역 회피로 인해 무너졌습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10326"/>
+        <location filename="../src/app/qgisapp.cpp" line="10331"/>
         <source>Pasted</source>
         <translation>붙여넣은 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10327"/>
+        <location filename="../src/app/qgisapp.cpp" line="10332"/>
         <source>Paste as Scratch Layer</source>
         <translation>스크래치 레이어 붙여넣기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10327"/>
+        <location filename="../src/app/qgisapp.cpp" line="10332"/>
         <source>Layer name</source>
         <translation>레이어 이름</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10659"/>
+        <location filename="../src/app/qgisapp.cpp" line="10664"/>
         <source>%1 and %2</source>
         <translation>%1 및 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10661"/>
+        <location filename="../src/app/qgisapp.cpp" line="10666"/>
         <source>%1, %2, …</source>
         <translation>%1, %2, …</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10555"/>
-        <location filename="../src/app/qgisapp.cpp" line="10634"/>
-        <location filename="../src/app/qgisapp.cpp" line="10889"/>
+        <location filename="../src/app/qgisapp.cpp" line="10560"/>
+        <location filename="../src/app/qgisapp.cpp" line="10639"/>
+        <location filename="../src/app/qgisapp.cpp" line="10894"/>
         <source>Start editing failed</source>
         <translation>편집 시작 실패</translation>
     </message>
@@ -60862,40 +60868,45 @@ Delete these features?</source>
         <translation>꼭짓점 편집기 표시하기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7841"/>
+        <location filename="../src/app/qgisapp.cpp" line="6238"/>
+        <source>An error occurred while performing the calculation using OpenCL. See OpenCL log messages for details.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="7846"/>
         <source>Could not commit changes</source>
         <translation>변경 사항을 커밋할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10634"/>
-        <location filename="../src/app/qgisapp.cpp" line="10890"/>
+        <location filename="../src/app/qgisapp.cpp" line="10639"/>
+        <location filename="../src/app/qgisapp.cpp" line="10895"/>
         <source>Provider cannot be opened for editing</source>
         <translation>해당 제공자는 편집 모드로 열 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10663"/>
+        <location filename="../src/app/qgisapp.cpp" line="10668"/>
         <source>Do you want to save the changes to layers %1?</source>
         <translation>%1 레이어의 변경 사항을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10663"/>
-        <location filename="../src/app/qgisapp.cpp" line="10813"/>
-        <location filename="../src/app/qgisapp.cpp" line="10901"/>
+        <location filename="../src/app/qgisapp.cpp" line="10668"/>
+        <location filename="../src/app/qgisapp.cpp" line="10818"/>
+        <location filename="../src/app/qgisapp.cpp" line="10906"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>%1 레이어의 변경 사항을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10698"/>
+        <location filename="../src/app/qgisapp.cpp" line="10703"/>
         <source>Problems during roll back: &apos;%1&apos;</source>
         <translation>롤백 도중 문제가 발생했습니다: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10786"/>
+        <location filename="../src/app/qgisapp.cpp" line="10791"/>
         <source>Mesh Editing</source>
         <translation>메시 편집 중</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10786"/>
+        <location filename="../src/app/qgisapp.cpp" line="10791"/>
         <source>At least one topological error in the mesh prevents starting editing.
 Some errors can be fixed by removing invalid elements.
 
@@ -60906,23 +60917,23 @@ Do you want to try to fix errors before starting editing?</source>
 편집 작업을 시작하기 전에 오류 수정을 시도하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10841"/>
-        <location filename="../src/app/qgisapp.cpp" line="10927"/>
+        <location filename="../src/app/qgisapp.cpp" line="10846"/>
+        <location filename="../src/app/qgisapp.cpp" line="10932"/>
         <source>Problems during roll back</source>
         <translation>롤백 도중 문제가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10914"/>
+        <location filename="../src/app/qgisapp.cpp" line="10919"/>
         <source>Stop editing</source>
         <translation>편집 종료</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11043"/>
+        <location filename="../src/app/qgisapp.cpp" line="11048"/>
         <source>Save edits</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11090"/>
+        <location filename="../src/app/qgisapp.cpp" line="11095"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -60933,78 +60944,78 @@ Errors: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11090"/>
-        <location filename="../src/app/qgisapp.cpp" line="11117"/>
-        <location filename="../src/app/qgisapp.cpp" line="11140"/>
+        <location filename="../src/app/qgisapp.cpp" line="11095"/>
+        <location filename="../src/app/qgisapp.cpp" line="11122"/>
+        <location filename="../src/app/qgisapp.cpp" line="11145"/>
         <source>rollback</source>
         <translation>롤백</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11090"/>
-        <location filename="../src/app/qgisapp.cpp" line="11117"/>
-        <location filename="../src/app/qgisapp.cpp" line="11140"/>
+        <location filename="../src/app/qgisapp.cpp" line="11095"/>
+        <location filename="../src/app/qgisapp.cpp" line="11122"/>
+        <location filename="../src/app/qgisapp.cpp" line="11145"/>
         <source>cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11188"/>
+        <location filename="../src/app/qgisapp.cpp" line="11193"/>
         <source>Save</source>
         <translation>저장</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11188"/>
-        <location filename="../src/app/qgisapp.cpp" line="11216"/>
-        <location filename="../src/app/qgisapp.cpp" line="11244"/>
+        <location filename="../src/app/qgisapp.cpp" line="11193"/>
+        <location filename="../src/app/qgisapp.cpp" line="11221"/>
+        <location filename="../src/app/qgisapp.cpp" line="11249"/>
         <source>all</source>
         <translation>모두</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11216"/>
+        <location filename="../src/app/qgisapp.cpp" line="11221"/>
         <source>Rollback</source>
         <translation>롤백</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11244"/>
+        <location filename="../src/app/qgisapp.cpp" line="11249"/>
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11260"/>
+        <location filename="../src/app/qgisapp.cpp" line="11265"/>
         <source>Current edits</source>
         <translation>현재 편집 내용</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11260"/>
+        <location filename="../src/app/qgisapp.cpp" line="11265"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%2 레이어에 현재 %1 변경 사항을 적용하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11410"/>
+        <location filename="../src/app/qgisapp.cpp" line="11415"/>
         <source>Error Setting Filter</source>
         <translation>필터 설정 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11410"/>
+        <location filename="../src/app/qgisapp.cpp" line="11415"/>
         <source>The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer.</source>
         <translation>필터링된 레이어가 행을 하나도 반환하지 않았습니다. PostgreSQL 래스터 제공자가 무결한 레이어를 생성하기 위해 필요한 정보를 추출하기 위해서는 행이 최소한 1개는 필요합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11440"/>
+        <location filename="../src/app/qgisapp.cpp" line="11445"/>
         <source>Filter on Joined Fields</source>
         <translation>결합된 필드에 대한 필터링</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11440"/>
+        <location filename="../src/app/qgisapp.cpp" line="11445"/>
         <source>You are about to set a subset filter on a layer that has joined fields. Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. Would you like to create a virtual layer out of this layer first?</source>
         <translation>결합된 필드들을 보유한 레이어에 대해 하위 집합 필터를 설정하려 합니다. 먼저 해당 레이어를 가상 레이어로 변환해야만 결합된 필드들을 필터링할 수 있습니다. 먼저 이 레이어로부터 가상 레이어를 생성하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11609"/>
+        <location filename="../src/app/qgisapp.cpp" line="11614"/>
         <source>Required Layers</source>
         <translation>필수 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11609"/>
+        <location filename="../src/app/qgisapp.cpp" line="11614"/>
         <source>The following layers are marked as required by the project:
 
 %1
@@ -61017,7 +61028,7 @@ Please deselect them (or unmark as required) and retry.</source>
 선택을 해제(또는 필수 표시 해제)한 후 다시 시도해 보십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11636"/>
+        <location filename="../src/app/qgisapp.cpp" line="11641"/>
         <source>The following tasks are currently running which depend on this layer:
 
 %1
@@ -61030,544 +61041,544 @@ Please cancel these tasks and retry.</source>
 이 작업을 취소한 다음 다시 시도해보십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11743"/>
+        <location filename="../src/app/qgisapp.cpp" line="11748"/>
         <source>copy</source>
         <translation>복사</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11748"/>
+        <location filename="../src/app/qgisapp.cpp" line="11753"/>
         <source>Plugin layer</source>
         <translation>플러그인 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11752"/>
+        <location filename="../src/app/qgisapp.cpp" line="11757"/>
         <source>Group layer</source>
         <translation>그룹 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11782"/>
-        <location filename="../src/app/qgisapp.cpp" line="11793"/>
+        <location filename="../src/app/qgisapp.cpp" line="11787"/>
+        <location filename="../src/app/qgisapp.cpp" line="11798"/>
         <source>Duplicate layer: </source>
         <translation>레이어 복제:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11783"/>
+        <location filename="../src/app/qgisapp.cpp" line="11788"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (무결하지 않은 레이어에서 복제된 결과)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11838"/>
+        <location filename="../src/app/qgisapp.cpp" line="11843"/>
         <source>Layer duplication complete</source>
         <translation>레이어 복제 성공</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11838"/>
+        <location filename="../src/app/qgisapp.cpp" line="11843"/>
         <source>Note that it&apos;s using the same data source.</source>
         <translation>동일한 데이터소스를 사용하고 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11867"/>
+        <location filename="../src/app/qgisapp.cpp" line="11872"/>
         <source>Set scale visibility for selected layers</source>
         <translation>선택된 레이어의 축척별 보이기 설정</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11925"/>
+        <location filename="../src/app/qgisapp.cpp" line="11930"/>
         <source>Set CRS for %1</source>
         <translation>%1 의 좌표계 설정</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12258"/>
+        <location filename="../src/app/qgisapp.cpp" line="12263"/>
         <source>Loading Python support</source>
         <translation>파이썬 지원 불러오는 중</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12278"/>
+        <location filename="../src/app/qgisapp.cpp" line="12283"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>파이썬 지원 라이브러리를 불러올 수 없음: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12289"/>
+        <location filename="../src/app/qgisapp.cpp" line="12294"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>파이썬 지원 라이브러리의 instance() 심볼을 해석할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12351"/>
+        <location filename="../src/app/qgisapp.cpp" line="12356"/>
         <source>There is a new version of QGIS available</source>
         <translation>사용가능한 새 버전의 QGIS가 있습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12355"/>
+        <location filename="../src/app/qgisapp.cpp" line="12360"/>
         <source>You are running a development version of QGIS</source>
         <translation>QGIS 개발 버전을 실행하고 있습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12359"/>
+        <location filename="../src/app/qgisapp.cpp" line="12364"/>
         <source>You are running the current version of QGIS</source>
         <translation>QGIS 최신 버전을 실행하고 있습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12367"/>
-        <location filename="../src/app/qgisapp.cpp" line="12373"/>
+        <location filename="../src/app/qgisapp.cpp" line="12372"/>
+        <location filename="../src/app/qgisapp.cpp" line="12378"/>
         <source>QGIS Version Information</source>
         <translation>QGIS 버전 정보</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12373"/>
+        <location filename="../src/app/qgisapp.cpp" line="12378"/>
         <source>Unable to get current version information from server</source>
         <translation>서버에서 현재 버전 정보를 가져올 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12437"/>
+        <location filename="../src/app/qgisapp.cpp" line="12442"/>
         <source>Style Manager</source>
         <translation>스타일 관리자</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12438"/>
+        <location filename="../src/app/qgisapp.cpp" line="12443"/>
         <source>Keyboard Shortcuts</source>
         <translation>키보드 단축키</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12439"/>
+        <location filename="../src/app/qgisapp.cpp" line="12444"/>
         <source>Custom Projections</source>
         <translation>사용자 정의 투영체</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12440"/>
+        <location filename="../src/app/qgisapp.cpp" line="12445"/>
         <source>Interface Customization</source>
         <translation>인터페이스 사용자 정의</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12614"/>
-        <location filename="../src/app/qgisapp.cpp" line="12621"/>
+        <location filename="../src/app/qgisapp.cpp" line="12619"/>
+        <location filename="../src/app/qgisapp.cpp" line="12626"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>전체 히스토그램 구간에 대해 실행하려면, 래스터 레이어를 선택해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12681"/>
-        <location filename="../src/app/qgisapp.cpp" line="12688"/>
+        <location filename="../src/app/qgisapp.cpp" line="12686"/>
+        <location filename="../src/app/qgisapp.cpp" line="12693"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>밝기나 대조를 변경하려면 래스터 레이어를 선택해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12734"/>
-        <location filename="../src/app/qgisapp.cpp" line="12741"/>
+        <location filename="../src/app/qgisapp.cpp" line="12739"/>
+        <location filename="../src/app/qgisapp.cpp" line="12746"/>
         <source>To change gamma, you need to have a raster layer selected.</source>
         <translation>감마값을 변경하려면 래스터 레이어를 선택해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12921"/>
+        <location filename="../src/app/qgisapp.cpp" line="12926"/>
         <source>Map tool handler is not properly constructed</source>
         <translation>맵 도구 처리자가 적절히 구성되지 않았습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13143"/>
-        <location filename="../src/app/qgisapp.cpp" line="13150"/>
+        <location filename="../src/app/qgisapp.cpp" line="13148"/>
+        <location filename="../src/app/qgisapp.cpp" line="13155"/>
         <source>3D Map</source>
         <translation>3D 맵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13143"/>
+        <location filename="../src/app/qgisapp.cpp" line="13148"/>
         <source>3D Maps</source>
         <translation>3D 맵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13170"/>
+        <location filename="../src/app/qgisapp.cpp" line="13175"/>
         <source>No Elevation Profiles Found</source>
         <translation>표고 단면을 찾을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13178"/>
+        <location filename="../src/app/qgisapp.cpp" line="13183"/>
         <source>Copy From %1</source>
         <translation>%1 에서 복사</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13227"/>
+        <location filename="../src/app/qgisapp.cpp" line="13232"/>
         <source>Elevation Profile</source>
         <translation>표고 단면</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13231"/>
+        <location filename="../src/app/qgisapp.cpp" line="13236"/>
         <source>Elevation Profile (%1)</source>
         <translation>표고 단면 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13275"/>
+        <location filename="../src/app/qgisapp.cpp" line="13280"/>
         <source>New 3D Map View</source>
         <translation>새 3D 맵 뷰</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13275"/>
+        <location filename="../src/app/qgisapp.cpp" line="13280"/>
         <source>Project extent is not valid. Please add or activate a layer to render.</source>
         <translation>프로젝트 범위가 무결하지 않습니다. 렌더링을 위해 레이어를 추가하거나 활성화하십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13288"/>
+        <location filename="../src/app/qgisapp.cpp" line="13293"/>
         <source>3D Globe %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13510"/>
-        <location filename="../src/app/qgisapp.cpp" line="17296"/>
+        <location filename="../src/app/qgisapp.cpp" line="13515"/>
+        <location filename="../src/app/qgisapp.cpp" line="17301"/>
         <source>Save Project</source>
         <translation>프로젝트 저장</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
+        <location filename="../src/app/qgisapp.cpp" line="13617"/>
         <source>Save Raster Attribute Table</source>
         <translation>래스터 속성 테이블 저장</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
+        <location filename="../src/app/qgisapp.cpp" line="13617"/>
         <source>Do you want to save the changes to the attribute tables (bands: %1) associated with layer &apos;%2&apos;?</source>
         <translation>&apos;%2&apos; 레이어와 관련된 속성 테이블(밴드: %1)에 변경 사항을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13623"/>
-        <location filename="../src/app/qgisapp.cpp" line="13631"/>
+        <location filename="../src/app/qgisapp.cpp" line="13628"/>
+        <location filename="../src/app/qgisapp.cpp" line="13636"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>래스터 속성 테이블 저장 도중 오류 발생</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13623"/>
+        <location filename="../src/app/qgisapp.cpp" line="13628"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos;: %2</source>
         <translation>&apos;%1&apos; 레이어의 래스터 속성 테이블을 저장하는 도중 오류가 발생했습니다: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13631"/>
+        <location filename="../src/app/qgisapp.cpp" line="13636"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos; to VAT.DBF file &apos;%2&apos;: %3</source>
         <translation>&apos;%1&apos; 레이어의 래스터 속성 테이블을 &apos;%2&apos; VAT.DBF 파일로 저장하는 도중 오류가 발생했습니다: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13679"/>
-        <location filename="../src/app/qgisapp.cpp" line="13682"/>
+        <location filename="../src/app/qgisapp.cpp" line="13684"/>
+        <location filename="../src/app/qgisapp.cpp" line="13687"/>
         <source>Close Project</source>
         <translation>프로젝트 닫기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13679"/>
+        <location filename="../src/app/qgisapp.cpp" line="13684"/>
         <source>This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?</source>
         <translation>이 프로젝트에는 하나 이상의 임시 레이어가 포함됩니다. 이 레이어는 디스크에 저장되지 않고 내용이 영구적으로 손실됩니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13682"/>
+        <location filename="../src/app/qgisapp.cpp" line="13687"/>
         <source>This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?</source>
         <translation>이 프로젝트에는 하나 이상의 임시 스크래치 레이어가 포함됩니다. 이 레이어는 디스크에 저장되지 않고 내용이 영구적으로 손실됩니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14437"/>
+        <location filename="../src/app/qgisapp.cpp" line="14442"/>
         <source>Unknown CRS</source>
         <translation>알 수 없는 좌표계</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14569"/>
+        <location filename="../src/app/qgisapp.cpp" line="14574"/>
         <source>Pan distance %1 (%2)</source>
         <translation>이동(pan) 거리 %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14580"/>
+        <location filename="../src/app/qgisapp.cpp" line="14585"/>
         <source>Add to the current selection</source>
         <translation>현재 선택에 추가</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14584"/>
+        <location filename="../src/app/qgisapp.cpp" line="14589"/>
         <source>Subtract from the current selection</source>
         <translation>현재 선택에서 추출</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14588"/>
+        <location filename="../src/app/qgisapp.cpp" line="14593"/>
         <source>Intersect with the current selection</source>
         <translation>현재 선택과 교집합</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14592"/>
+        <location filename="../src/app/qgisapp.cpp" line="14597"/>
         <source>Select features completely within</source>
         <translation>완전히 포함되는 피처 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14596"/>
+        <location filename="../src/app/qgisapp.cpp" line="14601"/>
         <source>Add features completely within to the current selection</source>
         <translation>현재 선택에 완전히 포함되는 피처 추가</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14600"/>
+        <location filename="../src/app/qgisapp.cpp" line="14605"/>
         <source>Subtract features completely within from the current selection</source>
         <translation>현재 선택에서 완전히 포함되는 피처 추출</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14604"/>
+        <location filename="../src/app/qgisapp.cpp" line="14609"/>
         <source>Intersect features completely within with the current selection</source>
         <translation>현재 선택에서 완전히 포함되는 피처의 교집합</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14749"/>
+        <location filename="../src/app/qgisapp.cpp" line="14754"/>
         <source>1 feature selected on layer %1 (%2).</source>
         <translation>%1 (%2) 레이어에서 피처 1개를 선택했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15952"/>
+        <location filename="../src/app/qgisapp.cpp" line="15957"/>
         <source>A profile with this name already exists</source>
         <translation>이 이름을 가진 단면이 이미 존재합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15955"/>
+        <location filename="../src/app/qgisapp.cpp" line="15960"/>
         <source>New Profile Name</source>
         <translation>새 단면 이름</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15971"/>
+        <location filename="../src/app/qgisapp.cpp" line="15976"/>
         <source>New Profile</source>
         <translation>새 단면</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15971"/>
+        <location filename="../src/app/qgisapp.cpp" line="15976"/>
         <source>Cannot create folder &apos;%1&apos;</source>
         <translation>&apos;%1&apos; 폴더를 생성할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15992"/>
+        <location filename="../src/app/qgisapp.cpp" line="15997"/>
         <source>Task failed</source>
         <translation>작업 실패</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16068"/>
+        <location filename="../src/app/qgisapp.cpp" line="16073"/>
         <source>New bookmark</source>
         <translation>새 북마크</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16144"/>
+        <location filename="../src/app/qgisapp.cpp" line="16149"/>
         <source>This project file was created by a newer version of QGIS (%1) and could not be completely loaded.</source>
         <translation>이 프로젝트 파일은 보다 신 버전(%1)의 QGIS에서 생성되었기 때문에 완전하게 불러올 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16370"/>
+        <location filename="../src/app/qgisapp.cpp" line="16375"/>
         <source>Select Transformation for %1</source>
         <translation>%1 에 사용할 변환 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16764"/>
+        <location filename="../src/app/qgisapp.cpp" line="16769"/>
         <source>Network request to %1 timed out, any data received is likely incomplete.</source>
         <translation>%1 에 대한 네트워크 요청이 타임아웃되었습니다. 수신된 모든 데이터가 불완전한 것 같습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16827"/>
+        <location filename="../src/app/qgisapp.cpp" line="16832"/>
         <source>QGIS Authentication</source>
         <translation>QGIS 인증</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16971"/>
+        <location filename="../src/app/qgisapp.cpp" line="16976"/>
         <source>%1 Panel</source>
         <translation>%1 패널</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17063"/>
+        <location filename="../src/app/qgisapp.cpp" line="17068"/>
         <source>Transaction</source>
         <translation>트랜잭션</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17076"/>
-        <location filename="../src/app/qgisapp.cpp" line="17126"/>
+        <location filename="../src/app/qgisapp.cpp" line="17081"/>
+        <location filename="../src/app/qgisapp.cpp" line="17131"/>
         <source>Cannot duplicate feature in not editable mode on layer %1</source>
         <translation>%1 레이어의 편집 모드가 아닌 상태에서 피처를 복제할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17106"/>
+        <location filename="../src/app/qgisapp.cpp" line="17111"/>
         <source>%1 children on layer %2 duplicated</source>
         <translation>%2 레이어의 %1 하위(children) 피처가 복제되었습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17110"/>
+        <location filename="../src/app/qgisapp.cpp" line="17115"/>
         <source>%1 features on layer %2 duplicated
 %3</source>
         <translation>%2 레이어의 %1 피처가 복제되었습니다.
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17139"/>
+        <location filename="../src/app/qgisapp.cpp" line="17144"/>
         <source>Digitize the duplicate on layer %1</source>
         <translation>%1 레이어에 대한 복제물 디지타이즈 작업</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17143"/>
+        <location filename="../src/app/qgisapp.cpp" line="17148"/>
         <source>Duplicate digitized</source>
         <translation>복제물을 디지타이즈했습니다</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="17156"/>
+        <location filename="../src/app/qgisapp.cpp" line="17161"/>
         <source>%n children on layer %1 duplicated</source>
         <translation><numerusform>%1 레이어에 있는 하위(children) 피처 %n 개를 복제했습니다</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17159"/>
+        <location filename="../src/app/qgisapp.cpp" line="17164"/>
         <source>Feature on layer %1 duplicated
 %2</source>
         <translation>%1 레이어에 있는 피처를 복제했습니다
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17177"/>
+        <location filename="../src/app/qgisapp.cpp" line="17182"/>
         <source>Templates</source>
         <translation>템플릿</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17188"/>
+        <location filename="../src/app/qgisapp.cpp" line="17193"/>
         <source>Template Name</source>
         <translation>템플릿 이름</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17188"/>
+        <location filename="../src/app/qgisapp.cpp" line="17193"/>
         <source>Name for the template</source>
         <translation>템플릿 이름</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17194"/>
+        <location filename="../src/app/qgisapp.cpp" line="17199"/>
         <source>Template not saved</source>
         <translation>템플릿을 저장하지 않았습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17194"/>
+        <location filename="../src/app/qgisapp.cpp" line="17199"/>
         <source>The template can not have an empty name.</source>
         <translation>템플릿의 이름은 공백일 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17201"/>
+        <location filename="../src/app/qgisapp.cpp" line="17206"/>
         <source>Overwrite Template</source>
         <translation>템플릿 덮어쓰기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17202"/>
+        <location filename="../src/app/qgisapp.cpp" line="17207"/>
         <source>The template %1 already exists, do you want to replace it?</source>
         <translation>%1 템플릿이 이미 있습니다. 교체하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17203"/>
+        <location filename="../src/app/qgisapp.cpp" line="17208"/>
         <source>Overwrite</source>
         <translation>덮어쓰기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17215"/>
+        <location filename="../src/app/qgisapp.cpp" line="17220"/>
         <source>Template saved</source>
         <translation>템플릿을 저장했습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17215"/>
+        <location filename="../src/app/qgisapp.cpp" line="17220"/>
         <source>Template %1 was saved</source>
         <translation>%1 템플릿을 저장했습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17301"/>
+        <location filename="../src/app/qgisapp.cpp" line="17306"/>
         <source>Save as Local File</source>
         <translation>로컬 파일로 저장</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17032"/>
+        <location filename="../src/app/qgisapp.cpp" line="17037"/>
         <source>Layer %1</source>
         <translation>%1 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9463"/>
-        <location filename="../src/app/qgisapp.cpp" line="9566"/>
-        <location filename="../src/app/qgisapp.cpp" line="9627"/>
+        <location filename="../src/app/qgisapp.cpp" line="9468"/>
+        <location filename="../src/app/qgisapp.cpp" line="9571"/>
+        <location filename="../src/app/qgisapp.cpp" line="9632"/>
         <source>The merge features tool only works on vector layers.</source>
         <translation>피처 병합 도구는 벡터 레이어에서만 동작합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9473"/>
-        <location filename="../src/app/qgisapp.cpp" line="9636"/>
+        <location filename="../src/app/qgisapp.cpp" line="9478"/>
+        <location filename="../src/app/qgisapp.cpp" line="9641"/>
         <source>Merging features can only be done for layers in editing mode.</source>
         <translation>레이어가 편집 모드일 경우에만 피처를 병합할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9555"/>
-        <location filename="../src/app/qgisapp.cpp" line="9617"/>
+        <location filename="../src/app/qgisapp.cpp" line="9560"/>
+        <location filename="../src/app/qgisapp.cpp" line="9622"/>
         <source>Please select a layer in the layer list</source>
         <translation>레이어 목록에서 레이어를 선택해 주십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9565"/>
-        <location filename="../src/app/qgisapp.cpp" line="9626"/>
+        <location filename="../src/app/qgisapp.cpp" line="9570"/>
+        <location filename="../src/app/qgisapp.cpp" line="9631"/>
         <source>Invalid layer</source>
         <translation>무결하지 않은 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9921"/>
+        <location filename="../src/app/qgisapp.cpp" line="9926"/>
         <source>To select all, choose a vector layer in the legend.</source>
         <translation>모두 선택하려면 범레에서 벡터 레이어를 선택하십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9937"/>
-        <location filename="../src/app/qgisapp.cpp" line="9957"/>
+        <location filename="../src/app/qgisapp.cpp" line="9942"/>
+        <location filename="../src/app/qgisapp.cpp" line="9962"/>
         <source>To select features, choose a vector layer in the legend.</source>
         <translation>피처를 선택하려면, 범례에서 벡터 레이어를 선택하세요.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13492"/>
+        <location filename="../src/app/qgisapp.cpp" line="13497"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>프로젝트에 저장되지 않은 편집 내용이 있는 편집 모드 레이어가 있으며, 이는 저장되지 않습니다!</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="14755"/>
-        <location filename="../src/app/qgisapp.cpp" line="14764"/>
+        <location filename="../src/app/qgisapp.cpp" line="14760"/>
+        <location filename="../src/app/qgisapp.cpp" line="14769"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation><numerusform>%1 레이어에서 피처 %n 개를 선택했습니다.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15907"/>
+        <location filename="../src/app/qgisapp.cpp" line="15912"/>
         <source>Exit QGIS</source>
         <translation>QGIS 종료</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15907"/>
+        <location filename="../src/app/qgisapp.cpp" line="15912"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>QGIS를 정말로 종료하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15954"/>
+        <location filename="../src/app/qgisapp.cpp" line="15959"/>
         <source>New profile name</source>
         <translation>새 프로파일 이름</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15990"/>
+        <location filename="../src/app/qgisapp.cpp" line="15995"/>
         <source>Task complete</source>
         <translation>작업 완료</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16132"/>
+        <location filename="../src/app/qgisapp.cpp" line="16137"/>
         <source>This project file was saved by QGIS version %1. When saving this project file, QGIS will update it to version %2, possibly rendering it unusable with older versions of QGIS.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16137"/>
+        <location filename="../src/app/qgisapp.cpp" line="16142"/>
         <source>Project file is older</source>
         <translation>프로젝트 파일이 구 버전입니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16764"/>
+        <location filename="../src/app/qgisapp.cpp" line="16769"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>추가 정보는 &lt;a href=&quot;#messageLog&quot;&gt;메시지 로그&lt;/a&gt; 를 확인하십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16670"/>
+        <location filename="../src/app/qgisapp.cpp" line="16675"/>
         <source>Warning</source>
         <translation>경고</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16670"/>
+        <location filename="../src/app/qgisapp.cpp" line="16675"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>이 레이어는 속성 대화창을 지원하지 않습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16735"/>
+        <location filename="../src/app/qgisapp.cpp" line="16740"/>
         <source>Proxy authentication required</source>
         <translation>프록시 인증이 필요합니다</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6910"/>
+        <location filename="../src/app/qgisapp.cpp" line="6915"/>
         <source>Failed to run Python script:</source>
         <translation>파이썬 스크립트 실행 실패:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8624"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>The current layer has no selected features</source>
         <translation>현재 레이어에서 선택한 피처가 없습니다</translation>
     </message>
@@ -134725,13 +134736,13 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
-        <location filename="../src/app/qgisapp.cpp" line="12471"/>
+        <location filename="../src/app/qgisapp.cpp" line="12476"/>
         <source>General</source>
         <translation>일반 설정</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="107"/>
-        <location filename="../src/app/qgisapp.cpp" line="12472"/>
+        <location filename="../src/app/qgisapp.cpp" line="12477"/>
         <source>System</source>
         <translation>시스템</translation>
     </message>
@@ -134742,7 +134753,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
-        <location filename="../src/app/qgisapp.cpp" line="12473"/>
+        <location filename="../src/app/qgisapp.cpp" line="12478"/>
         <source>CRS Handling</source>
         <translation>좌표계 처리</translation>
     </message>
@@ -134758,13 +134769,13 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="114"/>
-        <location filename="../src/app/qgisapp.cpp" line="12474"/>
+        <location filename="../src/app/qgisapp.cpp" line="12479"/>
         <source>Coordinate Transforms</source>
         <translation>좌표 변환</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="117"/>
-        <location filename="../src/app/qgisapp.cpp" line="12475"/>
+        <location filename="../src/app/qgisapp.cpp" line="12480"/>
         <source>Data Sources</source>
         <translation>데이터소스</translation>
     </message>
@@ -134785,31 +134796,31 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
-        <location filename="../src/app/qgisapp.cpp" line="12480"/>
+        <location filename="../src/app/qgisapp.cpp" line="12485"/>
         <source>Colors</source>
         <translation>색상</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="121"/>
-        <location filename="../src/app/qgisapp.cpp" line="12477"/>
+        <location filename="../src/app/qgisapp.cpp" line="12482"/>
         <source>Canvas &amp; Legend</source>
         <translation>캔버스 및 범례</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="123"/>
-        <location filename="../src/app/qgisapp.cpp" line="12478"/>
+        <location filename="../src/app/qgisapp.cpp" line="12483"/>
         <source>Map Tools</source>
         <translation>맵 도구</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="125"/>
-        <location filename="../src/app/qgisapp.cpp" line="12479"/>
+        <location filename="../src/app/qgisapp.cpp" line="12484"/>
         <source>Digitizing</source>
         <translation>디지타이즈 작업</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="119"/>
-        <location filename="../src/app/qgisapp.cpp" line="12476"/>
+        <location filename="../src/app/qgisapp.cpp" line="12481"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
@@ -134820,7 +134831,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
-        <location filename="../src/app/qgisapp.cpp" line="12484"/>
+        <location filename="../src/app/qgisapp.cpp" line="12489"/>
         <source>Network</source>
         <translation>네트워크</translation>
     </message>
@@ -134967,19 +134978,19 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
-        <location filename="../src/app/qgisapp.cpp" line="12483"/>
+        <location filename="../src/app/qgisapp.cpp" line="12488"/>
         <source>Authentication</source>
         <translation>인증</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
-        <location filename="../src/app/qgisapp.cpp" line="12482"/>
+        <location filename="../src/app/qgisapp.cpp" line="12487"/>
         <source>Variables</source>
         <translation>변수</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsadvancedoptions.cpp" line="100"/>
-        <location filename="../src/app/qgisapp.cpp" line="12487"/>
+        <location filename="../src/app/qgisapp.cpp" line="12492"/>
         <source>Advanced</source>
         <translation>고급</translation>
     </message>
@@ -135035,13 +135046,13 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
-        <location filename="../src/app/qgisapp.cpp" line="12481"/>
+        <location filename="../src/app/qgisapp.cpp" line="12486"/>
         <source>Layouts</source>
         <translation>조판</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
-        <location filename="../src/app/qgisapp.cpp" line="12485"/>
+        <location filename="../src/app/qgisapp.cpp" line="12490"/>
         <source>Locator</source>
         <translation>위치 탐색자</translation>
     </message>
@@ -135057,7 +135068,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
-        <location filename="../src/app/qgisapp.cpp" line="12486"/>
+        <location filename="../src/app/qgisapp.cpp" line="12491"/>
         <source>Acceleration</source>
         <translation>가속</translation>
     </message>
@@ -139279,7 +139290,7 @@ Please search the list of installed plugins. You should find the plugin there, b
     <name>QgsPluginManager</name>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="504"/>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1778"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1788"/>
         <source>Plugins</source>
         <translation>플러그인</translation>
     </message>
@@ -139480,7 +139491,7 @@ Please search the list of installed plugins. You should find the plugin there, b
         <translation>필터 지우기</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1548"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1558"/>
         <source>Don&apos;t show this again.</source>
         <translation>다시 표시하지 않습니다.</translation>
     </message>
@@ -139646,12 +139657,12 @@ Please search the list of installed plugins. You should find the plugin there, b
         <translation>플러그인 저장소에 투표를 전송하지 못했습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1542"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1552"/>
         <source>Security warning</source>
         <translation>보안 경고</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1543"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1553"/>
         <source>Installing a plugin from an untrusted source can harm your computer. Only continue if you received the plugin from a source you trust. Continue?</source>
         <translation>신뢰할 수 없는 소스로부터 플러그인을 설치하면 사용자 컴퓨터가 손상될 수 있습니다. 신뢰하는 소스에서 플러그인을 받은 경우에만 계속하십시오. 계속하시겠습니까?</translation>
     </message>
@@ -148018,7 +148029,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12400"/>
+        <location filename="../src/app/qgisapp.cpp" line="12405"/>
         <source>General</source>
         <translation>일반</translation>
     </message>
@@ -148054,7 +148065,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12403"/>
+        <location filename="../src/app/qgisapp.cpp" line="12408"/>
         <source>CRS</source>
         <translation>좌표계</translation>
     </message>
@@ -148065,7 +148076,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12409"/>
+        <location filename="../src/app/qgisapp.cpp" line="12414"/>
         <source>Variables</source>
         <translation>변수</translation>
     </message>
@@ -148211,7 +148222,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12408"/>
+        <location filename="../src/app/qgisapp.cpp" line="12413"/>
         <source>Relations</source>
         <translation>관계</translation>
     </message>
@@ -148317,7 +148328,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12407"/>
+        <location filename="../src/app/qgisapp.cpp" line="12412"/>
         <source>Data Sources</source>
         <translation>데이터소스</translation>
     </message>
@@ -148358,7 +148369,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12401"/>
+        <location filename="../src/app/qgisapp.cpp" line="12406"/>
         <source>Metadata</source>
         <translation>메타데이터</translation>
     </message>
@@ -148369,7 +148380,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12411"/>
+        <location filename="../src/app/qgisapp.cpp" line="12416"/>
         <source>QGIS Server</source>
         <translation>QGIS 서버</translation>
     </message>
@@ -148635,7 +148646,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12410"/>
+        <location filename="../src/app/qgisapp.cpp" line="12415"/>
         <source>Macros</source>
         <translation>매크로 </translation>
     </message>
@@ -148781,7 +148792,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12404"/>
+        <location filename="../src/app/qgisapp.cpp" line="12409"/>
         <source>Transformations</source>
         <translation>변환</translation>
     </message>
@@ -148792,7 +148803,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12412"/>
+        <location filename="../src/app/qgisapp.cpp" line="12417"/>
         <source>Temporal</source>
         <translation>시계열</translation>
     </message>
@@ -148863,7 +148874,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12402"/>
+        <location filename="../src/app/qgisapp.cpp" line="12407"/>
         <source>View Settings</source>
         <translation>뷰 설정</translation>
     </message>
@@ -149034,7 +149045,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12405"/>
+        <location filename="../src/app/qgisapp.cpp" line="12410"/>
         <source>Styles</source>
         <translation>스타일</translation>
     </message>
@@ -149065,7 +149076,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12406"/>
+        <location filename="../src/app/qgisapp.cpp" line="12411"/>
         <source>Colors</source>
         <translation type="unfinished"/>
     </message>

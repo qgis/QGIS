@@ -43883,17 +43883,17 @@ If the time step is kept to its default value (0 hours), the time step used is t
         <translation>பாதை% 1 இலிருந்து OpenCL நிரலை ஏற்ற முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsopenclutils.cpp" line="739"/>
+        <location filename="../src/core/qgsopenclutils.cpp" line="738"/>
         <source>Build logs not available!</source>
         <translation>கட்டுமானப் பதிவுகள் கிடைக்கவில்லை!</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsopenclutils.cpp" line="740"/>
+        <location filename="../src/core/qgsopenclutils.cpp" line="739"/>
         <source>Error building OpenCL program: %1</source>
         <translation>OpenCL நிரலை உருவாக்குவதில் பிழை:% 1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsopenclutils.cpp" line="748"/>
+        <location filename="../src/core/qgsopenclutils.cpp" line="747"/>
         <source>Error %1 building OpenCL program in %2</source>
         <translation>% 2 இல் OpenCL நிரலை உருவாக்குவதில்% 1 பிழை</translation>
     </message>
@@ -44123,14 +44123,19 @@ If desired, tables can also be output containing lists of the categories which c
         <translation>% 1 க்கு தேவையான நினைவகத்தை ஒதுக்க முடியவில்லை</translation>
     </message>
     <message>
+        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="555"/>
+        <source>Error compiling OpenCL kernel: %1</source>
+        <translation>OpenCL கர்னலை தொகுப்பதில் பிழை: % 1</translation>
+    </message>
+    <message>
         <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="179"/>
-        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="570"/>
+        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="579"/>
         <source>Could not obtain driver for %1</source>
         <translation>% 1க்கான இயக்கியைப் பெற முடியவில்லை</translation>
     </message>
     <message>
         <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="186"/>
-        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="577"/>
+        <location filename="../src/analysis/raster/qgsrastercalculator.cpp" line="586"/>
         <source>Could not create output %1</source>
         <translation>வெளியீடு% 1 ஐ உருவாக்க முடியவில்லை</translation>
     </message>
@@ -51056,7 +51061,7 @@ The created point layer will be in the same spatial reference system as the sele
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="493"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="872"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="871"/>
         <source>%1: Style has no paint property, skipping</source>
         <translation>%1: சூல் தண்டு has இல்லை paint property, skipping</translation>
     </message>
@@ -51086,271 +51091,271 @@ The created point layer will be in the same spatial reference system as the sele
         <translation>%1: Skipping unsupported line-opacity வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="776"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="775"/>
         <source>%1: Skipping unsupported line-dasharray type (%2)</source>
         <translation>%1: Skipping unsupported line-dasharray வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="900"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="899"/>
         <source>%1: Skipping unsupported circle-color type (%2)</source>
         <translation>%1: Skipping unsupported circle-color வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="934"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="933"/>
         <source>%1: Skipping unsupported circle-radius type (%2)</source>
         <translation>%1: Skipping unsupported circle-radius வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="961"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="960"/>
         <source>%1: Skipping unsupported circle-opacity type (%2)</source>
         <translation>%1: Skipping unsupported circle-opacity வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="991"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="990"/>
         <source>%1: Skipping unsupported circle-stroke-color type (%2)</source>
         <translation>%1: Skipping unsupported circle-stroke-color வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1020"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1019"/>
         <source>%1: Skipping unsupported circle-stroke-width type (%2)</source>
         <translation>%1: Skipping unsupported circle-stroke-width வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1047"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1046"/>
         <source>%1: Skipping unsupported circle-stroke-opacity type (%2)</source>
         <translation>%1: Skipping unsupported circle-stroke-opacity வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1075"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1074"/>
         <source>%1: Skipping unsupported circle-translate type (%2)</source>
         <translation>%1: Skipping unsupported circle-translate வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1125"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2122"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1124"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2121"/>
         <source>%1: Style layer has no layout property, skipping</source>
         <translation>%1: சூல் தண்டு layer has இல்லை மனையமைவு property, skipping</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1165"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1164"/>
         <source>%1: Skipping unsupported text-size type (%2)</source>
         <translation>%1: Skipping unsupported text-size வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1200"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1199"/>
         <source>%1: Skipping unsupported text-max-width type (%2)</source>
         <translation>%1: Skipping unsupported text-max-width வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1232"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1231"/>
         <source>%1: Skipping unsupported text-letter-spacing type (%2)</source>
         <translation>%1: Skipping unsupported text-letter-spacing வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1305"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1304"/>
         <source>%1: Skipping unsupported text-font type (%2)</source>
         <translation>%1: Skipping unsupported text-font வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1335"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1344"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2763"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2772"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2814"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2822"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1334"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1343"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2762"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2771"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2813"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2821"/>
         <source>%1: Expressions in interpolation function are not supported, skipping.</source>
         <translation>%1: Expressions in இடைக்கணிப்பு சார்பு அரே not supported, skipping.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1362"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1376"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1428"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1361"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1375"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1427"/>
         <source>%1: Referenced font %2 is not available on system</source>
         <translation>%1: Referenced font %2 is not available on மண்டலம்</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1452"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1451"/>
         <source>%1: Skipping unsupported text-color type (%2)</source>
         <translation>%1: Skipping unsupported text-color வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1483"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1482"/>
         <source>%1: Skipping unsupported text-halo-color type (%2)</source>
         <translation>%1: Skipping unsupported text-halo-color வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1517"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1516"/>
         <source>%1: Skipping unsupported text-halo-width type (%2)</source>
         <translation>%1: Skipping unsupported text-halo-width வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1568"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1567"/>
         <source>%1: Skipping unsupported text-halo-blur type (%2)</source>
         <translation>%1: Skipping unsupported text-halo-blur வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1694"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1693"/>
         <source>%1: Skipping unsupported text-field dictionary</source>
         <translation>%1: Skipping unsupported text-field dictionary</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1700"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1699"/>
         <source>%1: Skipping unsupported text-field type (%2)</source>
         <translation>%1: Skipping unsupported text-field வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1734"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1733"/>
         <source>%1: Skipping unsupported text-rotate map content (%2)</source>
         <translation>%1: Skipping unsupported text-rotate map content (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1739"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1738"/>
         <source>%1: Skipping unsupported text-rotate type (%2)</source>
         <translation>%1: Skipping unsupported text-rotate வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1809"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1959"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1808"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1958"/>
         <source>%1: Skipping unsupported text-offset type (%2)</source>
         <translation>%1: Skipping unsupported text-offset வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1863"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1862"/>
         <source>%1: Skipping unsupported text-justify type (%2)</source>
         <translation>%1: Skipping unsupported text-justify வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1916"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1915"/>
         <source>%1: Skipping unsupported text-anchor type (%2)</source>
         <translation>%1: Skipping unsupported text-anchor வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2089"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2153"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2088"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2152"/>
         <source>%1: Skipping unsupported symbol-spacing type (%2)</source>
         <translation>%1: Skipping unsupported symbol-spacing வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2200"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2384"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2199"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2383"/>
         <source>%1: Skipping unsupported icon-rotate type (%2)</source>
         <translation>%1: Skipping unsupported icon-rotate வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2009"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2260"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2343"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2008"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2259"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2342"/>
         <source>%1: Skipping non-implemented icon-size type (%2)</source>
         <translation>%1: Skipping non-implemented icon-size வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2411"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2410"/>
         <source>%1: Skipping unsupported icon-opacity type (%2)</source>
         <translation>%1: Skipping unsupported icon-opacity வகை (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2687"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2696"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2686"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2695"/>
         <source>%1: Skipping unsupported offset interpolation type (%2).</source>
         <translation>%1: Skipping unsupported offset இடைக்கணிப்பு வகை (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2849"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2857"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2877"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2848"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2856"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2876"/>
         <source>%1: Lists in label interpolation function are not supported, skipping.</source>
         <translation>%1: Lists in சிட்டை இடைக்கணிப்பு சார்பு அரே not supported, skipping.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2928"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3794"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2927"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3882"/>
         <source>%1: Could not interpret match list</source>
         <translation>%1: Could not interpret match பட்டியல்</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3090"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3578"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3869"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3134"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3662"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3957"/>
         <source>%1: Could not interpret step list</source>
         <translation>%1: Could not interpret படி பட்டியல்</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3174"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3241"/>
         <source>%1: Could not interpret value list</source>
         <translation>%1: Could not interpret மதிப்பு பட்டியல்</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3186"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3253"/>
         <source>%1: Cubic-bezier interpolation is not supported, linear used instead.</source>
         <translation>%1: Cubic-bezier இடைக்கணிப்பு is not supported, நேரியல் used instead.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3191"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3258"/>
         <source>%1: Skipping not implemented interpolation method %2</source>
         <translation>%1: Skipping not implemented இடைக்கணிப்பு method %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3197"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3264"/>
         <source>%1: Skipping not implemented interpolation input %2</source>
         <translation>%1: Skipping not implemented இடைக்கணிப்பு input %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3226"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3294"/>
         <source>%1: Skipping unsupported numeric array in interpolate</source>
         <translation>%1: Skipping unsupported எண் வரிசை array in interpolate</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3246"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3314"/>
         <source>%1: Could not parse non-string color %2, skipping</source>
         <translation>%1: Could not பாகுபடுத்தல் non-string color %2, skipping</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3343"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3411"/>
         <source>%1: Operator %2 requires exactly two operands, skipping extra operands</source>
         <translation>%1: Operator %2 requires exactly two operands, skipping extra operands</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3378"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3444"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3498"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3450"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3516"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3570"/>
         <source>%1: Skipping unsupported expression</source>
         <translation>%1: Skipping unsupported கோவை</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3601"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3689"/>
         <source>%1: Skipping unsupported expression &quot;%2&quot;</source>
         <translation>%1: Skipping unsupported கோவை &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3633"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3640"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3650"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3721"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3728"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3738"/>
         <source>%1: Could not retrieve sprite &apos;%2&apos;</source>
         <translation>%1: Could not retrieve sprite &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3918"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4006"/>
         <source>%1: Could not interpret sprite value list with method %2</source>
         <translation>%1: Could not interpret sprite மதிப்பு பட்டியல் with method %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3832"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3924"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3920"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4012"/>
         <source>%1: Skipping unsupported sprite type (%2).</source>
         <translation>%1: Skipping unsupported sprite வகை (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3962"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4050"/>
         <source>%1: Skipping unsupported expression part</source>
         <translation>%1: Skipping unsupported கோவை பகுதி</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4114"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4202"/>
         <source>Invalid source type &quot;%1&quot; for source &quot;%2&quot;</source>
         <translation>செல்லுபடியாகாத மூலம் வகை &quot;%1&quot; க்கு மூலம் &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4275"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4363"/>
         <source>%1 scheme is not supported for raster source %2</source>
         <translation>%1 scheme is not supported க்கு raster மூலம் %2</translation>
     </message>
@@ -59086,12 +59091,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3276"/>
-        <location filename="../src/app/qgisapp.cpp" line="10698"/>
-        <location filename="../src/app/qgisapp.cpp" line="10841"/>
-        <location filename="../src/app/qgisapp.cpp" line="10927"/>
-        <location filename="../src/app/qgisapp.cpp" line="11090"/>
-        <location filename="../src/app/qgisapp.cpp" line="11117"/>
-        <location filename="../src/app/qgisapp.cpp" line="11140"/>
+        <location filename="../src/app/qgisapp.cpp" line="10703"/>
+        <location filename="../src/app/qgisapp.cpp" line="10846"/>
+        <location filename="../src/app/qgisapp.cpp" line="10932"/>
+        <location filename="../src/app/qgisapp.cpp" line="11095"/>
+        <location filename="../src/app/qgisapp.cpp" line="11122"/>
+        <location filename="../src/app/qgisapp.cpp" line="11145"/>
         <source>Error</source>
         <translation>பிழை</translation>
     </message>
@@ -59137,13 +59142,13 @@ Please contact the developers.
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3386"/>
-        <location filename="../src/app/qgisapp.cpp" line="16958"/>
+        <location filename="../src/app/qgisapp.cpp" line="16963"/>
         <source>Panels</source>
         <translation>பேனல்கள்</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3388"/>
-        <location filename="../src/app/qgisapp.cpp" line="16978"/>
+        <location filename="../src/app/qgisapp.cpp" line="16983"/>
         <source>Toolbars</source>
         <translation>கருவிப்பட்டிகள்</translation>
     </message>
@@ -59296,220 +59301,220 @@ Please contact the developers.
         <translation>QGIS இன் இந்த நகல் பிழைத்திருத்த வெளியீட்டை எழுதுகிறது.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7923"/>
+        <location filename="../src/app/qgisapp.cpp" line="7928"/>
         <source>Diagram Properties</source>
         <translation>வரைபட பண்புகள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7934"/>
+        <location filename="../src/app/qgisapp.cpp" line="7939"/>
         <source>Annotations</source>
         <translation>சிறுகுறிப்புகள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7938"/>
+        <location filename="../src/app/qgisapp.cpp" line="7943"/>
         <source>Annotations (%1)</source>
         <translation>சிறுகுறிப்புகள் (% 1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8571"/>
+        <location filename="../src/app/qgisapp.cpp" line="8576"/>
         <source>Export failed</source>
         <translation>ஏற்றுமதி தோல்வியடைந்தது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8571"/>
+        <location filename="../src/app/qgisapp.cpp" line="8576"/>
         <source>A problem occurred while exporting: %1</source>
         <translation>ஏற்றுமதி செய்யும் போது ஒரு சிக்கல் ஏற்பட்டது:% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8573"/>
+        <location filename="../src/app/qgisapp.cpp" line="8578"/>
         <source>Cannot open file</source>
         <translation>கோப்பை திறக்க முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8573"/>
+        <location filename="../src/app/qgisapp.cpp" line="8578"/>
         <source>Cannot open exported file: %1</source>
         <translation>ஏற்றுமதி செய்யப்பட்ட கோப்பை திறக்க முடியாது: % 1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8649"/>
+        <location filename="../src/app/qgisapp.cpp" line="8654"/>
         <source>Some of the &lt;b&gt;%n&lt;/b&gt; selected feature(s) about to be deleted &lt;b&gt;are outside of the current map view&lt;/b&gt;. Would you still like to continue?</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8650"/>
-        <location filename="../src/app/qgisapp.cpp" line="8672"/>
-        <location filename="../src/app/qgisapp.cpp" line="8686"/>
+        <location filename="../src/app/qgisapp.cpp" line="8655"/>
+        <location filename="../src/app/qgisapp.cpp" line="8677"/>
+        <location filename="../src/app/qgisapp.cpp" line="8691"/>
         <source>Delete %n Feature(s)</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8667"/>
+        <location filename="../src/app/qgisapp.cpp" line="8672"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8687"/>
+        <location filename="../src/app/qgisapp.cpp" line="8692"/>
         <source>Don&apos;t show this message again</source>
         <translation>இந்த செய்தியை மீண்டும் காட்ட வேண்டாம்</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8720"/>
+        <location filename="../src/app/qgisapp.cpp" line="8725"/>
         <source>%n feature(s) deleted: %1</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9678"/>
-        <location filename="../src/app/qgisapp.cpp" line="9736"/>
+        <location filename="../src/app/qgisapp.cpp" line="9683"/>
+        <location filename="../src/app/qgisapp.cpp" line="9741"/>
         <source>Resulting geometry type (multipart) is incompatible with layer type (singlepart).</source>
         <translation>இதன் விளைவாக வடிவியல் வகை (மல்டிபார்ட்) அடுக்கு வகையுடன் (ஒற்றை பகுதி) பொருந்தாது.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9687"/>
+        <location filename="../src/app/qgisapp.cpp" line="9692"/>
         <source>Merge Features</source>
         <translation>அம்சங்களை ஒன்றிணைக்கவும்</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10303"/>
+        <location filename="../src/app/qgisapp.cpp" line="10308"/>
         <source>%n geometries collapsed due to intersection avoidance.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10364"/>
+        <location filename="../src/app/qgisapp.cpp" line="10369"/>
         <source>Cannot copy style</source>
         <translation>நடையை நகலெடுக்க முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10387"/>
+        <location filename="../src/app/qgisapp.cpp" line="10392"/>
         <source>Cannot parse style</source>
         <translation>பாணியை அலச முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10399"/>
+        <location filename="../src/app/qgisapp.cpp" line="10404"/>
         <source>Cannot paste style</source>
         <translation>ச்டைலை ஒட்ட முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10555"/>
+        <location filename="../src/app/qgisapp.cpp" line="10560"/>
         <source>Layer cannot be edited</source>
         <translation>லேயரைத் திருத்த முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10748"/>
+        <location filename="../src/app/qgisapp.cpp" line="10753"/>
         <source>Start Mesh Frame Edit</source>
         <translation>மெச் சட்ட திருத்தத்தைத் தொடங்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10748"/>
+        <location filename="../src/app/qgisapp.cpp" line="10753"/>
         <source>Starting editing the frame of this mesh layer will remove all dataset groups.
 Alternatively, you can create a new mesh layer from that one.</source>
         <translation>இந்த மெச் லேயரின் சட்டத்தைத் திருத்தத் தொடங்கினால், எல்லா தரவுத்தொகுப்புக் குழுக்களும் அகற்றப்படும். 
 மாற்றாக, அதில் இருந்து புதிய மெச் லேயரை உருவாக்கலாம்.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10752"/>
+        <location filename="../src/app/qgisapp.cpp" line="10757"/>
         <source>Edit Current Mesh</source>
         <translation>தற்போதைய மெசைத் திருத்தவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10753"/>
+        <location filename="../src/app/qgisapp.cpp" line="10758"/>
         <source>Edit a Copy</source>
         <translation>ஒரு நகலை திருத்தவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10800"/>
-        <location filename="../src/app/qgisapp.cpp" line="10826"/>
-        <location filename="../src/app/qgisapp.cpp" line="11020"/>
+        <location filename="../src/app/qgisapp.cpp" line="10805"/>
+        <location filename="../src/app/qgisapp.cpp" line="10831"/>
+        <location filename="../src/app/qgisapp.cpp" line="11025"/>
         <source>Mesh editing</source>
         <translation>மெச் திருத்துதல்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10801"/>
+        <location filename="../src/app/qgisapp.cpp" line="10806"/>
         <source>Unable to start mesh editing for layer &quot;%1&quot;</source>
         <translation>&quot;% 1&quot; லேயருக்கான மெச் திருத்துதல் தொடங்க முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10827"/>
-        <location filename="../src/app/qgisapp.cpp" line="10915"/>
-        <location filename="../src/app/qgisapp.cpp" line="11021"/>
-        <location filename="../src/app/qgisapp.cpp" line="11044"/>
+        <location filename="../src/app/qgisapp.cpp" line="10832"/>
+        <location filename="../src/app/qgisapp.cpp" line="10920"/>
+        <location filename="../src/app/qgisapp.cpp" line="11026"/>
+        <location filename="../src/app/qgisapp.cpp" line="11049"/>
         <source>Unable to save editing for layer &quot;%1&quot;</source>
         <translation>&quot;% 1&quot; அடுக்குக்கான திருத்தத்தைச் சேமிக்க முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11117"/>
-        <location filename="../src/app/qgisapp.cpp" line="11140"/>
+        <location filename="../src/app/qgisapp.cpp" line="11122"/>
+        <location filename="../src/app/qgisapp.cpp" line="11145"/>
         <source>Could not %1 changes to layer %2</source>
         <translation>அடுக்கு% 2 க்கு % 1 மாற்ற முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11645"/>
+        <location filename="../src/app/qgisapp.cpp" line="11650"/>
         <source>No legend entries selected</source>
         <translation>லெசண்ட் உள்ளீடுகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11645"/>
+        <location filename="../src/app/qgisapp.cpp" line="11650"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>லெசெண்டில் நீங்கள் அகற்ற விரும்பும் அடுக்குகள் மற்றும் குழுக்களைத் தேர்ந்தெடுக்கவும்.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11690"/>
+        <location filename="../src/app/qgisapp.cpp" line="11695"/>
         <source>(%n more hidden layer(s))</source>
         <comment>number of hidden layers not shown</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11692"/>
+        <location filename="../src/app/qgisapp.cpp" line="11697"/>
         <source>The following hidden layers will be removed:
 %1</source>
         <translation>பின்வரும் மறைக்கப்பட்ட அடுக்குகள் அகற்றப்படும்: 
 % 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11695"/>
+        <location filename="../src/app/qgisapp.cpp" line="11700"/>
         <source>Remove layers and groups</source>
         <translation>அடுக்குகள் மற்றும் குழுக்களை அகற்றவும்</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11683"/>
+        <location filename="../src/app/qgisapp.cpp" line="11688"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11714"/>
+        <location filename="../src/app/qgisapp.cpp" line="11719"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11794"/>
+        <location filename="../src/app/qgisapp.cpp" line="11799"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>% 1 (% 2 வகை ஆதரிக்கப்படவில்லை)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11836"/>
+        <location filename="../src/app/qgisapp.cpp" line="11841"/>
         <source>Cannot copy style to duplicated layer.</source>
         <translation>பாணியை நகல் அடுக்குக்கு நகலெடுக்க முடியாது.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13087"/>
+        <location filename="../src/app/qgisapp.cpp" line="13092"/>
         <source>Map %1</source>
         <translation>வரைபடம்% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13285"/>
+        <location filename="../src/app/qgisapp.cpp" line="13290"/>
         <source>3D Map %1</source>
         <translation>3D வரைபடம்% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13510"/>
+        <location filename="../src/app/qgisapp.cpp" line="13515"/>
         <source>Do you want to save the current project? %1</source>
         <translation>தற்போதைய திட்டத்தைச் சேமிக்க விரும்புகிறீர்களா? % 1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5759"/>
-        <location filename="../src/app/qgisapp.cpp" line="11636"/>
-        <location filename="../src/app/qgisapp.cpp" line="13718"/>
+        <location filename="../src/app/qgisapp.cpp" line="11641"/>
+        <location filename="../src/app/qgisapp.cpp" line="13723"/>
         <source>Active Tasks</source>
         <translation>செயலில் உள்ள பணிகள்</translation>
     </message>
@@ -59584,91 +59589,91 @@ Alternatively, you can create a new mesh layer from that one.</source>
         <translation>ராச்டர் வெளிப்பாட்டைக் கணக்கிடுகிறது…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6357"/>
+        <location filename="../src/app/qgisapp.cpp" line="6362"/>
         <source>Revert Project</source>
         <translation>திட்டத்தை மாற்றவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6357"/>
+        <location filename="../src/app/qgisapp.cpp" line="6362"/>
         <source>Are you sure you want to discard all unsaved changes the current project?</source>
         <translation>தற்போதைய திட்டத்தில் சேமிக்கப்படாத அனைத்து மாற்றங்களையும் நிராகரிக்க விரும்புகிறீர்களா?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6679"/>
+        <location filename="../src/app/qgisapp.cpp" line="6684"/>
         <source>Save Project As</source>
         <translation>திட்டத்தை இவ்வாறு சேமி</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8111"/>
-        <location filename="../src/app/qgisapp.cpp" line="8370"/>
+        <location filename="../src/app/qgisapp.cpp" line="8116"/>
+        <location filename="../src/app/qgisapp.cpp" line="8375"/>
         <source>Layer Exported</source>
         <translation>அடுக்கு ஏற்றுமதி செய்யப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8131"/>
+        <location filename="../src/app/qgisapp.cpp" line="8136"/>
         <source>Save Raster</source>
         <translation>ராச்டரை சேமிக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8128"/>
+        <location filename="../src/app/qgisapp.cpp" line="8133"/>
         <source>Cannot write raster. Error code: %1</source>
         <translation>ராச்டர் எழுத முடியாது. பிழை குறியீடு:% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8777"/>
+        <location filename="../src/app/qgisapp.cpp" line="8782"/>
         <source>Merging features…</source>
         <translation>அம்சங்களை ஒன்றிணைக்கிறது…</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10265"/>
+        <location filename="../src/app/qgisapp.cpp" line="10270"/>
         <source>
 %n children on layer %1 duplicated</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10294"/>
+        <location filename="../src/app/qgisapp.cpp" line="10299"/>
         <source>%n feature(s) were pasted.%1</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10420"/>
+        <location filename="../src/app/qgisapp.cpp" line="10425"/>
         <source>Error copying layer</source>
         <translation>லேயரை நகலெடுப்பதில் பிழை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10456"/>
+        <location filename="../src/app/qgisapp.cpp" line="10461"/>
         <source>Error pasting layer</source>
         <translation>லேயர் ஒட்டுவதில் பிழை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10663"/>
-        <location filename="../src/app/qgisapp.cpp" line="10813"/>
-        <location filename="../src/app/qgisapp.cpp" line="10901"/>
+        <location filename="../src/app/qgisapp.cpp" line="10668"/>
+        <location filename="../src/app/qgisapp.cpp" line="10818"/>
+        <location filename="../src/app/qgisapp.cpp" line="10906"/>
         <source>Stop Editing</source>
         <translation>திருத்துவதை நிறுத்து</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12770"/>
+        <location filename="../src/app/qgisapp.cpp" line="12775"/>
         <source>https://qgis.org/resources/support/bug-reporting/</source>
         <translation>https://qgis.org/resources/support/bug-reporting/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12777"/>
+        <location filename="../src/app/qgisapp.cpp" line="12782"/>
         <source>https://qgis.org/community/involve/</source>
         <translation>https://qgis.org/community/involve/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12784"/>
+        <location filename="../src/app/qgisapp.cpp" line="12789"/>
         <source>https://qgis.org/funding/donate/</source>
         <translation>https://qgis.org/funding/donate/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12791"/>
+        <location filename="../src/app/qgisapp.cpp" line="12796"/>
         <source>https://qgis.org/resources/support/commercial-support/</source>
         <translation>https://qgis.org/resources/support/commercial-support/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13718"/>
+        <location filename="../src/app/qgisapp.cpp" line="13723"/>
         <source>The following tasks are currently running which depend on layers in this project:
 
 %1
@@ -59681,42 +59686,42 @@ Please cancel these tasks and retry.</source>
 இந்தப் பணிகளை ரத்துசெய்துவிட்டு மீண்டும் முயற்சிக்கவும்.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14440"/>
+        <location filename="../src/app/qgisapp.cpp" line="14445"/>
         <source>Current CRS: %1</source>
         <translation>தற்போதைய CRS:% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14447"/>
+        <location filename="../src/app/qgisapp.cpp" line="14452"/>
         <source>No projection</source>
         <translation>ப்ரொசெக்சன் இல்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15253"/>
+        <location filename="../src/app/qgisapp.cpp" line="15258"/>
         <source>Add Point Feature</source>
         <translation>புள்ளி அம்சத்தைச் சேர்க்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15283"/>
+        <location filename="../src/app/qgisapp.cpp" line="15288"/>
         <source>Add Line Feature</source>
         <translation>வரி அம்சத்தைச் சேர்க்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15302"/>
+        <location filename="../src/app/qgisapp.cpp" line="15307"/>
         <source>Add Polygon Feature</source>
         <translation>பலகோண அம்சத்தைச் சேர்க்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15319"/>
+        <location filename="../src/app/qgisapp.cpp" line="15324"/>
         <source>Add Record</source>
         <translation>பதிவைச் சேர்க்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15875"/>
+        <location filename="../src/app/qgisapp.cpp" line="15880"/>
         <source>Map Views</source>
         <translation>வரைபடக் காட்சிகள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15878"/>
+        <location filename="../src/app/qgisapp.cpp" line="15883"/>
         <source>A view with this name already exists</source>
         <translation type="unfinished"/>
     </message>
@@ -59766,12 +59771,12 @@ Please cancel these tasks and retry.</source>
         <translation>கோப்பு கிடைக்கவில்லை: % 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6394"/>
+        <location filename="../src/app/qgisapp.cpp" line="6399"/>
         <source>Loading project: %1</source>
         <translation>திட்டத்தை ஏற்றுகிறது:% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6435"/>
+        <location filename="../src/app/qgisapp.cpp" line="6440"/>
         <source>Unable to open project</source>
         <translation>திட்டத்தை திறக்க முடியவில்லை</translation>
     </message>
@@ -59796,25 +59801,25 @@ Please cancel these tasks and retry.</source>
         <translation>லேயர் பேனலைக் காட்டு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6536"/>
+        <location filename="../src/app/qgisapp.cpp" line="6541"/>
         <source>Project loaded</source>
         <translation>திட்டம் ஏற்றப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6569"/>
+        <location filename="../src/app/qgisapp.cpp" line="6574"/>
         <source>Choose a QGIS project file</source>
         <translation>QGIS திட்டக் கோப்பைத் தேர்ந்தெடுக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6632"/>
-        <location filename="../src/app/qgisapp.cpp" line="6720"/>
-        <location filename="../src/app/qgisapp.cpp" line="17287"/>
+        <location filename="../src/app/qgisapp.cpp" line="6637"/>
+        <location filename="../src/app/qgisapp.cpp" line="6725"/>
+        <location filename="../src/app/qgisapp.cpp" line="17292"/>
         <source>Saved project to: %1</source>
         <translation>திட்டம் சேமிக்கப்பட்டது: % 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6640"/>
-        <location filename="../src/app/qgisapp.cpp" line="6726"/>
+        <location filename="../src/app/qgisapp.cpp" line="6645"/>
+        <location filename="../src/app/qgisapp.cpp" line="6731"/>
         <source>Unable to save project %1</source>
         <translation>திட்டம்% 1ஐ சேமிக்க முடியவில்லை</translation>
     </message>
@@ -60058,24 +60063,25 @@ Please cancel these tasks and retry.</source>
         <location filename="../src/app/qgisapp.cpp" line="6226"/>
         <location filename="../src/app/qgisapp.cpp" line="6230"/>
         <location filename="../src/app/qgisapp.cpp" line="6234"/>
+        <location filename="../src/app/qgisapp.cpp" line="6238"/>
         <source>Raster calculator</source>
         <translation>ராச்டர் கால்குலேட்டர்</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6207"/>
-        <location filename="../src/app/qgisapp.cpp" line="6270"/>
+        <location filename="../src/app/qgisapp.cpp" line="6275"/>
         <source>Calculation complete.</source>
         <translation>கணக்கீடு முடிந்தது.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6211"/>
-        <location filename="../src/app/qgisapp.cpp" line="6282"/>
+        <location filename="../src/app/qgisapp.cpp" line="6287"/>
         <source>Could not create destination file.</source>
         <translation>இலக்கு கோப்பை உருவாக்க முடியவில்லை.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6215"/>
-        <location filename="../src/app/qgisapp.cpp" line="6286"/>
+        <location filename="../src/app/qgisapp.cpp" line="6291"/>
         <source>Could not read input layer.</source>
         <translation>உள்ளீட்டு அடுக்கைப் படிக்க முடியவில்லை.</translation>
     </message>
@@ -60086,7 +60092,7 @@ Please cancel these tasks and retry.</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6226"/>
-        <location filename="../src/app/qgisapp.cpp" line="6297"/>
+        <location filename="../src/app/qgisapp.cpp" line="6302"/>
         <source>Insufficient memory available for operation.</source>
         <translation>செயல்பாட்டிற்கு போதுமான நினைவகம் இல்லை.</translation>
     </message>
@@ -60096,55 +60102,55 @@ Please cancel these tasks and retry.</source>
         <translation>உள்ளீட்டு அடுக்குக்கான தவறான பேண்ட் எண்.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6246"/>
+        <location filename="../src/app/qgisapp.cpp" line="6251"/>
         <source>Mesh Calculator</source>
         <translation>மெச் கால்குலேட்டர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6246"/>
+        <location filename="../src/app/qgisapp.cpp" line="6251"/>
         <source>Mesh calculator with mesh layer in edit mode is not supported.</source>
         <translation>திருத்து பயன்முறையில் மெச் லேயர் கொண்ட மெச் கால்குலேட்டர் ஆதரிக்கப்படவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6255"/>
+        <location filename="../src/app/qgisapp.cpp" line="6260"/>
         <source>Calculating mesh expression…</source>
         <translation>கண்ணி வெளிப்பாட்டைக் கணக்கிடுகிறது…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6270"/>
-        <location filename="../src/app/qgisapp.cpp" line="6274"/>
-        <location filename="../src/app/qgisapp.cpp" line="6278"/>
-        <location filename="../src/app/qgisapp.cpp" line="6282"/>
-        <location filename="../src/app/qgisapp.cpp" line="6286"/>
-        <location filename="../src/app/qgisapp.cpp" line="6293"/>
-        <location filename="../src/app/qgisapp.cpp" line="6297"/>
+        <location filename="../src/app/qgisapp.cpp" line="6275"/>
+        <location filename="../src/app/qgisapp.cpp" line="6279"/>
+        <location filename="../src/app/qgisapp.cpp" line="6283"/>
+        <location filename="../src/app/qgisapp.cpp" line="6287"/>
+        <location filename="../src/app/qgisapp.cpp" line="6291"/>
+        <location filename="../src/app/qgisapp.cpp" line="6298"/>
+        <location filename="../src/app/qgisapp.cpp" line="6302"/>
         <source>Mesh calculator</source>
         <translation>மெச் கால்குலேட்டர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6274"/>
+        <location filename="../src/app/qgisapp.cpp" line="6279"/>
         <source>Could not evaluate the formula.</source>
         <translation>சூத்திரத்தை மதிப்பிட முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6278"/>
+        <location filename="../src/app/qgisapp.cpp" line="6283"/>
         <source>Invalid or incompatible datasets used.</source>
         <translation>தவறான அல்லது பொருந்தாத தரவுத்தொகுப்புகள் பயன்படுத்தப்பட்டன.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6293"/>
+        <location filename="../src/app/qgisapp.cpp" line="6298"/>
         <source>Could not parse mesh formula.</source>
         <translation>மெச் சூத்திரத்தை அலச முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6318"/>
-        <location filename="../src/app/qgisapp.cpp" line="6562"/>
-        <location filename="../src/app/qgisapp.cpp" line="6672"/>
+        <location filename="../src/app/qgisapp.cpp" line="6323"/>
+        <location filename="../src/app/qgisapp.cpp" line="6567"/>
+        <location filename="../src/app/qgisapp.cpp" line="6677"/>
         <source>QGIS Project Formats</source>
         <translation>QGIS திட்டம் Formats</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6424"/>
+        <location filename="../src/app/qgisapp.cpp" line="6429"/>
         <source>Do you want to open the backup file
 %1
 instead?</source>
@@ -60153,213 +60159,213 @@ instead?</source>
 அதற்கு பதிலாக?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6620"/>
+        <location filename="../src/app/qgisapp.cpp" line="6625"/>
         <source>Insufficient permissions</source>
         <translation>போதிய அனுமதிகள் இல்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6620"/>
+        <location filename="../src/app/qgisapp.cpp" line="6625"/>
         <source>The project file is not writable.</source>
         <translation>திட்டக் கோப்பு எழுத முடியாதது.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6777"/>
+        <location filename="../src/app/qgisapp.cpp" line="6782"/>
         <source>Successfully exported DXF to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;க்கு DXF வெற்றிகரமாக ஏற்றுமதி செய்யப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6825"/>
-        <location filename="../src/app/qgisapp.cpp" line="6832"/>
-        <location filename="../src/app/qgisapp.cpp" line="6859"/>
+        <location filename="../src/app/qgisapp.cpp" line="6830"/>
+        <location filename="../src/app/qgisapp.cpp" line="6837"/>
+        <location filename="../src/app/qgisapp.cpp" line="6864"/>
         <source>Load template</source>
         <translation>வார்ப்புருவை ஏற்றவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6825"/>
+        <location filename="../src/app/qgisapp.cpp" line="6830"/>
         <source>Could not read template file</source>
         <translation>டெம்ப்ளேட் கோப்பைப் படிக்க முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6832"/>
-        <location filename="../src/app/qgisapp.cpp" line="6859"/>
+        <location filename="../src/app/qgisapp.cpp" line="6837"/>
+        <location filename="../src/app/qgisapp.cpp" line="6864"/>
         <source>Could not load template file</source>
         <translation>டெம்ப்ளேட் கோப்பை ஏற்ற முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7517"/>
+        <location filename="../src/app/qgisapp.cpp" line="7522"/>
         <source>No action selected</source>
         <translation>எந்த நடவடிக்கையும் தேர்ந்தெடுக்கப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7532"/>
-        <location filename="../src/app/qgisapp.cpp" line="7550"/>
+        <location filename="../src/app/qgisapp.cpp" line="7537"/>
+        <location filename="../src/app/qgisapp.cpp" line="7555"/>
         <source>Run feature action&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;</source>
         <translation>அம்சச் செயலை இயக்கு&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7642"/>
+        <location filename="../src/app/qgisapp.cpp" line="7647"/>
         <source>Original source URI: %1</source>
         <translation>அசல் மூல URI:% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7844"/>
+        <location filename="../src/app/qgisapp.cpp" line="7849"/>
         <source>Commit Errors</source>
         <translation>பிழைகளைச் செய்யுங்கள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7860"/>
+        <location filename="../src/app/qgisapp.cpp" line="7865"/>
         <source>Commit errors</source>
         <translation>தவறுகளைச் செய்யுங்கள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7840"/>
+        <location filename="../src/app/qgisapp.cpp" line="7845"/>
         <source>Could not commit changes to layer %1</source>
         <translation>அடுக்கு% 1 இல் மாற்றங்களைச் செய்ய முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7845"/>
+        <location filename="../src/app/qgisapp.cpp" line="7850"/>
         <source>Errors: %1
 </source>
         <translation>பிழைகள்:% 1
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7849"/>
+        <location filename="../src/app/qgisapp.cpp" line="7854"/>
         <source>Show more</source>
         <translation>மேலும் காட்டு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7923"/>
+        <location filename="../src/app/qgisapp.cpp" line="7928"/>
         <source>Please select a vector layer first</source>
         <translation>முதலில் வெக்டார் லேயரைத் தேர்ந்தெடுக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8597"/>
-        <location filename="../src/app/qgisapp.cpp" line="12614"/>
-        <location filename="../src/app/qgisapp.cpp" line="12621"/>
-        <location filename="../src/app/qgisapp.cpp" line="12681"/>
-        <location filename="../src/app/qgisapp.cpp" line="12688"/>
-        <location filename="../src/app/qgisapp.cpp" line="12734"/>
-        <location filename="../src/app/qgisapp.cpp" line="12741"/>
+        <location filename="../src/app/qgisapp.cpp" line="8602"/>
+        <location filename="../src/app/qgisapp.cpp" line="12619"/>
+        <location filename="../src/app/qgisapp.cpp" line="12626"/>
+        <location filename="../src/app/qgisapp.cpp" line="12686"/>
+        <location filename="../src/app/qgisapp.cpp" line="12693"/>
+        <location filename="../src/app/qgisapp.cpp" line="12739"/>
+        <location filename="../src/app/qgisapp.cpp" line="12746"/>
         <source>No Layer Selected</source>
         <translation>அடுக்கு எதுவும் தேர்ந்தெடுக்கப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8597"/>
+        <location filename="../src/app/qgisapp.cpp" line="8602"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>அம்சங்களை நீக்க, லெசெண்டில் வெக்டார் லேயரை தேர்ந்தெடுக்க வேண்டும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8604"/>
+        <location filename="../src/app/qgisapp.cpp" line="8609"/>
         <source>No Vector Layer Selected</source>
         <translation>திசையன் அடுக்கு எதுவும் தேர்ந்தெடுக்கப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8604"/>
+        <location filename="../src/app/qgisapp.cpp" line="8609"/>
         <source>Deleting features only works on vector layers</source>
         <translation>அம்சங்களை நீக்குவது வெக்டார் லேயர்களில் மட்டுமே வேலை செய்யும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8610"/>
+        <location filename="../src/app/qgisapp.cpp" line="8615"/>
         <source>Provider does not support deletion</source>
         <translation>வழங்குநர் நீக்குவதை ஆதரிக்கவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8610"/>
+        <location filename="../src/app/qgisapp.cpp" line="8615"/>
         <source>Data provider does not support deleting features</source>
         <translation>அம்சங்களை நீக்குவதை தரவு வழங்குநர் ஆதரிக்கவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8616"/>
-        <location filename="../src/app/qgisapp.cpp" line="9462"/>
-        <location filename="../src/app/qgisapp.cpp" line="9472"/>
-        <location filename="../src/app/qgisapp.cpp" line="9574"/>
-        <location filename="../src/app/qgisapp.cpp" line="9635"/>
-        <location filename="../src/app/qgisapp.cpp" line="10016"/>
-        <location filename="../src/app/qgisapp.cpp" line="10069"/>
+        <location filename="../src/app/qgisapp.cpp" line="8621"/>
+        <location filename="../src/app/qgisapp.cpp" line="9467"/>
+        <location filename="../src/app/qgisapp.cpp" line="9477"/>
+        <location filename="../src/app/qgisapp.cpp" line="9579"/>
+        <location filename="../src/app/qgisapp.cpp" line="9640"/>
+        <location filename="../src/app/qgisapp.cpp" line="10021"/>
+        <location filename="../src/app/qgisapp.cpp" line="10074"/>
         <source>Layer not editable</source>
         <translation>லேயர் திருத்த முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8616"/>
-        <location filename="../src/app/qgisapp.cpp" line="10016"/>
-        <location filename="../src/app/qgisapp.cpp" line="10069"/>
+        <location filename="../src/app/qgisapp.cpp" line="8621"/>
+        <location filename="../src/app/qgisapp.cpp" line="10021"/>
+        <location filename="../src/app/qgisapp.cpp" line="10074"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>தற்போதைய லேயரை திருத்த முடியாது. டிசிட்டல் டூல்பாரில் &apos;தொடங்கு திருத்துதல்&apos; என்பதைத் தேர்ந்தெடுக்கவும்.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8624"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>No Features Selected</source>
         <translation>நற்பொருத்தங்கள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8700"/>
+        <location filename="../src/app/qgisapp.cpp" line="8705"/>
         <source>Features deleted</source>
         <translation>நற்பொருத்தங்கள் நீக்கப்பட்டன</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8705"/>
+        <location filename="../src/app/qgisapp.cpp" line="8710"/>
         <source>Problem deleting features</source>
         <translation>அம்சங்களை நீக்குவதில் சிக்கல்</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8723"/>
+        <location filename="../src/app/qgisapp.cpp" line="8728"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6191"/>
-        <location filename="../src/app/qgisapp.cpp" line="6255"/>
-        <location filename="../src/app/qgisapp.cpp" line="8777"/>
+        <location filename="../src/app/qgisapp.cpp" line="6260"/>
+        <location filename="../src/app/qgisapp.cpp" line="8782"/>
         <source>Abort</source>
         <translation>கைவிடு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8878"/>
+        <location filename="../src/app/qgisapp.cpp" line="8883"/>
         <source>Title can not be empty!</source>
         <translation>தலைப்பு காலியாக இருக்க முடியாது!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8861"/>
-        <location filename="../src/app/qgisapp.cpp" line="8889"/>
+        <location filename="../src/app/qgisapp.cpp" line="8866"/>
+        <location filename="../src/app/qgisapp.cpp" line="8894"/>
         <source>Title already exists!</source>
         <translation>தலைப்பு ஏற்கனவே உள்ளது!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9454"/>
-        <location filename="../src/app/qgisapp.cpp" line="9554"/>
-        <location filename="../src/app/qgisapp.cpp" line="9616"/>
+        <location filename="../src/app/qgisapp.cpp" line="9459"/>
+        <location filename="../src/app/qgisapp.cpp" line="9559"/>
+        <location filename="../src/app/qgisapp.cpp" line="9621"/>
         <source>No active layer</source>
         <translation>செயலில் உள்ள அடுக்கு இல்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9454"/>
+        <location filename="../src/app/qgisapp.cpp" line="9459"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>செயலில் உள்ள அடுக்கு இல்லை. லேயர் பட்டியலில் ஒரு லேயரைத் தேர்ந்தெடுக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9485"/>
-        <location filename="../src/app/qgisapp.cpp" line="9647"/>
-        <location filename="../src/app/qgisapp.cpp" line="9704"/>
+        <location filename="../src/app/qgisapp.cpp" line="9490"/>
+        <location filename="../src/app/qgisapp.cpp" line="9652"/>
+        <location filename="../src/app/qgisapp.cpp" line="9709"/>
         <source>Not enough features selected</source>
         <translation>போதுமான நற்பொருத்தங்கள் தேர்ந்தெடுக்கப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9648"/>
-        <location filename="../src/app/qgisapp.cpp" line="9705"/>
+        <location filename="../src/app/qgisapp.cpp" line="9653"/>
+        <location filename="../src/app/qgisapp.cpp" line="9710"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>ஒன்றிணைக்கும் கருவிக்கு குறைந்தது இரண்டு தேர்ந்தெடுக்கப்பட்ட நற்பொருத்தங்கள் தேவை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9503"/>
+        <location filename="../src/app/qgisapp.cpp" line="9508"/>
         <source>Merged feature attributes</source>
         <translation>இணைக்கப்பட்ட அம்ச பண்புக்கூறுகள்</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5748"/>
-        <location filename="../src/app/qgisapp.cpp" line="11629"/>
-        <location filename="../src/app/qgisapp.cpp" line="13711"/>
+        <location filename="../src/app/qgisapp.cpp" line="11634"/>
+        <location filename="../src/app/qgisapp.cpp" line="13716"/>
         <source> • %1</source>
         <translation>•% 1</translation>
     </message>
@@ -60377,23 +60383,23 @@ Do you want to try canceling these active tasks?</source>
 செயலில் உள்ள இந்தப் பணிகளை ரத்துசெய்ய முயற்சிக்க விரும்புகிறீர்களா?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8111"/>
+        <location filename="../src/app/qgisapp.cpp" line="8116"/>
         <source>Successfully saved raster layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>ராச்டர் லேயர் &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt; இல் வெற்றிகரமாகச் சேமிக்கப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8225"/>
+        <location filename="../src/app/qgisapp.cpp" line="8230"/>
         <source>Error saving layer definition file</source>
         <translation>அடுக்கு வரையறை கோப்பை சேமிப்பதில் பிழை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8370"/>
+        <location filename="../src/app/qgisapp.cpp" line="8375"/>
         <source>Successfully saved vector layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt; இல் வெக்டார் லேயர் வெற்றிகரமாகச் சேமிக்கப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8202"/>
-        <location filename="../src/app/qgisapp.cpp" line="8377"/>
+        <location filename="../src/app/qgisapp.cpp" line="8207"/>
+        <location filename="../src/app/qgisapp.cpp" line="8382"/>
         <source>Save Error</source>
         <translation>சேமி பிழை</translation>
     </message>
@@ -60408,195 +60414,195 @@ Do you want to try canceling these active tasks?</source>
         <translation>GDAL பதிப்பு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6499"/>
+        <location filename="../src/app/qgisapp.cpp" line="6504"/>
         <source>Resolve vector layer dependencies</source>
         <translation>Resolve திசையன் layer dependencies</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6563"/>
-        <location filename="../src/app/qgisapp.cpp" line="6673"/>
+        <location filename="../src/app/qgisapp.cpp" line="6568"/>
+        <location filename="../src/app/qgisapp.cpp" line="6678"/>
         <source>QGIS Bundled Project Format</source>
         <translation>QGIS Bundled திட்டம் வடிவம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6564"/>
-        <location filename="../src/app/qgisapp.cpp" line="6674"/>
+        <location filename="../src/app/qgisapp.cpp" line="6569"/>
+        <location filename="../src/app/qgisapp.cpp" line="6679"/>
         <source>QGIS XML Project Format</source>
         <translation>QGIS நீகுமொ திட்டம் வடிவம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6614"/>
+        <location filename="../src/app/qgisapp.cpp" line="6619"/>
         <source>Project Has Changed on Disk</source>
         <translation>திட்டம் Has Changed on Disk</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6614"/>
+        <location filename="../src/app/qgisapp.cpp" line="6619"/>
         <source>The project file on the disk has been modified externally, saving the current project will overwrite any change. Do you still want to proceed?</source>
         <translation>The திட்டம் கோப்பு on the disk has been மாற்றியமைக்கப்பட்ட externally, saving the மின்னோட்ட்ம், ஓட்டம் திட்டம் will overwrite any change. Do you still want பெறுநர் proceed?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6777"/>
-        <location filename="../src/app/qgisapp.cpp" line="6797"/>
-        <location filename="../src/app/qgisapp.cpp" line="6801"/>
-        <location filename="../src/app/qgisapp.cpp" line="6805"/>
+        <location filename="../src/app/qgisapp.cpp" line="6782"/>
+        <location filename="../src/app/qgisapp.cpp" line="6802"/>
+        <location filename="../src/app/qgisapp.cpp" line="6806"/>
+        <location filename="../src/app/qgisapp.cpp" line="6810"/>
         <source>DXF export</source>
         <translation>DXF ஏற்றுமதி</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6786"/>
+        <location filename="../src/app/qgisapp.cpp" line="6791"/>
         <source>DXF Export</source>
         <translation>DXF ஏற்றுமதி</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6902"/>
+        <location filename="../src/app/qgisapp.cpp" line="6907"/>
         <source>Don&apos;t show this again.</source>
         <translation>இதை மீண்டும் காட்டாதே.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8194"/>
+        <location filename="../src/app/qgisapp.cpp" line="8199"/>
         <source>Layer Saved</source>
         <translation>அடுக்கு சேமிக்கப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8194"/>
+        <location filename="../src/app/qgisapp.cpp" line="8199"/>
         <source>Successfully saved scratch layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>ச்கிராட்ச் லேயர் &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt; இல் வெற்றிகரமாகச் சேமிக்கப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8203"/>
+        <location filename="../src/app/qgisapp.cpp" line="8208"/>
         <source>Could not make temporary scratch layer permanent.
 Error: %1</source>
         <translation>தற்காலிக கீறல் லேயரை நிரந்தரமாக்க முடியவில்லை. 
 பிழை:% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8208"/>
+        <location filename="../src/app/qgisapp.cpp" line="8213"/>
         <source>Save Scratch Layer</source>
         <translation>கீறல் அடுக்கைச் சேமிக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8378"/>
+        <location filename="../src/app/qgisapp.cpp" line="8383"/>
         <source>Export to vector file %1 failed.
 Error: %2</source>
         <translation>ஏற்றுமதி பெறுநர் திசையன் கோப்பு %1 failed.
 Error: %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8649"/>
-        <location filename="../src/app/qgisapp.cpp" line="8685"/>
+        <location filename="../src/app/qgisapp.cpp" line="8654"/>
+        <location filename="../src/app/qgisapp.cpp" line="8690"/>
         <source>Delete %n feature(s) from layer &quot;%1&quot;</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8671"/>
+        <location filename="../src/app/qgisapp.cpp" line="8676"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8671"/>
+        <location filename="../src/app/qgisapp.cpp" line="8676"/>
         <source>Delete %n feature(s) on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8685"/>
+        <location filename="../src/app/qgisapp.cpp" line="8690"/>
         <source>&lt;b&gt;%n&lt;/b&gt; selected feature(s) are about to be deleted. Would you like to continue?</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8705"/>
+        <location filename="../src/app/qgisapp.cpp" line="8710"/>
         <source>A problem occurred during deletion from layer &quot;%1&quot;. %n feature(s) not deleted.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8828"/>
+        <location filename="../src/app/qgisapp.cpp" line="8833"/>
         <source>print layout</source>
         <translation>அச்சு தளவமைப்பு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8832"/>
+        <location filename="../src/app/qgisapp.cpp" line="8837"/>
         <source>report</source>
         <translation>அறிக்கை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8837"/>
+        <location filename="../src/app/qgisapp.cpp" line="8842"/>
         <source>Enter a unique %1 title</source>
         <translation>தனிப்பட்ட % 1 தலைப்பை உள்ளிடவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8840"/>
+        <location filename="../src/app/qgisapp.cpp" line="8845"/>
         <source>(a title will be automatically generated if left empty)</source>
         <translation>(ஒரு தலைப்பு காலியாக இருந்தால் தானாகவே உருவாக்கப்படும்)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8973"/>
+        <location filename="../src/app/qgisapp.cpp" line="8978"/>
         <source>%1 copy</source>
         <translation>% 1 நகல்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9008"/>
+        <location filename="../src/app/qgisapp.cpp" line="9013"/>
         <source>Set as atlas feature for %1</source>
         <translation>% 1க்கு அட்லச் அம்சமாக அமைக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9486"/>
+        <location filename="../src/app/qgisapp.cpp" line="9491"/>
         <source>The merge tool requires at least two selected features.</source>
         <translation>ஒன்றிணைக்கும் கருவிக்கு குறைந்தது இரண்டு தேர்ந்தெடுக்கப்பட்ட நற்பொருத்தங்கள் தேவை.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9529"/>
-        <location filename="../src/app/qgisapp.cpp" line="9759"/>
+        <location filename="../src/app/qgisapp.cpp" line="9534"/>
+        <location filename="../src/app/qgisapp.cpp" line="9764"/>
         <source>Invalid result</source>
         <translation>தவறான முடிவு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9575"/>
+        <location filename="../src/app/qgisapp.cpp" line="9580"/>
         <source>Modifying features can only be done for layers in editing mode.</source>
         <translation>திருத்துதல் பயன்முறையில் உள்ள லேயர்களுக்கு மட்டுமே அம்சங்களை மாற்றியமைக்க முடியும்.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9664"/>
-        <location filename="../src/app/qgisapp.cpp" line="9677"/>
-        <location filename="../src/app/qgisapp.cpp" line="9722"/>
-        <location filename="../src/app/qgisapp.cpp" line="9735"/>
-        <location filename="../src/app/qgisapp.cpp" line="9751"/>
+        <location filename="../src/app/qgisapp.cpp" line="9669"/>
+        <location filename="../src/app/qgisapp.cpp" line="9682"/>
+        <location filename="../src/app/qgisapp.cpp" line="9727"/>
+        <location filename="../src/app/qgisapp.cpp" line="9740"/>
+        <location filename="../src/app/qgisapp.cpp" line="9756"/>
         <source>Merge failed</source>
         <translation>ஒன்றிணைக்க முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9665"/>
-        <location filename="../src/app/qgisapp.cpp" line="9723"/>
+        <location filename="../src/app/qgisapp.cpp" line="9670"/>
+        <location filename="../src/app/qgisapp.cpp" line="9728"/>
         <source>An error occurred during the merge operation.</source>
         <translation>ஒன்றிணைக்கும் செயல்பாட்டின் போது பிழை ஏற்பட்டது.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2978"/>
-        <location filename="../src/app/qgisapp.cpp" line="9857"/>
-        <location filename="../src/app/qgisapp.cpp" line="9889"/>
-        <location filename="../src/app/qgisapp.cpp" line="9904"/>
-        <location filename="../src/app/qgisapp.cpp" line="9920"/>
-        <location filename="../src/app/qgisapp.cpp" line="9936"/>
-        <location filename="../src/app/qgisapp.cpp" line="9956"/>
+        <location filename="../src/app/qgisapp.cpp" line="9862"/>
+        <location filename="../src/app/qgisapp.cpp" line="9894"/>
+        <location filename="../src/app/qgisapp.cpp" line="9909"/>
+        <location filename="../src/app/qgisapp.cpp" line="9925"/>
+        <location filename="../src/app/qgisapp.cpp" line="9941"/>
+        <location filename="../src/app/qgisapp.cpp" line="9961"/>
         <source>No active vector layer</source>
         <translation>செயலில் உள்ள திசையன் அடுக்கு இல்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9905"/>
+        <location filename="../src/app/qgisapp.cpp" line="9910"/>
         <source>To invert selection, choose a vector layer in the legend</source>
         <translation>தேர்வைத் தலைகீழாக மாற்ற, லெசெண்டில் வெக்டார் லேயரைத் தேர்ந்தெடுக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10022"/>
+        <location filename="../src/app/qgisapp.cpp" line="10027"/>
         <source>Features cut</source>
         <translation>நற்பொருத்தங்கள் வெட்டப்படுகின்றன</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10075"/>
+        <location filename="../src/app/qgisapp.cpp" line="10080"/>
         <source>Features pasted</source>
         <translation>நற்பொருத்தங்கள் ஒட்டப்பட்டுள்ளன</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10305"/>
+        <location filename="../src/app/qgisapp.cpp" line="10310"/>
         <source>Paste features</source>
         <translation>அம்சங்களை ஒட்டவும்</translation>
     </message>
@@ -60818,7 +60824,7 @@ Delete these features?</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2025"/>
-        <location filename="../src/app/qgisapp.cpp" line="6782"/>
+        <location filename="../src/app/qgisapp.cpp" line="6787"/>
         <source>More Info</source>
         <translation>More செய்தி</translation>
     </message>
@@ -60873,67 +60879,67 @@ Delete these features?</source>
         <translation>கணக்கீடு செய்யும் போது பிழை ஏற்பட்டது.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6332"/>
+        <location filename="../src/app/qgisapp.cpp" line="6337"/>
         <source>All Project Files</source>
         <translation>அனைத்தும் திட்டம் கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6339"/>
+        <location filename="../src/app/qgisapp.cpp" line="6344"/>
         <source>Open Project</source>
         <translation>திறந்த திட்டம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6797"/>
+        <location filename="../src/app/qgisapp.cpp" line="6802"/>
         <source>DXF export failed, device is not writable</source>
         <translation>DXF ஏற்றுமதி failed, device is not writable</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6801"/>
+        <location filename="../src/app/qgisapp.cpp" line="6806"/>
         <source>DXF export failed, the device is invalid</source>
         <translation>DXF ஏற்றுமதி failed, the device is செல்லுபடியாகாத</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6805"/>
+        <location filename="../src/app/qgisapp.cpp" line="6810"/>
         <source>DXF export failed, the extent could not be determined</source>
         <translation>DXF ஏற்றுமதி failed, the extent could not be determined</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6896"/>
+        <location filename="../src/app/qgisapp.cpp" line="6901"/>
         <source>Security warning</source>
         <translation>Security முன்னறிவிப்பு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6897"/>
+        <location filename="../src/app/qgisapp.cpp" line="6902"/>
         <source>Executing a script from an untrusted source can harm your computer. Only continue if you trust the source of the script. Continue?</source>
         <translation>Executing a script இருந்து an untrusted மூலம் can harm your computer. Only தொடரவும் if you trust the மூலம் of the script. Continue?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7617"/>
+        <location filename="../src/app/qgisapp.cpp" line="7622"/>
         <source>Repair Data Source</source>
         <translation>Repair தகவல்கள் மூலம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8121"/>
+        <location filename="../src/app/qgisapp.cpp" line="8126"/>
         <source>source provider</source>
         <translation>மூலம் வழங்குநர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8123"/>
+        <location filename="../src/app/qgisapp.cpp" line="8128"/>
         <source>destination provider</source>
         <translation>destination வழங்குநர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8125"/>
+        <location filename="../src/app/qgisapp.cpp" line="8130"/>
         <source>data source creation</source>
         <translation>தகவல்கள் மூலம் creation</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8127"/>
+        <location filename="../src/app/qgisapp.cpp" line="8132"/>
         <source>write error</source>
         <translation>write பிழை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8717"/>
+        <location filename="../src/app/qgisapp.cpp" line="8722"/>
         <source>%1 on layer %2. </source>
         <translation>%1 on layer %2. </translation>
     </message>
@@ -60941,80 +60947,80 @@ Delete these features?</source>
         <location filename="../src/app/qgisapp.cpp" line="796"/>
         <location filename="../src/app/qgisapp.cpp" line="817"/>
         <location filename="../src/app/qgisapp.cpp" line="818"/>
-        <location filename="../src/app/qgisapp.cpp" line="8852"/>
+        <location filename="../src/app/qgisapp.cpp" line="8857"/>
         <source>Create %1</source>
         <translation>Create %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9190"/>
+        <location filename="../src/app/qgisapp.cpp" line="9195"/>
         <source>Duplicate Feature</source>
         <translation>Duplicate Feature</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9197"/>
+        <location filename="../src/app/qgisapp.cpp" line="9202"/>
         <source>Duplicate Feature and Digitize</source>
         <translation>Duplicate Feature and Digitize</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9218"/>
+        <location filename="../src/app/qgisapp.cpp" line="9223"/>
         <source>Set as Atlas Feature for %1</source>
         <translation>கணம் அச் Atlas Feature க்கு %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9530"/>
+        <location filename="../src/app/qgisapp.cpp" line="9535"/>
         <source>Could not store value &apos;%1&apos; in field of type %2: %3</source>
         <translation>Could not store மதிப்பு &apos;%1&apos; in புலம் of வகை %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9858"/>
-        <location filename="../src/app/qgisapp.cpp" line="9890"/>
+        <location filename="../src/app/qgisapp.cpp" line="9863"/>
+        <location filename="../src/app/qgisapp.cpp" line="9895"/>
         <source>To deselect all features, choose a vector layer in the legend</source>
         <translation>பெறுநர் deselect அனைத்தும் features, choose a திசையன் layer in the legend</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10290"/>
+        <location filename="../src/app/qgisapp.cpp" line="10295"/>
         <source>No features pasted.</source>
         <translation>இல்லை நற்பொருத்தங்கள் pasted.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10298"/>
+        <location filename="../src/app/qgisapp.cpp" line="10303"/>
         <source>%1 of %2 features could be pasted.</source>
         <translation>%1 of %2 நற்பொருத்தங்கள் could be pasted.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10303"/>
+        <location filename="../src/app/qgisapp.cpp" line="10308"/>
         <source> Geometry collapsed due to intersection avoidance.</source>
         <translation> Geometry collapsed due பெறுநர் intersection avoidance.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10326"/>
+        <location filename="../src/app/qgisapp.cpp" line="10331"/>
         <source>Pasted</source>
         <translation>Pasted</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10327"/>
+        <location filename="../src/app/qgisapp.cpp" line="10332"/>
         <source>Paste as Scratch Layer</source>
         <translation>ஒட்டு அச் Scratch Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10327"/>
+        <location filename="../src/app/qgisapp.cpp" line="10332"/>
         <source>Layer name</source>
         <translation>Layer பெயர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10659"/>
+        <location filename="../src/app/qgisapp.cpp" line="10664"/>
         <source>%1 and %2</source>
         <translation>%1 and %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10661"/>
+        <location filename="../src/app/qgisapp.cpp" line="10666"/>
         <source>%1, %2, …</source>
         <translation>%1, %2, …</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10555"/>
-        <location filename="../src/app/qgisapp.cpp" line="10634"/>
-        <location filename="../src/app/qgisapp.cpp" line="10889"/>
+        <location filename="../src/app/qgisapp.cpp" line="10560"/>
+        <location filename="../src/app/qgisapp.cpp" line="10639"/>
+        <location filename="../src/app/qgisapp.cpp" line="10894"/>
         <source>Start editing failed</source>
         <translation>தொடங்கு editing failed</translation>
     </message>
@@ -61044,40 +61050,45 @@ Delete these features?</source>
         <translation>காட்டு Vertex திருத்தி</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7841"/>
+        <location filename="../src/app/qgisapp.cpp" line="6238"/>
+        <source>An error occurred while performing the calculation using OpenCL. See OpenCL log messages for details.</source>
+        <translation>OpenCL ஐப் பயன்படுத்தி கணக்கீடு செய்யும் போது பிழை ஏற்பட்டது. விவரங்களுக்கு OpenCL பதிவு செய்திகளைப் பார்க்கவும்.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="7846"/>
         <source>Could not commit changes</source>
         <translation>Could not commit changes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10634"/>
-        <location filename="../src/app/qgisapp.cpp" line="10890"/>
+        <location filename="../src/app/qgisapp.cpp" line="10639"/>
+        <location filename="../src/app/qgisapp.cpp" line="10895"/>
         <source>Provider cannot be opened for editing</source>
         <translation>வழங்குநர் cannot be opened க்கு editing</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10663"/>
+        <location filename="../src/app/qgisapp.cpp" line="10668"/>
         <source>Do you want to save the changes to layers %1?</source>
         <translation>Do you want பெறுநர் சேமி the changes பெறுநர் layers %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10663"/>
-        <location filename="../src/app/qgisapp.cpp" line="10813"/>
-        <location filename="../src/app/qgisapp.cpp" line="10901"/>
+        <location filename="../src/app/qgisapp.cpp" line="10668"/>
+        <location filename="../src/app/qgisapp.cpp" line="10818"/>
+        <location filename="../src/app/qgisapp.cpp" line="10906"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Do you want பெறுநர் சேமி the changes பெறுநர் layer %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10698"/>
+        <location filename="../src/app/qgisapp.cpp" line="10703"/>
         <source>Problems during roll back: &apos;%1&apos;</source>
         <translation>Problems during உருளம் back: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10786"/>
+        <location filename="../src/app/qgisapp.cpp" line="10791"/>
         <source>Mesh Editing</source>
         <translation>Mesh Editing</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10786"/>
+        <location filename="../src/app/qgisapp.cpp" line="10791"/>
         <source>At least one topological error in the mesh prevents starting editing.
 Some errors can be fixed by removing invalid elements.
 
@@ -61088,23 +61099,23 @@ Some errors can be fixed by removing செல்லுபடியாகாத 
 Do you want பெறுநர் try பெறுநர் fix errors before starting editing?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10841"/>
-        <location filename="../src/app/qgisapp.cpp" line="10927"/>
+        <location filename="../src/app/qgisapp.cpp" line="10846"/>
+        <location filename="../src/app/qgisapp.cpp" line="10932"/>
         <source>Problems during roll back</source>
         <translation>Problems during உருளம் பின்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10914"/>
+        <location filename="../src/app/qgisapp.cpp" line="10919"/>
         <source>Stop editing</source>
         <translation>நிறுத்து editing</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11043"/>
+        <location filename="../src/app/qgisapp.cpp" line="11048"/>
         <source>Save edits</source>
         <translation>சேமி edits</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11090"/>
+        <location filename="../src/app/qgisapp.cpp" line="11095"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -61115,78 +61126,78 @@ Errors: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11090"/>
-        <location filename="../src/app/qgisapp.cpp" line="11117"/>
-        <location filename="../src/app/qgisapp.cpp" line="11140"/>
+        <location filename="../src/app/qgisapp.cpp" line="11095"/>
+        <location filename="../src/app/qgisapp.cpp" line="11122"/>
+        <location filename="../src/app/qgisapp.cpp" line="11145"/>
         <source>rollback</source>
         <translation>rollback</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11090"/>
-        <location filename="../src/app/qgisapp.cpp" line="11117"/>
-        <location filename="../src/app/qgisapp.cpp" line="11140"/>
+        <location filename="../src/app/qgisapp.cpp" line="11095"/>
+        <location filename="../src/app/qgisapp.cpp" line="11122"/>
+        <location filename="../src/app/qgisapp.cpp" line="11145"/>
         <source>cancel</source>
         <translation>ரத்துசெய்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11188"/>
+        <location filename="../src/app/qgisapp.cpp" line="11193"/>
         <source>Save</source>
         <translation>சேமி</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11188"/>
-        <location filename="../src/app/qgisapp.cpp" line="11216"/>
-        <location filename="../src/app/qgisapp.cpp" line="11244"/>
+        <location filename="../src/app/qgisapp.cpp" line="11193"/>
+        <location filename="../src/app/qgisapp.cpp" line="11221"/>
+        <location filename="../src/app/qgisapp.cpp" line="11249"/>
         <source>all</source>
         <translation>அனைத்தும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11216"/>
+        <location filename="../src/app/qgisapp.cpp" line="11221"/>
         <source>Rollback</source>
         <translation>Rollback</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11244"/>
+        <location filename="../src/app/qgisapp.cpp" line="11249"/>
         <source>Cancel</source>
         <translation>ரத்துசெய்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11260"/>
+        <location filename="../src/app/qgisapp.cpp" line="11265"/>
         <source>Current edits</source>
         <translation>மின்னோட்ட்ம், ஓட்டம் edits</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11260"/>
+        <location filename="../src/app/qgisapp.cpp" line="11265"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 மின்னோட்ட்ம், ஓட்டம் changes க்கு %2 layer(s)?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11410"/>
+        <location filename="../src/app/qgisapp.cpp" line="11415"/>
         <source>Error Setting Filter</source>
         <translation>பிழை Setting வடிப்பி</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11410"/>
+        <location filename="../src/app/qgisapp.cpp" line="11415"/>
         <source>The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer.</source>
         <translation>The filtered layer returned இல்லை rows. The PostgreSQL raster வழங்குநர் requires at least one நிரை in order பெறுநர் extract the செய்தி required பெறுநர் create a valid layer.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11440"/>
+        <location filename="../src/app/qgisapp.cpp" line="11445"/>
         <source>Filter on Joined Fields</source>
         <translation>Filter on Joined புலங்கள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11440"/>
+        <location filename="../src/app/qgisapp.cpp" line="11445"/>
         <source>You are about to set a subset filter on a layer that has joined fields. Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. Would you like to create a virtual layer out of this layer first?</source>
         <translation>You அரே பற்றி பெறுநர் கணம் a subset வடிப்பி on a layer that has joined fields. Joined புலங்கள் cannot be filtered, unless you convert the layer பெறுநர் a virtual layer first. Would you like பெறுநர் create a virtual layer out of this layer first?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11609"/>
+        <location filename="../src/app/qgisapp.cpp" line="11614"/>
         <source>Required Layers</source>
         <translation>Required Layers</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11609"/>
+        <location filename="../src/app/qgisapp.cpp" line="11614"/>
         <source>The following layers are marked as required by the project:
 
 %1
@@ -61199,7 +61210,7 @@ Please deselect them (or unmark as required) and retry.</source>
 Please deselect them (or unmark அச் required) and retry.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11636"/>
+        <location filename="../src/app/qgisapp.cpp" line="11641"/>
         <source>The following tasks are currently running which depend on this layer:
 
 %1
@@ -61212,544 +61223,544 @@ Please cancel these tasks and retry.</source>
 Please நீக்கறல் these பணிகள் and retry.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11743"/>
+        <location filename="../src/app/qgisapp.cpp" line="11748"/>
         <source>copy</source>
         <translation>நகலெடு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11748"/>
+        <location filename="../src/app/qgisapp.cpp" line="11753"/>
         <source>Plugin layer</source>
         <translation>சொருகு layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11752"/>
+        <location filename="../src/app/qgisapp.cpp" line="11757"/>
         <source>Group layer</source>
         <translation>குழு layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11782"/>
-        <location filename="../src/app/qgisapp.cpp" line="11793"/>
+        <location filename="../src/app/qgisapp.cpp" line="11787"/>
+        <location filename="../src/app/qgisapp.cpp" line="11798"/>
         <source>Duplicate layer: </source>
         <translation>Duplicate layer: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11783"/>
+        <location filename="../src/app/qgisapp.cpp" line="11788"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (duplication resulted in செல்லுபடியாகாத layer)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11838"/>
+        <location filename="../src/app/qgisapp.cpp" line="11843"/>
         <source>Layer duplication complete</source>
         <translation>Layer படியீடு complete</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11838"/>
+        <location filename="../src/app/qgisapp.cpp" line="11843"/>
         <source>Note that it&apos;s using the same data source.</source>
         <translation>குறிப்பு that it&apos;s using the same தகவல்கள் source.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11867"/>
+        <location filename="../src/app/qgisapp.cpp" line="11872"/>
         <source>Set scale visibility for selected layers</source>
         <translation>கணம் scale விழிமை க்கு தேர்ந்தெடுக்கப்பட்டது layers</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11925"/>
+        <location filename="../src/app/qgisapp.cpp" line="11930"/>
         <source>Set CRS for %1</source>
         <translation>கணம் CRS க்கு %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12258"/>
+        <location filename="../src/app/qgisapp.cpp" line="12263"/>
         <source>Loading Python support</source>
         <translation>Loading பைதான் support</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12278"/>
+        <location filename="../src/app/qgisapp.cpp" line="12283"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Couldn&apos;t load பைதான் support library: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12289"/>
+        <location filename="../src/app/qgisapp.cpp" line="12294"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Couldn&apos;t resolve பைதான் support library&apos;s instance() symbol.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12351"/>
+        <location filename="../src/app/qgisapp.cpp" line="12356"/>
         <source>There is a new version of QGIS available</source>
         <translation>There is a புதிய version of QGIS available</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12355"/>
+        <location filename="../src/app/qgisapp.cpp" line="12360"/>
         <source>You are running a development version of QGIS</source>
         <translation>You அரே running a வளர்ச்சி version of QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12359"/>
+        <location filename="../src/app/qgisapp.cpp" line="12364"/>
         <source>You are running the current version of QGIS</source>
         <translation>You அரே running the மின்னோட்ட்ம், ஓட்டம் version of QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12367"/>
-        <location filename="../src/app/qgisapp.cpp" line="12373"/>
+        <location filename="../src/app/qgisapp.cpp" line="12372"/>
+        <location filename="../src/app/qgisapp.cpp" line="12378"/>
         <source>QGIS Version Information</source>
         <translation>QGIS Version செய்தி</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12373"/>
+        <location filename="../src/app/qgisapp.cpp" line="12378"/>
         <source>Unable to get current version information from server</source>
         <translation>Unable பெறுநர் get மின்னோட்ட்ம், ஓட்டம் version செய்தி இருந்து சேவையகம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12437"/>
+        <location filename="../src/app/qgisapp.cpp" line="12442"/>
         <source>Style Manager</source>
         <translation>சூல் தண்டு Manager</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12438"/>
+        <location filename="../src/app/qgisapp.cpp" line="12443"/>
         <source>Keyboard Shortcuts</source>
         <translation>விசைப்பலகை குறுக்குவழிகள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12439"/>
+        <location filename="../src/app/qgisapp.cpp" line="12444"/>
         <source>Custom Projections</source>
         <translation>தனிப்பயன் Projections</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12440"/>
+        <location filename="../src/app/qgisapp.cpp" line="12445"/>
         <source>Interface Customization</source>
         <translation>இடைமுகம் Customization</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12614"/>
-        <location filename="../src/app/qgisapp.cpp" line="12621"/>
+        <location filename="../src/app/qgisapp.cpp" line="12619"/>
+        <location filename="../src/app/qgisapp.cpp" line="12626"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>பெறுநர் perform a full செவ்வகப்படம் stretch, you need பெறுநர் have a raster layer selected.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12681"/>
-        <location filename="../src/app/qgisapp.cpp" line="12688"/>
+        <location filename="../src/app/qgisapp.cpp" line="12686"/>
+        <location filename="../src/app/qgisapp.cpp" line="12693"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>பெறுநர் change brightness or contrast, you need பெறுநர் have a raster layer selected.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12734"/>
-        <location filename="../src/app/qgisapp.cpp" line="12741"/>
+        <location filename="../src/app/qgisapp.cpp" line="12739"/>
+        <location filename="../src/app/qgisapp.cpp" line="12746"/>
         <source>To change gamma, you need to have a raster layer selected.</source>
         <translation>பெறுநர் change gamma, you need பெறுநர் have a raster layer selected.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12921"/>
+        <location filename="../src/app/qgisapp.cpp" line="12926"/>
         <source>Map tool handler is not properly constructed</source>
         <translation>Map கருவி handler is not properly constructed</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13143"/>
-        <location filename="../src/app/qgisapp.cpp" line="13150"/>
+        <location filename="../src/app/qgisapp.cpp" line="13148"/>
+        <location filename="../src/app/qgisapp.cpp" line="13155"/>
         <source>3D Map</source>
         <translation>3D Map</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13143"/>
+        <location filename="../src/app/qgisapp.cpp" line="13148"/>
         <source>3D Maps</source>
         <translation>3D Maps</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13170"/>
+        <location filename="../src/app/qgisapp.cpp" line="13175"/>
         <source>No Elevation Profiles Found</source>
         <translation>இல்லை உயர்வு கோடு Profiles Found</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13178"/>
+        <location filename="../src/app/qgisapp.cpp" line="13183"/>
         <source>Copy From %1</source>
         <translation>நகலெடு இருந்து %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13227"/>
+        <location filename="../src/app/qgisapp.cpp" line="13232"/>
         <source>Elevation Profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13231"/>
+        <location filename="../src/app/qgisapp.cpp" line="13236"/>
         <source>Elevation Profile (%1)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13275"/>
+        <location filename="../src/app/qgisapp.cpp" line="13280"/>
         <source>New 3D Map View</source>
         <translation>புதிய 3D Map பார்வை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13275"/>
+        <location filename="../src/app/qgisapp.cpp" line="13280"/>
         <source>Project extent is not valid. Please add or activate a layer to render.</source>
         <translation>திட்டம் extent is not valid. Please கூட்டு or செயல்படுத்து a layer பெறுநர் render.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13288"/>
+        <location filename="../src/app/qgisapp.cpp" line="13293"/>
         <source>3D Globe %1</source>
         <translation>3D Globe %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13510"/>
-        <location filename="../src/app/qgisapp.cpp" line="17296"/>
+        <location filename="../src/app/qgisapp.cpp" line="13515"/>
+        <location filename="../src/app/qgisapp.cpp" line="17301"/>
         <source>Save Project</source>
         <translation>சேமி திட்டம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
+        <location filename="../src/app/qgisapp.cpp" line="13617"/>
         <source>Save Raster Attribute Table</source>
         <translation>சேமி Raster பண்புக்கூறு Table</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13612"/>
+        <location filename="../src/app/qgisapp.cpp" line="13617"/>
         <source>Do you want to save the changes to the attribute tables (bands: %1) associated with layer &apos;%2&apos;?</source>
         <translation>Do you want பெறுநர் சேமி the changes பெறுநர் the பண்புக்கூறு அட்டவணைகள் (bands: %1) associated with layer &apos;%2&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13623"/>
-        <location filename="../src/app/qgisapp.cpp" line="13631"/>
+        <location filename="../src/app/qgisapp.cpp" line="13628"/>
+        <location filename="../src/app/qgisapp.cpp" line="13636"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>பிழை Saving Raster பண்புக்கூறு Table</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13623"/>
+        <location filename="../src/app/qgisapp.cpp" line="13628"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos;: %2</source>
         <translation>An பிழை occurred while saving raster பண்புக்கூறு table க்கு layer &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13631"/>
+        <location filename="../src/app/qgisapp.cpp" line="13636"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos; to VAT.DBF file &apos;%2&apos;: %3</source>
         <translation>An பிழை occurred while saving raster பண்புக்கூறு table க்கு layer &apos;%1&apos; பெறுநர் VAT.DBF கோப்பு &apos;%2&apos;: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13679"/>
-        <location filename="../src/app/qgisapp.cpp" line="13682"/>
+        <location filename="../src/app/qgisapp.cpp" line="13684"/>
+        <location filename="../src/app/qgisapp.cpp" line="13687"/>
         <source>Close Project</source>
         <translation>மூடு திட்டம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13679"/>
+        <location filename="../src/app/qgisapp.cpp" line="13684"/>
         <source>This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?</source>
         <translation>This திட்டம் includes one or more temporary layers. These layers அரே not permanently saved and their contents will be lost. அரே you sure you want பெறுநர் proceed?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13682"/>
+        <location filename="../src/app/qgisapp.cpp" line="13687"/>
         <source>This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?</source>
         <translation>This திட்டம் includes one or more temporary scratch layers. These layers அரே not saved பெறுநர் disk and their contents will be permanently lost. அரே you sure you want பெறுநர் proceed?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14437"/>
+        <location filename="../src/app/qgisapp.cpp" line="14442"/>
         <source>Unknown CRS</source>
         <translation>தெரியவில்லை CRS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14569"/>
+        <location filename="../src/app/qgisapp.cpp" line="14574"/>
         <source>Pan distance %1 (%2)</source>
         <translation>Pan distance %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14580"/>
+        <location filename="../src/app/qgisapp.cpp" line="14585"/>
         <source>Add to the current selection</source>
         <translation>கூட்டு பெறுநர் the மின்னோட்ட்ம், ஓட்டம் தேர்வு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14584"/>
+        <location filename="../src/app/qgisapp.cpp" line="14589"/>
         <source>Subtract from the current selection</source>
         <translation>Subtract இருந்து the மின்னோட்ட்ம், ஓட்டம் தேர்வு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14588"/>
+        <location filename="../src/app/qgisapp.cpp" line="14593"/>
         <source>Intersect with the current selection</source>
         <translation>Intersect with the மின்னோட்ட்ம், ஓட்டம் தேர்வு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14592"/>
+        <location filename="../src/app/qgisapp.cpp" line="14597"/>
         <source>Select features completely within</source>
         <translation>தேர்ந்தெடு நற்பொருத்தங்கள் completely within</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14596"/>
+        <location filename="../src/app/qgisapp.cpp" line="14601"/>
         <source>Add features completely within to the current selection</source>
         <translation>கூட்டு நற்பொருத்தங்கள் completely within பெறுநர் the மின்னோட்ட்ம், ஓட்டம் தேர்வு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14600"/>
+        <location filename="../src/app/qgisapp.cpp" line="14605"/>
         <source>Subtract features completely within from the current selection</source>
         <translation>Subtract நற்பொருத்தங்கள் completely within இருந்து the மின்னோட்ட்ம், ஓட்டம் தேர்வு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14604"/>
+        <location filename="../src/app/qgisapp.cpp" line="14609"/>
         <source>Intersect features completely within with the current selection</source>
         <translation>Intersect நற்பொருத்தங்கள் completely within with the மின்னோட்ட்ம், ஓட்டம் தேர்வு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14749"/>
+        <location filename="../src/app/qgisapp.cpp" line="14754"/>
         <source>1 feature selected on layer %1 (%2).</source>
         <translation>1 feature தேர்ந்தெடுக்கப்பட்டது on layer %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15952"/>
+        <location filename="../src/app/qgisapp.cpp" line="15957"/>
         <source>A profile with this name already exists</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15955"/>
+        <location filename="../src/app/qgisapp.cpp" line="15960"/>
         <source>New Profile Name</source>
         <translation>புதிய சுயவிவரம் பெயர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15971"/>
+        <location filename="../src/app/qgisapp.cpp" line="15976"/>
         <source>New Profile</source>
         <translation>புதிய சுயவிவரம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15971"/>
+        <location filename="../src/app/qgisapp.cpp" line="15976"/>
         <source>Cannot create folder &apos;%1&apos;</source>
         <translation>Cannot create folder &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15992"/>
+        <location filename="../src/app/qgisapp.cpp" line="15997"/>
         <source>Task failed</source>
         <translation>Task failed</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16068"/>
+        <location filename="../src/app/qgisapp.cpp" line="16073"/>
         <source>New bookmark</source>
         <translation>புதிய புத்தககுறி</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16144"/>
+        <location filename="../src/app/qgisapp.cpp" line="16149"/>
         <source>This project file was created by a newer version of QGIS (%1) and could not be completely loaded.</source>
         <translation>This திட்டம் கோப்பு was உருவாக்கப்பட்டது by a newer version of QGIS (%1) and could not be completely loaded.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16370"/>
+        <location filename="../src/app/qgisapp.cpp" line="16375"/>
         <source>Select Transformation for %1</source>
         <translation>தேர்ந்தெடு Transformation க்கு %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16764"/>
+        <location filename="../src/app/qgisapp.cpp" line="16769"/>
         <source>Network request to %1 timed out, any data received is likely incomplete.</source>
         <translation>பிணையம் request பெறுநர் %1 timed out, any தகவல்கள் received is likely incomplete.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16827"/>
+        <location filename="../src/app/qgisapp.cpp" line="16832"/>
         <source>QGIS Authentication</source>
         <translation>QGIS Authentication</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16971"/>
+        <location filename="../src/app/qgisapp.cpp" line="16976"/>
         <source>%1 Panel</source>
         <translation>%1 Panel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17063"/>
+        <location filename="../src/app/qgisapp.cpp" line="17068"/>
         <source>Transaction</source>
         <translation>Transaction</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17076"/>
-        <location filename="../src/app/qgisapp.cpp" line="17126"/>
+        <location filename="../src/app/qgisapp.cpp" line="17081"/>
+        <location filename="../src/app/qgisapp.cpp" line="17131"/>
         <source>Cannot duplicate feature in not editable mode on layer %1</source>
         <translation>Cannot duplicate feature in not editable பயன்முறை on layer %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17106"/>
+        <location filename="../src/app/qgisapp.cpp" line="17111"/>
         <source>%1 children on layer %2 duplicated</source>
         <translation>%1 children on layer %2 duplicated</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17110"/>
+        <location filename="../src/app/qgisapp.cpp" line="17115"/>
         <source>%1 features on layer %2 duplicated
 %3</source>
         <translation>%1 நற்பொருத்தங்கள் on layer %2 duplicated
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17139"/>
+        <location filename="../src/app/qgisapp.cpp" line="17144"/>
         <source>Digitize the duplicate on layer %1</source>
         <translation>Digitize the duplicate on layer %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17143"/>
+        <location filename="../src/app/qgisapp.cpp" line="17148"/>
         <source>Duplicate digitized</source>
         <translation>Duplicate digitized</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="17156"/>
+        <location filename="../src/app/qgisapp.cpp" line="17161"/>
         <source>%n children on layer %1 duplicated</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17159"/>
+        <location filename="../src/app/qgisapp.cpp" line="17164"/>
         <source>Feature on layer %1 duplicated
 %2</source>
         <translation>Feature on layer %1 duplicated
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17177"/>
+        <location filename="../src/app/qgisapp.cpp" line="17182"/>
         <source>Templates</source>
         <translation>வார்ப்புருக்கள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17188"/>
+        <location filename="../src/app/qgisapp.cpp" line="17193"/>
         <source>Template Name</source>
         <translation>Template பெயர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17188"/>
+        <location filename="../src/app/qgisapp.cpp" line="17193"/>
         <source>Name for the template</source>
         <translation>பெயர் க்கு the template</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17194"/>
+        <location filename="../src/app/qgisapp.cpp" line="17199"/>
         <source>Template not saved</source>
         <translation>Template not saved</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17194"/>
+        <location filename="../src/app/qgisapp.cpp" line="17199"/>
         <source>The template can not have an empty name.</source>
         <translation>The template can not have an வெறுமை name.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17201"/>
+        <location filename="../src/app/qgisapp.cpp" line="17206"/>
         <source>Overwrite Template</source>
         <translation>Overwrite Template</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17202"/>
+        <location filename="../src/app/qgisapp.cpp" line="17207"/>
         <source>The template %1 already exists, do you want to replace it?</source>
         <translation>The template %1 already exists, do you want பெறுநர் மாற்றவும் it?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17203"/>
+        <location filename="../src/app/qgisapp.cpp" line="17208"/>
         <source>Overwrite</source>
         <translation>Overwrite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17215"/>
+        <location filename="../src/app/qgisapp.cpp" line="17220"/>
         <source>Template saved</source>
         <translation>Template saved</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17215"/>
+        <location filename="../src/app/qgisapp.cpp" line="17220"/>
         <source>Template %1 was saved</source>
         <translation>Template %1 was saved</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17301"/>
+        <location filename="../src/app/qgisapp.cpp" line="17306"/>
         <source>Save as Local File</source>
         <translation>சேமி அச் Local கோப்பு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17032"/>
+        <location filename="../src/app/qgisapp.cpp" line="17037"/>
         <source>Layer %1</source>
         <translation>Layer %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9463"/>
-        <location filename="../src/app/qgisapp.cpp" line="9566"/>
-        <location filename="../src/app/qgisapp.cpp" line="9627"/>
+        <location filename="../src/app/qgisapp.cpp" line="9468"/>
+        <location filename="../src/app/qgisapp.cpp" line="9571"/>
+        <location filename="../src/app/qgisapp.cpp" line="9632"/>
         <source>The merge features tool only works on vector layers.</source>
         <translation>The merge நற்பொருத்தங்கள் கருவி only works on திசையன் layers.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9473"/>
-        <location filename="../src/app/qgisapp.cpp" line="9636"/>
+        <location filename="../src/app/qgisapp.cpp" line="9478"/>
+        <location filename="../src/app/qgisapp.cpp" line="9641"/>
         <source>Merging features can only be done for layers in editing mode.</source>
         <translation>Merging நற்பொருத்தங்கள் can only be முடிந்தது க்கு layers in editing mode.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9555"/>
-        <location filename="../src/app/qgisapp.cpp" line="9617"/>
+        <location filename="../src/app/qgisapp.cpp" line="9560"/>
+        <location filename="../src/app/qgisapp.cpp" line="9622"/>
         <source>Please select a layer in the layer list</source>
         <translation>Please தேர்ந்தெடு a layer in the layer பட்டியல்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9565"/>
-        <location filename="../src/app/qgisapp.cpp" line="9626"/>
+        <location filename="../src/app/qgisapp.cpp" line="9570"/>
+        <location filename="../src/app/qgisapp.cpp" line="9631"/>
         <source>Invalid layer</source>
         <translation>செல்லுபடியாகாத layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9921"/>
+        <location filename="../src/app/qgisapp.cpp" line="9926"/>
         <source>To select all, choose a vector layer in the legend.</source>
         <translation>பெறுநர் தேர்ந்தெடு all, choose a திசையன் layer in the legend.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9937"/>
-        <location filename="../src/app/qgisapp.cpp" line="9957"/>
+        <location filename="../src/app/qgisapp.cpp" line="9942"/>
+        <location filename="../src/app/qgisapp.cpp" line="9962"/>
         <source>To select features, choose a vector layer in the legend.</source>
         <translation>பெறுநர் தேர்ந்தெடு features, choose a திசையன் layer in the legend.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13492"/>
+        <location filename="../src/app/qgisapp.cpp" line="13497"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>திட்டம் has layer(s) in தொகு பயன்முறை with unsaved edits, which will NOT be சேமிக்கப்பட்டது!</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="14755"/>
-        <location filename="../src/app/qgisapp.cpp" line="14764"/>
+        <location filename="../src/app/qgisapp.cpp" line="14760"/>
+        <location filename="../src/app/qgisapp.cpp" line="14769"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15907"/>
+        <location filename="../src/app/qgisapp.cpp" line="15912"/>
         <source>Exit QGIS</source>
         <translation>வெளியேறு QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15907"/>
+        <location filename="../src/app/qgisapp.cpp" line="15912"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>Do you really want பெறுநர் வெளியேறு QGIS?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15954"/>
+        <location filename="../src/app/qgisapp.cpp" line="15959"/>
         <source>New profile name</source>
         <translation>புதிய சுயவிவரம் பெயர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15990"/>
+        <location filename="../src/app/qgisapp.cpp" line="15995"/>
         <source>Task complete</source>
         <translation>Task complete</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16132"/>
+        <location filename="../src/app/qgisapp.cpp" line="16137"/>
         <source>This project file was saved by QGIS version %1. When saving this project file, QGIS will update it to version %2, possibly rendering it unusable with older versions of QGIS.</source>
         <translation>This திட்டம் கோப்பு was saved by QGIS version %1. When saving this திட்டம் file, QGIS will புதுப்பிப்பு it பெறுநர் version %2, possibly rendering it unusable with older versions of QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16137"/>
+        <location filename="../src/app/qgisapp.cpp" line="16142"/>
         <source>Project file is older</source>
         <translation>Project கோப்பு is older</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16764"/>
+        <location filename="../src/app/qgisapp.cpp" line="16769"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation> Please சரிபார் the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; க்கு further info.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16670"/>
+        <location filename="../src/app/qgisapp.cpp" line="16675"/>
         <source>Warning</source>
         <translation>எச்சரிக்கை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16670"/>
+        <location filename="../src/app/qgisapp.cpp" line="16675"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>This layer doesn&apos;t have a பண்புகள் dialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16735"/>
+        <location filename="../src/app/qgisapp.cpp" line="16740"/>
         <source>Proxy authentication required</source>
         <translation>Proxy authentication required</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6910"/>
+        <location filename="../src/app/qgisapp.cpp" line="6915"/>
         <source>Failed to run Python script:</source>
         <translation>Failed பெறுநர் ஓடு பைதான் script:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8624"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>The current layer has no selected features</source>
         <translation>The மின்னோட்ட்ம், ஓட்டம் layer has இல்லை தேர்ந்தெடுக்கப்பட்டது நற்பொருத்தங்கள்</translation>
     </message>
@@ -134937,13 +134948,13 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
-        <location filename="../src/app/qgisapp.cpp" line="12471"/>
+        <location filename="../src/app/qgisapp.cpp" line="12476"/>
         <source>General</source>
         <translation>பொதுவான</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="107"/>
-        <location filename="../src/app/qgisapp.cpp" line="12472"/>
+        <location filename="../src/app/qgisapp.cpp" line="12477"/>
         <source>System</source>
         <translation>மண்டலம்</translation>
     </message>
@@ -134954,7 +134965,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
-        <location filename="../src/app/qgisapp.cpp" line="12473"/>
+        <location filename="../src/app/qgisapp.cpp" line="12478"/>
         <source>CRS Handling</source>
         <translation>CRS கையாளுதல்</translation>
     </message>
@@ -134970,13 +134981,13 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="114"/>
-        <location filename="../src/app/qgisapp.cpp" line="12474"/>
+        <location filename="../src/app/qgisapp.cpp" line="12479"/>
         <source>Coordinate Transforms</source>
         <translation>ஒருங்கிணைப்பு மாற்றங்கள்</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="117"/>
-        <location filename="../src/app/qgisapp.cpp" line="12475"/>
+        <location filename="../src/app/qgisapp.cpp" line="12480"/>
         <source>Data Sources</source>
         <translation>தரவு ஆதாரங்கள்</translation>
     </message>
@@ -134997,31 +135008,31 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
-        <location filename="../src/app/qgisapp.cpp" line="12480"/>
+        <location filename="../src/app/qgisapp.cpp" line="12485"/>
         <source>Colors</source>
         <translation>நிறங்கள்</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="121"/>
-        <location filename="../src/app/qgisapp.cpp" line="12477"/>
+        <location filename="../src/app/qgisapp.cpp" line="12482"/>
         <source>Canvas &amp; Legend</source>
         <translation>கேன்வாச் &amp; லெசண்ட்</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="123"/>
-        <location filename="../src/app/qgisapp.cpp" line="12478"/>
+        <location filename="../src/app/qgisapp.cpp" line="12483"/>
         <source>Map Tools</source>
         <translation>வரைபடக் கருவிகள்</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="125"/>
-        <location filename="../src/app/qgisapp.cpp" line="12479"/>
+        <location filename="../src/app/qgisapp.cpp" line="12484"/>
         <source>Digitizing</source>
         <translation>இலக்கமாக்குதல்</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="119"/>
-        <location filename="../src/app/qgisapp.cpp" line="12476"/>
+        <location filename="../src/app/qgisapp.cpp" line="12481"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
@@ -135032,7 +135043,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
-        <location filename="../src/app/qgisapp.cpp" line="12484"/>
+        <location filename="../src/app/qgisapp.cpp" line="12489"/>
         <source>Network</source>
         <translation>பிணையம்</translation>
     </message>
@@ -135179,19 +135190,19 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
-        <location filename="../src/app/qgisapp.cpp" line="12483"/>
+        <location filename="../src/app/qgisapp.cpp" line="12488"/>
         <source>Authentication</source>
         <translation>ஏற்பு</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
-        <location filename="../src/app/qgisapp.cpp" line="12482"/>
+        <location filename="../src/app/qgisapp.cpp" line="12487"/>
         <source>Variables</source>
         <translation>மாறிகள்</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsadvancedoptions.cpp" line="100"/>
-        <location filename="../src/app/qgisapp.cpp" line="12487"/>
+        <location filename="../src/app/qgisapp.cpp" line="12492"/>
         <source>Advanced</source>
         <translation>மேம்பட்ட</translation>
     </message>
@@ -135247,13 +135258,13 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
-        <location filename="../src/app/qgisapp.cpp" line="12481"/>
+        <location filename="../src/app/qgisapp.cpp" line="12486"/>
         <source>Layouts</source>
         <translation>தளவமைப்புகள்</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
-        <location filename="../src/app/qgisapp.cpp" line="12485"/>
+        <location filename="../src/app/qgisapp.cpp" line="12490"/>
         <source>Locator</source>
         <translation>இருப்பிடம்</translation>
     </message>
@@ -135269,7 +135280,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
-        <location filename="../src/app/qgisapp.cpp" line="12486"/>
+        <location filename="../src/app/qgisapp.cpp" line="12491"/>
         <source>Acceleration</source>
         <translation>முடுக்கம்</translation>
     </message>
@@ -139503,7 +139514,7 @@ Please search the list of installed plugins. You should find the plugin there, b
     <name>QgsPluginManager</name>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="504"/>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1778"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1788"/>
         <source>Plugins</source>
         <translation>செருகுநிரல்கள்</translation>
     </message>
@@ -139704,7 +139715,7 @@ Please search the list of installed plugins. You should find the plugin there, b
         <translation>வடிகட்டியை அழி</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1548"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1558"/>
         <source>Don&apos;t show this again.</source>
         <translation>இதை மீண்டும் காட்டாதே.</translation>
     </message>
@@ -139870,12 +139881,12 @@ Please search the list of installed plugins. You should find the plugin there, b
         <translation>செருகுநிரல் களஞ்சியத்திற்கு வாக்கை அனுப்புவது தோல்வியடைந்தது.</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1542"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1552"/>
         <source>Security warning</source>
         <translation>பாதுகாப்பு முன்னறிவிப்பு</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1543"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1553"/>
         <source>Installing a plugin from an untrusted source can harm your computer. Only continue if you received the plugin from a source you trust. Continue?</source>
         <translation>நம்பத்தகாத மூலத்திலிருந்து ஒரு செருகுநிரலை நிறுவுவது உங்கள் கணினிக்கு தீங்கு விளைவிக்கும். நீங்கள் நம்பும் மூலத்திலிருந்து செருகுநிரலைப் பெற்றிருந்தால் மட்டுமே தொடரவும். தொடரவா?</translation>
     </message>
@@ -148250,7 +148261,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12400"/>
+        <location filename="../src/app/qgisapp.cpp" line="12405"/>
         <source>General</source>
         <translation>பொதுவான</translation>
     </message>
@@ -148286,7 +148297,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12403"/>
+        <location filename="../src/app/qgisapp.cpp" line="12408"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
@@ -148297,7 +148308,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12409"/>
+        <location filename="../src/app/qgisapp.cpp" line="12414"/>
         <source>Variables</source>
         <translation>மாறிகள்</translation>
     </message>
@@ -148443,7 +148454,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12408"/>
+        <location filename="../src/app/qgisapp.cpp" line="12413"/>
         <source>Relations</source>
         <translation>உறவுகள்</translation>
     </message>
@@ -148549,7 +148560,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12407"/>
+        <location filename="../src/app/qgisapp.cpp" line="12412"/>
         <source>Data Sources</source>
         <translation>தரவு ஆதாரங்கள்</translation>
     </message>
@@ -148590,7 +148601,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12401"/>
+        <location filename="../src/app/qgisapp.cpp" line="12406"/>
         <source>Metadata</source>
         <translation>மேனிலை தரவு</translation>
     </message>
@@ -148601,7 +148612,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12411"/>
+        <location filename="../src/app/qgisapp.cpp" line="12416"/>
         <source>QGIS Server</source>
         <translation>QGIS சேவையகம்</translation>
     </message>
@@ -148867,7 +148878,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12410"/>
+        <location filename="../src/app/qgisapp.cpp" line="12415"/>
         <source>Macros</source>
         <translation>பெரியவைகள்</translation>
     </message>
@@ -149013,7 +149024,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12404"/>
+        <location filename="../src/app/qgisapp.cpp" line="12409"/>
         <source>Transformations</source>
         <translation>உருமாற்றங்கள்</translation>
     </message>
@@ -149024,7 +149035,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12412"/>
+        <location filename="../src/app/qgisapp.cpp" line="12417"/>
         <source>Temporal</source>
         <translation>தற்காலிகமானது</translation>
     </message>
@@ -149095,7 +149106,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12402"/>
+        <location filename="../src/app/qgisapp.cpp" line="12407"/>
         <source>View Settings</source>
         <translation>அமைப்புகளைப் பார்க்கவும்</translation>
     </message>
@@ -149266,7 +149277,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12405"/>
+        <location filename="../src/app/qgisapp.cpp" line="12410"/>
         <source>Styles</source>
         <translation>பாணிகள்</translation>
     </message>
@@ -149297,7 +149308,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12406"/>
+        <location filename="../src/app/qgisapp.cpp" line="12411"/>
         <source>Colors</source>
         <translation>நிறங்கள்</translation>
     </message>

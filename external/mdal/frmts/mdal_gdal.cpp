@@ -175,8 +175,7 @@ double MDAL::DriverGdal::parseMetadataTime( const std::string &time_s )
 MDAL::DriverGdal::metadata_hash MDAL::DriverGdal::parseMetadata( GDALMajorObjectH gdalObject, const char *pszDomain /* = 0 */ )
 {
   MDAL::DriverGdal::metadata_hash meta;
-  char **GDALmetadata = nullptr;
-  GDALmetadata = GDALGetMetadata( gdalObject, pszDomain );
+  CSLConstList GDALmetadata = GDALGetMetadata( gdalObject, pszDomain );
 
   if ( GDALmetadata )
   {

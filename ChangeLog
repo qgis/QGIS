@@ -1,6 +1,184 @@
+Jürgen E. Fischer <jef@norbit.de>	2026-05-29
+
+    translation update for 3.44.11 from transifex
+
+qgis-bot <58983587+qgis-bot@users.noreply.github.com>	2026-05-27
+
+    [Backport release-3_44] Treat empty mapbox sprite names as no icon (#66244)
+
+    * Treat empty mapbox sprite names as no icon
+
+    * Keep emiting warning for whitespace strings
+
+    Co-authored-by: Nicolas Godet <39594821+nicogodet@users.noreply.github.com>
+
+    ---------
+
+    Co-authored-by: Till Frankenbach <till.frankenbach@gmail.com>
+    Co-authored-by: Till Frankenbach <Tillfrankenbach@web.de>
+    Co-authored-by: Nicolas Godet <39594821+nicogodet@users.noreply.github.com>
+
+Merge: ac1443a90bb 9ad08819128
+Alexander Bruy <alexander.bruy@gmail.com>	2026-05-10
+
+    Merge pull request #66073 from qgis/backport-66069-to-release-3_44
+
+    [Backport release-3_44] [themes] Improve readability of hyperlinks with Blend of Gray
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2026-05-08
+
+    [themes] Improve readability of hyperlinks with Blend of Gray
+
+Merge: 0e6dfaf438a 3d0929ad1b7
+Even Rouault <even.rouault@spatialys.com>	2026-05-05
+
+    Merge pull request #66017 from rouault/backport-64557-to-3_44
+
+    [Backport 3.44] Build: fix build against latest GDAL 3.13.0dev
+
+Even Rouault <even.rouault@spatialys.com>	2026-01-15
+
+    Build: fix build against latest GDAL 3.13.0dev
+
+    Since https://github.com/OSGeo/gdal/pull/13658 , GDALGetMetadata()
+    return a CSLConstList=const char* const* instead of char**, better
+    reflecting its semantics.
+    The change in this PR is backwards compatible with earlier GDAL versions
+
+Matthias Kuhn <matthias@opengis.ch>	2026-05-01
+
+    ogc tests: Reduce ccache maximum size from 2.0G to 500M
+
+Matthias Kuhn <matthias@opengis.ch>	2026-05-01
+
+    Use GitHub Container Registry
+
+Matthias Kuhn <matthias@opengis.ch>	2026-05-01
+
+    Update permissions for GitHub Actions workflow
+
+Matthias Kuhn <matthias@opengis.ch>	2026-05-01
+
+    Fix cache-to syntax in OGC workflow
+
+Matthias Kuhn <matthias@opengis.ch>	2026-05-01
+
+    Use ghcr instead of actions cache for build deps docker
+
+dbyte <hxbb00@qq.com>	2026-04-23
+
+    fix: #65869
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2026-04-14
+
+    Don't show Plugin Dependencies Manager if plugin_dependencies metadata is empty
+
+Jean Felder <jean.felder@oslandia.com>	2026-04-10
+
+    qgs3dmapcanvaswidget: Prevent mapTool from being hidden when moved on Wayland
+
+    On wayland, moving a 3D map tool dialog, such as the measure dialog,
+    emits a signal on the clipboard. This ends up calling
+    `Qgs3DMapCanvasWidget::updateLayerRelatedActions` which disables all
+    map tools. In fact, this workflow is used to disable the pointcloud
+    map tool if the new active layer is not a pointcloud one.
+
+    This issue is fixed by checking if the current map tool is the
+    pointcloud one.
+
+Jean Felder <jean.felder@oslandia.com>	2026-04-10
+
+    qgs3dmeasuredialog: Set a parent to ensure visibility on wayland
+
+    On wayland, the measure dialog is not visible because it does not have
+    any parent. Fix the issue by using `Qgs3DMapCanvasWidget` as parent.
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-09
+
+    Fix tangent transformation when non-uniform scaling in effect
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-09
+
+    Avoid use of acos in phong shader
+
+    It's more stable and faster to directly calculate the cos of
+    the cut off angle and use that for comparison
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-09
+
+    Fix missing normalization in phong spot light handling
+
+    We shouldn't take the dot product of a non-normalized vector
+
+dbyte <hxbb00@qq.com>	2026-04-07
+
+    fix: ensure a valid regular expression in the search for plugins
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-07
+
+    Allow loading vector tile sprites directly from mapbox hosted styles
+
+    Handles resolving the mapbox:// URIs used in mapbox hosted style
+    JSON to real http URLs so that we can successfully retrieve
+    the associated sprite definitions and images.
+
+    (cherry picked from commit 8d0ae3d54bd5478261a2ef57cf1fc22548573287)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-07
+
+    Improve handling of odd length dash array during MapBox GL style conversion
+
+    Treat the arrays as implicitly having an extra "0" gap element on
+    the end, to exactly match how mapbox renders these
+
+    (cherry picked from commit 436247465a1ab3b2af63e4465008bea1297ecc82)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-02
+
+    Convert coalesce expression
+
+    (cherry picked from commit 10393847141ffe60d7632786eca091b4d6495a77)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-02
+
+    Convert mapbox 'pitch' expression to 0 constant
+
+    Since the vector tiles are always rendered in 2d, the pitch is
+    always 0
+
+    (cherry picked from commit 0a30f7c3c6c3cee231c1ef2b8ad0b7b12f04bc79)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-02
+
+    Convert sqrt expression in mapbox styles
+
+    (cherry picked from commit 8350b1301a42d1ed69d038ee1020576bf55c3472)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-30
+
+    Fix diffuse lighting for metal rough material
+
+    The diffuse component is supposed to be calculated on the
+    normal, not reflection
+
+Merge: 565fe70bd9e a2559baa154
+Matthias Kuhn <matthias@opengis.ch>	2026-05-02
+
+    Merge pull request #65987 from qgis/backport-65944-to-release-3_44
+
+    [Backport release-3_44] Decrease ccache max size to 500M
+
+Jürgen E. Fischer <jef@norbit.de>	2026-05-01
+
+    Release of 3.44.10
+
 Jürgen E. Fischer <jef@norbit.de>	2026-05-01
 
     translation update for 3.44.10 from transifex
+
+Matthias Kuhn <matthias@opengis.ch>	2026-04-27
+
+    Decrease ccache max size to 500M
 
 Stefanos Natsis <uclaros@gmail.com>	2026-04-30
 

@@ -31,7 +31,7 @@ void main()
     // Transform position, normal, and tangent to world space
     worldPosition = vec3(modelMatrix * vec4(vertexPosition, 1.0));
     worldNormal = normalize(modelNormalMatrix * vertexNormal);
-    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(vertexTangent.xyz, 0.0)));
+    worldTangent.xyz = normalize(modelNormalMatrix * vertexTangent.xyz);
     worldTangent.w = vertexTangent.w;
 
     // Calculate vertex position in clip coordinates
