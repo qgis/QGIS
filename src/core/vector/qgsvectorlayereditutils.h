@@ -74,6 +74,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Deletes a set of vertices from a feature.
      * \param featureId ID of feature to remove vertices from
      * \param vertices set of vertex indices to delete
+     *
+     * \since QGIS 4.2
      */
     Qgis::VectorEditResult deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices );
 
