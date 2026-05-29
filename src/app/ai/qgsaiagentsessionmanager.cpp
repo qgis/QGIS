@@ -659,7 +659,7 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   }
 
   // Tool list is injected so the model has discoverable names alongside the JSON schema,
-  // but only when the user actually allows custom actions. Otherwise we hide the catalogue
+  // but only when the user actually allows custom actions. Otherwise we hide the catalog
   // entirely so the model does not even attempt tool use.
   if ( mToolRegistry && mBehaviorSettings.allowCustomActions )
   {
