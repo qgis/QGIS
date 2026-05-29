@@ -59,6 +59,8 @@ class QgsTranslationContext;
  */
 class CORE_EXPORT QgsAbstractMetadataBase
 {
+    Q_GADGET
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
@@ -67,11 +69,14 @@ class CORE_EXPORT QgsAbstractMetadataBase
       sipType = sipType_QgsProjectMetadata;
     else
       sipType = NULL;
-  SIP_END
+    SIP_END
 #endif
 
-  public:
+    Q_PROPERTY( QString type READ type )
+    Q_PROPERTY( QString title READ title )
+    Q_PROPERTY( QString abstract READ abstract )
 
+  public:
     // NOTE - these really belong in a separate namespace, but SIP says no, I want to make you waste more time
     // TODO: dump sip
 
