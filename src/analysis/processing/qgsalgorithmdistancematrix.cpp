@@ -213,7 +213,7 @@ QVariantMap QgsDistanceMatrixAlgorithm::linearMatrix( const QVariantMap &paramet
 
   const QgsFeatureIterator targetIterator = mTarget->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( { targetIndex } ).setDestinationCrs( mSource->sourceCrs(), context.transformContext() ) );
   QHash<QgsFeatureId, QVariant> targetIdCache;
-  double step = mTarget->featureCount() > 0 ? 50.0 / mTarget->featureCount() : 1;
+  double step = mTarget->featureCount() > 0 ? 50.0 / static_cast<double>( mTarget->featureCount() ) : 1;
   long long current = 0;
   const QgsSpatialIndex index(
     targetIterator,
@@ -280,6 +280,7 @@ QVariantMap QgsDistanceMatrixAlgorithm::linearMatrix( const QVariantMap &paramet
         {
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         }
+        feedback->featureAddedToSink( u"OUTPUT"_s );
       }
     }
     else // Summary
@@ -333,6 +334,7 @@ QVariantMap QgsDistanceMatrixAlgorithm::linearMatrix( const QVariantMap &paramet
       {
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       }
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     }
 
     feedback->setProgress( 50.0 + static_cast<double>( current ) * step );
@@ -340,6 +342,7 @@ QVariantMap QgsDistanceMatrixAlgorithm::linearMatrix( const QVariantMap &paramet
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );
@@ -377,7 +380,7 @@ QVariantMap QgsDistanceMatrixAlgorithm::regularMatrix( const QVariantMap &parame
 
   const QgsFeatureIterator targetIterator = mTarget->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( { targetIndex } ).setDestinationCrs( mSource->sourceCrs(), context.transformContext() ) );
   QHash<QgsFeatureId, QVariant> targetIdCache;
-  double step = mTarget->featureCount() > 0 ? 50.0 / mTarget->featureCount() : 1;
+  double step = mTarget->featureCount() > 0 ? 50.0 / static_cast<double>( mTarget->featureCount() ) : 1;
   long long current = 0;
   const QgsSpatialIndex index(
     targetIterator,
@@ -443,12 +446,14 @@ QVariantMap QgsDistanceMatrixAlgorithm::regularMatrix( const QVariantMap &parame
     {
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
+    feedback->featureAddedToSink( u"OUTPUT"_s );
 
     feedback->setProgress( 50.0 + static_cast<double>( current ) * step );
     current++;
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );
