@@ -14,7 +14,7 @@
 
 
 
-class QgsLineString : QgsCurve
+class QgsLineString : QgsSimpleCurve
 {
 %Docstring(signature="appended")
 Line string geometry type, with support for z-dimension and m-values.
@@ -276,36 +276,6 @@ Returns a new linestring from a QPolygonF ``polygon`` input.
     virtual bool equals( const QgsCurve &other ) const;
 
 
-
-    SIP_PYOBJECT pointN( int i ) const /TypeHint="QgsPoint"/;
-%Docstring
-Returns the point at the specified index.
-
-Indexes can be less than 0, in which case they correspond to positions
-from the end of the line. E.g. an index of -1 corresponds to the last
-point in the line.
-
-:raises IndexError: if no point with the specified index exists.
-%End
-%MethodCode
-    const int count = sipCpp->numPoints();
-    if ( a0 < -count || a0 >= count )
-    {
-      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
-      sipIsErr = 1;
-    }
-    else
-    {
-      std::unique_ptr< QgsPoint > p;
-      if ( a0 >= 0 )
-        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
-      else // negative index, count backwards from end
-        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
-      sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
-    }
-%End
-
-
     virtual double xAt( int index ) const;
 
 %Docstring
@@ -360,15 +330,6 @@ point in the line.
         return PyFloat_FromDouble( sipCpp->yAt( count + a0 ) );
     }
 %End
-
-
-
-
-
-
-
-
-
 
 
     virtual double zAt( int index ) const;
@@ -700,10 +661,6 @@ approximation of the curve.
 :param toleranceType: maximum segmentation angle or maximum difference
                       between approximation and curve
 %End
-
-    virtual int numPoints() const /HoldGIL/;
-
-    virtual int nCoordinates() const /HoldGIL/;
 
     virtual void points( QgsPointSequence &pt /Out/ ) const;
 

@@ -700,11 +700,6 @@ bool QgsCircularString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
-int QgsCircularString::numPoints() const
-{
-  return std::min( mX.size(), mY.size() );
-}
-
 int QgsCircularString::indexOf( const QgsPoint &point ) const
 {
   const int size = mX.size();
@@ -740,43 +735,6 @@ int QgsCircularString::indexOf( const QgsPoint &point ) const
     }
   }
   return -1;
-}
-
-QgsPoint QgsCircularString::pointN( int i ) const
-{
-  if ( i < 0 || std::min( mX.size(), mY.size() ) <= i )
-  {
-    return QgsPoint();
-  }
-
-  double x = mX.at( i );
-  double y = mY.at( i );
-  double z = 0;
-  double m = 0;
-
-  if ( is3D() )
-  {
-    z = mZ.at( i );
-  }
-  if ( isMeasure() )
-  {
-    m = mM.at( i );
-  }
-
-  Qgis::WkbType t = Qgis::WkbType::Point;
-  if ( is3D() && isMeasure() )
-  {
-    t = Qgis::WkbType::PointZM;
-  }
-  else if ( is3D() )
-  {
-    t = Qgis::WkbType::PointZ;
-  }
-  else if ( isMeasure() )
-  {
-    t = Qgis::WkbType::PointM;
-  }
-  return QgsPoint( t, x, y, z, m );
 }
 
 double QgsCircularString::xAt( int index ) const

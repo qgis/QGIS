@@ -1191,59 +1191,6 @@ QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleran
   return clone();
 }
 
-int QgsLineString::numPoints() const
-{
-  return mX.size();
-}
-
-int QgsLineString::nCoordinates() const
-{
-  return mX.size();
-}
-
-QgsPoint QgsLineString::pointN( int i ) const
-{
-  if ( i < 0 || i >= mX.size() )
-  {
-    return QgsPoint();
-  }
-
-  double x = mX.at( i );
-  double y = mY.at( i );
-  double z = std::numeric_limits<double>::quiet_NaN();
-  double m = std::numeric_limits<double>::quiet_NaN();
-
-  bool hasZ = is3D();
-  if ( hasZ )
-  {
-    z = mZ.at( i );
-  }
-  bool hasM = isMeasure();
-  if ( hasM )
-  {
-    m = mM.at( i );
-  }
-
-  Qgis::WkbType t = Qgis::WkbType::Point;
-  if ( mWkbType == Qgis::WkbType::LineString25D )
-  {
-    t = Qgis::WkbType::Point25D;
-  }
-  else if ( hasZ && hasM )
-  {
-    t = Qgis::WkbType::PointZM;
-  }
-  else if ( hasZ )
-  {
-    t = Qgis::WkbType::PointZ;
-  }
-  else if ( hasM )
-  {
-    t = Qgis::WkbType::PointM;
-  }
-  return QgsPoint( t, x, y, z, m );
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

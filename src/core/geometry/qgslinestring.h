@@ -24,6 +24,7 @@
 #include "qgscompoundcurve.h"
 #include "qgscurve.h"
 #include "qgsgeometryutils_base.h"
+#include "qgssimplecurve.h"
 
 #include <QPolygonF>
 #include <QString>
@@ -44,7 +45,7 @@ class QgsBox3D;
  * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
  */
-class CORE_EXPORT QgsLineString : public QgsCurve
+class CORE_EXPORT QgsLineString : public QgsSimpleCurve
 {
   public:
     // clang-format off
@@ -433,46 +434,6 @@ class CORE_EXPORT QgsLineString : public QgsCurve
       return fuzzyEqual( other, 1e-8 );
     }
 
-
-#ifndef SIP_RUN
-
-    /**
-     * Returns the specified point from inside the line string.
-     * \param i index of point, starting at 0 for the first point
-     */
-    QgsPoint pointN( int i ) const;
-#else
-// clang-format off
-
-    /**
-     * Returns the point at the specified index.
-     *
-     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
-     * corresponds to the last point in the line.
-     *
-     * \throws IndexError if no point with the specified index exists.
-     */
-    SIP_PYOBJECT pointN( int i ) const SIP_TYPEHINT( QgsPoint );
-    % MethodCode
-    const int count = sipCpp->numPoints();
-    if ( a0 < -count || a0 >= count )
-    {
-      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
-      sipIsErr = 1;
-    }
-    else
-    {
-      std::unique_ptr< QgsPoint > p;
-      if ( a0 >= 0 )
-        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
-      else // negative index, count backwards from end
-        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
-      sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
-    }
-    % End
-// clang-format on
-#endif
-
 #ifndef SIP_RUN
     double xAt( int index ) const override;
 #else
@@ -536,101 +497,6 @@ class CORE_EXPORT QgsLineString : public QgsCurve
     % End
 // clang-format on
 #endif
-
-    /**
-     * Returns a const pointer to the x vertex data.
-     * \note Not available in Python bindings
-     * \see yData()
-     * \since QGIS 3.2
-     */
-    const double *xData() const SIP_SKIP
-    {
-      return mX.constData();
-    }
-
-    /**
-     * Returns a const pointer to the y vertex data.
-     * \note Not available in Python bindings
-     * \see xData()
-     * \since QGIS 3.2
-     */
-    const double *yData() const SIP_SKIP
-    {
-      return mY.constData();
-    }
-
-    /**
-     * Returns a const pointer to the z vertex data, or NULLPTR if the linestring does
-     * not have z values.
-     * \note Not available in Python bindings
-     * \see xData()
-     * \see yData()
-     * \since QGIS 3.2
-     */
-    const double *zData() const SIP_SKIP
-    {
-      if ( mZ.empty() )
-        return nullptr;
-      else
-        return mZ.constData();
-    }
-
-    /**
-     * Returns a const pointer to the m vertex data, or NULLPTR if the linestring does
-     * not have m values.
-     * \note Not available in Python bindings
-     * \see xData()
-     * \see yData()
-     * \since QGIS 3.2
-     */
-    const double *mData() const SIP_SKIP
-    {
-      if ( mM.empty() )
-        return nullptr;
-      else
-        return mM.constData();
-    }
-
-    /**
-     * Returns the x vertex values as a vector.
-     * \note Not available in Python bindings
-     * \since QGIS 3.26
-    */
-    QVector< double > xVector() const SIP_SKIP
-    {
-      return mX;
-    }
-
-    /**
-     * Returns the y vertex values as a vector.
-     * \note Not available in Python bindings
-     * \since QGIS 3.26
-    */
-    QVector< double > yVector() const SIP_SKIP
-    {
-      return mY;
-    }
-
-    /**
-     * Returns the z vertex values as a vector.
-     * \note Not available in Python bindings
-     * \since QGIS 3.26
-    */
-    QVector< double > zVector() const SIP_SKIP
-    {
-      return mZ;
-    }
-
-    /**
-     * Returns the m vertex values as a vector.
-     * \note Not available in Python bindings
-     * \since QGIS 3.26
-    */
-    QVector< double > mVector() const SIP_SKIP
-    {
-      return mM;
-    }
-
 
 #ifndef SIP_RUN
 
@@ -1042,8 +908,6 @@ class CORE_EXPORT QgsLineString : public QgsCurve
     */
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override  SIP_FACTORY;
 
-    int numPoints() const override SIP_HOLDGIL;
-    int nCoordinates() const override SIP_HOLDGIL;
     void points( QgsPointSequence &pt SIP_OUT ) const override;
 
     void draw( QPainter &p ) const override;
@@ -1309,11 +1173,6 @@ class CORE_EXPORT QgsLineString : public QgsCurve
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   private:
-    QVector<double> mX;
-    QVector<double> mY;
-    QVector<double> mZ;
-    QVector<double> mM;
-
     void importVerticesFromWkb( const QgsConstWkbPtr &wkb );
 
     /**
