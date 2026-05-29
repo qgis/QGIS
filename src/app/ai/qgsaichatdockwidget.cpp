@@ -1209,8 +1209,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   QFormLayout *indexingForm = new QFormLayout();
 
   QSettings indexSettings;
-  const bool layerIndexingEnabled
-    = settingValueWithLegacy( indexSettings, u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool();
+  const bool layerIndexingEnabled = settingValueWithLegacy( indexSettings, u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool();
 
   QCheckBox *enableLayerIndexing = new QCheckBox( tr( "Enable layer indexing (auto reindex on layer add/remove/edit)" ), &dialog );
   enableLayerIndexing->setChecked( layerIndexingEnabled );
@@ -1281,9 +1280,11 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QLabel *helpLabel = new QLabel(
     tr(
-      "OpenAI and Claude API keys are stored locally in application settings. The Codex OAuth refresh token is stored locally in application settings; the Claude OAuth refresh token is stored in the encrypted "
+      "OpenAI and Claude API keys are stored locally in application settings. The Codex OAuth refresh token is stored locally in application settings; the Claude OAuth refresh token is stored in the "
+      "encrypted "
       "QGIS authentication store. Leave API key fields empty to keep "
-      "the current saved value.\n\nAgent rules and skills are stored locally in application settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended to the "
+      "the current saved value.\n\nAgent rules and skills are stored locally in application settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended "
+      "to the "
       "prompt. Custom actions remain subject to the existing review/approval dialogs."
     ),
     &dialog
@@ -1469,7 +1470,8 @@ void QgsAiChatDockWidget::openProviderSettings()
         &dialog,
         tr( "Enable layer indexing" ),
         tr(
-          "Enabling layer indexing means GeoAI Desktop will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. The "
+          "Enabling layer indexing means GeoAI Desktop will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. "
+          "The "
           "embeddings are stored locally; the data leaves your machine only during indexing.\n\nProceed?"
         ),
         QMessageBox::Yes | QMessageBox::No,
