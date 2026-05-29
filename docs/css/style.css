@@ -112,13 +112,35 @@ img {
 .nav-brand {
   display: flex;
   align-items: center;
-  line-height: 0;
+  gap: 10px;
+  line-height: 1;
+  min-width: max-content;
 }
 
 .nav-brand img {
   width: 36px;
   height: 36px;
   border-radius: 8px;
+  flex: 0 0 36px;
+  object-fit: cover;
+}
+
+.nav-brand-wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.nav-brand-wordmark span:first-child {
+  color: var(--text);
+}
+
+.nav-brand-wordmark span:last-child {
+  color: #65e6c4;
 }
 
 .nav-links {
@@ -970,5 +992,15 @@ img {
   .footer-grid {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-brand-wordmark {
+    font-size: 0.92rem;
+  }
+
+  .nav-brand {
+    gap: 8px;
   }
 }
