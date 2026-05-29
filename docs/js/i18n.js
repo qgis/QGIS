@@ -1,12 +1,12 @@
 (function () {
-  const STORAGE_KEY = "qgis_ai_lang";
-  const RELEASES_URL = "https://github.com/francemazzi/QGIS_AI/releases/latest";
+  const STORAGE_KEY = "geoai_lang";
+  const RELEASES_URL = "https://github.com/francemazzi/GeoAI-Desktop/releases/latest";
 
   const translations = {
     it: {
-      "meta.title": "QGIS_AI — QGIS con AI nativa",
+      "meta.title": "GeoAI Desktop — AI nativa per GIS",
       "meta.description":
-        "Fork di QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace.",
+        "Fork non ufficiale basato su QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace.",
 
       "nav.problems": "Problemi",
       "nav.features": "Feature",
@@ -14,15 +14,15 @@
       "nav.download": "Download",
       "nav.downloadBtn": "Scarica",
 
-      "hero.badge": "Fork QGIS 4.1 · AI nativa",
-      "hero.title": "QGIS con AI nativa.",
+      "hero.badge": "Basato su QGIS 4.1 · AI nativa",
+      "hero.title": "GIS desktop con AI nativa.",
       "hero.titleAccent": "Fai GIS 10× più veloce.",
       "hero.subtitle":
         "Assistente integrato nel pannello laterale — non un plugin esterno. Chiedi in linguaggio naturale, l'agente ispeziona layer, esegue PyQGIS e salva workflow con la tua approvazione.",
-      "hero.ctaPrimary": "Scarica QGIS_AI",
+      "hero.ctaPrimary": "Scarica GeoAI Desktop",
       "hero.ctaSecondary": "Come configurarlo",
 
-      "mockup.mapLabel": "Mappa QGIS",
+      "mockup.mapLabel": "Mappa GIS",
       "mockup.chatTitle": "AI Assistant",
       "mockup.modePlan": "Plan",
       "mockup.modeAgent": "Agent",
@@ -35,7 +35,7 @@
       "problems.label": "Problemi comuni",
       "problems.title": "Conosci questi ostacoli in QGIS?",
       "problems.subtitle":
-        "Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. QGIS_AI risolve il gap tra domanda e azione nel tuo progetto.",
+        "Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. GeoAI Desktop risolve il gap tra domanda e azione nel tuo progetto.",
 
       "problems.1.title": "PyQGIS difficile",
       "problems.1.desc":
@@ -70,7 +70,7 @@
       "problems.7.title": "Plugin AI disconnessi",
       "problems.7.desc":
         "Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.",
-      "problems.7.fix": "Integrazione nativa nel fork desktop QGIS_AI.",
+      "problems.7.fix": "Integrazione nativa in GeoAI Desktop.",
 
       "solution.label": "Soluzione",
       "solution.title": "Chat laterale + Agente integrato",
@@ -89,7 +89,7 @@
         "Stile Cursor: Plan per pianificare, Agent per eseguire e modificare, Ask per domande e review. Rules & Skills personalizzabili.",
       "solution.agent.f1": "Plan · Agent · Ask",
       "solution.agent.f2": "19 tool GIS integrati",
-      "solution.agent.f3": "Rules & Skills (.qgis_ai/)",
+      "solution.agent.f3": "Rules & Skills (.geoai/)",
 
       "speed.label": "10× più veloce",
       "speed.title": "Da ore a minuti",
@@ -98,7 +98,7 @@
       "speed.beforeTime": "~45 min",
       "speed.beforeSteps":
         "Aprire console Python, scrivere script per ogni layer, cercare API su StackExchange, installare dipendenze, debuggare path, export manuale.",
-      "speed.after": "Con QGIS_AI",
+      "speed.after": "Con GeoAI Desktop",
       "speed.afterTime": "~5 min",
       "speed.afterSteps":
         "Una richiesta in linguaggio naturale. L'agente ispeziona, propone codice, chiede approval, esegue e salva nel workspace.",
@@ -114,7 +114,7 @@
 
       "features.2.title": "Rules & Skills",
       "features.2.desc":
-        "Regole inline e cartelle .qgis_ai/rules e .qgis_ai/skills per guidare l'agente come in Cursor.",
+        "Regole inline e cartelle .geoai/rules e .geoai/skills per guidare l'agente come in Cursor.",
 
       "features.3.title": "RAG workspace",
       "features.3.desc":
@@ -139,7 +139,7 @@
 
       "setup.creds.title": "Credenziali e login",
       "setup.creds.1":
-        "Apri QGIS_AI → menu Visualizza → Pannelli → AI Assistant.",
+        "Apri GeoAI Desktop → menu Visualizza → Pannelli → AI Assistant.",
       "setup.creds.2": "Clicca sull'icona ⚙ impostazioni in alto a destra del pannello.",
       "setup.creds.3.title": "Scegli il provider:",
       "setup.creds.3.openai":
@@ -166,7 +166,7 @@
         "I dati dei layer vengono inviati al provider embeddings solo se abiliti esplicitamente l'indexing.",
 
       "download.label": "Download",
-      "download.title": "Scarica QGIS_AI",
+      "download.title": "Scarica GeoAI Desktop",
       "download.subtitle":
         "Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.",
       "download.cta": "Vai alle Releases",
@@ -174,27 +174,29 @@
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": "File .dmg",
       "download.macos.note":
-        "Trascina QGIS_AI in Applicazioni. Poi: xattr -d com.apple.quarantine /Applications/QGIS_AI.app",
+        "Trascina GeoAI Desktop in Applicazioni. Poi: xattr -d com.apple.quarantine \"/Applications/GeoAI Desktop.app\"",
       "download.windows.title": "Windows",
       "download.windows.sub": "10/11 x64",
       "download.windows.file": "File -win64.zip",
       "download.windows.note":
-        "Estrai ovunque, lancia bin/qgis.exe. SmartScreen: Maggiori informazioni → Esegui comunque.",
+        "Estrai ovunque, lancia l'eseguibile GeoAI Desktop. SmartScreen: Maggiori informazioni → Esegui comunque.",
       "download.linux.title": "Linux",
       "download.linux.sub": "x86_64",
       "download.linux.file": "File .AppImage",
       "download.linux.note":
-        "chmod +x QGIS_AI-*.AppImage && ./QGIS_AI-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
+        "chmod +x GeoAI-Desktop-*.AppImage && ./GeoAI-Desktop-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "Fork QGIS con assistente AI nativo.",
+      "footer.tagline": "Fork non ufficiale basato su QGIS con assistente AI nativo.",
+      "footer.disclaimer":
+        "GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
       "footer.license": "Licenza GPLv2+",
       "footer.contact": "Contatto",
     },
     en: {
-      "meta.title": "QGIS_AI — QGIS with native AI",
+      "meta.title": "GeoAI Desktop — Native AI for GIS",
       "meta.description":
-        "QGIS fork with a built-in AI assistant. Do GIS 10× faster with side chat, agent, and workspace RAG.",
+        "Independent unofficial fork based on QGIS with a built-in AI assistant. Do GIS 10× faster with side chat, agent, and workspace RAG.",
 
       "nav.problems": "Problems",
       "nav.features": "Features",
@@ -202,15 +204,15 @@
       "nav.download": "Download",
       "nav.downloadBtn": "Download",
 
-      "hero.badge": "QGIS 4.1 fork · Native AI",
-      "hero.title": "QGIS with native AI.",
+      "hero.badge": "Based on QGIS 4.1 · Native AI",
+      "hero.title": "Desktop GIS with native AI.",
       "hero.titleAccent": "Do GIS 10× faster.",
       "hero.subtitle":
         "Assistant built into the side panel — not an external plugin. Ask in plain language; the agent inspects layers, runs PyQGIS, and saves workflows with your approval.",
-      "hero.ctaPrimary": "Download QGIS_AI",
+      "hero.ctaPrimary": "Download GeoAI Desktop",
       "hero.ctaSecondary": "How to set up",
 
-      "mockup.mapLabel": "QGIS map",
+      "mockup.mapLabel": "GIS map",
       "mockup.chatTitle": "AI Assistant",
       "mockup.modePlan": "Plan",
       "mockup.modeAgent": "Agent",
@@ -223,7 +225,7 @@
       "problems.label": "Common problems",
       "problems.title": "Sound familiar in QGIS?",
       "problems.subtitle":
-        "GIS workflows often mean PyQGIS scripts, forum searches, and copy-paste from generic chatbots. QGIS_AI closes the gap between question and action in your project.",
+        "GIS workflows often mean PyQGIS scripts, forum searches, and copy-paste from generic chatbots. GeoAI Desktop closes the gap between question and action in your project.",
 
       "problems.1.title": "PyQGIS is hard",
       "problems.1.desc":
@@ -258,7 +260,7 @@
       "problems.7.title": "Disconnected AI plugins",
       "problems.7.desc":
         "External assistants don't know your active layers or Processing Toolbox.",
-      "problems.7.fix": "Native integration in the QGIS_AI desktop fork.",
+      "problems.7.fix": "Native integration in GeoAI Desktop.",
 
       "solution.label": "Solution",
       "solution.title": "Side chat + integrated agent",
@@ -277,7 +279,7 @@
         "Cursor-style: Plan to strategize, Agent to execute and edit, Ask for Q&A and review. Customizable Rules & Skills.",
       "solution.agent.f1": "Plan · Agent · Ask",
       "solution.agent.f2": "19 built-in GIS tools",
-      "solution.agent.f3": "Rules & Skills (.qgis_ai/)",
+      "solution.agent.f3": "Rules & Skills (.geoai/)",
 
       "speed.label": "10× faster",
       "speed.title": "From hours to minutes",
@@ -286,7 +288,7 @@
       "speed.beforeTime": "~45 min",
       "speed.beforeSteps":
         "Open Python console, write scripts per layer, search StackExchange for APIs, install deps, debug paths, manual export.",
-      "speed.after": "With QGIS_AI",
+      "speed.after": "With GeoAI Desktop",
       "speed.afterTime": "~5 min",
       "speed.afterSteps":
         "One natural-language request. The agent inspects, proposes code, asks approval, runs, and saves to the workspace.",
@@ -302,7 +304,7 @@
 
       "features.2.title": "Rules & Skills",
       "features.2.desc":
-        "Inline rules and .qgis_ai/rules and .qgis_ai/skills folders to steer the agent like Cursor.",
+        "Inline rules and .geoai/rules and .geoai/skills folders to steer the agent like Cursor.",
 
       "features.3.title": "Workspace RAG",
       "features.3.desc":
@@ -327,7 +329,7 @@
 
       "setup.creds.title": "Credentials and login",
       "setup.creds.1":
-        "Open QGIS_AI → View → Panels → AI Assistant.",
+        "Open GeoAI Desktop → View → Panels → AI Assistant.",
       "setup.creds.2": "Click the ⚙ settings icon at the top-right of the panel.",
       "setup.creds.3.title": "Choose a provider:",
       "setup.creds.3.openai":
@@ -354,7 +356,7 @@
         "Layer data is sent to the embeddings provider only if you explicitly enable indexing.",
 
       "download.label": "Download",
-      "download.title": "Download QGIS_AI",
+      "download.title": "Download GeoAI Desktop",
       "download.subtitle":
         "Prebuilt binaries from GitHub Releases. Packages are unsigned — follow one-time OS instructions below.",
       "download.cta": "Go to Releases",
@@ -362,19 +364,21 @@
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": ".dmg file",
       "download.macos.note":
-        "Drag QGIS_AI to Applications. Then: xattr -d com.apple.quarantine /Applications/QGIS_AI.app",
+        "Drag GeoAI Desktop to Applications. Then: xattr -d com.apple.quarantine \"/Applications/GeoAI Desktop.app\"",
       "download.windows.title": "Windows",
       "download.windows.sub": "10/11 x64",
       "download.windows.file": "-win64.zip file",
       "download.windows.note":
-        "Extract anywhere, run bin/qgis.exe. SmartScreen: More info → Run anyway.",
+        "Extract anywhere, run the GeoAI Desktop executable. SmartScreen: More info → Run anyway.",
       "download.linux.title": "Linux",
       "download.linux.sub": "x86_64",
       "download.linux.file": ".AppImage file",
       "download.linux.note":
-        "chmod +x QGIS_AI-*.AppImage && ./QGIS_AI-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
+        "chmod +x GeoAI-Desktop-*.AppImage && ./GeoAI-Desktop-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "QGIS fork with native AI assistant.",
+      "footer.tagline": "Unofficial fork based on QGIS with native AI assistant.",
+      "footer.disclaimer":
+        "GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
       "footer.license": "GPLv2+ License",
       "footer.contact": "Contact",
@@ -469,5 +473,5 @@
     });
   });
 
-  window.QGIS_AI_I18N = { setLanguage, RELEASES_URL };
+  window.GEOAI_DESKTOP_I18N = { setLanguage, RELEASES_URL };
 })();

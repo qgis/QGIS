@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-  <id>org.qgis.qgis.desktop</id>
-  <name>QGIS Desktop</name>
-  <summary>A Geographic Information System</summary>
+  <id>com.francemazzi.geoaidesktop.desktop</id>
+  <name>GeoAI Desktop</name>
+  <summary>Independent unofficial fork based on QGIS with an integrated AI assistant</summary>
   <screenshots>
     <screenshot type="default"><caption>QGIS</caption><image type="source">https://docs.qgis.org/testing/en/_images/answer_symbology2.png</image></screenshot>
     <screenshot type="default"><caption>3D Map View</caption><image type="source">https://docs.qgis.org/testing/en/_images/3dmapview.png</image></screenshot>
     <screenshot type="default"><caption>QGIS Project Properties</caption><image type="source">https://docs.qgis.org/testing/en/_images/selectCRS.png</image></screenshot>
   </screenshots>
-  <developer id="org.qgis">
-    <name>QGIS Development Team</name>
+  <developer id="com.francemazzi">
+    <name>Francesco Mazzi</name>
   </developer>
   <description>
-    <p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo). It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</p>
+    <p>GeoAI Desktop is an independent, unofficial fork based on QGIS with an integrated AI assistant. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
+    <p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. GeoAI Desktop preserves QGIS copyright notices and GPL licensing while adding native AI assistance.</p>
   </description>
 
   <metadata_license>CC-BY-3.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
-  <url type="vcs-browser">https://github.com/qgis/QGIS/</url>
-  <url type="bugtracker">https://github.com/qgis/QGIS/issues</url>
+  <url type="vcs-browser">https://github.com/francemazzi/GeoAI-Desktop/</url>
+  <url type="bugtracker">https://github.com/francemazzi/GeoAI-Desktop/issues</url>
   <url type="donation">https://qgis.org/funding/donate/</url>
   <url type="faq">https://qgis.org/resources/support/faq/</url>
   <url type="help">https://qgis.org/resources/hub/#documentation</url>
-  <url type="homepage">https://qgis.org</url>
+  <url type="homepage">https://francemazzi.github.io/GeoAI-Desktop/</url>
 
-  <project_group>QGIS</project_group>
+  <project_group>GeoAI Desktop</project_group>
   <releases>
     <release version="4.0.0" date="2026-03-06" />
     <release version="3.44.0" date="2025-06-20" />
@@ -50,7 +51,7 @@
     <release version="3.4.0" date="2018-10-26" />
     <release version="3.2.0" date="2018-06-22" />
   </releases>
-  <launchable type="desktop-id">org.qgis.qgis.desktop</launchable>
+  <launchable type="desktop-id">com.francemazzi.geoaidesktop.desktop</launchable>
   <content_rating type="oars-1.1"/>
   <provides>
     <binary>qgis</binary>

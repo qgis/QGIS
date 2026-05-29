@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=QGIS_AI Desktop
+Name=GeoAI Desktop
 GenericName=Geographic Information System
-Icon=qgis
+Icon=geoai-desktop
 TryExec=qgis
 Exec=qgis %F
 Terminal=false

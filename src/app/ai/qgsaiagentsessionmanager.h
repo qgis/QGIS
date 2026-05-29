@@ -57,10 +57,10 @@ struct APP_EXPORT QgsAiAgentBehaviorSettings
     bool loadWorkspaceRules = true;
     //! When true, also load .md/.txt files from skillsPath inside the workspace.
     bool loadWorkspaceSkills = true;
-    //! Workspace-relative directory for rules files. Defaults to ".qgis_ai/rules".
-    QString rulesPath = u".qgis_ai/rules"_s;
-    //! Workspace-relative directory for skills files. Defaults to ".qgis_ai/skills".
-    QString skillsPath = u".qgis_ai/skills"_s;
+    //! Workspace-relative directory for rules files. Defaults to ".geoai/rules".
+    QString rulesPath = u".geoai/rules"_s;
+    //! Workspace-relative directory for skills files. Defaults to ".geoai/skills".
+    QString skillsPath = u".geoai/skills"_s;
 };
 
 class APP_EXPORT QgsAiAgentSessionManager : public QObject

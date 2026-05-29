@@ -2,9 +2,9 @@
 set(sizes 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512)
 
 # Install application icon
-install(FILES ${CMAKE_SOURCE_DIR}/images/icons/qgis_icon.svg RENAME qgis.svg DESTINATION share/icons/hicolor/scalable/apps)
+install(FILES ${CMAKE_SOURCE_DIR}/images/icons/geoai-desktop-icon.svg RENAME geoai-desktop.svg DESTINATION share/icons/hicolor/scalable/apps)
 foreach(size ${sizes})
-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/qgis-icon${size}.png RENAME qgis.png DESTINATION share/icons/hicolor/${size}/apps/)
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/geoai-desktop-icon${size}.png RENAME geoai-desktop.png DESTINATION share/icons/hicolor/${size}/apps/)
 endforeach()
 
 # Install MIME type icon

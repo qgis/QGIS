@@ -5,41 +5,31 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleName</key>
-	<string>QGIS_AI</string>
+	<string>GeoAI Desktop</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.francemazzi.qgisai</string>
+	<string>com.francemazzi.geoaidesktop</string>
 	<key>CFBundleExecutable</key>
 	<string>@QGIS_APP_NAME@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
-	<string>QGIS</string>
+	<string>GAID</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>QGIS_AI fork by Francesco Mazzi. Based on QGIS, Copyright © QGIS contributors. GPLv2+.</string>
+	<string>GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project. Copyright © QGIS contributors and GeoAI Desktop contributors. GPLv2+.</string>
 	<key>CFBundleShortVersionString</key>
 	<string>@COMPLETE_VERSION@</string>
 	<key>CFBundleVersion</key>
 	<string>@COMPLETE_VERSION@</string>
 	<key>CFBundleIconFile</key>
-	<string>qgis.icns</string>
+	<string>geoai-desktop.icns</string>
         <key>CFBundleIcons</key>
         <dict>
             <key>CFBundlePrimaryIcon</key>
             <dict>
                 <key>CFBundleIconFiles</key>
                 <array>
-                    <string>qgis.icns</string>
+                    <string>geoai-desktop.icns</string>
                 </array>
-            </dict>
-            <key>CFBundleAlternateIcons</key>
-            <dict>
-                <key>DarkModeIcon</key>
-                <dict>
-                    <key>CFBundleIconFiles</key>
-                    <array>
-                        <string>qgis-dark.icns</string>
-                    </array>
-                </dict>
             </dict>
         </dict>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -54,7 +44,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
-			<string>qgis.icns</string>
+			<string>geoai-desktop.icns</string>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>qgs</string>

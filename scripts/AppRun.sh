@@ -1,5 +1,5 @@
 #!/bin/bash
-# AppRun launcher embedded into QGIS_AI AppImage.
+# AppRun launcher embedded into GeoAI Desktop AppImage.
 # Sets runtime paths so QGIS finds GDAL/PROJ data, Qt plugins and Python modules
 # bundled inside the AppDir.
 

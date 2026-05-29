@@ -34,11 +34,42 @@
 #include <QRegularExpression>
 #include <QString>
 #include <QUuid>
+#include <QVariant>
 #include <QVariantList>
 
 #include "moc_qgsaiagentsessionmanager.cpp"
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+  QString defaultRulesPath()
+  {
+    return u".geoai/rules"_s;
+  }
+
+  QString defaultSkillsPath()
+  {
+    return u".geoai/skills"_s;
+  }
+
+  QString legacyRulesPath()
+  {
+    return u".qgis_ai/rules"_s;
+  }
+
+  QString legacySkillsPath()
+  {
+    return u".qgis_ai/skills"_s;
+  }
+
+  QVariant settingValueWithLegacy( QgsSettings &settings, const QString &key, const QString &legacyKey, const QVariant &defaultValue )
+  {
+    if ( settings.contains( key ) )
+      return settings.value( key, defaultValue );
+    return settings.value( legacyKey, defaultValue );
+  }
+} // namespace
 
 QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, QgsAiFileContextProvider *contextProvider, QgsAiReviewPatchEngine *reviewEngine, QObject *parent )
   : QObject( parent )
@@ -473,9 +504,9 @@ void QgsAiAgentSessionManager::setAgentBehaviorSettings( const QgsAiAgentBehavio
   mBehaviorSettings = settings;
   // Normalize the relative paths so saving an empty value falls back to the default folders.
   if ( mBehaviorSettings.rulesPath.trimmed().isEmpty() )
-    mBehaviorSettings.rulesPath = u".qgis_ai/rules"_s;
+    mBehaviorSettings.rulesPath = defaultRulesPath();
   if ( mBehaviorSettings.skillsPath.trimmed().isEmpty() )
-    mBehaviorSettings.skillsPath = u".qgis_ai/skills"_s;
+    mBehaviorSettings.skillsPath = defaultSkillsPath();
 
   persistBehaviorSettings();
   if ( mRouter )
@@ -485,25 +516,32 @@ void QgsAiAgentSessionManager::setAgentBehaviorSettings( const QgsAiAgentBehavio
 void QgsAiAgentSessionManager::loadPersistedBehaviorSettings()
 {
   QgsSettings settings;
-  mBehaviorSettings.allowCustomActions = settings.value( u"qgis_ai/agent/allow_custom_actions"_s, false ).toBool();
-  mBehaviorSettings.rulesText = settings.value( u"qgis_ai/agent/rules_text"_s, QString() ).toString();
-  mBehaviorSettings.skillsText = settings.value( u"qgis_ai/agent/skills_text"_s, QString() ).toString();
-  mBehaviorSettings.loadWorkspaceRules = settings.value( u"qgis_ai/agent/load_workspace_rules"_s, true ).toBool();
-  mBehaviorSettings.loadWorkspaceSkills = settings.value( u"qgis_ai/agent/load_workspace_skills"_s, true ).toBool();
-  mBehaviorSettings.rulesPath = settings.value( u"qgis_ai/agent/rules_path"_s, u".qgis_ai/rules"_s ).toString();
-  mBehaviorSettings.skillsPath = settings.value( u"qgis_ai/agent/skills_path"_s, u".qgis_ai/skills"_s ).toString();
+  mBehaviorSettings.allowCustomActions
+    = settingValueWithLegacy( settings, u"geoai/agent/allow_custom_actions"_s, u"qgis_ai/agent/allow_custom_actions"_s, false ).toBool();
+  mBehaviorSettings.rulesText
+    = settingValueWithLegacy( settings, u"geoai/agent/rules_text"_s, u"qgis_ai/agent/rules_text"_s, QString() ).toString();
+  mBehaviorSettings.skillsText
+    = settingValueWithLegacy( settings, u"geoai/agent/skills_text"_s, u"qgis_ai/agent/skills_text"_s, QString() ).toString();
+  mBehaviorSettings.loadWorkspaceRules
+    = settingValueWithLegacy( settings, u"geoai/agent/load_workspace_rules"_s, u"qgis_ai/agent/load_workspace_rules"_s, true ).toBool();
+  mBehaviorSettings.loadWorkspaceSkills
+    = settingValueWithLegacy( settings, u"geoai/agent/load_workspace_skills"_s, u"qgis_ai/agent/load_workspace_skills"_s, true ).toBool();
+  mBehaviorSettings.rulesPath
+    = settingValueWithLegacy( settings, u"geoai/agent/rules_path"_s, u"qgis_ai/agent/rules_path"_s, defaultRulesPath() ).toString();
+  mBehaviorSettings.skillsPath
+    = settingValueWithLegacy( settings, u"geoai/agent/skills_path"_s, u"qgis_ai/agent/skills_path"_s, defaultSkillsPath() ).toString();
 }
 
 void QgsAiAgentSessionManager::persistBehaviorSettings() const
 {
   QgsSettings settings;
-  settings.setValue( u"qgis_ai/agent/allow_custom_actions"_s, mBehaviorSettings.allowCustomActions );
-  settings.setValue( u"qgis_ai/agent/rules_text"_s, mBehaviorSettings.rulesText );
-  settings.setValue( u"qgis_ai/agent/skills_text"_s, mBehaviorSettings.skillsText );
-  settings.setValue( u"qgis_ai/agent/load_workspace_rules"_s, mBehaviorSettings.loadWorkspaceRules );
-  settings.setValue( u"qgis_ai/agent/load_workspace_skills"_s, mBehaviorSettings.loadWorkspaceSkills );
-  settings.setValue( u"qgis_ai/agent/rules_path"_s, mBehaviorSettings.rulesPath );
-  settings.setValue( u"qgis_ai/agent/skills_path"_s, mBehaviorSettings.skillsPath );
+  settings.setValue( u"geoai/agent/allow_custom_actions"_s, mBehaviorSettings.allowCustomActions );
+  settings.setValue( u"geoai/agent/rules_text"_s, mBehaviorSettings.rulesText );
+  settings.setValue( u"geoai/agent/skills_text"_s, mBehaviorSettings.skillsText );
+  settings.setValue( u"geoai/agent/load_workspace_rules"_s, mBehaviorSettings.loadWorkspaceRules );
+  settings.setValue( u"geoai/agent/load_workspace_skills"_s, mBehaviorSettings.loadWorkspaceSkills );
+  settings.setValue( u"geoai/agent/rules_path"_s, mBehaviorSettings.rulesPath );
+  settings.setValue( u"geoai/agent/skills_path"_s, mBehaviorSettings.skillsPath );
 }
 
 QString QgsAiAgentSessionManager::readWorkspaceTextFiles( const QString &relativeDir ) const
@@ -560,6 +598,12 @@ QString QgsAiAgentSessionManager::collectRulesContent() const
     const QString workspace = readWorkspaceTextFiles( mBehaviorSettings.rulesPath );
     if ( !workspace.isEmpty() )
       parts << workspace;
+    else if ( mBehaviorSettings.rulesPath == defaultRulesPath() )
+    {
+      const QString legacyWorkspace = readWorkspaceTextFiles( legacyRulesPath() );
+      if ( !legacyWorkspace.isEmpty() )
+        parts << legacyWorkspace;
+    }
   }
   return parts.join( "\n\n"_L1 );
 }
@@ -575,6 +619,12 @@ QString QgsAiAgentSessionManager::collectSkillsContent() const
     const QString workspace = readWorkspaceTextFiles( mBehaviorSettings.skillsPath );
     if ( !workspace.isEmpty() )
       parts << workspace;
+    else if ( mBehaviorSettings.skillsPath == defaultSkillsPath() )
+    {
+      const QString legacyWorkspace = readWorkspaceTextFiles( legacySkillsPath() );
+      if ( !legacyWorkspace.isEmpty() )
+        parts << legacyWorkspace;
+    }
   }
   return parts.join( "\n\n"_L1 );
 }
@@ -584,7 +634,7 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   // Cursor-like file-acting agent for QGIS. Tells the model it has tools and must use them
   // instead of telling the user to copy code. Workspace-aware fields are filled when known.
   QString prompt;
-  prompt += u"You are the %1 agent for QGIS_AI, a fork of QGIS with native AI assistance.\n"_s.arg( mActiveAgent );
+  prompt += u"You are the %1 agent for GeoAI Desktop, an independent unofficial fork based on QGIS with native AI assistance.\n"_s.arg( mActiveAgent );
   prompt += "Your job: help the user inspect, modify and run code/data in their workspace.\n\n"_L1;
 
   prompt += "== Workspace ==\n"_L1;

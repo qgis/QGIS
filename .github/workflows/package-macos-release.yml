@@ -5,11 +5,11 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: 'Run ID containing qgis-app-* macOS artifacts'
+        description: 'Run ID containing geoai-app-* macOS artifacts'
         required: true
         type: string
       release_tag:
-        description: 'Release tag to upload the DMG to, e.g. qgisai-v0.1.17'
+        description: 'Release tag to upload the DMG to, e.g. geoai-v0.1.17'
         required: true
         type: string
       sign_and_notarize:
@@ -41,7 +41,7 @@ jobs:
         with:
           run-id: ${{ inputs.source_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: qgis-app-${{ inputs.release_tag }}-*
+          pattern: geoai-app-${{ inputs.release_tag }}-*
           path: artifacts
 
       - name: Create universal app
@@ -52,8 +52,8 @@ jobs:
           rm -rf universal
           ls -laR artifacts | head -80 || true
 
-          X64_TARBALL=$(find artifacts -name 'qgis-app-*-x64-osx-dynamic-release.tar.gz' -print -quit)
-          ARM64_TARBALL=$(find artifacts -name 'qgis-app-*-arm64-osx-dynamic-release.tar.gz' -print -quit)
+          X64_TARBALL=$(find artifacts -name 'geoai-app-*-x64-osx-dynamic-release.tar.gz' -print -quit)
+          ARM64_TARBALL=$(find artifacts -name 'geoai-app-*-arm64-osx-dynamic-release.tar.gz' -print -quit)
 
           if [ -z "$X64_TARBALL" ]; then
             echo "ERROR: x64 app tarball not found under artifacts/"
@@ -86,14 +86,14 @@ jobs:
           ls -la universal/*.app
 
       - name: Import Apple code signing certificate
-        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'geoai-v') }}
         uses: apple-actions/import-codesign-certs@8f3fb608891dd2244cdab3d69cd68c0d37a7fe93 # v5.0.2
         with:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
           p12-password: ${{ secrets.MACOS_CERT_P12_PASSWORD }}
 
       - name: Materialize symlinks in Contents/MacOS
-        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'geoai-v') }}
         run: |
           # Replace ALL symlinks under Contents/MacOS/ with real copies of
           # their targets. Broken symlinks are removed. Done BEFORE the
@@ -118,7 +118,7 @@ jobs:
           echo "Materialized ${MATERIALIZED} symlink(s); removed ${REMOVED} broken symlink(s)."
 
       - name: Remove build metadata from app bundle
-        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'geoai-v') }}
         run: |
           APP_PATH=$(ls -d universal/*.app | head -n1)
           find "${APP_PATH}" -type d -name "objects-*" -print -prune -exec rm -rf {} +
@@ -127,7 +127,7 @@ jobs:
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
 
       - name: Move Frameworks/lib out of Frameworks
-        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'geoai-v') }}
         run: |
           # codesign treats every sub-directory of Contents/Frameworks/ as a
           # potential nested bundle. lib/python3.12/ does NOT have a valid
@@ -149,7 +149,7 @@ jobs:
           fi
 
       - name: Inventory Contents/MacOS (debug)
-        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'geoai-v') }}
         run: |
           APP_PATH=$(ls -d universal/*.app | head -n1)
           echo "=== ls -lah Contents/MacOS ==="
@@ -158,7 +158,7 @@ jobs:
           ls -lah "${APP_PATH}/Contents/Frameworks" || true
 
       - name: Sign app
-        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'geoai-v') }}
         run: |
           set -uo pipefail
           APP_PATH=$(ls -d universal/*.app | head -n1)
@@ -243,21 +243,21 @@ jobs:
 
       - name: Create dmg
         run: |
-          QGIS_APP_NAME="QGIS_AI"
+          QGIS_APP_NAME="GeoAI Desktop"
           create-dmg --volname "${QGIS_APP_NAME} Installer" \
-            --hide-extension ${QGIS_APP_NAME}.app \
-            --volicon "$(pwd)/images/icons/mac/qgis.icns" \
+            --hide-extension "${QGIS_APP_NAME}.app" \
+            --volicon "$(pwd)/images/icons/mac/geoai-desktop.icns" \
             --background "$(pwd)/platform/macos/installer_background.png" \
             --window-pos 200 120 \
             --window-size 512 320 \
             --icon-size 100 \
             --icon "${QGIS_APP_NAME}.app" 130 160 \
             --app-drop-link 400 155 \
-            ${QGIS_APP_NAME}-Installer.dmg \
+            "${QGIS_APP_NAME}-Installer.dmg" \
             universal/*.app
 
       - name: Notarize and staple DMG
-        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'geoai-v') }}
         run: |
           DMG_FILE=$(ls *.dmg | head -n1)
           echo "Notarizing ${DMG_FILE}..."

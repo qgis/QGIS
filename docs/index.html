@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Fork di QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace.">
-  <title data-i18n="meta.title">QGIS_AI — QGIS con AI nativa</title>
+  <meta name="description" content="Fork non ufficiale basato su QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace.">
+  <title data-i18n="meta.title">GeoAI Desktop — AI nativa per GIS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,8 +16,8 @@
   <!-- Navbar -->
   <nav class="navbar" aria-label="Main navigation">
     <div class="container">
-      <a href="#" class="nav-brand" aria-label="QGIS_AI">
-        <img src="./assets/logo.png" alt="QGIS" width="36" height="36">
+      <a href="#" class="nav-brand" aria-label="GeoAI Desktop">
+        <img src="./assets/logo.png" alt="GeoAI Desktop" width="36" height="36">
       </a>
 
       <div class="nav-links">
@@ -32,7 +32,7 @@
           <button type="button" data-lang="it" aria-pressed="true">IT</button>
           <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-primary" data-i18n="nav.downloadBtn">Scarica</a>
+        <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-primary" data-i18n="nav.downloadBtn">Scarica</a>
         <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M4 6h16M4 12h16M4 18h16"/>
@@ -46,16 +46,16 @@
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-content">
-        <span class="hero-badge" data-i18n="hero.badge">Fork QGIS 4.1 · AI nativa</span>
+        <span class="hero-badge" data-i18n="hero.badge">Basato su QGIS 4.1 · AI nativa</span>
         <h1>
-          <span data-i18n="hero.title">QGIS con AI nativa.</span>
+          <span data-i18n="hero.title">GIS desktop con AI nativa.</span>
           <span class="hero-accent" data-i18n="hero.titleAccent">Fai GIS 10× più veloce.</span>
         </h1>
         <p class="hero-subtitle" data-i18n="hero.subtitle">
           Assistente integrato nel pannello laterale — non un plugin esterno. Chiedi in linguaggio naturale, l'agente ispeziona layer, esegue PyQGIS e salva workflow con la tua approvazione.
         </p>
         <div class="hero-cta">
-          <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-primary btn-lg" data-i18n="hero.ctaPrimary">Scarica QGIS_AI</a>
+          <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-primary btn-lg" data-i18n="hero.ctaPrimary">Scarica GeoAI Desktop</a>
           <a href="#setup" class="btn btn-secondary btn-lg" data-i18n="hero.ctaSecondary">Come configurarlo</a>
         </div>
       </div>
@@ -69,7 +69,7 @@
         <div class="mockup-body">
           <div class="mockup-map">
             <div class="mockup-map-shapes"></div>
-            <span class="mockup-map-label" data-i18n="mockup.mapLabel">Mappa QGIS</span>
+            <span class="mockup-map-label" data-i18n="mockup.mapLabel">Mappa GIS</span>
           </div>
           <div class="mockup-chat">
             <div class="mockup-chat-header" data-i18n="mockup.chatTitle">AI Assistant</div>
@@ -96,7 +96,7 @@
         <span class="section-label" data-i18n="problems.label">Problemi comuni</span>
         <h2 class="section-title" data-i18n="problems.title">Conosci questi ostacoli in QGIS?</h2>
         <p class="section-subtitle" data-i18n="problems.subtitle">
-          Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. QGIS_AI risolve il gap tra domanda e azione nel tuo progetto.
+          Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. GeoAI Desktop risolve il gap tra domanda e azione nel tuo progetto.
         </p>
       </div>
 
@@ -147,7 +147,7 @@
           <div class="problem-icon">🔌</div>
           <h3 data-i18n="problems.7.title">Plugin AI disconnessi</h3>
           <p data-i18n="problems.7.desc">Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.</p>
-          <p class="problem-fix" data-i18n="problems.7.fix">Integrazione nativa nel fork desktop QGIS_AI.</p>
+          <p class="problem-fix" data-i18n="problems.7.fix">Integrazione nativa in GeoAI Desktop.</p>
         </article>
       </div>
     </div>
@@ -183,7 +183,7 @@
           <ul class="solution-features">
             <li data-i18n="solution.agent.f1">Plan · Agent · Ask</li>
             <li data-i18n="solution.agent.f2">19 tool GIS integrati</li>
-            <li data-i18n="solution.agent.f3">Rules & Skills (.qgis_ai/)</li>
+            <li data-i18n="solution.agent.f3">Rules & Skills (.geoai/)</li>
           </ul>
         </article>
       </div>
@@ -210,7 +210,7 @@
 
         <article class="speed-card highlight">
           <div class="speed-card-header">
-            <h3 data-i18n="speed.after">Con QGIS_AI</h3>
+            <h3 data-i18n="speed.after">Con GeoAI Desktop</h3>
             <span class="speed-time" data-i18n="speed.afterTime">~5 min</span>
           </div>
           <p data-i18n="speed.afterSteps">
@@ -240,7 +240,7 @@
         <article class="feature-card">
           <div class="feature-number">02</div>
           <h3 data-i18n="features.2.title">Rules & Skills</h3>
-          <p data-i18n="features.2.desc">Regole inline e cartelle .qgis_ai/rules e .qgis_ai/skills per guidare l'agente come in Cursor.</p>
+          <p data-i18n="features.2.desc">Regole inline e cartelle .geoai/rules e .geoai/skills per guidare l'agente come in Cursor.</p>
         </article>
 
         <article class="feature-card">
@@ -285,7 +285,7 @@
           <ol class="setup-steps">
             <li>
               <span class="step-num">1</span>
-              <span data-i18n="setup.creds.1">Apri QGIS_AI → menu Visualizza → Pannelli → AI Assistant.</span>
+              <span data-i18n="setup.creds.1">Apri GeoAI Desktop → menu Visualizza → Pannelli → AI Assistant.</span>
             </li>
             <li>
               <span class="step-num">2</span>
@@ -334,11 +334,11 @@
     <div class="container">
       <div class="download-header">
         <span class="section-label" data-i18n="download.label">Download</span>
-        <h2 class="section-title" data-i18n="download.title">Scarica QGIS_AI</h2>
+        <h2 class="section-title" data-i18n="download.title">Scarica GeoAI Desktop</h2>
         <p class="section-subtitle" data-i18n="download.subtitle">
           Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.
         </p>
-        <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-primary btn-lg" data-i18n="download.cta">Vai alle Releases</a>
+        <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-primary btn-lg" data-i18n="download.cta">Vai alle Releases</a>
       </div>
 
       <div class="download-grid">
@@ -347,8 +347,8 @@
           <h3 data-i18n="download.macos.title">macOS</h3>
           <p class="download-sub" data-i18n="download.macos.sub">Intel + Apple Silicon</p>
           <p class="download-file" data-i18n="download.macos.file">File .dmg</p>
-          <p class="download-note" data-i18n="download.macos.note">Trascina QGIS_AI in Applicazioni. Poi: xattr -d com.apple.quarantine /Applications/QGIS_AI.app</p>
-          <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <p class="download-note" data-i18n="download.macos.note">Trascina GeoAI Desktop in Applicazioni. Poi: xattr -d com.apple.quarantine "/Applications/GeoAI Desktop.app"</p>
+          <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
         <article class="download-card">
@@ -356,8 +356,8 @@
           <h3 data-i18n="download.windows.title">Windows</h3>
           <p class="download-sub" data-i18n="download.windows.sub">10/11 x64</p>
           <p class="download-file" data-i18n="download.windows.file">File -win64.zip</p>
-          <p class="download-note" data-i18n="download.windows.note">Estrai ovunque, lancia bin/qgis.exe. SmartScreen: Maggiori informazioni → Esegui comunque.</p>
-          <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <p class="download-note" data-i18n="download.windows.note">Estrai ovunque, lancia l'eseguibile GeoAI Desktop. SmartScreen: Maggiori informazioni → Esegui comunque.</p>
+          <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
         <article class="download-card">
@@ -365,8 +365,8 @@
           <h3 data-i18n="download.linux.title">Linux</h3>
           <p class="download-sub" data-i18n="download.linux.sub">x86_64</p>
           <p class="download-file" data-i18n="download.linux.file">File .AppImage</p>
-          <p class="download-note" data-i18n="download.linux.note">chmod +x QGIS_AI-*.AppImage && ./QGIS_AI-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.</p>
-          <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <p class="download-note" data-i18n="download.linux.note">chmod +x GeoAI-Desktop-*.AppImage && ./GeoAI-Desktop-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.</p>
+          <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
       </div>
     </div>
@@ -376,12 +376,13 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <strong>QGIS_AI</strong>
-        <span data-i18n="footer.tagline">Fork QGIS con assistente AI nativo.</span>
+        <strong>GeoAI Desktop</strong>
+        <span data-i18n="footer.tagline">Fork non ufficiale basato su QGIS con assistente AI nativo.</span>
+        <p class="footer-disclaimer" data-i18n="footer.disclaimer">GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
       </div>
       <div class="footer-links">
-        <a href="https://github.com/francemazzi/QGIS_AI" data-i18n="footer.github">GitHub</a>
-        <a href="https://github.com/francemazzi/QGIS_AI/releases/latest" data-i18n="nav.download">Download</a>
+        <a href="https://github.com/francemazzi/GeoAI-Desktop" data-i18n="footer.github">GitHub</a>
+        <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" data-i18n="nav.download">Download</a>
         <a href="mailto:francemazzi@gmail.com" data-i18n="footer.contact">Contatto</a>
       </div>
       <div class="lang-toggle" role="group" aria-label="Language">

@@ -6,7 +6,7 @@ on:
       - master
       - release-**
     tags:
-      - 'qgisai-v*'
+      - 'geoai-v*'
   pull_request:
   release:
     types: ['published']
@@ -72,7 +72,7 @@ jobs:
           ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
       - name: 🪟 Install NSIS
-        if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
+        if: ${{ startsWith(github.ref, 'refs/tags/geoai-v') }}
         run: choco install nsis -y --no-progress
         shell: bash
 
@@ -84,10 +84,10 @@ jobs:
           BUILD_DIR=$( cygpath "${{ github.workspace }}/build" )
           SOURCE_DIR=$( cygpath "${{ github.workspace }}" )
 
-          IS_AI_TAG="${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}"
+          IS_AI_TAG="${{ startsWith(github.ref, 'refs/tags/geoai-v') }}"
           if [[ "$IS_AI_TAG" == "true" ]]; then
-            APP_NAME_OPT='-D QGIS_APP_NAME=QGIS_AI'
-            NSIS_OPT='-D CREATE_NSIS=TRUE'
+            APP_NAME_OPT='-DQGIS_APP_NAME=GeoAIDesktop'
+            NSIS_OPT='-DCREATE_NSIS=TRUE'
           else
             APP_NAME_OPT=''
             NSIS_OPT=''
@@ -144,7 +144,7 @@ jobs:
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
 
         with:
-          name: qgis-sdk-x64-windows
+          name: geoai-sdk-x64-windows
           path: |
             sdk/vcpkg-export-*.zip
 
@@ -162,12 +162,12 @@ jobs:
 
         id: artifact-win64-qt6
         with:
-          name: qgis-windows-qt6
+          name: geoai-windows-qt6
           path: |
             build/*-win64.zip
 
       - name: Upload release assets
-        if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/qgisai-v') }}
+        if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/geoai-v') }}
         uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
           tag_name: ${{ github.ref_name }}

@@ -1,4 +1,4 @@
-/* QGIS_AI landing — Cursor-inspired dark theme */
+/* GeoAI Desktop landing — Cursor-inspired dark theme */
 
 :root {
   --bg: #0a0a0a;
@@ -870,6 +870,13 @@ img {
 .footer-brand span {
   font-size: 0.8125rem;
   color: var(--text-muted);
+}
+
+.footer-disclaimer {
+  max-width: 560px;
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  line-height: 1.5;
 }
 
 .footer-links {

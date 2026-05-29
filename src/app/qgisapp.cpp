@@ -1414,7 +1414,11 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexWorkspaceTool>( mAiWorkspaceIndex.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexLayersTool>( mAiWorkspaceIndex.get() ) );
   mAiLayerIndexCoordinator = std::make_unique<QgsAiLayerIndexCoordinator>( mAiWorkspaceIndex.get(), this );
-  mAiLayerIndexCoordinator->setEnabled( QgsSettings().value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool() );
+  QgsSettings aiSettings;
+  const bool aiLayerIndexingEnabled = aiSettings.contains( u"geoai/index/enable_layer_indexing"_s )
+                                        ? aiSettings.value( u"geoai/index/enable_layer_indexing"_s, false ).toBool()
+                                        : aiSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool();
+  mAiLayerIndexCoordinator->setEnabled( aiLayerIndexingEnabled );
   mAiChatHistoryStore = std::make_unique<QgsAiChatHistoryStore>( mAiFileContextProvider.get(), this );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );

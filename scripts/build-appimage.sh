@@ -1,13 +1,13 @@
 #!/bin/bash
-# Build a Linux x86_64 AppImage of QGIS_AI.
+# Build a Linux x86_64 AppImage of GeoAI Desktop.
 # Designed to run on Ubuntu 22.04 (LTS = broad glibc compatibility).
-# Output: ./QGIS_AI-${QGISAI_VERSION}-x86_64.AppImage
+# Output: ./GeoAI-Desktop-${GEOAI_VERSION}-x86_64.AppImage
 #
-# Required env: QGISAI_VERSION (e.g. "0.1.0")
+# Required env: GEOAI_VERSION (e.g. "0.1.0")
 
 set -euo pipefail
 
-VERSION="${QGISAI_VERSION:-dev}"
+VERSION="${GEOAI_VERSION:-dev}"
 APPDIR="${PWD}/AppDir"
 NPROC="$(nproc)"
 
@@ -116,7 +116,7 @@ sed -i 's|set(QT_MIN_VERSION 6\.6\.0)|set(QT_MIN_VERSION 6.4.0)|' CMakeLists.txt
 echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # WITH_PDAL=OFF: noble does not ship libpdal-dev where cmake expects it,
 # and PDAL (point cloud reading) is optional. Users who need point cloud
-# providers can install QGIS_AI from source.
+# providers can install GeoAI Desktop from source.
 # WITH_PYTHON=OFF + WITH_BINDINGS=OFF: noble ships sip6 which rejects the
 # /Movable/ annotation in python/PyQt6/core/conversions.sip:1249 (the
 # %If(MOVABLE_MAPPED_TYPE) guard does not gate parsing in sip6). Disabling
@@ -156,19 +156,19 @@ mkdir -p "${APPDIR}/usr/share/applications"
 # Use the existing .desktop template; render @QGIS_APP_NAME@ etc minimally.
 sed \
   -e 's|@QGIS_APP_NAME@|qgis|g' \
-  linux/org.qgis.qgis.desktop.in > "${APPDIR}/usr/share/applications/com.francemazzi.qgisai.desktop"
+  linux/org.qgis.qgis.desktop.in > "${APPDIR}/usr/share/applications/com.francemazzi.geoaidesktop.desktop"
 
 # Top-level desktop file (linuxdeploy needs one in AppDir root).
-cp "${APPDIR}/usr/share/applications/com.francemazzi.qgisai.desktop" "${APPDIR}/com.francemazzi.qgisai.desktop"
+cp "${APPDIR}/usr/share/applications/com.francemazzi.geoaidesktop.desktop" "${APPDIR}/com.francemazzi.geoaidesktop.desktop"
 
-# Icon (use the upstream QGIS icon for M1).
-ICON_SRC="images/icons/qgis-icon-512x512.png"
+# Icon.
+ICON_SRC="images/icons/geoai-desktop-icon-512x512.png"
 if [ ! -f "${ICON_SRC}" ]; then
-  ICON_SRC="$(find images/icons -maxdepth 3 -name 'qgis-icon-*.png' | sort -r | head -n1)"
+  ICON_SRC="images/icons/qgis-icon-512x512.png"
 fi
 mkdir -p "${APPDIR}/usr/share/icons/hicolor/512x512/apps"
-cp "${ICON_SRC}" "${APPDIR}/usr/share/icons/hicolor/512x512/apps/qgis.png"
-cp "${ICON_SRC}" "${APPDIR}/qgis.png"
+cp "${ICON_SRC}" "${APPDIR}/usr/share/icons/hicolor/512x512/apps/geoai-desktop.png"
+cp "${ICON_SRC}" "${APPDIR}/geoai-desktop.png"
 
 # AppRun launcher.
 cp scripts/AppRun.sh "${APPDIR}/AppRun"
@@ -196,7 +196,7 @@ fi
 echo "==> Running linuxdeploy with Qt plugin"
 export QMAKE=/usr/lib/qt6/bin/qmake6
 export EXTRA_QT_MODULES="quick;quickcontrols2;svg;sql;multimedia;positioning;3dcore;3drender;3dinput;3dlogic;3dextras;webengine;webenginewidgets;serialport"
-export OUTPUT="QGIS_AI-${VERSION}-x86_64.AppImage"
+export OUTPUT="GeoAI-Desktop-${VERSION}-x86_64.AppImage"
 
 # Allow running AppImage tools in CI containers (which lack FUSE).
 export APPIMAGE_EXTRACT_AND_RUN=1
@@ -215,9 +215,9 @@ done < <(find "${APPDIR}/usr/lib" -maxdepth 3 -name 'libqgis_*.so*' -print0)
   --appdir "${APPDIR}" \
   --plugin qt \
   --output appimage \
-  --desktop-file "${APPDIR}/com.francemazzi.qgisai.desktop" \
-  --icon-file "${APPDIR}/qgis.png" \
+  --desktop-file "${APPDIR}/com.francemazzi.geoaidesktop.desktop" \
+  --icon-file "${APPDIR}/geoai-desktop.png" \
   "${LIBRARY_ARGS[@]}"
 
 echo "==> Done"
-ls -lh QGIS_AI-*.AppImage
+ls -lh GeoAI-Desktop-*.AppImage

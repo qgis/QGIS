@@ -449,7 +449,7 @@ if (WIN32)
   endif()
 
   win32_icon(QGIS_APPMAIN_SRCS)
-  win32_version_info("QGIS Desktop" ${QGIS_APP_NAME} QGIS_APPMAIN_SRCS)
+  win32_version_info("GeoAI Desktop" ${QGIS_APP_NAME} QGIS_APPMAIN_SRCS)
 else()
   set (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 endif()
@@ -538,9 +538,9 @@ if(QGISPOSTFIX)
   )
 endif()
 
-set(_qgisai_qml_module_extra_args "")
+set(_geoai_qml_module_extra_args "")
 if(Qt6_VERSION VERSION_GREATER_EQUAL 6.5)
-    list(APPEND _qgisai_qml_module_extra_args NO_GENERATE_EXTRA_QMLDIRS)
+    list(APPEND _geoai_qml_module_extra_args NO_GENERATE_EXTRA_QMLDIRS)
 endif()
 
 qt_add_qml_module(qgis_app
@@ -562,7 +562,7 @@ qt_add_qml_module(qgis_app
         qml/images/close.svg
         qml/images/love.svg
         qml/images/qgis.svg
-    ${_qgisai_qml_module_extra_args}
+    ${_geoai_qml_module_extra_args}
 )
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")

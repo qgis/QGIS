@@ -101,9 +101,9 @@ for c in r:
                 e.tail = c.tail
                 r.append(e)
 
-d.write(sys.argv[1] + "/org.qgis.qgis.appdata.xml", encoding="UTF-8", xml_declaration=True)
+d.write(sys.argv[1] + "/com.francemazzi.geoaidesktop.appdata.xml", encoding="UTF-8", xml_declaration=True)
 
-f = open(sys.argv[1] + "/org.qgis.qgis.desktop", "w", encoding="utf-8")
+f = open(sys.argv[1] + "/com.francemazzi.geoaidesktop.desktop", "w", encoding="utf-8")
 
 for line in lines:
     skip = False

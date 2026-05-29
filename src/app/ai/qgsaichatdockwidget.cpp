@@ -119,6 +119,13 @@ namespace
       return u"Ask"_s;
     return u"Plan"_s;
   }
+
+  QVariant settingValueWithLegacy( QSettings &settings, const QString &key, const QString &legacyKey, const QVariant &defaultValue )
+  {
+    if ( settings.contains( key ) )
+      return settings.value( key, defaultValue );
+    return settings.value( legacyKey, defaultValue );
+  }
 } //namespace
 
 Q_DECLARE_METATYPE( ModelEntry )
@@ -1172,7 +1179,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   behaviorForm->addRow( QString(), loadWorkspaceRules );
 
   QLineEdit *rulesPathEdit = new QLineEdit( currentBehavior.rulesPath, &dialog );
-  rulesPathEdit->setPlaceholderText( u".qgis_ai/rules"_s );
+  rulesPathEdit->setPlaceholderText( u".geoai/rules"_s );
   behaviorForm->addRow( tr( "Rules folder (relative)" ), rulesPathEdit );
 
   QCheckBox *loadWorkspaceSkills = new QCheckBox( tr( "Also load skill files from workspace folder" ), &dialog );
@@ -1180,7 +1187,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   behaviorForm->addRow( QString(), loadWorkspaceSkills );
 
   QLineEdit *skillsPathEdit = new QLineEdit( currentBehavior.skillsPath, &dialog );
-  skillsPathEdit->setPlaceholderText( u".qgis_ai/skills"_s );
+  skillsPathEdit->setPlaceholderText( u".geoai/skills"_s );
   behaviorForm->addRow( tr( "Skills folder (relative)" ), skillsPathEdit );
 
   layout->addLayout( behaviorForm );
@@ -1202,7 +1209,8 @@ void QgsAiChatDockWidget::openProviderSettings()
   QFormLayout *indexingForm = new QFormLayout();
 
   QSettings indexSettings;
-  const bool layerIndexingEnabled = indexSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool();
+  const bool layerIndexingEnabled
+    = settingValueWithLegacy( indexSettings, u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool();
 
   QCheckBox *enableLayerIndexing = new QCheckBox( tr( "Enable layer indexing (auto reindex on layer add/remove/edit)" ), &dialog );
   enableLayerIndexing->setChecked( layerIndexingEnabled );
@@ -1273,9 +1281,9 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QLabel *helpLabel = new QLabel(
     tr(
-      "OpenAI and Claude API keys are stored locally in QGIS settings. The Codex OAuth refresh token is stored locally in QGIS settings; the Claude OAuth refresh token is stored in the encrypted "
+      "OpenAI and Claude API keys are stored locally in application settings. The Codex OAuth refresh token is stored locally in application settings; the Claude OAuth refresh token is stored in the encrypted "
       "QGIS authentication store. Leave API key fields empty to keep "
-      "the current saved value.\n\nAgent rules and skills are stored locally in QGIS settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended to the "
+      "the current saved value.\n\nAgent rules and skills are stored locally in application settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended to the "
       "prompt. Custom actions remain subject to the existing review/approval dialogs."
     ),
     &dialog
@@ -1461,7 +1469,7 @@ void QgsAiChatDockWidget::openProviderSettings()
         &dialog,
         tr( "Enable layer indexing" ),
         tr(
-          "Enabling layer indexing means QGIS_AI will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. The "
+          "Enabling layer indexing means GeoAI Desktop will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. The "
           "embeddings are stored locally; the data leaves your machine only during indexing.\n\nProceed?"
         ),
         QMessageBox::Yes | QMessageBox::No,
@@ -1478,7 +1486,7 @@ void QgsAiChatDockWidget::openProviderSettings()
       }
     }
 
-    QSettings().setValue( u"qgis_ai/index/enable_layer_indexing"_s, layerIndexingChoice );
+    QSettings().setValue( u"geoai/index/enable_layer_indexing"_s, layerIndexingChoice );
     if ( mLayerIndexCoordinator )
       mLayerIndexCoordinator->setEnabled( layerIndexingChoice );
   }
@@ -1496,7 +1504,7 @@ void QgsAiChatDockWidget::showEvent( QShowEvent *event )
 void QgsAiChatDockWidget::maybeShowWelcomeBanner()
 {
   QgsSettings settings;
-  if ( settings.value( u"qgis_ai/welcome_seen"_s, false ).toBool() )
+  if ( settingValueWithLegacy( settings, u"geoai/welcome_seen"_s, u"qgis_ai/welcome_seen"_s, false ).toBool() )
     return;
 
   if ( !mModelRouter )
@@ -1510,7 +1518,7 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
        || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude )
        || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Plan ) )
   {
-    settings.setValue( u"qgis_ai/welcome_seen"_s, true );
+    settings.setValue( u"geoai/welcome_seen"_s, true );
     return;
   }
 
@@ -1528,7 +1536,7 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
   } );
 
   messageBar->pushItem( item );
-  settings.setValue( u"qgis_ai/welcome_seen"_s, true );
+  settings.setValue( u"geoai/welcome_seen"_s, true );
 }
 
 void QgsAiChatDockWidget::setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *coordinator )
@@ -1538,10 +1546,11 @@ void QgsAiChatDockWidget::setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *
 
 bool QgsAiChatDockWidget::requiresLayerIndexingConsent()
 {
-  return !QSettings().value( u"qgis_ai/index/layer_indexing_consented"_s, false ).toBool();
+  QSettings settings;
+  return !settingValueWithLegacy( settings, u"geoai/index/layer_indexing_consented"_s, u"qgis_ai/index/layer_indexing_consented"_s, false ).toBool();
 }
 
 void QgsAiChatDockWidget::recordLayerIndexingConsent()
 {
-  QSettings().setValue( u"qgis_ai/index/layer_indexing_consented"_s, true );
+  QSettings().setValue( u"geoai/index/layer_indexing_consented"_s, true );
 }

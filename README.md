@@ -1,38 +1,40 @@
 <img src="images/README-md/main_logo.png" width="300">
 
-> Sito: **[francemazzi.github.io/QGIS_AI](https://francemazzi.github.io/QGIS_AI)**
+> Sito: **[francemazzi.github.io/GeoAI-Desktop](https://francemazzi.github.io/GeoAI-Desktop)**
 
-# QGIS_AI — Download
+# GeoAI Desktop — Download
 
-QGIS_AI è un fork di QGIS con un assistente AI integrato nativamente. Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**.
+GeoAI Desktop è un fork non ufficiale basato su QGIS con un assistente AI integrato nativamente. Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**.
+
+> GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.
 
 | Sistema | Cosa scaricare | Cosa fare dopo |
 |---|---|---|
-| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Doppio click → trascina QGIS_AI in Applicazioni. Vedi *Aggirare il warning macOS* sotto. |
-| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Estrai la cartella ovunque, apri `bin/` e doppio click su `qgis.exe`. Vedi *Aggirare SmartScreen*. |
-| 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x QGIS_AI-*.AppImage` poi doppio click. Niente installazione. |
+| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Doppio click → trascina GeoAI Desktop in Applicazioni. Vedi *Aggirare il warning macOS* sotto. |
+| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Estrai la cartella ovunque, apri `bin/` e doppio click sull'eseguibile GeoAI Desktop. Vedi *Aggirare SmartScreen*. |
+| 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x GeoAI-Desktop-*.AppImage` poi doppio click. Niente installazione. |
 
 > ⚠️ I pacchetti **non sono firmati**. È normale. Al primo avvio gli OS mostrano un warning: segui le istruzioni qui sotto, è una procedura una tantum.
 
 ### 🍎 Aggirare il warning macOS (Gatekeeper)
 
-Dopo aver trascinato `QGIS_AI.app` in Applicazioni, apri il Terminale e incolla:
+Dopo aver trascinato `GeoAI Desktop.app` in Applicazioni, apri il Terminale e incolla:
 
 ```
-xattr -d com.apple.quarantine /Applications/QGIS_AI.app
+xattr -d com.apple.quarantine "/Applications/GeoAI Desktop.app"
 ```
 
 Poi apri normalmente l'app.
 
 ### 🪟 Aggirare SmartScreen su Windows
 
-Quando avvii `qgis.exe` la prima volta, Windows può mostrare *"Windows ha protetto il PC"*. Click su **Maggiori informazioni** → **Esegui comunque**.
+Quando avvii l'eseguibile la prima volta, Windows può mostrare *"Windows ha protetto il PC"*. Click su **Maggiori informazioni** → **Esegui comunque**.
 
 ### 🐧 AppImage su Linux
 
 ```
-chmod +x QGIS_AI-*.AppImage
-./QGIS_AI-*.AppImage
+chmod +x GeoAI-Desktop-*.AppImage
+./GeoAI-Desktop-*.AppImage
 ```
 
 Funziona su Ubuntu 22.04+, Fedora 38+, Debian 12+, Arch e qualsiasi distro con `glibc >= 2.35` e FUSE installato.
@@ -41,7 +43,7 @@ Funziona su Ubuntu 22.04+, Fedora 38+, Debian 12+, Arch e qualsiasi distro con `
 
 ## Configurare l'AI al primo avvio
 
-1. Apri QGIS_AI.
+1. Apri GeoAI Desktop.
 2. Menu **Visualizza → Pannelli → AI Assistant**.
 3. Click sull'icona **⚙ impostazioni** in alto a destra del pannello.
 4. Incolla la tua **API key** OpenAI/Anthropic oppure usa il login **Codex/ChatGPT** o **Claude OAuth**.
@@ -53,7 +55,7 @@ Da dove ottenere le chiavi:
 - **Codex/ChatGPT**: dal dialog impostazioni scegli “Get Codex device code”, apri la pagina mostrata e completa il login. Il modello Codex usa `gpt-5.5`.
 - **Claude OAuth**: dal dialog impostazioni scegli “Login with Claude” e incolla il codice di autorizzazione quando richiesto.
 
-Le chiavi sono salvate **solo localmente** nelle impostazioni QGIS della tua macchina. I login OAuth salvano solo il refresh token nell'auth store cifrato di QGIS. Le credenziali non vengono inviate a nessun server diverso dal provider che hai scelto.
+Le chiavi sono salvate **solo localmente** nelle impostazioni dell'applicazione sulla tua macchina. I login OAuth salvano solo il refresh token nell'auth store cifrato di QGIS. Le credenziali non vengono inviate a nessun server diverso dal provider che hai scelto.
 
 ---
 
