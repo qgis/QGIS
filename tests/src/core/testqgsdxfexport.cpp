@@ -2648,9 +2648,9 @@ TestQgsDxfExport::BlockVertices TestQgsDxfExport::scanBlockVertices( const QByte
   {
     const QString trimmed = lines.at( i ).trimmed();
     const QString next = lines.at( i + 1 ).trimmed();
-    if ( trimmed == "2"_L1 && next == "BLOCKS"_L1 )
+    if ( trimmed == QStringLiteral( "2" ) && next == QStringLiteral( "BLOCKS" ) )
       inBlocks = true;
-    else if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
+    else if ( trimmed == QStringLiteral( "2" ) && next == QStringLiteral( "ENTITIES" ) )
       inBlocks = false;
     if ( !inBlocks )
       continue;
@@ -2684,11 +2684,11 @@ int TestQgsDxfExport::countEntityInserts( const QByteArray &dxfBytes )
   {
     const QString trimmed = lines.at( i ).trimmed();
     const QString next = lines.at( i + 1 ).trimmed();
-    if ( trimmed == "2"_L1 && next == "ENTITIES"_L1 )
+    if ( trimmed == QStringLiteral( "2" ) && next == QStringLiteral( "ENTITIES" ) )
       inEntities = true;
-    else if ( trimmed == "0"_L1 && next == "ENDSEC"_L1 )
+    else if ( trimmed == QStringLiteral( "0" ) && next == QStringLiteral( "ENDSEC" ) )
       inEntities = false;
-    if ( inEntities && trimmed == "0"_L1 && next == "INSERT"_L1 )
+    if ( inEntities && trimmed == QStringLiteral( "0" ) && next == QStringLiteral( "INSERT" ) )
       ++count;
   }
   return count;
