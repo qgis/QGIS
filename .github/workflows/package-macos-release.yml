@@ -169,7 +169,7 @@ jobs:
           echo "Signing ${APP_PATH} (main executable: ${MAIN_EXEC})..."
 
           # Try to sign $1; if codesign refuses because the file is not a
-          # signable Mach-O / bundle, relocate it under Resources/python/.
+          # signable Mach-O / bundle, relocate it under Resources/python/. # spellok
           sign_or_move() {
             local f="$1"
             local err
@@ -179,7 +179,7 @@ jobs:
             if [ "$rc" -eq 0 ]; then
               return 0
             fi
-            if echo "$err" | grep -qE 'is not (a|recognized as) (Mach-O|bundle|signable|valid)|unsupported format|file not in any of the requested architectures|invalid Info.plist|cannot find executable|bundle format unrecognized|the file is empty'; then
+            if echo "$err" | grep -qE 'is not (a|recognized as) (Mach-O|bundle|signable|valid)|unsupported format|file not in any of the requested architectures|invalid Info.plist|cannot find executable|bundle format unrecognized|the file is empty'; then # spellok
               echo "Not signable, moving out of MacOS/: $f"
               echo "  reason: $err"
               mv "$f" "${DEST}/" || rm -f "$f"
@@ -204,7 +204,7 @@ jobs:
             sign_or_move "$f" || exit 1
           done
 
-          # 2. Sign Mach-O files elsewhere in the bundle (libs, plugins, .so).
+          # 2. Sign Mach-O files elsewhere in the bundle (libs, plugins, .so). # spellok
           declare -a OTHER_ENTRIES=()
           while IFS= read -r -d '' f; do
             OTHER_ENTRIES+=("$f")
@@ -212,7 +212,7 @@ jobs:
                    \( -type f -o -type l \) -print0)
           for f in "${OTHER_ENTRIES[@]}"; do
             [ -z "$f" ] && continue
-            if file -bL "$f" 2>/dev/null | grep -qE 'Mach-O'; then
+            if file -bL "$f" 2>/dev/null | grep -qE 'Mach-O'; then # spellok
               codesign --force --options runtime --timestamp \
                 --sign "${MACOS_DEVELOPER_ID}" "$f" || exit 1
             fi

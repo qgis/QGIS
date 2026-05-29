@@ -4,7 +4,7 @@
 
 # GeoAI Desktop — Download
 
-GeoAI Desktop è un fork non ufficiale basato su QGIS con un assistente AI integrato nativamente. Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**.
+GeoAI Desktop è un fork non ufficiale basato su QGIS con un assistente AI integrato nativamente. Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**. <!--#spellok-->
 
 > GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.
 

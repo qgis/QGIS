@@ -744,7 +744,7 @@ QString QgsAiAgentSessionManager::formatRetrievedContext( const QList<QgsAiWorks
   out += "== Retrieved context ==\n"_L1;
   out += "Top RAG matches from the workspace + project layers for the user's last message. "
          "These chunks are GROUND TRUTH for the data they cover.\n"_L1;
-  out += "Behaviour rules for this turn:\n"_L1;
+  out += "Behavior rules for this turn:\n"_L1;
   out += "- If the user's question is answerable from the chunks below, ANSWER DIRECTLY using them. "
          "Do NOT call describe_layer, list_project_layers, run_python, read_file or other inspection tools — "
          "that would just re-fetch what is already in your context.\n"_L1;

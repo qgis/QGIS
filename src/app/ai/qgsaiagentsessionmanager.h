@@ -41,7 +41,7 @@ struct APP_EXPORT QgsAiChatContextFile
 };
 
 /**
- * User-configurable behaviour for the agent: rules, skills and a master toggle that
+ * User-configurable behavior for the agent: rules, skills and a master toggle that
  * gates whether the agent is allowed to perform custom actions (tool use). The
  * settings are persisted in QgsSettings and loaded once at construction time.
  */
@@ -136,7 +136,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     static QString formatRetrievedContext( const QList<QgsAiWorkspaceIndex::Chunk> &chunks, int byteCap = RETRIEVAL_BYTE_CAP );
 
     /**
-     * Returns the current agent behaviour settings (rules, skills, custom actions toggle).
+     * Returns the current agent behavior settings (rules, skills, custom actions toggle).
      * The values are kept in sync with QgsSettings.
      */
     QgsAiAgentBehaviorSettings agentBehaviorSettings() const { return mBehaviorSettings; }

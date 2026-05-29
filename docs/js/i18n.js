@@ -6,7 +6,7 @@
     it: {
       "meta.title": "GeoAI Desktop — AI nativa per GIS",
       "meta.description":
-        "Fork non ufficiale basato su QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace.",
+        "Fork non ufficiale basato su QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace.", // #spellok
 
       "nav.problems": "Problemi",
       "nav.features": "Feature",
@@ -18,7 +18,7 @@
       "hero.title": "GIS desktop con AI nativa.",
       "hero.titleAccent": "Fai GIS 10× più veloce.",
       "hero.subtitle":
-        "Assistente integrato nel pannello laterale — non un plugin esterno. Chiedi in linguaggio naturale, l'agente ispeziona layer, esegue PyQGIS e salva workflow con la tua approvazione.",
+        "Assistente integrato nel pannello laterale — non un plugin esterno. Chiedi in linguaggio naturale, l'agente ispeziona layer, esegue PyQGIS e salva workflow con la tua approvazione.", // #spellok
       "hero.ctaPrimary": "Scarica GeoAI Desktop",
       "hero.ctaSecondary": "Come configurarlo",
 
@@ -69,7 +69,7 @@
 
       "problems.7.title": "Plugin AI disconnessi",
       "problems.7.desc":
-        "Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.",
+        "Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.", // #spellok
       "problems.7.fix": "Integrazione nativa in GeoAI Desktop.",
 
       "solution.label": "Soluzione",
@@ -106,7 +106,7 @@
       "features.label": "Feature",
       "features.title": "Tutto ciò che serve, integrato",
       "features.subtitle":
-        "Potenza di QGIS 4.1 più un assistente che conosce il tuo progetto.",
+        "Potenza di QGIS 4.1 più un assistente che conosce il tuo progetto.", // #spellok
 
       "features.1.title": "19 tool integrati",
       "features.1.desc":
@@ -161,7 +161,7 @@
       "setup.index.3":
         "Requisito: serve una API key OpenAI (o variabile OPENAI_API_KEY) per ricostruire gli embeddings.",
       "setup.index.4":
-        "Stato visibile nel dialog ⚙: Indexed: N file chunks, M layer chunks (last sync: …).",
+        "Stato visibile nel dialog ⚙: Indexed: N file chunks, M layer chunks (last sync: …).", // #spellok
       "setup.index.privacy":
         "I dati dei layer vengono inviati al provider embeddings solo se abiliti esplicitamente l'indexing.",
 
@@ -186,7 +186,7 @@
       "download.linux.note":
         "chmod +x GeoAI-Desktop-*.AppImage && ./GeoAI-Desktop-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "Fork non ufficiale basato su QGIS con assistente AI nativo.",
+      "footer.tagline": "Fork non ufficiale basato su QGIS con assistente AI nativo.", // #spellok
       "footer.disclaimer":
         "GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
