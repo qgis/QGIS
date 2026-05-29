@@ -247,23 +247,27 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
 
   struct FieldInfo
   {
-      std::optional<int> seq;
-      std::optional<std::string> name;
+      FieldInfo( int seq, const std::string &identifier )
+        : seq( seq )
+        , identifier( identifier )
+      {}
+      int seq;
+      std::string identifier;
       std::optional<std::string> type;
       std::optional<bool> readOnly;
-      std::optional<bool> nullable;
-      std::optional<std::string> role;
+      std::optional<bool> nullable;    // unused for now!
+      std::optional<std::string> role; // x-ogc-role
       std::optional<std::string> title;
       std::optional<std::string> format;
-      std::optional<std::string> collectionId;
       std::optional<std::string> unit;
-      std::optional<json> minimum; // int range (can be int or double)
-      std::optional<json> maximum; // int range (can be int or double)
+      std::optional<json> minimum; // range (can be int or double)
+      std::optional<json> maximum; // range (can be int or double)
       std::optional<CodelistInline> codelist;
       // min length (unused for now)
       // std::optional<int> minLength;  // string length
-      std::optional<int> maxLength;   // string length
-      std::optional<json> enumValues; // enum values
+      std::optional<int> maxLength;            // string length
+      std::optional<json> enumValues;          // enum values
+      std::optional<std::string> collectionId; // x-ogc-collectionId
   };
 
   auto fieldTypeFormat = []( const QgsField &field, FieldInfo &fInfo ) -> void {
@@ -377,6 +381,8 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         fInfo.type = "string";
         break;
       }
+      default:
+        break;
     }
   };
 
@@ -387,9 +393,16 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
 
   int seq = 0;
 
-  // id is always present, read-only and must be the first field
+  // "id" is always present, read-only and must be the first field
+  // NOTE: this appears as a top-level field (and not in the properties) in the collection item
+  //       response and is used as the unique identifier for the feature but is returned
+  //       as a regular field in the collection metadata response (with the other attributes)
   {
-    availableFieldInformation.push_back( { seq++, "id", "integer", true, false, "id" } );
+    FieldInfo fInfo { seq++, "id" };
+    fInfo.type = "integer";
+    fInfo.readOnly = true;
+    fInfo.role = "id";
+    availableFieldInformation.push_back( fInfo );
   }
 
   QList<QString> publishedFieldNames;
@@ -431,6 +444,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         }
 
         FieldInfo fInfo { seq++, fieldIdentifier.toStdString() };
+
         if ( config.readOnly( fieldElement->idx() ) )
         {
           fInfo.readOnly = true;
@@ -445,12 +459,17 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
 
         // Get the widget configuration
         const QgsEditorWidgetSetup widgetSetup { mapLayer->editorWidgetSetup( fieldElement->idx() ) };
-        const QString widgetType = widgetSetup.type();
+        const QString widgetType { widgetSetup.type() };
         const QVariantMap widgetConfig = widgetSetup.config();
-        if ( widgetConfig.value( u"AllowNull"_s ).toBool() )
+
+        // NOTE: unused for now!
+        if ( widgetConfig.contains( u"AllowNull"_s ) )
         {
-          fInfo.nullable = true;
+          fInfo.nullable = widgetConfig.value( u"AllowNull"_s ).toBool();
         }
+
+        // /////////////////////////////////////////////////////////
+        // Process specific widget types for additional information
 
         // Check for value map
         if ( widgetType == "ValueMap"_L1 )
@@ -535,11 +554,65 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
           fInfo.format = "geometry-any";
           fInfo.type = "string";
         }
+        else if ( widgetType == "ValueRelation"_L1 )
+        {
+          const QString referencedLayerId = widgetConfig.value( u"Layer"_s ).toString();
+          const QgsMapLayer *referencedLayer = apiContext.project()->mapLayer( referencedLayerId );
+          if ( referencedLayer )
+          {
+            fInfo.role = "reference";
+            const std::string referencedLayerTitle {
+              referencedLayer->serverProperties()->wfsTitle().isEmpty() ? referencedLayer->name().toStdString() : referencedLayer->serverProperties()->wfsTitle().toStdString()
+            };
+            // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
+            //       so we take the layer name as the collectionId in that case
+            const QString referencedLayerShortName { referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName() };
+            fInfo.collectionId = referencedLayerShortName.toStdString();
+            if ( !referencedLayerTitle.empty() )
+            {
+              fInfo.title = referencedLayerTitle;
+            }
+          }
+          else
+          {
+            throw QgsServerApiImproperlyConfiguredException( u"Referenced layer with id '%1' not found for relation reference field '%2'"_s.arg( referencedLayerId, fieldIdentifier ) );
+          }
+        }
+        else if ( widgetType == "RelationReference"_L1 )
+        {
+          fInfo.role = "reference";
+          const QgsRelation relation { apiContext.project()->relationManager()->relation( widgetConfig.value( u"Relation"_s ).toString() ) };
+          // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
+          //       so we take the layer name as the collectionId in that case
+          const QString referencedLayerId { relation.referencedLayerId() };
+          // Get the layer from the project, don't check if it's published or not (we don't care at this point)
+          const QgsMapLayer *referencedLayer = apiContext.project()->mapLayer( referencedLayerId );
+          if ( referencedLayer )
+          {
+            const std::string referencedLayerTitle {
+              referencedLayer->serverProperties()->wfsTitle().isEmpty() ? referencedLayer->name().toStdString() : referencedLayer->serverProperties()->wfsTitle().toStdString()
+            };
+            const QString referencedLayerShortName { referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName() };
+            fInfo.collectionId = referencedLayerShortName.toStdString();
+            if ( !referencedLayerTitle.empty() )
+            {
+              fInfo.title = referencedLayerTitle;
+            }
+          }
+          else
+          {
+            throw QgsServerApiImproperlyConfiguredException( u"Referenced layer with id '%1' not found for relation reference field '%2'"_s.arg( referencedLayerId, fieldIdentifier ) );
+          }
+        }
+        else
+        {
+          QgsMessageLog::logMessage( u"Unhandled widget type '%1' for field '%2'"_s.arg( widgetType, fieldIdentifier ), u"Server"_s, Qgis::MessageLevel::Warning );
+        }
 
         // TODO: pattern for strings
 
         // ////////////////////////////////////////////////////
-        // Generic code that may apply to multiple widget types
+        // Generic code that may apply to several widget types
 
         // Check for std::numeric_limits max/min(lowest for double) and reset if found
         if ( fInfo.maximum.has_value() )
@@ -578,8 +651,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       }
       case Qgis::AttributeEditorType::Relation:
       {
-        // TODO: do we need this or we handle that as a field of type "relation" with additional information about the relation?
-        const QgsAttributeEditorRelation *relationElement = qgis::down_cast<const QgsAttributeEditorRelation *>( element );
+        // This is not handled because the field doesn't belong to the referenced layer
         break;
       }
       case Qgis::AttributeEditorType::Container:
@@ -603,7 +675,10 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
   if ( mapLayer->isSpatial() )
   {
     requiredFields.push_back( "geometry" );
-    FieldInfo fInfo { seq++, "geometry" };
+    FieldInfo fInfo {
+      seq++,
+      "geometry",
+    };
     fInfo.role = "primary-geometry";
     fInfo.format = "geometry-" + QgsWkbTypes::displayString( QgsWkbTypes::flatType( mapLayer->wkbType() ) ).toLower().toStdString();
     availableFieldInformation.push_back( fInfo );
@@ -619,18 +694,17 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
 
   for ( const auto &fInfo : availableFieldInformation )
   {
-    const std::string fieldName = fInfo.name.value();
+    const std::string fieldName = fInfo.identifier;
     fieldsInfo[fieldName] = json::object();
-    if ( fInfo.type.has_value() )
-      fieldsInfo[fieldName]["type"] = fInfo.type.value();
+    fieldsInfo[fieldName]["x-ogc-propertySeq"] = fInfo.seq;
+    fieldsInfo[fieldName]["type"] = fInfo.type;
+    // Optional info
     if ( fInfo.title.has_value() )
       fieldsInfo[fieldName]["title"] = fInfo.title.value();
     if ( fInfo.readOnly.has_value() )
       fieldsInfo[fieldName]["readOnly"] = fInfo.readOnly.value();
     if ( fInfo.role.has_value() )
       fieldsInfo[fieldName]["x-ogc-role"] = fInfo.role.value();
-    if ( fInfo.seq.has_value() )
-      fieldsInfo[fieldName]["x-ogc-propertySeq"] = fInfo.seq.value();
     if ( fInfo.format.has_value() )
       fieldsInfo[fieldName]["format"] = fInfo.format.value();
     if ( fInfo.collectionId.has_value() )
@@ -664,6 +738,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         else
         {
           codelistJson["oneOf"].push_back( { { "title", it.key().toStdString() }, { "const", json() } } );
+          fieldsInfo[fieldName]["x-ogc-nullValues"] = json::array( { json() } );
         }
       }
       fieldsInfo[fieldName]["x-ogc-codelist"] = codelistJson;
@@ -828,6 +903,8 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
         "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-codelists",
+        "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-parameter",
+        "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references",
       } }
   };
   json navigation = json::array();

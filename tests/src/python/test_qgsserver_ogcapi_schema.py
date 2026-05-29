@@ -44,6 +44,8 @@ from qgis.core import (
     QgsProject,
     QgsProviderMetadata,
     QgsProviderRegistry,
+    QgsRelation,
+    QgsRelationContext,
     QgsVectorLayer,
     QgsVectorLayerServerProperties,
 )
@@ -375,6 +377,108 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         self.assertEqual(
             j["properties"]["geom1"],
             {"format": "geometry-any", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+    def test_relation(self):
+
+        # Create two memory layers with a fk:pk relation
+        referenced_layer = QgsVectorLayer(
+            "Point?field=pk:integer&key=pk", "referenced", "memory"
+        )
+        feature = QgsFeature(referenced_layer.fields())
+        feature.setGeometry(QgsGeometry.fromWkt("POINT(0 0)"))
+        feature.setAttribute("pk", 123)
+        self.assertTrue(referenced_layer.dataProvider().addFeature(feature))
+        feature = QgsFeature(referenced_layer.fields())
+        feature.setGeometry(QgsGeometry.fromWkt("POINT(1 1)"))
+        feature.setAttribute("pk", 456)
+        self.assertTrue(referenced_layer.dataProvider().addFeature(feature))
+
+        referencing_layer = QgsVectorLayer(
+            "Point?field=pk:integer&field=fk:integer&key=pk", "referencing", "memory"
+        )
+        feature = QgsFeature(referencing_layer.fields())
+        feature.setGeometry(QgsGeometry.fromWkt("POINT(2 2)"))
+        feature.setAttribute("pk", 1)
+        feature.setAttribute("fk", 123)
+        self.assertTrue(referencing_layer.dataProvider().addFeature(feature))
+        feature = QgsFeature(referencing_layer.fields())
+        feature.setGeometry(QgsGeometry.fromWkt("POINT(3 3)"))
+        feature.setAttribute("pk", 2)
+        feature.setAttribute("fk", 456)
+        self.assertTrue(referencing_layer.dataProvider().addFeature(feature))
+
+        project = QgsProject()
+        project.addMapLayer(referenced_layer)
+        project.addMapLayer(referencing_layer)
+
+        relation = QgsRelation(QgsRelationContext(project))
+        relation.setName("relation1")
+        relation.setId("relation1")
+        relation.addFieldPair("fk", "pk")
+        relation.setReferencingLayer(referencing_layer.id())
+        relation.setReferencedLayer(referenced_layer.id())
+
+        r_manager = project.relationManager()
+        r_manager.addRelation(relation)
+        self.assertIn("relation1", r_manager.relations())
+
+        referencing_layer.setEditorWidgetSetup(
+            1, QgsEditorWidgetSetup("RelationReference", {"Relation": "relation1"})
+        )
+
+        # Expose to WFS
+        project.writeEntry(
+            "WFSLayers", "/", [referencing_layer.id(), referenced_layer.id()]
+        )
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/referencing/schema.json", project
+        )
+
+        self.assertEqual(
+            j["properties"]["fk"],
+            {
+                "format": "int32",
+                "title": "referenced",
+                "type": "integer",
+                "x-ogc-collectionId": "referenced",
+                "x-ogc-propertySeq": 2,
+                "x-ogc-role": "reference",
+            },
+        )
+
+        # Use a value relation widget
+        referencing_layer.setEditorWidgetSetup(
+            1,
+            QgsEditorWidgetSetup(
+                "ValueRelation",
+                {
+                    # Note, Layer and LayerName are the only relevant information for OAPIF, the rest is just for the QGIS UI
+                    "Layer": referenced_layer.id(),
+                    "LayerName": "Test this is taken",
+                    # Not relevant for OAPIF:
+                    "LayerProviderName": referenced_layer.dataProvider().name(),
+                    "LayerSource": referenced_layer.source(),
+                    "Key": "pk",
+                    "Value": "pk",  # Note, in a real project this would be a more user friendly field
+                },
+            ),
+        )
+
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/referencing/schema.json", project
+        )
+
+        self.assertEqual(
+            j["properties"]["fk"],
+            {
+                "format": "int32",
+                "title": "referenced",
+                "type": "integer",
+                "x-ogc-collectionId": "referenced",
+                "x-ogc-propertySeq": 2,
+                "x-ogc-role": "reference",
+            },
         )
 
 
