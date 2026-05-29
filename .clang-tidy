@@ -12,8 +12,9 @@ CheckOptions:
 
   # Not applicable for public member, comment it for now
   # readability-identifier-naming.MemberPrefix: m
+  # readability-identifier-naming.MemberCase: CamelCase
 
-  readability-identifier-naming.MemberCase: CamelCase
+  readability-identifier-naming.MemberCase: camelBack
 
   # Static member
   readability-identifier-naming.ClassMemberCase: CamelCase
