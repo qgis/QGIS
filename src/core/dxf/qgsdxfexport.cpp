@@ -248,7 +248,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   if ( mMapSettings.extent().isEmpty() )
     return ExportResult::EmptyExtentError;
 
-  Qgis::DistanceUnit mapUnits = mCrs.mapUnits();
+  Qgis::DistanceUnit mapUnits = mCrs.isValid() ? mCrs.mapUnits() : mMapSettings.destinationCrs().mapUnits();
 
   // Empty layer check to avoid adding those in the exported file
   QList<QgsMapLayer *> layers;
