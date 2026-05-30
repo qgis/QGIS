@@ -153,7 +153,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemCamera = elem.firstChildElement( u"camera"_s );
   if ( !elemCamera.isNull() )
   {
-    mFieldOfView = elemCamera.attribute( u"field-of-view"_s, u"45"_s ).toFloat();
+    mFieldOfView = elemCamera.attribute( u"field-of-view"_s, u"45"_s ).toDouble();
     mProjectionType = static_cast<Qt3DRender::QCameraLens::ProjectionType>( elemCamera.attribute( u"projection-type"_s, u"1"_s ).toInt() );
     QString cameraNavigationMode = elemCamera.attribute( u"camera-navigation-mode"_s, u"basic-navigation"_s );
     if ( cameraNavigationMode == "terrain-based-navigation"_L1 )
@@ -1225,14 +1225,14 @@ void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
   emit lightSourcesChanged();
 }
 
-float Qgs3DMapSettings::fieldOfView() const
+double Qgs3DMapSettings::fieldOfView() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mFieldOfView;
 }
 
-void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
+void Qgs3DMapSettings::setFieldOfView( const double fieldOfView )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

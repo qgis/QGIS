@@ -70,7 +70,7 @@ Qgs3DRenderContext Qgs3DRenderContext::fromMapSettings( const Qgs3DMapSettings *
   res.mTemporalRange = mapSettings->temporalRange();
   res.mSelectionColor = mapSettings->selectionColor();
   res.mDpi = mapSettings->outputDpi();
-  res.mFieldOfView = mapSettings->fieldOfView();
+  res.mFieldOfView = static_cast< float >( mapSettings->fieldOfView() );
   res.mTerrainRenderingEnabled = mapSettings->terrainRenderingEnabled();
   res.mTerrainSettings = std::unique_ptr<QgsAbstractTerrainSettings>( mapSettings->terrainSettings()->clone() );
   res.mTerrainGenerator = mapSettings->terrainGenerator();
