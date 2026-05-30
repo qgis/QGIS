@@ -140,9 +140,6 @@ Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertices( QgsFeatureId fea
   if ( !mLayer->isSpatial() )
     return Qgis::VectorEditResult::InvalidLayer;
 
-  if ( vertices.isEmpty() )
-    return Qgis::VectorEditResult::Success;
-
   QgsFeature f;
   if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return Qgis::VectorEditResult::FetchFeatureFailed;
