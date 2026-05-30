@@ -520,6 +520,7 @@ void TestQgsDxfExport::testMtext()
   mapSettings.setDestinationCrs( layer->crs() );
 
   d.setMapSettings( mapSettings );
+  d.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   d.setSymbologyScale( 1000 );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
@@ -612,6 +613,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
   mapSettings.setDestinationCrs( mPointLayerNoSymbols->crs() );
 
   d.setMapSettings( mapSettings );
+  d.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   d.setSymbologyScale( 1000 );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
