@@ -245,10 +245,26 @@ QString QgsDataSourceUri::removePassword( const QString &aUri, bool hide )
   {
     if ( aUri.contains( " password='"_L1 ) )
     {
+      // Match password='...' at end of string (no trailing space) — fixes #51368
+      regexp.setPattern( u" password='[^']*'$"_s );
+      if ( hide )
+        safeName.replace( regexp, u" password=%1"_s.arg( HIDING_TOKEN ) );
+      else
+        safeName.replace( regexp, QString() );
+
+      // Match password='...' in middle of string (original pattern, requires trailing space)
       regexp.setPattern( u" password='[^']*' "_s );
     }
     else
     {
+      // Match password=value at end of string (no trailing space) — fixes #51368
+      regexp.setPattern( u" password=\\S+$"_s );
+      if ( hide )
+        safeName.replace( regexp, u" password=%1"_s.arg( HIDING_TOKEN ) );
+      else
+        safeName.replace( regexp, QString() );
+
+      // Match password=value in middle of string (original pattern, requires trailing space)
       regexp.setPattern( u" password=.* "_s );
     }
 
@@ -260,7 +276,7 @@ QString QgsDataSourceUri::removePassword( const QString &aUri, bool hide )
     {
       safeName.replace( regexp, u" "_s );
     }
-  }
+  } 
   else if ( aUri.contains( ",password="_L1 ) )
   {
     regexp.setPattern( u",password=.*,"_s );
