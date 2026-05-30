@@ -937,16 +937,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1" colspan="2">
-                   <widget class="QgsSpinBox" name="spinCameraFieldOfView">
-                    <property name="suffix">
-                     <string>°</string>
-                    </property>
-                    <property name="maximum">
-                     <number>180</number>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="labelFieldofView">
                     <property name="text">
@@ -984,6 +974,16 @@
                    <widget class="QLabel" name="labelMovementSpeed">
                     <property name="text">
                      <string>Movement speed</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1" colspan="2">
+                   <widget class="QgsDoubleSpinBox" name="spinCameraFieldOfView">
+                    <property name="suffix">
+                     <string>°</string>
+                    </property>
+                    <property name="maximum">
+                     <double>180.000000000000000</double>
                     </property>
                    </widget>
                   </item>

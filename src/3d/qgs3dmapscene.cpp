@@ -120,7 +120,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   // Camera
   float aspectRatio = ( float ) viewportRect.width() / viewportRect.height();
-  mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), aspectRatio, 10.f, 10000.0f );
+  mEngine->camera()->lens()->setPerspectiveProjection( static_cast< float >( mMap.fieldOfView() ), aspectRatio, 10.f, 10000.0f );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered, this, &Qgs3DMapScene::onFrameTriggered );
@@ -717,7 +717,7 @@ void Qgs3DMapScene::updateLights()
 
 void Qgs3DMapScene::updateCameraLens()
 {
-  mEngine->camera()->lens()->setFieldOfView( mMap.fieldOfView() );
+  mEngine->camera()->lens()->setFieldOfView( static_cast< float >( mMap.fieldOfView() ) );
   mEngine->camera()->lens()->setProjectionType( mMap.projectionType() );
   onCameraChanged();
 }
