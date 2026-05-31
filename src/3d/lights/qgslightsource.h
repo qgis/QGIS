@@ -59,6 +59,13 @@ class _3D_EXPORT QgsLightSource SIP_ABSTRACT
     virtual QgsLightSource *clone() const = 0 SIP_FACTORY;
 
     /**
+     * Returns the unique light ID string.
+     *
+     * \since QGIS 4.2
+     */
+    QString id() const { return mId; }
+
+    /**
      * Creates an entity representing the light source.
      */
     virtual Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const SIP_SKIP = 0;
@@ -86,6 +93,12 @@ class _3D_EXPORT QgsLightSource SIP_ABSTRACT
      * Creates a new light source from an XML element.
      */
     static QgsLightSource *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+
+  protected:
+    QgsLightSource();
+
+    //! Unique light ID
+    QString mId;
 };
 
 

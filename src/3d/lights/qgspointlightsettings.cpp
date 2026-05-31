@@ -37,7 +37,9 @@ Qgis::LightSourceType QgsPointLightSettings::type() const
 
 QgsPointLightSettings *QgsPointLightSettings::clone() const
 {
-  return new QgsPointLightSettings( *this );
+  auto res = std::make_unique< QgsPointLightSettings >( *this );
+  res->mId = mId;
+  return res.release();
 }
 
 Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const
@@ -93,6 +95,7 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
 QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elemLight = doc.createElement( u"point-light"_s );
+  elemLight.setAttribute( u"id"_s, mId );
   elemLight.setAttribute( u"x"_s, mPosition.x() );
   elemLight.setAttribute( u"y"_s, mPosition.y() );
   elemLight.setAttribute( u"z"_s, mPosition.z() );
@@ -106,6 +109,9 @@ QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWri
 
 void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
+  if ( elem.hasAttribute( u"id"_s ) )
+    mId = elem.attribute( u"id"_s );
+
   mPosition.set( elem.attribute( u"x"_s ).toDouble(), elem.attribute( u"y"_s ).toDouble(), elem.attribute( u"z"_s ).toDouble() );
   mColor = QgsColorUtils::colorFromString( elem.attribute( u"color"_s ) );
   mIntensity = elem.attribute( u"intensity"_s ).toFloat();
