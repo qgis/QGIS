@@ -1778,6 +1778,102 @@ Qgis::DataType QgsArcGisRestUtils::dataTypeFromString( const QString &pixelType 
   return Qgis::DataType::UnknownDataType;
 }
 
+QgsArcGisRestUtils::PixelTypeLimitUsefulness QgsArcGisRestUtils::pixelTypeLimitUsefulness( const QString &pixelType )
+{
+  if ( pixelType.compare( "U8"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U4"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U2"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U1"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "S8"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U16"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "S16"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return PixelTypeLimitUsefulness { true, true };
+  }
+  else if ( pixelType.compare( "U32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return PixelTypeLimitUsefulness { true, false };
+  }
+  else if ( pixelType.compare( "S32"_L1, Qt::CaseInsensitive ) == 0
+            || pixelType.compare( "F32"_L1, Qt::CaseInsensitive ) == 0
+            || pixelType.compare( "F64"_L1, Qt::CaseInsensitive ) == 0
+            || pixelType.compare( "C64"_L1, Qt::CaseInsensitive ) == 0
+            || pixelType.compare( "C128"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return PixelTypeLimitUsefulness { false, false };
+  }
+  else
+  {
+    QgsDebugError( u"Unknown pixelType: %1"_s.arg( pixelType ) );
+  }
+
+  return PixelTypeLimitUsefulness { false, false };
+}
+
+std::optional<std::pair<double, double> > QgsArcGisRestUtils::rangeForPixelType( const QString &pixelType )
+{
+  if ( pixelType.compare( "U8"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( 0.0, 255.0 );
+  }
+  else if ( pixelType.compare( "U4"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( 0.0, 15.0 );
+  }
+  else if ( pixelType.compare( "U2"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( 0.0, 3.0 );
+  }
+  else if ( pixelType.compare( "U1"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( 0.0, 1.0 );
+  }
+  else if ( pixelType.compare( "S8"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( -128.0, 127.0 );
+  }
+  else if ( pixelType.compare( "U16"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( 0.0, 65535.0 );
+  }
+  else if ( pixelType.compare( "S16"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( -32768.0, 32767.0 );
+  }
+  else if ( pixelType.compare( "U32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( 0.0, static_cast<double>( std::numeric_limits<uint32_t>::max() ) );
+  }
+  else if ( pixelType.compare( "S32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( static_cast<double>( std::numeric_limits<int32_t>::lowest() ), static_cast<double>( std::numeric_limits<int32_t>::max() ) );
+  }
+  else if ( pixelType.compare( "F32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( static_cast<double>( std::numeric_limits<float>::lowest() ), static_cast<double>( std::numeric_limits<float>::max() ) );
+  }
+  else if ( pixelType.compare( "F64"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return std::make_pair( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
+  }
+  else if ( pixelType.compare( "C64"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    // C64 = 32-bit real + 32-bit imaginary
+    return std::make_pair( static_cast<double>( std::numeric_limits<float>::lowest() ), static_cast<double>( std::numeric_limits<float>::max() ) );
+  }
+  else if ( pixelType.compare( "C128"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    // C128 = 64-bit real + 64-bit imaginary
+    return std::make_pair( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
+  }
+  else
+  {
+    QgsDebugError( u"Unknown pixelType: %1"_s.arg( pixelType ) );
+  }
+
+  return std::nullopt;
+}
+
 Qgis::RasterColorInterpretation QgsArcGisRestUtils::colorInterpretationFromBandName( const QString &bandName )
 {
   if ( bandName.isEmpty() )
