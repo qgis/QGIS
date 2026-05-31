@@ -242,6 +242,27 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     }
   }
 
+  // populate remaining missing min/max values with appropriate values for certain data types, if we can!
+  const QgsArcGisRestUtils::PixelTypeLimitUsefulness pixelTypeLimitUsefulness = QgsArcGisRestUtils::pixelTypeLimitUsefulness( mPixelType );
+  if ( pixelTypeLimitUsefulness.minIsUseful || pixelTypeLimitUsefulness.maxIsUseful )
+  {
+    const std::optional< std::pair< double, double > > typeRange = QgsArcGisRestUtils::rangeForPixelType( mPixelType );
+    if ( pixelTypeLimitUsefulness.minIsUseful && typeRange.has_value() )
+    {
+      for ( qsizetype i = mMinValues.count(); i < mBandCount; ++i )
+      {
+        mMinValues.append( typeRange->first );
+      }
+    }
+    if ( pixelTypeLimitUsefulness.maxIsUseful && typeRange.has_value() )
+    {
+      for ( qsizetype i = mMaxValues.count(); i < mBandCount; ++i )
+      {
+        mMaxValues.append( typeRange->second );
+      }
+    }
+  }
+
   QgsLayerMetadata::SpatialExtent spatialExtent;
   spatialExtent.bounds = QgsBox3D( mExtent );
   spatialExtent.extentCrs = mCrs;

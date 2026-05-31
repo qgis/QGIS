@@ -1430,6 +1430,196 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertTrue(rl.dataProvider().useSourceNoDataValue(1))
         self.assertEqual(rl.dataProvider().sourceNoDataValue(1), 32767.0)
 
+    def test_missing_min_max(self):
+        """
+        Test guessing min/max values from pixel type
+        """
+        DATA = {
+            "U8": (0, 255),
+            "U4": (0, 15),
+            "U2": (0, 3),
+            "U1": (0, 1),
+            "S8": (-128.0, 127.0),
+            "U16": (0.0, 65535.0),
+            "S16": (-32768.0, 32767.0),
+            "U32": (0, None),
+            "S32": (None, None),
+            "F32": (None, None),
+            "F64": (None, None),
+            "C64": (None, None),
+            "C128": (None, None),
+        }
+
+        for pixel_type, (min, max) in DATA.items():
+            for test_min in (True, False):
+                endpoint = (
+                    self.basetestpath
+                    + f"/minmax{pixel_type}{test_min}_test_fake_qgis_http_endpoint"
+                )
+                with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+                    f.write(
+                        """
+                        {
+         "currentVersion": 10.91,
+         "name": "CharlotteLAS",
+         "description": "My service description",
+         "copyrightText": "My copyright string",
+         "extent": {
+          "xmin": 1440000,
+          "ymin": 535000,
+          "xmax": 1455000,
+          "ymax": 550000,
+          "spatialReference": {
+           "wkid": 102719,
+           "latestWkid": 2264
+          }
+         },
+         "initialExtent": {
+          "xmin": 1440000,
+          "ymin": 535000,
+          "xmax": 1455000,
+          "ymax": 550000,
+          "spatialReference": {
+           "wkid": 102719,
+           "latestWkid": 2264
+          }
+         },
+         "fullExtent": {
+          "xmin": 1440000,
+          "ymin": 535000,
+          "xmax": 1455000,
+          "ymax": 550000,
+          "spatialReference": {
+           "wkid": 102719,
+           "latestWkid": 2264
+          }
+         },
+         "hasMultidimensions": false,
+         "pixelSizeX": 10,
+         "pixelSizeY": 10,
+         "datasetFormat": "AMD",
+         "uncompressedSize": 9000000,
+         "blockWidth": 2048,
+         "blockHeight": 256,
+         "compressionType": "None",
+         "bandNames": [
+          "Band_1"
+         ],
+         "allowCopy": true,
+         "allowAnalysis": true,
+         "bandCount": 1,
+         "pixelType": "PIXEL_TYPE",
+         "minPixelSize": 0,
+         "maxPixelSize": 0,
+         "serviceDataType": "esriImageServiceDataTypeGeneric",
+         "objectIdField": "OBJECTID",
+         "fields": [
+          {
+           "name": "OBJECTID",
+           "type": "esriFieldTypeOID",
+           "alias": "OBJECTID",
+           "domain": null
+          }
+         ],
+         "capabilities": "Image,Metadata,Catalog,Mensuration",
+         "defaultMosaicMethod": "Northwest",
+         "allowedMosaicMethods": "NorthWest,Center,LockRaster,ByAttribute,Nadir,Viewpoint,Seamline,None",
+         "sortField": "",
+         "sortValue": null,
+         "sortAscending": true,
+         "mosaicOperator": "First",
+         "maxDownloadSizeLimit": 0,
+         "defaultCompressionQuality": 10000,
+         "defaultResamplingMethod": "Bilinear",
+         "maxImageHeight": 4100,
+         "maxImageWidth": 15000,
+         "maxRecordCount": 1000,
+         "maxDownloadImageCount": 0,
+         "maxMosaicImageCount": 20,
+         "allowRasterFunction": true,
+         "rasterFunctionInfos": [
+         ],
+         "rasterTypeInfos": [
+          {
+           "name": "Raster Dataset",
+           "description": "Supports all ArcGIS Raster Datasets",
+           "help": ""
+          }
+         ],
+         "mensurationCapabilities": "Basic",
+         "hasHistograms": true,
+         "hasColormap": false,
+         "hasRasterAttributeTable": false,
+         "minScale": 0,
+         "maxScale": 0,
+         "exportTilesAllowed": false,
+         "supportsStatistics": true,
+         "supportsAdvancedQueries": true,
+         "editFieldsInfo": null,
+         "ownershipBasedAccessControlForRasters": null,
+         "allowComputeTiePoints": false,
+         "useStandardizedQueries": true,
+         "advancedQueryCapabilities": {
+          "useStandardizedQueries": true,
+          "supportsStatistics": true,
+          "supportsOrderBy": true,
+          "supportsDistinct": true,
+          "supportsPagination": true
+         },
+         "spatialReference": {
+          "wkid": 102719,
+          "latestWkid": 2264
+         }
+        }""".replace("PIXEL_TYPE", pixel_type).encode()
+                    )
+
+                rl = QgsRasterLayer(
+                    "url='http://" + endpoint + "'",
+                    "test",
+                    "arcgisimageserver",
+                )
+                self.assertTrue(rl.isValid())
+                if test_min:
+                    if min is not None:
+                        self.assertTrue(
+                            rl.dataProvider().hasStatistics(
+                                1, Qgis.RasterBandStatistic.Min
+                            ),
+                            f"No minimum for {pixel_type}, should be set",
+                        )
+                        band_stats = rl.dataProvider().bandStatistics(
+                            1, Qgis.RasterBandStatistic.Min
+                        )
+                        self.assertEqual(band_stats.bandNumber, 1)
+                        self.assertEqual(band_stats.minimumValue, min)
+                    else:
+                        self.assertFalse(
+                            rl.dataProvider().hasStatistics(
+                                1, Qgis.RasterBandStatistic.Min
+                            ),
+                            f"Unexpected minimum {band_stats.minimumValue} for {pixel_type}, should not be set",
+                        )
+                else:
+                    if max is not None:
+                        self.assertTrue(
+                            rl.dataProvider().hasStatistics(
+                                1, Qgis.RasterBandStatistic.Max
+                            ),
+                            f"No maximum for {pixel_type}, should be set",
+                        )
+                        band_stats = rl.dataProvider().bandStatistics(
+                            1, Qgis.RasterBandStatistic.Min
+                        )
+                        self.assertEqual(band_stats.bandNumber, 1)
+                        self.assertEqual(band_stats.maximumValue, max)
+                    else:
+                        self.assertFalse(
+                            rl.dataProvider().hasStatistics(
+                                1, Qgis.RasterBandStatistic.Max
+                            ),
+                            f"Unexpected maximum {band_stats.maximumValue} for {pixel_type}, should not be set",
+                        )
+
     @unittest.skipIf(
         not QgsGdalUtils.supportsMrfLercCompression(),
         "GDAL build with LERC support required",
