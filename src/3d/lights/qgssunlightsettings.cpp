@@ -94,7 +94,7 @@ void QgsSunLightSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   if ( elem.hasAttribute( u"id"_s ) )
     mId = elem.attribute( u"id"_s );
   mColor = QgsColorUtils::colorFromString( elem.attribute( u"color"_s ) );
-  mIntensity = elem.attribute( u"intensity"_s ).toFloat();
+  mIntensity = elem.attribute( u"intensity"_s ).toDouble();
   mSunTime = QDateTime::fromString( elem.attribute( u"sun-time"_s ), Qt::ISODate );
   if ( !mSunTime.isValid() )
   {
@@ -107,7 +107,8 @@ void QgsSunLightSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
 bool QgsSunLightSettings::operator==( const QgsSunLightSettings &other ) const
 {
-  return mSunTime == other.mSunTime
+  return mId == other.mId
+         && mSunTime == other.mSunTime
          && mColor == other.mColor
          && mIntensity == other.mIntensity
          && qgsDoubleNear( mAtmosphericPressure, other.mAtmosphericPressure )

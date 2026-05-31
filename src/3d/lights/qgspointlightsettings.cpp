@@ -51,11 +51,11 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
 
   Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
   light->setColor( Qgs3DUtils::srgbToLinear( color() ) );
-  light->setIntensity( intensity() );
+  light->setIntensity( static_cast< float >( intensity() ) );
 
-  light->setConstantAttenuation( constantAttenuation() );
-  light->setLinearAttenuation( linearAttenuation() );
-  light->setQuadraticAttenuation( quadraticAttenuation() );
+  light->setConstantAttenuation( static_cast< float >( constantAttenuation() ) );
+  light->setLinearAttenuation( static_cast< float >( linearAttenuation() ) );
+  light->setQuadraticAttenuation( static_cast< float >( quadraticAttenuation() ) );
 
   lightEntity->addComponent( light );
   lightEntity->addComponent( lightTransform );
@@ -114,7 +114,7 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
 
   mPosition.set( elem.attribute( u"x"_s ).toDouble(), elem.attribute( u"y"_s ).toDouble(), elem.attribute( u"z"_s ).toDouble() );
   mColor = QgsColorUtils::colorFromString( elem.attribute( u"color"_s ) );
-  mIntensity = elem.attribute( u"intensity"_s ).toFloat();
+  mIntensity = elem.attribute( u"intensity"_s ).toDouble();
   mConstantAttenuation = elem.attribute( u"attenuation-0"_s ).toDouble();
   mLinearAttenuation = elem.attribute( u"attenuation-1"_s ).toDouble();
   mQuadraticAttenuation = elem.attribute( u"attenuation-2"_s ).toDouble();
@@ -122,10 +122,11 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
 
 bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other ) const
 {
-  return mPosition == other.mPosition
+  return mId == other.mId
+         && mPosition == other.mPosition
          && mColor == other.mColor
-         && mIntensity == other.mIntensity
-         && mConstantAttenuation == other.mConstantAttenuation
-         && mLinearAttenuation == other.mLinearAttenuation
-         && mQuadraticAttenuation == other.mQuadraticAttenuation;
+         && qgsDoubleNear( mIntensity, other.mIntensity )
+         && qgsDoubleNear( mConstantAttenuation, other.mConstantAttenuation )
+         && qgsDoubleNear( mLinearAttenuation, other.mLinearAttenuation )
+         && qgsDoubleNear( mQuadraticAttenuation, other.mQuadraticAttenuation );
 }

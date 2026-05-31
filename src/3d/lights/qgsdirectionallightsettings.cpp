@@ -44,7 +44,7 @@ Qt3DCore::QEntity *QgsDirectionalLightSettings::createEntity( const Qgs3DMapSett
 
   Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
   light->setColor( Qgs3DUtils::srgbToLinear( color() ) );
-  light->setIntensity( intensity() );
+  light->setIntensity( static_cast< float >( intensity() ) );
   QgsVector3D direction = QgsDirectionalLightSettings::direction();
   light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
 
@@ -72,10 +72,10 @@ void QgsDirectionalLightSettings::readXml( const QDomElement &elem, const QgsRea
 
   mDirection.set( elem.attribute( u"x"_s ).toFloat(), elem.attribute( u"y"_s ).toFloat(), elem.attribute( u"z"_s ).toFloat() );
   mColor = QgsColorUtils::colorFromString( elem.attribute( u"color"_s ) );
-  mIntensity = elem.attribute( u"intensity"_s ).toFloat();
+  mIntensity = elem.attribute( u"intensity"_s ).toDouble();
 }
 
 bool QgsDirectionalLightSettings::operator==( const QgsDirectionalLightSettings &other ) const
 {
-  return mDirection == other.mDirection && mColor == other.mColor && mIntensity == other.mIntensity;
+  return mId == other.mId && mDirection == other.mDirection && mColor == other.mColor && qgsDoubleNear( mIntensity, other.mIntensity );
 }
