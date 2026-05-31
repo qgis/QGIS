@@ -227,10 +227,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // ==================
   // Page: Shadows
   mShadowSettingsWidget = new QgsShadowRenderingSettingsWidget( this );
-  mShadowSettingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLightCount() );
+  mShadowSettingsWidget->setLightSourceModel( widgetLights->lightSourceModel() );
   mShadowSettingsWidget->setShadowSettings( map->shadowSettings() );
   groupShadowRendering->layout()->addWidget( mShadowSettingsWidget );
-  connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSettingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
 
   connect( widgetLights, &QgsLightsWidget::lightsAdded, this, &Qgs3DMapConfigWidget::validate );
   connect( widgetLights, &QgsLightsWidget::lightsRemoved, this, &Qgs3DMapConfigWidget::validate );

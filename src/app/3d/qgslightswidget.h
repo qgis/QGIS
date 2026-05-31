@@ -58,6 +58,9 @@ class QgsLightsModel : public QAbstractListModel
     QModelIndex addDirectionalLight( const QgsDirectionalLightSettings &light );
     QModelIndex addSunLight( const QgsSunLightSettings &light );
 
+    //! Returns the model index corresponding to a light's ID
+    QModelIndex indexFromLightId( const QString &id ) const;
+
   private:
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
@@ -107,8 +110,9 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     void setPointLightCrs( const QgsCoordinateReferenceSystem &crs );
     void setMapExtent( const QgsRectangle &extent );
 
+    QgsLightsModel *lightSourceModel() { return mLightsModel; }
+
   signals:
-    void directionalLightsCountChanged( int count );
     void lightsRemoved();
     void lightsAdded();
 
