@@ -2312,13 +2312,13 @@ void TestQgs3DRendering::testDebugMap()
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
-  QgsDirectionalLightSettings defaultPointLight;
-  mapSettings.setLightSources( { defaultPointLight.clone() } );
+  QgsDirectionalLightSettings defaultLight;
+  mapSettings.setLightSources( { defaultLight.clone() } );
   mapSettings.setOutputDpi( 92 );
 
   QgsShadowSettings shadowSettings = mapSettings.shadowSettings();
   shadowSettings.setRenderShadows( true );
-  shadowSettings.setSelectedDirectionalLight( 0 );
+  shadowSettings.setLightSource( defaultLight.id() );
   shadowSettings.setMaximumShadowRenderingDistance( 2500 );
   shadowSettings.setShadowQuality( Qgis::ShadowQuality::High );
   mapSettings.setShadowSettings( shadowSettings );

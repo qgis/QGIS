@@ -181,7 +181,7 @@ void TestQgs3DShadows::testFlatTerrain()
   // render with the cascade splits visible so that we test these
   shadow.setShowCascadeSplits( true );
   shadow.setRenderShadows( true );
-  shadow.setSelectedDirectionalLight( 0 );
+  shadow.setLightSource( defaultLight.id() );
   shadow.setShadowQuality( Qgis::ShadowQuality::High );
   map->setShadowSettings( shadow );
 
@@ -260,7 +260,7 @@ void TestQgs3DShadows::testShadowsPhong()
   QgsShadowSettings shadow = map->shadowSettings();
 
   shadow.setRenderShadows( true );
-  shadow.setSelectedDirectionalLight( 0 );
+  shadow.setLightSource( defaultLight.id() );
   shadow.setShadowQuality( Qgis::ShadowQuality::High );
   map->setShadowSettings( shadow );
 
@@ -338,7 +338,7 @@ void TestQgs3DShadows::testShadowsMetalRough()
   QgsShadowSettings shadow = map->shadowSettings();
 
   shadow.setRenderShadows( true );
-  shadow.setSelectedDirectionalLight( 0 );
+  shadow.setLightSource( defaultLight.id() );
   shadow.setShadowQuality( Qgis::ShadowQuality::High );
   map->setShadowSettings( shadow );
 
@@ -401,7 +401,7 @@ void TestQgs3DShadows::testShadowsMetalRoughEmissive()
   QgsShadowSettings shadow = map->shadowSettings();
 
   shadow.setRenderShadows( true );
-  shadow.setSelectedDirectionalLight( 0 );
+  shadow.setLightSource( defaultLight.id() );
   shadow.setShadowQuality( Qgis::ShadowQuality::High );
   map->setShadowSettings( shadow );
 
