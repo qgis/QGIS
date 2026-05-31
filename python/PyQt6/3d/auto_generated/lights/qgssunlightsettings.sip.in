@@ -35,6 +35,11 @@ A light source based on the real-world sun position.
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
 
+    QgsVector3D direction( const Qgs3DMapSettings &map ) const;
+%Docstring
+Returns the calculated direction of the light
+%End
+
     QDateTime sunTime() const;
 %Docstring
 Returns the configured date and time for the sun position calculation.
