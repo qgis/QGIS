@@ -184,22 +184,22 @@ void QgsLightsWidget::selectedLightChanged( const QItemSelection &selected, cons
     return;
   }
 
-  const QgsLightsModel::LightType lightType = static_cast<QgsLightsModel::LightType>( mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightTypeRole ).toInt() );
+  const Qgis::LightSourceType lightType = static_cast<Qgis::LightSourceType>( mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightTypeRole ).toInt() );
   const int listIndex = mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightListIndex ).toInt();
 
   switch ( lightType )
   {
-    case QgsLightsModel::Point:
+    case Qgis::LightSourceType::Point:
       mStackedWidget->setCurrentIndex( 1 );
       showSettingsForPointLight( mLightsModel->pointLights().at( listIndex ) );
       break;
 
-    case QgsLightsModel::Directional:
+    case Qgis::LightSourceType::Directional:
       mStackedWidget->setCurrentIndex( 2 );
       showSettingsForDirectionalLight( mLightsModel->directionalLights().at( listIndex ) );
       break;
 
-    case QgsLightsModel::Sun:
+    case Qgis::LightSourceType::Sun:
       mStackedWidget->setCurrentWidget( mPageSunLight );
       showSettingsForSunLight( mLightsModel->sunLights().at( listIndex ) );
       break;
@@ -419,17 +419,19 @@ QVariant QgsLightsModel::data( const QModelIndex &index, int role ) const
   if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
     return QVariant();
 
-  const LightType lightType = index.row() < mPointLights.size() ? Point : index.row() < ( mPointLights.size() + mDirectionalLights.size() ) ? Directional : Sun;
+  const Qgis::LightSourceType lightType = index.row() < mPointLights.size()                                   ? Qgis::LightSourceType::Point
+                                          : index.row() < ( mPointLights.size() + mDirectionalLights.size() ) ? Qgis::LightSourceType::Directional
+                                                                                                              : Qgis::LightSourceType::Sun;
   int lightListRow = 0;
   switch ( lightType )
   {
-    case Point:
+    case Qgis::LightSourceType::Point:
       lightListRow = index.row();
       break;
-    case Directional:
+    case Qgis::LightSourceType::Directional:
       lightListRow = index.row() - mPointLights.size();
       break;
-    case Sun:
+    case Qgis::LightSourceType::Sun:
       lightListRow = index.row() - mPointLights.size() - mDirectionalLights.size();
       break;
   }
@@ -441,22 +443,34 @@ QVariant QgsLightsModel::data( const QModelIndex &index, int role ) const
     case Qt::EditRole:
       switch ( lightType )
       {
-        case Point:
+        case Qgis::LightSourceType::Point:
           return tr( "Point light %1" ).arg( lightListRow + 1 );
 
-        case Directional:
+        case Qgis::LightSourceType::Directional:
           return tr( "Directional light %1" ).arg( lightListRow + 1 );
 
-        case Sun:
+        case Qgis::LightSourceType::Sun:
           return tr( "Sun light %1" ).arg( lightListRow + 1 );
       }
       break;
 
     case LightTypeRole:
-      return lightType;
+      return static_cast< int >( lightType );
 
     case LightListIndex:
       return lightListRow;
+
+    case LightId:
+      switch ( lightType )
+      {
+        case Qgis::LightSourceType::Point:
+          return mPointLights.at( lightListRow ).id();
+        case Qgis::LightSourceType::Directional:
+          return mDirectionalLights.at( lightListRow ).id();
+        case Qgis::LightSourceType::Sun:
+          return mSunLights.at( lightListRow ).id();
+      }
+      break;
 
     case Qt::DecorationRole:
       return QgsApplication::getThemeIcon( u"/mActionHighlightFeature.svg"_s );
@@ -472,31 +486,33 @@ bool QgsLightsModel::removeRows( int row, int count, const QModelIndex &parent )
   beginRemoveRows( parent, row, row + count - 1 );
   for ( int i = row + count - 1; i >= row; --i )
   {
-    const LightType lightType = i < mPointLights.size() ? Point : i < ( mPointLights.size() + mDirectionalLights.size() ) ? Directional : Sun;
+    const Qgis::LightSourceType lightType = i < mPointLights.size()                                   ? Qgis::LightSourceType::Point
+                                            : i < ( mPointLights.size() + mDirectionalLights.size() ) ? Qgis::LightSourceType::Directional
+                                                                                                      : Qgis::LightSourceType::Sun;
     int lightListRow = 0;
     switch ( lightType )
     {
-      case Point:
+      case Qgis::LightSourceType::Point:
         lightListRow = i;
         break;
-      case Directional:
+      case Qgis::LightSourceType::Directional:
         lightListRow = i - mPointLights.size();
         break;
-      case Sun:
+      case Qgis::LightSourceType::Sun:
         lightListRow = i - mPointLights.size() - mDirectionalLights.size();
         break;
     }
     switch ( lightType )
     {
-      case Point:
+      case Qgis::LightSourceType::Point:
         mPointLights.removeAt( lightListRow );
         break;
 
-      case Directional:
+      case Qgis::LightSourceType::Directional:
         mDirectionalLights.removeAt( lightListRow );
         break;
 
-      case Sun:
+      case Qgis::LightSourceType::Sun:
         mSunLights.removeAt( lightListRow );
         break;
     }
@@ -611,4 +627,34 @@ QModelIndex QgsLightsModel::addSunLight( const QgsSunLightSettings &light )
   endInsertRows();
 
   return index( mPointLights.size() + mDirectionalLights.size() + mSunLights.size() - 1 );
+}
+
+//
+// QgsLightsProxyModel
+//
+
+QgsLightsProxyModel::QgsLightsProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setDynamicSortFilter( true );
+}
+
+void QgsLightsProxyModel::setAllowedLightTypes( const QList<Qgis::LightSourceType> &types )
+{
+  mAllowedTypes = QSet<Qgis::LightSourceType>( types.begin(), types.end() );
+  invalidateFilter();
+}
+
+bool QgsLightsProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  if ( !sourceModel() )
+    return false;
+
+  if ( mAllowedTypes.empty() )
+    return true;
+
+  const QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
+  const Qgis::LightSourceType lightType = static_cast<Qgis::LightSourceType>( sourceModel()->data( sourceIndex, QgsLightsModel::LightTypeRole ).toInt() );
+
+  return mAllowedTypes.contains( lightType );
 }

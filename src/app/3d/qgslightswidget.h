@@ -22,23 +22,18 @@
 #include "qgspointlightsettings.h"
 #include "qgssunlightsettings.h"
 
+#include <QSortFilterProxyModel>
 #include <QWidget>
 
 class QgsLightsModel : public QAbstractListModel
 {
     Q_OBJECT
   public:
-    enum LightType
-    {
-      Point,
-      Directional,
-      Sun
-    };
-
     enum Role
     {
       LightTypeRole = Qt::UserRole,
       LightListIndex,
+      LightId
     };
 
     explicit QgsLightsModel( QObject *parent = nullptr );
@@ -67,6 +62,29 @@ class QgsLightsModel : public QAbstractListModel
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
     QList<QgsSunLightSettings> mSunLights;
+};
+
+/**
+ * \ingroup qgis_3d
+ * \brief Proxy model for filtering a QgsLightsModel to specific allowed light types.
+ */
+class QgsLightsProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsLightsProxyModel( QObject *parent = nullptr );
+
+    /**
+   * Sets the light \a types that to include in the model.
+   */
+    void setAllowedLightTypes( const QList<Qgis::LightSourceType> &types );
+
+  protected:
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+
+  private:
+    QSet<Qgis::LightSourceType> mAllowedTypes;
 };
 
 /**
