@@ -106,6 +106,11 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   selectedLightChanged( mLightsListView->selectionModel()->selection(), QItemSelection() );
 }
 
+void QgsLightsWidget::setSceneMode( Qgis::SceneMode mode )
+{
+  mSceneMode = mode;
+}
+
 void QgsLightsWidget::setLights( const QList<QgsLightSource *> sources )
 {
   QList<QgsPointLightSettings> pointLights;
@@ -385,6 +390,15 @@ void QgsLightsWidget::updateCurrentSunLightParameters()
 
 void QgsLightsWidget::onAddSunLight()
 {
+  switch ( mSceneMode )
+  {
+    case Qgis::SceneMode::Globe:
+      QMessageBox::warning( this, tr( "Add Sun Light" ), tr( "It is not currently possible to add sun lights in 3D globes." ) );
+      return;
+    case Qgis::SceneMode::Local:
+      break;
+  }
+
   if ( mLightsModel->directionalLights().size() + mLightsModel->sunLights().size() >= 4 )
   {
     QMessageBox::warning( this, tr( "Add Sun Light" ), tr( "It is not possible to add more than 4 directional lights to the scene." ) );

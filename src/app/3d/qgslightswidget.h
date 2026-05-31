@@ -100,6 +100,8 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
   public:
     explicit QgsLightsWidget( QWidget *parent = nullptr );
 
+    void setSceneMode( Qgis::SceneMode mode );
+
     void setLights( const QList<QgsLightSource *> sources );
 
     QList<QgsLightSource *> lightSources();
@@ -141,6 +143,7 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     double mDirectionZ = 0;
     QgsLightsModel *mLightsModel = nullptr;
     QgsRectangle mMapExtent;
+    Qgis::SceneMode mSceneMode = Qgis::SceneMode::Local;
 };
 
 
