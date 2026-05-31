@@ -233,6 +233,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   connect( widgetLights, &QgsLightsWidget::lightsAdded, this, &Qgs3DMapConfigWidget::validate );
   connect( widgetLights, &QgsLightsWidget::lightsRemoved, this, &Qgs3DMapConfigWidget::validate );
+  widgetLights->setSceneMode( mMap->sceneMode() );
 
   groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 
