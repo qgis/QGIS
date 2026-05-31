@@ -23,8 +23,13 @@
 #include "qgssunlightsettings.h"
 
 #include <QString>
+#include <QUuid>
 
 using namespace Qt::StringLiterals;
+
+QgsLightSource::QgsLightSource()
+  : mId( QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces ) )
+{}
 
 QgsLightSource::~QgsLightSource() = default;
 

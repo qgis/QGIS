@@ -36,7 +36,9 @@ Qgis::LightSourceType QgsSunLightSettings::type() const
 
 QgsSunLightSettings *QgsSunLightSettings::clone() const
 {
-  return new QgsSunLightSettings( *this );
+  auto res = std::make_unique< QgsSunLightSettings >( *this );
+  res->mId = mId;
+  return res.release();
 }
 
 Qt3DCore::QEntity *QgsSunLightSettings::createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const
@@ -76,6 +78,7 @@ Qt3DCore::QEntity *QgsSunLightSettings::createEntity( const Qgs3DMapSettings &ma
 QDomElement QgsSunLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elemLight = doc.createElement( u"sun-light"_s );
+  elemLight.setAttribute( u"id"_s, mId );
   elemLight.setAttribute( u"color"_s, QgsColorUtils::colorToString( mColor ) );
   elemLight.setAttribute( u"intensity"_s, mIntensity );
   elemLight.setAttribute( u"sun-time"_s, mSunTime.toString( Qt::ISODate ) );
@@ -88,6 +91,8 @@ QDomElement QgsSunLightSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
 void QgsSunLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
+  if ( elem.hasAttribute( u"id"_s ) )
+    mId = elem.attribute( u"id"_s );
   mColor = QgsColorUtils::colorFromString( elem.attribute( u"color"_s ) );
   mIntensity = elem.attribute( u"intensity"_s ).toFloat();
   mSunTime = QDateTime::fromString( elem.attribute( u"sun-time"_s ), Qt::ISODate );
