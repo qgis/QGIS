@@ -301,7 +301,6 @@ void QgsLightsWidget::onAddDirectionalLight()
   const QModelIndex newIndex = mLightsModel->addDirectionalLight( QgsDirectionalLightSettings() );
   mLightsListView->selectionModel()->select( newIndex, QItemSelectionModel::ClearAndSelect );
   emit lightsAdded();
-  emit directionalLightsCountChanged( mLightsModel->directionalLights().size() );
 }
 
 void QgsLightsWidget::onRemoveLight()
@@ -317,9 +316,6 @@ void QgsLightsWidget::onRemoveLight()
   const int sunLightCount = mLightsModel->sunLights().size();
 
   mLightsModel->removeRows( selected.indexes().at( 0 ).row(), 1 );
-
-  if ( mLightsModel->directionalLights().size() != directionalCount )
-    emit directionalLightsCountChanged( mLightsModel->directionalLights().size() );
 
   if ( mLightsModel->rowCount( QModelIndex() ) != directionalCount + pointCount + sunLightCount )
     emit lightsRemoved();
@@ -627,6 +623,30 @@ QModelIndex QgsLightsModel::addSunLight( const QgsSunLightSettings &light )
   endInsertRows();
 
   return index( mPointLights.size() + mDirectionalLights.size() + mSunLights.size() - 1 );
+}
+
+QModelIndex QgsLightsModel::indexFromLightId( const QString &id ) const
+{
+  int row = 0;
+  for ( const QgsPointLightSettings &light : mPointLights )
+  {
+    if ( light.id() == id )
+      return index( row );
+    row++;
+  }
+  for ( const QgsDirectionalLightSettings &light : mDirectionalLights )
+  {
+    if ( light.id() == id )
+      return index( row );
+    row++;
+  }
+  for ( const QgsSunLightSettings &light : mSunLights )
+  {
+    if ( light.id() == id )
+      return index( row );
+    row++;
+  }
+  return QModelIndex();
 }
 
 //
