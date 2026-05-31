@@ -44,6 +44,9 @@ class _3D_EXPORT QgsSunLightSettings : public QgsLightSource
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) override;
 
+    //! Returns the calculated direction of the light
+    QgsVector3D direction( const Qgs3DMapSettings &map ) const;
+
     /**
      * Returns the configured date and time for the sun position calculation.
      *

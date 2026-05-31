@@ -1212,7 +1212,7 @@ void Qgs3DMapScene::onBackgroundSettingsChanged()
 
 void Qgs3DMapScene::onShadowSettingsChanged()
 {
-  mEngine->frameGraph()->updateShadowSettings( mMap.shadowSettings(), mMap.lightSources() );
+  mEngine->frameGraph()->updateShadowSettings( mMap );
 }
 
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()

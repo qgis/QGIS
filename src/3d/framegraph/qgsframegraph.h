@@ -238,7 +238,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
      * \since QGIS 3.44
      */
-    void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources );
+    void updateShadowSettings( const Qgs3DMapSettings &mapSettings );
 
     /**
      * Updates settings for depth debug map

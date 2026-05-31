@@ -25,6 +25,7 @@ class QgsFrameGraph;
 class QgsShadowRenderView;
 class QgsDirectionalLightSettings;
 class QgsColorGradingSettings;
+class QgsVector3D;
 
 namespace Qt3DRender
 {
@@ -77,7 +78,7 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      * Sets shadow rendering to use a directional light
      * \since QGIS 3.44
      */
-    void updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
+    void updateShadowSettings( const QgsVector3D &lightDirection, float maximumShadowRenderingDistance );
 
     /**
      * Sets whether screen space ambient occlusion is enabled

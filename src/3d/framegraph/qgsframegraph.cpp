@@ -28,6 +28,7 @@
 #include "qgsoverlaytexturerenderview.h"
 #include "qgspostprocessingentity.h"
 #include "qgsshadowrenderview.h"
+#include "qgssunlightsettings.h"
 
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
@@ -402,28 +403,36 @@ void QgsFrameGraph::updateColorGradingSettings( const QgsColorGradingSettings &s
   mPostprocessingEntity->updateColorGradingSettings( settings );
 }
 
-void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources )
+void QgsFrameGraph::updateShadowSettings( const Qgs3DMapSettings &mapSettings )
 {
+  const QgsShadowSettings shadowSettings = mapSettings.shadowSettings();
+  const QList<QgsLightSource *> lightSources = mapSettings.lightSources();
   if ( shadowSettings.renderShadows() )
   {
-    int selectedLight = shadowSettings.selectedDirectionalLight();
-    QgsDirectionalLightSettings *light = nullptr;
+    const QString lightSourceId = shadowSettings.lightSource();
+    QgsLightSource *light = nullptr;
     int globalLightIndex = 0;
-    for ( int i = 0, dirLight = 0; !light && i < lightSources.size(); i++ )
+    for ( int i = 0; !light && i < lightSources.size(); i++ )
     {
-      if ( lightSources[i]->type() == Qgis::LightSourceType::Directional )
+      if ( lightSources[i]->id() == lightSourceId )
       {
-        if ( dirLight == selectedLight )
-        {
-          light = qgis::down_cast< QgsDirectionalLightSettings * >( lightSources[i] );
-          globalLightIndex = i;
-        }
-        dirLight++;
+        light = lightSources[i];
+        globalLightIndex = i;
       }
     }
 
     if ( light )
     {
+      QgsVector3D lightDirection;
+      if ( auto directionalLight = dynamic_cast< QgsDirectionalLightSettings * >( light ) )
+      {
+        lightDirection = directionalLight->direction();
+      }
+      else if ( auto sunLight = dynamic_cast< QgsSunLightSettings * >( light ) )
+      {
+        lightDirection = sunLight->direction( mapSettings );
+      }
+
       const int size = shadowSettings.qualityToMapResolution( shadowSettings.shadowQuality() );
       shadowRenderView().setMapSize( size, size );
       shadowRenderView().setEnabled( true );
@@ -431,7 +440,7 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
       mPostprocessingEntity->setShadowMapResolution( size );
       mPostprocessingEntity->setShadowLightIndex( globalLightIndex );
       mPostprocessingEntity->setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
-      mPostprocessingEntity->updateShadowSettings( *light, static_cast<float>( shadowSettings.maximumShadowRenderingDistance() ) );
+      mPostprocessingEntity->updateShadowSettings( lightDirection, static_cast<float>( shadowSettings.maximumShadowRenderingDistance() ) );
       mPostprocessingEntity->setShowCascadingShadowSplits( shadowSettings.showCascadeSplits() );
     }
   }

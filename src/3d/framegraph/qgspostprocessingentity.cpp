@@ -134,7 +134,7 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mShader->setFragmentShaderCode( finalFragmentShaderCode );
 }
 
-void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
+void QgsPostprocessingEntity::updateShadowSettings( const QgsVector3D &lightDir, float maximumShadowRenderingDistance )
 {
   // We are using "Cascading Shadow Maps" technique.
   // Reading/watching which was useful during development:
@@ -144,7 +144,7 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   // https://www.youtube.com/watch?v=qbDrqARX07o
   // https://web.archive.org/web/20170710150304/https://cesiumjs.org/presentations/ShadowsAndCesiumImplementation.pdf
 
-  const QVector3D lightDirection = light.direction().toVector3D().normalized();
+  const QVector3D lightDirection = lightDir.toVector3D().normalized();
   const QVector3D up = Qgs3DUtils::calculateDirectionalLightUpVector( lightDirection );
 
   const float mainCameraNearPlane = mMainCamera->nearPlane();
