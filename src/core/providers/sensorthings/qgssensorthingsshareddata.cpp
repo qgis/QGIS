@@ -224,7 +224,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   {
     const QgsNetworkReplyContent content = networkRequest.reply();
 
-    const std::string countKey = mVersion >= 2 ? "@count" : "@iot.count";
+    const std::string countKey = mVersion >= QVersionNumber( 2, 0 ) ? "@count" : "@iot.count";
 
     try
     {
@@ -422,9 +422,10 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
   const QgsFields fields = mFields;
   const QList< QgsSensorThingsExpansionDefinition > expansions = mExpansions;
 
-  const std::string idKey = mVersion >= 2 ? "id" : "@iot.id";
-  const std::string selfLinkKey = mVersion >= 2 ? "@id" : "@iot.selfLink";
-  const std::string nextLinkKey = mVersion >= 2 ? "@nextLink" : "@iot.nextLink";
+  const bool isVersion2OrLater = mVersion >= QVersionNumber( 2, 0 );
+  const std::string idKey = isVersion2OrLater ? "id" : "@iot.id";
+  const std::string selfLinkKey = isVersion2OrLater ? "@id" : "@iot.selfLink";
+  const std::string nextLinkKey = isVersion2OrLater ? "@nextLink" : "@iot.nextLink";
 
   while ( continueFetchingCallback() )
   {

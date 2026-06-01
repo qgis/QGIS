@@ -840,7 +840,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertIn("Entity Type</td><td>Location</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Locations"', vl.htmlMetadata())
             # we assume version 1.1 if we can't determine exactly
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 1.1)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "1.1")
 
             # As multipoint
             vl = QgsVectorLayer(
@@ -952,7 +952,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
             self.assertTrue(vl.isValid())
             self.assertIn("SensorThings Version</td><td>1.1</td>", vl.htmlMetadata())
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 1.1)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "1.1")
 
     def test_layer_conformance_2(self):
         """
@@ -1045,7 +1045,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             )
             self.assertTrue(vl.isValid())
             self.assertIn("SensorThings Version</td><td>2.0</td>", vl.htmlMetadata())
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
     def test_thing(self):
         """
@@ -1311,7 +1311,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
             self.assertTrue(vl.extent().isNull())
             self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
@@ -1688,7 +1688,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
             # pessimistic "worst case" extent should initially be used
             self.assertEqual(vl.extent(), QgsRectangle(-180, -90, 180, 90))
             self.assertEqual(vl.featureCount(), 3)
@@ -3396,7 +3396,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
             self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
             self.assertIn(
@@ -3825,7 +3825,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
             self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Datastream</td>", vl.htmlMetadata())
@@ -4221,7 +4221,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
             self.assertEqual(vl.featureCount(), 3)
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Sensor</td>", vl.htmlMetadata())
@@ -4943,7 +4943,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
             self.assertFalse(vl.crs().isValid())
             self.assertIn("Entity Type</td><td>Observation</td>", vl.htmlMetadata())
             self.assertIn(f'href="http://{endpoint}/Observations"', vl.htmlMetadata())
@@ -5413,7 +5413,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertEqual(vl.featureCount(), 3)
@@ -5619,7 +5619,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -6422,7 +6422,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -6628,7 +6628,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -6837,7 +6837,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -7043,7 +7043,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -7269,7 +7269,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
             self.assertEqual(vl.featureCount(), 3)
@@ -7486,7 +7486,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -7697,7 +7697,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -7915,7 +7915,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -8101,7 +8101,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -8242,7 +8242,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -8387,7 +8387,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)
@@ -8530,7 +8530,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertTrue(vl.isValid())
             # basic layer properties tests
             self.assertEqual(vl.storageType(), "OGC SensorThings API")
-            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], 2.0)
+            self.assertEqual(vl.dataProvider().metadata()["SensorThingsVersion"], "2.0")
 
             self.assertEqual(vl.wkbType(), Qgis.WkbType.NoGeometry)
             self.assertEqual(vl.featureCount(), 3)

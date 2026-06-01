@@ -87,13 +87,7 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
           if ( versionMatch.hasMatch() )
           {
             const QString versionString = versionMatch.captured( 0 );
-            bool ok = false;
-            const double version = versionString.toDouble( &ok );
-            if ( ok )
-            {
-              mSharedData->mVersion = version;
-              break;
-            }
+            mSharedData->mVersion = QVersionNumber::fromString( versionString );
           }
         }
       }
@@ -302,7 +296,7 @@ QString QgsSensorThingsProvider::htmlMetadata() const
   QString metadata;
 
   QgsReadWriteLocker locker( mSharedData->mReadWriteLock, QgsReadWriteLocker::Read );
-  metadata += u"<tr><td class=\"highlight\">"_s % tr( "SensorThings Version" ) % u"</td><td>%1"_s.arg( mSharedData->mVersion, 0, 'f', 1 ) % u"</td></tr>\n"_s;
+  metadata += u"<tr><td class=\"highlight\">"_s % tr( "SensorThings Version" ) % u"</td><td>%1"_s.arg( mSharedData->mVersion.toString() ) % u"</td></tr>\n"_s;
   metadata += u"<tr><td class=\"highlight\">"_s % tr( "Entity Type" ) % u"</td><td>%1"_s.arg( qgsEnumValueToKey( mSharedData->mEntityType ) ) % u"</td></tr>\n"_s;
   metadata += u"<tr><td class=\"highlight\">"_s % tr( "Endpoint" ) % u"</td><td><a href=\"%1\">%1</a>"_s.arg( mSharedData->mEntityBaseUri ) % u"</td></tr>\n"_s;
 
@@ -316,7 +310,7 @@ QVariantMap QgsSensorThingsProvider::metadata() const
   QVariantMap metadata;
 
   QgsReadWriteLocker locker( mSharedData->mReadWriteLock, QgsReadWriteLocker::Read );
-  metadata.insert( u"SensorThingsVersion"_s, mSharedData->mVersion );
+  metadata.insert( u"SensorThingsVersion"_s, mSharedData->mVersion.toString() );
   return metadata;
 }
 
