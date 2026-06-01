@@ -20,6 +20,7 @@ set(PYQT_COMPAT_FILES
   QtQuick.py
   QtQuickWidgets.py
   QtSql.py
+  QtSvgWidgets.py
   QtTest.py
   QtSvg.py
   Qsci.py
