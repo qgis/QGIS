@@ -122,6 +122,23 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="lblColorModifier">
+            <property name="toolTip">
+             <string>Applies an expression to adjust the colors of the point cloud. The renderer base color is accessible as @value.</string>
+            </property>
+            <property name="text">
+             <string>Color modification</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QgsFieldExpressionWidget" name="mColorExpressionWidget" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -300,29 +317,6 @@
          </layout>
         </widget>
        </item>
-        <item>
-          <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
-          <property name="title">
-            <string>Color Modification</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
-            <item row="0" column="0">
-            <widget class="QLabel" name="label1">
-              <property name="text">
-              <string>Base color accessible as @value</string>
-              </property>
-            </widget>
-            </item>
-            <item row="0" column="1">
-            <widget class="QgsFieldExpressionWidget" name="mColorExpressionWidget" native="true">
-              <property name="focusPolicy">
-              <enum>Qt::FocusPolicy::StrongFocus</enum>
-              </property>
-            </widget>
-            </item>
-          </layout>
-          </widget>
-        </item>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mVpcGroupBox">
          <property name="title">
@@ -555,6 +549,11 @@ Select Earlier to switch at a smaller scale (zoomed out) or Later to switch at a
    <class>QgsDirectionalLightWidget</class>
    <extends>QWidget</extends>
    <header>qgsdirectionallightwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
