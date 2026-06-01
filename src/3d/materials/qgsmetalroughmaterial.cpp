@@ -32,7 +32,7 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent, bool disableEnvironmentalLight )
+QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   : QgsMaterial( parent )
   , mBaseColorParameter( new Qt3DRender::QParameter( u"baseColor"_s, Qgs3DUtils::srgbToLinear( QColor( "grey" ) ), this ) )
   , mMetalnessParameter( new Qt3DRender::QParameter( u"metalness"_s, 0.0f, this ) )
@@ -55,7 +55,6 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent, bool disableEnviron
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
-  , mDisableEnvironmentalLighting( disableEnvironmentalLight )
 {
   init();
 }
@@ -359,8 +358,8 @@ void QgsMetalRoughMaterial::updateShaders()
     fragShaderDefines += "EMISSION_MAP";
   if ( mFlatShading )
     fragShaderDefines += "FLAT_SHADING";
-  if ( mDisableEnvironmentalLighting )
-    fragShaderDefines += "DISABLE_IBL";
+  if ( mEnableEnvironmentalLighting )
+    fragShaderDefines += "ENABLE_IBL";
 
   if ( mInstanced )
   {
@@ -407,6 +406,15 @@ void QgsMetalRoughMaterial::setDataDefinedEnabled( bool enabled )
   if ( enabled != mDataDefinedEnabled )
   {
     mDataDefinedEnabled = enabled;
+    updateShaders();
+  }
+}
+
+void QgsMetalRoughMaterial::setEnvironmentalLightingEnabled( bool enabled )
+{
+  if ( enabled != mEnableEnvironmentalLighting )
+  {
+    mEnableEnvironmentalLighting = enabled;
     updateShaders();
   }
 }

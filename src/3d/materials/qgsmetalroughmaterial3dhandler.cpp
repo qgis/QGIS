@@ -46,7 +46,8 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
         return new QgsHighlightMaterial( technique );
       }
 
-      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial( nullptr, context.isPreview() );
+      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial( nullptr );
+      material->setEnvironmentalLightingEnabled( !context.isPreview() );
       material->setObjectName( u"metalRoughMaterial"_s );
       applySettingsToMaterial( metalRoughSettings, material, context );
       material->setDataDefinedEnabled(
@@ -70,6 +71,7 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toInstancedMaterial( const QgsAbstr
   const QgsMetalRoughMaterialSettings *metalRoughSettings = qgis::down_cast< const QgsMetalRoughMaterialSettings * >( settings );
 
   QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial();
+  material->setEnvironmentalLightingEnabled( true );
   material->setInstancingEnabled( true, flags );
 
   material->setObjectName( u"metalRoughMaterial"_s );
