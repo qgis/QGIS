@@ -588,14 +588,41 @@ class CORE_EXPORT QgsSymbolLayer
     //! write as DXF
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
-    //! Gets line width
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    /**
+     * Gets line width.
+     * \deprecated QGIS 4.2. Use the overload without the \a e parameter instead.
+     */
+    Q_DECL_DEPRECATED virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const SIP_DEPRECATED;
 
-    //! Gets marker size
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    /**
+     * Gets line width.
+     * \since QGIS 4.2
+     */
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 
-    //! Gets offset
-    virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    /**
+     * Gets marker size.
+     * \deprecated QGIS 4.2. Use the overload without the \a e parameter instead.
+     */
+    Q_DECL_DEPRECATED virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const SIP_DEPRECATED;
+
+    /**
+     * Gets marker size.
+     * \since QGIS 4.2
+     */
+    virtual double dxfSize( QgsSymbolRenderContext &context ) const;
+
+    /**
+     * Gets offset.
+     * \deprecated QGIS 4.2. Use the overload without the \a e parameter instead.
+     */
+    Q_DECL_DEPRECATED virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const SIP_DEPRECATED;
+
+    /**
+     * Gets offset.
+     * \since QGIS 4.2
+     */
+    virtual double dxfOffset( QgsSymbolRenderContext &context ) const;
 
     //! Gets color
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
@@ -1058,7 +1085,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-    double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    double dxfSize( QgsSymbolRenderContext &context ) const override;
     double dxfAngle( QgsSymbolRenderContext &context ) const override;
 
     /**
@@ -1188,7 +1215,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
-    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    double dxfWidth( QgsSymbolRenderContext &context ) const override;
 
     /**
      * Renders the line symbol layer along the line joining \a points, using the given render \a context.
