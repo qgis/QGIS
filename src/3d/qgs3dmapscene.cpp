@@ -87,7 +87,6 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
-#include <Qt3DRender/QEnvironmentLight>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QRenderPass>

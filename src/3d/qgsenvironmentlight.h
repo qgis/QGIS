@@ -79,7 +79,7 @@ class _3D_EXPORT QgsEnvironmentLight : public Qt3DCore::QEntity
 
   private:
     Qt3DRender::QParameter *mEnvironmentLightModeParam = nullptr;     // whether environmental lighting is enabled
-    Qt3DRender::QParameter *mEnvironmentLightStrengthParam = nullptr; // whether environmental lighting is enabled
+    Qt3DRender::QParameter *mEnvironmentLightStrengthParam = nullptr; // strength of environmental lighting effect
     Qt3DRender::QParameter *mShParam = nullptr;
     Qt3DRender::QParameter *mSpecularMapParam = nullptr;
     Qt3DRender::QParameter *mMipLevelsParam = nullptr;
