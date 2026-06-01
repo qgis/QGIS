@@ -3183,6 +3183,51 @@ class TestQgsExpression : public QObject
       run_evaluation_test( exp4, evalError, result );
     }
 
+    void layer_property_type_i18n_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<QLocale::Language>( "language" );
+      QTest::addColumn<QVariant>( "expected" );
+
+      QTest::newRow( "layer_property type English" ) << u"layer_property('%1','type')"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type French" ) << u"layer_property('%1','type')"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vecteur" );
+      QTest::newRow( "layer_property type explicit translation English" ) << u"layer_property('%1','type', true)"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type explicit translation French" ) << u"layer_property('%1','type', true)"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vecteur" );
+      QTest::newRow( "layer_property type no translation English" ) << u"layer_property('%1','type', false)"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type no translation French" ) << u"layer_property('%1','type', false)"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vector" );
+    }
+
+    void layer_property_type_i18n()
+    {
+      QFETCH( QString, string );
+      QFETCH( QLocale::Language, language );
+      QFETCH( QVariant, expected );
+
+      QgsExpression exp( string );
+
+      QLocale::setDefault( language );
+      QTranslator translator;
+      const bool ok = translator.load( "qgis_" + QLocale().name(), QgsApplication::i18nPath() );
+      QVERIFY( ok );
+      QCoreApplication::installTranslator( &translator );
+
+      if ( exp.hasParserError() )
+      {
+        qDebug() << exp.parserErrorString();
+      }
+      QCOMPARE( exp.hasParserError(), false );
+
+      QVariant result = exp.evaluate();
+      if ( exp.hasEvalError() )
+      {
+        qDebug() << exp.evalErrorString();
+      }
+
+      QCOMPARE( result, expected );
+
+      QLocale::setDefault( QLocale::English );
+    }
+
     void eval_columns()
     {
       QgsFields fields;
