@@ -164,6 +164,8 @@ namespace
         return QVector3D( u, -v, 1.0f );
       case Qt3DRender::QTextureCubeMap::CubeMapFace::CubeMapNegativeZ:
         return QVector3D( -u, -v, -1.0f );
+      default:
+        break;
     }
     return QVector3D();
   }
@@ -329,13 +331,6 @@ void QgsCubeFacesSkyboxEntity::updateEnvironmentLight( QgsEnvironmentLight *envL
   }
 
   const QVector<QVector3D> shCoeffs = faceDataList.isEmpty() ? QVector<QVector3D>( 9, QVector3D( 0, 0, 0 ) ) : computeSphericalHarmonics( faceDataList );
-
-  // ground color hack!
-  // The Y00 coefficient (sh[0]) dictates the baseline ambient brightness.
-  // to artificially darken the "bottom" hemisphere,
-  // manually subtract the ground color from the Y11(y) directional coefficient.
-  // QVector3D groundColor( 0.05f, 0.04f, 0.04f );
-  //shCoeffs[1] -= groundColor * 0.5f; // Pulls the ambient light darker when facing down
 
   int mipLevels = 1;
   if ( maxSize > 0 )
