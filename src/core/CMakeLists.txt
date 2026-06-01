@@ -2359,7 +2359,10 @@ elseif(EMSCRIPTEN)
     SKIP_PRECOMPILE_HEADERS ON
   )
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES
+    COMPILE_FLAGS "-O1"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
   set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
 endif()
 
