@@ -660,11 +660,9 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
       return {
         u"id"_s,
         u"name"_s,
+        u"definition"_s,
         u"description"_s,
-        u"encodingType"_s,
-        u"location"_s,
         u"properties"_s,
-        u"time"_s,
       };
 
     case Qgis::SensorThingsEntity::Sampler:
@@ -672,6 +670,7 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
       return {
         u"id"_s,
         u"name"_s,
+        u"definition"_s,
         u"description"_s,
         u"properties"_s,
         u"samplerType"_s,
@@ -897,6 +896,7 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
     case Qgis::SensorThingsEntity::Sampler:
       // https://hylkevds.github.io/24-046/24-046.html#_6d3c932c-3d6c-e4d4-ccdf-8c63e03d503a
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       fields.append( QgsField( u"samplerType"_s, QMetaType::Type::QString ) );
@@ -905,8 +905,8 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
     case Qgis::SensorThingsEntity::PreparationStep:
       // https://hylkevds.github.io/24-046/24-046.html#_6ec4909c-d8de-111a-721b-ff0b24e834f9
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
-      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       if ( includeRangeFieldProxies )
       {
@@ -918,8 +918,8 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
     case Qgis::SensorThingsEntity::PreparationProcedure:
       // https://hylkevds.github.io/24-046/24-046.html#_48e9f88b-b0be-dff8-9e0b-1134e953ae57
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
-      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 

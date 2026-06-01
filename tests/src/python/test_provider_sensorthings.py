@@ -6846,11 +6846,20 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
-                ["id", "selfLink", "name", "description", "properties", "samplerType"],
+                [
+                    "id",
+                    "selfLink",
+                    "name",
+                    "definition",
+                    "description",
+                    "properties",
+                    "samplerType",
+                ],
             )
             self.assertEqual(
                 [f.type() for f in vl.fields()],
                 [
+                    QVariant.String,
                     QVariant.String,
                     QVariant.String,
                     QVariant.String,
@@ -7490,7 +7499,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
             self.assertEqual(
                 [f.name() for f in vl.fields()],
-                ["id", "selfLink", "name", "description", "definition", "properties"],
+                ["id", "selfLink", "name", "definition", "description", "properties"],
             )
             self.assertEqual(
                 [f.type() for f in vl.fields()],
@@ -7703,8 +7712,8 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     "id",
                     "selfLink",
                     "name",
-                    "description",
                     "definition",
+                    "description",
                     "properties",
                     "timeStart",
                     "timeEnd",
