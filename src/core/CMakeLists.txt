@@ -2364,6 +2364,10 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES
     SKIP_PRECOMPILE_HEADERS ON
   )
   set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
+  set_source_files_properties(textrenderer/qgsfontmanager.cpp PROPERTIES
+    COMPILE_FLAGS "-O0"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
 endif()
 
 # Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
