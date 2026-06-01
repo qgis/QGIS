@@ -17,6 +17,7 @@
 
 #include "qgsxyzsourcewidget.h"
 
+#include "qgshttpheaderwidget.h"
 #include "qgsproviderregistry.h"
 #include "qgswmssourceselect.h"
 
@@ -46,7 +47,6 @@ QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   connect( mAuthSettings, &QgsAuthSettingsWidget::configIdChanged, this, &QgsProviderSourceWidget::changed );
   connect( mAuthSettings, &QgsAuthSettingsWidget::usernameChanged, this, &QgsProviderSourceWidget::changed );
   connect( mAuthSettings, &QgsAuthSettingsWidget::passwordChanged, this, &QgsProviderSourceWidget::changed );
-  connect( mEditReferer, &QLineEdit::textChanged, this, &QgsProviderSourceWidget::changed );
   connect( mComboTileResolution, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProviderSourceWidget::changed );
 
   mInterpretationCombo = new QgsWmsInterpretationComboBox( this );
@@ -66,7 +66,9 @@ void QgsXyzSourceWidget::setSourceUri( const QString &uri )
   mSpinZMax->setValue( mCheckBoxZMax->isChecked() ? mSourceParts.value( u"zmax"_s ).toInt() : 18 );
   mAuthSettings->setUsername( mSourceParts.value( u"username"_s ).toString() );
   mAuthSettings->setPassword( mSourceParts.value( u"password"_s ).toString() );
-  mEditReferer->setText( mSourceParts.value( u"http-header:referer"_s ).toString() );
+  QgsHttpHeaders headers;
+  headers.setFromMap( mSourceParts );
+  mHttpHeaders->setHeaders( headers );
 
   int index = 0; // default is "unknown"
   if ( mSourceParts.value( u"tilePixelRatio"_s ).toInt() == 2. )
@@ -103,10 +105,16 @@ QString QgsXyzSourceWidget::sourceUri() const
   else
     parts.remove( u"password"_s );
 
-  if ( !mEditReferer->text().isEmpty() )
-    parts.insert( u"referer"_s, mEditReferer->text() );
-  else
-    parts.remove( u"referer"_s );
+  QStringList keysToRemove;
+  for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
+  {
+    if ( it.key().startsWith( QgsHttpHeaders::PARAM_PREFIX ) || it.key() == QgsHttpHeaders::KEY_REFERER )
+      keysToRemove.append( it.key() );
+  }
+  for ( const QString &key : keysToRemove )
+    parts.remove( key );
+
+  mHttpHeaders->httpHeaders().updateMap( parts );
 
   if ( mComboTileResolution->currentIndex() > 0 )
     parts.insert( u"tilePixelRatio"_s, mComboTileResolution->currentIndex() );
@@ -188,14 +196,14 @@ QString QgsXyzSourceWidget::authcfg() const
   return mAuthSettings->configId();
 }
 
-void QgsXyzSourceWidget::setReferer( const QString &referer )
+void QgsXyzSourceWidget::setHttpHeaders( const QgsHttpHeaders &headers )
 {
-  mEditReferer->setText( referer );
+  mHttpHeaders->setHeaders( headers );
 }
 
-QString QgsXyzSourceWidget::referer() const
+QgsHttpHeaders QgsXyzSourceWidget::httpHeaders() const
 {
-  return mEditReferer->text();
+  return mHttpHeaders->httpHeaders();
 }
 
 void QgsXyzSourceWidget::setTilePixelRatio( int ratio )

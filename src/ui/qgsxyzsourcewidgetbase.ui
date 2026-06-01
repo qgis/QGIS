@@ -88,15 +88,8 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lblReferer">
-     <property name="text">
-      <string>Referer</string>
-     </property>
-     <property name="buddy">
-      <cstring>mEditReferer</cstring>
-     </property>
-    </widget>
+   <item row="4" column="0" colspan="2">
+    <widget class="QgsHttpHeaderWidget" name="mHttpHeaders" native="true"/>
    </item>
    <item row="0" column="1">
     <widget class="QLineEdit" name="mEditUrl">
@@ -146,13 +139,6 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="mEditReferer">
-     <property name="toolTip">
-      <string>Optional custom referer</string>
-     </property>
-    </widget>
-   </item>
    <item row="6" column="1">
     <layout class="QHBoxLayout" name="mInterpretationLayout">
      <property name="spacing">
@@ -167,6 +153,19 @@
      </property>
     </widget>
    </item>
+   <item row="7" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -174,6 +173,12 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsHttpHeaderWidget</class>
+   <extends>QWidget</extends>
+   <header>qgshttpheaderwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsAuthSettingsWidget</class>
@@ -194,7 +199,7 @@
   <tabstop>mSpinZMin</tabstop>
   <tabstop>mCheckBoxZMax</tabstop>
   <tabstop>mSpinZMax</tabstop>
-  <tabstop>mEditReferer</tabstop>
+  <tabstop>mHttpHeaders</tabstop>
   <tabstop>mComboTileResolution</tabstop>
  </tabstops>
  <resources/>
