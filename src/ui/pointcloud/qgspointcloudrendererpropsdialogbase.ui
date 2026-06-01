@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>569</width>
-    <height>618</height>
+    <height>892</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -93,7 +93,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="lblPointStyle">
             <property name="text">
              <string>Style</string>
             </property>
@@ -116,7 +116,7 @@
            <widget class="QComboBox" name="mPointStyleComboBox"/>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="lblTransparency_4">
+           <widget class="QLabel" name="lblPointSize">
             <property name="text">
              <string>Point size</string>
             </property>
@@ -180,7 +180,7 @@
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="lblEdlDistance">
             <property name="text">
              <string>Distance</string>
             </property>
@@ -194,7 +194,7 @@
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="lblEdlStrength">
             <property name="text">
              <string>Strength</string>
             </property>
@@ -561,6 +561,20 @@ Select Earlier to switch at a smaller scale (zoomed out) or Later to switch at a
   <tabstop>mPointSizeSpinBox</tabstop>
   <tabstop>mPointSizeUnitWidget</tabstop>
   <tabstop>mPointStyleComboBox</tabstop>
+  <tabstop>mColorExpressionWidget</tabstop>
+  <tabstop>mEyeDomeLightingGroupBox</tabstop>
+  <tabstop>mEdlStrengthSpinBox</tabstop>
+  <tabstop>mEdlDistanceSpinBox</tabstop>
+  <tabstop>mHillshadeGroupBox</tabstop>
+  <tabstop>mHillshadingZFactorSpinBox</tabstop>
+  <tabstop>mHillshadingMultidirCheckBox</tabstop>
+  <tabstop>mTriangulateGroupBox</tabstop>
+  <tabstop>mHorizontalTriangleCheckBox</tabstop>
+  <tabstop>mHorizontalTriangleThresholdSpinBox</tabstop>
+  <tabstop>mZoomOutOptions</tabstop>
+  <tabstop>mLabels</tabstop>
+  <tabstop>mLabelOptions</tabstop>
+  <tabstop>mOverviewSwitchingScale</tabstop>
   <tabstop>mDrawOrderComboBox</tabstop>
   <tabstop>mMaxErrorSpinBox</tabstop>
   <tabstop>mMaxErrorUnitWidget</tabstop>
