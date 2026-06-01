@@ -1338,6 +1338,11 @@ class ProviderTestCase(FeatureSourceTestCase):
             l.dataProvider().capabilities()
             & QgsVectorDataProvider.Capability.DeleteFeatures
         ):
+            # try to delete a feature which does not exist
+            # should return false
+            non_existent_id = 2 * features[-1].id() + 99999
+            self.assertFalse(l.dataProvider().deleteFeatures([non_existent_id]))
+
             # expect success
             result = l.dataProvider().deleteFeatures(to_delete)
             self.assertTrue(
