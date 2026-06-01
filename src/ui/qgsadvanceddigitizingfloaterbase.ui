@@ -117,11 +117,17 @@
    </item>
    <item row="11" column="3">
     <widget class="QLineEdit" name="mTotalLengthLineEdit">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::NoFocus</enum>
+     </property>
      <property name="text">
       <string>-</string>
      </property>
      <property name="frame">
       <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -196,11 +202,17 @@
    </item>
    <item row="10" column="3">
     <widget class="QLineEdit" name="mTotalAreaLineEdit">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::NoFocus</enum>
+     </property>
      <property name="text">
       <string>-</string>
      </property>
      <property name="frame">
       <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -245,8 +257,14 @@
    </item>
    <item row="8" column="3">
     <widget class="QLineEdit" name="mBearingLineEdit">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::NoFocus</enum>
+     </property>
      <property name="frame">
       <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -301,11 +319,17 @@
    </item>
    <item row="9" column="3">
     <widget class="QLineEdit" name="mCommonAngleSnappingLineEdit">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::NoFocus</enum>
+     </property>
      <property name="text">
       <string>-</string>
      </property>
      <property name="frame">
       <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
