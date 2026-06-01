@@ -786,7 +786,14 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
 
                   case Qgis::SensorThingsEntity::Sampler:
                   {
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << properties << getString( entityData, "samplerType" );
+                    attributes
+                      << iotId
+                      << selfLink
+                      << getString( entityData, "name" )
+                      << getString( entityData, "definition" )
+                      << getString( entityData, "description" )
+                      << properties
+                      << getString( entityData, "samplerType" );
                     break;
                   }
 
@@ -797,8 +804,8 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                       << iotId
                       << selfLink
                       << getString( entityData, "name" )
-                      << getString( entityData, "description" )
                       << getString( entityData, "definition" )
+                      << getString( entityData, "description" )
                       << properties
                       << time.first
                       << time.second;
@@ -807,7 +814,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
 
                   case Qgis::SensorThingsEntity::PreparationProcedure:
                   {
-                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "description" ) << getString( entityData, "definition" ) << properties;
+                    attributes << iotId << selfLink << getString( entityData, "name" ) << getString( entityData, "definition" ) << getString( entityData, "description" ) << properties;
                     break;
                   }
 
