@@ -1085,6 +1085,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
+    using QgsSymbolLayer::dxfSize;
     double dxfSize( QgsSymbolRenderContext &context ) const override;
     double dxfAngle( QgsSymbolRenderContext &context ) const override;
 
@@ -1215,6 +1216,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
+    using QgsSymbolLayer::dxfWidth;
     double dxfWidth( QgsSymbolRenderContext &context ) const override;
 
     /**
