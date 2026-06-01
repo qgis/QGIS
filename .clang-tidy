@@ -8,7 +8,6 @@ CheckOptions:
   readability-identifier-naming.EnumCase: CamelCase
   readability-identifier-naming.EnumConstantCase: CamelCase
   readability-identifier-naming.ClassCase: CamelCase
-  readability-identifier-naming.ClassPrefix: Qgs
 
   # Not applicable for public member, comment it for now
   # readability-identifier-naming.MemberPrefix: m
