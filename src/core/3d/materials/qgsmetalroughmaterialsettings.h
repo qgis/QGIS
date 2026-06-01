@@ -89,7 +89,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      *
      * Anisotropic materials are those with properties are which vary in different directions.
      *
-     * \see anisotropyDirection()
+     * \see anisotropyRotation()
      * \see setAnisotropy()
      * \since QGIS 4.2
      */
