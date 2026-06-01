@@ -168,6 +168,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
+    using QgsFillSymbolLayer::dxfWidth;
     double dxfWidth( QgsSymbolRenderContext &context ) const override;
     QColor dxfColor( QgsSymbolRenderContext &context ) const override;
     double dxfAngle( QgsSymbolRenderContext &context ) const override;
@@ -828,6 +829,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer : public QgsFillSymbolLayer SIP_ABSTRA
     Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
+    using QgsFillSymbolLayer::dxfWidth;
     double dxfWidth( QgsSymbolRenderContext &context ) const override;
     Qt::PenStyle dxfPenStyle() const override;
     QVariantMap properties() const override;
