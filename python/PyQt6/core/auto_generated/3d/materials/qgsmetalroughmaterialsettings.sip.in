@@ -89,7 +89,7 @@ Returns the material's anisotropy, as a value between 0 and 1.
 Anisotropic materials are those with properties are which vary in
 different directions.
 
-.. seealso:: :py:func:`anisotropyDirection`
+.. seealso:: :py:func:`anisotropyRotation`
 
 .. seealso:: :py:func:`setAnisotropy`
 
