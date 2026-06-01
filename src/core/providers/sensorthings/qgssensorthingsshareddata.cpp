@@ -422,9 +422,9 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
   const QgsFields fields = mFields;
   const QList< QgsSensorThingsExpansionDefinition > expansions = mExpansions;
 
-  const std::string iotIdKey = mVersion >= 2 ? "id" : "@iot.id";
-  const std::string iotSelfLinkKey = mVersion >= 2 ? "@id" : "@iot.selfLink";
-  const std::string iotNextLinkKey = mVersion >= 2 ? "@nextLink" : "@iot.nextLink";
+  const std::string idKey = mVersion >= 2 ? "id" : "@iot.id";
+  const std::string selfLinkKey = mVersion >= 2 ? "@id" : "@iot.selfLink";
+  const std::string nextLinkKey = mVersion >= 2 ? "@nextLink" : "@iot.nextLink";
 
   while ( continueFetchingCallback() )
   {
@@ -615,7 +615,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                 return { QVariant(), QVariant() };
               };
 
-              const QString iotId = getString( featureData, iotIdKey.data() ).toString();
+              const QString iotId = getString( featureData, idKey.data() ).toString();
               if ( expansions.isEmpty() )
               {
                 auto existingFeatureIdIt = mIotIdToFeatureId.constFind( iotId );
@@ -648,10 +648,10 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                                        &getDateTime,
                                        &getStringList,
                                        &getVariantList,
-                                       &iotIdKey,
-                                       &iotSelfLinkKey]( Qgis::SensorThingsEntity entityType, const auto &entityData, QgsAttributes &attributes ) {
-                const QString iotId = getString( entityData, iotIdKey.data() ).toString();
-                const QString selfLink = getString( entityData, iotSelfLinkKey.data() ).toString();
+                                       &idKey,
+                                       &selfLinkKey]( Qgis::SensorThingsEntity entityType, const auto &entityData, QgsAttributes &attributes ) {
+                const QString iotId = getString( entityData, idKey.data() ).toString();
+                const QString selfLink = getString( entityData, selfLinkKey.data() ).toString();
 
                 const QVariant properties = getVariantMap( entityData, "properties" );
 
@@ -859,7 +859,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                 fetchedFeatureCallback( feature );
               };
 
-              const QString baseFeatureId = getString( featureData, iotIdKey.data() ).toString();
+              const QString baseFeatureId = getString( featureData, idKey.data() ).toString();
               if ( !expansions.empty() )
               {
                 mRetrievedBaseFeatureCount++;
@@ -872,7 +872,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                    &traverseExpansion,
                    &fetchedFeatureCallback,
                    &extendAttributes,
-                   &iotIdKey,
+                   &idKey,
                    &processFeature]( const nlohmann::json &currentLevelData, Qgis::SensorThingsEntity parentEntityType, const QList<QgsSensorThingsExpansionDefinition > &expansionTargets, const QString &lowerLevelId, const QgsAttributes &lowerLevelAttributes ) {
                     const QgsSensorThingsExpansionDefinition currentExpansionTarget = expansionTargets.at( 0 );
                     const QList< QgsSensorThingsExpansionDefinition > remainingExpansionTargets = expansionTargets.mid( 1 );
@@ -905,10 +905,10 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
                                                   &extendAttributes,
                                                   &traverseExpansion,
                                                   &currentExpansionTarget,
-                                                  &iotIdKey,
+                                                  &idKey,
                                                   this]( const json &expandedEntityElement ) {
                         QgsAttributes expandedAttributes = lowerLevelAttributes;
-                        const QString expandedEntityIotId = getString( expandedEntityElement, iotIdKey.data() ).toString();
+                        const QString expandedEntityIotId = getString( expandedEntityElement, idKey.data() ).toString();
                         const QString expandedFeatureId = lowerLevelId + '_' + expandedEntityIotId;
 
                         if ( remainingExpansionTargets.empty() )
@@ -975,9 +975,9 @@ bool QgsSensorThingsSharedData::processFeatureRequest(
           }
           locker.unlock();
 
-          if ( rootContent.contains( iotNextLinkKey.data() ) && ( mFeatureLimit == 0 || mFeatureLimit > mCachedFeatures.size() ) )
+          if ( rootContent.contains( nextLinkKey.data() ) && ( mFeatureLimit == 0 || mFeatureLimit > mCachedFeatures.size() ) )
           {
-            nextPage = QString::fromStdString( rootContent[iotNextLinkKey.data()].get<std::string>() );
+            nextPage = QString::fromStdString( rootContent[nextLinkKey.data()].get<std::string>() );
           }
           else
           {
