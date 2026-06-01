@@ -303,6 +303,7 @@ static std::unique_ptr<QgsMaterial> parseMaterial( tinygltf::Model &model, int m
   {
     // material unspecified - using default
     auto defaultMaterial = std::make_unique<QgsMetalRoughMaterial>();
+    defaultMaterial->setEnvironmentalLightingEnabled( true );
     defaultMaterial->setMetalness( 1 );
     defaultMaterial->setRoughness( 1 );
     defaultMaterial->setBaseColor( QColor::fromRgbF( 1, 1, 1 ) );
@@ -320,6 +321,7 @@ static std::unique_ptr<QgsMaterial> parseMaterial( tinygltf::Model &model, int m
     if ( tex.source < 0 )
     {
       auto pbrMaterial = std::make_unique<QgsMetalRoughMaterial>();
+      pbrMaterial->setEnvironmentalLightingEnabled( true );
       pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
       pbrMaterial->setRoughness( pbr.roughnessFactor );
       pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
@@ -346,6 +348,7 @@ static std::unique_ptr<QgsMaterial> parseMaterial( tinygltf::Model &model, int m
     if ( img.image.empty() )
     {
       auto pbrMaterial = std::make_unique<QgsMetalRoughMaterial>();
+      pbrMaterial->setEnvironmentalLightingEnabled( true );
       pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
       pbrMaterial->setRoughness( pbr.roughnessFactor );
       pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
@@ -386,6 +389,7 @@ static std::unique_ptr<QgsMaterial> parseMaterial( tinygltf::Model &model, int m
     return nullptr; // completely transparent primitive, just skip it
 
   auto pbrMaterial = std::make_unique<QgsMetalRoughMaterial>();
+  pbrMaterial->setEnvironmentalLightingEnabled( true );
   pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
   pbrMaterial->setRoughness( pbr.roughnessFactor );
   pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );

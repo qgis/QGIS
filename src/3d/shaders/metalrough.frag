@@ -4,7 +4,7 @@
 #version 330
 
 // defines are added here as a pre-processing step
-#ifndef DISABLE_IBL
+#ifdef ENABLE_IBL
 uniform samplerCube globalSpecularMap;
 uniform int globalSpecularMipLevels;
 uniform vec3 envLightSh[9];
@@ -332,7 +332,7 @@ vec3 pbrModel(const in int lightIndex,
     return color;
 }
 
-#ifndef DISABLE_IBL
+#ifdef ENABLE_IBL
 float roughnessToMipLevel(float roughness)
 {
   // as per https://google.github.io/filament/Filament.md.html, section 5.3.11.11
@@ -352,7 +352,7 @@ vec2 environmentBrdfApproximation(const in float roughness, const in float viewD
     vec2 ab = vec2(-1.04, 1.04) * a004 + r.zw;
     return ab;
 }
-#ifndef DISABLE_IBL
+#ifdef ENABLE_IBL
 vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
@@ -433,7 +433,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
 
     // Remap roughness for a perceptually more linear correspondence
     float alpha = remapRoughness(roughness);
-#ifndef DISABLE_IBL
+#ifdef ENABLE_IBL
     if ( envLightMode == 1 && envLightStrength > 0 )
     {
         cLinear += pbrIblModelSphericalHarmonics(worldNormal,
