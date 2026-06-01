@@ -1692,7 +1692,7 @@ void TestQgsDxfExport::testDataDefinedLayerEnabled()
   auto *marker = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Square, 5.0 );
   marker->setSizeUnit( Qgis::RenderUnit::Millimeters );
   QgsPropertyCollection ddProps;
-  ddProps.setProperty( QgsSymbolLayer::Property::LayerEnabled, QgsProperty::fromExpression( u"\"keep\" = 1"_s ) );
+  ddProps.setProperty( QgsSymbolLayer::Property::LayerEnabled, QgsProperty::fromExpression( QStringLiteral( "\"keep\" = 1"" ) ) );
   marker->setDataDefinedProperties( ddProps );
 
   QgsSymbolLayerList sll;
