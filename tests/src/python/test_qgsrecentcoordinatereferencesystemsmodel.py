@@ -285,6 +285,77 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
             QgsCoordinateReferenceSystem("ESRI:115851"),
         )
 
+        registry.pushRecent(QgsCoordinateReferenceSystem("EPSG:4978"))
+        registry.pushRecent(QgsCoordinateReferenceSystem("EPSG:4979"))
+
+        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterGeocentric)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
+        self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
+        self.assertEqual(
+            model.crs(model.index(0, 0, QModelIndex())),
+            QgsCoordinateReferenceSystem("EPSG:4978"),
+        )
+        self.assertIsNone(
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
+        )
+
+        model.setFilters(
+            QgsCoordinateReferenceSystemProxyModel.Filter.FilterGeographic3d
+        )
+        self.assertEqual(model.rowCount(), 1)
+        self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
+        self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
+        self.assertEqual(
+            model.crs(model.index(0, 0, QModelIndex())),
+            QgsCoordinateReferenceSystem("EPSG:4979"),
+        )
+        self.assertIsNone(
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
+        )
+
+        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterHorizontal)
+        self.assertEqual(model.rowCount(), 3)
+        self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
+        self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
+        self.assertTrue(model.index(2, 0, QModelIndex()).isValid())
+        self.assertFalse(model.index(3, 0, QModelIndex()).isValid())
+        self.assertEqual(
+            model.crs(model.index(0, 0, QModelIndex())),
+            QgsCoordinateReferenceSystem("EPSG:4979"),
+        )
+        self.assertEqual(
+            model.crs(model.index(1, 0, QModelIndex())),
+            QgsCoordinateReferenceSystem("EPSG:4978"),
+        )
+        self.assertEqual(
+            model.crs(model.index(2, 0, QModelIndex())),
+            QgsCoordinateReferenceSystem("EPSG:3111"),
+        )
+        self.assertIsNone(
+            model.data(model.index(3, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
+        )
+
+        model.setFilters(
+            QgsCoordinateReferenceSystemProxyModel.Filter.FilterGeocentric
+            | QgsCoordinateReferenceSystemProxyModel.Filter.FilterGeographic3d
+        )
+        self.assertEqual(model.rowCount(), 2)
+        self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
+        self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
+        self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
+        self.assertEqual(
+            model.crs(model.index(0, 0, QModelIndex())),
+            QgsCoordinateReferenceSystem("EPSG:4979"),
+        )
+        self.assertEqual(
+            model.crs(model.index(1, 0, QModelIndex())),
+            QgsCoordinateReferenceSystem("EPSG:4978"),
+        )
+        self.assertIsNone(
+            model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

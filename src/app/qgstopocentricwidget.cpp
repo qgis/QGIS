@@ -38,10 +38,10 @@ QgsTopocentricWidget::QgsTopocentricWidget( QWidget *parent )
   titleLabel->setAlignment( Qt::AlignCenter );
 
   QGridLayout *grid = new QGridLayout();
-  grid->addWidget( new QLabel( tr( "Latitude:" ) ), 0, 0 );
+  grid->addWidget( new QLabel( tr( "Latitude" ) ), 0, 0 );
   grid->addWidget( mHorizontalSliderX, 0, 1 );
   grid->addWidget( mDoubleSpinBoxX, 0, 2 );
-  grid->addWidget( new QLabel( tr( "Longitude:" ) ), 1, 0 );
+  grid->addWidget( new QLabel( tr( "Longitude" ) ), 1, 0 );
   grid->addWidget( mHorizontalSliderY, 1, 1 );
   grid->addWidget( mDoubleSpinBoxY, 1, 2 );
   grid->setColumnStretch( 1, 1 );

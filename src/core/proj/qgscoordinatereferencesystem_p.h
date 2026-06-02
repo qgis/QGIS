@@ -53,6 +53,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mAuthId( other.mAuthId )
       , mIsValid( other.mIsValid )
       , mCoordinateEpoch( other.mCoordinateEpoch )
+      , mTopocentricBaseCrs( other.mTopocentricBaseCrs )
       , mPj()
       , mPjParentContext( nullptr )
       , mProj4( other.mProj4 )
@@ -104,6 +105,9 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     //! Coordinate epoch
     double mCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
+
+    //! Base CRS for topocentric CRS (null if not set or not a topocentric CRS)
+    std::shared_ptr<QgsCoordinateReferenceSystem> mTopocentricBaseCrs;
 
     // this is the "master" proj object, to be used as a template for new proj objects created on different threads ONLY.
     // Always use threadLocalProjObject() instead of this.

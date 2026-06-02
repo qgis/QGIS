@@ -1040,10 +1040,6 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
     const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
 
-    double topoLat = 0.0, topoLon = 0.0;
-    if ( !crs.topocentricOrigin( topoLat, topoLon ) )
-      mTopocentricBaseCrs = QgsCoordinateReferenceSystem();
-
     mCrs = crs;
     writeEntry( u"SpatialRefSys"_s, u"/ProjectionsEnabled"_s, crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
@@ -1121,18 +1117,6 @@ QgsCoordinateReferenceSystem QgsProject::verticalCrs() const
       break;
   }
   return mVerticalCrs;
-}
-
-QgsCoordinateReferenceSystem QgsProject::topocentricBaseCrs() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
-  return mTopocentricBaseCrs;
-}
-
-void QgsProject::setTopocentricBaseCrs( const QgsCoordinateReferenceSystem &crs )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  mTopocentricBaseCrs = crs;
 }
 
 bool QgsProject::setVerticalCrs( const QgsCoordinateReferenceSystem &crs, QString *errorMessage )
@@ -1294,7 +1278,6 @@ void QgsProject::clear()
   mCrs = QgsCoordinateReferenceSystem();
   mVerticalCrs = QgsCoordinateReferenceSystem();
   mCrs3D = QgsCoordinateReferenceSystem();
-  mTopocentricBaseCrs = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
   mElevationShadingRenderer = QgsElevationShadingRenderer();
   if ( !settingsAnonymizeNewProjects->value() )
@@ -2364,16 +2347,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     }
     mVerticalCrs = verticalCrs;
   }
-  // topocentric base crs
-  {
-    QgsCoordinateReferenceSystem topocentricBaseCrs;
-    const QDomNode topocentricBaseCrsNode = doc->documentElement().namedItem( u"topocentricBaseCrs"_s );
-    if ( !topocentricBaseCrsNode.isNull() )
-    {
-      topocentricBaseCrs.readXml( topocentricBaseCrsNode );
-    }
-    mTopocentricBaseCrs = topocentricBaseCrs;
-  }
   rebuildCrs3D();
 
   QStringList datumErrors;
@@ -3436,13 +3409,6 @@ bool QgsProject::writeProjectFile( const QString &filename )
     mVerticalCrs.writeXml( verticalSrsNode, *doc );
     qgisNode.appendChild( verticalSrsNode );
   }
-  if ( mTopocentricBaseCrs.isValid() )
-  {
-    QDomElement topocentricBaseCrsNode = doc->createElement( u"topocentricBaseCrs"_s );
-    mTopocentricBaseCrs.writeXml( topocentricBaseCrsNode, *doc );
-    qgisNode.appendChild( topocentricBaseCrsNode );
-  }
-
   QDomElement elevationShadingNode = doc->createElement( u"elevation-shading-renderer"_s );
   mElevationShadingRenderer.writeXml( elevationShadingNode, context );
   qgisNode.appendChild( elevationShadingNode );

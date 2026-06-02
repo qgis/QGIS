@@ -342,8 +342,8 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel : public QSortFilterProx
       FilterHorizontal = 1 << 1,   //!< Include horizontal CRS (excludes compound CRS containing a horizontal component)
       FilterVertical = 1 << 2,     //!< Include vertical CRS (excludes compound CRS containing a vertical component)
       FilterCompound = 1 << 3,     //!< Include compound CRS
-      FilterGeocentric = 1 << 4,   //!< Include geocentric CRS
-      FilterGeographic3d = 1 << 5, //!< Include 3D geographic CRS
+      FilterGeocentric = 1 << 4,   //!< Include geocentric CRS \since QGIS 4.2
+      FilterGeographic3d = 1 << 5, //!< Include 3D geographic CRS \since QGIS 4.2
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )

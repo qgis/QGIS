@@ -1337,6 +1337,14 @@ If the CRS is not topocentric compatible, returns invalid CRS.
 .. versionadded:: 4.2
 %End
 
+    QgsCoordinateReferenceSystem topocentricBaseCrs() const;
+%Docstring
+Returns the base CRS for this topocentric CRS, or an invalid CRS if this
+is not a topocentric CRS or no base CRS has been set.
+
+.. versionadded:: 4.2
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ),

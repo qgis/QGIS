@@ -2245,6 +2245,13 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     }
 
     mNativeFormat = qgsEnumKeyToValue<Qgis::CrsDefinitionFormat>( srsNode.toElement().attribute( u"nativeFormat"_s ), Qgis::CrsDefinitionFormat::Wkt );
+
+    const QDomNode topoBaseCrsNode = srsNode.namedItem( u"topocentricBaseCrs"_s );
+    if ( !topoBaseCrsNode.isNull() )
+    {
+      d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem() );
+      d->mTopocentricBaseCrs->readXml( topoBaseCrsNode );
+    }
   }
   else
   {
@@ -2308,6 +2315,13 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc )
 
   geographicFlagElement.appendChild( doc.createTextNode( geoFlagText ) );
   srsElement.appendChild( geographicFlagElement );
+
+  if ( d->mTopocentricBaseCrs && d->mTopocentricBaseCrs->isValid() )
+  {
+    QDomElement topoBaseCrsElement = doc.createElement( u"topocentricBaseCrs"_s );
+    d->mTopocentricBaseCrs->writeXml( topoBaseCrsElement, doc );
+    srsElement.appendChild( topoBaseCrsElement );
+  }
 
   layerNode.appendChild( srsElement );
 
@@ -3352,7 +3366,14 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( dou
   if ( !topocentric )
     return QgsCoordinateReferenceSystem();
 
-  return QgsCoordinateReferenceSystem::fromProjObject( topocentric.get() );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProjObject( topocentric.get() );
+  crs.d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem( *this ) );
+  return crs;
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::topocentricBaseCrs() const
+{
+  return d->mTopocentricBaseCrs ? *d->mTopocentricBaseCrs : QgsCoordinateReferenceSystem();
 }
 
 PJ *QgsCoordinateReferenceSystem::projObject() const

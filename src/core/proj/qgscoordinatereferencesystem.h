@@ -1134,6 +1134,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QgsCoordinateReferenceSystem toTopocentricCrs( double latitude, double longitude ) const;
 
+    /**
+     * Returns the base CRS for this topocentric CRS, or an invalid CRS if this
+     * is not a topocentric CRS or no base CRS has been set.
+     *
+     * \since QGIS 4.2
+     */
+    QgsCoordinateReferenceSystem topocentricBaseCrs() const;
+
 #ifdef SIP_RUN
     // clang-format off
     SIP_PYOBJECT __repr__();

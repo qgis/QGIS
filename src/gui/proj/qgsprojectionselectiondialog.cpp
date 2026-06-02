@@ -21,7 +21,6 @@
 #include "qgscoordinatereferencesystemmodel.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsproject.h"
 #include "qgsprojectionselectionwidget.h"
 #include "qgssettings.h"
 
@@ -113,10 +112,9 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
     }
   } );
 
-  connect( mTopocentricBaseSelector, &QgsProjectionSelectionWidget::crsChanged, this, [this]( const QgsCoordinateReferenceSystem &newBase ) {
+  connect( mTopocentricBaseSelector, &QgsProjectionSelectionWidget::crsChanged, this, [this]( const QgsCoordinateReferenceSystem & ) {
     if ( !mBlockSignals )
     {
-      QgsProject::instance()->setTopocentricBaseCrs( newBase );
       emit crsChanged();
       emit hasValidSelectionChanged( hasValidSelection() );
     }
@@ -287,7 +285,7 @@ void QgsCrsSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
     {
       mSpinBoxTopoLat->setValue( topoLat );
       mSpinBoxTopoLon->setValue( topoLon );
-      mTopocentricBaseSelector->setCrs( QgsProject::instance()->topocentricBaseCrs() );
+      mTopocentricBaseSelector->setCrs( crs.topocentricBaseCrs() );
       mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Topocentric ) ) );
       mStackedWidget->setCurrentWidget( mPageTopocentric );
     }
