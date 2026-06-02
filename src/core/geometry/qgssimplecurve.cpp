@@ -270,3 +270,62 @@ QgsSimpleCurve *QgsSimpleCurve::reversed() const
   copy->mSummedUpArea = -mSummedUpArea;
   return copy;
 }
+
+void QgsSimpleCurve::splitCurveAtVertexProtected(
+  int index, QVector< double > &x1, QVector< double > &y1, QVector< double > &z1, QVector< double > &m1, QVector< double > &x2, QVector< double > &y2, QVector< double > &z2, QVector< double > &m2
+) const
+{
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+
+  const int size = mX.size();
+  if ( size == 0 )
+    return;
+
+  index = std::clamp( index, 0, size - 1 );
+
+  const int part1Size = index + 1;
+  x1.resize( part1Size );
+  y1.resize( part1Size );
+  z1.resize( useZ ? part1Size : 0 );
+  m1.resize( useM ? part1Size : 0 );
+
+  const double *sourceX = mX.constData();
+  const double *sourceY = mY.constData();
+  const double *sourceZ = useZ ? mZ.constData() : nullptr;
+  const double *sourceM = useM ? mM.constData() : nullptr;
+
+  double *destX = x1.data();
+  double *destY = y1.data();
+  double *destZ = useZ ? z1.data() : nullptr;
+  double *destM = useM ? m1.data() : nullptr;
+
+  std::copy( sourceX, sourceX + part1Size, destX );
+  std::copy( sourceY, sourceY + part1Size, destY );
+  if ( useZ )
+    std::copy( sourceZ, sourceZ + part1Size, destZ );
+  if ( useM )
+    std::copy( sourceM, sourceM + part1Size, destM );
+
+  const int part2Size = size - index;
+  x2.resize( part2Size );
+  y2.resize( part2Size );
+  z2.resize( useZ ? part2Size : 0 );
+  m2.resize( useM ? part2Size : 0 );
+
+  if ( part2Size < 2 )
+    return;
+
+  destX = x2.data();
+  destY = y2.data();
+  destZ = useZ ? z2.data() : nullptr;
+  destM = useM ? m2.data() : nullptr;
+  std::copy( sourceX + index, sourceX + size, destX );
+  std::copy( sourceY + index, sourceY + size, destY );
+  if ( useZ )
+    std::copy( sourceZ + index, sourceZ + size, destZ );
+  if ( useM )
+    std::copy( sourceM + index, sourceM + size, destM );
+
+  return;
+}
