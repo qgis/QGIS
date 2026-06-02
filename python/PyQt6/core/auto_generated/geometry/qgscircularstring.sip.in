@@ -137,10 +137,6 @@ circular string.
 
     virtual double length() const;
 
-    virtual QgsPoint startPoint() const /HoldGIL/;
-
-    virtual QgsPoint endPoint() const /HoldGIL/;
-
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     virtual QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
@@ -162,8 +158,6 @@ circular string.
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
 
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
-
     virtual bool deleteVertex( QgsVertexId position );
 
     virtual bool deleteVertices( const QSet<QgsVertexId> &positions );
@@ -184,7 +178,7 @@ circular string.
 
     virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
 
-    virtual QgsCircularString *reversed() const  /Factory/;
+    virtual QgsCircularString *reversed() const /Factory/;
 
     virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
 

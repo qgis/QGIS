@@ -19,6 +19,7 @@
 #define QGSSIMPLECURVE_H
 
 #include "qgscurve.h"
+#include "qgsvertexid.h"
 
 /**
  * \ingroup core
@@ -142,7 +143,8 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     QVector< double > mVector() const SIP_SKIP { return mM; }
 
     // Overrides
-    int numPoints() const override SIP_HOLDGIL;
+    int numPoints() const override
+    SIP_HOLDGIL;
     int nCoordinates() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;
 
@@ -150,6 +152,16 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     bool addZValue( double zValue = 0 ) override;
     bool dropMValue() override;
     bool dropZValue() override;
+
+    QgsPoint startPoint() const override SIP_HOLDGIL;
+    QgsPoint endPoint() const override SIP_HOLDGIL;
+
+#ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
+    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+#endif
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    QgsSimpleCurve *reversed() const override SIP_FACTORY;
 
 protected:
   QVector<double> mX;

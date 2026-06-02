@@ -139,3 +139,134 @@ int QgsSimpleCurve::dimension() const
 {
   return 1;
 }
+
+QgsPoint QgsSimpleCurve::startPoint() const
+{
+  if ( numPoints() < 1 )
+  {
+    return QgsPoint();
+  }
+  return pointN( 0 );
+}
+
+QgsPoint QgsSimpleCurve::endPoint() const
+{
+  if ( numPoints() < 1 )
+  {
+    return QgsPoint();
+  }
+  return pointN( numPoints() - 1 );
+}
+
+void QgsSimpleCurve::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
+{
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  int size = mX.size();
+
+  double *srcX = mX.data();
+  double *srcY = mY.data();
+  double *srcM = hasM ? mM.data() : nullptr;
+  double *srcZ = hasZ ? mZ.data() : nullptr;
+
+  double *destX = srcX;
+  double *destY = srcY;
+  double *destM = srcM;
+  double *destZ = srcZ;
+
+  int filteredPoints = 0;
+  for ( int i = 0; i < size; ++i )
+  {
+    double x = *srcX++;
+    double y = *srcY++;
+    double z = hasZ ? *srcZ++ : std::numeric_limits<double>::quiet_NaN();
+    double m = hasM ? *srcM++ : std::numeric_limits<double>::quiet_NaN();
+
+    if ( filter( QgsPoint( x, y, z, m ) ) )
+    {
+      filteredPoints++;
+      *destX++ = x;
+      *destY++ = y;
+      if ( hasM )
+        *destM++ = m;
+      if ( hasZ )
+        *destZ++ = z;
+    }
+  }
+
+  mX.resize( filteredPoints );
+  mY.resize( filteredPoints );
+  if ( hasZ )
+    mZ.resize( filteredPoints );
+  if ( hasM )
+    mM.resize( filteredPoints );
+
+  clearCache();
+}
+
+void QgsSimpleCurve::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
+{
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  int size = mX.size();
+
+  double *srcX = mX.data();
+  double *srcY = mY.data();
+  double *srcM = hasM ? mM.data() : nullptr;
+  double *srcZ = hasZ ? mZ.data() : nullptr;
+
+  for ( int i = 0; i < size; ++i )
+  {
+    double x = *srcX;
+    double y = *srcY;
+    double z = hasZ ? *srcZ : std::numeric_limits<double>::quiet_NaN();
+    double m = hasM ? *srcM : std::numeric_limits<double>::quiet_NaN();
+    QgsPoint res = transform( QgsPoint( x, y, z, m ) );
+    *srcX++ = res.x();
+    *srcY++ = res.y();
+    if ( hasM )
+      *srcM++ = res.m();
+    if ( hasZ )
+      *srcZ++ = res.z();
+  }
+  clearCache();
+}
+
+bool QgsSimpleCurve::moveVertex( QgsVertexId position, const QgsPoint &newPos )
+{
+  if ( position.vertex < 0 || position.vertex >= mX.size() )
+  {
+    return false;
+  }
+
+  mX[position.vertex] = newPos.x();
+  mY[position.vertex] = newPos.y();
+  if ( is3D() && newPos.is3D() )
+  {
+    mZ[position.vertex] = newPos.z();
+  }
+  if ( isMeasure() && newPos.isMeasure() )
+  {
+    mM[position.vertex] = newPos.m();
+  }
+  clearCache(); //set bounding box invalid
+  return true;
+}
+
+QgsSimpleCurve *QgsSimpleCurve::reversed() const
+{
+  QgsSimpleCurve *copy = qgis::down_cast<QgsSimpleCurve *>( clone() );
+  std::reverse( copy->mX.begin(), copy->mX.end() );
+  std::reverse( copy->mY.begin(), copy->mY.end() );
+  if ( is3D() )
+  {
+    std::reverse( copy->mZ.begin(), copy->mZ.end() );
+  }
+  if ( isMeasure() )
+  {
+    std::reverse( copy->mM.begin(), copy->mM.end() );
+  }
+
+  copy->mSummedUpArea = -mSummedUpArea;
+  return copy;
+}

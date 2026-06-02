@@ -592,24 +592,6 @@ double QgsCircularString::length() const
   return length;
 }
 
-QgsPoint QgsCircularString::startPoint() const
-{
-  if ( numPoints() < 1 )
-  {
-    return QgsPoint();
-  }
-  return pointN( 0 );
-}
-
-QgsPoint QgsCircularString::endPoint() const
-{
-  if ( numPoints() < 1 )
-  {
-    return QgsPoint();
-  }
-  return pointN( numPoints() - 1 );
-}
-
 QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsLineString *line = new QgsLineString();
@@ -806,80 +788,6 @@ bool QgsCircularString::transform( QgsAbstractGeometryTransformer *transformer, 
   }
   clearCache();
   return res;
-}
-
-void QgsCircularString::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
-{
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-  int size = mX.size();
-
-  double *srcX = mX.data();                  // clazy:exclude=detaching-member
-  double *srcY = mY.data();                  // clazy:exclude=detaching-member
-  double *srcM = hasM ? mM.data() : nullptr; // clazy:exclude=detaching-member
-  double *srcZ = hasZ ? mZ.data() : nullptr; // clazy:exclude=detaching-member
-
-  double *destX = srcX;
-  double *destY = srcY;
-  double *destM = srcM;
-  double *destZ = srcZ;
-
-  int filteredPoints = 0;
-  for ( int i = 0; i < size; ++i )
-  {
-    double x = *srcX++;
-    double y = *srcY++;
-    double z = hasZ ? *srcZ++ : std::numeric_limits<double>::quiet_NaN();
-    double m = hasM ? *srcM++ : std::numeric_limits<double>::quiet_NaN();
-
-    if ( filter( QgsPoint( x, y, z, m ) ) )
-    {
-      filteredPoints++;
-      *destX++ = x;
-      *destY++ = y;
-      if ( hasM )
-        *destM++ = m;
-      if ( hasZ )
-        *destZ++ = z;
-    }
-  }
-
-  mX.resize( filteredPoints );
-  mY.resize( filteredPoints );
-  if ( hasZ )
-    mZ.resize( filteredPoints );
-  if ( hasM )
-    mM.resize( filteredPoints );
-
-  clearCache();
-}
-
-void QgsCircularString::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
-{
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-  int size = mX.size();
-
-  double *srcX = mX.data();
-  double *srcY = mY.data();
-  double *srcM = hasM ? mM.data() : nullptr;
-  double *srcZ = hasZ ? mZ.data() : nullptr;
-
-  for ( int i = 0; i < size; ++i )
-  {
-    double x = *srcX;
-    double y = *srcY;
-    double z = hasZ ? *srcZ : std::numeric_limits<double>::quiet_NaN();
-    double m = hasM ? *srcM : std::numeric_limits<double>::quiet_NaN();
-    QgsPoint res = transform( QgsPoint( x, y, z, m ) );
-    *srcX++ = res.x();
-    *srcY++ = res.y();
-    if ( hasM )
-      *srcM++ = res.m();
-    if ( hasZ )
-      *srcZ++ = res.z();
-  }
-  clearCache();
 }
 
 std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCircularString::splitCurveAtVertex( int index ) const
@@ -1195,27 +1103,6 @@ bool QgsCircularString::insertVertex( QgsVertexId position, const QgsPoint &vert
   else
   {
     insertVertexBetween( position.vertex, position.vertex + 1, position.vertex - 1 );
-  }
-  clearCache(); //set bounding box invalid
-  return true;
-}
-
-bool QgsCircularString::moveVertex( QgsVertexId position, const QgsPoint &newPos )
-{
-  if ( position.vertex < 0 || position.vertex >= mX.size() )
-  {
-    return false;
-  }
-
-  mX[position.vertex] = newPos.x();
-  mY[position.vertex] = newPos.y();
-  if ( is3D() && newPos.is3D() )
-  {
-    mZ[position.vertex] = newPos.z();
-  }
-  if ( isMeasure() && newPos.isMeasure() )
-  {
-    mM[position.vertex] = newPos.m();
   }
   clearCache(); //set bounding box invalid
   return true;
@@ -1814,20 +1701,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
 
 QgsCircularString *QgsCircularString::reversed() const
 {
-  QgsCircularString *copy = clone();
-  std::reverse( copy->mX.begin(), copy->mX.end() );
-  std::reverse( copy->mY.begin(), copy->mY.end() );
-  if ( is3D() )
-  {
-    std::reverse( copy->mZ.begin(), copy->mZ.end() );
-  }
-  if ( isMeasure() )
-  {
-    std::reverse( copy->mM.begin(), copy->mM.end() );
-  }
-
-  copy->mSummedUpArea = -mSummedUpArea;
-  return copy;
+  return qgis::down_cast< QgsCircularString *>( QgsSimpleCurve::reversed() );
 }
 
 QgsPoint *QgsCircularString::interpolatePoint( const double distance ) const

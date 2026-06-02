@@ -897,8 +897,6 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
      * \since QGIS 3.10
      */
     double length3D() const SIP_HOLDGIL;
-    QgsPoint startPoint() const override SIP_HOLDGIL;
-    QgsPoint endPoint() const override SIP_HOLDGIL;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
@@ -919,7 +917,6 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     void drawAsPolygon( QPainter &p ) const override;
 
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
 
@@ -968,9 +965,6 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
-    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
-    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
-
     /**
      * Cast the \a geom to a QgsLineString.
      * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
