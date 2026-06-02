@@ -86,8 +86,6 @@ winding the other way around the circle).
 
     virtual QString geometryType() const /HoldGIL/;
 
-    virtual int dimension() const /HoldGIL/;
-
     virtual QgsCircularString *clone() const /Factory/;
 
     virtual void clear();
@@ -191,14 +189,6 @@ circular string.
     virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
 
     virtual QgsCircularString *curveSubstring( double startDistance, double endDistance ) const /Factory/;
-
-    virtual bool addZValue( double zValue = 0 );
-
-    virtual bool addMValue( double mValue = 0 );
-
-    virtual bool dropZValue();
-
-    virtual bool dropMValue();
 
     virtual void swapXy();
 

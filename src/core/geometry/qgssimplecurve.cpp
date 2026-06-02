@@ -69,3 +69,73 @@ int QgsSimpleCurve::nCoordinates() const
 {
   return mX.size();
 }
+
+bool QgsSimpleCurve::addMValue( double mValue )
+{
+  if ( QgsWkbTypes::hasM( mWkbType ) )
+    return false;
+
+  clearCache();
+  mWkbType = QgsWkbTypes::addM( mWkbType );
+
+  mM.clear();
+  int nPoints = numPoints();
+  mM.reserve( nPoints );
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    mM << mValue;
+  }
+  return true;
+}
+
+bool QgsSimpleCurve::addZValue( double zValue )
+{
+  if ( QgsWkbTypes::hasZ( mWkbType ) )
+    return false;
+
+  clearCache();
+  if ( mWkbType == Qgis::WkbType::Unknown )
+  {
+    mWkbType = Qgis::WkbType::LineStringZ;
+    return true;
+  }
+
+  mWkbType = QgsWkbTypes::addZ( mWkbType );
+
+  mZ.clear();
+  int nPoints = numPoints();
+  mZ.reserve( nPoints );
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    mZ << zValue;
+  }
+  return true;
+}
+
+bool QgsSimpleCurve::dropMValue()
+{
+  if ( !isMeasure() )
+    return false;
+
+  clearCache();
+  mWkbType = QgsWkbTypes::dropM( mWkbType );
+  mM.clear();
+  return true;
+}
+
+bool QgsSimpleCurve::dropZValue()
+{
+  if ( !is3D() )
+    return false;
+
+  clearCache();
+
+  mWkbType = QgsWkbTypes::dropZ( mWkbType );
+  mZ.clear();
+  return true;
+}
+
+int QgsSimpleCurve::dimension() const
+{
+  return 1;
+}

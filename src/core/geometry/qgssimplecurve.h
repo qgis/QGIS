@@ -142,9 +142,14 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     QVector< double > mVector() const SIP_SKIP { return mM; }
 
     // Overrides
-    int numPoints() const override
-    SIP_HOLDGIL;
-  int nCoordinates() const override SIP_HOLDGIL;
+    int numPoints() const override SIP_HOLDGIL;
+    int nCoordinates() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
+
+    bool addMValue( double mValue = 0 ) override;
+    bool addZValue( double zValue = 0 ) override;
+    bool dropMValue() override;
+    bool dropZValue() override;
 
 protected:
   QVector<double> mX;

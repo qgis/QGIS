@@ -228,11 +228,6 @@ QString QgsCircularString::geometryType() const
   return u"CircularString"_s;
 }
 
-int QgsCircularString::dimension() const
-{
-  return 1;
-}
-
 QgsCircularString *QgsCircularString::clone() const
 {
   return new QgsCircularString( *this );
@@ -2019,66 +2014,6 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
   auto result = std::make_unique< QgsCircularString >();
   result->setPoints( substringPoints );
   return result.release();
-}
-
-bool QgsCircularString::addZValue( double zValue )
-{
-  if ( QgsWkbTypes::hasZ( mWkbType ) )
-    return false;
-
-  clearCache();
-  mWkbType = QgsWkbTypes::addZ( mWkbType );
-
-  int nPoints = numPoints();
-  mZ.clear();
-  mZ.reserve( nPoints );
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    mZ << zValue;
-  }
-  return true;
-}
-
-bool QgsCircularString::addMValue( double mValue )
-{
-  if ( QgsWkbTypes::hasM( mWkbType ) )
-    return false;
-
-  clearCache();
-  mWkbType = QgsWkbTypes::addM( mWkbType );
-
-  int nPoints = numPoints();
-  mM.clear();
-  mM.reserve( nPoints );
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    mM << mValue;
-  }
-  return true;
-}
-
-bool QgsCircularString::dropZValue()
-{
-  if ( !QgsWkbTypes::hasZ( mWkbType ) )
-    return false;
-
-  clearCache();
-
-  mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  mZ.clear();
-  return true;
-}
-
-bool QgsCircularString::dropMValue()
-{
-  if ( !QgsWkbTypes::hasM( mWkbType ) )
-    return false;
-
-  clearCache();
-
-  mWkbType = QgsWkbTypes::dropM( mWkbType );
-  mM.clear();
-  return true;
 }
 
 void QgsCircularString::swapXy()

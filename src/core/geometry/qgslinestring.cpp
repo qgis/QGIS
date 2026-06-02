@@ -1889,11 +1889,6 @@ QString QgsLineString::geometryType() const
   return u"LineString"_s;
 }
 
-int QgsLineString::dimension() const
-{
-  return 1;
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -2453,83 +2448,6 @@ double QgsLineString::segmentLength( QgsVertexId startVertex ) const
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
-
-bool QgsLineString::addZValue( double zValue )
-{
-  if ( QgsWkbTypes::hasZ( mWkbType ) )
-    return false;
-
-  clearCache();
-  if ( mWkbType == Qgis::WkbType::Unknown )
-  {
-    mWkbType = Qgis::WkbType::LineStringZ;
-    return true;
-  }
-
-  mWkbType = QgsWkbTypes::addZ( mWkbType );
-
-  mZ.clear();
-  int nPoints = numPoints();
-  mZ.reserve( nPoints );
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    mZ << zValue;
-  }
-  return true;
-}
-
-bool QgsLineString::addMValue( double mValue )
-{
-  if ( QgsWkbTypes::hasM( mWkbType ) )
-    return false;
-
-  clearCache();
-  if ( mWkbType == Qgis::WkbType::Unknown )
-  {
-    mWkbType = Qgis::WkbType::LineStringM;
-    return true;
-  }
-
-  if ( mWkbType == Qgis::WkbType::LineString25D )
-  {
-    mWkbType = Qgis::WkbType::LineStringZM;
-  }
-  else
-  {
-    mWkbType = QgsWkbTypes::addM( mWkbType );
-  }
-
-  mM.clear();
-  int nPoints = numPoints();
-  mM.reserve( nPoints );
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    mM << mValue;
-  }
-  return true;
-}
-
-bool QgsLineString::dropZValue()
-{
-  if ( !is3D() )
-    return false;
-
-  clearCache();
-  mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  mZ.clear();
-  return true;
-}
-
-bool QgsLineString::dropMValue()
-{
-  if ( !isMeasure() )
-    return false;
-
-  clearCache();
-  mWkbType = QgsWkbTypes::dropM( mWkbType );
-  mM.clear();
-  return true;
-}
 
 void QgsLineString::swapXy()
 {
