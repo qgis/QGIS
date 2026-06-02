@@ -87,7 +87,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     /**
      * Returns the material's anisotropy, as a value between 0 and 1.
      *
-     * Anisotropic materials are those with properties are which vary in different directions.
+     * Anisotropic materials are those with properties which vary in different directions.
      *
      * \see anisotropyRotation()
      * \see setAnisotropy()
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     /**
      * Returns the rotation of the material's anisotropy, as a angle in degrees.
      *
-     * Anisotropic materials are those with properties are which vary in different directions.
+     * Anisotropic materials are those with properties which vary in different directions.
      *
      * \see setAnisotropyRotation()
      * \see anisotropy()
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     /**
      * Sets the material's \a anisotropy, as a value between 0 and 1.
      *
-     * Anisotropic materials are those with properties are which vary in different directions.
+     * Anisotropic materials are those with properties which vary in different directions.
      *
      * \see setAnisotropyRotation()
      * \see anisotropy()
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     /**
      * Sets the \a rotation of the material's anisotropy, as a angle in degrees.
      *
-     * Anisotropic materials are those with properties are which vary in different directions.
+     * Anisotropic materials are those with properties which vary in different directions.
      *
      * \see anisotropyRotation()
      * \see setAnisotropy()
