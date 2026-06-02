@@ -1894,12 +1894,12 @@ void TestQgsDxfExport::testSvgMarkerClipsOutOfViewport()
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
 
-  const QString svgContent = uR"SVG(<?xml version="1.0"?>
+const QString svgContent = QStringLiteral( R"SVG(<?xml version="1.0"?>
 <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
   <rect x="-1000" y="-1000" width="3000" height="3000" fill="#aabbcc"/>
   <rect x="10" y="10" width="80" height="80" fill="#cc3344"/>
 </svg>
-)SVG"_s;
+)SVG" );
   const QString svgPath = writeSvg( tempDir, QStringLiteral( "clip.svg" ), svgContent );
   QVERIFY( !svgPath.isEmpty() );
 
@@ -1934,13 +1934,13 @@ void TestQgsDxfExport::testSvgMarkerClipPreservesInnerGroupTransform()
 
   // The inner group scales by 0.1, so the path with raw coords in
   // [100..900] maps to viewport coords [10..90] - well within 100x100.
-  const QString svgContent = uR"SVG(<?xml version="1.0"?>
+  const QString svgContent = QStringLiteral( R"SVG(<?xml version="1.0"?>
 <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
   <g transform="matrix(0.1,0,0,0.1,0,0)">
     <path fill="#cc3344" d="M 100,100 L 900,100 L 900,900 L 100,900 Z"/>
   </g>
 </svg>
-)SVG"_s;
+)SVG" );
   const QString svgPath = writeSvg( tempDir, QStringLiteral( "inner.svg" ), svgContent );
   QVERIFY( !svgPath.isEmpty() );
 
@@ -1971,11 +1971,11 @@ void TestQgsDxfExport::testSvgMarkerClipPreservesRotatedContent()
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
 
-  const QString svgContent = uR"SVG(<?xml version="1.0"?>
+  const QString svgContent = QStringLiteral( R"SVG(<?xml version="1.0"?>
 <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
   <rect x="10" y="10" width="80" height="80" fill="#cc3344"/>
 </svg>
-)SVG"_s;
+)SVG" );
   const QString svgPath = writeSvg( tempDir, QStringLiteral( "rot.svg" ), svgContent );
   QVERIFY( !svgPath.isEmpty() );
 
@@ -2027,7 +2027,7 @@ void TestQgsDxfExport::testDataDefinedSymbolClassHashDynamicAttribute()
   f2.setAttribute( QStringLiteral( "target_b" ), QStringLiteral( "shapeY" ) );
 
   QgsPropertyCollection props;
-  props.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( uR"(attribute('target_' || "dir"))"_s ) );
+  props.setProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( QStringLiteral( R"(attribute('target_' || "dir"))" ) ) );
 
   QgsExpressionContext ctx;
   QgsExpressionContextScope *fieldsScope = new QgsExpressionContextScope();
