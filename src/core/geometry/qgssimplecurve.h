@@ -164,6 +164,8 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     QgsSimpleCurve *reversed() const override SIP_FACTORY;
 
 protected:
+  void splitCurveAtVertexProtected( int index, QVector< double > &x1, QVector< double > &y1, QVector< double > &z1, QVector< double > &m1, QVector< double > &x2, QVector< double > &y2, QVector< double > &z2, QVector< double > &m2 ) const;
+
   QVector<double> mX;
   QVector<double> mY;
   QVector<double> mZ;
