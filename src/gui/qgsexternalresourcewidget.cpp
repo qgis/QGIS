@@ -57,8 +57,9 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   mPixmapLabel = new QgsPixmapLabel( this );
   layout->addWidget( mPixmapLabel, 1, 0 );
 
-  mMediaWidget = new QgsMediaWidget( this );
-  layout->addWidget( mMediaWidget, 3, 0 );
+  // mMediaWidget (grid row 3) is created lazily in setDocumentViewerContent(),
+  // only when the document viewer is set to Audio or Video, to avoid the expensive
+  // QMediaPlayer/QVideoWidget construction for the common image/no-content case.
 
   mLoadingLabel = new QLabel( this );
   layout->addWidget( mLoadingLabel, 4, 0 );
@@ -126,6 +127,16 @@ QgsExternalResourceWidget::DocumentViewerContent QgsExternalResourceWidget::docu
 void QgsExternalResourceWidget::setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content )
 {
   mDocumentViewerContent = content;
+
+  // The media widget embeds a QMediaPlayer/QVideoWidget whose construction is
+  // expensive (it initializes the platform multimedia backend). Only create it
+  // when audio or video playback is actually requested.
+  if ( ( content == Audio || content == Video ) && !mMediaWidget )
+  {
+    mMediaWidget = new QgsMediaWidget( this );
+    static_cast<QGridLayout *>( layout() )->addWidget( mMediaWidget, 3, 0 );
+  }
+
   if ( mDocumentViewerContent != Image )
     updateDocumentViewer();
   loadDocument( mFileWidget->filePath() );
@@ -168,14 +179,16 @@ void QgsExternalResourceWidget::updateDocumentViewer()
   {
     case Web:
     {
-      mMediaWidget->setVisible( false );
+      if ( mMediaWidget )
+        mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( false );
       break;
     }
 
     case Image:
     {
-      mMediaWidget->setVisible( false );
+      if ( mMediaWidget )
+        mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( true );
 
       const QPixmap pm = mPixmapLabel->pixmap();
@@ -218,7 +231,8 @@ void QgsExternalResourceWidget::updateDocumentViewer()
 
     case NoContent:
     {
-      mMediaWidget->setVisible( false );
+      if ( mMediaWidget )
+        mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( false );
       break;
     }
@@ -367,7 +381,8 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 
       mContent = mFileWidget->externalStorage()->fetch( resolvedPath, storageAuthConfigId() );
 
-      mMediaWidget->setVisible( false );
+      if ( mMediaWidget )
+        mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( false );
       mErrorLabel->setVisible( false );
       mLoadingLabel->setVisible( true );
