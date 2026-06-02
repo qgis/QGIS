@@ -825,6 +825,22 @@ void TestQgsDataSourceUri::checkRemovePassword()
   const QString uri4
     = QgsDataSourceUri::removePassword( u"dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s, true );
   QCOMPARE( uri4, u"dbname='geodata' host=localhost port=5432 user='jgr' password=XXXXXXXX srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s );
+
+   // Edge case: quoted password as LAST parameter (no trailing space) — remove mode
+  const QString uri5 = QgsDataSourceUri::removePassword( u"dbname='test' host=localhost port=5432 user='admin' password='secret'"_s );
+  QCOMPARE( uri5, u"dbname='test' host=localhost port=5432 user='admin'"_s );
+
+  // Edge case: quoted password as LAST parameter (no trailing space) — hide mode
+  const QString uri6 = QgsDataSourceUri::removePassword( u"dbname='test' host=localhost port=5432 user='admin' password='secret'"_s, true );
+  QCOMPARE( uri6, u"dbname='test' host=localhost port=5432 user='admin' password=XXXXXXXX"_s );
+
+  // Edge case: unquoted password as LAST parameter (no trailing space) — remove mode
+  const QString uri7 = QgsDataSourceUri::removePassword( u"dbname='test' host=localhost port=5432 user='admin' password=secret"_s );
+  QCOMPARE( uri7, u"dbname='test' host=localhost port=5432 user='admin'"_s );
+
+  // Edge case: unquoted password as LAST parameter (no trailing space) — hide mode
+  const QString uri8 = QgsDataSourceUri::removePassword( u"dbname='test' host=localhost port=5432 user='admin' password=secret"_s, true );
+  QCOMPARE( uri8, u"dbname='test' host=localhost port=5432 user='admin' password=XXXXXXXX"_s );  
 }
 
 void TestQgsDataSourceUri::checkUnicodeUri()
