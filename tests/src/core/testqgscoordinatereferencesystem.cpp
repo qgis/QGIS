@@ -2382,25 +2382,25 @@ void TestQgsCoordinateReferenceSystem::topocentricEllipsoid()
   QVERIFY( epsg4326.isValid() );
   const QgsCoordinateReferenceSystem topoCrsEpsg4326 = epsg4326.toTopocentricCrs( 45.29, 18.80 );
   QVERIFY( topoCrsEpsg4326.isValid() );
-  QCOMPARE( topoCrsEpsg4326.ellipsoidAcronym(), u"EPSG:7030"_s );
+  QCOMPARE( topoCrsEpsg4326.ellipsoidAcronym(), u"PARAMETER:6378137:6356752.31424517929553986"_s );
 
   const QgsCoordinateReferenceSystem epsg4258( u"EPSG:4258"_s );
   QVERIFY( epsg4258.isValid() );
   const QgsCoordinateReferenceSystem topoCrsEpsg4258 = epsg4258.toTopocentricCrs( 45.33, 14.44 );
   QVERIFY( topoCrsEpsg4258.isValid() );
-  QCOMPARE( topoCrsEpsg4258.ellipsoidAcronym(), u"EPSG:7019"_s );
+  QCOMPARE( topoCrsEpsg4258.ellipsoidAcronym(), u"PARAMETER:6378137:6356752.31414035614579916"_s );
 
   const QgsCoordinateReferenceSystem epsg25832( u"EPSG:25832"_s );
   QVERIFY( epsg25832.isValid() );
   const QgsCoordinateReferenceSystem topoCrsEpsg25832 = epsg25832.toTopocentricCrs( 43.51, 16.44 );
   QVERIFY( topoCrsEpsg25832.isValid() );
-  QCOMPARE( topoCrsEpsg25832.ellipsoidAcronym(), u"EPSG:7019"_s );
+  QCOMPARE( topoCrsEpsg25832.ellipsoidAcronym(), u"PARAMETER:6378137:6356752.31414035614579916"_s );
 
   const QgsCoordinateReferenceSystem epsg32632( u"EPSG:32632"_s );
   QVERIFY( epsg32632.isValid() );
   const QgsCoordinateReferenceSystem topoCrsEpsg32632 = epsg32632.toTopocentricCrs( 42.65, 18.09 );
   QVERIFY( topoCrsEpsg32632.isValid() );
-  QCOMPARE( topoCrsEpsg32632.ellipsoidAcronym(), u"EPSG:7030"_s );
+  QCOMPARE( topoCrsEpsg32632.ellipsoidAcronym(), u"PARAMETER:6378137:6356752.31424517929553986"_s );
 }
 
 
