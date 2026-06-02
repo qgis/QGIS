@@ -837,7 +837,7 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
 
     //reimplemented methods
     QString geometryType() const override SIP_HOLDGIL;
-    int dimension() const override SIP_HOLDGIL;
+
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
     bool isEmpty() const override SIP_HOLDGIL;
@@ -959,11 +959,7 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
     double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
-    bool addZValue( double zValue = 0 ) override;
-    bool addMValue( double mValue = 0 ) override;
 
-    bool dropZValue() override;
-    bool dropMValue() override;
     void swapXy() override;
 
     bool convertTo( Qgis::WkbType type ) override;

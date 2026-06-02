@@ -217,7 +217,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
 
 
     QString geometryType() const override SIP_HOLDGIL;
-    int dimension() const override SIP_HOLDGIL;
     QgsCircularString *clone() const override SIP_FACTORY;
     void clear() override;
 
@@ -281,10 +280,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     QgsCircularString *reversed() const override  SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCircularString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
-    bool addZValue( double zValue = 0 ) override;
-    bool addMValue( double mValue = 0 ) override;
-    bool dropZValue() override;
-    bool dropMValue() override;
     void swapXy() override;
     double xAt( int index ) const override SIP_HOLDGIL;
     double yAt( int index ) const override SIP_HOLDGIL;

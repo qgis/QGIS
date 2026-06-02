@@ -564,7 +564,6 @@ the first or last segment in the line.
 
     virtual QString geometryType() const /HoldGIL/;
 
-    virtual int dimension() const /HoldGIL/;
 
     virtual QgsLineString *clone() const /Factory/;
 
@@ -740,14 +739,6 @@ equal to the value of the sum.
 
     virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
 
-    virtual bool addZValue( double zValue = 0 );
-
-    virtual bool addMValue( double mValue = 0 );
-
-
-    virtual bool dropZValue();
-
-    virtual bool dropMValue();
 
     virtual void swapXy();
 
