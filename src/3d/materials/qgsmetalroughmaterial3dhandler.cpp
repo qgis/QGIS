@@ -164,6 +164,8 @@ void QgsMetalRoughMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoug
   material->setBaseColor( context.isSelected() ? context.selectionColor() : metalRoughSettings->baseColor() );
   material->setEmissionColor( metalRoughSettings->emissionColor().isValid() ? metalRoughSettings->emissionColor() : QColor( 0, 0, 0 ) );
   material->setEmissionFactor( static_cast< float>( metalRoughSettings->emissionFactor() ) );
+  material->setClearCoatFactor( static_cast< float >( metalRoughSettings->clearCoatFactor() ) );
+  material->setClearCoatRoughness( static_cast< float >( metalRoughSettings->clearCoatRoughness() ) );
   material->setMetalness( static_cast< float >( metalRoughSettings->metalness() ) );
   material->setRoughness( static_cast< float >( metalRoughSettings->roughness() ) );
   material->setReflectance( static_cast< float >( metalRoughSettings->reflectance() ) );

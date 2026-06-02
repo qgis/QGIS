@@ -114,6 +114,12 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Sets the emission strength factor
     void setEmissionFactor( double factor );
 
+    //! Sets the clear coat factor
+    void setClearCoatFactor( float factor );
+
+    //! Sets the clear coat roughness
+    void setClearCoatRoughness( float roughness );
+
     /**
      * Enables or disables instanced point rendering mode.
      * When \a enabled is TRUE the material uses the instanced vertex shader.
@@ -162,6 +168,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mEmissionMapParameter = nullptr;
     Qt3DRender::QParameter *mEmissiveColorParameter = nullptr;
     Qt3DRender::QParameter *mEmissionFactorParameter = nullptr;
+    Qt3DRender::QParameter *mClearCoatFactorParameter = nullptr;
+    Qt3DRender::QParameter *mClearCoatRoughnessParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mTextureRotationParameter = nullptr;
     Qt3DRender::QParameter *mOpacityParameter = nullptr;

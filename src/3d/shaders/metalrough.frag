@@ -66,6 +66,11 @@ uniform float anisotropy;
 uniform float anisotropyRotation;
 #endif
 
+#ifdef CLEAR_COAT
+uniform float clearCoatFactor;
+uniform float clearCoatRoughness;
+#endif
+
 #ifdef DATA_DEFINED
 // DataColor has emission color
 #elif defined(EMISSION_MAP)
@@ -337,6 +342,38 @@ vec3 specularModel(const in vec3 F0,
     return clamp(cSpec, vec3(0.0), vec3(1.0));
 }
 
+#ifdef CLEAR_COAT
+float visibilityKelemen(const in float lDotH)
+{
+  // as per https://google.github.io/filament/Filament.md.html#materialsystem/clearcoatmodel, listing 13
+  return 0.25 / max(lDotH * lDotH, 0.00001);
+}
+
+float pow5(float x)
+{
+  float x2 = x * x;
+  return x2 * x2 * x;
+}
+
+// https://github.com/google/filament/blob/3427685f2fa40de3a5fcaae6d7ffa157780e53a8/shaders/src/surface_brdf.fs#L155
+float fresnelSchlick(float f0, float f90, float VoH)
+{
+  return f0 + (f90 - f0) * pow5(1.0 - VoH);
+}
+
+vec3 adjustF0ForClearCoatInterface(vec3 F0)
+{
+  // adjust F0 based on clear coat-material interface (IOR 1.5) instead of air-material
+  // see https://google.github.io/filament/Filament.md.html#materialsystem/clearcoatmodel/clearcoatparameterization section 4.9.14
+  vec3 f0Sqrt = sqrt(clamp(F0, vec3(0.0), vec3(1.0)));
+  vec3 f0Num = vec3(1.0) - 5.0 * f0Sqrt;
+  vec3 f0Den = vec3(5.0) - f0Sqrt;
+  vec3 f0Base = (f0Num * f0Num) / (f0Den * f0Den);
+  return mix(F0, f0Base, clearCoatFactor);
+}
+
+#endif
+
 vec3 pbrModel(const in int lightIndex,
               const in vec3 wPosition,
               const in vec3 n, // NORMALIZED world normal
@@ -365,6 +402,11 @@ vec3 pbrModel(const in int lightIndex,
     // Calculate specular component
     vec3 dielectricColor = vec3(0.16 * reflectance * reflectance);
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
+
+#ifdef CLEAR_COAT
+    F0 = adjustF0ForClearCoatInterface(F0);
+#endif
+
     vec3 specularFactor = vec3(0.0);
     if (light.sDotN > 0.0) {
 #ifdef ANISOTROPY
@@ -402,7 +444,32 @@ vec3 pbrModel(const in int lightIndex,
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
     vec3 kS = fresnelFactor(F0, light.sDotH);
-    vec3 color = light.visibilityFactor * light.att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
+    vec3 Fd = diffuse * (vec3(1.0) - kS);
+    vec3 Fr = specular;
+
+#ifdef CLEAR_COAT
+    // as per https://google.github.io/filament/Filament.md.html#materialsystem/clearcoatmodel/clearcoatparameterization, Listing 14
+    float ccPerceptualRoughness = clamp(clearCoatRoughness, 0.089, 1.0);
+    float ccAlpha = ccPerceptualRoughness * ccPerceptualRoughness;
+
+    // clear coat BRDF
+    // we don't currently expose control over clear-coat normals, so standard material
+    // normal is used
+    float Dc = normalDistribution(light.nDotH, ccAlpha); // we use GGX for normalDistribution
+    float Vc = visibilityKelemen(light.sDotH);
+    // fixed IOR to 1.5 => reflectance = 0.04
+    float Fc = fresnelSchlick(0.04, 1.0, light.sDotH) * clearCoatFactor;
+
+    // clear coat specific specular reflection
+    vec3 Frc = vec3(Dc * Vc * Fc) * light.sDotN * lights[lightIndex].color;
+
+    // Account for energy loss in the base layer
+    vec3 layeredColor = (Fd + Fr * (1.0 - Fc)) * (1.0 - Fc) + Frc;
+#else
+    vec3 layeredColor = Fd + Fr;
+#endif
+
+    vec3 color = light.visibilityFactor * light.att * lights[lightIndex].intensity * layeredColor;
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
@@ -474,6 +541,10 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
 
     float lod = roughnessToMipLevel(roughness);
 
+#ifdef CLEAR_COAT
+    F0 = adjustF0ForClearCoatInterface(F0);
+#endif
+
     // convert Z-up reflection to Y-up for OpenGL cubemap lookup
     vec3 yUpReflect = vec3(l.x, l.z, -l.y);
     vec3 indirectSpecular = textureLod(globalSpecularMap, yUpReflect, lod).rgb;
@@ -491,10 +562,27 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
     vec3 kS = fresnelSchlickRoughness(F0, vDotN, roughness);
-    vec3 color = specular + diffuse * (vec3(1.0) - kS);
+    vec3 Fd = diffuse * (vec3(1.0) - kS);
+    vec3 Fr = specular;
+
+#ifdef CLEAR_COAT
+    // as per https://google.github.io/filament/Filament.md.html#materialsystem/clearcoatmodel/clearcoatparameterization, Listing 14
+    float ccPerceptualRoughness = clamp(clearCoatRoughness, 0.089, 1.0);
+    float ccLod = roughnessToMipLevel(ccPerceptualRoughness);
+
+    vec3 ccIndirectSpecular = textureLod(globalSpecularMap, yUpReflect, ccLod).rgb;
+    // fixed IOR to 1.5 => reflectance = 0.04
+    float Fc = fresnelSchlick(0.04, 1.0, vDotN) * clearCoatFactor;
+    vec2 ccEnvBrdf = environmentBrdfApproximation(ccPerceptualRoughness, vDotN);
+    vec3 Frc = ccIndirectSpecular * (0.04 * ccEnvBrdf.x + ccEnvBrdf.y) * clearCoatFactor;
+    // Account for energy loss in the base layer
+    vec3 layeredColor = (Fd + Fr * (1.0 - Fc)) * (1.0 - Fc) + Frc;
+#else
+    vec3 layeredColor = Fd + Fr;
+#endif
 
     // Reduce by ambient occlusion amount
-    color *= ambientOcclusion;
+    vec3 color = layeredColor * ambientOcclusion;
 
     return color;
 }
