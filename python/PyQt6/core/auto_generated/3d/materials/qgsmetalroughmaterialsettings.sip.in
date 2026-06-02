@@ -86,8 +86,8 @@ This controls the specular intensity for non-metals.
 %Docstring
 Returns the material's anisotropy, as a value between 0 and 1.
 
-Anisotropic materials are those with properties are which vary in
-different directions.
+Anisotropic materials are those with properties which vary in different
+directions.
 
 .. seealso:: :py:func:`anisotropyRotation`
 
@@ -101,8 +101,8 @@ different directions.
 Returns the rotation of the material's anisotropy, as a angle in
 degrees.
 
-Anisotropic materials are those with properties are which vary in
-different directions.
+Anisotropic materials are those with properties which vary in different
+directions.
 
 .. seealso:: :py:func:`setAnisotropyRotation`
 
@@ -193,8 +193,8 @@ This controls the specular intensity for non-metals.
 %Docstring
 Sets the material's ``anisotropy``, as a value between 0 and 1.
 
-Anisotropic materials are those with properties are which vary in
-different directions.
+Anisotropic materials are those with properties which vary in different
+directions.
 
 .. seealso:: :py:func:`setAnisotropyRotation`
 
@@ -208,8 +208,8 @@ different directions.
 Sets the ``rotation`` of the material's anisotropy, as a angle in
 degrees.
 
-Anisotropic materials are those with properties are which vary in
-different directions.
+Anisotropic materials are those with properties which vary in different
+directions.
 
 .. seealso:: :py:func:`anisotropyRotation`
 
