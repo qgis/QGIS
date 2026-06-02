@@ -77,6 +77,10 @@ void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsR
   else
     mEmissiveColor = QColor();
   mEmissionFactor = elem.attribute( u"emission_factor"_s, u"1.0"_s ).toDouble();
+
+  mClearCoatFactor = elem.attribute( u"clear_coat_factor"_s, u"0.0"_s ).toDouble();
+  mClearCoatRoughness = elem.attribute( u"clear_coat_roughness"_s, u"0.0"_s ).toDouble();
+
   mMetalness = elem.attribute( u"metalness"_s, u"0.0"_s ).toDouble();
   mRoughness = elem.attribute( u"roughness"_s, u"0.5"_s ).toDouble();
   mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
@@ -110,6 +114,16 @@ void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
   {
     elem.setAttribute( u"emission_factor"_s, mEmissionFactor );
   }
+
+  if ( !qgsDoubleNear( mClearCoatFactor, 0.0 ) )
+  {
+    elem.setAttribute( u"clear_coat_factor"_s, mClearCoatFactor );
+  }
+  if ( !qgsDoubleNear( mClearCoatRoughness, 0.0 ) )
+  {
+    elem.setAttribute( u"clear_coat_roughness"_s, mClearCoatRoughness );
+  }
+
   if ( !qgsDoubleNear( mOpacity, 1 ) )
   {
     elem.setAttribute( u"opacity"_s, mOpacity );

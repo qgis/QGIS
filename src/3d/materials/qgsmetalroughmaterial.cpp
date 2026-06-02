@@ -50,6 +50,8 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mEmissionMapParameter( new Qt3DRender::QParameter( u"emissionMap"_s, QVariant(), this ) )
   , mEmissiveColorParameter( new Qt3DRender::QParameter( u"emissiveColor"_s, Qgs3DUtils::srgbToLinear( QColor( 0, 0, 0 ) ), this ) )
   , mEmissionFactorParameter( new Qt3DRender::QParameter( u"emissiveFactor"_s, 1.0f, this ) )
+  , mClearCoatFactorParameter( new Qt3DRender::QParameter( u"clearCoatFactor"_s, 0.0f, this ) )
+  , mClearCoatRoughnessParameter( new Qt3DRender::QParameter( u"clearCoatRoughness"_s, 0.0f, this ) )
   , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
   , mTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f, this ) )
   , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
@@ -320,6 +322,36 @@ void QgsMetalRoughMaterial::setEmissionFactor( double factor )
   mEmissionFactorParameter->setValue( factor );
 }
 
+void QgsMetalRoughMaterial::setClearCoatFactor( float factor )
+{
+  mClearCoatFactorParameter->setValue( factor );
+  const bool oldUsingClearCoat = mMetalRoughEffect->parameters().contains( mClearCoatFactorParameter );
+  const bool newUsingClearCoat = factor > 0;
+  if ( newUsingClearCoat )
+  {
+    if ( !oldUsingClearCoat )
+    {
+      mMetalRoughEffect->addParameter( mClearCoatFactorParameter );
+      mMetalRoughEffect->addParameter( mClearCoatRoughnessParameter );
+    }
+  }
+  else if ( oldUsingClearCoat )
+  {
+    mMetalRoughEffect->removeParameter( mClearCoatFactorParameter );
+    mMetalRoughEffect->removeParameter( mClearCoatRoughnessParameter );
+  }
+
+  if ( oldUsingClearCoat != newUsingClearCoat )
+  {
+    updateShaders();
+  }
+}
+
+void QgsMetalRoughMaterial::setClearCoatRoughness( float roughness )
+{
+  mClearCoatRoughnessParameter->setValue( roughness );
+}
+
 void QgsMetalRoughMaterial::setTextureScale( float textureScale )
 {
   mTextureScaleParameter->setValue( textureScale );
@@ -399,6 +431,8 @@ void QgsMetalRoughMaterial::updateShaders()
     fragShaderDefines += "FLAT_SHADING";
   if ( mMetalRoughEffect->parameters().contains( mAnisotropyParameter ) )
     fragShaderDefines += "ANISOTROPY";
+  if ( mMetalRoughEffect->parameters().contains( mClearCoatFactorParameter ) )
+    fragShaderDefines += "CLEAR_COAT";
   if ( mEnableEnvironmentalLighting )
     fragShaderDefines += "ENABLE_IBL";
 

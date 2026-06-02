@@ -251,6 +251,51 @@ directly. Larger values result in more light emission.
 .. versionadded:: 4.2
 %End
 
+    double clearCoatFactor() const;
+%Docstring
+Returns the material's clear coat factor, as a value between 0 and 1.
+
+.. seealso:: :py:func:`setClearCoatFactor`
+
+.. seealso:: :py:func:`clearCoatRoughness`
+
+.. versionadded:: 4.2
+%End
+
+    void setClearCoatFactor( double factor );
+%Docstring
+Sets the material's clear coat ``factor``, as a value between 0 and 1.
+
+.. seealso:: :py:func:`clearCoatFactor`
+
+.. seealso:: :py:func:`setClearCoatRoughness`
+
+.. versionadded:: 4.2
+%End
+
+    double clearCoatRoughness() const;
+%Docstring
+Returns the material's clear coat roughness, as a value between 0 and 1.
+
+.. seealso:: :py:func:`setClearCoatRoughness`
+
+.. seealso:: :py:func:`clearCoatFactor`
+
+.. versionadded:: 4.2
+%End
+
+    void setClearCoatRoughness( double roughness );
+%Docstring
+Sets the material's clear coat ``roughness``, as a value between 0 and
+1.
+
+.. seealso:: :py:func:`clearCoatRoughness`
+
+.. seealso:: :py:func:`setClearCoatFactor`
+
+.. versionadded:: 4.2
+%End
+
     virtual void setColorsFromBase( const QColor &baseColor );
 
 %Docstring
