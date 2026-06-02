@@ -645,10 +645,6 @@ line string, return its 2D length.
 
 .. versionadded:: 3.10
 %End
-    virtual QgsPoint startPoint() const /HoldGIL/;
-
-    virtual QgsPoint endPoint() const /HoldGIL/;
-
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const  /Factory/;
 
@@ -678,8 +674,6 @@ approximation of the curve.
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
-
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
 
     virtual bool deleteVertex( QgsVertexId position );
 

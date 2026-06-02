@@ -80,6 +80,16 @@ corresponds to the last point in the simple curve.
     virtual bool dropZValue();
 
 
+    virtual QgsPoint startPoint() const /HoldGIL/;
+
+    virtual QgsPoint endPoint() const /HoldGIL/;
+
+
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
+    virtual QgsSimpleCurve *reversed() const /Factory/;
+
+
 protected:
 };
 

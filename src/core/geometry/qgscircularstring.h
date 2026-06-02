@@ -253,8 +253,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     void append( const QgsCircularString *string );
 
     double length() const override;
-    QgsPoint startPoint() const override SIP_HOLDGIL;
-    QgsPoint endPoint() const override SIP_HOLDGIL;
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     QgsAbstractGeometry *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
@@ -266,7 +264,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
@@ -277,7 +274,7 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
     double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
-    QgsCircularString *reversed() const override  SIP_FACTORY;
+    QgsCircularString *reversed() const override SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCircularString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
     void swapXy() override;
@@ -290,8 +287,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
-    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
-    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
     std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
 
     /**
