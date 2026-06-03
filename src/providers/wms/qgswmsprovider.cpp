@@ -711,21 +711,23 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
     }
   }
 
+  const Qgis::RendererUsage rendererUsage( feedback ? feedback->renderContext().rendererUsage() : Qgis::RendererUsage::Unknown );
+
   // get URLs of tiles because their URLs are used as keys in the tile cache
   TilePositions tiles = qgis::setToList( tilesSet );
   TileRequests requests;
   switch ( tileMode )
   {
     case WMSC:
-      createTileRequestsWMSC( tmOther, tiles, requests );
+      createTileRequestsWMSC( tmOther, tiles, requests, rendererUsage );
       break;
 
     case WMTS:
-      createTileRequestsWMTS( tmOther, tiles, requests );
+      createTileRequestsWMTS( tmOther, tiles, requests, rendererUsage );
       break;
 
     case XYZ:
-      createTileRequestsXYZ( tmOther, tiles, requests, feedback );
+      createTileRequestsXYZ( tmOther, tiles, requests, rendererUsage );
       break;
   }
 
@@ -931,19 +933,21 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
       }
     }
 
+    const Qgis::RendererUsage rendererUsage( feedback ? feedback->renderContext().rendererUsage() : Qgis::RendererUsage::Unknown );
+
     TileRequests requests;
     switch ( tileMode )
     {
       case WMSC:
-        createTileRequestsWMSC( tm, tiles, requests );
+        createTileRequestsWMSC( tm, tiles, requests, rendererUsage );
         break;
 
       case WMTS:
-        createTileRequestsWMTS( tm, tiles, requests );
+        createTileRequestsWMTS( tm, tiles, requests, rendererUsage );
         break;
 
       case XYZ:
-        createTileRequestsXYZ( tm, tiles, requests, feedback );
+        createTileRequestsXYZ( tm, tiles, requests, rendererUsage );
         break;
 
       default:
@@ -1486,7 +1490,7 @@ QString QgsWmsProvider::calculateWmtsTimeDimensionValue() const
   return mTileLayer->defaultTimeDimensionValue;
 }
 
-void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests )
+void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, Qgis::RendererUsage rendererUsage )
 {
   bool changeXY = mCaps.shouldInvertAxisOrientation( mImageCrs );
 
@@ -1542,13 +1546,13 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const 
               .arg( qgsDoubleToString( bbox.xMinimum() ), qgsDoubleToString( bbox.yMinimum() ), qgsDoubleToString( bbox.xMaximum() ), qgsDoubleToString( bbox.yMaximum() ) );
 
     QgsDebugMsgLevel( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
-    requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i );
+    requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i, rendererUsage );
     ++i;
   }
 }
 
 
-void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests )
+void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, Qgis::RendererUsage rendererUsage )
 {
   if ( !getTileUrl().isNull() )
   {
@@ -1594,7 +1598,7 @@ void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const 
       turl += QStringLiteral( "&TILEROW=%1&TILECOL=%2" ).arg( tile.row ).arg( tile.col );
 
       QgsDebugMsgLevel( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
-      requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i );
+      requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i, rendererUsage );
       ++i;
     }
   }
@@ -1629,7 +1633,7 @@ void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const 
       turl.replace( QLatin1String( "{tilecol}" ), QString::number( tile.col ), Qt::CaseInsensitive );
 
       QgsDebugMsgLevel( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
-      requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i );
+      requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i, rendererUsage );
       ++i;
     }
   }
@@ -1655,7 +1659,7 @@ static QString _tile2quadkey( int tileX, int tileY, int z )
 }
 
 
-void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, QgsRasterBlockFeedback *feedback )
+void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, Qgis::RendererUsage rendererUsage )
 {
   int z = tm->identifier.toInt();
   QString url = mSettings.mBaseUrl;
@@ -1680,9 +1684,9 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
     }
     turl.replace( QLatin1String( "{z}" ), QString::number( z ), Qt::CaseInsensitive );
 
-    if ( turl.contains( QLatin1String( "{usage}" ) ) && feedback )
+    if ( turl.contains( QLatin1String( "{usage}" ) ) )
     {
-      switch ( feedback->renderContext().rendererUsage() )
+      switch ( rendererUsage )
       {
         case Qgis::RendererUsage::View:
           turl.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
@@ -1697,7 +1701,7 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
     }
 
     QgsDebugMsgLevel( QStringLiteral( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
-    requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i );
+    requests << TileRequest( turl, tm->tileRect( tile.col, tile.row ), i, rendererUsage );
   }
 }
 
@@ -4451,6 +4455,31 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r.rect );
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileUrl ), r.url );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRendererUsage ), static_cast<int>( r.rendererUsage ) );
+
+    if ( r.url.toString().contains( QLatin1String( "openstreetmap" ), Qt::CaseInsensitive ) && r.rendererUsage != Qgis::RendererUsage::Unknown )
+    {
+      QgsSettings s;
+      QString with = s.value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString();
+      if ( !with.isEmpty() )
+        with += ' ';
+
+      QString usage;
+      switch ( r.rendererUsage )
+      {
+        case Qgis::RendererUsage::View:
+          usage = QStringLiteral( "view" );
+          break;
+        case Qgis::RendererUsage::Export:
+          usage = QStringLiteral( "export" );
+          break;
+        case Qgis::RendererUsage::Unknown:
+          break;
+      }
+
+      with += QStringLiteral( "QGIS/%1/%2/%3" ).arg( Qgis::versionInt() ).arg( QSysInfo::prettyProductName() ).arg( usage );
+      request.setRawHeader( "X-Requested-With", with.toLatin1() );
+    }
 
     QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
     connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
