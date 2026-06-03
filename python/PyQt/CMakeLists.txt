@@ -29,6 +29,12 @@ set(PYQT_COMPAT_FILES
   uic/properties.py
 )
 
+if(${QT_VERSION_MAJOR} GREATER 5)
+  list(APPEND PYQT_COMPAT_FILES
+    QtSvgWidgets.py
+)
+endif()
+
 add_custom_target(pyqtcompat ALL)
 add_dependencies(pyqtcompat pyutils)
 
