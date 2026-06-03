@@ -60,7 +60,7 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
   lightEntity->addComponent( light );
   lightEntity->addComponent( lightTransform );
 
-  if ( !map.showLightSourceOrigins() )
+  if ( !map.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowLightSourceOrigins ) )
   {
     lightEntity->setParent( parent );
     return lightEntity;

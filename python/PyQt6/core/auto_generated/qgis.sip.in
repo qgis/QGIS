@@ -2413,6 +2413,18 @@ The development version
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
 
+    enum class Map3DDebugFlag /BaseType=IntFlag/
+    {
+      ShowTerrainBoundingBoxes,
+      ShowTerrainTileInfo,
+      ShowCameraViewCenter,
+      ShowCameraRotationCenter,
+      ShowLightSourceOrigins,
+      ShowFPS,
+      ShowDebugPanel,
+    };
+    typedef QFlags<Qgis::Map3DDebugFlag> Map3DDebugFlags;
+
 
     enum class Point3DShape /BaseType=IntEnum/
     {
@@ -4143,6 +4155,8 @@ QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapabilit
 QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapability f1, QFlags<Qgis::ArcGisRestServiceCapability> f2);
 
 QFlags<Qgis::InstancedMaterialFlag> operator|(Qgis::InstancedMaterialFlag f1, QFlags<Qgis::InstancedMaterialFlag> f2);
+
+QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map3DDebugFlag> f2);
 
 
 

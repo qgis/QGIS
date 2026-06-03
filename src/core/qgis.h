@@ -4308,6 +4308,26 @@ int QgisEvent = QEvent::User + 1;
     Q_DECLARE_FLAGS( PlotToolFlags, PlotToolFlag )
     Q_FLAG( PlotToolFlags )
 
+    /**
+     * Flags that control debug options for 3D maps.
+     *
+     * \warning These are debugging options only, and are not considered part of stable API.
+     *
+     * \since QGIS 4.2
+     */
+    enum class Map3DDebugFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ShowTerrainBoundingBoxes = 1 << 0, //!< Displays bounding boxes of terrain tiles.
+      ShowTerrainTileInfo = 1 << 1,      //!< Displays extra tile info on top of terrain tiles.
+      ShowCameraViewCenter = 1 << 2,     //!< Shows the camera's view center as a sphere.
+      ShowCameraRotationCenter = 1 << 3, //!< Shows the camera's rotation center as a sphere.
+      ShowLightSourceOrigins = 1 << 4,   //!< Shows the light source origins as a sphere.
+      ShowFPS = 1 << 5,                  //!< Shows the frames per second (FPS).
+      ShowDebugPanel = 1 << 6,           //!< Shows the debug panel next to the map.
+    };
+    Q_ENUM( Map3DDebugFlag )
+    Q_DECLARE_FLAGS( Map3DDebugFlags, Map3DDebugFlag )
+    Q_FLAG( Map3DDebugFlags )
 
     /**
      * 3D point shape types.
@@ -7085,6 +7105,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ArcGisRestServiceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::InstancedMaterialFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Map3DDebugFlags )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
