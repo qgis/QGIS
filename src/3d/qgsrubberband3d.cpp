@@ -76,7 +76,7 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *en
 
 void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
 {
-  mMarkerEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mMarkerEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
   mMarkerGeometry = new QgsBillboardGeometry();
   mMarkerGeometryRenderer = new Qt3DRender::QGeometryRenderer;
   mMarkerGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
@@ -93,7 +93,7 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
 
 void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
 {
-  mLineEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mLineEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
 
   QgsLineVertexData dummyLineData;
   mLineGeometry = dummyLineData.createGeometry( mLineEntity );
@@ -126,7 +126,7 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
 
 void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
 {
-  mPolygonEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mPolygonEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
 
   mPolygonGeometry = new QgsTessellatedPolygonGeometry();
 

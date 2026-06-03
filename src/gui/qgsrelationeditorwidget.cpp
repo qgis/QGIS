@@ -291,7 +291,7 @@ void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext 
 
   if ( context.mapCanvas() && context.cadDockWidget() )
   {
-    mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( context.mapCanvas(), context.cadDockWidget() ) );
+    mMapToolDigitize = make_qobject_unique<QgsMapToolDigitizeFeature>( context.mapCanvas(), context.cadDockWidget() );
     mMapToolDigitize->setButton( mAddFeatureGeometryButton );
   }
 

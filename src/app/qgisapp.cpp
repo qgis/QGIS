@@ -12626,7 +12626,7 @@ void QgisApp::customize()
 
   if ( !mCustomizationDialog )
   {
-    mCustomizationDialog.reset( new QgsCustomizationDialog( this ) );
+    mCustomizationDialog = make_qobject_unique<QgsCustomizationDialog>( this );
   }
 
   mCustomizationDialog->show();

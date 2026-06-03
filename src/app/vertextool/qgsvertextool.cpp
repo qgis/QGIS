@@ -298,12 +298,12 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
   mEndpointMarker->setVisible( false );
 
   // Control polygon for NURBS curves
-  mNurbsControlPolygonBand.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Line ) );
+  mNurbsControlPolygonBand = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Line );
   applyNurbsControlPolygonStyle( mNurbsControlPolygonBand.get() );
   mNurbsControlPolygonBand->setVisible( false );
 
   // Poly-Bézier visualization
-  mBezierMarker.reset( new QgsBezierMarker( canvas, this ) );
+  mBezierMarker = make_qobject_unique<QgsBezierMarker>( canvas, this );
 }
 
 QgsVertexTool::~QgsVertexTool()
@@ -1662,7 +1662,7 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
       return;
     }
 
-    mLockedFeature.reset( new QgsLockedFeature( fid, layer, mCanvas ) );
+    mLockedFeature = make_qobject_unique<QgsLockedFeature>( fid, layer, mCanvas );
     connect( mLockedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
     for ( int i = 0; i < mSelectedVertices.length(); ++i )
     {

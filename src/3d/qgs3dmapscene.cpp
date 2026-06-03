@@ -568,7 +568,7 @@ void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoi
   if ( !mMapOverlayEntity )
   {
     QgsWindow3DEngine *engine = qobject_cast<QgsWindow3DEngine *>( mEngine );
-    mMapOverlayEntity.reset( new QgsMapOverlayEntity( engine, &overlayRenderView, &mMap, this ) );
+    mMapOverlayEntity = make_qobject_unique<QgsMapOverlayEntity>( engine, &overlayRenderView, &mMap, this );
     mMapOverlayEntity->setEnabled( true );
     overlayRenderView.setEnabled( true );
   }
