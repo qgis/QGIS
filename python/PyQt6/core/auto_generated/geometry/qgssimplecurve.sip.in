@@ -92,6 +92,23 @@ corresponds to the last point in the simple curve.
 
 protected:
   void splitCurveAtVertexProtected( int index, QVector< double > &x1, QVector< double > &y1, QVector< double > &z1, QVector< double > &m1, QVector< double > &x2, QVector< double > &y2, QVector< double > &z2, QVector< double > &m2 ) const;
+%Docstring
+Returns coordinate vectors for the splitted curves.
+
+:param index: Vertex index that will be used to split the curve
+:param x1: x coordinate vector of the first output curve
+:param y1: y coordinate vector of the first output curve
+:param z1: z coordinate vector of the first output curve
+:param m1: m coordinate vector of the first output curve
+:param x2: x coordinate vector of the second output curve
+:param y2: y coordinate vector of the second output curve
+:param z2: z coordinate vector of the second output curve
+:param m2: m coordinate vector of the second output curve
+
+.. note::
+
+   The vertex ``index`` must correspond to a segment vertex, not a curve vertex.
+%End
 
 };
 

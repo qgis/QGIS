@@ -366,7 +366,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
 
     /**
      * Splits the curve at the specified vertex \a index, returning two curves which represent the portion of the
-     * curve up to an including the vertex at \a index, and the portion of the curve from the vertex at \a index (inclusive)
+     * curve up to including the vertex at \a index, and the portion of the curve from the vertex at \a index (inclusive)
      * to the end of the curve.
      *
      * \note The vertex \a index must correspond to a segment vertex, not a curve vertex.
