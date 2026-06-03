@@ -17,6 +17,57 @@
 
 #include "qgssimplecurve.h"
 
+#include "qgsapplication.h"
+#include "qgsgeometryutils.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+int QgsSimpleCurve::wkbSize( QgsAbstractGeometry::WkbFlags ) const
+{
+  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
+  return binarySize;
+}
+
+QByteArray QgsSimpleCurve::asWkb( WkbFlags flags ) const
+{
+  QByteArray wkbArray;
+  wkbArray.resize( QgsSimpleCurve::wkbSize( flags ) );
+  QgsWkbPtr wkb( wkbArray );
+  wkb << static_cast<char>( QgsApplication::endian() );
+  wkb << static_cast<quint32>( wkbType() );
+  QgsPointSequence pts;
+  points( pts );
+  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure(), flags );
+  return wkbArray;
+}
+
+QString QgsSimpleCurve::asWkt( int precision ) const
+{
+  QString wkt = wktTypeStr() + ' ';
+
+  if ( isEmpty() )
+    wkt += "EMPTY"_L1;
+  else
+  {
+    QgsPointSequence pts;
+    points( pts );
+    wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
+  }
+  return wkt;
+}
+
+void QgsSimpleCurve::clear()
+{
+  mX.clear();
+  mY.clear();
+  mZ.clear();
+  mM.clear();
+  clearCache();
+}
+
 QgsPoint QgsSimpleCurve::pointN( int i ) const
 {
   if ( i < 0 || i >= mX.size() )
