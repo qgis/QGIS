@@ -88,6 +88,7 @@
 #include "qgsalgorithmdetectdatasetchanges.h"
 #include "qgsalgorithmdifference.h"
 #include "qgsalgorithmdissolve.h"
+#include "qgsalgorithmdistancematrix.h"
 #include "qgsalgorithmdistancewithin.h"
 #include "qgsalgorithmdownloadvectortiles.h"
 #include "qgsalgorithmdrape.h"
@@ -441,6 +442,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDetectVectorChangesAlgorithm() );
   addAlgorithm( new QgsDifferenceAlgorithm() );
   addAlgorithm( new QgsDissolveAlgorithm() );
+  addAlgorithm( new QgsDistanceMatrixAlgorithm() );
   addAlgorithm( new QgsDownloadVectorTilesAlgorithm() );
   addAlgorithm( new QgsDrapeToMAlgorithm() );
   addAlgorithm( new QgsDrapeToZAlgorithm() );
