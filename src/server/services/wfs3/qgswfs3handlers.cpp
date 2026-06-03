@@ -604,6 +604,14 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
             throw QgsServerApiImproperlyConfiguredException( u"Referenced layer with id '%1' not found for relation reference field '%2'"_s.arg( referencedLayerId, fieldIdentifier ) );
           }
         }
+        else if ( widgetType == "DateTime"_L1 )
+        {
+          fInfo.format = "date-time";
+        }
+        else if ( widgetType == "Date"_L1 )
+        {
+          fInfo.format = "date";
+        }
         else
         {
           QgsMessageLog::logMessage( u"Unhandled widget type '%1' for field '%2'"_s.arg( widgetType, fieldIdentifier ), u"Server"_s, Qgis::MessageLevel::Warning );
