@@ -240,18 +240,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
      */
     void setPoints( const QgsPointSequence &points );
 
-    /**
-     * Appends the contents of another circular \a string to the end of this circular string.
-     *
-     * \param string circular string to append. Ownership is not transferred.
-     *
-     * \warning It is the caller's responsibility to ensure that the first point in the appended
-     * \a string matches the last point in the existing curve, or the result will be undefined.
-     *
-     * \since QGIS 3.20
-     */
-    void append( const QgsCircularString *string );
-
     double length() const override;
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;

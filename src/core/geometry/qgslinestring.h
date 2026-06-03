@@ -457,12 +457,6 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     void setPoints( const QgsPointSequence &points );
 
     /**
-     * Appends the contents of another line string to the end of this line string.
-     * \param line line to append. Ownership is not transferred.
-     */
-    void append( const QgsLineString *line );
-
-    /**
      * Adds a new vertex to the end of the line string.
      * \param pt vertex to add
      */

@@ -1281,66 +1281,6 @@ void QgsLineString::setPoints( const QgsPointSequence &points )
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::append( const QgsLineString *line )
-{
-  if ( !line )
-  {
-    return;
-  }
-
-  if ( numPoints() < 1 )
-  {
-    setZMTypeFromSubGeometry( line, Qgis::WkbType::LineString );
-  }
-
-  // do not store duplicate points
-  if ( numPoints() > 0 && line->numPoints() > 0 && endPoint() == line->startPoint() )
-  {
-    mX.pop_back();
-    mY.pop_back();
-
-    if ( is3D() )
-    {
-      mZ.pop_back();
-    }
-    if ( isMeasure() )
-    {
-      mM.pop_back();
-    }
-  }
-
-  mX += line->mX;
-  mY += line->mY;
-
-  if ( is3D() )
-  {
-    if ( line->is3D() )
-    {
-      mZ += line->mZ;
-    }
-    else
-    {
-      // if append line does not have z coordinates, fill with NaN to match number of points in final line
-      mZ.insert( mZ.count(), mX.size() - mZ.size(), std::numeric_limits<double>::quiet_NaN() );
-    }
-  }
-
-  if ( isMeasure() )
-  {
-    if ( line->isMeasure() )
-    {
-      mM += line->mM;
-    }
-    else
-    {
-      // if append line does not have m values, fill with NaN to match number of points in final line
-      mM.insert( mM.count(), mX.size() - mM.size(), std::numeric_limits<double>::quiet_NaN() );
-    }
-  }
-
-  clearCache(); //set bounding box invalid
-}
-
 QgsLineString *QgsLineString::reversed() const
 {
   return qgis::down_cast< QgsLineString *>( QgsSimpleCurve::reversed() );
