@@ -26,6 +26,7 @@
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
 
+
 ///@cond PRIVATE
 
 
@@ -240,6 +241,8 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
     FieldStatistic( 18, QStringLiteral( "mean_length" ), QMetaType::Type::Double ),
   };
 
+  QgsAttributes nonMatchingJoinAttributes;
+
   for ( const QString &field : std::as_const( joinedFieldNames ) )
   {
     const int fieldIndex = joinSource->fields().lookupField( field );
@@ -275,6 +278,17 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
             addFieldWithType( joinField, statistic.name, statistic.type );
           else
             addFieldKeepType( joinField, statistic.name );
+
+          // count, unique, empty and filled values should be 0
+          // see https://github.com/qgis/QGIS/issues/40108
+          if ( statistic.enumIndex == 0 || statistic.enumIndex == 1 || statistic.enumIndex == 14 || statistic.enumIndex == 15 )
+          {
+            nonMatchingJoinAttributes.append( QVariant( 0 ) );
+          }
+          else
+          {
+            nonMatchingJoinAttributes.append( QVariant() );
+          }
         }
       }
     }
@@ -294,7 +308,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
 
   QgsFeatureIterator sourceIter = baseSource->getFeatures();
   QgsFeature f;
-  const double step = baseSource->featureCount() > 0 ? 100.0 / baseSource->featureCount() : 1;
+  const double step = baseSource->featureCount() > 0 ? 100.0 / static_cast<double>( baseSource->featureCount() ) : 1;
   long long i = 0;
   while ( sourceIter.nextFeature( f ) )
   {
@@ -303,12 +317,17 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
 
     if ( !f.hasGeometry() )
     {
+      qDebug() << "NO GEOMETRY";
       if ( !discardNonMatching )
       {
         // ensure consistent count of attributes - otherwise non matching
         // features will have incorrect attribute length
         // and provider may reject them
-        f.resizeAttributes( outputFields.size() );
+        qDebug() << "OUTPUT FIELDS" << outputFields.size();
+        QgsAttributes outputAttributes = f.attributes();
+        outputAttributes.append( nonMatchingJoinAttributes );
+        qDebug() << "OUTPUT ATTRS" << outputAttributes.size();
+        f.setAttributes( outputAttributes );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
@@ -349,7 +368,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
     }
 
     i++;
-    feedback->setProgress( i * step );
+    feedback->setProgress( static_cast<double>( i ) * step );
 
     if ( feedback->isCanceled() )
       break;
@@ -365,7 +384,11 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
         // ensure consistent count of attributes - otherwise non matching
         // features will have incorrect attribute length
         // and provider may reject them
-        f.resizeAttributes( outputFields.size() );
+        qDebug() << "OUTPUT FIELDS" << outputFields.size();
+        QgsAttributes outputAttributes = f.attributes();
+        outputAttributes.append( nonMatchingJoinAttributes );
+        qDebug() << "OUTPUT ATTRS" << outputAttributes.size();
+        f.setAttributes( outputAttributes );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
