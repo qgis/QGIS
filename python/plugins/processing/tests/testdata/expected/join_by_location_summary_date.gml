@@ -19,8 +19,8 @@
       <ogr:date_unique>4</ogr:date_unique>
       <ogr:date_empty>1</ogr:date_empty>
       <ogr:date_filled>3</ogr:date_filled>
-      <ogr:date_min>2005-09-13</ogr:date_min>
-      <ogr:date_max>2017-09-13</ogr:date_max>
+      <ogr:date_min>2005/09/13</ogr:date_min>
+      <ogr:date_max>2017/09/13</ogr:date_max>
     </ogr:join_by_location_summary_date>
   </ogr:featureMember>
   <ogr:featureMember>
@@ -67,8 +67,8 @@
       <ogr:date_unique>1</ogr:date_unique>
       <ogr:date_empty>0</ogr:date_empty>
       <ogr:date_filled>1</ogr:date_filled>
-      <ogr:date_min>2011-09-13</ogr:date_min>
-      <ogr:date_max>2011-09-13</ogr:date_max>
+      <ogr:date_min>2011/09/13</ogr:date_min>
+      <ogr:date_max>2011/09/13</ogr:date_max>
     </ogr:join_by_location_summary_date>
   </ogr:featureMember>
   <ogr:featureMember>
@@ -97,8 +97,8 @@
       <ogr:date_unique>2</ogr:date_unique>
       <ogr:date_empty>0</ogr:date_empty>
       <ogr:date_filled>2</ogr:date_filled>
-      <ogr:date_min>2005-09-13</ogr:date_min>
-      <ogr:date_max>2014-03-13</ogr:date_max>
+      <ogr:date_min>2005/09/13</ogr:date_min>
+      <ogr:date_max>2014/03/13</ogr:date_max>
     </ogr:join_by_location_summary_date>
   </ogr:featureMember>
 </ogr:FeatureCollection>
