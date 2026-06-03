@@ -1730,14 +1730,16 @@ void TestQgsDxfExport::testMarkerOffset()
     const BlockVertices v = scanBlockVertices( bytes );
     double maxAbsX = 0;
     double maxAbsY = 0;
-    const qsizetype n = std::min( v.xs.size(), v.ys.size() );
-    for ( qsizetype i = 0; i < n; ++i )
+    const int n = static_cast<int>( std::min( v.xs.size(), v.ys.size() ) );
+    for ( int i = 0; i < n; ++i )
     {
+      const double x = v.xs.at( i );
+      const double y = v.ys.at( i );
       // Skip HATCH/POLYLINE elevation reference points at the entity origin.
-      if ( qgsDoubleNear( v.xs[i], 0.0 ) && qgsDoubleNear( v.ys[i], 0.0 ) )
+      if ( qgsDoubleNear( x, 0.0 ) && qgsDoubleNear( y, 0.0 ) )
         continue;
-      maxAbsX = std::max( maxAbsX, std::fabs( v.xs[i] ) );
-      maxAbsY = std::max( maxAbsY, std::fabs( v.ys[i] ) );
+      maxAbsX = std::max( maxAbsX, std::fabs( x ) );
+      maxAbsY = std::max( maxAbsY, std::fabs( y ) );
     }
     return QPointF( maxAbsX, maxAbsY );
   };
@@ -1838,13 +1840,15 @@ void TestQgsDxfExport::testMarkerOffset()
       // For a Top-Left anchor at 5 mm @ 1:1000, the SVG render is displaced
       // by ~2.5 m in X and ~2.5 m in Y from origin (in absolute value).
       double maxAbsX = 0, maxAbsY = 0;
-      const qsizetype n = std::min( v.xs.size(), v.ys.size() );
-      for ( qsizetype i = 0; i < n; ++i )
+      const int n = static_cast<int>( std::min( v.xs.size(), v.ys.size() ) );
+      for ( int i = 0; i < n; ++i )
       {
-        if ( qgsDoubleNear( v.xs[i], 0.0 ) && qgsDoubleNear( v.ys[i], 0.0 ) )
+        const double x = v.xs.at( i );
+        const double y = v.ys.at( i );
+        if ( qgsDoubleNear( x, 0.0 ) && qgsDoubleNear( y, 0.0 ) )
           continue;
-        maxAbsX = std::max( maxAbsX, std::fabs( v.xs[i] ) );
-        maxAbsY = std::max( maxAbsY, std::fabs( v.ys[i] ) );
+        maxAbsX = std::max( maxAbsX, std::fabs( x ) );
+        maxAbsY = std::max( maxAbsY, std::fabs( y ) );
       }
       // With anchor applied: extent reaches roughly 0..5 m on each axis (max |coord| ~5).
       // Without anchor: extent is roughly -2.5..+2.5 (max |coord| ~2.5).
@@ -1894,7 +1898,7 @@ void TestQgsDxfExport::testSvgMarkerClipsOutOfViewport()
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
 
-const QString svgContent = QStringLiteral( R"SVG(<?xml version="1.0"?>
+  const QString svgContent = QStringLiteral( R"SVG(<?xml version="1.0"?>
 <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
   <rect x="-1000" y="-1000" width="3000" height="3000" fill="#aabbcc"/>
   <rect x="10" y="10" width="80" height="80" fill="#cc3344"/>
