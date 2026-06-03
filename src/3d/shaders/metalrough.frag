@@ -432,7 +432,7 @@ vec3 pbrModel(const in int lightIndex,
 #endif
 
         // calculate multi-scatter energy compensation factor for direct light
-        // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.5
+        // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.2
         vec2 environmentBrdf = environmentBrdfApproximation(roughness, vDotN);
         float directionalAlbedo = environmentBrdf.x + environmentBrdf.y;
         vec3 energyCompensation = vec3(1.0) + F0 * (1.0 / max(directionalAlbedo, 0.001) - 1.0);
@@ -554,7 +554,7 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
     vec3 specular = indirectSpecular * (F0 * environmentBrdf.x + environmentBrdf.y);
 
     // multi-scatter energy compensation factor for indirect light
-    // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.5
+    // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.2
     float directionalAlbedo = environmentBrdf.x + environmentBrdf.y;
     vec3 energyCompensation = vec3(1.0) + F0 * (1.0 / max(directionalAlbedo, 0.001) - 1.0);
     specular *= energyCompensation;
