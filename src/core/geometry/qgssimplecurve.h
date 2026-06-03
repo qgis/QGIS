@@ -34,6 +34,20 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
   public:
     QgsSimpleCurve() = default;
 
+    /**
+     * Appends the contents of another simple curve to the end of this simple curve.
+     * \param curve curve to append. Ownership is not transferred.
+     *
+     * \note The curve type to be appended must match the base curve type. That is,
+     * Only LinearStrings can be appended to LinearStrings and only CircularStrings
+     * can be appended to CircularStrings.
+     *
+     * \warning It is the caller's responsibility to ensure that the first point in
+     * the appended \a curve matches the last point in the existing curve, or the
+     * result will be undefined.
+     */
+    void append( const QgsSimpleCurve *curve );
+
 #ifndef SIP_RUN
 
     /**

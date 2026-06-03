@@ -285,14 +285,6 @@ string will inherit the dimensionality of the first point in the list.
                cleared.
 %End
 
-    void append( const QgsLineString *line );
-%Docstring
-Appends the contents of another line string to the end of this line
-string.
-
-:param line: line to append. Ownership is not transferred.
-%End
-
     void addVertex( const QgsPoint &pt );
 %Docstring
 Adds a new vertex to the end of the line string.

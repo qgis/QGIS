@@ -359,3 +359,68 @@ void QgsSimpleCurve::splitCurveAtVertexProtected(
 
   return;
 }
+
+void QgsSimpleCurve::append( const QgsSimpleCurve *curve )
+{
+  if ( !curve || curve->isEmpty() || QgsWkbTypes::flatType( mWkbType ) != QgsWkbTypes::flatType( curve->wkbType() ) )
+  {
+    return;
+  }
+
+  if ( numPoints() < 1 )
+  {
+    setZMTypeFromSubGeometry( curve, QgsWkbTypes::flatType( mWkbType ) );
+  }
+
+  // do not store duplicate points
+  if ( numPoints() > 0
+       && curve->numPoints() > 0
+       && qgsDoubleNear( endPoint().x(), curve->startPoint().x() )
+       && qgsDoubleNear( endPoint().y(), curve->startPoint().y() )
+       && ( !is3D() || !curve->is3D() || qgsDoubleNear( endPoint().z(), curve->startPoint().z() ) )
+       && ( !isMeasure() || !curve->isMeasure() || qgsDoubleNear( endPoint().m(), curve->startPoint().m() ) ) )
+  {
+    mX.pop_back();
+    mY.pop_back();
+
+    if ( is3D() && curve->is3D() )
+    {
+      mZ.pop_back();
+    }
+    if ( isMeasure() && curve->isMeasure() )
+    {
+      mM.pop_back();
+    }
+  }
+
+  mX += curve->mX;
+  mY += curve->mY;
+
+  if ( is3D() )
+  {
+    if ( curve->is3D() )
+    {
+      mZ += curve->mZ;
+    }
+    else
+    {
+      // if append line does not have z coordinates, fill with NaN to match number of points in final line
+      mZ.insert( mZ.count(), mX.size() - mZ.size(), std::numeric_limits<double>::quiet_NaN() );
+    }
+  }
+
+  if ( isMeasure() )
+  {
+    if ( curve->isMeasure() )
+    {
+      mM += curve->mM;
+    }
+    else
+    {
+      // if append line does not have m values, fill with NaN to match number of points in final line
+      mM.insert( mM.count(), mX.size() - mM.size(), std::numeric_limits<double>::quiet_NaN() );
+    }
+  }
+
+  clearCache(); //set bounding box invalid
+}
