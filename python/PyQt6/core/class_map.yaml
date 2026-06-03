@@ -1248,7 +1248,7 @@ QgsArcGisRestContext.setObjectIdFieldName: src/core/providers/arcgis/qgsarcgisre
 QgsArcGisRestContext.setTimeZone: src/core/providers/arcgis/qgsarcgisrestutils.h#L73
 QgsArcGisRestContext.timeZone: src/core/providers/arcgis/qgsarcgisrestutils.h#L80
 QgsArcGisRestContext: src/core/providers/arcgis/qgsarcgisrestutils.h#L65
-QgsArcGisRestUtils.colorInterpretationFromBandName: src/core/providers/arcgis/qgsarcgisrestutils.h#L298
+QgsArcGisRestUtils.colorInterpretationFromBandName: src/core/providers/arcgis/qgsarcgisrestutils.h#L340
 QgsArcGisRestUtils.convertColor: src/core/providers/arcgis/qgsarcgisrestutils.h#L177
 QgsArcGisRestUtils.convertDateTime: src/core/providers/arcgis/qgsarcgisrestutils.h#L192
 QgsArcGisRestUtils.convertFieldType: src/core/providers/arcgis/qgsarcgisrestutils.h#L118
@@ -1260,7 +1260,7 @@ QgsArcGisRestUtils.convertRectangle: src/core/providers/arcgis/qgsarcgisrestutil
 QgsArcGisRestUtils.convertSpatialReference: src/core/providers/arcgis/qgsarcgisrestutils.h#L146
 QgsArcGisRestUtils.crsToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L210
 QgsArcGisRestUtils.dataTypeFromString: src/core/providers/arcgis/qgsarcgisrestutils.h#L289
-QgsArcGisRestUtils.defaultNoDataForDataType: src/core/providers/arcgis/qgsarcgisrestutils.h#L310
+QgsArcGisRestUtils.defaultNoDataForDataType: src/core/providers/arcgis/qgsarcgisrestutils.h#L352
 QgsArcGisRestUtils.featureToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L247
 QgsArcGisRestUtils.fieldDefinitionToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L268
 QgsArcGisRestUtils.geometryToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L201
