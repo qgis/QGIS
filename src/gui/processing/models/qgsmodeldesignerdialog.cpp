@@ -335,7 +335,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   // We use a QObjectUniquePtr here because we want to delete QgsModelViewToolSelect
   // mouse handles before everything else and don't want to wait for QObject destructor to destroy it
-  mSelectTool.reset( new QgsModelViewToolSelect( mView ) );
+  mSelectTool = make_qobject_unique<QgsModelViewToolSelect>( mView );
   mSelectTool->setAction( mActionSelectMoveItem );
 
   mToolsActionGroup->addAction( mActionSelectMoveItem );

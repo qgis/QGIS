@@ -813,20 +813,20 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
   connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged );
 
-  mCrossSectionRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Polygon ) );
+  mCrossSectionRubberBand = make_qobject_unique<QgsRubberBand>( mMainCanvas, Qgis::GeometryType::Polygon );
   QColor polygonColor = QColorConstants::Red.lighter();
   polygonColor.setAlphaF( 0.5 );
   mCrossSectionRubberBand->setColor( polygonColor );
 
   if ( !mViewFrustumHighlight )
   {
-    mViewFrustumHighlight.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
+    mViewFrustumHighlight = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Polygon );
     mViewFrustumHighlight->setColor( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
   }
 
   if ( !mViewExtentHighlight )
   {
-    mViewExtentHighlight.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
+    mViewExtentHighlight = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Polygon );
     mViewExtentHighlight->setColor( QColor::fromRgba( qRgba( 255, 0, 0, 50 ) ) );
   }
 }
