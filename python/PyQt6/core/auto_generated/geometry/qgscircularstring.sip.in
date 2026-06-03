@@ -186,14 +186,6 @@ circular string.
 
     virtual void swapXy();
 
-    virtual double xAt( int index ) const /HoldGIL/;
-
-    virtual double yAt( int index ) const /HoldGIL/;
-
-    virtual double zAt( int index ) const /HoldGIL/;
-
-    virtual double mAt( int index ) const /HoldGIL/;
-
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
