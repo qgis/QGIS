@@ -153,7 +153,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
     /**
-     * Returns the point and vertex id of a point within the curve.
+     * Returns the point and vertex type of a point within the curve.
      * \param node node number, where the first node is 0
      * \param point will be set to point at corresponding node in the curve
      * \param type will be set to the vertex type of the node
