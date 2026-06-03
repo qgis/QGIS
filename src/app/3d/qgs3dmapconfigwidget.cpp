@@ -184,8 +184,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mCameraMovementSpeed->setValue( mMap->cameraMovementSpeed() );
 
   chkShowLabels->setChecked( mMap->showLabels() );
-  mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
-  chkShowDebugPanel->setChecked( mMap->showDebugPanel() );
+  mFpsCounterCheckBox->setChecked( mMap->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowFPS ) );
+  chkShowDebugPanel->setChecked( mMap->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture );
@@ -388,8 +388,10 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setCameraNavigationMode( mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>() );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
   mMap->setShowLabels( chkShowLabels->isChecked() );
-  mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
-  mMap->setShowDebugPanel( chkShowDebugPanel->isChecked() );
+  Qgis::Map3DDebugFlags debugFlags = mMap->debugFlags();
+  debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowFPS, mFpsCounterCheckBox->isChecked() );
+  debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowDebugPanel, chkShowDebugPanel->isChecked() );
+  mMap->setDebugFlags( debugFlags );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
 
   const std::unique_ptr<QgsAbstractMaterialSettings> terrainMaterial( widgetTerrainMaterial->settings() );

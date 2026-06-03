@@ -7735,6 +7735,36 @@ Qgis.PlotToolFlags = lambda flags=0: Qgis.PlotToolFlag(flags)
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Map3DDebugFlag.ShowTerrainBoundingBoxes.__doc__ = "Displays bounding boxes of terrain tiles."
+Qgis.Map3DDebugFlag.ShowTerrainTileInfo.__doc__ = "Displays extra tile info on top of terrain tiles."
+Qgis.Map3DDebugFlag.ShowCameraViewCenter.__doc__ = "Shows the camera's view center as a sphere."
+Qgis.Map3DDebugFlag.ShowCameraRotationCenter.__doc__ = "Shows the camera's rotation center as a sphere."
+Qgis.Map3DDebugFlag.ShowLightSourceOrigins.__doc__ = "Shows the light source origins as a sphere."
+Qgis.Map3DDebugFlag.ShowFPS.__doc__ = "Shows the frames per second (FPS)."
+Qgis.Map3DDebugFlag.ShowDebugPanel.__doc__ = "Shows the debug panel next to the map."
+Qgis.Map3DDebugFlag.__doc__ = """Flags that control debug options for 3D maps.
+
+.. warning::
+
+   These are debugging options only, and are not considered part of stable API.
+
+.. versionadded:: 4.2
+
+* ``ShowTerrainBoundingBoxes``: Displays bounding boxes of terrain tiles.
+* ``ShowTerrainTileInfo``: Displays extra tile info on top of terrain tiles.
+* ``ShowCameraViewCenter``: Shows the camera's view center as a sphere.
+* ``ShowCameraRotationCenter``: Shows the camera's rotation center as a sphere.
+* ``ShowLightSourceOrigins``: Shows the light source origins as a sphere.
+* ``ShowFPS``: Shows the frames per second (FPS).
+* ``ShowDebugPanel``: Shows the debug panel next to the map.
+
+"""
+# --
+Qgis.Map3DDebugFlag.baseClass = Qgis
+Qgis.Map3DDebugFlags = lambda flags=0: Qgis.Map3DDebugFlag(flags)
+Qgis.Map3DDebugFlags.baseClass = Qgis
+Map3DDebugFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
 Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
 Qgis.Point3DShape.Cone.__doc__ = "Cone"

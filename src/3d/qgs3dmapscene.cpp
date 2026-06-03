@@ -532,7 +532,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   static int frameCount = 0;
   static float accumulatedTime = 0.0f;
 
-  if ( !mMap.isFpsCounterEnabled() )
+  if ( !mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowFPS ) )
   {
     frameCount = 0;
     accumulatedTime = 0;
@@ -669,7 +669,7 @@ void Qgs3DMapScene::createTerrainDeferred()
     terrainOrGlobe->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
 
     terrainOrGlobe->setParent( this );
-    terrainOrGlobe->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
+    terrainOrGlobe->setShowBoundingBoxes( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes ) );
 
     mSceneEntities << terrainOrGlobe;
 
@@ -1160,10 +1160,10 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   rendererCameraViewCenter->setRadius( 10 );
   mEntityCameraViewCenter->addComponent( rendererCameraViewCenter );
 
-  mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
+  mEntityCameraViewCenter->setEnabled( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter ) );
   mEntityCameraViewCenter->setParent( this );
 
-  connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this] { mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() ); } );
+  connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this] { mEntityCameraViewCenter->setEnabled( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter ) ); } );
 }
 
 void Qgs3DMapScene::setSceneState( Qgs3DMapScene::SceneState state )
@@ -1453,7 +1453,9 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
 
   connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center ) { trRotationCenter->setTranslation( center ); } );
 
-  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this] { mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() ); } );
+  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this] {
+    mEntityRotationCenter->setEnabled( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowCameraRotationCenter ) );
+  } );
 }
 
 void Qgs3DMapScene::on3DAxisSettingsChanged()

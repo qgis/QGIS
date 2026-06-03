@@ -429,50 +429,95 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     // misc configuration
     //
 
-    //! Sets whether to display bounding boxes of terrain tiles (for debugging)
-    void setShowTerrainBoundingBoxes( bool enabled );
-    //! Returns whether to display bounding boxes of terrain tiles (for debugging)
-    bool showTerrainBoundingBoxes() const;
-    //! Sets whether to display extra tile info on top of terrain tiles (for debugging)
-    void setShowTerrainTilesInfo( bool enabled );
-    //! Returns whether to display extra tile info on top of terrain tiles (for debugging)
-    bool showTerrainTilesInfo() const;
+    /**
+     * Sets flags that control debugging options for the map.
+     *
+     * \warning These are debugging options only, and are not considered part of stable API.
+     *
+     * \see debugFlags()
+     * \since QGIS 4.2
+     */
+    void setDebugFlags( Qgis::Map3DDebugFlags flags );
+
+    /**
+     * Returns the flags that control debugging options for the map.
+     *
+     * \warning These are debugging options only, and are not considered part of stable API.
+     *
+     * \see setDebugFlags()
+     * \since QGIS 4.2
+     */
+    Qgis::Map3DDebugFlags debugFlags() const;
+
+    /**
+     * Sets whether to display bounding boxes of terrain tiles (for debugging).
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
+     */
+    Q_DECL_DEPRECATED void setShowTerrainBoundingBoxes( bool enabled ) SIP_DEPRECATED;
+
+    /**
+     * Returns whether to display bounding boxes of terrain tiles (for debugging).
+     *
+     * \deprecated QGIS 4.2. Use debugFlags() instead.
+     */
+    Q_DECL_DEPRECATED bool showTerrainBoundingBoxes() const SIP_DEPRECATED;
+
+    /**
+     * Sets whether to display extra tile info on top of terrain tiles (for debugging).
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
+     */
+    Q_DECL_DEPRECATED void setShowTerrainTilesInfo( bool enabled ) SIP_DEPRECATED;
+
+    /**
+     * Returns whether to display extra tile info on top of terrain tiles (for debugging).
+     *
+     * \deprecated QGIS 4.2. Use debugFlags() instead.
+     */
+    Q_DECL_DEPRECATED bool showTerrainTilesInfo() const SIP_DEPRECATED;
 
     /**
      * Sets whether to show camera's view center as a sphere (for debugging)
-     * \since QGIS 3.4
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
      */
-    void setShowCameraViewCenter( bool enabled );
+    Q_DECL_DEPRECATED void setShowCameraViewCenter( bool enabled ) SIP_DEPRECATED;
 
     /**
      * Returns whether to show camera's view center as a sphere (for debugging)
-     * \since QGIS 3.4
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
      */
-    bool showCameraViewCenter() const;
+    Q_DECL_DEPRECATED bool showCameraViewCenter() const SIP_DEPRECATED;
 
     /**
      * Sets whether to show camera's rotation center as a sphere (for debugging)
-     * \since QGIS 3.24
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
      */
-    void setShowCameraRotationCenter( bool enabled );
+    Q_DECL_DEPRECATED void setShowCameraRotationCenter( bool enabled ) SIP_DEPRECATED;
 
     /**
      * Returns whether to show camera's rotation center as a sphere (for debugging)
-     * \since QGIS 3.24
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
      */
-    bool showCameraRotationCenter() const;
+    Q_DECL_DEPRECATED bool showCameraRotationCenter() const SIP_DEPRECATED;
 
     /**
      * Sets whether to show light source origins as a sphere (for debugging)
-     * \since QGIS 3.16
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
      */
-    void setShowLightSourceOrigins( bool enabled );
+    Q_DECL_DEPRECATED void setShowLightSourceOrigins( bool enabled ) SIP_DEPRECATED;
 
     /**
      * Returns whether to show light source origins as a sphere (for debugging)
-     * \since QGIS 3.16
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
      */
-    bool showLightSourceOrigins() const;
+    Q_DECL_DEPRECATED bool showLightSourceOrigins() const SIP_DEPRECATED;
 
     //! Sets whether to display labels on terrain tiles
     void setShowLabels( bool enabled );
@@ -735,17 +780,17 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Returns whether FPS counter label is enabled
-     * \see setIsFpsCounterEnabled()
-     * \since QGIS 3.18
+     *
+     * \deprecated QGIS 4.2. Use debugFlags() instead.
      */
-    bool isFpsCounterEnabled() const;
+    Q_DECL_DEPRECATED bool isFpsCounterEnabled() const SIP_DEPRECATED;
 
     /**
-     * Sets whether FPS counter label is enabled
-     * \see isFpsCounterEnabled()
-     * \since QGIS 3.18
+     * Sets whether FPS counter label is enabled.
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
      */
-    void setIsFpsCounterEnabled( bool fpsCounterEnabled );
+    Q_DECL_DEPRECATED void setIsFpsCounterEnabled( bool fpsCounterEnabled ) SIP_DEPRECATED;
 
     /**
      * Returns whether the 2D terrain surface will be rendered.
@@ -849,15 +894,17 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Sets whether the debug side panel is shown
-     * \since QGIS 3.42
+     *
+     * \deprecated QGIS 4.2. Use setDebugFlags() instead.
      */
-    void setShowDebugPanel( bool enabled );
+    Q_DECL_DEPRECATED void setShowDebugPanel( bool enabled ) SIP_DEPRECATED;
 
     /**
      * Returns whether the debug side panel is shown
-     * \since QGIS 3.42
+     *
+     * \deprecated QGIS 4.2. Use debugFlags() instead.
      */
-    bool showDebugPanel() const;
+    Q_DECL_DEPRECATED bool showDebugPanel() const SIP_DEPRECATED;
 
     /**
      * Returns whether 2D map overlay is enabled
@@ -1220,16 +1267,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mTerrainShadingEnabled = false;              //!< Whether terrain should be shaded taking lights into account
     QgsPhongMaterialSettings mTerrainShadingMaterial; //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
     QString mTerrainMapTheme;                         //!< Name of map theme used for terrain's texture (empty means use the current map theme)
-    bool mShowTerrainBoundingBoxes = false;           //!< Whether to show bounding boxes of entities - useful for debugging
-    bool mShowTerrainTileInfo = false;                //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
-    bool mShowCameraViewCenter = false;               //!< Whether to show camera view center as a sphere - useful for debugging
-    bool mShowCameraRotationCenter = false;           //!< Whether to show camera rotation center as a sphere - useful for debugging
-    bool mShowLightSources = false;                   //!< Whether to show the origin of light sources
-    bool mShowLabels = false;                         //!< Whether to display labels on terrain tiles
-    bool mStopUpdates = false;                        //!< Whether to stop updating scene on zoom
-    bool mShowDebugPanel = false;                     //!< Whether to show debug panel
-    QList<QgsLightSource *> mLightSources;            //!< List of light sources in the scene (owned by the settings)
-    double mFieldOfView = 45.0;                       //!< Camera lens field of view value
+    Qgis::Map3DDebugFlags mDebugFlags;
+    bool mShowLabels = false;                                                                                 //!< Whether to display labels on terrain tiles
+    bool mStopUpdates = false;                                                                                //!< Whether to stop updating scene on zoom
+    QList<QgsLightSource *> mLightSources;                                                                    //!< List of light sources in the scene (owned by the settings)
+    double mFieldOfView = 45.0;                                                                               //!< Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection; //<! Camera lens projection type
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
@@ -1239,7 +1281,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsPathResolver mPathResolver;
     QgsMapThemeCollection *mMapThemes = nullptr; //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
     double mDpi = 96;                            //!< Dot per inch value for the screen / painter
-    bool mIsFpsCounterEnabled = false;
 
     std::unique_ptr<QgsAbstract3DMapBackgroundSettings> mBackgroundSettings; //!< Stores background settings
     QgsShadowSettings mShadowSettings;                                       //!< Shadow rendering related settings
