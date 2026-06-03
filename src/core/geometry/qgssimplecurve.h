@@ -143,6 +143,351 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     QVector< double > mVector() const SIP_SKIP { return mM; }
 
     // Overrides
+
+#ifndef SIP_RUN
+    double xAt( int index ) const override;
+#else
+    // clang-format off
+
+  /**
+   * Returns the x-coordinate of the specified node in the simple curve.
+   *
+   * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+   *
+   * corresponds to the last point in the curve.
+   *
+   * - \throws IndexError if no point with the specified index exists.
+   */
+  double xAt( int index ) const override;
+  % MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    if ( a0 >= 0 )
+      return PyFloat_FromDouble( sipCpp->xAt( a0 ) );
+    else
+      return PyFloat_FromDouble( sipCpp->xAt( count + a0 ) );
+  }
+  % End
+// clang-format on
+#endif
+
+#ifndef SIP_RUN
+    double yAt( int index ) const override;
+#else
+      // clang-format off
+
+      /**
+       * Returns the y-coordinate of the specified node in the simple curve.
+       *
+       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       *
+       * corresponds to the last point in the curve.
+       *
+       * - \throws IndexError if no point with the specified index exists.
+       */
+      double yAt( int index ) const override;
+  % MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    if ( a0 >= 0 )
+      return PyFloat_FromDouble( sipCpp->yAt( a0 ) );
+    else
+      return PyFloat_FromDouble( sipCpp->yAt( count + a0 ) );
+  }
+  % End
+// clang-format on
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+   * Returns the z-coordinate of the specified node in the simple curve.
+   * \param index index of node, where the first node in the curve is 0
+   * \returns z-coordinate of node, or ``NaN`` if index is out of bounds or the curve
+   * does not have a z dimension
+   * \see setZAt()
+   */
+    double zAt( int index ) const override
+    {
+      if ( index >= 0 && index < mZ.size() )
+        return mZ.at( index );
+      else
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+#else
+      // clang-format off
+
+      /**
+       * Returns the z-coordinate of the specified node in the simple curve.
+       *
+       * - If the SimpleCurve does not have a z-dimension then ``NaN`` will be returned.
+       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       *
+       * corresponds to the last point in the curve.
+       *
+       * - \throws IndexError if no point with the specified index exists.
+       */
+      double zAt( int index ) const override;
+  % MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    if ( a0 >= 0 )
+      return PyFloat_FromDouble( sipCpp->zAt( a0 ) );
+    else
+      return PyFloat_FromDouble( sipCpp->zAt( count + a0 ) );
+  }
+  % End
+// clang-format on
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+   * Returns the m value of the specified node in the simple curve.
+   * \param index index of node, where the first node in the curve is 0
+   * \returns m value of node, or ``NaN`` if index is out of bounds or the curve
+   * does not have m values
+   * \see setMAt()
+   */
+    double mAt( int index ) const override
+    {
+      if ( index >= 0 && index < mM.size() )
+        return mM.at( index );
+      else
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+#else
+      // clang-format off
+
+      /**
+       * Returns the m value of the specified node in the simple curve.
+       *
+       * - If the SimpleCurve does not have m values then ``NaN`` will be returned.
+       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       *
+       * corresponds to the last point in the curve.
+       *
+       * - \throws IndexError if no point with the specified index exists.
+       */
+      double mAt( int index ) const override;
+  % MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    if ( a0 >= 0 )
+      return PyFloat_FromDouble( sipCpp->mAt( a0 ) );
+    else
+      return PyFloat_FromDouble( sipCpp->mAt( count + a0 ) );
+  }
+  % End
+// clang-format on
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+   * Sets the x-coordinate of the specified node in the simple curve.
+   * \param index index of node, where the first node in the curve is 0. Corresponding
+   * node must already exist in the simple curve.
+   * \param x x-coordinate of node
+   * \see xAt()
+   */
+    void setXAt( int index, double x );
+#else
+      // clang-format off
+
+      /**
+       * Sets the x-coordinate of the specified node in the simple curve.
+       * The corresponding node must already exist in simple curve.
+       *
+       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       *
+       * corresponds to the last point in the curve.
+       *
+       * - \throws IndexError if no point with the specified index exists.
+       * - \see xAt()
+       */
+      void setXAt( int index, double x );
+  % MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    if ( a0 >= 0 )
+      sipCpp->setXAt( a0, a1 );
+    else
+      sipCpp->setXAt( count + a0, a1 );
+  }
+  % End
+// clang-format on
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+   * Sets the y-coordinate of the specified node in the simple curve.
+   * \param index index of node, where the first node in the curve is 0. Corresponding
+   * node must already exist in the simple curve.
+   * \param y y-coordinate of node
+   * \see yAt()
+   */
+    void setYAt( int index, double y );
+#else
+      // clang-format off
+
+      /**
+       * Sets the y-coordinate of the specified node in the simple curve.
+       * The corresponding node must already exist in the simple curve.
+       *
+       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       *
+       * corresponds to the last point in the curve.
+       *
+       * - \throws IndexError if no point with the specified index exists.
+       * - \see yAt()
+       */
+      void setYAt( int index, double y );
+  % MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    if ( a0 >= 0 )
+      sipCpp->setYAt( a0, a1 );
+    else
+      sipCpp->setYAt( count + a0, a1 );
+  }
+  % End
+// clang-format on
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+   * Sets the z-coordinate of the specified node in the simple curve.
+   * \param index index of node, where the first node in the curve is 0. Corresponding
+   * node must already exist in simple curve, and the simple curve must have z-dimension.
+   * \param z z-coordinate of node
+   * \see zAt()
+   */
+    void setZAt( int index, double z )
+    {
+      if ( index >= 0 && index < mZ.size() )
+        mZ[index] = z;
+    }
+#else
+      // clang-format off
+
+      /**
+       * Sets the z-coordinate of the specified node in the simple curve.
+       * The corresponding node must already exist in the simple curve and the simple curve must have z-dimension.
+       *
+       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       *
+       * corresponds to the last point in the curve.
+       *
+       * - \throws IndexError if no point with the specified index exists.
+       *
+       * \see zAt()
+       */
+      void setZAt( int index, double z );
+  % MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    if ( a0 >= 0 )
+      sipCpp->setZAt( a0, a1 );
+    else
+      sipCpp->setZAt( count + a0, a1 );
+  }
+  % End
+// clang-format on
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+   * Sets the m value of the specified node in the simple curve.
+   * \param index index of node, where the first node in the curve is 0. Corresponding
+   * node must already exist in the simple curve, and the simple curve must have m values.
+   * \param m m value of node
+   * \see mAt()
+   */
+    void setMAt( int index, double m )
+    {
+      if ( index >= 0 && index < mM.size() )
+        mM[index] = m;
+    }
+#else
+      // clang-format off
+
+      /**
+       * Sets the m-coordinate of the specified node in the simple curve.
+       * The corresponding node must already exist in the simple curve and the simple curve must have m-dimension.
+       *
+       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       *
+       * corresponds to the last point in the curve.
+       *
+       * - \throws IndexError if no point with the specified index exists.
+       *
+       * \see mAt()
+       */
+      void setMAt( int index, double m );
+  % MethodCode
+      const int count = sipCpp->numPoints();
+  if ( a0 < -count || a0 >= count )
+  {
+    PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+    sipIsErr = 1;
+  }
+  else
+  {
+    if ( a0 >= 0 )
+      sipCpp->setMAt( a0, a1 );
+    else
+      sipCpp->setMAt( count + a0, a1 );
+  }
+  % End
+// clang-format on
+#endif
+
     int numPoints() const override
     SIP_HOLDGIL;
     int nCoordinates() const override SIP_HOLDGIL;

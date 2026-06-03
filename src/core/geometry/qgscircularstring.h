@@ -278,10 +278,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCircularString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
     void swapXy() override;
-    double xAt( int index ) const override SIP_HOLDGIL;
-    double yAt( int index ) const override SIP_HOLDGIL;
-    double zAt( int index ) const override SIP_HOLDGIL;
-    double mAt( int index ) const override SIP_HOLDGIL;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
     void scroll( int firstVertexIndex ) final;

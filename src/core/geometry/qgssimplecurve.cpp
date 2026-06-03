@@ -135,6 +135,36 @@ bool QgsSimpleCurve::dropZValue()
   return true;
 }
 
+double QgsSimpleCurve::xAt( int index ) const
+{
+  if ( index >= 0 && index < mX.size() )
+    return mX.at( index );
+  else
+    return 0.0;
+}
+
+double QgsSimpleCurve::yAt( int index ) const
+{
+  if ( index >= 0 && index < mY.size() )
+    return mY.at( index );
+  else
+    return 0.0;
+}
+
+void QgsSimpleCurve::setXAt( int index, double x )
+{
+  if ( index >= 0 && index < mX.size() )
+    mX[index] = x;
+  clearCache();
+}
+
+void QgsSimpleCurve::setYAt( int index, double y )
+{
+  if ( index >= 0 && index < mY.size() )
+    mY[index] = y;
+  clearCache();
+}
+
 int QgsSimpleCurve::dimension() const
 {
   return 1;

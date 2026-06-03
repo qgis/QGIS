@@ -1141,42 +1141,6 @@ QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleran
  * See details in QEP #17
  ****************************************************************************/
 
-double QgsLineString::xAt( int index ) const
-{
-  if ( index >= 0 && index < mX.size() )
-    return mX.at( index );
-  else
-    return 0.0;
-}
-
-double QgsLineString::yAt( int index ) const
-{
-  if ( index >= 0 && index < mY.size() )
-    return mY.at( index );
-  else
-    return 0.0;
-}
-
-void QgsLineString::setXAt( int index, double x )
-{
-  if ( index >= 0 && index < mX.size() )
-    mX[index] = x;
-  clearCache();
-}
-
-void QgsLineString::setYAt( int index, double y )
-{
-  if ( index >= 0 && index < mY.size() )
-    mY[index] = y;
-  clearCache();
-}
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
-
 void QgsLineString::points( QgsPointSequence &pts ) const
 {
   pts.clear();
