@@ -448,7 +448,7 @@ template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p1, c
 
 /**
  * Create an object owned by a QObjectUniquePtr.
- *  \param _Tp A non-array object type.
+ *  \tparam _Tp A non-array object type.
  *  \param __args Constructor arguments for the new object.
  *  Returns A `QObjectUniquePtr` that owns the new object.
  */
