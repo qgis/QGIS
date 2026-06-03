@@ -40,7 +40,7 @@ jobs:
           persist-credentials: false
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@7bfc9baacbbdcb5e37957ad05c3546b3e222be3c # latest
+        uses: lukka/get-cmake@591817e96fcad43505fb4eae36172462abb3a42e # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -252,7 +252,7 @@ jobs:
             *.dmg
 
       - name: Upload release assets
-        uses: AButler/upload-release-assets@45be2facf3acc71812c1c17b4cefef5f6e8cac8a  # v3.0.1
+        uses: AButler/upload-release-assets@34491005a5d7ec239a784e460807ce844fde7962  # v4.0.0
         if: ${{ github.event_name == 'release' }}
         with:
           files: '*.dmg'

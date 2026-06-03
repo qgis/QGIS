@@ -143,7 +143,7 @@ jobs:
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  # v7.1.0
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf  # v7.2.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -353,7 +353,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  # v7.1.0
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf  # v7.2.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -471,7 +471,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  #  v7.1.0
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf  #  v7.2.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
