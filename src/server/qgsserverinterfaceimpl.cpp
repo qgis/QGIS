@@ -41,12 +41,7 @@ QString QgsServerInterfaceImpl::getEnv( const QString &name ) const
 
 
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
-{
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-
-
-#endif
-}
+{}
 
 
 void QgsServerInterfaceImpl::clearRequestHandler()
