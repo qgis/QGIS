@@ -215,7 +215,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
       return fuzzyEqual( other, 1e-8 );
     }
 
-
     QString geometryType() const override SIP_HOLDGIL;
     QgsCircularString *clone() const override SIP_FACTORY;
     void clear() override;
@@ -223,9 +222,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 
-    int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
-    QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;

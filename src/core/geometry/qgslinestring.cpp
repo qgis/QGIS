@@ -284,12 +284,8 @@ QgsLineString *QgsLineString::clone() const
 
 void QgsLineString::clear()
 {
-  mX.clear();
-  mY.clear();
-  mZ.clear();
-  mM.clear();
   mWkbType = Qgis::WkbType::LineString;
-  clearCache();
+  QgsSimpleCurve::clear();
 }
 
 bool QgsLineString::isEmpty() const
@@ -865,46 +861,11 @@ bool QgsLineString::fromWkt( const QString &wkt )
   return true;
 }
 
-int QgsLineString::wkbSize( QgsAbstractGeometry::WkbFlags ) const
-{
-  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
-  return binarySize;
-}
-
-QByteArray QgsLineString::asWkb( WkbFlags flags ) const
-{
-  QByteArray wkbArray;
-  wkbArray.resize( QgsLineString::wkbSize( flags ) );
-  QgsWkbPtr wkb( wkbArray );
-  wkb << static_cast<char>( QgsApplication::endian() );
-  wkb << static_cast<quint32>( wkbType() );
-  QgsPointSequence pts;
-  points( pts );
-  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure(), flags );
-  return wkbArray;
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
-
-QString QgsLineString::asWkt( int precision ) const
-{
-  QString wkt = wktTypeStr() + ' ';
-
-  if ( isEmpty() )
-    wkt += "EMPTY"_L1;
-  else
-  {
-    QgsPointSequence pts;
-    points( pts );
-    wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
-  }
-  return wkt;
-}
 
 QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {

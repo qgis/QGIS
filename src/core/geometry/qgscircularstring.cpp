@@ -236,11 +236,7 @@ QgsCircularString *QgsCircularString::clone() const
 void QgsCircularString::clear()
 {
   mWkbType = Qgis::WkbType::CircularString;
-  mX.clear();
-  mY.clear();
-  mZ.clear();
-  mM.clear();
-  clearCache();
+  QgsSimpleCurve::clear();
 }
 
 QgsBox3D QgsCircularString::calculateBoundingBox3D() const
@@ -494,41 +490,6 @@ bool QgsCircularString::fromWkt( const QString &wkt )
 
   setPoints( points );
   return true;
-}
-
-int QgsCircularString::wkbSize( QgsAbstractGeometry::WkbFlags ) const
-{
-  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
-  return binarySize;
-}
-
-QByteArray QgsCircularString::asWkb( WkbFlags flags ) const
-{
-  QByteArray wkbArray;
-  wkbArray.resize( QgsCircularString::wkbSize( flags ) );
-  QgsWkbPtr wkb( wkbArray );
-  wkb << static_cast<char>( QgsApplication::endian() );
-  wkb << static_cast<quint32>( wkbType() );
-  QgsPointSequence pts;
-  points( pts );
-  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure(), flags );
-  return wkbArray;
-}
-
-QString QgsCircularString::asWkt( int precision ) const
-{
-  QString wkt = wktTypeStr() + ' ';
-
-  if ( isEmpty() )
-    wkt += "EMPTY"_L1;
-  else
-  {
-    QgsPointSequence pts;
-    points( pts );
-    wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
-  }
-  return wkt;
 }
 
 QDomElement QgsCircularString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const

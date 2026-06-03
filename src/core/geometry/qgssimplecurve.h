@@ -502,6 +502,11 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
 // clang-format on
 #endif
 
+    int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
+    QString asWkt( int precision = 17 ) const override;
+
+    void clear() override;
     int numPoints() const override
     SIP_HOLDGIL;
     int nCoordinates() const override SIP_HOLDGIL;

@@ -83,7 +83,6 @@ winding the other way around the circle).
 
     virtual bool equals( const QgsCurve &other ) const;
 
-
     virtual QString geometryType() const /HoldGIL/;
 
     virtual QgsCircularString *clone() const /Factory/;
@@ -95,12 +94,6 @@ winding the other way around the circle).
 
     virtual bool fromWkt( const QString &wkt );
 
-
-    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
-
-    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
-
-    virtual QString asWkt( int precision = 17 ) const;
 
     virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 

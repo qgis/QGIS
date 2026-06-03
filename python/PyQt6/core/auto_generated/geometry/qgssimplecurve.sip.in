@@ -325,6 +325,15 @@ corresponds to the last point in the curve.
   }
 %End
 
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QString asWkt( int precision = 17 ) const;
+
+
+    virtual void clear();
+
     virtual int numPoints() const /HoldGIL/;
 
     virtual int nCoordinates() const /HoldGIL/;
