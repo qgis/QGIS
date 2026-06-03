@@ -2561,6 +2561,25 @@ void TestQgsCircularString::append()
   QVERIFY( cs.isClosed() );
   QCOMPARE( cs.numPoints(), 5 );
   QCOMPARE( cs.vertexCount(), 5 );
+
+  // Avoid appending a LineString (i.e., another SimpleCurve with different type)
+  cs.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
+
+  auto toAppendLineString = std::make_unique<QgsLineString>();
+  cs.append( toAppendLineString.get() );
+  QVERIFY( !cs.isEmpty() );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
+
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( 10, 12 ) );
+  cs.append( toAppendLineString.get() );
+
+  QVERIFY( !cs.isEmpty() );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
 }
 
 void TestQgsCircularString::appendZM()
