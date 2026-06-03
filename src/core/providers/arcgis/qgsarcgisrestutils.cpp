@@ -762,6 +762,74 @@ std::unique_ptr<QgsAbstractVectorLayerLabeling > QgsArcGisRestUtils::convertLabe
   return std::make_unique< QgsRuleBasedLabeling >( root );
 }
 
+void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, QgsSymbol *symbol )
+{
+  if ( !symbol )
+    return;
+
+  const QVariantList visualVariablesData = rendererData.value( u"visualVariables"_s ).toList();
+  for ( const QVariant &visualVariable : visualVariablesData )
+  {
+    const QVariantMap visualVariableData = visualVariable.toMap();
+    const QString variableType = visualVariableData.value( u"type"_s ).toString();
+
+    if ( variableType == "rotationInfo"_L1 )
+    {
+      const QString field = visualVariableData.value( u"field"_s ).toString();
+      if ( field.isEmpty() )
+      {
+        // Check if it was a valueExpression that we don't support yet
+        if ( !visualVariableData.value( u"valueExpression"_s ).toString().isEmpty() )
+          QgsDebugError( u"ESRI rotationInfo valueExpression is not yet supported"_s );
+        continue;
+      }
+
+      const QString rotationType = visualVariableData.value( u"rotationType"_s ).toString();
+
+      QgsProperty angleProperty;
+      if ( rotationType == "arithmetic"_L1 )
+      {
+        // ArcGIS arithmetic: 0° = East, counter-clockwise
+        // QGIS: 0° = North, clockwise
+        // Conversion: QGIS_angle = 90 - ArcGIS_angle
+        angleProperty = QgsProperty::fromExpression( u"90 - \"%1\""_s.arg( field ) );
+      }
+      else
+      {
+        if ( rotationType != "geographic"_L1 )
+          QgsDebugError( u"ESRI rotationInfo rotationType '%1' is not supported, defaulting to 'geographic'"_s.arg( rotationType ) );
+
+        // ArcGIS geographic: 0° = North, clockwise (same as QGIS)
+        angleProperty = QgsProperty::fromField( field );
+      }
+
+      // Apply rotation to all symbol layers
+      for ( int layer = 0; layer < symbol->symbolLayerCount(); ++layer )
+      {
+        symbol->symbolLayer( layer )->setDataDefinedProperty( QgsSymbolLayer::Property::Angle, angleProperty );
+      }
+    }
+    else
+    {
+      QgsDebugError( u"ESRI visualVariable type %1 is not currently supported"_s.arg( variableType ) );
+    }
+  }
+}
+
+void QgsArcGisRestUtils::applyVisualVariablesToRenderer( const QVariantMap &rendererData, QgsFeatureRenderer *renderer )
+{
+  if ( !renderer )
+    return;
+
+  // Apply visual variables to all symbols in the renderer
+  QgsRenderContext context;
+  const QgsSymbolList symbols = renderer->symbols( context );
+  for ( QgsSymbol *symbol : symbols )
+  {
+    applyVisualVariables( rendererData, symbol );
+  }
+}
+
 std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData )
 {
   const QString type = rendererData.value( u"type"_s ).toString();
@@ -770,7 +838,11 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     const QVariantMap symbolProps = rendererData.value( u"symbol"_s ).toMap();
     std::unique_ptr< QgsSymbol > symbol( convertSymbol( symbolProps ) );
     if ( symbol )
+    {
+      // Apply visual variables (e.g., rotation) to the symbol
+      applyVisualVariables( rendererData, symbol.get() );
       return std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
+    }
     else
       return nullptr;
   }
@@ -820,7 +892,12 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     if ( categoryList.empty() )
       return nullptr;
 
-    return std::make_unique< QgsCategorizedSymbolRenderer >( attribute, categoryList );
+    auto renderer = std::make_unique< QgsCategorizedSymbolRenderer >( attribute, categoryList );
+
+    // Apply visual variables (e.g., rotation) to all category symbols
+    applyVisualVariablesToRenderer( rendererData, renderer.get() );
+
+    return renderer;
   }
   else if ( type == "classBreaks"_L1 )
   {
@@ -898,6 +975,11 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
 
         return std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
       }
+      else if ( variableType == "rotationInfo"_L1 )
+      {
+        // Rotation will be handled below after the renderer is created
+        continue;
+      }
       else
       {
         QgsDebugError( u"ESRI visualVariable type %1 is not currently supported"_s.arg( variableType ) );
@@ -967,6 +1049,9 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       lastValue = classMaxValue;
       graduatedRenderer->addClass( range );
     }
+
+    // Apply visual variables (e.g., rotation) to all class symbols
+    applyVisualVariablesToRenderer( rendererData, graduatedRenderer.get() );
 
     return graduatedRenderer;
   }
