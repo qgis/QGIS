@@ -281,17 +281,17 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
      */
     void updateColorGradingSettings( const QgsColorGradingSettings &settings );
 
-    static const QString FORWARD_RENDERVIEW;
-    static const QString SHADOW_RENDERVIEW;
-    static const QString AXIS3D_RENDERVIEW;
-    static const QString DEPTH_RENDERVIEW;
-    static const QString OVERLAY_RENDERVIEW;
+    static const QString sForwardRenderView;
+    static const QString sShadowRenderView;
+    static const QString sAxiS3DRenderView;
+    static const QString sDepthRenderView;
+    static const QString sOverlayRenderView;
     //! Ambient occlusion render view name
-    static const QString AMBIENT_OCCLUSION_RENDERVIEW;
-    static const QString BLOOM_RENDERVIEW;
+    static const QString sAmbientOcclusionRenderView;
+    static const QString sBloomRenderView;
     //! Postprocessing render view name
-    static const QString POSTPROC_RENDERVIEW;
-    static const QString HIGHLIGHTS_RENDERVIEW;
+    static const QString sPostprocRenderView;
+    static const QString sHighlightsRenderView;
 
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
