@@ -18,6 +18,9 @@
 #include "qgssimplecurve.h"
 
 #include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsgeometrytransformer.h"
 #include "qgsgeometryutils.h"
 
 #include <QString>
@@ -635,6 +638,17 @@ void QgsSimpleCurve::append( const QgsSimpleCurve *curve )
   clearCache(); //set bounding box invalid
 }
 
+void QgsSimpleCurve::points( QgsPointSequence &pts ) const
+{
+  pts.clear();
+  int nPoints = numPoints();
+  pts.reserve( nPoints );
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    pts.push_back( pointN( i ) );
+  }
+}
+
 void QgsSimpleCurve::setPoints( const QgsPointSequence &points )
 {
   if ( points.isEmpty() )
@@ -686,4 +700,149 @@ void QgsSimpleCurve::setPoints( const QgsPointSequence &points )
       mM[i] = std::isnan( m ) ? 0 : m;
     }
   }
+}
+
+void QgsSimpleCurve::scroll( int index )
+{
+  const int size = mX.size();
+  if ( index < 1 || index >= size - 1 )
+    return;
+
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+
+  QVector<double> newX( size );
+  QVector<double> newY( size );
+  QVector<double> newZ( useZ ? size : 0 );
+  QVector<double> newM( useM ? size : 0 );
+  auto it = std::copy( mX.constBegin() + index, mX.constEnd() - 1, newX.begin() );
+  it = std::copy( mX.constBegin(), mX.constBegin() + index, it );
+  *it = *newX.constBegin();
+  mX = std::move( newX );
+
+  it = std::copy( mY.constBegin() + index, mY.constEnd() - 1, newY.begin() );
+  it = std::copy( mY.constBegin(), mY.constBegin() + index, it );
+  *it = *newY.constBegin();
+  mY = std::move( newY );
+  if ( useZ )
+  {
+    it = std::copy( mZ.constBegin() + index, mZ.constEnd() - 1, newZ.begin() );
+    it = std::copy( mZ.constBegin(), mZ.constBegin() + index, it );
+    *it = *newZ.constBegin();
+    mZ = std::move( newZ );
+  }
+  if ( useM )
+  {
+    it = std::copy( mM.constBegin() + index, mM.constEnd() - 1, newM.begin() );
+    it = std::copy( mM.constBegin(), mM.constBegin() + index, it );
+    *it = *newM.constBegin();
+    mM = std::move( newM );
+  }
+}
+
+void QgsSimpleCurve::swapXy()
+{
+  std::swap( mX, mY );
+  clearCache();
+}
+
+bool QgsSimpleCurve::isEmpty() const
+{
+  return mX.isEmpty();
+}
+
+
+bool QgsSimpleCurve::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
+{
+  if ( !transformer )
+    return false;
+
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  int size = mX.size();
+
+  double *srcX = mX.data();
+  double *srcY = mY.data();
+  double *srcM = hasM ? mM.data() : nullptr;
+  double *srcZ = hasZ ? mZ.data() : nullptr;
+
+  bool res = true;
+  for ( int i = 0; i < size; ++i )
+  {
+    double x = *srcX;
+    double y = *srcY;
+    double z = hasZ ? *srcZ : std::numeric_limits<double>::quiet_NaN();
+    double m = hasM ? *srcM : std::numeric_limits<double>::quiet_NaN();
+    if ( !transformer->transformPoint( x, y, z, m ) )
+    {
+      res = false;
+      break;
+    }
+
+    *srcX++ = x;
+    *srcY++ = y;
+    if ( hasM )
+      *srcM++ = m;
+    if ( hasZ )
+      *srcZ++ = z;
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      res = false;
+      break;
+    }
+  }
+  clearCache();
+  return res;
+}
+
+void QgsSimpleCurve::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
+{
+  double *zArray = nullptr;
+  bool hasZ = is3D();
+  int nPoints = numPoints();
+
+  // it's possible that transformCoords will throw an exception - so we need to use
+  // a smart pointer for the dummy z values in order to ensure that they always get cleaned up
+  std::unique_ptr< double[] > dummyZ;
+  if ( !hasZ || !transformZ )
+  {
+    dummyZ = std::make_unique<double[]>( nPoints );
+    zArray = dummyZ.get();
+  }
+  else
+  {
+    zArray = mZ.data();
+  }
+  ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
+  clearCache();
+}
+
+void QgsSimpleCurve::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
+{
+  int nPoints = numPoints();
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  double *x = mX.data();
+  double *y = mY.data();
+  double *z = hasZ ? mZ.data() : nullptr;
+  double *m = hasM ? mM.data() : nullptr;
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    double xOut, yOut;
+    t.map( *x, *y, &xOut, &yOut );
+    *x++ = xOut;
+    *y++ = yOut;
+    if ( hasZ )
+    {
+      *z = *z * zScale + zTranslate;
+      z++;
+    }
+    if ( hasM )
+    {
+      *m = *m * mScale + mTranslate;
+      m++;
+    }
+  }
+  clearCache();
 }

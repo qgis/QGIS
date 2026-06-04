@@ -95,11 +95,8 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
-    bool isEmpty() const override SIP_HOLDGIL;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
     int indexOf( const QgsPoint &point ) const final;
-
-    void points( QgsPointSequence &pts SIP_OUT ) const override;
 
     double length() const override;
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
@@ -108,8 +105,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
     void draw( QPainter &p ) const override;
-    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
-    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
@@ -126,10 +121,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     QgsCircularString *reversed() const override SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCircularString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
-    void swapXy() override;
-
-    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
-    void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
     std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;

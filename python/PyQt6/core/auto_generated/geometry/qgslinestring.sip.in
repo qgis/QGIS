@@ -307,8 +307,6 @@ the first or last segment in the line.
 
     virtual void clear();
 
-    virtual bool isEmpty() const /HoldGIL/;
-
     int indexOf( const QgsPoint &point ) const final;
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
@@ -385,15 +383,7 @@ approximation of the curve.
                       between approximation and curve
 %End
 
-    virtual void points( QgsPointSequence &pt /Out/ ) const;
-
-
     virtual void draw( QPainter &p ) const;
-
-
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
-
-    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
 
     virtual void addToPainterPath( QPainterPath &path ) const;
@@ -462,15 +452,8 @@ equal to the value of the sum.
     virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
 
 
-    virtual void swapXy();
-
-
     virtual bool convertTo( Qgis::WkbType type );
 
-
-    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
-
-    void scroll( int firstVertexIndex ) final;
 
 
     virtual QgsLineString *createEmptyWithSameType() const /Factory/;
