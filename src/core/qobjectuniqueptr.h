@@ -448,13 +448,13 @@ template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p1, c
 
 /**
  * Create an object owned by a QObjectUniquePtr.
- *  \tparam _Tp A non-array object type.
- *  \param __args Constructor arguments for the new object.
+ *  \tparam Tp A non-array object type.
+ *  \param args Constructor arguments for the new object.
  *  Returns A `QObjectUniquePtr` that owns the new object.
  */
-template<typename _Tp, typename... _Args> constexpr inline QObjectUniquePtr<_Tp> make_qobject_unique( _Args &&...__args )
+template<typename Tp, typename... Args> constexpr inline QObjectUniquePtr<Tp> make_qobject_unique( Args &&...args )
 {
-  return QObjectUniquePtr<_Tp>( new _Tp( std::forward<_Args>( __args )... ) );
+  return QObjectUniquePtr<Tp>( new Tp( std::forward<Args>( args )... ) );
 }
 
 #endif // QOBJECTUNIQUEPTR_H
