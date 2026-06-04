@@ -282,6 +282,28 @@ default content type of the handler if none of the above matches.
                                      (:py:func:`contentTypes` member)
 %End
 
+    static QgsServerOgcApi::Profile profileFromString( const QString &profile, bool &ok /Out/ );
+%Docstring
+Returns the Profile from the string representation in ``profile``, or
+Profile.NONE if the string was not recognized.
+
+:param profile: the string representation of the profile, for example
+                "rel-as-key" or "RFC7946"
+
+:return: - ok: output parameter set to true if the profile string was
+           recognized, false otherwise
+
+.. versionadded:: 4.2
+%End
+
+    QList<QgsServerOgcApi::Profile> profilesFromRequest( const QgsServerRequest *request ) const;
+%Docstring
+Return a list of the profiles in the request, extracted from the
+"profile" query parameter.
+
+.. versionadded:: 4.2
+%End
+
     static QString parentLink( const QUrl &url, int levels = 1 );
 %Docstring
 Returns a link to the parent page up to ``levels`` in the HTML hierarchy

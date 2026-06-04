@@ -161,7 +161,79 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
   return data;
 }
 
-void QgsWfs3AbstractItemsHandler::checkLayerIsAccessible( QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+QString QgsWfs3AbstractItemsHandler::referencedLayerIdentifier( const QgsVectorLayer *mapLayer, int fieldIdx, const QgsServerApiContext &apiContext, QString *referencedLayerTitle ) const
+{
+  const QgsEditorWidgetSetup widgetSetup { mapLayer->editorWidgetSetup( fieldIdx ) };
+  const QVariantMap widgetConfig = widgetSetup.config();
+  const QgsMapLayer *referencedLayer = nullptr;
+  QString referencedLayerId;
+  if ( widgetSetup.type() == "ValueRelation"_L1 )
+  {
+    referencedLayerId = widgetConfig.value( u"Layer"_s ).toString();
+    referencedLayer = apiContext.project()->mapLayer( referencedLayerId );
+  }
+  else if ( widgetSetup.type() == "RelationReference"_L1 )
+  {
+    const QgsRelation relation { apiContext.project()->relationManager()->relation( widgetConfig.value( u"Relation"_s ).toString() ) };
+    // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
+    //       so we take the layer name as the collectionId in that case
+    referencedLayerId = relation.referencedLayerId();
+    // Get the layer from the project, don't check if it's published or not (we don't care at this point)
+    referencedLayer = apiContext.project()->mapLayer( referencedLayerId );
+  }
+  else
+  {
+    // not a relation
+    return QString();
+  }
+
+  if ( referencedLayer )
+  {
+    // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
+    //       so we take the layer name as the collectionId in that case
+    if ( referencedLayerTitle )
+      *referencedLayerTitle = referencedLayer->serverProperties()->wfsTitle().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->wfsTitle();
+    return referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName();
+  }
+  else
+  {
+    throw QgsServerApiImproperlyConfiguredException(
+      u"Referenced layer with id '%1' not found for %2 field '%3'"_s.arg( referencedLayerId, widgetSetup.type(), mapLayer->fields().field( fieldIdx ).displayName() )
+    );
+  }
+}
+
+json QgsWfs3AbstractItemsHandler::relatedFeatureReference(
+  const QVariant &referencedFeatureValue, const ReferencedLayerInfo &referencedInfo, QgsServerOgcApi::Profile relAs, const QgsServerApiContext &apiContext
+) const
+{
+  switch ( relAs )
+  {
+    case QgsServerOgcApi::Profile::REL_AS_URI:
+    case QgsServerOgcApi::Profile::REL_AS_LINK:
+    {
+      // Build the URI calling uri()
+      const QMap<QString, QVariant> fieldValueMap { { referencedInfo.referencedFieldOapifIdentifier, referencedFeatureValue } };
+      const std::string uriStr = uri( referencedInfo.referencedLayerOapifIdentifier, fieldValueMap, apiContext ).toStdString();
+
+      if ( relAs == QgsServerOgcApi::Profile::REL_AS_LINK )
+      {
+        return { { "title", "Related feature from layer '" + referencedInfo.referencedLayerOapifIdentifier.toStdString() + "'" }, { "href", uriStr } };
+      }
+      else
+      {
+        return uriStr;
+      }
+    }
+    case QgsServerOgcApi::Profile::REL_AS_KEY:
+    default:
+      return QgsJsonUtils::jsonFromVariant( referencedFeatureValue );
+  }
+  return json();
+}
+
+
+void QgsWfs3AbstractItemsHandler::checkLayerIsAccessible( QgsVectorLayer *mapLayer, const QgsServerApiContext &context )
 {
   const QVector<QgsVectorLayer *> publishedLayers = QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context );
   if ( !publishedLayers.contains( mapLayer ) )
@@ -200,7 +272,7 @@ QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorL
   return featureRequest;
 }
 
-QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vLayer, const QgsServerApiContext &context ) const
+QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vLayer, const QgsServerApiContext &context )
 {
   QStringList publishedAttributes = QStringList();
   // Removed attributes
@@ -396,7 +468,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
   // "id" is always present, read-only and must be the first field
   // NOTE: this appears as a top-level field (and not in the properties) in the collection item
   //       response and is used as the unique identifier for the feature but is returned
-  //       as a regular field in the collection metadata response (with the other attributes)
+  //       as a regular field in the collection schema response (with the other attributes)
   {
     FieldInfo fInfo { seq++, "id" };
     fInfo.type = "integer";
@@ -556,52 +628,25 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         }
         else if ( widgetType == "ValueRelation"_L1 )
         {
-          const QString referencedLayerId = widgetConfig.value( u"Layer"_s ).toString();
-          const QgsMapLayer *referencedLayer = apiContext.project()->mapLayer( referencedLayerId );
-          if ( referencedLayer )
+          QString referencedLayerTitle;
+          const QString referencedLayerId = referencedLayerIdentifier( mapLayer, fieldElement->idx(), apiContext, &referencedLayerTitle );
+
+          fInfo.role = "reference";
+          fInfo.collectionId = referencedLayerId.toStdString();
+          if ( !referencedLayerTitle.isEmpty() )
           {
-            fInfo.role = "reference";
-            const std::string referencedLayerTitle {
-              referencedLayer->serverProperties()->wfsTitle().isEmpty() ? referencedLayer->name().toStdString() : referencedLayer->serverProperties()->wfsTitle().toStdString()
-            };
-            // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
-            //       so we take the layer name as the collectionId in that case
-            const QString referencedLayerShortName { referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName() };
-            fInfo.collectionId = referencedLayerShortName.toStdString();
-            if ( !referencedLayerTitle.empty() )
-            {
-              fInfo.title = referencedLayerTitle;
-            }
-          }
-          else
-          {
-            throw QgsServerApiImproperlyConfiguredException( u"Referenced layer with id '%1' not found for relation reference field '%2'"_s.arg( referencedLayerId, fieldIdentifier ) );
+            fInfo.title = referencedLayerTitle.toStdString();
           }
         }
         else if ( widgetType == "RelationReference"_L1 )
         {
+          QString referencedLayerTitle;
+          const QString referencedLayerId = referencedLayerIdentifier( mapLayer, fieldElement->idx(), apiContext, &referencedLayerTitle );
           fInfo.role = "reference";
-          const QgsRelation relation { apiContext.project()->relationManager()->relation( widgetConfig.value( u"Relation"_s ).toString() ) };
-          // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
-          //       so we take the layer name as the collectionId in that case
-          const QString referencedLayerId { relation.referencedLayerId() };
-          // Get the layer from the project, don't check if it's published or not (we don't care at this point)
-          const QgsMapLayer *referencedLayer = apiContext.project()->mapLayer( referencedLayerId );
-          if ( referencedLayer )
+          fInfo.collectionId = referencedLayerId.toStdString();
+          if ( !referencedLayerTitle.isEmpty() )
           {
-            const std::string referencedLayerTitle {
-              referencedLayer->serverProperties()->wfsTitle().isEmpty() ? referencedLayer->name().toStdString() : referencedLayer->serverProperties()->wfsTitle().toStdString()
-            };
-            const QString referencedLayerShortName { referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName() };
-            fInfo.collectionId = referencedLayerShortName.toStdString();
-            if ( !referencedLayerTitle.empty() )
-            {
-              fInfo.title = referencedLayerTitle;
-            }
-          }
-          else
-          {
-            throw QgsServerApiImproperlyConfiguredException( u"Referenced layer with id '%1' not found for relation reference field '%2'"_s.arg( referencedLayerId, fieldIdentifier ) );
+            fInfo.title = referencedLayerTitle.toStdString();
           }
         }
         else if ( widgetType == "DateTime"_L1 )
@@ -614,7 +659,11 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         }
         else
         {
-          QgsMessageLog::logMessage( u"Unhandled widget type '%1' for field '%2'"_s.arg( widgetType, fieldIdentifier ), u"Server"_s, Qgis::MessageLevel::Warning );
+          // FIXME: if the widget type is unknown, should we skip the field or include it with best effort?
+          //         For instance, if a relation is set, we could still include the reference information even
+          //         if the widget type is unknown.
+          //         For now, we skip and warn (info level) assuming that if the widget is not set this is intentional.
+          QgsMessageLog::logMessage( u"Unhandled widget type '%1' for field '%2'"_s.arg( widgetType, fieldIdentifier ), u"Server"_s, Qgis::MessageLevel::Info );
         }
 
         // TODO: pattern for strings
@@ -817,7 +866,7 @@ bool QgsWfs3AbstractItemsHandler::canUpdateFeatures( const QgsVectorLayer *mapLa
   return false;
 }
 
-QUrlQuery QgsWfs3AbstractItemsHandler::removeOffsetAndLimit( const QUrlQuery &urlQuery )
+QUrlQuery QgsWfs3AbstractItemsHandler::removeOffsetAndLimit( const QUrlQuery &urlQuery, bool removeProfile )
 {
   // Since headers are stored in a case sensitive map,
   // make sure we are clearing the correct case if any
@@ -833,8 +882,104 @@ QUrlQuery QgsWfs3AbstractItemsHandler::removeOffsetAndLimit( const QUrlQuery &ur
     {
       query.removeAllQueryItems( pair.first );
     }
+    else if ( removeProfile && pair.first.compare( "profile"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeAllQueryItems( pair.first );
+    }
   }
   return query;
+}
+
+QMap<int, QgsWfs3AbstractItemsHandler::ReferencedLayerInfo> QgsWfs3AbstractItemsHandler::gatherReferencedLayerInfo( const QgsVectorLayer *mapLayer, const QgsServerApiContext &apiContext ) const
+{
+  QMap<int, ReferencedLayerInfo> refInfo;
+
+  const QVector<QgsVectorLayer *> publishedLayers = QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( apiContext );
+  const QgsFields published { publishedFields( mapLayer, apiContext ) };
+  for ( const QgsField &referencingField : std::as_const( published ) )
+  {
+    const int referencingFieldIdx = mapLayer->fields().lookupField( referencingField.name() );
+    if ( referencingFieldIdx < 0 )
+    {
+      throw QgsServerApiImproperlyConfiguredException( u"Field '%1' not found in layer '%2'"_s.arg( referencingField.name() ).arg( mapLayer->name() ) );
+    }
+    const QgsEditorWidgetSetup editorSetup = mapLayer->editorWidgetSetup( referencingFieldIdx );
+    if ( editorSetup.type() == "RelationReference"_L1 )
+    {
+      const QVariantMap widgetConfig = editorSetup.config();
+      const QgsRelation relation { apiContext.project()->relationManager()->relation( widgetConfig.value( u"Relation"_s ).toString() ) };
+      if ( !relation.isValid() )
+      {
+        QgsMessageLog::logMessage( u"RelationReference with relation id '%1' is not valid"_s, u"Server"_s.arg( relation.id() ), Qgis::MessageLevel::Warning );
+        continue;
+      }
+      // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
+      //       so we take the layer name as the collectionId in that case
+      // Get the layer from the project, don't check if it's published or not (we don't care at this point)
+      const QgsVectorLayer *referencedLayer = apiContext.project()->mapLayer<const QgsVectorLayer *>( relation.referencedLayerId() );
+      if ( referencedLayer && publishedLayers.contains( referencedLayer ) )
+      {
+        if ( relation.referencedFields().size() > 1 )
+        {
+          QgsMessageLog::logMessage( u"RelationReference relations with id '%1' has multiple field pairs, this is not supported"_s.arg( relation.id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+          continue;
+        }
+        if ( referencedLayer->type() != Qgis::LayerType::Vector )
+        {
+          continue;
+        }
+        if ( referencedLayer->primaryKeyAttributes().size() > 1 )
+        {
+          QgsMessageLog::
+            logMessage( u"RelationReference relations with id '%1' has a referenced layer with compound primary key, this is not supported"_s.arg( relation.id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+          continue;
+        }
+        const int referencedFieldIdx = relation.referencedFields().first();
+        const QgsField referencedField = referencedLayer->fields().field( referencedFieldIdx );
+        ReferencedLayerInfo info;
+        info.referencingFieldIdx = referencingFieldIdx;
+        info.referencedLayer = referencedLayer;
+        info.referencedLayerOapifIdentifier = referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName();
+        info.referencedFieldOapifIdentifier = referencedField.displayName();
+        info.referencingFieldOapifIdentifier = referencingField.displayName();
+        info.referencingFieldComment = referencedField.comment();
+        info.valueIsPk = referencedLayer->primaryKeyAttributes().contains( referencedFieldIdx );
+        refInfo.insert( referencingFieldIdx, info );
+      }
+    }
+    else if ( editorSetup.type() == "ValueRelation"_L1 )
+    {
+      const QVariantMap widgetConfig = editorSetup.config();
+      const QgsVectorLayer *referencedLayer = apiContext.project()->mapLayer<const QgsVectorLayer *>( widgetConfig.value( u"Layer"_s ).toString() );
+      if ( referencedLayer && publishedLayers.contains( referencedLayer ) )
+      {
+        if ( referencedLayer->type() != Qgis::LayerType::Vector )
+        {
+          continue;
+        }
+        if ( referencedLayer->primaryKeyAttributes().size() > 1 )
+        {
+          const QgsField field = mapLayer->fields().field( referencingFieldIdx );
+          QgsMessageLog::
+            logMessage( u"ValueRelation %1' has a referenced layer '%2' with compound primary key, this is not supported"_s.arg( field.name(), referencedLayer->id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+          continue;
+        }
+        const QString referencedFielName = widgetConfig.value( u"Key"_s ).toString();
+        const int fieldIdx = referencedLayer->fields().lookupField( referencedFielName );
+        const QgsField referencedField = referencedLayer->fields().field( fieldIdx );
+        ReferencedLayerInfo info;
+        info.referencingFieldIdx = referencingFieldIdx;
+        info.referencedLayer = referencedLayer;
+        info.referencedFieldOapifIdentifier = referencedLayer->fields().at( fieldIdx ).displayName();
+        info.referencingFieldOapifIdentifier = referencingField.displayName();
+        info.referencedLayerOapifIdentifier = referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName();
+        info.valueIsPk = referencedLayer->primaryKeyAttributes().contains( referencedLayer->fields().lookupField( referencedFielName ) );
+        info.referencingFieldComment = referencedField.comment();
+        refInfo.insert( referencingFieldIdx, info );
+      }
+    }
+  }
+  return refInfo;
 }
 
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
@@ -909,7 +1054,15 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
-        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+
+        // From https://docs.ogc.org/is/23-058r2/23-058r2.html
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-parameter",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-codelists",
+
+        // Draft
+        "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/schemas",
         "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-codelists",
         "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-parameter",
         "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references",
@@ -989,7 +1142,6 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
           // a description of the features in the collection
           { "description", layer->serverProperties()->abstract().toStdString() },
           { "crs", crss },
-          // TODO: "relations" ?
           { "extent",
             { {
                 "spatial",
@@ -1094,7 +1246,6 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
   const std::string itemsTitle { title + " items" };
   const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
-  const QString typeName { mapLayer->serverProperties()->wfsTypeName() };
   json linksList = links( context );
 
   for ( const auto ct : { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::ContentType::FLATGEOBUF } )
@@ -1117,6 +1268,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
 
 
 #if 0
+  const QString typeName { mapLayer->serverProperties()->wfsTypeName() };
   // Unsure we want to keep this after "schema" has been implemented
   linksList.push_back(
     { { "href",
@@ -1141,7 +1293,6 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     { "title", title },
     // TODO: check if we need to expose other advertised CRS here
     { "crs", crss },
-    // TODO: "relations" ?
     { "extent",
       { { "spatial",
           {
@@ -1491,6 +1642,31 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
 void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &apiContext, const ExportContext &exportContext ) const
 {
   const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
+  const QList<QgsServerOgcApi::Profile> requestedProfiles = profilesFromRequest( apiContext.request() );
+
+  // If the layer has any related objects, we need to process the related objects in the output
+  // if the client requested the a "rel-as-uri" or "rel-as-link" profile
+
+  const QgsAttributeList requestedAttributes = featureRequest.subsetOfAttributes();
+  QMap<int, ReferencedLayerInfo> referencedInfo = gatherReferencedLayerInfo( mapLayer, apiContext );
+  // remove if attributes are not requested
+  referencedInfo.erase(
+    std::remove_if( referencedInfo.begin(), referencedInfo.end(), [&requestedAttributes]( const auto &info ) { return !requestedAttributes.contains( info.referencingFieldIdx ); } ), referencedInfo.end()
+  );
+
+  QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::NONE;
+
+  bool hasReferencedObjects = !referencedInfo.isEmpty();
+
+  if ( hasReferencedObjects )
+  {
+    if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_URI ) )
+      relAs = QgsServerOgcApi::Profile::REL_AS_URI;
+    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_LINK ) )
+      relAs = QgsServerOgcApi::Profile::REL_AS_LINK;
+    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_KEY ) )
+      relAs = QgsServerOgcApi::Profile::REL_AS_KEY;
+  }
 
   // Exporter for JSON output
   QgsJsonExporter exporter { const_cast<QgsVectorLayer *>( mapLayer ) };
@@ -1544,6 +1720,16 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
   for ( int i = 0; i < featureList.length(); i++ )
   {
     data["features"][i]["id"] = fidMap.value( data["features"][i]["id"] ).toStdString();
+    if ( hasReferencedObjects && relAs != QgsServerOgcApi::Profile::NONE )
+    {
+      for ( const auto &[fieldIdx, referencedInfo] : referencedInfo.toStdMap() )
+      {
+        const QgsField field = mapLayer->fields().field( fieldIdx );
+        const QString fieldIdentifier = field.alias().isEmpty() ? field.name() : field.alias();
+        const QVariant rawValue = featureList[i].attribute( fieldIdx );
+        data["features"][i]["properties"][fieldIdentifier.toStdString()] = relatedFeatureReference( rawValue, referencedInfo, relAs, apiContext );
+      }
+    }
   }
 
   // Add some metadata
@@ -1712,6 +1898,35 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
     }
   }
 
+  // Add rel-as- links based on requested profile
+  // Note: for NONE profile we don't add any rel-as- link
+  switch ( relAs )
+  {
+    case QgsServerOgcApi::Profile::REL_AS_LINK:
+      data["links"].push_back(
+        { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
+          { "href", "http://www.opengis.net/def/profile/ogc/0/rel-as-link" },
+          { "Profile 'rel-as-link' is used in the response", "" } }
+      );
+      break;
+    case QgsServerOgcApi::Profile::REL_AS_URI:
+      data["links"].push_back(
+        { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
+          { "href", "http://www.opengis.net/def/profile/ogc/0/rel-as-uri" },
+          { "Profile 'rel-as-uri' is used in the response", "" } }
+      );
+      break;
+    case QgsServerOgcApi::Profile::REL_AS_KEY:
+      data["links"].push_back(
+        { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
+          { "href", "http://www.opengis.net/def/profile/ogc/0/rel-as-key" },
+          { "Profile 'rel-as-key' is used in the response", "" } }
+      );
+      break;
+    default:
+      break;
+  }
+
   json navigation = json::array();
   navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 3 ).toStdString() } } );
   navigation.push_back( { { "title", "Collections" }, { "href", parentLink( url, 2 ).toStdString() } } );
@@ -1869,7 +2084,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
     // Url without offset and limit
     QUrl cleanedUrl { url };
-    cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( url.query() ) ) );
+    cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( url.query() ), /* removeProfile */ true ) );
     QString cleanedUrlAsString { cleanedUrl.toString() };
 
     if ( !cleanedUrl.hasQuery() )
@@ -2809,6 +3024,133 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
 
   } // end for loop
   return data;
+}
+
+QString QgsWfs3AbstractItemsHandler::uri( const QString &collectionId, const QMap<QString, QVariant> &fieldValueMap, const QgsServerApiContext &apiContext, QgsServerOgcApi::ContentType contentType )
+{
+  // Retrieve the layer from the collection ID
+  if ( !apiContext.project() )
+  {
+    throw QgsServerApiImproperlyConfiguredException( u"Project is invalid or undefined"_s );
+  }
+  // May throw not found exception if the collectionId is invalid
+  QgsVectorLayer *mapLayer { layerFromCollectionId( apiContext, collectionId ) };
+
+  // This will never happen (it's just a hint for reviewers)
+  Q_ASSERT( mapLayer );
+
+  // Check if the layer is published, raise not found if it is not
+  checkLayerIsAccessible( mapLayer, apiContext );
+
+  // Collect info about pks from the layer and the fieldValueMap
+  const QList<int> pkList = mapLayer->primaryKeyAttributes();
+  QSet<QString> pkFieldNames;
+  QString firstPkFieldName;
+  for ( const int &pkIdx : std::as_const( pkList ) )
+  {
+    const QgsField field = mapLayer->fields().field( pkIdx );
+    const QString fieldNameOrAlias = field.alias().isEmpty() ? field.name() : field.alias();
+    pkFieldNames.insert( fieldNameOrAlias );
+    if ( firstPkFieldName.isEmpty() )
+    {
+      firstPkFieldName = fieldNameOrAlias;
+    }
+  }
+
+  const bool providerHasPk { pkList.size() > 0 };
+
+  // Note: if "id" is the only field in the fieldValueMap and it is not a pk field of the provider,
+  // we can still use it as featureId as long as the provider does not have any pk field.
+  // In that case, we will assume that "id" is a unique identifier for features in that layer.
+  const bool valueMapHasSinglePkId = ( fieldValueMap.size() == 1 )
+                                     && ( ( providerHasPk && fieldValueMap.contains( firstPkFieldName ) ) || ( !providerHasPk && fieldValueMap.firstKey() == "id"_L1 && !pkFieldNames.contains( "id"_L1 ) ) );
+
+  const QStringList fieldValueMapKeys = fieldValueMap.keys();
+  const bool valueMapsHasMultiplePkIds = pkFieldNames == QSet<QString>( fieldValueMapKeys.constBegin(), fieldValueMapKeys.constEnd() );
+
+  QUrl cleanedUrl { apiContext.request()->url() };
+  cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( cleanedUrl.query() ) ) );
+
+  // 1 - Simple case: fieldValueMap contains a single entry with the field that is used as featureId (e.g. primary key)
+  if ( valueMapHasSinglePkId )
+  {
+    const QString featureId { fieldValueMap.first().toString() };
+    cleanedUrl.setPath( apiContext.matchedPath() + u"/collections/%1/items/%2"_s.arg( collectionId ).arg( featureId ) );
+  }
+  // 2 - Complex case: fieldValueMap contains multiple entries that are only and all PKs
+  else if ( valueMapsHasMultiplePkIds )
+  {
+    // Build the ID
+    QgsFeature feature( mapLayer->fields() );
+    for ( auto it = fieldValueMap.constBegin(); it != fieldValueMap.constEnd(); ++it )
+    {
+      const QString fieldName { it.key() };
+      // Retrieve the field index from the exposed name/alias
+      int fieldIdx = -1;
+      for ( int idx = 0; idx < mapLayer->fields().count(); ++idx )
+      {
+        if ( mapLayer->fields().field( idx ).displayName() == fieldName )
+        {
+          fieldIdx = idx;
+          break;
+        }
+      }
+      if ( fieldIdx == -1 )
+      {
+        throw QgsServerApiImproperlyConfiguredException( u"Field '%1' does not exist in layer '%2'"_s.arg( fieldName ).arg( mapLayer->name() ) );
+      }
+      feature.setAttribute( fieldIdx, it.value() );
+    }
+    const QString featureId { QgsServerFeatureId::getServerFid( feature, pkList ) };
+    cleanedUrl.setPath( apiContext.matchedPath() + u"/collections/%1/items/%2"_s.arg( collectionId ).arg( featureId ) );
+  }
+  // 3 - Wild case: fieldValueMap contains multiple entries that are not all and only PKs, we cannot be sure about the featureId
+  //     so we build an URI that retrieve the features by filtering by all the field values, but we cannot be sure that it will
+  //     return a single feature, so this is a fallback solution
+  else if ( !fieldValueMap.isEmpty() )
+  {
+    const QgsFields availableFields { publishedFields( mapLayer, apiContext ) };
+    cleanedUrl.setPath( apiContext.matchedPath() + u"/collections/%1/items.json"_s.arg( collectionId ) );
+    QUrlQuery query { cleanedUrl.query() };
+    for ( auto it = fieldValueMap.constBegin(); it != fieldValueMap.constEnd(); ++it )
+    {
+      const QString fieldName { it.key() };
+      // Throw if the field is not part of the published fields, as it means that we cannot use it for filtering
+      if ( availableFields.lookupField( fieldName ) < 0 )
+      {
+        throw QgsServerApiImproperlyConfiguredException( u"Field '%1' is not part of the published fields for layer '%2', cannot be used for filtering"_s.arg( fieldName ).arg( mapLayer->name() ) );
+      }
+      const QVariant fieldValue { it.value() };
+      query.addQueryItem( fieldName, fieldValue.toString() );
+    }
+    cleanedUrl.setQuery( query );
+  }
+
+  // Add extension from contentType if not already present in the url path
+  // Remove any existing extension
+  const auto suffixLength { QFileInfo( cleanedUrl.path() ).suffix().length() };
+  if ( suffixLength > 0 )
+  {
+    auto path { cleanedUrl.path() };
+    path.truncate( path.length() - ( suffixLength + 1 ) );
+    cleanedUrl.setPath( path );
+  }
+
+  const QString extension { QgsServerOgcApi::contentTypeToExtension( contentType ) };
+
+  // (re-)add extension
+  // JSON is the default anyway so we don't need to add it
+  if ( !extension.isEmpty() )
+  {
+    // Remove trailing slashes if any.
+    QString path { cleanedUrl.path() };
+    while ( path.endsWith( '/' ) )
+    {
+      path.chop( 1 );
+    }
+    cleanedUrl.setPath( path + '.' + extension );
+  }
+  return QgsServerOgcApi::sanitizeUrl( cleanedUrl ).toString( QUrl::FullyEncoded );
 }
 
 const QString QgsWfs3ConformanceHandler::templatePath( const QgsServerApiContext &context ) const

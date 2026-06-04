@@ -6,7 +6,10 @@ Content-Type: application/json
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
-    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas"
+    "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/schemas",
+    "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-codelists",
+    "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-parameter",
+    "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-references",
   ],
   "links": [
     {
