@@ -48,8 +48,14 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
      */
     void append( const QgsSimpleCurve *curve );
 
-#ifndef SIP_RUN
+    /**
+     * Resets the simple curve to match the specified list of points. The simple curve will
+     * inherit the dimensionality of the first point in the list.
+     * \param points new points for simple curve. If empty, simple curve will be cleared.
+     */
+    void setPoints( const QgsPointSequence &points );
 
+#ifndef SIP_RUN
     /**
    * Returns the specified point from inside the simple curve.
    * \param i index of point, starting at 0 for the first point
@@ -505,6 +511,8 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QString asWkt( int precision = 17 ) const override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkt( const QString &wkt ) override;
 
     void clear() override;
     int numPoints() const override
@@ -528,8 +536,10 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     QgsSimpleCurve *reversed() const override SIP_FACTORY;
 
 protected:
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+
     /**
-     * \brief Returns coordinate vectors for the splitted curves.
+     * \brief Returns coordinate vectors for the split curves.
      * \param index Vertex index that will be used to split the curve
      * \param x1 x coordinate vector of the first output curve
      * \param y1 y coordinate vector of the first output curve
@@ -542,6 +552,12 @@ protected:
      * \note The vertex \a index must correspond to a segment vertex, not a curve vertex.
      */
   void splitCurveAtVertexProtected( int index, QVector< double > &x1, QVector< double > &y1, QVector< double > &z1, QVector< double > &m1, QVector< double > &x2, QVector< double > &y2, QVector< double > &z2, QVector< double > &m2 ) const;
+
+    /**
+     * \brief Imports vertices from wkb geometry representation
+     * \param wkb const wkb pointer
+     */
+  void importVerticesFromWkb( const QgsConstWkbPtr &wkb );
 
   QVector<double> mX;
   QVector<double> mY;

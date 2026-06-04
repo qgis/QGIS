@@ -46,6 +46,16 @@ curve.
    result will be undefined.
 %End
 
+    void setPoints( const QgsPointSequence &points );
+%Docstring
+Resets the simple curve to match the specified list of points. The
+simple curve will inherit the dimensionality of the first point in the
+list.
+
+:param points: new points for simple curve. If empty, simple curve will
+               be cleared.
+%End
+
 
   SIP_PYOBJECT pointN( int i ) const /TypeHint="QgsPoint"/;
 %Docstring
@@ -331,6 +341,10 @@ corresponds to the last point in the curve.
 
     virtual QString asWkt( int precision = 17 ) const;
 
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
+    virtual bool fromWkt( const QString &wkt );
+
 
     virtual void clear();
 
@@ -361,9 +375,11 @@ corresponds to the last point in the curve.
 
 
 protected:
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+
   void splitCurveAtVertexProtected( int index, QVector< double > &x1, QVector< double > &y1, QVector< double > &z1, QVector< double > &m1, QVector< double > &x2, QVector< double > &y2, QVector< double > &z2, QVector< double > &m2 ) const;
 %Docstring
-Returns coordinate vectors for the splitted curves.
+Returns coordinate vectors for the split curves.
 
 :param index: Vertex index that will be used to split the curve
 :param x1: x coordinate vector of the first output curve
@@ -378,6 +394,13 @@ Returns coordinate vectors for the splitted curves.
 .. note::
 
    The vertex ``index`` must correspond to a segment vertex, not a curve vertex.
+%End
+
+  void importVerticesFromWkb( const QgsConstWkbPtr &wkb );
+%Docstring
+Imports vertices from wkb geometry representation
+
+:param wkb: const wkb pointer
 %End
 
 };

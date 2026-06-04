@@ -219,9 +219,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     QgsCircularString *clone() const override SIP_FACTORY;
     void clear() override;
 
-    bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    bool fromWkt( const QString &wkt ) override;
-
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
@@ -230,11 +227,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
     int indexOf( const QgsPoint &point ) const final;
 
     void points( QgsPointSequence &pts SIP_OUT ) const override;
-
-    /**
-     * Sets the circular string's points
-     */
-    void setPoints( const QgsPointSequence &points );
 
     double length() const override;
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
@@ -316,8 +308,6 @@ class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
 #endif
 
   protected:
-
-    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsBox3D calculateBoundingBox3D() const override;
 
   private:

@@ -434,6 +434,10 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
       return fuzzyEqual( other, 1e-8 );
     }
 
+#ifndef SIP_RUN
+    using QgsSimpleCurve::setPoints; // make all setPoints() functions eligible for overload resolution
+#endif // !SIP_RUN
+
     /**
     * Resets the line string to match the specified point data. The line string
     * dimensionality will be based on whether \a z or \a m arrays are specified.
@@ -448,13 +452,6 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     * \since QGIS 3.26
     */
     void setPoints( size_t size, const double *x, const double *y, const double *z = nullptr, const double *m = nullptr ) SIP_SKIP;
-
-    /**
-    * Resets the line string to match the specified list of points. The line string will
-    * inherit the dimensionality of the first point in the list.
-    * \param points new points for line string. If empty, line string will be cleared.
-    */
-    void setPoints( const QgsPointSequence &points );
 
     /**
      * Adds a new vertex to the end of the line string.
@@ -518,8 +515,6 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     QPolygonF asQPolygonF() const override;
 
     QgsLineString *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
-    bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    bool fromWkt( const QString &wkt ) override;
 
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
@@ -811,13 +806,7 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
      */
     bool lineLocatePointByM( double m, double &x SIP_OUT, double &y SIP_OUT, double &z SIP_OUT, double &distanceFromStart SIP_OUT, bool use3DDistance = true ) const;
 
-  protected:
-
-    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
-
   private:
-    void importVerticesFromWkb( const QgsConstWkbPtr &wkb );
-
     /**
      * Resets the line string to match the line string in a WKB geometry.
      * \param type WKB type
