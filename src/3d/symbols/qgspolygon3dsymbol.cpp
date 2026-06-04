@@ -20,6 +20,7 @@
 #include "qgs3dutils.h"
 #include "qgscolorutils.h"
 #include "qgsmaterialregistry.h"
+#include "qgsmetalroughmaterialsettings.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
@@ -30,7 +31,7 @@
 using namespace Qt::StringLiterals;
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
-  : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
+  : mMaterialSettings( std::make_unique<QgsMetalRoughMaterialSettings>() )
 {}
 
 QgsPolygon3DSymbol::~QgsPolygon3DSymbol() = default;
@@ -102,10 +103,10 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   mExtrusionFaces = qgsFlagKeysToValue( elemDataProperties.attribute( u"rendered-facade"_s ), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
 
   const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
-  const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );
+  const QString materialType = elem.attribute( u"material_type"_s, u"metalrough"_s );
   mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( materialType );
   if ( !mMaterialSettings )
-    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s );
+    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"metalrough"_s );
   mMaterialSettings->readXml( elemMaterial, context );
 
   const QDomElement elemDDP = elem.firstChildElement( u"data-defined-properties"_s );
