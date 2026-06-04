@@ -834,6 +834,7 @@ set(QGIS_GUI_SRCS
   qgsvariableeditorwidget.cpp
   qgsvectorlayertemporalpropertieswidget.cpp
   qgsvertexmarker.cpp
+  qgsviewsettingsmenu.cpp
   qgsfiledownloaderdialog.cpp
   qgsvscrollarea.cpp
   qgsdatasourcemanagerdialog.cpp
@@ -1112,6 +1113,7 @@ set(QGIS_GUI_HDRS
   qgsvariableeditorwidget.h
   qgsvectorlayertemporalpropertieswidget.h
   qgsvertexmarker.h
+  qgsviewsettingsmenu.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
