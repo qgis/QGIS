@@ -34,6 +34,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsEditorWidgetSetup,
+    QgsExpression,
     QgsFeature,
     QgsFeatureRequest,
     QgsField,
@@ -182,6 +183,7 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             expected_property,
             required=False,
             read_only=False,
+            expression=None,
         ):
             temp_dir = QtCore.QTemporaryDir()
             temp_dir_path = temp_dir.path()
@@ -196,6 +198,27 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             field.setEditorWidgetSetup(widget)
             layer.dataProvider().addAttributes([field])
             layer.updateFields()
+
+            if expression:
+                exp = QgsExpression(expression)
+                self.assertTrue(
+                    exp.isValid(),
+                    f"Expression {expression} is not valid: {exp.parserErrorString()}",
+                )
+                layer.setConstraintExpression(1, expression)
+                layer.setFieldConstraint(
+                    1,
+                    QgsFieldConstraints.ConstraintExpression,
+                    QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+                )
+
+            if required:
+                layer.setFieldConstraint(
+                    1,
+                    QgsFieldConstraints.ConstraintNotNull,
+                    QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+                )
+
             if read_only:
                 ediform_config = layer.editFormConfig()
                 ediform_config.setReadOnly(layer.fields().indexOf(field.name()))
@@ -214,6 +237,22 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             if required:
                 self.assertIn("field1", j["required"])
 
+        # Field with regexp expression constraint
+        field = QgsField("field1", QtCore.QMetaType.Type.QString)
+        _test_widget_conf(
+            field,
+            "TextEdit",
+            {},
+            {
+                "type": "string",
+                "readOnly": True,
+                "x-ogc-propertySeq": 2,
+                "pattern": r"^[A-Z]{3}$",
+            },
+            read_only=True,
+            expression="regexp_match(\"field1\", '^[A-Z]{3}$')",
+        )
+
         # ValueMap
         _test_widget_conf(
             QgsField("field1", QtCore.QMetaType.Type.QString),
@@ -230,6 +269,7 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
                 },
                 "x-ogc-propertySeq": 2,
             },
+            required=True,
         )
 
         # String JSON
