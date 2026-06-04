@@ -96,6 +96,12 @@ corresponds to the last point in the simple curve.
 
 
 
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
+    virtual bool equals( const QgsCurve &other ) const;
+
 
   virtual double xAt( int index ) const;
 
@@ -403,6 +409,8 @@ Imports vertices from wkb geometry representation
 
 :param wkb: const wkb pointer
 %End
+
+
 
 };
 
