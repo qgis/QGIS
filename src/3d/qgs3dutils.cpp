@@ -540,8 +540,6 @@ void Qgs3DUtils::extractPointPositions(
   const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions, const QgsVector3D &translation
 )
 {
-  int qualSum = 0;
-
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
   {
@@ -554,14 +552,7 @@ void Qgs3DUtils::extractPointPositions(
     float terrainZ = 0.0f;
     if ( context.terrainRenderingEnabled() && context.terrainGenerator() )
     {
-      if ( const QgsTerrainGeneratorWithCache *demCache = dynamic_cast<const QgsTerrainGeneratorWithCache *>( context.terrainGenerator() ) )
-      {
-        int qual;
-        demCache->heightMapCache()->heightAndQualityAt( pt.x(), pt.y(), terrainZ, qual );
-        qualSum += qual;
-      }
-      else
-        terrainZ = context.terrainGenerator()->heightAt( pt.x(), pt.y(), context );
+      terrainZ = context.terrainGenerator()->heightAt( pt.x(), pt.y(), context );
       terrainZ *= context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1;
     }
     float h = 0.0f;
