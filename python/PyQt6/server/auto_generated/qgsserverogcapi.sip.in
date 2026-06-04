@@ -56,7 +56,8 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
       items,
       conformance,
       data,
-      schema
+      schema,
+      profile
     };
 
     enum ContentType /BaseType=IntEnum/
@@ -78,6 +79,9 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
       // I am very optimistic that it will be supported soon!
       //  JSONFG,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
       //  JSONFG_PLUS //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      REL_AS_LINK,
+      REL_AS_KEY,
+      REL_AS_URI
     };
 
     QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() );
