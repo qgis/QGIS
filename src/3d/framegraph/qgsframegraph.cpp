@@ -496,13 +496,38 @@ void QgsFrameGraph::updateShadowSettings( const Qgs3DMapSettings &mapSettings )
     const QString lightSourceId = shadowSettings.lightSource();
     QgsLightSource *light = nullptr;
     int globalLightIndex = 0;
+
+    QgsLightSource *backupLightSource = nullptr;
+    int backupLightSourceIndex = 0;
     for ( int i = 0; !light && i < lightSources.size(); i++ )
     {
+      if ( !backupLightSource )
+      {
+        if ( auto directionalLight = dynamic_cast< QgsDirectionalLightSettings * >( lightSources[i] ) )
+        {
+          backupLightSource = directionalLight;
+          backupLightSourceIndex = i;
+        }
+        else if ( auto sunLight = dynamic_cast< QgsSunLightSettings * >( lightSources[i] ) )
+        {
+          backupLightSource = sunLight;
+          backupLightSourceIndex = i;
+        }
+      }
+
       if ( lightSources[i]->id() == lightSourceId )
       {
         light = lightSources[i];
         globalLightIndex = i;
       }
+    }
+
+    if ( !light )
+    {
+      // if we didn't find an light matching the exact ID requested, then
+      // fallback to just the first compatible light found in the scene
+      light = backupLightSource;
+      globalLightIndex = backupLightSourceIndex;
     }
 
     if ( light )
