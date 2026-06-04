@@ -31,6 +31,7 @@ from qgis.core import (
     QgsProcessing,
     QgsProcessingContext,
     QgsProcessingModelAlgorithm,
+    QgsProcessingModelChildAlgorithm,
     QgsProcessingModelParameter,
     QgsProject,
     QgsSettings,
@@ -351,31 +352,31 @@ class ModelerDialog(QgsModelDesignerDialog):
         if not alg:
             return
 
-        dlg = ModelerParametersDialog(alg, self.model())
-        dlg.setModal(True)
-        if dlg.exec():
-            alg = dlg.createAlgorithm()
-            if pos is None or not pos:
-                alg.setPosition(self.getPositionForAlgorithmItem())
-            else:
-                alg.setPosition(pos)
+        child_alg = QgsProcessingModelChildAlgorithm(alg_id)
+        child_alg.setDescription(alg.displayName())
 
-            alg.comment().setPosition(
-                alg.position() + QPointF(alg.size().width(), -1.5 * alg.size().height())
+        if pos is None or not pos:
+            child_alg.setPosition(self.getPositionForAlgorithmItem())
+        else:
+            child_alg.setPosition(pos)
+
+        child_alg.comment().setPosition(
+            child_alg.position()
+            + QPointF(child_alg.size().width(), -1.5 * child_alg.size().height())
+        )
+
+        output_offset_x = child_alg.size().width()
+        output_offset_y = 1.5 * child_alg.size().height()
+        for out in child_alg.modelOutputs():
+            child_alg.modelOutput(out).setPosition(
+                child_alg.position() + QPointF(output_offset_x, output_offset_y)
             )
+            output_offset_y += 1.5 * child_alg.modelOutput(out).size().height()
 
-            output_offset_x = alg.size().width()
-            output_offset_y = 1.5 * alg.size().height()
-            for out in alg.modelOutputs():
-                alg.modelOutput(out).setPosition(
-                    alg.position() + QPointF(output_offset_x, output_offset_y)
-                )
-                output_offset_y += 1.5 * alg.modelOutput(out).size().height()
-
-            self.beginUndoCommand(self.tr("Add Algorithm"))
-            id = self.model().addChildAlgorithm(alg)
-            self.repaintModel()
-            self.endUndoCommand()
+        self.beginUndoCommand(self.tr("Add Algorithm"))
+        self.model().addChildAlgorithm(child_alg)
+        self.repaintModel()
+        self.endUndoCommand()
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20
