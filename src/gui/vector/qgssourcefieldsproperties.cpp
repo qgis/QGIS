@@ -79,7 +79,7 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   configurationFlagsWi->setToolTip( tr( "Configures the field" ) );
   mFieldsList->setHorizontalHeaderItem( AttrConfigurationFlagsCol, configurationFlagsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
-  const auto fieldDomainWi = new QTableWidgetItem( tr( "Field Domain" ) );
+  const auto fieldDomainWidget = new QTableWidgetItem( tr( "Field Domain" ) );
   fieldDomainWi->setToolTip( tr( "Field domain associated with the field" ) );
   mFieldsList->setHorizontalHeaderItem( AttrFieldDomainCol, fieldDomainWi );
 
@@ -251,10 +251,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
   mFieldsList->setItem( row, AttrFieldDomainCol, new QTableWidgetItem( field.constraints().domainName() ) );
 
-  QList<int> notEditableCols = QList<int>() << AttrIdCol << AttrNameCol << AttrAliasCol << AttrTypeCol << AttrTypeNameCol << AttrLengthCol << AttrPrecCol << AttrCommentCol << AttrFieldDomainCol;
-
-  const auto constNotEditableCols = notEditableCols;
-  for ( const int i : constNotEditableCols )
+for ( const int i : { AttrIdCol, AttrNameCol, AttrAliasCol, AttrTypeCol, AttrTypeNameCol, AttrLengthCol, AttrPrecCol, AttrCommentCol, AttrFieldDomainCol } )
   {
     if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression )
       mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
