@@ -34,6 +34,36 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
   public:
     QgsSimpleCurve() = default;
 
+#ifndef SIP_RUN
+    /**
+     * Cast the \a geom to a QgsSimpleCurve.
+     * Should be used by qgsgeometry_cast<QgsSimpleCurve *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     * \note Not available in Python.
+     */
+    inline static const QgsSimpleCurve *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::LineString || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CircularString ) )
+        return static_cast<const QgsSimpleCurve *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsSimpleCurve.
+     * Should be used by qgsgeometry_cast<QgsSimpleCurve *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     * \note Not available in Python.
+     */
+    inline static QgsSimpleCurve *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::LineString || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CircularString ) )
+        return static_cast<QgsSimpleCurve *>( geom );
+      return nullptr;
+    }
+#endif
+
     /**
      * Appends the contents of another simple curve to the end of this simple curve.
      * \param curve curve to append. Ownership is not transferred.

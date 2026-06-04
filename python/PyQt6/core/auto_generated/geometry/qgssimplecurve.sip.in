@@ -26,6 +26,7 @@ implementation convenience.
   public:
     QgsSimpleCurve();
 
+
     void append( const QgsSimpleCurve *curve );
 %Docstring
 Appends the contents of another simple curve to the end of this simple
