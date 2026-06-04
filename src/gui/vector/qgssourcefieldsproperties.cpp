@@ -80,8 +80,8 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   mFieldsList->setHorizontalHeaderItem( AttrConfigurationFlagsCol, configurationFlagsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
   const auto fieldDomainWidget = new QTableWidgetItem( tr( "Field Domain" ) );
-  fieldDomainWi->setToolTip( tr( "Field domain associated with the field" ) );
-  mFieldsList->setHorizontalHeaderItem( AttrFieldDomainCol, fieldDomainWi );
+  fieldDomainWidget->setToolTip( tr( "Field domain associated with the field" ) );
+  mFieldsList->setHorizontalHeaderItem( AttrFieldDomainCol, fieldDomainWidget );
 
   mFieldsList->setSortingEnabled( true );
   mFieldsList->sortByColumn( 0, Qt::AscendingOrder );
@@ -251,7 +251,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
   mFieldsList->setItem( row, AttrFieldDomainCol, new QTableWidgetItem( field.constraints().domainName() ) );
 
-for ( const int i : { AttrIdCol, AttrNameCol, AttrAliasCol, AttrTypeCol, AttrTypeNameCol, AttrLengthCol, AttrPrecCol, AttrCommentCol, AttrFieldDomainCol } )
+  for ( const int i : { AttrIdCol, AttrNameCol, AttrAliasCol, AttrTypeCol, AttrTypeNameCol, AttrLengthCol, AttrPrecCol, AttrCommentCol, AttrFieldDomainCol } )
   {
     if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression )
       mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
