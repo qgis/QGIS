@@ -57,6 +57,7 @@
 #include <QString>
 #include <QSvgGenerator>
 #include <QTextStream>
+#include <QTimer>
 #include <QToolButton>
 #include <QUndoView>
 #include <QUrl>
@@ -491,7 +492,7 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
   // Delay zoom to the full model to ensure the scene has been properly set
   // and that the itemsBoundingRect returns the correct value.
-  QMetaObject::invokeMethod( this, &QgsModelDesignerDialog::zoomFull, Qt::QueuedConnection );
+  QTimer::singleShot( 100, this, [this] { zoomFull(); } );
 }
 
 void QgsModelDesignerDialog::loadModel( const QString &path )
