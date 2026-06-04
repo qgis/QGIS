@@ -5265,6 +5265,17 @@ class PyQgsOGRProvider(QgisTestCase):
             metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
         )
 
+    def testListFieldDomainsCapabilityShapefile(self):
+        """Shapefile provider should not report ListFieldDomains capability"""
+        vl = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "points.shp"), "test", "ogr"
+        )
+        self.assertTrue(vl.isValid())
+        self.assertFalse(
+            vl.dataProvider().capabilities()
+            & Qgis.VectorProviderCapability.ListFieldDomains
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
