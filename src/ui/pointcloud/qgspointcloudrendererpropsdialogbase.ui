@@ -132,7 +132,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" colspan="2">
+          <item row="2" column="1" colspan="3">
            <widget class="QgsFieldExpressionWidget" name="mColorExpressionWidget" native="true">
             <property name="focusPolicy">
              <enum>Qt::FocusPolicy::StrongFocus</enum>
@@ -160,7 +160,7 @@
           <property name="sizeConstraint">
            <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
           </property>
-          <item row="3" column="1">
+          <item row="0" column="1" colspan="2">
            <widget class="QgsDoubleSpinBox" name="mEdlStrengthSpinBox">
             <property name="toolTip">
              <string>Adjusts how strong the added shading will be. Greater values mean stronger effect.</string>
@@ -179,28 +179,28 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="lblEdlDistance">
             <property name="text">
              <string>Distance</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="1" column="1" colspan="2">
            <widget class="QgsDoubleSpinBox" name="mEdlDistanceSpinBox">
             <property name="toolTip">
              <string>Distance away from the original pixel to sample neighbors.</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="0" column="0">
            <widget class="QLabel" name="lblEdlStrength">
             <property name="text">
              <string>Strength</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
+          <item row="1" column="3">
            <widget class="QgsUnitSelectionWidget" name="mEdlDistanceUnit" native="true"/>
           </item>
          </layout>
@@ -224,7 +224,7 @@
           <property name="sizeConstraint">
            <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
           </property>
-          <item row="0" column="1">
+          <item row="0" column="1" colspan="3">
            <widget class="QgsDoubleSpinBox" name="mHillshadingZFactorSpinBox">
             <property name="toolTip">
              <string>Vertical exageration for hillshading</string>
@@ -267,7 +267,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item row="2" column="0" colspan="4">
            <widget class="QgsDirectionalLightWidget" name="mDirectionalLightWidget" native="true"/>
           </item>
          </layout>
@@ -298,7 +298,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="1" colspan="2">
            <widget class="QgsDoubleSpinBox" name="mHorizontalTriangleThresholdSpinBox">
             <property name="toolTip">
              <string>Maximum Triangle Side Size in Horizontal Plan</string>
@@ -311,7 +311,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="3">
            <widget class="QgsUnitSelectionWidget" name="mHorizontalTriangleUnitWidget" native="true"/>
           </item>
          </layout>
@@ -325,41 +325,34 @@
          <property name="checkable">
           <bool>false</bool>
          </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
           <item row="1" column="0">
            <widget class="QCheckBox" name="mLabels">
             <property name="text">
              <string>Show tile labels</string>
             </property>
+            <property name="tristate">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>301</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="lblZoomedOut">
             <property name="text">
              <string>When zoomed out</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" colspan="2">
+          <item row="0" column="1" colspan="3">
            <widget class="QComboBox" name="mZoomOutOptions"/>
           </item>
-          <item row="1" column="2">
+          <item row="1" column="3">
            <widget class="QgsFontButton" name="mLabelOptions">
             <property name="text">
              <string/>
@@ -367,13 +360,13 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="lblOverviewScale">
             <property name="text">
              <string>Overview switching scale</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1" colspan="2">
+           <item row="2" column="1" colspan="3">
            <widget class="QComboBox" name="mOverviewSwitchingScale">
             <property name="toolTip">
              <string>Sets the zoom level at which the individual point cloud files will get rendered instead of the overview or their extents.
@@ -435,8 +428,8 @@ Select Earlier to switch at a smaller scale (zoomed out) or Later to switch at a
           <item row="3" column="1" colspan="3">
            <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>4</horstretch>
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -452,8 +445,8 @@ Select Earlier to switch at a smaller scale (zoomed out) or Later to switch at a
           <item row="0" column="1" colspan="3">
            <widget class="QComboBox" name="mDrawOrderComboBox">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>4</horstretch>
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
