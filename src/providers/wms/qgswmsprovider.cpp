@@ -785,9 +785,9 @@ void QgsWmsProvider::fetchOtherResTiles(
   );
 }
 
-uint qHash( QgsWmsProvider::TilePosition tp )
+size_t qHash( QgsWmsProvider::TilePosition tp )
 {
-  return ( uint ) tp.col + ( ( uint ) tp.row << 16 );
+  return ( size_t ) tp.col + ( ( size_t ) tp.row << 16 );
 }
 
 static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color )
