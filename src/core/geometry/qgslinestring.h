@@ -367,7 +367,6 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
 
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
-    bool isEmpty() const override SIP_HOLDGIL;
     int indexOf( const QgsPoint &point ) const final;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
@@ -428,12 +427,7 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     */
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override  SIP_FACTORY;
 
-    void points( QgsPointSequence &pt SIP_OUT ) const override;
-
     void draw( QPainter &p ) const override;
-
-    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override  SIP_THROW( QgsCsException );
-    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
@@ -479,12 +473,7 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     double segmentLength( QgsVertexId startVertex ) const override;
     double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
 
-    void swapXy() override;
-
     bool convertTo( Qgis::WkbType type ) override;
-
-    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
-    void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
     /**

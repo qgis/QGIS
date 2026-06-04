@@ -609,6 +609,7 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     bool fromWkt( const QString &wkt ) override;
 
     void clear() override;
+    bool isEmpty() const override SIP_HOLDGIL;
     int numPoints() const override SIP_HOLDGIL;
     int nCoordinates() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;
@@ -620,6 +621,9 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
 
     QgsPoint startPoint() const override SIP_HOLDGIL;
     QgsPoint endPoint() const override SIP_HOLDGIL;
+    void points( QgsPointSequence &pts SIP_OUT ) const override;
+    void scroll( int firstVertexIndex ) final;
+    void swapXy() override;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
@@ -627,6 +631,10 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
 #endif
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     QgsSimpleCurve *reversed() const override SIP_FACTORY;
+
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override  SIP_THROW( QgsCsException );
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
 protected:
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;

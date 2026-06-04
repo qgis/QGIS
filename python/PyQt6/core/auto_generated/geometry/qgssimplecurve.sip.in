@@ -355,6 +355,8 @@ corresponds to the last point in the curve.
 
     virtual void clear();
 
+    virtual bool isEmpty() const /HoldGIL/;
+
     virtual int numPoints() const /HoldGIL/;
 
     virtual int nCoordinates() const /HoldGIL/;
@@ -375,10 +377,22 @@ corresponds to the last point in the curve.
 
     virtual QgsPoint endPoint() const /HoldGIL/;
 
+    virtual void points( QgsPointSequence &pts /Out/ ) const;
+
+    void scroll( int firstVertexIndex ) final;
+    virtual void swapXy();
+
 
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
 
     virtual QgsSimpleCurve *reversed() const /Factory/;
+
+
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
+
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
 
 protected:

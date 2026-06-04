@@ -86,14 +86,9 @@ winding the other way around the circle).
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual bool isEmpty() const /HoldGIL/;
-
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
     int indexOf( const QgsPoint &point ) const final;
-
-    virtual void points( QgsPointSequence &pts /Out/ ) const;
-
 
     virtual double length() const;
 
@@ -107,10 +102,6 @@ winding the other way around the circle).
 
 
     virtual void draw( QPainter &p ) const;
-
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
-
-    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
     virtual void addToPainterPath( QPainterPath &path ) const;
 
@@ -144,12 +135,6 @@ winding the other way around the circle).
 
     virtual QgsCircularString *curveSubstring( double startDistance, double endDistance ) const /Factory/;
 
-    virtual void swapXy();
-
-
-    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
-
-    void scroll( int firstVertexIndex ) final;
 
 
     virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
