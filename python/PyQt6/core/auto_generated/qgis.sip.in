@@ -369,6 +369,7 @@ The development version
       ReloadData,
       FeatureSymbology,
       CacheData,
+      ListFieldDomains,
       EditingCapabilities,
     };
 

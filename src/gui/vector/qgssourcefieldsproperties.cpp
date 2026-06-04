@@ -110,7 +110,11 @@ void QgsSourceFieldsProperties::loadRows()
   for ( int i = 0; i < fields.count(); ++i )
     attributeAdded( i );
 
-  mFieldsList->setColumnHidden( AttrFieldDomainCol, !providerSupportsFieldDomains() );
+  if ( mLayer->dataProvider() )
+  {
+    mFieldsList->setColumnHidden( AttrFieldDomainCol, !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ListFieldDomains ) );
+  }
+
   mFieldsList->resizeColumnsToContents();
   connect( mFieldsList, &QTableWidget::cellChanged, this, &QgsSourceFieldsProperties::attributesListCellChanged );
 
@@ -197,7 +201,10 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   if ( sorted )
     mFieldsList->setSortingEnabled( true );
 
-  mFieldsList->setColumnHidden( AttrFieldDomainCol, !providerSupportsFieldDomains() );
+  if ( mLayer->dataProvider() )
+  {
+    mFieldsList->setColumnHidden( AttrFieldDomainCol, !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ListFieldDomains ) );
+  }
 }
 
 
@@ -253,9 +260,9 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
   for ( const int i : { AttrIdCol, AttrNameCol, AttrAliasCol, AttrTypeCol, AttrTypeNameCol, AttrLengthCol, AttrPrecCol, AttrCommentCol, AttrFieldDomainCol } )
   {
-    if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression )
+    if ( i != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression )
       mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
-    if ( notEditableCols[i] == AttrAliasCol )
+    if ( i == AttrAliasCol )
       mFieldsList->item( row, i )->setToolTip( tr( "Edit alias in the Form config tab" ) );
   }
   const bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::RenameAttributes ) && !mLayer->readOnly();
@@ -424,23 +431,6 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 void QgsSourceFieldsProperties::attributesListCellPressed( int /*row*/, int /*column*/ )
 {
   updateButtons();
-}
-
-bool QgsSourceFieldsProperties::providerSupportsFieldDomains() const
-{
-  if ( !mLayer )
-    return false;
-
-  QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( mLayer->providerType() );
-  if ( !md )
-    return false;
-
-  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( dynamic_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mLayer->source(), {} ) ) );
-
-  if ( !conn )
-    return false;
-
-  return conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains );
 }
 
 //NICE FUNCTIONS
