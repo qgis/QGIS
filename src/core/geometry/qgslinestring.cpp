@@ -743,23 +743,6 @@ QgsLineString *QgsLineString::simplifyByDistance( double tolerance ) const
   return new QgsLineString( newX, newY, newZ, newM );
 }
 
-bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
-{
-  if ( !wkbPtr )
-  {
-    return false;
-  }
-
-  Qgis::WkbType type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != Qgis::WkbType::LineString )
-  {
-    return false;
-  }
-  mWkbType = type;
-  importVerticesFromWkb( wkbPtr );
-  return true;
-}
-
 QgsBox3D QgsLineString::calculateBoundingBox3D() const
 {
   if ( mX.empty() )
@@ -835,38 +818,6 @@ void QgsLineString::scroll( int index )
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
-bool QgsLineString::fromWkt( const QString &wkt )
-{
-  clear();
-
-  QPair<Qgis::WkbType, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
-
-  if ( QgsWkbTypes::flatType( parts.first ) != Qgis::WkbType::LineString )
-    return false;
-  mWkbType = parts.first;
-
-  QString secondWithoutParentheses = parts.second;
-  secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  parts.second = parts.second.remove( '(' ).remove( ')' );
-  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
-    return true;
-
-  QgsPointSequence points = QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() );
-  // There is a non number in the coordinates sequence
-  // LineString ( A b, 1 2)
-  if ( points.isEmpty() )
-    return false;
-
-  setPoints( points );
-  return true;
-}
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
-
 QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   QgsPointSequence pts;
@@ -1179,59 +1130,6 @@ void QgsLineString::setPoints( size_t size, const double *x, const double *y, co
     if ( hasM )
     {
       *destM++ = *m++;
-    }
-  }
-}
-
-void QgsLineString::setPoints( const QgsPointSequence &points )
-{
-  clearCache(); //set bounding box invalid
-
-  if ( points.isEmpty() )
-  {
-    clear();
-    return;
-  }
-
-  //get wkb type from first point
-  const QgsPoint &firstPt = points.at( 0 );
-  bool hasZ = firstPt.is3D();
-  bool hasM = firstPt.isMeasure();
-
-  setZMTypeFromSubGeometry( &firstPt, Qgis::WkbType::LineString );
-
-  mX.resize( points.size() );
-  mY.resize( points.size() );
-  if ( hasZ )
-  {
-    mZ.resize( points.size() );
-  }
-  else
-  {
-    mZ.clear();
-  }
-  if ( hasM )
-  {
-    mM.resize( points.size() );
-  }
-  else
-  {
-    mM.clear();
-  }
-
-  for ( int i = 0; i < points.size(); ++i )
-  {
-    mX[i] = points.at( i ).x();
-    mY[i] = points.at( i ).y();
-    if ( hasZ )
-    {
-      double z = points.at( i ).z();
-      mZ[i] = std::isnan( z ) ? 0 : z;
-    }
-    if ( hasM )
-    {
-      double m = points.at( i ).m();
-      mM[i] = std::isnan( m ) ? 0 : m;
     }
   }
 }
@@ -1592,92 +1490,6 @@ QgsLineString *QgsLineString::createEmptyWithSameType() const
   auto result = std::make_unique< QgsLineString >();
   result->mWkbType = mWkbType;
   return result.release();
-}
-
-int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
-{
-  const QgsLineString *otherLine = qgsgeometry_cast<const QgsLineString *>( other );
-  if ( !otherLine )
-    return -1;
-
-  const int size = mX.size();
-  const int otherSize = otherLine->mX.size();
-  if ( size > otherSize )
-  {
-    return 1;
-  }
-  else if ( size < otherSize )
-  {
-    return -1;
-  }
-
-  if ( is3D() && !otherLine->is3D() )
-    return 1;
-  else if ( !is3D() && otherLine->is3D() )
-    return -1;
-  const bool considerZ = is3D();
-
-  if ( isMeasure() && !otherLine->isMeasure() )
-    return 1;
-  else if ( !isMeasure() && otherLine->isMeasure() )
-    return -1;
-  const bool considerM = isMeasure();
-
-  for ( int i = 0; i < size; i++ )
-  {
-    const double x = mX[i];
-    const double otherX = otherLine->mX[i];
-    if ( x < otherX )
-    {
-      return -1;
-    }
-    else if ( x > otherX )
-    {
-      return 1;
-    }
-
-    const double y = mY[i];
-    const double otherY = otherLine->mY[i];
-    if ( y < otherY )
-    {
-      return -1;
-    }
-    else if ( y > otherY )
-    {
-      return 1;
-    }
-
-    if ( considerZ )
-    {
-      const double z = mZ[i];
-      const double otherZ = otherLine->mZ[i];
-
-      if ( z < otherZ )
-      {
-        return -1;
-      }
-      else if ( z > otherZ )
-      {
-        return 1;
-      }
-    }
-
-    if ( considerM )
-    {
-      const double m = mM[i];
-      const double otherM = otherLine->mM[i];
-
-      if ( m < otherM )
-      {
-        return -1;
-      }
-      else if ( m > otherM )
-      {
-        return 1;
-      }
-    }
-  }
-  return 0;
 }
 
 QString QgsLineString::geometryType() const
@@ -2119,36 +1931,6 @@ void QgsLineString::sumUpArea3D( double &sum ) const
 
   mHasCachedSummedUpArea3D = true;
   sum += mSummedUpArea3D;
-}
-
-void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )
-{
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-  int nVertices = 0;
-  wkb >> nVertices;
-  mX.resize( nVertices );
-  mY.resize( nVertices );
-  hasZ ? mZ.resize( nVertices ) : mZ.clear();
-  hasM ? mM.resize( nVertices ) : mM.clear();
-  double *x = mX.data();
-  double *y = mY.data();
-  double *m = hasM ? mM.data() : nullptr;
-  double *z = hasZ ? mZ.data() : nullptr;
-  for ( int i = 0; i < nVertices; ++i )
-  {
-    wkb >> *x++;
-    wkb >> *y++;
-    if ( hasZ )
-    {
-      wkb >> *z++;
-    }
-    if ( hasM )
-    {
-      wkb >> *m++;
-    }
-  }
-  clearCache(); //set bounding box invalid
 }
 
 /***************************************************************************

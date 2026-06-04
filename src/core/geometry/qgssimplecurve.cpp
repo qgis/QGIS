@@ -59,6 +59,79 @@ QString QgsSimpleCurve::asWkt( int precision ) const
   return wkt;
 }
 
+bool QgsSimpleCurve::fromWkb( QgsConstWkbPtr &wkbPtr )
+{
+  if ( !wkbPtr )
+  {
+    return false;
+  }
+
+  Qgis::WkbType type = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::flatType( mWkbType ) )
+  {
+    return false;
+  }
+  mWkbType = type;
+  importVerticesFromWkb( wkbPtr );
+  return true;
+}
+
+void QgsSimpleCurve::importVerticesFromWkb( const QgsConstWkbPtr &wkb )
+{
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  int nVertices = 0;
+  wkb >> nVertices;
+  mX.resize( nVertices );
+  mY.resize( nVertices );
+  hasZ ? mZ.resize( nVertices ) : mZ.clear();
+  hasM ? mM.resize( nVertices ) : mM.clear();
+  double *x = mX.data();
+  double *y = mY.data();
+  double *m = hasM ? mM.data() : nullptr;
+  double *z = hasZ ? mZ.data() : nullptr;
+  for ( int i = 0; i < nVertices; ++i )
+  {
+    wkb >> *x++;
+    wkb >> *y++;
+    if ( hasZ )
+    {
+      wkb >> *z++;
+    }
+    if ( hasM )
+    {
+      wkb >> *m++;
+    }
+  }
+  clearCache(); //set bounding box invalid
+}
+
+bool QgsSimpleCurve::fromWkt( const QString &wkt )
+{
+  clear();
+
+  QPair<Qgis::WkbType, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
+
+  if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::flatType( mWkbType ) )
+    return false;
+  mWkbType = parts.first;
+
+  parts.second = parts.second.remove( '(' ).remove( ')' );
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.simplified().remove( ' ' );
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
+    return true;
+
+  QgsPointSequence points = QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() );
+  // There is a non number in the coordinates sequence
+  // LineString ( A b, 1 2)
+  if ( points.isEmpty() )
+    return false;
+
+  setPoints( points );
+  return true;
+}
+
 void QgsSimpleCurve::clear()
 {
   mX.clear();
@@ -352,6 +425,92 @@ QgsSimpleCurve *QgsSimpleCurve::reversed() const
   return copy;
 }
 
+int QgsSimpleCurve::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsSimpleCurve *otherCurve = qgsgeometry_cast<const QgsSimpleCurve *>( other );
+  if ( !otherCurve )
+    return -1;
+
+  const int size = mX.size();
+  const int otherSize = otherCurve->mX.size();
+  if ( size > otherSize )
+  {
+    return 1;
+  }
+  else if ( size < otherSize )
+  {
+    return -1;
+  }
+
+  if ( is3D() && !otherCurve->is3D() )
+    return 1;
+  else if ( !is3D() && otherCurve->is3D() )
+    return -1;
+  const bool considerZ = is3D();
+
+  if ( isMeasure() && !otherCurve->isMeasure() )
+    return 1;
+  else if ( !isMeasure() && otherCurve->isMeasure() )
+    return -1;
+  const bool considerM = isMeasure();
+
+  for ( int i = 0; i < size; i++ )
+  {
+    const double x = mX[i];
+    const double otherX = otherCurve->mX[i];
+    if ( x < otherX )
+    {
+      return -1;
+    }
+    else if ( x > otherX )
+    {
+      return 1;
+    }
+
+    const double y = mY[i];
+    const double otherY = otherCurve->mY[i];
+    if ( y < otherY )
+    {
+      return -1;
+    }
+    else if ( y > otherY )
+    {
+      return 1;
+    }
+
+    if ( considerZ )
+    {
+      const double z = mZ[i];
+      const double otherZ = otherCurve->mZ[i];
+
+      if ( z < otherZ )
+      {
+        return -1;
+      }
+      else if ( z > otherZ )
+      {
+        return 1;
+      }
+    }
+
+    if ( considerM )
+    {
+      const double m = mM[i];
+      const double otherM = otherCurve->mM[i];
+
+      if ( m < otherM )
+      {
+        return -1;
+      }
+      else if ( m > otherM )
+      {
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
 void QgsSimpleCurve::splitCurveAtVertexProtected(
   int index, QVector< double > &x1, QVector< double > &y1, QVector< double > &z1, QVector< double > &m1, QVector< double > &x2, QVector< double > &y2, QVector< double > &z2, QVector< double > &m2
 ) const
@@ -474,4 +633,57 @@ void QgsSimpleCurve::append( const QgsSimpleCurve *curve )
   }
 
   clearCache(); //set bounding box invalid
+}
+
+void QgsSimpleCurve::setPoints( const QgsPointSequence &points )
+{
+  if ( points.isEmpty() )
+  {
+    clear();
+    return;
+  }
+
+  clearCache(); //set bounding box invalid
+
+  //get wkb type from first point
+  const QgsPoint &firstPt = points.at( 0 );
+  bool hasZ = firstPt.is3D();
+  bool hasM = firstPt.isMeasure();
+
+  setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::flatType( mWkbType ) );
+
+  mX.resize( points.size() );
+  mY.resize( points.size() );
+  if ( hasZ )
+  {
+    mZ.resize( points.size() );
+  }
+  else
+  {
+    mZ.clear();
+  }
+  if ( hasM )
+  {
+    mM.resize( points.size() );
+  }
+  else
+  {
+    mM.clear();
+  }
+
+  for ( int i = 0; i < points.size(); ++i )
+  {
+    mX[i] = points.at( i ).x();
+    mY[i] = points.at( i ).y();
+    if ( hasZ )
+    {
+      double z = points.at( i ).z();
+      mZ[i] = std::isnan( z ) ? 0 : z;
+    }
+    if ( hasM )
+    {
+      double m = points.at( i ).m();
+      mM[i] = std::isnan( m ) ? 0 : m;
+    }
+  }
 }

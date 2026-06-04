@@ -276,14 +276,6 @@ Returns a new linestring from a QPolygonF ``polygon`` input.
     virtual bool equals( const QgsCurve &other ) const;
 
 
-    void setPoints( const QgsPointSequence &points );
-%Docstring
-Resets the line string to match the specified list of points. The line
-string will inherit the dimensionality of the first point in the list.
-
-:param points: new points for line string. If empty, line string will be
-               cleared.
-%End
 
     void addVertex( const QgsPoint &pt );
 %Docstring
@@ -355,10 +347,6 @@ testing for duplicates.
 
 
     virtual QgsLineString *simplifyByDistance( double tolerance ) const /Factory/;
-
-    virtual bool fromWkb( QgsConstWkbPtr &wkb );
-
-    virtual bool fromWkt( const QString &wkt );
 
 
     virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
@@ -673,10 +661,6 @@ from the m values of surrounding vertices (see
 
 .. versionadded:: 3.40
 %End
-
-  protected:
-
-    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
 };
 
