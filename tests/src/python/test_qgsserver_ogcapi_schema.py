@@ -1,6 +1,6 @@
 """QGIS Unit tests for QgsServer OGC API Schema Handler.
 
-From build dir, run: ctest -R PyQgsServerApi -V
+From build dir, run: ctest -R PyQgsServerApiSchema -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -423,14 +423,26 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         r_manager.addRelation(relation)
         self.assertIn("relation1", r_manager.relations())
 
-        referencing_layer.setEditorWidgetSetup(
-            1, QgsEditorWidgetSetup("RelationReference", {"Relation": "relation1"})
-        )
-
         # Expose to WFS
         project.writeEntry(
             "WFSLayers", "/", [referencing_layer.id(), referenced_layer.id()]
         )
+
+        # First: test with no editor widget, the fk field should be exposed as a regular integer field
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/referencing/schema.json", project
+        )
+
+        self.assertEqual(
+            j["properties"]["fk"],
+            {"format": "int32", "type": "integer", "x-ogc-propertySeq": 2},
+        )
+
+        # Setup the widget
+        referencing_layer.setEditorWidgetSetup(
+            1, QgsEditorWidgetSetup("RelationReference", {"Relation": "relation1"})
+        )
+
         j = self._getJsonResponse(
             "http://server.qgis.org/wfs3/collections/referencing/schema.json", project
         )

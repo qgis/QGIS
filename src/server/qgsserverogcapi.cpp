@@ -161,6 +161,12 @@ QString QgsServerOgcApi::profileToUri( const Profile &profile )
     case Profile::JSONFG_PLUS:
       return u"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"_s;
 #endif
+    case Profile::REL_AS_KEY:
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-key"_s;
+    case Profile::REL_AS_URI:
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-uri"_s;
+    case Profile::REL_AS_LINK:
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-link"_s;
     case Profile::NONE:
       return QString();
   }

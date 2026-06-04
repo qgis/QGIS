@@ -28,6 +28,7 @@ using namespace Qt::StringLiterals;
 class QgsFeatureRequest;
 class QgsServerOgcApi;
 class QgsFeature;
+class QgsMapLayer;
 
 /**
  * The QgsWfs3AbstractItemsHandler class provides some
@@ -45,7 +46,7 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * \param context the server api context
      * \throws QgsServerApiNotFoundException if the layer is NOT published
      */
-    void checkLayerIsAccessible( QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+    static void checkLayerIsAccessible( QgsVectorLayer *layer, const QgsServerApiContext &context );
 
     /**
      * Creates a filtered QgsFeatureRequest containing only fields published for WFS and plugin filters applied.
@@ -62,7 +63,7 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * \param context the server api context
      * \return QgsFields list with filters applied
      */
-    QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+    static QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context );
 
     /**
      * Adds the information about the available fields as a json object, to be used in the schema operation.
@@ -105,9 +106,56 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
 
     /**
      * Removes the 'offset' and 'limit' query parameters from the given \a urlQuery ignoring case,
-     * and returns the modified query.
+     * and returns the modified query. If \a removeProfile is TRUE, also the 'profile' query parameter is removed.
      */
-    static QUrlQuery removeOffsetAndLimit( const QUrlQuery &urlQuery );
+    static QUrlQuery removeOffsetAndLimit( const QUrlQuery &urlQuery, bool removeProfile = false );
+
+  protected:
+    /**
+     * Referenced layer information from ValueRelation and RelationReference widgets
+     */
+    struct ReferencedLayerInfo
+    {
+        const QgsVectorLayer *referencedLayer;   //!< The referenced layer
+        QString referencingFieldOapifIdentifier; //!< The OAPIF name of the field in the referencing layer that contains the reference to the other layer (compound primary keys are not supported)
+        int referencingFieldIdx = -1;            //!< The index of the referencing field in the referencing layer
+        QString referencedLayerOapifIdentifier;  //!< The name used by OAPIF to identify the referenced layer (collectionId)
+        QString referencedFieldOapifIdentifier;  //!< The OAPIF name of the field in the referenced layer that is used as a primary key (compounf primary keys are not supported)
+        bool valueIsPk;                          //!< True if the referenced field is a primary key of the referenced layer, false otherwise
+        QString referencingFieldComment;         //!< The comment of the referencing field (if available), to be used in the description of the reference
+    };
+
+    /**
+     * Returns the information about the referenced layers for the given \a mapLayer and \a apiContext.
+     * The returned map has as key the index of the field in the \a mapLayer that contains the reference to the other layer, and as value a ReferencedLayerInfo struct with the information about the referenced layer.
+     * Unpublished fields or referenced layers are not returned as well as relations using compound primary keys (i.e. referencing multiple fields) or referencing fields that are not a primary key of the referenced layer.
+     */
+    QMap<int, ReferencedLayerInfo> gatherReferencedLayerInfo( const QgsVectorLayer *mapLayer, const QgsServerApiContext &apiContext ) const;
+
+    /**
+     * Returns the name used by OAPIF to identify the collection
+     * \throw QgsServerApiImproperlyConfiguredException if referenced layer is not found
+     */
+    QString referencedLayerIdentifier( const QgsVectorLayer *mapLayer, int fieldIdx, const QgsServerApiContext &apiContext, QString *referencedLayerTitle = nullptr ) const;
+
+    /**
+     * Creates the link to the referenced feature to be set in the referencing feature JSON
+     */
+    json relatedFeatureReference( const QVariant &referencedFeatureValue, const ReferencedLayerInfo &referencedInfo, QgsServerOgcApi::Profile relAs, const QgsServerApiContext &apiContext ) const;
+
+    /**
+     * Returns the URI to the feature(s) given the collection ID and the field values, it may return a
+     * direct link to the feature if the collection has a unique key or it may return a link to the
+     * items endpoint with filters on the field values.
+     * Note that the field names in fieldValueMap should be the field names as defined in the collection schema,
+     * not necessarily the same as the field names in the underlying data source.
+     * If valueMap contains a single "id" field name and there is no such a fieldName in the layer, this is considered the
+     * unique identifier of the feature and the URI to the feature will be returned using the "id" value, otherwise a link
+     * to the items endpoint with filters on the field values will be returned.
+     */
+    static QString uri(
+      const QString &collectionId, const QMap<QString, QVariant> &fieldValueMap, const QgsServerApiContext &apiContext, QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON
+    );
 };
 
 /**

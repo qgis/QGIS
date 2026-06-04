@@ -68,7 +68,8 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       items,       //!< Refers to a resource that is comprised of members of the collection represented by the link’s context.
       conformance, //!< The target IRI points to a resource which represents the collection resource for the context IRI.
       data,        //!< The target IRI points to resource data
-      schema       //!< "http://www.opengis.net/def/rel/ogc/0.0/schema"
+      schema,      //!< "http://www.opengis.net/def/rel/ogc/0.0/schema"
+      profile      //!< "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references"
     };
     Q_ENUM( Rel )
 
@@ -95,6 +96,9 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       // I am very optimistic that it will be supported soon!
       //  JSONFG,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
       //  JSONFG_PLUS //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      REL_AS_LINK, //!< JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
+      REL_AS_KEY,  //!< JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
+      REL_AS_URI   //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
     };
     Q_ENUM( Profile )
 
