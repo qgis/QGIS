@@ -13,7 +13,7 @@
     "arg": "translate",
     "optional": true,
     "default": "true",
-    "description": "whether to return translated string. Currently affects only 'type' property."
+    "description": "whether to return translated string. Currently affects only 'type' property. By default translated strings are returned. Setting this to false will disable translation, always returning English strings."
   }],
   "examples": [{
     "expression": "layer_property('streets','title')",
