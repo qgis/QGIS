@@ -4487,30 +4487,15 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class VerticalAxisInversion : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      /**
-       * When dragging with mouse button held in fly navigation
-       * \since QGIS 4.2
-       */
-      InFlyWhenDragging = 1 << 0,
-      /**
-       * When moving captured mouse in fly navigation
-       * \since QGIS 4.2
-       */
-      InFlyWhenCaptured = 1 << 1,
-      /**
-       * When in terrain navigation
-       * \since QGIS 4.2
-       */
-      InTerrain = 1 << 2,
+      WhenRotatingDragging = 1 << 0, //!< When rotating camera around self with mouse captured \since QGIS 4.2
+      WhenRotatingCaptured = 1 << 1, //!< When rotating camera around self with mouse button pressed \since QGIS 4.2
+      WhenPivoting = 1 << 2,         //!< When pivoting camera around point in terrain \since QGIS 4.2
 
       // Legacy aliases for old flying-only enum:
 
-      //! Never invert vertical axis movements
-      Never = 0,
-      //! Invert vertical axis movements when dragging in first person modes
-      WhenDragging = InFlyWhenDragging,
-      //! Always invert vertical axis movements
-      Always = InFlyWhenDragging | InFlyWhenCaptured,
+      Never = 0,                                            //<! Never invert vertical axis movements \deprecated QGIS 4.2
+      WhenDragging = WhenRotatingDragging,                  //<! Invert vertical axis movements when dragging in first person modes \deprecated QGIS 4.2
+      Always = WhenRotatingDragging | WhenRotatingCaptured, //<! Always invert vertical axis movements \deprecated QGIS 4.2
     };
     Q_ENUM( VerticalAxisInversion )
     Q_DECLARE_FLAGS( VerticalAxisInversionFlags, VerticalAxisInversion )

@@ -2515,17 +2515,14 @@ The development version
 
     enum class VerticalAxisInversion /BaseType=IntFlag/
     {
-      InFlyWhenDragging,
-      InFlyWhenCaptured,
-      InTerrain,
+      WhenRotatingDragging,
+      WhenRotatingCaptured,
+      WhenPivoting,
 
       // Legacy aliases for old flying-only enum:
 
-      //! Never invert vertical axis movements
       Never,
-      //! Invert vertical axis movements when dragging in first person modes
       WhenDragging,
-      //! Always invert vertical axis movements
       Always,
     };
     typedef QFlags<Qgis::VerticalAxisInversion> VerticalAxisInversionFlags;

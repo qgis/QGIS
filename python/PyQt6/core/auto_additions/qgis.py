@@ -7963,19 +7963,28 @@ Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
 # --
 Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.VerticalAxisInversion.InFlyWhenDragging.__doc__ = ""
-Qgis.VerticalAxisInversion.InFlyWhenCaptured.__doc__ = ""
-Qgis.VerticalAxisInversion.InTerrain.__doc__ = ""
+Qgis.VerticalAxisInversion.WhenRotatingDragging.__doc__ = "When rotating camera around self with mouse captured \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenRotatingCaptured.__doc__ = "When rotating camera around self with mouse button pressed \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenPivoting.__doc__ = "When pivoting camera around point in terrain \n.. versionadded:: 4.2"
 Qgis.VerticalAxisInversion.Never.__doc__ = ""
 Qgis.VerticalAxisInversion.WhenDragging.__doc__ = ""
 Qgis.VerticalAxisInversion.Always.__doc__ = ""
-Qgis.VerticalAxisInversion.__doc__ = """When in terrain navigation
+Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D views.
 
-.. versionadded:: 4.2
+.. versionadded:: 3.30
 
-* ``InFlyWhenDragging``: 
-* ``InFlyWhenCaptured``: 
-* ``InTerrain``: 
+* ``WhenRotatingDragging``: When rotating camera around self with mouse captured
+
+  .. versionadded:: 4.2
+
+* ``WhenRotatingCaptured``: When rotating camera around self with mouse button pressed
+
+  .. versionadded:: 4.2
+
+* ``WhenPivoting``: When pivoting camera around point in terrain
+
+  .. versionadded:: 4.2
+
 * ``Never``: 
 * ``WhenDragging``: 
 * ``Always``: 

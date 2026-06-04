@@ -96,13 +96,13 @@ class _3D_EXPORT QgsCameraController : public QObject
     void setCameraMovementSpeed( double movementSpeed );
 
     /**
-     * Returns the vertical axis inversion behavior for walk mode.
+     * Returns the vertical axis inversion behavior.
      * \since QGIS 3.18
      */
     Qgis::VerticalAxisInversionFlags verticalAxisInversion() const { return mVerticalAxisInversion; }
 
     /**
-     * Sets the vertical axis \a inversion behavior for walk mode.
+     * Sets the vertical axis \a inversion behavior.
      * \since QGIS 3.18
      */
     void setVerticalAxisInversion( Qgis::VerticalAxisInversionFlags inversion );

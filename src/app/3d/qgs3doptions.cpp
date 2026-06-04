@@ -19,7 +19,6 @@
 #include "qgisapp.h"
 #include "qgs3d.h"
 #include "qgs3dmapcanvas.h"
-#include "qgs3dmapcanvaswidget.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgssettings.h"
@@ -49,9 +48,10 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   cboCameraProjectionType->addItem( tr( "Perspective Projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
   cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
 
-  mVerticalAxisInversionComboBox->addItem( tr( "In walk mode (when captured)" ), QVariant::fromValue( Qgis::VerticalAxisInversion::InFlyWhenCaptured ) );
-  mVerticalAxisInversionComboBox->addItem( tr( "In walk mode (when dragging)" ), QVariant::fromValue( Qgis::VerticalAxisInversion::InFlyWhenDragging ) );
-  mVerticalAxisInversionComboBox->addItem( tr( "In terrain mode" ), QVariant::fromValue( Qgis::VerticalAxisInversion::InTerrain ) );
+  mVerticalAxisInversionComboBox->setDefaultText( tr( "Do not invert" ) );
+  mVerticalAxisInversionComboBox->addItem( tr( "When rotating (mouse captured)" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenRotatingCaptured ) );
+  mVerticalAxisInversionComboBox->addItem( tr( "When rotating (when dragging)" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenRotatingDragging ) );
+  mVerticalAxisInversionComboBox->addItem( tr( "When pivoting around terrain" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenPivoting ) );
 
   mTextureFilterQualityCombo->addItem( tr( "Off (Trilinear)" ), QVariant::fromValue( Qgis::TextureFilterQuality::Trilinear ) );
   mTextureFilterQualityCombo->addItem( tr( "2×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic2x ) );
@@ -72,10 +72,10 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   const Qgis::NavigationMode defaultNavMode = settings.enumValue( u"map3d/defaultNavigation"_s, Qgis::NavigationMode::TerrainBased, QgsSettings::App );
   mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( QVariant::fromValue( defaultNavMode ) ) );
 
-  const Qgis::VerticalAxisInversionFlags axisInversion = settings.flagValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::InFlyWhenDragging, QgsSettings::App );
-  mVerticalAxisInversionComboBox->setItemCheckState( 0, ( axisInversion & Qgis::VerticalAxisInversion::InFlyWhenCaptured ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
-  mVerticalAxisInversionComboBox->setItemCheckState( 1, ( axisInversion & Qgis::VerticalAxisInversion::InFlyWhenDragging ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
-  mVerticalAxisInversionComboBox->setItemCheckState( 2, ( axisInversion & Qgis::VerticalAxisInversion::InTerrain ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+  const Qgis::VerticalAxisInversionFlags axisInversion = settings.flagValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenRotatingDragging, QgsSettings::App );
+  mVerticalAxisInversionComboBox->setItemCheckState( 0, ( axisInversion & Qgis::VerticalAxisInversion::WhenRotatingCaptured ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+  mVerticalAxisInversionComboBox->setItemCheckState( 1, ( axisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+  mVerticalAxisInversionComboBox->setItemCheckState( 2, ( axisInversion & Qgis::VerticalAxisInversion::WhenPivoting ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
 
   const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
   cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( static_cast<int>( defaultProjection ) ) );
@@ -113,7 +113,7 @@ void Qgs3DOptionsWidget::apply()
   Qgs3D::settingShadowQuality->setValue( mShadowQualityCombo->currentData().value< Qgis::ShadowQuality >() );
 
   Qgis::VerticalAxisInversionFlags axisInversion;
-  for ( auto flag : mVerticalAxisInversionComboBox->checkedItemsData() )
+  for ( QVariant flag : mVerticalAxisInversionComboBox->checkedItemsData() )
     axisInversion.setFlag( flag.value<Qgis::VerticalAxisInversion>() );
 
   settings.setFlagValue( u"map3d/axisInversion"_s, axisInversion, QgsSettings::App );
@@ -121,10 +121,8 @@ void Qgs3DOptionsWidget::apply()
   // Apply axis inversion setting to existing map views
   for ( Qgs3DMapCanvas *canvas : QgisApp::instance()->mapCanvases3D() )
   {
-    QgsCameraController *cameraController = canvas->cameraController();
-    if ( !cameraController )
-      continue;
-    cameraController->setVerticalAxisInversion( axisInversion );
+    if ( QgsCameraController *cameraController = canvas->cameraController() )
+      cameraController->setVerticalAxisInversion( axisInversion );
   }
 }
 
