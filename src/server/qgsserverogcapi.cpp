@@ -142,6 +142,12 @@ QString QgsServerOgcApi::profileToString( const Profile &profile )
 #endif
     case Profile::NONE:
       return QString();
+    case Profile::REL_AS_KEY:
+      return u"rel-as-key"_s;
+    case Profile::REL_AS_URI:
+      return u"rel-as-uri"_s;
+    case Profile::REL_AS_LINK:
+      return u"rel-as-link"_s;
   }
   Q_UNREACHABLE();
   return QString();

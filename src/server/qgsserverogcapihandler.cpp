@@ -225,7 +225,7 @@ QString QgsServerOgcApiHandler::headerLink(
 
   if ( !profileStr.isEmpty() )
   {
-    hrefStr += u"&profile="_s + profileStr;
+    hrefStr += "&profile="_L1 + profileStr;
   }
 
   QString titleStr = !title.isEmpty() ? title : QString::fromStdString( linkTitle() );
@@ -241,7 +241,7 @@ QString QgsServerOgcApiHandler::headerLink(
 
   if ( !profileStr.isEmpty() )
   {
-    linkStr += QString( "; profile=\"%1\"" ).arg( profileStr );
+    linkStr += u"; profile=\"%1\""_s.arg( profileStr );
   }
 
   return linkStr;
