@@ -25,6 +25,7 @@
 #include "qgsbufferserverrequest.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
 #include "qgsjsonutils.h"
 #include "qgslogger.h"
@@ -340,6 +341,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       std::optional<int> maxLength;            // string length
       std::optional<json> enumValues;          // enum values
       std::optional<std::string> collectionId; // x-ogc-collectionId
+      std::optional<std::string> pattern;      // regex pattern for string values
   };
 
   auto fieldTypeFormat = []( const QgsField &field, FieldInfo &fInfo ) -> void {
@@ -510,7 +512,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
           break;
         }
 
-        if ( field.constraints().constraints().testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+        if ( field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard )
         {
           requiredFields.push_back( fieldIdentifier.toStdString() );
         }
@@ -666,7 +668,29 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
           QgsMessageLog::logMessage( u"Unhandled widget type '%1' for field '%2'"_s.arg( widgetType, fieldIdentifier ), u"Server"_s, Qgis::MessageLevel::Info );
         }
 
-        // TODO: pattern for strings
+        // Extract the pattern
+        const QgsFieldConstraints constraints = field.constraints();
+        if ( field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard )
+        {
+          const QgsExpression expression( constraints.constraintExpression() );
+          if ( expression.isValid() && expression.rootNode()->dump().startsWith( "regexp_match("_L1 ) )
+          {
+            if ( const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( expression.rootNode() ) )
+            {
+              QgsExpressionNode::NodeList *functionArgs = functionNode->args();
+              if ( functionArgs->count() == 2 )
+              {
+                if ( const QgsExpressionNodeColumnRef *columnNode = qgis::down_cast<const QgsExpressionNodeColumnRef *>( functionArgs->at( 0 ) ); columnNode->name() == field.name() )
+                {
+                  if ( const QgsExpressionNodeLiteral *patternNode = qgis::down_cast<const QgsExpressionNodeLiteral *>( functionArgs->at( 1 ) ) )
+                  {
+                    fInfo.pattern = patternNode->value().toString().toStdString();
+                  }
+                }
+              }
+            }
+          }
+        }
 
         // ////////////////////////////////////////////////////
         // Generic code that may apply to several widget types
@@ -776,6 +800,8 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       fieldsInfo[fieldName]["maxLength"] = fInfo.maxLength.value();
     if ( fInfo.enumValues.has_value() )
       fieldsInfo[fieldName]["enum"] = fInfo.enumValues.value();
+    if ( fInfo.pattern.has_value() )
+      fieldsInfo[fieldName]["pattern"] = fInfo.pattern.value();
     if ( fInfo.codelist.has_value() )
     {
       json codelistJson = json::object();
@@ -931,7 +957,7 @@ QMap<int, QgsWfs3AbstractItemsHandler::ReferencedLayerInfo> QgsWfs3AbstractItems
         if ( referencedLayer->primaryKeyAttributes().size() > 1 )
         {
           QgsMessageLog::
-            logMessage( u"RelationReference relations with id '%1' has a referenced layer with compound primary key, this is not supported"_s.arg( relation.id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+            logMessage( u"RelationReference relations with id '%1' has a referenced layer with composite primary key, this is not supported"_s.arg( relation.id() ), u"Server"_s, Qgis::MessageLevel::Warning );
           continue;
         }
         const int referencedFieldIdx = relation.referencedFields().first();
@@ -961,11 +987,11 @@ QMap<int, QgsWfs3AbstractItemsHandler::ReferencedLayerInfo> QgsWfs3AbstractItems
         {
           const QgsField field = mapLayer->fields().field( referencingFieldIdx );
           QgsMessageLog::
-            logMessage( u"ValueRelation %1' has a referenced layer '%2' with compound primary key, this is not supported"_s.arg( field.name(), referencedLayer->id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+            logMessage( u"ValueRelation %1' has a referenced layer '%2' with composite primary key, this is not supported"_s.arg( field.name(), referencedLayer->id() ), u"Server"_s, Qgis::MessageLevel::Warning );
           continue;
         }
-        const QString referencedFielName = widgetConfig.value( u"Key"_s ).toString();
-        const int fieldIdx = referencedLayer->fields().lookupField( referencedFielName );
+        const QString referencedFieldName = widgetConfig.value( u"Key"_s ).toString();
+        const int fieldIdx = referencedLayer->fields().lookupField( referencedFieldName );
         const QgsField referencedField = referencedLayer->fields().field( fieldIdx );
         ReferencedLayerInfo info;
         info.referencingFieldIdx = referencingFieldIdx;
@@ -973,7 +999,7 @@ QMap<int, QgsWfs3AbstractItemsHandler::ReferencedLayerInfo> QgsWfs3AbstractItems
         info.referencedFieldOapifIdentifier = referencedLayer->fields().at( fieldIdx ).displayName();
         info.referencingFieldOapifIdentifier = referencingField.displayName();
         info.referencedLayerOapifIdentifier = referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName();
-        info.valueIsPk = referencedLayer->primaryKeyAttributes().contains( referencedLayer->fields().lookupField( referencedFielName ) );
+        info.valueIsPk = referencedLayer->primaryKeyAttributes().contains( referencedLayer->fields().lookupField( referencedFieldName ) );
         info.referencingFieldComment = referencedField.comment();
         refInfo.insert( referencingFieldIdx, info );
       }
@@ -1900,31 +1926,14 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
 
   // Add rel-as- links based on requested profile
   // Note: for NONE profile we don't add any rel-as- link
-  switch ( relAs )
+  if ( relAs != QgsServerOgcApi::Profile::NONE )
   {
-    case QgsServerOgcApi::Profile::REL_AS_LINK:
-      data["links"].push_back(
-        { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
-          { "href", "http://www.opengis.net/def/profile/ogc/0/rel-as-link" },
-          { "Profile 'rel-as-link' is used in the response", "" } }
-      );
-      break;
-    case QgsServerOgcApi::Profile::REL_AS_URI:
-      data["links"].push_back(
-        { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
-          { "href", "http://www.opengis.net/def/profile/ogc/0/rel-as-uri" },
-          { "Profile 'rel-as-uri' is used in the response", "" } }
-      );
-      break;
-    case QgsServerOgcApi::Profile::REL_AS_KEY:
-      data["links"].push_back(
-        { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
-          { "href", "http://www.opengis.net/def/profile/ogc/0/rel-as-key" },
-          { "Profile 'rel-as-key' is used in the response", "" } }
-      );
-      break;
-    default:
-      break;
+    const std::string profileStr { QgsServerOgcApi::profileToString( relAs ).toStdString() };
+    data["links"].push_back(
+      { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
+        { "href", "http://www.opengis.net/def/profile/ogc/0/" + profileStr },
+        { "title", "Profile 'rel-as-link' is used in the response" + profileStr } }
+    );
   }
 
   json navigation = json::array();
