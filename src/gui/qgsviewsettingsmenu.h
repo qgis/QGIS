@@ -33,6 +33,7 @@
  * \brief Builds a menu to be used with toolbars.
  *
  * Menu doesn't close when an action is triggered, and allows triggering multiple actions in a row.
+ * \since QGIS 4.2
  */
 class GUI_EXPORT QgsViewSettingsMenu : public QMenu
 {

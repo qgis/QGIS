@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsviewsettingsmenu.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsViewSettingsMenu : QMenu
+{
+%Docstring(signature="appended")
+Builds a menu to be used with toolbars.
+
+Menu doesn't close when an action is triggered, and allows triggering
+multiple actions in a row.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsviewsettingsmenu.h"
+%End
+  public:
+    explicit QgsViewSettingsMenu( const QString &title, QWidget *parent = 0 );
+%Docstring
+QgsViewSettingsMenu is a menu to be used with toolbars.
+%End
+
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
+
+    ~QgsViewSettingsMenu();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsviewsettingsmenu.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
