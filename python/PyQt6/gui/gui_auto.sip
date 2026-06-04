@@ -233,6 +233,7 @@
 %Include auto_generated/qgsvariableeditorwidget.sip
 %Include auto_generated/qgsvectorlayertemporalpropertieswidget.sip
 %Include auto_generated/qgsvertexmarker.sip
+%Include auto_generated/qgsviewsettingsmenu.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
 %Include auto_generated/actions/qgsactionmenu.sip
