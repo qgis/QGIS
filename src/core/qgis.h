@@ -48,7 +48,7 @@ int QgisEvent = QEvent::User + 1;
 // qHash implementation for scoped enum type
 // https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
 #define QHASH_FOR_CLASS_ENUM( T )                                                     \
-  inline uint qHash( const T &t, uint seed )                                          \
+  inline size_t qHash( const T &t, size_t seed )                                      \
   {                                                                                   \
     return ::qHash( static_cast<typename std::underlying_type<T>::type>( t ), seed ); \
   }
@@ -7237,7 +7237,7 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *ob
 }
 
 //! Hash for QVariant
-CORE_EXPORT uint qHash( const QVariant &variant );
+CORE_EXPORT size_t qHash( const QVariant &variant );
 
 /**
  * Returns a string representation of a double

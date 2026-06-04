@@ -4214,7 +4214,7 @@ QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QF
 
 
 
-uint qHash( const QVariant &variant );
+size_t qHash( const QVariant &variant );
 %Docstring
 Hash for QVariant
 %End

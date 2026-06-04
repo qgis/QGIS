@@ -56,7 +56,7 @@
 
 using namespace Qt::StringLiterals;
 
-uint qHash( const Vertex &v )
+size_t qHash( const Vertex &v )
 {
   return qHash( v.layer ) ^ qHash( v.fid ) ^ qHash( v.vertexId );
 }

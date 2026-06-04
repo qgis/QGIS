@@ -398,7 +398,7 @@ class CORE_EXPORT QgsPointXY
     //! is point empty?
     bool mIsEmpty = true;
 
-    friend uint qHash( const QgsPointXY &pnt );
+    friend size_t qHash( const QgsPointXY &pnt );
 
 }; // class QgsPointXY
 
@@ -411,11 +411,11 @@ inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_S
   return os;
 }
 
-inline uint qHash( const QgsPointXY &p ) SIP_SKIP
+inline size_t qHash( const QgsPointXY &p ) SIP_SKIP
 {
-  uint hash;
-  const uint h1 = qHash( static_cast< quint64 >( p.mX ) );
-  const uint h2 = qHash( static_cast< quint64 >( p.mY ) );
+  size_t hash;
+  const size_t h1 = qHash( static_cast< quint64 >( p.mX ) );
+  const size_t h2 = qHash( static_cast< quint64 >( p.mY ) );
   hash = h1 ^ ( h2 << 1 );
   return hash;
 }
