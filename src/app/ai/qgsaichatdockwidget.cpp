@@ -1210,8 +1210,7 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QSettings indexSettings;
   const bool hasLayerIndexingSetting = indexSettings.contains( u"geoai/index/enable_layer_indexing"_s ) || indexSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
-  const bool defaultLayerIndexingEnabled
-    = mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration() && !requiresLayerIndexingConsent();
+  const bool defaultLayerIndexingEnabled = mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration() && !requiresLayerIndexingConsent();
   const bool layerIndexingEnabled = hasLayerIndexingSetting ? settingValueWithLegacy( indexSettings, u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool()
                                                             : defaultLayerIndexingEnabled;
 

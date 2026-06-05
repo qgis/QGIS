@@ -12,10 +12,10 @@
 #include "qgssettings.h"
 #include "qgstest.h"
 
-#include <QLabel>
 #include <QApplication>
 #include <QCheckBox>
 #include <QDialog>
+#include <QLabel>
 #include <QMetaObject>
 #include <QPushButton>
 #include <QSettings>

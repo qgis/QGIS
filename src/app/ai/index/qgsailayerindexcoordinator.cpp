@@ -15,13 +15,14 @@
 
 #include "qgsailayerindexcoordinator.h"
 
+#include <algorithm>
+
 #include "qgsaiworkspaceindex.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-#include <algorithm>
 #include <QString>
 
 #include "moc_qgsailayerindexcoordinator.cpp"
