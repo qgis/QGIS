@@ -1076,22 +1076,44 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
     { "links", links( context ) },
     { "conformsTo",
       {
-        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
-        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
-        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
-        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
+        // From https://docs.ogc.org/is/19-072/19-072.html
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/landing-page"
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/oas30",
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/html",
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/json"
 
         // From https://docs.ogc.org/is/23-058r2/23-058r2.html
         "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
         "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-parameter",
         "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
         "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-codelists",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/references",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/returnables-and-receivables",
+
+        // From: https://docs.ogc.org/is/18-058r1/18-058r1.html
+        "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
+
+        // From: https://docs.ogc.org/is/17-069r4/17-069r4.html
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
+
+        // From: https://docs.ogc.org/is/19-079r2/19-079r2.html
+        // TODO: queryables and sortables are not supported yet, but we may want to add them in the future:
+        // requirement http://www.opengis.net/spec/ogcapi-features-3/1.0/req/queryables-query-parameters
+        // filtering:
+        // - http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter
+        // - http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter
+        // has limited supported but we cannot advertise it yet because of the dependency on
+        // http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables-query-parameters
 
         // Draft
-        "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/schemas",
-        "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-codelists",
-        "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/profile-parameter",
-        "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-codelists",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-parameter",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/feature-references",
       } }
   };
   json navigation = json::array();
@@ -1319,6 +1341,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     { "title", title },
     // TODO: check if we need to expose other advertised CRS here
     { "crs", crss },
+    { "storageCrs", mapLayer->crs().toOgcUri().toStdString() },
     { "extent",
       { { "spatial",
           {
@@ -1332,6 +1355,11 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
           } } } },
     { "links", linksList }
   };
+  // Add storageCrsCoordinateEpoch if not NaN
+  if ( !std::isnan( mapLayer->crs().coordinateEpoch() ) )
+  {
+    data["storageCrsCoordinateEpoch"] = mapLayer->crs().coordinateEpoch();
+  }
   json navigation = json::array();
   const QUrl url { context.request()->url() };
   navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 2 ).toStdString() } } );

@@ -153,6 +153,10 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       }
     },
     "schemas": {
+      "anyObject": {
+        "description": "any JSON object",
+        "type": "object"
+      },
       "collectionInfo": {
         "properties": {
           "crs": {
@@ -851,6 +855,43 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
         ]
       }
     },
+    "/wfs3/collections/exclude_attribute/schema": {
+      "get": {
+        "description": "Return the JSON schema of the collection with ID {collectionId}.",
+        "operationId": "getCollectionSchema_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de_GET",
+        "responses": {
+          "200": {
+            "content": {
+              "application/schema+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/anyObject"
+                }
+              }
+            },
+            "description": "Retrieve the schema of the 'A test vector layer exclude attrs' feature collection."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
+        "summary": "Retrieve the schema of the 'A test vector layer exclude attrs' feature collection",
+        "tags": [
+          "Capabilities"
+        ]
+      }
+    },
     "/wfs3/collections/fields_alias": {
       "get": {
         "description": "Metadata about a feature collection.",
@@ -1055,6 +1096,43 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
         ]
       }
     },
+    "/wfs3/collections/fields_alias/schema": {
+      "get": {
+        "description": "Return the JSON schema of the collection with ID {collectionId}.",
+        "operationId": "getCollectionSchema_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774_GET",
+        "responses": {
+          "200": {
+            "content": {
+              "application/schema+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/anyObject"
+                }
+              }
+            },
+            "description": "Retrieve the schema of the 'A test vector layer with aliases' feature collection."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
+        "summary": "Retrieve the schema of the 'A test vector layer with aliases' feature collection",
+        "tags": [
+          "Capabilities"
+        ]
+      }
+    },
     "/wfs3/collections/layer1_with_short_name": {
       "get": {
         "description": "Metadata about a feature collection.",
@@ -1256,6 +1334,43 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
         "summary": "Retrieve a single feature from the 'A Layer1 with a short name' feature collection",
         "tags": [
           "Features"
+        ]
+      }
+    },
+    "/wfs3/collections/layer1_with_short_name/schema": {
+      "get": {
+        "description": "Return the JSON schema of the collection with ID {collectionId}.",
+        "operationId": "getCollectionSchema_testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a_GET",
+        "responses": {
+          "200": {
+            "content": {
+              "application/schema+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/anyObject"
+                }
+              }
+            },
+            "description": "Retrieve the schema of the 'A Layer1 with a short name' feature collection."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
+        "summary": "Retrieve the schema of the 'A Layer1 with a short name' feature collection",
+        "tags": [
+          "Capabilities"
         ]
       }
     },
@@ -1602,9 +1717,46 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
         ]
       }
     },
+    "/wfs3/collections/testlayer èé/schema": {
+      "get": {
+        "description": "Return the JSON schema of the collection with ID {collectionId}.",
+        "operationId": "getCollectionSchema_testlayer20150528120452665_GET",
+        "responses": {
+          "200": {
+            "content": {
+              "application/schema+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/anyObject"
+                }
+              }
+            },
+            "description": "Retrieve the schema of the 'A test wfs vector layer èé' feature collection."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
+        "summary": "Retrieve the schema of the 'A test wfs vector layer èé' feature collection",
+        "tags": [
+          "Capabilities"
+        ]
+      }
+    },
     "/wfs3/conformance": {
       "get": {
-        "description": "List all requirements classes specified in a standard (e.g., WFS 3.0 Part 1: Core) that the server conforms to.",
+        "description": "List all requirements classes specified in a standard (e.g., OGCAPI 1.0 Part 1: Core) that the server conforms to.",
         "operationId": "getRequirementClasses",
         "responses": {
           "200": {
@@ -1620,7 +1772,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
                 }
               }
             },
-            "description": "List all requirements classes specified in a standard (e.g., WFS 3.0 Part 1: Core) that the server conforms to."
+            "description": "List all requirements classes specified in a standard (e.g., OGCAPI 1.0 Part 1: Core) that the server conforms to."
           },
           "default": {
             "content": {
