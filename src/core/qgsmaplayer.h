@@ -60,6 +60,7 @@ class QgsMapLayerElevationProperties;
 class QgsObjectEntityVisitorInterface;
 class QgsObjectVisitorContext;
 class QgsSldExportContext;
+class QgsSaveStyleResult;
 
 class QDomDocument;
 class QKeyEvent;
@@ -826,6 +827,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayer::SaveStyleResults saveStyleToDatabaseV2(
       const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, QString &msgError SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
+    );
+
+    /*
+     * Saves selected representation of the layer's style to a table in the
+     * database.
+     *
+     * \since QGIS 4.2
+     */
+    QgsSaveStyleResult saveStyleToDatabaseV3(
+      const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, const Qgis::SaveStyleFormats formats, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
     );
 
     // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
