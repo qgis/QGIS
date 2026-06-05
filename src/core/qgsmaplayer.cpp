@@ -2661,6 +2661,15 @@ QgsMapLayer::SaveStyleResults QgsMapLayer::saveStyleToDatabaseV2(
   return result.saveResult;
 }
 
+QgsSaveStyleResult saveStyleToDatabaseV3(
+  const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, const Qgis::SaveStyleFormats formats, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
+)
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsMapLayerUtils::saveLayerStyleToDatabase( this, mProviderKey, mDataSource, name, description, useAsDefault, uiFileContent, formats, categories );
+}
+
 QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories, Qgis::LoadStyleFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
