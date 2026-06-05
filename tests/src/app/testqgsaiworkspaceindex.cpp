@@ -11,9 +11,12 @@
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/tools/qgsaiindextools.h"
+#include "qgssettings.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QByteArray>
+#include <QDir>
 #include <QJsonObject>
 #include <QString>
 #include <QTemporaryDir>
@@ -33,6 +36,8 @@ class TestQgsAiWorkspaceIndex : public QObject
     void replaceScopeAllFilesPreservesLayerChunks();
     void replaceScopeSingleLayerOnlyTouchesThatLayer();
     void removeLayerDropsOnlyMatchingChunks();
+    void workspaceRootChangeLoadsSeparateIndex();
+    void hasEmbeddingConfigurationReflectsSettingsAndEnvironment();
     void schemaMigrationDropsOldDb();
     void reindexLayersFailsWithoutApiKey();
     void chunkerOutputPersistsAsLayerChunks();
@@ -228,6 +233,84 @@ void TestQgsAiWorkspaceIndex::removeLayerDropsOnlyMatchingChunks()
   QVERIFY( index2.ensureLoaded() );
   QCOMPARE( index2.status().chunkCount, 2 );
   QCOMPARE( index2.chunks( QgsAiWorkspaceIndex::ReplaceScope::SingleLayer, u"L1"_s ).size(), 0 );
+}
+
+void TestQgsAiWorkspaceIndex::workspaceRootChangeLoadsSeparateIndex()
+{
+  QTemporaryDir root1;
+  QTemporaryDir root2;
+  QVERIFY( root1.isValid() );
+  QVERIFY( root2.isValid() );
+
+  QgsAiFileContextProvider contextProvider( root1.path() );
+  QgsAiWorkspaceIndex index( &contextProvider, nullptr );
+
+  QString err;
+  QVERIFY( index.persistChunks( { makeFileChunk( u"a.md"_s, 0, u"root one"_s ) }, { dummyEmbedding( 0.1f ) }, QgsAiWorkspaceIndex::ReplaceScope::All, QString(), &err ) );
+  QCOMPARE( index.status().workspaceRoot, QDir( root1.path() ).absolutePath() );
+  QCOMPARE( index.status().chunkCount, 1 );
+
+  contextProvider.setWorkspaceRoot( root2.path() );
+  QCOMPARE( index.status().workspaceRoot, QDir( root2.path() ).absolutePath() );
+  QCOMPARE( index.status().chunkCount, 0 );
+
+  QVERIFY( index.persistChunks( { makeFileChunk( u"b.md"_s, 0, u"root two"_s ) }, { dummyEmbedding( 0.2f ) }, QgsAiWorkspaceIndex::ReplaceScope::All, QString(), &err ) );
+  QCOMPARE( index.status().chunkCount, 1 );
+  QCOMPARE( index.chunks().first().relativePath, u"b.md"_s );
+
+  contextProvider.setWorkspaceRoot( root1.path() );
+  QCOMPARE( index.status().workspaceRoot, QDir( root1.path() ).absolutePath() );
+  QCOMPARE( index.status().chunkCount, 1 );
+  QCOMPARE( index.chunks().first().relativePath, u"a.md"_s );
+}
+
+void TestQgsAiWorkspaceIndex::hasEmbeddingConfigurationReflectsSettingsAndEnvironment()
+{
+  const char *envName = "OPENAI_API_KEY";
+  const QString key = u"ai/provider/openai/apiKey"_s;
+
+  struct RestoreState
+  {
+      const char *envName = nullptr;
+      bool hadEnv = false;
+      QByteArray savedEnv;
+      QString key;
+      QVariant savedSetting;
+
+      ~RestoreState()
+      {
+        qunsetenv( envName );
+        if ( hadEnv )
+          qputenv( envName, savedEnv );
+
+        QgsSettings settings;
+        if ( savedSetting.isValid() )
+          settings.setValue( key, savedSetting );
+        else
+          settings.remove( key );
+      }
+  };
+
+  QgsSettings settings;
+  RestoreState restore { envName, qEnvironmentVariableIsSet( envName ), qgetenv( envName ), key, settings.value( key ) };
+  qunsetenv( envName );
+
+  settings.remove( key );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiEmbeddingClient client;
+  QgsAiWorkspaceIndex index( &contextProvider, &client );
+
+  QVERIFY( !index.hasEmbeddingConfiguration() );
+
+  settings.setValue( key, u"sk-test-settings"_s );
+  QVERIFY( index.hasEmbeddingConfiguration() );
+
+  settings.remove( key );
+  qputenv( envName, "sk-test-env" );
+  QVERIFY( index.hasEmbeddingConfiguration() );
 }
 
 void TestQgsAiWorkspaceIndex::schemaMigrationDropsOldDb()

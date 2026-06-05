@@ -47,6 +47,7 @@ class APP_EXPORT QgsAiFileContextProvider : public QObject
     QStringList searchInFile( const QString &filePath, const QString &needle, int maxMatches = 25 ) const;
     QString diffPreview( const QString &beforeText, const QString &afterText ) const;
     QString workspaceRoot() const { return mWorkspaceRoot; }
+    void setWorkspaceRoot( const QString &workspaceRoot );
 
     /**
      * Returns the absolute, cleaned path for \a filePath. If \a allowExternal is false (default)
@@ -61,6 +62,9 @@ class APP_EXPORT QgsAiFileContextProvider : public QObject
      * Public for the same reason as normalizePath.
      */
     bool isInWorkspace( const QString &absolutePath ) const;
+
+  signals:
+    void workspaceRootChanged( const QString &workspaceRoot );
 
   private:
     QString mWorkspaceRoot;

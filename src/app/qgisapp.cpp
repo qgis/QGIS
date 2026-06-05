@@ -1389,6 +1389,14 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   if ( aiWorkspaceRoot.isEmpty() )
     aiWorkspaceRoot = QDir::currentPath();
   mAiFileContextProvider = std::make_unique<QgsAiFileContextProvider>( aiWorkspaceRoot, this );
+  connect( QgsProject::instance(), &QgsProject::homePathChanged, this, [this]() {
+    if ( !mAiFileContextProvider )
+      return;
+    QString projectWorkspaceRoot = QgsProject::instance()->homePath();
+    if ( projectWorkspaceRoot.isEmpty() )
+      projectWorkspaceRoot = QDir::currentPath();
+    mAiFileContextProvider->setWorkspaceRoot( projectWorkspaceRoot );
+  } );
   mAiReviewPatchEngine = std::make_unique<QgsAiReviewPatchEngine>( this );
   mAiReviewPatchEngine->setContextProvider( mAiFileContextProvider.get() );
   mAiToolRegistry = std::make_unique<QgsAiToolRegistry>( this );
@@ -1415,8 +1423,12 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexLayersTool>( mAiWorkspaceIndex.get() ) );
   mAiLayerIndexCoordinator = std::make_unique<QgsAiLayerIndexCoordinator>( mAiWorkspaceIndex.get(), this );
   QgsSettings aiSettings;
-  const bool aiLayerIndexingEnabled = aiSettings.contains( u"geoai/index/enable_layer_indexing"_s ) ? aiSettings.value( u"geoai/index/enable_layer_indexing"_s, false ).toBool()
-                                                                                                    : aiSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool();
+  const bool hasLayerIndexingSetting = aiSettings.contains( u"geoai/index/enable_layer_indexing"_s ) || aiSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
+  const bool defaultLayerIndexingEnabled = mAiWorkspaceIndex->hasEmbeddingConfiguration() && !QgsAiChatDockWidget::requiresLayerIndexingConsent();
+  const bool aiLayerIndexingEnabled = hasLayerIndexingSetting ? ( aiSettings.contains( u"geoai/index/enable_layer_indexing"_s )
+                                                                    ? aiSettings.value( u"geoai/index/enable_layer_indexing"_s, false ).toBool()
+                                                                    : aiSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool() )
+                                                              : defaultLayerIndexingEnabled;
   mAiLayerIndexCoordinator->setEnabled( aiLayerIndexingEnabled );
   mAiChatHistoryStore = std::make_unique<QgsAiChatHistoryStore>( mAiFileContextProvider.get(), this );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );

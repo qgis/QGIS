@@ -1209,9 +1209,14 @@ void QgsAiChatDockWidget::openProviderSettings()
   QFormLayout *indexingForm = new QFormLayout();
 
   QSettings indexSettings;
-  const bool layerIndexingEnabled = settingValueWithLegacy( indexSettings, u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool();
+  const bool hasLayerIndexingSetting = indexSettings.contains( u"geoai/index/enable_layer_indexing"_s ) || indexSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
+  const bool defaultLayerIndexingEnabled
+    = mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration() && !requiresLayerIndexingConsent();
+  const bool layerIndexingEnabled = hasLayerIndexingSetting ? settingValueWithLegacy( indexSettings, u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool()
+                                                            : defaultLayerIndexingEnabled;
 
   QCheckBox *enableLayerIndexing = new QCheckBox( tr( "Enable layer indexing (auto reindex on layer add/remove/edit)" ), &dialog );
+  enableLayerIndexing->setObjectName( u"aiEnableLayerIndexingCheckBox"_s );
   enableLayerIndexing->setChecked( layerIndexingEnabled );
   enableLayerIndexing->setToolTip(
     tr( "When enabled, layer attributes and bounding boxes are sent to the OpenAI embeddings endpoint and indexed locally so the assistant can ground its answers on actual layer data." )
@@ -1219,8 +1224,10 @@ void QgsAiChatDockWidget::openProviderSettings()
   indexingForm->addRow( QString(), enableLayerIndexing );
 
   QLabel *indexStatusLabel = new QLabel( &dialog );
+  indexStatusLabel->setObjectName( u"aiIndexStatusLabel"_s );
   if ( mSessionManager && mSessionManager->workspaceIndex() )
   {
+    mSessionManager->workspaceIndex()->ensureLoaded();
     const auto status = mSessionManager->workspaceIndex()->status();
     indexStatusLabel->setText( tr( "Indexed: %1 file chunks, %2 layer chunks (last sync: %3)" )
                                  .arg( status.fileChunkCount )
@@ -1233,14 +1240,23 @@ void QgsAiChatDockWidget::openProviderSettings()
   }
   indexingForm->addRow( QString(), indexStatusLabel );
 
-  QPushButton *rebuildLayerIndexButton = new QPushButton( tr( "Rebuild layer index now" ), &dialog );
-  rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
-  indexingForm->addRow( QString(), rebuildLayerIndexButton );
+  auto refreshIndexStatusLabel = [this, indexStatusLabel]() {
+    if ( mSessionManager && mSessionManager->workspaceIndex() )
+    {
+      mSessionManager->workspaceIndex()->ensureLoaded();
+      const auto status = mSessionManager->workspaceIndex()->status();
+      indexStatusLabel->setText( tr( "Indexed: %1 file chunks, %2 layer chunks (last sync: %3)" )
+                                   .arg( status.fileChunkCount )
+                                   .arg( status.layerChunkCount )
+                                   .arg( status.lastSync.isValid() ? status.lastSync.toLocalTime().toString( Qt::ISODate ) : tr( "never" ) ) );
+    }
+    else
+    {
+      indexStatusLabel->setText( tr( "Indexed: (workspace index unavailable)" ) );
+    }
+  };
 
-  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, indexStatusLabel, openAiKey]() {
-    if ( !mSessionManager || !mSessionManager->workspaceIndex() )
-      return;
-
+  auto ensureOpenAiEmbeddingKey = [this, &dialog, openAiKey]( const QString &actionText ) {
     const QString pendingOpenAiKey = openAiKey->text().trimmed();
     if ( !pendingOpenAiKey.isEmpty() )
     {
@@ -1248,16 +1264,59 @@ void QgsAiChatDockWidget::openProviderSettings()
       if ( !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::OpenAi, pendingOpenAiKey, &keyError ) )
       {
         QMessageBox::warning( &dialog, tr( "OpenAI API key" ), keyError.isEmpty() ? tr( "Unable to save the OpenAI API key." ) : keyError );
-        return;
+        return false;
       }
       openAiKey->clear();
       openAiKey->setPlaceholderText( tr( "Saved locally — enter a new key only to replace it" ) );
+      return true;
     }
-    else if ( !mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) && qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed().isEmpty() )
+
+    if ( !mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) && qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed().isEmpty() )
     {
-      QMessageBox::warning( &dialog, tr( "OpenAI API key" ), tr( "Enter an OpenAI API key, or set OPENAI_API_KEY, before rebuilding the layer index." ) );
+      QMessageBox::warning( &dialog, tr( "OpenAI API key" ), tr( "Enter an OpenAI API key, or set OPENAI_API_KEY, before %1." ).arg( actionText ) );
+      return false;
+    }
+
+    return true;
+  };
+
+  QPushButton *rebuildWorkspaceIndexButton = new QPushButton( tr( "Rebuild file/workspace index now" ), &dialog );
+  rebuildWorkspaceIndexButton->setObjectName( u"aiRebuildWorkspaceIndexButton"_s );
+  rebuildWorkspaceIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
+  indexingForm->addRow( QString(), rebuildWorkspaceIndexButton );
+
+  QPushButton *rebuildLayerIndexButton = new QPushButton( tr( "Rebuild layer index now" ), &dialog );
+  rebuildLayerIndexButton->setObjectName( u"aiRebuildLayerIndexButton"_s );
+  rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
+  indexingForm->addRow( QString(), rebuildLayerIndexButton );
+
+  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureOpenAiEmbeddingKey, refreshIndexStatusLabel]() {
+    if ( !mSessionManager || !mSessionManager->workspaceIndex() )
+      return;
+
+    if ( !ensureOpenAiEmbeddingKey( tr( "rebuilding the file/workspace index" ) ) )
+      return;
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QString err;
+    const bool ok = mSessionManager->workspaceIndex()->reindex( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES, &err );
+    QApplication::restoreOverrideCursor();
+    if ( !ok )
+    {
+      QMessageBox::warning( &dialog, tr( "Workspace reindex failed" ), err.isEmpty() ? tr( "Unknown error." ) : err );
       return;
     }
+    refreshIndexStatusLabel();
+    const auto status = mSessionManager->workspaceIndex()->status();
+    QMessageBox::information( &dialog, tr( "Workspace reindex" ), tr( "Done — %1 file chunks indexed." ).arg( status.fileChunkCount ) );
+  } );
+
+  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureOpenAiEmbeddingKey, refreshIndexStatusLabel]() {
+    if ( !mSessionManager || !mSessionManager->workspaceIndex() )
+      return;
+
+    if ( !ensureOpenAiEmbeddingKey( tr( "rebuilding the layer index" ) ) )
+      return;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
     QString err;
@@ -1268,11 +1327,8 @@ void QgsAiChatDockWidget::openProviderSettings()
       QMessageBox::warning( &dialog, tr( "Layer reindex failed" ), err.isEmpty() ? tr( "Unknown error." ) : err );
       return;
     }
+    refreshIndexStatusLabel();
     const auto status = mSessionManager->workspaceIndex()->status();
-    indexStatusLabel->setText( tr( "Indexed: %1 file chunks, %2 layer chunks (last sync: %3)" )
-                                 .arg( status.fileChunkCount )
-                                 .arg( status.layerChunkCount )
-                                 .arg( status.lastSync.isValid() ? status.lastSync.toLocalTime().toString( Qt::ISODate ) : tr( "never" ) ) );
     QMessageBox::information( &dialog, tr( "Layer reindex" ), tr( "Done — %1 layer chunks indexed." ).arg( status.layerChunkCount ) );
   } );
 
@@ -1489,8 +1545,13 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
 
     QSettings().setValue( u"geoai/index/enable_layer_indexing"_s, layerIndexingChoice );
+    const bool canUseEmbeddings = mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration();
     if ( mLayerIndexCoordinator )
+    {
       mLayerIndexCoordinator->setEnabled( layerIndexingChoice );
+      if ( layerIndexingChoice && canUseEmbeddings )
+        mLayerIndexCoordinator->scheduleAllLayers();
+    }
   }
 
   if ( !errorMessages.isEmpty() )

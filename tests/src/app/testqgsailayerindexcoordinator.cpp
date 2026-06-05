@@ -11,11 +11,14 @@
 #include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaifilecontextprovider.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include "qgsproject.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
 #include <QFile>
+#include <QMetaObject>
 #include <QSignalSpy>
 #include <QString>
 #include <QTemporaryDir>
@@ -32,7 +35,8 @@ class TestQgsAiLayerIndexCoordinator : public QObject
     void cleanupTestCase();
     void cleanup();
 
-    void debouncesEditingStoppedAndCallsReindexLayer();
+    void enablingSchedulesExistingLayers();
+    void layerChangeSignalsAreDebounced();
     void layerWillBeRemovedDropsChunksImmediately();
     void disabledCoordinatorIgnoresProjectSignals();
 
@@ -42,6 +46,25 @@ class TestQgsAiLayerIndexCoordinator : public QObject
      * exercises a writable copy and never mutates the in-tree fixture.
      */
     static QString copyPointsShapefile( const QString &destDir );
+};
+
+class CountingWorkspaceIndex : public QgsAiWorkspaceIndex
+{
+  public:
+    explicit CountingWorkspaceIndex( QgsAiFileContextProvider *contextProvider )
+      : QgsAiWorkspaceIndex( contextProvider, nullptr )
+    {}
+
+    bool hasEmbeddingConfiguration() const override { return true; }
+
+    bool reindexLayer( const QString &layerId, QString *errorMessage = nullptr ) override
+    {
+      Q_UNUSED( errorMessage )
+      reindexedLayerIds.append( layerId );
+      return true;
+    }
+
+    QStringList reindexedLayerIds;
 };
 
 QString TestQgsAiLayerIndexCoordinator::copyPointsShapefile( const QString &destDir )
@@ -71,17 +94,13 @@ void TestQgsAiLayerIndexCoordinator::cleanup()
   QgsProject::instance()->clear();
 }
 
-void TestQgsAiLayerIndexCoordinator::debouncesEditingStoppedAndCallsReindexLayer()
+void TestQgsAiLayerIndexCoordinator::enablingSchedulesExistingLayers()
 {
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );
 
-  // Embedding client without API key — reindexLayer() will fail with a clear
-  // "API key" error, which is what we want to assert (proves the coordinator
-  // wired the call through). No network traffic happens.
-  QgsAiEmbeddingClient client;
-  QgsAiWorkspaceIndex index( &contextProvider, &client );
+  CountingWorkspaceIndex index( &contextProvider );
 
   QgsAiLayerIndexCoordinator coord( &index );
   coord.setDebounceMs( 50 );
@@ -93,23 +112,58 @@ void TestQgsAiLayerIndexCoordinator::debouncesEditingStoppedAndCallsReindexLayer
   QVERIFY( layer->isValid() );
   QgsProject::instance()->addMapLayer( layer.get(), false );
 
-  coord.setEnabled( true );
-
   QSignalSpy startSpy( &coord, &QgsAiLayerIndexCoordinator::reindexStarted );
   QSignalSpy doneSpy( &coord, &QgsAiLayerIndexCoordinator::reindexFinished );
 
-  // Trigger an editingStopped pulse: startEditing then commitChanges.
-  QVERIFY( layer->startEditing() );
-  QVERIFY( layer->commitChanges() );
+  coord.setEnabled( true );
 
   QVERIFY( doneSpy.wait( 5000 ) );
   QCOMPARE( startSpy.count(), 1 );
   QCOMPARE( startSpy.first().at( 0 ).toString(), layer->id() );
   QCOMPARE( doneSpy.count(), 1 );
   QCOMPARE( doneSpy.first().at( 0 ).toString(), layer->id() );
-  // success must be false because no API key, and the message must mention API key.
-  QCOMPARE( doneSpy.first().at( 1 ).toBool(), false );
-  QVERIFY2( doneSpy.first().at( 2 ).toString().contains( u"API key"_s, Qt::CaseInsensitive ), doneSpy.first().at( 2 ).toString().toUtf8().constData() );
+  QCOMPARE( doneSpy.first().at( 1 ).toBool(), true );
+  QCOMPARE( index.reindexedLayerIds, QStringList { layer->id() } );
+
+  QgsProject::instance()->removeMapLayer( layer.release() );
+}
+
+void TestQgsAiLayerIndexCoordinator::layerChangeSignalsAreDebounced()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+
+  CountingWorkspaceIndex index( &contextProvider );
+
+  QgsAiLayerIndexCoordinator coord( &index );
+  coord.setDebounceMs( 200 );
+
+  const QString shpPath = copyPointsShapefile( tempDir.path() );
+  auto layer = std::make_unique<QgsVectorLayer>( shpPath, u"points"_s, u"ogr"_s );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayer( layer.get(), false );
+
+  QSignalSpy doneSpy( &coord, &QgsAiLayerIndexCoordinator::reindexFinished );
+  coord.setEnabled( true );
+  QVERIFY( doneSpy.wait( 5000 ) );
+  doneSpy.clear();
+  index.reindexedLayerIds.clear();
+
+  QVERIFY( QMetaObject::invokeMethod( layer.get(), "layerModified", Qt::DirectConnection ) );
+  QVERIFY( QMetaObject::invokeMethod( layer.get(), "dataChanged", Qt::DirectConnection ) );
+
+  QVERIFY( layer->startEditing() );
+  QgsFeature feature( layer->fields() );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Point(0 0)"_s ) );
+  QVERIFY( layer->addFeature( feature ) );
+  QVERIFY( layer->commitChanges() );
+
+  QVERIFY( doneSpy.wait( 5000 ) );
+  QCOMPARE( doneSpy.count(), 1 );
+  QCOMPARE( doneSpy.first().at( 0 ).toString(), layer->id() );
+  QCOMPARE( doneSpy.first().at( 1 ).toBool(), true );
+  QCOMPARE( index.reindexedLayerIds, QStringList { layer->id() } );
 
   QgsProject::instance()->removeMapLayer( layer.release() );
 }
@@ -161,8 +215,7 @@ void TestQgsAiLayerIndexCoordinator::disabledCoordinatorIgnoresProjectSignals()
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );
 
-  QgsAiEmbeddingClient client;
-  QgsAiWorkspaceIndex index( &contextProvider, &client );
+  CountingWorkspaceIndex index( &contextProvider );
 
   QgsAiLayerIndexCoordinator coord( &index );
   coord.setDebounceMs( 50 );

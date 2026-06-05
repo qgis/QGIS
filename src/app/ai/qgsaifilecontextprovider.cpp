@@ -32,6 +32,16 @@ QgsAiFileContextProvider::QgsAiFileContextProvider( const QString &workspaceRoot
   , mWorkspaceRoot( QDir( workspaceRoot ).absolutePath() )
 {}
 
+void QgsAiFileContextProvider::setWorkspaceRoot( const QString &workspaceRoot )
+{
+  const QString normalizedRoot = QDir( workspaceRoot ).absolutePath();
+  if ( mWorkspaceRoot == normalizedRoot )
+    return;
+
+  mWorkspaceRoot = normalizedRoot;
+  emit workspaceRootChanged( mWorkspaceRoot );
+}
+
 bool QgsAiFileContextProvider::isInWorkspace( const QString &absolutePath ) const
 {
   if ( absolutePath.isEmpty() || mWorkspaceRoot.isEmpty() )

@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
+#include <algorithm>
 #include <QString>
 
 #include "moc_qgsailayerindexcoordinator.cpp"
@@ -70,10 +71,12 @@ void QgsAiLayerIndexCoordinator::connectProjectSignals()
     return;
   connect( mProject, &QgsProject::layerWasAdded, this, &QgsAiLayerIndexCoordinator::onLayerAdded );
   connect( mProject, qOverload<const QString &>( &QgsProject::layerWillBeRemoved ), this, &QgsAiLayerIndexCoordinator::onLayerWillBeRemoved );
-  // Wire signals on already-loaded layers too so we react to subsequent edits.
+  // Wire and enqueue already-loaded layers too so the current project is indexed
+  // as soon as automatic layer indexing is enabled.
   const QMap<QString, QgsMapLayer *> existing = mProject->mapLayers();
   for ( auto it = existing.constBegin(); it != existing.constEnd(); ++it )
     connectLayerSignals( it.value() );
+  scheduleAllLayers();
 }
 
 void QgsAiLayerIndexCoordinator::disconnectProjectSignals()
@@ -91,8 +94,23 @@ void QgsAiLayerIndexCoordinator::disconnectProjectSignals()
 
 void QgsAiLayerIndexCoordinator::connectLayerSignals( QgsMapLayer *layer )
 {
+  if ( !layer )
+    return;
+
+  connect( layer, &QgsMapLayer::layerModified, this, &QgsAiLayerIndexCoordinator::onLayerChanged, Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::dataChanged, this, &QgsAiLayerIndexCoordinator::onLayerChanged, Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::dataSourceChanged, this, &QgsAiLayerIndexCoordinator::onLayerChanged, Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::editingStopped, this, &QgsAiLayerIndexCoordinator::onLayerChanged, Qt::UniqueConnection );
+
   if ( QgsVectorLayer *v = qobject_cast<QgsVectorLayer *>( layer ) )
-    connect( v, &QgsVectorLayer::editingStopped, this, &QgsAiLayerIndexCoordinator::onEditingStopped, Qt::UniqueConnection );
+  {
+    connect( v, &QgsVectorLayer::committedAttributesDeleted, this, &QgsAiLayerIndexCoordinator::onVectorLayerCommitted, Qt::UniqueConnection );
+    connect( v, &QgsVectorLayer::committedAttributesAdded, this, &QgsAiLayerIndexCoordinator::onVectorLayerCommitted, Qt::UniqueConnection );
+    connect( v, &QgsVectorLayer::committedFeaturesAdded, this, &QgsAiLayerIndexCoordinator::onVectorLayerCommitted, Qt::UniqueConnection );
+    connect( v, &QgsVectorLayer::committedFeaturesRemoved, this, &QgsAiLayerIndexCoordinator::onVectorLayerCommitted, Qt::UniqueConnection );
+    connect( v, &QgsVectorLayer::committedAttributeValuesChanges, this, &QgsAiLayerIndexCoordinator::onVectorLayerCommitted, Qt::UniqueConnection );
+    connect( v, &QgsVectorLayer::committedGeometriesChanges, this, &QgsAiLayerIndexCoordinator::onVectorLayerCommitted, Qt::UniqueConnection );
+  }
 }
 
 void QgsAiLayerIndexCoordinator::onLayerAdded( QgsMapLayer *layer )
@@ -114,17 +132,37 @@ void QgsAiLayerIndexCoordinator::onLayerWillBeRemoved( const QString &layerId )
     QgsMessageLog::logMessage( u"Layer index: removeLayer(%1) failed: %2"_s.arg( layerId, err ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
 }
 
-void QgsAiLayerIndexCoordinator::onEditingStopped()
+void QgsAiLayerIndexCoordinator::onLayerChanged()
 {
-  QgsVectorLayer *v = qobject_cast<QgsVectorLayer *>( sender() );
-  if ( !v )
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  if ( !layer )
     return;
-  scheduleDirty( v->id() );
+  scheduleDirty( layer->id() );
+}
+
+void QgsAiLayerIndexCoordinator::onVectorLayerCommitted( const QString &layerId )
+{
+  scheduleDirty( layerId );
+}
+
+void QgsAiLayerIndexCoordinator::scheduleAllLayers()
+{
+  if ( !mProject )
+    return;
+
+  const QMap<QString, QgsMapLayer *> existing = mProject->mapLayers();
+  for ( auto it = existing.constBegin(); it != existing.constEnd(); ++it )
+  {
+    if ( it.value() )
+      scheduleDirty( it.value()->id() );
+  }
 }
 
 void QgsAiLayerIndexCoordinator::scheduleDirty( const QString &layerId )
 {
   if ( layerId.isEmpty() )
+    return;
+  if ( !mIndex || !mIndex->hasEmbeddingConfiguration() )
     return;
   mDirtyLayers.insert( layerId );
   mDebounceTimer.start( mDebounceMs );
@@ -132,7 +170,7 @@ void QgsAiLayerIndexCoordinator::scheduleDirty( const QString &layerId )
 
 void QgsAiLayerIndexCoordinator::flushDirty()
 {
-  if ( !mIndex || !mEnabled )
+  if ( !mIndex || !mEnabled || !mIndex->hasEmbeddingConfiguration() )
   {
     mDirtyLayers.clear();
     return;

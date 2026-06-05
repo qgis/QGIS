@@ -28,7 +28,7 @@ class QgsMapLayer;
 class QgsProject;
 
 /**
- * Listens to QgsProject layer-add/remove events and to per-layer editingStopped()
+ * Listens to QgsProject layer-add/remove events and to per-layer data/editing
  * signals, batching the affected layer ids and re-indexing them via QgsAiWorkspaceIndex
  * after a debounce window. Removed layers are deleted from the index immediately.
  *
@@ -47,6 +47,7 @@ class APP_EXPORT QgsAiLayerIndexCoordinator : public QObject
 
     int debounceMs() const { return mDebounceMs; }
     void setDebounceMs( int ms );
+    void scheduleAllLayers();
 
     /**
      * Override the QgsProject the coordinator listens to. Defaults to QgsProject::instance()
@@ -61,7 +62,8 @@ class APP_EXPORT QgsAiLayerIndexCoordinator : public QObject
   private slots:
     void onLayerAdded( QgsMapLayer *layer );
     void onLayerWillBeRemoved( const QString &layerId );
-    void onEditingStopped();
+    void onLayerChanged();
+    void onVectorLayerCommitted( const QString &layerId );
     void flushDirty();
 
   private:

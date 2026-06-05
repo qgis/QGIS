@@ -32,6 +32,7 @@
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -78,7 +79,10 @@ QgsAiWorkspaceIndex::QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvi
   : QObject( parent )
   , mContextProvider( contextProvider )
   , mEmbeddingClient( embeddingClient )
-{}
+{
+  if ( mContextProvider )
+    connect( mContextProvider, &QgsAiFileContextProvider::workspaceRootChanged, this, &QgsAiWorkspaceIndex::onWorkspaceRootChanged );
+}
 
 QgsAiWorkspaceIndex::~QgsAiWorkspaceIndex()
 {
@@ -113,6 +117,29 @@ bool QgsAiWorkspaceIndex::isTextFile( const QString &relativePath )
   if ( ext.isEmpty() )
     return false;
   return TEXT_EXTENSIONS.contains( ext );
+}
+
+bool QgsAiWorkspaceIndex::hasEmbeddingConfiguration() const
+{
+  return mEmbeddingClient && mEmbeddingClient->hasApiKey();
+}
+
+void QgsAiWorkspaceIndex::onWorkspaceRootChanged()
+{
+  const QString name = connectionName();
+  if ( QSqlDatabase::contains( name ) )
+  {
+    {
+      QSqlDatabase db = QSqlDatabase::database( name );
+      db.close();
+    }
+    QSqlDatabase::removeDatabase( name );
+  }
+
+  mCache.clear();
+  mLastSync = QDateTime();
+  mLoaded = false;
+  ensureLoaded();
 }
 
 QStringList QgsAiWorkspaceIndex::chunkText( const QString &content )
@@ -492,7 +519,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
       *errorMessage = u"Workspace context provider is unavailable."_s;
     return false;
   }
-  if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
+  if ( !hasEmbeddingConfiguration() )
   {
     if ( errorMessage )
       *errorMessage = u"OpenAI API key is required for embeddings; configure it in AI Provider Settings."_s;
@@ -610,7 +637,7 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &qu
       *errorMessage = u"Workspace index is empty. Run reindex_workspace first."_s;
     return results;
   }
-  if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
+  if ( !hasEmbeddingConfiguration() )
   {
     if ( errorMessage )
       *errorMessage = u"OpenAI API key is required for query embedding."_s;
@@ -658,7 +685,7 @@ namespace
 
 bool QgsAiWorkspaceIndex::reindexLayers( QString *errorMessage )
 {
-  if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
+  if ( !hasEmbeddingConfiguration() )
   {
     if ( errorMessage )
       *errorMessage = u"OpenAI API key is required for embeddings; configure it in AI Provider Settings."_s;
@@ -720,7 +747,7 @@ bool QgsAiWorkspaceIndex::reindexLayer( const QString &layerId, QString *errorMe
       *errorMessage = u"reindexLayer: empty layerId."_s;
     return false;
   }
-  if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
+  if ( !hasEmbeddingConfiguration() )
   {
     if ( errorMessage )
       *errorMessage = u"OpenAI API key is required for embeddings."_s;

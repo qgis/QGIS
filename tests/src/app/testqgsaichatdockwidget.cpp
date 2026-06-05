@@ -13,11 +13,16 @@
 #include "qgstest.h"
 
 #include <QLabel>
+#include <QApplication>
+#include <QCheckBox>
+#include <QDialog>
+#include <QMetaObject>
 #include <QPushButton>
 #include <QSettings>
 #include <QString>
 #include <QTemporaryDir>
 #include <QTextEdit>
+#include <QTimer>
 
 using namespace Qt::StringLiterals;
 
@@ -29,6 +34,7 @@ class TestQgsAiChatDockWidget : public QObject
     void hasRuntimeWidgets();
     void doesNotDuplicateStreamedAssistantResponse();
     void layerIndexingConsentPolicy();
+    void settingsDialogContainsManualIndexingControls();
 };
 
 void TestQgsAiChatDockWidget::hasRuntimeWidgets()
@@ -115,6 +121,36 @@ void TestQgsAiChatDockWidget::layerIndexingConsentPolicy()
     settings.setValue( legacyKey, savedLegacyValue );
   else
     settings.remove( legacyKey );
+}
+
+void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+  bool inspected = false;
+  bool controlsFound = false;
+  QTimer::singleShot( 0, [&inspected, &controlsFound]() {
+    QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
+    if ( settingsDialog )
+    {
+      controlsFound = settingsDialog->findChild<QCheckBox *>( u"aiEnableLayerIndexingCheckBox"_s )
+                      && settingsDialog->findChild<QPushButton *>( u"aiRebuildWorkspaceIndexButton"_s )
+                      && settingsDialog->findChild<QPushButton *>( u"aiRebuildLayerIndexButton"_s );
+      settingsDialog->reject();
+    }
+    inspected = true;
+  } );
+
+  QVERIFY( QMetaObject::invokeMethod( &dock, "openProviderSettings", Qt::DirectConnection ) );
+  QVERIFY( inspected );
+  QVERIFY( controlsFound );
 }
 
 QGSTEST_MAIN( TestQgsAiChatDockWidget )

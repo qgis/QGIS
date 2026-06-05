@@ -53,6 +53,7 @@ QgsAiToolResult QgsAiIndexStatusTool::execute( const QJsonObject &args )
   if ( !mIndex )
     return QgsAiToolResult::error( u"Workspace index is not available."_s );
 
+  mIndex->ensureLoaded();
   const QgsAiWorkspaceIndex::Status status = mIndex->status();
   QJsonObject output;
   output.insert( u"indexed"_s, status.indexed );

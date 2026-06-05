@@ -108,6 +108,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingClient *embeddingClient, QObject *parent = nullptr );
     ~QgsAiWorkspaceIndex() override;
 
+    virtual bool hasEmbeddingConfiguration() const;
     Status status() const;
 
     /**
@@ -137,7 +138,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
      * \a layerId. Existing chunks for the same layer are replaced; other
      * layers and file chunks are preserved.
      */
-    bool reindexLayer( const QString &layerId, QString *errorMessage = nullptr );
+    virtual bool reindexLayer( const QString &layerId, QString *errorMessage = nullptr );
 
     /**
      * Drops the index file from disk and clears the in-memory cache. Useful
@@ -156,7 +157,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     /**
      * Removes every chunk belonging to \a layerId from the cache and the SQLite store.
      */
-    bool removeLayer( const QString &layerId, QString *errorMessage = nullptr );
+    virtual bool removeLayer( const QString &layerId, QString *errorMessage = nullptr );
 
     /**
      * Returns the cached chunks (without embeddings), optionally filtered.
@@ -177,6 +178,9 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
 
   signals:
     void progress( int current, int total, const QString &filePath );
+
+  private slots:
+    void onWorkspaceRootChanged();
 
   private:
     struct CachedChunk
