@@ -253,6 +253,36 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             expression="regexp_match(\"field1\", '^[A-Z]{3}$')",
         )
 
+        # Field with regexp expression constraint but on another field - should not be picked up as a pattern constraint
+        field = QgsField("field1", QtCore.QMetaType.Type.QString)
+        _test_widget_conf(
+            field,
+            "TextEdit",
+            {},
+            {
+                "type": "string",
+                "readOnly": True,
+                "x-ogc-propertySeq": 2,
+            },
+            read_only=True,
+            expression="regexp_match(\"field2\", '^[A-Z]{3}$')",
+        )
+
+        # Field with regexp expression constraint but taken from another field - should not be picked up as a pattern constraint
+        field = QgsField("field1", QtCore.QMetaType.Type.QString)
+        _test_widget_conf(
+            field,
+            "TextEdit",
+            {},
+            {
+                "type": "string",
+                "readOnly": True,
+                "x-ogc-propertySeq": 2,
+            },
+            read_only=True,
+            expression='regexp_match("field1", "refield")',
+        )
+
         # ValueMap
         _test_widget_conf(
             QgsField("field1", QtCore.QMetaType.Type.QString),
