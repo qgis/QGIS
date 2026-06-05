@@ -72,7 +72,8 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   const Qgis::NavigationMode defaultNavMode = settings.enumValue( u"map3d/defaultNavigation"_s, Qgis::NavigationMode::TerrainBased, QgsSettings::App );
   mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( QVariant::fromValue( defaultNavMode ) ) );
 
-  const Qgis::VerticalAxisInversionFlags axisInversion = settings.flagValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenRotatingDragging, QgsSettings::App );
+  const Qgis::VerticalAxisInversionFlags axisInversion
+    = settings.flagValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenPivoting | Qgis::VerticalAxisInversion::WhenRotatingDragging, QgsSettings::App );
   mVerticalAxisInversionComboBox->setItemCheckState( 0, ( axisInversion & Qgis::VerticalAxisInversion::WhenRotatingCaptured ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
   mVerticalAxisInversionComboBox->setItemCheckState( 1, ( axisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
   mVerticalAxisInversionComboBox->setItemCheckState( 2, ( axisInversion & Qgis::VerticalAxisInversion::WhenPivoting ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
