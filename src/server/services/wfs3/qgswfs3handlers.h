@@ -140,7 +140,7 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     QRegularExpression path() const override { return QRegularExpression( R"re((.html|.json)?$)re" ); }
     std::string operationId() const override { return "getLandingPage"; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
-    std::string summary() const override { return "WFS 3.0 Landing Page"; }
+    std::string summary() const override { return "OGC API Landing Page"; }
     std::string description() const override
     {
       return "The landing page provides links to the API definition, the Conformance "
