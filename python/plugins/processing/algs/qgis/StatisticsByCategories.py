@@ -369,7 +369,7 @@ class StatisticsByCategories(QgisAlgorithm):
                     stat.count(),
                     stat.countDistinct(),
                     stat.countMissing(),
-                    stat.count() - stat.countMissing(),
+                    len(v) - stat.countMissing(),
                     stat.min(),
                     stat.max(),
                     stat.minLength(),

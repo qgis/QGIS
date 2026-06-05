@@ -38,17 +38,16 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
         for d in dates:
             s2.addValue(d)
         s2.finalize()
-        self.assertEqual(s.count(), 9)
-        self.assertEqual(s2.count(), 9)
-        self.assertEqual(s.countDistinct(), 6)
-        self.assertEqual(s2.countDistinct(), 6)
+        self.assertEqual(s.count(), 7)
+        self.assertEqual(s2.count(), 7)
+        self.assertEqual(s.countDistinct(), 5)
+        self.assertEqual(s2.countDistinct(), 5)
         self.assertEqual(
             set(s.distinctValues()),
             {
                 QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54)),
                 QDateTime(QDate(2011, 1, 5), QTime(15, 3, 1)),
                 QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)),
-                QDateTime(),
                 QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
                 QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54)),
             },
@@ -67,10 +66,10 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
         # tests calculation of statistics one at a time, to make sure statistic calculations are not
         # dependent on each other
         tests = [
-            {"stat": QgsDateTimeStatisticalSummary.Statistic.Count, "expected": 9},
+            {"stat": QgsDateTimeStatisticalSummary.Statistic.Count, "expected": 7},
             {
                 "stat": QgsDateTimeStatisticalSummary.Statistic.CountDistinct,
-                "expected": 6,
+                "expected": 5,
             },
             {
                 "stat": QgsDateTimeStatisticalSummary.Statistic.CountMissing,
@@ -143,9 +142,11 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
                 QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
                 QDateTime(),
                 QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54)),
+                None,
+                "2013-09-13T10:05:13",
             ]
         )
-        self.assertEqual(s.count(), 9)
+        self.assertEqual(s.count(), 5)
         self.assertEqual(
             set(s.distinctValues()),
             {
@@ -153,10 +154,9 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
                 QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)),
                 QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
                 QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54)),
-                QDateTime(),
             },
         )
-        self.assertEqual(s.countMissing(), 4)
+        self.assertEqual(s.countMissing(), 6)
         self.assertEqual(s.min(), QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)))
         self.assertEqual(s.max(), QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)))
         self.assertEqual(s.range(), QgsInterval(693871147))
@@ -176,14 +176,13 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
                 QDate(2011, 1, 5),
             ]
         )
-        self.assertEqual(s.count(), 7)
+        self.assertEqual(s.count(), 5)
         self.assertEqual(
             set(s.distinctValues()),
             {
                 QDateTime(QDate(2015, 3, 4), QTime()),
                 QDateTime(QDate(2019, 12, 28), QTime()),
                 QDateTime(QDate(1998, 1, 2), QTime()),
-                QDateTime(),
                 QDateTime(QDate(2011, 1, 5), QTime()),
             },
         )
@@ -207,8 +206,8 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
                 QTime(19, 12, 28),
             ]
         )
-        self.assertEqual(s.count(), 7)
-        self.assertEqual(s.countDistinct(), 5)
+        self.assertEqual(s.count(), 5)
+        self.assertEqual(s.countDistinct(), 4)
         self.assertEqual(s.countMissing(), 2)
         self.assertEqual(s.min().time(), QTime(8, 1, 2))
         self.assertEqual(s.max().time(), QTime(19, 12, 28))
@@ -223,6 +222,7 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
     def testMissing(self):
         s = QgsDateTimeStatisticalSummary()
         s.calculate([NULL, "not a date"])
+        self.assertEqual(s.count(), 0)
         self.assertEqual(s.countMissing(), 2)
 
 

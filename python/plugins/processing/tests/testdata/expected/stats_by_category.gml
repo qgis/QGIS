@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
+     gml:id="aFeatureCollection"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation=""
+     xsi:schemaLocation="http://ogr.maptools.org/ stats_by_category.xsd"
      xmlns:ogr="http://ogr.maptools.org/"
-     xmlns:gml="http://www.opengis.net/gml">
-  <gml:boundedBy><gml:null>missing</gml:null></gml:boundedBy>
-                                                                                                                                                                                                                                                                                                
-  <gml:featureMember>
-    <ogr:stats_by_category fid="stats_by_category.0">
+     xmlns:gml="http://www.opengis.net/gml/3.2">
+  <gml:boundedBy><gml:Null /></gml:boundedBy>
+                                                                                                                                                                                                                                                                                                                
+  <ogr:featureMember>
+    <ogr:stats_by_category gml:id="stats_by_category.0">
       <ogr:id2>2</ogr:id2>
       <ogr:count>2</ogr:count>
       <ogr:unique>2</ogr:unique>
@@ -24,9 +25,9 @@
       <ogr:q3>4</ogr:q3>
       <ogr:iqr>3</ogr:iqr>
     </ogr:stats_by_category>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:stats_by_category fid="stats_by_category.1">
+  </ogr:featureMember>
+  <ogr:featureMember>
+    <ogr:stats_by_category gml:id="stats_by_category.1">
       <ogr:id2>1</ogr:id2>
       <ogr:count>2</ogr:count>
       <ogr:unique>2</ogr:unique>
@@ -43,9 +44,9 @@
       <ogr:q3>5</ogr:q3>
       <ogr:iqr>3</ogr:iqr>
     </ogr:stats_by_category>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:stats_by_category fid="stats_by_category.2">
+  </ogr:featureMember>
+  <ogr:featureMember>
+    <ogr:stats_by_category gml:id="stats_by_category.2">
       <ogr:id2>0</ogr:id2>
       <ogr:count>5</ogr:count>
       <ogr:unique>5</ogr:unique>
@@ -62,5 +63,5 @@
       <ogr:q3>8</ogr:q3>
       <ogr:iqr>2</ogr:iqr>
     </ogr:stats_by_category>
-  </gml:featureMember>
+  </ogr:featureMember>
 </ogr:FeatureCollection>

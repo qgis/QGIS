@@ -256,7 +256,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
   outputs.insert( u"COUNT"_s, stat.count() );
   outputs.insert( u"UNIQUE"_s, stat.variety() );
   outputs.insert( u"EMPTY"_s, stat.countMissing() );
-  outputs.insert( u"FILLED"_s, count - stat.countMissing() );
+  outputs.insert( u"FILLED"_s, current - stat.countMissing() > 0 ? current - stat.countMissing() : 0 );
   outputs.insert( u"MIN"_s, stat.min() );
   outputs.insert( u"MAX"_s, stat.max() );
   outputs.insert( u"RANGE"_s, stat.range() );
@@ -275,7 +275,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
     << QObject::tr( "Count: %1" ).arg( stat.count() )
     << QObject::tr( "Unique values: %1" ).arg( stat.variety() )
     << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
-    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( count - stat.countMissing() )
+    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( current - stat.countMissing() > 0 ? current - stat.countMissing() : 0 )
     << QObject::tr( "Minimum value: %1" ).arg( stat.min() )
     << QObject::tr( "Maximum value: %1" ).arg( stat.max() )
     << QObject::tr( "Range: %1" ).arg( stat.range() )
@@ -353,7 +353,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
   outputs.insert( u"COUNT"_s, stat.count() );
   outputs.insert( u"UNIQUE"_s, stat.countDistinct() );
   outputs.insert( u"EMPTY"_s, stat.countMissing() );
-  outputs.insert( u"FILLED"_s, stat.count() - stat.countMissing() );
+  outputs.insert( u"FILLED"_s, current - stat.countMissing() > 0 ? current - stat.countMissing() : 0 );
   outputs.insert( u"MIN"_s, stat.statistic( Qgis::DateTimeStatistic::Min ) );
   outputs.insert( u"MAX"_s, stat.statistic( Qgis::DateTimeStatistic::Max ) );
   outputs.insert( u"RANGE"_s, stat.range().seconds() );
@@ -362,7 +362,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
     << QObject::tr( "Count: %1" ).arg( stat.count() )
     << QObject::tr( "Unique values: %1" ).arg( stat.countDistinct() )
     << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
-    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( stat.count() - stat.countMissing() )
+    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( current - stat.countMissing() > 0 ? current - stat.countMissing() : 0 )
     << QObject::tr( "Minimum value: %1" ).arg( field.displayString( stat.statistic( Qgis::DateTimeStatistic::Min ) ) )
     << QObject::tr( "Maximum value: %1" ).arg( field.displayString( stat.statistic( Qgis::DateTimeStatistic::Max ) ) )
     << QObject::tr( "Range (seconds): %1" ).arg( stat.range().seconds() );
@@ -420,7 +420,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics(
   outputs.insert( u"COUNT"_s, stat.count() );
   outputs.insert( u"UNIQUE"_s, stat.countDistinct() );
   outputs.insert( u"EMPTY"_s, stat.countMissing() );
-  outputs.insert( u"FILLED"_s, stat.count() - stat.countMissing() );
+  outputs.insert( u"FILLED"_s, current - stat.countMissing() > 0 ? current - stat.countMissing() : 0 );
   outputs.insert( u"MIN"_s, stat.min() );
   outputs.insert( u"MAX"_s, stat.max() );
   outputs.insert( u"MIN_LENGTH"_s, stat.minLength() );
@@ -433,7 +433,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics(
     << QObject::tr( "Count: %1" ).arg( stat.count() )
     << QObject::tr( "Unique values: %1" ).arg( stat.countDistinct() )
     << QObject::tr( "NULL (missing) values: %1" ).arg( stat.countMissing() )
-    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( count - stat.countMissing() )
+    << QObject::tr( "NOT NULL (filled) values: %1" ).arg( current - stat.countMissing() > 0 ? current - stat.countMissing() : 0 )
     << QObject::tr( "Minimum value: %1" ).arg( stat.min() )
     << QObject::tr( "Maximum value: %1" ).arg( stat.max() )
     << QObject::tr( "Minimum length: %1" ).arg( stat.minLength() )

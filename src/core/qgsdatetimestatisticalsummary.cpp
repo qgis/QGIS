@@ -80,7 +80,6 @@ void QgsDateTimeStatisticalSummary::addValue( const QVariant &value )
   else //not a date
   {
     mCountMissing++;
-    mCount++;
   }
 
   // QTime?
@@ -94,11 +93,13 @@ void QgsDateTimeStatisticalSummary::finalize()
 
 void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime, bool isNull )
 {
-  mCount++;
-
   if ( !dateTime.isValid() || isNull )
+  {
     mCountMissing++;
+    return;
+  }
 
+  mCount++;
   if ( mStatistics & Qgis::DateTimeStatistic::CountDistinct )
   {
     mValues << dateTime;

@@ -116,7 +116,7 @@ quantities of variants this may be more efficient then first adding all
 the variants to a list and calling
 :py:func:`~QgsStringStatisticalSummary.calculateFromVariants`.
 
-:param value: variant to add
+:param value: variant to add. Non-string values are treated as null.
 
 .. note::
 

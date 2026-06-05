@@ -9,8 +9,8 @@
                                                                                                                                                                                                                                                                                                                 
   <ogr:featureMember>
     <ogr:statistics_date gml:id="statistics_date.0">
-      <ogr:count>4</ogr:count>
-      <ogr:unique>4</ogr:unique>
+      <ogr:count>3</ogr:count>
+      <ogr:unique>3</ogr:unique>
       <ogr:empty>1</ogr:empty>
       <ogr:filled>3</ogr:filled>
       <ogr:min>2014-11-30</ogr:min>

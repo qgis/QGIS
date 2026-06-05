@@ -107,7 +107,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * allows variants to be added to the calculation one at a time. For large
      * quantities of variants this may be more efficient then first adding all the
      * variants to a list and calling calculateFromVariants().
-     * \param value variant to add
+     * \param value variant to add. Non-string values are treated as null.
      * \note call reset() before adding the first string using this method
      * to clear the results from any previous calculations
      * \note finalize() must be called after adding the final value and before
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     QString mMinority;
     QString mMajority;
 
-    void testString( const QString &string );
+    void testString( const QString &string, bool isNull );
 };
 
 #endif // QGSSTRINGSTATISTICALSUMMARY_H
