@@ -179,7 +179,7 @@ class CORE_EXPORT QgsMapLayerUtils
 
 /**
  * \ingroup core
- * \brief Class representing the result of saving a style.
+ * \brief Represents the result of saving a style.
  * \since QGIS 4.2
  */
 class CORE_EXPORT QgsSaveStyleResult
