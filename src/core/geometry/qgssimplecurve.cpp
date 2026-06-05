@@ -2,8 +2,10 @@
                        qgssimplecurve.h
                          ------------
     begin                : May 2026
-    copyright            : (C) 2026 by Germán Carrillo
-    email                : german at opengis dot ch
+    copyright            : (C) 2014 by Marco Hugentobler
+                           (C) 2026 by Germán Carrillo
+    email                : marco at sourcepole dot ch
+                           german at opengis dot ch
  ***************************************************************************/
 
 /***************************************************************************
