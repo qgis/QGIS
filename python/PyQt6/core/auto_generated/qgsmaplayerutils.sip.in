@@ -141,7 +141,7 @@ Returns the consistent tooltip for the given layer.
 .. versionadded:: 4.2
 %End
 
-    static QgsMapLayer::SaveStyleResults saveLayerStyleToDatabase(
+    static QgsSaveStyleResult saveLayerStyleToDatabase(
       QgsMapLayer *layer,
       const QString &providerKey,
       const QString &targetDataSource,
@@ -149,7 +149,7 @@ Returns the consistent tooltip for the given layer.
       const QString &description,
       bool useAsDefault,
       const QString &uiFileContent,
-      QString &msgError /Out/,
+      const Qgis::SaveStyleFormats formats = Qgis::SaveStyleFormats( Qgis::SaveStyleFormat::QML | Qgis::SaveStyleFormat::SLD ),
       QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
     );
 %Docstring
@@ -173,16 +173,34 @@ which the style should be associated.
                      default style for the layer.
 :param uiFileContent: Optional UI file content associated with the
                       style.
+:param msgError: Will be set to a descriptive error message if any
+                 occurs.
 :param categories: The style categories to be saved.
 
-:return: - Flags representing whether QML or SLD storing was successful.
-         - msgError: Will be set to a descriptive error message if any
-           occurs.
+:return: Flags representing whether QML or SLD storing was successful.
 
 .. versionadded:: 4.2
 %End
 };
 
+class QgsSaveStyleResult
+{
+%Docstring(signature="appended")
+Class representing the result of saving a style.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerutils.h"
+%End
+  public:
+    QgsMapLayer::SaveStyleResults saveResult;
+    QStringList sldErrorMessages;
+    QStringList sldWarningMessages;
+    QString providerSaveStyleError;
+    QString qmlError;
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

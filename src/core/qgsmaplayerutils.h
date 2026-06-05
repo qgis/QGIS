@@ -164,7 +164,7 @@ class CORE_EXPORT QgsMapLayerUtils
      *
      * \since QGIS 4.2
      */
-    static QgsMapLayer::SaveStyleResults saveLayerStyleToDatabase(
+    static QgsSaveStyleResult saveLayerStyleToDatabase(
       QgsMapLayer *layer,
       const QString &providerKey,
       const QString &targetDataSource,
@@ -172,9 +172,23 @@ class CORE_EXPORT QgsMapLayerUtils
       const QString &description,
       bool useAsDefault,
       const QString &uiFileContent,
-      QString &msgError SIP_OUT,
+      const Qgis::SaveStyleFormats formats = Qgis::SaveStyleFormats( Qgis::SaveStyleFormat::QML | Qgis::SaveStyleFormat::SLD ),
       QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
     );
 };
 
+/**
+ * \ingroup core
+ * \brief Class representing the result of saving a style.
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsSaveStyleResult
+{
+  public:
+    QgsMapLayer::SaveStyleResults saveResult;
+    QStringList sldErrorMessages;
+    QStringList sldWarningMessages;
+    QString providerSaveStyleError;
+    QString qmlError;
+};
 #endif // QGSMAPLAYERUTILS_H
