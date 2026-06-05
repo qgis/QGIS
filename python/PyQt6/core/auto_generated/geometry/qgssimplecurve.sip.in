@@ -23,9 +23,10 @@ implementation convenience.
 %TypeHeaderCode
 #include "qgssimplecurve.h"
 %End
-  public:
+  protected:
     QgsSimpleCurve();
 
+  public:
 
     void append( const QgsSimpleCurve *curve );
 %Docstring

@@ -31,9 +31,10 @@
  */
 class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
 {
-  public:
+  protected:
     QgsSimpleCurve() = default;
 
+  public:
 #ifndef SIP_RUN
     /**
      * Cast the \a geom to a QgsSimpleCurve.
