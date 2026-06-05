@@ -19,6 +19,8 @@
 #include <QMouseEvent>
 #include <QSignalBlocker>
 
+#include "moc_qgsviewsettingsmenu.cpp"
+
 QgsViewSettingsMenu::QgsViewSettingsMenu( const QString &title, QWidget *parent )
   : QMenu( title, parent )
 {}
