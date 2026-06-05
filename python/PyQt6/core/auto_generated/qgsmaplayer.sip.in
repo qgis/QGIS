@@ -893,6 +893,16 @@ database.
 Saves selected representation of the layer's style to a table in the
 database.
 
+:param name: Style name
+:param description: A description of the style
+:param useAsDefault: Set to ``True`` if style should be used as the
+                     default style for the layer
+:param uiFileContent: 
+:param formats: Flag specifying which style formats to save.
+:param categories: the style categories to be saved.
+
+:return: Object containing information about export status and messages.
+
 .. versionadded:: 4.2
 %End
 

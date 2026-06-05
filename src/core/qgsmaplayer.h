@@ -829,9 +829,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
       const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, QString &msgError SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
     );
 
-    /*
+    /**
      * Saves selected representation of the layer's style to a table in the
      * database.
+     *
+     * \param name Style name
+     * \param description A description of the style
+     * \param useAsDefault Set to TRUE if style should be used as the default
+     * style for the layer
+     * \param uiFileContent
+     * \param formats Flag specifying which style formats to save.
+     * \param categories the style categories to be saved.
+     *
+     * \returns Object containing information about export status and messages.
      *
      * \since QGIS 4.2
      */
