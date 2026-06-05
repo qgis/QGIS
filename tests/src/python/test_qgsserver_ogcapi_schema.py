@@ -68,7 +68,7 @@ from qgis.server import (
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 from test_qgsserver_api import QgsServerAPITestBase
-from utilities import unitTestDataPath
+from utilities import compareWkt, unitTestDataPath
 
 
 class EnumProvider(PyProvider):
@@ -106,15 +106,15 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
     # Set to True in child classes to re-generate reference files for this class
     regeregenerate_api_reference = True
 
-    def _getJsonResponse(self, url, project):
+    def _getJsonResponse(self, url, project, expected_status=200):
         request = QgsBufferServerRequest(url)
         response = QgsBufferServerResponse()
         server = QgsServer()
         server.handleRequest(request, response, project)
         self.assertEqual(
             response.statusCode(),
-            200,
-            f"Request failed with status {response.statusCode()} and message: {bytes(response.body()).decode('utf8')} for URL: {url}",
+            expected_status,
+            f"Request status mismatch {response.statusCode()} and message: {bytes(response.body()).decode('utf8')} for URL: {url}",
         )
         response_str = bytes(response.body()).decode("utf8")
         j = json.loads(response_str)
@@ -563,7 +563,7 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             },
         )
 
-    def test_extra_geometry(self):
+    def test_extra_geometry_and_crs(self):
 
         if "QGIS_PGTEST_DB" in os.environ:
             dbconn = os.environ["QGIS_PGTEST_DB"]
@@ -584,12 +584,14 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         conn.executeSql(
             "SELECT AddGeometryColumn('qgis_test', 'TwoGeoms', 'geom1', 4326, 'POINT', 2 )"
         )
+
+        # NOTE: geom2 is the QGIS layer primary geometry in 3857
         conn.executeSql(
-            "SELECT AddGeometryColumn('qgis_test', 'TwoGeoms', 'geom2', 4326, 'POINT', 2 )"
+            "SELECT AddGeometryColumn('qgis_test', 'TwoGeoms', 'geom2', 3857, 'POINT', 2 )"
         )
 
         conn.executeSql(
-            "INSERT INTO \"qgis_test\".\"TwoGeoms\" (geom1, geom2) VALUES (ST_GeomFromText('POINT(0 0)', 4326), ST_GeomFromText('POINT(1 1)', 4326))"
+            "INSERT INTO \"qgis_test\".\"TwoGeoms\" (geom1, geom2) VALUES (ST_GeomFromText('POINT(1 1)', 4326), ST_GeomFromText('POINT(111319 111325)', 3857))"
         )
 
         layer_source = conn.tableUri("qgis_test", "TwoGeoms") + " (geom2) sql="
@@ -611,11 +613,105 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             {"format": "geometry-any", "type": "string", "x-ogc-propertySeq": 1},
         )
 
-        # Get data and check geom1 is correctly exposed as WKT
+        # Default 4326 CRS, check geom1 is correctly exposed as WKT
         j = self._getJsonResponse(
-            "http://server.qgis.org/wfs3/collections/TwoGeoms/items?f=json", project
+            "http://server.qgis.org/wfs3/collections/TwoGeoms/items.json", project
         )
-        self.assertEqual(j["features"][0]["properties"]["geom1"].upper(), "POINT (0 0)")
+        self.assertEqual(j["features"][0]["properties"]["geom1"].upper(), "POINT (1 1)")
+
+        # Explicitly ask for 4326, check geom1 is correctly exposed as WKT
+        encoded_crs = parse.quote("http://www.opengis.net/def/crs/EPSG/0/4326", safe="")
+        j = self._getJsonResponse(
+            f"http://server.qgis.org/wfs3/collections/TwoGeoms/items.json?crs={encoded_crs}",
+            project,
+        )
+        self.assertEqual(j["features"][0]["properties"]["geom1"].upper(), "POINT (1 1)")
+
+        # 3857 and check geom1 is correctly exposed as transformed WKT
+        encoded_crs = parse.quote("http://www.opengis.net/def/crs/EPSG/0/3857", safe="")
+        j = self._getJsonResponse(
+            f"http://server.qgis.org/wfs3/collections/TwoGeoms/items.json?crs={encoded_crs}",
+            project,
+        )
+        self.assertTrue(
+            compareWkt(
+                j["features"][0]["properties"]["geom1"].upper(),
+                "POINT (111319 111325)",
+                tol=1,
+            )
+        )
+
+        # Test single feature retrieval with 3857 and check geom1 is correctly exposed as transformed WKT
+        j = self._getJsonResponse(
+            f"http://server.qgis.org/wfs3/collections/TwoGeoms/items/1.json?crs={encoded_crs}",
+            project,
+        )
+
+        self.assertTrue(
+            compareWkt(
+                j["properties"]["geom1"].upper(),
+                "POINT (111319 111325)",
+                tol=1,
+            )
+        )
+
+        # Check main geometry is still correctly exposed as GeoJSON 3857
+        self.assertAlmostEqual(j["geometry"]["coordinates"][0], 111319, delta=0.1)
+        self.assertAlmostEqual(j["geometry"]["coordinates"][1], 111325, delta=0.1)
+
+        # Check both are transformed to http://www.opengis.net/def/crs/EPSG/0/3395
+        encoded_crs = parse.quote("http://www.opengis.net/def/crs/EPSG/0/3395", safe="")
+
+        # Error because CRS 3395 is not published
+        j = self._getJsonResponse(
+            f"http://server.qgis.org/wfs3/collections/TwoGeoms/items.json?crs={encoded_crs}",
+            project,
+            expected_status=400,
+        )
+
+        self.assertEqual(j[0]["code"], "Bad request error")
+        self.assertTrue(j[0]["description"].startswith("Argument 'crs' is not valid."))
+
+        # Publish 3395
+        project.writeEntry("WMSCrsList", "/", ["EPSG:3395"])
+
+        j = self._getJsonResponse(
+            f"http://server.qgis.org/wfs3/collections/TwoGeoms/items.json?crs={encoded_crs}",
+            project,
+            expected_status=200,
+        )
+
+        self.assertTrue(
+            compareWkt(
+                j["features"][0]["properties"]["geom1"].upper(),
+                "POINT (111319 110579)",
+                tol=1,
+            )
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["geometry"]["coordinates"][0], 111319.0, delta=0.1
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["geometry"]["coordinates"][1], 110579.8, delta=0.1
+        )
+
+        # Same check for single feature retrieval
+        j = self._getJsonResponse(
+            f"http://server.qgis.org/wfs3/collections/TwoGeoms/items/1.json?crs={encoded_crs}",
+            project,
+        )
+        self.assertTrue(
+            compareWkt(
+                j["properties"]["geom1"].upper(),
+                "POINT (111319 110579)",
+                tol=1,
+            )
+        )
+
+        self.assertAlmostEqual(j["geometry"]["coordinates"][0], 111319, delta=0.1)
+        self.assertAlmostEqual(
+            j["geometry"]["coordinates"][1], 110579.823312, delta=0.1
+        )
 
 
 if __name__ == "__main__":

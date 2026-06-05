@@ -18,6 +18,7 @@
 #ifndef QGS_WFS3_HANDLERS_H
 #define QGS_WFS3_HANDLERS_H
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
 #include "qgsserverogcapihandler.h"
 
@@ -110,6 +111,12 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      */
     static QUrlQuery removeOffsetAndLimit( const QUrlQuery &urlQuery, bool removeProfile = false );
 
+    /**
+     * Returns TRUE if the given \a crs is published in the WFS service in the given \a apiContext, FALSE otherwise.
+     */
+    static bool crsIsPublished( const QgsCoordinateReferenceSystem &crs, const QgsServerApiContext &context );
+
+
   protected:
     /**
      * Referenced layer information from ValueRelation and RelationReference widgets
@@ -130,18 +137,18 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * The returned map has as key the index of the field in the \a mapLayer that contains the reference to the other layer, and as value a ReferencedLayerInfo struct with the information about the referenced layer.
      * Unpublished fields or referenced layers are not returned as well as relations using compound primary keys (i.e. referencing multiple fields) or referencing fields that are not a primary key of the referenced layer.
      */
-    QMap<int, ReferencedLayerInfo> gatherReferencedLayerInfo( const QgsVectorLayer *mapLayer, const QgsServerApiContext &apiContext ) const;
+    QMap<int, ReferencedLayerInfo> gatherReferencedLayerInfo( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
 
     /**
      * Returns the name used by OAPIF to identify the collection
      * \throw QgsServerApiImproperlyConfiguredException if referenced layer is not found
      */
-    QString referencedLayerIdentifier( const QgsVectorLayer *mapLayer, int fieldIdx, const QgsServerApiContext &apiContext, QString *referencedLayerTitle = nullptr ) const;
+    QString referencedLayerIdentifier( const QgsVectorLayer *mapLayer, int fieldIdx, const QgsServerApiContext &context, QString *referencedLayerTitle = nullptr ) const;
 
     /**
      * Creates the link to the referenced feature to be set in the referencing feature JSON
      */
-    json relatedFeatureReference( const QVariant &referencedFeatureValue, const ReferencedLayerInfo &referencedInfo, QgsServerOgcApi::Profile relAs, const QgsServerApiContext &apiContext ) const;
+    json relatedFeatureReference( const QVariant &referencedFeatureValue, const ReferencedLayerInfo &referencedInfo, QgsServerOgcApi::Profile relAs, const QgsServerApiContext &context ) const;
 
     /**
      * Returns the URI to the feature(s) given the collection ID and the field values, it may return a
@@ -154,7 +161,7 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * to the items endpoint with filters on the field values will be returned.
      */
     static QString uri(
-      const QString &collectionId, const QMap<QString, QVariant> &fieldValueMap, const QgsServerApiContext &apiContext, QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON
+      const QString &collectionId, const QMap<QString, QVariant> &fieldValueMap, const QgsServerApiContext &context, QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON
     );
 };
 
@@ -289,7 +296,7 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
 {
   public:
     QgsWfs3CollectionsItemsHandler();
-    void handleRequest( const QgsServerApiContext &apiContext ) const override;
+    void handleRequest( const QgsServerApiContext &context ) const override;
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html|\.fgb|/)?$)re" ); }
     std::string operationId() const override { return "getFeatures"; }
     std::string summary() const override { return "Retrieve features of feature collection {collectionId}."; }
@@ -321,10 +328,10 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
     const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
 
     // Json output
-    void writeJsonOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &apiContext, const ExportContext &exportContext ) const;
+    void writeJsonOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &context, const ExportContext &exportContext ) const;
 
     // FlatGeobuf output
-    void writeFlatGeobufOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &apiContext, const ExportContext &exportContext ) const;
+    void writeFlatGeobufOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &context, const ExportContext &exportContext ) const;
 };
 
 /**
@@ -364,6 +371,7 @@ class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
     QStringList tags() const override { return { u"Features"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     json schema( const QgsServerApiContext &context ) const override;
+    QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &apiContext ) const override;
 };
 
 

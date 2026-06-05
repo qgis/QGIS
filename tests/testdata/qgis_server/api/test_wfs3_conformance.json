@@ -2,9 +2,11 @@ Content-Type: application/json
 
 {
   "conformsTo": [
-    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/landing-pagehttp://www.opengis.net/spec/ogcapi-common-1/1.0/req/oas30",
+    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/landing-page",
+    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/oas30",
     "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/html",
-    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/jsonhttp://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/json",
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
     "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-parameter",
     "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
     "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-codelists",
