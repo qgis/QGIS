@@ -173,6 +173,7 @@ which the style should be associated.
                      default style for the layer.
 :param uiFileContent: Optional UI file content associated with the
                       style.
+:param formats: Flag specifying which style formats to save.
 :param categories: The style categories to be saved.
 
 :return: Flags representing whether QML or SLD storing was successful.
