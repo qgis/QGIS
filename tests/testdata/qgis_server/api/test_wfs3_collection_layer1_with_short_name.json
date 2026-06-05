@@ -56,9 +56,15 @@ Content-Type: application/json
       "type": "application/flatgeobuf"
     },
     {
+      "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/schema.json",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/schema",
+      "title": "Schema of features in 'A Layer1 with a short name' as SCHEMA_JSON",
+      "type": "application/schema+json"
+    },
+    {
       "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/schema.html",
-      "rel": "http://www.opengis.net/def/rel/ogc/0.0/schema",
-      "title": "Schema of features in 'A Layer1 with a short name'",
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/schema",
+      "title": "Schema of features in 'A Layer1 with a short name' as HTML",
       "type": "text/html"
     }
   ],
