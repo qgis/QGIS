@@ -505,6 +505,8 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     }
 
     GDALSetRasterNoDataValue( GDALGetRasterBand( tmpDS.get(), 1 ), noDataValue );
+    // fill with nodata, so that there are no unintended 0 values where there are no tiles
+    GDALFillRaster( GDALGetRasterBand( tmpDS.get(), 1 ), noDataValue, 0 );
 
     // Write tiles to the temporary raster
     CPLErrorReset();
