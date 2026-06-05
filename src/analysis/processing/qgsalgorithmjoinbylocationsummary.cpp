@@ -317,16 +317,13 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
 
     if ( !f.hasGeometry() )
     {
-      qDebug() << "NO GEOMETRY";
       if ( !discardNonMatching )
       {
         // ensure consistent count of attributes - otherwise non matching
         // features will have incorrect attribute length
         // and provider may reject them
-        qDebug() << "OUTPUT FIELDS" << outputFields.size();
         QgsAttributes outputAttributes = f.attributes();
         outputAttributes.append( nonMatchingJoinAttributes );
-        qDebug() << "OUTPUT ATTRS" << outputAttributes.size();
         f.setAttributes( outputAttributes );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -384,10 +381,8 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
         // ensure consistent count of attributes - otherwise non matching
         // features will have incorrect attribute length
         // and provider may reject them
-        qDebug() << "OUTPUT FIELDS" << outputFields.size();
         QgsAttributes outputAttributes = f.attributes();
         outputAttributes.append( nonMatchingJoinAttributes );
-        qDebug() << "OUTPUT ATTRS" << outputAttributes.size();
         f.setAttributes( outputAttributes );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
