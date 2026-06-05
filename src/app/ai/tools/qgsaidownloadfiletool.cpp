@@ -205,7 +205,8 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy );
   request.setTransferTimeout( TRANSFER_TIMEOUT_MS );
 
-  QgsMessageLog::logMessage( u"download_file: starting (url=%1, dest=%2, maxBytes=%3)"_s.arg( urlForLog( url ), pathForLog( mContextProvider, destPath ), QString::number( maxBytes ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::
+    logMessage( u"download_file: starting (url=%1, dest=%2, maxBytes=%3)"_s.arg( urlForLog( url ), pathForLog( mContextProvider, destPath ), QString::number( maxBytes ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
 
   QNetworkReply *reply = nam->get( request );
   if ( !reply )
@@ -303,7 +304,8 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
     return QgsAiToolResult::ok( output );
   }
 
-  QgsMessageLog::logMessage( u"download_file ok (url=%1, dest=%2, bytes=%3)"_s.arg( urlForLog( url ), pathForLog( mContextProvider, destPath ), QString::number( bytesWritten ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::
+    logMessage( u"download_file ok (url=%1, dest=%2, bytes=%3)"_s.arg( urlForLog( url ), pathForLog( mContextProvider, destPath ), QString::number( bytesWritten ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
 
   QJsonObject output;
   output.insert( u"status"_s, u"ok"_s );

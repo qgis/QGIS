@@ -125,8 +125,7 @@ namespace
     return u"Plan"_s;
   }
 
-  template <typename Settings>
-  QVariant settingValueWithLegacy( Settings &settings, const QString &key, const QString &legacyKey, const QVariant &defaultValue )
+  template<typename Settings> QVariant settingValueWithLegacy( Settings &settings, const QString &key, const QString &legacyKey, const QVariant &defaultValue )
   {
     if ( settings.contains( key ) )
       return settings.value( key, defaultValue );
@@ -640,7 +639,7 @@ QString QgsAiChatDockWidget::renderToolMessageMarkdown( const QgsAiChatMessage &
     ++shown;
   }
   if ( shown == 0 )
-    md += u"\nResult received."_s;
+    md += "\nResult received."_L1;
   return md.trimmed();
 }
 

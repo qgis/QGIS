@@ -15,9 +15,9 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <QDialog>
-#include <QLabel>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QLabel>
 #include <QMetaObject>
 #include <QPushButton>
 #include <QSettings>

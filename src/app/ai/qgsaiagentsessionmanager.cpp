@@ -1107,9 +1107,8 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
     if ( !isToolAllowedForActiveAgent( call.name ) )
     {
       QgsMessageLog::logMessage( u"Blocked disallowed tool call in %1 mode: %2"_s.arg( mActiveAgent, call.name ), u"AI"_s, Qgis::MessageLevel::Warning, false );
-      const QString message = mActiveAgent == "planner"_L1
-                              ? u"Plan mode does not execute tools or change workspace state. No tool was run."_s
-                              : u"This mode does not allow the requested tool '%1'. No tool was run."_s.arg( call.name );
+      const QString message = mActiveAgent == "planner"_L1 ? u"Plan mode does not execute tools or change workspace state. No tool was run."_s
+                                                           : u"This mode does not allow the requested tool '%1'. No tool was run."_s.arg( call.name );
       const QgsAiChatMessage error = buildAssistantMessage( message );
       recordHistoryMessage( error );
       mActiveRequestId.clear();
