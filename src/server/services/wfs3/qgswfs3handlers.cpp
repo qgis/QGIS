@@ -1103,13 +1103,12 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
         // From: https://docs.ogc.org/is/19-079r2/19-079r2.html
         // TODO: queryables and sortables are not supported yet, but we may want to add them in the future:
         // requirement http://www.opengis.net/spec/ogcapi-features-3/1.0/req/queryables-query-parameters
-        // filtering:
-        // - http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter
-        // - http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter
-        // has limited supported but we cannot advertise it yet because of the dependency on
-        // http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables-query-parameters
+        // filtering has limited supported but we cannot advertise it yet because of the dependency on
+        // queryables-query-parameters:
+        // http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter
+        // http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter
 
-        // Draft
+        // Draft? Now approved as part 3 https://docs.ogc.org/is/23-058r2/23-058r2.html
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-codelists",
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-parameter",
