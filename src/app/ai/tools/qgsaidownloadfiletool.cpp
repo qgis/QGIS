@@ -19,6 +19,7 @@
 #include "qgsaitoolschemautil.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
 
 #include <QDir>
 #include <QEventLoop>
@@ -48,12 +49,46 @@ namespace
       return u"%1 MiB"_s.arg( mb, 0, 'f', 1 );
     return u"%1 GiB"_s.arg( mb / 1024.0, 0, 'f', 2 );
   }
+
+  bool fullDownloadLogDetails()
+  {
+    return QgsSettings().value( u"geoai/log/full_tool_details"_s, false ).toBool();
+  }
+
+  QString urlForLog( const QUrl &url )
+  {
+    if ( fullDownloadLogDetails() )
+      return url.toString();
+
+    QString path = url.path();
+    if ( path.size() > 80 )
+      path = path.left( 77 ) + u"..."_s;
+    return u"%1://%2%3"_s.arg( url.scheme(), url.host(), path );
+  }
+
+  QString pathForLog( QgsAiFileContextProvider *contextProvider, const QString &absolutePath )
+  {
+    if ( fullDownloadLogDetails() || !contextProvider || contextProvider->workspaceRoot().isEmpty() )
+      return absolutePath;
+
+    return QDir( contextProvider->workspaceRoot() ).relativeFilePath( absolutePath );
+  }
 } //namespace
 
 QgsAiDownloadFileTool::QgsAiDownloadFileTool( QgsAiFileContextProvider *contextProvider, QWidget *dialogParent )
   : mContextProvider( contextProvider )
   , mDialogParent( dialogParent )
 {}
+
+bool QgsAiDownloadFileTool::isAvailable() const
+{
+  return mContextProvider && !mContextProvider->workspaceRoot().isEmpty();
+}
+
+QString QgsAiDownloadFileTool::availabilityReason() const
+{
+  return u"download_file is not available because the AI workspace root is not configured. Save the QGIS project or set geoai/workspace/root before downloading files."_s;
+}
 
 QString QgsAiDownloadFileTool::description() const
 {
@@ -88,6 +123,8 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
 {
   if ( !mContextProvider )
     return QgsAiToolResult::error( u"Workspace context provider is not available."_s );
+  if ( !isAvailable() )
+    return QgsAiToolResult::error( availabilityReason() );
 
   const QString urlString = args.value( u"url"_s ).toString().trimmed();
   if ( urlString.isEmpty() )
@@ -103,6 +140,9 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   const QString destRequest = args.value( u"dest_path"_s ).toString().trimmed();
   if ( destRequest.isEmpty() )
     return QgsAiToolResult::error( u"Argument 'dest_path' is required."_s );
+
+  if ( mContextProvider->workspaceRoot().isEmpty() )
+    return QgsAiToolResult::error( u"AI workspace root is not configured. Save the QGIS project or set geoai/workspace/root before downloading files."_s );
 
   const QString destPath = mContextProvider->normalizePath( destRequest, /*allowExternal=*/false );
   if ( destPath.isEmpty() )
@@ -138,7 +178,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
     QMessageBox::StandardButton answer = QMessageBox::question( mDialogParent, QObject::tr( "AI: confirm file download" ), question, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
     if ( answer != QMessageBox::Yes )
     {
-      QgsMessageLog::logMessage( u"download_file rejected by user (url=%1)"_s.arg( url.toString() ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
+      QgsMessageLog::logMessage( u"download_file rejected by user (url=%1)"_s.arg( urlForLog( url ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
       QJsonObject output;
       output.insert( u"status"_s, u"user_rejected"_s );
       return QgsAiToolResult::ok( output );
@@ -165,7 +205,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy );
   request.setTransferTimeout( TRANSFER_TIMEOUT_MS );
 
-  QgsMessageLog::logMessage( u"download_file: starting (url=%1, dest=%2, maxBytes=%3)"_s.arg( url.toString(), destPath, QString::number( maxBytes ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::logMessage( u"download_file: starting (url=%1, dest=%2, maxBytes=%3)"_s.arg( urlForLog( url ), pathForLog( mContextProvider, destPath ), QString::number( maxBytes ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
 
   QNetworkReply *reply = nam->get( request );
   if ( !reply )
@@ -253,7 +293,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
     else
       reasonText = u"network error: %1"_s.arg( networkErrorString );
 
-    QgsMessageLog::logMessage( u"download_file failed (url=%1, reason=%2)"_s.arg( url.toString(), reasonText ), u"AI/Download"_s, Qgis::MessageLevel::Warning, false );
+    QgsMessageLog::logMessage( u"download_file failed (url=%1, reason=%2)"_s.arg( urlForLog( url ), reasonText ), u"AI/Download"_s, Qgis::MessageLevel::Warning, false );
 
     QJsonObject output;
     output.insert( u"status"_s, u"error"_s );
@@ -263,7 +303,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
     return QgsAiToolResult::ok( output );
   }
 
-  QgsMessageLog::logMessage( u"download_file ok (url=%1, dest=%2, bytes=%3)"_s.arg( url.toString(), destPath, QString::number( bytesWritten ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::logMessage( u"download_file ok (url=%1, dest=%2, bytes=%3)"_s.arg( urlForLog( url ), pathForLog( mContextProvider, destPath ), QString::number( bytesWritten ) ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );
 
   QJsonObject output;
   output.insert( u"status"_s, u"ok"_s );

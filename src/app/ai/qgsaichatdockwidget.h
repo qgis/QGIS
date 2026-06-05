@@ -83,6 +83,8 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
   private:
     QString selectedProposalId() const;
     void appendTranscriptMessage( const QString &role, const QString &content );
+    void appendTranscriptMessage( const QgsAiChatMessage &message );
+    QString renderToolMessageMarkdown( const QgsAiChatMessage &message ) const;
     static QString renderMarkdown( const QString &md );
     void appendStreamChunk( const QString &chunk );
     void closeStreamingAssistantMessage();

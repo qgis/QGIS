@@ -60,6 +60,8 @@ class APP_EXPORT QgsAiInstallPythonPackageTool : public QgsAiTool
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
     bool requiresApproval() const override { return true; }
+    bool isAvailable() const override;
+    QString availabilityReason() const override;
 
   private:
     QWidget *mDialogParent = nullptr;

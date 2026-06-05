@@ -20,6 +20,8 @@ namespace
     public:
       explicit FakeEchoTool( const QString &name, bool requiresApproval = false )
         : mName( name ), mRequiresApproval( requiresApproval ) {}
+      FakeEchoTool( const QString &name, bool requiresApproval, bool available )
+        : mName( name ), mRequiresApproval( requiresApproval ), mAvailable( available ) {}
 
       QString name() const override { return mName; }
       QString description() const override { return QStringLiteral( "Echoes the 'text' argument." ); }
@@ -49,10 +51,13 @@ namespace
       }
 
       bool requiresApproval() const override { return mRequiresApproval; }
+      bool isAvailable() const override { return mAvailable; }
+      QString availabilityReason() const override { return QStringLiteral( "tool unavailable" ); }
 
     private:
       QString mName;
       bool mRequiresApproval;
+      bool mAvailable = true;
   };
 }
 
@@ -66,6 +71,7 @@ class TestQgsAiToolRegistry : public QObject
     void rejectsEmptyNameAndNull();
     void schemasJsonContainsAllTools();
     void schemasJsonFilter();
+    void unavailableToolsAreHiddenAndNotExecuted();
     void executeRoundTrip();
     void clearEmptiesRegistry();
 };
@@ -135,6 +141,21 @@ void TestQgsAiToolRegistry::schemasJsonFilter()
   QCOMPARE( filtered.size(), 1 );
   QCOMPARE( filtered.first().toObject().value( QStringLiteral( "name" ) ).toString(),
             QStringLiteral( "read_file" ) );
+}
+
+void TestQgsAiToolRegistry::unavailableToolsAreHiddenAndNotExecuted()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<FakeEchoTool>( QStringLiteral( "run_python" ), true, false ) );
+
+  QVERIFY( registry.availableToolNames().isEmpty() );
+  QVERIFY( registry.schemasJson().isEmpty() );
+
+  QJsonObject args;
+  args.insert( QStringLiteral( "text" ), QStringLiteral( "hello" ) );
+  const QgsAiToolResult result = registry.execute( QStringLiteral( "run_python" ), args );
+  QVERIFY( !result.success );
+  QVERIFY( result.errorMessage.contains( QStringLiteral( "unavailable" ) ) );
 }
 
 void TestQgsAiToolRegistry::executeRoundTrip()

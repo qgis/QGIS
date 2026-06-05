@@ -100,6 +100,16 @@ QgsAiRunPythonTool::QgsAiRunPythonTool( QWidget *dialogParent )
   : mDialogParent( dialogParent )
 {}
 
+bool QgsAiRunPythonTool::isAvailable() const
+{
+  return QgsPythonRunner::isValid();
+}
+
+QString QgsAiRunPythonTool::availabilityReason() const
+{
+  return u"Python runner is not available in this QGIS instance. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s;
+}
+
 QString QgsAiRunPythonTool::description() const
 {
   return QStringLiteral(
@@ -129,7 +139,7 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
     return QgsAiToolResult::error( u"Refusing to run code exceeding %1 characters (got %2). Split the work into smaller calls."_s.arg( MAX_CODE_CHARS ).arg( code.size() ) );
 
   if ( !QgsPythonRunner::isValid() )
-    return QgsAiToolResult::error( u"Python runner is not available in this QGIS instance."_s );
+    return QgsAiToolResult::error( availabilityReason() );
 
   const QString description = args.value( u"description"_s ).toString();
 
@@ -158,7 +168,7 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
     codeFile.write( code.toUtf8() );
   }
 
-  QgsMessageLog::logMessage( u"run_python: executing approved code (codeChars=%1, codePath=%2)"_s.arg( code.size() ).arg( codePath ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::logMessage( u"run_python: executing approved code (codeChars=%1)"_s.arg( code.size() ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
 
   // Build the wrapper with safely-quoted paths.
   const QString wrapper = QString::fromUtf8( PY_WRAPPER_TEMPLATE ).arg( escapeRunPythonPath( codePath ), escapeRunPythonPath( outPath ) );
@@ -191,7 +201,7 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
 
   if ( !ranOk )
   {
-    QgsMessageLog::logMessage( u"run_python: QgsPythonRunner::run() returned false (wrapper failed). traceback='%1'"_s.arg( tracebackText.left( 500 ) ), u"AI/Python"_s, Qgis::MessageLevel::Warning, false );
+    QgsMessageLog::logMessage( u"run_python: QgsPythonRunner::run() returned false (wrapper failed)."_s, u"AI/Python"_s, Qgis::MessageLevel::Warning, false );
     return QgsAiToolResult::error( u"Python wrapper failed to execute. %1"_s.arg( tracebackText.isEmpty() ? QString() : tracebackText ) );
   }
 

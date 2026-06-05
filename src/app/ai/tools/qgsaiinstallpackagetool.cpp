@@ -115,6 +115,16 @@ QgsAiInstallPythonPackageTool::QgsAiInstallPythonPackageTool( QWidget *dialogPar
   : mDialogParent( dialogParent )
 {}
 
+bool QgsAiInstallPythonPackageTool::isAvailable() const
+{
+  return QgsPythonRunner::isValid();
+}
+
+QString QgsAiInstallPythonPackageTool::availabilityReason() const
+{
+  return u"Python package installation is not available because the QGIS Python runner is unavailable. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s;
+}
+
 QString QgsAiInstallPythonPackageTool::description() const
 {
   return QStringLiteral(
@@ -174,7 +184,7 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
   }
 
   if ( !QgsPythonRunner::isValid() )
-    return QgsAiToolResult::error( u"Python runner is not available in this QGIS instance."_s );
+    return QgsAiToolResult::error( availabilityReason() );
 
   const QString reason = args.value( u"reason"_s ).toString();
 
@@ -183,7 +193,7 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
   const int dialogResult = dialog.exec();
   if ( dialogResult != QDialog::Accepted )
   {
-    QgsMessageLog::logMessage( u"install_python_package rejected by user (packages=%1)"_s.arg( packages.join( ", "_L1 ) ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
+    QgsMessageLog::logMessage( u"install_python_package rejected by user (packages=%1)"_s.arg( packages.size() ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
     QJsonObject output;
     output.insert( u"status"_s, u"user_rejected"_s );
     return QgsAiToolResult::ok( output );
@@ -206,7 +216,7 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
     argsFile.write( QJsonDocument( jsonPackages ).toJson( QJsonDocument::Compact ) );
   }
 
-  QgsMessageLog::logMessage( u"install_python_package: executing approved install (packages=%1)"_s.arg( packages.join( ", "_L1 ) ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::logMessage( u"install_python_package: executing approved install (packages=%1)"_s.arg( packages.size() ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
 
   constexpr int TIMEOUT_SECONDS = 300;
   const QString wrapper = QString::fromUtf8( PIP_WRAPPER_TEMPLATE ).arg( escapePipPath( outPath ), escapePipPath( argsPath ), QString::number( TIMEOUT_SECONDS ) );
@@ -241,7 +251,7 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
 
   if ( !ranOk )
   {
-    QgsMessageLog::logMessage( u"install_python_package: QgsPythonRunner::run() returned false. error='%1'"_s.arg( innerError.left( 500 ) ), u"AI/Pip"_s, Qgis::MessageLevel::Warning, false );
+    QgsMessageLog::logMessage( u"install_python_package: QgsPythonRunner::run() returned false."_s, u"AI/Pip"_s, Qgis::MessageLevel::Warning, false );
     return QgsAiToolResult::error( u"pip wrapper failed to execute. %1"_s.arg( innerError ) );
   }
 

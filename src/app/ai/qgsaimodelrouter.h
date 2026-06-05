@@ -98,6 +98,16 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     void setToolUseEnabled( bool enabled ) { mToolUseEnabled = enabled; }
     bool toolUseEnabled() const { return mToolUseEnabled; }
 
+    /**
+     * Restricts advertised tools to \a toolNames. An empty list with this filter enabled
+     * means no tools are advertised. clearAllowedToolsFilter() restores the default
+     * "all available tools" behavior.
+     */
+    void setAllowedTools( const QStringList &toolNames );
+    void clearAllowedToolsFilter();
+    QStringList allowedTools() const { return mAllowedTools; }
+    bool hasAllowedToolsFilter() const { return mAllowedToolsFilterEnabled; }
+
   signals:
     void requestProgress( const QString &requestId, const QString &chunk );
     void requestFinished(
@@ -179,6 +189,8 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QMap<QString, RequestContext> mRequests;
     QgsAiToolRegistry *mToolRegistry = nullptr;
     bool mToolUseEnabled = false;
+    bool mAllowedToolsFilterEnabled = false;
+    QStringList mAllowedTools;
     mutable QString mCodexPromptCacheKey;
 };
 

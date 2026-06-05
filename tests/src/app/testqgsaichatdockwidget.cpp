@@ -16,6 +16,8 @@
 #include <QCheckBox>
 #include <QDialog>
 #include <QLabel>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QMetaObject>
 #include <QPushButton>
 #include <QSettings>
@@ -23,6 +25,7 @@
 #include <QTemporaryDir>
 #include <QTextEdit>
 #include <QTimer>
+#include <QVariantMap>
 
 using namespace Qt::StringLiterals;
 
@@ -33,6 +36,7 @@ class TestQgsAiChatDockWidget : public QObject
   private slots:
     void hasRuntimeWidgets();
     void doesNotDuplicateStreamedAssistantResponse();
+    void rendersToolResultWithoutRawJson();
     void layerIndexingConsentPolicy();
     void settingsDialogContainsManualIndexingControls();
 };
@@ -89,6 +93,52 @@ void TestQgsAiChatDockWidget::doesNotDuplicateStreamedAssistantResponse()
 
   manager.messageAdded( assistantMessage );
   QCOMPARE( transcript->toPlainText(), u"[assistant] Ciao! Come posso aiutarti con QGIS oggi?"_s );
+}
+
+void TestQgsAiChatDockWidget::rendersToolResultWithoutRawJson()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+  QTextEdit *transcript = nullptr;
+  const QList<QTextEdit *> textEdits = dock.findChildren<QTextEdit *>();
+  for ( QTextEdit *textEdit : textEdits )
+  {
+    if ( textEdit->isReadOnly() )
+    {
+      transcript = textEdit;
+      break;
+    }
+  }
+  QVERIFY( transcript );
+
+  QJsonObject output;
+  output.insert( u"status"_s, u"ok"_s );
+  output.insert( u"http_status"_s, 200 );
+  output.insert( u"bytes_written"_s, 1234 );
+  output.insert( u"dest_path"_s, tempDir.filePath( u"data/pomponesco.geojson"_s ) );
+
+  QgsAiChatMessage toolMessage;
+  toolMessage.role = QgsAiChatRole::Tool;
+  toolMessage.content = QString::fromUtf8( QJsonDocument( output ).toJson( QJsonDocument::Compact ) );
+  toolMessage.metadata.insert( u"tool_name"_s, u"download_file"_s );
+  QVariantMap args;
+  args.insert( u"url"_s, u"https://overpass-api.de/api/interpreter?data=secret-query"_s );
+  toolMessage.metadata.insert( u"tool_args"_s, args );
+
+  manager.messageAdded( toolMessage );
+  const QString plain = transcript->toPlainText();
+  QVERIFY( plain.contains( u"download_file"_s ) );
+  QVERIFY( plain.contains( u"overpass-api.de"_s ) );
+  QVERIFY( plain.contains( u"data/pomponesco.geojson"_s ) );
+  QVERIFY( !plain.contains( u"{\"status\""_s ) );
+  QVERIFY( !plain.contains( u"secret-query"_s ) );
 }
 
 void TestQgsAiChatDockWidget::layerIndexingConsentPolicy()

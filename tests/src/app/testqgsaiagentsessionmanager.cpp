@@ -20,12 +20,43 @@
 #include <QByteArray>
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QSignalSpy>
 #include <QString>
 #include <QTemporaryDir>
 #include <QVector>
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+  class AvailabilityTool : public QgsAiTool
+  {
+    public:
+      AvailabilityTool( const QString &name, bool available )
+        : mName( name )
+        , mAvailable( available )
+      {}
+
+      QString name() const override { return mName; }
+      QString description() const override { return u"test tool"_s; }
+      QJsonObject schema() const override
+      {
+        QJsonObject schema;
+        schema.insert( u"type"_s, u"object"_s );
+        schema.insert( u"properties"_s, QJsonObject() );
+        return schema;
+      }
+      QgsAiToolResult execute( const QJsonObject & ) override { return QgsAiToolResult::ok( QJsonObject() ); }
+      bool isAvailable() const override { return mAvailable; }
+      QString availabilityReason() const override { return u"not available"_s; }
+
+    private:
+      QString mName;
+      bool mAvailable = true;
+  };
+} // namespace
 
 class TestQgsAiAgentSessionManager : public QObject
 {
@@ -38,6 +69,8 @@ class TestQgsAiAgentSessionManager : public QObject
     void allowsExplicitExternalAttachmentContext();
     void agentBehaviorSettingsRoundTrip();
     void agentBehaviorTogglePropagatesToRouter();
+    void planModeDoesNotAdvertiseTools();
+    void agentModeOmitsUnavailableTools();
     void collectsInlineRulesAndSkills();
     void collectsWorkspaceRulesFiles();
     void collectsLegacyWorkspaceRulesFiles();
@@ -199,11 +232,86 @@ void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()
   QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
   updated.allowCustomActions = true;
   manager.setAgentBehaviorSettings( updated );
+  QCOMPARE( router.toolUseEnabled(), false );
+
+  manager.setActiveAgent( u"editor"_s );
   QCOMPARE( router.toolUseEnabled(), true );
 
   updated.allowCustomActions = false;
   manager.setAgentBehaviorSettings( updated );
   QCOMPARE( router.toolUseEnabled(), false );
+
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::planModeDoesNotAdvertiseTools()
+{
+  QgsSettings settings;
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  manager.setToolRegistry( &registry );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.allowCustomActions = true;
+  manager.setAgentBehaviorSettings( updated );
+  manager.setActiveAgent( u"planner"_s );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, false ) ).object();
+  QVERIFY( !object.contains( u"tools"_s ) );
+  QVERIFY( !object.contains( u"tool_choice"_s ) );
+
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::agentModeOmitsUnavailableTools()
+{
+  QgsSettings settings;
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"run_python"_s, false ) );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  manager.setToolRegistry( &registry );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.allowCustomActions = true;
+  manager.setAgentBehaviorSettings( updated );
+  manager.setActiveAgent( u"editor"_s );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, false ) ).object();
+  QVERIFY( !object.contains( u"tools"_s ) );
+  QVERIFY( !object.contains( u"tool_choice"_s ) );
 
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );

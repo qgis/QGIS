@@ -11,6 +11,8 @@
 #include "ai/qgsaimodelrouter.h"
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaitoolregistry.h"
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 
@@ -25,6 +27,8 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QRegularExpression>
+#include <QScopeGuard>
+#include <QSignalSpy>
 #include <QString>
 #include <QTimer>
 #include <QUrlQuery>
@@ -33,6 +37,32 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
+  class AvailabilityTool : public QgsAiTool
+  {
+    public:
+      AvailabilityTool( const QString &name, bool available )
+        : mName( name )
+        , mAvailable( available )
+      {}
+
+      QString name() const override { return mName; }
+      QString description() const override { return u"test tool"_s; }
+      QJsonObject schema() const override
+      {
+        QJsonObject schema;
+        schema.insert( u"type"_s, u"object"_s );
+        schema.insert( u"properties"_s, QJsonObject() );
+        return schema;
+      }
+      QgsAiToolResult execute( const QJsonObject & ) override { return QgsAiToolResult::ok( QJsonObject() ); }
+      bool isAvailable() const override { return mAvailable; }
+      QString availabilityReason() const override { return u"not available"_s; }
+
+    private:
+      QString mName;
+      bool mAvailable = true;
+  };
+
   void loadEnvFileIfPresent()
   {
     QDir dir( QDir::currentPath() );
@@ -90,7 +120,7 @@ class TestQgsAiModelRouter : public QObject
   private slots:
     void initTestCase();
     void buildPayloadForOpenAi();
-    void buildPayloadForCodexUsesGpt55();
+    void buildPayloadForCodexUsesGpt54();
     void codexModelFallback();
     void extractChatGptAccountIdFromIdToken();
     void claudeAuthorizationUrlUsesCurrentPlatformEndpoints();
@@ -101,6 +131,9 @@ class TestQgsAiModelRouter : public QObject
     void toolUseEnabledIncludesToolsForOpenAi();
     void toolUseDisabledOmitsToolsFromClaudePayload();
     void toolUseEnabledIncludesToolsForClaude();
+    void allowedToolFilterCanAdvertiseNoTools();
+    void unavailableToolsAreOmittedFromPayload();
+    void dispatchLogDoesNotExposeEndpointQuery();
     void liveOpenAiRequest();
     void liveClaudeRequest();
 };
@@ -126,7 +159,7 @@ void TestQgsAiModelRouter::buildPayloadForOpenAi()
   QVERIFY( object.contains( u"input"_s ) );
 }
 
-void TestQgsAiModelRouter::buildPayloadForCodexUsesGpt55()
+void TestQgsAiModelRouter::buildPayloadForCodexUsesGpt54()
 {
   QgsSettings settings;
   settings.remove( u"ai/provider/codex"_s );
@@ -141,7 +174,7 @@ void TestQgsAiModelRouter::buildPayloadForCodexUsesGpt55()
   QVERIFY( doc.isObject() );
   const QJsonObject object = doc.object();
   QCOMPARE( object.value( u"stream"_s ).toBool(), true );
-  QCOMPARE( object.value( u"model"_s ).toString(), u"gpt-5.5"_s );
+  QCOMPARE( object.value( u"model"_s ).toString(), u"gpt-5.4"_s );
   QVERIFY( object.contains( u"input"_s ) );
 }
 
@@ -155,13 +188,13 @@ void TestQgsAiModelRouter::codexModelFallback()
   codexSettings.model = u"gpt-5"_s;
   router.setProviderSettings( QgsAiModelRouter::Provider::Codex, codexSettings );
 
-  QCOMPARE( router.providerSettings( QgsAiModelRouter::Provider::Codex ).model, u"gpt-5.5"_s );
+  QCOMPARE( router.providerSettings( QgsAiModelRouter::Provider::Codex ).model, u"gpt-5.4"_s );
 
   QgsAiChatMessage message;
   message.role = QgsAiChatRole::User;
   message.content = u"hello"_s;
   const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, { message }, false ) ).object();
-  QCOMPARE( object.value( u"model"_s ).toString(), u"gpt-5.5"_s );
+  QCOMPARE( object.value( u"model"_s ).toString(), u"gpt-5.4"_s );
 
   settings.remove( u"ai/provider/codex"_s );
 }
@@ -305,6 +338,102 @@ void TestQgsAiModelRouter::toolUseEnabledIncludesToolsForClaude()
   const QJsonArray tools = object.value( u"tools"_s ).toArray();
   QVERIFY( !tools.isEmpty() );
   QCOMPARE( tools.at( 0 ).toObject().value( u"name"_s ).toString(), u"echo"_s );
+}
+
+void TestQgsAiModelRouter::allowedToolFilterCanAdvertiseNoTools()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setToolUseEnabled( true );
+  router.setAllowedTools( QStringList() );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject openAiObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, false ) ).object();
+  QVERIFY( !openAiObject.contains( u"tools"_s ) );
+  QVERIFY( !openAiObject.contains( u"tool_choice"_s ) );
+
+  const QJsonObject codexObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, { message }, false ) ).object();
+  QVERIFY( !codexObject.contains( u"tools"_s ) );
+  QVERIFY( !codexObject.contains( u"tool_choice"_s ) );
+}
+
+void TestQgsAiModelRouter::unavailableToolsAreOmittedFromPayload()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"run_python"_s, false ) );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setToolUseEnabled( true );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, false ) ).object();
+  QVERIFY( !object.contains( u"tools"_s ) );
+  QVERIFY( !object.contains( u"tool_choice"_s ) );
+}
+
+void TestQgsAiModelRouter::dispatchLogDoesNotExposeEndpointQuery()
+{
+  QgsSettings settings;
+  const QString apiKeyKey = u"ai/provider/openai/apiKey"_s;
+  const QString endpointKey = u"ai/provider/openai/endpoint"_s;
+  const QString modelKey = u"ai/provider/openai/model"_s;
+  const QString enabledKey = u"ai/provider/openai/enabled"_s;
+  const QVariant savedApiKey = settings.value( apiKeyKey );
+  const QVariant savedEndpoint = settings.value( endpointKey );
+  const QVariant savedModel = settings.value( modelKey );
+  const QVariant savedEnabled = settings.value( enabledKey );
+
+  auto restoreSetting = [&settings]( const QString &key, const QVariant &value ) {
+    if ( value.isValid() )
+      settings.setValue( key, value );
+    else
+      settings.remove( key );
+  };
+  const auto restoreSettings = qScopeGuard( [&]() {
+    restoreSetting( apiKeyKey, savedApiKey );
+    restoreSetting( endpointKey, savedEndpoint );
+    restoreSetting( modelKey, savedModel );
+    restoreSetting( enabledKey, savedEnabled );
+  } );
+
+  QgsAiModelRouter router;
+  router.storeApiKey( QgsAiModelRouter::Provider::OpenAi, u"test-key"_s );
+  QgsAiModelRouter::ProviderSettings providerSettings = router.providerSettings( QgsAiModelRouter::Provider::OpenAi );
+  providerSettings.endpoint = u"http://127.0.0.1:9/v1/responses?token=secret-query&path=/Users/francesco/private"_s;
+  providerSettings.model = u"gpt-4.1-mini"_s;
+  providerSettings.enabled = true;
+  router.setProviderSettings( QgsAiModelRouter::Provider::OpenAi, providerSettings );
+
+  QSignalSpy logSpy( QgsApplication::messageLog(), &QgsMessageLog::messageReceivedWithFormat );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+  const QString requestId = router.startChatRequest( QgsAiModelRouter::Provider::OpenAi, { message }, false );
+  router.cancelRequest( requestId );
+
+  bool foundDispatchLog = false;
+  for ( const QList<QVariant> &args : logSpy )
+  {
+    const QString logMessage = args.at( 0 ).toString();
+    if ( !logMessage.contains( u"Dispatching request"_s ) )
+      continue;
+    foundDispatchLog = true;
+    QVERIFY( logMessage.contains( u"endpointHost=127.0.0.1"_s ) );
+    QVERIFY( !logMessage.contains( u"secret-query"_s ) );
+    QVERIFY( !logMessage.contains( u"/Users/francesco/private"_s ) );
+  }
+  QVERIFY( foundDispatchLog );
 }
 
 void TestQgsAiModelRouter::liveOpenAiRequest()

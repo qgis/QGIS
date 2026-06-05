@@ -58,6 +58,9 @@ QString QgsAiChatHistoryStore::dbPath() const
     return QString();
 
   const QString root = mContextProvider->workspaceRoot();
+  if ( root.isEmpty() )
+    return QString();
+
   const QByteArray hash = QCryptographicHash::hash( root.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 16 );
   const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_chat"_s;
   QDir().mkpath( dir );

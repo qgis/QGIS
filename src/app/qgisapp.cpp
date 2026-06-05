@@ -1385,16 +1385,18 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 #ifdef HAVE_AI_ASSISTANT
   startProfile( tr( "AI assistant dock" ) );
   mAiModelRouter = std::make_unique<QgsAiModelRouter>( this );
+  QgsSettings aiWorkspaceSettings;
   QString aiWorkspaceRoot = QgsProject::instance()->homePath();
   if ( aiWorkspaceRoot.isEmpty() )
-    aiWorkspaceRoot = QDir::currentPath();
+    aiWorkspaceRoot = aiWorkspaceSettings.value( u"geoai/workspace/root"_s, aiWorkspaceSettings.value( u"qgis_ai/workspace/root"_s, QString() ) ).toString().trimmed();
   mAiFileContextProvider = std::make_unique<QgsAiFileContextProvider>( aiWorkspaceRoot, this );
   connect( QgsProject::instance(), &QgsProject::homePathChanged, this, [this]() {
     if ( !mAiFileContextProvider )
       return;
+    QgsSettings settings;
     QString projectWorkspaceRoot = QgsProject::instance()->homePath();
     if ( projectWorkspaceRoot.isEmpty() )
-      projectWorkspaceRoot = QDir::currentPath();
+      projectWorkspaceRoot = settings.value( u"geoai/workspace/root"_s, settings.value( u"qgis_ai/workspace/root"_s, QString() ) ).toString().trimmed();
     mAiFileContextProvider->setWorkspaceRoot( projectWorkspaceRoot );
   } );
   mAiReviewPatchEngine = std::make_unique<QgsAiReviewPatchEngine>( this );

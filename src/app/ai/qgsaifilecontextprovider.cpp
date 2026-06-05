@@ -29,12 +29,12 @@ using namespace Qt::StringLiterals;
 
 QgsAiFileContextProvider::QgsAiFileContextProvider( const QString &workspaceRoot, QObject *parent )
   : QObject( parent )
-  , mWorkspaceRoot( QDir( workspaceRoot ).absolutePath() )
+  , mWorkspaceRoot( workspaceRoot.trimmed().isEmpty() ? QString() : QDir( workspaceRoot ).absolutePath() )
 {}
 
 void QgsAiFileContextProvider::setWorkspaceRoot( const QString &workspaceRoot )
 {
-  const QString normalizedRoot = QDir( workspaceRoot ).absolutePath();
+  const QString normalizedRoot = workspaceRoot.trimmed().isEmpty() ? QString() : QDir( workspaceRoot ).absolutePath();
   if ( mWorkspaceRoot == normalizedRoot )
     return;
 
@@ -57,6 +57,9 @@ QString QgsAiFileContextProvider::normalizePath( const QString &filePath, bool a
     return QString();
 
   QFileInfo info( filePath );
+  if ( mWorkspaceRoot.isEmpty() && ( !allowExternal || !info.isAbsolute() ) )
+    return QString();
+
   const QString absolutePath = info.isAbsolute() ? info.absoluteFilePath() : QDir( mWorkspaceRoot ).absoluteFilePath( filePath );
   const QString cleanPath = QDir::cleanPath( absolutePath );
 

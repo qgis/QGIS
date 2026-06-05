@@ -91,6 +91,22 @@ namespace
 
     return QString();
   }
+
+  bool aiFullToolLogDetails()
+  {
+    return QgsSettings().value( u"geoai/log/full_tool_details"_s, false ).toBool();
+  }
+
+  QString endpointForLog( const QString &endpoint )
+  {
+    if ( aiFullToolLogDetails() )
+      return endpoint;
+
+    const QUrl url( endpoint );
+    if ( url.isValid() && !url.host().isEmpty() )
+      return url.host();
+    return u"(custom endpoint)"_s;
+  }
 } //namespace
 
 QgsAiModelRouter::QgsAiModelRouter( QObject *parent )
@@ -125,6 +141,19 @@ QgsAiModelRouter::QgsAiModelRouter( QObject *parent )
 QgsAiModelRouter::ProviderSettings QgsAiModelRouter::providerSettings( Provider provider ) const
 {
   return mProviderSettings.value( provider );
+}
+
+void QgsAiModelRouter::setAllowedTools( const QStringList &toolNames )
+{
+  mAllowedToolsFilterEnabled = true;
+  mAllowedTools = toolNames;
+  mAllowedTools.removeDuplicates();
+}
+
+void QgsAiModelRouter::clearAllowedToolsFilter()
+{
+  mAllowedToolsFilterEnabled = false;
+  mAllowedTools.clear();
 }
 
 void QgsAiModelRouter::setProviderSettings( Provider provider, const ProviderSettings &settings )
@@ -325,17 +354,25 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
 
     QJsonArray toolSchemas;
     if ( mToolUseEnabled && mToolRegistry && mToolRegistry->count() > 0 )
-      toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiResponses );
+    {
+      if ( !mAllowedToolsFilterEnabled )
+        toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiResponses );
+      else if ( !mAllowedTools.isEmpty() )
+        toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiResponses, mAllowedTools );
+    }
 
     if ( provider == Provider::Codex )
     {
       // The chatgpt.com Codex backend mirrors the schema codex_cli_rs sends and
-      // rejects requests that omit these fields.
+      // accepts tool fields only when tool schemas are intentionally advertised.
       if ( !codexInstructions.isEmpty() )
         payload.insert( u"instructions"_s, codexInstructions );
-      payload.insert( u"tools"_s, toolSchemas );
-      payload.insert( u"tool_choice"_s, u"auto"_s );
-      payload.insert( u"parallel_tool_calls"_s, false );
+      if ( !toolSchemas.isEmpty() )
+      {
+        payload.insert( u"tools"_s, toolSchemas );
+        payload.insert( u"tool_choice"_s, u"auto"_s );
+        payload.insert( u"parallel_tool_calls"_s, false );
+      }
       payload.insert( u"reasoning"_s, QJsonValue() );
       payload.insert( u"store"_s, false );
       payload.insert( u"include"_s, QJsonArray() );
@@ -380,7 +417,11 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
 
     if ( mToolUseEnabled && mToolRegistry && mToolRegistry->count() > 0 )
     {
-      const QJsonArray toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::AnthropicTools );
+      QJsonArray toolSchemas;
+      if ( !mAllowedToolsFilterEnabled )
+        toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::AnthropicTools );
+      else if ( !mAllowedTools.isEmpty() )
+        toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::AnthropicTools, mAllowedTools );
       if ( !toolSchemas.isEmpty() )
         payload.insert( u"tools"_s, toolSchemas );
     }
@@ -892,8 +933,8 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
   context.streamingBuffer.clear();
   const QByteArray payload = buildRequestPayload( context.provider, context.messages, context.stream );
   QgsMessageLog::logMessage(
-    u"Dispatching request id=%1 provider=%2 endpoint=%3 model=%4 attempt=%5 payloadBytes=%6 stream=%7"_s
-      .arg( context.requestId, providerDisplayName( context.provider ), settings.endpoint, settings.model )
+    u"Dispatching request id=%1 provider=%2 endpointHost=%3 model=%4 attempt=%5 payloadBytes=%6 stream=%7"_s
+      .arg( context.requestId, providerDisplayName( context.provider ), endpointForLog( settings.endpoint ), settings.model )
       .arg( context.attempt )
       .arg( payload.size() )
       .arg( context.stream ),

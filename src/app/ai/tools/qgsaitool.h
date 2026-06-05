@@ -55,6 +55,8 @@ class APP_EXPORT QgsAiTool
     virtual QJsonObject schema() const = 0;
     virtual QgsAiToolResult execute( const QJsonObject &args ) = 0;
     virtual bool requiresApproval() const { return false; }
+    virtual bool isAvailable() const { return true; }
+    virtual QString availabilityReason() const { return QString(); }
 };
 
 #endif // QGSAITOOL_H

@@ -112,6 +112,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QStringList projectFileCandidates( const QString &query, int maxResults = 25 ) const;
     QString resolveProjectFile( const QString &filePath ) const;
     QString workspaceRoot() const;
+    void setWorkspaceRoot( const QString &workspaceRoot );
 
     void setToolRegistry( QgsAiToolRegistry *registry );
     QgsAiToolRegistry *toolRegistry() const { return mToolRegistry; }
@@ -187,6 +188,9 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     bool tryBuildPatchProposal( const QString &text, QgsAiPatchProposal &proposal ) const;
     QString buildSystemPrompt( const QString &extraContext = QString() ) const;
     QString retrieveContextForLastUserMessage() const;
+    QStringList allowedToolsForActiveAgent() const;
+    bool isToolAllowedForActiveAgent( const QString &toolName ) const;
+    void refreshRouterToolPolicy();
     //! Per-profile folder where Processing Toolbox picks up user scripts.
     static QString processingScriptsFolder();
     QList<QgsAiChatMessage> trimHistoryByTokenBudget( int budgetTokens ) const;

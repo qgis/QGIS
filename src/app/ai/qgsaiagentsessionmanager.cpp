@@ -69,6 +69,20 @@ namespace
       return settings.value( key, defaultValue );
     return settings.value( legacyKey, defaultValue );
   }
+
+  QStringList reviewerReadOnlyTools()
+  {
+    return QStringList {
+      u"read_file"_s,
+      u"search_files"_s,
+      u"list_files"_s,
+      u"list_project_layers"_s,
+      u"get_active_canvas_extent"_s,
+      u"describe_layer"_s,
+      u"index_status"_s,
+      u"search_workspace"_s,
+    };
+  }
 } // namespace
 
 QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, QgsAiFileContextProvider *contextProvider, QgsAiReviewPatchEngine *reviewEngine, QObject *parent )
@@ -78,8 +92,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
   , mReviewEngine( reviewEngine )
 {
   loadPersistedBehaviorSettings();
-  if ( mRouter )
-    mRouter->setToolUseEnabled( mBehaviorSettings.allowCustomActions );
+  refreshRouterToolPolicy();
 
   if ( mRouter )
   {
@@ -136,7 +149,10 @@ QStringList QgsAiAgentSessionManager::availableAgents() const
 void QgsAiAgentSessionManager::setActiveAgent( const QString &agentName )
 {
   if ( availableAgents().contains( agentName ) )
+  {
     mActiveAgent = agentName;
+    refreshRouterToolPolicy();
+  }
 }
 
 void QgsAiAgentSessionManager::clearHistory()
@@ -272,6 +288,12 @@ QString QgsAiAgentSessionManager::workspaceRoot() const
   return mContextProvider ? mContextProvider->workspaceRoot() : QString();
 }
 
+void QgsAiAgentSessionManager::setWorkspaceRoot( const QString &workspaceRoot )
+{
+  if ( mContextProvider )
+    mContextProvider->setWorkspaceRoot( workspaceRoot );
+}
+
 QList<QgsAiModelRouter::Provider> QgsAiAgentSessionManager::providerFallbackOrder() const
 {
   QList<QgsAiModelRouter::Provider> order;
@@ -289,6 +311,8 @@ void QgsAiAgentSessionManager::startProviderAttempt( QgsAiModelRouter::Provider 
 {
   if ( !mRouter )
     return;
+
+  refreshRouterToolPolicy();
 
   mActiveProvider = provider;
   const QList<QgsAiChatMessage> messages = buildOutgoingMessages();
@@ -496,7 +520,10 @@ void QgsAiAgentSessionManager::setToolRegistry( QgsAiToolRegistry *registry )
 {
   mToolRegistry = registry;
   if ( mRouter )
+  {
     mRouter->setToolRegistry( registry );
+    refreshRouterToolPolicy();
+  }
 }
 
 void QgsAiAgentSessionManager::setAgentBehaviorSettings( const QgsAiAgentBehaviorSettings &settings )
@@ -509,8 +536,49 @@ void QgsAiAgentSessionManager::setAgentBehaviorSettings( const QgsAiAgentBehavio
     mBehaviorSettings.skillsPath = defaultSkillsPath();
 
   persistBehaviorSettings();
-  if ( mRouter )
-    mRouter->setToolUseEnabled( mBehaviorSettings.allowCustomActions );
+  refreshRouterToolPolicy();
+}
+
+QStringList QgsAiAgentSessionManager::allowedToolsForActiveAgent() const
+{
+  if ( !mToolRegistry || !mBehaviorSettings.allowCustomActions )
+    return QStringList();
+
+  const QStringList available = mToolRegistry->availableToolNames();
+  if ( mActiveAgent == "planner"_L1 )
+    return QStringList();
+
+  if ( mActiveAgent == "reviewer"_L1 )
+  {
+    QStringList allowed;
+    const QStringList readOnly = reviewerReadOnlyTools();
+    for ( const QString &toolName : available )
+    {
+      if ( readOnly.contains( toolName ) )
+        allowed << toolName;
+    }
+    return allowed;
+  }
+
+  if ( mActiveAgent == "editor"_L1 )
+    return available;
+
+  return QStringList();
+}
+
+bool QgsAiAgentSessionManager::isToolAllowedForActiveAgent( const QString &toolName ) const
+{
+  return allowedToolsForActiveAgent().contains( toolName );
+}
+
+void QgsAiAgentSessionManager::refreshRouterToolPolicy()
+{
+  if ( !mRouter )
+    return;
+
+  const QStringList allowedTools = allowedToolsForActiveAgent();
+  mRouter->setAllowedTools( allowedTools );
+  mRouter->setToolUseEnabled( !allowedTools.isEmpty() );
 }
 
 void QgsAiAgentSessionManager::loadPersistedBehaviorSettings()
@@ -661,15 +729,12 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   // Tool list is injected so the model has discoverable names alongside the JSON schema,
   // but only when the user actually allows custom actions. Otherwise we hide the catalog
   // entirely so the model does not even attempt tool use.
-  if ( mToolRegistry && mBehaviorSettings.allowCustomActions )
+  const QStringList allowedTools = allowedToolsForActiveAgent();
+  if ( !allowedTools.isEmpty() )
   {
-    const QStringList toolNames = mToolRegistry->toolNames();
-    if ( !toolNames.isEmpty() )
-    {
-      prompt += "\n== Available tools ==\n"_L1;
-      prompt += toolNames.join( ", "_L1 );
-      prompt += '\n';
-    }
+    prompt += "\n== Available tools ==\n"_L1;
+    prompt += allowedTools.join( ", "_L1 );
+    prompt += '\n';
   }
 
   // User-provided rules and skills (inline + workspace files) live on top of the built-in
@@ -691,12 +756,54 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   }
 
   prompt += "\n== How to act ==\n"_L1;
+  if ( mActiveAgent == "planner"_L1 )
+  {
+    prompt += "- You are in Plan mode. Do not call tools, do not download data, do not run Python, and do not modify project or workspace state.\n"_L1;
+    prompt += "- Produce a concise implementation plan or answer. Make the plan concrete enough that an agent can execute it later.\n"_L1;
+    prompt += "- If the user asks you to do the work, explain the exact steps that Agent mode would take instead of performing them.\n"_L1;
+    if ( !extraContext.isEmpty() )
+    {
+      prompt += '\n';
+      prompt += extraContext;
+    }
+    return prompt;
+  }
+
+  if ( mActiveAgent == "reviewer"_L1 )
+  {
+    prompt += "- You are in Ask mode. Answer and review only; do not modify files, download data, add layers, install packages, or run Python.\n"_L1;
+    if ( allowedTools.isEmpty() )
+    {
+      prompt += "- No tools are available for this turn. Answer in plain text only.\n"_L1;
+    }
+    else
+    {
+      prompt += "- You may use read-only inspection tools when needed to ground the answer. Do not request any mutating tool.\n"_L1;
+    }
+    if ( !extraContext.isEmpty() )
+    {
+      prompt += '\n';
+      prompt += extraContext;
+    }
+    return prompt;
+  }
+
   if ( !mBehaviorSettings.allowCustomActions )
   {
     prompt += "- Custom agent actions are DISABLED by the user. Do not attempt to call any tool. "
               "Answer in plain text only and tell the user to enable 'Allow custom agent actions' in AI settings if a tool is needed.\n"_L1;
     // Even with tool use disabled the user expects RAG-grounded answers, so the
     // retrieved context block must still ride along (it is just static text).
+    if ( !extraContext.isEmpty() )
+    {
+      prompt += '\n';
+      prompt += extraContext;
+    }
+    return prompt;
+  }
+  if ( allowedTools.isEmpty() )
+  {
+    prompt += "- No agent tools are currently available. Answer in plain text and explain what setting or runtime dependency is missing if action is required.\n"_L1;
     if ( !extraContext.isEmpty() )
     {
       prompt += '\n';
@@ -823,7 +930,7 @@ QString QgsAiAgentSessionManager::retrieveContextForLastUserMessage() const
   mWorkspaceIndex->ensureLoaded();
   const auto status = mWorkspaceIndex->status();
   QgsMessageLog::
-    logMessage( u"Retrieval: query='%1' indexChunks=%2 (file=%3 layer=%4)"_s.arg( query.left( 80 ) ).arg( status.chunkCount ).arg( status.fileChunkCount ).arg( status.layerChunkCount ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+    logMessage( u"Retrieval: queryChars=%1 indexChunks=%2 (file=%3 layer=%4)"_s.arg( query.size() ).arg( status.chunkCount ).arg( status.fileChunkCount ).arg( status.layerChunkCount ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
 
   if ( status.chunkCount == 0 )
     return QString();
@@ -963,6 +1070,12 @@ QgsAiChatMessage QgsAiAgentSessionManager::buildToolResultMessage( const QgsAiTo
   toolMessage.content = serialized;
   toolMessage.metadata.insert( u"tool_call_id"_s, call.id );
   toolMessage.metadata.insert( u"tool_name"_s, call.name );
+  toolMessage.metadata.insert( u"tool_args"_s, call.args.toVariantMap() );
+  if ( call.name == "run_python"_L1 )
+  {
+    toolMessage.metadata.insert( u"tool_description"_s, call.args.value( u"description"_s ).toString() );
+    toolMessage.metadata.insert( u"tool_code"_s, call.args.value( u"code"_s ).toString() );
+  }
   if ( !result.success )
     toolMessage.metadata.insert( u"is_error"_s, true );
   return toolMessage;
@@ -972,10 +1085,6 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
 {
   if ( requestId != mActiveRequestId )
     return;
-
-  // Append the assistant turn that requested the tools to history so the next round carries it.
-  const QgsAiChatMessage assistantMessage = buildAssistantToolUseMessage( assistantText, calls );
-  recordHistoryMessage( assistantMessage );
 
   // Surface a short status to the UI: which tools the model wants to use.
   QStringList summary;
@@ -993,6 +1102,22 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
     return;
   }
 
+  for ( const QgsAiToolCall &call : calls )
+  {
+    if ( !isToolAllowedForActiveAgent( call.name ) )
+    {
+      QgsMessageLog::logMessage( u"Blocked disallowed tool call in %1 mode: %2"_s.arg( mActiveAgent, call.name ), u"AI"_s, Qgis::MessageLevel::Warning, false );
+      const QString message = mActiveAgent == "planner"_L1
+                              ? u"Plan mode does not execute tools or change workspace state. No tool was run."_s
+                              : u"This mode does not allow the requested tool '%1'. No tool was run."_s.arg( call.name );
+      const QgsAiChatMessage error = buildAssistantMessage( message );
+      recordHistoryMessage( error );
+      mActiveRequestId.clear();
+      emit requestRunningChanged( false );
+      return;
+    }
+  }
+
   ++mToolIterations;
   if ( mToolIterations > MAX_TOOL_ITERATIONS_PER_TURN )
   {
@@ -1003,9 +1128,13 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
     return;
   }
 
-  // Execute every requested tool synchronously and add its result to history.
-  // Approval-gated tools (file edits, run_python) are wired in later sprints; for B1 we
-  // execute everything inline so the loop itself can be exercised end-to-end.
+  // Append the assistant turn that requested the tools only after the calls are
+  // accepted by the active mode. Otherwise the next turn would carry a tool-call
+  // message without matching tool results.
+  const QgsAiChatMessage assistantMessage = buildAssistantToolUseMessage( assistantText, calls );
+  recordHistoryMessage( assistantMessage );
+
+  // Execute every requested, mode-allowed tool synchronously and add its result to history.
   for ( const QgsAiToolCall &call : calls )
   {
     QgsMessageLog::

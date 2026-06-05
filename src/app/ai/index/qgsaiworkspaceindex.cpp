@@ -105,6 +105,9 @@ QString QgsAiWorkspaceIndex::dbPath() const
     return QString();
 
   const QString root = mContextProvider->workspaceRoot();
+  if ( root.isEmpty() )
+    return QString();
+
   const QByteArray hash = QCryptographicHash::hash( root.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 16 );
   const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_index"_s;
   QDir().mkpath( dir );
@@ -517,6 +520,12 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   {
     if ( errorMessage )
       *errorMessage = u"Workspace context provider is unavailable."_s;
+    return false;
+  }
+  if ( mContextProvider->workspaceRoot().isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"AI workspace root is unset. Save the QGIS project or configure the AI workspace root in provider settings."_s;
     return false;
   }
   if ( !hasEmbeddingConfiguration() )

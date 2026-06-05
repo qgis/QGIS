@@ -58,6 +58,19 @@ QStringList QgsAiToolRegistry::toolNames() const
   return names;
 }
 
+QStringList QgsAiToolRegistry::availableToolNames() const
+{
+  QStringList names;
+  names.reserve( static_cast<int>( mTools.size() ) );
+  for ( const auto &entry : mTools )
+  {
+    const QgsAiTool *tool = entry.second.get();
+    if ( tool && tool->isAvailable() )
+      names.append( entry.first );
+  }
+  return names;
+}
+
 QJsonArray QgsAiToolRegistry::schemasJson( const QStringList &allowedTools ) const
 {
   return schemasJsonForFormat( WireFormat::AnthropicTools, allowedTools );
@@ -73,6 +86,9 @@ QJsonArray QgsAiToolRegistry::schemasJsonForFormat( WireFormat format, const QSt
       continue;
 
     const QgsAiTool *tool = it->second.get();
+    if ( !tool || !tool->isAvailable() )
+      continue;
+
     QJsonObject entry;
     switch ( format )
     {
@@ -99,6 +115,11 @@ QgsAiToolResult QgsAiToolRegistry::execute( const QString &name, const QJsonObje
   QgsAiTool *tool = find( name );
   if ( !tool )
     return QgsAiToolResult::error( u"Unknown tool: %1"_s.arg( name ) );
+  if ( !tool->isAvailable() )
+  {
+    const QString reason = tool->availabilityReason();
+    return QgsAiToolResult::error( reason.isEmpty() ? u"Tool is not available: %1"_s.arg( name ) : reason );
+  }
   return tool->execute( args );
 }
 

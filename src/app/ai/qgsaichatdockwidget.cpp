@@ -29,6 +29,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 
 #include <QAction>
@@ -48,6 +49,9 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QInputDialog>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QLayoutItem>
@@ -68,6 +72,7 @@
 #include <QTextDocument>
 #include <QTextEdit>
 #include <QToolButton>
+#include <QUrl>
 #include <QVBoxLayout>
 #include <QVariant>
 
@@ -120,11 +125,63 @@ namespace
     return u"Plan"_s;
   }
 
-  QVariant settingValueWithLegacy( QSettings &settings, const QString &key, const QString &legacyKey, const QVariant &defaultValue )
+  template <typename Settings>
+  QVariant settingValueWithLegacy( Settings &settings, const QString &key, const QString &legacyKey, const QVariant &defaultValue )
   {
     if ( settings.contains( key ) )
       return settings.value( key, defaultValue );
     return settings.value( legacyKey, defaultValue );
+  }
+
+  QString truncateForTranscript( const QString &text, int maxChars = 4000 )
+  {
+    if ( text.size() <= maxChars )
+      return text;
+    return text.left( maxChars ) + u"\n...[truncated]"_s;
+  }
+
+  QString markdownCodeBlock( const QString &label, const QString &text, const QString &language = QString() )
+  {
+    if ( text.isEmpty() )
+      return QString();
+    return u"\n%1\n```%2\n%3\n```\n"_s.arg( label, language, truncateForTranscript( text ) );
+  }
+
+  QJsonObject jsonObjectFromMessageContent( const QString &content )
+  {
+    const QJsonDocument doc = QJsonDocument::fromJson( content.toUtf8() );
+    return doc.isObject() ? doc.object() : QJsonObject();
+  }
+
+  QString scalarForTranscript( const QJsonValue &value )
+  {
+    if ( value.isString() )
+      return value.toString();
+    if ( value.isDouble() )
+      return QString::number( value.toDouble(), 'g', 12 );
+    if ( value.isBool() )
+      return value.toBool() ? u"true"_s : u"false"_s;
+    if ( value.isNull() || value.isUndefined() )
+      return u"null"_s;
+    return QString::fromUtf8( QJsonDocument( value.toObject() ).toJson( QJsonDocument::Compact ) );
+  }
+
+  QString urlHostForTranscript( const QString &urlText )
+  {
+    const QUrl url( urlText );
+    if ( url.isValid() && !url.host().isEmpty() )
+      return url.host();
+    return urlText;
+  }
+
+  QString relativePathForTranscript( const QString &workspaceRoot, const QString &path )
+  {
+    if ( workspaceRoot.isEmpty() || path.isEmpty() )
+      return path;
+    const QString relative = QDir( workspaceRoot ).relativeFilePath( path );
+    if ( relative == "."_L1 || relative.startsWith( "../"_L1 ) || relative == ".."_L1 || QDir::isAbsolutePath( relative ) )
+      return path;
+    return relative;
   }
 } //namespace
 
@@ -309,7 +366,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
         return;
       }
       closeStreamingAssistantMessage();
-      appendTranscriptMessage( qgsAiChatRoleToString( message.role ), message.content );
+      appendTranscriptMessage( message );
     } );
     connect( mSessionManager, &QgsAiAgentSessionManager::proposalCreated, this, [this]( const QString & ) { refreshProposalList(); } );
     connect( mSessionManager, &QgsAiAgentSessionManager::responseChunkReceived, this, &QgsAiChatDockWidget::appendStreamChunk );
@@ -504,6 +561,89 @@ void QgsAiChatDockWidget::appendTranscriptMessage( const QString &role, const QS
   mTranscript->setTextCursor( cursor );
 }
 
+void QgsAiChatDockWidget::appendTranscriptMessage( const QgsAiChatMessage &message )
+{
+  if ( message.role == QgsAiChatRole::Tool )
+  {
+    appendTranscriptMessage( qgsAiChatRoleToString( message.role ), renderToolMessageMarkdown( message ) );
+    return;
+  }
+
+  appendTranscriptMessage( qgsAiChatRoleToString( message.role ), message.content );
+}
+
+QString QgsAiChatDockWidget::renderToolMessageMarkdown( const QgsAiChatMessage &message ) const
+{
+  const QString toolName = message.metadata.value( u"tool_name"_s ).toString();
+  const bool isError = message.metadata.value( u"is_error"_s ).toBool();
+  const QJsonObject output = jsonObjectFromMessageContent( message.content );
+  const QVariantMap args = message.metadata.value( u"tool_args"_s ).toMap();
+  const QString status = output.value( u"status"_s ).toString( isError ? u"error"_s : u"ok"_s );
+
+  QString md = u"**%1** - `%2`\n"_s.arg( toolName.isEmpty() ? u"tool"_s : toolName, status );
+
+  if ( toolName == "run_python"_L1 )
+  {
+    const QString description = message.metadata.value( u"tool_description"_s ).toString().trimmed();
+    if ( !description.isEmpty() )
+      md += u"\n%1\n"_s.arg( description );
+
+    md += markdownCodeBlock( tr( "Approved code:" ), message.metadata.value( u"tool_code"_s ).toString(), u"python"_s );
+    md += markdownCodeBlock( tr( "stdout:" ), output.value( u"stdout"_s ).toString() );
+    md += markdownCodeBlock( tr( "stderr:" ), output.value( u"stderr"_s ).toString() );
+    md += markdownCodeBlock( tr( "traceback:" ), output.value( u"traceback"_s ).toString(), u"text"_s );
+    if ( output.contains( u"error"_s ) )
+      md += u"\nError: `%1`\n"_s.arg( output.value( u"error"_s ).toString() );
+    return md.trimmed();
+  }
+
+  if ( toolName == "download_file"_L1 )
+  {
+    const QString host = urlHostForTranscript( args.value( u"url"_s ).toString() );
+    const QString dest = relativePathForTranscript( mSessionManager ? mSessionManager->workspaceRoot() : QString(), output.value( u"dest_path"_s ).toString() );
+    md += u"\nHost: `%1`\n"_s.arg( host.isEmpty() ? u"(unknown)"_s : host );
+    if ( !dest.isEmpty() )
+      md += u"Destination: `%1`\n"_s.arg( dest );
+    if ( output.contains( u"bytes_written"_s ) )
+      md += u"Bytes: `%1`\n"_s.arg( scalarForTranscript( output.value( u"bytes_written"_s ) ) );
+    if ( output.contains( u"http_status"_s ) )
+      md += u"HTTP: `%1`\n"_s.arg( scalarForTranscript( output.value( u"http_status"_s ) ) );
+    if ( output.contains( u"error"_s ) )
+      md += u"Error: `%1`\n"_s.arg( output.value( u"error"_s ).toString() );
+    return md.trimmed();
+  }
+
+  if ( toolName == "install_python_package"_L1 )
+  {
+    md += u"\nPackages requested: `%1`\n"_s.arg( args.value( u"packages"_s ).toList().size() );
+    if ( output.contains( u"exit_code"_s ) )
+      md += u"Exit code: `%1`\n"_s.arg( scalarForTranscript( output.value( u"exit_code"_s ) ) );
+    md += markdownCodeBlock( tr( "stdout:" ), output.value( u"stdout"_s ).toString() );
+    md += markdownCodeBlock( tr( "stderr:" ), output.value( u"stderr"_s ).toString() );
+    if ( output.contains( u"error"_s ) )
+      md += u"\nError: `%1`\n"_s.arg( output.value( u"error"_s ).toString() );
+    return md.trimmed();
+  }
+
+  if ( output.isEmpty() )
+  {
+    md += u"\n%1"_s.arg( truncateForTranscript( message.content, 1000 ) );
+    return md.trimmed();
+  }
+
+  int shown = 0;
+  for ( auto it = output.constBegin(); it != output.constEnd() && shown < 6; ++it )
+  {
+    if ( it.value().isObject() || it.value().isArray() )
+      continue;
+    md += u"\n- %1: `%2`"_s.arg( it.key(), truncateForTranscript( scalarForTranscript( it.value() ), 160 ) );
+    ++shown;
+  }
+  if ( shown == 0 )
+    md += u"\nResult received."_s;
+  return md.trimmed();
+}
+
 void QgsAiChatDockWidget::onNewChatClicked()
 {
   if ( mSessionManager )
@@ -523,7 +663,7 @@ void QgsAiChatDockWidget::reloadTranscriptFromHistory()
   {
     if ( m.role == QgsAiChatRole::System )
       continue;
-    appendTranscriptMessage( qgsAiChatRoleToString( m.role ), m.content );
+    appendTranscriptMessage( m );
   }
 }
 
@@ -1117,6 +1257,17 @@ void QgsAiChatDockWidget::openProviderSettings()
   planToken->setEchoMode( QLineEdit::Password );
   planToken->setPlaceholderText( tr( "Session token from your plan login..." ) );
 
+  QSettings workspaceSettings;
+  QLineEdit *aiWorkspaceRoot = new QLineEdit( settingValueWithLegacy( workspaceSettings, u"geoai/workspace/root"_s, u"qgis_ai/workspace/root"_s, QString() ).toString(), &dialog );
+  aiWorkspaceRoot->setObjectName( u"aiWorkspaceRootLineEdit"_s );
+  aiWorkspaceRoot->setPlaceholderText( tr( "Used when the QGIS project is unsaved" ) );
+  QPushButton *browseWorkspaceRoot = new QPushButton( tr( "Browse..." ), &dialog );
+  QWidget *workspaceRootWidget = new QWidget( &dialog );
+  QHBoxLayout *workspaceRootLayout = new QHBoxLayout( workspaceRootWidget );
+  workspaceRootLayout->setContentsMargins( 0, 0, 0, 0 );
+  workspaceRootLayout->addWidget( aiWorkspaceRoot, 1 );
+  workspaceRootLayout->addWidget( browseWorkspaceRoot );
+
   form->addRow( tr( "OpenAI endpoint" ), openAiEndpoint );
   form->addRow( tr( "OpenAI model" ), openAiModel );
   form->addRow( tr( "OpenAI API key" ), openAiKey );
@@ -1133,6 +1284,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   form->addRow( tr( "Plan backend endpoint" ), planEndpoint );
   form->addRow( tr( "Plan OAuth authcfg ID" ), planAuthCfg );
   form->addRow( tr( "Plan session token" ), planToken );
+  form->addRow( tr( "AI workspace root" ), workspaceRootWidget );
   layout->addLayout( form );
 
   // ----------------------------------------------------------------------
@@ -1340,7 +1492,7 @@ void QgsAiChatDockWidget::openProviderSettings()
       "QGIS authentication store. Leave API key fields empty to keep "
       "the current saved value.\n\nAgent rules and skills are stored locally in application settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended "
       "to the "
-      "prompt. Custom actions remain subject to the existing review/approval dialogs."
+      "prompt. The AI workspace root is used only when the current QGIS project has no home path. Custom actions remain subject to the existing review/approval dialogs."
     ),
     &dialog
   );
@@ -1423,6 +1575,12 @@ void QgsAiChatDockWidget::openProviderSettings()
     claudeOAuthStatus->setText( QObject::tr( "Not signed in" ) );
   } );
 
+  connect( browseWorkspaceRoot, &QPushButton::clicked, &dialog, [&dialog, aiWorkspaceRoot]() {
+    const QString dir = QFileDialog::getExistingDirectory( &dialog, QObject::tr( "Choose AI workspace root" ), aiWorkspaceRoot->text().trimmed() );
+    if ( !dir.isEmpty() )
+      aiWorkspaceRoot->setText( QDir::cleanPath( dir ) );
+  } );
+
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog );
   connect( buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject );
@@ -1478,6 +1636,25 @@ void QgsAiChatDockWidget::openProviderSettings()
     errorMessages += error + '\n';
   if ( !pendingPlanToken.isEmpty() && !mModelRouter->setPlanSessionToken( pendingPlanToken, &error ) )
     errorMessages += error + '\n';
+
+  {
+    QSettings settings;
+    const QString requestedWorkspaceRoot = aiWorkspaceRoot->text().trimmed();
+    const QString configuredWorkspaceRoot = requestedWorkspaceRoot.isEmpty() ? QString() : QDir::cleanPath( requestedWorkspaceRoot );
+    if ( configuredWorkspaceRoot.isEmpty() )
+    {
+      settings.remove( u"geoai/workspace/root"_s );
+      settings.remove( u"qgis_ai/workspace/root"_s );
+    }
+    else
+    {
+      settings.setValue( u"geoai/workspace/root"_s, QDir::cleanPath( configuredWorkspaceRoot ) );
+      settings.remove( u"qgis_ai/workspace/root"_s );
+    }
+
+    if ( mSessionManager && QgsProject::instance() && QgsProject::instance()->homePath().isEmpty() )
+      mSessionManager->setWorkspaceRoot( configuredWorkspaceRoot );
+  }
 
   QgsAiModelRouter::ProviderSettings claudeSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude );
   claudeSettings.endpoint = claudeEndpoint->text().trimmed();

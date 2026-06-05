@@ -43,6 +43,9 @@ class APP_EXPORT QgsAiToolRegistry : public QObject
     //! Returns all registered tool names.
     QStringList toolNames() const;
 
+    //! Returns registered tool names whose runtime dependencies are currently available.
+    QStringList availableToolNames() const;
+
     int count() const { return mTools.size(); }
 
     /**
