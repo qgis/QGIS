@@ -158,7 +158,6 @@ class CORE_EXPORT QgsMapLayerUtils
      * \param description A description of the style.
      * \param useAsDefault Set to TRUE if style should be used as the default style for the layer.
      * \param uiFileContent Optional UI file content associated with the style.
-     * \param msgError Will be set to a descriptive error message if any occurs.
      * \param categories The style categories to be saved.
      * \returns Flags representing whether QML or SLD storing was successful.
      *
