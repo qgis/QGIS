@@ -47,6 +47,8 @@ class GUI_EXPORT QgsViewSettingsMenu : public QMenu
 
     void mouseReleaseEvent( QMouseEvent *e ) override;
 
+    void keyPressEvent( QKeyEvent *e ) override;
+
     ~QgsViewSettingsMenu() override;
 };
 

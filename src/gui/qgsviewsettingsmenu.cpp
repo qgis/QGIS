@@ -39,3 +39,19 @@ void QgsViewSettingsMenu::mouseReleaseEvent( QMouseEvent *e )
   else
     QMenu::mouseReleaseEvent( e );
 }
+
+void QgsViewSettingsMenu::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter || e->key() == Qt::Key_Space )
+  {
+    QAction *action = activeAction();
+    if ( action && action->isEnabled() )
+    {
+      action->trigger();
+      e->accept();
+      return;
+    }
+  }
+  else
+    QMenu::keyPressEvent( e );
+}
