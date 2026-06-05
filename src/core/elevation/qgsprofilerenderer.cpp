@@ -260,11 +260,13 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
       for ( auto it = mGenerators.begin(); it != mGenerators.end(); )
       {
         if ( ( *it )->sourceId() == sourceId )
+        {
           it = mGenerators.erase( it );
-        else
-          it++;
+          mGenerators.emplace( it, std::move( generator ) );
+          break;
+        }
+        it++;
       }
-      mGenerators.emplace_back( std::move( generator ) );
     }
   }
   return res;
