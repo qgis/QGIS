@@ -56,18 +56,13 @@ Content-Type: application/json
       "type": "application/flatgeobuf"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/schema.json",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/schema.html",
       "rel": "http://www.opengis.net/def/rel/ogc/0.0/schema",
       "title": "Schema of features in 'A test wfs vector layer èé'",
-      "type": "application/json"
-    },
-    {
-      "href": "http://server.qgis.org/?request=DescribeFeatureType&typename=testlayer_èé&service=WFS&version=2.0",
-      "rel": "describedBy",
-      "title": "Schema for A test wfs vector layer èé",
-      "type": "application/xml"
+      "type": "text/html"
     }
   ],
+  "storageCrs": "http://www.opengis.net/def/crs/EPSG/0/4326",
   "timeStamp": "2019-07-05T12:27:07Z",
   "title": "A test wfs vector layer èé"
 }
