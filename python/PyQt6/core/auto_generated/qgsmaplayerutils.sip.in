@@ -185,7 +185,7 @@ which the style should be associated.
 class QgsSaveStyleResult
 {
 %Docstring(signature="appended")
-Class representing the result of saving a style.
+Represents the result of saving a style.
 
 .. versionadded:: 4.2
 %End
