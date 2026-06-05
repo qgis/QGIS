@@ -6769,6 +6769,20 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( DockableWidgetInitialState )
 
     /**
+     * Style save format
+     *
+     * \since QGIS 4.2
+     */
+    enum class SaveStyleFormat : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      QML = 0,
+      SLD = 1 << 0,
+    };
+    Q_ENUM( SaveStyleFormat )
+    Q_DECLARE_FLAGS( SaveStyleFormats, SaveStyleFormat )
+    Q_FLAG( SaveStyleFormats )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
