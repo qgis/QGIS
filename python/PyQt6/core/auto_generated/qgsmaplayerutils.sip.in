@@ -173,8 +173,6 @@ which the style should be associated.
                      default style for the layer.
 :param uiFileContent: Optional UI file content associated with the
                       style.
-:param msgError: Will be set to a descriptive error message if any
-                 occurs.
 :param categories: The style categories to be saved.
 
 :return: Flags representing whether QML or SLD storing was successful.
