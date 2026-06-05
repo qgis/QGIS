@@ -563,6 +563,60 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             },
         )
 
+    def test_extra_geometry(self):
+
+        if "QGIS_PGTEST_DB" in os.environ:
+            dbconn = os.environ["QGIS_PGTEST_DB"]
+        else:
+            dbconn = "service=qgis_test dbname=qgis_test sslmode=disable "
+
+        # Test layer
+        uri = dbconn + " dbname=qgis_test sslmode=disable "
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+
+        if not md:
+            self.skipTest("postgres provider not available")
+
+        conn = md.createConnection(uri, {})
+        conn.executeSql('DROP TABLE IF EXISTS "qgis_test"."TwoGeoms" CASCADE')
+        conn.executeSql('CREATE TABLE "qgis_test"."TwoGeoms" (id serial primary key)')
+
+        conn.executeSql(
+            "SELECT AddGeometryColumn('qgis_test', 'TwoGeoms', 'geom1', 4326, 'POINT', 2 )"
+        )
+        conn.executeSql(
+            "SELECT AddGeometryColumn('qgis_test', 'TwoGeoms', 'geom2', 4326, 'POINT', 2 )"
+        )
+
+        conn.executeSql(
+            "INSERT INTO \"qgis_test\".\"TwoGeoms\" (geom1, geom2) VALUES (ST_GeomFromText('POINT(0 0)', 4326), ST_GeomFromText('POINT(1 1)', 4326))"
+        )
+
+        layer_source = conn.tableUri("qgis_test", "TwoGeoms") + " (geom2) sql="
+
+        project = QgsProject()
+        layer = QgsVectorLayer(layer_source, "TwoGeoms", "postgres")
+        self.assertTrue(layer.isValid())
+
+        project.addMapLayer(layer)
+        # Expose to WFS
+        project.writeEntry("WFSLayers", "/", [layer.id()])
+
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/TwoGeoms/schema.json", project
+        )
+
+        self.assertEqual(
+            j["properties"]["geom1"],
+            {"format": "geometry-any", "type": "string", "x-ogc-propertySeq": 1},
+        )
+
+        # Get data and check geom1 is correctly exposed as WKT
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/TwoGeoms/items?f=json", project
+        )
+        self.assertEqual(j["features"][0]["properties"]["geom1"].upper(), "POINT (0 0)")
+
 
 if __name__ == "__main__":
     unittest.main()
