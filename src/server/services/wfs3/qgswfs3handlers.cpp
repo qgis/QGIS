@@ -31,6 +31,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogrutils.h"
+#include "qgsreferencedgeometry.h"
 #include "qgsserverapicontext.h"
 #include "qgsserverapiutils.h"
 #include "qgsserverfeatureid.h"
@@ -455,8 +456,26 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         fInfo.type = "string";
         break;
       }
-      default:
+      case QMetaType::Type::QByteArray:
+      {
+        fInfo.type = "binary";
         break;
+      }
+      case QMetaType::Type::User:
+      {
+        if ( field.typeName().toLower() == "geometry" )
+        {
+          // no format: we do not have the information about the geometry type
+          fInfo.format = "geometry-any";
+          fInfo.type = "string";
+        }
+        break;
+      }
+      default:
+      {
+        QgsDebugMsgLevel( u"Field '%1' has unsupported  meta type '%2', defaulting to string"_s.arg( field.name() ).arg( field.type() ), 2 );
+        break;
+      }
     }
   };
 
@@ -667,6 +686,8 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
           //         For now, we skip and warn (info level) assuming that if the widget is not set this is intentional.
           QgsMessageLog::logMessage( u"Unhandled widget type '%1' for field '%2'"_s.arg( widgetType, fieldIdentifier ), u"Server"_s, Qgis::MessageLevel::Info );
         }
+        // ////////////////////////////////////////////////////
+        // Generic code that may apply to several widget types
 
         // Extract the pattern
         const QgsFieldConstraints constraints = field.constraints();
@@ -691,9 +712,6 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
             }
           }
         }
-
-        // ////////////////////////////////////////////////////
-        // Generic code that may apply to several widget types
 
         // Check for std::numeric_limits max/min(lowest for double) and reset if found
         if ( fInfo.maximum.has_value() )
@@ -1772,7 +1790,20 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
 
   json data = exporter.exportFeaturesToJsonObject( featureList );
 
-  // Patch feature IDs with server feature IDs
+  QMap<int, QString> extraGeomFields;
+  const QList<int> requestedAttrs = featureRequest.subsetOfAttributes();
+  for ( const int idx : std::as_const( requestedAttrs ) )
+  {
+    if ( mapLayer->fields().field( idx ).type() == QMetaType::Type::User && mapLayer->fields().field( idx ).typeName().compare( "geometry"_L1 ) == 0 )
+    {
+      extraGeomFields.insert( idx, mapLayer->fields().field( idx ).displayName() );
+    }
+  }
+
+  // Patch feature
+  //  - IDs with server feature IDs
+  //  - add references
+  //  - format extra geometries
   for ( int i = 0; i < featureList.length(); i++ )
   {
     data["features"][i]["id"] = fidMap.value( data["features"][i]["id"] ).toStdString();
@@ -1785,6 +1816,11 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
         const QVariant rawValue = featureList[i].attribute( fieldIdx );
         data["features"][i]["properties"][fieldIdentifier.toStdString()] = relatedFeatureReference( rawValue, referencedInfo, relAs, apiContext );
       }
+    }
+    for ( const auto &[fieldIdx, fieldIdentifier] : extraGeomFields.toStdMap() )
+    {
+      const QgsReferencedGeometry &refGeom = featureList[i].attribute( fieldIdx ).value<QgsReferencedGeometry>();
+      data["features"][i]["properties"][fieldIdentifier.toStdString()] = refGeom.asWkt().toStdString();
     }
   }
 
