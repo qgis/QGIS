@@ -675,14 +675,14 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
           const QgsExpression expression( constraints.constraintExpression() );
           if ( expression.isValid() && expression.rootNode()->dump().startsWith( "regexp_match("_L1 ) )
           {
-            if ( const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( expression.rootNode() ) )
+            if ( const QgsExpressionNodeFunction *functionNode = dynamic_cast<const QgsExpressionNodeFunction *>( expression.rootNode() ) )
             {
               QgsExpressionNode::NodeList *functionArgs = functionNode->args();
               if ( functionArgs->count() == 2 )
               {
-                if ( const QgsExpressionNodeColumnRef *columnNode = qgis::down_cast<const QgsExpressionNodeColumnRef *>( functionArgs->at( 0 ) ); columnNode->name() == field.name() )
+                if ( const QgsExpressionNodeColumnRef *columnNode = dynamic_cast<const QgsExpressionNodeColumnRef *>( functionArgs->at( 0 ) ); columnNode->name() == field.name() )
                 {
-                  if ( const QgsExpressionNodeLiteral *patternNode = qgis::down_cast<const QgsExpressionNodeLiteral *>( functionArgs->at( 1 ) ) )
+                  if ( const QgsExpressionNodeLiteral *patternNode = dynamic_cast<const QgsExpressionNodeLiteral *>( functionArgs->at( 1 ) ) )
                   {
                     fInfo.pattern = patternNode->value().toString().toStdString();
                   }
