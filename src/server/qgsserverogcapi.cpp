@@ -184,7 +184,7 @@ std::string QgsServerOgcApi::relToString( const Rel &rel )
 {
   if ( rel == Rel::schema )
   {
-    return "http://www.opengis.net/def/rel/ogc/0.0/schema";
+    return "http://www.opengis.net/def/rel/ogc/1.0/schema";
   }
   static const QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerOgcApi::Rel>();
   std::string val { metaEnum.valueToKey( rel ) };

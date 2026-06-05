@@ -1077,10 +1077,10 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
     { "conformsTo",
       {
         // From https://docs.ogc.org/is/19-072/19-072.html
-        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/landing-page"
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/landing-page",
         "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/oas30",
         "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/html",
-        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/json"
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/json",
 
         // From https://docs.ogc.org/is/23-058r2/23-058r2.html
         "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
@@ -1306,12 +1306,15 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   }
 
   // Add schemas
-  linksList.push_back(
-    { { "href", href( context, u"/schema"_s, QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) },
-      { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::schema ) },
-      { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
-      { "title", "Schema of features in '" + title + "'" } }
-  );
+  for ( const auto ct : { QgsServerOgcApi::ContentType::SCHEMA_JSON, QgsServerOgcApi::ContentType::HTML } )
+  {
+    linksList.push_back(
+      { { "href", href( context, u"/schema"_s, QgsServerOgcApi::contentTypeToExtension( ct ) ) },
+        { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::schema ) },
+        { "type", QgsServerOgcApi::mimeType( ct ) },
+        { "title", "Schema of features in '" + title + "' as " + QgsServerOgcApi::contentTypeToStdString( ct ) } }
+    );
+  }
 
 
 #if 0
