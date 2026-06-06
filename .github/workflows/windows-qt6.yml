@@ -5,9 +5,12 @@ on:
     branches:
       - master
       - release-**
+    tags:
+      - 'geoai-v*'
   pull_request:
   release:
     types: ['published']
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

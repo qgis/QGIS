@@ -5,6 +5,8 @@ on:
     branches:
       - master
       - release-*
+    tags:
+      - 'geoai-v*'
   pull_request:
   release:
     types: ['published']

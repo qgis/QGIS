@@ -1,6 +1,9 @@
 name: 🐧 Build AppImage (Linux)
 
 on:
+  push:
+    tags:
+      - 'geoai-v*'
   release:
     types: ['published']
   workflow_dispatch:
