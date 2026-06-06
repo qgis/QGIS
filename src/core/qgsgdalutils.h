@@ -107,6 +107,14 @@ class CORE_EXPORT QgsGdalUtils
     SIP_SKIP static bool supportsRasterCreate( GDALDriverH driver );
 
     /**
+     * Reads whether a driver supports GDALCreateCopy() for raster purposes.
+     * \param driver GDAL driver
+     * \returns TRUE if a driver supports GDALCreateCopy() for raster purposes.
+     * \since QGIS 4.2
+     */
+    SIP_SKIP static bool supportsRasterCreateCopy( GDALDriverH driver );
+
+    /**
      * Creates a new single band memory dataset with given parameters
      * \since QGIS 3.8
      */

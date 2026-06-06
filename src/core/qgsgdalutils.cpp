@@ -173,6 +173,11 @@ bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
   return GDALGetMetadataItem( driver, GDAL_DCAP_CREATE, nullptr ) && GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr );
 }
 
+bool QgsGdalUtils::supportsRasterCreateCopy( GDALDriverH driver )
+{
+  return supportsRasterCreate( driver ) || ( GDALGetMetadataItem( driver, GDAL_DCAP_CREATECOPY, nullptr ) && GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr ) );
+}
+
 gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
   return createMultiBandMemoryDataset( dataType, 1, extent, width, height, crs );
