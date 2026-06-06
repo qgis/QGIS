@@ -138,7 +138,7 @@ class TestQgsAiModelRouter : public QObject
     void visualContextImageIsAddedToOpenAiPayload();
     void visualContextImageIsAddedToClaudePayload();
     void visualContextImageRequiresConsent();
-    void visualContextImageIsOmittedFromCodexPayload();
+    void visualContextImageIsAddedToCodexPayload();
     void dispatchLogDoesNotExposeEndpointQuery();
     void liveOpenAiRequest();
     void liveClaudeRequest();
@@ -500,7 +500,7 @@ void TestQgsAiModelRouter::visualContextImageRequiresConsent()
   QVERIFY( !payloadText.contains( u"data:image/png;base64"_s ) );
 }
 
-void TestQgsAiModelRouter::visualContextImageIsOmittedFromCodexPayload()
+void TestQgsAiModelRouter::visualContextImageIsAddedToCodexPayload()
 {
   QgsSettings settings;
   settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
@@ -521,9 +521,22 @@ void TestQgsAiModelRouter::visualContextImageIsOmittedFromCodexPayload()
 
   QgsAiModelRouter router;
   const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, { toolMessage }, false ) ).object();
-  const QString payloadText = QString::fromUtf8( QJsonDocument( object ).toJson( QJsonDocument::Compact ) );
-  QVERIFY( !payloadText.contains( u"input_image"_s ) );
-  QVERIFY( !payloadText.contains( u"data:image/png;base64"_s ) );
+  const QJsonArray input = object.value( u"input"_s ).toArray();
+  QCOMPARE( input.size(), 2 );
+  QCOMPARE( input.at( 0 ).toObject().value( u"type"_s ).toString(), u"function_call_output"_s );
+
+  const QJsonArray content = input.at( 1 ).toObject().value( u"content"_s ).toArray();
+  bool hasImage = false;
+  for ( const QJsonValue &value : content )
+  {
+    const QJsonObject block = value.toObject();
+    if ( block.value( u"type"_s ).toString() == "input_image"_L1 )
+    {
+      hasImage = true;
+      QVERIFY( block.value( u"image_url"_s ).toString().startsWith( u"data:image/png;base64,"_s ) );
+    }
+  }
+  QVERIFY( hasImage );
 
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }

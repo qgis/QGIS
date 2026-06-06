@@ -330,7 +330,7 @@ void QgsAiModelRouter::appendOpenAiInputItems( Provider provider, const QgsAiCha
     item.insert( u"output"_s, message.content );
     input.push_back( item );
 
-    if ( provider == Provider::OpenAi )
+    if ( provider == Provider::OpenAi || provider == Provider::Codex )
     {
       QString mimeType;
       QString base64Data;
