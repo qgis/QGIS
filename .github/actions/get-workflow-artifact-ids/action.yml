@@ -18,6 +18,10 @@ runs:
         if [ "${{ github.event_name }}" = "pull_request" ]; then
           ID="pr${{ github.event.pull_request.number }}"
           DISPLAY_ID="PR${{ github.event.pull_request.number }}"
+        elif [ "${{ github.event_name }}" = "release" ]; then
+          TAG="${{ github.event.release.tag_name }}"
+          ID="$TAG"
+          DISPLAY_ID="$TAG"
         elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
           TAG=${GITHUB_REF#refs/tags/}
           ID="$TAG"

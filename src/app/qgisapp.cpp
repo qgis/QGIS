@@ -99,6 +99,7 @@ using namespace Qt::StringLiterals;
 #include "ai/qgsaichathistorystore.h"
 #include "ai/qgsaichatdockwidget.h"
 #include "ai/qgsaifilecontextprovider.h"
+#include "ai/qgsaimessagelogbuffer.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
 #include "ai/tools/qgsaidownloadfiletool.h"
@@ -107,6 +108,7 @@ using namespace Qt::StringLiterals;
 #include "ai/tools/qgsaiindextools.h"
 #include "ai/tools/qgsaiinstallpackagetool.h"
 #include "ai/tools/qgsailayertools.h"
+#include "ai/tools/qgsaimessagelogtool.h"
 #include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsairunpythontool.h"
 #include "ai/tools/qgsaitoolregistry.h"
@@ -1394,6 +1396,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   } );
   mAiReviewPatchEngine = std::make_unique<QgsAiReviewPatchEngine>( this );
   mAiReviewPatchEngine->setContextProvider( mAiFileContextProvider.get() );
+  mAiMessageLogBuffer = std::make_unique<QgsAiMessageLogBuffer>( this );
   mAiToolRegistry = std::make_unique<QgsAiToolRegistry>( this );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiEchoTool>() );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReadFileTool>( mAiFileContextProvider.get() ) );
@@ -1402,6 +1405,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiListProjectLayersTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiGetCanvasExtentTool>( mMapCanvas ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCaptureMapCanvasTool>( mMapCanvas, this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiReadMessageLogTool>( mAiMessageLogBuffer.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiAddLayerFromFileTool>( mAiFileContextProvider.get(), QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiDescribeLayerTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeEditTool>( mAiReviewPatchEngine.get(), this ) );

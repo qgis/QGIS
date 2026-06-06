@@ -1,9 +1,6 @@
 name: 🐧 Build AppImage (Linux)
 
 on:
-  push:
-    tags:
-      - 'geoai-v*'
   release:
     types: ['published']
   workflow_dispatch:
@@ -72,5 +69,5 @@ jobs:
         if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/geoai-v') }}
         uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ github.event.release.tag_name || github.ref_name }}
           files: 'GeoAI-Desktop-*.AppImage'

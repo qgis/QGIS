@@ -323,6 +323,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaimodels.cpp
     ai/qgsaipipinstallapprovaldialog.cpp
     ai/qgsaipythonapprovaldialog.cpp
+    ai/qgsaimessagelogbuffer.cpp
     ai/qgsaireviewdialog.cpp
     ai/qgsaireviewpatchengine.cpp
     ai/tools/qgsaidownloadfiletool.cpp
@@ -331,6 +332,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/tools/qgsaiindextools.cpp
     ai/tools/qgsaiinstallpackagetool.cpp
     ai/tools/qgsailayertools.cpp
+    ai/tools/qgsaimessagelogtool.cpp
     ai/tools/qgsaireadtools.cpp
     ai/tools/qgsairunpythontool.cpp
     ai/tools/qgsaitoolregistry.cpp

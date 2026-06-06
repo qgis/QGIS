@@ -84,6 +84,7 @@ namespace
       u"get_active_canvas_extent"_s,
       u"capture_map_canvas"_s,
       u"describe_layer"_s,
+      u"read_message_log"_s,
       u"index_status"_s,
       u"search_workspace"_s,
     };
@@ -855,6 +856,7 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
     {
       prompt += "- You may use read-only inspection tools when needed to ground the answer. Do not request any mutating tool.\n"_L1;
       prompt += "- For visual map questions, use capture_map_canvas only when the user asks you to inspect what is visible/rendered. OpenAI, Codex, and Claude requests can receive the screenshot after consent.\n"_L1;
+      prompt += "- To diagnose QGIS runtime errors/warnings (layer load, Processing, plugins): call read_message_log with levels [\"warning\",\"critical\"] and an optional tag filter.\n"_L1;
     }
     if ( !extraContext.isEmpty() )
     {
@@ -890,6 +892,7 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   prompt += "- Use tools instead of writing code in chat for the user to copy.\n"_L1;
   prompt += "- To inspect files: read_file, search_files, list_files. To inspect project state: list_project_layers, get_active_canvas_extent.\n"_L1;
   prompt += "- To inspect what is visually rendered on the 2D map canvas, use capture_map_canvas only when the user asks you to look at the map, check what is visible, or debug a visual result. The screenshot is shared with OpenAI, Codex, and Claude only after user consent.\n"_L1;
+  prompt += "- To diagnose QGIS runtime errors/warnings (layer load, Processing, plugins): call read_message_log with levels [\"warning\",\"critical\"] and an optional tag filter.\n"_L1;
   prompt += "- To modify files: ALWAYS go through propose_edit / propose_create_file / propose_delete_file (when available). The user will review and accept your diff.\n"_L1;
   prompt += "- Never call propose_edit blind: read the file first to capture the exact original text.\n"_L1;
   prompt += "- Keep proposals small and reviewable. One concept per proposal.\n"_L1;

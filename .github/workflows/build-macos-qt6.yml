@@ -5,8 +5,6 @@ on:
     branches:
       - master
       - release-*
-    tags:
-      - 'geoai-v*'
   pull_request:
   release:
     types: ['published']
@@ -19,6 +17,9 @@ concurrency:
 permissions:
   contents: write
   packages: write
+
+env:
+  IS_GEOAI_RELEASE: ${{ startsWith(github.ref, 'refs/tags/geoai-v') || startsWith(github.event.release.tag_name, 'geoai-v') }}
 
 jobs:
   build:
@@ -103,7 +104,7 @@ jobs:
           xcode-version: latest-stable
 
       - name: 🔐 Import Apple code signing certificate
-        if: ${{ startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
         uses: apple-actions/import-codesign-certs@8f3fb608891dd2244cdab3d69cd68c0d37a7fe93 # v5.0.2
         with:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
@@ -113,7 +114,7 @@ jobs:
         uses: hendrikmuhs/ccache-action@33522472633dbd32578e909b315f5ee43ba878ce  # v1.2.22
         with:
           max-size: 500M
-          key: build-ccache-${{ matrix.triplet }}-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
+          key: build-ccache-${{ matrix.triplet }}-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
           save: ${{ github.event_name == 'push' }}
 
       - name: 🛍️ Tune ccache configuration
@@ -139,7 +140,7 @@ jobs:
           cmake -S . \
                 -G Ninja \
                 -B build \
-                -D "QGIS_APP_NAME=${{ startsWith(github.ref, 'refs/tags/geoai-v') && 'GeoAI Desktop' || format('GeoAI-{0}', steps.workflow-artifact-ids.outputs.display-name) }}" \
+                -D "QGIS_APP_NAME=${{ env.IS_GEOAI_RELEASE == 'true' && 'GeoAI Desktop' || format('GeoAI-{0}', steps.workflow-artifact-ids.outputs.display-name) }}" \
                 -D WITH_VCPKG=ON \
                 -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
@@ -273,14 +274,14 @@ jobs:
           ls -la universal/*.app
 
       - name: 🔐 Import Apple code signing certificate
-        if: ${{ startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
         uses: apple-actions/import-codesign-certs@8f3fb608891dd2244cdab3d69cd68c0d37a7fe93 # v5.0.2
         with:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
           p12-password: ${{ secrets.MACOS_CERT_P12_PASSWORD }}
 
       - name: 🧹 Materialize symlinks in Contents/MacOS #spellok
-        if: ${{ startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
         run: |
           # Replace ALL symlinks under Contents/MacOS/ with real copies of #spellok
           # their targets, regardless of file type. Broken symlinks are
@@ -311,7 +312,7 @@ jobs:
           echo "Materialized ${MATERIALIZED} symlink(s); removed ${REMOVED} broken symlink(s)."
 
       - name: 🧹 Remove build metadata from app bundle
-        if: ${{ startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
         run: |
           # Qt plugin builds can leave intermediate metadata under Contents/PlugIns.
           # These are not runtime files and make codesign reject the bundle seal.
@@ -322,7 +323,7 @@ jobs:
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
 
       - name: 🚚 Move Frameworks/lib out of Frameworks #spellok
-        if: ${{ startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
         run: |
           # codesign treats every sub-directory of Contents/Frameworks/ as a
           # potential nested bundle. lib/python3.12/ does NOT have a valid
@@ -344,7 +345,7 @@ jobs:
           fi
 
       - name: 🔏 Sign app
-        if: ${{ startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
         run: |
           # Sign inside-out: every Mach-O binary, then nested bundles #spellok
           # (.framework, sub-.app), then the outer .app last. We avoid
@@ -439,7 +440,7 @@ jobs:
 
       - name: Create dmg
         run: |
-          if [[ "${GITHUB_REF}" == refs/tags/geoai-v* ]]; then
+          if [[ "${IS_GEOAI_RELEASE}" == "true" ]]; then
             QGIS_APP_NAME="GeoAI Desktop"
           else
             QGIS_APP_NAME="GeoAI-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_DISPLAY_NAME}"
@@ -467,7 +468,7 @@ jobs:
             *.dmg
 
       - name: 🔏 Notarize and staple DMG
-        if: ${{ startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
         run: |
           DMG_FILE=$(ls *.dmg | head -n1)
           echo "Notarizing ${DMG_FILE}..."
@@ -493,10 +494,10 @@ jobs:
           xcrun stapler validate "${DMG_FILE}" || echo "WARN: stapler validate failed but ticket should still be online"
 
       - name: Upload release assets
-        if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ github.event_name == 'release' || env.IS_GEOAI_RELEASE == 'true' }}
         uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ github.event.release.tag_name || github.ref_name }}
           files: '*.dmg'
 
       - name: Schedule download comment
