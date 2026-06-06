@@ -7,11 +7,9 @@ on:
       release_tag:
         description: GitHub release tag to upload Windows assets to
         required: true
-        default: geoai-v1.0.8
       ref_to_build:
         description: Git ref/tag to build
         required: true
-        default: geoai-v1.0.8
       sdk_run_id:
         description: Existing workflow run id containing qgis-sdk-x64-windows; leave empty to rebuild vcpkg
         required: false

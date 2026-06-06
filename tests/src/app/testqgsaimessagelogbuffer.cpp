@@ -159,7 +159,7 @@ void TestQgsAiMessageLogBuffer::readMessageLogToolReturnsEntries()
   const QJsonObject output = result.output.toObject();
   const QJsonArray entries = output.value( u"entries"_s ).toArray();
   QVERIFY( !entries.isEmpty() );
-  QCOMPARE( entries.constFirst().toObject().value( u"message"_s ).toString(), u"tool visible warning"_s );
+  QCOMPARE( entries.at( 0 ).toObject().value( u"message"_s ).toString(), u"tool visible warning"_s );
   QCOMPARE( output.value( u"returned"_s ).toInt(), entries.size() );
   QVERIFY( output.contains( u"total_buffered"_s ) );
 }
