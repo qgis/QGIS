@@ -7,8 +7,8 @@
 
 #include <memory>
 
-#include "ai/tools/qgsaitoolregistry.h"
 #include "ai/tools/qgsaireadtools.h"
+#include "ai/tools/qgsaitoolregistry.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmapcanvas.h"

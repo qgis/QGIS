@@ -15,11 +15,13 @@
 
 #include "qgsaimessagelogbuffer.h"
 
+#include <algorithm>
+
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 
-#include <algorithm>
 #include <QMutexLocker>
+#include <QString>
 
 #include "moc_qgsaimessagelogbuffer.cpp"
 
@@ -57,12 +59,7 @@ QgsAiMessageLogBuffer::QgsAiMessageLogBuffer( QObject *parent, int capacity )
 
   if ( QgsMessageLog *log = QgsApplication::messageLog() )
   {
-    connect(
-      log,
-      static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat )>( &QgsMessageLog::messageReceivedWithFormat ),
-      this,
-      &QgsAiMessageLogBuffer::onMessageReceived
-    );
+    connect( log, static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat )>( &QgsMessageLog::messageReceivedWithFormat ), this, &QgsAiMessageLogBuffer::onMessageReceived );
   }
 }
 
@@ -90,9 +87,7 @@ QgsAiMessageLogBuffer::QueryResult QgsAiMessageLogBuffer::query( const Query &qu
   QMutexLocker locker( &mMutex );
   result.totalBuffered = mEntries.size();
 
-  const QDateTime cutoff = query.sinceSeconds > 0
-                             ? QDateTime::currentDateTimeUtc().addSecs( -query.sinceSeconds )
-                             : QDateTime();
+  const QDateTime cutoff = query.sinceSeconds > 0 ? QDateTime::currentDateTimeUtc().addSecs( -query.sinceSeconds ) : QDateTime();
 
   auto entryMatches = [&]( const Entry &entry ) {
     if ( query.sinceSeconds > 0 && entry.timestamp < cutoff )

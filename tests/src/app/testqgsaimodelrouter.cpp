@@ -420,7 +420,7 @@ void TestQgsAiModelRouter::visualContextImageIsAddedToOpenAiPayload()
     if ( block.value( u"type"_s ).toString() == "input_image"_L1 )
     {
       hasImage = true;
-      QVERIFY( block.value( u"image_url"_s ).toString().startsWith( u"data:image/png;base64,"_s ) );
+      QVERIFY( block.value( u"image_url"_s ).toString().startsWith( "data:image/png;base64,"_L1 ) );
     }
   }
   QVERIFY( hasImage );
@@ -533,7 +533,7 @@ void TestQgsAiModelRouter::visualContextImageIsAddedToCodexPayload()
     if ( block.value( u"type"_s ).toString() == "input_image"_L1 )
     {
       hasImage = true;
-      QVERIFY( block.value( u"image_url"_s ).toString().startsWith( u"data:image/png;base64,"_s ) );
+      QVERIFY( block.value( u"image_url"_s ).toString().startsWith( "data:image/png;base64,"_L1 ) );
     }
   }
   QVERIFY( hasImage );

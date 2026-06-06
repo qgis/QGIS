@@ -20,8 +20,8 @@
 
 #include "qgsaifilecontextprovider.h"
 #include "qgsaitoolschemautil.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmapcanvas.h"
@@ -36,9 +36,9 @@
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgssettings.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilerenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
 #include <QDateTime>
@@ -186,7 +186,8 @@ namespace
       parent,
       QObject::tr( "Share map screenshot with AI" ),
       QObject::tr(
-        "GeoAI can capture the current map canvas as an image and send it to vision-capable AI providers for this and future visual-context requests. The image may include visible map data, labels, and styles. Do you want to allow this?"
+        "GeoAI can capture the current map canvas as an image and send it to vision-capable AI providers for this and future visual-context requests. The image may include visible map data, labels, "
+        "and styles. Do you want to allow this?"
       ),
       QMessageBox::Yes | QMessageBox::No,
       QMessageBox::No

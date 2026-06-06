@@ -16,8 +16,8 @@
 #ifndef QGSAIMESSAGELOGBUFFER_H
 #define QGSAIMESSAGELOGBUFFER_H
 
-#include "qgis_app.h"
 #include "qgis.h"
+#include "qgis_app.h"
 
 #include <QDateTime>
 #include <QList>
@@ -48,18 +48,18 @@ class APP_EXPORT QgsAiMessageLogBuffer : public QObject
 
     struct Query
     {
-      QList<Qgis::MessageLevel> levels;
-      QStringList tags;
-      QString search;
-      int limit = 50;
-      int sinceSeconds = -1;
+        QList<Qgis::MessageLevel> levels;
+        QStringList tags;
+        QString search;
+        int limit = 50;
+        int sinceSeconds = -1;
     };
 
     struct QueryResult
     {
-      QList<Entry> entries;
-      int totalBuffered = 0;
-      bool truncated = false;
+        QList<Entry> entries;
+        int totalBuffered = 0;
+        bool truncated = false;
     };
 
     static constexpr int DEFAULT_CAPACITY = 2000;

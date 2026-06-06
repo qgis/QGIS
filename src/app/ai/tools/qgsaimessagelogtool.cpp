@@ -21,6 +21,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 
@@ -47,22 +48,22 @@ namespace
   bool parseLevelToken( const QString &token, Qgis::MessageLevel &levelOut )
   {
     const QString normalized = token.trimmed().toLower();
-    if ( normalized == u"info"_s )
+    if ( normalized == "info"_L1 )
     {
       levelOut = Qgis::MessageLevel::Info;
       return true;
     }
-    if ( normalized == u"warning"_s || normalized == u"warn"_s )
+    if ( normalized == "warning"_L1 || normalized == "warn"_L1 )
     {
       levelOut = Qgis::MessageLevel::Warning;
       return true;
     }
-    if ( normalized == u"critical"_s || normalized == u"error"_s )
+    if ( normalized == "critical"_L1 || normalized == "error"_L1 )
     {
       levelOut = Qgis::MessageLevel::Critical;
       return true;
     }
-    if ( normalized == u"success"_s )
+    if ( normalized == "success"_L1 )
     {
       levelOut = Qgis::MessageLevel::Success;
       return true;
