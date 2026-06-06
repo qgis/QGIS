@@ -1,4 +1,10 @@
-Checks: 'bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-virtual-near-miss,-bugprone-suspicious-include,-bugprone-branch-clone,readability-identifier-naming'
+Checks:
+  - bugprone-*
+  - -bugprone-easily-swappable-parameters
+  - -bugprone-virtual-near-miss
+  - -bugprone-suspicious-include
+  - -bugprone-branch-clone
+  - readability-identifier-naming
 HeaderFilterRegex: ''
 CheckOptions:
 
