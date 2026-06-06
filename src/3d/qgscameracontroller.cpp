@@ -604,7 +604,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     setMouseParameters( MouseOperation::RotationCamera );
     // rotate/tilt using mouse (camera stays at one position as it rotates)
-    float diffPitch = 0.2f * dy;
+    float diffPitch = 0.2f * static_cast<float>( dy );
     const float diffYaw = -0.2f * dx;
     if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging )
       diffPitch *= -1.0f;
