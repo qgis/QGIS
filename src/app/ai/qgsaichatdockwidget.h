@@ -92,7 +92,9 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void appendTranscriptMessage( const QgsAiChatMessage &message );
     QString renderToolMessageMarkdown( const QgsAiChatMessage &message ) const;
     static QString renderMarkdown( const QString &md );
-    QWidget *createMessageWidget( const QString &role, const QString &content, const QVariantMap &metadata = QVariantMap(), const QString &messageId = QString(), QgsAiChatRole messageRole = QgsAiChatRole::Assistant );
+    QWidget *createMessageWidget(
+      const QString &role, const QString &content, const QVariantMap &metadata = QVariantMap(), const QString &messageId = QString(), QgsAiChatRole messageRole = QgsAiChatRole::Assistant
+    );
     QWidget *createCollapsibleSection( const QString &title, const QString &content, const QString &language = QString(), bool collapsed = true );
     QWidget *createPlanActionsWidget( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata );
     QWidget *createQuestionsWidget( const QString &messageId, const QJsonObject &payload, const QVariantMap &metadata );

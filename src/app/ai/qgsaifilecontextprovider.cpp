@@ -17,15 +17,15 @@
 
 #include <algorithm>
 
+#include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
 #include <QString>
-
-#include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
 
 #include "moc_qgsaifilecontextprovider.cpp"
 

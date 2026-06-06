@@ -32,10 +32,10 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 
+#include <QAbstractButton>
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
-#include <QAbstractButton>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QColor>
@@ -52,8 +52,8 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QInputDialog>
-#include <QJsonDocument>
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
 #include <QJsonValue>
@@ -68,8 +68,8 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QPushButton>
-#include <QRegularExpression>
 #include <QRadioButton>
+#include <QRegularExpression>
 #include <QScreen>
 #include <QScrollArea>
 #include <QScrollBar>
@@ -313,7 +313,7 @@ namespace
       if ( parseError.error == QJsonParseError::NoError && candidate.size() > 160 )
       {
         visible += text.mid( last, i - last );
-        visible += u"\n\n_Technical JSON hidden below._\n\n"_s;
+        visible += "\n\n_Technical JSON hidden below._\n\n"_L1;
         TechnicalSection section;
         section.title = QObject::tr( "JSON" );
         section.language = u"json"_s;
@@ -866,7 +866,7 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
   }
 
   if ( messageRole == QgsAiChatRole::User )
-    card->setStyleSheet( card->styleSheet() + QStringLiteral( "QFrame#aiMessage { background: palette(alternate-base); }" ) );
+    card->setStyleSheet( card->styleSheet() + u"QFrame#aiMessage { background: palette(alternate-base); }"_s );
 
   return card;
 }
@@ -952,17 +952,13 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   sendRevisionButton->setEnabled( pending );
   layout->addWidget( sendRevisionButton );
 
-  connect( acceptButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata]() {
-    acceptPlan( messageId, planMarkdown, metadata );
-  } );
+  connect( acceptButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata]() { acceptPlan( messageId, planMarkdown, metadata ); } );
   connect( reviseButton, &QPushButton::clicked, planCard, [revisionEdit, sendRevisionButton]() {
     revisionEdit->setVisible( true );
     sendRevisionButton->setVisible( true );
     revisionEdit->setFocus();
   } );
-  connect( sendRevisionButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata, revisionEdit]() {
-    sendPlanRevision( messageId, planMarkdown, metadata, revisionEdit );
-  } );
+  connect( sendRevisionButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata, revisionEdit]() { sendPlanRevision( messageId, planMarkdown, metadata, revisionEdit ); } );
 
   return planCard;
 }
@@ -1037,9 +1033,7 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
   submit->setEnabled( pending );
   layout->addWidget( submit );
 
-  connect( submit, &QPushButton::clicked, this, [this, messageId, metadata, questionsCard]() {
-    sendQuestionAnswers( messageId, metadata, questionsCard );
-  } );
+  connect( submit, &QPushButton::clicked, this, [this, messageId, metadata, questionsCard]() { sendQuestionAnswers( messageId, metadata, questionsCard ); } );
 
   return questionsCard;
 }
@@ -1117,10 +1111,8 @@ void QgsAiChatDockWidget::sendPlanRevision( const QString &messageId, const QStr
   const QString feedback = revisionEdit ? revisionEdit->toPlainText().trimmed() : QString();
   markMessageStatus( messageId, metadata, u"plan_status"_s, u"rejected"_s );
   setModeLabel( u"Plan"_s );
-  mSessionManager->sendUserMessage(
-    tr( "Revise the previous plan before execution. Keep Plan mode and return a new proposed_plan block.\n\nOriginal plan:\n%1\n\nUser revision request:\n%2" )
-      .arg( planMarkdown.trimmed(), feedback.isEmpty() ? tr( "The plan was rejected; propose a safer or clearer revision." ) : feedback )
-  );
+  mSessionManager->sendUserMessage( tr( "Revise the previous plan before execution. Keep Plan mode and return a new proposed_plan block.\n\nOriginal plan:\n%1\n\nUser revision request:\n%2" )
+                                      .arg( planMarkdown.trimmed(), feedback.isEmpty() ? tr( "The plan was rejected; propose a safer or clearer revision." ) : feedback ) );
   reloadTranscriptFromHistory();
 }
 

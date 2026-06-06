@@ -21,16 +21,16 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLabel>
-#include <QMetaObject>
 #include <QMenu>
+#include <QMetaObject>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSettings>
 #include <QString>
-#include <QToolButton>
 #include <QTemporaryDir>
 #include <QTextEdit>
 #include <QTimer>
+#include <QToolButton>
 #include <QVariantMap>
 
 using namespace Qt::StringLiterals;
@@ -335,7 +335,7 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
 void TestQgsAiChatDockWidget::historyMenuPromptsForWorkspaceRootWhenUnset()
 {
   QgsAiModelRouter router;
-  QgsAiFileContextProvider contextProvider( QString{} );
+  QgsAiFileContextProvider contextProvider( QString {} );
   QgsAiReviewPatchEngine reviewEngine;
   QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
   QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );

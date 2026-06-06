@@ -15,6 +15,8 @@
 
 #include "qgsaiagentsessionmanager.h"
 
+#include <algorithm>
+
 #include "qgsaifilecontextprovider.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsaitool.h"
@@ -25,7 +27,6 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 
-#include <algorithm>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
