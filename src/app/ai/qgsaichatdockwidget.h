@@ -31,7 +31,6 @@ class QJsonObject;
 class QLabel;
 class QListWidget;
 class QPushButton;
-class QScrollArea;
 class QShowEvent;
 class QTextEdit;
 class QToolButton;
@@ -40,6 +39,7 @@ class QVBoxLayout;
 class QgsAiLayerIndexCoordinator;
 class QgsAiModelRouter;
 class QgsAiReviewPatchEngine;
+class QgsScrollArea;
 
 class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
 {
@@ -133,7 +133,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QPointer<QgsAiReviewPatchEngine> mReviewEngine;
     QPointer<QgsAiLayerIndexCoordinator> mLayerIndexCoordinator;
 
-    QScrollArea *mTranscriptScrollArea = nullptr;
+    QgsScrollArea *mTranscriptScrollArea = nullptr;
     QWidget *mTranscriptContainer = nullptr;
     QVBoxLayout *mTranscriptLayout = nullptr;
     QTextEdit *mInputTextEdit = nullptr;

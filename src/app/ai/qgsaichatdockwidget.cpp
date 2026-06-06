@@ -30,6 +30,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsproject.h"
+#include "qgsscrollarea.h"
 #include "qgssettings.h"
 
 #include <QAbstractButton>
@@ -71,7 +72,6 @@
 #include <QRadioButton>
 #include <QRegularExpression>
 #include <QScreen>
-#include <QScrollArea>
 #include <QScrollBar>
 #include <QSet>
 #include <QSize>
@@ -419,7 +419,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   topBar->addStretch( 1 );
   layout->addLayout( topBar );
 
-  mTranscriptScrollArea = new QScrollArea( container );
+  mTranscriptScrollArea = new QgsScrollArea( container );
   mTranscriptScrollArea->setObjectName( u"aiTranscriptScrollArea"_s );
   mTranscriptScrollArea->setWidgetResizable( true );
   mTranscriptScrollArea->setFrameShape( QFrame::NoFrame );
@@ -1813,7 +1813,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   QDialog dialog( this );
   dialog.setWindowTitle( tr( "AI Provider Settings" ) );
   QVBoxLayout *dialogLayout = new QVBoxLayout( &dialog );
-  QScrollArea *scrollArea = new QScrollArea( &dialog );
+  QgsScrollArea *scrollArea = new QgsScrollArea( &dialog );
   scrollArea->setWidgetResizable( true );
   scrollArea->setFrameShape( QFrame::NoFrame );
   QWidget *settingsContent = new QWidget( scrollArea );
