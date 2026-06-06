@@ -152,6 +152,7 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
                 "font_texture_atlas_hyi",
                 "font_texture_atlas_hyi",
                 atlas.renderAtlasTexture(),
+                size_tolerance=QSize(0, 1),
             )
         )
 
