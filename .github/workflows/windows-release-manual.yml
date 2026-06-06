@@ -1,0 +1,152 @@
+---
+name: 🪟 Windows Release Manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: GitHub release tag to upload Windows assets to
+        required: true
+        default: geoai-v1.0.8
+      ref_to_build:
+        description: Git ref/tag to build
+        required: true
+        default: geoai-v1.0.8
+
+concurrency:
+  group: windows-release-manual-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    name: build and upload Windows release asset
+    runs-on: windows-2022
+    timeout-minutes: 360
+
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ inputs.ref_to_build }}
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: 🔨 Uninstall system cmake
+        shell: bash
+        run: choco uninstall cmake.install
+
+      - name: 🐩 Install CMake and Ninja
+        uses: lukka/get-cmake@ea83089aa35e08e459464341fe24ad024ee2466f
+        with:
+          cmakeVersion: 3.31.6
+
+      - name: 🧽 Developer Command Prompt for Microsoft Visual C++
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1
+
+      - name: 🎡 Setup vcpkg
+        uses: ./.github/actions/setup-vcpkg
+
+      - name: 🦬 Setup flex/bison
+        uses: robinraju/release-downloader@daf26c55d821e836577a15f77d86ddc078948b05 # v1.12
+        with:
+          repository: lexxmark/winflexbison
+          fileName: '*.zip'
+          tag: v2.5.24
+          extract: true
+
+      - name: 🛍️ Setup ccache
+        uses: hendrikmuhs/ccache-action@33522472633dbd32578e909b315f5ee43ba878ce # v1.2
+        with:
+          max-size: 2G
+          key: build-ccache-win64-qt6-${{ inputs.release_tag }}
+          save: true
+
+      - name: 🛍️ Tune ccache configuration
+        shell: bash
+        run: |
+          ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
+
+      - name: 🪟 Install NSIS
+        run: choco install nsis -y --no-progress
+        shell: bash
+
+      - name: 🌱 Install dependencies and generate project files
+        shell: bash
+        env:
+          X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          BUILD_DIR=$(cygpath "${{ github.workspace }}/build")
+          SOURCE_DIR=$(cygpath "${{ github.workspace }}")
+
+          APP_NAME_OPT=""
+          NSIS_OPT=""
+          if [[ "${RELEASE_TAG}" == geoai-v* ]]; then
+            APP_NAME_OPT="-DQGIS_APP_NAME=GeoAIDesktop"
+            NSIS_OPT="-DCREATE_NSIS=TRUE"
+          fi
+
+          cmake -S "${SOURCE_DIR}" \
+                -B "${BUILD_DIR}" \
+                -G Ninja \
+                -D CMAKE_BUILD_TYPE=Release \
+                -D WITH_VCPKG=ON \
+                -D CREATE_ZIP=ON \
+                ${NSIS_OPT} \
+                ${APP_NAME_OPT} \
+                -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+                -D VCPKG_HOST_TRIPLET=x64-windows-release \
+                -D WITH_DESKTOP=ON \
+                -D WITH_3D=ON \
+                -D WITH_BINDINGS=ON \
+                -D WITH_GEOGRAPHICLIB=OFF \
+                -D WITH_SFCGAL=OFF \
+                -D ENABLE_TESTS=OFF \
+                -D USE_CCACHE=ON \
+                -D ENABLE_UNITY_BUILDS=ON \
+                -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
+                -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
+                -D WITH_QTWEBENGINE=OFF \
+                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
+                -D NUGET_BINARY_SOURCE_MODE=readwrite \
+                -D "NUGET_USERNAME=${GITHUB_ACTOR}" \
+                -D NUGET_PUSH_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🌋 Build
+        shell: bash
+        run: cmake --build "${{ github.workspace }}/build" --config Release
+
+      - name: 📦 Package
+        shell: bash
+        run: cmake --build "${{ github.workspace }}/build" --target bundle --config Release
+
+      - name: 📤 Upload bundle artifact
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: geoai-windows-${{ inputs.release_tag }}
+          path: |
+            build/*-win64.zip
+            build/*-Setup.exe
+            build/*.exe
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        with:
+          tag_name: ${{ inputs.release_tag }}
+          files: |
+            build/*-win64.zip
+            build/*-Setup.exe
+            build/*.exe
+
+      - name: 📑 Upload dep build logs
+        if: failure()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: build-logs-windows-${{ inputs.release_tag }}
+          path: |
+            C:/src/**/*.log
