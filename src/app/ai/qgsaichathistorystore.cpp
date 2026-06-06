@@ -305,6 +305,30 @@ bool QgsAiChatHistoryStore::appendMessage( const QString &sessionId, const QgsAi
   return touchSession( sessionId );
 }
 
+bool QgsAiChatHistoryStore::updateMessageMetadata( const QString &sessionId, const QString &messageId, const QVariantMap &metadata )
+{
+  if ( sessionId.isEmpty() || messageId.isEmpty() )
+    return false;
+  if ( !ensureReady() )
+    return false;
+
+  QSqlDatabase db = QSqlDatabase::database( connectionName() );
+  QSqlQuery q( db );
+  q.prepare( u"UPDATE messages SET metadata_json = ? WHERE session_id = ? AND message_id = ?"_s );
+  q.addBindValue( QString::fromUtf8( QJsonDocument( QJsonObject::fromVariantMap( metadata ) ).toJson( QJsonDocument::Compact ) ) );
+  q.addBindValue( sessionId );
+  q.addBindValue( messageId );
+  if ( !q.exec() )
+  {
+    QgsMessageLog::logMessage( u"updateMessageMetadata failed: %1"_s.arg( q.lastError().text() ), u"AI/ChatHistory"_s, Qgis::MessageLevel::Warning, false );
+    return false;
+  }
+  if ( q.numRowsAffected() <= 0 )
+    return false;
+
+  return touchSession( sessionId );
+}
+
 bool QgsAiChatHistoryStore::renameSession( const QString &sessionId, const QString &newTitle )
 {
   if ( !ensureReady() )

@@ -70,6 +70,9 @@ class APP_EXPORT QgsAiChatHistoryStore : public QObject
     //! Appends a message and bumps the session updated_at. Returns false on SQL error.
     bool appendMessage( const QString &sessionId, const QgsAiChatMessage &msg, int ordering );
 
+    //! Updates metadata for an existing message. Used for UI state such as accepted/rejected plans.
+    bool updateMessageMetadata( const QString &sessionId, const QString &messageId, const QVariantMap &metadata );
+
     //! Updates the session title. Returns false on SQL error or unknown id.
     bool renameSession( const QString &sessionId, const QString &newTitle );
 

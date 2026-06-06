@@ -7,6 +7,7 @@
 #include "ai/qgsaichathistorystore.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 
@@ -26,8 +27,10 @@ class TestQgsAiChatHistoryStore : public QObject
 
   private slots:
     void persistsSessionsWhenWorkspaceConfigured();
+    void updatesMessageMetadata();
     void workspaceRootChangeLoadsSeparateHistory();
     void workspaceRootSettingRoundTripsViaQgsSettings();
+    void autoWorkspaceRootUsesProfileDirectoryWhenUnset();
 
   private:
     static QString expectedDbPath( const QString &workspaceRoot );
@@ -69,6 +72,35 @@ void TestQgsAiChatHistoryStore::persistsSessionsWhenWorkspaceConfigured()
 
   const QString dbPath = expectedDbPath( QDir( tempDir.path() ).absolutePath() );
   QVERIFY( QFileInfo::exists( dbPath ) );
+}
+
+void TestQgsAiChatHistoryStore::updatesMessageMetadata()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+
+  const QString sessionId = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  QVERIFY( store.createSession( sessionId, u"Plan chat"_s, u"planner"_s ) );
+
+  QgsAiChatMessage assistantMessage;
+  assistantMessage.id = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  assistantMessage.role = QgsAiChatRole::Assistant;
+  assistantMessage.content = u"<proposed_plan>Do it</proposed_plan>"_s;
+  assistantMessage.metadata.insert( u"ui_kind"_s, u"plan"_s );
+  assistantMessage.metadata.insert( u"plan_status"_s, u"pending"_s );
+  QVERIFY( store.appendMessage( sessionId, assistantMessage, 0 ) );
+
+  QVariantMap updated = assistantMessage.metadata;
+  updated.insert( u"plan_status"_s, u"accepted"_s );
+  QVERIFY( store.updateMessageMetadata( sessionId, assistantMessage.id, updated ) );
+
+  const QList<QgsAiChatMessage> messages = store.loadMessages( sessionId );
+  QCOMPARE( messages.size(), 1 );
+  QCOMPARE( messages.first().metadata.value( u"ui_kind"_s ).toString(), u"plan"_s );
+  QCOMPARE( messages.first().metadata.value( u"plan_status"_s ).toString(), u"accepted"_s );
 }
 
 void TestQgsAiChatHistoryStore::workspaceRootChangeLoadsSeparateHistory()
@@ -116,6 +148,29 @@ void TestQgsAiChatHistoryStore::workspaceRootSettingRoundTripsViaQgsSettings()
   settings.setValue( settingsKey, workspacePath );
 
   QCOMPARE( settings.value( settingsKey ).toString(), workspacePath );
+  QVERIFY( !settings.contains( legacyKey ) );
+
+  settings.remove( settingsKey );
+}
+
+void TestQgsAiChatHistoryStore::autoWorkspaceRootUsesProfileDirectoryWhenUnset()
+{
+  const QString settingsKey = u"geoai/workspace/root"_s;
+  const QString legacyKey = u"qgis_ai/workspace/root"_s;
+
+  QgsSettings settings;
+  settings.remove( settingsKey );
+  settings.remove( legacyKey );
+
+  QgsProject::instance()->setFileName( QString() );
+  QgsProject::instance()->setPresetHomePath( QString() );
+
+  const QString expectedRoot = QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"ai_workspace"_s );
+  const QString resolvedRoot = QgsAiFileContextProvider::resolveWorkspaceRoot();
+
+  QCOMPARE( resolvedRoot, QDir( expectedRoot ).absolutePath() );
+  QVERIFY( QDir( resolvedRoot ).exists() );
+  QCOMPARE( settings.value( settingsKey ).toString(), resolvedRoot );
   QVERIFY( !settings.contains( legacyKey ) );
 
   settings.remove( settingsKey );

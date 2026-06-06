@@ -23,9 +23,34 @@
 #include <QFileInfo>
 #include <QString>
 
+#include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+
 #include "moc_qgsaifilecontextprovider.cpp"
 
 using namespace Qt::StringLiterals;
+
+QString QgsAiFileContextProvider::resolveWorkspaceRoot()
+{
+  const QString projectHome = QgsProject::instance()->homePath().trimmed();
+  if ( !projectHome.isEmpty() )
+    return QDir( projectHome ).absolutePath();
+
+  QgsSettings settings;
+  const QString settingsKey = u"geoai/workspace/root"_s;
+  const QString legacyKey = u"qgis_ai/workspace/root"_s;
+  QString configured = settings.value( settingsKey, settings.value( legacyKey, QString() ) ).toString().trimmed();
+  if ( !configured.isEmpty() )
+    return QDir( configured ).absolutePath();
+
+  const QString defaultRoot = QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"ai_workspace"_s );
+  QDir().mkpath( defaultRoot );
+  const QString absoluteDefaultRoot = QDir( defaultRoot ).absolutePath();
+  settings.setValue( settingsKey, absoluteDefaultRoot );
+  settings.remove( legacyKey );
+  return absoluteDefaultRoot;
+}
 
 QgsAiFileContextProvider::QgsAiFileContextProvider( const QString &workspaceRoot, QObject *parent )
   : QObject( parent )

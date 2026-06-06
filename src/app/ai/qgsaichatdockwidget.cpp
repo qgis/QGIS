@@ -35,6 +35,8 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
+#include <QAbstractButton>
+#include <QButtonGroup>
 #include <QCheckBox>
 #include <QColor>
 #include <QDesktopServices>
@@ -45,12 +47,15 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFont>
+#include <QFontDatabase>
 #include <QFormLayout>
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QJsonDocument>
+#include <QJsonArray>
 #include <QJsonObject>
+#include <QJsonParseError>
 #include <QJsonValue>
 #include <QKeyEvent>
 #include <QLabel>
@@ -58,19 +63,23 @@
 #include <QLineEdit>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QMap>
 #include <QMenu>
 #include <QMessageBox>
 #include <QPalette>
 #include <QPushButton>
 #include <QRegularExpression>
+#include <QRadioButton>
 #include <QScreen>
 #include <QScrollArea>
+#include <QScrollBar>
 #include <QSet>
 #include <QSize>
 #include <QString>
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextEdit>
+#include <QTimer>
 #include <QToolButton>
 #include <QUrl>
 #include <QVBoxLayout>
@@ -182,6 +191,194 @@ namespace
       return path;
     return relative;
   }
+
+  struct TechnicalSection
+  {
+      QString title;
+      QString content;
+      QString language;
+  };
+
+  struct RenderedMessageContent
+  {
+      QString markdown;
+      QList<TechnicalSection> technicalSections;
+  };
+
+  QString removeQuestionsProtocolBlocks( const QString &text )
+  {
+    QString stripped = text;
+    static const QRegularExpression questionsRe( u"```qgis_ai_questions\\s*\\n[\\s\\S]*?\\n```"_s, QRegularExpression::CaseInsensitiveOption );
+    stripped.remove( questionsRe );
+    return stripped.trimmed();
+  }
+
+  QString planMarkdownFromMetadata( const QVariantMap &metadata )
+  {
+    return metadata.value( u"plan_markdown"_s ).toString().trimmed();
+  }
+
+  QJsonObject questionsPayloadFromMetadata( const QVariantMap &metadata )
+  {
+    const QString json = metadata.value( u"questions_json"_s ).toString();
+    if ( json.isEmpty() )
+      return QJsonObject();
+
+    QJsonParseError parseError;
+    const QJsonDocument doc = QJsonDocument::fromJson( json.toUtf8(), &parseError );
+    if ( parseError.error != QJsonParseError::NoError || !doc.isObject() )
+      return QJsonObject();
+    return doc.object();
+  }
+
+  int balancedJsonEnd( const QString &text, int start )
+  {
+    QList<QChar> stack;
+    bool inString = false;
+    bool escape = false;
+
+    for ( int i = start; i < text.size(); ++i )
+    {
+      const QChar ch = text.at( i );
+      if ( inString )
+      {
+        if ( escape )
+        {
+          escape = false;
+        }
+        else if ( ch == '\\'_L1 )
+        {
+          escape = true;
+        }
+        else if ( ch == '"'_L1 )
+        {
+          inString = false;
+        }
+        continue;
+      }
+
+      if ( ch == '"'_L1 )
+      {
+        inString = true;
+        continue;
+      }
+
+      if ( ch == '{'_L1 )
+      {
+        stack << '}'_L1;
+        continue;
+      }
+      if ( ch == '['_L1 )
+      {
+        stack << ']'_L1;
+        continue;
+      }
+
+      if ( ch == '}'_L1 || ch == ']'_L1 )
+      {
+        if ( stack.isEmpty() || stack.takeLast() != ch )
+          return -1;
+        if ( stack.isEmpty() )
+          return i;
+      }
+    }
+
+    return -1;
+  }
+
+  QString extractLargeJsonBlocks( const QString &text, QList<TechnicalSection> &sections )
+  {
+    QString visible;
+    int last = 0;
+    int i = 0;
+    while ( i < text.size() )
+    {
+      const QChar ch = text.at( i );
+      if ( ch != '{'_L1 && ch != '['_L1 )
+      {
+        ++i;
+        continue;
+      }
+
+      const int end = balancedJsonEnd( text, i );
+      if ( end <= i )
+      {
+        ++i;
+        continue;
+      }
+
+      const QString candidate = text.mid( i, end - i + 1 );
+      QJsonParseError parseError;
+      const QJsonDocument doc = QJsonDocument::fromJson( candidate.toUtf8(), &parseError );
+      if ( parseError.error == QJsonParseError::NoError && candidate.size() > 160 )
+      {
+        visible += text.mid( last, i - last );
+        visible += u"\n\n_Technical JSON hidden below._\n\n"_s;
+        TechnicalSection section;
+        section.title = QObject::tr( "JSON" );
+        section.language = u"json"_s;
+        section.content = QString::fromUtf8( doc.toJson( QJsonDocument::Indented ) );
+        sections << section;
+        i = end + 1;
+        last = i;
+        continue;
+      }
+
+      ++i;
+    }
+
+    visible += text.mid( last );
+    return visible;
+  }
+
+  RenderedMessageContent splitTechnicalContent( const QString &content )
+  {
+    RenderedMessageContent result;
+    QString visible;
+
+    static const QRegularExpression fenceRe( u"```([A-Za-z0-9_+.#-]*)\\s*\\n([\\s\\S]*?)\\n```"_s );
+    QRegularExpressionMatchIterator it = fenceRe.globalMatch( content );
+    int lastEnd = 0;
+    int codeIndex = 1;
+    while ( it.hasNext() )
+    {
+      const QRegularExpressionMatch match = it.next();
+      visible += content.mid( lastEnd, match.capturedStart() - lastEnd );
+
+      const QString language = match.captured( 1 ).trimmed();
+      if ( language != "qgis_ai_questions"_L1 )
+      {
+        TechnicalSection section;
+        section.language = language;
+        section.content = match.captured( 2 );
+        section.title = language.isEmpty() ? QObject::tr( "Code %1" ).arg( codeIndex ) : QObject::tr( "Code %1 (%2)" ).arg( codeIndex ).arg( language );
+        result.technicalSections << section;
+        ++codeIndex;
+      }
+      lastEnd = match.capturedEnd();
+    }
+    visible += content.mid( lastEnd );
+    visible = extractLargeJsonBlocks( visible, result.technicalSections );
+
+    result.markdown = visible.trimmed();
+    return result;
+  }
+
+  QString roleDisplayName( QgsAiChatRole role, const QString &fallback )
+  {
+    switch ( role )
+    {
+      case QgsAiChatRole::User:
+        return QObject::tr( "User" );
+      case QgsAiChatRole::Assistant:
+        return QObject::tr( "Assistant" );
+      case QgsAiChatRole::Tool:
+        return QObject::tr( "Tool" );
+      case QgsAiChatRole::System:
+        return QObject::tr( "System" );
+    }
+    return fallback;
+  }
 } //namespace
 
 Q_DECLARE_METATYPE( ModelEntry )
@@ -222,17 +419,20 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   topBar->addStretch( 1 );
   layout->addLayout( topBar );
 
-  mTranscript = new QTextEdit( container );
-  mTranscript->setReadOnly( true );
-  mTranscript->setFrameShape( QFrame::NoFrame );
-  const QColor codeBg = mTranscript->palette().alternateBase().color();
-  mTranscript->document()->setDefaultStyleSheet( QStringLiteral(
-                                                   "pre { background-color: %1; padding: 6px; font-family: monospace; white-space: pre-wrap; }"
-                                                   "code { background-color: %1; font-family: monospace; padding: 1px 3px; }"
-                                                   "h1, h2, h3 { margin-top: 8px; margin-bottom: 4px; }"
-  )
-                                                   .arg( codeBg.name() ) );
-  layout->addWidget( mTranscript, 1 );
+  mTranscriptScrollArea = new QScrollArea( container );
+  mTranscriptScrollArea->setObjectName( u"aiTranscriptScrollArea"_s );
+  mTranscriptScrollArea->setWidgetResizable( true );
+  mTranscriptScrollArea->setFrameShape( QFrame::NoFrame );
+  mTranscriptScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+
+  mTranscriptContainer = new QWidget( mTranscriptScrollArea );
+  mTranscriptContainer->setObjectName( u"aiTranscriptContainer"_s );
+  mTranscriptLayout = new QVBoxLayout( mTranscriptContainer );
+  mTranscriptLayout->setContentsMargins( 0, 0, 0, 0 );
+  mTranscriptLayout->setSpacing( 8 );
+  mTranscriptLayout->addStretch( 1 );
+  mTranscriptScrollArea->setWidget( mTranscriptContainer );
+  layout->addWidget( mTranscriptScrollArea, 1 );
 
   mFileContextChipRow = new QWidget( container );
   mFileContextChipRow->setObjectName( u"aiAttachmentChipRow"_s );
@@ -361,7 +561,15 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
     connect( mSessionManager, &QgsAiAgentSessionManager::messageAdded, this, [this]( const QgsAiChatMessage &message ) {
       if ( mStreamingInProgress && message.role == QgsAiChatRole::Assistant )
       {
-        finalizeStreamingAssistantMessage( message.content );
+        if ( mStreamingTextEdit )
+        {
+          QWidget *streamingWidget = mStreamingTextEdit->parentWidget();
+          mStreamingTextEdit = nullptr;
+          if ( streamingWidget )
+            streamingWidget->deleteLater();
+        }
+        closeStreamingAssistantMessage();
+        appendTranscriptMessage( message );
         return;
       }
       closeStreamingAssistantMessage();
@@ -548,27 +756,430 @@ QString QgsAiChatDockWidget::renderMarkdown( const QString &md )
 
 void QgsAiChatDockWidget::appendTranscriptMessage( const QString &role, const QString &content )
 {
-  // Each message lives in its own block, but the role label and the body sit
-  // inline in the same block so toPlainText() yields "[role] body" with a
-  // single space between them (not a newline).
-  QTextCursor cursor = mTranscript->textCursor();
-  cursor.movePosition( QTextCursor::End );
-  if ( !mTranscript->document()->isEmpty() )
-    cursor.insertBlock();
-  cursor.insertHtml( u"<b>[%1]</b> "_s.arg( role.toHtmlEscaped() ) );
-  cursor.insertHtml( renderMarkdown( content ) );
-  mTranscript->setTextCursor( cursor );
+  QWidget *messageWidget = createMessageWidget( role, content );
+  if ( !messageWidget || !mTranscriptLayout )
+    return;
+
+  const int insertIndex = std::max( 0, mTranscriptLayout->count() - 1 );
+  mTranscriptLayout->insertWidget( insertIndex, messageWidget );
+  scrollTranscriptToBottom();
 }
 
 void QgsAiChatDockWidget::appendTranscriptMessage( const QgsAiChatMessage &message )
 {
+  QString content = message.content;
   if ( message.role == QgsAiChatRole::Tool )
   {
-    appendTranscriptMessage( qgsAiChatRoleToString( message.role ), renderToolMessageMarkdown( message ) );
-    return;
+    content = renderToolMessageMarkdown( message );
   }
 
-  appendTranscriptMessage( qgsAiChatRoleToString( message.role ), message.content );
+  QWidget *messageWidget = createMessageWidget( roleDisplayName( message.role, qgsAiChatRoleToString( message.role ) ), content, message.metadata, message.id, message.role );
+  if ( !messageWidget || !mTranscriptLayout )
+    return;
+
+  const int insertIndex = std::max( 0, mTranscriptLayout->count() - 1 );
+  mTranscriptLayout->insertWidget( insertIndex, messageWidget );
+  scrollTranscriptToBottom();
+}
+
+QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QString &content, const QVariantMap &metadata, const QString &messageId, QgsAiChatRole messageRole )
+{
+  QFrame *card = new QFrame( mTranscriptContainer );
+  card->setObjectName( u"aiMessage"_s );
+  card->setFrameShape( QFrame::StyledPanel );
+  card->setStyleSheet( QStringLiteral(
+    "QFrame#aiMessage { border: 1px solid palette(mid); border-radius: 6px; background: palette(base); } "
+    "QLabel#aiMessageRole { color: palette(mid); font-weight: 600; }"
+  ) );
+
+  QVBoxLayout *cardLayout = new QVBoxLayout( card );
+  cardLayout->setContentsMargins( 8, 6, 8, 8 );
+  cardLayout->setSpacing( 6 );
+
+  QHBoxLayout *headerLayout = new QHBoxLayout();
+  headerLayout->setContentsMargins( 0, 0, 0, 0 );
+  QLabel *roleLabel = new QLabel( role, card );
+  roleLabel->setObjectName( u"aiMessageRole"_s );
+  headerLayout->addWidget( roleLabel );
+  headerLayout->addStretch( 1 );
+  const QString uiKind = metadata.value( u"ui_kind"_s ).toString();
+  if ( uiKind == "plan"_L1 )
+  {
+    QLabel *status = new QLabel( metadata.value( u"plan_status"_s, u"pending"_s ).toString(), card );
+    status->setObjectName( u"aiPlanStatusLabel"_s );
+    headerLayout->addWidget( status );
+  }
+  else if ( uiKind == "questions"_L1 )
+  {
+    QLabel *status = new QLabel( metadata.value( u"questions_status"_s, u"pending"_s ).toString(), card );
+    status->setObjectName( u"aiQuestionsStatusLabel"_s );
+    headerLayout->addWidget( status );
+  }
+  cardLayout->addLayout( headerLayout );
+
+  QString renderContent = content;
+  if ( uiKind == "plan"_L1 )
+  {
+    const QString planMarkdown = planMarkdownFromMetadata( metadata );
+    if ( !planMarkdown.isEmpty() )
+      renderContent = planMarkdown;
+  }
+  else if ( uiKind == "questions"_L1 )
+  {
+    renderContent = removeQuestionsProtocolBlocks( content );
+  }
+
+  RenderedMessageContent rendered = splitTechnicalContent( renderContent );
+
+  if ( !rendered.markdown.isEmpty() )
+  {
+    QLabel *body = new QLabel( card );
+    body->setObjectName( u"aiMessageBody"_s );
+    body->setWordWrap( true );
+    body->setTextFormat( Qt::RichText );
+    body->setTextInteractionFlags( Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse );
+    body->setOpenExternalLinks( true );
+    body->setText( renderMarkdown( rendered.markdown ) );
+    cardLayout->addWidget( body );
+  }
+
+  if ( metadata.contains( u"tool_calls"_s ) )
+  {
+    const QJsonArray calls = QJsonArray::fromVariantList( metadata.value( u"tool_calls"_s ).toList() );
+    rendered.technicalSections.prepend( { tr( "Tool calls" ), QString::fromUtf8( QJsonDocument( calls ).toJson( QJsonDocument::Indented ) ), u"json"_s } );
+  }
+
+  for ( const TechnicalSection &section : std::as_const( rendered.technicalSections ) )
+    cardLayout->addWidget( createCollapsibleSection( section.title, section.content, section.language, true ) );
+
+  if ( uiKind == "plan"_L1 )
+  {
+    const QString planMarkdown = planMarkdownFromMetadata( metadata );
+    if ( !planMarkdown.isEmpty() )
+      cardLayout->addWidget( createPlanActionsWidget( messageId, planMarkdown, metadata ) );
+  }
+  else if ( uiKind == "questions"_L1 )
+  {
+    const QJsonObject payload = questionsPayloadFromMetadata( metadata );
+    if ( !payload.isEmpty() )
+      cardLayout->addWidget( createQuestionsWidget( messageId, payload, metadata ) );
+  }
+
+  if ( messageRole == QgsAiChatRole::User )
+    card->setStyleSheet( card->styleSheet() + QStringLiteral( "QFrame#aiMessage { background: palette(alternate-base); }" ) );
+
+  return card;
+}
+
+QWidget *QgsAiChatDockWidget::createCollapsibleSection( const QString &title, const QString &content, const QString &language, bool collapsed )
+{
+  QWidget *section = new QWidget( mTranscriptContainer );
+  section->setObjectName( u"aiTechnicalSection"_s );
+  QVBoxLayout *layout = new QVBoxLayout( section );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->setSpacing( 3 );
+
+  QToolButton *toggle = new QToolButton( section );
+  toggle->setObjectName( u"aiTechnicalToggle"_s );
+  toggle->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  toggle->setCheckable( true );
+  toggle->setChecked( !collapsed );
+  toggle->setAutoRaise( true );
+  toggle->setText( title );
+  toggle->setArrowType( collapsed ? Qt::RightArrow : Qt::DownArrow );
+  layout->addWidget( toggle );
+
+  QTextEdit *details = new QTextEdit( section );
+  details->setObjectName( u"aiTechnicalContent"_s );
+  details->setReadOnly( true );
+  details->setAcceptRichText( false );
+  details->setPlainText( content );
+  details->setFrameShape( QFrame::StyledPanel );
+  details->setLineWrapMode( QTextEdit::NoWrap );
+  QFont mono = QFontDatabase::systemFont( QFontDatabase::FixedFont );
+  details->setFont( mono );
+  details->setMinimumHeight( 80 );
+  details->setMaximumHeight( 260 );
+  details->setVisible( !collapsed );
+  details->setProperty( "language", language );
+  layout->addWidget( details );
+
+  connect( toggle, &QToolButton::toggled, section, [toggle, details]( bool checked ) {
+    toggle->setArrowType( checked ? Qt::DownArrow : Qt::RightArrow );
+    details->setVisible( checked );
+  } );
+
+  return section;
+}
+
+QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata )
+{
+  QFrame *planCard = new QFrame( mTranscriptContainer );
+  planCard->setObjectName( u"aiPlanCard"_s );
+  planCard->setFrameShape( QFrame::StyledPanel );
+  planCard->setStyleSheet( u"QFrame#aiPlanCard { border: 1px solid palette(highlight); border-radius: 6px; }"_s );
+
+  QVBoxLayout *layout = new QVBoxLayout( planCard );
+  layout->setContentsMargins( 8, 8, 8, 8 );
+  layout->setSpacing( 6 );
+
+  const QString status = metadata.value( u"plan_status"_s, u"pending"_s ).toString();
+  const bool pending = status == "pending"_L1;
+
+  QHBoxLayout *buttons = new QHBoxLayout();
+  QPushButton *acceptButton = new QPushButton( tr( "Accept plan" ), planCard );
+  acceptButton->setObjectName( u"aiAcceptPlanButton"_s );
+  acceptButton->setEnabled( pending );
+  QPushButton *reviseButton = new QPushButton( tr( "Reject / revise" ), planCard );
+  reviseButton->setObjectName( u"aiRejectPlanButton"_s );
+  reviseButton->setEnabled( pending );
+  buttons->addWidget( acceptButton );
+  buttons->addWidget( reviseButton );
+  buttons->addStretch( 1 );
+  layout->addLayout( buttons );
+
+  QTextEdit *revisionEdit = new QTextEdit( planCard );
+  revisionEdit->setObjectName( u"aiPlanRevisionEdit"_s );
+  revisionEdit->setAcceptRichText( false );
+  revisionEdit->setPlaceholderText( tr( "Describe what should change in the plan..." ) );
+  revisionEdit->setFixedHeight( 72 );
+  revisionEdit->setVisible( false );
+  layout->addWidget( revisionEdit );
+
+  QPushButton *sendRevisionButton = new QPushButton( tr( "Send revision" ), planCard );
+  sendRevisionButton->setObjectName( u"aiSendPlanRevisionButton"_s );
+  sendRevisionButton->setVisible( false );
+  sendRevisionButton->setEnabled( pending );
+  layout->addWidget( sendRevisionButton );
+
+  connect( acceptButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata]() {
+    acceptPlan( messageId, planMarkdown, metadata );
+  } );
+  connect( reviseButton, &QPushButton::clicked, planCard, [revisionEdit, sendRevisionButton]() {
+    revisionEdit->setVisible( true );
+    sendRevisionButton->setVisible( true );
+    revisionEdit->setFocus();
+  } );
+  connect( sendRevisionButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata, revisionEdit]() {
+    sendPlanRevision( messageId, planMarkdown, metadata, revisionEdit );
+  } );
+
+  return planCard;
+}
+
+QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, const QJsonObject &payload, const QVariantMap &metadata )
+{
+  QFrame *questionsCard = new QFrame( mTranscriptContainer );
+  questionsCard->setObjectName( u"aiQuestionsCard"_s );
+  questionsCard->setFrameShape( QFrame::StyledPanel );
+  questionsCard->setStyleSheet( u"QFrame#aiQuestionsCard { border: 1px solid palette(highlight); border-radius: 6px; }"_s );
+
+  QVBoxLayout *layout = new QVBoxLayout( questionsCard );
+  layout->setContentsMargins( 8, 8, 8, 8 );
+  layout->setSpacing( 8 );
+
+  const bool pending = metadata.value( u"questions_status"_s, u"pending"_s ).toString() == "pending"_L1;
+  const QJsonArray questions = payload.value( u"questions"_s ).toArray();
+  for ( const QJsonValue &questionValue : questions )
+  {
+    const QJsonObject question = questionValue.toObject();
+    const QString questionId = question.value( u"id"_s ).toString();
+    const QString type = question.value( u"type"_s ).toString( u"single"_s );
+
+    QLabel *questionLabel = new QLabel( question.value( u"question"_s ).toString(), questionsCard );
+    questionLabel->setWordWrap( true );
+    questionLabel->setProperty( "question_id", questionId );
+    QFont f = questionLabel->font();
+    f.setBold( true );
+    questionLabel->setFont( f );
+    layout->addWidget( questionLabel );
+
+    QButtonGroup *singleGroup = nullptr;
+    if ( type != "multi"_L1 )
+    {
+      singleGroup = new QButtonGroup( questionsCard );
+      singleGroup->setExclusive( true );
+    }
+
+    const QJsonArray options = question.value( u"options"_s ).toArray();
+    for ( const QJsonValue &optionValue : options )
+    {
+      const QJsonObject option = optionValue.toObject();
+      const QString optionId = option.value( u"id"_s ).toString();
+      const QString label = option.value( u"label"_s ).toString();
+      const QString description = option.value( u"description"_s ).toString();
+
+      QAbstractButton *button = type == "multi"_L1 ? static_cast<QAbstractButton *>( new QCheckBox( label, questionsCard ) ) : static_cast<QAbstractButton *>( new QRadioButton( label, questionsCard ) );
+      button->setObjectName( u"aiQuestionOption"_s );
+      button->setProperty( "question_id", questionId );
+      button->setProperty( "option_id", optionId );
+      button->setProperty( "question_type", type );
+      button->setEnabled( pending );
+      button->setToolTip( description );
+      if ( singleGroup )
+        singleGroup->addButton( button );
+      layout->addWidget( button );
+    }
+
+    if ( question.value( u"allow_other"_s ).toBool( true ) )
+    {
+      QLineEdit *other = new QLineEdit( questionsCard );
+      other->setObjectName( u"aiQuestionOtherLineEdit"_s );
+      other->setProperty( "question_id", questionId );
+      other->setPlaceholderText( tr( "Other..." ) );
+      other->setEnabled( pending );
+      layout->addWidget( other );
+    }
+  }
+
+  QPushButton *submit = new QPushButton( tr( "Send answers" ), questionsCard );
+  submit->setObjectName( u"aiSubmitQuestionAnswersButton"_s );
+  submit->setEnabled( pending );
+  layout->addWidget( submit );
+
+  connect( submit, &QPushButton::clicked, this, [this, messageId, metadata, questionsCard]() {
+    sendQuestionAnswers( messageId, metadata, questionsCard );
+  } );
+
+  return questionsCard;
+}
+
+void QgsAiChatDockWidget::clearTranscriptWidgets()
+{
+  if ( !mTranscriptLayout )
+    return;
+
+  while ( mTranscriptLayout->count() > 1 )
+  {
+    QLayoutItem *item = mTranscriptLayout->takeAt( 0 );
+    if ( QWidget *widget = item->widget() )
+      widget->deleteLater();
+    delete item;
+  }
+}
+
+void QgsAiChatDockWidget::scrollTranscriptToBottom()
+{
+  if ( !mTranscriptScrollArea )
+    return;
+  QTimer::singleShot( 0, this, [this]() {
+    if ( mTranscriptScrollArea && mTranscriptScrollArea->verticalScrollBar() )
+      mTranscriptScrollArea->verticalScrollBar()->setValue( mTranscriptScrollArea->verticalScrollBar()->maximum() );
+  } );
+}
+
+void QgsAiChatDockWidget::setModeLabel( const QString &label )
+{
+  if ( !mModePill )
+    return;
+
+  mModePill->setText( label + u" ▾"_s );
+  if ( mModePill->menu() )
+  {
+    for ( QAction *action : mModePill->menu()->actions() )
+    {
+      if ( action->isCheckable() )
+        action->setChecked( action->text() == label );
+    }
+  }
+  if ( mSessionManager )
+    mSessionManager->setActiveAgent( modeLabelToAgent( label ) );
+}
+
+void QgsAiChatDockWidget::markMessageStatus( const QString &messageId, const QVariantMap &metadata, const QString &key, const QString &value )
+{
+  if ( !mSessionManager || messageId.isEmpty() )
+    return;
+
+  QVariantMap updated = metadata;
+  updated.insert( key, value );
+  mSessionManager->updateMessageMetadata( messageId, updated );
+}
+
+void QgsAiChatDockWidget::acceptPlan( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata )
+{
+  if ( !mSessionManager || planMarkdown.trimmed().isEmpty() || mRequestRunning )
+    return;
+
+  markMessageStatus( messageId, metadata, u"plan_status"_s, u"accepted"_s );
+  setModeLabel( u"Agent"_s );
+  mSessionManager->sendUserMessage(
+    tr( "Execute the accepted plan exactly. Use the existing approval/review dialogs for any operation that requires confirmation.\n\nAccepted plan:\n%1" ).arg( planMarkdown.trimmed() )
+  );
+  reloadTranscriptFromHistory();
+}
+
+void QgsAiChatDockWidget::sendPlanRevision( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata, QTextEdit *revisionEdit )
+{
+  if ( !mSessionManager || mRequestRunning )
+    return;
+
+  const QString feedback = revisionEdit ? revisionEdit->toPlainText().trimmed() : QString();
+  markMessageStatus( messageId, metadata, u"plan_status"_s, u"rejected"_s );
+  setModeLabel( u"Plan"_s );
+  mSessionManager->sendUserMessage(
+    tr( "Revise the previous plan before execution. Keep Plan mode and return a new proposed_plan block.\n\nOriginal plan:\n%1\n\nUser revision request:\n%2" )
+      .arg( planMarkdown.trimmed(), feedback.isEmpty() ? tr( "The plan was rejected; propose a safer or clearer revision." ) : feedback )
+  );
+  reloadTranscriptFromHistory();
+}
+
+void QgsAiChatDockWidget::sendQuestionAnswers( const QString &messageId, const QVariantMap &metadata, QWidget *questionsCard )
+{
+  if ( !mSessionManager || !questionsCard || mRequestRunning )
+    return;
+
+  QMap<QString, QJsonObject> answersById;
+  const QList<QAbstractButton *> options = questionsCard->findChildren<QAbstractButton *>( u"aiQuestionOption"_s );
+  for ( QAbstractButton *option : options )
+  {
+    if ( !option->isChecked() )
+      continue;
+
+    const QString questionId = option->property( "question_id" ).toString();
+    if ( questionId.isEmpty() )
+      continue;
+
+    QJsonObject answer = answersById.value( questionId );
+    QJsonArray selected = answer.value( u"selected"_s ).toArray();
+    selected.append( option->property( "option_id" ).toString() );
+    answer.insert( u"id"_s, questionId );
+    answer.insert( u"selected"_s, selected );
+    answersById.insert( questionId, answer );
+  }
+
+  const QList<QLineEdit *> otherEdits = questionsCard->findChildren<QLineEdit *>( u"aiQuestionOtherLineEdit"_s );
+  for ( QLineEdit *other : otherEdits )
+  {
+    const QString text = other->text().trimmed();
+    if ( text.isEmpty() )
+      continue;
+
+    const QString questionId = other->property( "question_id" ).toString();
+    if ( questionId.isEmpty() )
+      continue;
+
+    QJsonObject answer = answersById.value( questionId );
+    answer.insert( u"id"_s, questionId );
+    answer.insert( u"other"_s, text );
+    answersById.insert( questionId, answer );
+  }
+
+  QJsonArray answers;
+  for ( auto it = answersById.constBegin(); it != answersById.constEnd(); ++it )
+    answers.append( it.value() );
+
+  if ( answers.isEmpty() )
+    return;
+
+  QJsonObject payload;
+  payload.insert( u"answers"_s, answers );
+  markMessageStatus( messageId, metadata, u"questions_status"_s, u"answered"_s );
+  setModeLabel( u"Plan"_s );
+  mSessionManager->sendUserMessage(
+    tr( "Answers to your planning questions:\n```qgis_ai_answers\n%1\n```" ).arg( QString::fromUtf8( QJsonDocument( payload ).toJson( QJsonDocument::Indented ) ).trimmed() )
+  );
+  reloadTranscriptFromHistory();
 }
 
 QString QgsAiChatDockWidget::renderToolMessageMarkdown( const QgsAiChatMessage &message ) const
@@ -651,10 +1262,10 @@ void QgsAiChatDockWidget::onNewChatClicked()
 
 void QgsAiChatDockWidget::reloadTranscriptFromHistory()
 {
-  if ( !mTranscript )
+  if ( !mTranscriptLayout )
     return;
   closeStreamingAssistantMessage();
-  mTranscript->clear();
+  clearTranscriptWidgets();
   if ( !mSessionManager )
     return;
   const QList<QgsAiChatMessage> history = mSessionManager->history();
@@ -767,42 +1378,42 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
 
   if ( !mStreamingInProgress )
   {
-    QTextCursor cursor = mTranscript->textCursor();
-    cursor.movePosition( QTextCursor::End );
-    if ( !mTranscript->document()->isEmpty() )
-      cursor.insertBlock();
-    cursor.insertHtml( u"<b>[assistant]</b> "_s );
-    mStreamingContentStartPosition = cursor.position();
+    QFrame *card = new QFrame( mTranscriptContainer );
+    card->setObjectName( u"aiStreamingMessage"_s );
+    card->setFrameShape( QFrame::StyledPanel );
+    card->setStyleSheet( u"QFrame#aiStreamingMessage { border: 1px solid palette(mid); border-radius: 6px; background: palette(base); }"_s );
+    QVBoxLayout *layout = new QVBoxLayout( card );
+    layout->setContentsMargins( 8, 6, 8, 8 );
+    QLabel *roleLabel = new QLabel( tr( "Assistant" ), card );
+    roleLabel->setObjectName( u"aiMessageRole"_s );
+    layout->addWidget( roleLabel );
+
+    mStreamingTextEdit = new QTextEdit( card );
+    mStreamingTextEdit->setObjectName( u"aiStreamingTextEdit"_s );
+    mStreamingTextEdit->setReadOnly( true );
+    mStreamingTextEdit->setAcceptRichText( false );
+    mStreamingTextEdit->setFrameShape( QFrame::NoFrame );
+    mStreamingTextEdit->setMinimumHeight( 48 );
+    layout->addWidget( mStreamingTextEdit );
+
+    const int insertIndex = std::max( 0, mTranscriptLayout->count() - 1 );
+    mTranscriptLayout->insertWidget( insertIndex, card );
     mStreamingInProgress = true;
   }
-  QTextCursor cursor = mTranscript->textCursor();
-  cursor.movePosition( QTextCursor::End );
-  cursor.insertText( chunk );
-  mTranscript->setTextCursor( cursor );
+  if ( mStreamingTextEdit )
+  {
+    QTextCursor cursor = mStreamingTextEdit->textCursor();
+    cursor.movePosition( QTextCursor::End );
+    cursor.insertText( chunk );
+    mStreamingTextEdit->setTextCursor( cursor );
+  }
+  scrollTranscriptToBottom();
 }
 
 void QgsAiChatDockWidget::closeStreamingAssistantMessage()
 {
   mStreamingInProgress = false;
-  mStreamingContentStartPosition = -1;
-}
-
-void QgsAiChatDockWidget::finalizeStreamingAssistantMessage( const QString &finalText )
-{
-  if ( !mStreamingInProgress )
-    return;
-
-  if ( mStreamingContentStartPosition >= 0 && !finalText.isEmpty() )
-  {
-    QTextCursor cursor( mTranscript->document() );
-    cursor.setPosition( mStreamingContentStartPosition );
-    cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor );
-    cursor.removeSelectedText();
-    cursor.insertHtml( renderMarkdown( finalText ) );
-    mTranscript->setTextCursor( cursor );
-  }
-
-  closeStreamingAssistantMessage();
+  mStreamingTextEdit = nullptr;
 }
 
 void QgsAiChatDockWidget::updateRuntimeState( const QString &state, const QString &detail )
@@ -841,10 +1452,7 @@ void QgsAiChatDockWidget::onModeSelected( QAction *action )
 {
   if ( !action )
     return;
-  const QString label = action->text();
-  mModePill->setText( label + u" ▾"_s );
-  if ( mSessionManager )
-    mSessionManager->setActiveAgent( modeLabelToAgent( label ) );
+  setModeLabel( action->text() );
 }
 
 void QgsAiChatDockWidget::onModelSelected( QAction *action )

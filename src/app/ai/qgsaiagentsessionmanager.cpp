@@ -25,12 +25,15 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 
+#include <algorithm>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonParseError>
 #include <QRegularExpression>
 #include <QString>
 #include <QUuid>
@@ -82,6 +85,54 @@ namespace
       u"index_status"_s,
       u"search_workspace"_s,
     };
+  }
+
+  QString extractProposedPlanMarkdown( const QString &text )
+  {
+    static const QRegularExpression planRe( u"<proposed_plan>\\s*([\\s\\S]*?)\\s*</proposed_plan>"_s, QRegularExpression::CaseInsensitiveOption );
+    const QRegularExpressionMatch match = planRe.match( text );
+    return match.hasMatch() ? match.captured( 1 ).trimmed() : QString();
+  }
+
+  QJsonObject extractQuestionsPayload( const QString &text )
+  {
+    static const QRegularExpression questionsRe( u"```qgis_ai_questions\\s*\\n([\\s\\S]*?)\\n```"_s, QRegularExpression::CaseInsensitiveOption );
+    const QRegularExpressionMatch match = questionsRe.match( text );
+    if ( !match.hasMatch() )
+      return QJsonObject();
+
+    QJsonParseError parseError;
+    const QJsonDocument doc = QJsonDocument::fromJson( match.captured( 1 ).toUtf8(), &parseError );
+    if ( parseError.error != QJsonParseError::NoError || !doc.isObject() )
+      return QJsonObject();
+
+    const QJsonObject object = doc.object();
+    if ( !object.value( u"questions"_s ).isArray() || object.value( u"questions"_s ).toArray().isEmpty() )
+      return QJsonObject();
+    return object;
+  }
+
+  void applyAssistantUiMetadata( QgsAiChatMessage &message )
+  {
+    if ( message.role != QgsAiChatRole::Assistant )
+      return;
+
+    const QJsonObject questions = extractQuestionsPayload( message.content );
+    if ( !questions.isEmpty() )
+    {
+      message.metadata.insert( u"ui_kind"_s, u"questions"_s );
+      message.metadata.insert( u"questions_json"_s, QString::fromUtf8( QJsonDocument( questions ).toJson( QJsonDocument::Compact ) ) );
+      message.metadata.insert( u"questions_status"_s, u"pending"_s );
+      return;
+    }
+
+    const QString planMarkdown = extractProposedPlanMarkdown( message.content );
+    if ( !planMarkdown.isEmpty() )
+    {
+      message.metadata.insert( u"ui_kind"_s, u"plan"_s );
+      message.metadata.insert( u"plan_markdown"_s, planMarkdown );
+      message.metadata.insert( u"plan_status"_s, u"pending"_s );
+    }
   }
 } // namespace
 
@@ -158,6 +209,25 @@ void QgsAiAgentSessionManager::setActiveAgent( const QString &agentName )
 void QgsAiAgentSessionManager::clearHistory()
 {
   mHistory.clear();
+}
+
+bool QgsAiAgentSessionManager::updateMessageMetadata( const QString &messageId, const QVariantMap &metadata )
+{
+  if ( messageId.isEmpty() )
+    return false;
+
+  for ( QgsAiChatMessage &message : mHistory )
+  {
+    if ( message.id != messageId )
+      continue;
+
+    message.metadata = metadata;
+    if ( mHistoryStore && !mActiveSessionId.isEmpty() )
+      mHistoryStore->updateMessageMetadata( mActiveSessionId, messageId, metadata );
+    return true;
+  }
+
+  return false;
 }
 
 void QgsAiAgentSessionManager::recordHistoryMessage( const QgsAiChatMessage &message )
@@ -338,6 +408,7 @@ QgsAiChatMessage QgsAiAgentSessionManager::buildAssistantMessage( const QString 
   reply.role = QgsAiChatRole::Assistant;
   reply.content = text;
   reply.timestamp = QDateTime::currentDateTimeUtc();
+  applyAssistantUiMetadata( reply );
   return reply;
 }
 
@@ -761,6 +832,8 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
     prompt += "- You are in Plan mode. Do not call tools, do not download data, do not run Python, and do not modify project or workspace state.\n"_L1;
     prompt += "- Produce a concise implementation plan or answer. Make the plan concrete enough that an agent can execute it later.\n"_L1;
     prompt += "- If the user asks you to do the work, explain the exact steps that Agent mode would take instead of performing them.\n"_L1;
+    prompt += "- When you have a complete executable plan, wrap the plan body in exactly one <proposed_plan>...</proposed_plan> block. Do not place ordinary chat text inside that block.\n"_L1;
+    prompt += "- If you need user decisions before planning, do not guess. Emit exactly one fenced ```qgis_ai_questions JSON block with this shape: {\"questions\":[{\"id\":\"short_snake_case\",\"type\":\"single|multi\",\"question\":\"...\",\"options\":[{\"id\":\"option_id\",\"label\":\"...\",\"description\":\"...\"}],\"allow_other\":true}]}. Do not emit a proposed_plan in the same response.\n"_L1;
     if ( !extraContext.isEmpty() )
     {
       prompt += '\n';
@@ -847,6 +920,7 @@ QString QgsAiAgentSessionManager::formatRetrievedContext( const QList<QgsAiWorks
   if ( chunks.isEmpty() )
     return QString();
 
+  const QString truncatedMarker = u"…[retrieved context truncated at %1 bytes]\n"_s.arg( byteCap );
   QString out;
   out += "== Retrieved context ==\n"_L1;
   out += "Top RAG matches from the workspace + project layers for the user's last message. "
@@ -859,6 +933,9 @@ QString QgsAiAgentSessionManager::formatRetrievedContext( const QList<QgsAiWorks
   out += "- Only fall back to a tool call (e.g. run_python) when the question is aggregative over the WHOLE dataset "
          "(\"count by\", \"list every distinct\", \"top N over the entire layer\") AND the chunks below clearly cover "
          "only a subset. In that case, briefly say so before calling the tool.\n\n"_L1;
+
+  if ( out.size() > byteCap )
+    return out.left( std::max( 0, byteCap ) ) + truncatedMarker;
 
   for ( const QgsAiWorkspaceIndex::Chunk &c : chunks )
   {
@@ -886,7 +963,7 @@ QString QgsAiAgentSessionManager::formatRetrievedContext( const QList<QgsAiWorks
 
     if ( out.size() + block.size() > byteCap )
     {
-      out += u"…[retrieved context truncated at %1 bytes]\n"_s.arg( byteCap );
+      out += truncatedMarker;
       break;
     }
     out += block;

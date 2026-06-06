@@ -76,6 +76,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
 
     QList<QgsAiChatMessage> history() const { return mHistory; }
     void clearHistory();
+    bool updateMessageMetadata( const QString &messageId, const QVariantMap &metadata );
 
     /**
      * Sets the persistent chat history store. When set, every message appended

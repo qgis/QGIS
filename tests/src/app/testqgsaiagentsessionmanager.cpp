@@ -225,6 +225,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()
   QgsAiFileContextProvider contextProvider( tempDir.path() );
   QgsAiReviewPatchEngine reviewEngine;
   QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  manager.setToolRegistry( &registry );
 
   // Default: tool use stays off until the user opts in.
   QCOMPARE( router.toolUseEnabled(), false );

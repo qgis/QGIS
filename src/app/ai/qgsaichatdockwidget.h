@@ -27,12 +27,15 @@ class QAction;
 class QEvent;
 class QFrame;
 class QHBoxLayout;
+class QJsonObject;
 class QLabel;
 class QListWidget;
 class QPushButton;
+class QScrollArea;
 class QShowEvent;
 class QTextEdit;
 class QToolButton;
+class QVBoxLayout;
 
 class QgsAiLayerIndexCoordinator;
 class QgsAiModelRouter;
@@ -47,6 +50,10 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
 
     void setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *coordinator );
 
+  public slots:
+    void rebuildHistoryMenu();
+
+  public:
     /**
      * Returns true when the user has not yet consented to layer indexing
      * (i.e. attributes + bounding boxes leaving the machine for OpenAI embeddings).
@@ -76,7 +83,6 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void cancelRunningRequest();
     void onSendOrStopClicked();
     void onNewChatClicked();
-    void rebuildHistoryMenu();
     void onHistoryEntryTriggered( QAction *action );
     void reloadTranscriptFromHistory();
 
@@ -86,9 +92,19 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void appendTranscriptMessage( const QgsAiChatMessage &message );
     QString renderToolMessageMarkdown( const QgsAiChatMessage &message ) const;
     static QString renderMarkdown( const QString &md );
+    QWidget *createMessageWidget( const QString &role, const QString &content, const QVariantMap &metadata = QVariantMap(), const QString &messageId = QString(), QgsAiChatRole messageRole = QgsAiChatRole::Assistant );
+    QWidget *createCollapsibleSection( const QString &title, const QString &content, const QString &language = QString(), bool collapsed = true );
+    QWidget *createPlanActionsWidget( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata );
+    QWidget *createQuestionsWidget( const QString &messageId, const QJsonObject &payload, const QVariantMap &metadata );
+    void clearTranscriptWidgets();
+    void scrollTranscriptToBottom();
+    void setModeLabel( const QString &label );
+    void markMessageStatus( const QString &messageId, const QVariantMap &metadata, const QString &key, const QString &value );
+    void acceptPlan( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata );
+    void sendPlanRevision( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata, QTextEdit *revisionEdit );
+    void sendQuestionAnswers( const QString &messageId, const QVariantMap &metadata, QWidget *questionsCard );
     void appendStreamChunk( const QString &chunk );
     void closeStreamingAssistantMessage();
-    void finalizeStreamingAssistantMessage( const QString &finalText );
     void updateRuntimeState( const QString &state, const QString &detail );
     void applyPillStyling();
     void initModeMenu();
@@ -115,7 +131,9 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QPointer<QgsAiReviewPatchEngine> mReviewEngine;
     QPointer<QgsAiLayerIndexCoordinator> mLayerIndexCoordinator;
 
-    QTextEdit *mTranscript = nullptr;
+    QScrollArea *mTranscriptScrollArea = nullptr;
+    QWidget *mTranscriptContainer = nullptr;
+    QVBoxLayout *mTranscriptLayout = nullptr;
     QTextEdit *mInputTextEdit = nullptr;
 
     QToolButton *mNewChatButton = nullptr;
@@ -141,7 +159,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QLabel *mRuntimeStatusLabel = nullptr;
 
     bool mStreamingInProgress = false;
-    int mStreamingContentStartPosition = -1;
+    QTextEdit *mStreamingTextEdit = nullptr;
     bool mRequestRunning = false;
 };
 
