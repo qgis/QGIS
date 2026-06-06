@@ -389,6 +389,12 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
     }
   }
 
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+  // Workaround an issue where hasAttribute("xmlns:...") does not work when combining
+  // filters (QT 5 only)
+  ( void ) envelopeFilterDoc.setContent( envelopeFilterDoc.toString(), false );
+#endif
+
   if ( mLayerPropertiesList.size() == 1 && envelopeFilterDoc.firstChildElement().hasAttribute( QStringLiteral( "xmlns:" ) + mLayerPropertiesList[0].mNamespacePrefix ) )
   {
     // nothing to do
@@ -398,7 +404,7 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
     // add xmls:PREFIX=URI attributes to top element
     for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mLayerPropertiesList ) )
     {
-      if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() && !setNamespaceURI.contains( props.mNamespaceURI ) )
+      if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() && !setNamespaceURI.contains( props.mNamespaceURI ) && !envelopeFilterDoc.firstChildElement().hasAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix ) )
       {
         setNamespaceURI.insert( props.mNamespaceURI );
         QDomAttr attr = envelopeFilterDoc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
