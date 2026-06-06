@@ -1291,7 +1291,7 @@ QList< QgsRasterFileWriter::FilterFormatDetails > QgsRasterFileWriter::supported
     GDALDriverH drv = GDALGetDriver( i );
     if ( drv )
     {
-      if ( QgsGdalUtils::supportsRasterCreate( drv ) )
+      if ( QgsGdalUtils::supportsRasterCreate( drv ) || ( ( options & ListCreateCopy ) && QgsGdalUtils::supportsRasterCreateCopy( drv ) ) )
       {
         const QString drvName = GDALGetDriverShortName( drv );
         const QString filterString = filterForDriver( drvName );

@@ -27,6 +27,7 @@ formats and data providers can be used by calling
     enum RasterFormatOption /BaseType=IntEnum/
     {
       SortRecommended,
+      ListCreateCopy,
     };
     typedef QFlags<QgsRasterFileWriter::RasterFormatOption> RasterFormatOptions;
 

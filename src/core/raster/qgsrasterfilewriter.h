@@ -49,6 +49,7 @@ class CORE_EXPORT QgsRasterFileWriter
     enum RasterFormatOption SIP_ENUM_BASETYPE( IntFlag )
     {
       SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
+      ListCreateCopy = 1 << 2, //!< Also list formats that support creation only by copying from an existing dataset (added in QGIS 4.2). By default, only formats that support creation from scratch are listed.
     };
     Q_DECLARE_FLAGS( RasterFormatOptions, RasterFormatOption )
 
