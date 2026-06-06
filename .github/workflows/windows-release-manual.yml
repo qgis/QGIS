@@ -12,6 +12,14 @@ on:
         description: Git ref/tag to build
         required: true
         default: geoai-v1.0.8
+      sdk_run_id:
+        description: Existing workflow run id containing qgis-sdk-x64-windows; leave empty to rebuild vcpkg
+        required: false
+        default: '26423962164'
+      sdk_artifact_name:
+        description: SDK artifact name to download
+        required: false
+        default: qgis-sdk-x64-windows
 
 concurrency:
   group: windows-release-manual-${{ inputs.release_tag }}
@@ -47,7 +55,38 @@ jobs:
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1
 
+      - name: 📥 Download Windows SDK
+        if: ${{ inputs.sdk_run_id != '' }}
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v6.0.1
+        with:
+          name: ${{ inputs.sdk_artifact_name }}
+          run-id: ${{ inputs.sdk_run_id }}
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: sdk-artifact
+
+      - name: 📦 Extract Windows SDK
+        if: ${{ inputs.sdk_run_id != '' }}
+        shell: bash
+        run: |
+          mkdir -p sdk-root
+          SDK_ZIP=$(find sdk-artifact -name 'vcpkg-export-*.zip' -print -quit)
+          if [ -z "${SDK_ZIP}" ]; then
+            echo "ERROR: vcpkg export zip not found in SDK artifact"
+            find sdk-artifact -maxdepth 3 -type f -print
+            exit 1
+          fi
+          7z x "${SDK_ZIP}" -osdk-root -y
+          SDK_DIR=$(find sdk-root -mindepth 1 -maxdepth 1 -type d -name 'vcpkg-export-*' -print -quit)
+          if [ -z "${SDK_DIR}" ]; then
+            echo "ERROR: extracted SDK root not found"
+            find sdk-root -maxdepth 3 -type d -print
+            exit 1
+          fi
+          echo "WINDOWS_SDK_PATH=$(cygpath -m "${SDK_DIR}")" >> "${GITHUB_ENV}"
+
       - name: 🎡 Setup vcpkg
+        if: ${{ inputs.sdk_run_id == '' }}
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
@@ -90,16 +129,31 @@ jobs:
             NSIS_OPT="-DCREATE_NSIS=TRUE"
           fi
 
+          VCPKG_OPTS=(
+                -D VCPKG_TARGET_TRIPLET=x64-windows-release
+                -D VCPKG_HOST_TRIPLET=x64-windows-release
+          )
+
+          if [ -n "${WINDOWS_SDK_PATH:-}" ]; then
+            VCPKG_OPTS+=(-D "SDK_PATH=${WINDOWS_SDK_PATH}")
+          else
+            VCPKG_OPTS+=(
+                -D WITH_VCPKG=ON
+                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src"
+                -D NUGET_BINARY_SOURCE_MODE=readwrite
+                -D "NUGET_USERNAME=${GITHUB_ACTOR}"
+                -D NUGET_PUSH_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            )
+          fi
+
           cmake -S "${SOURCE_DIR}" \
                 -B "${BUILD_DIR}" \
                 -G Ninja \
                 -D CMAKE_BUILD_TYPE=Release \
-                -D WITH_VCPKG=ON \
                 -D CREATE_ZIP=ON \
                 ${NSIS_OPT} \
                 ${APP_NAME_OPT} \
-                -D VCPKG_TARGET_TRIPLET=x64-windows-release \
-                -D VCPKG_HOST_TRIPLET=x64-windows-release \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
@@ -111,11 +165,7 @@ jobs:
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
                 -D WITH_QTWEBENGINE=OFF \
-                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
-                -D NUGET_BINARY_SOURCE_MODE=readwrite \
-                -D "NUGET_USERNAME=${GITHUB_ACTOR}" \
-                -D NUGET_PUSH_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
-                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
+                "${VCPKG_OPTS[@]}"
 
       - name: 🌋 Build
         shell: bash
