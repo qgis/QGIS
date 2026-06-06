@@ -8,8 +8,16 @@
 #include <memory>
 
 #include "ai/tools/qgsaitoolregistry.h"
+#include "ai/tools/qgsaireadtools.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsmapcanvas.h"
+#include "qgsrectangle.h"
+#include "qgssettings.h"
 #include "qgstest.h"
 
+#include <QFileInfo>
+#include <QImage>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QSignalSpy>
@@ -75,6 +83,8 @@ class TestQgsAiToolRegistry : public QObject
     Q_OBJECT
 
   private slots:
+    void initTestCase();
+    void cleanupTestCase();
     void registerAndLookup();
     void rejectsDuplicateNames();
     void rejectsEmptyNameAndNull();
@@ -82,8 +92,20 @@ class TestQgsAiToolRegistry : public QObject
     void schemasJsonFilter();
     void unavailableToolsAreHiddenAndNotExecuted();
     void executeRoundTrip();
+    void captureMapCanvasRequiresConsent();
+    void captureMapCanvasCreatesCappedPng();
     void clearEmptiesRegistry();
 };
+
+void TestQgsAiToolRegistry::initTestCase()
+{
+  QgsApplication::initQgis();
+}
+
+void TestQgsAiToolRegistry::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsAiToolRegistry::registerAndLookup()
 {
@@ -183,6 +205,50 @@ void TestQgsAiToolRegistry::executeRoundTrip()
   const QgsAiToolResult missing = tool->execute( QJsonObject() );
   QVERIFY( !missing.success );
   QVERIFY( !missing.errorMessage.isEmpty() );
+}
+
+void TestQgsAiToolRegistry::captureMapCanvasRequiresConsent()
+{
+  QgsSettings settings;
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
+
+  QgsMapCanvas canvas;
+  QgsAiCaptureMapCanvasTool tool( &canvas );
+  const QgsAiToolResult result = tool.execute( QJsonObject() );
+  QVERIFY( !result.success );
+  QVERIFY( result.errorMessage.contains( u"consent"_s, Qt::CaseInsensitive ) );
+}
+
+void TestQgsAiToolRegistry::captureMapCanvasCreatesCappedPng()
+{
+  QgsSettings settings;
+  settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
+
+  QgsMapCanvas canvas;
+  canvas.resize( 2000, 1000 );
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 5 ) );
+
+  QgsAiCaptureMapCanvasTool tool( &canvas );
+  QJsonObject args;
+  args.insert( u"max_longest_side"_s, 500 );
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY( result.success );
+
+  const QJsonObject output = result.output.toObject();
+  const QJsonObject imageJson = output.value( u"image"_s ).toObject();
+  const QString path = imageJson.value( u"path"_s ).toString();
+  QVERIFY( QFileInfo::exists( path ) );
+  QCOMPARE( imageJson.value( u"mime_type"_s ).toString(), u"image/png"_s );
+
+  const QImage image( path );
+  QVERIFY( !image.isNull() );
+  QVERIFY( image.width() <= 500 );
+  QVERIFY( image.height() <= 500 );
+  QCOMPARE( image.width(), imageJson.value( u"width"_s ).toInt() );
+  QCOMPARE( image.height(), imageJson.value( u"height"_s ).toInt() );
+
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }
 
 void TestQgsAiToolRegistry::clearEmptiesRegistry()

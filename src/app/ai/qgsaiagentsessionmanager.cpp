@@ -82,6 +82,7 @@ namespace
       u"list_files"_s,
       u"list_project_layers"_s,
       u"get_active_canvas_extent"_s,
+      u"capture_map_canvas"_s,
       u"describe_layer"_s,
       u"index_status"_s,
       u"search_workspace"_s,
@@ -853,6 +854,7 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
     else
     {
       prompt += "- You may use read-only inspection tools when needed to ground the answer. Do not request any mutating tool.\n"_L1;
+      prompt += "- For visual map questions, use capture_map_canvas only when the user asks you to inspect what is visible/rendered. If the active provider cannot receive images, explain that you only have the returned metadata/path, not pixel vision.\n"_L1;
     }
     if ( !extraContext.isEmpty() )
     {
@@ -887,6 +889,7 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   }
   prompt += "- Use tools instead of writing code in chat for the user to copy.\n"_L1;
   prompt += "- To inspect files: read_file, search_files, list_files. To inspect project state: list_project_layers, get_active_canvas_extent.\n"_L1;
+  prompt += "- To inspect what is visually rendered on the 2D map canvas, use capture_map_canvas only when the user asks you to look at the map, check what is visible, or debug a visual result. The screenshot is shared with vision-capable providers only after user consent; non-vision providers receive only the JSON metadata/path and cannot see pixels.\n"_L1;
   prompt += "- To modify files: ALWAYS go through propose_edit / propose_create_file / propose_delete_file (when available). The user will review and accept your diff.\n"_L1;
   prompt += "- Never call propose_edit blind: read the file first to capture the exact original text.\n"_L1;
   prompt += "- Keep proposals small and reviewable. One concept per proposal.\n"_L1;
@@ -1153,6 +1156,18 @@ QgsAiChatMessage QgsAiAgentSessionManager::buildToolResultMessage( const QgsAiTo
   {
     toolMessage.metadata.insert( u"tool_description"_s, call.args.value( u"description"_s ).toString() );
     toolMessage.metadata.insert( u"tool_code"_s, call.args.value( u"code"_s ).toString() );
+  }
+  if ( result.success && call.name == "capture_map_canvas"_L1 && result.output.isObject() )
+  {
+    const QJsonObject image = result.output.toObject().value( u"image"_s ).toObject();
+    const QString imagePath = image.value( u"path"_s ).toString();
+    if ( !imagePath.isEmpty() )
+    {
+      toolMessage.metadata.insert( u"visual_context_image_path"_s, imagePath );
+      toolMessage.metadata.insert( u"visual_context_mime_type"_s, image.value( u"mime_type"_s ).toString( u"image/png"_s ) );
+      toolMessage.metadata.insert( u"visual_context_width"_s, image.value( u"width"_s ).toInt() );
+      toolMessage.metadata.insert( u"visual_context_height"_s, image.value( u"height"_s ).toInt() );
+    }
   }
   if ( !result.success )
     toolMessage.metadata.insert( u"is_error"_s, true );

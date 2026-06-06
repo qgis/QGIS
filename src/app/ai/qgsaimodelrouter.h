@@ -164,7 +164,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QString roleForProvider( Provider provider, QgsAiChatRole role ) const;
     QJsonArray buildAnthropicAssistantContent( const QgsAiChatMessage &message ) const;
     QJsonArray buildAnthropicUserContent( const QgsAiChatMessage &message ) const;
-    void appendOpenAiInputItems( const QgsAiChatMessage &message, QJsonArray &input ) const;
+    void appendOpenAiInputItems( Provider provider, const QgsAiChatMessage &message, QJsonArray &input ) const;
 
     static QString generateRequestId();
     QString authHeaderName( Provider provider ) const;

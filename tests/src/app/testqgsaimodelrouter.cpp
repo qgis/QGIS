@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
+#include <QImage>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -30,6 +31,7 @@
 #include <QScopeGuard>
 #include <QSignalSpy>
 #include <QString>
+#include <QTemporaryDir>
 #include <QTimer>
 #include <QUrlQuery>
 
@@ -133,6 +135,10 @@ class TestQgsAiModelRouter : public QObject
     void toolUseEnabledIncludesToolsForClaude();
     void allowedToolFilterCanAdvertiseNoTools();
     void unavailableToolsAreOmittedFromPayload();
+    void visualContextImageIsAddedToOpenAiPayload();
+    void visualContextImageIsAddedToClaudePayload();
+    void visualContextImageRequiresConsent();
+    void visualContextImageIsOmittedFromCodexPayload();
     void dispatchLogDoesNotExposeEndpointQuery();
     void liveOpenAiRequest();
     void liveClaudeRequest();
@@ -379,6 +385,147 @@ void TestQgsAiModelRouter::unavailableToolsAreOmittedFromPayload()
   const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, false ) ).object();
   QVERIFY( !object.contains( u"tools"_s ) );
   QVERIFY( !object.contains( u"tool_choice"_s ) );
+}
+
+void TestQgsAiModelRouter::visualContextImageIsAddedToOpenAiPayload()
+{
+  QgsSettings settings;
+  settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString imagePath = tempDir.filePath( u"canvas.png"_s );
+  QImage image( 2, 2, QImage::Format_ARGB32 );
+  image.fill( Qt::red );
+  QVERIFY( image.save( imagePath, "PNG" ) );
+
+  QgsAiChatMessage toolMessage;
+  toolMessage.role = QgsAiChatRole::Tool;
+  toolMessage.content = u"{\"image\":{\"path\":\"canvas.png\"}}"_s;
+  toolMessage.metadata.insert( u"tool_call_id"_s, u"call_1"_s );
+  toolMessage.metadata.insert( u"visual_context_image_path"_s, imagePath );
+  toolMessage.metadata.insert( u"visual_context_mime_type"_s, u"image/png"_s );
+
+  QgsAiModelRouter router;
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { toolMessage }, false ) ).object();
+  const QJsonArray input = object.value( u"input"_s ).toArray();
+  QCOMPARE( input.size(), 2 );
+  QCOMPARE( input.at( 0 ).toObject().value( u"type"_s ).toString(), u"function_call_output"_s );
+
+  const QJsonArray content = input.at( 1 ).toObject().value( u"content"_s ).toArray();
+  bool hasImage = false;
+  for ( const QJsonValue &value : content )
+  {
+    const QJsonObject block = value.toObject();
+    if ( block.value( u"type"_s ).toString() == "input_image"_L1 )
+    {
+      hasImage = true;
+      QVERIFY( block.value( u"image_url"_s ).toString().startsWith( u"data:image/png;base64,"_s ) );
+    }
+  }
+  QVERIFY( hasImage );
+
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
+}
+
+void TestQgsAiModelRouter::visualContextImageIsAddedToClaudePayload()
+{
+  QgsSettings settings;
+  settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString imagePath = tempDir.filePath( u"canvas.png"_s );
+  QImage image( 2, 2, QImage::Format_ARGB32 );
+  image.fill( Qt::blue );
+  QVERIFY( image.save( imagePath, "PNG" ) );
+
+  QgsAiChatMessage toolMessage;
+  toolMessage.role = QgsAiChatRole::Tool;
+  toolMessage.content = u"{\"image\":{\"path\":\"canvas.png\"}}"_s;
+  toolMessage.metadata.insert( u"tool_call_id"_s, u"toolu_1"_s );
+  toolMessage.metadata.insert( u"visual_context_image_path"_s, imagePath );
+  toolMessage.metadata.insert( u"visual_context_mime_type"_s, u"image/png"_s );
+
+  QgsAiModelRouter router;
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Claude, { toolMessage }, false ) ).object();
+  const QJsonArray messages = object.value( u"messages"_s ).toArray();
+  QCOMPARE( messages.size(), 1 );
+  const QJsonArray content = messages.at( 0 ).toObject().value( u"content"_s ).toArray();
+  QCOMPARE( content.size(), 1 );
+  const QJsonObject toolResult = content.at( 0 ).toObject();
+  QCOMPARE( toolResult.value( u"type"_s ).toString(), u"tool_result"_s );
+  const QJsonArray resultContent = toolResult.value( u"content"_s ).toArray();
+
+  bool hasImage = false;
+  for ( const QJsonValue &value : resultContent )
+  {
+    const QJsonObject block = value.toObject();
+    if ( block.value( u"type"_s ).toString() == "image"_L1 )
+    {
+      hasImage = true;
+      const QJsonObject source = block.value( u"source"_s ).toObject();
+      QCOMPARE( source.value( u"media_type"_s ).toString(), u"image/png"_s );
+      QVERIFY( !source.value( u"data"_s ).toString().isEmpty() );
+    }
+  }
+  QVERIFY( hasImage );
+
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
+}
+
+void TestQgsAiModelRouter::visualContextImageRequiresConsent()
+{
+  QgsSettings settings;
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString imagePath = tempDir.filePath( u"canvas.png"_s );
+  QImage image( 2, 2, QImage::Format_ARGB32 );
+  image.fill( Qt::green );
+  QVERIFY( image.save( imagePath, "PNG" ) );
+
+  QgsAiChatMessage toolMessage;
+  toolMessage.role = QgsAiChatRole::Tool;
+  toolMessage.content = u"{\"image\":{\"path\":\"canvas.png\"}}"_s;
+  toolMessage.metadata.insert( u"tool_call_id"_s, u"call_1"_s );
+  toolMessage.metadata.insert( u"visual_context_image_path"_s, imagePath );
+  toolMessage.metadata.insert( u"visual_context_mime_type"_s, u"image/png"_s );
+
+  QgsAiModelRouter router;
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { toolMessage }, false ) ).object();
+  const QString payloadText = QString::fromUtf8( QJsonDocument( object ).toJson( QJsonDocument::Compact ) );
+  QVERIFY( !payloadText.contains( u"input_image"_s ) );
+  QVERIFY( !payloadText.contains( u"data:image/png;base64"_s ) );
+}
+
+void TestQgsAiModelRouter::visualContextImageIsOmittedFromCodexPayload()
+{
+  QgsSettings settings;
+  settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString imagePath = tempDir.filePath( u"canvas.png"_s );
+  QImage image( 2, 2, QImage::Format_ARGB32 );
+  image.fill( Qt::green );
+  QVERIFY( image.save( imagePath, "PNG" ) );
+
+  QgsAiChatMessage toolMessage;
+  toolMessage.role = QgsAiChatRole::Tool;
+  toolMessage.content = u"{\"image\":{\"path\":\"canvas.png\"}}"_s;
+  toolMessage.metadata.insert( u"tool_call_id"_s, u"call_1"_s );
+  toolMessage.metadata.insert( u"visual_context_image_path"_s, imagePath );
+  toolMessage.metadata.insert( u"visual_context_mime_type"_s, u"image/png"_s );
+
+  QgsAiModelRouter router;
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, { toolMessage }, false ) ).object();
+  const QString payloadText = QString::fromUtf8( QJsonDocument( object ).toJson( QJsonDocument::Compact ) );
+  QVERIFY( !payloadText.contains( u"input_image"_s ) );
+  QVERIFY( !payloadText.contains( u"data:image/png;base64"_s ) );
+
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }
 
 void TestQgsAiModelRouter::dispatchLogDoesNotExposeEndpointQuery()

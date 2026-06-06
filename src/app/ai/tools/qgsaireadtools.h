@@ -26,6 +26,7 @@ using namespace Qt::StringLiterals;
 class QgsAiFileContextProvider;
 class QgsMapCanvas;
 class QgsProject;
+class QWidget;
 
 /**
  * read_file: returns text content of a workspace file. Optional start_line / end_line
@@ -118,6 +119,26 @@ class APP_EXPORT QgsAiGetCanvasExtentTool : public QgsAiTool
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
+};
+
+/**
+ * capture_map_canvas: renders the current 2D map canvas offscreen to a temporary PNG
+ * and returns the image path plus canvas metadata. The image is intended for visual
+ * context and may be sent to vision-capable model providers after user consent.
+ */
+class APP_EXPORT QgsAiCaptureMapCanvasTool : public QgsAiTool
+{
+  public:
+    QgsAiCaptureMapCanvasTool( QgsMapCanvas *canvas, QWidget *consentParent = nullptr );
+
+    QString name() const override { return u"capture_map_canvas"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+
+  private:
+    QgsMapCanvas *mCanvas = nullptr;
+    QWidget *mConsentParent = nullptr;
 };
 
 #endif // QGSAIREADTOOLS_H

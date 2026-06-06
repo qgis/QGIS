@@ -22,11 +22,15 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
+#include "qgslayertree.h"
+#include "qgslayertreelayer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
@@ -88,6 +92,54 @@ namespace
     e.insert( u"xmax"_s, extent.xMaximum() );
     e.insert( u"ymax"_s, extent.yMaximum() );
     return e;
+  }
+
+  QString layerTreePath( QgsLayerTreeLayer *node )
+  {
+    if ( !node )
+      return QString();
+
+    QStringList parts;
+    QgsLayerTreeNode *current = node;
+    while ( current )
+    {
+      if ( current->parent() && !current->name().isEmpty() )
+        parts.prepend( current->name() );
+      current = current->parent();
+    }
+    return u"/%1"_s.arg( parts.join( "/"_L1 ) );
+  }
+
+  QJsonObject layerVisualSummary( QgsMapLayer *layer, QgsLayerTreeLayer *node )
+  {
+    QJsonObject summary;
+    if ( !layer )
+      return summary;
+
+    summary.insert( u"visible"_s, node ? node->isVisible() : true );
+    summary.insert( u"checked"_s, node ? node->itemVisibilityChecked() : true );
+    if ( node )
+      summary.insert( u"tree_path"_s, layerTreePath( node ) );
+    summary.insert( u"opacity"_s, layer->opacity() );
+    summary.insert( u"scale_based_visibility"_s, layer->hasScaleBasedVisibility() );
+    summary.insert( u"minimum_scale"_s, layer->minimumScale() );
+    summary.insert( u"maximum_scale"_s, layer->maximumScale() );
+
+    if ( QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer ) )
+    {
+      summary.insert( u"renderer_type"_s, vector->renderer() ? vector->renderer()->type() : QString() );
+      summary.insert( u"labels_enabled"_s, vector->labelsEnabled() && vector->labeling() );
+    }
+    else if ( QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer ) )
+    {
+      summary.insert( u"renderer_type"_s, raster->renderer() ? raster->renderer()->type() : QString() );
+      summary.insert( u"labels_enabled"_s, raster->labelsEnabled() && raster->labeling() );
+    }
+    else
+    {
+      summary.insert( u"labels_enabled"_s, false );
+    }
+    return summary;
   }
 } //namespace
 
@@ -224,6 +276,9 @@ QgsAiToolResult QgsAiDescribeLayerTool::execute( const QJsonObject &args )
   if ( !layer )
     return QgsAiToolResult::error( u"No layer with id: %1"_s.arg( layerId ) );
 
+  QgsLayerTree *root = project->layerTreeRoot();
+  QgsLayerTreeLayer *treeNode = root ? root->findLayer( layerId ) : nullptr;
+
   const int requestedSamples = args.value( u"sample_features"_s ).toInt( 0 );
   const int maxSamples = std::clamp( requestedSamples, 0, 10 );
 
@@ -234,6 +289,7 @@ QgsAiToolResult QgsAiDescribeLayerTool::execute( const QJsonObject &args )
   output.insert( u"crs"_s, layer->crs().authid() );
   output.insert( u"source"_s, layer->publicSource() );
   output.insert( u"extent"_s, extentJson( layer->extent() ) );
+  output.insert( u"visual"_s, layerVisualSummary( layer, treeNode ) );
 
   if ( QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer ) )
   {

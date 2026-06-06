@@ -28,6 +28,7 @@
 
 #include <QByteArray>
 #include <QDateTime>
+#include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -106,6 +107,30 @@ namespace
     if ( url.isValid() && !url.host().isEmpty() )
       return url.host();
     return u"(custom endpoint)"_s;
+  }
+
+  bool readVisualContextImage( const QgsAiChatMessage &message, QString &mimeType, QString &base64Data )
+  {
+    if ( !QgsSettings().value( u"geoai/visual_context/image_send_consent"_s, false ).toBool() )
+      return false;
+
+    const QString imagePath = message.metadata.value( u"visual_context_image_path"_s ).toString();
+    if ( imagePath.isEmpty() )
+      return false;
+
+    QFile file( imagePath );
+    if ( !file.open( QIODevice::ReadOnly ) )
+      return false;
+
+    const QByteArray bytes = file.readAll();
+    if ( bytes.isEmpty() )
+      return false;
+
+    mimeType = message.metadata.value( u"visual_context_mime_type"_s, u"image/png"_s ).toString();
+    if ( mimeType.isEmpty() )
+      mimeType = u"image/png"_s;
+    base64Data = QString::fromLatin1( bytes.toBase64() );
+    return true;
   }
 } //namespace
 
@@ -252,7 +277,35 @@ QJsonArray QgsAiModelRouter::buildAnthropicUserContent( const QgsAiChatMessage &
     QJsonObject toolResult;
     toolResult.insert( u"type"_s, u"tool_result"_s );
     toolResult.insert( u"tool_use_id"_s, message.metadata.value( u"tool_call_id"_s ).toString() );
-    toolResult.insert( u"content"_s, message.content );
+
+    QString mimeType;
+    QString base64Data;
+    if ( readVisualContextImage( message, mimeType, base64Data ) )
+    {
+      QJsonArray resultContent;
+
+      QJsonObject textBlock;
+      textBlock.insert( u"type"_s, u"text"_s );
+      textBlock.insert( u"text"_s, message.content );
+      resultContent.push_back( textBlock );
+
+      QJsonObject source;
+      source.insert( u"type"_s, u"base64"_s );
+      source.insert( u"media_type"_s, mimeType );
+      source.insert( u"data"_s, base64Data );
+
+      QJsonObject imageBlock;
+      imageBlock.insert( u"type"_s, u"image"_s );
+      imageBlock.insert( u"source"_s, source );
+      resultContent.push_back( imageBlock );
+
+      toolResult.insert( u"content"_s, resultContent );
+    }
+    else
+    {
+      toolResult.insert( u"content"_s, message.content );
+    }
+
     if ( message.metadata.value( u"is_error"_s ).toBool() )
       toolResult.insert( u"is_error"_s, true );
     content.push_back( toolResult );
@@ -266,7 +319,7 @@ QJsonArray QgsAiModelRouter::buildAnthropicUserContent( const QgsAiChatMessage &
   return content;
 }
 
-void QgsAiModelRouter::appendOpenAiInputItems( const QgsAiChatMessage &message, QJsonArray &input ) const
+void QgsAiModelRouter::appendOpenAiInputItems( Provider provider, const QgsAiChatMessage &message, QJsonArray &input ) const
 {
   // Tool results are emitted as standalone function_call_output items, not as messages.
   if ( message.role == QgsAiChatRole::Tool )
@@ -276,6 +329,32 @@ void QgsAiModelRouter::appendOpenAiInputItems( const QgsAiChatMessage &message, 
     item.insert( u"call_id"_s, message.metadata.value( u"tool_call_id"_s ).toString() );
     item.insert( u"output"_s, message.content );
     input.push_back( item );
+
+    if ( provider == Provider::OpenAi )
+    {
+      QString mimeType;
+      QString base64Data;
+      if ( readVisualContextImage( message, mimeType, base64Data ) )
+      {
+        QJsonObject imageMessage;
+        imageMessage.insert( u"type"_s, u"message"_s );
+        imageMessage.insert( u"role"_s, u"user"_s );
+
+        QJsonArray content;
+        QJsonObject textBlock;
+        textBlock.insert( u"type"_s, u"input_text"_s );
+        textBlock.insert( u"text"_s, u"Visual context image captured from the QGIS map canvas for the preceding tool result."_s );
+        content.push_back( textBlock );
+
+        QJsonObject imageBlock;
+        imageBlock.insert( u"type"_s, u"input_image"_s );
+        imageBlock.insert( u"image_url"_s, u"data:%1;base64,%2"_s.arg( mimeType, base64Data ) );
+        content.push_back( imageBlock );
+
+        imageMessage.insert( u"content"_s, content );
+        input.push_back( imageMessage );
+      }
+    }
     return;
   }
 
@@ -348,7 +427,7 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
         codexInstructions += message.content;
         continue;
       }
-      appendOpenAiInputItems( message, input );
+      appendOpenAiInputItems( provider, message, input );
     }
     payload.insert( u"input"_s, input );
 

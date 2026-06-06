@@ -16,27 +16,205 @@
 #include "qgsaireadtools.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include "qgsaifilecontextprovider.h"
 #include "qgsaitoolschemautil.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsapplication.h"
+#include "qgslayertree.h"
+#include "qgslayertreelayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaprendererparalleljob.h"
+#include "qgsmapsettings.h"
+#include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
+#include "qgsrenderer.h"
+#include "qgssettings.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilerenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
+#include <QDateTime>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QImage>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QMessageBox>
+#include <QSize>
 #include <QString>
 #include <QStringList>
+#include <QUuid>
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+  QString visualConsentSettingKey()
+  {
+    return u"geoai/visual_context/image_send_consent"_s;
+  }
+
+  QJsonObject extentJson( const QgsRectangle &extent )
+  {
+    QJsonObject e;
+    e.insert( u"xmin"_s, extent.xMinimum() );
+    e.insert( u"ymin"_s, extent.yMinimum() );
+    e.insert( u"xmax"_s, extent.xMaximum() );
+    e.insert( u"ymax"_s, extent.yMaximum() );
+    return e;
+  }
+
+  QString layerTreePath( QgsLayerTreeLayer *node )
+  {
+    if ( !node )
+      return QString();
+
+    QStringList parts;
+    QgsLayerTreeNode *current = node;
+    while ( current )
+    {
+      if ( current->parent() && !current->name().isEmpty() )
+        parts.prepend( current->name() );
+      current = current->parent();
+    }
+    return u"/%1"_s.arg( parts.join( "/"_L1 ) );
+  }
+
+  QJsonObject layerVisualSummary( QgsMapLayer *layer, QgsLayerTreeLayer *node = nullptr, int renderOrder = -1, double scale = 0 )
+  {
+    QJsonObject summary;
+    if ( !layer )
+      return summary;
+
+    summary.insert( u"visible"_s, node ? node->isVisible() : true );
+    summary.insert( u"checked"_s, node ? node->itemVisibilityChecked() : true );
+    if ( node )
+      summary.insert( u"tree_path"_s, layerTreePath( node ) );
+    if ( renderOrder >= 0 )
+      summary.insert( u"render_order"_s, renderOrder );
+
+    summary.insert( u"opacity"_s, layer->opacity() );
+    summary.insert( u"scale_based_visibility"_s, layer->hasScaleBasedVisibility() );
+    summary.insert( u"minimum_scale"_s, layer->minimumScale() );
+    summary.insert( u"maximum_scale"_s, layer->maximumScale() );
+    if ( scale > 0 )
+      summary.insert( u"in_scale_range"_s, layer->isInScaleRange( scale ) );
+
+    if ( QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer ) )
+    {
+      summary.insert( u"renderer_type"_s, vector->renderer() ? vector->renderer()->type() : QString() );
+      summary.insert( u"labels_enabled"_s, vector->labelsEnabled() && vector->labeling() );
+    }
+    else if ( QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer ) )
+    {
+      summary.insert( u"renderer_type"_s, raster->renderer() ? raster->renderer()->type() : QString() );
+      summary.insert( u"labels_enabled"_s, raster->labelsEnabled() && raster->labeling() );
+    }
+    else if ( QgsVectorTileLayer *vectorTile = qobject_cast<QgsVectorTileLayer *>( layer ) )
+    {
+      summary.insert( u"renderer_type"_s, vectorTile->renderer() ? vectorTile->renderer()->type() : QString() );
+      summary.insert( u"labels_enabled"_s, vectorTile->labelsEnabled() && vectorTile->labeling() );
+    }
+    else if ( QgsMeshLayer *mesh = qobject_cast<QgsMeshLayer *>( layer ) )
+    {
+      summary.insert( u"labels_enabled"_s, mesh->labelsEnabled() && mesh->labeling() );
+    }
+    else
+    {
+      summary.insert( u"labels_enabled"_s, false );
+    }
+
+    return summary;
+  }
+
+  QJsonArray layerRefsJson( const QList<QgsMapLayer *> &layers )
+  {
+    QJsonArray array;
+    for ( int i = 0; i < layers.size(); ++i )
+    {
+      QgsMapLayer *layer = layers.at( i );
+      if ( !layer )
+        continue;
+      QJsonObject entry;
+      entry.insert( u"id"_s, layer->id() );
+      entry.insert( u"name"_s, layer->name() );
+      entry.insert( u"type"_s, QgsMapLayerFactory::typeToString( layer->type() ) );
+      entry.insert( u"render_order"_s, i );
+      array.push_back( entry );
+    }
+    return array;
+  }
+
+  QString visualContextDirectory()
+  {
+    const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_visual_context"_s;
+    QDir().mkpath( dir );
+    return dir;
+  }
+
+  void cleanupOldVisualContextFiles( const QString &dirPath )
+  {
+    QDir dir( dirPath );
+    const QFileInfoList files = dir.entryInfoList( QStringList() << u"*.png"_s, QDir::Files, QDir::Time );
+    const QDateTime now = QDateTime::currentDateTime();
+    for ( const QFileInfo &info : files )
+    {
+      if ( info.lastModified().secsTo( now ) > 24 * 60 * 60 )
+        QFile::remove( info.absoluteFilePath() );
+    }
+  }
+
+  bool ensureVisualContextConsent( QWidget *parent )
+  {
+    QgsSettings settings;
+    if ( settings.value( visualConsentSettingKey(), false ).toBool() )
+      return true;
+
+    if ( !parent )
+      return false;
+
+    const QMessageBox::StandardButton answer = QMessageBox::question(
+      parent,
+      QObject::tr( "Share map screenshot with AI" ),
+      QObject::tr(
+        "GeoAI can capture the current map canvas as an image and send it to vision-capable AI providers for this and future visual-context requests. The image may include visible map data, labels, and styles. Do you want to allow this?"
+      ),
+      QMessageBox::Yes | QMessageBox::No,
+      QMessageBox::No
+    );
+
+    if ( answer != QMessageBox::Yes )
+      return false;
+
+    settings.setValue( visualConsentSettingKey(), true );
+    return true;
+  }
+
+  QSize cappedRenderSize( QSize original, int requestedLongestSide )
+  {
+    if ( original.width() <= 0 || original.height() <= 0 )
+      original = QSize( 1280, 720 );
+
+    const int longestCap = std::clamp( requestedLongestSide <= 0 ? 1280 : requestedLongestSide, 1, 1600 );
+    static constexpr double maxPixels = 2000000.0;
+    const double longest = std::max( original.width(), original.height() );
+    const double area = static_cast<double>( original.width() ) * original.height();
+    double scale = std::min( 1.0, longestCap / longest );
+    if ( area * scale * scale > maxPixels )
+      scale = std::sqrt( maxPixels / area );
+
+    return QSize( std::max( 1, static_cast<int>( std::round( original.width() * scale ) ) ), std::max( 1, static_cast<int>( std::round( original.height() * scale ) ) ) );
+  }
+} // namespace
 
 // ---------------------------------------------------------------------------
 // read_file
@@ -273,12 +451,22 @@ QgsAiToolResult QgsAiListProjectLayersTool::execute( const QJsonObject &args )
     if ( !layer )
       continue;
 
+    QgsLayerTree *root = project->layerTreeRoot();
+    QgsLayerTreeLayer *treeNode = root ? root->findLayer( layer->id() ) : nullptr;
+    int renderOrder = -1;
+    if ( root )
+    {
+      const QList<QgsMapLayer *> order = root->layerOrder();
+      renderOrder = order.indexOf( layer );
+    }
+
     QJsonObject entry;
     entry.insert( u"id"_s, layer->id() );
     entry.insert( u"name"_s, layer->name() );
     entry.insert( u"type"_s, QgsMapLayerFactory::typeToString( layer->type() ) );
     entry.insert( u"crs"_s, layer->crs().authid() );
     entry.insert( u"source"_s, layer->publicSource() );
+    entry.insert( u"visual"_s, layerVisualSummary( layer, treeNode, renderOrder ) );
 
     if ( QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer ) )
     {
@@ -343,5 +531,85 @@ QgsAiToolResult QgsAiGetCanvasExtentTool::execute( const QJsonObject &args )
   output.insert( u"extent"_s, extentJson );
   output.insert( u"crs"_s, crs.authid() );
   output.insert( u"scale"_s, mCanvas->scale() );
+  output.insert( u"rotation"_s, mCanvas->rotation() );
+  output.insert( u"width"_s, mCanvas->mapSettings().outputSize().width() );
+  output.insert( u"height"_s, mCanvas->mapSettings().outputSize().height() );
+  output.insert( u"device_pixel_ratio"_s, mCanvas->mapSettings().devicePixelRatio() );
+  output.insert( u"rendered_layers"_s, layerRefsJson( mCanvas->mapSettings().layers( true ) ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// capture_map_canvas
+// ---------------------------------------------------------------------------
+
+QgsAiCaptureMapCanvasTool::QgsAiCaptureMapCanvasTool( QgsMapCanvas *canvas, QWidget *consentParent )
+  : mCanvas( canvas )
+  , mConsentParent( consentParent )
+{}
+
+QString QgsAiCaptureMapCanvasTool::description() const
+{
+  return QStringLiteral(
+    "Renders the current 2D QGIS map canvas offscreen to a temporary PNG and returns "
+    "the image path plus canvas metadata. Use this only when the user asks you to inspect "
+    "what is visually happening on the map. The first use requires explicit user consent "
+    "because vision-capable providers may receive the screenshot."
+  );
+}
+
+QJsonObject QgsAiCaptureMapCanvasTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"max_longest_side"_s, prop( u"integer"_s, u"Optional longest-side pixel cap for the rendered image (default 1280, hard cap 1600)."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiCaptureMapCanvasTool::execute( const QJsonObject &args )
+{
+  if ( !mCanvas )
+    return QgsAiToolResult::error( u"No map canvas available."_s );
+
+  if ( !ensureVisualContextConsent( mConsentParent ) )
+    return QgsAiToolResult::error( u"Visual context screenshot was not sent because the user has not consented to sharing map images with AI providers."_s );
+
+  QgsMapSettings settings = mCanvas->mapSettings();
+  settings.setDevicePixelRatio( 1.0 );
+  const QSize outputSize = cappedRenderSize( settings.outputSize().isValid() ? settings.outputSize() : mCanvas->size(), args.value( u"max_longest_side"_s ).toInt( 1280 ) );
+  settings.setOutputSize( outputSize );
+  settings.setExtent( mCanvas->extent() );
+
+  QgsMapRendererParallelJob job( settings );
+  job.start();
+  job.waitForFinished();
+  QImage image = job.renderedImage();
+  if ( image.isNull() )
+    return QgsAiToolResult::error( u"Map canvas render produced an empty image."_s );
+
+  const QString dir = visualContextDirectory();
+  cleanupOldVisualContextFiles( dir );
+  const QString path = QDir( dir ).filePath( u"canvas_%1.png"_s.arg( QUuid::createUuid().toString( QUuid::WithoutBraces ) ) );
+  if ( !image.save( path, "PNG" ) )
+    return QgsAiToolResult::error( u"Failed to save visual context image: %1"_s.arg( path ) );
+
+  QJsonObject imageJson;
+  imageJson.insert( u"path"_s, path );
+  imageJson.insert( u"mime_type"_s, u"image/png"_s );
+  imageJson.insert( u"width"_s, image.width() );
+  imageJson.insert( u"height"_s, image.height() );
+
+  QJsonObject canvasJson;
+  canvasJson.insert( u"extent"_s, extentJson( settings.extent() ) );
+  canvasJson.insert( u"visible_extent"_s, extentJson( settings.visibleExtent() ) );
+  canvasJson.insert( u"crs"_s, settings.destinationCrs().authid() );
+  canvasJson.insert( u"scale"_s, settings.scale() );
+  canvasJson.insert( u"rotation"_s, settings.rotation() );
+  canvasJson.insert( u"width"_s, outputSize.width() );
+  canvasJson.insert( u"height"_s, outputSize.height() );
+
+  QJsonObject output;
+  output.insert( u"image"_s, imageJson );
+  output.insert( u"canvas"_s, canvasJson );
+  output.insert( u"layers_rendered"_s, layerRefsJson( settings.layers( true ) ) );
   return QgsAiToolResult::ok( output );
 }

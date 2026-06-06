@@ -70,6 +70,7 @@ class TestQgsAiAgentSessionManager : public QObject
     void agentBehaviorSettingsRoundTrip();
     void agentBehaviorTogglePropagatesToRouter();
     void planModeDoesNotAdvertiseTools();
+    void askAndAgentAdvertiseCaptureMapCanvasTool();
     void agentModeOmitsUnavailableTools();
     void collectsInlineRulesAndSkills();
     void collectsWorkspaceRulesFiles();
@@ -218,6 +219,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()
 
   QgsAiToolRegistry registry;
   registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"capture_map_canvas"_s, true ) );
 
   QgsAiModelRouter router;
   router.setToolRegistry( &registry );
@@ -277,6 +279,43 @@ void TestQgsAiAgentSessionManager::planModeDoesNotAdvertiseTools()
   const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, false ) ).object();
   QVERIFY( !object.contains( u"tools"_s ) );
   QVERIFY( !object.contains( u"tool_choice"_s ) );
+
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::askAndAgentAdvertiseCaptureMapCanvasTool()
+{
+  QgsSettings settings;
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"capture_map_canvas"_s, true ) );
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"run_python"_s, true ) );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  manager.setToolRegistry( &registry );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.allowCustomActions = true;
+  manager.setAgentBehaviorSettings( updated );
+
+  manager.setActiveAgent( u"reviewer"_s );
+  QVERIFY( router.allowedTools().contains( u"capture_map_canvas"_s ) );
+  QVERIFY( !router.allowedTools().contains( u"run_python"_s ) );
+
+  manager.setActiveAgent( u"editor"_s );
+  QVERIFY( router.allowedTools().contains( u"capture_map_canvas"_s ) );
+  QVERIFY( router.allowedTools().contains( u"run_python"_s ) );
 
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
