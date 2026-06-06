@@ -294,7 +294,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   };
   createShortcuts( u"m3DSetSceneExtent"_s, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
 
-  mActionOpenCameraControlsWidget = new QAction( QgsApplication::getThemeIcon( u"/mIconCamera.svg"_s ), tr( "Camera controls" ), this );
+  mActionOpenCameraControlsWidget = new QAction( QgsApplication::getThemeIcon( u"/mIconCamera.svg"_s ), tr( "Camera Controls" ), this );
   connect( mActionOpenCameraControlsWidget, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configureCamera );
   mCameraMenu->addAction( mActionOpenCameraControlsWidget );
 
@@ -847,7 +847,7 @@ void Qgs3DMapCanvasWidget::configureCamera()
 
   mCameraControlsDialog = new QDialog( this );
   mCameraControlsDialog->setAttribute( Qt::WA_DeleteOnClose );
-  mCameraControlsDialog->setWindowTitle( tr( "Camera controls" ) );
+  mCameraControlsDialog->setWindowTitle( tr( "Camera Controls" ) );
   mCameraControlsDialog->setObjectName( u"3DCameraControlsDialog"_s );
   mCameraControlsDialog->setMinimumSize( 300, 200 );
   QgsGui::enableAutoGeometryRestore( mCameraControlsDialog );
