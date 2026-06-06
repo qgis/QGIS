@@ -1194,7 +1194,12 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
   const auto attributes { featureRequest.subsetOfAttributes() };
   QgsFields exportedFields;
-  exportedFields.append( QgsField( u"qgs_fid"_s, QMetaType::Type::QString ) );
+  const bool addQgsFid { mapLayer->dataProvider()->pkAttributeIndexes().count() > 1 && mapLayer->fields().lookupField( u"qgs_fid"_s ) == -1 };
+  if ( addQgsFid )
+  {
+    exportedFields.append( QgsField( u"qgs_fid"_s, QMetaType::Type::QString ) );
+  }
+
   for ( int i = 0; i < mapLayer->fields().count(); i++ )
   {
     if ( !attributes.isEmpty() && !attributes.contains( i ) )
@@ -1228,7 +1233,6 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
   QgsFeature feat;
   qlonglong i { 0 };
-  QMap<QgsFeatureId, QString> fidMap;
 
   while ( features.nextFeature( feat ) )
   {
@@ -1236,13 +1240,14 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
     if ( i >= exportContext.offset )
     {
       // Patch feature to add the server feature id
-      const QgsFeatureId originalFid { feat.id() };
-      const QString newFid { QgsServerFeatureId::getServerFid( feat, mapLayer->dataProvider()->pkAttributeIndexes() ) };
-      fidMap.insert( originalFid, newFid );
-      QgsAttributes attributes = feat.attributes();
-      attributes.insert( 0, newFid );
-      feat.setFields( exportedFields );
-      feat.setAttributes( attributes );
+      if ( addQgsFid )
+      {
+        const QString newFid { QgsServerFeatureId::getServerFid( feat, mapLayer->dataProvider()->pkAttributeIndexes() ) };
+        QgsAttributes attributes = feat.attributes();
+        attributes.insert( 0, newFid );
+        feat.setAttributes( attributes );
+        feat.setFields( exportedFields );
+      }
       featureList << feat;
     }
     i++;
@@ -1271,6 +1276,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
     }
   }
 
+  // cannot be const:
   for ( QgsFeature &f : featureList )
   {
     if ( !writer->addFeature( f ) )
