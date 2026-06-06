@@ -51,6 +51,29 @@ class QgsPointCloudLayer;
 class QgsAnnotationLayer;
 
 /**
+ * \class QgsProcessingFormatExtensionPair
+ * \ingroup core
+ *
+ * \brief Details of available filters and formats.
+ *
+ * \since QGIS 4.2
+ */
+struct CORE_EXPORT QgsProcessingFormatExtensionPair
+{
+    //! Unique format name (GDAL driver name)
+    QString format;
+
+    //! File extension
+    QString extension;
+
+    //! Constructor
+    QgsProcessingFormatExtensionPair( const QString &format, const QString &extension )
+      : format( format )
+      , extension( extension )
+    {}
+};
+
+/**
  * \class QgsProcessingFeatureSourceDefinition
  * \ingroup core
  *
@@ -3856,9 +3879,9 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     /**
      * Returns a list of (format, file extension) supported by this provider.
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.2
      */
-    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+    virtual QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensions() const;
 
     /**
      * Creates a new parameter using the definition from a script code.

@@ -1,5 +1,15 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingparameters.h
 try:
+    QgsProcessingFormatExtensionPair.__attribute_docs__ = {'format': 'Unique format name (GDAL driver name)', 'extension': 'File extension'}
+    QgsProcessingFormatExtensionPair.__annotations__ = {'format': str, 'extension': str}
+    QgsProcessingFormatExtensionPair.__doc__ = """
+Details of available filters and formats.
+
+.. versionadded:: 4.2"""
+    QgsProcessingFormatExtensionPair.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingFeatureSourceDefinition.__attribute_docs__ = {'source': "Source definition. Usually a static property set to a source layer's ID or file name.", 'selectedFeaturesOnly': '``True`` if only selected features in the source should be used by algorithms.', 'featureLimit': 'If set to a value > 0, places a limit on the maximum number of features which will be\nread from the source.\n\n.. versionadded:: 3.14', 'filterExpression': 'Optional expression filter to use for filtering features which will be read from the source.\n\n.. versionadded:: 3.32', 'flags': 'Flags which dictate source behavior.\n\n.. versionadded:: 3.14', 'geometryCheck': 'Geometry check method to apply to this source. This setting is only\nutilized if the :py:class:`Qgis`.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck is\nset in QgsProcessingFeatureSourceDefinition.flags.\n\n.. versionadded:: 3.14'}
     QgsProcessingFeatureSourceDefinition.__annotations__ = {'source': 'QgsProperty', 'selectedFeaturesOnly': bool, 'featureLimit': int, 'filterExpression': str, 'flags': 'Qgis.ProcessingFeatureSourceDefinitionFlags', 'geometryCheck': 'Qgis.InvalidGeometryCheck'}
     QgsProcessingFeatureSourceDefinition.__group__ = ['processing']

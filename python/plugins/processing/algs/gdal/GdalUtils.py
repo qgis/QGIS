@@ -41,6 +41,7 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingFormatExtensionPair,
     QgsProcessingRasterLayerDefinition,
     QgsProcessingUtils,
     QgsProviderRegistry,
@@ -297,15 +298,18 @@ class GdalUtils:
         return allexts
 
     @staticmethod
-    def getSupportedOutputRasterExtensions():
-        allexts = []
-        for exts in list(GdalUtils.getSupportedOutputRasters().values()):
+    def getSupportedOutputRasterFormatAndExtensions():
+        res = []
+        for format, exts in GdalUtils.getSupportedOutputRasters().items():
             for ext in exts:
-                if ext not in allexts and ext not in ["", "tif", "tiff"]:
-                    allexts.append(ext)
-        allexts.sort()
-        allexts[0:0] = ["tif", "tiff"]
-        return allexts
+                if ext != "" and format != "GTiff":
+                    res.append(QgsProcessingFormatExtensionPair(format, ext))
+        res.sort(key=lambda pair: (pair.format, pair.extension))
+        res[0:0] = [
+            QgsProcessingFormatExtensionPair("GTiff", "tif"),
+            QgsProcessingFormatExtensionPair("GTiff", "tiff"),
+        ]
+        return res
 
     @staticmethod
     def getVectorDriverFromFileName(filename):

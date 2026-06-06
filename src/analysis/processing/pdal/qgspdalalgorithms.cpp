@@ -91,9 +91,9 @@ QStringList QgsPdalAlgorithms::supportedOutputVectorLayerExtensions() const
   return QStringList() << u"gpkg"_s;
 }
 
-QList<QPair<QString, QString>> QgsPdalAlgorithms::supportedOutputRasterLayerFormatAndExtensions() const
+QList<QgsProcessingFormatExtensionPair> QgsPdalAlgorithms::supportedOutputRasterLayerFormatAndExtensions() const
 {
-  return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), u"tif"_s );
+  return QList<QgsProcessingFormatExtensionPair>() << QgsProcessingFormatExtensionPair( QString(), u"tif"_s );
 }
 
 QStringList QgsPdalAlgorithms::supportedOutputPointCloudLayerExtensions() const

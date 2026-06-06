@@ -154,11 +154,11 @@ provider.
    :py:func:`~QgsProcessingProvider.supportedOutputRasterLayerFormatAndExtensions` instead.
 %End
 
-    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+    virtual QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensions() const;
 %Docstring
 Returns a list of (format, file extension) supported by this provider.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
 

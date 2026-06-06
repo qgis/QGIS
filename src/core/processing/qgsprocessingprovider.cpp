@@ -71,29 +71,29 @@ QString QgsProcessingProvider::versionInfo() const
 
 QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
 {
-  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  const QList<QgsProcessingFormatExtensionPair> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
   QSet< QString > extensions;
   QStringList res;
-  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
+  for ( const QgsProcessingFormatExtensionPair &formatAndExt : std::as_const( formatAndExtensions ) )
   {
-    if ( !extensions.contains( formatAndExt.second ) )
+    if ( !extensions.contains( formatAndExt.extension ) )
     {
-      extensions.insert( formatAndExt.second );
-      res << formatAndExt.second;
+      extensions.insert( formatAndExt.extension );
+      res << formatAndExt.extension;
     }
   }
   return res;
 }
 
-QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensions() const
+QList<QgsProcessingFormatExtensionPair> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensions() const
 {
   return supportedOutputRasterLayerFormatAndExtensionsDefault();
 }
 
-QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault()
+QList<QgsProcessingFormatExtensionPair> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault()
 {
   const auto formats = QgsRasterFileWriter::supportedFiltersAndFormats();
-  QList<QPair<QString, QString>> res;
+  QList<QgsProcessingFormatExtensionPair> res;
 
   const thread_local QRegularExpression rx( u"\\*\\.([a-zA-Z0-9]*)"_s );
 
@@ -105,38 +105,38 @@ QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayer
       continue;
 
     const QString matched = match.captured( 1 );
-    res << QPair<QString, QString>( format.driverName, matched );
+    res << QgsProcessingFormatExtensionPair( format.driverName, matched );
   }
 
-  std::sort( res.begin(), res.end(), []( const QPair<QString, QString> &a, const QPair<QString, QString> &b ) -> bool {
+  std::sort( res.begin(), res.end(), []( const QgsProcessingFormatExtensionPair &a, const QgsProcessingFormatExtensionPair &b ) -> bool {
     for ( const QString &tifExt : { u"tif"_s, u"tiff"_s } )
     {
-      if ( a.second == tifExt )
+      if ( a.extension == tifExt )
       {
-        if ( b.second == a.second )
+        if ( b.extension == a.extension )
         {
-          if ( a.first == "GTiff"_L1 )
+          if ( a.format == "GTiff"_L1 )
             return true;
-          else if ( b.first == "GTiff"_L1 )
+          else if ( b.format == "GTiff"_L1 )
             return false;
-          return a.first.toLower().localeAwareCompare( b.first.toLower() ) < 0;
+          return a.format.toLower().localeAwareCompare( b.format.toLower() ) < 0;
         }
         return true;
       }
-      else if ( b.second == tifExt )
+      else if ( b.extension == tifExt )
         return false;
     }
 
-    if ( a.second == "gpkg"_L1 )
+    if ( a.extension == "gpkg"_L1 )
     {
-      if ( b.second == a.second )
-        return a.first.toLower().localeAwareCompare( b.first.toLower() ) < 0;
+      if ( b.extension == a.extension )
+        return a.format.toLower().localeAwareCompare( b.format.toLower() ) < 0;
       return true;
     }
-    else if ( b.second == "gpkg"_L1 )
+    else if ( b.extension == "gpkg"_L1 )
       return false;
 
-    return a.second.toLower().localeAwareCompare( b.second.toLower() ) < 0;
+    return a.extension.toLower().localeAwareCompare( b.extension.toLower() ) < 0;
   } );
 
   return res;
@@ -324,10 +324,10 @@ QString QgsProcessingProvider::defaultRasterFileFormat() const
 {
   const QString userDefault = QgsProcessingUtils::defaultRasterFormat();
 
-  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
-  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
+  const QList<QgsProcessingFormatExtensionPair> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  for ( const QgsProcessingFormatExtensionPair &formatAndExt : std::as_const( formatAndExtensions ) )
   {
-    if ( formatAndExt.first.compare( userDefault, Qt::CaseInsensitive ) == 0 )
+    if ( formatAndExt.format.compare( userDefault, Qt::CaseInsensitive ) == 0 )
     {
       // user set default is supported by provider, use that
       return userDefault;
@@ -336,7 +336,7 @@ QString QgsProcessingProvider::defaultRasterFileFormat() const
 
   if ( !formatAndExtensions.empty() )
   {
-    return formatAndExtensions.at( 0 ).first;
+    return formatAndExtensions.at( 0 ).format;
   }
   else
   {

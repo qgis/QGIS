@@ -13,6 +13,21 @@
 
 
 
+struct QgsProcessingFormatExtensionPair
+{
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+    QString format;
+
+    QString extension;
+
+    QgsProcessingFormatExtensionPair( const QString &format, const QString &extension );
+%Docstring
+Constructor
+%End
+};
+
 
 class QgsProcessingFeatureSourceDefinition
 {
@@ -4285,11 +4300,11 @@ parameter.
    Use :py:func:`~QgsProcessingParameterRasterDestination.supportedOutputRasterLayerFormatAndExtensions` instead.
 %End
 
-    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+    virtual QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensions() const;
 %Docstring
 Returns a list of (format, file extension) supported by this provider.
 
-.. versionadded:: 3.40
+.. versionadded:: 4.2
 %End
 
     static QgsProcessingParameterRasterDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;

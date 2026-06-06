@@ -120,7 +120,10 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 
     QStringList supportedOutputVectorLayerExtensions() const override { return QStringList() << u"mif"_s; }
 
-    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override { return QList<QPair<QString, QString>>() << QPair<QString, QString>( u"XYZ"_s, u"xyz"_s ); }
+    QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensions() const override
+    {
+      return QList<QgsProcessingFormatExtensionPair>() << QgsProcessingFormatExtensionPair( u"XYZ"_s, u"xyz"_s );
+    }
 
     void loadAlgorithms() override
     {

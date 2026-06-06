@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT QgsPdalAlgorithms : public QgsProcessingProvider
     bool supportsNonFileBasedOutput() const override;
 
     QStringList supportedOutputVectorLayerExtensions() const override;
-    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override;
+    QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensions() const override;
     QStringList supportedOutputPointCloudLayerExtensions() const override;
 
   protected:

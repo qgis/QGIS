@@ -209,6 +209,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( rasterParam->defaultFileExtension(), u"tif"_s ); // before alg is accessible
       QVERIFY( addParameter( rasterParam ) );
       QCOMPARE( rasterParam->defaultFileExtension(), u"tif"_s );
+      QVERIFY( rasterParam->createFileFilter().contains( u"GTIFF - tif files (*.tif)"_s ) );
 
       // should allow parameters with same name but different case (required for grass provider)
       QgsProcessingParameterBoolean *p1C = new QgsProcessingParameterBoolean( "P1" );
@@ -618,9 +619,9 @@ class DummyProvider3 : public QgsProcessingProvider // clazy:exclude=missing-qob
 
     QStringList supportedOutputTableExtensions() const override { return QStringList() << u"dbf"_s; }
 
-    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override
+    QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensions() const override
     {
-      return QList<QPair<QString, QString>>() << QPair<QString, QString>( u"XYZ"_s, u"xyz"_s ) << QPair<QString, QString>( u"BMP"_s, u"bmp"_s );
+      return QList<QgsProcessingFormatExtensionPair>() << QgsProcessingFormatExtensionPair( u"XYZ"_s, u"xyz"_s ) << QgsProcessingFormatExtensionPair( u"BMP"_s, u"bmp"_s );
     }
 
     QStringList supportedOutputPointCloudLayerExtensions() const override { return QStringList() << u"las"_s << u"ept.json"_s; }
@@ -639,7 +640,10 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 
     QStringList supportedOutputVectorLayerExtensions() const override { return QStringList() << u"mif"_s; }
 
-    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override { return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), u"mig"_s ); }
+    QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensions() const override
+    {
+      return QList<QgsProcessingFormatExtensionPair>() << QgsProcessingFormatExtensionPair( QString(), u"mig"_s );
+    }
 
     void loadAlgorithms() override { QVERIFY( addAlgorithm( new DummyAlgorithm2( "alg1" ) ) ); }
 };
@@ -8683,12 +8687,12 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( def->createFileFilter().contains( u"*.*"_s ) );
 
   const QStringList filters = def->createFileFilter().split( u";;"_s );
-  const QList<QPair<QString, QString>> formatAndExtensions = def->supportedOutputRasterLayerFormatAndExtensions();
+  const QList<QgsProcessingFormatExtensionPair> formatAndExtensions = def->supportedOutputRasterLayerFormatAndExtensions();
   QCOMPARE( filters.size(), formatAndExtensions.size() + 1 ); // filters have one more entry for all files
   for ( qsizetype i = 0; i < formatAndExtensions.size(); ++i )
   {
-    QVERIFY( filters[i].contains( formatAndExtensions[i].first.toUpper() ) );
-    QVERIFY( filters[i].contains( formatAndExtensions[i].second ) );
+    QVERIFY( filters[i].contains( formatAndExtensions[i].format.toUpper() ) );
+    QVERIFY( filters[i].contains( formatAndExtensions[i].extension ) );
   }
 
   QVariantMap params;

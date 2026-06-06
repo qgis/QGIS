@@ -7137,17 +7137,25 @@ QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
 QString QgsProcessingParameterRasterDestination::createFileFilter() const
 {
   QStringList filters;
-  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  const QList<QgsProcessingFormatExtensionPair> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
   // Note: the returned filter list MUST be in the same order as the output
   // of supportedOutputRasterLayerFormatAndExtensions(), otherwise
   // QgsProcessingLayerOutputDestinationWidget::selectFile() will misbehave.
-  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
+  for ( const QgsProcessingFormatExtensionPair &formatAndExt : std::as_const( formatAndExtensions ) )
   {
-    QString format = formatAndExt.first;
-    const QString &extension = formatAndExt.second;
+    QString format = formatAndExt.format;
+    const QString &extension = formatAndExt.extension;
     if ( format.isEmpty() )
+    {
       format = extension;
-    filters << QObject::tr( "%1 files (*.%2)" ).arg( format.toUpper(), extension.toLower() );
+      filters << QObject::tr( "%1 files (*.%2)" ).arg( format.toUpper(), extension.toLower() );
+    }
+    else
+    {
+      // QgsProcessingLayerOutputDestinationWidget::selectFile() is sensitive
+      // to this "%1 - %2" format
+      filters << QObject::tr( "%1 - %2 files (*.%3)" ).arg( format.toUpper(), extension.toLower(), extension.toLower() );
+    }
   }
 
   return filters.join( ";;"_L1 ) + u";;"_s + QObject::tr( "All files (*.*)" );
@@ -7155,16 +7163,16 @@ QString QgsProcessingParameterRasterDestination::createFileFilter() const
 
 QStringList QgsProcessingParameterRasterDestination::supportedOutputRasterLayerExtensions() const
 {
-  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  const QList<QgsProcessingFormatExtensionPair> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
   QSet< QString > extensions;
-  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
+  for ( const QgsProcessingFormatExtensionPair &formatAndExt : std::as_const( formatAndExtensions ) )
   {
-    extensions.insert( formatAndExt.second );
+    extensions.insert( formatAndExt.extension );
   }
   return QStringList( extensions.constBegin(), extensions.constEnd() );
 }
 
-QList<QPair<QString, QString>> QgsProcessingParameterRasterDestination::supportedOutputRasterLayerFormatAndExtensions() const
+QList<QgsProcessingFormatExtensionPair> QgsProcessingParameterRasterDestination::supportedOutputRasterLayerFormatAndExtensions() const
 {
   if ( auto *lOriginalProvider = originalProvider() )
   {

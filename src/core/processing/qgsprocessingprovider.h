@@ -153,16 +153,16 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     /**
      * Returns a list of (format, file extension) supported by this provider.
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
-    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+    virtual QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensions() const;
 
     /**
      * Returns a list of (format, file extension) supported by GDAL
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
-    static QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensionsDefault() SIP_SKIP;
+    static QList<QgsProcessingFormatExtensionPair> supportedOutputRasterLayerFormatAndExtensionsDefault() SIP_SKIP;
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
