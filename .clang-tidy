@@ -26,3 +26,10 @@ CheckOptions:
   readability-identifier-naming.ClassMemberPrefix: s
 
   readability-identifier-naming.ConstexprVariableCase: UPPER_CASE
+
+  # Don't warn on converting int to float that can't represent whole int range,
+  # that is expected with floats and doesn't lead to bugs in reasonable code.
+  bugprone-narrowing-conversions.WarnOnIntegerToFloatingPointNarrowingConversion: false
+  # Don't warn on converting double to float, we generally can't avoid such
+  # conversions and they generally don't lead to bugs.
+  bugprone-narrowing-conversions.WarnOnFloatingPointNarrowingConversion: false
