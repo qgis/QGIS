@@ -98,7 +98,7 @@ class tri(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterRasterDestination(
                 self.OUTPUT, self.tr("Terrain Ruggedness Index")
-            )
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

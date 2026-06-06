@@ -136,7 +136,9 @@ class slope(GdalAlgorithm):
         self.addParameter(extra_param)
 
         self.addParameter(
-            QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr("Slope"))
+            QgsProcessingParameterRasterDestination(
+                self.OUTPUT, self.tr("Slope")
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

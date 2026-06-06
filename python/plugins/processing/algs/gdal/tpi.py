@@ -98,7 +98,7 @@ class tpi(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterRasterDestination(
                 self.OUTPUT, self.tr("Topographic Position Index")
-            )
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

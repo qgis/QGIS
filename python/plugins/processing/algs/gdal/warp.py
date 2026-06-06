@@ -220,7 +220,9 @@ class warp(GdalAlgorithm):
         self.addParameter(extra_param)
 
         self.addParameter(
-            QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr("Reprojected"))
+            QgsProcessingParameterRasterDestination(
+                self.OUTPUT, self.tr("Reprojected")
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

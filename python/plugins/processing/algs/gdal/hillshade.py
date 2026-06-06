@@ -173,7 +173,9 @@ class hillshade(GdalAlgorithm):
         self.addParameter(extra_param)
 
         self.addParameter(
-            QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr("Hillshade"))
+            QgsProcessingParameterRasterDestination(
+                self.OUTPUT, self.tr("Hillshade")
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

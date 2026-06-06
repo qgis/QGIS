@@ -123,7 +123,9 @@ class rearrange_bands(GdalAlgorithm):
         self.addParameter(dataType_param)
 
         self.addParameter(
-            QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr("Converted"))
+            QgsProcessingParameterRasterDestination(
+                self.OUTPUT, self.tr("Converted")
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

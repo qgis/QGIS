@@ -124,7 +124,9 @@ class pansharp(GdalAlgorithm):
         self.addParameter(extra_param)
 
         self.addParameter(
-            QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr("Output"))
+            QgsProcessingParameterRasterDestination(
+                self.OUTPUT, self.tr("Output")
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

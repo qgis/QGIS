@@ -133,7 +133,9 @@ class aspect(GdalAlgorithm):
         self.addParameter(extra_param)
 
         self.addParameter(
-            QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr("Aspect"))
+            QgsProcessingParameterRasterDestination(
+                self.OUTPUT, self.tr("Aspect")
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

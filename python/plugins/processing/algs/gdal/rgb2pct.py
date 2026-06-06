@@ -61,7 +61,9 @@ class rgb2pct(GdalAlgorithm):
         )
 
         self.addParameter(
-            QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr("RGB to PCT"))
+            QgsProcessingParameterRasterDestination(
+                self.OUTPUT, self.tr("RGB to PCT")
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):

@@ -161,7 +161,7 @@ class ClipRasterByExtent(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterRasterDestination(
                 self.OUTPUT, self.tr("Clipped (extent)")
-            )
+            ).setAcceptCreateCopyFormats()
         )
 
     def name(self):
