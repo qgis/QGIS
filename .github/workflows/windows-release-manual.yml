@@ -83,7 +83,8 @@ jobs:
             find sdk-root -maxdepth 3 -type d -print
             exit 1
           fi
-          echo "WINDOWS_SDK_PATH=$(cygpath -m "${SDK_DIR}")" >> "${GITHUB_ENV}"
+          SDK_DIR_ABS=$(cd "${SDK_DIR}" && pwd -W)
+          echo "WINDOWS_SDK_PATH=${SDK_DIR_ABS}" >> "${GITHUB_ENV}"
 
       - name: 🎡 Setup vcpkg
         if: ${{ inputs.sdk_run_id == '' }}
