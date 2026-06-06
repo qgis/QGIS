@@ -82,7 +82,16 @@ class APP_EXPORT QgsAiChatHistoryStore : public QObject
     //! Returns the largest ordering value stored for \a sessionId, or -1 if none.
     int lastOrdering( const QString &sessionId ) const;
 
+  signals:
+    //! Emitted when the workspace root changes and the session list may differ.
+    void sessionListChanged();
+
+  private slots:
+    void onWorkspaceRootChanged();
+
   private:
+    void resetDatabaseConnection();
+
     QString connectionName() const;
     QString dbPath() const;
     bool openDatabase( QString *errorMessage = nullptr ) const;

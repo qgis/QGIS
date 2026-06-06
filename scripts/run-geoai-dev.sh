@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BUILD_OUTPUT="/Volumes/LLM_MODELS/QGIS_AI/build/output"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BUILD_OUTPUT="${GEOAI_BUILD_DIR:-${ROOT}/build}/output"
 export PYTHONHOME="/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14"
+
+"${ROOT}/scripts/patch-macos-bundle.sh" >/dev/null
 
 exec "${BUILD_OUTPUT}/Contents/MacOS/qgis" "$@"

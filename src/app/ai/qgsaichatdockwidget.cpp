@@ -681,6 +681,13 @@ void QgsAiChatDockWidget::rebuildHistoryMenu()
     return;
   }
 
+  if ( mSessionManager->workspaceRoot().isEmpty() )
+  {
+    QAction *empty = menu->addAction( tr( "Configure AI workspace root to save chat history" ) );
+    empty->setEnabled( false );
+    return;
+  }
+
   const QList<QgsAiChatHistoryStore::SessionInfo> sessions = mSessionManager->listSessions();
   if ( sessions.isEmpty() )
   {
@@ -1256,7 +1263,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   planToken->setEchoMode( QLineEdit::Password );
   planToken->setPlaceholderText( tr( "Session token from your plan login..." ) );
 
-  QSettings workspaceSettings;
+  QgsSettings workspaceSettings;
   QLineEdit *aiWorkspaceRoot = new QLineEdit( settingValueWithLegacy( workspaceSettings, u"geoai/workspace/root"_s, u"qgis_ai/workspace/root"_s, QString() ).toString(), &dialog );
   aiWorkspaceRoot->setObjectName( u"aiWorkspaceRootLineEdit"_s );
   aiWorkspaceRoot->setPlaceholderText( tr( "Used when the QGIS project is unsaved" ) );
@@ -1359,7 +1366,7 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QFormLayout *indexingForm = new QFormLayout();
 
-  QSettings indexSettings;
+  QgsSettings indexSettings;
   const bool hasLayerIndexingSetting = indexSettings.contains( u"geoai/index/enable_layer_indexing"_s ) || indexSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
   const bool defaultLayerIndexingEnabled = mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration() && !requiresLayerIndexingConsent();
   const bool layerIndexingEnabled = hasLayerIndexingSetting ? settingValueWithLegacy( indexSettings, u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool()
@@ -1637,7 +1644,7 @@ void QgsAiChatDockWidget::openProviderSettings()
     errorMessages += error + '\n';
 
   {
-    QSettings settings;
+    QgsSettings settings;
     const QString requestedWorkspaceRoot = aiWorkspaceRoot->text().trimmed();
     const QString configuredWorkspaceRoot = requestedWorkspaceRoot.isEmpty() ? QString() : QDir::cleanPath( requestedWorkspaceRoot );
     if ( configuredWorkspaceRoot.isEmpty() )
@@ -1719,7 +1726,7 @@ void QgsAiChatDockWidget::openProviderSettings()
       }
     }
 
-    QSettings().setValue( u"geoai/index/enable_layer_indexing"_s, layerIndexingChoice );
+    QgsSettings().setValue( u"geoai/index/enable_layer_indexing"_s, layerIndexingChoice );
     const bool canUseEmbeddings = mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration();
     if ( mLayerIndexCoordinator )
     {
@@ -1784,11 +1791,11 @@ void QgsAiChatDockWidget::setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *
 
 bool QgsAiChatDockWidget::requiresLayerIndexingConsent()
 {
-  QSettings settings;
+  QgsSettings settings;
   return !settingValueWithLegacy( settings, u"geoai/index/layer_indexing_consented"_s, u"qgis_ai/index/layer_indexing_consented"_s, false ).toBool();
 }
 
 void QgsAiChatDockWidget::recordLayerIndexingConsent()
 {
-  QSettings().setValue( u"geoai/index/layer_indexing_consented"_s, true );
+  QgsSettings().setValue( u"geoai/index/layer_indexing_consented"_s, true );
 }

@@ -38,13 +38,34 @@ using namespace Qt::StringLiterals;
 QgsAiChatHistoryStore::QgsAiChatHistoryStore( QgsAiFileContextProvider *contextProvider, QObject *parent )
   : QObject( parent )
   , mContextProvider( contextProvider )
-{}
+{
+  if ( mContextProvider )
+    connect( mContextProvider, &QgsAiFileContextProvider::workspaceRootChanged, this, &QgsAiChatHistoryStore::onWorkspaceRootChanged );
+}
 
 QgsAiChatHistoryStore::~QgsAiChatHistoryStore()
 {
+  resetDatabaseConnection();
+}
+
+void QgsAiChatHistoryStore::resetDatabaseConnection()
+{
   const QString name = connectionName();
   if ( QSqlDatabase::contains( name ) )
+  {
+    {
+      QSqlDatabase db = QSqlDatabase::database( name );
+      db.close();
+    }
     QSqlDatabase::removeDatabase( name );
+  }
+  mReady = false;
+}
+
+void QgsAiChatHistoryStore::onWorkspaceRootChanged()
+{
+  resetDatabaseConnection();
+  emit sessionListChanged();
 }
 
 QString QgsAiChatHistoryStore::connectionName() const
@@ -78,7 +99,12 @@ bool QgsAiChatHistoryStore::openDatabase( QString *errorMessage ) const
   }
 
   QSqlDatabase db = QSqlDatabase::contains( connectionName() ) ? QSqlDatabase::database( connectionName() ) : QSqlDatabase::addDatabase( u"QSQLITE"_s, connectionName() );
-  db.setDatabaseName( path );
+  if ( db.databaseName() != path )
+  {
+    if ( db.isOpen() )
+      db.close();
+    db.setDatabaseName( path );
+  }
   if ( !db.isOpen() && !db.open() )
   {
     if ( errorMessage )

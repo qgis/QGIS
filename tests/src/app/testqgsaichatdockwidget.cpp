@@ -19,9 +19,11 @@
 #include <QJsonObject>
 #include <QLabel>
 #include <QMetaObject>
+#include <QMenu>
 #include <QPushButton>
 #include <QSettings>
 #include <QString>
+#include <QToolButton>
 #include <QTemporaryDir>
 #include <QTextEdit>
 #include <QTimer>
@@ -39,6 +41,7 @@ class TestQgsAiChatDockWidget : public QObject
     void rendersToolResultWithoutRawJson();
     void layerIndexingConsentPolicy();
     void settingsDialogContainsManualIndexingControls();
+    void historyMenuPromptsForWorkspaceRootWhenUnset();
 };
 
 void TestQgsAiChatDockWidget::hasRuntimeWidgets()
@@ -201,6 +204,26 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   QVERIFY( QMetaObject::invokeMethod( &dock, "openProviderSettings", Qt::DirectConnection ) );
   QVERIFY( inspected );
   QVERIFY( controlsFound );
+}
+
+void TestQgsAiChatDockWidget::historyMenuPromptsForWorkspaceRootWhenUnset()
+{
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider;
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+  QToolButton *historyButton = dock.findChild<QToolButton *>( u"aiHistoryButton"_s );
+  QVERIFY( historyButton );
+  QVERIFY( historyButton->menu() );
+
+  QVERIFY( QMetaObject::invokeMethod( &dock, "rebuildHistoryMenu", Qt::DirectConnection ) );
+
+  const QList<QAction *> actions = historyButton->menu()->actions();
+  QCOMPARE( actions.size(), 1 );
+  QVERIFY( actions.first()->text().contains( u"workspace root"_s, Qt::CaseInsensitive ) );
+  QVERIFY( !actions.first()->isEnabled() );
 }
 
 QGSTEST_MAIN( TestQgsAiChatDockWidget )

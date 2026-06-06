@@ -1439,6 +1439,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiSessionManager->setHistoryStore( mAiChatHistoryStore.get() );
 
   mAiChatDock = new QgsAiChatDockWidget( mAiSessionManager.get(), mAiModelRouter.get(), mAiReviewPatchEngine.get(), this );
+  connect( mAiChatHistoryStore.get(), &QgsAiChatHistoryStore::sessionListChanged, mAiChatDock, &QgsAiChatDockWidget::rebuildHistoryMenu );
   mAiChatDock->setLayerIndexCoordinator( mAiLayerIndexCoordinator.get() );
   mAiChatDock->setWindowTitle( tr( "AI Assistant" ) );
   mAiChatDock->setObjectName( u"AiAssistant"_s );
