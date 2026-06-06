@@ -137,7 +137,7 @@ providers in a "beta" or "untrustworthy" state.
 Returns ``True`` if the provider is active and able to run algorithms.
 %End
 
-    QStringList supportedOutputRasterLayerExtensions() const;
+    QStringList supportedOutputRasterLayerExtensions(bool includeCreateCopy = false) const;
 %Docstring
 Returns a list of the raster format file extensions supported by this
 provider.
@@ -148,15 +148,23 @@ provider.
 
 .. seealso:: :py:func:`supportedOutputVectorTileLayerExtensions`
 
+If ``includeCreateCopy`` (added in QGIS 4.2) is set to true, raster
+formats that only support creation from a source dataset (to be opposed
+to creation from scratch) are also listed.
+
 .. note::
 
    Since QGIS 4.0, this method is no longer virtual and use internally
    :py:func:`~QgsProcessingProvider.supportedOutputRasterLayerFormatAndExtensions` instead.
 %End
 
-    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions(bool includeCreateCopy = false) const;
 %Docstring
 Returns a list of (format, file extension) supported by this provider.
+
+If ``includeCreateCopy`` (added in QGIS 4.2) is set to true, raster
+formats that only support creation from a source dataset (to be opposed
+to creation from scratch) are also listed.
 
 .. versionadded:: 4.0
 %End

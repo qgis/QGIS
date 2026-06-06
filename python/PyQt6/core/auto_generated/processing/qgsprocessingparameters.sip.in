@@ -4246,6 +4246,22 @@ If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
 %End
 
+    QgsProcessingParameterRasterDestination &setAcceptCreateCopyFormats();
+%Docstring
+Indicates that raster formats that only support creation from a source
+dataset (to be opposed to creation from scratch) are also accepted.
+
+.. versionadded:: 4.2
+%End
+
+    bool acceptsCreateCopyFormats() const;
+%Docstring
+Returns whether raster formats that only support creation from a source
+dataset (to be opposed to creation from scratch) are also accepted.
+
+.. versionadded:: 4.2
+%End
+
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -4296,6 +4312,7 @@ Returns a list of (format, file extension) supported by this provider.
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
+
 };
 
 class QgsProcessingParameterFileDestination : QgsProcessingDestinationParameter

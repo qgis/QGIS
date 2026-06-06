@@ -7040,6 +7040,12 @@ QgsProcessingParameterDefinition *QgsProcessingParameterRasterDestination::clone
   return new QgsProcessingParameterRasterDestination( *this );
 }
 
+QgsProcessingParameterRasterDestination &QgsProcessingParameterRasterDestination::setAcceptCreateCopyFormats()
+{
+  mAcceptCreateCopy = true;
+  return *this;
+}
+
 bool QgsProcessingParameterRasterDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   QVariant var = input;
@@ -7168,15 +7174,15 @@ QList<QPair<QString, QString>> QgsProcessingParameterRasterDestination::supporte
 {
   if ( auto *lOriginalProvider = originalProvider() )
   {
-    return lOriginalProvider->supportedOutputRasterLayerFormatAndExtensions();
+    return lOriginalProvider->supportedOutputRasterLayerFormatAndExtensions( mAcceptCreateCopy );
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
-    return p->supportedOutputRasterLayerFormatAndExtensions();
+    return p->supportedOutputRasterLayerFormatAndExtensions( mAcceptCreateCopy );
   }
   else
   {
-    return QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault();
+    return QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault( mAcceptCreateCopy );
   }
 }
 

@@ -618,8 +618,9 @@ class DummyProvider3 : public QgsProcessingProvider // clazy:exclude=missing-qob
 
     QStringList supportedOutputTableExtensions() const override { return QStringList() << u"dbf"_s; }
 
-    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override
+    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions( bool includeCreateCopy = false ) const override
     {
+      Q_UNUSED( includeCreateCopy );
       return QList<QPair<QString, QString>>() << QPair<QString, QString>( u"XYZ"_s, u"xyz"_s ) << QPair<QString, QString>( u"BMP"_s, u"bmp"_s );
     }
 
@@ -639,7 +640,21 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 
     QStringList supportedOutputVectorLayerExtensions() const override { return QStringList() << u"mif"_s; }
 
-    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const override { return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), u"mig"_s ); }
+    QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions( bool includeCreateCopy = false ) const override
+    {
+      Q_UNUSED( includeCreateCopy );
+      return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), u"mig"_s );
+    }
+
+    void loadAlgorithms() override { QVERIFY( addAlgorithm( new DummyAlgorithm2( "alg1" ) ) ); }
+};
+
+class DummyProvider5 : public QgsProcessingProvider // clazy:exclude=missing-qobject-macro
+{
+  public:
+    DummyProvider5() = default;
+    QString id() const override { return u"dummy5"_s; }
+    QString name() const override { return u"dummy5"_s; }
 
     void loadAlgorithms() override { QVERIFY( addAlgorithm( new DummyAlgorithm2( "alg1" ) ) ); }
 };
@@ -8666,6 +8681,8 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( !def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( "" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromValue( u"layer12312312"_s ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QgsProperty::fromValue( QString() ) ) );
+  QVERIFY( !def->acceptsCreateCopyFormats() );
+
 
   // should be OK with or without context - it's an output layer!
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif" ) );
@@ -8689,7 +8706,14 @@ void TestQgsProcessing::parameterRasterOut()
   {
     QVERIFY( filters[i].contains( formatAndExtensions[i].first.toUpper() ) );
     QVERIFY( filters[i].contains( formatAndExtensions[i].second ) );
+    QVERIFY( formatAndExtensions[i].first.toUpper() != "AAIGRID"_L1 );
   }
+
+  def->setAcceptCreateCopyFormats();
+  QVERIFY( def->acceptsCreateCopyFormats() );
+
+  const QList<QPair<QString, QString>> formatAndExtensions2 = def->supportedOutputRasterLayerFormatAndExtensions();
+  QVERIFY( formatAndExtensions2.size() > formatAndExtensions.size() );
 
   QVariantMap params;
   params.insert( "non_optional", "test.tif" );
@@ -8800,6 +8824,11 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( provider.isSupportedOutputValue( "d:/test.xyz", def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( "d:/test.XYZ", def.get(), context, error ) );
   QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.XYZ" ), def.get(), context, error ) );
+
+  const DummyProvider5 provider5;
+  QVERIFY( !provider5.isSupportedOutputValue( "d:/test.asc", def.get(), context, error ) );
+  def->setAcceptCreateCopyFormats();
+  QVERIFY( provider5.isSupportedOutputValue( "d:/test.asc", def.get(), context, error ) );
 
   // test layers to load on completion
   def = std::make_unique<QgsProcessingParameterRasterDestination>( "x", u"desc"_s, u"default.tif"_s, true );

@@ -3825,6 +3825,22 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     QgsProcessingParameterRasterDestination( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, bool createByDefault = true );
 
     /**
+     * Indicates that raster formats that only support creation from a source
+     * dataset (to be opposed to creation from scratch) are also accepted.
+     *
+     * \since QGIS 4.2
+     */
+    QgsProcessingParameterRasterDestination &setAcceptCreateCopyFormats();
+
+    /**
+     * Returns whether raster formats that only support creation from a source
+     * dataset (to be opposed to creation from scratch) are also accepted.
+     *
+     * \since QGIS 4.2
+     */
+    bool acceptsCreateCopyFormats() const { return mAcceptCreateCopy; }
+
+    /**
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return u"rasterDestination"_s; }
@@ -3864,6 +3880,9 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterRasterDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+    bool mAcceptCreateCopy = false;
 };
 
 /**

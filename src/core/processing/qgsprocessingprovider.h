@@ -145,24 +145,36 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputPointCloudLayerExtensions()
      * \see supportedOutputVectorTileLayerExtensions()
      *
+     * If \a includeCreateCopy (added in QGIS 4.2) is set to true, raster formats
+     * that only support creation from a source dataset (to be opposed to creation
+     * from scratch) are also listed.
+     *
      * \note Since QGIS 4.0, this method is no longer virtual and use internally
      * supportedOutputRasterLayerFormatAndExtensions() instead.
      */
-    QStringList supportedOutputRasterLayerExtensions() const;
+    QStringList supportedOutputRasterLayerExtensions(bool includeCreateCopy = false) const;
 
     /**
      * Returns a list of (format, file extension) supported by this provider.
      *
+     * If \a includeCreateCopy (added in QGIS 4.2) is set to true, raster formats
+     * that only support creation from a source dataset (to be opposed to creation
+     * from scratch) are also listed.
+     *
      * \since QGIS 4.0
      */
-    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions(bool includeCreateCopy = false) const;
 
     /**
      * Returns a list of (format, file extension) supported by GDAL
      *
+     * If \a includeCreateCopy (added in QGIS 4.2) is set to true, raster formats
+     * that only support creation from a source dataset (to be opposed to creation
+     * from scratch) are also listed.
+     *
      * \since QGIS 4.0
      */
-    static QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensionsDefault() SIP_SKIP;
+    static QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensionsDefault(bool includeCreateCopy = false) SIP_SKIP;
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.

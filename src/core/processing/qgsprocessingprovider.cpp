@@ -69,9 +69,9 @@ QString QgsProcessingProvider::versionInfo() const
   return QString();
 }
 
-QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
+QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions( bool includeCreateCopy ) const
 {
-  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions( includeCreateCopy );
   QSet< QString > extensions;
   QStringList res;
   for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
@@ -85,14 +85,16 @@ QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
   return res;
 }
 
-QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensions() const
+QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensions( bool includeCreateCopy ) const
 {
-  return supportedOutputRasterLayerFormatAndExtensionsDefault();
+  return supportedOutputRasterLayerFormatAndExtensionsDefault( includeCreateCopy );
 }
 
-QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault()
+QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault( bool includeCreateCopy )
 {
-  const auto formats = QgsRasterFileWriter::supportedFiltersAndFormats();
+  const auto formats = QgsRasterFileWriter::supportedFiltersAndFormats(
+    includeCreateCopy ? static_cast<QgsRasterFileWriter::RasterFormatOption>( QgsRasterFileWriter::ListCreateCopy | QgsRasterFileWriter::SortRecommended ) : QgsRasterFileWriter::SortRecommended
+  );
   QList<QPair<QString, QString>> res;
 
   const thread_local QRegularExpression rx( u"\\*\\.([a-zA-Z0-9]*)"_s );
@@ -261,9 +263,10 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
   }
   else if ( parameter->type() == QgsProcessingParameterRasterDestination::typeName() )
   {
+    const QgsProcessingParameterRasterDestination *rasterParam = static_cast<const QgsProcessingParameterRasterDestination *>( parameter );
     const QFileInfo fi( outputPath );
     const QString extension = fi.suffix();
-    if ( !supportedOutputRasterLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
+    if ( !supportedOutputRasterLayerExtensions( rasterParam->acceptsCreateCopyFormats() ).contains( extension, Qt::CaseInsensitive ) )
     {
       error = tr( "“.%1” files are not supported as outputs for this algorithm" ).arg( extension );
       return false;
