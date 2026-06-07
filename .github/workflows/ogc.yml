@@ -71,9 +71,6 @@ jobs:
           tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
           context: .ci/ogc
           file: .ci/ogc/Dockerfile
-          cache-from: type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache
-          #  Replace with ${{ github.event_name == 'push' && 'type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache,mode=min' || '' }}
-          cache-to: type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache,mode=min
           load: true
 
       - name: Run build
@@ -81,13 +78,6 @@ jobs:
           docker run -v $(pwd):/usr/src/qgis -v /home/runner/QGIS/.ccache:/root/.ccache ${DOCKER_IMAGE} /usr/src/qgis/.ci/ogc/build.sh
         env:
           DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}
-
-      - name: Save build cache for push only
-        uses: actions/cache/save@v4
-        if: ${{ github.event_name == 'push' }}
-        with:
-          path: /home/runner/QGIS/.ccache
-          key: build-ccache-ogc-${{ github.ref_name }}-${{ github.run_id }}
 
       - name: Install pyogctest
         run: |
