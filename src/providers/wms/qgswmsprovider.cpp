@@ -113,7 +113,7 @@ struct LessThanTileRequest
 };
 
 
-QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &options, const QgsWmsCapabilities *capabilities )
+QgsWmsProvider::QgsWmsProvider( const QString &uri, const ProviderOptions &options, const QgsWmsCapabilities *capabilities )
   : QgsRasterDataProvider( uri, options )
   , mHttpGetLegendGraphicResponse( nullptr )
   , mImageCrs( DEFAULT_LATLON_CRS )
@@ -133,6 +133,9 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     appendError( ERR( tr( "Cannot parse URI" ) ) );
     return;
   }
+
+  QgsDataSourceUri sourceUri;
+  sourceUri.setEncodedUri( uri );
 
   if ( !addLayers() )
     return;
@@ -207,6 +210,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
         if ( property.name == mSettings.mActiveSubLayers[0] )
         {
           mSettings.mCrsId = property.preferredAvailableCrs();
+          sourceUri.setParam( u"crs"_s, mSettings.mCrsId );
           break;
         }
       }
@@ -276,6 +280,22 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   }
 
   mValid = true;
+
+  // this is very messy, but XYZ/mbtile providers don't use encoded URIs. So we'll only update the
+  // stored data source URI for non-xyz/mbtile sources. For now this is safe, as we've only got logic
+  // in place above to change the URI params for non-xyz/mbtile sources, but this will possibly need
+  // to be revised in future if that assumption changes...
+  if ( !mSettings.mXyz )
+  {
+    // update stored source URI string for provider, as we may have guessed parameters in the logic
+    // above (such as picking a CRS if it wasn't explicitly specified), and we need to ensure that
+    // the provider's URI string is a full representation of the state of the provider at the time
+    // these parameters were deduced (eg, to protect against the order of get capabilities CRSes changing,
+    // which would mean we pick a different default CRS, which would differ from the CRS stored at the
+    // MAP LAYER level, leading to a broken layer...)
+    setDataSourceUri( sourceUri.encodedUri() );
+  }
+
   QgsDebugMsgLevel( u"exiting constructor."_s, 4 );
 }
 
