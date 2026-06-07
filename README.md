@@ -1,27 +1,31 @@
 <img src="images/README-md/main_logo.png" width="300">
 
-> Sito: **[francemazzi.github.io/GeoAI-Desktop](https://francemazzi.github.io/GeoAI-Desktop)**
+> Sito: **[francemazzi.github.io/strata](https://francemazzi.github.io/strata)**
 
-# GeoAI Desktop — Download
+# Strata — The AI-native GIS
 
-GeoAI Desktop è un fork non ufficiale basato su QGIS con un assistente AI integrato nativamente. Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**. <!--#spellok-->
+Strata — il GIS con l'AI nativa. Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace.
 
-> GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.
+> An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.
+
+Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**. <!--#spellok-->
+
+> Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.
 
 | Sistema | Cosa scaricare | Cosa fare dopo |
 |---|---|---|
-| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Doppio click → trascina GeoAI Desktop in Applicazioni. Vedi *Aggirare il warning macOS* sotto. |
-| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Estrai la cartella ovunque, apri `bin/` e doppio click sull'eseguibile GeoAI Desktop. Vedi *Aggirare SmartScreen*. |
-| 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x GeoAI-Desktop-*.AppImage` poi doppio click. Niente installazione. |
+| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Doppio click → trascina Strata in Applicazioni. Vedi *Aggirare il warning macOS* sotto. |
+| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Estrai la cartella ovunque, apri `bin/` e doppio click sull'eseguibile Strata. Vedi *Aggirare SmartScreen*. |
+| 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x Strata-*.AppImage` poi doppio click. Niente installazione. |
 
 > ⚠️ I pacchetti **non sono firmati**. È normale. Al primo avvio gli OS mostrano un warning: segui le istruzioni qui sotto, è una procedura una tantum.
 
 ### 🍎 Aggirare il warning macOS (Gatekeeper)
 
-Dopo aver trascinato `GeoAI Desktop.app` in Applicazioni, apri il Terminale e incolla:
+Dopo aver trascinato `Strata.app` in Applicazioni, apri il Terminale e incolla:
 
 ```
-xattr -d com.apple.quarantine "/Applications/GeoAI Desktop.app"
+xattr -d com.apple.quarantine "/Applications/Strata.app"
 ```
 
 Poi apri normalmente l'app.
@@ -33,17 +37,39 @@ Quando avvii l'eseguibile la prima volta, Windows può mostrare *"Windows ha pro
 ### 🐧 AppImage su Linux
 
 ```
-chmod +x GeoAI-Desktop-*.AppImage
-./GeoAI-Desktop-*.AppImage
+chmod +x Strata-*.AppImage
+./Strata-*.AppImage
 ```
 
 Funziona su Ubuntu 22.04+, Fedora 38+, Debian 12+, Arch e qualsiasi distro con `glibc >= 2.35` e FUSE installato.
 
 ---
 
+## Demo — vedilo in azione
+
+> Demo interattiva completa anche sulla [landing page](https://francemazzi.github.io/strata/#demo).
+
+### Agent mode
+
+![Strata Agent mode — mappa GIS con pannello AI che esegue PyQGIS](docs/assets/demo-chat.png)
+
+Chiedi in linguaggio naturale: l'assistant ispeziona layer e CRS attivi, esegue codice PyQGIS (`run_python`) e aggiorna la mappa — ad esempio creare una maschera esterna sul confine comunale.
+
+*Ask in plain language: the assistant inspects active layers, runs PyQGIS via `run_python`, and updates the map — e.g. building an external mask from a municipality boundary.*
+
+### Plan mode
+
+![Strata Plan mode — piano strutturato con Accept plan e Reject](docs/assets/strata-plan-mode.png)
+
+Per task multi-step, passa in **Plan**: Strata elenca layer, campi e simbologia da creare, poi chiede **Accept plan** o **Reject / revise** prima di eseguire.
+
+*For multi-step work, switch to **Plan**: Strata outlines layers, fields, and symbology, then waits for **Accept plan** or **Reject / revise** before changing the project.*
+
+---
+
 ## Configurare l'AI al primo avvio
 
-1. Apri GeoAI Desktop.
+1. Apri Strata.
 2. Menu **Visualizza → Pannelli → AI Assistant**.
 3. Click sull'icona **⚙ impostazioni** in alto a destra del pannello.
 4. Incolla la tua **API key** OpenAI/Anthropic oppure usa il login **Codex/ChatGPT** o **Claude OAuth**.

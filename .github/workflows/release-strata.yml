@@ -1,13 +1,13 @@
-name: 🚀 Release GeoAI Desktop
+name: 🚀 Release Strata
 
 on:
   push:
     tags:
-      - 'geoai-v*'
+      - 'strata-v*'
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag name (e.g. geoai-v0.1.0-test)'
+        description: 'Tag name (e.g. strata-v0.1.0-test)'
         required: true
         type: string
 
@@ -30,7 +30,7 @@ jobs:
           else
             TAG="${GITHUB_REF#refs/tags/}"
           fi
-          VERSION="${TAG#geoai-v}"
+          VERSION="${TAG#strata-v}"
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
@@ -38,23 +38,23 @@ jobs:
         uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
           tag_name: ${{ steps.set-tag.outputs.tag }}
-          name: GeoAI Desktop ${{ steps.set-tag.outputs.version }}
+          name: Strata ${{ steps.set-tag.outputs.version }}
           draft: false
           prerelease: ${{ contains(steps.set-tag.outputs.tag, '-test') || contains(steps.set-tag.outputs.tag, '-rc') || contains(steps.set-tag.outputs.tag, '-beta') }}
           generate_release_notes: true
           body: |
-            # GeoAI Desktop ${{ steps.set-tag.outputs.version }}
+            # Strata ${{ steps.set-tag.outputs.version }}
 
-            GeoAI Desktop è un fork non ufficiale basato su QGIS con AI nativa integrata.
+            Strata — il GIS con l'AI nativa. Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace.
 
-            > GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.
+            > An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.
 
             ## Download
 
             | Sistema | File | Note |
             |---|---|---|
             | **macOS** (Intel + Apple Silicon) | `*.dmg` | Universal binary, **firmato Apple Developer ID + notarizzato**. Doppio click sul DMG, trascina l'app in Applications, lancia. |
-            | **Windows** (x64) | `*-win64.zip` | ZIP portable. Estrai e lancia l'eseguibile GeoAI Desktop. |
+            | **Windows** (x64) | `*-win64.zip` | ZIP portable. Estrai e lancia l'eseguibile Strata. |
             | **Linux** (x86_64) | `*.AppImage` | `chmod +x` poi doppio click. |
 
             > ⚠️ I pacchetti **Windows** e **Linux** non sono firmati. Al primo avvio l'OS mostra un warning.

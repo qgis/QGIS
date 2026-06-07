@@ -74,7 +74,9 @@ class TestQgsAiAgentSessionManager : public QObject
     void agentModeOmitsUnavailableTools();
     void collectsInlineRulesAndSkills();
     void collectsWorkspaceRulesFiles();
+    void collectsGeoAiWorkspaceRulesFiles();
     void collectsLegacyWorkspaceRulesFiles();
+    void readsGeoAiAgentBehaviorSettings();
     void readsLegacyAgentBehaviorSettings();
     void rejectsRulesFolderOutsideWorkspace();
     void formatRetrievedContextRendersFileAndLayerHeaders();
@@ -165,6 +167,7 @@ void TestQgsAiAgentSessionManager::allowsExplicitExternalAttachmentContext()
 void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -179,7 +182,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
     QCOMPARE( defaults.allowCustomActions, false );
     QVERIFY( defaults.rulesText.isEmpty() );
     QVERIFY( defaults.skillsText.isEmpty() );
-    QCOMPARE( defaults.rulesPath, u".geoai/rules"_s );
+    QCOMPARE( defaults.rulesPath, u".strata/rules"_s );
 
     QgsAiAgentBehaviorSettings updated = defaults;
     updated.allowCustomActions = true;
@@ -195,7 +198,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
     QCOMPARE( reread.skillsText, u"Prefer GeoPandas."_s );
     QCOMPARE( reread.rulesPath, u"ai/rules"_s );
     // Empty skill path must fall back to the default folder so the file loader stays predictable.
-    QCOMPARE( reread.skillsPath, u".geoai/skills"_s );
+    QCOMPARE( reread.skillsPath, u".strata/skills"_s );
   }
 
   QgsAiAgentSessionManager reloaded( nullptr, &contextProvider, &reviewEngine );
@@ -204,6 +207,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
   QCOMPARE( restored.rulesText, u"Always answer in English."_s );
   QCOMPARE( restored.skillsText, u"Prefer GeoPandas."_s );
 
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -211,6 +215,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
 void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -244,6 +249,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()
   manager.setAgentBehaviorSettings( updated );
   QCOMPARE( router.toolUseEnabled(), false );
 
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -251,6 +257,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()
 void TestQgsAiAgentSessionManager::planModeDoesNotAdvertiseTools()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -280,6 +287,7 @@ void TestQgsAiAgentSessionManager::planModeDoesNotAdvertiseTools()
   QVERIFY( !object.contains( u"tools"_s ) );
   QVERIFY( !object.contains( u"tool_choice"_s ) );
 
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -287,6 +295,7 @@ void TestQgsAiAgentSessionManager::planModeDoesNotAdvertiseTools()
 void TestQgsAiAgentSessionManager::askAndAgentAdvertiseCaptureMapCanvasTool()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -317,6 +326,7 @@ void TestQgsAiAgentSessionManager::askAndAgentAdvertiseCaptureMapCanvasTool()
   QVERIFY( router.allowedTools().contains( u"capture_map_canvas"_s ) );
   QVERIFY( router.allowedTools().contains( u"run_python"_s ) );
 
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -324,6 +334,7 @@ void TestQgsAiAgentSessionManager::askAndAgentAdvertiseCaptureMapCanvasTool()
 void TestQgsAiAgentSessionManager::agentModeOmitsUnavailableTools()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -353,6 +364,7 @@ void TestQgsAiAgentSessionManager::agentModeOmitsUnavailableTools()
   QVERIFY( !object.contains( u"tools"_s ) );
   QVERIFY( !object.contains( u"tool_choice"_s ) );
 
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -360,6 +372,7 @@ void TestQgsAiAgentSessionManager::agentModeOmitsUnavailableTools()
 void TestQgsAiAgentSessionManager::collectsInlineRulesAndSkills()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -380,6 +393,7 @@ void TestQgsAiAgentSessionManager::collectsInlineRulesAndSkills()
   QCOMPARE( manager.collectRulesContent(), u"Be concise."_s );
   QCOMPARE( manager.collectSkillsContent(), u"Use OSMnx for graphs."_s );
 
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -387,14 +401,15 @@ void TestQgsAiAgentSessionManager::collectsInlineRulesAndSkills()
 void TestQgsAiAgentSessionManager::collectsWorkspaceRulesFiles()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
 
-  QVERIFY( QDir( tempDir.path() ).mkpath( u".geoai/rules"_s ) );
-  QFile rulesFile( tempDir.filePath( u".geoai/rules/coding.md"_s ) );
+  QVERIFY( QDir( tempDir.path() ).mkpath( u".strata/rules"_s ) );
+  QFile rulesFile( tempDir.filePath( u".strata/rules/coding.md"_s ) );
   QVERIFY( rulesFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
   rulesFile.write( "- Always run linters.\n" );
   rulesFile.close();
@@ -410,8 +425,9 @@ void TestQgsAiAgentSessionManager::collectsWorkspaceRulesFiles()
 
   const QString rules = manager.collectRulesContent();
   QVERIFY( rules.contains( u"Always run linters."_s ) );
-  QVERIFY( rules.contains( u".geoai/rules/coding.md"_s ) );
+  QVERIFY( rules.contains( u".strata/rules/coding.md"_s ) );
 
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -419,6 +435,7 @@ void TestQgsAiAgentSessionManager::collectsWorkspaceRulesFiles()
 void TestQgsAiAgentSessionManager::collectsLegacyWorkspaceRulesFiles()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -444,6 +461,41 @@ void TestQgsAiAgentSessionManager::collectsLegacyWorkspaceRulesFiles()
   QVERIFY( rules.contains( u"Keep legacy folders readable."_s ) );
   QVERIFY( rules.contains( u".qgis_ai/rules/legacy.md"_s ) );
 
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::collectsGeoAiWorkspaceRulesFiles()
+{
+  QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QVERIFY( QDir( tempDir.path() ).mkpath( u".geoai/rules"_s ) );
+  QFile rulesFile( tempDir.filePath( u".geoai/rules/legacy.md"_s ) );
+  QVERIFY( rulesFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  rulesFile.write( "- Keep GeoAI folders readable.\n" );
+  rulesFile.close();
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.rulesText.clear();
+  updated.loadWorkspaceRules = true;
+  manager.setAgentBehaviorSettings( updated );
+
+  const QString rules = manager.collectRulesContent();
+  QVERIFY( rules.contains( u"Keep GeoAI folders readable."_s ) );
+  QVERIFY( rules.contains( u".geoai/rules/legacy.md"_s ) );
+
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -451,6 +503,7 @@ void TestQgsAiAgentSessionManager::collectsLegacyWorkspaceRulesFiles()
 void TestQgsAiAgentSessionManager::readsLegacyAgentBehaviorSettings()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -470,6 +523,35 @@ void TestQgsAiAgentSessionManager::readsLegacyAgentBehaviorSettings()
   QCOMPARE( restored.rulesText, u"Legacy rule"_s );
   QCOMPARE( restored.skillsPath, u".qgis_ai/skills"_s );
 
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::readsGeoAiAgentBehaviorSettings()
+{
+  QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  settings.setValue( u"geoai/agent/allow_custom_actions"_s, true );
+  settings.setValue( u"geoai/agent/rules_text"_s, u"GeoAI legacy rule"_s );
+  settings.setValue( u"geoai/agent/skills_path"_s, u".geoai/skills"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+
+  const QgsAiAgentBehaviorSettings restored = manager.agentBehaviorSettings();
+  QCOMPARE( restored.allowCustomActions, true );
+  QCOMPARE( restored.rulesText, u"GeoAI legacy rule"_s );
+  QCOMPARE( restored.skillsPath, u".geoai/skills"_s );
+
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -477,6 +559,7 @@ void TestQgsAiAgentSessionManager::readsLegacyAgentBehaviorSettings()
 void TestQgsAiAgentSessionManager::rejectsRulesFolderOutsideWorkspace()
 {
   QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 
@@ -496,6 +579,7 @@ void TestQgsAiAgentSessionManager::rejectsRulesFolderOutsideWorkspace()
 
   QVERIFY( manager.collectRulesContent().isEmpty() );
 
+  settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }

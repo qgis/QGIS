@@ -210,6 +210,7 @@ void TestQgsAiToolRegistry::executeRoundTrip()
 void TestQgsAiToolRegistry::captureMapCanvasRequiresConsent()
 {
   QgsSettings settings;
+  settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
 
   QgsMapCanvas canvas;
@@ -222,7 +223,7 @@ void TestQgsAiToolRegistry::captureMapCanvasRequiresConsent()
 void TestQgsAiToolRegistry::captureMapCanvasCreatesCappedPng()
 {
   QgsSettings settings;
-  settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
+  settings.setValue( u"strata/visual_context/image_send_consent"_s, true );
 
   QgsMapCanvas canvas;
   canvas.resize( 2000, 1000 );
@@ -248,6 +249,7 @@ void TestQgsAiToolRegistry::captureMapCanvasCreatesCappedPng()
   QCOMPARE( image.width(), imageJson.value( u"width"_s ).toInt() );
   QCOMPARE( image.height(), imageJson.value( u"height"_s ).toInt() );
 
+  settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }
 

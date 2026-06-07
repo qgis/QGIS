@@ -5,30 +5,30 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleName</key>
-	<string>GeoAI Desktop</string>
+	<string>Strata</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.francemazzi.geoaidesktop</string>
+	<string>com.francemazzi.strata</string>
 	<key>CFBundleExecutable</key>
 	<string>@QGIS_APP_NAME@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
-	<string>GAID</string>
+	<string>STRA</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project. Copyright © QGIS contributors and GeoAI Desktop contributors. GPLv2+.</string>
+	<string>An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop. Strata is not endorsed by or affiliated with QGIS.ORG or the QGIS project. Copyright © QGIS contributors and Strata contributors. GPLv2+.</string>
 	<key>CFBundleShortVersionString</key>
 	<string>@COMPLETE_VERSION@</string>
 	<key>CFBundleVersion</key>
 	<string>@COMPLETE_VERSION@</string>
 	<key>CFBundleIconFile</key>
-	<string>geoai-desktop.icns</string>
+	<string>strata.icns</string>
         <key>CFBundleIcons</key>
         <dict>
             <key>CFBundlePrimaryIcon</key>
             <dict>
                 <key>CFBundleIconFiles</key>
                 <array>
-                    <string>geoai-desktop.icns</string>
+                    <string>strata.icns</string>
                 </array>
             </dict>
         </dict>
@@ -44,7 +44,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
-			<string>geoai-desktop.icns</string>
+			<string>strata.icns</string>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>qgs</string>

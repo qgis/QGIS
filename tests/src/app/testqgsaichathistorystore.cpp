@@ -31,6 +31,7 @@ class TestQgsAiChatHistoryStore : public QObject
     void workspaceRootChangeLoadsSeparateHistory();
     void workspaceRootSettingRoundTripsViaQgsSettings();
     void autoWorkspaceRootUsesProfileDirectoryWhenUnset();
+    void workspaceRootMigratesGeoAiLegacySetting();
 
   private:
     static QString expectedDbPath( const QString &workspaceRoot );
@@ -139,28 +140,33 @@ void TestQgsAiChatHistoryStore::workspaceRootSettingRoundTripsViaQgsSettings()
   QVERIFY( tempDir.isValid() );
 
   const QString workspacePath = QDir( tempDir.path() ).absolutePath();
-  const QString settingsKey = u"geoai/workspace/root"_s;
-  const QString legacyKey = u"qgis_ai/workspace/root"_s;
+  const QString settingsKey = u"strata/workspace/root"_s;
+  const QString geoAiLegacyKey = u"geoai/workspace/root"_s;
+  const QString qgisAiLegacyKey = u"qgis_ai/workspace/root"_s;
 
   QgsSettings settings;
   settings.remove( settingsKey );
-  settings.remove( legacyKey );
+  settings.remove( geoAiLegacyKey );
+  settings.remove( qgisAiLegacyKey );
   settings.setValue( settingsKey, workspacePath );
 
   QCOMPARE( settings.value( settingsKey ).toString(), workspacePath );
-  QVERIFY( !settings.contains( legacyKey ) );
+  QVERIFY( !settings.contains( geoAiLegacyKey ) );
+  QVERIFY( !settings.contains( qgisAiLegacyKey ) );
 
   settings.remove( settingsKey );
 }
 
 void TestQgsAiChatHistoryStore::autoWorkspaceRootUsesProfileDirectoryWhenUnset()
 {
-  const QString settingsKey = u"geoai/workspace/root"_s;
-  const QString legacyKey = u"qgis_ai/workspace/root"_s;
+  const QString settingsKey = u"strata/workspace/root"_s;
+  const QString geoAiLegacyKey = u"geoai/workspace/root"_s;
+  const QString qgisAiLegacyKey = u"qgis_ai/workspace/root"_s;
 
   QgsSettings settings;
   settings.remove( settingsKey );
-  settings.remove( legacyKey );
+  settings.remove( geoAiLegacyKey );
+  settings.remove( qgisAiLegacyKey );
 
   QgsProject::instance()->setFileName( QString() );
   QgsProject::instance()->setPresetHomePath( QString() );
@@ -171,7 +177,36 @@ void TestQgsAiChatHistoryStore::autoWorkspaceRootUsesProfileDirectoryWhenUnset()
   QCOMPARE( resolvedRoot, QDir( expectedRoot ).absolutePath() );
   QVERIFY( QDir( resolvedRoot ).exists() );
   QCOMPARE( settings.value( settingsKey ).toString(), resolvedRoot );
-  QVERIFY( !settings.contains( legacyKey ) );
+  QVERIFY( !settings.contains( geoAiLegacyKey ) );
+  QVERIFY( !settings.contains( qgisAiLegacyKey ) );
+
+  settings.remove( settingsKey );
+}
+
+void TestQgsAiChatHistoryStore::workspaceRootMigratesGeoAiLegacySetting()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  const QString workspacePath = QDir( tempDir.path() ).absolutePath();
+  const QString settingsKey = u"strata/workspace/root"_s;
+  const QString geoAiLegacyKey = u"geoai/workspace/root"_s;
+  const QString qgisAiLegacyKey = u"qgis_ai/workspace/root"_s;
+
+  QgsSettings settings;
+  settings.remove( settingsKey );
+  settings.remove( geoAiLegacyKey );
+  settings.remove( qgisAiLegacyKey );
+  settings.setValue( geoAiLegacyKey, workspacePath );
+
+  QgsProject::instance()->setFileName( QString() );
+  QgsProject::instance()->setPresetHomePath( QString() );
+
+  const QString resolvedRoot = QgsAiFileContextProvider::resolveWorkspaceRoot();
+  QCOMPARE( resolvedRoot, workspacePath );
+  QCOMPARE( settings.value( settingsKey ).toString(), workspacePath );
+  QVERIFY( !settings.contains( geoAiLegacyKey ) );
+  QVERIFY( !settings.contains( qgisAiLegacyKey ) );
 
   settings.remove( settingsKey );
 }

@@ -3,7 +3,7 @@ name: 🐧 Build AppImage (Linux)
 on:
   push:
     tags:
-      - 'geoai-v*'
+      - 'strata-v*'
   release:
     types: ['published']
   workflow_dispatch:
@@ -38,10 +38,10 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "release" ]; then
             TAG="${{ github.event.release.tag_name }}"
-            VERSION="${TAG#geoai-v}"
+            VERSION="${TAG#strata-v}"
           elif [ "${{ github.event_name }}" = "push" ] && [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             TAG="${GITHUB_REF#refs/tags/}"
-            VERSION="${TAG#geoai-v}"
+            VERSION="${TAG#strata-v}"
           else
             VERSION="${{ inputs.version }}"
           fi
@@ -56,7 +56,7 @@ jobs:
 
       - name: Build AppImage
         env:
-          GEOAI_VERSION: ${{ steps.version.outputs.version }}
+          STRATA_VERSION: ${{ steps.version.outputs.version }}
         run: |
           chmod +x scripts/build-appimage.sh
           scripts/build-appimage.sh
@@ -64,13 +64,13 @@ jobs:
       - name: 📤 Upload AppImage as workflow artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: geoai-desktop-appimage-x86_64
+          name: strata-appimage-x86_64
           path: |
-            GeoAI-Desktop-*.AppImage
+            Strata-*.AppImage
 
       - name: Upload release assets
-        if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/geoai-v') }}
+        if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/strata-v') }}
         uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
           tag_name: ${{ github.event.release.tag_name || github.ref_name }}
-          files: 'GeoAI-Desktop-*.AppImage'
+          files: 'Strata-*.AppImage'

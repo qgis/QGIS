@@ -1,5 +1,5 @@
 #!/bin/bash
-# AppRun launcher embedded into GeoAI Desktop AppImage.
+# AppRun launcher embedded into Strata AppImage.
 # Sets runtime paths so QGIS finds GDAL/PROJ data, Qt plugins and Python modules
 # bundled inside the AppDir.
 
@@ -15,4 +15,4 @@ export PYTHONPATH="${HERE}/usr/share/qgis/python:${HERE}/usr/share/qgis/python/p
 export QGIS_PREFIX_PATH="${HERE}/usr"
 export LD_LIBRARY_PATH="${HERE}/usr/lib:${HERE}/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH}"
 
-exec "${HERE}/usr/bin/qgis" "$@"
+exec "${HERE}/usr/bin/Strata" "$@"

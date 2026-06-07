@@ -95,7 +95,10 @@ namespace
 
   bool aiFullToolLogDetails()
   {
-    return QgsSettings().value( u"geoai/log/full_tool_details"_s, false ).toBool();
+    QgsSettings settings;
+    if ( settings.contains( u"strata/log/full_tool_details"_s ) )
+      return settings.value( u"strata/log/full_tool_details"_s, false ).toBool();
+    return settings.value( u"geoai/log/full_tool_details"_s, false ).toBool();
   }
 
   QString endpointForLog( const QString &endpoint )
@@ -111,7 +114,11 @@ namespace
 
   bool readVisualContextImage( const QgsAiChatMessage &message, QString &mimeType, QString &base64Data )
   {
-    if ( !QgsSettings().value( u"geoai/visual_context/image_send_consent"_s, false ).toBool() )
+    QgsSettings settings;
+    const bool hasConsent = settings.contains( u"strata/visual_context/image_send_consent"_s )
+                              ? settings.value( u"strata/visual_context/image_send_consent"_s, false ).toBool()
+                              : settings.value( u"geoai/visual_context/image_send_consent"_s, false ).toBool();
+    if ( !hasConsent )
       return false;
 
     const QString imagePath = message.metadata.value( u"visual_context_image_path"_s ).toString();

@@ -1,25 +1,26 @@
 (function () {
-  const STORAGE_KEY = "geoai_lang";
-  const RELEASES_URL = "https://github.com/francemazzi/GeoAI-Desktop/releases/latest";
+  const STORAGE_KEY = "strata_lang";
+  const RELEASES_URL = "https://github.com/francemazzi/strata/releases/latest";
 
   const translations = {
     it: {
-      "meta.title": "GeoAI Desktop — AI nativa per GIS",
+      "meta.title": "Strata — il GIS con l'AI nativa",
       "meta.description":
-        "Fork non ufficiale basato su QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace.", // #spellok
+        "Strata — il GIS con l'AI nativa. Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace.", // #spellok
 
       "nav.problems": "Problemi",
       "nav.features": "Feature",
+      "nav.demo": "Demo",
       "nav.setup": "Setup",
       "nav.download": "Download",
       "nav.downloadBtn": "Scarica",
 
-      "hero.badge": "Basato su QGIS 4.1 · AI nativa",
-      "hero.title": "GIS desktop con AI nativa.",
-      "hero.titleAccent": "Fai GIS 10× più veloce.",
+      "hero.badge": "Fork di QGIS · AI nativa",
+      "hero.title": "Strata",
+      "hero.titleAccent": "il GIS con l'AI nativa.",
       "hero.subtitle":
-        "Assistente integrato nel pannello laterale — non un plugin esterno. Chiedi in linguaggio naturale, l'agente ispeziona layer, esegue PyQGIS e salva workflow con la tua approvazione.", // #spellok
-      "hero.ctaPrimary": "Scarica GeoAI Desktop",
+        "Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace.", // #spellok
+      "hero.ctaPrimary": "Scarica Strata",
       "hero.ctaSecondary": "Come configurarlo",
 
       "mockup.mapLabel": "Mappa GIS",
@@ -35,7 +36,7 @@
       "problems.label": "Problemi comuni",
       "problems.title": "Conosci questi ostacoli in QGIS?",
       "problems.subtitle":
-        "Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. GeoAI Desktop risolve il gap tra domanda e azione nel tuo progetto.",
+        "Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. Strata risolve il gap tra domanda e azione nel tuo progetto.",
 
       "problems.1.title": "PyQGIS difficile",
       "problems.1.desc":
@@ -70,7 +71,7 @@
       "problems.7.title": "Plugin AI disconnessi",
       "problems.7.desc":
         "Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.", // #spellok
-      "problems.7.fix": "Integrazione nativa in GeoAI Desktop.",
+      "problems.7.fix": "Integrazione nativa in Strata.",
 
       "solution.label": "Soluzione",
       "solution.title": "Chat laterale + Agente integrato",
@@ -89,7 +90,18 @@
         "Stile Cursor: Plan per pianificare, Agent per eseguire e modificare, Ask per domande e review. Rules & Skills personalizzabili.",
       "solution.agent.f1": "Plan · Agent · Ask",
       "solution.agent.f2": "19 tool GIS integrati",
-      "solution.agent.f3": "Rules & Skills (.geoai/)",
+      "solution.agent.f3": "Rules & Skills (.strata/)",
+
+      "demo.label": "Demo",
+      "demo.title": "Vedilo in azione",
+      "demo.subtitle":
+        "Due modalità reali di Strata: l'agente esegue PyQGIS sul progetto, Plan propone un piano approvabile prima di toccare i layer.",
+      "demo.agent.title": "Agent mode — esecuzione sul progetto",
+      "demo.agent.desc":
+        "Chiedi in linguaggio naturale (es. «crea maschera esterna»): l'assistant ispeziona i layer, esegue run_python e mostra il risultato sulla mappa.",
+      "demo.plan.title": "Plan mode — piano prima dell'azione",
+      "demo.plan.desc":
+        "Descrivi un obiettivo complesso (es. censimento alberi): Strata propone step strutturati e pulsanti Accept plan / Reject / revise prima di modificare il progetto.",
 
       "speed.label": "10× più veloce",
       "speed.title": "Da ore a minuti",
@@ -98,7 +110,7 @@
       "speed.beforeTime": "~45 min",
       "speed.beforeSteps":
         "Aprire console Python, scrivere script per ogni layer, cercare API su StackExchange, installare dipendenze, debuggare path, export manuale.",
-      "speed.after": "Con GeoAI Desktop",
+      "speed.after": "Con Strata",
       "speed.afterTime": "~5 min",
       "speed.afterSteps":
         "Una richiesta in linguaggio naturale. L'agente ispeziona, propone codice, chiede approval, esegue e salva nel workspace.",
@@ -114,7 +126,7 @@
 
       "features.2.title": "Rules & Skills",
       "features.2.desc":
-        "Regole inline e cartelle .geoai/rules e .geoai/skills per guidare l'agente come in Cursor.",
+        "Regole inline e cartelle .strata/rules e .strata/skills per guidare l'agente come in Cursor.",
 
       "features.3.title": "RAG workspace",
       "features.3.desc":
@@ -139,7 +151,7 @@
 
       "setup.creds.title": "Credenziali e login",
       "setup.creds.1":
-        "Apri GeoAI Desktop → menu Visualizza → Pannelli → AI Assistant.",
+        "Apri Strata → menu Visualizza → Pannelli → AI Assistant.",
       "setup.creds.2": "Clicca sull'icona ⚙ impostazioni in alto a destra del pannello.",
       "setup.creds.3.title": "Scegli il provider:",
       "setup.creds.3.openai":
@@ -166,7 +178,7 @@
         "I dati dei layer vengono inviati al provider embeddings solo se abiliti esplicitamente l'indexing.",
 
       "download.label": "Download",
-      "download.title": "Scarica GeoAI Desktop",
+      "download.title": "Scarica Strata",
       "download.subtitle":
         "Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.",
       "download.cta": "Vai alle Releases",
@@ -174,42 +186,43 @@
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": "File .dmg",
       "download.macos.note":
-        "Trascina GeoAI Desktop in Applicazioni. Poi: xattr -d com.apple.quarantine \"/Applications/GeoAI Desktop.app\"",
+        "Trascina Strata in Applicazioni. Poi: xattr -d com.apple.quarantine \"/Applications/Strata.app\"",
       "download.windows.title": "Windows",
       "download.windows.sub": "10/11 x64",
       "download.windows.file": "File -win64.zip",
       "download.windows.note":
-        "Estrai ovunque, lancia l'eseguibile GeoAI Desktop. SmartScreen: Maggiori informazioni → Esegui comunque.",
+        "Estrai ovunque, lancia l'eseguibile Strata. SmartScreen: Maggiori informazioni → Esegui comunque.",
       "download.linux.title": "Linux",
       "download.linux.sub": "x86_64",
       "download.linux.file": "File .AppImage",
       "download.linux.note":
-        "chmod +x GeoAI-Desktop-*.AppImage && ./GeoAI-Desktop-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
+        "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "Fork non ufficiale basato su QGIS con assistente AI nativo.", // #spellok
+      "footer.tagline": "Il GIS con l'AI nativa.", // #spellok
       "footer.disclaimer":
-        "GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
+        "Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
       "footer.license": "Licenza GPLv2+",
       "footer.contact": "Contatto",
     },
     en: {
-      "meta.title": "GeoAI Desktop — Native AI for GIS",
+      "meta.title": "Strata — The AI-native GIS",
       "meta.description":
-        "Independent unofficial fork based on QGIS with a built-in AI assistant. Do GIS 10× faster with side chat, agent, and workspace RAG.",
+        "An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.",
 
       "nav.problems": "Problems",
       "nav.features": "Features",
+      "nav.demo": "Demo",
       "nav.setup": "Setup",
       "nav.download": "Download",
       "nav.downloadBtn": "Download",
 
-      "hero.badge": "Based on QGIS 4.1 · Native AI",
-      "hero.title": "Desktop GIS with native AI.",
-      "hero.titleAccent": "Do GIS 10× faster.",
+      "hero.badge": "QGIS fork · Native AI",
+      "hero.title": "Strata",
+      "hero.titleAccent": "The AI-native GIS.",
       "hero.subtitle":
-        "Assistant built into the side panel — not an external plugin. Ask in plain language; the agent inspects layers, runs PyQGIS, and saves workflows with your approval.",
-      "hero.ctaPrimary": "Download GeoAI Desktop",
+        "An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.",
+      "hero.ctaPrimary": "Download Strata",
       "hero.ctaSecondary": "How to set up",
 
       "mockup.mapLabel": "GIS map",
@@ -225,7 +238,7 @@
       "problems.label": "Common problems",
       "problems.title": "Sound familiar in QGIS?",
       "problems.subtitle":
-        "GIS workflows often mean PyQGIS scripts, forum searches, and copy-paste from generic chatbots. GeoAI Desktop closes the gap between question and action in your project.",
+        "GIS workflows often mean PyQGIS scripts, forum searches, and copy-paste from generic chatbots. Strata closes the gap between question and action in your project.",
 
       "problems.1.title": "PyQGIS is hard",
       "problems.1.desc":
@@ -260,7 +273,7 @@
       "problems.7.title": "Disconnected AI plugins",
       "problems.7.desc":
         "External assistants don't know your active layers or Processing Toolbox.",
-      "problems.7.fix": "Native integration in GeoAI Desktop.",
+      "problems.7.fix": "Native integration in Strata.",
 
       "solution.label": "Solution",
       "solution.title": "Side chat + integrated agent",
@@ -279,7 +292,18 @@
         "Cursor-style: Plan to strategize, Agent to execute and edit, Ask for Q&A and review. Customizable Rules & Skills.",
       "solution.agent.f1": "Plan · Agent · Ask",
       "solution.agent.f2": "19 built-in GIS tools",
-      "solution.agent.f3": "Rules & Skills (.geoai/)",
+      "solution.agent.f3": "Rules & Skills (.strata/)",
+
+      "demo.label": "Demo",
+      "demo.title": "See it in action",
+      "demo.subtitle":
+        "Two real Strata modes: the agent runs PyQGIS on your project; Plan proposes an approvable plan before touching layers.",
+      "demo.agent.title": "Agent mode — execution on your project",
+      "demo.agent.desc":
+        "Ask in plain language (e.g. \"create external mask\"): the assistant inspects layers, runs run_python, and shows the result on the map.",
+      "demo.plan.title": "Plan mode — plan before action",
+      "demo.plan.desc":
+        "Describe a complex goal (e.g. tree inventory): Strata proposes structured steps and Accept plan / Reject / revise buttons before changing the project.",
 
       "speed.label": "10× faster",
       "speed.title": "From hours to minutes",
@@ -288,7 +312,7 @@
       "speed.beforeTime": "~45 min",
       "speed.beforeSteps":
         "Open Python console, write scripts per layer, search StackExchange for APIs, install deps, debug paths, manual export.",
-      "speed.after": "With GeoAI Desktop",
+      "speed.after": "With Strata",
       "speed.afterTime": "~5 min",
       "speed.afterSteps":
         "One natural-language request. The agent inspects, proposes code, asks approval, runs, and saves to the workspace.",
@@ -304,7 +328,7 @@
 
       "features.2.title": "Rules & Skills",
       "features.2.desc":
-        "Inline rules and .geoai/rules and .geoai/skills folders to steer the agent like Cursor.",
+        "Inline rules and .strata/rules and .strata/skills folders to steer the agent like Cursor.",
 
       "features.3.title": "Workspace RAG",
       "features.3.desc":
@@ -329,7 +353,7 @@
 
       "setup.creds.title": "Credentials and login",
       "setup.creds.1":
-        "Open GeoAI Desktop → View → Panels → AI Assistant.",
+        "Open Strata → View → Panels → AI Assistant.",
       "setup.creds.2": "Click the ⚙ settings icon at the top-right of the panel.",
       "setup.creds.3.title": "Choose a provider:",
       "setup.creds.3.openai":
@@ -356,7 +380,7 @@
         "Layer data is sent to the embeddings provider only if you explicitly enable indexing.",
 
       "download.label": "Download",
-      "download.title": "Download GeoAI Desktop",
+      "download.title": "Download Strata",
       "download.subtitle":
         "Prebuilt binaries from GitHub Releases. Packages are unsigned — follow one-time OS instructions below.",
       "download.cta": "Go to Releases",
@@ -364,21 +388,21 @@
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": ".dmg file",
       "download.macos.note":
-        "Drag GeoAI Desktop to Applications. Then: xattr -d com.apple.quarantine \"/Applications/GeoAI Desktop.app\"",
+        "Drag Strata to Applications. Then: xattr -d com.apple.quarantine \"/Applications/Strata.app\"",
       "download.windows.title": "Windows",
       "download.windows.sub": "10/11 x64",
       "download.windows.file": "-win64.zip file",
       "download.windows.note":
-        "Extract anywhere, run the GeoAI Desktop executable. SmartScreen: More info → Run anyway.",
+        "Extract anywhere, run the Strata executable. SmartScreen: More info → Run anyway.",
       "download.linux.title": "Linux",
       "download.linux.sub": "x86_64",
       "download.linux.file": ".AppImage file",
       "download.linux.note":
-        "chmod +x GeoAI-Desktop-*.AppImage && ./GeoAI-Desktop-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
+        "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "Unofficial fork based on QGIS with native AI assistant.",
+      "footer.tagline": "The AI-native GIS.",
       "footer.disclaimer":
-        "GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
+        "Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
       "footer.license": "GPLv2+ License",
       "footer.contact": "Contact",
@@ -473,5 +497,5 @@
     });
   });
 
-  window.GEOAI_DESKTOP_I18N = { setLanguage, RELEASES_URL };
+  window.STRATA_I18N = { setLanguage, RELEASES_URL };
 })();

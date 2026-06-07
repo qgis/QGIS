@@ -451,7 +451,7 @@ if (WIN32)
   endif()
 
   win32_icon(QGIS_APPMAIN_SRCS)
-  win32_version_info("GeoAI Desktop" ${QGIS_APP_NAME} QGIS_APPMAIN_SRCS)
+  win32_version_info("Strata" ${QGIS_APP_NAME} QGIS_APPMAIN_SRCS)
 else()
   set (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 endif()
@@ -534,15 +534,15 @@ if(QGISPOSTFIX)
      RUNTIME_OUTPUT_NAME qgis_app${QGISPOSTFIX}
      LIBRARY_OUTPUT_NAME qgis_app${QGISPOSTFIX}
   )
-  set_target_properties(${QGIS_APP_NAME} PROPERTIES
+  set_target_properties(qgis PROPERTIES
      RUNTIME_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
      LIBRARY_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
   )
 endif()
 
-set(_geoai_qml_module_extra_args "")
+set(_strata_qml_module_extra_args "")
 if(Qt6_VERSION VERSION_GREATER_EQUAL 6.5)
-    list(APPEND _geoai_qml_module_extra_args NO_GENERATE_EXTRA_QMLDIRS)
+    list(APPEND _strata_qml_module_extra_args NO_GENERATE_EXTRA_QMLDIRS)
 endif()
 
 qt_add_qml_module(qgis_app
@@ -564,7 +564,7 @@ qt_add_qml_module(qgis_app
         qml/images/close.svg
         qml/images/love.svg
         qml/images/qgis.svg
-    ${_geoai_qml_module_extra_args}
+    ${_strata_qml_module_extra_args}
 )
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")

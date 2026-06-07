@@ -60,7 +60,14 @@ namespace
 {
   QString visualConsentSettingKey()
   {
-    return u"geoai/visual_context/image_send_consent"_s;
+    return u"strata/visual_context/image_send_consent"_s;
+  }
+
+  bool hasVisualConsent( QgsSettings &settings )
+  {
+    if ( settings.contains( visualConsentSettingKey() ) )
+      return settings.value( visualConsentSettingKey(), false ).toBool();
+    return settings.value( u"geoai/visual_context/image_send_consent"_s, false ).toBool();
   }
 
   QJsonObject extentJson( const QgsRectangle &extent )
@@ -176,7 +183,7 @@ namespace
   bool ensureVisualContextConsent( QWidget *parent )
   {
     QgsSettings settings;
-    if ( settings.value( visualConsentSettingKey(), false ).toBool() )
+    if ( hasVisualConsent( settings ) )
       return true;
 
     if ( !parent )
@@ -186,7 +193,7 @@ namespace
       parent,
       QObject::tr( "Share map screenshot with AI" ),
       QObject::tr(
-        "GeoAI can capture the current map canvas as an image and send it to vision-capable AI providers for this and future visual-context requests. The image may include visible map data, labels, "
+        "Strata can capture the current map canvas as an image and send it to vision-capable AI providers for this and future visual-context requests. The image may include visible map data, labels, "
         "and styles. Do you want to allow this?"
       ),
       QMessageBox::Yes | QMessageBox::No,
@@ -196,9 +203,10 @@ namespace
     if ( answer != QMessageBox::Yes )
       return false;
 
-    settings.setValue( visualConsentSettingKey(), true );
-    return true;
-  }
+  settings.setValue( visualConsentSettingKey(), true );
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
+  return true;
+}
 
   QSize cappedRenderSize( QSize original, int requestedLongestSide )
   {

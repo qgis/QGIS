@@ -38,17 +38,28 @@ QString QgsAiFileContextProvider::resolveWorkspaceRoot()
     return QDir( projectHome ).absolutePath();
 
   QgsSettings settings;
-  const QString settingsKey = u"geoai/workspace/root"_s;
-  const QString legacyKey = u"qgis_ai/workspace/root"_s;
-  QString configured = settings.value( settingsKey, settings.value( legacyKey, QString() ) ).toString().trimmed();
+  const QString settingsKey = u"strata/workspace/root"_s;
+  const QString geoAiLegacyKey = u"geoai/workspace/root"_s;
+  const QString qgisAiLegacyKey = u"qgis_ai/workspace/root"_s;
+  QString configured = settings.value( settingsKey ).toString().trimmed();
+  if ( configured.isEmpty() )
+    configured = settings.value( geoAiLegacyKey ).toString().trimmed();
+  if ( configured.isEmpty() )
+    configured = settings.value( qgisAiLegacyKey ).toString().trimmed();
   if ( !configured.isEmpty() )
+  {
+    settings.setValue( settingsKey, QDir( configured ).absolutePath() );
+    settings.remove( geoAiLegacyKey );
+    settings.remove( qgisAiLegacyKey );
     return QDir( configured ).absolutePath();
+  }
 
   const QString defaultRoot = QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"ai_workspace"_s );
   QDir().mkpath( defaultRoot );
   const QString absoluteDefaultRoot = QDir( defaultRoot ).absolutePath();
   settings.setValue( settingsKey, absoluteDefaultRoot );
-  settings.remove( legacyKey );
+  settings.remove( geoAiLegacyKey );
+  settings.remove( qgisAiLegacyKey );
   return absoluteDefaultRoot;
 }
 

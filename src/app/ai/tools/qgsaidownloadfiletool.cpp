@@ -52,7 +52,10 @@ namespace
 
   bool fullDownloadLogDetails()
   {
-    return QgsSettings().value( u"geoai/log/full_tool_details"_s, false ).toBool();
+    QgsSettings settings;
+    if ( settings.contains( u"strata/log/full_tool_details"_s ) )
+      return settings.value( u"strata/log/full_tool_details"_s, false ).toBool();
+    return settings.value( u"geoai/log/full_tool_details"_s, false ).toBool();
   }
 
   QString urlForLog( const QUrl &url )
@@ -87,7 +90,7 @@ bool QgsAiDownloadFileTool::isAvailable() const
 
 QString QgsAiDownloadFileTool::availabilityReason() const
 {
-  return u"download_file is not available because the AI workspace root is not configured. Save the QGIS project or set geoai/workspace/root before downloading files."_s;
+  return u"download_file is not available because the AI workspace root is not configured. Save the QGIS project or set strata/workspace/root before downloading files."_s;
 }
 
 QString QgsAiDownloadFileTool::description() const
@@ -142,7 +145,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
     return QgsAiToolResult::error( u"Argument 'dest_path' is required."_s );
 
   if ( mContextProvider->workspaceRoot().isEmpty() )
-    return QgsAiToolResult::error( u"AI workspace root is not configured. Save the QGIS project or set geoai/workspace/root before downloading files."_s );
+    return QgsAiToolResult::error( u"AI workspace root is not configured. Save the QGIS project or set strata/workspace/root before downloading files."_s );
 
   const QString destPath = mContextProvider->normalizePath( destRequest, /*allowExternal=*/false );
   if ( destPath.isEmpty() )

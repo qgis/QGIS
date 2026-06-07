@@ -76,6 +76,7 @@
 #include <QSet>
 #include <QSize>
 #include <QString>
+#include <QStringList>
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextEdit>
@@ -134,11 +135,16 @@ namespace
     return u"Plan"_s;
   }
 
-  template<typename Settings> QVariant settingValueWithLegacy( Settings &settings, const QString &key, const QString &legacyKey, const QVariant &defaultValue )
+  template<typename Settings> QVariant settingValueWithLegacy( Settings &settings, const QString &key, const QStringList &legacyKeys, const QVariant &defaultValue )
   {
     if ( settings.contains( key ) )
       return settings.value( key, defaultValue );
-    return settings.value( legacyKey, defaultValue );
+    for ( const QString &legacyKey : legacyKeys )
+    {
+      if ( settings.contains( legacyKey ) )
+        return settings.value( legacyKey, defaultValue );
+    }
+    return defaultValue;
   }
 
   QString truncateForTranscript( const QString &text, int maxChars = 4000 )
@@ -1864,7 +1870,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   planToken->setPlaceholderText( tr( "Session token from your plan login..." ) );
 
   QgsSettings workspaceSettings;
-  QLineEdit *aiWorkspaceRoot = new QLineEdit( settingValueWithLegacy( workspaceSettings, u"geoai/workspace/root"_s, u"qgis_ai/workspace/root"_s, QString() ).toString(), &dialog );
+  QLineEdit *aiWorkspaceRoot = new QLineEdit( settingValueWithLegacy( workspaceSettings, u"strata/workspace/root"_s, QStringList{ u"geoai/workspace/root"_s, u"qgis_ai/workspace/root"_s }, QString() ).toString(), &dialog );
   aiWorkspaceRoot->setObjectName( u"aiWorkspaceRootLineEdit"_s );
   aiWorkspaceRoot->setPlaceholderText( tr( "Used when the QGIS project is unsaved" ) );
   QPushButton *browseWorkspaceRoot = new QPushButton( tr( "Browse..." ), &dialog );
@@ -1937,7 +1943,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   behaviorForm->addRow( QString(), loadWorkspaceRules );
 
   QLineEdit *rulesPathEdit = new QLineEdit( currentBehavior.rulesPath, &dialog );
-  rulesPathEdit->setPlaceholderText( u".geoai/rules"_s );
+  rulesPathEdit->setPlaceholderText( u".strata/rules"_s );
   behaviorForm->addRow( tr( "Rules folder (relative)" ), rulesPathEdit );
 
   QCheckBox *loadWorkspaceSkills = new QCheckBox( tr( "Also load skill files from workspace folder" ), &dialog );
@@ -1945,7 +1951,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   behaviorForm->addRow( QString(), loadWorkspaceSkills );
 
   QLineEdit *skillsPathEdit = new QLineEdit( currentBehavior.skillsPath, &dialog );
-  skillsPathEdit->setPlaceholderText( u".geoai/skills"_s );
+  skillsPathEdit->setPlaceholderText( u".strata/skills"_s );
   behaviorForm->addRow( tr( "Skills folder (relative)" ), skillsPathEdit );
 
   layout->addLayout( behaviorForm );
@@ -1967,9 +1973,9 @@ void QgsAiChatDockWidget::openProviderSettings()
   QFormLayout *indexingForm = new QFormLayout();
 
   QgsSettings indexSettings;
-  const bool hasLayerIndexingSetting = indexSettings.contains( u"geoai/index/enable_layer_indexing"_s ) || indexSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
+  const bool hasLayerIndexingSetting = indexSettings.contains( u"strata/index/enable_layer_indexing"_s ) || indexSettings.contains( u"geoai/index/enable_layer_indexing"_s ) || indexSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
   const bool defaultLayerIndexingEnabled = mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration() && !requiresLayerIndexingConsent();
-  const bool layerIndexingEnabled = hasLayerIndexingSetting ? settingValueWithLegacy( indexSettings, u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool()
+  const bool layerIndexingEnabled = hasLayerIndexingSetting ? settingValueWithLegacy( indexSettings, u"strata/index/enable_layer_indexing"_s, QStringList{ u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s }, false ).toBool()
                                                             : defaultLayerIndexingEnabled;
 
   QCheckBox *enableLayerIndexing = new QCheckBox( tr( "Enable layer indexing (auto reindex on layer add/remove/edit)" ), &dialog );
@@ -2249,12 +2255,14 @@ void QgsAiChatDockWidget::openProviderSettings()
     const QString configuredWorkspaceRoot = requestedWorkspaceRoot.isEmpty() ? QString() : QDir::cleanPath( requestedWorkspaceRoot );
     if ( configuredWorkspaceRoot.isEmpty() )
     {
+      settings.remove( u"strata/workspace/root"_s );
       settings.remove( u"geoai/workspace/root"_s );
       settings.remove( u"qgis_ai/workspace/root"_s );
     }
     else
     {
-      settings.setValue( u"geoai/workspace/root"_s, QDir::cleanPath( configuredWorkspaceRoot ) );
+      settings.setValue( u"strata/workspace/root"_s, QDir::cleanPath( configuredWorkspaceRoot ) );
+      settings.remove( u"geoai/workspace/root"_s );
       settings.remove( u"qgis_ai/workspace/root"_s );
     }
 
@@ -2308,7 +2316,7 @@ void QgsAiChatDockWidget::openProviderSettings()
         &dialog,
         tr( "Enable layer indexing" ),
         tr(
-          "Enabling layer indexing means GeoAI Desktop will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. "
+          "Enabling layer indexing means Strata will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. "
           "The "
           "embeddings are stored locally; the data leaves your machine only during indexing.\n\nProceed?"
         ),
@@ -2326,7 +2334,10 @@ void QgsAiChatDockWidget::openProviderSettings()
       }
     }
 
-    QgsSettings().setValue( u"geoai/index/enable_layer_indexing"_s, layerIndexingChoice );
+    QgsSettings layerSettings;
+    layerSettings.setValue( u"strata/index/enable_layer_indexing"_s, layerIndexingChoice );
+    layerSettings.remove( u"geoai/index/enable_layer_indexing"_s );
+    layerSettings.remove( u"qgis_ai/index/enable_layer_indexing"_s );
     const bool canUseEmbeddings = mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration();
     if ( mLayerIndexCoordinator )
     {
@@ -2349,7 +2360,7 @@ void QgsAiChatDockWidget::showEvent( QShowEvent *event )
 void QgsAiChatDockWidget::maybeShowWelcomeBanner()
 {
   QgsSettings settings;
-  if ( settingValueWithLegacy( settings, u"geoai/welcome_seen"_s, u"qgis_ai/welcome_seen"_s, false ).toBool() )
+  if ( settingValueWithLegacy( settings, u"strata/welcome_seen"_s, QStringList{ u"geoai/welcome_seen"_s, u"qgis_ai/welcome_seen"_s }, false ).toBool() )
     return;
 
   if ( !mModelRouter )
@@ -2363,7 +2374,9 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
        || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude )
        || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Plan ) )
   {
-    settings.setValue( u"geoai/welcome_seen"_s, true );
+    settings.setValue( u"strata/welcome_seen"_s, true );
+    settings.remove( u"geoai/welcome_seen"_s );
+    settings.remove( u"qgis_ai/welcome_seen"_s );
     return;
   }
 
@@ -2381,7 +2394,9 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
   } );
 
   messageBar->pushItem( item );
-  settings.setValue( u"geoai/welcome_seen"_s, true );
+  settings.setValue( u"strata/welcome_seen"_s, true );
+  settings.remove( u"geoai/welcome_seen"_s );
+  settings.remove( u"qgis_ai/welcome_seen"_s );
 }
 
 void QgsAiChatDockWidget::setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *coordinator )
@@ -2392,10 +2407,13 @@ void QgsAiChatDockWidget::setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *
 bool QgsAiChatDockWidget::requiresLayerIndexingConsent()
 {
   QgsSettings settings;
-  return !settingValueWithLegacy( settings, u"geoai/index/layer_indexing_consented"_s, u"qgis_ai/index/layer_indexing_consented"_s, false ).toBool();
+  return !settingValueWithLegacy( settings, u"strata/index/layer_indexing_consented"_s, QStringList{ u"geoai/index/layer_indexing_consented"_s, u"qgis_ai/index/layer_indexing_consented"_s }, false ).toBool();
 }
 
 void QgsAiChatDockWidget::recordLayerIndexingConsent()
 {
-  QgsSettings().setValue( u"geoai/index/layer_indexing_consented"_s, true );
+  QgsSettings settings;
+  settings.setValue( u"strata/index/layer_indexing_consented"_s, true );
+  settings.remove( u"geoai/index/layer_indexing_consented"_s );
+  settings.remove( u"qgis_ai/index/layer_indexing_consented"_s );
 }

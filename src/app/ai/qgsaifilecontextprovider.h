@@ -42,8 +42,8 @@ class APP_EXPORT QgsAiFileContextProvider : public QObject
     explicit QgsAiFileContextProvider( const QString &workspaceRoot, QObject *parent = nullptr );
 
     /**
-     * Resolves the AI workspace root: project home path, then geoai/workspace/root,
-     * then creates and persists a profile-local default when unset.
+     * Resolves the AI workspace root: project home path, then strata/workspace/root,
+     * then legacy geoai/qgis_ai settings, then a profile-local default.
      */
     static QString resolveWorkspaceRoot();
 

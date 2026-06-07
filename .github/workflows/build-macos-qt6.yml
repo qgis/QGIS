@@ -6,7 +6,7 @@ on:
       - master
       - release-*
     tags:
-      - 'geoai-v*'
+      - 'strata-v*'
   pull_request:
   release:
     types: ['published']
@@ -21,7 +21,7 @@ permissions:
   packages: write
 
 env:
-  IS_GEOAI_RELEASE: ${{ startsWith(github.ref, 'refs/tags/geoai-v') || startsWith(github.event.release.tag_name, 'geoai-v') }}
+  IS_STRATA_RELEASE: ${{ startsWith(github.ref, 'refs/tags/strata-v') || startsWith(github.event.release.tag_name, 'strata-v') }}
 
 jobs:
   build:
@@ -106,7 +106,7 @@ jobs:
           xcode-version: latest-stable
 
       - name: 🔐 Import Apple code signing certificate
-        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         uses: apple-actions/import-codesign-certs@8f3fb608891dd2244cdab3d69cd68c0d37a7fe93 # v5.0.2
         with:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
@@ -142,7 +142,7 @@ jobs:
           cmake -S . \
                 -G Ninja \
                 -B build \
-                -D "QGIS_APP_NAME=${{ env.IS_GEOAI_RELEASE == 'true' && 'GeoAI Desktop' || format('GeoAI-{0}', steps.workflow-artifact-ids.outputs.display-name) }}" \
+                -D "QGIS_APP_NAME=${{ env.IS_STRATA_RELEASE == 'true' && 'Strata' || format('Strata-{0}', steps.workflow-artifact-ids.outputs.display-name) }}" \
                 -D WITH_VCPKG=ON \
                 -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
@@ -182,7 +182,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: geoai-sdk-${{ matrix.triplet }}
+          name: strata-sdk-${{ matrix.triplet }}
           path: |
             sdk/vcpkg-export-*.zip
 
@@ -195,14 +195,14 @@ jobs:
 
       - name: Archive app
         run: |
-          gtar -cpvzf geoai-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
+          gtar -cpvzf strata-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: 📤 Upload app
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: geoai-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
+          name: strata-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
           path: |
-            geoai-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz
+            strata-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz
 
   schedule_download_comment:
     name: Create dmg
@@ -226,7 +226,7 @@ jobs:
       - name: 📤 Download app
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
-          pattern: geoai-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
+          pattern: strata-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
           path: |
             artifacts
 
@@ -242,8 +242,8 @@ jobs:
           rm -rf universal
           ls -laR artifacts | head -80 || true
 
-          X64_TARBALL=$(find artifacts -name 'geoai-app-*-x64-osx-dynamic-release.tar.gz' -print -quit)
-          ARM64_TARBALL=$(find artifacts -name 'geoai-app-*-arm64-osx-dynamic-release.tar.gz' -print -quit)
+          X64_TARBALL=$(find artifacts -name 'strata-app-*-x64-osx-dynamic-release.tar.gz' -print -quit)
+          ARM64_TARBALL=$(find artifacts -name 'strata-app-*-arm64-osx-dynamic-release.tar.gz' -print -quit)
 
           if [ -z "$X64_TARBALL" ]; then
             echo "ERROR: x64 app tarball not found under artifacts/"
@@ -276,14 +276,14 @@ jobs:
           ls -la universal/*.app
 
       - name: 🔐 Import Apple code signing certificate
-        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         uses: apple-actions/import-codesign-certs@8f3fb608891dd2244cdab3d69cd68c0d37a7fe93 # v5.0.2
         with:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
           p12-password: ${{ secrets.MACOS_CERT_P12_PASSWORD }}
 
       - name: 🧹 Materialize symlinks in Contents/MacOS #spellok
-        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         run: |
           # Replace ALL symlinks under Contents/MacOS/ with real copies of #spellok
           # their targets, regardless of file type. Broken symlinks are
@@ -314,7 +314,7 @@ jobs:
           echo "Materialized ${MATERIALIZED} symlink(s); removed ${REMOVED} broken symlink(s)."
 
       - name: 🧹 Remove build metadata from app bundle
-        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         run: |
           # Qt plugin builds can leave intermediate metadata under Contents/PlugIns.
           # These are not runtime files and make codesign reject the bundle seal.
@@ -325,7 +325,7 @@ jobs:
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
 
       - name: 🚚 Move Frameworks/lib out of Frameworks #spellok
-        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         run: |
           # codesign treats every sub-directory of Contents/Frameworks/ as a
           # potential nested bundle. lib/python3.12/ does NOT have a valid
@@ -347,7 +347,7 @@ jobs:
           fi
 
       - name: 🔏 Sign app
-        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         run: |
           # Sign inside-out: every Mach-O binary, then nested bundles #spellok
           # (.framework, sub-.app), then the outer .app last. We avoid
@@ -442,14 +442,14 @@ jobs:
 
       - name: Create dmg
         run: |
-          if [[ "${IS_GEOAI_RELEASE}" == "true" ]]; then
-            QGIS_APP_NAME="GeoAI Desktop"
+          if [[ "${IS_STRATA_RELEASE}" == "true" ]]; then
+            QGIS_APP_NAME="Strata"
           else
-            QGIS_APP_NAME="GeoAI-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_DISPLAY_NAME}"
+            QGIS_APP_NAME="Strata-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_DISPLAY_NAME}"
           fi
           create-dmg --volname "${QGIS_APP_NAME} Installer" \
             --hide-extension "${QGIS_APP_NAME}.app" \
-            --volicon "$(pwd)/images/icons/mac/geoai-desktop.icns" \
+            --volicon "$(pwd)/images/icons/mac/strata.icns" \
             --background "$(pwd)/platform/macos/installer_background.png" \
             --window-pos 200 120 \
             --window-size 512 320 \
@@ -465,12 +465,12 @@ jobs:
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         id: artifact-mac-qt6
         with:
-          name: geoai-${{steps.workflow-artifact-ids.outputs.filename}}-dmg
+          name: strata-${{steps.workflow-artifact-ids.outputs.filename}}-dmg
           path: |
             *.dmg
 
       - name: 🔏 Notarize and staple DMG
-        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         run: |
           DMG_FILE=$(ls *.dmg | head -n1)
           echo "Notarizing ${DMG_FILE}..."
@@ -496,7 +496,7 @@ jobs:
           xcrun stapler validate "${DMG_FILE}" || echo "WARN: stapler validate failed but ticket should still be online"
 
       - name: Upload release assets
-        if: ${{ github.event_name == 'release' || env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ github.event_name == 'release' || env.IS_STRATA_RELEASE == 'true' }}
         uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
           tag_name: ${{ github.event.release.tag_name || github.ref_name }}
@@ -510,6 +510,6 @@ jobs:
           body: |
             ### 🍎 MacOS Qt6 builds
             Download [MacOS Qt6 builds of this PR for testing](${{ steps.artifact-mac-qt6.outputs.artifact-url }}).
-            _This app is not notarized, run `sudo xattr -d com.apple.quarantine /Applications/GeoAI*.app` to avoid the warning_
+            _This app is not notarized, run `sudo xattr -d com.apple.quarantine /Applications/Strata.app` to avoid the warning_
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}

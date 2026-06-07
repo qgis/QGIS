@@ -1,22 +1,18 @@
 <svg width="200" height="54" viewBox="0 0 200 54" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="4" y1="4" x2="48" y2="50" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#143a3f"/>
-      <stop offset="1" stop-color="#0c171c"/>
+      <stop offset="0" stop-color="#0E1A2B"/>
+      <stop offset="1" stop-color="#132238"/>
     </linearGradient>
     <linearGradient id="geo" x1="14" y1="16" x2="42" y2="40" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#6ee7b7"/>
+      <stop offset="0" stop-color="#2DD4BF"/>
       <stop offset="1" stop-color="#22d3ee"/>
     </linearGradient>
   </defs>
   <rect x="3" y="3" width="48" height="48" rx="11" fill="url(#bg)"/>
-  <path d="M13 20c8-6 19-7 29-1" fill="none" stroke="url(#geo)" stroke-width="4.5" stroke-linecap="round"/>
-  <path d="M12 28c10-5 21-5 32 0" fill="none" stroke="url(#geo)" stroke-width="4.5" stroke-linecap="round" opacity=".92"/>
-  <path d="M16 37c8-3 17-2 25 2" fill="none" stroke="url(#geo)" stroke-width="4.5" stroke-linecap="round" opacity=".82"/>
-  <circle cx="40" cy="17" r="4" fill="#fbbf24"/>
-  <circle cx="44" cy="31" r="3.3" fill="#f59e0b"/>
-  <circle cx="31" cy="41" r="3" fill="#fbbf24"/>
-  <path d="M40 17l4 14-13 10" fill="none" stroke="#fde68a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="62" y="25" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700" fill="#eef4f2">GeoAI</text>
-  <text x="62" y="45" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700" fill="#6ee7b7">Desktop</text>
+  <path d="M9 20c9-5 20-5 35 1" fill="none" stroke="#E2A86A" stroke-width="7" stroke-linecap="round"/>
+  <path d="M9 30c11-5 23-4 36 1" fill="none" stroke="#C2854F" stroke-width="7" stroke-linecap="round"/>
+  <path d="M10 40c10-4 22-3 34 2" fill="none" stroke="#6B4A37" stroke-width="7" stroke-linecap="round"/>
+  <path d="M9 12c10-5 23-5 36 1" fill="none" stroke="url(#geo)" stroke-width="8" stroke-linecap="round"/>
+  <text x="62" y="35" font-family="IBM Plex Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="#F7F1E8">Strata</text>
 </svg>

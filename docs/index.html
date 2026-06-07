@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Fork non ufficiale basato su QGIS con assistente AI integrato. Fai GIS 10× più veloce con chat laterale, agente e RAG sul tuo workspace."> <!--#spellok-->
-  <title data-i18n="meta.title">GeoAI Desktop — AI nativa per GIS</title>
+  <meta name="description" content="Strata — il GIS con l'AI nativa. Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace."> <!--#spellok-->
+  <title data-i18n="meta.title">Strata — il GIS con l'AI nativa</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
   <link rel="icon" href="./assets/app-icon.png" type="image/png">
 </head>
@@ -16,17 +16,17 @@
   <!-- Navbar -->
   <nav class="navbar" aria-label="Main navigation">
     <div class="container">
-      <a href="#" class="nav-brand" aria-label="GeoAI Desktop">
+      <a href="#" class="nav-brand" aria-label="Strata">
         <img src="./assets/app-icon.png" alt="" width="36" height="36" aria-hidden="true">
         <span class="nav-brand-wordmark">
-          <span>GeoAI</span>
-          <span>Desktop</span>
+          <span>Strata</span>
         </span>
       </a>
 
       <div class="nav-links">
         <a href="#problems" data-i18n="nav.problems">Problemi</a>
         <a href="#features" data-i18n="nav.features">Feature</a>
+        <a href="#demo" data-i18n="nav.demo">Demo</a>
         <a href="#setup" data-i18n="nav.setup">Setup</a>
         <a href="#download" data-i18n="nav.download">Download</a>
       </div>
@@ -36,7 +36,7 @@
           <button type="button" data-lang="it" aria-pressed="true">IT</button>
           <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-primary" data-i18n="nav.downloadBtn">Scarica</a>
+        <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-primary" data-i18n="nav.downloadBtn">Scarica</a>
         <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M4 6h16M4 12h16M4 18h16"/>
@@ -50,16 +50,16 @@
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-content">
-        <span class="hero-badge" data-i18n="hero.badge">Basato su QGIS 4.1 · AI nativa</span>
+        <span class="hero-badge" data-i18n="hero.badge">Fork di QGIS · AI nativa</span>
         <h1>
-          <span data-i18n="hero.title">GIS desktop con AI nativa.</span>
-          <span class="hero-accent" data-i18n="hero.titleAccent">Fai GIS 10× più veloce.</span>
+          <span data-i18n="hero.title">Strata</span>
+          <span class="hero-accent" data-i18n="hero.titleAccent">il GIS con l'AI nativa.</span>
         </h1>
         <p class="hero-subtitle" data-i18n="hero.subtitle">
-          Assistente integrato nel pannello laterale — non un plugin esterno. Chiedi in linguaggio naturale, l'agente ispeziona layer, esegue PyQGIS e salva workflow con la tua approvazione. <!--#spellok-->
+          Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace. <!--#spellok-->
         </p>
         <div class="hero-cta">
-          <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-primary btn-lg" data-i18n="hero.ctaPrimary">Scarica GeoAI Desktop</a>
+          <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-primary btn-lg" data-i18n="hero.ctaPrimary">Scarica Strata</a>
           <a href="#setup" class="btn btn-secondary btn-lg" data-i18n="hero.ctaSecondary">Come configurarlo</a>
         </div>
       </div>
@@ -100,7 +100,7 @@
         <span class="section-label" data-i18n="problems.label">Problemi comuni</span>
         <h2 class="section-title" data-i18n="problems.title">Conosci questi ostacoli in QGIS?</h2>
         <p class="section-subtitle" data-i18n="problems.subtitle">
-          Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. GeoAI Desktop risolve il gap tra domanda e azione nel tuo progetto.
+          Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. Strata risolve il gap tra domanda e azione nel tuo progetto.
         </p>
       </div>
 
@@ -151,7 +151,7 @@
           <div class="problem-icon">🔌</div>
           <h3 data-i18n="problems.7.title">Plugin AI disconnessi</h3>
           <p data-i18n="problems.7.desc">Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.</p> <!--#spellok-->
-          <p class="problem-fix" data-i18n="problems.7.fix">Integrazione nativa in GeoAI Desktop.</p>
+          <p class="problem-fix" data-i18n="problems.7.fix">Integrazione nativa in Strata.</p>
         </article>
       </div>
     </div>
@@ -182,13 +182,50 @@
         <article class="solution-card">
           <h3 data-i18n="solution.agent.title">Tre modalità agente</h3>
           <p data-i18n="solution.agent.desc">
-            Stile Cursor: Plan per pianificare, Agent per eseguire e modificare, Ask per domande e review. Rules & Skills personalizzabili.
+            Stile Cursor: Plan per pianificare, Agent per eseguire e modificare, Ask per domande e review. Rules &amp; Skills personalizzabili.
           </p>
           <ul class="solution-features">
             <li data-i18n="solution.agent.f1">Plan · Agent · Ask</li>
             <li data-i18n="solution.agent.f2">19 tool GIS integrati</li>
-            <li data-i18n="solution.agent.f3">Rules & Skills (.geoai/)</li>
+            <li data-i18n="solution.agent.f3">Rules &amp; Skills (.strata/)</li>
           </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section class="section" id="demo">
+    <div class="container">
+      <span class="section-label" data-i18n="demo.label">Demo</span>
+      <h2 class="section-title" data-i18n="demo.title">Vedilo in azione</h2>
+      <p class="section-subtitle" data-i18n="demo.subtitle">
+        Due modalità reali di Strata: l'agente esegue PyQGIS sul progetto, Plan propone un piano approvabile prima di toccare i layer.
+      </p>
+
+      <div class="demo-showcase">
+        <article class="demo-card">
+          <figure class="demo-frame">
+            <img loading="lazy" src="./assets/demo-chat.png" alt="Strata Agent mode" width="1024" height="570">
+          </figure>
+          <div class="demo-caption">
+            <h3 data-i18n="demo.agent.title">Agent mode — esecuzione sul progetto</h3>
+            <p data-i18n="demo.agent.desc">
+              Chiedi in linguaggio naturale (es. «crea maschera esterna»): l'assistant ispeziona i layer, esegue run_python e mostra il risultato sulla mappa.
+            </p>
+          </div>
+        </article>
+
+        <article class="demo-card">
+          <figure class="demo-frame">
+            <img loading="lazy" src="./assets/strata-plan-mode.png" alt="Strata Plan mode" width="1024" height="775">
+          </figure>
+          <div class="demo-caption">
+            <h3 data-i18n="demo.plan.title">Plan mode — piano prima dell'azione</h3>
+            <p data-i18n="demo.plan.desc">
+              Descrivi un obiettivo complesso (es. censimento alberi): Strata propone step strutturati e pulsanti Accept plan / Reject / revise prima di modificare il progetto.
+            </p>
+          </div>
         </article>
       </div>
     </div>
@@ -214,7 +251,7 @@
 
         <article class="speed-card highlight">
           <div class="speed-card-header">
-            <h3 data-i18n="speed.after">Con GeoAI Desktop</h3>
+            <h3 data-i18n="speed.after">Con Strata</h3>
             <span class="speed-time" data-i18n="speed.afterTime">~5 min</span>
           </div>
           <p data-i18n="speed.afterSteps">
@@ -243,8 +280,8 @@
 
         <article class="feature-card">
           <div class="feature-number">02</div>
-          <h3 data-i18n="features.2.title">Rules & Skills</h3>
-          <p data-i18n="features.2.desc">Regole inline e cartelle .geoai/rules e .geoai/skills per guidare l'agente come in Cursor.</p>
+          <h3 data-i18n="features.2.title">Rules &amp; Skills</h3>
+          <p data-i18n="features.2.desc">Regole inline e cartelle .strata/rules e .strata/skills per guidare l'agente come in Cursor.</p>
         </article>
 
         <article class="feature-card">
@@ -289,7 +326,7 @@
           <ol class="setup-steps">
             <li>
               <span class="step-num">1</span>
-              <span data-i18n="setup.creds.1">Apri GeoAI Desktop → menu Visualizza → Pannelli → AI Assistant.</span>
+              <span data-i18n="setup.creds.1">Apri Strata → menu Visualizza → Pannelli → AI Assistant.</span>
             </li>
             <li>
               <span class="step-num">2</span>
@@ -338,11 +375,11 @@
     <div class="container">
       <div class="download-header">
         <span class="section-label" data-i18n="download.label">Download</span>
-        <h2 class="section-title" data-i18n="download.title">Scarica GeoAI Desktop</h2>
+        <h2 class="section-title" data-i18n="download.title">Scarica Strata</h2>
         <p class="section-subtitle" data-i18n="download.subtitle">
           Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.
         </p>
-        <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-primary btn-lg" data-i18n="download.cta">Vai alle Releases</a>
+        <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-primary btn-lg" data-i18n="download.cta">Vai alle Releases</a>
       </div>
 
       <div class="download-grid">
@@ -351,8 +388,8 @@
           <h3 data-i18n="download.macos.title">macOS</h3>
           <p class="download-sub" data-i18n="download.macos.sub">Intel + Apple Silicon</p>
           <p class="download-file" data-i18n="download.macos.file">File .dmg</p>
-          <p class="download-note" data-i18n="download.macos.note">Trascina GeoAI Desktop in Applicazioni. Poi: xattr -d com.apple.quarantine "/Applications/GeoAI Desktop.app"</p>
-          <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <p class="download-note" data-i18n="download.macos.note">Trascina Strata in Applicazioni. Poi: xattr -d com.apple.quarantine "/Applications/Strata.app"</p>
+          <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
         <article class="download-card">
@@ -360,8 +397,8 @@
           <h3 data-i18n="download.windows.title">Windows</h3>
           <p class="download-sub" data-i18n="download.windows.sub">10/11 x64</p>
           <p class="download-file" data-i18n="download.windows.file">File -win64.zip</p>
-          <p class="download-note" data-i18n="download.windows.note">Estrai ovunque, lancia l'eseguibile GeoAI Desktop. SmartScreen: Maggiori informazioni → Esegui comunque.</p>
-          <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <p class="download-note" data-i18n="download.windows.note">Estrai ovunque, lancia l'eseguibile Strata. SmartScreen: Maggiori informazioni → Esegui comunque.</p>
+          <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
         <article class="download-card">
@@ -369,8 +406,8 @@
           <h3 data-i18n="download.linux.title">Linux</h3>
           <p class="download-sub" data-i18n="download.linux.sub">x86_64</p>
           <p class="download-file" data-i18n="download.linux.file">File .AppImage</p>
-          <p class="download-note" data-i18n="download.linux.note">chmod +x GeoAI-Desktop-*.AppImage && ./GeoAI-Desktop-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.</p>
-          <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <p class="download-note" data-i18n="download.linux.note">chmod +x Strata-*.AppImage &amp;&amp; ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.</p>
+          <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
       </div>
     </div>
@@ -380,13 +417,13 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <strong>GeoAI Desktop</strong>
-        <span data-i18n="footer.tagline">Fork non ufficiale basato su QGIS con assistente AI nativo.</span> <!--#spellok-->
-        <p class="footer-disclaimer" data-i18n="footer.disclaimer">GeoAI Desktop is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
+        <strong>Strata</strong>
+        <span data-i18n="footer.tagline">Il GIS con l'AI nativa.</span> <!--#spellok-->
+        <p class="footer-disclaimer" data-i18n="footer.disclaimer">Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
       </div>
       <div class="footer-links">
-        <a href="https://github.com/francemazzi/GeoAI-Desktop" data-i18n="footer.github">GitHub</a>
-        <a href="https://github.com/francemazzi/GeoAI-Desktop/releases/latest" data-i18n="nav.download">Download</a>
+        <a href="https://github.com/francemazzi/strata" data-i18n="footer.github">GitHub</a>
+        <a href="https://github.com/francemazzi/strata/releases/latest" data-i18n="nav.download">Download</a>
         <a href="mailto:francemazzi@gmail.com" data-i18n="footer.contact">Contatto</a>
       </div>
       <div class="lang-toggle" role="group" aria-label="Language">

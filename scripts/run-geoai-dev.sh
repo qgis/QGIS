@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
+# Legacy wrapper for the Strata dev launcher.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BUILD_OUTPUT="${GEOAI_BUILD_DIR:-${ROOT}/build}/output"
-export PYTHONHOME="/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14"
-
-"${ROOT}/scripts/patch-macos-bundle.sh" >/dev/null
-
-exec "${BUILD_OUTPUT}/Contents/MacOS/qgis" "$@"
+exec "${ROOT}/scripts/run-strata-dev.sh" "$@"

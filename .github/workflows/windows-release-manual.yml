@@ -123,8 +123,8 @@ jobs:
 
           APP_NAME_OPT=""
           NSIS_OPT=""
-          if [[ "${RELEASE_TAG}" == geoai-v* ]]; then
-            APP_NAME_OPT="-DQGIS_APP_NAME=GeoAIDesktop"
+          if [[ "${RELEASE_TAG}" == strata-v* ]]; then
+            APP_NAME_OPT="-DQGIS_APP_NAME=Strata"
             NSIS_OPT="-DCREATE_NSIS=TRUE"
           fi
 
@@ -177,7 +177,7 @@ jobs:
       - name: 📤 Upload bundle artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: geoai-windows-${{ inputs.release_tag }}
+          name: strata-windows-${{ inputs.release_tag }}
           path: |
             build/*-win64.zip
             build/*-Setup.exe

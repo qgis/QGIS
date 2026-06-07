@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=GeoAI Desktop
+Name=Strata
 GenericName=Geographic Information System
-Icon=geoai-desktop
-TryExec=qgis
-Exec=qgis %F
+Icon=strata
+TryExec=Strata
+Exec=Strata %F
 Terminal=false
 StartupNotify=false
 Categories=Qt;Education;Science;Geography;

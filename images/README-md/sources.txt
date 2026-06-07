@@ -1,5 +1,7 @@
 These are examples used in the GitHub landing page README.md
 
+demo-chat.png, strata-plan-mode.png - Strata demo screenshots (Agent + Plan mode), stored in docs/assets/ for README and GitHub Pages
+
 icebergs.gif, network_analysis_2.png - Ben Hur, own work @benhur07b
 plugins_1.png - self-explanatory screenshot
 qgis_map_showcase.png - screen shot from https://www.flickr.com/groups/qgis/pool/

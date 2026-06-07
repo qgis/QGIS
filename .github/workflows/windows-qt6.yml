@@ -6,7 +6,7 @@ on:
       - master
       - release-**
     tags:
-      - 'geoai-v*'
+      - 'strata-v*'
   pull_request:
   release:
     types: ['published']
@@ -21,7 +21,7 @@ permissions:
   packages: write
 
 env:
-  IS_GEOAI_RELEASE: ${{ startsWith(github.ref, 'refs/tags/geoai-v') || startsWith(github.event.release.tag_name, 'geoai-v') }}
+  IS_STRATA_RELEASE: ${{ startsWith(github.ref, 'refs/tags/strata-v') || startsWith(github.event.release.tag_name, 'strata-v') }}
 
 jobs:
   build:
@@ -76,7 +76,7 @@ jobs:
           ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
       - name: 🪟 Install NSIS
-        if: ${{ env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         run: choco install nsis -y --no-progress
         shell: bash
 
@@ -88,8 +88,8 @@ jobs:
           BUILD_DIR=$( cygpath "${{ github.workspace }}/build" )
           SOURCE_DIR=$( cygpath "${{ github.workspace }}" )
 
-          if [[ "${IS_GEOAI_RELEASE}" == "true" ]]; then
-            APP_NAME_OPT='-DQGIS_APP_NAME=GeoAIDesktop'
+          if [[ "${IS_STRATA_RELEASE}" == "true" ]]; then
+            APP_NAME_OPT='-DQGIS_APP_NAME=Strata'
             NSIS_OPT='-DCREATE_NSIS=TRUE'
           else
             APP_NAME_OPT=''
@@ -147,7 +147,7 @@ jobs:
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
 
         with:
-          name: geoai-sdk-x64-windows
+          name: strata-sdk-x64-windows
           path: |
             sdk/vcpkg-export-*.zip
 
@@ -165,12 +165,12 @@ jobs:
 
         id: artifact-win64-qt6
         with:
-          name: geoai-windows-qt6
+          name: strata-windows-qt6
           path: |
             build/*-win64.zip
 
       - name: Upload release assets
-        if: ${{ github.event_name == 'release' || env.IS_GEOAI_RELEASE == 'true' }}
+        if: ${{ github.event_name == 'release' || env.IS_STRATA_RELEASE == 'true' }}
         uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
           tag_name: ${{ github.event.release.tag_name || github.ref_name }}

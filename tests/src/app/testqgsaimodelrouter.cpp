@@ -390,7 +390,7 @@ void TestQgsAiModelRouter::unavailableToolsAreOmittedFromPayload()
 void TestQgsAiModelRouter::visualContextImageIsAddedToOpenAiPayload()
 {
   QgsSettings settings;
-  settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
+  settings.setValue( u"strata/visual_context/image_send_consent"_s, true );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
@@ -425,13 +425,14 @@ void TestQgsAiModelRouter::visualContextImageIsAddedToOpenAiPayload()
   }
   QVERIFY( hasImage );
 
+  settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }
 
 void TestQgsAiModelRouter::visualContextImageIsAddedToClaudePayload()
 {
   QgsSettings settings;
-  settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
+  settings.setValue( u"strata/visual_context/image_send_consent"_s, true );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
@@ -471,12 +472,14 @@ void TestQgsAiModelRouter::visualContextImageIsAddedToClaudePayload()
   }
   QVERIFY( hasImage );
 
+  settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }
 
 void TestQgsAiModelRouter::visualContextImageRequiresConsent()
 {
   QgsSettings settings;
+  settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
 
   QTemporaryDir tempDir;
@@ -503,7 +506,7 @@ void TestQgsAiModelRouter::visualContextImageRequiresConsent()
 void TestQgsAiModelRouter::visualContextImageIsAddedToCodexPayload()
 {
   QgsSettings settings;
-  settings.setValue( u"geoai/visual_context/image_send_consent"_s, true );
+  settings.setValue( u"strata/visual_context/image_send_consent"_s, true );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
@@ -538,6 +541,7 @@ void TestQgsAiModelRouter::visualContextImageIsAddedToCodexPayload()
   }
   QVERIFY( hasImage );
 
+  settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }
 

@@ -1,13 +1,13 @@
 #!/bin/bash
-# Build a Linux x86_64 AppImage of GeoAI Desktop.
+# Build a Linux x86_64 AppImage of Strata.
 # Designed to run on Ubuntu 22.04 (LTS = broad glibc compatibility).
-# Output: ./GeoAI-Desktop-${GEOAI_VERSION}-x86_64.AppImage
+# Output: ./Strata-${STRATA_VERSION}-x86_64.AppImage
 #
-# Required env: GEOAI_VERSION (e.g. "0.1.0")
+# Required env: STRATA_VERSION (e.g. "0.1.0")
 
 set -euo pipefail
 
-VERSION="${GEOAI_VERSION:-dev}"
+VERSION="${STRATA_VERSION:-dev}"
 APPDIR="${PWD}/AppDir"
 NPROC="$(nproc)"
 
@@ -116,7 +116,7 @@ sed -i 's|set(QT_MIN_VERSION 6\.6\.0)|set(QT_MIN_VERSION 6.4.0)|' CMakeLists.txt
 echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # WITH_PDAL=OFF: noble does not ship libpdal-dev where cmake expects it,
 # and PDAL (point cloud reading) is optional. Users who need point cloud
-# providers can install GeoAI Desktop from source.
+# providers can install Strata from source.
 # WITH_PYTHON=OFF + WITH_BINDINGS=OFF: noble ships sip6 which rejects the
 # /Movable/ annotation in python/PyQt6/core/conversions.sip:1249 (the
 # %If(MOVABLE_MAPPED_TYPE) guard does not gate parsing in sip6). Disabling
@@ -130,6 +130,7 @@ echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 cmake -S . -B build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="${APPDIR}/usr" \
+  -DQGIS_APP_NAME=Strata \
   -DENABLE_AI_ASSISTANT=ON \
   -DWITH_PYTHON=OFF \
   -DWITH_BINDINGS=OFF \
@@ -155,20 +156,20 @@ mkdir -p "${APPDIR}/usr/share/applications"
 
 # Use the existing .desktop template; render @QGIS_APP_NAME@ etc minimally.
 sed \
-  -e 's|@QGIS_APP_NAME@|qgis|g' \
-  linux/org.qgis.qgis.desktop.in > "${APPDIR}/usr/share/applications/com.francemazzi.geoaidesktop.desktop"
+  -e 's|@QGIS_APP_NAME@|Strata|g' \
+  linux/org.qgis.qgis.desktop.in > "${APPDIR}/usr/share/applications/com.francemazzi.strata.desktop"
 
 # Top-level desktop file (linuxdeploy needs one in AppDir root).
-cp "${APPDIR}/usr/share/applications/com.francemazzi.geoaidesktop.desktop" "${APPDIR}/com.francemazzi.geoaidesktop.desktop"
+cp "${APPDIR}/usr/share/applications/com.francemazzi.strata.desktop" "${APPDIR}/com.francemazzi.strata.desktop"
 
 # Icon.
-ICON_SRC="images/icons/geoai-desktop-icon-512x512.png"
+ICON_SRC="images/icons/strata-icon-512x512.png"
 if [ ! -f "${ICON_SRC}" ]; then
   ICON_SRC="images/icons/qgis-icon-512x512.png"
 fi
 mkdir -p "${APPDIR}/usr/share/icons/hicolor/512x512/apps"
-cp "${ICON_SRC}" "${APPDIR}/usr/share/icons/hicolor/512x512/apps/geoai-desktop.png"
-cp "${ICON_SRC}" "${APPDIR}/geoai-desktop.png"
+cp "${ICON_SRC}" "${APPDIR}/usr/share/icons/hicolor/512x512/apps/strata.png"
+cp "${ICON_SRC}" "${APPDIR}/strata.png"
 
 # AppRun launcher.
 cp scripts/AppRun.sh "${APPDIR}/AppRun"
@@ -196,7 +197,7 @@ fi
 echo "==> Running linuxdeploy with Qt plugin"
 export QMAKE=/usr/lib/qt6/bin/qmake6
 export EXTRA_QT_MODULES="quick;quickcontrols2;svg;sql;multimedia;positioning;3dcore;3drender;3dinput;3dlogic;3dextras;webengine;webenginewidgets;serialport"
-export OUTPUT="GeoAI-Desktop-${VERSION}-x86_64.AppImage"
+export OUTPUT="Strata-${VERSION}-x86_64.AppImage"
 
 # Allow running AppImage tools in CI containers (which lack FUSE).
 export APPIMAGE_EXTRACT_AND_RUN=1
@@ -215,9 +216,9 @@ done < <(find "${APPDIR}/usr/lib" -maxdepth 3 -name 'libqgis_*.so*' -print0)
   --appdir "${APPDIR}" \
   --plugin qt \
   --output appimage \
-  --desktop-file "${APPDIR}/com.francemazzi.geoaidesktop.desktop" \
-  --icon-file "${APPDIR}/geoai-desktop.png" \
+  --desktop-file "${APPDIR}/com.francemazzi.strata.desktop" \
+  --icon-file "${APPDIR}/strata.png" \
   "${LIBRARY_ARGS[@]}"
 
 echo "==> Done"
-ls -lh GeoAI-Desktop-*.AppImage
+ls -lh Strata-*.AppImage
