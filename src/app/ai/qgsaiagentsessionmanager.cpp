@@ -663,13 +663,17 @@ void QgsAiAgentSessionManager::refreshRouterToolPolicy()
 void QgsAiAgentSessionManager::loadPersistedBehaviorSettings()
 {
   QgsSettings settings;
-  mBehaviorSettings.allowCustomActions = settingValueWithLegacy( settings, u"strata/agent/allow_custom_actions"_s, QStringList{ u"geoai/agent/allow_custom_actions"_s, u"qgis_ai/agent/allow_custom_actions"_s }, false ).toBool();
-  mBehaviorSettings.rulesText = settingValueWithLegacy( settings, u"strata/agent/rules_text"_s, QStringList{ u"geoai/agent/rules_text"_s, u"qgis_ai/agent/rules_text"_s }, QString() ).toString();
-  mBehaviorSettings.skillsText = settingValueWithLegacy( settings, u"strata/agent/skills_text"_s, QStringList{ u"geoai/agent/skills_text"_s, u"qgis_ai/agent/skills_text"_s }, QString() ).toString();
-  mBehaviorSettings.loadWorkspaceRules = settingValueWithLegacy( settings, u"strata/agent/load_workspace_rules"_s, QStringList{ u"geoai/agent/load_workspace_rules"_s, u"qgis_ai/agent/load_workspace_rules"_s }, true ).toBool();
-  mBehaviorSettings.loadWorkspaceSkills = settingValueWithLegacy( settings, u"strata/agent/load_workspace_skills"_s, QStringList{ u"geoai/agent/load_workspace_skills"_s, u"qgis_ai/agent/load_workspace_skills"_s }, true ).toBool();
-  mBehaviorSettings.rulesPath = settingValueWithLegacy( settings, u"strata/agent/rules_path"_s, QStringList{ u"geoai/agent/rules_path"_s, u"qgis_ai/agent/rules_path"_s }, defaultRulesPath() ).toString();
-  mBehaviorSettings.skillsPath = settingValueWithLegacy( settings, u"strata/agent/skills_path"_s, QStringList{ u"geoai/agent/skills_path"_s, u"qgis_ai/agent/skills_path"_s }, defaultSkillsPath() ).toString();
+  mBehaviorSettings.allowCustomActions
+    = settingValueWithLegacy( settings, u"strata/agent/allow_custom_actions"_s, QStringList { u"geoai/agent/allow_custom_actions"_s, u"qgis_ai/agent/allow_custom_actions"_s }, false ).toBool();
+  mBehaviorSettings.rulesText = settingValueWithLegacy( settings, u"strata/agent/rules_text"_s, QStringList { u"geoai/agent/rules_text"_s, u"qgis_ai/agent/rules_text"_s }, QString() ).toString();
+  mBehaviorSettings.skillsText = settingValueWithLegacy( settings, u"strata/agent/skills_text"_s, QStringList { u"geoai/agent/skills_text"_s, u"qgis_ai/agent/skills_text"_s }, QString() ).toString();
+  mBehaviorSettings.loadWorkspaceRules
+    = settingValueWithLegacy( settings, u"strata/agent/load_workspace_rules"_s, QStringList { u"geoai/agent/load_workspace_rules"_s, u"qgis_ai/agent/load_workspace_rules"_s }, true ).toBool();
+  mBehaviorSettings.loadWorkspaceSkills
+    = settingValueWithLegacy( settings, u"strata/agent/load_workspace_skills"_s, QStringList { u"geoai/agent/load_workspace_skills"_s, u"qgis_ai/agent/load_workspace_skills"_s }, true ).toBool();
+  mBehaviorSettings.rulesPath = settingValueWithLegacy( settings, u"strata/agent/rules_path"_s, QStringList { u"geoai/agent/rules_path"_s, u"qgis_ai/agent/rules_path"_s }, defaultRulesPath() ).toString();
+  mBehaviorSettings.skillsPath
+    = settingValueWithLegacy( settings, u"strata/agent/skills_path"_s, QStringList { u"geoai/agent/skills_path"_s, u"qgis_ai/agent/skills_path"_s }, defaultSkillsPath() ).toString();
 }
 
 void QgsAiAgentSessionManager::persistBehaviorSettings() const

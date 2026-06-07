@@ -115,9 +115,8 @@ namespace
   bool readVisualContextImage( const QgsAiChatMessage &message, QString &mimeType, QString &base64Data )
   {
     QgsSettings settings;
-    const bool hasConsent = settings.contains( u"strata/visual_context/image_send_consent"_s )
-                              ? settings.value( u"strata/visual_context/image_send_consent"_s, false ).toBool()
-                              : settings.value( u"geoai/visual_context/image_send_consent"_s, false ).toBool();
+    const bool hasConsent = settings.contains( u"strata/visual_context/image_send_consent"_s ) ? settings.value( u"strata/visual_context/image_send_consent"_s, false ).toBool()
+                                                                                               : settings.value( u"geoai/visual_context/image_send_consent"_s, false ).toBool();
     if ( !hasConsent )
       return false;
 

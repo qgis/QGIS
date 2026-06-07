@@ -1423,12 +1423,14 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexLayersTool>( mAiWorkspaceIndex.get() ) );
   mAiLayerIndexCoordinator = std::make_unique<QgsAiLayerIndexCoordinator>( mAiWorkspaceIndex.get(), this );
   QgsSettings aiSettings;
-  const bool hasLayerIndexingSetting = aiSettings.contains( u"strata/index/enable_layer_indexing"_s ) || aiSettings.contains( u"geoai/index/enable_layer_indexing"_s ) || aiSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
+  const bool hasLayerIndexingSetting = aiSettings.contains( u"strata/index/enable_layer_indexing"_s )
+                                       || aiSettings.contains( u"geoai/index/enable_layer_indexing"_s )
+                                       || aiSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
   const bool defaultLayerIndexingEnabled = mAiWorkspaceIndex->hasEmbeddingConfiguration() && !QgsAiChatDockWidget::requiresLayerIndexingConsent();
   const bool aiLayerIndexingEnabled = hasLayerIndexingSetting
-                                        ? ( aiSettings.contains( u"strata/index/enable_layer_indexing"_s ) ? aiSettings.value( u"strata/index/enable_layer_indexing"_s, false ).toBool()
+                                        ? ( aiSettings.contains( u"strata/index/enable_layer_indexing"_s )  ? aiSettings.value( u"strata/index/enable_layer_indexing"_s, false ).toBool()
                                             : aiSettings.contains( u"geoai/index/enable_layer_indexing"_s ) ? aiSettings.value( u"geoai/index/enable_layer_indexing"_s, false ).toBool()
-                                                                                                           : aiSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool() )
+                                                                                                            : aiSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool() )
                                         : defaultLayerIndexingEnabled;
   mAiLayerIndexCoordinator->setEnabled( aiLayerIndexingEnabled );
   mAiChatHistoryStore = std::make_unique<QgsAiChatHistoryStore>( mAiFileContextProvider.get(), this );

@@ -203,10 +203,10 @@ namespace
     if ( answer != QMessageBox::Yes )
       return false;
 
-  settings.setValue( visualConsentSettingKey(), true );
-  settings.remove( u"geoai/visual_context/image_send_consent"_s );
-  return true;
-}
+    settings.setValue( visualConsentSettingKey(), true );
+    settings.remove( u"geoai/visual_context/image_send_consent"_s );
+    return true;
+  }
 
   QSize cappedRenderSize( QSize original, int requestedLongestSide )
   {
