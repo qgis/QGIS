@@ -1,7 +1,3 @@
-<img src="images/README-md/main_logo.png" width="300">
-
-> Website: **[francemazzi.github.io/strata](https://francemazzi.github.io/strata)**
-
 # Strata — The AI-native GIS
 
 An AI-native fork of QGIS with a built-in assistant: chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.
