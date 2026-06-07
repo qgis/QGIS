@@ -303,6 +303,7 @@ class RandomPointsPolygons(QgisAlgorithm):
                     f.setAttribute("id", pointId)
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
+                    feedback.featureAddedToSink(self.OUTPUT)
                     if minDistance:
                         index.addFeature(f)
                     points[nPoints] = p
@@ -323,4 +324,5 @@ class RandomPointsPolygons(QgisAlgorithm):
 
         feedback.setProgress(100)
         sink.finalize()
+        feedback.featureSinkFinalized(self.OUTPUT)
         return {self.OUTPUT: dest_id}

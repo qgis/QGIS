@@ -236,6 +236,8 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
       neighborFeature.setAttributes( QgsAttributes() << i << inputLayer->getFeature( neighborId ).attribute( uniqueIdFieldIdx ) );
       if ( !sink_neighbors->addFeature( neighborFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink_neighbors.get(), parameters, u"NEIGHBORS"_s ) );
+      else
+        feedback->featureAddedToSink( u"NEIGHBORS"_s );
     }
 
     QgsFeature f;
@@ -246,10 +248,14 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
     f.setGeometry( error->geometry() );
     if ( !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( sink_errors && !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
+    else if ( sink_errors )
+      feedback->featureAddedToSink( u"ERRORS"_s );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -269,10 +275,19 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   QVariantMap outputs;
+  sink_neighbors->finalize();
+  feedback->featureSinkFinalized( u"NEIGHBORS"_s );
   outputs.insert( u"NEIGHBORS"_s, dest_neighbors );
+
+  sink_output->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
   outputs.insert( u"OUTPUT"_s, dest_output );
   if ( sink_errors )
+  {
+    sink_errors->finalize();
+    feedback->featureSinkFinalized( u"ERRORS"_s );
     outputs.insert( u"ERRORS"_s, dest_errors );
+  }
 
   return outputs;
 }

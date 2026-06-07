@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsModelArrowItem : QObject, QGraphicsPathItem
 {
 %Docstring(signature="appended")
@@ -86,14 +88,49 @@ points on both items.
 Sets the pen ``style`` to use for rendering the arrow line.
 %End
 
-  signals:
-
-    void painterPathUpdated();
+    QgsModelComponentGraphicItem *startItem();
 %Docstring
-Emitted when the path is updated.
+Returns the item at the start of the arrow.
 
-.. versionadded:: 4.0
+.. seealso:: :py:func:`endItem`
 %End
+
+    Qt::Edge startEdge();
+%Docstring
+Returns the edge of the start item that arrow begins at.
+
+.. seealso:: :py:func:`endEdge`
+%End
+
+    int startIndex();
+%Docstring
+Returns the index of the start item that arrow begins at.
+
+.. seealso:: :py:func:`endIndex`
+%End
+
+    QgsModelComponentGraphicItem *endItem();
+%Docstring
+Returns the item at the end of the arrow.
+
+.. seealso:: :py:func:`startItem`
+%End
+
+    Qt::Edge endEdge();
+%Docstring
+Returns the edge of the end item that arrow ends at.
+
+.. seealso:: :py:func:`startEdge`
+%End
+
+    int endIndex();
+%Docstring
+Returns the index of the end item that arrow ends at.
+
+.. seealso:: :py:func:`startIndex`
+%End
+
+
 
   public slots:
 

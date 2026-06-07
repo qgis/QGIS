@@ -87,6 +87,7 @@ running the child.
 
 };
 
+
 class QgsProcessingModelResult
 {
 %Docstring(signature="appended")

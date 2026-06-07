@@ -135,6 +135,29 @@ Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featu
   return !geometry.isNull() ? Qgis::VectorEditResult::Success : Qgis::VectorEditResult::EmptyGeometry;
 }
 
+Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices )
+{
+  if ( !mLayer->isSpatial() )
+    return Qgis::VectorEditResult::InvalidLayer;
+
+  QgsFeature f;
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
+    return Qgis::VectorEditResult::FetchFeatureFailed;
+
+  QgsGeometry geometry = f.geometry();
+
+  if ( !geometry.deleteVertices( vertices ) )
+    return Qgis::VectorEditResult::EditFailed;
+
+  if ( geometry.constGet() && geometry.constGet()->nCoordinates() == 0 )
+  {
+    // Last vertex deleted, set geometry to null
+    geometry.set( nullptr );
+  }
+
+  mLayer->changeGeometry( featureId, geometry );
+  return !geometry.isNull() ? Qgis::VectorEditResult::Success : Qgis::VectorEditResult::EmptyGeometry;
+}
 
 static Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_ptr< QgsCurve > &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds, bool firstOne = true )
 {
@@ -470,9 +493,6 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
   QgsFeatureIterator features;
   const QgsFeatureIds selectedIds = mLayer->selectedFeatureIds();
 
-  // deactivate preserving circular if the curve contains only straight segments to avoid transforming Polygon to CurvePolygon
-  preserveCircular &= curve->hasCurvedSegments();
-
   if ( !selectedIds.isEmpty() ) //consider only the selected features if there is a selection
   {
     features = mLayer->getSelectedFeatures();
@@ -513,6 +533,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
   QgsVectorLayerUtils::QgsFeaturesDataList featuresDataToAdd;
 
   const int fieldCount = mLayer->fields().count();
+  const bool splitCurveContainsCurves = curve->hasCurvedSegments();
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
@@ -525,7 +546,13 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
     QgsPointSequence featureTopologyTestPoints;
     const QgsGeometry originalGeom = feat.geometry();
     QgsGeometry featureGeom = originalGeom;
-    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircular, topologicalEditing, featureTopologyTestPoints );
+
+    // For the current geometry, make sure preserveCircular is not forced, unless
+    // the input param is true and one of the involved geometries contains curves
+    bool preserveCircularForGeom = preserveCircular;
+    preserveCircularForGeom &= ( splitCurveContainsCurves || featureGeom.constGet()->hasCurvedSegments() );
+    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircularForGeom, topologicalEditing, featureTopologyTestPoints );
+
     topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success )
     {

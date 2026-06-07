@@ -16,6 +16,7 @@
 #ifndef QGSTEXTUREMATERIAL_H
 #define QGSTEXTUREMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -57,10 +58,11 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
     Qt3DRender::QAbstractTexture *texture() const;
 
     /**
-     * When instancing is enabled, the vertex shader uses per-instance
-     * translation, rotation, and scale attributes for GPU instancing.
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader.
+     * \a flags controls which per-instance attributes (scale, rotation) are active.
      */
-    void setInstancingEnabled( bool enabled );
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
 
   public slots:
 
@@ -80,7 +82,8 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
     Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
     Qt3DRender::QShaderProgram *mGL3Shader = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
-    bool mInstancingEnabled = false;
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
 };
 
 ///@endcond PRIVATE

@@ -214,6 +214,8 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
         feature.setAttributes( QgsAttributes() << i << it.key() << rect.width() << rect.height() << rect.area() << rect.perimeter() );
         if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( u"OUTPUT"_s );
         i++;
         feedback->setProgress( 50 + i * step );
       }
@@ -230,6 +232,8 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
         QgsFeature feature = createFeature( feedback, i, geometryType, it.value(), it.key() );
         if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( u"OUTPUT"_s );
         i++;
         feedback->setProgress( 50 + i * step );
       }
@@ -282,9 +286,12 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
 
       if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
   }
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

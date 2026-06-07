@@ -84,21 +84,12 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExpression( u"FILENAME_EXPRESSION"_s, QObject::tr( "Output filename expression" ), u"'output_'||@atlas_featurenumber"_s, u"COVERAGE_LAYER"_s ) );
   addParameter( new QgsProcessingParameterFile( u"FOLDER"_s, QObject::tr( "Output folder" ), Qgis::ProcessingFileParameterBehavior::Folder ) );
 
-
   auto layersParam
     = std::make_unique<QgsProcessingParameterMultipleLayers>( u"LAYERS"_s, QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
-  QStringList imageFormats;
-  const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
-  for ( const QByteArray &format : supportedImageFormats )
-  {
-    if ( format == QByteArray( "svg" ) )
-      continue;
-    imageFormats << QString( format );
-  }
-  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( u"EXTENSION"_s, QObject::tr( "Image format" ), imageFormats, false, imageFormats.indexOf( "png"_L1 ) );
+  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( u"EXTENSION"_s, QObject::tr( "Image format" ), QgsProcessingUtils::supportedImageFormats(), false, 0 );
   extensionParam->setFlags( extensionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extensionParam.release() );
 
@@ -183,16 +174,9 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   const QString directory = parameterAsFileOutput( parameters, u"FOLDER"_s, context );
   const QString fileName = QDir( directory ).filePath( u"atlas"_s );
 
-  QStringList imageFormats;
-  const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
-  for ( const QByteArray &format : supportedImageFormats )
-  {
-    if ( format == QByteArray( "svg" ) )
-      continue;
-    imageFormats << QString( format );
-  }
+  const QStringList imageFormats = QgsProcessingUtils::supportedImageFormats();
   const int idx = parameterAsEnum( parameters, u"EXTENSION"_s, context );
-  const QString extension = '.' + imageFormats.at( idx );
+  const QString extension = '.' + imageFormats.at( idx ).toLower();
 
   QgsLayoutExporter::ImageExportSettings settings;
 

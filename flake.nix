@@ -90,13 +90,6 @@
               ];
 
               shellHook = ''
-                echo "Applying Nix patches ..."
-                for p in ${nixPatches}; do
-                  echo "patch: $p"
-                  patch --reverse --reject-file - --strip 1 < $p &> /dev/null || true
-                  patch --strip 1 < $p
-                done
-
                 export QT_PLUGIN_PATH="${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix}"
                 export QT_QPA_PLATFORM_PLUGIN_PATH="${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix}/platforms"
 
@@ -107,14 +100,19 @@
                   echo "Build QGIS using following commands:"
                   echo
                   echo " 1.  mkdir build && cd build"
-                  echo " 2.  cmake \
-                    -G Ninja \
-                    -D CMAKE_BUILD_TYPE=Debug \
-                    -D WITH_3D=True \
-                    -D WITH_PDAL=True \
-                    -D WITH_QTWEBENGINE=True \
-                    -D CMAKE_INSTALL_PREFIX=\$(pwd)/app \
-                    -D QT_PLUGINS_DIR=${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix} .."
+                  cat <<EOF
+                 2.  cmake .. \\
+                    -G Ninja \\
+                    -D CMAKE_BUILD_TYPE=Debug \\
+                    -D WITH_3D=True \\
+                    -D WITH_PDAL=True \\
+                    -D WITH_QTWEBENGINE=True \\
+                    -D CMAKE_INSTALL_PREFIX=\$PWD/app \\
+                    -D QT_PLUGINS_DIR=${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix} \\
+                    -D QSCI_SIP_DIR=${pkgs.python3Packages.qscintilla-qt6}/${pkgs.python3.sitePackages}/PyQt6/bindings \\
+                    -D QSCI_DIST_INFO=${pkgs.python3Packages.qscintilla-qt6}/${pkgs.python3.sitePackages}/pyqt6_qscintilla-${pkgs.python3Packages.qscintilla-qt6.version}.dist-info \\
+                    -D PYQT6_DIST_INFO=${pkgs.python3Packages.pyqt6}/${pkgs.python3.sitePackages}/pyqt6-${pkgs.python3Packages.pyqt6.version}.dist-info
+                EOF
                   echo " 3.  ninja"
                   echo " 4.  ninja install"
                   echo

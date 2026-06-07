@@ -7735,6 +7735,36 @@ Qgis.PlotToolFlags = lambda flags=0: Qgis.PlotToolFlag(flags)
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Map3DDebugFlag.ShowTerrainBoundingBoxes.__doc__ = "Displays bounding boxes of terrain tiles."
+Qgis.Map3DDebugFlag.ShowTerrainTileInfo.__doc__ = "Displays extra tile info on top of terrain tiles."
+Qgis.Map3DDebugFlag.ShowCameraViewCenter.__doc__ = "Shows the camera's view center as a sphere."
+Qgis.Map3DDebugFlag.ShowCameraRotationCenter.__doc__ = "Shows the camera's rotation center as a sphere."
+Qgis.Map3DDebugFlag.ShowLightSourceOrigins.__doc__ = "Shows the light source origins as a sphere."
+Qgis.Map3DDebugFlag.ShowFPS.__doc__ = "Shows the frames per second (FPS)."
+Qgis.Map3DDebugFlag.ShowDebugPanel.__doc__ = "Shows the debug panel next to the map."
+Qgis.Map3DDebugFlag.__doc__ = """Flags that control debug options for 3D maps.
+
+.. warning::
+
+   These are debugging options only, and are not considered part of stable API.
+
+.. versionadded:: 4.2
+
+* ``ShowTerrainBoundingBoxes``: Displays bounding boxes of terrain tiles.
+* ``ShowTerrainTileInfo``: Displays extra tile info on top of terrain tiles.
+* ``ShowCameraViewCenter``: Shows the camera's view center as a sphere.
+* ``ShowCameraRotationCenter``: Shows the camera's rotation center as a sphere.
+* ``ShowLightSourceOrigins``: Shows the light source origins as a sphere.
+* ``ShowFPS``: Shows the frames per second (FPS).
+* ``ShowDebugPanel``: Shows the debug panel next to the map.
+
+"""
+# --
+Qgis.Map3DDebugFlag.baseClass = Qgis
+Qgis.Map3DDebugFlags = lambda flags=0: Qgis.Map3DDebugFlag(flags)
+Qgis.Map3DDebugFlags.baseClass = Qgis
+Map3DDebugFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
 Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
 Qgis.Point3DShape.Cone.__doc__ = "Cone"
@@ -7852,12 +7882,17 @@ Qgis.ShadowQuality.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
+Qgis.LightSourceType.Sun.__doc__ = "Sun based light source \n.. versionadded:: 4.2"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 
 .. versionadded:: 3.26
 
 * ``Point``: Point light source
 * ``Directional``: Directional light source
+* ``Sun``: Sun based light source
+
+  .. versionadded:: 4.2
+
 
 """
 # --
@@ -7942,6 +7977,20 @@ Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D v
 """
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ToneMappingMethod.Clamp.__doc__ = "Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail."
+Qgis.ToneMappingMethod.Aces.__doc__ = "Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness."
+Qgis.ToneMappingMethod.__doc__ = """Defines the method used to map High Dynamic Range (HDR) scene colors
+to the Standard Dynamic Range (SDR) of a display monitor.
+
+.. versionadded:: 4.2
+
+* ``Clamp``: Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail.
+* ``Aces``: Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness.
+
+"""
+# --
+Qgis.ToneMappingMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.Export3DSceneFormat.Obj.__doc__ = "Wavefront OBJ format."
 Qgis.Export3DSceneFormat.StlAscii.__doc__ = "STL ascii format."
@@ -8501,6 +8550,21 @@ Qgis.LayerTreeInsertionMethod.__doc__ = """Layer tree insertion methods
 """
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LegendLayerDoubleClickAction.LayerProperties.__doc__ = "Open the layer properties dialog"
+Qgis.LegendLayerDoubleClickAction.AttributeTable.__doc__ = "Open the attribute table"
+Qgis.LegendLayerDoubleClickAction.LayerStyling.__doc__ = "Open the layer styling dock"
+Qgis.LegendLayerDoubleClickAction.__doc__ = """Action performed when double-clicking a layer in the legend.
+
+.. versionadded:: 4.0
+
+* ``LayerProperties``: Open the layer properties dialog
+* ``AttributeTable``: Open the attribute table
+* ``LayerStyling``: Open the layer styling dock
+
+"""
+# --
+Qgis.LegendLayerDoubleClickAction.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LayerTreeFilterFlag.SkipVisibilityCheck.__doc__ = "If set, the standard visibility check should be skipped"
 Qgis.LayerTreeFilterFlag.__doc__ = """Layer tree filter flags.

@@ -503,7 +503,7 @@ Write mtext (MTEXT)
    available in Python bindings as writeMTextV2
 %End
 
-    static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
+ static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 ) /Deprecated="Since 4.2. Use the overload taking a QgsRenderContext instead."/;
 %Docstring
 Returns scale factor for conversion to map units
 
@@ -511,6 +511,19 @@ Returns scale factor for conversion to map units
 :param symbolUnits: the symbol output units
 :param mapUnits: the map units
 :param mapUnitsPerPixel: Map units per pixel
+
+.. deprecated:: 4.2
+
+   Use the overload taking a :py:class:`QgsRenderContext` instead.
+%End
+
+    static double mapUnitScaleFactor( const QgsRenderContext &renderContext, Qgis::RenderUnit symbolUnits );
+%Docstring
+Returns the scale factor for conversion of a symbol size in
+``symbolUnits`` to map units, using the symbology scale and map-to-pixel
+transform from ``renderContext``.
+
+.. versionadded:: 4.2
 %End
 
     void clipValueToMapUnitScale( double &value, const QgsMapUnitScale &scale, double pixelToMMFactor ) const;

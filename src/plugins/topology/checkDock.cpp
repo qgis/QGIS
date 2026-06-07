@@ -64,9 +64,9 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mTestTable = mConfigureDialog->rulesTable();
 
   QgsMapCanvas *canvas = qIface->mapCanvas(); // mQgisApp->mapCanvas();
-  mRBFeature1.reset( new QgsRubberBand( canvas ) );
-  mRBFeature2.reset( new QgsRubberBand( canvas ) );
-  mRBConflict.reset( new QgsRubberBand( canvas ) );
+  mRBFeature1 = make_qobject_unique<QgsRubberBand>( canvas );
+  mRBFeature2 = make_qobject_unique<QgsRubberBand>( canvas );
+  mRBConflict = make_qobject_unique<QgsRubberBand>( canvas );
 
   mRBFeature1->setColor( QColor( 0, 0, 255, 65 ) );
   mRBFeature2->setColor( QColor( 0, 255, 0, 65 ) );

@@ -30,6 +30,110 @@
 
 ///@cond NOT_STABLE
 
+//
+// QgsModelDesignerArrowBadgeItem
+//
+
+QgsModelDesignerArrowBadgeItem::QgsModelDesignerArrowBadgeItem( QgsModelArrowItem *link )
+  : QGraphicsRectItem( link )
+{
+  setZValue( QgsModelGraphicsScene::ZValues::ArrowDecoration );
+}
+
+void QgsModelDesignerArrowBadgeItem::setCenter( const QPointF &center )
+{
+  const double width = rect().width();
+  const double height = rect().height();
+  setRect( center.x() - width * 0.5, center.y() - height * 0.5, width, height );
+}
+
+QgsModelArrowItem *QgsModelDesignerArrowBadgeItem::arrow()
+{
+  return dynamic_cast< QgsModelArrowItem * >( parentItem() );
+}
+
+void QgsModelDesignerArrowBadgeItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  QgsModelArrowItem *arrow = QgsModelDesignerArrowBadgeItem::arrow();
+  if ( !arrow )
+    return;
+
+  // find mid-point color for arrow, and match badge to mid-point color
+  const QColor startColor = arrow->startItem()->linkColor( arrow->startEdge(), arrow->startIndex() );
+  const QColor endColor = arrow->endItem()->linkColor( arrow->endEdge(), arrow->endIndex() );
+  const QColor backgroundColor = QColor::fromRgbF( 0.5f * ( startColor.redF() + endColor.redF() ), 0.5f * ( startColor.greenF() + endColor.greenF() ), 0.5f * ( startColor.blueF() + endColor.blueF() ) );
+  const QColor strokeColor = backgroundColor.darker( 150 );
+
+  const bool hadAntialiasing = painter->testRenderHint( QPainter::Antialiasing );
+  painter->setRenderHint( QPainter::Antialiasing, true );
+  // First draw a rounded rectangle as background
+  painter->setBrush( QBrush( backgroundColor ) );
+  QPen pen( strokeColor );
+  pen.setCosmetic( true );
+  pen.setWidth( 1 );
+  painter->setPen( pen );
+  painter->drawRoundedRect( rect(), BORDER_RADIUS, BORDER_RADIUS );
+
+  const bool isDarkBackground = backgroundColor.lightness() < 128;
+
+  // And finally draw the text on top
+  QFont font;
+  font.setPointSize( FONT_SIZE );
+  font.setBold( true );
+  painter->setFont( font );
+  painter->setPen( QPen( isDarkBackground ? QColor( 255, 255, 255 ) : QColor( 0, 0, 0 ) ) );
+  painter->setBrush( Qt::NoBrush );
+
+  painter->drawText( rect(), Qt::AlignCenter, textForValue( mValue ) );
+
+  painter->setRenderHint( QPainter::Antialiasing, hadAntialiasing );
+}
+
+void QgsModelDesignerArrowBadgeItem::setValue( const QVariant &value )
+{
+  mValue = value;
+  resizeToContents();
+  update();
+}
+
+QVariant QgsModelDesignerArrowBadgeItem::value() const
+{
+  return mValue;
+}
+
+QString QgsModelDesignerArrowBadgeItem::textForValue( const QVariant &value )
+{
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  if ( QgsVariantUtils::isNumericType( static_cast< QMetaType::Type>( value.userType() ) ) )
+  {
+    return value.toString();
+  }
+
+  // limit size of badge
+  const QString stringValue = value.toString();
+  return QgsStringUtils::truncateMiddleOfString( stringValue, 10 );
+}
+
+void QgsModelDesignerArrowBadgeItem::resizeToContents()
+{
+  QFont font;
+  font.setPointSize( FONT_SIZE );
+  font.setBold( true );
+  QFontMetrics fm( font );
+  const QRectF boundingRect = fm.boundingRect( textForValue( mValue ) );
+  const double width = boundingRect.width() + 2 * BORDER_RADIUS + CONTENTS_MARGIN * 2;
+  const double height = boundingRect.height() + 2 * BORDER_RADIUS + CONTENTS_MARGIN * 2;
+
+  const QPointF center = rect().center();
+  setRect( center.x() - width * 0.5, center.y() - height * 0.5, width, height );
+}
+
+
+//
+// QgsModelArrowItem
+//
 
 QgsModelArrowItem::QgsModelArrowItem(
   QgsModelComponentGraphicItem *startItem,
@@ -169,6 +273,36 @@ void QgsModelArrowItem::setPenStyle( Qt::PenStyle style )
   update();
 }
 
+QgsModelComponentGraphicItem *QgsModelArrowItem::startItem()
+{
+  return mStartItem;
+}
+
+QgsModelComponentGraphicItem *QgsModelArrowItem::endItem()
+{
+  return mEndItem;
+}
+
+QgsModelDesignerArrowBadgeItem *QgsModelArrowItem::badgeItem()
+{
+  return mBadgeItem;
+}
+
+void QgsModelArrowItem::setShowBadge( bool visible )
+{
+  if ( visible && !mBadgeItem )
+  {
+    mBadgeItem = new QgsModelDesignerArrowBadgeItem( this );
+    mBadgeItem->setCenter( path().pointAtPercent( 0.5 ) );
+  }
+  else if ( !visible && mBadgeItem )
+  {
+    scene()->removeItem( mBadgeItem );
+    delete mBadgeItem;
+    mBadgeItem = nullptr;
+  }
+}
+
 void QgsModelArrowItem::updatePath()
 {
   QList<QPointF> controlPoints;
@@ -248,7 +382,10 @@ void QgsModelArrowItem::updatePath()
   path.moveTo( controlPoints.at( 0 ) );
   path.cubicTo( controlPoints.at( 1 ), controlPoints.at( 2 ), controlPoints.at( 3 ) );
   setPath( path );
-  emit painterPathUpdated();
+  if ( mBadgeItem )
+  {
+    mBadgeItem->setCenter( path.pointAtPercent( 0.5 ) );
+  }
 }
 
 QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const

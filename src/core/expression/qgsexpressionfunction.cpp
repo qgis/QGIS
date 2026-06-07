@@ -7330,12 +7330,18 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
 {
   const QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
 
+  bool translate = true;
+  if ( values.length() >= 3 )
+  {
+    translate = QgsExpressionUtils::getTVLValue( values.at( 2 ), parent ) == QgsExpressionUtils::TVL::True;
+  }
+
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe(
     values.at( 0 ),
     context,
     parent,
-    [layerProperty]( QgsMapLayer *layer ) -> QVariant {
+    [layerProperty, translate]( QgsMapLayer *layer ) -> QVariant {
       if ( !layer )
         return QVariant();
 
@@ -7402,23 +7408,23 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         switch ( layer->type() )
         {
           case Qgis::LayerType::Vector:
-            return QCoreApplication::translate( "expressions", "Vector" );
+            return translate ? QCoreApplication::translate( "expressions", "Vector" ) : u"Vector"_s;
           case Qgis::LayerType::Raster:
-            return QCoreApplication::translate( "expressions", "Raster" );
+            return translate ? QCoreApplication::translate( "expressions", "Raster" ) : u"Raster"_s;
           case Qgis::LayerType::Mesh:
-            return QCoreApplication::translate( "expressions", "Mesh" );
+            return translate ? QCoreApplication::translate( "expressions", "Mesh" ) : u"Mesh"_s;
           case Qgis::LayerType::VectorTile:
-            return QCoreApplication::translate( "expressions", "Vector Tile" );
+            return translate ? QCoreApplication::translate( "expressions", "Vector Tile" ) : u"Vector Tile"_s;
           case Qgis::LayerType::Plugin:
-            return QCoreApplication::translate( "expressions", "Plugin" );
+            return translate ? QCoreApplication::translate( "expressions", "Plugin" ) : u"Plugin"_s;
           case Qgis::LayerType::Annotation:
-            return QCoreApplication::translate( "expressions", "Annotation" );
+            return translate ? QCoreApplication::translate( "expressions", "Annotation" ) : u"Annotation"_s;
           case Qgis::LayerType::PointCloud:
-            return QCoreApplication::translate( "expressions", "Point Cloud" );
+            return translate ? QCoreApplication::translate( "expressions", "Point Cloud" ) : u"Point Cloud"_s;
           case Qgis::LayerType::Group:
-            return QCoreApplication::translate( "expressions", "Group" );
+            return translate ? QCoreApplication::translate( "expressions", "Group" ) : u"Group"_s;
           case Qgis::LayerType::TiledScene:
-            return QCoreApplication::translate( "expressions", "Tiled Scene" );
+            return translate ? QCoreApplication::translate( "expressions", "Tiled Scene" ) : u"Tiled Scene"_s;
         }
       }
       else
@@ -10629,7 +10635,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     // **General** functions
     functions
-      << new QgsStaticExpressionFunction( u"layer_property"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"property"_s ), fcnGetLayerProperty, u"Map Layers"_s )
+      << new QgsStaticExpressionFunction(
+           u"layer_property"_s,
+           QgsExpressionFunction::ParameterList()
+             << QgsExpressionFunction::Parameter( u"layer"_s )
+             << QgsExpressionFunction::Parameter( u"property"_s )
+             << QgsExpressionFunction::Parameter( u"translate"_s, true, true ),
+           fcnGetLayerProperty,
+           u"Map Layers"_s
+         )
       << new QgsStaticExpressionFunction( u"decode_uri"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"part"_s, true ), fcnDecodeUri, u"Map Layers"_s )
       << new QgsStaticExpressionFunction( u"mime_type"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"binary_data"_s ), fcnMimeType, u"General"_s )
       << new QgsStaticExpressionFunction(

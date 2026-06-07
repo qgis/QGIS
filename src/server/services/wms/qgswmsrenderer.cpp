@@ -112,6 +112,9 @@ using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {
+  constexpr const char *MEMBERNAME_FEATURETYPE = "featureType";                     // name of the JSON-FG member describing the layer name
+  constexpr const char *MEMBERNAME_QGIS_REQUESTEDWMSNAME = "qgis:requestedWmsName"; // name of the QGIS member describing the name of the group that requested this layer
+
   QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
     : mContext( context )
   {
@@ -3029,10 +3032,11 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &destCRS ) const
   {
-    json json {
+    json jsonCollection {
       { "type", "FeatureCollection" },
       { "features", json::array() },
     };
+
     const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
     const bool withDisplayName = mWmsParameters.withDisplayName();
 
@@ -3053,6 +3057,16 @@ namespace QgsWms
 
       if ( !layer )
         continue;
+
+      // check if the layers have been requested by something other than their layer name (like the group)
+      // and if so, keep the highest ancestor as requestedWmsName
+      QStringList requestedWmsNames = mContext.acceptableLayersToRender().value( layer );
+      requestedWmsNames.removeAll( layerName );
+      QString requestedWmsName;
+      if ( !requestedWmsNames.isEmpty() )
+      {
+        requestedWmsName = requestedWmsNames.first();
+      }
 
       if ( layer->type() == Qgis::LayerType::Vector )
       {
@@ -3147,7 +3161,7 @@ namespace QgsWms
         exporter.setIncludeGeometry( withGeometry );
         exporter.setTransformGeometries( false );
 
-        QgsJsonUtils::addCrsInfo( json, destCRS );
+        QgsJsonUtils::addCrsInfo( jsonCollection, destCRS );
 
         for ( const auto &feature : std::as_const( features ) )
         {
@@ -3157,7 +3171,16 @@ namespace QgsWms
           {
             extraProperties.insert( u"display_name"_s, fidDisplayNameMap.value( feature.id() ) );
           }
-          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id, layerName ) );
+          QVariantMap extraMembers;
+          extraMembers[MEMBERNAME_FEATURETYPE] = layerName;
+
+          // if existing, add the requestedWmsName to extra members
+          if ( !requestedWmsName.isEmpty() )
+          {
+            extraMembers[MEMBERNAME_QGIS_REQUESTEDWMSNAME] = requestedWmsName;
+          }
+
+          jsonCollection["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id, extraMembers ) );
         }
       }
       else // raster layer
@@ -3178,14 +3201,20 @@ namespace QgsWms
           properties[name.toStdString()] = value.toStdString();
         }
 
-        json["features"].push_back( { { "type", "Feature" }, { "featureType", layerName.toStdString() }, { "id", layerName.toStdString() }, { "properties", properties } } );
+        json jsonFeature = { { "type", "Feature" }, { MEMBERNAME_FEATURETYPE, layerName.toStdString() }, { "id", layerName.toStdString() }, { "properties", properties } };
+
+        if ( !requestedWmsName.isEmpty() )
+        {
+          jsonFeature[MEMBERNAME_QGIS_REQUESTEDWMSNAME] = requestedWmsName.toStdString();
+        }
+        jsonCollection["features"].push_back( jsonFeature );
       }
     }
 #ifdef QGISDEBUG
     // This is only useful to generate human readable reference files for tests
-    return QByteArray::fromStdString( json.dump( 2 ) );
+    return QByteArray::fromStdString( jsonCollection.dump( 2 ) );
 #else
-    return QByteArray::fromStdString( json.dump() );
+    return QByteArray::fromStdString( jsonCollection.dump() );
 #endif
   }
 

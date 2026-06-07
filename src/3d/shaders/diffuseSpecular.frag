@@ -4,7 +4,6 @@ in vec3 worldPosition;
 in vec3 worldNormal;
 in vec2 texCoord;
 
-uniform vec3 eyePosition;
 uniform vec4 ambientColor;
 uniform vec4 specularColor;
 uniform float shininess;

@@ -532,6 +532,11 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         self.assertEqual(settings.baseColor(), QColor.fromRgbF(0.5, 0.5, 0.5, 1.0))
         self.assertEqual(settings.metalness(), 0.0)
         self.assertEqual(settings.roughness(), 0.5)
+        self.assertEqual(settings.emissionFactor(), 1.0)
+        self.assertFalse(settings.emissionColor().isValid())
+        self.assertEqual(settings.reflectance(), 0.5)
+        self.assertEqual(settings.anisotropy(), 0.0)
+        self.assertEqual(settings.anisotropyRotation(), 0.0)
 
         # Test setters/getters
         settings.setBaseColor(QColor(255, 0, 0))
@@ -543,17 +548,42 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings.setRoughness(0.7)
         self.assertEqual(settings.roughness(), 0.7)
 
+        settings.setEmissionFactor(2.0)
+        self.assertEqual(settings.emissionFactor(), 2.0)
+
+        settings.setEmissionColor(QColor(0, 255, 0))
+        self.assertEqual(settings.emissionColor(), QColor(0, 255, 0))
+
+        settings.setReflectance(0.7)
+        self.assertEqual(settings.reflectance(), 0.7)
+
+        settings.setAnisotropy(0.3)
+        self.assertEqual(settings.anisotropy(), 0.3)
+
+        settings.setAnisotropyRotation(45.5)
+        self.assertEqual(settings.anisotropyRotation(), 45.5)
+
     def test_clone(self):
         settings = QgsMetalRoughMaterialSettings()
         settings.setBaseColor(QColor(255, 0, 0))
         settings.setMetalness(0.5)
         settings.setRoughness(0.7)
+        settings.setEmissionFactor(2.0)
+        settings.setEmissionColor(QColor(0, 255, 0))
+        settings.setReflectance(0.7)
+        settings.setAnisotropy(0.3)
+        settings.setAnisotropyRotation(45.5)
 
         cloned = settings.clone()
         self.assertIsInstance(cloned, QgsMetalRoughMaterialSettings)
         self.assertEqual(cloned.baseColor(), QColor(255, 0, 0))
         self.assertEqual(cloned.metalness(), 0.5)
         self.assertEqual(cloned.roughness(), 0.7)
+        self.assertEqual(cloned.emissionFactor(), 2.0)
+        self.assertEqual(cloned.emissionColor(), QColor(0, 255, 0))
+        self.assertEqual(cloned.reflectance(), 0.7)
+        self.assertEqual(cloned.anisotropy(), 0.3)
+        self.assertEqual(cloned.anisotropyRotation(), 45.5)
 
     def test_equality(self):
         settings1 = QgsMetalRoughMaterialSettings()
@@ -576,6 +606,31 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings1.setRoughness(0.7)
         self.assertEqual(settings1, settings2)
 
+        settings2.setEmissionFactor(3.0)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionFactor(3.0)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setEmissionColor(QColor(0, 0, 255))
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionColor(QColor(0, 0, 255))
+        self.assertEqual(settings1, settings2)
+
+        settings2.setReflectance(0.7)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setReflectance(0.7)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setAnisotropy(0.3)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setAnisotropy(0.3)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setAnisotropyRotation(45.5)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setAnisotropyRotation(45.5)
+        self.assertEqual(settings1, settings2)
+
     def test_equals_method(self):
         settings1 = QgsMetalRoughMaterialSettings()
         settings2 = QgsMetalRoughMaterialSettings()
@@ -593,6 +648,11 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings.setBaseColor(QColor(255, 0, 0))
         settings.setMetalness(0.5)
         settings.setRoughness(0.7)
+        settings.setEmissionFactor(3.0)
+        settings.setEmissionColor(QColor(255, 0, 0))
+        settings.setReflectance(0.7)
+        settings.setAnisotropy(0.3)
+        settings.setAnisotropyRotation(45.5)
 
         doc = QDomDocument("settings")
         element = doc.createElement("settings")

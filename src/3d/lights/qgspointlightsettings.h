@@ -59,24 +59,24 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     void setColor( const QColor &color ) { mColor = color; }
 
     //! Returns intensity of the light
-    float intensity() const { return mIntensity; }
+    double intensity() const { return mIntensity; }
     //! Sets intensity of the light
-    void setIntensity( float intensity ) { mIntensity = intensity; }
+    void setIntensity( double intensity ) { mIntensity = intensity; }
 
     //! Returns constant attenuation (A_0)
-    float constantAttenuation() const { return mConstantAttenuation; }
+    double constantAttenuation() const { return mConstantAttenuation; }
     //! Sets constant attenuation (A_0)
-    void setConstantAttenuation( float value ) { mConstantAttenuation = value; }
+    void setConstantAttenuation( double value ) { mConstantAttenuation = value; }
 
     //! Returns linear attenuation (A_1)
-    float linearAttenuation() const { return mLinearAttenuation; }
+    double linearAttenuation() const { return mLinearAttenuation; }
     //! Sets linear attenuation (A_1)
-    void setLinearAttenuation( float value ) { mLinearAttenuation = value; }
+    void setLinearAttenuation( double value ) { mLinearAttenuation = value; }
 
     //! Returns quadratic attenuation (A_2)
-    float quadraticAttenuation() const { return mQuadraticAttenuation; }
+    double quadraticAttenuation() const { return mQuadraticAttenuation; }
     //! Sets quadratic attenuation (A_2)
-    void setQuadraticAttenuation( float value ) { mQuadraticAttenuation = value; }
+    void setQuadraticAttenuation( double value ) { mQuadraticAttenuation = value; }
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsPointLightSettings &other ) const;
@@ -84,10 +84,10 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
   private:
     QgsVector3D mPosition { 0, 0, 0 };
     QColor mColor = Qt::white;
-    float mIntensity = 1.0;
-    float mConstantAttenuation = 1.0f;
-    float mLinearAttenuation = 0.0f;
-    float mQuadraticAttenuation = 0.0f;
+    double mIntensity = 1.0;
+    double mConstantAttenuation = 1.0f;
+    double mLinearAttenuation = 0.0f;
+    double mQuadraticAttenuation = 0.0f;
 };
 
 #endif // QGSPOINTLIGHTSETTINGS_H

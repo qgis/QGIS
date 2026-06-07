@@ -2085,7 +2085,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     // main checkbox in labeling GUI
     QgsLabelThinningSettings thinningSettings = labelSettings.thinningSettings();
     thinningSettings.setAllowDuplicateRemoval( true );
-    thinningSettings.setMinimumDistanceToDuplicateUnit( Qgis::RenderUnit::Pixels );
+    thinningSettings.setMinimumDistanceToDuplicateUnit( context.targetUnit() );
     labelSettings.setThinningSettings( thinningSettings );
 
     QgsProperty spacingProp;
@@ -3941,6 +3941,12 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
 QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize )
 {
   QImage spriteImage;
+
+  if ( name.isEmpty() )
+  {
+    return QImage();
+  }
+
   QString category;
   QString actualName = name;
   const int categorySeparator = name.indexOf( ':' );

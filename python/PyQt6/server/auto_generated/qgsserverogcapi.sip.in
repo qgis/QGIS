@@ -64,7 +64,18 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
       OPENAPI3,
       JSON,
       HTML,
-      XML
+      XML,
+      FLATGEOBUF
+    };
+
+    enum class Profile
+    {
+      NONE,
+      RFC7946,
+      // This not supported yet but I am leaving it here because
+      // I am very optimistic that it will be supported soon!
+      //  JSONFG,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
+      //  JSONFG_PLUS //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
     };
 
     QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() );
@@ -91,6 +102,8 @@ QgsServerOgcApi constructor
 %Docstring
 Executes a request by passing the given ``context`` to the API handlers.
 %End
+
+
 
 
 

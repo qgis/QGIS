@@ -175,39 +175,6 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     }
   }
 
-  // for integer data types, we enforce that there is a nodata value for every band.
-  // we require this as we can't fallback to a nan value for padding raster blocks
-  // with nodata when required
-  switch ( mDataType )
-  {
-    case Qgis::DataType::UnknownDataType:
-      break;
-
-    case Qgis::DataType::Byte:
-    case Qgis::DataType::UInt16:
-    case Qgis::DataType::Int16:
-    case Qgis::DataType::UInt32:
-    case Qgis::DataType::Int32:
-    case Qgis::DataType::Int8:
-      while ( mSrcHasNoDataValue.size() < mBandCount )
-      {
-        mSrcNoDataValue.append( QgsArcGisRestUtils::defaultNoDataForDataType( mDataType, ok ) );
-        mSrcHasNoDataValue.append( true );
-        mUseSrcNoDataValue.append( true );
-      }
-      break;
-
-    case Qgis::DataType::Float32:
-    case Qgis::DataType::Float64:
-    case Qgis::DataType::CInt16:
-    case Qgis::DataType::CInt32:
-    case Qgis::DataType::CFloat32:
-    case Qgis::DataType::CFloat64:
-    case Qgis::DataType::ARGB32:
-    case Qgis::DataType::ARGB32_Premultiplied:
-      break;
-  }
-
   for ( const QVariant &min : mLayerInfo.value( u"minValues"_s ).toList() )
   {
     mMinValues.append( min.toDouble() );
@@ -238,6 +205,27 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
       for ( qsizetype i = mMaxValues.count(); i < mBandCount; ++i )
       {
         mMaxValues.append( 9000 );
+      }
+    }
+  }
+
+  // populate remaining missing min/max values with appropriate values for certain data types, if we can!
+  const QgsArcGisRestUtils::PixelTypeLimitUsefulness pixelTypeLimitUsefulness = QgsArcGisRestUtils::pixelTypeLimitUsefulness( mPixelType );
+  if ( pixelTypeLimitUsefulness.minIsUseful || pixelTypeLimitUsefulness.maxIsUseful )
+  {
+    const std::optional< std::pair< double, double > > typeRange = QgsArcGisRestUtils::rangeForPixelType( mPixelType );
+    if ( pixelTypeLimitUsefulness.minIsUseful && typeRange.has_value() )
+    {
+      for ( qsizetype i = mMinValues.count(); i < mBandCount; ++i )
+      {
+        mMinValues.append( typeRange->first );
+      }
+    }
+    if ( pixelTypeLimitUsefulness.maxIsUseful && typeRange.has_value() )
+    {
+      for ( qsizetype i = mMaxValues.count(); i < mBandCount; ++i )
+      {
+        mMaxValues.append( typeRange->second );
       }
     }
   }
@@ -614,7 +602,80 @@ QList<double> QgsImageServerProvider::nativeResolutions() const
   return mResolutions;
 }
 
+QgsRasterBlock *QgsImageServerProvider::block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback )
+{
+  auto block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+
+  bool useNoDataMask = true;
+  if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
+  {
+    block->setNoDataValue( sourceNoDataValue( bandNo ) );
+    useNoDataMask = false;
+  }
+
+  if ( block->isEmpty() )
+  {
+    QgsDebugError( u"Couldn't create raster block"_s );
+    block->setError( { tr( "Couldn't create raster block." ), u"Raster"_s } );
+    block->setValid( false );
+    return block.release();
+  }
+
+  if ( !mExtent.intersects( boundingBox ) )
+  {
+    // the requested extent is completely outside of the raster's extent - nothing to do
+    block->setIsNoData();
+    return block.release();
+  }
+  if ( !mExtent.contains( boundingBox ) )
+  {
+    QRect subRect = QgsRasterBlock::subRect( boundingBox, width, height, mExtent );
+    block->setIsNoDataExcept( subRect );
+  }
+
+  std::vector<GByte> maskData;
+  const qgssize dataSize = static_cast< qgssize >( width ) * static_cast< qgssize >( height );
+  if ( useNoDataMask )
+  {
+    maskData.resize( dataSize );
+  }
+
+  bool foundNoDataMask = false;
+  if ( !readBlockInternal( bandNo, boundingBox, width, height, block->bits(), useNoDataMask ? &maskData : nullptr, &foundNoDataMask, feedback ) )
+  {
+    if ( !feedback || !feedback->isCanceled() )
+    {
+      QgsDebugError( u"Error occurred while reading block"_s );
+      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+    }
+    block->setIsNoData();
+    block->setValid( false );
+    return block.release();
+  }
+  else if ( useNoDataMask && foundNoDataMask )
+  {
+    for ( qgssize i = 0; i < dataSize; ++i )
+    {
+      if ( maskData[i] == 0 )
+      {
+        block->setIsNoData( i );
+      }
+    }
+  }
+
+  block->applyScaleOffset( bandScale( bandNo ), bandOffset( bandNo ) );
+  block->applyNoDataValues( userNoDataValues( bandNo ) );
+  return block.release();
+}
+
 bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
+{
+  return readBlockInternal( bandNo, viewExtent, width, height, data, nullptr, nullptr, feedback );
+}
+
+bool QgsImageServerProvider::readBlockInternal(
+  int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, std::vector<GByte> *noDataMask, bool *foundNoDataMask, QgsRasterBlockFeedback *feedback
+)
 {
   if ( !mValid || width <= 0 || height <= 0 )
     return false;
@@ -709,8 +770,10 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
 
   query.addQueryItem( u"f"_s, u"image"_s );
   query.addQueryItem( u"bandIds"_s, QString::number( bandNo - 1 ) );
-  query.addQueryItem( u"interpretation"_s, u"RSP_BilinearInterpolation"_s );
+  query.addQueryItem( u"interpolation"_s, u"RSP_BilinearInterpolation"_s );
   query.addQueryItem( u"pixelType"_s, mPixelType );
+
+  int responseBandNumber = 1;
 
   // determine the request format
   // default to tiff as a safe option since it handles all bit depths and nodata.
@@ -721,6 +784,21 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
     // provider has a hardcoded format, use that
     requestFormat = dataSource.param( u"format"_s );
     vsiExtension.clear();
+  }
+  else if ( mDataType == Qgis::DataType::Byte )
+  {
+    requestFormat = u"png8"_s;
+    vsiExtension = u".png"_s;
+    // hack to get around ImageServer pixel mask logic for RGB images
+    if ( mServiceInfo.value( u"serviceDataType"_s ).toString() == "esriImageServiceDataTypeRGB" )
+    {
+      // gross hack -- for RGB byte data, we need to force the service to return a PNG32 image so that we
+      // get the alpha mask.
+      // we'll throw away two of those unwanted bands shortly :o
+      requestFormat = u"png32"_s;
+      query.removeQueryItem( u"bandIds"_s );
+      responseBandNumber = bandNo;
+    }
   }
   else if ( mMaximumLercVersionSupported > 0 && ( mDataType == Qgis::DataType::Float32 || mDataType == Qgis::DataType::Float64 ) )
   {
@@ -742,24 +820,41 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   queryUrl.setQuery( query );
 
   queryUrl = QgsArcGisRestQueryUtils::parseUrl( queryUrl );
-
-  QgsBlockingNetworkRequest networkRequest;
-  networkRequest.setAuthCfg( mAuthCfg );
-  QNetworkRequest req( queryUrl );
-  mRequestHeaders.updateNetworkRequest( req );
-  QgsSetRequestInitiatorClass( req, u"QgsImageServerProvider"_s );
-
-  if ( networkRequest.get( req, false, feedback ) != QgsBlockingNetworkRequest::NoError )
+  QByteArray rawData;
+  if ( queryUrl == mLastReply.requestUrl )
   {
-    if ( !feedback || !feedback->isCanceled() )
-    {
-      QgsDebugMsgLevel( u"Network request failed: %1"_s.arg( networkRequest.errorMessage() ), 2 );
-    }
-    return false;
+    // optimization -- if we are requesting the EXACT same data as the last request, just take the
+    // same reply. This helps with the RGB data situation, where QGIS requests three separate blocks
+    // for the different channels, yet we have to retrieve the data as a complete RGB request from
+    // ImageServer providers. (Otherwise we'd been requesting the RGB data for just the red channel and
+    // throwing away the green and blue, then requesting the RGB data again for the green channel and
+    // throwing away the red and blue, etc...)
+    rawData = mLastReply.response;
   }
+  else
+  {
+    mLastReply = ServiceReply();
 
-  const QgsNetworkReplyContent reply = networkRequest.reply();
-  QByteArray rawData = reply.content();
+    QgsBlockingNetworkRequest networkRequest;
+    networkRequest.setAuthCfg( mAuthCfg );
+    QNetworkRequest req( queryUrl );
+    mRequestHeaders.updateNetworkRequest( req );
+    QgsSetRequestInitiatorClass( req, u"QgsImageServerProvider"_s );
+
+    if ( networkRequest.get( req, false, feedback ) != QgsBlockingNetworkRequest::NoError )
+    {
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        QgsDebugMsgLevel( u"Network request failed: %1"_s.arg( networkRequest.errorMessage() ), 2 );
+      }
+      return false;
+    }
+
+    const QgsNetworkReplyContent reply = networkRequest.reply();
+    rawData = reply.content();
+    mLastReply.requestUrl = queryUrl;
+    mLastReply.response = rawData;
+  }
   if ( rawData.isEmpty() || ( feedback && feedback->isCanceled() ) )
     return false;
 
@@ -776,15 +871,13 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
     return false;
   }
 
-  // we'll always have a single-band raster, so we request the first band
-  GDALRasterBandH hBand = GDALGetRasterBand( hDS, 1 );
+  GDALRasterBandH hBand = GDALGetRasterBand( hDS, responseBandNumber );
   if ( !hBand || ( feedback && feedback->isCanceled() ) )
   {
     GDALClose( hDS );
     VSIUnlink( vsimemFilename.toUtf8().constData() );
     return false;
   }
-
 
   if ( feedback && feedback->isCanceled() )
   {
@@ -809,6 +902,25 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   const GSpacing lineSpace = static_cast<GSpacing>( width ) * elementSize;
   const CPLErr err
     = GDALRasterIOEx( hBand, GF_Read, 0, 0, GDALGetRasterXSize( hDS ), GDALGetRasterYSize( hDS ), targetData, blockSubRectPixels.width(), blockSubRectPixels.height(), gdalType, pixelSpace, lineSpace, &extraArg );
+
+  if ( noDataMask )
+  {
+    *foundNoDataMask = false;
+    const int maskFlags = GDALGetMaskFlags( hBand );
+    if ( !( maskFlags & GMF_ALL_VALID ) )
+    {
+      if ( GDALRasterBandH hMaskBand = GDALGetMaskBand( hBand ) )
+      {
+        // Read the mask array
+        CPLErr err = GDALRasterIOEx( hMaskBand, GF_Read, 0, 0, GDALGetRasterXSize( hDS ), GDALGetRasterYSize( hDS ), noDataMask->data(), width, height, GDT_Byte, 0, 0, nullptr );
+
+        if ( err == CE_None )
+        {
+          *foundNoDataMask = true;
+        }
+      }
+    }
+  }
 
   GDALClose( hDS );
   VSIUnlink( vsimemFilename.toUtf8().constData() );
@@ -1144,7 +1256,7 @@ QgsImageServerProviderMetadata::QgsImageServerProviderMetadata()
 
 QIcon QgsImageServerProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( u"mIconAms.svg"_s );
+  return QgsApplication::getThemeIcon( u"mIconImageServer.svg"_s );
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsImageServerProviderMetadata::providerCapabilities() const

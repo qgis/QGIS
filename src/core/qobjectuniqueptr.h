@@ -102,7 +102,7 @@ template<class T> class QObjectUniquePtr
 
     inline QObjectUniquePtr<T> &operator=( T *p )
     {
-      mPtr.assign( static_cast<QObjectType *>( p ) );
+      mPtr = static_cast<QObjectType *>( p );
       return *this;
     }
 
@@ -445,5 +445,16 @@ template<class T> inline bool operator!=( const QObjectParentUniquePtr<T> &p1, c
   return p1.operator->() != p2.operator->();
 }
 
+
+/**
+ * Create an object owned by a QObjectUniquePtr.
+ *  \tparam Tp A non-array object type.
+ *  \param args Constructor arguments for the new object.
+ *  Returns A `QObjectUniquePtr` that owns the new object.
+ */
+template<typename Tp, typename... Args> constexpr inline QObjectUniquePtr<Tp> make_qobject_unique( Args &&...args )
+{
+  return QObjectUniquePtr<Tp>( new Tp( std::forward<Args>( args )... ) );
+}
 
 #endif // QOBJECTUNIQUEPTR_H

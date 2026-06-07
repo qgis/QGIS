@@ -120,9 +120,26 @@ class _3D_EXPORT QgsMaterialContext
      */
     void setTextureFilterQuality( Qgis::TextureFilterQuality quality ) { mTextureFilterQuality = quality; }
 
+    /**
+     * Returns TRUE if the material is being shown in a preview widget.
+     *
+     * \see setIsPreview()
+     * \since QGIS 4.2
+     */
+    bool isPreview() const;
+
+    /**
+     * Sets whether the material is being shown in a preview widget.
+     *
+     * \see isPreview()
+     * \since QGIS 4.2
+     */
+    void setIsPreview( bool isPreview );
+
   private:
     bool mIsSelected = false;
     bool mIsHighlighted = false;
+    bool mIsPreview = false;
 
     QColor mSelectedColor;
     Qgis::TextureFilterQuality mTextureFilterQuality = Qgis::TextureFilterQuality::Trilinear;
@@ -168,11 +185,6 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
     virtual QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const = 0;
 
     /**
-     * Adds parameters from the material \a settings to a destination \a effect.
-     */
-    virtual void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const = 0;
-
-    /**
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
      */
     virtual void applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const;
@@ -184,12 +196,6 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      * \since QGIS 3.18
      */
     virtual QByteArray dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const;
-
-    /**
-     * Returns byte stride of the data defined colors,used to fill the vertex colors data defined buffer for rendering
-     * \since QGIS 3.18
-     */
-    virtual int dataDefinedByteStride( const QgsAbstractMaterialSettings *settings ) const;
 
     /**
      * Encapsulates information about available preview meshes.

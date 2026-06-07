@@ -124,7 +124,7 @@ class GrassUtils:
             try:
                 lines = proc.stdout.readlines()
                 for line in lines:
-                    if "GRASS GIS " in line:
+                    if "GRASS " in line:
                         line = line.split(" ")[-1].strip()
                         if line.startswith("7.") or line.startswith("8."):
                             GrassUtils.version = line

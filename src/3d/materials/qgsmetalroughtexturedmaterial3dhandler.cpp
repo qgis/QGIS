@@ -41,6 +41,11 @@ QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toMaterial( const QgsAbstra
 
   switch ( technique )
   {
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
+    {
+      Q_ASSERT( false );
+      return nullptr;
+    }
     case Qgis::MaterialRenderingTechnique::Triangles:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
     {
@@ -49,7 +54,8 @@ QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toMaterial( const QgsAbstra
         return new QgsHighlightMaterial( technique );
       }
 
-      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial();
+      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial( nullptr );
+      material->setEnvironmentalLightingEnabled( !context.isPreview() );
       material->setObjectName( u"metalRoughTexturedMaterial"_s );
       applySettingsToMaterial( texturedSettings, material, context );
 
@@ -61,14 +67,25 @@ QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toMaterial( const QgsAbstra
   }
 }
 
+QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+{
+  const QgsMetalRoughTexturedMaterialSettings *texturedSettings = qgis::down_cast< const QgsMetalRoughTexturedMaterialSettings * >( settings );
+
+  QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial();
+  material->setEnvironmentalLightingEnabled( true );
+  material->setInstancingEnabled( true, flags );
+
+  material->setObjectName( u"metalRoughTexturedMaterial"_s );
+  applySettingsToMaterial( texturedSettings, material, context );
+
+  return material;
+}
+
 QMap<QString, QString> QgsMetalRoughTexturedMaterial3DHandler::toExportParameters( const QgsAbstractMaterialSettings * ) const
 {
   QMap<QString, QString> parameters;
   return parameters;
 }
-
-void QgsMetalRoughTexturedMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
-{}
 
 bool QgsMetalRoughTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
 {

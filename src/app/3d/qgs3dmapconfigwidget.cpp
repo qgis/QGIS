@@ -67,6 +67,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( mMap->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased ) );
   mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
 
+  mComboToneMapping->addItem( tr( "Clamp HDR to SDR" ), QVariant::fromValue( Qgis::ToneMappingMethod::Clamp ) );
+  mComboToneMapping->addItem( tr( "ACES (Film Look)" ), QVariant::fromValue( Qgis::ToneMappingMethod::Aces ) );
+  mSpinExposure->setClearValue( 0 );
+
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
   int tabIndex = settings.value( u"Windows/3DMapConfig/Tab"_s, 0 ).toInt();
@@ -180,8 +184,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mCameraMovementSpeed->setValue( mMap->cameraMovementSpeed() );
 
   chkShowLabels->setChecked( mMap->showLabels() );
-  mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
-  chkShowDebugPanel->setChecked( mMap->showDebugPanel() );
+  mFpsCounterCheckBox->setChecked( mMap->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowFPS ) );
+  chkShowDebugPanel->setChecked( mMap->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture );
@@ -223,13 +227,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // ==================
   // Page: Shadows
   mShadowSettingsWidget = new QgsShadowRenderingSettingsWidget( this );
-  mShadowSettingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLightCount() );
+  mShadowSettingsWidget->setLightSourceModel( widgetLights->lightSourceModel() );
   mShadowSettingsWidget->setShadowSettings( map->shadowSettings() );
   groupShadowRendering->layout()->addWidget( mShadowSettingsWidget );
-  connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSettingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
 
   connect( widgetLights, &QgsLightsWidget::lightsAdded, this, &Qgs3DMapConfigWidget::validate );
   connect( widgetLights, &QgsLightsWidget::lightsRemoved, this, &Qgs3DMapConfigWidget::validate );
+  widgetLights->setSceneMode( mMap->sceneMode() );
 
   groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 
@@ -274,6 +278,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mSpinBloomIntensity->setValue( map->bloomSettings().intensity() );
   // we arbitrarily scale the radius by 1000 to make the sizes look more reasonable in the UI
   mSpinBloomRadius->setValue( map->bloomSettings().radius() * 1000 );
+
+  mComboToneMapping->setCurrentIndex( mComboToneMapping->findData( QVariant::fromValue( map->colorGradingSettings().toneMapping() ) ) );
+  mSpinExposure->setValue( map->colorGradingSettings().exposureAdjustment() );
 
   // ==================
   // Page: General
@@ -381,8 +388,10 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setCameraNavigationMode( mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>() );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
   mMap->setShowLabels( chkShowLabels->isChecked() );
-  mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
-  mMap->setShowDebugPanel( chkShowDebugPanel->isChecked() );
+  Qgis::Map3DDebugFlags debugFlags = mMap->debugFlags();
+  debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowFPS, mFpsCounterCheckBox->isChecked() );
+  debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowDebugPanel, chkShowDebugPanel->isChecked() );
+  mMap->setDebugFlags( debugFlags );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
 
   const std::unique_ptr<QgsAbstractMaterialSettings> terrainMaterial( widgetTerrainMaterial->settings() );
@@ -416,6 +425,11 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
 
   mMap->setAmbientOcclusionSettings( mAmbientOcclusionSettingsWidget->toAmbientOcclusionSettings() );
+
+  QgsColorGradingSettings colorSettings = mMap->colorGradingSettings();
+  colorSettings.setExposureAdjustment( mSpinExposure->value() );
+  colorSettings.setToneMapping( mComboToneMapping->currentData().value< Qgis::ToneMappingMethod >() );
+  mMap->setColorGradingSettings( colorSettings );
 
   QgsBloomSettings bloomSettings = mMap->bloomSettings();
   bloomSettings.setEnabled( mBloomGroupBox->isChecked() );

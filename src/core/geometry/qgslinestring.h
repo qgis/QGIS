@@ -138,7 +138,7 @@ class CORE_EXPORT QgsLineString : public QgsCurve
               double d = PyFloat_AsDouble( element );
               if ( PyErr_Occurred() )
               {
-                Py_DECREF( value );
+                Py_DECREF( element );
                 sipIsErr = 1;
                 break;
               }
@@ -1057,6 +1057,7 @@ class CORE_EXPORT QgsLineString : public QgsCurve
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
+    bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
 
     QgsLineString *reversed() const override SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;

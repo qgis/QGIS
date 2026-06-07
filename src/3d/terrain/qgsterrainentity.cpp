@@ -66,7 +66,7 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   map->terrainGenerator()->setTerrain( this );
   mIsValid = map->terrainGenerator()->isValid();
 
-  mLayerWatcher.reset( new QgsLayerStyleWatcher( map ) );
+  mLayerWatcher = make_qobject_unique<QgsLayerStyleWatcher>( map );
   connect( mLayerWatcher.get(), &QgsLayerStyleWatcher::styleChanged, this, &QgsTerrainEntity::invalidateMapImages );
 
   connect( map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
@@ -166,9 +166,8 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
 
 void QgsTerrainEntity::onShowBoundingBoxesChanged()
 {
-  setShowBoundingBoxes( mMapSettings->showTerrainBoundingBoxes() );
+  setShowBoundingBoxes( mMapSettings->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes ) );
 }
-
 
 void QgsTerrainEntity::invalidateMapImages()
 {
