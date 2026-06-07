@@ -8,9 +8,35 @@ Strata — il GIS con l'AI nativa. Fork di QGIS con assistente integrato: parla 
 
 > An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.
 
-Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**. <!--#spellok-->
+## Open Source e attribuzione
 
 > Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.
+
+Strata è rilasciato sotto **GNU General Public License v2.0 o successiva** ([COPYING](COPYING)).
+È un fork non ufficiale di [QGIS](https://qgis.org) — codice sorgente upstream: [github.com/qgis/QGIS](https://github.com/qgis/QGIS).
+
+[![🧪 QGIS tests](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml?query=branch%3Amaster+event%3Apush)
+[![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://hub.docker.com/r/qgis/qgis/tags)
+[![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/qgis/QGIS/badge)](https://securityscorecards.dev/viewer/?uri=github.com/qgis/QGIS)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/1581/badge)](https://www.bestpractices.dev/projects/1581)
+[![🪟 MingW64 Windows 64bit Build](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6139224.svg)](https://doi.org/10.5281/zenodo.6139224)
+
+QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical information system (GIS) that runs on Unix platforms, Windows, and MacOS.
+
+QGIS is part of the Open-Source Geospatial Foundation ([OSGeo](https://www.osgeo.org/)), offering a range of complementary open-source GIS software projects.
+
+- [Download](#download)
+- [Demo](#demo--vedilo-in-azione)
+- [Configurare l'AI](#configurare-lai-al-primo-avvio)
+- [QGIS upstream](#qgis-upstream--documentazione-originale)
+
+---
+
+## Download
+
+Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**. <!--#spellok-->
 
 | Sistema | Cosa scaricare | Cosa fare dopo |
 |---|---|---|
@@ -87,15 +113,8 @@ Le chiavi sono salvate **solo localmente** nelle impostazioni dell'applicazione 
 
 ## QGIS upstream — documentazione originale
 
-[![🧪 QGIS tests](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml?query=branch%3Amaster+event%3Apush)
-[![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://hub.docker.com/r/qgis/qgis/tags)
-[![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/qgis/QGIS/badge)](https://securityscorecards.dev/viewer/?uri=github.com/qgis/QGIS)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/1581/badge)](https://www.bestpractices.dev/projects/1581)
-[![🪟 MingW64 Windows 64bit Build](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6139224.svg)](https://doi.org/10.5281/zenodo.6139224)
-
-QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical information system (GIS) that runs on Unix platforms, Windows, and MacOS.
+<details>
+<summary><strong>Documentazione QGIS upstream (Features, community, documentazione…)</strong></summary>
 
 <!-- TOC generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
@@ -275,3 +294,5 @@ There are several channels where you can find help and support for QGIS:
 ## Get involved with the community
 
 [Contribution guidelines for this project](CONTRIBUTING.md)
+
+</details>
