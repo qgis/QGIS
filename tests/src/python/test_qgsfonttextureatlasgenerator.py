@@ -160,11 +160,15 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertTrue(atlas.isValid())
         self.assertEqual(atlas.count(), 4)
         self.assertEqual(len(atlas), 4)
-        self.assertEqual(atlas.atlasSize(), QSize(43, 48))
+        # this test is sensitive to cross-platform rendering differences...
         self.assertEqual(atlas.graphemeCount("HY"), 2)
         self.assertEqual(atlas.graphemeCount("hi"), 2)
         with self.assertRaises(KeyError):
             atlas.rect("x")
+        if atlas.atlasSize().width() == 43:
+            self.assertEqual(atlas.atlasSize(), QSize(43, 48))
+        else:
+            self.assertEqual(atlas.atlasSize(), QSize(48, 49))
         self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
         self.assertEqual(atlas.rect("H"), QRect(0, 24, 23, 24))
         self.assertEqual(atlas.rect("i"), QRect(25, 0, 9, 24))
