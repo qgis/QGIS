@@ -1,15 +1,17 @@
+<img src="images/README-md/main_logo.png" width="300">
+
+> Website: **[francemazzi.github.io/strata](https://francemazzi.github.io/strata)**
+
 # Strata — The AI-native GIS
 
-Strata — il GIS con l'AI nativa. Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace. <!--#spellok-->
+An AI-native fork of QGIS with a built-in assistant: chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.
 
-> An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.
-
-## Open Source e attribuzione
+## Open Source and Attribution
 
 > Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.
 
-Strata è rilasciato sotto **GNU General Public License v2.0 o successiva** ([COPYING](COPYING)).
-È un fork non ufficiale di [QGIS](https://qgis.org) — codice sorgente upstream: [github.com/qgis/QGIS](https://github.com/qgis/QGIS).
+Strata is released under the **GNU General Public License v2.0 or later** ([COPYING](COPYING)).
+It is an unofficial fork of [QGIS](https://qgis.org) — upstream source code: [github.com/qgis/QGIS](https://github.com/qgis/QGIS).
 
 [![🧪 QGIS tests](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml?query=branch%3Amaster+event%3Apush)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://hub.docker.com/r/qgis/qgis/tags)
@@ -24,93 +26,89 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 QGIS is part of the Open-Source Geospatial Foundation ([OSGeo](https://www.osgeo.org/)), offering a range of complementary open-source GIS software projects.
 
 - [Download](#download)
-- [Demo](#demo--vedilo-in-azione)
-- [Configurare l'AI](#configurare-lai-al-primo-avvio)
-- [QGIS upstream](#qgis-upstream--documentazione-originale)
+- [Demo](#demo--see-it-in-action)
+- [Configure AI](#configure-ai-on-first-launch)
+- [QGIS upstream](#qgis-upstream--original-documentation)
 
 ---
 
 ## Download
 
-Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**. <!--#spellok-->
+All packages are available from **[Releases](../../releases/latest)**.
 
-| Sistema | Cosa scaricare | Cosa fare dopo |
+| Platform | Download | What to do next |
 |---|---|---|
-| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Doppio click → trascina Strata in Applicazioni. Vedi *Aggirare il warning macOS* sotto. |
-| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Estrai la cartella ovunque, apri `bin/` e doppio click sull'eseguibile Strata. Vedi *Aggirare SmartScreen*. |
-| 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x Strata-*.AppImage` poi doppio click. Niente installazione. |
+| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Double-click → drag Strata to Applications. See *Bypass the macOS warning* below. |
+| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Extract the folder anywhere, open `bin/`, and double-click the Strata executable. See *Bypass SmartScreen*. |
+| 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x Strata-*.AppImage` then double-click. No installation required. |
 
-> ⚠️ I pacchetti **non sono firmati**. È normale. Al primo avvio gli OS mostrano un warning: segui le istruzioni qui sotto, è una procedura una tantum.
+> ⚠️ Packages are **not signed**. This is expected. On first launch, your OS will show a warning — follow the steps below. It is a one-time procedure.
 
-### 🍎 Aggirare il warning macOS (Gatekeeper)
+### 🍎 Bypass the macOS warning (Gatekeeper)
 
-Dopo aver trascinato `Strata.app` in Applicazioni, apri il Terminale e incolla:
+After dragging `Strata.app` to Applications, open Terminal and paste:
 
 ```
 xattr -d com.apple.quarantine "/Applications/Strata.app"
 ```
 
-Poi apri normalmente l'app.
+Then open the app normally.
 
-### 🪟 Aggirare SmartScreen su Windows
+### 🪟 Bypass SmartScreen on Windows
 
-Quando avvii l'eseguibile la prima volta, Windows può mostrare *"Windows ha protetto il PC"*. Click su **Maggiori informazioni** → **Esegui comunque**.
+On first launch, Windows may show *"Windows protected your PC"*. Click **More info** → **Run anyway**.
 
-### 🐧 AppImage su Linux
+### 🐧 AppImage on Linux
 
 ```
 chmod +x Strata-*.AppImage
 ./Strata-*.AppImage
 ```
 
-Funziona su Ubuntu 22.04+, Fedora 38+, Debian 12+, Arch e qualsiasi distro con `glibc >= 2.35` e FUSE installato.
+Works on Ubuntu 22.04+, Fedora 38+, Debian 12+, Arch, and any distro with `glibc >= 2.35` and FUSE installed.
 
 ---
 
-## Demo — vedilo in azione
+## Demo — see it in action
 
-> Demo interattiva completa anche sulla [landing page](https://francemazzi.github.io/strata/#demo).
+> Full interactive demo also on the [landing page](https://francemazzi.github.io/strata/#demo).
 
 ### Agent mode
 
-![Strata Agent mode — mappa GIS con pannello AI che esegue PyQGIS](docs/assets/demo-chat.png)
+![Strata Agent mode — GIS map with AI panel running PyQGIS](docs/assets/demo-chat.png)
 
-Chiedi in linguaggio naturale: l'assistant ispeziona layer e CRS attivi, esegue codice PyQGIS (`run_python`) e aggiorna la mappa — ad esempio creare una maschera esterna sul confine comunale.
-
-*Ask in plain language: the assistant inspects active layers, runs PyQGIS via `run_python`, and updates the map — e.g. building an external mask from a municipality boundary.*
+Ask in plain language: the assistant inspects active layers and CRS, runs PyQGIS code (`run_python`), and updates the map — e.g. building an external mask from a municipality boundary.
 
 ### Plan mode
 
-![Strata Plan mode — piano strutturato con Accept plan e Reject](docs/assets/strata-plan-mode.png)
+![Strata Plan mode — structured plan with Accept plan and Reject](docs/assets/strata-plan-mode.png)
 
-Per task multi-step, passa in **Plan**: Strata elenca layer, campi e simbologia da creare, poi chiede **Accept plan** o **Reject / revise** prima di eseguire.
-
-*For multi-step work, switch to **Plan**: Strata outlines layers, fields, and symbology, then waits for **Accept plan** or **Reject / revise** before changing the project.*
+For multi-step work, switch to **Plan**: Strata outlines layers, fields, and symbology to create, then waits for **Accept plan** or **Reject / revise** before changing the project.
 
 ---
 
-## Configurare l'AI al primo avvio
+## Configure AI on first launch
 
-1. Apri Strata.
-2. Menu **Visualizza → Pannelli → AI Assistant**.
-3. Click sull'icona **⚙ impostazioni** in alto a destra del pannello.
-4. Incolla la tua **API key** OpenAI/Anthropic oppure usa il login **Codex/ChatGPT** o **Claude OAuth**.
-5. Chiudi il dialog e prova a scrivere un messaggio nella chat.
+1. Open Strata.
+2. Menu **View → Panels → AI Assistant**.
+3. Click the **⚙ settings** icon in the top-right corner of the panel.
+4. Paste your **API key** for OpenAI/Anthropic, or sign in with **Codex/ChatGPT** or **Claude OAuth**.
+5. Close the dialog and try sending a message in the chat.
 
-Da dove ottenere le chiavi:
+Where to get API keys:
 - **OpenAI**: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 - **Anthropic**: [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
-- **Codex/ChatGPT**: dal dialog impostazioni scegli “Get Codex device code”, apri la pagina mostrata e completa il login. Il modello Codex usa `gpt-5.5`.
-- **Claude OAuth**: dal dialog impostazioni scegli “Login with Claude” e incolla il codice di autorizzazione quando richiesto.
+- **Codex/ChatGPT**: in the settings dialog, choose “Get Codex device code”, open the page shown, and complete sign-in. The Codex model uses `gpt-5.5`.
+- **Claude OAuth**: in the settings dialog, choose “Login with Claude” and paste the authorization code when prompted.
 
-Le chiavi sono salvate **solo localmente** nelle impostazioni dell'applicazione sulla tua macchina. I login OAuth salvano solo il refresh token nell'auth store cifrato di QGIS. Le credenziali non vengono inviate a nessun server diverso dal provider che hai scelto.
+Keys are stored **locally only** in the application settings on your machine. OAuth logins save only the refresh token in QGIS's encrypted auth store. Credentials are never sent to any server other than the provider you chose.
 
 ---
 
-## QGIS upstream — documentazione originale
+## QGIS upstream — original documentation
 
 <details>
-<summary><strong>Documentazione QGIS upstream (Features, community, documentazione…)</strong></summary>
+<summary><strong>QGIS upstream documentation (Features, community, docs…)</strong></summary>
 
 <!-- TOC generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
