@@ -75,24 +75,9 @@ QSet<QgsAbstractMaterialSettings::Property> QgsPhongTexturedMaterialSettings::su
   return { QgsAbstractMaterialSettings::Property::TextureRotation, QgsAbstractMaterialSettings::Property::TextureScale, QgsAbstractMaterialSettings::Property::TextureOffset };
 }
 
-double QgsPhongTexturedMaterialSettings::textureScale() const
-{
-  return mTextureScale;
-}
-
 bool QgsPhongTexturedMaterialSettings::requiresTextureCoordinates() const
 {
   return !mDiffuseTexturePath.isEmpty();
-}
-
-double QgsPhongTexturedMaterialSettings::textureRotation() const
-{
-  return mTextureRotation;
-}
-
-QPointF QgsPhongTexturedMaterialSettings::textureOffset() const
-{
-  return mTextureOffset;
 }
 
 QColor QgsPhongTexturedMaterialSettings::averageColor() const
