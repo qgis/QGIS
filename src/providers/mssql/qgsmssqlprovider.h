@@ -185,7 +185,9 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     bool mSkipFailures = false;
     bool mUseGeometryColumnsTableForExtent = false;
 
-    long long mNumberFeatures = 0;
+    //! Whether the next call to featureCount() should refresh the feature count
+    mutable bool mRefreshFeatureCount = true;
+    mutable long long mFeaturesCounted = 0;
 
     /**
       *
