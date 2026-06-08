@@ -826,12 +826,17 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
 std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context )
 {
   const QString type = rendererData.value( u"type"_s ).toString();
+
+  const double transparency = rendererData.value( u"transparency"_s ).toDouble();
+  const double opacity = ( 100.0 - transparency ) / 100.0;
+
   if ( type == "simple"_L1 )
   {
     const QVariantMap symbolProps = rendererData.value( u"symbol"_s ).toMap();
     std::unique_ptr< QgsSymbol > symbol( convertSymbol( symbolProps, context ) );
     if ( symbol )
     {
+      symbol->setOpacity( opacity );
       // Apply visual variables (e.g., rotation) to the symbol
       applyVisualVariables( rendererData, symbol.get(), context );
       return std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
@@ -874,6 +879,7 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       {
         // Apply visual variables (e.g., rotation) to the symbol
         applyVisualVariables( rendererData, symbol.get(), context );
+        symbol->setOpacity( opacity );
 
         categoryList.append( QgsRendererCategory( value, symbol.release(), label ) );
       }
@@ -884,7 +890,7 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     {
       // Apply visual variables (e.g., rotation) to the symbol
       applyVisualVariables( rendererData, defaultSymbol.get(), context );
-
+      defaultSymbol->setOpacity( opacity );
       categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), rendererData.value( u"defaultLabel"_s ).toString() ) );
     }
 
@@ -916,8 +922,6 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     if ( !symbol )
       return nullptr;
 
-    const double transparency = rendererData.value( u"transparency"_s ).toDouble();
-    const double opacity = ( 100.0 - transparency ) / 100.0;
     symbol->setOpacity( opacity );
 
     const QVariantList visualVariablesData = rendererData.value( u"visualVariables"_s ).toList();
@@ -1031,6 +1035,8 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     {
       const QVariantMap symbolData = classBreakInfo.toMap().value( u"symbol"_s ).toMap();
       std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData, context ) );
+      if ( symbol )
+        symbol->setOpacity( opacity );
       double classMaxValue = classBreakInfo.toMap().value( u"classMaxValue"_s ).toDouble();
       const QString label = classBreakInfo.toMap().value( u"label"_s ).toString();
 
