@@ -37,6 +37,8 @@ float ssao(vec3 originPos, vec3 noise)
     float cy_sx = cy * sx;
     float cy_cx = cy * cx;
 
+    // rotate around x axis, then y axis
+    // note that mat3 initialization values are specified in column-major order
     mat3 sampleRotation = mat3(
         cy,     0.0,    -sy,
         sy_sx, cx,     cy_sx,
