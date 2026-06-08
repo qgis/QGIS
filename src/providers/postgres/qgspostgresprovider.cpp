@@ -5242,7 +5242,7 @@ QString QgsPostgresProvider::htmlMetadata() const
   const QVariantMap
     additionalInformation { { tr( "Privileges" ), privileges }, { tr( "Rows (estimation)" ), estimateRowCount }, { tr( "Spatial Index" ), spatialIndexText }, { tr( "Table Comment" ), tableComment } };
 
-  return QgsPostgresUtils::variantMapToHtml( additionalInformation, tr( "Additional information" ) );
+  return QgsVariantUtils::variantToHtml( additionalInformation, tr( "Additional information" ) );
 }
 
 QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
