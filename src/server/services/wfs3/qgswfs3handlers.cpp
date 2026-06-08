@@ -1194,6 +1194,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
   const auto attributes { featureRequest.subsetOfAttributes() };
   QgsFields exportedFields;
+  // Server FID is required if the layer has a compound primary key and doesn't already have a field named "qgs_fid"
   const bool addQgsFid { mapLayer->dataProvider()->pkAttributeIndexes().count() > 1 && mapLayer->fields().lookupField( u"qgs_fid"_s ) == -1 };
   if ( addQgsFid )
   {
