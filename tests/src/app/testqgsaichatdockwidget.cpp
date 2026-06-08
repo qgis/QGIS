@@ -209,15 +209,15 @@ void TestQgsAiChatDockWidget::transcriptMessagesFitNarrowDockWithoutHorizontalSc
   QgsAiChatMessage assistantMessage;
   assistantMessage.id = u"assistant-wide-table"_s;
   assistantMessage.role = QgsAiChatRole::Assistant;
-  assistantMessage.content =
-    u"Ecco l'elenco completo dei layer.\n\n"
-    "| Nome layer | Tipo layer | Geometria | N. feature | CRS |\n"
-    "| --- | --- | --- | ---: | --- |\n"
-    "| dbgt_AB_CDA_AB_CDA_SUP_SR_nome_molto_lungo_senza_spazi | vector | MultiPolygonZWithVeryLongGeometryName | 19382 | EPSG:7791-long-crs-description-without-natural-breaks |\n"
-    "| dbgt_ACC_PC_ACC_PC_POS_layer_con_nome_esteso | vector | Point | 41942 | non definito - percorso /Users/francesco/Sviluppo/frasma_lab/strata/tests_ai/Dati/strata_test_brescia.qgz |\n\n"
-    "```json\n"
-    "{\"project_file\":\"/Users/francesco/Sviluppo/frasma_lab/strata/tests_ai/Dati/strata_test_brescia.qgz\",\"layer_count\":118}\n"
-    "```"_s;
+  assistantMessage.content
+    = u"Ecco l'elenco completo dei layer.\n\n"
+      "| Nome layer | Tipo layer | Geometria | N. feature | CRS |\n"
+      "| --- | --- | --- | ---: | --- |\n"
+      "| dbgt_AB_CDA_AB_CDA_SUP_SR_nome_molto_lungo_senza_spazi | vector | MultiPolygonZWithVeryLongGeometryName | 19382 | EPSG:7791-long-crs-description-without-natural-breaks |\n"
+      "| dbgt_ACC_PC_ACC_PC_POS_layer_con_nome_esteso | vector | Point | 41942 | non definito - percorso /Users/francesco/Sviluppo/frasma_lab/strata/tests_ai/Dati/strata_test_brescia.qgz |\n\n"
+      "```json\n"
+      "{\"project_file\":\"/Users/francesco/Sviluppo/frasma_lab/strata/tests_ai/Dati/strata_test_brescia.qgz\",\"layer_count\":118}\n"
+      "```"_s;
 
   manager.messageAdded( assistantMessage );
   manager.responseChunkReceived( u"streaming-token-without-spaces-or-natural-breaks-EPSG7791-layer-name-dbgt_ACC_PC_ACC_PC_POS"_s );
@@ -233,7 +233,7 @@ void TestQgsAiChatDockWidget::transcriptMessagesFitNarrowDockWithoutHorizontalSc
 
   const int viewportWidth = scrollArea->viewport()->width();
   QVERIFY( viewportWidth > 0 );
-  QVERIFY2( container->width() <= viewportWidth + 1, qPrintable( QStringLiteral( "Transcript container width %1 exceeds viewport width %2" ).arg( container->width() ).arg( viewportWidth ) ) );
+  QVERIFY2( container->width() <= viewportWidth + 1, qPrintable( u"Transcript container width %1 exceeds viewport width %2"_s.arg( container->width() ).arg( viewportWidth ) ) );
 
   const QList<QFrame *> frames = container->findChildren<QFrame *>();
   bool checkedTranscriptFrame = false;
@@ -243,7 +243,7 @@ void TestQgsAiChatDockWidget::transcriptMessagesFitNarrowDockWithoutHorizontalSc
       continue;
 
     checkedTranscriptFrame = true;
-    QVERIFY2( frame->width() <= viewportWidth + 1, qPrintable( QStringLiteral( "%1 width %2 exceeds viewport width %3" ).arg( frame->objectName() ).arg( frame->width() ).arg( viewportWidth ) ) );
+    QVERIFY2( frame->width() <= viewportWidth + 1, qPrintable( u"%1 width %2 exceeds viewport width %3"_s.arg( frame->objectName() ).arg( frame->width() ).arg( viewportWidth ) ) );
   }
   QVERIFY( checkedTranscriptFrame );
 
