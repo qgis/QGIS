@@ -71,11 +71,33 @@ Returns the diffuse texture path.
 .. seealso:: :py:func:`setDiffuseTexturePath`
 %End
 
-    virtual double textureScale() const;
+    double textureScale() const;
+%Docstring
+Returns the texture scale.
 
-    virtual double textureRotation() const;
+The texture scale changes the size of the material's textures in the 3D
+scene.
 
-    virtual QPointF textureOffset() const;
+If the texture scale is less than 1 the textures will be stretched.
+
+.. seealso:: :py:func:`setTextureScale`
+%End
+
+    double textureRotation() const;
+%Docstring
+Returns the texture rotation, in degrees.
+
+.. seealso:: :py:func:`setTextureRotation`
+%End
+
+    QPointF textureOffset() const;
+%Docstring
+Returns the texture offset.
+
+.. seealso:: :py:func:`setTextureOffset`
+
+.. versionadded:: 4.2
+%End
 
     virtual bool requiresTextureCoordinates() const;
 

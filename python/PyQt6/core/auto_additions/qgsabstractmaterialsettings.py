@@ -61,7 +61,7 @@ QgsAbstractMaterialSettings.Property.__doc__ = """Data definable properties.
 """
 # --
 try:
-    QgsAbstractMaterialSettings.__virtual_methods__ = ['readXml', 'writeXml', 'requiresTextureCoordinates', 'requiresTangents', 'textureScale', 'textureRotation', 'textureOffset', 'supportedProperties']
+    QgsAbstractMaterialSettings.__virtual_methods__ = ['readXml', 'writeXml', 'requiresTextureCoordinates', 'requiresTangents', 'supportedProperties']
     QgsAbstractMaterialSettings.__abstract_methods__ = ['type', 'clone', 'equals', 'averageColor', 'setColorsFromBase']
     QgsAbstractMaterialSettings.__group__ = ['3d', 'materials']
 except (NameError, AttributeError):

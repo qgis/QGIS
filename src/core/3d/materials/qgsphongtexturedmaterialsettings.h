@@ -70,9 +70,32 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
      */
     QString diffuseTexturePath() const { return mDiffuseTexturePath; }
 
-    double textureScale() const override;
-    double textureRotation() const override;
-    QPointF textureOffset() const override;
+    /**
+     * Returns the texture scale.
+     *
+     * The texture scale changes the size of the material's textures in the 3D scene.
+     *
+     * If the texture scale is less than 1 the textures will be stretched.
+     *
+     * \see setTextureScale()
+     */
+    double textureScale() const { return mTextureScale; }
+
+    /**
+     * Returns the texture rotation, in degrees.
+     *
+     * \see setTextureRotation()
+     */
+    double textureRotation() const { return mTextureRotation; }
+
+    /**
+     * Returns the texture offset.
+     *
+     * \see setTextureOffset()
+     * \since QGIS 4.2
+     */
+    QPointF textureOffset() const { return mTextureOffset; }
+
     bool requiresTextureCoordinates() const override;
 
     /**
