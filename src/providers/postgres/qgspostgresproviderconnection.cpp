@@ -215,6 +215,8 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
 void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlPrivate( u"ALTER TABLE %1.%2 RENAME TO %3"_s.arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( newName ) ) );
+  executeSqlPrivate( u"UPDATE public.layer_styles SET f_table_name=%1 WHERE f_table_schema=%2 AND f_table_name=%3"_s
+                       .arg( QgsPostgresConn::quotedValue( newName ), QgsPostgresConn::quotedValue( schema ), QgsPostgresConn::quotedValue( name ) ) );
 }
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderConnection::tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags, QgsFeedback *feedback ) const
