@@ -259,14 +259,20 @@ void QgsPolygon3DSymbolHandler::processPolygon(
     QgsMessageLog::logMessage( out.tessellator->error(), QObject::tr( "3D" ) );
   }
 
-  if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
+  const QgsPropertyCollection &dataDefinedProperties = mSymbol->materialSettings()->dataDefinedProperties();
+  if ( dataDefinedProperties.hasActiveProperties() )
   {
     const uint newUniqueVertices = out.tessellator->uniqueVertexCount() - oldVertexCount;
     processMaterialDatadefined( newUniqueVertices, context.expressionContext(), out );
 
-    for ( uint i = 0; i < newUniqueVertices; ++i )
+    if ( dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::TextureScale )
+         || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::TextureRotation )
+         || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::TextureOffset ) )
     {
-      out.ddTextureTransformData << dataDefinedTextureOffsetX << dataDefinedTextureOffsetY << dataDefinedTextureScale << dataDefinedTextureRotation;
+      for ( uint i = 0; i < newUniqueVertices; ++i )
+      {
+        out.ddTextureTransformData << dataDefinedTextureOffsetX << dataDefinedTextureOffsetY << dataDefinedTextureScale << dataDefinedTextureRotation;
+      }
     }
   }
 }
@@ -453,7 +459,6 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   {
     if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) )
     {
-      // TODO should this be tightened?
       handler->applyDataDefinedToGeometry( mSymbol->materialSettings(), geometry, vertexCount, polyData.materialDataDefined );
     }
 
