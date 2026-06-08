@@ -1055,9 +1055,7 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
 
 void QgsAiModelRouter::queueFailedRequestFinish( const QString &requestId, const QString &errorMessage )
 {
-  QTimer::singleShot( 0, this, [this, requestId, errorMessage]() {
-    finishRequest( requestId, false, QString(), sanitizeErrorText( errorMessage ), 0, 0, false, 0 );
-  } );
+  QTimer::singleShot( 0, this, [this, requestId, errorMessage]() { finishRequest( requestId, false, QString(), sanitizeErrorText( errorMessage ), 0, 0, false, 0 ); } );
 }
 
 void QgsAiModelRouter::clearRequestTransport( RequestContext &context )
@@ -1107,12 +1105,7 @@ void QgsAiModelRouter::startRequestWatchdog( RequestContext &context, int transf
     RequestContext &timedOutContext = mRequests[requestId];
     const QString providerName = providerDisplayName( timedOutContext.provider );
     const qint64 latencyMs = timedOutContext.startedAtMs > 0 ? std::max<qint64>( 0, QDateTime::currentMSecsSinceEpoch() - timedOutContext.startedAtMs ) : 0;
-    QgsMessageLog::logMessage(
-      u"Request id=%1 provider=%2 watchdog timed out after %3 seconds."_s.arg( requestId, providerName ).arg( watchdogSeconds ),
-      u"AI"_s,
-      Qgis::MessageLevel::Warning,
-      false
-    );
+    QgsMessageLog::logMessage( u"Request id=%1 provider=%2 watchdog timed out after %3 seconds."_s.arg( requestId, providerName ).arg( watchdogSeconds ), u"AI"_s, Qgis::MessageLevel::Warning, false );
     const int retryCount = timedOutContext.attempt - 1;
     finishRequest( requestId, false, QString(), u"Network request watchdog timed out after %1 seconds."_s.arg( watchdogSeconds ), 0, retryCount, false, latencyMs );
   } );
