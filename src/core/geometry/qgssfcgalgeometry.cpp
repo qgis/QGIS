@@ -1091,6 +1091,8 @@ QgsMatrix4x4 QgsSfcgalGeometry::primitiveTransform() const
   double *data = sfcgal_primitive_transformation( mSfcgalPrim.get() );
   THROW_ON_ERROR( &errorMsg );
 
+  // sfcgal_primitive_transformation returns data in column-major order
+  // QgsMatrix4x4 constructor expects data in row-major order
   // clang-format off
   QgsMatrix4x4 transformMatrix(
     data[0], data[4], data[8], data[12],
