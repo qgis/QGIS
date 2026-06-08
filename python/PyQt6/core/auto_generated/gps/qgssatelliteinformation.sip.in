@@ -20,6 +20,9 @@ Encapsulates information relating to a GPS satellite.
 #include "qgssatelliteinformation.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     int id;
 
     bool inUse;

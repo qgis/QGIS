@@ -16,3 +16,5 @@
  ***************************************************************************/
 
 #include "qgssatelliteinformation.h"
+
+#include "moc_qgssatelliteinformation.cpp"
