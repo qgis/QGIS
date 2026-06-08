@@ -2971,6 +2971,10 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
   const double aspectRatio = calculateAspectRatio( context, scaledWidth, hasDataDefinedAspectRatio );
   double scaledHeight = scaledWidth * ( !qgsDoubleNear( aspectRatio, 0.0 ) ? aspectRatio : mDefaultAspectRatio );
 
+  QPointF outputOffset;
+  double angle = 0.0;
+  calculateOffsetAndRotation( context, scaledWidth, scaledHeight, outputOffset, angle );
+
   scaledWidth = context.renderContext().convertToPainterUnits( scaledWidth, mSizeUnit, mSizeMapUnitScale );
   scaledHeight = context.renderContext().convertToPainterUnits( scaledHeight, mSizeUnit, mSizeMapUnitScale );
 
@@ -2979,10 +2983,6 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
   {
     return QRectF();
   }
-
-  QPointF outputOffset;
-  double angle = 0.0;
-  calculateOffsetAndRotation( context, scaledWidth, scaledHeight, outputOffset, angle );
 
   double strokeWidth = mStrokeWidth;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) )
