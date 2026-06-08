@@ -15,6 +15,7 @@
 
 #include "qgscategorized3drendererwidget.h"
 
+#include "qgisapp.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolutils.h"
 #include "qgsabstract3dsymbol.h"
@@ -153,6 +154,7 @@ QgsCategorized3DRendererWidget::QgsCategorized3DRendererWidget( QWidget *parent 
   connect( mBtnDeleteAllCategories, &QAbstractButton::clicked, this, &QgsCategorized3DRendererWidget::deleteAllCategories );
   connect( mBtnDeleteUnusedCategories, &QAbstractButton::clicked, this, &QgsCategorized3DRendererWidget::deleteUnusedCategories );
   connect( mBtnAddCategory, &QAbstractButton::clicked, this, &QgsCategorized3DRendererWidget::addCategory );
+  connect( mBtnUpdateCategoriesFrom2D, &QAbstractButton::clicked, this, &QgsCategorized3DRendererWidget::updateCategoriesFrom2D );
 
   connect( mBtnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsCategorized3DRendererWidget::applyColorRamp );
 }
@@ -217,6 +219,16 @@ void QgsCategorized3DRendererWidget::updateUiFromRenderer()
   if ( mRenderer->sourceColorRamp() )
   {
     whileBlocking( mBtnColorRamp )->setColorRamp( mRenderer->sourceColorRamp() );
+  }
+
+  if ( mLayer )
+  {
+    QgsFeatureRenderer *renderer2D = mLayer->renderer();
+    const bool hasCategorizedSymbol2D = renderer2D && renderer2D->type() == "categorizedSymbol"_L1;
+
+    mBtnUpdateCategoriesFrom2D->setEnabled( hasCategorizedSymbol2D );
+    const QString toolTip = hasCategorizedSymbol2D ? QString() : tr( "Requires a categorized 2D renderer" );
+    mBtnUpdateCategoriesFrom2D->setToolTip( toolTip );
   }
 }
 
@@ -479,6 +491,94 @@ void QgsCategorized3DRendererWidget::addCategory()
   const Qgs3DRendererCategory category( QVariant(), symbol->clone(), true );
   mModel->addCategory( category );
   emit widgetChanged();
+}
+
+void QgsCategorized3DRendererWidget::updateCategoriesFrom2D()
+{
+  if ( !mModel || !mLayer )
+  {
+    return;
+  }
+
+  QgsFeatureRenderer *renderer2D = mLayer->renderer();
+  if ( renderer2D && renderer2D->type() == "categorizedSymbol"_L1 )
+  {
+    const QgsCategorizedSymbolRenderer *categorizedRenderer2D = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer2D );
+    if ( mRenderer->classAttribute() != categorizedRenderer2D->classAttribute() )
+    {
+      // If the categorized attribute has changed, rebuild the whole
+      // renderer from the 2D categorized renderer, as existing 3D categories
+      // are no longer meaningful.
+      QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
+      QList<Qgs3DRendererCategory> categories3D;
+      for ( const QgsRendererCategory &category2D : categorizedRenderer2D->categories() )
+      {
+        std::unique_ptr<QgsAbstract3DSymbol> symbol3D = Qgs3DSymbolUtils::create3DSymbolFrom2D( mLayer, category2D.symbol(), context );
+        Qgs3DRendererCategory category3D( category2D.value(), symbol3D.release(), category2D.renderState() );
+        categories3D.append( category3D );
+      }
+
+      auto newRenderer3D = std::make_unique<QgsCategorized3DRenderer>( categorizedRenderer2D->classAttribute(), categories3D );
+      std::unique_ptr<QgsAbstract3DSymbol> sourceSymbol3D = Qgs3DSymbolUtils::create3DSymbolFrom2D( mLayer, categorizedRenderer2D->sourceSymbol(), context );
+      newRenderer3D->setSourceSymbol( sourceSymbol3D.release() );
+      if ( categorizedRenderer2D->sourceColorRamp() )
+      {
+        newRenderer3D->setSourceColorRamp( categorizedRenderer2D->sourceColorRamp()->clone() );
+      }
+      mRenderer = std::move( newRenderer3D );
+      mCategorizedSymbol.reset( mRenderer->sourceSymbol()->clone() );
+      mModel->setRenderer( mRenderer.get() );
+
+      updateUiFromRenderer();
+    }
+    else
+    {
+      // Same class attribute.
+      // Add missing categories from the 2D renderer
+      // and remove 3D categories which do not exist in the 2D renderer.
+      QSet<QVariant> existing3DCategoriesValues;
+      for ( const Qgs3DRendererCategory &category3D : mRenderer->categories() )
+      {
+        existing3DCategoriesValues.insert( category3D.value() );
+      }
+
+      QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
+      QSet<QVariant> categories2DValues;
+      for ( const QgsRendererCategory &category2D : categorizedRenderer2D->categories() )
+      {
+        categories2DValues.insert( category2D.value() );
+
+        // Add categories which exist in the 2D renderer but are missing
+        // from the 3D renderer.
+        if ( !existing3DCategoriesValues.contains( category2D.value() ) )
+        {
+          std::unique_ptr<QgsAbstract3DSymbol> symbol3D = Qgs3DSymbolUtils::create3DSymbolFrom2D( mLayer, category2D.symbol(), context );
+          std::unique_ptr<QgsAbstract3DSymbol> newCatSymbol( mCategorizedSymbol->clone() );
+          Qgs3DSymbolUtils::copyVectorSymbolMaterial( symbol3D.get(), newCatSymbol.get() );
+          Qgs3DRendererCategory category3D( category2D.value(), newCatSymbol.release(), category2D.renderState() );
+          mModel->addCategory( category3D );
+        }
+      }
+
+      // Remove 3D categories which do not exist in the 2D renderer.
+      QList<int> categoriesToDelete;
+      for ( int i = static_cast<int>( mRenderer->categories().count() ) - 1; i >= 0; --i )
+      {
+        const Qgs3DRendererCategory &category3D = mRenderer->categories().at( i );
+        if ( !categories2DValues.contains( category3D.value() ) )
+        {
+          categoriesToDelete.append( i );
+        }
+      }
+      if ( !categoriesToDelete.isEmpty() )
+      {
+        mModel->deleteRows( categoriesToDelete );
+      }
+
+      mModel->updateSymbology();
+      emit widgetChanged();
+    }
+  }
 }
 
 Qgs3DCategoryList QgsCategorized3DRendererWidget::selectedCategoryList() const
