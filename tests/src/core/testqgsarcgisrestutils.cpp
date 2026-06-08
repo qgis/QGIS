@@ -263,7 +263,10 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
     "}"
     "}"
   );
-  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
+  QVERIFY( context.warnings().isEmpty() );
   QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
@@ -327,8 +330,10 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
     "}"
     "}"
   );
-
-  std::unique_ptr<QgsSymbol> fontSymbol( QgsArcGisRestUtils::convertSymbol( fontMap ) );
+  QgsReadWriteContext rwContext2;
+  QgsSymbolConverterContext context2( rwContext2 );
+  std::unique_ptr<QgsSymbol> fontSymbol( QgsArcGisRestUtils::convertSymbol( fontMap, context2 ) );
+  QVERIFY( context2.warnings().isEmpty() );
   QgsMarkerSymbol *fontMarker = dynamic_cast<QgsMarkerSymbol *>( fontSymbol.get() );
   QVERIFY( fontMarker );
   QCOMPARE( fontMarker->symbolLayerCount(), 1 );
@@ -401,7 +406,10 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
     "\"yoffset\": 17"
     "}"
   );
-  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
+  QVERIFY( context.warnings().isEmpty() );
   QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
@@ -435,7 +443,10 @@ void TestQgsArcGisRestUtils::testParseLineSymbol()
     "\"width\": 7"
     "}"
   );
-  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
+  QVERIFY( context.warnings().isEmpty() );
   QgsLineSymbol *line = dynamic_cast<QgsLineSymbol *>( symbol.get() );
   QVERIFY( line );
   QCOMPARE( line->symbolLayerCount(), 1 );
@@ -476,7 +487,10 @@ void TestQgsArcGisRestUtils::testParseFillSymbol()
     "}"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContextFill;
+  QgsSymbolConverterContext contextFill( rwContextFill );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, contextFill ) );
+  QVERIFY( contextFill.warnings().isEmpty() );
   QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 1 );
@@ -544,7 +558,10 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
     "}"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContextPFill;
+  QgsSymbolConverterContext contextPFill( rwContextPFill );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, contextPFill ) );
+  QVERIFY( contextPFill.warnings().isEmpty() );
   QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 2 );
@@ -620,7 +637,9 @@ void TestQgsArcGisRestUtils::testParseRendererSimple()
     "}"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
   QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   QVERIFY( ssRenderer->symbol() );
@@ -694,7 +713,9 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
   QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
   QVERIFY( catRenderer );
   QCOMPARE( catRenderer->categories().count(), 2 );
@@ -724,7 +745,9 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationGeographic()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData, context ) );
   const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
@@ -751,7 +774,9 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationArithmetic()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData, context ) );
   const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
@@ -777,7 +802,9 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationDefaultsToGeographic()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData, context ) );
   const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
@@ -804,11 +831,15 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationValueExpressionSkipped()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData, context ) );
   const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
   QVERIFY( !prop.isActive() );
+  QVERIFY( !context.warnings().isEmpty() );
+  QVERIFY( context.warnings().first().contains( u"$feature.ANGLE * 2"_s ) );
 }
 
 void TestQgsArcGisRestUtils::testVisualVariableRotationSimpleRenderer()
@@ -836,7 +867,9 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationSimpleRenderer()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
   QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   QVERIFY( ssRenderer->symbol() );
@@ -878,7 +911,9 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationCategorizedRenderer()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
   QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
   QVERIFY( catRenderer );
   QCOMPARE( catRenderer->categories().count(), 2 );
@@ -925,7 +960,9 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationGraduatedRenderer()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
   QgsGraduatedSymbolRenderer *gradRenderer = dynamic_cast<QgsGraduatedSymbolRenderer *>( renderer.get() );
   QVERIFY( gradRenderer );
   QVERIFY( gradRenderer->ranges().count() >= 2 );

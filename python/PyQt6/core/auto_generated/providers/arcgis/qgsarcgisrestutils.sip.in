@@ -107,19 +107,37 @@ Converts a spatial reference JSON definition to a
 :py:class:`QgsCoordinateReferenceSystem` value.
 %End
 
-    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition );
+    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition, QgsSymbolConverterContext &context );
 %Docstring
 Converts a symbol JSON ``definition`` to a :py:class:`QgsSymbol`.
 
-Caller takes ownership of the returned symbol.
+:param definition: symbol JSON definition
+:param context: conversion context, used to collect warnings and errors
+                encountered during conversion.
+
+:return: the converted symbol, or None on failure. Caller takes
+         ownership of the returned symbol.
+
+.. note::
+
+   The ``context`` parameter was added in QGIS 4.2
 %End
 
-    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData );
+    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context );
 %Docstring
 Converts renderer JSON ``data`` to an equivalent
 :py:class:`QgsFeatureRenderer`.
 
-Caller takes ownership of the returned renderer.
+:param rendererData: renderer JSON data
+:param context: conversion context, used to collect warnings and errors
+                encountered during conversion.
+
+:return: the converted renderer, or None on failure. Caller takes
+         ownership of the returned renderer.
+
+.. note::
+
+   The ``context`` parameter was added in QGIS 4.2
 %End
 
     static std::unique_ptr< QgsAbstractVectorLayerLabeling > convertLabeling( const QVariantList &data );
