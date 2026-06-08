@@ -67,6 +67,7 @@ class QgsCategorized3DRendererWidget : public QgsPanelWidget, private Ui::QgsCat
     void categoriesDoubleClicked( const QModelIndex &idx );
     void addCategory();
     void addCategories();
+    void updateCategoriesFrom2D();
 
     /**
      * Applies the color ramp passed on by the color ramp button
@@ -117,6 +118,7 @@ class QgsCategorized3DRendererWidget : public QgsPanelWidget, private Ui::QgsCat
     QString mOldClassificationAttribute;
     Qgs3DCategoryList mCopyBuffer;
     bool mUpdatingSymbolButton = false;
+    QAction *mCategoriesFrom2DAction = nullptr;
 };
 
 #endif // QGSCATEGORIZED3DRENDERERWIDGET_H
