@@ -193,6 +193,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId id ) const override;
+    bool hasVertex( QgsVertexId position ) const override;
     QgsCurve *toCurveType() const override SIP_FACTORY;
     void normalize() final SIP_HOLDGIL;
 

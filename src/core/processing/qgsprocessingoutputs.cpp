@@ -52,6 +52,11 @@ QString QgsProcessingOutputDefinition::valueAsFormattedString( const QVariant &v
   return valueAsString( value, context, ok );
 }
 
+bool QgsProcessingOutputDefinition::isMapLayer() const
+{
+  return false;
+}
+
 QColor QgsProcessingOutputDefinition::modelColor() const
 {
   return QColor( 128, 128, 128 ); /* mid  gray */
@@ -77,6 +82,11 @@ QColor QgsProcessingOutputVectorLayer::modelColor() const
   return QColor( 122, 0, 47 ); /* burgundy */
 }
 
+bool QgsProcessingOutputVectorLayer::isMapLayer() const
+{
+  return true;
+}
+
 QgsProcessingOutputRasterLayer::QgsProcessingOutputRasterLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -86,9 +96,19 @@ QColor QgsProcessingOutputRasterLayer::modelColor() const
   return QColor( 0, 180, 180 ); /* turquoise */
 }
 
+bool QgsProcessingOutputRasterLayer::isMapLayer() const
+{
+  return true;
+}
+
 QgsProcessingOutputPointCloudLayer::QgsProcessingOutputPointCloudLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+bool QgsProcessingOutputPointCloudLayer::isMapLayer() const
+{
+  return true;
+}
 
 QgsProcessingOutputVectorTileLayer::QgsProcessingOutputVectorTileLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
@@ -97,6 +117,11 @@ QgsProcessingOutputVectorTileLayer::QgsProcessingOutputVectorTileLayer( const QS
 QColor QgsProcessingOutputVectorTileLayer::modelColor() const
 {
   return QColor( 137, 150, 171 ); /* cold gray */
+}
+
+bool QgsProcessingOutputVectorTileLayer::isMapLayer() const
+{
+  return true;
 }
 
 QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QString &description )
@@ -224,6 +249,11 @@ QString QgsProcessingOutputMapLayer::type() const
   return typeName();
 }
 
+bool QgsProcessingOutputMapLayer::isMapLayer() const
+{
+  return true;
+}
+
 QColor QgsProcessingOutputMapLayer::modelColor() const
 {
   return QColor( 137, 150, 171 ); /* cold gray */
@@ -267,6 +297,11 @@ QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value,
       break;
   }
   return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
+}
+
+bool QgsProcessingOutputMultipleLayers::isMapLayer() const
+{
+  return true;
 }
 
 QColor QgsProcessingOutputMultipleLayers::modelColor() const

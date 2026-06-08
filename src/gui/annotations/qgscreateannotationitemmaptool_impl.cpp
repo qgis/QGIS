@@ -271,7 +271,7 @@ void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
     mFirstPoint = event->snapPoint();
     mRect.setRect( mFirstPoint.x(), mFirstPoint.y(), mFirstPoint.x(), mFirstPoint.y() );
 
-    mRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon ) );
+    mRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Polygon );
     mRubberBand->setWidth( digitizingStrokeWidth() );
     QColor color = digitizingStrokeColor();
 
@@ -416,7 +416,7 @@ void QgsCreateRectangleTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *e
     mFirstPoint = event->snapPoint();
     mRect.setRect( mFirstPoint.x(), mFirstPoint.y(), mFirstPoint.x(), mFirstPoint.y() );
 
-    mRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon ) );
+    mRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Polygon );
     mRubberBand->setWidth( digitizingStrokeWidth() );
     QColor color = digitizingStrokeColor();
 

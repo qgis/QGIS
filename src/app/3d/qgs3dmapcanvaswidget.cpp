@@ -294,7 +294,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   };
   createShortcuts( u"m3DSetSceneExtent"_s, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
 
-  mActionOpenCameraControlsWidget = new QAction( QgsApplication::getThemeIcon( u"/mIconCamera.svg"_s ), tr( "Camera controls" ), this );
+  mActionOpenCameraControlsWidget = new QAction( QgsApplication::getThemeIcon( u"/mIconCamera.svg"_s ), tr( "Camera Controls" ), this );
   connect( mActionOpenCameraControlsWidget, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configureCamera );
   mCameraMenu->addAction( mActionOpenCameraControlsWidget );
 
@@ -755,9 +755,10 @@ void Qgs3DMapCanvasWidget::toggleDebugWidget( const bool visibility ) const
 // this is used only for keyboard shortcut, you should supply the visibility value
 void Qgs3DMapCanvasWidget::toggleDebugWidget() const
 {
-  const bool newVisibility = !mCanvas->mapSettings()->showDebugPanel();
-  mDebugWidget->setVisible( newVisibility );
-  mCanvas->mapSettings()->setShowDebugPanel( newVisibility );
+  Qgis::Map3DDebugFlags debugFlags = mCanvas->mapSettings()->debugFlags();
+  debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowDebugPanel, !debugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
+  mCanvas->mapSettings()->setDebugFlags( debugFlags );
+  mDebugWidget->setVisible( debugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
 }
 
 void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
@@ -766,7 +767,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 
   mCanvas->setMapSettings( map );
   connect( map, &Qgs3DMapSettings::showDebugPanelChanged, this, qOverload<bool>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
-  toggleDebugWidget( map->showDebugPanel() );
+  toggleDebugWidget( mCanvas->mapSettings()->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
   mDebugWidget->setMapSettings( map );
 
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged );
@@ -785,7 +786,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mActionMapThemes->setDisabled(
     !mCanvas->mapSettings()->terrainRenderingEnabled() || !mCanvas->mapSettings()->terrainGenerator() || mCanvas->mapSettings()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh
   );
-  mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
+  mLabelFpsCounter->setVisible( mCanvas->mapSettings()->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowFPS ) );
 
   mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
   mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
@@ -813,20 +814,20 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
   connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged );
 
-  mCrossSectionRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Polygon ) );
+  mCrossSectionRubberBand = make_qobject_unique<QgsRubberBand>( mMainCanvas, Qgis::GeometryType::Polygon );
   QColor polygonColor = QColorConstants::Red.lighter();
   polygonColor.setAlphaF( 0.5 );
   mCrossSectionRubberBand->setColor( polygonColor );
 
   if ( !mViewFrustumHighlight )
   {
-    mViewFrustumHighlight.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
+    mViewFrustumHighlight = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Polygon );
     mViewFrustumHighlight->setColor( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
   }
 
   if ( !mViewExtentHighlight )
   {
-    mViewExtentHighlight.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
+    mViewExtentHighlight = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Polygon );
     mViewExtentHighlight->setColor( QColor::fromRgba( qRgba( 255, 0, 0, 50 ) ) );
   }
 }
@@ -846,7 +847,7 @@ void Qgs3DMapCanvasWidget::configureCamera()
 
   mCameraControlsDialog = new QDialog( this );
   mCameraControlsDialog->setAttribute( Qt::WA_DeleteOnClose );
-  mCameraControlsDialog->setWindowTitle( tr( "Camera controls" ) );
+  mCameraControlsDialog->setWindowTitle( tr( "Camera Controls" ) );
   mCameraControlsDialog->setObjectName( u"3DCameraControlsDialog"_s );
   mCameraControlsDialog->setMinimumSize( 300, 200 );
   QgsGui::enableAutoGeometryRestore( mCameraControlsDialog );

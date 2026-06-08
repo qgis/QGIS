@@ -811,7 +811,12 @@ QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const Qg
   if ( !definition )
     return nullptr;
 
-  return QgsProcessingUtils::variantToSource( value, context, definition->defaultValue() );
+  QgsProcessingFeatureSource *result = QgsProcessingUtils::variantToSource( value, context, definition->defaultValue() );
+  if ( QgsProcessingFeedback *feedback = context.feedback(); feedback && result )
+  {
+    feedback->reportSourceLoaded( definition->name(), result->featureCount() );
+  }
+  return result;
 }
 
 QString parameterAsCompatibleSourceLayerPathInternal(

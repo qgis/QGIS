@@ -1120,7 +1120,7 @@ Qt::PenStyle QgsSimpleLineSymbolLayer::dxfPenStyle() const
   return mPenStyle;
 }
 
-double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
+double QgsSimpleLineSymbolLayer::dxfWidth( QgsSymbolRenderContext &context ) const
 {
   double width = mWidth;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) )
@@ -1129,12 +1129,7 @@ double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRende
     width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::StrokeWidth, context.renderContext().expressionContext(), mWidth );
   }
 
-  width *= QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
-  if ( mWidthUnit == Qgis::RenderUnit::MapUnits )
-  {
-    e.clipValueToMapUnitScale( width, mWidthMapUnitScale, context.renderContext().scaleFactor() );
-  }
-  return width;
+  return context.renderContext().convertToMapUnits( width, widthUnit(), mWidthMapUnitScale );
 }
 
 QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
@@ -1172,7 +1167,7 @@ void QgsSimpleLineSymbolLayer::setTweakDashPatternOnCorners( bool enabled )
   mPatternCartographicTweakOnSharpCorners = enabled;
 }
 
-double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
+double QgsSimpleLineSymbolLayer::dxfOffset( QgsSymbolRenderContext &context ) const
 {
   double offset = mOffset;
 
@@ -1182,11 +1177,7 @@ double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRend
     offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Offset, context.renderContext().expressionContext(), mOffset );
   }
 
-  offset *= QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), offsetUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
-  if ( mOffsetUnit == Qgis::RenderUnit::MapUnits )
-  {
-    e.clipValueToMapUnitScale( offset, mOffsetMapUnitScale, context.renderContext().scaleFactor() );
-  }
+  offset = context.renderContext().convertToMapUnits( offset, offsetUnit(), mOffsetMapUnitScale );
   return -offset; //direction seems to be inverse to symbology offset
 }
 

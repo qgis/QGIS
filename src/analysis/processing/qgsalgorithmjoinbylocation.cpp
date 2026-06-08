@@ -213,11 +213,13 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( mJoinedFeatures )
   {
     mJoinedFeatures->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, joinedSinkId );
   }
   if ( mUnjoinedFeatures )
   {
     mUnjoinedFeatures->finalize();
+    feedback->featureSinkFinalized( u"NON_MATCHING"_s );
     outputs.insert( u"NON_MATCHING"_s, nonMatchingSinkId );
   }
 

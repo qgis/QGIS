@@ -145,6 +145,8 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
     {
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
     else
     {
@@ -156,6 +158,8 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
         feat.setAttributes( f.attributes() );
         if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
     }
 
@@ -164,6 +168,7 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

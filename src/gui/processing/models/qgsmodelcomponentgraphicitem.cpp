@@ -820,6 +820,39 @@ QgsModelDesignerSocketGraphicItem *QgsModelComponentGraphicItem::outSocketAt( in
   return mOutSockets.at( index );
 }
 
+QList<QgsModelArrowItem *> QgsModelComponentGraphicItem::incomingArrows()
+{
+  const QList<QGraphicsItem *> allItems = scene()->items();
+  QList<QgsModelArrowItem *> arrows;
+  for ( QGraphicsItem *item : allItems )
+  {
+    if ( auto arrowItem = dynamic_cast< QgsModelArrowItem * >( item ) )
+    {
+      if ( arrowItem->endItem() == this )
+      {
+        arrows << arrowItem;
+      }
+    }
+  }
+  return arrows;
+}
+
+QList<QgsModelArrowItem *> QgsModelComponentGraphicItem::outgoingArrows()
+{
+  const QList<QGraphicsItem *> allItems = scene()->items();
+  QList<QgsModelArrowItem *> arrows;
+  for ( QGraphicsItem *item : allItems )
+  {
+    if ( auto arrowItem = dynamic_cast< QgsModelArrowItem * >( item ) )
+    {
+      if ( arrowItem->startItem() == this )
+      {
+        arrows << arrowItem;
+      }
+    }
+  }
+  return arrows;
+}
 
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( parameter, model, parent )
@@ -1162,6 +1195,11 @@ QColor QgsModelChildAlgorithmGraphicItem::textColor( QgsModelComponentGraphicIte
 
 QColor QgsModelChildAlgorithmGraphicItem::outlineColor() const
 {
+  if ( mOutdated )
+  {
+    return QColor( 150, 150, 0 );
+  }
+
   switch ( mResults.executionStatus() )
   {
     case Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted:
@@ -1374,10 +1412,84 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
   if ( mResults == results )
     return;
 
+  mOutdated = false;
+  const QList< QgsModelArrowItem * > arrows = outgoingArrows();
+  if ( results.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted )
+  {
+    for ( QgsModelArrowItem *arrow : arrows )
+    {
+      arrow->setShowBadge( false );
+    }
+  }
+  else
+  {
+    if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+    {
+      if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+      {
+        const QVariantMap outputs = results.outputs();
+        for ( auto it = outputs.constBegin(); it != outputs.constEnd(); ++it )
+        {
+          // don't show badges for output layers, these will just be the internal layer identifiers and we have logic elsewhere
+          // to show actually useful information in the badges (feature counts)
+          if ( const QgsProcessingOutputDefinition *outputDefinition = algorithm->outputDefinition( it.key() ); outputDefinition && outputDefinition->isMapLayer() )
+            continue;
+
+          const int index = indexForOutput( it.key() );
+          if ( index >= 0 )
+          {
+            for ( QgsModelArrowItem *arrow : arrows )
+            {
+              if ( arrow->startIndex() == index && arrow->startEdge() == Qt::BottomEdge )
+              {
+                arrow->setShowBadge( true );
+                arrow->badgeItem()->setValue( it.value() );
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   mResults = results;
   mStarted = false;
   update();
   emit updateArrowPaths();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setSourceFeatureCount( const QString &parameterName, long long featureCount )
+{
+  const int index = indexForInput( parameterName );
+  if ( index < 0 )
+    return;
+
+  const QList< QgsModelArrowItem * > arrows = incomingArrows();
+  for ( QgsModelArrowItem *arrow : arrows )
+  {
+    if ( arrow->endIndex() == index && arrow->endEdge() == Qt::TopEdge )
+    {
+      arrow->setShowBadge( true );
+      arrow->badgeItem()->setValue( featureCount );
+    }
+  }
+}
+
+void QgsModelChildAlgorithmGraphicItem::setSinkFeatureCount( const QString &outputName, long long featureCount )
+{
+  const int index = indexForOutput( outputName );
+  if ( index < 0 )
+    return;
+
+  const QList< QgsModelArrowItem * > arrows = outgoingArrows();
+  for ( QgsModelArrowItem *arrow : arrows )
+  {
+    if ( arrow->startIndex() == index && arrow->startEdge() == Qt::BottomEdge )
+    {
+      arrow->setShowBadge( true );
+      arrow->badgeItem()->setValue( featureCount );
+    }
+  }
 }
 
 void QgsModelChildAlgorithmGraphicItem::setProgress( double progress )
@@ -1393,6 +1505,36 @@ void QgsModelChildAlgorithmGraphicItem::setStarted()
 {
   mStarted = true;
   update();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setOutdated()
+{
+  mOutdated = true;
+  update();
+}
+
+int QgsModelChildAlgorithmGraphicItem::indexForInput( const QString &parameterName ) const
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  {
+    if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+    {
+      return QgsProcessingUtils::parameterDefinitionIndex( algorithm, parameterName );
+    }
+  }
+  return -1;
+}
+
+int QgsModelChildAlgorithmGraphicItem::indexForOutput( const QString &output ) const
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  {
+    if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+    {
+      return QgsProcessingUtils::outputDefinitionIndex( algorithm, output );
+    }
+  }
+  return -1;
 }
 
 void QgsModelChildAlgorithmGraphicItem::paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )

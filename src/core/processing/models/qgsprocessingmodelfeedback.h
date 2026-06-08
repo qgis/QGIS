@@ -93,6 +93,22 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
     void reportChildProgress( const QString &childId, double progress );
 
     /**
+     * Reports that a feature source was retrieved for the specified child algorithm input parameter.
+     *
+     * \see childSourceLoaded()
+     */
+    void reportChildSourceLoaded( const QString &childId, const QString &parameterName, long long featureCount );
+
+    /**
+     * Reports that the count of features pushed to a child algorithm's sink has changed.
+     *
+     * The \a childOutput argument specifies the associated child algorithm output name.
+     *
+     * \see childSinkFeatureCountChanged()
+     */
+    void reportChildSinkFeatureCountChanged( const QString &childId, const QString &childOutput, long long featureCount );
+
+    /**
      * Report an error which occurred while executing a child algorithm.
      *
      * \see childExecutionFailed()
@@ -169,6 +185,25 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
      * \see reportChildProgress()
      */
     void childProgressChanged( const QString &childId, double progress );
+
+    /**
+     * Emitted when a feature source was retrieved for the specified child algorithm input parameter.
+     *
+     * \see reportChildSourceLoaded()
+     */
+    void childSourceLoaded( const QString &childId, const QString &parameterName, long long featureCount );
+
+    /**
+     * Emitted when the count of features pushed to a child's sink has changed.
+     *
+     * The \a output argument specifies the associated child algorithm output name.
+     *
+     * \note For performance, this signal is not emitted for every individual feature
+     * added to the sink. It is instead emitted only once for every 100 features added.
+     *
+     * \see reportChildSinkFeatureCountChanged()
+     */
+    void childSinkFeatureCountChanged( const QString &childId, const QString &childOutput, long long featureCount );
 
     /**
      * Emitted when an error occurred while executing a child algorithm.

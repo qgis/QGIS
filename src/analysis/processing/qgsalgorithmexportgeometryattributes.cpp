@@ -233,12 +233,17 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
     {
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
+    else
+    {
+      feedback->featureAddedToSink( u"OUTPUT"_s );
+    }
 
     i++;
     feedback->setProgress( i * step );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

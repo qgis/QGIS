@@ -1,2 +1,35 @@
-Checks: 'bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-virtual-near-miss,-bugprone-suspicious-include,-bugprone-branch-clone'
+Checks:
+  - bugprone-*
+  - -bugprone-easily-swappable-parameters
+  - -bugprone-virtual-near-miss
+  - -bugprone-suspicious-include
+  - -bugprone-branch-clone
+  - readability-identifier-naming
 HeaderFilterRegex: ''
+CheckOptions:
+
+  ### Coding style
+  ### see https://github.com/qgis/QGIS-Enhancement-Proposals/blob/master/qep-314-coding-style.md
+
+  readability-identifier-naming.EnumCase: CamelCase
+  readability-identifier-naming.EnumConstantCase: CamelCase
+  readability-identifier-naming.ClassCase: CamelCase
+
+  # Not applicable for public member, comment it for now
+  # readability-identifier-naming.MemberPrefix: m
+  # readability-identifier-naming.MemberCase: CamelCase
+
+  readability-identifier-naming.MemberCase: camelBack
+
+  # Static member
+  readability-identifier-naming.ClassMemberCase: CamelCase
+  readability-identifier-naming.ClassMemberPrefix: s
+
+  readability-identifier-naming.ConstexprVariableCase: UPPER_CASE
+
+  # Don't warn on converting int to float that can't represent whole int range,
+  # that is expected with floats and doesn't lead to bugs in reasonable code.
+  bugprone-narrowing-conversions.WarnOnIntegerToFloatingPointNarrowingConversion: false
+  # Don't warn on converting double to float, we generally can't avoid such
+  # conversions and they generally don't lead to bugs.
+  bugprone-narrowing-conversions.WarnOnFloatingPointNarrowingConversion: false

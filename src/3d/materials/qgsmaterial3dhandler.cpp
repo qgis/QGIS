@@ -40,6 +40,16 @@ QgsMaterialContext QgsMaterialContext::fromRenderContext( const Qgs3DRenderConte
   return res;
 }
 
+bool QgsMaterialContext::isPreview() const
+{
+  return mIsPreview;
+}
+
+void QgsMaterialContext::setIsPreview( bool isPreview )
+{
+  mIsPreview = isPreview;
+}
+
 QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
 {
   Q_UNUSED( flags )

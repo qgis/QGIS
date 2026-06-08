@@ -8,6 +8,7 @@
   extraPythonPackages ? (ps: [ ]),
 
   qt6Packages,
+  libspatialite,
 
   # unwrapped package parameters
   withGrass ? false,
@@ -44,6 +45,12 @@ symlinkJoin {
         --set PYTHONPATH $program_PYTHONPATH
     done
   ''
+  + lib.optionalString stdenv.hostPlatform.isLinux ''
+    for program in $out/bin/*; do
+      wrapProgram $program \
+        --prefix LD_LIBRARY_PATH : ${libspatialite}/lib
+    done
+  ''
   + lib.optionalString stdenv.hostPlatform.isDarwin ''
     QGIS_PYTHON_PATH="$out/Applications/QGIS.app/Contents/Frameworks"
     for program in $out/Applications/QGIS.app/Contents/MacOS/qgis \
@@ -51,6 +58,7 @@ symlinkJoin {
       if [[ -e "$program" ]]; then
         wrapProgram "$program" \
           --prefix PATH : $program_PATH \
+          --prefix DYLD_LIBRARY_PATH : ${libspatialite}/lib \
           --set PYTHONHOME ${qgis-unwrapped.py} \
           --set PYTHONPATH "$QGIS_PYTHON_PATH:$program_PYTHONPATH"
       fi

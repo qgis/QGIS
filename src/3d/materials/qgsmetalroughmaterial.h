@@ -16,6 +16,7 @@
 #ifndef QGSMETALROUGHMATERIAL_H
 #define QGSMETALROUGHMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -78,6 +79,15 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Sets the roughness texture. Takes ownership
     void setRoughnessTexture( Qt3DRender::QAbstractTexture *roughness );
 
+    //! Set constant reflectance value (between 0 - 1.0)
+    void setReflectance( float reflectance );
+
+    //! Set constant anisotropy value (between 0 - 1.0)
+    void setAnisotropy( float anisotropy );
+
+    //! Set constant anisotropy rotation (in degrees)
+    void setAnisotropyRotation( float rotation );
+
     //! Sets the ambient occlusion texture. Takes ownership. Set to NULLPTR to remove.
     void setAmbientOcclusionTexture( Qt3DRender::QAbstractTexture *ambientOcclusion );
 
@@ -104,11 +114,18 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Sets the emission strength factor
     void setEmissionFactor( double factor );
 
+    //! Sets the clear coat factor
+    void setClearCoatFactor( float factor );
+
+    //! Sets the clear coat roughness
+    void setClearCoatRoughness( float roughness );
+
     /**
-     * When instancing is enabled, the vertex shader uses per-instance
-     * translation, rotation, and scale attributes for GPU instancing.
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader.
+     * \a flags controls which per-instance attributes (scale, rotation) are active.
      */
-    void setInstancingEnabled( bool enabled );
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
 
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
@@ -123,6 +140,13 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
      */
     void setDataDefinedEnabled( bool enabled );
 
+    /**
+     * Sets whether environmental lighting effects should be enabled for the material.
+     *
+     * By default this is disabled.
+     */
+    void setEnvironmentalLightingEnabled( bool enabled );
+
   private:
     void init();
 
@@ -131,6 +155,9 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mBaseColorParameter = nullptr;
     Qt3DRender::QParameter *mMetalnessParameter = nullptr;
     Qt3DRender::QParameter *mRoughnessParameter = nullptr;
+    Qt3DRender::QParameter *mReflectanceParameter = nullptr;
+    Qt3DRender::QParameter *mAnisotropyParameter = nullptr;
+    Qt3DRender::QParameter *mAnisotropyRotationParameter = nullptr;
     Qt3DRender::QParameter *mBaseColorMapParameter = nullptr;
     Qt3DRender::QParameter *mMetalnessMapParameter = nullptr;
     Qt3DRender::QParameter *mRoughnessMapParameter = nullptr;
@@ -141,6 +168,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mEmissionMapParameter = nullptr;
     Qt3DRender::QParameter *mEmissiveColorParameter = nullptr;
     Qt3DRender::QParameter *mEmissionFactorParameter = nullptr;
+    Qt3DRender::QParameter *mClearCoatFactorParameter = nullptr;
+    Qt3DRender::QParameter *mClearCoatRoughnessParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mTextureRotationParameter = nullptr;
     Qt3DRender::QParameter *mOpacityParameter = nullptr;
@@ -157,9 +186,11 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingHeightMap = false;
     bool mUsingEmissionMap = false;
     bool mFlatShading = false;
-    bool mInstancingEnabled = false;
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
 
     bool mDataDefinedEnabled = false;
+    bool mEnableEnvironmentalLighting = false;
 
     friend class TestQgsGltf3DUtils;
 };

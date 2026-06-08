@@ -203,6 +203,11 @@ bool QgsSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, con
 double QgsSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( e )
+  return dxfWidth( context );
+}
+
+double QgsSymbolLayer::dxfWidth( QgsSymbolRenderContext &context ) const
+{
   Q_UNUSED( context )
   return 1.0;
 }
@@ -210,6 +215,11 @@ double QgsSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &
 double QgsSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( e )
+  return dxfSize( context );
+}
+
+double QgsSymbolLayer::dxfSize( QgsSymbolRenderContext &context ) const
+{
   Q_UNUSED( context )
   return 1.0;
 }
@@ -217,6 +227,11 @@ double QgsSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &c
 double QgsSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( e )
+  return dxfOffset( context );
+}
+
+double QgsSymbolLayer::dxfOffset( QgsSymbolRenderContext &context ) const
+{
   Q_UNUSED( context )
   return 0.0;
 }
@@ -931,10 +946,9 @@ double QgsLineSymbolLayer::width( const QgsRenderContext &context ) const
   return context.convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
 }
 
-double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
+double QgsLineSymbolLayer::dxfWidth( QgsSymbolRenderContext &context ) const
 {
-  Q_UNUSED( context )
-  return width() * QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  return width() * QgsDxfExport::mapUnitScaleFactor( context.renderContext(), widthUnit() );
 }
 
 
@@ -1055,7 +1069,7 @@ void QgsSymbolLayer::setSelectiveMaskingSourceSetId( const QString &id )
   mSelectiveMaskingSourceSetId = id;
 }
 
-double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
+double QgsMarkerSymbolLayer::dxfSize( QgsSymbolRenderContext &context ) const
 {
   double size = mSize;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Size ) )
@@ -1075,7 +1089,7 @@ double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderCont
       }
     }
   }
-  return size * QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), mSizeUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  return size * QgsDxfExport::mapUnitScaleFactor( context.renderContext(), mSizeUnit );
 }
 
 double QgsMarkerSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const

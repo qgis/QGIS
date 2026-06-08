@@ -24,6 +24,8 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgslegendstyle.h"
 #include "qgsrendercontext.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
 #include "qgstextrenderer.h"
 
 #include <QJsonObject>
@@ -764,40 +766,43 @@ QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext &context, double top, Qt::
   {
     return size;
   }
+  const double dotsPerMM = context.scaleFactor();
+
+  const QgsTextFormat titleFormat = mSettings.style( Qgis::LegendComponent::Title ).textFormat();
 
   QStringList lines = mSettings.splitStringForWrapping( mSettings.title() );
+  const QgsTextDocument textDocument = QgsTextDocument::fromTextAndFormat( lines, titleFormat );
+
+  QgsTextDocumentRenderContext documentContext;
+  QgsScopedRenderContextScaleToPixels scaleToPx( context );
+  if ( mSettings.autoWrapLinesAfter() > 0 )
+  {
+    documentContext.setMaximumWidth( context.convertToPainterUnits( mSettings.autoWrapLinesAfter(), Qgis::RenderUnit::Millimeters ) );
+    documentContext.setFlags( Qgis::TextRendererFlag::WrapLines );
+  }
 
   //calculate width and left pos of rectangle to draw text into
   double textBoxWidth;
   double textBoxLeft;
   widthAndOffsetForTitleText( halignment, legendWidth, textBoxWidth, textBoxLeft );
 
-  const QgsTextFormat titleFormat = mSettings.style( Qgis::LegendComponent::Title ).textFormat();
-  const double dotsPerMM = context.scaleFactor();
-
-  double overallTextHeight = 0;
-  double overallTextWidth = 0;
-
-  {
-    QgsScopedRenderContextScaleToPixels contextToPixels( context );
-    overallTextHeight = QgsTextRenderer::textHeight( context, titleFormat, lines, Qgis::TextLayoutMode::Rectangle );
-    overallTextWidth = QgsTextRenderer::textWidth( context, titleFormat, lines );
-  }
+  const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( context, titleFormat );
+  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, titleFormat, context, textScaleFactor, documentContext );
+  const double overallTextHeight = textDocumentMetrics.documentSize( Qgis::TextLayoutMode::Rectangle, Qgis::TextOrientation::Horizontal ).height();
+  const double overallTextWidth = textDocumentMetrics.documentSize( Qgis::TextLayoutMode::Rectangle, Qgis::TextOrientation::Horizontal ).width();
 
   size.rheight() = overallTextHeight / dotsPerMM;
   size.rwidth() = overallTextWidth / dotsPerMM;
 
   if ( context.painter() )
   {
-    QgsScopedRenderContextScaleToPixels contextToPixels( context );
-
     const QRectF r( textBoxLeft * dotsPerMM, top * dotsPerMM, textBoxWidth * dotsPerMM, overallTextHeight );
 
     Qgis::TextHorizontalAlignment halign = halignment == Qt::AlignLeft    ? Qgis::TextHorizontalAlignment::Left
                                            : halignment == Qt::AlignRight ? Qgis::TextHorizontalAlignment::Right
                                                                           : Qgis::TextHorizontalAlignment::Center;
 
-    QgsTextRenderer::drawText( r, 0, halign, lines, context, titleFormat );
+    QgsTextRenderer::drawDocument( r, titleFormat, textDocumentMetrics.document(), textDocumentMetrics, context, halign, Qgis::TextVerticalAlignment::Top );
   }
 
   return size;
@@ -1000,6 +1005,8 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
   if ( titleString.isEmpty() )
     return size;
 
+  const double dotsPerMM = context.scaleFactor();
+
   const QgsTextFormat layerFormat = mSettings.style( nodeLegendStyle( nodeLayer ) ).textFormat();
 
   QgsExpressionContextScope *layerScope = nullptr;
@@ -1010,16 +1017,22 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
   }
 
   const QStringList lines = mSettings.evaluateItemText( titleString, context.expressionContext() );
+  const QgsTextDocument textDocument = QgsTextDocument::fromTextAndFormat( lines, layerFormat );
 
-  const double dotsPerMM = context.scaleFactor();
-
-  double overallTextHeight = 0;
-  double overallTextWidth = 0;
+  QgsTextDocumentRenderContext documentContext;
+  QgsScopedRenderContextScaleToPixels scaleToPx( context );
+  if ( mSettings.autoWrapLinesAfter() > 0 )
   {
-    QgsScopedRenderContextScaleToPixels contextToPixels( context );
-    overallTextHeight = QgsTextRenderer::textHeight( context, layerFormat, lines, Qgis::TextLayoutMode::RectangleAscentBased );
-    overallTextWidth = QgsTextRenderer::textWidth( context, layerFormat, lines );
+    documentContext.setMaximumWidth( context.convertToPainterUnits( mSettings.autoWrapLinesAfter(), Qgis::RenderUnit::Millimeters ) );
+    documentContext.setFlags( Qgis::TextRendererFlag::WrapLines );
   }
+
+  const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( context, layerFormat );
+  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, layerFormat, context, textScaleFactor, documentContext );
+
+  const double overallTextHeight = textDocumentMetrics.documentSize( Qgis::TextLayoutMode::RectangleAscentBased, Qgis::TextOrientation::Horizontal ).height();
+  const double overallTextWidth = textDocumentMetrics.documentSize( Qgis::TextLayoutMode::RectangleAscentBased, Qgis::TextOrientation::Horizontal ).width();
+
   const double sideMargin = mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Left );
 
   size.rheight() = overallTextHeight / dotsPerMM;
@@ -1027,17 +1040,15 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
 
   if ( context.painter() )
   {
-    QgsScopedRenderContextScaleToPixels contextToPixels( context );
     Qgis::TextHorizontalAlignment halign = mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignLeft    ? Qgis::TextHorizontalAlignment::Left
                                            : mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignRight ? Qgis::TextHorizontalAlignment::Right
                                                                                                                            : Qgis::TextHorizontalAlignment::Center;
-
     const QRectF
       r( ( columnContext.left + ( halign == Qgis::TextHorizontalAlignment::Left ? sideMargin : 0 ) ) * dotsPerMM,
          top * dotsPerMM,
          ( ( columnContext.right - columnContext.left ) - ( halign == Qgis::TextHorizontalAlignment::Right ? sideMargin : 0 ) ) * dotsPerMM,
          overallTextHeight );
-    QgsTextRenderer::drawText( r, 0, halign, lines, context, layerFormat );
+    QgsTextRenderer::drawDocument( r, layerFormat, textDocumentMetrics.document(), textDocumentMetrics, context, halign, Qgis::TextVerticalAlignment::Top );
   }
 
   size.rheight() += mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Side::Bottom );
@@ -1053,29 +1064,34 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
   QSizeF size( 0, 0 );
   QModelIndex idx = mLegendModel->node2index( nodeGroup );
 
+  const double dotsPerMM = context.scaleFactor();
+
   const QgsTextFormat groupFormat = mSettings.style( nodeLegendStyle( nodeGroup ) ).textFormat();
 
   const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(), context.expressionContext() );
+  const QgsTextDocument textDocument = QgsTextDocument::fromTextAndFormat( lines, groupFormat );
 
-  double overallTextHeight = 0;
-  double overallTextWidth = 0;
-
+  QgsTextDocumentRenderContext documentContext;
+  QgsScopedRenderContextScaleToPixels scaleToPx( context );
+  if ( mSettings.autoWrapLinesAfter() > 0 )
   {
-    QgsScopedRenderContextScaleToPixels contextToPixels( context );
-    overallTextHeight = QgsTextRenderer::textHeight( context, groupFormat, lines, Qgis::TextLayoutMode::RectangleAscentBased );
-    overallTextWidth = QgsTextRenderer::textWidth( context, groupFormat, lines );
+    documentContext.setMaximumWidth( context.convertToPainterUnits( mSettings.autoWrapLinesAfter(), Qgis::RenderUnit::Millimeters ) );
+    documentContext.setFlags( Qgis::TextRendererFlag::WrapLines );
   }
 
+  const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( context, groupFormat );
+  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, groupFormat, context, textScaleFactor, documentContext );
+
+  const double overallTextHeight = textDocumentMetrics.documentSize( Qgis::TextLayoutMode::RectangleAscentBased, Qgis::TextOrientation::Horizontal ).height();
+  const double overallTextWidth = textDocumentMetrics.documentSize( Qgis::TextLayoutMode::RectangleAscentBased, Qgis::TextOrientation::Horizontal ).width();
+
   const double sideMargin = mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Left );
-  const double dotsPerMM = context.scaleFactor();
 
   size.rheight() = overallTextHeight / dotsPerMM;
   size.rwidth() = overallTextWidth / dotsPerMM + sideMargin * ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignHCenter ? 2 : 1 );
 
   if ( context.painter() )
   {
-    QgsScopedRenderContextScaleToPixels contextToPixels( context );
-
     Qgis::TextHorizontalAlignment halign = mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignLeft    ? Qgis::TextHorizontalAlignment::Left
                                            : mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignRight ? Qgis::TextHorizontalAlignment::Right
                                                                                                                            : Qgis::TextHorizontalAlignment::Center;
@@ -1085,7 +1101,7 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
          top * dotsPerMM,
          dotsPerMM * ( ( columnContext.right - columnContext.left ) - ( halign == Qgis::TextHorizontalAlignment::Right ? sideMargin : 0 ) ),
          overallTextHeight );
-    QgsTextRenderer::drawText( r, 0, halign, lines, context, groupFormat );
+    QgsTextRenderer::drawDocument( r, groupFormat, textDocumentMetrics.document(), textDocumentMetrics, context, halign, Qgis::TextVerticalAlignment::Top );
   }
 
   size.rheight() += mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Bottom );

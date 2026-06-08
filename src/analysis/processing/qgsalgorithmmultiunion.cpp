@@ -139,8 +139,9 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     outputs.insert( u"OUTPUT"_s, dest );
 
-    QgsOverlayUtils::resolveOverlaps( *sourceA, *sink, feedback );
+    QgsOverlayUtils::resolveOverlaps( *sourceA, *sink, u"OUTPUT"_s, feedback );
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     return outputs;
   }
   else
@@ -169,7 +170,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
         QString id = u"memory:"_s;
         fields = QgsProcessingUtils::combineFields( sourceA->fields(), overlayLayer->fields(), overlayFieldsPrefix );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
-        ok = makeUnion( *sourceA, *overlayLayer, *sink, context, &multiStepFeedback );
+        ok = makeUnion( *sourceA, *overlayLayer, *sink, QString(), context, &multiStepFeedback );
 
         if ( !ok )
           throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
@@ -187,7 +188,9 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
           throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
         outputs.insert( u"OUTPUT"_s, dest );
-        ok = makeUnion( *unionLayer, *overlayLayer, *sink, context, &multiStepFeedback );
+        ok = makeUnion( *unionLayer, *overlayLayer, *sink, u"OUTPUT"_s, context, &multiStepFeedback );
+        sink->finalize();
+        feedback->featureSinkFinalized( u"OUTPUT"_s );
         if ( !ok )
           throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
       }
@@ -196,7 +199,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
         QString id = u"memory:"_s;
         fields = QgsProcessingUtils::combineFields( unionLayer->fields(), overlayLayer->fields(), overlayFieldsPrefix );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
-        ok = makeUnion( *unionLayer, *overlayLayer, *sink, context, &multiStepFeedback );
+        ok = makeUnion( *unionLayer, *overlayLayer, *sink, QString(), context, &multiStepFeedback );
         if ( !ok )
           throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
 
@@ -210,7 +213,9 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
   return outputs;
 }
 
-bool QgsMultiUnionAlgorithm::makeUnion( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsMultiUnionAlgorithm::makeUnion(
+  const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, const QString &sinkName, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+)
 {
   const QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA.fields() );
   const QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceB.fields() );
@@ -218,15 +223,15 @@ bool QgsMultiUnionAlgorithm::makeUnion( const QgsFeatureSource &sourceA, const Q
   long count = 0;
   const long total = sourceA.featureCount() * 2 + sourceB.featureCount();
 
-  QgsOverlayUtils::intersection( sourceA, sourceB, sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
+  QgsOverlayUtils::intersection( sourceA, sourceB, sink, sinkName, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
   if ( feedback->isCanceled() )
     return false;
 
-  QgsOverlayUtils::difference( sourceA, sourceB, sink, context, feedback, count, total, QgsOverlayUtils::OutputAB );
+  QgsOverlayUtils::difference( sourceA, sourceB, sink, sinkName, context, feedback, count, total, QgsOverlayUtils::OutputAB );
   if ( feedback->isCanceled() )
     return false;
 
-  QgsOverlayUtils::difference( sourceB, sourceA, sink, context, feedback, count, total, QgsOverlayUtils::OutputBA );
+  QgsOverlayUtils::difference( sourceB, sourceA, sink, sinkName, context, feedback, count, total, QgsOverlayUtils::OutputBA );
   return true;
 }
 

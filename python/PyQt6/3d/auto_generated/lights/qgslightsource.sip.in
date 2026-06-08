@@ -36,6 +36,13 @@ Returns the light source type.
 Returns a copy of the light source.
 %End
 
+    QString id() const;
+%Docstring
+Returns the unique light ID string.
+
+.. versionadded:: 4.2
+%End
+
 
     virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const = 0;
 %Docstring
@@ -63,6 +70,10 @@ read as layer IDs.
 %Docstring
 Creates a new light source from an XML element.
 %End
+
+  protected:
+    QgsLightSource();
+
 };
 
 

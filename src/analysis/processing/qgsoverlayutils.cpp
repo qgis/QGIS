@@ -105,6 +105,7 @@ void QgsOverlayUtils::difference(
   const QgsFeatureSource &sourceA,
   const QgsFeatureSource &sourceB,
   QgsFeatureSink &sink,
+  const QString &sinkName,
   QgsProcessingContext &context,
   QgsProcessingFeedback *feedback,
   long &count,
@@ -229,12 +230,16 @@ void QgsOverlayUtils::difference(
       outFeat.setAttributes( attrs );
       if ( !sink.addFeature( outFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError() );
+      else if ( !sinkName.isEmpty() )
+        feedback->featureAddedToSink( sinkName );
     }
     else
     {
       // TODO: should we write out features that do not have geometry?
       if ( !sink.addFeature( featA, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError() );
+      else if ( !sinkName.isEmpty() )
+        feedback->featureAddedToSink( sinkName );
     }
 
     ++count;
@@ -247,6 +252,7 @@ void QgsOverlayUtils::intersection(
   const QgsFeatureSource &sourceA,
   const QgsFeatureSource &sourceB,
   QgsFeatureSink &sink,
+  const QString &sinkName,
   QgsProcessingContext &context,
   QgsProcessingFeedback *feedback,
   long &count,
@@ -341,6 +347,8 @@ void QgsOverlayUtils::intersection(
       outFeat.setAttributes( outAttributes );
       if ( !sink.addFeature( outFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError() );
+      else if ( !sinkName.isEmpty() )
+        feedback->featureAddedToSink( sinkName );
     }
 
     ++count;
@@ -348,7 +356,9 @@ void QgsOverlayUtils::intersection(
   }
 }
 
-void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback, const QgsGeometryParameters &parameters, SanitizeFlags flags )
+void QgsOverlayUtils::resolveOverlaps(
+  const QgsFeatureSource &source, QgsFeatureSink &sink, const QString &sinkName, QgsProcessingFeedback *feedback, const QgsGeometryParameters &parameters, SanitizeFlags flags
+)
 {
   long count = 0;
   const long totalCount = source.featureCount();
@@ -535,6 +545,8 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
         outFeature.setAttributes( attributesHash.value( id ) );
         if ( !sink.addFeature( outFeature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError() );
+        else if ( !sinkName.isEmpty() )
+          feedback->featureAddedToSink( sinkName );
       }
     }
     else
@@ -542,6 +554,8 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       outFeature.setAttributes( attributesHash.value( i.key() ) );
       if ( !sink.addFeature( outFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError() );
+      else if ( !sinkName.isEmpty() )
+        feedback->featureAddedToSink( sinkName );
     }
   }
 }

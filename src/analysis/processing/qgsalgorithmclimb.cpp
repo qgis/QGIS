@@ -191,6 +191,11 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     {
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
+    else
+    {
+      feedback->featureAddedToSink( u"OUTPUT"_s );
+    }
+
     minElevation = std::min( minElevation, minElev );
     maxElevation = std::max( maxElevation, maxElev );
 
@@ -199,6 +204,7 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   if ( !noGeometry.empty() )
   {

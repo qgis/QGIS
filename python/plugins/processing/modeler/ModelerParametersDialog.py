@@ -85,7 +85,6 @@ class ModelerParametersDialog(QDialog):
     ):
         super().__init__()
         self.setObjectName("ModelerParametersDialog")
-        self.setModal(True)
 
         if iface is not None:
             self.setStyleSheet(iface.mainWindow().styleSheet())
@@ -363,14 +362,10 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             widget.setDialog(self.dialog)
             widget.setWidgetContext(widget_context)
             widget.registerProcessingContextGenerator(self.context_generator)
+            if isinstance(widget, QgsProcessingModelerParameterWidget):
+                widget.changed.connect(self.emit_changed_signal)
 
             self.wrappers[output.name()] = widget
-
-            item = QgsFilterLineEdit()
-            if hasattr(item, "setPlaceholderText"):
-                item.setPlaceholderText(
-                    self.tr("[Enter name if this is a final result]")
-                )
 
             label = widget.createLabel()
             if label is not None:

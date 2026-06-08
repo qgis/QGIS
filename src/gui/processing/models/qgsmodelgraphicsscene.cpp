@@ -121,6 +121,31 @@ void QgsModelGraphicsScene::setupFeedbackConnections( QgsProcessingModelFeedback
       item->setResults( result );
     }
   } );
+
+  connect( feedback, &QgsProcessingModelFeedback::childSinkFeatureCountChanged, this, [this]( const QString &childId, const QString &outputName, long long featureCount ) {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+    {
+      item->setSinkFeatureCount( outputName, featureCount );
+    }
+  } );
+
+  connect( feedback, &QgsProcessingModelFeedback::childSourceLoaded, this, [this]( const QString &childId, const QString &parameterName, long long featureCount ) {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( childId ) )
+    {
+      item->setSourceFeatureCount( parameterName, featureCount );
+    }
+  } );
+}
+
+void QgsModelGraphicsScene::flagChildrenAsOutdated( const QSet<QString> &children )
+{
+  for ( const QString &child : children )
+  {
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( child ) )
+    {
+      item->setOutdated();
+    }
+  }
 }
 
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
@@ -204,7 +229,6 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     item->setPos( it.value().position().x(), it.value().position().y() );
 
     const QString childId = it.value().childId();
-    item->setResults( mLastResult.childResults().value( childId ) );
     mChildAlgorithmItems.insert( childId, item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
@@ -269,11 +293,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             }
             addItem( arrow );
 
-            if ( QgsModelChildAlgorithmGraphicItem *childAlgItem = mChildAlgorithmItems.value( it.value().childId() ) )
-            {
-              QString layerId = childAlgItem->results().inputs().value( parameter->name() ).toString();
-              addFeatureCountItemForArrow( arrow, layerId );
-            }
+            const QString layerId = mLastResult.childResults().value( it.value().childId() ).inputs().value( parameter->name() ).toString();
+            addFeatureCountItemForArrow( arrow, layerId );
           }
         }
         if ( parameter->isDestination() )
@@ -366,15 +387,22 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       QgsModelArrowItem *arrow = new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, QgsModelArrowItem::Marker::Circle, item, QgsModelArrowItem::Marker::Circle );
       addItem( arrow );
 
-      if ( QgsModelChildAlgorithmGraphicItem *childItem = mChildAlgorithmItems.value( it.value().childId() ) )
-      {
-        QString layerId = childItem->results().outputs().value( outputIt.value().childOutputName() ).toString();
-        addFeatureCountItemForArrow( arrow, layerId );
-      }
+      QString layerId = mLastResult.childResults().value( it.value().childId() ).outputs().value( outputIt.value().childOutputName() ).toString();
+      addFeatureCountItemForArrow( arrow, layerId );
 
       addCommentItemForComponent( model, outputIt.value(), item );
     }
     mOutputItems.insert( it.value().childId(), outputItems );
+  }
+
+  // update last results -- this MUST happen after all arrows have been created
+  for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
+  {
+    const QString childId = it.value().childId();
+    if ( QgsModelChildAlgorithmGraphicItem *item = childAlgorithmItem( it.key() ) )
+    {
+      item->setResults( mLastResult.childResults().value( childId ) );
+    }
   }
 }
 
@@ -664,16 +692,22 @@ void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgori
 void QgsModelGraphicsScene::addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId )
 {
   if ( mFlags & FlagHideFeatureCount )
-    return;
-
-  if ( !mLastResultCount.contains( layerId ) )
   {
+    arrow->setShowBadge( false );
     return;
   }
 
-  QString numberFeatureText = u"[%1]"_s.arg( mLastResultCount.value( layerId ) );
-  QgsModelDesignerFeatureCountGraphicItem *featureCount = new QgsModelDesignerFeatureCountGraphicItem( arrow, numberFeatureText );
-  addItem( featureCount );
+  if ( !mLastResultCount.contains( layerId ) )
+  {
+    arrow->setShowBadge( false );
+    return;
+  }
+
+  arrow->setShowBadge( true );
+  if ( QgsModelDesignerArrowBadgeItem *badge = arrow->badgeItem() )
+  {
+    badge->setValue( mLastResultCount.value( layerId ) );
+  }
 }
 
 

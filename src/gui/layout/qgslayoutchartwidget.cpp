@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgslayout.h"
+#include "qgslayoutatlas.h"
 #include "qgslayoutchartseriesdetailswidget.h"
 #include "qgslayoutitemchart.h"
 #include "qgsplotregistry.h"
@@ -73,6 +74,12 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
 
   setGuiElementValues();
   updateButtonsState();
+
+  if ( QgsLayoutAtlas *atlas = layoutAtlas() )
+  {
+    connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutChartWidget::layoutAtlasToggled );
+    layoutAtlasToggled( atlas->enabled() );
+  }
 
   connect( mChartItem, &QgsLayoutObject::changed, this, &QgsLayoutChartWidget::setGuiElementValues );
 }
@@ -542,4 +549,17 @@ void QgsLayoutChartWidget::updateButtonsState()
   mSortCheckBox->setEnabled( enable );
   mAddSeriesPushButton->setEnabled( enable );
   mRemoveSeriesPushButton->setEnabled( mSeriesListWidget->count() > 0 );
+}
+
+void QgsLayoutChartWidget::layoutAtlasToggled( bool atlasEnabled )
+{
+  if ( atlasEnabled )
+  {
+    mIntersectAtlasCheckBox->setEnabled( true );
+  }
+  else
+  {
+    mIntersectAtlasCheckBox->setEnabled( false );
+    mIntersectAtlasCheckBox->setChecked( false );
+  }
 }

@@ -12626,7 +12626,7 @@ void QgisApp::customize()
 
   if ( !mCustomizationDialog )
   {
-    mCustomizationDialog.reset( new QgsCustomizationDialog( this ) );
+    mCustomizationDialog = make_qobject_unique<QgsCustomizationDialog>( this );
   }
 
   mCustomizationDialog->show();
@@ -13635,7 +13635,14 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     }
 
     // new scenes default to a single directional light
-    map->setLightSources( QList<QgsLightSource *>() << new QgsDirectionalLightSettings() );
+    auto directionalLight = std::make_unique< QgsDirectionalLightSettings >();
+    const QString lightId = directionalLight->id();
+    map->setLightSources( { directionalLight.release() } );
+    // set this light to be the default shadow source, but don't enable shadows by default
+    QgsShadowSettings shadow = map->shadowSettings();
+    shadow.setLightSource( lightId );
+    map->setShadowSettings( shadow );
+
     map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
     map->setRendererUsage( Qgis::RendererUsage::View );
 

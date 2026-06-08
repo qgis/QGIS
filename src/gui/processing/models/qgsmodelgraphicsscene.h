@@ -222,6 +222,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void setupFeedbackConnections( QgsProcessingModelFeedback *feedback ) SIP_SKIP;
 
+    /**
+     * Flags a set of children as possibly being outdated (i.e. previous results are invalid due to changes elsewhere in the model).
+     *
+     * \since QGIS 4.2
+     */
+    void flagChildrenAsOutdated( const QSet< QString > &children );
+
   signals:
 
     /**

@@ -104,13 +104,10 @@ bool QgsMeshSurfaceToPolygonAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  if ( feedback )
-  {
-    if ( feedback->isCanceled() )
-      return QVariantMap();
-    feedback->setProgress( 0 );
-    feedback->pushInfo( QObject::tr( "Creating output vector layer" ) );
-  }
+  if ( feedback->isCanceled() )
+    return QVariantMap();
+  feedback->setProgress( 0 );
+  feedback->pushInfo( QObject::tr( "Creating output vector layer" ) );
 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, u"CRS_OUTPUT"_s, context );
   QString identifier;
@@ -118,28 +115,21 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   if ( !sink )
     return QVariantMap();
 
-  if ( feedback )
-  {
-    if ( feedback->isCanceled() )
-      return QVariantMap();
-    feedback->setProgress( 0 );
-  }
+  if ( feedback->isCanceled() )
+    return QVariantMap();
+  feedback->setProgress( 0 );
 
   QgsGeometry lines;
   QgsMeshFace face;
   QMap<std::pair<int, int>, int> edges; // edge as key and count of edge usage as value
   std::pair<int, int> edge;
 
-  if ( feedback )
-    feedback->setProgressText( QObject::tr( "Parsing mesh faces to extract edges." ) );
+  feedback->setProgressText( QObject::tr( "Parsing mesh faces to extract edges." ) );
 
   for ( int i = 0; i < mNativeMesh.faceCount(); i++ )
   {
-    if ( feedback )
-    {
-      if ( feedback->isCanceled() )
-        return QVariantMap();
-    }
+    if ( feedback->isCanceled() )
+      return QVariantMap();
 
     face = mNativeMesh.face( i );
 
@@ -172,26 +162,19 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
       }
     }
 
-    if ( feedback )
-      feedback->setProgress( 100.0 * static_cast<double>( i ) / mNativeMesh.faceCount() );
+    feedback->setProgress( 100.0 * static_cast<double>( i ) / mNativeMesh.faceCount() );
   }
 
-  if ( feedback )
-  {
-    feedback->setProgress( 0 );
-    feedback->setProgressText( QObject::tr( "Parsing mesh edges." ) );
-  }
+  feedback->setProgress( 0 );
+  feedback->setProgressText( QObject::tr( "Parsing mesh edges." ) );
 
   auto multiLineString = std::make_unique<QgsMultiLineString>();
 
   int i = 0;
   for ( auto it = edges.begin(); it != edges.end(); it++ )
   {
-    if ( feedback )
-    {
-      if ( feedback->isCanceled() )
-        return QVariantMap();
-    }
+    if ( feedback->isCanceled() )
+      return QVariantMap();
 
     // only consider edges with count 1 which are on the edge of mesh surface
     if ( it.value() == 1 )
@@ -200,18 +183,14 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
       multiLineString->addGeometry( line.release() );
     }
 
-    if ( feedback )
-      feedback->setProgress( 100.0 * static_cast<double>( i ) / edges.size() );
+    feedback->setProgress( 100.0 * static_cast<double>( i ) / edges.size() );
 
     i++;
   }
 
-  if ( feedback )
-  {
-    feedback->setProgressText( QObject::tr( "Creating final geometry." ) );
-    if ( feedback->isCanceled() )
-      return QVariantMap();
-  }
+  feedback->setProgressText( QObject::tr( "Creating final geometry." ) );
+  if ( feedback->isCanceled() )
+    return QVariantMap();
 
   // merge lines
   QgsGeometry mergedLines = QgsGeometry( multiLineString.release() );
@@ -224,11 +203,8 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   // for every part create polygon and add to resulting multipolygon
   for ( auto pit = multiLinesAbstract->const_parts_begin(); pit != multiLinesAbstract->const_parts_end(); ++pit )
   {
-    if ( feedback )
-    {
-      if ( feedback->isCanceled() )
-        return QVariantMap();
-    }
+    if ( feedback->isCanceled() )
+      return QVariantMap();
 
     // individula polygon - can be either polygon or hole in polygon
     QgsPolygon *polygon = new QgsPolygon();
@@ -280,11 +256,8 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   auto multiPolygon = std::make_unique<QgsMultiPolygon>();
   multiPolygon->addGeometries( polygons );
 
-  if ( feedback )
-  {
-    if ( feedback->isCanceled() )
-      return QVariantMap();
-  }
+  if ( feedback->isCanceled() )
+    return QVariantMap();
 
   // create final geom and transform it
   QgsGeometry resultGeom = QgsGeometry( multiPolygon.release() );
@@ -295,8 +268,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   }
   catch ( QgsCsException & )
   {
-    if ( feedback )
-      feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
+    feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
   }
 
   QgsFeature feat;
@@ -304,13 +276,15 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
   if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+  else
+    feedback->featureAddedToSink( u"OUTPUT"_s );
 
-  if ( feedback )
-  {
-    feedback->pushInfo( QObject::tr( "Output vector layer created" ) );
-    if ( feedback->isCanceled() )
-      return QVariantMap();
-  }
+  sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
+
+  feedback->pushInfo( QObject::tr( "Output vector layer created" ) );
+  if ( feedback->isCanceled() )
+    return QVariantMap();
 
   QVariantMap ret;
   ret[u"OUTPUT"_s] = identifier;

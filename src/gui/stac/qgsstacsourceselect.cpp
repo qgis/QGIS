@@ -590,7 +590,7 @@ void QgsStacSourceSelect::highlightFootprint( const QModelIndex &index )
   QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
   if ( QgsMapCanvas *map = mapCanvas() )
   {
-    mCurrentItemBand.reset( new QgsRubberBand( map, Qgis::GeometryType::Polygon ) );
+    mCurrentItemBand = make_qobject_unique<QgsRubberBand>( map, Qgis::GeometryType::Polygon );
     mCurrentItemBand->setFillColor( QColor::fromRgb( 255, 0, 0, 128 ) );
     mCurrentItemBand->setToGeometry( geom, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
   }

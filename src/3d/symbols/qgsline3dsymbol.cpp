@@ -21,6 +21,7 @@
 #include "qgs3dsceneexporter.h"
 #include "qgs3dutils.h"
 #include "qgsmaterialregistry.h"
+#include "qgsmetalroughmaterialsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
 
@@ -29,7 +30,7 @@
 using namespace Qt::StringLiterals;
 
 QgsLine3DSymbol::QgsLine3DSymbol()
-  : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
+  : mMaterialSettings( std::make_unique<QgsMetalRoughMaterialSettings>() )
 {}
 
 QgsLine3DSymbol::~QgsLine3DSymbol() = default;
@@ -82,10 +83,10 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mRenderAsSimpleLines = elemDataProperties.attribute( u"simple-lines"_s, u"0"_s ).toInt();
 
   const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
-  const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );
+  const QString materialType = elem.attribute( u"material_type"_s, u"metalrough"_s );
   mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( materialType );
   if ( !mMaterialSettings )
-    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s );
+    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"metalrough"_s );
   mMaterialSettings->readXml( elemMaterial, context );
 }
 

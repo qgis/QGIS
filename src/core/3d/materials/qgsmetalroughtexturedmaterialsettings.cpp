@@ -34,12 +34,12 @@ bool QgsMetalRoughTexturedMaterialSettings::supportsTechnique( Qgis::MaterialRen
   {
     case Qgis::MaterialRenderingTechnique::Triangles:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined: //technique is supported but color can't be datadefined
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
       return true;
 
     case Qgis::MaterialRenderingTechnique::Points:
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
     case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
     case Qgis::MaterialRenderingTechnique::Lines:
     case Qgis::MaterialRenderingTechnique::Billboards:
       return false;

@@ -50,6 +50,16 @@ void QgsProcessingModelFeedback::reportChildProgress( const QString &childId, do
   emit childProgressChanged( childId, progress );
 }
 
+void QgsProcessingModelFeedback::reportChildSourceLoaded( const QString &childId, const QString &parameterName, long long featureCount )
+{
+  emit childSourceLoaded( childId, parameterName, featureCount );
+}
+
+void QgsProcessingModelFeedback::reportChildSinkFeatureCountChanged( const QString &childId, const QString &childOutput, long long featureCount )
+{
+  emit childSinkFeatureCountChanged( childId, childOutput, featureCount );
+}
+
 void QgsProcessingModelFeedback::reportChildExecutionFailure( const QString &childId, const QString &error )
 {
   mFailedChildren.insert( childId );

@@ -2441,11 +2441,11 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool tog
   switch ( mSymbolType )
   {
     case TemplatedSymbolType::Hash:
-      mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsHashedLineSymbolLayer>( context().mapCanvas(), vectorLayer(), mLayer, mBlankSegmentsDDButton ) );
+      mMapToolEditBlankSegments = make_qobject_unique<QgsMapToolEditBlankSegments<QgsHashedLineSymbolLayer>>( context().mapCanvas(), vectorLayer(), mLayer, mBlankSegmentsDDButton );
       break;
 
     case TemplatedSymbolType::Marker:
-      mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>( context().mapCanvas(), vectorLayer(), mLayer, mBlankSegmentsDDButton ) );
+      mMapToolEditBlankSegments = make_qobject_unique<QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>>( context().mapCanvas(), vectorLayer(), mLayer, mBlankSegmentsDDButton );
       break;
   }
 
@@ -2458,7 +2458,7 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolAddExtraItem( bool toggled 
   if ( !toggled || ( mMapToolAddExtraItem.get() && context().mapCanvas()->mapTool() == mMapToolAddExtraItem.get() ) )
     return;
 
-  mMapToolAddExtraItem.reset( new QgsMapToolAddExtraItem( context().mapCanvas(), vectorLayer(), mLayer, mExtraItemsDDBtn ) );
+  mMapToolAddExtraItem = make_qobject_unique<QgsMapToolAddExtraItem>( context().mapCanvas(), vectorLayer(), mLayer, mExtraItemsDDBtn );
   mMapToolAddExtraItem->setAction( mAddExtraItemAction );
   context().mapCanvas()->setMapTool( mMapToolAddExtraItem );
 }
@@ -2468,7 +2468,7 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolModifyExtraItem( bool toggl
   if ( !toggled || ( mMapToolModifyExtraItem.get() && context().mapCanvas()->mapTool() == mMapToolModifyExtraItem.get() ) )
     return;
 
-  mMapToolModifyExtraItem.reset( new QgsMapToolModifyExtraItems( context().mapCanvas(), vectorLayer(), mLayer, mExtraItemsDDBtn ) );
+  mMapToolModifyExtraItem = make_qobject_unique<QgsMapToolModifyExtraItems>( context().mapCanvas(), vectorLayer(), mLayer, mExtraItemsDDBtn );
   mMapToolModifyExtraItem->setAction( mModifyExtraItemAction );
   context().mapCanvas()->setMapTool( mMapToolModifyExtraItem );
 }

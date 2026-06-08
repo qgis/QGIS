@@ -7,27 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>739</width>
-    <height>409</height>
+    <height>391</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="1">
-    <widget class="QLabel" name="lblRoughness_2">
-     <property name="text">
-      <string>Opacity</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="lblMetalness">
-     <property name="text">
-      <string>Metalness</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1">
     <widget class="QLabel" name="lblSpecular">
      <property name="text">
@@ -35,111 +21,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="lblSpecular_3">
-     <property name="text">
-      <string>Emission strength</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QgsColorButton" name="mButtonBaseColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="lblRoughness">
-     <property name="text">
-      <string>Roughness</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2">
-    <widget class="QgsColorButton" name="mButtonEmissionColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="lblSpecular_2">
-     <property name="text">
-      <string>Emission</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" rowspan="7">
-    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>200</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mBaseColorDataDefinedButton">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mEmissionColorDataDefinedButton">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" colspan="2">
-    <widget class="QgsPercentageWidget" name="mMetalnessWidget" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::FocusPolicy::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2" colspan="2">
-    <widget class="QgsPercentageWidget" name="mRoughnessWidget" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::FocusPolicy::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" colspan="2">
+   <item row="9" column="2" colspan="2">
     <widget class="QgsDoubleSpinBox" name="mEmissionStrengthSpinBox">
      <property name="toolTip">
       <string>Scaling factor for the emission effect.</string>
@@ -161,10 +43,201 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="lblMetalness">
+     <property name="text">
+      <string>Metalness</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" colspan="2">
+    <widget class="QgsPercentageWidget" name="mAnisotropyWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="lblRoughness_4">
+     <property name="text">
+      <string>Anisotropy</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mEmissionColorDataDefinedButton">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" colspan="2">
+    <widget class="QgsPercentageWidget" name="mReflectanceWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2" colspan="2">
+    <widget class="QgsPercentageWidget" name="mClearCoatFactorWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <widget class="QgsColorButton" name="mButtonEmissionColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="lblRoughness_5">
+     <property name="text">
+      <string>Anisotropy direction</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mBaseColorDataDefinedButton">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="12">
+    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>200</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLabel" name="lblSpecular_3">
+     <property name="text">
+      <string>Emission strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QLabel" name="lblRoughness_2">
+     <property name="text">
+      <string>Opacity</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLabel" name="lblSpecular_6">
+     <property name="text">
+      <string>Clear coat strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLabel" name="lblSpecular_2">
+     <property name="text">
+      <string>Emission</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="lblSpecular_7">
+     <property name="text">
+      <string>Clear coat roughness</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2" colspan="2">
+    <widget class="QgsPercentageWidget" name="mClearCoatRoughnessWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="lblRoughness_3">
+     <property name="text">
+      <string>Reflectance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" colspan="2">
+    <widget class="QgsPercentageWidget" name="mRoughnessWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
    <item row="5" column="2" colspan="2">
+    <widget class="QSlider" name="mAnisotropyRotationWidget">
+     <property name="maximum">
+      <number>360</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QgsColorButton" name="mButtonBaseColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="2" colspan="2">
     <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" colspan="2">
+    <widget class="QgsPercentageWidget" name="mMetalnessWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="lblRoughness">
+     <property name="text">
+      <string>Roughness</string>
      </property>
     </widget>
    </item>
@@ -211,6 +284,11 @@
   <tabstop>mBaseColorDataDefinedButton</tabstop>
   <tabstop>mMetalnessWidget</tabstop>
   <tabstop>mRoughnessWidget</tabstop>
+  <tabstop>mReflectanceWidget</tabstop>
+  <tabstop>mAnisotropyWidget</tabstop>
+  <tabstop>mAnisotropyRotationWidget</tabstop>
+  <tabstop>mClearCoatFactorWidget</tabstop>
+  <tabstop>mClearCoatRoughnessWidget</tabstop>
   <tabstop>mButtonEmissionColor</tabstop>
   <tabstop>mEmissionColorDataDefinedButton</tabstop>
   <tabstop>mEmissionStrengthSpinBox</tabstop>

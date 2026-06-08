@@ -120,9 +120,26 @@ class _3D_EXPORT QgsMaterialContext
      */
     void setTextureFilterQuality( Qgis::TextureFilterQuality quality ) { mTextureFilterQuality = quality; }
 
+    /**
+     * Returns TRUE if the material is being shown in a preview widget.
+     *
+     * \see setIsPreview()
+     * \since QGIS 4.2
+     */
+    bool isPreview() const;
+
+    /**
+     * Sets whether the material is being shown in a preview widget.
+     *
+     * \see isPreview()
+     * \since QGIS 4.2
+     */
+    void setIsPreview( bool isPreview );
+
   private:
     bool mIsSelected = false;
     bool mIsHighlighted = false;
+    bool mIsPreview = false;
 
     QColor mSelectedColor;
     Qgis::TextureFilterQuality mTextureFilterQuality = Qgis::TextureFilterQuality::Trilinear;
