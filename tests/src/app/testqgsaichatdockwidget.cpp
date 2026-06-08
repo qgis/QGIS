@@ -12,11 +12,13 @@
 #include "qgssettings.h"
 #include "qgstest.h"
 
+#include <QAbstractScrollArea>
 #include <QApplication>
 #include <QCheckBox>
 #include <QCoreApplication>
 #include <QDialog>
 #include <QEvent>
+#include <QFrame>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -76,6 +78,7 @@ class TestQgsAiChatDockWidget : public QObject
     void doesNotDuplicateStreamedAssistantResponse();
     void rendersToolResultWithoutRawJson();
     void collapsesTechnicalCodeBlocks();
+    void transcriptMessagesFitNarrowDockWithoutHorizontalScroll();
     void acceptingPlanSwitchesToAgentAndSendsPlan();
     void questionCardSendsStructuredAnswers();
     void layerIndexingConsentPolicy();
@@ -187,6 +190,70 @@ void TestQgsAiChatDockWidget::collapsesTechnicalCodeBlocks()
   QVERIFY( !details->isVisible() );
   QVERIFY( details->toPlainText().contains( u"print('hidden')"_s ) );
   QVERIFY( !visibleLabelText( dock ).contains( u"print('hidden')"_s ) );
+}
+
+void TestQgsAiChatDockWidget::transcriptMessagesFitNarrowDockWithoutHorizontalScroll()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  dock.resize( 300, 520 );
+  dock.show();
+  QApplication::processEvents();
+
+  QgsAiChatMessage assistantMessage;
+  assistantMessage.id = u"assistant-wide-table"_s;
+  assistantMessage.role = QgsAiChatRole::Assistant;
+  assistantMessage.content =
+    u"Ecco l'elenco completo dei layer.\n\n"
+    "| Nome layer | Tipo layer | Geometria | N. feature | CRS |\n"
+    "| --- | --- | --- | ---: | --- |\n"
+    "| dbgt_AB_CDA_AB_CDA_SUP_SR_nome_molto_lungo_senza_spazi | vector | MultiPolygonZWithVeryLongGeometryName | 19382 | EPSG:7791-long-crs-description-without-natural-breaks |\n"
+    "| dbgt_ACC_PC_ACC_PC_POS_layer_con_nome_esteso | vector | Point | 41942 | non definito - percorso /Users/francesco/Sviluppo/frasma_lab/strata/tests_ai/Dati/strata_test_brescia.qgz |\n\n"
+    "```json\n"
+    "{\"project_file\":\"/Users/francesco/Sviluppo/frasma_lab/strata/tests_ai/Dati/strata_test_brescia.qgz\",\"layer_count\":118}\n"
+    "```"_s;
+
+  manager.messageAdded( assistantMessage );
+  manager.responseChunkReceived( u"streaming-token-without-spaces-or-natural-breaks-EPSG7791-layer-name-dbgt_ACC_PC_ACC_PC_POS"_s );
+  QCoreApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QApplication::processEvents();
+
+  QAbstractScrollArea *scrollArea = dock.findChild<QAbstractScrollArea *>( u"aiTranscriptScrollArea"_s );
+  QWidget *container = dock.findChild<QWidget *>( u"aiTranscriptContainer"_s );
+  QVERIFY( scrollArea );
+  QVERIFY( container );
+  QVERIFY( scrollArea->viewport() );
+  QCOMPARE( scrollArea->horizontalScrollBarPolicy(), Qt::ScrollBarAlwaysOff );
+
+  const int viewportWidth = scrollArea->viewport()->width();
+  QVERIFY( viewportWidth > 0 );
+  QVERIFY2( container->width() <= viewportWidth + 1, qPrintable( QStringLiteral( "Transcript container width %1 exceeds viewport width %2" ).arg( container->width() ).arg( viewportWidth ) ) );
+
+  const QList<QFrame *> frames = container->findChildren<QFrame *>();
+  bool checkedTranscriptFrame = false;
+  for ( QFrame *frame : frames )
+  {
+    if ( frame->objectName() != "aiMessage"_L1 && frame->objectName() != "aiStreamingMessage"_L1 && frame->objectName() != "aiPlanCard"_L1 && frame->objectName() != "aiQuestionsCard"_L1 )
+      continue;
+
+    checkedTranscriptFrame = true;
+    QVERIFY2( frame->width() <= viewportWidth + 1, qPrintable( QStringLiteral( "%1 width %2 exceeds viewport width %3" ).arg( frame->objectName() ).arg( frame->width() ).arg( viewportWidth ) ) );
+  }
+  QVERIFY( checkedTranscriptFrame );
+
+  const QList<QTextEdit *> transcriptEdits = container->findChildren<QTextEdit *>();
+  QVERIFY( !transcriptEdits.isEmpty() );
+  for ( QTextEdit *edit : transcriptEdits )
+  {
+    QCOMPARE( edit->horizontalScrollBarPolicy(), Qt::ScrollBarAlwaysOff );
+    QVERIFY( edit->lineWrapMode() != QTextEdit::NoWrap );
+  }
 }
 
 void TestQgsAiChatDockWidget::acceptingPlanSwitchesToAgentAndSendsPlan()

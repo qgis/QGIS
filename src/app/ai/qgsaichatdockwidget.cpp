@@ -34,6 +34,7 @@
 #include "qgssettings.h"
 
 #include <QAbstractButton>
+#include <QAbstractScrollArea>
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
@@ -75,11 +76,13 @@
 #include <QScrollBar>
 #include <QSet>
 #include <QSize>
+#include <QSizePolicy>
 #include <QString>
 #include <QStringList>
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextEdit>
+#include <QTextOption>
 #include <QTimer>
 #include <QToolButton>
 #include <QUrl>
@@ -111,6 +114,29 @@ namespace
       { u"Claude Opus 4.1"_s, u"claude-opus-4-1-20250805"_s, QgsAiModelRouter::Provider::Claude },
       { u"Plan backend"_s, u"managed-plan"_s, QgsAiModelRouter::Provider::Plan },
     };
+  }
+
+  void applyTranscriptWidthPolicy( QWidget *widget )
+  {
+    if ( !widget )
+      return;
+
+    QSizePolicy policy = widget->sizePolicy();
+    policy.setHorizontalPolicy( QSizePolicy::Ignored );
+    policy.setHorizontalStretch( 1 );
+    widget->setSizePolicy( policy );
+    widget->setMinimumWidth( 0 );
+  }
+
+  void applyTranscriptTextEditWrapping( QTextEdit *edit )
+  {
+    if ( !edit )
+      return;
+
+    applyTranscriptWidthPolicy( edit );
+    edit->setLineWrapMode( QTextEdit::WidgetWidth );
+    edit->setWordWrapMode( QTextOption::WrapAnywhere );
+    edit->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   }
 
   QString modeLabelToAgent( const QString &label )
@@ -430,9 +456,12 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   mTranscriptScrollArea->setWidgetResizable( true );
   mTranscriptScrollArea->setFrameShape( QFrame::NoFrame );
   mTranscriptScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  mTranscriptScrollArea->setSizeAdjustPolicy( QAbstractScrollArea::AdjustIgnored );
+  mTranscriptScrollArea->setMinimumWidth( 0 );
 
   mTranscriptContainer = new QWidget( mTranscriptScrollArea );
   mTranscriptContainer->setObjectName( u"aiTranscriptContainer"_s );
+  applyTranscriptWidthPolicy( mTranscriptContainer );
   mTranscriptLayout = new QVBoxLayout( mTranscriptContainer );
   mTranscriptLayout->setContentsMargins( 0, 0, 0, 0 );
   mTranscriptLayout->setSpacing( 8 );
@@ -756,8 +785,21 @@ void QgsAiChatDockWidget::applyPillStyling()
 QString QgsAiChatDockWidget::renderMarkdown( const QString &md )
 {
   QTextDocument doc;
+  QTextOption textOption = doc.defaultTextOption();
+  textOption.setWrapMode( QTextOption::WrapAnywhere );
+  doc.setDefaultTextOption( textOption );
+  doc.setDefaultStyleSheet( QStringLiteral(
+    "body { white-space: normal; } "
+    "p, li { white-space: normal; } "
+    "table { width: 100%; table-layout: fixed; border-collapse: collapse; } "
+    "th, td { white-space: normal; word-wrap: break-word; overflow-wrap: anywhere; word-break: break-word; } "
+    "pre, code { white-space: pre-wrap; word-wrap: break-word; overflow-wrap: anywhere; word-break: break-word; }"
+  ) );
   doc.setMarkdown( md, QTextDocument::MarkdownDialectGitHub );
-  return doc.toHtml();
+  QString html = doc.toHtml();
+  static const QRegularExpression tableWithoutWidthRe( u"<table(?![^>]*\\bwidth=)"_s, QRegularExpression::CaseInsensitiveOption );
+  html.replace( tableWithoutWidthRe, u"<table width=\"100%\" style=\"width:100%; table-layout:fixed; border-collapse:collapse;\""_s );
+  return html;
 }
 
 void QgsAiChatDockWidget::appendTranscriptMessage( const QString &role, const QString &content )
@@ -793,6 +835,7 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
   QFrame *card = new QFrame( mTranscriptContainer );
   card->setObjectName( u"aiMessage"_s );
   card->setFrameShape( QFrame::StyledPanel );
+  applyTranscriptWidthPolicy( card );
   card->setStyleSheet( QStringLiteral(
     "QFrame#aiMessage { border: 1px solid palette(mid); border-radius: 6px; background: palette(base); } "
     "QLabel#aiMessageRole { color: palette(mid); font-weight: 600; }"
@@ -845,6 +888,7 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
     body->setTextFormat( Qt::RichText );
     body->setTextInteractionFlags( Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse );
     body->setOpenExternalLinks( true );
+    applyTranscriptWidthPolicy( body );
     body->setText( renderMarkdown( rendered.markdown ) );
     cardLayout->addWidget( body );
   }
@@ -881,6 +925,7 @@ QWidget *QgsAiChatDockWidget::createCollapsibleSection( const QString &title, co
 {
   QWidget *section = new QWidget( mTranscriptContainer );
   section->setObjectName( u"aiTechnicalSection"_s );
+  applyTranscriptWidthPolicy( section );
   QVBoxLayout *layout = new QVBoxLayout( section );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 3 );
@@ -901,7 +946,7 @@ QWidget *QgsAiChatDockWidget::createCollapsibleSection( const QString &title, co
   details->setAcceptRichText( false );
   details->setPlainText( content );
   details->setFrameShape( QFrame::StyledPanel );
-  details->setLineWrapMode( QTextEdit::NoWrap );
+  applyTranscriptTextEditWrapping( details );
   QFont mono = QFontDatabase::systemFont( QFontDatabase::FixedFont );
   details->setFont( mono );
   details->setMinimumHeight( 80 );
@@ -923,6 +968,7 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   QFrame *planCard = new QFrame( mTranscriptContainer );
   planCard->setObjectName( u"aiPlanCard"_s );
   planCard->setFrameShape( QFrame::StyledPanel );
+  applyTranscriptWidthPolicy( planCard );
   planCard->setStyleSheet( u"QFrame#aiPlanCard { border: 1px solid palette(highlight); border-radius: 6px; }"_s );
 
   QVBoxLayout *layout = new QVBoxLayout( planCard );
@@ -950,6 +996,7 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   revisionEdit->setPlaceholderText( tr( "Describe what should change in the plan..." ) );
   revisionEdit->setFixedHeight( 72 );
   revisionEdit->setVisible( false );
+  applyTranscriptTextEditWrapping( revisionEdit );
   layout->addWidget( revisionEdit );
 
   QPushButton *sendRevisionButton = new QPushButton( tr( "Send revision" ), planCard );
@@ -974,6 +1021,7 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
   QFrame *questionsCard = new QFrame( mTranscriptContainer );
   questionsCard->setObjectName( u"aiQuestionsCard"_s );
   questionsCard->setFrameShape( QFrame::StyledPanel );
+  applyTranscriptWidthPolicy( questionsCard );
   questionsCard->setStyleSheet( u"QFrame#aiQuestionsCard { border: 1px solid palette(highlight); border-radius: 6px; }"_s );
 
   QVBoxLayout *layout = new QVBoxLayout( questionsCard );
@@ -991,6 +1039,7 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
     QLabel *questionLabel = new QLabel( question.value( u"question"_s ).toString(), questionsCard );
     questionLabel->setWordWrap( true );
     questionLabel->setProperty( "question_id", questionId );
+    applyTranscriptWidthPolicy( questionLabel );
     QFont f = questionLabel->font();
     f.setBold( true );
     questionLabel->setFont( f );
@@ -1018,6 +1067,7 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
       button->setProperty( "question_type", type );
       button->setEnabled( pending );
       button->setToolTip( description );
+      applyTranscriptWidthPolicy( button );
       if ( singleGroup )
         singleGroup->addButton( button );
       layout->addWidget( button );
@@ -1379,6 +1429,7 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
     QFrame *card = new QFrame( mTranscriptContainer );
     card->setObjectName( u"aiStreamingMessage"_s );
     card->setFrameShape( QFrame::StyledPanel );
+    applyTranscriptWidthPolicy( card );
     card->setStyleSheet( u"QFrame#aiStreamingMessage { border: 1px solid palette(mid); border-radius: 6px; background: palette(base); }"_s );
     QVBoxLayout *layout = new QVBoxLayout( card );
     layout->setContentsMargins( 8, 6, 8, 8 );
@@ -1392,6 +1443,7 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
     mStreamingTextEdit->setAcceptRichText( false );
     mStreamingTextEdit->setFrameShape( QFrame::NoFrame );
     mStreamingTextEdit->setMinimumHeight( 48 );
+    applyTranscriptTextEditWrapping( mStreamingTextEdit );
     layout->addWidget( mStreamingTextEdit );
 
     const int insertIndex = std::max( 0, mTranscriptLayout->count() - 1 );
