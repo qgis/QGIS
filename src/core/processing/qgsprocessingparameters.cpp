@@ -7143,11 +7143,18 @@ QString QgsProcessingParameterRasterDestination::createFileFilter() const
   // QgsProcessingLayerOutputDestinationWidget::selectFile() will misbehave.
   for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
   {
-    QString format = formatAndExt.first;
+    const QString &format = formatAndExt.first;
     const QString &extension = formatAndExt.second;
     if ( format.isEmpty() )
-      format = extension;
-    filters << QObject::tr( "%1 files (*.%2)" ).arg( format.toUpper(), extension.toLower() );
+    {
+      filters << QObject::tr( "%1 files (*.%2)" ).arg( extension.toUpper(), extension.toLower() );
+    }
+    else
+    {
+      // QgsProcessingLayerOutputDestinationWidget::selectFile() is sensitive
+      // to this "%1 - %2" format
+      filters << QObject::tr( "%1 - %2 files (*.%3)" ).arg( format.toUpper(), extension.toLower(), extension.toLower() );
+    }
   }
 
   return filters.join( ";;"_L1 ) + u";;"_s + QObject::tr( "All files (*.*)" );
