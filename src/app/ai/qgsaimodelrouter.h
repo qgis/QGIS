@@ -29,6 +29,7 @@
 
 class QgsAiToolRegistry;
 class QNetworkRequest;
+class QTimer;
 
 class APP_EXPORT QgsAiModelRouter : public QObject
 {
@@ -151,10 +152,15 @@ class APP_EXPORT QgsAiModelRouter : public QObject
         QList<PendingToolCall> toolCalls;         // collected during streaming/parse
         QMap<int, int> streamItemIndexToToolCall; // Claude content_block index OR OpenAI output_index → toolCalls index
         QNetworkReply *reply = nullptr;
+        QTimer *watchdogTimer = nullptr;
         QString preDispatchError;
     };
 
     bool dispatchRequest( RequestContext &context );
+    void finishRequest( const QString &requestId, bool success, const QString &responseText, const QString &errorMessage, int httpStatus, int retryCount, bool retriable, qint64 latencyMs );
+    void queueFailedRequestFinish( const QString &requestId, const QString &errorMessage );
+    void clearRequestTransport( RequestContext &context );
+    void startRequestWatchdog( RequestContext &context, int transferTimeoutSeconds );
     bool shouldRetry( int httpStatus, QNetworkReply::NetworkError networkError, int attempt, int maxRetries ) const;
     QString extractTextFromResponse( Provider provider, const QJsonObject &object ) const;
     QString extractTextFromStreamEvent( Provider provider, const QJsonObject &object ) const;

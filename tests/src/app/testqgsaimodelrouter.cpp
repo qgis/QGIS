@@ -139,6 +139,7 @@ class TestQgsAiModelRouter : public QObject
     void visualContextImageIsAddedToClaudePayload();
     void visualContextImageRequiresConsent();
     void visualContextImageIsAddedToCodexPayload();
+    void preDispatchFailureIsQueued();
     void dispatchLogDoesNotExposeEndpointQuery();
     void liveOpenAiRequest();
     void liveClaudeRequest();
@@ -543,6 +544,40 @@ void TestQgsAiModelRouter::visualContextImageIsAddedToCodexPayload()
 
   settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
+}
+
+void TestQgsAiModelRouter::preDispatchFailureIsQueued()
+{
+  QgsSettings settings;
+  settings.remove( u"ai/provider/plan"_s );
+
+  QgsAiModelRouter router;
+  QgsAiModelRouter::ProviderSettings planSettings = router.providerSettings( QgsAiModelRouter::Provider::Plan );
+  planSettings.endpoint = u"https://example.invalid/ai/messages"_s;
+  planSettings.enabled = true;
+  router.setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
+
+  QSignalSpy finishedSpy( &router, &QgsAiModelRouter::requestFinished );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+  const QString requestId = router.startChatRequest( QgsAiModelRouter::Provider::Plan, { message }, false );
+
+  QVERIFY( !requestId.isEmpty() );
+  QCOMPARE( finishedSpy.count(), 0 );
+  QVERIFY( router.hasActiveRequest( requestId ) );
+
+  QTRY_COMPARE( finishedSpy.count(), 1 );
+  QVERIFY( !router.hasActiveRequest( requestId ) );
+
+  const QList<QVariant> args = finishedSpy.takeFirst();
+  QCOMPARE( args.at( 0 ).toString(), requestId );
+  QCOMPARE( args.at( 1 ).toBool(), false );
+  QCOMPARE( args.at( 2 ).toString(), u"Plan Account"_s );
+  QVERIFY( args.at( 4 ).toString().contains( u"endpoint is not configured"_s, Qt::CaseInsensitive ) );
+
+  settings.remove( u"ai/provider/plan"_s );
 }
 
 void TestQgsAiModelRouter::dispatchLogDoesNotExposeEndpointQuery()

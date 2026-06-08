@@ -471,10 +471,32 @@ QString QgsAiAgentSessionManager::buildContextSummary( const QList<QgsAiChatCont
 QString QgsAiAgentSessionManager::actionableError( const QString &providerName, const QString &errorMessage, int httpStatus ) const
 {
   const QString sanitized = mRouter ? mRouter->sanitizeErrorText( errorMessage ) : errorMessage;
+  const QString lower = sanitized.toLower();
+
+  if ( httpStatus == 0 )
+  {
+    if ( lower.contains( "watchdog timed out"_L1 ) )
+      return u"%1 request timed out. Retry, switch provider, or increase ai/network/watchdogSeconds in settings."_s.arg( providerName );
+    if ( lower.contains( "endpoint is not configured"_L1 ) || lower.contains( "endpoint is a placeholder"_L1 ) )
+      return u"%1 is not fully configured. Check the provider endpoint in Provider Settings."_s.arg( providerName );
+    if ( lower.contains( "no api key configured"_L1 ) )
+      return u"%1 API key is missing. Add an API key in Provider Settings or switch provider."_s.arg( providerName );
+    if ( providerName == "Codex"_L1 && ( lower.contains( "missing codex refresh token"_L1 ) || lower.contains( "oauth"_L1 ) || lower.contains( "refresh token"_L1 ) ) )
+      return u"Codex authentication failed. Sign in with Codex again in Provider Settings, then retry."_s;
+    if ( providerName == "Claude"_L1 && ( lower.contains( "missing claude refresh token"_L1 ) || lower.contains( "oauth"_L1 ) || lower.contains( "refresh token"_L1 ) ) )
+      return u"Claude authentication failed. Sign in with Claude again or configure an API key in Provider Settings."_s;
+    if ( providerName == "Plan Account"_L1 && lower.contains( "session token"_L1 ) )
+      return u"Plan Account authentication failed. Check the session token or authcfg in Provider Settings."_s;
+  }
+
   if ( httpStatus == 401 || httpStatus == 403 )
   {
     if ( providerName == "Plan Account"_L1 )
       return u"%1 authentication failed. Check session token or authcfg in Provider Settings."_s.arg( providerName );
+    if ( providerName == "Codex"_L1 )
+      return u"Codex authentication failed. Sign in with Codex again in Provider Settings, then retry."_s;
+    if ( providerName == "Claude"_L1 )
+      return u"Claude authentication failed. Sign in with Claude again or configure an API key in Provider Settings."_s;
     return u"%1 authentication failed. Check the API key or OAuth login in Provider Settings."_s.arg( providerName );
   }
   if ( httpStatus == 404 )

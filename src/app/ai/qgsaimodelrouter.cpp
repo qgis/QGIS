@@ -38,6 +38,7 @@
 #include <QRegularExpression>
 #include <QString>
 #include <QStringList>
+#include <QTimer>
 #include <QUrl>
 #include <QUuid>
 
@@ -773,8 +774,7 @@ QString QgsAiModelRouter::startChatRequest( Provider provider, const QList<QgsAi
   {
     const QString fallbackError = u"Unable to start network request."_s;
     const QString error = !storedContext.preDispatchError.isEmpty() ? storedContext.preDispatchError : fallbackError;
-    emit requestFinished( storedContext.requestId, false, providerDisplayName( provider ), QString(), error, 0, 0, false, 0 );
-    mRequests.remove( storedContext.requestId );
+    queueFailedRequestFinish( storedContext.requestId, error );
   }
 
   return context.requestId;
@@ -792,7 +792,14 @@ void QgsAiModelRouter::cancelRequest( const QString &requestId )
 
   RequestContext &context = mRequests[requestId];
   if ( context.reply )
+  {
     context.reply->abort();
+  }
+  else
+  {
+    clearRequestTransport( context );
+    mRequests.remove( requestId );
+  }
 }
 
 bool QgsAiModelRouter::storeApiKey( Provider provider, const QString &apiKey, QString *errorMessage )
@@ -977,11 +984,15 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
 {
   const ProviderSettings settings = providerSettings( context.provider );
   if ( settings.endpoint.trimmed().isEmpty() )
+  {
+    context.preDispatchError = u"%1 endpoint is not configured. Check Provider Settings."_s.arg( providerDisplayName( context.provider ) );
     return false;
+  }
 
   if ( context.provider == Provider::Plan && !isUsablePlanEndpoint( settings.endpoint ) )
   {
     QgsMessageLog::logMessage( u"Plan provider endpoint is a placeholder (%1); refusing to dispatch."_s.arg( settings.endpoint ), u"AI"_s, Qgis::MessageLevel::Warning, false );
+    context.preDispatchError = u"Plan Account endpoint is not configured. Configure a usable endpoint and session token in Provider Settings."_s;
     return false;
   }
 
@@ -1011,6 +1022,8 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
 
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
   if ( !networkManager )
+    context.preDispatchError = u"Network manager is not available."_s;
+  if ( !networkManager )
     return false;
 
   context.startedAtMs = QDateTime::currentMSecsSinceEpoch();
@@ -1029,12 +1042,82 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
   );
   context.reply = networkManager->post( request, payload );
   if ( !context.reply )
+    context.preDispatchError = u"Unable to start network request for %1."_s.arg( providerDisplayName( context.provider ) );
+  if ( !context.reply )
     return false;
 
   context.reply->setProperty( "aiRequestId", context.requestId );
   connect( context.reply, &QNetworkReply::readyRead, this, &QgsAiModelRouter::onReplyReadyRead );
   connect( context.reply, &QNetworkReply::finished, this, &QgsAiModelRouter::onReplyFinished );
+  startRequestWatchdog( context, configuredTimeoutSeconds );
   return true;
+}
+
+void QgsAiModelRouter::queueFailedRequestFinish( const QString &requestId, const QString &errorMessage )
+{
+  QTimer::singleShot( 0, this, [this, requestId, errorMessage]() {
+    finishRequest( requestId, false, QString(), sanitizeErrorText( errorMessage ), 0, 0, false, 0 );
+  } );
+}
+
+void QgsAiModelRouter::clearRequestTransport( RequestContext &context )
+{
+  if ( context.watchdogTimer )
+  {
+    context.watchdogTimer->stop();
+    context.watchdogTimer->deleteLater();
+    context.watchdogTimer = nullptr;
+  }
+
+  if ( context.reply )
+  {
+    context.reply->deleteLater();
+    context.reply = nullptr;
+  }
+}
+
+void QgsAiModelRouter::finishRequest( const QString &requestId, bool success, const QString &responseText, const QString &errorMessage, int httpStatus, int retryCount, bool retriable, qint64 latencyMs )
+{
+  if ( !mRequests.contains( requestId ) )
+    return;
+
+  RequestContext &context = mRequests[requestId];
+  const QString providerName = providerDisplayName( context.provider );
+  clearRequestTransport( context );
+  mRequests.remove( requestId );
+
+  emit requestFinished( requestId, success, providerName, responseText, errorMessage, httpStatus, retryCount, retriable, latencyMs );
+}
+
+void QgsAiModelRouter::startRequestWatchdog( RequestContext &context, int transferTimeoutSeconds )
+{
+  QgsSettings appSettings;
+  const int watchdogSeconds = appSettings.value( u"ai/network/watchdogSeconds"_s, transferTimeoutSeconds + 30 ).toInt();
+  if ( watchdogSeconds <= 0 )
+    return;
+
+  QTimer *timer = new QTimer( this );
+  timer->setSingleShot( true );
+  timer->setInterval( std::max( 10, watchdogSeconds ) * 1000 );
+  const QString requestId = context.requestId;
+  connect( timer, &QTimer::timeout, this, [this, requestId, watchdogSeconds]() {
+    if ( !mRequests.contains( requestId ) )
+      return;
+
+    RequestContext &timedOutContext = mRequests[requestId];
+    const QString providerName = providerDisplayName( timedOutContext.provider );
+    const qint64 latencyMs = timedOutContext.startedAtMs > 0 ? std::max<qint64>( 0, QDateTime::currentMSecsSinceEpoch() - timedOutContext.startedAtMs ) : 0;
+    QgsMessageLog::logMessage(
+      u"Request id=%1 provider=%2 watchdog timed out after %3 seconds."_s.arg( requestId, providerName ).arg( watchdogSeconds ),
+      u"AI"_s,
+      Qgis::MessageLevel::Warning,
+      false
+    );
+    const int retryCount = timedOutContext.attempt - 1;
+    finishRequest( requestId, false, QString(), u"Network request watchdog timed out after %1 seconds."_s.arg( watchdogSeconds ), 0, retryCount, false, latencyMs );
+  } );
+  context.watchdogTimer = timer;
+  timer->start();
 }
 
 bool QgsAiModelRouter::shouldRetry( int httpStatus, QNetworkReply::NetworkError networkError, int attempt, int maxRetries ) const
@@ -1421,29 +1504,26 @@ void QgsAiModelRouter::onReplyFinished()
       call.args = pending.argumentsObject;
       publicCalls.append( call );
     }
-    emit toolCallsRequested( requestId, providerName, responseText.trimmed(), publicCalls );
-    reply->deleteLater();
+    clearRequestTransport( *context );
     mRequests.remove( requestId );
+    emit toolCallsRequested( requestId, providerName, responseText.trimmed(), publicCalls );
     return;
   }
 
   if ( success )
   {
-    emit requestFinished( requestId, true, providerName, responseText.trimmed(), QString(), httpStatus, context->attempt - 1, false, latencyMs );
-    reply->deleteLater();
-    mRequests.remove( requestId );
+    finishRequest( requestId, true, responseText.trimmed(), QString(), httpStatus, context->attempt - 1, false, latencyMs );
     return;
   }
 
   const bool retriable = shouldRetry( httpStatus, networkError, context->attempt, context->maxRetries );
   if ( retriable )
   {
-    reply->deleteLater();
-    context->reply = nullptr;
+    clearRequestTransport( *context );
     if ( !dispatchRequest( *context ) )
     {
-      emit requestFinished( requestId, false, providerName, QString(), sanitizeErrorText( u"Retry dispatch failed."_s ), httpStatus, context->attempt - 1, true, latencyMs );
-      mRequests.remove( requestId );
+      const QString retryError = !context->preDispatchError.isEmpty() ? context->preDispatchError : u"Retry dispatch failed."_s;
+      finishRequest( requestId, false, QString(), sanitizeErrorText( retryError ), httpStatus, context->attempt - 1, true, latencyMs );
     }
     return;
   }
@@ -1455,9 +1535,7 @@ void QgsAiModelRouter::onReplyFinished()
     errorMessage = responseText;
   errorMessage = sanitizeErrorText( errorMessage );
 
-  emit requestFinished( requestId, false, providerName, QString(), errorMessage, httpStatus, context->attempt - 1, false, latencyMs );
-  reply->deleteLater();
-  mRequests.remove( requestId );
+  finishRequest( requestId, false, QString(), errorMessage, httpStatus, context->attempt - 1, false, latencyMs );
 }
 
 bool QgsAiModelRouter::isUsablePlanEndpoint( const QString &endpoint )

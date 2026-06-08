@@ -56,6 +56,32 @@ namespace
       QString mName;
       bool mAvailable = true;
   };
+
+  void clearProviderSettings()
+  {
+    QgsSettings settings;
+    settings.remove( u"ai/provider/plan"_s );
+    settings.remove( u"ai/provider/codex"_s );
+    settings.remove( u"ai/provider/openai"_s );
+    settings.remove( u"ai/provider/claude"_s );
+  }
+
+  void forceProviderPreDispatchFailures( QgsAiModelRouter &router )
+  {
+    const QList<QgsAiModelRouter::Provider> providers = {
+      QgsAiModelRouter::Provider::Plan,
+      QgsAiModelRouter::Provider::Codex,
+      QgsAiModelRouter::Provider::OpenAi,
+      QgsAiModelRouter::Provider::Claude,
+    };
+    for ( QgsAiModelRouter::Provider provider : providers )
+    {
+      QgsAiModelRouter::ProviderSettings settings = router.providerSettings( provider );
+      settings.endpoint.clear();
+      settings.enabled = true;
+      router.setProviderSettings( provider, settings );
+    }
+  }
 } // namespace
 
 class TestQgsAiAgentSessionManager : public QObject
@@ -82,6 +108,8 @@ class TestQgsAiAgentSessionManager : public QObject
     void formatRetrievedContextRendersFileAndLayerHeaders();
     void formatRetrievedContextTruncatesOverBudget();
     void retrievalSkippedWithoutWorkspaceIndex();
+    void preDispatchFailureUnlocksRunningState();
+    void fallbackPreDispatchFailuresAreDrained();
 };
 
 void TestQgsAiAgentSessionManager::createsPatchProposalFromCommand()
@@ -661,6 +689,75 @@ void TestQgsAiAgentSessionManager::retrievalSkippedWithoutWorkspaceIndex()
   // if retrieval were attempted, it would log "API key required"; but since the
   // index is empty, retrieveContextForLastUserMessage() returns "" beforehand.
   manager.sendUserMessage( u"second"_s );
+}
+
+void TestQgsAiAgentSessionManager::preDispatchFailureUnlocksRunningState()
+{
+  clearProviderSettings();
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  forceProviderPreDispatchFailures( router );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+
+  QSignalSpy runningSpy( &manager, &QgsAiAgentSessionManager::requestRunningChanged );
+  QSignalSpy messageSpy( &manager, &QgsAiAgentSessionManager::messageAdded );
+
+  manager.sendUserMessage( u"hello"_s );
+
+  QVERIFY( runningSpy.count() >= 1 );
+  QCOMPARE( runningSpy.first().at( 0 ).toBool(), true );
+  QTRY_VERIFY( !manager.hasActiveRequest() );
+  QVERIFY( runningSpy.count() >= 2 );
+  QCOMPARE( runningSpy.last().at( 0 ).toBool(), false );
+  QVERIFY( messageSpy.count() >= 2 );
+  QVERIFY( manager.history().last().content.contains( u"not fully configured"_s, Qt::CaseInsensitive ) );
+
+  clearProviderSettings();
+}
+
+void TestQgsAiAgentSessionManager::fallbackPreDispatchFailuresAreDrained()
+{
+  clearProviderSettings();
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  forceProviderPreDispatchFailures( router );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+
+  QSignalSpy runningSpy( &manager, &QgsAiAgentSessionManager::requestRunningChanged );
+  QSignalSpy stateSpy( &manager, &QgsAiAgentSessionManager::requestStateChanged );
+
+  manager.sendUserMessage( u"exercise provider fallback"_s );
+  QTRY_VERIFY( !manager.hasActiveRequest() );
+
+  int retryingCount = 0;
+  bool sawFailed = false;
+  for ( const QList<QVariant> &args : stateSpy )
+  {
+    const QString state = args.at( 0 ).toString();
+    if ( state == "retrying"_L1 )
+      ++retryingCount;
+    if ( state == "failed"_L1 )
+      sawFailed = true;
+  }
+
+  QCOMPARE( retryingCount, 3 );
+  QVERIFY( sawFailed );
+  QVERIFY( runningSpy.count() >= 2 );
+  QCOMPARE( runningSpy.last().at( 0 ).toBool(), false );
+
+  clearProviderSettings();
 }
 
 QGSTEST_MAIN( TestQgsAiAgentSessionManager )
