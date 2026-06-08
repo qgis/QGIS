@@ -338,6 +338,13 @@ bool QgsMssqlProvider::execPreparedLogged( QSqlQuery &qry, const QString &queryO
   return res;
 }
 
+void QgsMssqlProvider::reloadProviderData()
+{
+  mRefreshFeatureCount = true;
+  mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
+  mExtent.setNull();
+}
+
 void QgsMssqlProvider::setLastError( const QString &error )
 {
   appendError( error );
