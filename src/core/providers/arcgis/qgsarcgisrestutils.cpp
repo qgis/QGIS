@@ -626,10 +626,8 @@ QgsCoordinateReferenceSystem QgsArcGisRestUtils::convertSpatialReference( const 
   return crs;
 }
 
-std::unique_ptr< QgsSymbol > QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData )
+std::unique_ptr< QgsSymbol > QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData, QgsSymbolConverterContext &context )
 {
-  QgsReadWriteContext rwContext;
-  QgsSymbolConverterContext context( rwContext );
   return QgsSymbolConverterEsriRest().createSymbol( symbolData, context );
 }
 
@@ -762,7 +760,7 @@ std::unique_ptr<QgsAbstractVectorLayerLabeling > QgsArcGisRestUtils::convertLabe
   return std::make_unique< QgsRuleBasedLabeling >( root );
 }
 
-void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, QgsSymbol *symbol )
+void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, QgsSymbol *symbol, QgsSymbolConverterContext &context )
 {
   if ( !symbol )
     return;
@@ -780,7 +778,7 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
       {
         // Check if it was a valueExpression that we don't support yet
         if ( !visualVariableData.value( u"valueExpression"_s ).toString().isEmpty() )
-          QgsDebugError( u"ESRI rotationInfo valueExpression is not yet supported"_s );
+          context.pushWarning( QObject::tr( "ESRI rotationInfo valueExpression is not yet supported" ) );
         continue;
       }
 
@@ -801,7 +799,7 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
       }
       else
       {
-        QgsDebugError( u"ESRI rotationInfo rotationType '%1' is not supported."_s.arg( rotationType ) );
+        context.pushWarning( QObject::tr( "ESRI rotationInfo rotationType '%1' is not supported" ).arg( rotationType ) );
         continue;
       }
 
@@ -813,36 +811,36 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
     }
     else
     {
-      QgsDebugError( u"ESRI visualVariable type %1 is not currently supported"_s.arg( variableType ) );
+      context.pushWarning( QObject::tr( "ESRI visualVariable type '%1' is not currently supported" ).arg( variableType ) );
     }
   }
 }
 
-void QgsArcGisRestUtils::applyVisualVariablesToRenderer( const QVariantMap &rendererData, QgsFeatureRenderer *renderer )
+void QgsArcGisRestUtils::applyVisualVariablesToRenderer( const QVariantMap &rendererData, QgsFeatureRenderer *renderer, QgsSymbolConverterContext &context )
 {
   if ( !renderer )
     return;
 
   // Apply visual variables to all symbols in the renderer
-  QgsRenderContext context;
-  const QgsSymbolList symbols = renderer->symbols( context );
+  QgsRenderContext renderContext;
+  const QgsSymbolList symbols = renderer->symbols( renderContext );
   for ( QgsSymbol *symbol : symbols )
   {
-    applyVisualVariables( rendererData, symbol );
+    applyVisualVariables( rendererData, symbol, context );
   }
 }
 
-std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData )
+std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context )
 {
   const QString type = rendererData.value( u"type"_s ).toString();
   if ( type == "simple"_L1 )
   {
     const QVariantMap symbolProps = rendererData.value( u"symbol"_s ).toMap();
-    std::unique_ptr< QgsSymbol > symbol( convertSymbol( symbolProps ) );
+    std::unique_ptr< QgsSymbol > symbol( convertSymbol( symbolProps, context ) );
     if ( symbol )
     {
       // Apply visual variables (e.g., rotation) to the symbol
-      applyVisualVariables( rendererData, symbol.get() );
+      applyVisualVariables( rendererData, symbol.get(), context );
       return std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
     }
     else
@@ -878,14 +876,14 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       const QVariantMap categoryData = category.toMap();
       const QString value = categoryData.value( u"value"_s ).toString();
       const QString label = categoryData.value( u"label"_s ).toString();
-      std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( categoryData.value( u"symbol"_s ).toMap() ) );
+      std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( categoryData.value( u"symbol"_s ).toMap(), context ) );
       if ( symbol )
       {
         categoryList.append( QgsRendererCategory( value, symbol.release(), label ) );
       }
     }
 
-    std::unique_ptr< QgsSymbol > defaultSymbol( convertSymbol( rendererData.value( u"defaultSymbol"_s ).toMap() ) );
+    std::unique_ptr< QgsSymbol > defaultSymbol( convertSymbol( rendererData.value( u"defaultSymbol"_s ).toMap(), context ) );
     if ( defaultSymbol )
     {
       categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), rendererData.value( u"defaultLabel"_s ).toString() ) );
@@ -897,7 +895,7 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     auto renderer = std::make_unique< QgsCategorizedSymbolRenderer >( attribute, categoryList );
 
     // Apply visual variables (e.g., rotation) to all category symbols
-    applyVisualVariablesToRenderer( rendererData, renderer.get() );
+    applyVisualVariablesToRenderer( rendererData, renderer.get(), context );
 
     return renderer;
   }
@@ -919,7 +917,7 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     {
       symbolData = classBreakInfos.at( 0 ).toMap().value( u"symbol"_s ).toMap();
     }
-    std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+    std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData, context ) );
     if ( !symbol )
       return nullptr;
 
@@ -984,7 +982,7 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       }
       else
       {
-        QgsDebugError( u"ESRI visualVariable type %1 is not currently supported"_s.arg( variableType ) );
+        context.pushWarning( QObject::tr( "ESRI visualVariable type '%1' is not currently supported" ).arg( variableType ) );
       }
     }
 
@@ -1031,13 +1029,13 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     }
     else if ( !esriMode.isEmpty() )
     {
-      QgsDebugError( u"ESRI classification mode %1 is not currently supported"_s.arg( esriMode ) );
+      context.pushWarning( QObject::tr( "ESRI classification mode '%1' is not currently supported" ).arg( esriMode ) );
     }
 
     for ( const QVariant &classBreakInfo : classBreakInfos )
     {
       const QVariantMap symbolData = classBreakInfo.toMap().value( u"symbol"_s ).toMap();
-      std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+      std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData, context ) );
       double classMaxValue = classBreakInfo.toMap().value( u"classMaxValue"_s ).toDouble();
       const QString label = classBreakInfo.toMap().value( u"label"_s ).toString();
 
@@ -1053,7 +1051,7 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     }
 
     // Apply visual variables (e.g., rotation) to all class symbols
-    applyVisualVariablesToRenderer( rendererData, graduatedRenderer.get() );
+    applyVisualVariablesToRenderer( rendererData, graduatedRenderer.get(), context );
 
     return graduatedRenderer;
   }

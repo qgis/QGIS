@@ -53,6 +53,7 @@ class QgsCurvePolygon;
 class QgsFeature;
 class QgsLineString;
 class QgsCurve;
+class QgsSymbolConverterContext;
 
 /**
  * \ingroup core
@@ -148,16 +149,22 @@ class CORE_EXPORT QgsArcGisRestUtils
     /**
      * Converts a symbol JSON \a definition to a QgsSymbol.
      *
-     * Caller takes ownership of the returned symbol.
+     * \param definition symbol JSON definition
+     * \param context conversion context, used to collect warnings and errors encountered during conversion.
+     * \returns the converted symbol, or nullptr on failure. Caller takes ownership of the returned symbol.
+     * \note The \a context parameter was added in QGIS 4.2
      */
-    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition );
+    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition, QgsSymbolConverterContext &context );
 
     /**
      * Converts renderer JSON \a data to an equivalent QgsFeatureRenderer.
      *
-     * Caller takes ownership of the returned renderer.
+     * \param rendererData renderer JSON data
+     * \param context conversion context, used to collect warnings and errors encountered during conversion.
+     * \returns the converted renderer, or nullptr on failure. Caller takes ownership of the returned renderer.
+     * \note The \a context parameter was added in QGIS 4.2
      */
-    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData );
+    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context );
 
     /**
      * Converts labeling JSON \a data to an equivalent QGIS vector labeling.
@@ -356,15 +363,17 @@ class CORE_EXPORT QgsArcGisRestUtils
      * Applies visual variables from renderer JSON \a data to a \a symbol.
      *
      * Currently only rotation visual variables (\c rotationInfo) are supported.
+     * Warnings and errors encountered during conversion are pushed to \a context.
      */
-    static void applyVisualVariables( const QVariantMap &rendererData, QgsSymbol *symbol );
+    static void applyVisualVariables( const QVariantMap &rendererData, QgsSymbol *symbol, QgsSymbolConverterContext &context );
 
     /**
      * Applies visual variables from renderer JSON \a data to all symbols in a \a renderer.
      *
      * Currently only rotation visual variables (\c rotationInfo) are supported.
+     * Warnings and errors encountered during conversion are pushed to \a context.
      */
-    static void applyVisualVariablesToRenderer( const QVariantMap &rendererData, QgsFeatureRenderer *renderer );
+    static void applyVisualVariablesToRenderer( const QVariantMap &rendererData, QgsFeatureRenderer *renderer, QgsSymbolConverterContext &context );
 
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.
