@@ -63,7 +63,12 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
       applySettingsToMaterial( goochSettings, material );
       if ( context.isSelected() )
         material->setDiffuse( context.selectionColor() );
-      material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
+      material->setDataDefinedEnabled(
+        dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Warm )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Cool )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Diffuse )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Specular )
+      );
 
       return material;
     }

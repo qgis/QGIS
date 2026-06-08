@@ -59,7 +59,10 @@ QgsMaterial *QgsPhongMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
       QgsPhongMaterial *material = new QgsPhongMaterial();
       material->setObjectName( u"phongMaterial"_s );
 
-      const bool dataDefined = phongSettings->dataDefinedProperties().hasActiveProperties();
+      const QgsPropertyCollection &dataDefinedProperties = phongSettings->dataDefinedProperties();
+      const bool dataDefined = dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Ambient )
+                               || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Diffuse )
+                               || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Specular );
       if ( !dataDefined )
       {
         const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
