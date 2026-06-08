@@ -1235,8 +1235,10 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
     QgsMessageLog::logMessage( error, tr( "Network" ) );
     return;
   }
+#ifdef QGISDEBUG
   QgsDebugMsgLevel( u"repeat tileRequest %1 %2(retry %3) for url: %4"_s.arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ), 2 );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
+#endif
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
   mReplies << reply;
