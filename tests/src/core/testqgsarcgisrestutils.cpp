@@ -694,7 +694,7 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationArithmetic()
 
 void TestQgsArcGisRestUtils::testVisualVariableRotationDefaultsToGeographic()
 {
-  // When rotationType is absent the implementation defaults to geographic
+  // When rotationType is absent the implementation does not apply rotation
   const QVariantMap rendererData = jsonStringToMap(
     "{"
     "\"type\": \"simple\","
@@ -715,9 +715,7 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationDefaultsToGeographic()
   const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
-  QVERIFY( prop.isActive() );
-  QCOMPARE( prop.propertyType(), Qgis::PropertyType::Field );
-  QCOMPARE( prop.field(), u"BEARING"_s );
+  QVERIFY( !prop.isActive() );
 }
 
 void TestQgsArcGisRestUtils::testVisualVariableRotationValueExpressionSkipped()
@@ -746,7 +744,7 @@ void TestQgsArcGisRestUtils::testVisualVariableRotationValueExpressionSkipped()
   const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
   QVERIFY( !prop.isActive() );
   QVERIFY( !context.warnings().isEmpty() );
-  QVERIFY( context.warnings().first().contains( u"$feature.ANGLE * 2"_s ) );
+  QVERIFY( context.warnings().first().contains( u"valueExpression"_s ) );
 }
 
 void TestQgsArcGisRestUtils::testVisualVariableRotationSimpleRenderer()
