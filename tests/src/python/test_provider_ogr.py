@@ -5273,7 +5273,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(vl.isValid())
         self.assertFalse(
             vl.dataProvider().capabilities()
-            & Qgis.VectorProviderCapability.ListFieldDomains
+            & Qgis.VectorProviderCapability.ReadFieldDomains
         )
 
 

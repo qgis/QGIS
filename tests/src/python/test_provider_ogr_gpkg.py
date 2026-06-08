@@ -3935,7 +3935,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertTrue(vl.isValid())
         self.assertTrue(
             vl.dataProvider().capabilities()
-            & Qgis.VectorProviderCapability.ListFieldDomains
+            & Qgis.VectorProviderCapability.ReadFieldDomains
         )
 
 
