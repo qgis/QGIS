@@ -792,7 +792,7 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
         // ArcGIS arithmetic: 0° = East, counter-clockwise
         // QGIS: 0° = North, clockwise
         // Conversion: QGIS_angle = 90 - ArcGIS_angle
-        angleProperty = QgsProperty::fromExpression( u"90 - \"%1\""_s.arg( field ) );
+        angleProperty = QgsProperty::fromExpression( u"90 - %1"_s.arg( QgsExpression::quotedColumnRef( field ) ) );
       }
       else
       {
