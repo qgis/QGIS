@@ -32,6 +32,7 @@
 #include <qgssinglesymbolrenderer.h>
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
+#include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfontutils.h"
@@ -54,6 +55,7 @@ class TestQgsSvgMarkerSymbol : public QgsTest
 
     void svgMarkerSymbol();
     void bounds();
+    void boundsAnchorPoint();
     void boundsWidth();
     void bench();
     void anchor();
@@ -154,6 +156,67 @@ void TestQgsSvgMarkerSymbol::bounds()
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty() );
   QVERIFY( result );
+}
+
+void TestQgsSvgMarkerSymbol::boundsAnchorPoint()
+{
+  // the bounds reported for a non-centered anchor must be equal
+  // to the center-anchored bounds translated by half the rendered
+  // symbol size, in pixels.
+
+  QgsSvgMarkerSymbolLayer layer( QgsSymbolLayerUtils::svgSymbolNameToPath( u"/backgrounds/background_square.svg"_s, QgsPathResolver() ) );
+  layer.setSize( 24.0 );
+  layer.setSizeUnit( Qgis::RenderUnit::Millimeters );
+  layer.setFixedAspectRatio( 1.0 );
+  layer.setStrokeWidth( 0.0 );
+  layer.setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint::Center );
+  layer.setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Center );
+
+  QgsMapSettings ms;
+  ms.setExtent( QgsRectangle( 0, 0, 1000, 1000 ) );
+  ms.setOutputSize( QSize( 500, 500 ) );
+  ms.setOutputDpi( 96 );
+  QgsRenderContext rc = QgsRenderContext::fromMapSettings( ms );
+  QgsSymbolRenderContext src( rc, Qgis::RenderUnit::Unknown, 1.0, false, Qgis::SymbolRenderHints() );
+
+  const QPointF point( 250, 250 );
+
+  layer.startRender( src );
+  const QRectF centerBounds = layer.bounds( point, src );
+  layer.stopRender( src );
+  QVERIFY( centerBounds.isValid() );
+
+  const double halfWidthPx = rc.convertToPainterUnits( layer.size(), layer.sizeUnit(), layer.sizeMapUnitScale() ) / 2.0;
+  const double halfHeightPx = halfWidthPx; // fixedAspectRatio == 1.0
+
+  layer.setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Bottom );
+  layer.startRender( src );
+  const QRectF bottomBounds = layer.bounds( point, src );
+  layer.stopRender( src );
+  QGSCOMPARENEAR( bottomBounds.center().x(), centerBounds.center().x(), 0.01 );
+  QGSCOMPARENEAR( bottomBounds.center().y(), centerBounds.center().y() - halfHeightPx, 0.01 );
+
+  layer.setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Top );
+  layer.startRender( src );
+  const QRectF topBounds = layer.bounds( point, src );
+  layer.stopRender( src );
+  QGSCOMPARENEAR( topBounds.center().x(), centerBounds.center().x(), 0.01 );
+  QGSCOMPARENEAR( topBounds.center().y(), centerBounds.center().y() + halfHeightPx, 0.01 );
+
+  layer.setVerticalAnchorPoint( Qgis::VerticalAnchorPoint::Center );
+  layer.setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint::Left );
+  layer.startRender( src );
+  const QRectF leftBounds = layer.bounds( point, src );
+  layer.stopRender( src );
+  QGSCOMPARENEAR( leftBounds.center().x(), centerBounds.center().x() + halfWidthPx, 0.01 );
+  QGSCOMPARENEAR( leftBounds.center().y(), centerBounds.center().y(), 0.01 );
+
+  layer.setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint::Right );
+  layer.startRender( src );
+  const QRectF rightBounds = layer.bounds( point, src );
+  layer.stopRender( src );
+  QGSCOMPARENEAR( rightBounds.center().x(), centerBounds.center().x() - halfWidthPx, 0.01 );
+  QGSCOMPARENEAR( rightBounds.center().y(), centerBounds.center().y(), 0.01 );
 }
 
 void TestQgsSvgMarkerSymbol::boundsWidth()
