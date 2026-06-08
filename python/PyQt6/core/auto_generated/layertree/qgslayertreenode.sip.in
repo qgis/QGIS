@@ -117,6 +117,12 @@ Returns the number of children contained in the node.
     sipRes = sipCpp->children().count();
 %End
 
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
+%End
+
     SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsLayerTreeNode"/;
 %Docstring
 Returns the child node at the specified ``index``.
