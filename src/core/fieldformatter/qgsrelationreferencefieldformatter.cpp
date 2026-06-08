@@ -41,7 +41,21 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
 {
   if ( cache.isValid() )
   {
-    return cache.value<QMap<QVariant, QString>>().value( value );
+    // See regression #66339: the value type should be converted to the type of the key in the cache,
+    // otherwise we might not find the value in the cache, even if it is there, because of type mismatch.
+    // This can happen for example when the value is a int and the key in the cache is a long long.
+    QVariant key = value;
+    const QMap<QVariant, QString> cacheMap = cache.value<QMap<QVariant, QString>>();
+    if ( cacheMap.size() > 0 )
+    {
+      const QMetaType keyType = key.metaType();
+      const QMetaType cacheKeyType = cacheMap.firstKey().metaType();
+      if ( keyType != cacheKeyType && key.canConvert( cacheKeyType ) )
+      {
+        key.convert( cacheKeyType );
+      }
+    }
+    return cache.value<QMap<QVariant, QString>>().value( key );
   }
 
   const QString fieldName = fieldIndex < layer->fields().size() ? layer->fields().at( fieldIndex ).name() : QObject::tr( "<unknown>" );
