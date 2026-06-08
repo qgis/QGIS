@@ -794,13 +794,15 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
         // Conversion: QGIS_angle = 90 - ArcGIS_angle
         angleProperty = QgsProperty::fromExpression( u"90 - %1"_s.arg( QgsExpression::quotedColumnRef( field ) ) );
       }
-      else
+      else if ( rotationType == "geographic"_L1 )
       {
-        if ( rotationType != "geographic"_L1 )
-          QgsDebugError( u"ESRI rotationInfo rotationType '%1' is not supported, defaulting to 'geographic'"_s.arg( rotationType ) );
-
         // ArcGIS geographic: 0° = North, clockwise (same as QGIS)
         angleProperty = QgsProperty::fromField( field );
+      }
+      else
+      {
+        QgsDebugError( u"ESRI rotationInfo rotationType '%1' is not supported."_s.arg( rotationType ) );
+        continue;
       }
 
       // Apply rotation to all symbol layers
