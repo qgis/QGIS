@@ -112,7 +112,7 @@ void QgsSourceFieldsProperties::loadRows()
 
   if ( mLayer->dataProvider() )
   {
-    mFieldsList->setColumnHidden( AttrFieldDomainCol, !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ListFieldDomains ) );
+    mFieldsList->setColumnHidden( AttrFieldDomainCol, !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ReadFieldDomains ) );
   }
 
   mFieldsList->resizeColumnsToContents();
@@ -203,7 +203,7 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
 
   if ( mLayer->dataProvider() )
   {
-    mFieldsList->setColumnHidden( AttrFieldDomainCol, !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ListFieldDomains ) );
+    mFieldsList->setColumnHidden( AttrFieldDomainCol, !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ReadFieldDomains ) );
   }
 }
 

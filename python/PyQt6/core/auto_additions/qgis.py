@@ -1033,9 +1033,9 @@ QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embe
 QgsVectorDataProvider.CacheData = Qgis.VectorProviderCapability.CacheData
 QgsVectorDataProvider.CacheData.is_monkey_patched = True
 QgsVectorDataProvider.CacheData.__doc__ = "Provider caches source data and should force provider data reloads when dependent layers are committed \n.. versionadded:: 4.2"
-QgsVectorDataProvider.ListFieldDomains = Qgis.VectorProviderCapability.ListFieldDomains
-QgsVectorDataProvider.ListFieldDomains.is_monkey_patched = True
-QgsVectorDataProvider.ListFieldDomains.__doc__ = "Provider can list field domains and their properties \n.. versionadded:: 4.2"
+QgsVectorDataProvider.ReadFieldDomains = Qgis.VectorProviderCapability.ReadFieldDomains
+QgsVectorDataProvider.ReadFieldDomains.is_monkey_patched = True
+QgsVectorDataProvider.ReadFieldDomains.__doc__ = "Provider can read field domains and their properties \n.. versionadded:: 4.2"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -1088,7 +1088,7 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
 
   .. versionadded:: 4.2
 
-* ``ListFieldDomains``: Provider can list field domains and their properties
+* ``ReadFieldDomains``: Provider can read field domains and their properties
 
   .. versionadded:: 4.2
 
