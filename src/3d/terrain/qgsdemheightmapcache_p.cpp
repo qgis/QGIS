@@ -19,7 +19,11 @@
 #include "qgschunknode.h"
 #include "qgsdemterraintileloader_p.h"
 
+#include <QString>
+
 #include "moc_qgsdemheightmapcache_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDemHeightMapCache::QgsDemHeightMapCache( QgsDemHeightMapGenerator *generator, int resolution, int emitLevel, QgsChunkNode *rootNode )
   : mHeightMapGenerator( generator )
@@ -156,7 +160,8 @@ void QgsDemHeightMapCache::heightAndQualityAt( double x, double y, float &height
 
       const float *data = ( const float * ) heightMapData;
       height = data[cellX + cellY * mResolution];
-      if ( !std::isnan( height ) ) // keep good value or continue to fetch coarse one
+      QgsDebugMsgLevel( u"With cache x:%1, y:%2, z:%3, q:%4"_s.arg( x ).arg( y ).arg( height ).arg( quality ), 2 );
+      if ( !std::isnan( height ) && bestTile.d >= mEmitLevel ) // keep good value or continue to fetch coarse one
         return;
     }
   }
@@ -166,10 +171,12 @@ void QgsDemHeightMapCache::heightAndQualityAt( double x, double y, float &height
   {
     quality = 0;
     height = mHeightMapGenerator->heightAt( x, y );
+    QgsDebugMsgLevel( u"No cache x:%1, y:%2, z:%3, q:%4"_s.arg( x ).arg( y ).arg( height ).arg( quality ), 2 );
   }
   else
   {
     quality = -1;
     height = std::numeric_limits<float>::quiet_NaN();
+    QgsDebugMsgLevel( u"No generator x:%1, y:%2, z:%3, q:%4"_s.arg( x ).arg( y ).arg( height ).arg( quality ), 2 );
   }
 }

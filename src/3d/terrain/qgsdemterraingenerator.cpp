@@ -137,7 +137,8 @@ void QgsDemTerrainGenerator::updateGenerator()
     mTerrainTilingScheme = QgsTilingScheme( intersectExtent, mCrs );
     mHeightMapGenerator = std::make_unique<QgsDemHeightMapGenerator>( dem, mTerrainTilingScheme, mResolution, mTransformContext );
 
-    mCache = std::make_unique<QgsDemHeightMapCache>( mHeightMapGenerator.get(), mResolution, mMaxLevel / 2, mRootNode );
+    int emitLevel = ( mMaxLevel <= 0 ? 2 : mMaxLevel / 2 );
+    mCache = std::make_unique<QgsDemHeightMapCache>( mHeightMapGenerator.get(), mResolution, emitLevel, mRootNode );
 
     mIsValid = true;
   }
