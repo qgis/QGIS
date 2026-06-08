@@ -300,14 +300,33 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
   const QPoint center( size.width() / 2, size.height() / 2 );
 
   const QVector3D centerWorldPos = Qgs3DUtils::screenPointToWorldPos( center, static_cast<float>( mLastCenterDepth ), size, camera );
+  const float centerZ = centerWorldPos.z();
+  const QVector3D cameraPosition = camera->position();
 
   QVector<int> pointsOrder = { 0, 1, 3, 2 };
   for ( int i : pointsOrder )
   {
     const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : size.width(), ( ( i >> 1 ) & 1 ) ? 0 : size.height() );
 
-    QVector3D worldPos = Qgs3DUtils::screenPointToWorldPos( p, static_cast<float>( mLastCenterDepth ), size, camera );
-    worldPos.setZ( centerWorldPos.z() );
+    const QVector3D edgePoint = Qgs3DUtils::screenPointToWorldPos( p, static_cast<float>( mLastCenterDepth ), size, camera );
+    const QVector3D rayDir = ( edgePoint - cameraPosition ).normalized();
+
+    QVector3D worldPos;
+    if ( std::abs( rayDir.z() ) > 0 )
+    {
+      float t = ( centerZ - cameraPosition.z() ) / rayDir.z();
+      if ( t < 0 )
+        t = camera->farPlane();
+      else
+        t = std::min<float>( t, camera->farPlane() );
+      worldPos = cameraPosition + t * rayDir;
+    }
+    else
+    {
+      worldPos = cameraPosition + camera->farPlane() * rayDir;
+      worldPos.setZ( centerZ );
+    }
+
     QgsVector3D mapPos = mMap.worldToMapCoordinates( worldPos );
     extent.push_back( QgsPointXY( mapPos.x(), mapPos.y() ) );
   }
