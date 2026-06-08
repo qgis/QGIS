@@ -56,7 +56,7 @@ class TestPyQgsPythonProvider(QgisTestCase, ProviderTestCase):
     @classmethod
     def createLayer(cls):
         vl = QgsVectorLayer(
-            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk",
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time",
             "test",
             "pythonprovider",
         )
@@ -149,7 +149,7 @@ class TestPyQgsPythonProvider(QgisTestCase, ProviderTestCase):
 
         # poly layer
         cls.poly_vl = QgsVectorLayer(
-            "Polygon?crs=epsg:4326&field=pk:integer&key=pk", "test", "pythonprovider"
+            "Polygon?crs=epsg:4326&field=pk:integer", "test", "pythonprovider"
         )
         assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
@@ -555,7 +555,7 @@ class TestPyQgsPythonProvider(QgisTestCase, ProviderTestCase):
 
     def testThreadSafetyWithIndex(self):
         layer = QgsVectorLayer(
-            "Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk",
+            "Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string",
             "test",
             "pythonprovider",
         )
