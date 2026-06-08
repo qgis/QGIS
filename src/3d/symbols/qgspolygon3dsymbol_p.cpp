@@ -25,6 +25,7 @@
 #include "qgslinevertexdata_p.h"
 #include "qgsmaterial3dhandler.h"
 #include "qgsmessagelog.h"
+#include "qgsmetalroughtexturedmaterialsettings.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsphongtexturedmaterialsettings.h"
@@ -330,10 +331,25 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   const bool hasTextureOffset = materialSettings
                                 && materialSettings->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::TextureOffset )
                                 && materialSettings->supportedProperties().contains( QgsAbstractMaterialSettings::Property::TextureOffset );
-  float dataDefinedTextureRotation = materialSettings ? static_cast< float >( materialSettings->textureRotation() ) : 0;
-  float dataDefinedTextureScale = materialSettings ? static_cast< float >( materialSettings->textureScale() ) : 1;
-  float dataDefinedTextureOffsetX = materialSettings ? static_cast< float >( materialSettings->textureOffset().x() ) : 0;
-  float dataDefinedTextureOffsetY = materialSettings ? static_cast< float >( materialSettings->textureOffset().y() ) : 0;
+  float dataDefinedTextureRotation = 0;
+  float dataDefinedTextureScale = 1;
+  float dataDefinedTextureOffsetX = 0;
+  float dataDefinedTextureOffsetY = 0;
+  if ( auto phongTexturedMaterial = dynamic_cast<const QgsPhongTexturedMaterialSettings * >( materialSettings ) )
+  {
+    dataDefinedTextureRotation = phongTexturedMaterial->textureRotation();
+    dataDefinedTextureScale = phongTexturedMaterial->textureScale();
+    dataDefinedTextureOffsetX = phongTexturedMaterial->textureOffset().x();
+    dataDefinedTextureOffsetY = phongTexturedMaterial->textureOffset().y();
+  }
+  else if ( auto metalRoughTexturedMaterial = dynamic_cast<const QgsMetalRoughTexturedMaterialSettings * >( materialSettings ) )
+  {
+    dataDefinedTextureRotation = metalRoughTexturedMaterial->textureRotation();
+    dataDefinedTextureScale = metalRoughTexturedMaterial->textureScale();
+    dataDefinedTextureOffsetX = metalRoughTexturedMaterial->textureOffset().x();
+    dataDefinedTextureOffsetY = metalRoughTexturedMaterial->textureOffset().y();
+  }
+
   if ( hasTextureScale || hasTextureRotation || hasTextureOffset )
   {
     dataDefinedTextureRotation = static_cast< float >(
