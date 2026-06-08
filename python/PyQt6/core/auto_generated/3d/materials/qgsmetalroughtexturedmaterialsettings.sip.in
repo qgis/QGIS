@@ -125,9 +125,33 @@ Returns the path to the ambient occlusion texture map.
 .. seealso:: :py:func:`setAmbientOcclusionTexturePath`
 %End
 
-    virtual double textureScale() const;
-    virtual double textureRotation() const;
-    virtual QPointF textureOffset() const;
+    double textureScale() const;
+%Docstring
+Returns the texture scale.
+
+The texture scale changes the size of the material's textures in the 3D
+scene.
+
+If the texture scale is less than 1 the textures will be stretched.
+
+.. seealso:: :py:func:`setTextureScale`
+%End
+
+    double textureRotation() const;
+%Docstring
+Returns the texture rotation, in degrees.
+
+.. seealso:: :py:func:`setTextureRotation`
+%End
+
+    QPointF textureOffset() const;
+%Docstring
+Returns the texture offset.
+
+.. seealso:: :py:func:`setTextureOffset`
+
+.. versionadded:: 4.2
+%End
 
     double opacity() const;
 %Docstring

@@ -46,21 +46,6 @@ bool QgsAbstractMaterialSettings::requiresTangents() const
   return false;
 }
 
-double QgsAbstractMaterialSettings::textureScale() const
-{
-  return 1.0;
-}
-
-double QgsAbstractMaterialSettings::textureRotation() const
-{
-  return 0.0;
-}
-
-QPointF QgsAbstractMaterialSettings::textureOffset() const
-{
-  return QPointF( 0, 0 );
-}
-
 QSet<QgsAbstractMaterialSettings::Property> QgsAbstractMaterialSettings::supportedProperties() const
 {
   return {};

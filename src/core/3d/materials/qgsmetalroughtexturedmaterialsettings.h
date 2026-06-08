@@ -122,9 +122,31 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      */
     QString ambientOcclusionTexturePath() const { return mAmbientOcclusionTexturePath; }
 
-    double textureScale() const override { return mTextureScale; }
-    double textureRotation() const override { return mTextureRotation; }
-    QPointF textureOffset() const override { return mTextureOffset; }
+    /**
+     * Returns the texture scale.
+     *
+     * The texture scale changes the size of the material's textures in the 3D scene.
+     *
+     * If the texture scale is less than 1 the textures will be stretched.
+     *
+     * \see setTextureScale()
+     */
+    double textureScale() const { return mTextureScale; }
+
+    /**
+     * Returns the texture rotation, in degrees.
+     *
+     * \see setTextureRotation()
+     */
+    double textureRotation() const { return mTextureRotation; }
+
+    /**
+     * Returns the texture offset.
+     *
+     * \see setTextureOffset()
+     * \since QGIS 4.2
+     */
+    QPointF textureOffset() const { return mTextureOffset; }
 
     /**
      * Returns the opacity of the surface
