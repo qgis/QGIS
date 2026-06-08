@@ -29,7 +29,7 @@ class TestQgsVectorLayerFeatureCounter(QgisTestCase):
     def setUp(self):
 
         self.vl = QgsVectorLayer(
-            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk",
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time",
             "test",
             "memory",
         )
@@ -101,7 +101,7 @@ class TestQgsVectorLayerFeatureCounter(QgisTestCase):
         assert self.vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
 
         self.vl2 = QgsVectorLayer(
-            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk",
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time",
             "test",
             "memory",
         )
