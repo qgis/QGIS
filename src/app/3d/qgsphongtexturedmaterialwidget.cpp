@@ -101,7 +101,6 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsPhongTexturedMaterialWidget::set
   m->setTextureScale( 100.0 / textureScaleSpinBox->value() );
   m->setTextureRotation( textureRotationSpinBox->value() );
   m->setTextureOffset( QPointF( textureOffsetXSpin->value(), textureOffsetYSpin->value() ) );
-  m->setDataDefinedProperties( mPropertyCollection );
 
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::TextureRotation, mTextureRotationDataDefinedButton->toProperty() );
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::TextureScale, mTextureScaleDataDefinedButton->toProperty() );
