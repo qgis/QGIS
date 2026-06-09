@@ -180,6 +180,8 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   mapSettings.setTransformContext( mMap.transformContext() );
   mapSettings.setPathResolver( mMap.pathResolver() );
   mapSettings.setRendererUsage( mMap.rendererUsage() );
+  if ( QgsProject::instance() )
+    mapSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QList<QgsMapLayer *> layers;
   QgsMapThemeCollection *mapThemes = mMap.mapThemeCollection();
