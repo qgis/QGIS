@@ -752,8 +752,11 @@ void QgsModelGraphicsScene::addDataViewerButtonForArrow( QgsModelArrowItem *arro
   }
 
   QgsModelDesignerDataViewerButtonGraphicItem *openDataViewerButton = new QgsModelDesignerDataViewerButtonGraphicItem( arrow );
+  // set button childId and paramOrOutputName as properties on the button so we can access them in the click handler
 
-  connect( openDataViewerButton, &QgsModelDesignerFlatButtonGraphicItem::clicked, this, [this, childId = childId, paramOrOutputName = paramOrOutputName] {
+  arrow->setDataViewerButton( openDataViewerButton );
+
+  connect( openDataViewerButton, &QgsModelDesignerDataViewerButtonGraphicItem::clicked, this, [this, childId = childId, paramOrOutputName = paramOrOutputName] {
     emit showDataViewerDock( childId, paramOrOutputName );
   } );
 }
