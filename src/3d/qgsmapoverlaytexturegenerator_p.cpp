@@ -148,8 +148,6 @@ QgsMapSettings QgsMapOverlayTextureGenerator::baseMapSettings() const
   mapSettings.setPathResolver( m3DMapSettings.pathResolver() );
   mapSettings.setRendererUsage( m3DMapSettings.rendererUsage() );
   mapSettings.setLayers( m3DMapSettings.layers() );
-  if ( QgsProject::instance() )
-    mapSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   return mapSettings;
 }
