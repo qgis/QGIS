@@ -1,0 +1,17 @@
+@radiuslarge:8px
+@radiussmall:4px
+@radius:6px
+@controlpadding:0.22em 0.55em
+@tightpadding:0.16em 0.45em
+@itempadding:0.28em 0.55em
+@toolbuttonpadding:0.18em
+@surfacehigh:palette(button)
+@surface:palette(window)
+@fieldalt:palette(alternate-base)
+@fieldtext:palette(text)
+@field:palette(base)
+@accenttext:palette(highlighted-text)
+@accent:palette(highlight)
+@text:palette(window-text)
+@muted:palette(mid)
+@border:palette(mid)

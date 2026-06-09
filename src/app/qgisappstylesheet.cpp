@@ -69,7 +69,9 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
 
   ss += "QGroupBox{ font-weight: 600; }"_L1;
 
-  const QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
+  QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
+  if ( themeName == "Cursor Auto"_L1 )
+    themeName = u"Strata Auto"_s;
   if ( themeName == "default"_L1 || !QgsApplication::uiThemes().contains( themeName ) )
   {
     //sidebar style

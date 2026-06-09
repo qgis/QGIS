@@ -749,6 +749,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   whileBlocking( cmbStyle )->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
 
   QString theme = mSettings->value( u"UI/UITheme"_s, u"default"_s ).toString();
+  if ( theme == "Cursor Auto"_L1 )
+    theme = u"Strata Auto"_s;
   if ( !QgsApplication::uiThemes().contains( theme ) )
   {
     theme = u"default"_s;

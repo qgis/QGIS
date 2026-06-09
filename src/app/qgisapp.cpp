@@ -4332,7 +4332,7 @@ void QgisApp::setTheme( const QString &themeName )
   for the user to choose from.
   */
 
-  QString theme = themeName;
+  QString theme = themeName == "Cursor Auto"_L1 ? u"Strata Auto"_s : themeName;
 
   QgsApplication::setUITheme( theme );
   mStyleSheetBuilder->updateStyleSheet();
@@ -4508,7 +4508,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionTrimExtendFeature->setIcon( QgsApplication::getThemeIcon( u"/mActionTrimExtendFeature.svg"_s ) );
   mActionTemporalController->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/temporal.svg"_s ) );
 
-  emit currentThemeChanged( themeName );
+  emit currentThemeChanged( theme );
 }
 
 void QgisApp::setupConnections()

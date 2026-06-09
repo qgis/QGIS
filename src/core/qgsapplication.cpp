@@ -139,7 +139,7 @@ namespace
     return 0.2126 * color.redF() + 0.7152 * color.greenF() + 0.0722 * color.blueF();
   }
 
-  void applyCursorAutoPalette( QPalette &palette )
+  void applyStrataAutoPalette( QPalette &palette )
   {
     const bool darkBase = colorLuminance( palette.color( QPalette::ColorRole::Window ) ) < 0.5;
 
@@ -1174,9 +1174,11 @@ QString QgsApplication::themeName()
 
 void QgsApplication::setUITheme( const QString &themeName )
 {
+  const QString resolvedThemeName = themeName == "Cursor Auto"_L1 ? u"Strata Auto"_s : themeName;
+
   // Loop all style sheets, find matching name, load it.
-  const QString path = applicationThemeRegistry()->themeFolder( themeName );
-  if ( themeName == "default"_L1 || path.isEmpty() )
+  const QString path = applicationThemeRegistry()->themeFolder( resolvedThemeName );
+  if ( resolvedThemeName == "default"_L1 || path.isEmpty() )
   {
     setThemeName( u"default"_s );
     qApp->setStyleSheet( QString() );
@@ -1202,10 +1204,10 @@ void QgsApplication::setUITheme( const QString &themeName )
   {
     const QString autoPaletteMode = QString::fromUtf8( autoPaletteFile.readAll() ).trimmed();
     autoPaletteFile.close();
-    if ( autoPaletteMode.compare( "cursor"_L1, Qt::CaseInsensitive ) == 0 )
+    if ( autoPaletteMode.compare( "strata"_L1, Qt::CaseInsensitive ) == 0 || autoPaletteMode.compare( "cursor"_L1, Qt::CaseInsensitive ) == 0 )
     {
       QPalette pal = qApp->palette();
-      applyCursorAutoPalette( pal );
+      applyStrataAutoPalette( pal );
       qApp->setPalette( pal );
       appliedPalette = true;
     }
@@ -1273,7 +1275,7 @@ void QgsApplication::setUITheme( const QString &themeName )
 
   qApp->setStyleSheet( styledata );
 
-  setThemeName( themeName );
+  setThemeName( resolvedThemeName );
   instance()->themeChanged();
 }
 

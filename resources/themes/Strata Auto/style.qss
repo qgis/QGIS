@@ -41,7 +41,7 @@ QToolTip
   color: @fieldtext;
   background-color: @field;
   border: 1px solid @border;
-  border-radius: @radius;
+  border-radius: @radiuslarge;
   padding: 0.25em 0.45em;
 }
 
@@ -81,7 +81,7 @@ QMenu::item
 {
   padding: 0.28em 1.5em 0.28em 0.55em;
   background: transparent;
-  border-radius: @radius;
+  border-radius: @radiussmall;
 }
 
 QMenu::item:selected
@@ -188,6 +188,8 @@ QAbstractSpinBox::down-button
 {
   border: 0;
   border-left: 1px solid @border;
+  border-top-right-radius: @radius;
+  border-bottom-right-radius: @radius;
   background-color: @surfacehigh;
   width: 1.25em;
 }
@@ -233,7 +235,7 @@ QTableWidget
 QAbstractItemView::item
 {
   padding: @itempadding;
-  border-radius: @radius;
+  border-radius: @radiussmall;
 }
 
 QAbstractItemView::item:hover
@@ -310,7 +312,7 @@ QScrollBar::handle:vertical,
 QScrollBar::handle:horizontal
 {
   background-color: @muted;
-  border-radius: 0.35em;
+  border-radius: @radius;
   min-height: 1.8em;
   min-width: 1.8em;
   margin: 0.12em;
@@ -377,7 +379,7 @@ QProgressBar
 QProgressBar::chunk
 {
   background-color: @accent;
-  border-radius: @radius;
+  border-radius: @radiuslarge;
 }
 
 QDockWidget::title

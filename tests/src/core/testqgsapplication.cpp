@@ -48,7 +48,7 @@ class TestQgsApplication : public QgsTest
     void platformName();
     void applicationFullName();
     void themeIcon();
-    void cursorAutoTheme();
+    void strataAutoTheme();
 
   private:
     QString getQgisPath();
@@ -120,7 +120,7 @@ void TestQgsApplication::themeIcon()
   QVERIFY( QGSIMAGECHECK( u"theme_icon_colors_2"_s, u"theme_icon_colors_2"_s, im, QString(), 0 ) );
 }
 
-void TestQgsApplication::cursorAutoTheme()
+void TestQgsApplication::strataAutoTheme()
 {
   struct ThemeRestorer
   {
@@ -137,17 +137,21 @@ void TestQgsApplication::cursorAutoTheme()
   } restorer;
 
   const QHash<QString, QString> themes = QgsApplication::uiThemes();
-  QVERIFY( themes.contains( u"Cursor Auto"_s ) );
-  QVERIFY( QFileInfo::exists( themes.value( u"Cursor Auto"_s ) + "/auto-palette.txt"_L1 ) );
+  QVERIFY( themes.contains( u"Strata Auto"_s ) );
+  QVERIFY( !themes.contains( u"Cursor Auto"_s ) );
+  QVERIFY( QFileInfo::exists( themes.value( u"Strata Auto"_s ) + "/auto-palette.txt"_L1 ) );
 
   QPalette darkSeed = restorer.palette;
   darkSeed.setColor( QPalette::ColorRole::Window, QColor( u"#202020"_s ) );
   qApp->setPalette( darkSeed );
-  QgsApplication::setUITheme( u"Cursor Auto"_s );
+  QgsApplication::setUITheme( u"Strata Auto"_s );
 
-  QCOMPARE( QgsApplication::themeName(), u"Cursor Auto"_s );
+  QCOMPARE( QgsApplication::themeName(), u"Strata Auto"_s );
   QVERIFY( !qApp->styleSheet().isEmpty() );
   QVERIFY( qApp->styleSheet().contains( u"QToolButton"_s ) );
+  QVERIFY( qApp->styleSheet().contains( u"border-radius: 4px"_s ) );
+  QVERIFY( qApp->styleSheet().contains( u"border-radius: 6px"_s ) );
+  QVERIFY( qApp->styleSheet().contains( u"border-radius: 8px"_s ) );
   QCOMPARE( qApp->palette().color( QPalette::ColorRole::Window ), QColor( u"#1f2028"_s ) );
   QCOMPARE( qApp->palette().color( QPalette::ColorRole::Base ), QColor( u"#17181f"_s ) );
   QCOMPARE( qApp->palette().color( QPalette::ColorRole::Highlight ), QColor( u"#4b7dff"_s ) );
@@ -156,12 +160,17 @@ void TestQgsApplication::cursorAutoTheme()
   QPalette lightSeed = restorer.palette;
   lightSeed.setColor( QPalette::ColorRole::Window, QColor( u"#ffffff"_s ) );
   qApp->setPalette( lightSeed );
-  QgsApplication::setUITheme( u"Cursor Auto"_s );
+  QgsApplication::setUITheme( u"Strata Auto"_s );
 
   QCOMPARE( qApp->palette().color( QPalette::ColorRole::Window ), QColor( u"#f5f6fa"_s ) );
   QCOMPARE( qApp->palette().color( QPalette::ColorRole::Base ), QColor( u"#ffffff"_s ) );
   QCOMPARE( qApp->palette().color( QPalette::ColorRole::Highlight ), QColor( u"#3f6df6"_s ) );
   QVERIFY( qApp->palette().color( QPalette::ColorRole::Text ) != QColor( u"#000000"_s ) );
+
+  qApp->setPalette( darkSeed );
+  QgsApplication::setUITheme( u"Cursor Auto"_s );
+  QCOMPARE( QgsApplication::themeName(), u"Strata Auto"_s );
+  QCOMPARE( qApp->palette().color( QPalette::ColorRole::Window ), QColor( u"#1f2028"_s ) );
 }
 
 void TestQgsApplication::checkPaths()
