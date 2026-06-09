@@ -224,9 +224,17 @@ void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, c
   {
     if ( QgsPostgresUtils::tableExists( conn, u"public"_s, u"layer_styles"_s ) )
     {
-      executeSqlPrivate( u"UPDATE public.layer_styles SET f_table_name=%1 WHERE f_table_schema=%2 AND f_table_name=%3"_s
-                           .arg( QgsPostgresConn::quotedValue( newName ), QgsPostgresConn::quotedValue( schema ), QgsPostgresConn::quotedValue( name ) ) );
+      try
+      {
+        executeSqlPrivate( u"UPDATE public.layer_styles SET f_table_name=%1 WHERE f_table_schema=%2 AND f_table_name=%3"_s
+                             .arg( QgsPostgresConn::quotedValue( newName ), QgsPostgresConn::quotedValue( schema ), QgsPostgresConn::quotedValue( name ) ) );
+      }
+      catch ( const QgsProviderConnectionException &e )
+      {
+        QgsDebugError( u"Failed to update layer_styles table: %1"_s.arg( e.what() ) );
+      }
     }
+
     QgsPostgresConnPool::instance()->releaseConnection( conn );
   }
 }
