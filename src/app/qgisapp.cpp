@@ -3274,6 +3274,20 @@ void QgisApp::createActions()
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
   connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
+  // Window Menu
+
+  mWindowMenu = new QMenu( tr( "Window" ), this );
+
+  mWindowMenu->addAction( mActionWindowMinimize );
+  mWindowMenu->addAction( mActionWindowZoom );
+  mWindowMenu->addSeparator();
+
+  mWindowMenu->addAction( mActionWindowAllToFront );
+  mWindowMenu->addSeparator();
+
+  // insert before Help menu, as per Mac OS convention
+  menuBar()->insertMenu( mHelpMenu->menuAction(), mWindowMenu );
+
   // list of open windows
   mWindowActions = new QActionGroup( this );
 #endif
@@ -3577,19 +3591,6 @@ void QgisApp::createMenus()
   connect( actionPrefs, &QAction::triggered, this, &QgisApp::options );
   mProjectMenu->addAction( actionPrefs );
 
-  // Window Menu
-
-  mWindowMenu = new QMenu( tr( "Window" ), this );
-
-  mWindowMenu->addAction( mActionWindowMinimize );
-  mWindowMenu->addAction( mActionWindowZoom );
-  mWindowMenu->addSeparator();
-
-  mWindowMenu->addAction( mActionWindowAllToFront );
-  mWindowMenu->addSeparator();
-
-  // insert before Help menu, as per Mac OS convention
-  menuBar()->insertMenu( mHelpMenu->menuAction(), mWindowMenu );
 #endif
 
   // Database Menu
