@@ -16,6 +16,7 @@
 #include "qgsalgorithmdxfexport.h"
 
 #include "qgsdxfexport.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsprocessingparameterdxflayers.h"
 
 #include <QString>
@@ -115,6 +116,14 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   mapSettings.setTransformContext( context.transformContext() );
   mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
   mapSettings.setScaleMethod( mScaleMethod );
+  mapSettings.setEllipsoid( context.ellipsoid() );
+
+  QgsExpressionContext expContext;
+  expContext.appendScope( QgsExpressionContextUtils::globalScope() );
+  if ( context.project() )
+    expContext.appendScope( QgsExpressionContextUtils::projectScope( context.project() ) );
+  expContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapSettings ) );
+  mapSettings.setExpressionContext( expContext );
 
   QList<QgsVectorLayer *> mapLayers;
 

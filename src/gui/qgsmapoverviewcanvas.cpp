@@ -234,6 +234,8 @@ void QgsMapOverviewCanvas::refresh()
   QgsDebugMsgLevel( u"oveview - starting new"_s, 2 );
 
   mSettings.setDevicePixelRatio( static_cast<float>( devicePixelRatioF() ) );
+  if ( QgsProject::instance() )
+    mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   // build the expression context
   QgsExpressionContext expressionContext;
