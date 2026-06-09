@@ -203,30 +203,61 @@
         Due modalità reali di Strata: l'agente esegue PyQGIS sul progetto, Plan propone un piano approvabile prima di toccare i layer.
       </p>
 
-      <div class="demo-showcase">
-        <article class="demo-card">
-          <figure class="demo-frame">
-            <img loading="lazy" src="./assets/demo-chat.png" alt="Strata Agent mode" width="1024" height="570">
-          </figure>
-          <div class="demo-caption">
-            <h3 data-i18n="demo.agent.title">Agent mode — esecuzione sul progetto</h3>
-            <p data-i18n="demo.agent.desc">
-              Chiedi in linguaggio naturale (es. «crea maschera esterna»): l'assistant ispeziona i layer, esegue run_python e mostra il risultato sulla mappa.
-            </p>
+      <div class="demo-carousel" aria-roledescription="carousel" data-i18n-aria-label="demo.carousel.label">
+        <div class="demo-carousel-header">
+          <div class="demo-tabs" role="tablist" aria-label="Esempi demo" data-i18n-aria-label="demo.tabs.label">
+            <button type="button" class="demo-tab active" role="tab" aria-selected="true" aria-controls="demo-slide-agent" id="demo-tab-agent" data-demo-target="0" data-i18n="demo.agent.tab">Agent</button>
+            <button type="button" class="demo-tab" role="tab" aria-selected="false" aria-controls="demo-slide-plan" id="demo-tab-plan" data-demo-target="1" data-i18n="demo.plan.tab">Plan</button>
+            <button type="button" class="demo-tab" role="tab" aria-selected="false" aria-controls="demo-slide-maps" id="demo-tab-maps" data-demo-target="2" data-i18n="demo.maps.tab">Analisi mappe</button>
           </div>
-        </article>
 
-        <article class="demo-card">
-          <figure class="demo-frame">
-            <img loading="lazy" src="./assets/strata-plan-mode.png" alt="Strata Plan mode" width="1024" height="775">
-          </figure>
-          <div class="demo-caption">
-            <h3 data-i18n="demo.plan.title">Plan mode — piano prima dell'azione</h3>
-            <p data-i18n="demo.plan.desc">
-              Descrivi un obiettivo complesso (es. censimento alberi): Strata propone step strutturati e pulsanti Accept plan / Reject / revise prima di modificare il progetto.
-            </p>
+          <div class="demo-controls">
+            <button type="button" class="demo-control" data-demo-prev data-i18n-aria-label="demo.prev">Precedente</button>
+            <span class="demo-count" data-demo-count>1 / 3</span>
+            <button type="button" class="demo-control" data-demo-next data-i18n-aria-label="demo.next">Successivo</button>
           </div>
-        </article>
+        </div>
+
+        <div class="demo-viewport">
+          <article class="demo-slide active" role="tabpanel" id="demo-slide-agent" aria-labelledby="demo-tab-agent" data-demo-slide>
+            <figure class="demo-frame">
+              <img loading="lazy" src="./assets/demo-chat.png" alt="Strata Agent mode" width="1024" height="570" data-i18n-alt="demo.agent.alt">
+            </figure>
+            <div class="demo-caption">
+              <span class="demo-kicker" data-i18n="demo.agent.kicker">Esecuzione controllata</span>
+              <h3 data-i18n="demo.agent.title">Agent mode — esecuzione sul progetto</h3>
+              <p data-i18n="demo.agent.desc">
+                Chiedi in linguaggio naturale (es. «crea maschera esterna»): l'assistant ispeziona i layer, esegue run_python e mostra il risultato sulla mappa.
+              </p>
+            </div>
+          </article>
+
+          <article class="demo-slide" role="tabpanel" id="demo-slide-plan" aria-labelledby="demo-tab-plan" data-demo-slide hidden>
+            <figure class="demo-frame">
+              <img loading="lazy" src="./assets/strata-plan-mode.png" alt="Strata Plan mode" width="1024" height="775" data-i18n-alt="demo.plan.alt">
+            </figure>
+            <div class="demo-caption">
+              <span class="demo-kicker" data-i18n="demo.plan.kicker">Piano prima dell'azione</span>
+              <h3 data-i18n="demo.plan.title">Plan mode — piano prima dell'azione</h3>
+              <p data-i18n="demo.plan.desc">
+                Descrivi un obiettivo complesso (es. censimento alberi): Strata propone step strutturati e pulsanti Accept plan / Reject / revise prima di modificare il progetto.
+              </p>
+            </div>
+          </article>
+
+          <article class="demo-slide" role="tabpanel" id="demo-slide-maps" aria-labelledby="demo-tab-maps" data-demo-slide hidden>
+            <figure class="demo-frame">
+              <img loading="lazy" src="./assets/demo-mappe-brescia.png" alt="Strata map analysis over Brescia layers" width="1024" height="768" data-i18n-alt="demo.maps.alt">
+            </figure>
+            <div class="demo-caption">
+              <span class="demo-kicker" data-i18n="demo.maps.kicker">Domande sui layer reali</span>
+              <h3 data-i18n="demo.maps.title">Analisi mappe — verde urbano e alberi</h3>
+              <p data-i18n="demo.maps.desc">
+                L'assistente legge i layer del progetto, unisce geometrie sovrapposte, calcola superfici, conta gli alberi e restituisce una risposta verificabile direttamente accanto alla mappa.
+              </p>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   </section>

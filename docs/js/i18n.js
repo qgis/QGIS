@@ -96,12 +96,28 @@
       "demo.title": "Vedilo in azione",
       "demo.subtitle":
         "Due modalità reali di Strata: l'agente esegue PyQGIS sul progetto, Plan propone un piano approvabile prima di toccare i layer.",
+      "demo.carousel.label": "Esempi interattivi di Strata",
+      "demo.tabs.label": "Scegli un esempio demo",
+      "demo.prev": "Esempio precedente",
+      "demo.next": "Esempio successivo",
+      "demo.agent.tab": "Agent",
+      "demo.agent.kicker": "Esecuzione controllata",
       "demo.agent.title": "Agent mode — esecuzione sul progetto",
       "demo.agent.desc":
         "Chiedi in linguaggio naturale (es. «crea maschera esterna»): l'assistant ispeziona i layer, esegue run_python e mostra il risultato sulla mappa.",
+      "demo.agent.alt": "Strata in Agent mode con pannello AI accanto alla mappa GIS",
+      "demo.plan.tab": "Plan",
+      "demo.plan.kicker": "Piano prima dell'azione",
       "demo.plan.title": "Plan mode — piano prima dell'azione",
       "demo.plan.desc":
         "Descrivi un obiettivo complesso (es. censimento alberi): Strata propone step strutturati e pulsanti Accept plan / Reject / revise prima di modificare il progetto.",
+      "demo.plan.alt": "Strata in Plan mode con piano approvabile prima delle modifiche",
+      "demo.maps.tab": "Analisi mappe",
+      "demo.maps.kicker": "Domande sui layer reali",
+      "demo.maps.title": "Analisi mappe — verde urbano e alberi",
+      "demo.maps.desc":
+        "L'assistente legge i layer del progetto, unisce geometrie sovrapposte, calcola superfici, conta gli alberi e restituisce una risposta verificabile direttamente accanto alla mappa.",
+      "demo.maps.alt": "Analisi Strata su mappa di Brescia con risposta AI su verde urbano e alberi",
 
       "speed.label": "10× più veloce",
       "speed.title": "Da ore a minuti",
@@ -298,12 +314,28 @@
       "demo.title": "See it in action",
       "demo.subtitle":
         "Two real Strata modes: the agent runs PyQGIS on your project; Plan proposes an approvable plan before touching layers.",
+      "demo.carousel.label": "Interactive Strata examples",
+      "demo.tabs.label": "Choose a demo example",
+      "demo.prev": "Previous example",
+      "demo.next": "Next example",
+      "demo.agent.tab": "Agent",
+      "demo.agent.kicker": "Controlled execution",
       "demo.agent.title": "Agent mode — execution on your project",
       "demo.agent.desc":
         "Ask in plain language (e.g. \"create external mask\"): the assistant inspects layers, runs run_python, and shows the result on the map.",
+      "demo.agent.alt": "Strata in Agent mode with the AI panel next to the GIS map",
+      "demo.plan.tab": "Plan",
+      "demo.plan.kicker": "Plan before action",
       "demo.plan.title": "Plan mode — plan before action",
       "demo.plan.desc":
         "Describe a complex goal (e.g. tree inventory): Strata proposes structured steps and Accept plan / Reject / revise buttons before changing the project.",
+      "demo.plan.alt": "Strata in Plan mode with an approvable plan before changes",
+      "demo.maps.tab": "Map analysis",
+      "demo.maps.kicker": "Questions over real layers",
+      "demo.maps.title": "Map analysis — urban green and trees",
+      "demo.maps.desc":
+        "The assistant reads project layers, dissolves overlapping geometries, calculates surfaces, counts trees, and returns a verifiable answer right beside the map.",
+      "demo.maps.alt": "Strata analysis over a Brescia map with an AI answer about urban green and trees",
 
       "speed.label": "10× faster",
       "speed.title": "From hours to minutes",
@@ -438,6 +470,20 @@
       }
     });
 
+    document.querySelectorAll("[data-i18n-alt]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-alt");
+      if (dict[key] !== undefined) {
+        el.setAttribute("alt", dict[key]);
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-aria-label");
+      if (dict[key] !== undefined) {
+        el.setAttribute("aria-label", dict[key]);
+      }
+    });
+
     const titleEl = document.querySelector("title[data-i18n]");
     if (titleEl && dict["meta.title"]) {
       titleEl.textContent = dict["meta.title"];
@@ -461,8 +507,72 @@
     applyTranslations(lang);
   }
 
+  function initDemoCarousel() {
+    const carousel = document.querySelector(".demo-carousel");
+    if (!carousel) return;
+
+    const slides = Array.from(carousel.querySelectorAll("[data-demo-slide]"));
+    const tabs = Array.from(carousel.querySelectorAll("[data-demo-target]"));
+    const prev = carousel.querySelector("[data-demo-prev]");
+    const next = carousel.querySelector("[data-demo-next]");
+    const count = carousel.querySelector("[data-demo-count]");
+    if (!slides.length || !tabs.length) return;
+
+    let activeIndex = 0;
+
+    function showSlide(index) {
+      activeIndex = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, slideIndex) => {
+        const isActive = slideIndex === activeIndex;
+        slide.classList.toggle("active", isActive);
+        slide.hidden = !isActive;
+      });
+
+      tabs.forEach((tab, tabIndex) => {
+        const isActive = tabIndex === activeIndex;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+        tab.tabIndex = isActive ? 0 : -1;
+      });
+
+      if (count) {
+        count.textContent = `${activeIndex + 1} / ${slides.length}`;
+      }
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        showSlide(Number(tab.getAttribute("data-demo-target")));
+      });
+
+      tab.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showSlide(activeIndex + 1);
+          tabs[activeIndex].focus();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showSlide(activeIndex - 1);
+          tabs[activeIndex].focus();
+        }
+      });
+    });
+
+    if (prev) {
+      prev.addEventListener("click", () => showSlide(activeIndex - 1));
+    }
+
+    if (next) {
+      next.addEventListener("click", () => showSlide(activeIndex + 1));
+    }
+
+    showSlide(activeIndex);
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     applyTranslations(currentLang);
+    initDemoCarousel();
 
     document.querySelectorAll("[data-lang]").forEach((btn) => {
       btn.addEventListener("click", () => setLanguage(btn.getAttribute("data-lang")));
