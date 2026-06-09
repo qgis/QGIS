@@ -305,13 +305,6 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     // using it for storage of parameters only, not for filtering!
     Qt3DRender::QRenderPassFilter *mGlobalParamsStorage = nullptr;
 
-    // Post processing pass branch nodes:
-    Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
-    Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
-    // Post processing pass texture related objects:
-    Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
-    Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
-
     // Separate thumbnail capture pass to save scaled-down images of the
     // rendered view to aid in debugging (e.g., Tracy profiler frame images).
     Qt3DRender::QRenderCapture *mThumbnailCapture = nullptr;
