@@ -104,6 +104,12 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( !mRubberBand )
   {
+    if ( e->button() != Qt::LeftButton )
+    {
+      // only a left-click can start the move operation
+      return;
+    }
+
     //find first geometry under mouse cursor and store iterator to it
     const QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
     const double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
