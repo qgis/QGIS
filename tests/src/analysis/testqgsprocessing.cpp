@@ -209,6 +209,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( rasterParam->defaultFileExtension(), u"tif"_s ); // before alg is accessible
       QVERIFY( addParameter( rasterParam ) );
       QCOMPARE( rasterParam->defaultFileExtension(), u"tif"_s );
+      QVERIFY( rasterParam->createFileFilter().contains( u"GTIFF - tif files (*.tif)"_s ) );
 
       // should allow parameters with same name but different case (required for grass provider)
       QgsProcessingParameterBoolean *p1C = new QgsProcessingParameterBoolean( "P1" );

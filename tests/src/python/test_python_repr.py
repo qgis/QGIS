@@ -318,7 +318,7 @@ class TestPython__repr__(QgisTestCase):
 
     def testQgsMapLayerRepr(self):
         vl = QgsVectorLayer(
-            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk",
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string",
             "QGIS搖滾",
             "memory",
         )

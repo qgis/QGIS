@@ -190,7 +190,7 @@ void TestQgsAppLocatorFilters::testLayouts()
 
 void TestQgsAppLocatorFilters::testSearchActiveLayer()
 {
-  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk"_s;
+  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double"_s;
   QgsVectorLayer *vl = new QgsVectorLayer( layerDef, u"Layer"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( vl );
 
@@ -275,7 +275,7 @@ void TestQgsAppLocatorFilters::testActiveLayerFieldRestriction()
 
 void TestQgsAppLocatorFilters::testActiveLayerCompletion()
 {
-  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk"_s;
+  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double"_s;
   QgsVectorLayer *vl = new QgsVectorLayer( layerDef, u"Layer"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( vl );
   mQgisApp->setActiveLayer( vl );
@@ -293,7 +293,7 @@ void TestQgsAppLocatorFilters::testActiveLayerCompletion()
 
 void TestQgsAppLocatorFilters::testSearchAllLayers()
 {
-  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk"_s;
+  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer"_s;
   QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, u"Layer 1"_s, u"memory"_s );
   QgsVectorLayer *l2 = new QgsVectorLayer( layerDef, u"Layer 2"_s, u"memory"_s );
 
@@ -333,7 +333,7 @@ void TestQgsAppLocatorFilters::testSearchAllLayers()
 
 void TestQgsAppLocatorFilters::testSearchAllLayersPrioritizeExactMatch()
 {
-  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk"_s;
+  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer"_s;
   QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, u"Layer 1"_s, u"memory"_s );
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << l1 );

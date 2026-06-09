@@ -14,20 +14,10 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="2">
-    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
-   </item>
    <item row="6" column="1">
     <widget class="QLabel" name="lblTextureRotation">
      <property name="text">
       <string>Texture rotation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QgsDoubleSpinBox" name="spinShininess">
-     <property name="maximum">
-      <double>1000.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -38,6 +28,103 @@
      </property>
     </widget>
    </item>
+   <item row="8" column="2">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>x</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsDoubleSpinBox" name="textureOffsetXSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-99999999.989999994635582</double>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsDoubleSpinBox" name="textureOffsetYSpin">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-99999999.989999994635582</double>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>y</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="lblTextureScale">
+     <property name="text">
+      <string>Texture scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
+     <property name="suffix">
+      <string> °</string>
+     </property>
+     <property name="minimum">
+      <double>-360.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.500000000000000</double>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="QLabel" name="lblAmbient">
      <property name="toolTip">
@@ -45,6 +132,16 @@
      </property>
      <property name="text">
       <string>Ambient</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="lblSpecular">
+     <property name="toolTip">
+      <string>Color of light reflecting from smooth surfaces.</string>
+     </property>
+     <property name="text">
+      <string>Specular</string>
      </property>
     </widget>
    </item>
@@ -77,33 +174,65 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="lblSpecular">
-     <property name="toolTip">
-      <string>Color of light reflecting from smooth surfaces.</string>
+   <item row="0" column="0" rowspan="10">
+    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>200</height>
+      </size>
      </property>
+    </widget>
+   </item>
+   <item row="9" column="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="lblTextureScale_2">
      <property name="text">
-      <string>Specular</string>
+      <string>Diffuse texture</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="2">
-    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
-     <property name="suffix">
-      <string> °</string>
-     </property>
-     <property name="minimum">
-      <double>-360.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>360.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
+   <item row="5" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mTextureScaleDataDefinedButton">
+     <property name="text">
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
+   <item row="6" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mTextureRotationDataDefinedButton">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mTextureOffsetDataDefinedButton">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLabel" name="lblTextureRotation_2">
+     <property name="text">
+      <string>Texture offset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="2">
     <widget class="QgsColorButton" name="btnAmbient">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -119,7 +248,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
+   <item row="1" column="2" colspan="2">
     <widget class="QgsColorButton" name="btnSpecular">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -135,55 +264,30 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QLabel" name="lblTextureScale">
-     <property name="text">
-      <string>Texture scale</string>
+   <item row="2" column="2" colspan="2">
+    <widget class="QgsDoubleSpinBox" name="spinShininess">
+     <property name="maximum">
+      <double>1000.000000000000000</double>
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
-    <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true"/>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="lblTextureScale_2">
-     <property name="text">
-      <string>Diffuse texture</string>
+   <item row="3" column="2" colspan="2">
+    <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
     </widget>
    </item>
-   <item row="7" column="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="0" rowspan="8">
-    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>200</height>
-      </size>
+   <item row="4" column="2" colspan="2">
+    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>QgsMaterialPreviewWidget</class>
    <extends>QWidget</extends>
@@ -196,15 +300,26 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsImageSourceLineEdit</class>
    <extends>QWidget</extends>
    <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -212,8 +327,15 @@
   <tabstop>btnAmbient</tabstop>
   <tabstop>btnSpecular</tabstop>
   <tabstop>spinShininess</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
+  <tabstop>textureFile</tabstop>
   <tabstop>textureScaleSpinBox</tabstop>
+  <tabstop>mTextureScaleDataDefinedButton</tabstop>
   <tabstop>textureRotationSpinBox</tabstop>
+  <tabstop>mTextureRotationDataDefinedButton</tabstop>
+  <tabstop>textureOffsetXSpin</tabstop>
+  <tabstop>textureOffsetYSpin</tabstop>
+  <tabstop>mTextureOffsetDataDefinedButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

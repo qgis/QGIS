@@ -32,7 +32,8 @@ namespace Qt3DRender
 {
   class QParameter;
   class QShaderProgram;
-
+  class QRenderPass;
+  class QFilterKey;
 } // namespace Qt3DRender
 
 ///@cond PRIVATE
@@ -75,28 +76,47 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
 
     void setDiffuseTextureScale( float textureScale );
     void setDiffuseTextureRotation( float textureRotation );
+    void setDiffuseTextureOffset( float textureOffsetX, float textureOffsetY );
     //! Sets specular color, must be a SRGB color
     void setSpecular( const QColor &specular );
     void setShininess( float shininess );
     void setOpacity( float opacity );
 
+    /**
+     * When data defined texture translation is enabled,
+     * the fragment shader uses per-instance
+     * translation, rotation, and scale attributes for the texture coordinates.
+     */
+    void setDataDefinedTextureTransformEnabled( bool enabled );
+
   private:
     void init();
     void updateShaders();
+
+    void updateVertexShader();
 
     Qt3DRender::QParameter *mAmbientParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureRotationParameter = nullptr;
+    Qt3DRender::QParameter *mDiffuseTextureOffsetParameter = nullptr;
     Qt3DRender::QParameter *mSpecularParameter = nullptr;
     Qt3DRender::QParameter *mShininessParameter = nullptr;
     Qt3DRender::QParameter *mOpacityParameter = nullptr;
-    Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
+
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
     Qt3DRender::QParameter *mNodeTransformParameter = nullptr;
     Qt3DRender::QParameter *mAxisTransformParameter = nullptr;
     Qt3DRender::QParameter *mNodeNormalTransformParameter = nullptr;
+
+    Qt3DRender::QEffect *mEffect = nullptr;
+    Qt3DRender::QTechnique *mGL3Technique = nullptr;
+    Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
+    Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
+    Qt3DRender::QFilterKey *mFilterKey = nullptr;
+
+    bool mDataDefinedTextureTransformEnabled = false;
 };
 
 ///@endcond PRIVATE

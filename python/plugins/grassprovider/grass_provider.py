@@ -204,8 +204,8 @@ class GrassProvider(QgsProcessingProvider):
         # different from QGIS OGR version.
         return super().supportedOutputVectorLayerExtensions()
 
-    def supportedOutputRasterLayerExtensions(self):
-        return GrassUtils.getSupportedOutputRasterExtensions()
+    def getSupportedOutputRasterFormatAndExtensions(self):
+        return GrassUtils.getSupportedOutputRasterFormatAndExtensions()
 
     def canBeActivated(self):
         return not bool(GrassUtils.checkGrassIsInstalled())

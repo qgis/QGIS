@@ -665,12 +665,12 @@ class GrassUtils:
             return "https://grass.osgeo.org/grass-stable/manuals/"
 
     @staticmethod
-    def getSupportedOutputRasterExtensions():
+    def getSupportedOutputRasterFormatAndExtensions():
         # We use the same extensions as GDAL because:
         # - GRASS is also using GDAL for raster imports.
         # - Chances that GRASS is compiled with another version of
         # GDAL than QGIS are very limited!
-        return GdalUtils.getSupportedOutputRasterExtensions()
+        return GdalUtils.getSupportedOutputRasterFormatAndExtensions()
 
     @staticmethod
     def getRasterFormatFromFilename(filename):

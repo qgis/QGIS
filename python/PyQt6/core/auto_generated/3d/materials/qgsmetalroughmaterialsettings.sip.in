@@ -31,6 +31,8 @@ A PBR metal rough shading material used for rendering.
 
     virtual QString type() const;
 
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
 
     static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
 %Docstring

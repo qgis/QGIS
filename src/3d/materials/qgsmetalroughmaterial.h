@@ -131,6 +131,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
 
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
+    void setTextureOffset( float textureOffsetX, float textureOffsetY );
     void setFlatShadingEnabled( bool enabled );
 
     void setOpacity( float opacity );
@@ -141,6 +142,13 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
      * the DATA_DEFINED define is injected into the fragment shader.
      */
     void setDataDefinedEnabled( bool enabled );
+
+    /**
+     * When data defined texture translation is enabled,
+     * the fragment shader uses per-instance
+     * translation, rotation, and scale attributes for the texture coordinates.
+     */
+    void setDataDefinedTextureTransformEnabled( bool enabled );
 
     /**
      * Sets whether environmental lighting effects should be enabled for the material.
@@ -174,6 +182,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mClearCoatRoughnessParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mTextureRotationParameter = nullptr;
+    Qt3DRender::QParameter *mTextureOffsetParameter = nullptr;
     Qt3DRender::QParameter *mOpacityParameter = nullptr;
     Qt3DRender::QEffect *mMetalRoughEffect = nullptr;
     Qt3DRender::QTechnique *mMetalRoughGL3Technique = nullptr;
@@ -195,6 +204,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mNodeNormalTransformParameter = nullptr;
 
     bool mDataDefinedEnabled = false;
+    bool mDataDefinedTextureTransformEnabled = false;
     bool mEnableEnvironmentalLighting = false;
 
     friend class TestQgsGltf3DUtils;

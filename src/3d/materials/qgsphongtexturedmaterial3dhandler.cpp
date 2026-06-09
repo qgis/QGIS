@@ -98,6 +98,13 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
       material->setDiffuseTexture( texture );
       material->setDiffuseTextureScale( static_cast<float>( phongSettings->textureScale() ) );
       material->setDiffuseTextureRotation( static_cast<float>( phongSettings->textureRotation() ) );
+      material->setDiffuseTextureOffset( static_cast<float>( phongSettings->textureOffset().x() ), static_cast<float>( phongSettings->textureOffset().y() ) );
+
+      const QgsPropertyCollection ddProps = phongSettings->dataDefinedProperties();
+      const bool hasDDTextureTransform = ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureOffset )
+                                         || ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureScale )
+                                         || ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureRotation );
+      material->setDataDefinedTextureTransformEnabled( hasDDTextureTransform );
 
       return material;
     }
@@ -182,6 +189,8 @@ bool QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *s
     p->setValue( phongSettings->textureScale() );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordRotation"_s ) )
     p->setValue( phongSettings->textureRotation() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordOffset"_s ) )
+    p->setValue( QVariant::fromValue( QVector2D( static_cast< float>( phongSettings->textureOffset().x() ), static_cast< float >( phongSettings->textureOffset().y() ) ) ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"specularColor"_s ) )
     p->setValue( Qgs3DUtils::srgbToLinear( phongSettings->specular() ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"shininess"_s ) )

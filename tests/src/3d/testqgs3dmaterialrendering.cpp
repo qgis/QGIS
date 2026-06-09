@@ -71,6 +71,8 @@ class TestQgs3DMaterialRendering : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testPhongShading();
     void testExtrudedPolygonsTexturedPhong();
+    void testPhongTexturedDataDefined_data();
+    void testPhongTexturedDataDefined();
     void testExtrudedPolygonsDataDefinedPhong();
     void testExtrudedPolygonsDataDefinedPhongClipping();
     void testExtrudedPolygonsDataDefinedGooch();
@@ -84,6 +86,8 @@ class TestQgs3DMaterialRendering : public QgsTest
     void testExtrudedPolygonsMetalRoughTexturedShadingEmission();
     void testExtrudedPolygonsMetalRoughTexturedShadingDisplacement();
     void testExtrudedPolygonsMetalRoughTexturedShadingOpacity();
+    void testMetalRoughTexturedDataDefined_data();
+    void testMetalRoughTexturedDataDefined();
     void testExtrudedPolygonsDataDefinedMetalRoughBase();
     void testExtrudedPolygonsDataDefinedMetalRoughEmission();
     void testMetalRoughEnvironmentLight_data();
@@ -319,6 +323,84 @@ void TestQgs3DMaterialRendering::testExtrudedPolygonsTexturedPhong()
   delete scene;
   delete map;
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_phong", "polygon3d_extrusion_textured_phong", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DMaterialRendering::testPhongTexturedDataDefined_data()
+{
+  QTest::addColumn<QgsProperty>( "scale" );
+  QTest::addColumn<QgsProperty>( "rotation" );
+  QTest::addColumn<QgsProperty>( "offset" );
+  QTest::addColumn<QString>( "reference" );
+
+  QTest::newRow( "dd scale" ) << QgsProperty::fromExpression( "case when ogc_fid =29204 then 400 else 800 end" ) << QgsProperty() << QgsProperty() << "phong_dd_texture_scale";
+  QTest::newRow( "dd rotation" ) << QgsProperty() << QgsProperty::fromExpression( "case when ogc_fid =29204 then 45 else 90 end" ) << QgsProperty() << "phong_dd_texture_rotation";
+  QTest::newRow( "dd offset" ) << QgsProperty() << QgsProperty() << QgsProperty::fromExpression( "case when ogc_fid =29204 then '10,20' else '2,-3' end" ) << "phong_dd_texture_offset";
+  QTest::newRow( "dd scale, rotation, offset" )
+    << QgsProperty::fromExpression( "case when ogc_fid =29204 then 400 else 800 end" )
+    << QgsProperty::fromExpression( "case when ogc_fid =29204 then 45 else 90 end" )
+    << QgsProperty::fromExpression( "case when ogc_fid =29204 then '10,20' else '15,10' end" )
+    << "phong_dd_texture_scale_rotation_offset";
+}
+
+void TestQgs3DMaterialRendering::testPhongTexturedDataDefined()
+{
+  QFETCH( QgsProperty, scale );
+  QFETCH( QgsProperty, rotation );
+  QFETCH( QgsProperty, offset );
+  QFETCH( QString, reference );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsPhongTexturedMaterialSettings materialSettings;
+  materialSettings.setAmbient( QColor( 26, 26, 26 ) );
+  materialSettings.setSpecular( QColor( 10, 10, 10 ) );
+  materialSettings.setShininess( 1.0 );
+  materialSettings.setDiffuseTexturePath( testDataPath( "/sample_image.png" ) );
+  materialSettings.setTextureScale( 0.02 );
+  QgsPropertyCollection props = materialSettings.dataDefinedProperties();
+  if ( scale.isActive() )
+    props.setProperty( QgsAbstractMaterialSettings::Property::TextureScale, scale );
+  if ( rotation.isActive() )
+    props.setProperty( QgsAbstractMaterialSettings::Property::TextureRotation, rotation );
+  if ( offset.isActive() )
+    props.setProperty( QgsAbstractMaterialSettings::Property::TextureOffset, offset );
+  materialSettings.setDataDefinedProperties( props );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.9 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 30, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( reference, reference, img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DMaterialRendering::testExtrudedPolygonsDataDefinedPhong()
@@ -982,6 +1064,81 @@ void TestQgs3DMaterialRendering::testExtrudedPolygonsMetalRoughTexturedShadingOp
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough_opacity", "polygon3d_extrusion_textured_metalrough_opacity", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DMaterialRendering::testMetalRoughTexturedDataDefined_data()
+{
+  QTest::addColumn<QgsProperty>( "scale" );
+  QTest::addColumn<QgsProperty>( "rotation" );
+  QTest::addColumn<QgsProperty>( "offset" );
+  QTest::addColumn<QString>( "reference" );
+
+  QTest::newRow( "dd scale" ) << QgsProperty::fromExpression( "case when ogc_fid =29204 then 400 else 800 end" ) << QgsProperty() << QgsProperty() << "metalrough_dd_texture_scale";
+  QTest::newRow( "dd rotation" ) << QgsProperty() << QgsProperty::fromExpression( "case when ogc_fid =29204 then 45 else 90 end" ) << QgsProperty() << "metalrough_dd_texture_rotation";
+  QTest::newRow( "dd offset" ) << QgsProperty() << QgsProperty() << QgsProperty::fromExpression( "case when ogc_fid =29204 then '10,20' else '2,-3' end" ) << "metalrough_dd_texture_offset";
+  QTest::newRow( "dd scale, rotation, offset" )
+    << QgsProperty::fromExpression( "case when ogc_fid =29204 then 400 else 800 end" )
+    << QgsProperty::fromExpression( "case when ogc_fid =29204 then 45 else 90 end" )
+    << QgsProperty::fromExpression( "case when ogc_fid =29204 then '10,20' else '15,10' end" )
+    << "metalrough_dd_texture_scale_rotation_offset";
+}
+
+void TestQgs3DMaterialRendering::testMetalRoughTexturedDataDefined()
+{
+  QFETCH( QgsProperty, scale );
+  QFETCH( QgsProperty, rotation );
+  QFETCH( QgsProperty, offset );
+  QFETCH( QString, reference );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsMetalRoughTexturedMaterialSettings materialSettings;
+  materialSettings.setBaseColorTexturePath( testDataPath( "/sample_image.png" ) );
+  materialSettings.setTextureScale( 0.02 );
+  QgsPropertyCollection props = materialSettings.dataDefinedProperties();
+  if ( scale.isActive() )
+    props.setProperty( QgsAbstractMaterialSettings::Property::TextureScale, scale );
+  if ( rotation.isActive() )
+    props.setProperty( QgsAbstractMaterialSettings::Property::TextureRotation, rotation );
+  if ( offset.isActive() )
+    props.setProperty( QgsAbstractMaterialSettings::Property::TextureOffset, offset );
+  materialSettings.setDataDefinedProperties( props );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.9 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 30, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( reference, reference, img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DMaterialRendering::testExtrudedPolygonsDataDefinedMetalRoughBase()

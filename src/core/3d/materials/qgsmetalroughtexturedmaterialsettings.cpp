@@ -66,6 +66,11 @@ bool QgsMetalRoughTexturedMaterialSettings::equals( const QgsAbstractMaterialSet
   return *this == *otherMetal;
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsMetalRoughTexturedMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::TextureRotation, QgsAbstractMaterialSettings::Property::TextureScale, QgsAbstractMaterialSettings::Property::TextureOffset };
+}
+
 bool QgsMetalRoughTexturedMaterialSettings::requiresTextureCoordinates() const
 {
   return true;
@@ -156,6 +161,7 @@ void QgsMetalRoughTexturedMaterialSettings::readXml( const QDomElement &elem, co
   mParallaxScale = elem.attribute( u"parallax_scale"_s, QString( "0.1" ) ).toDouble();
   mTextureScale = elem.attribute( u"texture_scale"_s, QString( "1.0" ) ).toDouble();
   mTextureRotation = elem.attribute( u"texture_rotation"_s, QString( "0.0" ) ).toDouble();
+  mTextureOffset = QgsSymbolLayerUtils::decodePoint( elem.attribute( u"texture_offset"_s ) );
   mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
@@ -175,6 +181,8 @@ void QgsMetalRoughTexturedMaterialSettings::writeXml( QDomElement &elem, const Q
     elem.setAttribute( u"emission_factor"_s, mEmissionFactor );
   elem.setAttribute( u"texture_scale"_s, mTextureScale );
   elem.setAttribute( u"texture_rotation"_s, mTextureRotation );
+  if ( !qgsDoubleNear( mTextureOffset.x(), 0 ) || !qgsDoubleNear( mTextureOffset.y(), 0 ) )
+    elem.setAttribute( u"texture_offset"_s, QgsSymbolLayerUtils::encodePoint( mTextureOffset ) );
   if ( !qgsDoubleNear( mOpacity, 1 ) )
     elem.setAttribute( u"opacity"_s, mOpacity );
 
