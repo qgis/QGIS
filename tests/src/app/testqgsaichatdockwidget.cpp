@@ -4,6 +4,8 @@
   begin                : April 2026
 ***************************************************************************/
 
+#include "ai/index/qgsaiembeddingprovider.h"
+#include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaichatdockwidget.h"
 #include "ai/qgsaichathistorystore.h"
@@ -16,6 +18,7 @@
 #include <QAbstractScrollArea>
 #include <QApplication>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QCoreApplication>
 #include <QDialog>
 #include <QEvent>
@@ -428,18 +431,33 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
 
   QgsSettings settings;
   const QString openAiKey = u"ai/provider/openai/apiKey"_s;
+  const QString legacyEmbeddingProviderKey = u"ai/embeddings/provider"_s;
+  const QString embeddingProviderKey = u"strata/index/embedding_provider"_s;
+  const QString automaticIndexingKey = u"strata/index/automatic"_s;
   const QString layerIndexingKey = u"strata/index/enable_layer_indexing"_s;
   const bool hadOpenAiKey = settings.contains( openAiKey );
   const QVariant savedOpenAiKey = settings.value( openAiKey );
+  const bool hadLegacyEmbeddingProvider = settings.contains( legacyEmbeddingProviderKey );
+  const QVariant savedLegacyEmbeddingProvider = settings.value( legacyEmbeddingProviderKey );
+  const bool hadEmbeddingProvider = settings.contains( embeddingProviderKey );
+  const QVariant savedEmbeddingProvider = settings.value( embeddingProviderKey );
+  const bool hadAutomaticIndexing = settings.contains( automaticIndexingKey );
+  const QVariant savedAutomaticIndexing = settings.value( automaticIndexingKey );
   const bool hadLayerIndexing = settings.contains( layerIndexingKey );
   const QVariant savedLayerIndexing = settings.value( layerIndexingKey );
   settings.setValue( openAiKey, u"sk-old-test-key"_s );
+  settings.setValue( legacyEmbeddingProviderKey, u"openai"_s );
+  settings.remove( embeddingProviderKey );
+  settings.setValue( automaticIndexingKey, true );
   settings.setValue( layerIndexingKey, true );
 
   QgsAiModelRouter router;
   QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiLocalEmbeddingProvider embeddingProvider;
+  QgsAiWorkspaceIndex workspaceIndex( &contextProvider, &embeddingProvider );
   QgsAiReviewPatchEngine reviewEngine;
   QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  manager.setWorkspaceIndex( &workspaceIndex );
   QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
 
   bool inspected = false;
@@ -447,13 +465,17 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool layerIndexingChecked = true;
   bool layerIndexingEnabled = true;
   bool localStatusFound = false;
-  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound]() {
+  bool defaultProviderSelected = false;
+  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &defaultProviderSelected]() {
     QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
     if ( settingsDialog )
     {
       QCheckBox *layerIndexing = settingsDialog->findChild<QCheckBox *>( u"aiEnableLayerIndexingCheckBox"_s );
+      QComboBox *providerCombo = settingsDialog->findChild<QComboBox *>( u"aiEmbeddingProviderComboBox"_s );
       QLabel *statusLabel = settingsDialog->findChild<QLabel *>( u"aiEmbeddingProviderStatusLabel"_s );
       controlsFound = layerIndexing
+                      && providerCombo
+                      && settingsDialog->findChild<QCheckBox *>( u"aiAutomaticIndexingCheckBox"_s )
                       && settingsDialog->findChild<QPushButton *>( u"aiRebuildWorkspaceIndexButton"_s )
                       && settingsDialog->findChild<QPushButton *>( u"aiRebuildLayerIndexButton"_s );
       if ( layerIndexing )
@@ -461,7 +483,8 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
         layerIndexingChecked = layerIndexing->isChecked();
         layerIndexingEnabled = layerIndexing->isEnabled();
       }
-      localStatusFound = statusLabel && statusLabel->text().contains( u"local embedding model"_s, Qt::CaseInsensitive );
+      defaultProviderSelected = providerCombo && providerCombo->currentData().toString() == QgsAiEmbeddingProviderRegistry::defaultProviderId();
+      localStatusFound = statusLabel && statusLabel->text().contains( u"without an API key"_s, Qt::CaseInsensitive );
       settingsDialog->reject();
     }
     inspected = true;
@@ -473,6 +496,18 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
     settings.setValue( openAiKey, savedOpenAiKey );
   else
     settings.remove( openAiKey );
+  if ( hadLegacyEmbeddingProvider )
+    settings.setValue( legacyEmbeddingProviderKey, savedLegacyEmbeddingProvider );
+  else
+    settings.remove( legacyEmbeddingProviderKey );
+  if ( hadEmbeddingProvider )
+    settings.setValue( embeddingProviderKey, savedEmbeddingProvider );
+  else
+    settings.remove( embeddingProviderKey );
+  if ( hadAutomaticIndexing )
+    settings.setValue( automaticIndexingKey, savedAutomaticIndexing );
+  else
+    settings.remove( automaticIndexingKey );
   if ( hadLayerIndexing )
     settings.setValue( layerIndexingKey, savedLayerIndexing );
   else
@@ -482,8 +517,9 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   QVERIFY( inspected );
   QVERIFY( controlsFound );
   QVERIFY( localStatusFound );
-  QVERIFY( !layerIndexingChecked );
-  QVERIFY( !layerIndexingEnabled );
+  QVERIFY( defaultProviderSelected );
+  QVERIFY( layerIndexingChecked );
+  QVERIFY( layerIndexingEnabled );
 }
 
 void TestQgsAiChatDockWidget::historyMenuPromptsForSavedProjectWhenUnsaved()

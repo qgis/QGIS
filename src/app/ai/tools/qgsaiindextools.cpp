@@ -78,7 +78,7 @@ QString QgsAiSearchWorkspaceTool::description() const
 {
   return QStringLiteral(
     "Semantic top-k retrieval over the indexed workspace. Embeds 'query' with "
-    "the local embedding model and returns the best-matching chunks as "
+    "the selected embedding provider and returns the best-matching chunks as "
     "[{path, chunk_index, score, text}]. The model should typically use this "
     "to locate the right file before reading it with read_file. "
     "If the index is empty, the result will say so — call reindex_workspace first."
@@ -145,8 +145,9 @@ QString QgsAiReindexWorkspaceTool::description() const
 {
   return QStringLiteral(
     "Rebuilds the AI workspace retrieval index. Walks every text-like file in "
-    "the workspace, chunks it, and embeds each chunk with the local embedding "
-    "model. The caller MUST set 'confirm: true' to acknowledge local CPU work. "
+    "the workspace, chunks it, and embeds each chunk with the selected embedding "
+    "provider. The default provider is local; remote providers are used only "
+    "when explicitly selected. The caller MUST set 'confirm: true'. "
     "Optional 'max_files' caps how many files are processed (default 500)."
   );
 }
@@ -154,7 +155,7 @@ QString QgsAiReindexWorkspaceTool::description() const
 QJsonObject QgsAiReindexWorkspaceTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that file chunks will be processed by the local embedding model."_s ) );
+  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that file chunks will be processed by the selected embedding provider."_s ) );
   properties.insert( u"max_files"_s, prop( u"integer"_s, u"Cap on indexed files (default 500, hard cap 5000)."_s ) );
   return schemaObject( properties, QJsonArray { u"confirm"_s } );
 }
@@ -200,8 +201,8 @@ QString QgsAiReindexLayersTool::description() const
   return QStringLiteral(
     "Rebuilds the layer portion of the AI retrieval index. Walks every vector "
     "and raster layer in the active QgsProject, packs features into auto-sized "
-    "chunks (attributes + bounding boxes), and embeds them with the local "
-    "embedding model. File chunks are preserved. The caller MUST set "
+    "chunks (attributes + bounding boxes), and embeds them with the selected "
+    "embedding provider. File chunks are preserved. The caller MUST set "
     "'confirm: true' to acknowledge this."
   );
 }
@@ -209,7 +210,7 @@ QString QgsAiReindexLayersTool::description() const
 QJsonObject QgsAiReindexLayersTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that layer data will be processed by the local embedding model."_s ) );
+  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that layer data will be processed by the selected embedding provider."_s ) );
   return schemaObject( properties, QJsonArray { u"confirm"_s } );
 }
 

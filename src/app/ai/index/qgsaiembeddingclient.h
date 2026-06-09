@@ -53,11 +53,23 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
 
     explicit QgsAiEmbeddingClient( QObject *parent = nullptr );
 
+    void setProvider( Provider provider )
+    {
+      mProviderOverride = provider;
+      mHasProviderOverride = true;
+      resetCircuitBreaker();
+    }
     void setModel( const QString &model ) { mModelOverride = model.trimmed(); }
     QString model() const;
     Provider provider() const;
     QString endpoint() const;
     QJsonObject openRouterProviderPreferences() const;
+    bool authenticationFailed() const { return mAuthenticationFailed; }
+    void resetCircuitBreaker()
+    {
+      mAuthenticationFailed = false;
+      mAuthFailureLogged = false;
+    }
 
     /**
      * Returns true when the configured embeddings provider has an API key (settings or env).
@@ -81,6 +93,10 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
 
     QString mModelOverride;
     int mTimeoutMs = 60000;
+    Provider mProviderOverride = Provider::OpenAi;
+    bool mHasProviderOverride = false;
+    bool mAuthenticationFailed = false;
+    bool mAuthFailureLogged = false;
 };
 
 #endif // QGSAIEMBEDDINGCLIENT_H

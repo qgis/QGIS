@@ -50,13 +50,16 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
 
     void setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *coordinator );
 
+  signals:
+    void embeddingProviderSettingsChanged();
+
   public slots:
     void rebuildHistoryMenu();
 
   public:
     /**
      * Returns true when the user has not yet consented to layer indexing
-     * (i.e. attributes + bounding boxes leaving the machine for embeddings).
+     * (i.e. attributes + bounding boxes being processed for retrieval).
      * Callers must surface a confirmation dialog before flipping the toggle on.
      */
     static bool requiresLayerIndexingConsent();

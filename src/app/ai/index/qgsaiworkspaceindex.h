@@ -21,6 +21,7 @@
 #include <QDateTime>
 #include <QList>
 #include <QObject>
+#include <QRecursiveMutex>
 #include <QString>
 #include <QVector>
 
@@ -52,9 +53,9 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     static constexpr int CHUNK_TARGET_CHARS = 1200;
     static constexpr int MAX_FILE_BYTES = 256 * 1024;
     static constexpr int DEFAULT_MAX_FILES = 500;
-    static constexpr int EMBEDDING_BATCH = 64;
+    static constexpr int EMBEDDING_BATCH = 16;
     //! Bumped when the on-disk SQLite schema changes; older DBs are dropped on first load.
-    static constexpr int SCHEMA_VERSION = 2;
+    static constexpr int SCHEMA_VERSION = 3;
 
     //! Discriminates between workspace-file chunks and layer-data chunks.
     static constexpr const char *SOURCE_TYPE_FILE = "file";
@@ -103,11 +104,14 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
         int layerChunkCount = 0;
         QDateTime lastSync;
         QString workspaceRoot;
+        QString embeddingProviderId;
+        QString embeddingModelId;
     };
 
     QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingProvider *embeddingProvider, QObject *parent = nullptr );
     ~QgsAiWorkspaceIndex() override;
 
+    void setEmbeddingProvider( QgsAiEmbeddingProvider *embeddingProvider );
     virtual bool embeddingProviderAvailable() const;
     //! Temporary compatibility wrapper for older call sites.
     virtual bool hasEmbeddingConfiguration() const;
@@ -189,6 +193,12 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     {
         Chunk chunk;
         QVector<float> embedding;
+        QString providerId;
+        QString modelId;
+        QString modelRevision;
+        int embeddingDimension = 0;
+        QString contentHash;
+        qint64 sourceMTime = 0;
     };
 
     bool persistAll( const QList<CachedChunk> &chunks, ReplaceScope scope, const QString &scopedLayerId, QString *errorMessage );
@@ -204,6 +214,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     QList<CachedChunk> mCache;
     QDateTime mLastSync;
     bool mLoaded = false;
+    mutable QRecursiveMutex mMutex;
 };
 
 #endif // QGSAIWORKSPACEINDEX_H

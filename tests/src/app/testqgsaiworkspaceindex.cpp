@@ -44,6 +44,7 @@ namespace
         const QStringList keys = {
           u"ai/provider/openai/apiKey"_s,
           u"ai/provider/openrouter/apiKey"_s,
+          u"strata/index/embedding_provider"_s,
           u"ai/embeddings/provider"_s,
           u"ai/embeddings/openai/model"_s,
           u"ai/embeddings/openrouter/model"_s,
@@ -378,27 +379,38 @@ void TestQgsAiWorkspaceIndex::embeddingProviderAvailabilityIgnoresRemoteSettings
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );
-  QgsAiUnavailableLocalEmbeddingProvider provider;
-  QgsAiWorkspaceIndex index( &contextProvider, &provider );
 
-  QVERIFY( !index.embeddingProviderAvailable() );
-  QVERIFY( !index.hasEmbeddingConfiguration() );
+  std::unique_ptr<QgsAiEmbeddingProvider> provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
+  QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
+  QVERIFY( provider->isAvailable() );
+  QgsAiWorkspaceIndex index( &contextProvider, provider.get() );
+  QVERIFY( index.embeddingProviderAvailable() );
+  QVERIFY( index.hasEmbeddingConfiguration() );
 
   settings.setValue( u"ai/provider/openai/apiKey"_s, u"sk-test-settings"_s );
-  QVERIFY( !index.embeddingProviderAvailable() );
-  QVERIFY( !index.hasEmbeddingConfiguration() );
+  provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
+  QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
+  QVERIFY( provider->isAvailable() );
 
   settings.remove( u"ai/provider/openai/apiKey"_s );
   qputenv( "OPENAI_API_KEY", "sk-test-env" );
-  QVERIFY( !index.embeddingProviderAvailable() );
-  QVERIFY( !index.hasEmbeddingConfiguration() );
+  provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
+  QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
+  QVERIFY( provider->isAvailable() );
 
   qunsetenv( "OPENAI_API_KEY" );
   settings.setValue( u"ai/embeddings/provider"_s, u"openrouter"_s );
   settings.setValue( u"ai/provider/openrouter/apiKey"_s, u"sk-or-test-settings"_s );
   qputenv( "OPENROUTER_API_KEY", "sk-or-test-env" );
-  QVERIFY( !index.embeddingProviderAvailable() );
-  QVERIFY( !index.hasEmbeddingConfiguration() );
+  provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
+  QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
+  QVERIFY( provider->isAvailable() );
+
+  settings.setValue( u"strata/index/embedding_provider"_s, u"openrouter"_s );
+  provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
+  QCOMPARE( provider->providerId(), u"openrouter"_s );
+  QVERIFY( provider->isRemote() );
+  QVERIFY( provider->isAvailable() );
 }
 
 void TestQgsAiWorkspaceIndex::embeddingClientDefaultsToOpenAi()

@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
 
 #include "qgsaiembeddingprovider.h"
 #include "qgsaifilecontextprovider.h"
@@ -34,11 +35,14 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
+#include <QMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QString>
 #include <QStringList>
+#include <QThread>
 #include <QUuid>
 #include <QVariant>
 
@@ -84,6 +88,55 @@ namespace
       *errorMessage = providerError.isEmpty() ? u"Local embedding model is not installed."_s : providerError;
     return false;
   }
+
+  QString storageProviderId( QgsAiEmbeddingProvider *provider )
+  {
+    return provider ? provider->providerId() : u"test"_s;
+  }
+
+  QString storageModelId( QgsAiEmbeddingProvider *provider )
+  {
+    return provider ? provider->modelId() : u"test"_s;
+  }
+
+  QString storageModelRevision( QgsAiEmbeddingProvider *provider )
+  {
+    return provider ? provider->modelRevision() : u"test"_s;
+  }
+
+  int storageDimension( QgsAiEmbeddingProvider *provider, const QVector<float> &embedding )
+  {
+    const int providerDimension = provider ? provider->embeddingDimension() : 0;
+    return providerDimension > 0 ? providerDimension : embedding.size();
+  }
+
+  QString textHash( const QString &text, const QByteArray &extra = QByteArray() )
+  {
+    QCryptographicHash hash( QCryptographicHash::Sha1 );
+    hash.addData( text.toUtf8() );
+    if ( !extra.isEmpty() )
+      hash.addData( extra );
+    return QString::fromLatin1( hash.result().toHex() );
+  }
+
+  bool metadataMatchesProvider( const QString &providerId, const QString &modelId, const QString &modelRevision, int dimension, QgsAiEmbeddingProvider *provider )
+  {
+    if ( !provider )
+      return true;
+    if ( providerId != provider->providerId() )
+      return false;
+    if ( modelId != provider->modelId() )
+      return false;
+    if ( modelRevision != provider->modelRevision() )
+      return false;
+    const int providerDimension = provider->embeddingDimension();
+    return providerDimension <= 0 || dimension == providerDimension;
+  }
+
+  QString chunkReuseKey( const QString &sourceType, const QString &relativePath, const QString &layerId, int chunkIndex )
+  {
+    return sourceType + QChar( 0x1f ) + relativePath + QChar( 0x1f ) + layerId + QChar( 0x1f ) + QString::number( chunkIndex );
+  }
 } //namespace
 
 QgsAiWorkspaceIndex::QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingProvider *embeddingProvider, QObject *parent )
@@ -107,7 +160,7 @@ QString QgsAiWorkspaceIndex::connectionName() const
 {
   // One named SQL connection per index instance — avoid clashing with other
   // QGIS components that already use unnamed default connections.
-  return u"qgsai_index_%1"_s.arg( reinterpret_cast<quintptr>( this ) );
+  return u"qgsai_index_%1_%2"_s.arg( reinterpret_cast<quintptr>( this ) ).arg( reinterpret_cast<quintptr>( QThread::currentThreadId() ) );
 }
 
 QString QgsAiWorkspaceIndex::dbPath() const
@@ -138,14 +191,29 @@ bool QgsAiWorkspaceIndex::hasEmbeddingConfiguration() const
   return embeddingProviderAvailable();
 }
 
+void QgsAiWorkspaceIndex::setEmbeddingProvider( QgsAiEmbeddingProvider *embeddingProvider )
+{
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
+  if ( mEmbeddingProvider == embeddingProvider )
+    return;
+
+  mEmbeddingProvider = embeddingProvider;
+  mCache.clear();
+  mLastSync = QDateTime();
+  mLoaded = false;
+  ensureLoaded();
+}
+
 bool QgsAiWorkspaceIndex::embeddingProviderAvailable() const
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   QString ignored;
   return mEmbeddingProvider && mEmbeddingProvider->isAvailable( &ignored );
 }
 
 void QgsAiWorkspaceIndex::onWorkspaceRootChanged()
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   const QString name = connectionName();
   if ( QSqlDatabase::contains( name ) )
   {
@@ -211,6 +279,7 @@ float QgsAiWorkspaceIndex::cosineSimilarity( const QVector<float> &a, const QVec
 
 bool QgsAiWorkspaceIndex::ensureLoaded()
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   if ( mLoaded )
     return true;
   QString err;
@@ -227,8 +296,11 @@ bool QgsAiWorkspaceIndex::ensureLoaded()
 
 QgsAiWorkspaceIndex::Status QgsAiWorkspaceIndex::status() const
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   Status s;
   s.workspaceRoot = mContextProvider ? mContextProvider->workspaceRoot() : QString();
+  s.embeddingProviderId = mEmbeddingProvider ? mEmbeddingProvider->providerId() : QString();
+  s.embeddingModelId = mEmbeddingProvider ? mEmbeddingProvider->modelId() : QString();
   s.chunkCount = mCache.size();
   QStringList uniqueFiles;
   for ( const CachedChunk &c : mCache )
@@ -250,6 +322,7 @@ QgsAiWorkspaceIndex::Status QgsAiWorkspaceIndex::status() const
 
 QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::chunks( ReplaceScope scope, const QString &layerId ) const
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   QList<Chunk> out;
   for ( const CachedChunk &c : mCache )
   {
@@ -278,6 +351,7 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::chunks( ReplaceScope scop
 
 bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   mCache.clear();
   const QString path = dbPath();
   if ( path.isEmpty() || !QFileInfo::exists( path ) )
@@ -309,8 +383,33 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
     }
   }
 
+  {
+    QSqlQuery tableCheck( db );
+    if ( tableCheck.exec( u"SELECT name FROM sqlite_master WHERE type='table' AND name='chunks'"_s ) && !tableCheck.next() )
+      return true;
+  }
+
+  {
+    QSqlQuery metadata( db );
+    if ( metadata.exec( u"SELECT provider_id, model_id, model_revision, embedding_dimension FROM chunks LIMIT 1"_s ) && metadata.next() )
+    {
+      const QString providerId = metadata.value( 0 ).toString();
+      const QString modelId = metadata.value( 1 ).toString();
+      const QString modelRevision = metadata.value( 2 ).toString();
+      const int dimension = metadata.value( 3 ).toInt();
+      if ( !metadataMatchesProvider( providerId, modelId, modelRevision, dimension, mEmbeddingProvider ) )
+      {
+        QgsMessageLog::logMessage( u"Workspace index provider changed (%1/%2 -> %3/%4); dropping old chunks"_s.arg( providerId, modelId, storageProviderId( mEmbeddingProvider ), storageModelId( mEmbeddingProvider ) ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+        QSqlQuery drop( db );
+        drop.exec( u"DROP TABLE IF EXISTS chunks"_s );
+        drop.exec( u"PRAGMA user_version = %1"_s.arg( SCHEMA_VERSION ) );
+        return true;
+      }
+    }
+  }
+
   QSqlQuery q( db );
-  if ( !q.exec( u"SELECT source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync FROM chunks ORDER BY id"_s ) )
+  if ( !q.exec( u"SELECT source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync, provider_id, model_id, model_revision, embedding_dimension, content_hash, source_mtime FROM chunks ORDER BY id"_s ) )
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
@@ -332,6 +431,12 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
     c.chunk.wktBlob = q.value( 7 ).toByteArray();
     c.embedding = bytesToVector( q.value( 8 ).toByteArray() );
     const qint64 syncMs = q.value( 9 ).toLongLong();
+    c.providerId = q.value( 10 ).toString();
+    c.modelId = q.value( 11 ).toString();
+    c.modelRevision = q.value( 12 ).toString();
+    c.embeddingDimension = q.value( 13 ).toInt();
+    c.contentHash = q.value( 14 ).toString();
+    c.sourceMTime = q.value( 15 ).toLongLong();
     if ( syncMs > maxSync )
       maxSync = syncMs;
     if ( !c.embedding.isEmpty() )
@@ -345,6 +450,7 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
 
 bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceScope scope, const QString &scopedLayerId, QString *errorMessage )
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   const QString path = dbPath();
   if ( path.isEmpty() )
   {
@@ -375,10 +481,17 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
     "text TEXT NOT NULL, "
     "wkt_blob BLOB, "
     "embedding BLOB NOT NULL, "
-    "last_sync INTEGER NOT NULL"
+    "last_sync INTEGER NOT NULL, "
+    "provider_id TEXT NOT NULL DEFAULT 'unknown', "
+    "model_id TEXT NOT NULL DEFAULT 'unknown', "
+    "model_revision TEXT NOT NULL DEFAULT '', "
+    "embedding_dimension INTEGER NOT NULL DEFAULT 0, "
+    "content_hash TEXT NOT NULL DEFAULT '', "
+    "source_mtime INTEGER NOT NULL DEFAULT 0"
     ")"
   ) );
   q.exec( u"CREATE INDEX IF NOT EXISTS idx_chunks_layer ON chunks(layer_id) WHERE layer_id IS NOT NULL"_s );
+  q.exec( u"CREATE INDEX IF NOT EXISTS idx_chunks_source_hash ON chunks(source_type, relative_path, chunk_index, content_hash)"_s );
   q.exec( u"PRAGMA user_version = %1"_s.arg( SCHEMA_VERSION ) );
 
   // Replace only the rows in scope.
@@ -411,9 +524,17 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
   }
 
   const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
-  q.prepare( u"INSERT INTO chunks (source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"_s );
+  q.prepare( QStringLiteral(
+    "INSERT INTO chunks (source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync, provider_id, model_id, model_revision, embedding_dimension, content_hash, source_mtime) "
+    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  ) );
   for ( const CachedChunk &c : chunks )
   {
+    const QString providerId = c.providerId.isEmpty() ? storageProviderId( mEmbeddingProvider ) : c.providerId;
+    const QString modelId = c.modelId.isEmpty() ? storageModelId( mEmbeddingProvider ) : c.modelId;
+    const QString modelRevision = c.modelRevision.isEmpty() ? storageModelRevision( mEmbeddingProvider ) : c.modelRevision;
+    const int dimension = c.embeddingDimension > 0 ? c.embeddingDimension : storageDimension( mEmbeddingProvider, c.embedding );
+    const QString hash = c.contentHash.isEmpty() ? textHash( c.chunk.text, c.chunk.wktBlob ) : c.contentHash;
     q.addBindValue( c.chunk.sourceType.isEmpty() ? QString::fromLatin1( SOURCE_TYPE_FILE ) : c.chunk.sourceType );
     q.addBindValue( c.chunk.relativePath );
     q.addBindValue( c.chunk.layerId.isEmpty() ? QVariant( QMetaType::fromType<QString>() ) : QVariant( c.chunk.layerId ) );
@@ -424,6 +545,12 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
     q.addBindValue( c.chunk.wktBlob.isEmpty() ? QVariant( QMetaType::fromType<QByteArray>() ) : QVariant( c.chunk.wktBlob ) );
     q.addBindValue( vectorToBytes( c.embedding ) );
     q.addBindValue( nowMs );
+    q.addBindValue( providerId );
+    q.addBindValue( modelId );
+    q.addBindValue( modelRevision );
+    q.addBindValue( dimension );
+    q.addBindValue( hash );
+    q.addBindValue( c.sourceMTime );
     if ( !q.exec() )
     {
       if ( errorMessage )
@@ -443,6 +570,7 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
 
 bool QgsAiWorkspaceIndex::persistChunks( const QList<Chunk> &chunks, const QList<QVector<float>> &embeddings, ReplaceScope scope, const QString &scopedLayerId, QString *errorMessage )
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   if ( chunks.size() != embeddings.size() )
   {
     if ( errorMessage )
@@ -461,6 +589,11 @@ bool QgsAiWorkspaceIndex::persistChunks( const QList<Chunk> &chunks, const QList
     if ( cc.chunk.sourceType.isEmpty() )
       cc.chunk.sourceType = QString::fromLatin1( SOURCE_TYPE_FILE );
     cc.embedding = embeddings.at( i );
+    cc.providerId = storageProviderId( mEmbeddingProvider );
+    cc.modelId = storageModelId( mEmbeddingProvider );
+    cc.modelRevision = storageModelRevision( mEmbeddingProvider );
+    cc.embeddingDimension = storageDimension( mEmbeddingProvider, cc.embedding );
+    cc.contentHash = textHash( cc.chunk.text, cc.chunk.wktBlob );
     built.append( cc );
   }
 
@@ -496,6 +629,7 @@ bool QgsAiWorkspaceIndex::persistChunks( const QList<Chunk> &chunks, const QList
 
 bool QgsAiWorkspaceIndex::removeLayer( const QString &layerId, QString *errorMessage )
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   if ( layerId.isEmpty() )
   {
     if ( errorMessage )
@@ -533,6 +667,7 @@ bool QgsAiWorkspaceIndex::removeLayer( const QString &layerId, QString *errorMes
 
 bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   if ( !mContextProvider )
   {
     if ( errorMessage )
@@ -547,6 +682,23 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   }
   if ( !ensureEmbeddingProviderAvailable( mEmbeddingProvider, errorMessage ) )
     return false;
+
+  ensureLoaded();
+
+  QHash<QString, CachedChunk> reusableFileChunks;
+  for ( const CachedChunk &cached : std::as_const( mCache ) )
+  {
+    if ( cached.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || cached.chunk.sourceType.isEmpty() )
+    {
+      if ( metadataMatchesProvider( cached.providerId, cached.modelId, cached.modelRevision, cached.embeddingDimension, mEmbeddingProvider ) )
+      {
+        reusableFileChunks.insert(
+          chunkReuseKey( QString::fromLatin1( SOURCE_TYPE_FILE ), cached.chunk.relativePath, QString(), cached.chunk.chunkIndex ),
+          cached
+        );
+      }
+    }
+  }
 
   const int cap = maxFiles > 0 ? maxFiles : DEFAULT_MAX_FILES;
   const QStringList all = mContextProvider->workspaceFileCandidates( QString(), 50000 );
@@ -589,6 +741,9 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
     const QString rel = eligible.at( fileIdx );
     emit progress( fileIdx + 1, eligible.size(), rel );
 
+    const QString abs = mContextProvider->resolveWorkspaceFile( rel );
+    const QFileInfo fileInfo( abs );
+    const qint64 sourceMTime = fileInfo.exists() ? fileInfo.lastModified().toMSecsSinceEpoch() : 0;
     const QgsAiFileContext fileContext = mContextProvider->buildContext( rel, QString(), MAX_FILE_BYTES );
     if ( fileContext.fileSnippet.isEmpty() || fileContext.binary )
       continue;
@@ -600,13 +755,30 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
       c.chunk.relativePath = rel;
       c.chunk.chunkIndex = ci;
       c.chunk.text = chunks.at( ci );
+      c.chunk.sourceType = QString::fromLatin1( SOURCE_TYPE_FILE );
+      c.providerId = storageProviderId( mEmbeddingProvider );
+      c.modelId = storageModelId( mEmbeddingProvider );
+      c.modelRevision = storageModelRevision( mEmbeddingProvider );
+      c.contentHash = textHash( c.chunk.text );
+      c.sourceMTime = sourceMTime;
+
+      const QString reuseKey = chunkReuseKey( QString::fromLatin1( SOURCE_TYPE_FILE ), rel, QString(), ci );
+      const auto reusableIt = reusableFileChunks.constFind( reuseKey );
+      if ( reusableIt != reusableFileChunks.constEnd() && reusableIt->contentHash == c.contentHash && reusableIt->sourceMTime == c.sourceMTime && !reusableIt->embedding.isEmpty() )
+      {
+        c.embedding = reusableIt->embedding;
+        c.embeddingDimension = reusableIt->embeddingDimension;
+        built.append( c );
+        continue;
+      }
+
       built.append( c );
       backRefIndex.append( built.size() - 1 );
       textsToEmbed.append( c.chunk.text );
     }
   }
 
-  if ( textsToEmbed.isEmpty() )
+  if ( built.isEmpty() )
   {
     mCache.erase(
       std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end()
@@ -617,18 +789,27 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
     return true;
   }
 
-  QList<QVector<float>> vectors;
-  if ( !mEmbeddingProvider->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
-    return false;
-  if ( vectors.size() != textsToEmbed.size() )
+  if ( !textsToEmbed.isEmpty() )
   {
-    if ( errorMessage )
-      *errorMessage = u"Embedding count mismatch: expected %1 got %2"_s.arg( textsToEmbed.size() ).arg( vectors.size() );
-    return false;
-  }
+    QList<QVector<float>> vectors;
+    QgsAiEmbeddingOptions options;
+    options.maxBatch = EMBEDDING_BATCH;
+    if ( !mEmbeddingProvider->embed( textsToEmbed, QgsAiEmbeddingRole::Passage, vectors, errorMessage, options ) )
+      return false;
+    if ( vectors.size() != textsToEmbed.size() )
+    {
+      if ( errorMessage )
+        *errorMessage = u"Embedding count mismatch: expected %1 got %2"_s.arg( textsToEmbed.size() ).arg( vectors.size() );
+      return false;
+    }
 
-  for ( int i = 0; i < vectors.size(); ++i )
-    built[backRefIndex.at( i )].embedding = vectors.at( i );
+    for ( int i = 0; i < vectors.size(); ++i )
+    {
+      CachedChunk &chunk = built[backRefIndex.at( i )];
+      chunk.embedding = vectors.at( i );
+      chunk.embeddingDimension = storageDimension( mEmbeddingProvider, chunk.embedding );
+    }
+  }
 
   if ( !persistAll( built, ReplaceScope::AllFiles, QString(), errorMessage ) )
     return false;
@@ -645,6 +826,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
 
 QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &query, int k, QString *errorMessage )
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   ensureLoaded();
   QList<Chunk> results;
   if ( query.trimmed().isEmpty() )
@@ -664,7 +846,9 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &qu
 
   QStringList qList { query };
   QList<QVector<float>> qEmb;
-  if ( !mEmbeddingProvider->embed( qList, qEmb, errorMessage, 1 ) || qEmb.isEmpty() )
+  QgsAiEmbeddingOptions options;
+  options.maxBatch = 1;
+  if ( !mEmbeddingProvider->embed( qList, QgsAiEmbeddingRole::Query, qEmb, errorMessage, options ) || qEmb.isEmpty() )
     return results;
 
   const QVector<float> &qVec = qEmb.first();
@@ -703,6 +887,7 @@ namespace
 
 bool QgsAiWorkspaceIndex::reindexLayers( QString *errorMessage )
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   if ( !ensureEmbeddingProviderAvailable( mEmbeddingProvider, errorMessage ) )
     return false;
 
@@ -737,7 +922,9 @@ bool QgsAiWorkspaceIndex::reindexLayers( QString *errorMessage )
     textsToEmbed.append( c.text );
 
   QList<QVector<float>> vectors;
-  if ( !mEmbeddingProvider->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
+  QgsAiEmbeddingOptions options;
+  options.maxBatch = EMBEDDING_BATCH;
+  if ( !mEmbeddingProvider->embed( textsToEmbed, QgsAiEmbeddingRole::Passage, vectors, errorMessage, options ) )
     return false;
   if ( vectors.size() != allChunks.size() )
   {
@@ -755,6 +942,7 @@ bool QgsAiWorkspaceIndex::reindexLayers( QString *errorMessage )
 
 bool QgsAiWorkspaceIndex::reindexLayer( const QString &layerId, QString *errorMessage )
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   if ( layerId.isEmpty() )
   {
     if ( errorMessage )
@@ -784,7 +972,9 @@ bool QgsAiWorkspaceIndex::reindexLayer( const QString &layerId, QString *errorMe
     textsToEmbed.append( c.text );
 
   QList<QVector<float>> vectors;
-  if ( !mEmbeddingProvider->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
+  QgsAiEmbeddingOptions options;
+  options.maxBatch = EMBEDDING_BATCH;
+  if ( !mEmbeddingProvider->embed( textsToEmbed, QgsAiEmbeddingRole::Passage, vectors, errorMessage, options ) )
     return false;
   if ( vectors.size() != chunks.size() )
   {
@@ -798,6 +988,7 @@ bool QgsAiWorkspaceIndex::reindexLayer( const QString &layerId, QString *errorMe
 
 void QgsAiWorkspaceIndex::clear()
 {
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
   mCache.clear();
   mLastSync = QDateTime();
   const QString path = dbPath();

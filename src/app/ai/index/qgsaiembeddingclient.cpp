@@ -19,6 +19,8 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 
+#include <algorithm>
+
 #include <QEventLoop>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -50,6 +52,9 @@ QgsAiEmbeddingClient::QgsAiEmbeddingClient( QObject *parent )
 
 QgsAiEmbeddingClient::Provider QgsAiEmbeddingClient::provider() const
 {
+  if ( mHasProviderOverride )
+    return mProviderOverride;
+
   const QgsSettings settings;
   const QString configured = settings.value( QString::fromLatin1( EMBEDDINGS_PROVIDER_SETTING ), u"openai"_s ).toString().trimmed();
   return configured.compare( u"openrouter"_s, Qt::CaseInsensitive ) == 0 ? Provider::OpenRouter : Provider::OpenAi;
@@ -99,7 +104,7 @@ QString QgsAiEmbeddingClient::apiKey() const
 
 bool QgsAiEmbeddingClient::hasApiKey() const
 {
-  return !apiKey().isEmpty();
+  return !mAuthenticationFailed && !apiKey().isEmpty();
 }
 
 bool QgsAiEmbeddingClient::embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage, int maxBatch )
@@ -128,6 +133,14 @@ bool QgsAiEmbeddingClient::embed( const QStringList &texts, QList<QVector<float>
 
 bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage )
 {
+  if ( mAuthenticationFailed )
+  {
+    if ( errorMessage )
+      *errorMessage = provider() == Provider::OpenRouter ? u"OpenRouter embeddings are disabled after an authentication failure. Check the API key and retry."_s
+                                                         : u"OpenAI embeddings are disabled after an authentication failure. Check the API key and retry."_s;
+    return false;
+  }
+
   const QString key = apiKey();
   if ( key.isEmpty() )
   {
@@ -188,8 +201,21 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
       const QJsonObject err = doc.object().value( u"error"_s ).toObject();
       detail = err.value( u"message"_s ).toString();
     }
-    QgsMessageLog::
-      logMessage( u"Embeddings request failed httpStatus=%1 networkError=%2 detail=%3"_s.arg( httpStatus ).arg( static_cast<int>( netError ) ).arg( detail.left( 300 ) ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+    if ( httpStatus == 401 || httpStatus == 403 )
+    {
+      mAuthenticationFailed = true;
+      if ( !mAuthFailureLogged )
+      {
+        QgsMessageLog::logMessage( u"Embeddings authentication failed for %1; disabling this remote embedding provider until settings are changed."_s.arg( provider() == Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+        mAuthFailureLogged = true;
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage(
+        u"Embeddings request failed httpStatus=%1 networkError=%2 detail=%3"_s.arg( httpStatus ).arg( static_cast<int>( netError ) ).arg( detail.left( 300 ) ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false
+      );
+    }
     if ( errorMessage )
       *errorMessage = detail.isEmpty() ? u"Embeddings request failed (HTTP %1)."_s.arg( httpStatus ) : u"Embeddings request failed: %1"_s.arg( detail );
     return false;

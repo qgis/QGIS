@@ -1180,7 +1180,7 @@ QString QgsAiAgentSessionManager::retrieveContextForLastUserMessage() const
   }
   if ( !mWorkspaceIndex->embeddingProviderAvailable() )
   {
-    QgsMessageLog::logMessage( u"Retrieval: local embedding model unavailable — skipping."_s, u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+    QgsMessageLog::logMessage( u"Retrieval: embedding provider unavailable; skipping."_s, u"AI/Index"_s, Qgis::MessageLevel::Info, false );
     return QString();
   }
 

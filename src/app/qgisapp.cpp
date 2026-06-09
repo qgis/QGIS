@@ -93,6 +93,7 @@ using namespace Qt::StringLiterals;
 #include "qgsdevtoolspanelwidget.h"
 #ifdef HAVE_AI_ASSISTANT
 #include "ai/index/qgsaiembeddingprovider.h"
+#include "ai/index/qgsaiindexingscheduler.h"
 #include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
@@ -1393,6 +1394,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     if ( !mAiFileContextProvider )
       return;
     mAiFileContextProvider->setWorkspaceRoot( QgsAiFileContextProvider::resolveWorkspaceRoot() );
+    if ( mAiIndexingScheduler )
+      mAiIndexingScheduler->scheduleWorkspaceIndexing();
   } );
   mAiReviewPatchEngine = std::make_unique<QgsAiReviewPatchEngine>( this );
   mAiReviewPatchEngine->setContextProvider( mAiFileContextProvider.get() );
@@ -1415,18 +1418,21 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiRunPythonTool>( this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiInstallPythonPackageTool>( this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiDownloadFileTool>( mAiFileContextProvider.get(), this ) );
-  mAiEmbeddingProvider = std::make_unique<QgsAiUnavailableLocalEmbeddingProvider>();
+  mAiEmbeddingProvider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings( this );
   mAiWorkspaceIndex = std::make_unique<QgsAiWorkspaceIndex>( mAiFileContextProvider.get(), mAiEmbeddingProvider.get(), this );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiIndexStatusTool>( mAiWorkspaceIndex.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiSearchWorkspaceTool>( mAiWorkspaceIndex.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexWorkspaceTool>( mAiWorkspaceIndex.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexLayersTool>( mAiWorkspaceIndex.get() ) );
+  mAiIndexingScheduler = std::make_unique<QgsAiIndexingScheduler>( mAiWorkspaceIndex.get(), this );
   mAiLayerIndexCoordinator = std::make_unique<QgsAiLayerIndexCoordinator>( mAiWorkspaceIndex.get(), this );
   QgsSettings aiSettings;
+  const bool automaticIndexing = aiSettings.value( u"strata/index/automatic"_s, true ).toBool();
+  mAiIndexingScheduler->setAutomaticEnabled( automaticIndexing );
   const bool hasLayerIndexingSetting = aiSettings.contains( u"strata/index/enable_layer_indexing"_s )
                                        || aiSettings.contains( u"geoai/index/enable_layer_indexing"_s )
                                        || aiSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
-  const bool defaultLayerIndexingEnabled = false;
+  const bool defaultLayerIndexingEnabled = automaticIndexing;
   const bool requestedLayerIndexing = hasLayerIndexingSetting
                                         ? ( aiSettings.contains( u"strata/index/enable_layer_indexing"_s )  ? aiSettings.value( u"strata/index/enable_layer_indexing"_s, false ).toBool()
                                             : aiSettings.contains( u"geoai/index/enable_layer_indexing"_s ) ? aiSettings.value( u"geoai/index/enable_layer_indexing"_s, false ).toBool()
@@ -1434,6 +1440,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
                                         : defaultLayerIndexingEnabled;
   const bool canUseLocalEmbeddings = mAiWorkspaceIndex->embeddingProviderAvailable();
   mAiLayerIndexCoordinator->setEnabled( requestedLayerIndexing && canUseLocalEmbeddings );
+  mAiIndexingScheduler->scheduleStartupIndexing();
   mAiChatHistoryStore = std::make_unique<QgsAiChatHistoryStore>( mAiFileContextProvider.get(), this );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );
@@ -1461,6 +1468,32 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiChatDock = new QgsAiChatDockWidget( mAiSessionManager.get(), mAiModelRouter.get(), mAiReviewPatchEngine.get(), this );
   connect( mAiChatHistoryStore.get(), &QgsAiChatHistoryStore::sessionListChanged, mAiChatDock, &QgsAiChatDockWidget::rebuildHistoryMenu );
   mAiChatDock->setLayerIndexCoordinator( mAiLayerIndexCoordinator.get() );
+  connect( mAiChatDock, &QgsAiChatDockWidget::embeddingProviderSettingsChanged, this, [this]() {
+    if ( !mAiWorkspaceIndex )
+      return;
+
+    std::unique_ptr<QgsAiEmbeddingProvider> newEmbeddingProvider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings( this );
+    mAiWorkspaceIndex->setEmbeddingProvider( newEmbeddingProvider.get() );
+    mAiEmbeddingProvider = std::move( newEmbeddingProvider );
+
+    QgsSettings settings;
+    const bool automaticIndexing = settings.value( u"strata/index/automatic"_s, true ).toBool();
+    if ( mAiIndexingScheduler )
+    {
+      mAiIndexingScheduler->setAutomaticEnabled( automaticIndexing );
+      if ( automaticIndexing )
+        mAiIndexingScheduler->scheduleWorkspaceIndexing();
+    }
+
+    const bool layerIndexing = settings.value( u"strata/index/enable_layer_indexing"_s, automaticIndexing ).toBool();
+    const bool providerAvailable = mAiWorkspaceIndex->embeddingProviderAvailable();
+    if ( mAiLayerIndexCoordinator )
+    {
+      mAiLayerIndexCoordinator->setEnabled( layerIndexing && providerAvailable );
+      if ( layerIndexing && providerAvailable )
+        mAiLayerIndexCoordinator->scheduleAllLayers();
+    }
+  } );
   mAiChatDock->setWindowTitle( tr( "AI Assistant" ) );
   mAiChatDock->setObjectName( u"AiAssistant"_s );
   addDockWidget( Qt::RightDockWidgetArea, mAiChatDock );
