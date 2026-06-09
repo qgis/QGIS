@@ -338,12 +338,17 @@ void TestQgs3DExporter::do3DSceneExport(
       symbol3d->setAltitudeClamping( altitudeClamping );
       newRenderer3d = new QgsVectorLayer3DRenderer( symbol3d );
     }
+    else
+      QVERIFY2( false, "layerPoly needs to have a QgsVectorLayer3DRenderer" );
 
     QgsVectorLayer3DTilingSettings tilingSettings;
     tilingSettings.setShowBoundingBoxes( true );
     tilingSettings.setMaximumChunkFeatures( maxFeatPerChunkCount );
-    newRenderer3d->setTilingSettings( tilingSettings );
-    layerPoly->setRenderer3D( newRenderer3d );
+    if ( newRenderer3d ) // useless but needed by clang-tidy
+    {
+      newRenderer3d->setTilingSettings( tilingSettings );
+      layerPoly->setRenderer3D( newRenderer3d );
+    }
   }
 
   // Calling captureSceneImage to wait for Qgs3DMapScene::Ready
