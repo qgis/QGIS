@@ -891,8 +891,6 @@ void QgsDxfExport::prepareRenderers()
 
   mRenderContext = QgsRenderContext::fromMapSettings( mMapSettings );
   mRenderContext.setRendererScale( mSymbologyScale );
-  mRenderContext.setExtent( mMapSettings.extent() );
-  mRenderContext.setScaleFactor( 96.0 / 25.4 );
   mRenderContext.setMapToPixel(
     QgsMapToPixel( 1.0 / mFactor, mMapSettings.extent().center().x(), mMapSettings.extent().center().y(), std::floor( mMapSettings.extent().width() * mFactor ), std::floor( mMapSettings.extent().height() * mFactor ), 0 )
   );
