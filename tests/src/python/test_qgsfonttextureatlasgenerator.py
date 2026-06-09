@@ -223,7 +223,7 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertEqual(atlas.rect("i").left(), 41)
         self.assertEqual(atlas.rect("i").top(), 24)
         self.assertEqual(atlas.rect("i").width(), 9)
-        self.assertEqual(atlas.rect("i").height(), (24, 25))
+        self.assertIn(atlas.rect("i").height(), (24, 25))
         self.assertEqual(atlas.rect("h"), QRect(21, 24, 20, 24))
         self.assertEqual(atlas.rect("g"), QRect(0, 24, 21, 25))
         self.assertEqual(atlas.pixelOffsetForGrapheme("HY", 0), QPoint(0, 0))
