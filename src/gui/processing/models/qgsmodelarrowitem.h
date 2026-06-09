@@ -23,8 +23,9 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 
-class QgsModelComponentGraphicItem;
 class QgsModelArrowItem;
+class QgsModelComponentGraphicItem;
+class QgsModelDesignerDataViewerButtonGraphicItem;
 
 ///@cond NOT_STABLE
 
@@ -203,13 +204,8 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      */
     SIP_SKIP void setShowBadge( bool visible );
 
-  signals:
-    /**
-     * Emitted when the path is updated.
-     *
-     * \since QGIS 4.0
-     */
-    void painterPathUpdated();
+
+    SIP_SKIP void setDataViewerButton( QgsModelDesignerDataViewerButtonGraphicItem *button );
 
   public slots:
 
@@ -237,6 +233,9 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
 
     // Optional child badge item. Not created by default.
     QgsModelDesignerArrowBadgeItem *mBadgeItem = nullptr;
+
+    // Optional data viewer button. Not created by default.
+    QgsModelDesignerDataViewerButtonGraphicItem *mDataViewerButton = nullptr;
 
     QPointF mStartPoint;
     QPointF mEndPoint;
