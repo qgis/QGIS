@@ -101,7 +101,13 @@ namespace
 
   QString storageModelRevision( QgsAiEmbeddingProvider *provider )
   {
-    return provider ? provider->modelRevision() : u"test"_s;
+    if ( !provider )
+      return u"test"_s;
+    // A provider may report a null/empty revision (the base default returns a
+    // null QString). The model_revision column is NOT NULL, so coalesce to a
+    // non-null empty string to bind '' rather than SQL NULL.
+    const QString revision = provider->modelRevision();
+    return revision.isNull() ? u""_s : revision;
   }
 
   int storageDimension( QgsAiEmbeddingProvider *provider, const QVector<float> &embedding )
@@ -173,9 +179,20 @@ QString QgsAiWorkspaceIndex::dbPath() const
     return QString();
 
   const QByteArray hash = QCryptographicHash::hash( root.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 16 );
+
+  // Separate index files per embedding provider so switching providers (for example
+  // local <-> remote) keeps each index intact instead of rebuilding every time.
+  // local and remote embeddings can never share a file.
+  QString providerSlug;
+  const QString rawId = mEmbeddingProvider ? mEmbeddingProvider->providerId().toLower() : QString();
+  for ( const QChar ch : rawId )
+    providerSlug.append( ch.isLetterOrNumber() ? ch : QChar( u'_' ) );
+  if ( providerSlug.isEmpty() )
+    providerSlug = u"none"_s;
+
   const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_index"_s;
   QDir().mkpath( dir );
-  return QDir( dir ).filePath( u"ws_%1.sqlite"_s.arg( QString::fromLatin1( hash ) ) );
+  return QDir( dir ).filePath( u"ws_%1_%2.sqlite"_s.arg( QString::fromLatin1( hash ), providerSlug ) );
 }
 
 bool QgsAiWorkspaceIndex::isTextFile( const QString &relativePath )

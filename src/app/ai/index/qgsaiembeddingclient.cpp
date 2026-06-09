@@ -62,6 +62,8 @@ QgsAiEmbeddingClient::Provider QgsAiEmbeddingClient::provider() const
 
 QString QgsAiEmbeddingClient::endpoint() const
 {
+  if ( !mEndpointOverride.isEmpty() )
+    return mEndpointOverride;
   return provider() == Provider::OpenRouter ? QString::fromLatin1( OPENROUTER_EMBEDDINGS_ENDPOINT ) : QString::fromLatin1( OPENAI_EMBEDDINGS_ENDPOINT );
 }
 

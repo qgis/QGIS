@@ -40,6 +40,7 @@ class TestQgsAiLayerIndexCoordinator : public QObject
     void layerWillBeRemovedDropsChunksImmediately();
     void disabledCoordinatorIgnoresProjectSignals();
     void unavailableEmbeddingProviderPreventsScheduling();
+    void providerUnavailableMidBatchStopsBatch();
 
   private:
     /**
@@ -65,6 +66,32 @@ class CountingWorkspaceIndex : public QgsAiWorkspaceIndex
       return true;
     }
 
+    QStringList reindexedLayerIds;
+};
+
+/**
+ * Index whose first reindexLayer() fails and trips the embedding provider to
+ * unavailable, simulating a remote 401/403 circuit breaker firing mid-batch.
+ */
+class BreakerTrippingIndex : public QgsAiWorkspaceIndex
+{
+  public:
+    explicit BreakerTrippingIndex( QgsAiFileContextProvider *contextProvider )
+      : QgsAiWorkspaceIndex( contextProvider, nullptr )
+    {}
+
+    bool embeddingProviderAvailable() const override { return mAvailable; }
+
+    bool reindexLayer( const QString &layerId, QString *errorMessage = nullptr ) override
+    {
+      reindexedLayerIds.append( layerId );
+      mAvailable = false; // the breaker trips on the first failed embed
+      if ( errorMessage )
+        *errorMessage = u"authentication failed"_s;
+      return false;
+    }
+
+    bool mAvailable = true;
     QStringList reindexedLayerIds;
 };
 
@@ -261,6 +288,45 @@ void TestQgsAiLayerIndexCoordinator::unavailableEmbeddingProviderPreventsSchedul
   QCOMPARE( doneSpy.count(), 0 );
 
   QgsProject::instance()->removeMapLayer( layer.release() );
+}
+
+void TestQgsAiLayerIndexCoordinator::providerUnavailableMidBatchStopsBatch()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+
+  BreakerTrippingIndex index( &contextProvider );
+
+  QgsAiLayerIndexCoordinator coord( &index );
+  coord.setDebounceMs( 50 );
+
+  // Several layers all become dirty in the same flush pass.
+  QList<QgsVectorLayer *> layers;
+  for ( int i = 0; i < 4; ++i )
+  {
+    auto *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=id:integer"_s, u"mem%1"_s.arg( i ), u"memory"_s );
+    QVERIFY( layer->isValid() );
+    QgsProject::instance()->addMapLayer( layer, false );
+    layers.append( layer );
+  }
+
+  QSignalSpy doneSpy( &coord, &QgsAiLayerIndexCoordinator::reindexFinished );
+  coord.setEnabled( true );
+
+  // The first reindex fails and trips the provider to unavailable. The coordinator
+  // must stop the batch immediately instead of attempting (and logging a warning
+  // for) every remaining layer.
+  QVERIFY( doneSpy.wait( 5000 ) );
+  QTest::qWait( 300 ); // give any erroneous extra iterations a chance to fire
+
+  QCOMPARE( index.reindexedLayerIds.size(), 1 );
+  QCOMPARE( doneSpy.count(), 1 );
+  QCOMPARE( doneSpy.first().at( 1 ).toBool(), false );
+
+  coord.setEnabled( false );
+  for ( int i = 0; i < layers.size(); ++i )
+    QgsProject::instance()->removeMapLayer( layers.at( i ) );
 }
 
 QGSTEST_MAIN( TestQgsAiLayerIndexCoordinator )

@@ -60,6 +60,13 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
       resetCircuitBreaker();
     }
     void setModel( const QString &model ) { mModelOverride = model.trimmed(); }
+
+    /**
+     * Overrides the embeddings endpoint URL (e.g. a self-hosted gateway, or a
+     * loopback server in tests). Pass an empty string to restore the default
+     * provider endpoint.
+     */
+    void setEndpointOverride( const QString &endpoint ) { mEndpointOverride = endpoint.trimmed(); }
     QString model() const;
     Provider provider() const;
     QString endpoint() const;
@@ -92,6 +99,7 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
     bool embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage );
 
     QString mModelOverride;
+    QString mEndpointOverride;
     int mTimeoutMs = 60000;
     Provider mProviderOverride = Provider::OpenAi;
     bool mHasProviderOverride = false;

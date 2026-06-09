@@ -30,7 +30,7 @@ namespace
   {
     public:
       explicit QgsAiWorkspaceIndexTask( QgsAiWorkspaceIndex *index )
-        : QgsTask( QObject::tr( "Index AI workspace" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
+        : QgsTask( QObject::tr( "Index AI workspace" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
         , mIndex( index )
       {}
 
@@ -47,8 +47,17 @@ namespace
         if ( isCanceled() )
           return false;
 
+        // Relay the index's progress to the task so the task manager shows real
+        // per-file progress. reindex() runs synchronously on this worker thread, so
+        // the progress signal is delivered here; a direct connection is safe.
+        const QMetaObject::Connection conn = connect( mIndex.data(), &QgsAiWorkspaceIndex::progress, this, [this]( int current, int total, const QString & ) {
+          if ( total > 0 )
+            setProgress( 100.0 * static_cast<double>( current ) / static_cast<double>( total ) );
+        }, Qt::DirectConnection );
+
         QString error;
         const bool ok = mIndex->reindex( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES, &error );
+        disconnect( conn );
         if ( !ok )
           mErrorMessage = error;
         return ok && !isCanceled();
@@ -127,5 +136,7 @@ void QgsAiIndexingScheduler::startWorkspaceIndexing()
     if ( mRunningTask == task )
       mRunningTask = nullptr;
   } );
-  manager->addTask( task );
+  // Lowest priority: background indexing must never take precedence over
+  // user-initiated tasks (in QGIS higher priority numbers win, so 0 is lowest).
+  manager->addTask( task, 0 );
 }

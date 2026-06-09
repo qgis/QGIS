@@ -196,7 +196,10 @@ QVector<float> QgsAiLocalEmbeddingProvider::embedOne( const QString &text, QgsAi
 
 QString QgsAiEmbeddingProviderRegistry::defaultProviderId()
 {
-  return u"local:e5-small-int8"_s;
+  // Must match QgsAiLocalEmbeddingProvider::providerId(). The id reflects the
+  // actual local implementation (a lightweight lexical MinHash embedder), not an
+  // E5 model — a future ONNX/E5 provider will use a different id to force a rebuild.
+  return u"local:minihash-384"_s;
 }
 
 QString QgsAiEmbeddingProviderRegistry::configuredProviderId()

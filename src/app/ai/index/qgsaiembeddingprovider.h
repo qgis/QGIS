@@ -96,16 +96,18 @@ class APP_EXPORT QgsAiUnavailableLocalEmbeddingProvider final : public QgsAiEmbe
 /**
  * Zero-setup local embedding provider.
  *
- * This is intentionally small and CPU-only. It provides deterministic 384
- * dimensional embeddings from lexical tokens/ngrams so indexing works on
- * low-memory machines without external APIs. A future ONNX/SentencePiece E5
+ * This is intentionally small and CPU-only. It is NOT an E5 model: it provides
+ * deterministic 384 dimensional embeddings from lexical tokens/ngrams (a MinHash
+ * style embedder) so indexing works on low-memory machines without external APIs.
+ * The provider id reflects this honestly. A future ONNX/SentencePiece E5
  * implementation can keep the same provider registry slot and force a schema
- * rebuild through a different modelId/modelRevision.
+ * rebuild through a different providerId/modelId/modelRevision.
  */
 class APP_EXPORT QgsAiLocalEmbeddingProvider final : public QgsAiEmbeddingProvider
 {
   public:
-    QString providerId() const override { return u"local:e5-small-int8"_s; }
+    // Keep in sync with QgsAiEmbeddingProviderRegistry::defaultProviderId().
+    QString providerId() const override { return u"local:minihash-384"_s; }
     QString displayName() const override { return u"Local small model"_s; }
     QString modelId() const override { return u"strata-local-minihash-384"_s; }
     QString modelRevision() const override { return u"2026-06-09"_s; }

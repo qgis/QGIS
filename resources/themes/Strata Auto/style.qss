@@ -149,6 +149,36 @@ QWidget:disabled
   border-color: @border;
 }
 
+QToolBar QToolButton
+{
+  color: @text;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: @toolbuttonpadding;
+}
+
+QToolBar QToolButton:hover
+{
+  background-color: @fieldalt;
+  border: 0;
+}
+
+QToolBar QToolButton:pressed,
+QToolBar QToolButton:checked
+{
+  color: @accenttext;
+  background-color: @accent;
+  border: 0;
+}
+
+QToolBar QToolButton:disabled
+{
+  color: @muted;
+  background-color: transparent;
+  border: 0;
+}
+
 QLineEdit,
 QTextEdit,
 QPlainTextEdit,

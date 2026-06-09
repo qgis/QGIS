@@ -2155,7 +2155,13 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QCheckBox *automaticIndexing = new QCheckBox( tr( "Index workspace automatically in the background" ), &dialog );
   automaticIndexing->setObjectName( u"aiAutomaticIndexingCheckBox"_s );
-  automaticIndexing->setChecked( indexSettings.value( u"strata/index/automatic"_s, true ).toBool() );
+  // Default ON only when an embedding provider is actually available; if the user
+  // already chose a value, keep it. The toggle is disabled when no provider is available.
+  const bool hasAutomaticSetting = indexSettings.contains( u"strata/index/automatic"_s );
+  automaticIndexing->setChecked( hasAutomaticSetting
+                                   ? indexSettings.value( u"strata/index/automatic"_s, true ).toBool()
+                                   : canUseEmbeddings );
+  automaticIndexing->setEnabled( canUseEmbeddings );
   automaticIndexing->setToolTip( tr( "When enabled, Strata refreshes the local retrieval index after opening or changing the project. The task is cancellable." ) );
   indexingForm->addRow( QString(), automaticIndexing );
 
@@ -2222,6 +2228,18 @@ void QgsAiChatDockWidget::openProviderSettings()
     return false;
   };
 
+  // Rebuilding can be expensive: heavy local CPU usage, or remote API cost and data egress.
+  // Always confirm before starting, with a message tailored to the selected provider.
+  auto confirmRebuild = [&dialog, embeddingProvider]( const QString &what ) {
+    const QString providerId = embeddingProvider->currentData().toString();
+    const QString message = QgsAiEmbeddingProviderRegistry::isRemoteProviderId( providerId )
+                              ? tr( "Rebuilding the %1 will re-embed content with the remote provider %2. This sends data to that service and may incur API costs.\n\nProceed?" )
+                                  .arg( what, QgsAiEmbeddingProviderRegistry::displayNameForProviderId( providerId ) )
+                              : tr( "Rebuilding the %1 will re-embed content on this computer and may use significant CPU for a while.\n\nProceed?" )
+                                  .arg( what );
+    return QMessageBox::question( &dialog, tr( "Rebuild index" ), message, QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes;
+  };
+
   QPushButton *rebuildWorkspaceIndexButton = new QPushButton( tr( "Rebuild file/workspace index now" ), &dialog );
   rebuildWorkspaceIndexButton->setObjectName( u"aiRebuildWorkspaceIndexButton"_s );
   rebuildWorkspaceIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
@@ -2232,11 +2250,14 @@ void QgsAiChatDockWidget::openProviderSettings()
   rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
   indexingForm->addRow( QString(), rebuildLayerIndexButton );
 
-  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingProvider, refreshIndexStatusLabel]() {
+  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingProvider, confirmRebuild, refreshIndexStatusLabel]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
 
     if ( !ensureEmbeddingProvider() )
+      return;
+
+    if ( !confirmRebuild( tr( "file/workspace index" ) ) )
       return;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -2253,11 +2274,14 @@ void QgsAiChatDockWidget::openProviderSettings()
     QMessageBox::information( &dialog, tr( "Workspace reindex" ), tr( "Done — %1 file chunks indexed." ).arg( status.fileChunkCount ) );
   } );
 
-  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingProvider, refreshIndexStatusLabel]() {
+  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingProvider, confirmRebuild, refreshIndexStatusLabel]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
 
     if ( !ensureEmbeddingProvider() )
+      return;
+
+    if ( !confirmRebuild( tr( "layer index" ) ) )
       return;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );

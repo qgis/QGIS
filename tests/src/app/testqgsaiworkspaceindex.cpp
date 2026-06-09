@@ -5,6 +5,7 @@
 ***************************************************************************/
 
 #include <memory>
+#include <utility>
 
 #include "ai/index/qgsaiembeddingclient.h"
 #include "ai/index/qgsaiembeddingprovider.h"
@@ -125,6 +126,44 @@ namespace
         return true;
       }
   };
+
+  /**
+   * Provider with fully configurable identity metadata, used to exercise the
+   * provider/model mismatch -> wipe-and-rebuild path of the on-disk index.
+   */
+  class MetaEmbeddingProvider : public QgsAiEmbeddingProvider
+  {
+    public:
+      MetaEmbeddingProvider( QString providerId, QString modelId, QString revision, int dimension )
+        : mProviderId( std::move( providerId ) ), mModelId( std::move( modelId ) ), mRevision( std::move( revision ) ), mDimension( dimension ) {}
+
+      QString providerId() const override { return mProviderId; }
+      QString displayName() const override { return mProviderId; }
+      QString modelId() const override { return mModelId; }
+      QString modelRevision() const override { return mRevision; }
+      int embeddingDimension() const override { return mDimension; }
+      bool isAvailable( QString *errorMessage = nullptr ) const override
+      {
+        Q_UNUSED( errorMessage )
+        return true;
+      }
+
+      bool embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage = nullptr, int maxBatch = 64 ) override
+      {
+        Q_UNUSED( errorMessage )
+        Q_UNUSED( maxBatch )
+        out.clear();
+        for ( int i = 0; i < texts.size(); ++i )
+          out.append( QVector<float>( mDimension, 0.1f ) );
+        return true;
+      }
+
+    private:
+      QString mProviderId;
+      QString mModelId;
+      QString mRevision;
+      int mDimension = 0;
+  };
 } // namespace
 
 class TestQgsAiWorkspaceIndex : public QObject
@@ -144,6 +183,7 @@ class TestQgsAiWorkspaceIndex : public QObject
     void embeddingClientDefaultsToOpenAi();
     void embeddingClientUsesOpenRouterSettings();
     void schemaMigrationDropsOldDb();
+    void providerMetadataMismatchRebuildsIndex();
     void reindexAndSearchUseLocalProvider();
     void reindexLayersFailsWithoutLocalProvider();
     void chunkerOutputPersistsAsLayerChunks();
@@ -479,6 +519,31 @@ void TestQgsAiWorkspaceIndex::schemaMigrationDropsOldDb()
   QgsAiWorkspaceIndex fresh( &contextProvider, nullptr );
   QVERIFY( fresh.ensureLoaded() );
   QCOMPARE( fresh.status().chunkCount, 0 );
+}
+
+void TestQgsAiWorkspaceIndex::providerMetadataMismatchRebuildsIndex()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+
+  // Seed the on-disk index with chunks produced by provider A.
+  MetaEmbeddingProvider providerA( u"mismatch-test"_s, u"model-A"_s, u"rev-1"_s, 3 );
+  {
+    QgsAiWorkspaceIndex index( &contextProvider, &providerA );
+    QString err;
+    QVERIFY( index.persistChunks( { makeFileChunk( u"a.md"_s, 0, u"hello"_s ) }, { QVector<float>( 3, 0.2f ) }, QgsAiWorkspaceIndex::ReplaceScope::All, QString(), &err ) );
+    QCOMPARE( index.status().chunkCount, 1 );
+  }
+
+  // Reopen the SAME workspace with a provider that has the same providerId (so the
+  // db path is identical) but a different model. The stored chunks belong to a
+  // different model and must be dropped: the index rebuilds empty rather than
+  // mixing incompatible embeddings.
+  MetaEmbeddingProvider providerB( u"mismatch-test"_s, u"model-B"_s, u"rev-2"_s, 3 );
+  QgsAiWorkspaceIndex index2( &contextProvider, &providerB );
+  QVERIFY( index2.ensureLoaded() );
+  QCOMPARE( index2.status().chunkCount, 0 );
 }
 
 void TestQgsAiWorkspaceIndex::initTestCase()

@@ -177,14 +177,26 @@ void QgsAiLayerIndexCoordinator::flushDirty()
     return;
   }
 
-  const QSet<QString> toProcess = mDirtyLayers;
+  const QList<QString> toProcess( mDirtyLayers.constBegin(), mDirtyLayers.constEnd() );
   mDirtyLayers.clear();
 
-  for ( const QString &layerId : toProcess )
+  for ( int i = 0; i < toProcess.size(); ++i )
   {
+    const QString &layerId = toProcess.at( i );
     emit reindexStarted( layerId );
     QString err;
     const bool ok = mIndex->reindexLayer( layerId, &err );
+    if ( !ok && !mIndex->embeddingProviderAvailable() )
+    {
+      // The embedding provider became unavailable mid-batch (e.g. a remote 401/403
+      // tripped the circuit breaker). Stop now instead of logging one warning per
+      // remaining layer; re-queue the unprocessed layers so they retry once the
+      // provider is available again.
+      for ( int j = i; j < toProcess.size(); ++j )
+        mDirtyLayers.insert( toProcess.at( j ) );
+      emit reindexFinished( layerId, ok, err );
+      break;
+    }
     if ( !ok )
       QgsMessageLog::logMessage( u"Layer index: reindexLayer(%1) failed: %2"_s.arg( layerId, err ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
     emit reindexFinished( layerId, ok, err );
