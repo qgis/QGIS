@@ -5,6 +5,7 @@
 ***************************************************************************/
 
 #include "ai/qgsaiagentsessionmanager.h"
+#include "ai/qgsaichathistorystore.h"
 #include "ai/qgsaichatdockwidget.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
@@ -27,6 +28,7 @@
 #include <QMetaObject>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QString>
 #include <QTemporaryDir>
@@ -75,6 +77,7 @@ class TestQgsAiChatDockWidget : public QObject
 
   private slots:
     void hasRuntimeWidgets();
+    void usesPaletteBasedCursorStyling();
     void doesNotDuplicateStreamedAssistantResponse();
     void rendersToolResultWithoutRawJson();
     void collapsesTechnicalCodeBlocks();
@@ -83,7 +86,9 @@ class TestQgsAiChatDockWidget : public QObject
     void questionCardSendsStructuredAnswers();
     void layerIndexingConsentPolicy();
     void settingsDialogContainsManualIndexingControls();
-    void historyMenuPromptsForWorkspaceRootWhenUnset();
+    void historyMenuPromptsForSavedProjectWhenUnsaved();
+    void historyMenuDoesNotShowWorkspaceHistoryForUnsavedProject();
+    void historyMenuShowsOnlyCurrentProjectSessions();
 };
 
 void TestQgsAiChatDockWidget::hasRuntimeWidgets()
@@ -103,6 +108,41 @@ void TestQgsAiChatDockWidget::hasRuntimeWidgets()
   QVERIFY( cancelButton );
   QVERIFY( !cancelButton->isEnabled() );
   QVERIFY( runtimeLabel->text().contains( u"idle"_s, Qt::CaseInsensitive ) );
+}
+
+void TestQgsAiChatDockWidget::usesPaletteBasedCursorStyling()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+  QTextEdit *input = dock.findChild<QTextEdit *>( u"aiPromptInput"_s );
+  QToolButton *sendButton = dock.findChild<QToolButton *>( u"aiSendButton"_s );
+  QToolButton *modePill = dock.findChild<QToolButton *>( u"aiModePill"_s );
+  QVERIFY( input );
+  QVERIFY( sendButton );
+  QVERIFY( modePill );
+  QVERIFY( input->styleSheet().contains( u"palette(base)"_s ) );
+  QVERIFY( sendButton->styleSheet().contains( u"palette(highlight)"_s ) );
+  QVERIFY( modePill->styleSheet().contains( u"palette(button)"_s ) );
+
+  QgsAiChatMessage assistantMessage;
+  assistantMessage.id = u"assistant-style"_s;
+  assistantMessage.role = QgsAiChatRole::Assistant;
+  assistantMessage.content = u"Styled response."_s;
+  manager.messageAdded( assistantMessage );
+
+  QFrame *message = dock.findChild<QFrame *>( u"aiMessage"_s );
+  QVERIFY( message );
+  QVERIFY( message->styleSheet().contains( u"palette(base)"_s ) );
+  QVERIFY( message->styleSheet().contains( u"palette(mid)"_s ) );
+  static const QRegularExpression hexColorRe( u"#[0-9a-fA-F]{3,8}\\b"_s );
+  QVERIFY( !hexColorRe.match( message->styleSheet() ).hasMatch() );
 }
 
 void TestQgsAiChatDockWidget::doesNotDuplicateStreamedAssistantResponse()
@@ -411,12 +451,12 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   QVERIFY( controlsFound );
 }
 
-void TestQgsAiChatDockWidget::historyMenuPromptsForWorkspaceRootWhenUnset()
+void TestQgsAiChatDockWidget::historyMenuPromptsForSavedProjectWhenUnsaved()
 {
   QgsAiModelRouter router;
   QgsAiFileContextProvider contextProvider( QString {} );
   QgsAiReviewPatchEngine reviewEngine;
-  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
   QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
 
   QToolButton *historyButton = dock.findChild<QToolButton *>( u"aiHistoryButton"_s );
@@ -427,8 +467,80 @@ void TestQgsAiChatDockWidget::historyMenuPromptsForWorkspaceRootWhenUnset()
 
   const QList<QAction *> actions = historyButton->menu()->actions();
   QCOMPARE( actions.size(), 1 );
-  QVERIFY( actions.first()->text().contains( u"workspace root"_s, Qt::CaseInsensitive ) );
+  QVERIFY( actions.first()->text().contains( u"QGIS project"_s, Qt::CaseInsensitive ) );
   QVERIFY( !actions.first()->isEnabled() );
+}
+
+void TestQgsAiChatDockWidget::historyMenuDoesNotShowWorkspaceHistoryForUnsavedProject()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  manager.setHistoryStore( &store );
+
+  QVERIFY( store.createSession( u"legacy-workspace-chat"_s, u"Legacy workspace chat"_s, u"planner"_s ) );
+  manager.resetProjectChatHistoryScope();
+
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  QToolButton *historyButton = dock.findChild<QToolButton *>( u"aiHistoryButton"_s );
+  QVERIFY( historyButton );
+  QVERIFY( historyButton->menu() );
+
+  QVERIFY( QMetaObject::invokeMethod( &dock, "rebuildHistoryMenu", Qt::DirectConnection ) );
+
+  const QList<QAction *> actions = historyButton->menu()->actions();
+  QCOMPARE( actions.size(), 1 );
+  QVERIFY( actions.first()->text().contains( u"QGIS project"_s, Qt::CaseInsensitive ) );
+  QVERIFY( !actions.first()->text().contains( u"Legacy workspace chat"_s ) );
+  QVERIFY( !actions.first()->isEnabled() );
+}
+
+void TestQgsAiChatDockWidget::historyMenuShowsOnlyCurrentProjectSessions()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  manager.setHistoryStore( &store );
+
+  const QString projectScope1 = QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( tempDir.filePath( u"one.qgz"_s ) );
+  const QString projectScope2 = QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( tempDir.filePath( u"two.qgz"_s ) );
+
+  manager.setProjectChatHistoryScopeKey( projectScope1 );
+  manager.sendUserMessage( u"project alpha"_s );
+  manager.setProjectChatHistoryScopeKey( projectScope2 );
+  manager.sendUserMessage( u"project beta"_s );
+
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  QToolButton *historyButton = dock.findChild<QToolButton *>( u"aiHistoryButton"_s );
+  QVERIFY( historyButton );
+  QVERIFY( historyButton->menu() );
+
+  QVERIFY( QMetaObject::invokeMethod( &dock, "rebuildHistoryMenu", Qt::DirectConnection ) );
+  QStringList projectTwoLabels;
+  for ( QAction *action : historyButton->menu()->actions() )
+    projectTwoLabels << action->text();
+  const QString projectTwoMenu = projectTwoLabels.join( '\n' );
+  QVERIFY( projectTwoMenu.contains( u"project beta"_s ) );
+  QVERIFY( !projectTwoMenu.contains( u"project alpha"_s ) );
+
+  manager.setProjectChatHistoryScopeKey( projectScope1 );
+  QVERIFY( QMetaObject::invokeMethod( &dock, "rebuildHistoryMenu", Qt::DirectConnection ) );
+  QStringList projectOneLabels;
+  for ( QAction *action : historyButton->menu()->actions() )
+    projectOneLabels << action->text();
+  const QString projectOneMenu = projectOneLabels.join( '\n' );
+  QVERIFY( projectOneMenu.contains( u"project alpha"_s ) );
+  QVERIFY( !projectOneMenu.contains( u"project beta"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsAiChatDockWidget )

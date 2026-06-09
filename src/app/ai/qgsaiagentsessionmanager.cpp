@@ -16,6 +16,7 @@
 #include "qgsaiagentsessionmanager.h"
 
 #include <algorithm>
+#include <utility>
 
 #include "qgsaifilecontextprovider.h"
 #include "qgsaireviewpatchengine.h"
@@ -230,7 +231,7 @@ bool QgsAiAgentSessionManager::updateMessageMetadata( const QString &messageId, 
       continue;
 
     message.metadata = metadata;
-    if ( mHistoryStore && !mActiveSessionId.isEmpty() )
+    if ( mHistoryStore && mHistoryStore->hasPersistentHistoryScope() && !mActiveSessionId.isEmpty() )
       mHistoryStore->updateMessageMetadata( mActiveSessionId, messageId, metadata );
     return true;
   }
@@ -241,7 +242,7 @@ bool QgsAiAgentSessionManager::updateMessageMetadata( const QString &messageId, 
 void QgsAiAgentSessionManager::recordHistoryMessage( const QgsAiChatMessage &message )
 {
   mHistory.append( message );
-  if ( mHistoryStore && !mActiveSessionId.isEmpty() )
+  if ( mHistoryStore && mHistoryStore->hasPersistentHistoryScope() && !mActiveSessionId.isEmpty() )
     mHistoryStore->appendMessage( mActiveSessionId, message, mNextMessageOrdering++ );
   emit messageAdded( message );
 }
@@ -259,11 +260,140 @@ QString QgsAiAgentSessionManager::deriveSessionTitle( const QString &text )
   return single;
 }
 
+QString QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( const QString &projectFilePath )
+{
+  const QString trimmed = projectFilePath.trimmed();
+  if ( trimmed.isEmpty() )
+    return QString();
+
+  const QFileInfo info( trimmed );
+  QString normalizedPath;
+  if ( info.exists() )
+    normalizedPath = info.canonicalFilePath();
+  if ( normalizedPath.isEmpty() && info.isAbsolute() )
+    normalizedPath = QDir::cleanPath( info.absoluteFilePath() );
+
+  const bool looksLikeUri = trimmed.contains( u"://"_s )
+                            || trimmed.startsWith( u"geopackage:"_s, Qt::CaseInsensitive )
+                            || trimmed.startsWith( u"postgresql:"_s, Qt::CaseInsensitive );
+  if ( normalizedPath.isEmpty() && !looksLikeUri )
+    normalizedPath = QDir::cleanPath( info.absoluteFilePath() );
+  if ( normalizedPath.isEmpty() )
+    normalizedPath = trimmed;
+
+  return u"project:file:%1"_s.arg( normalizedPath );
+}
+
+bool QgsAiAgentSessionManager::hasPersistentChatHistoryScope() const
+{
+  return mHistoryStore && mHistoryStore->hasPersistentHistoryScope();
+}
+
+QString QgsAiAgentSessionManager::chatHistoryScopeKey() const
+{
+  return mHistoryStore && mHistoryStore->hasExplicitHistoryScopeKey() ? mHistoryStore->historyScopeKey() : QString();
+}
+
+void QgsAiAgentSessionManager::resetCurrentSessionState( bool emitHistorySignal )
+{
+  mHistory.clear();
+  mActiveSessionId.clear();
+  mNextMessageOrdering = 0;
+  mCurrentContextFiles.clear();
+  mStreamedText.clear();
+  mToolIterations = 0;
+  if ( emitHistorySignal )
+    emit historyReplaced();
+}
+
+void QgsAiAgentSessionManager::persistCurrentHistoryToStore()
+{
+  if ( !mHistoryStore || !mHistoryStore->hasPersistentHistoryScope() || mHistory.isEmpty() )
+    return;
+
+  QString firstUserText;
+  for ( const QgsAiChatMessage &message : std::as_const( mHistory ) )
+  {
+    if ( message.role == QgsAiChatRole::User )
+    {
+      firstUserText = message.content;
+      break;
+    }
+  }
+
+  const QString sessionId = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  if ( !mHistoryStore->createSession( sessionId, deriveSessionTitle( firstUserText ), mActiveAgent ) )
+  {
+    QgsMessageLog::logMessage( u"Failed to create promoted project chat session in store"_s, u"AI/ChatHistory"_s, Qgis::MessageLevel::Warning, false );
+    mActiveSessionId.clear();
+    mNextMessageOrdering = 0;
+    return;
+  }
+
+  mActiveSessionId = sessionId;
+  mNextMessageOrdering = 0;
+  for ( const QgsAiChatMessage &message : std::as_const( mHistory ) )
+    mHistoryStore->appendMessage( mActiveSessionId, message, mNextMessageOrdering++ );
+
+  emit sessionListChanged();
+}
+
+void QgsAiAgentSessionManager::resetProjectChatHistoryScope()
+{
+  if ( hasActiveRequest() )
+    cancelActiveRequest();
+
+  if ( mHistoryStore )
+    mHistoryStore->setHistoryScopeKey( QString() );
+
+  resetCurrentSessionState( true );
+  emit sessionListChanged();
+}
+
+void QgsAiAgentSessionManager::setProjectChatHistoryScopeKey( const QString &scopeKey )
+{
+  const QString normalizedScope = scopeKey.trimmed();
+  if ( normalizedScope.isEmpty() )
+  {
+    resetProjectChatHistoryScope();
+    return;
+  }
+
+  if ( !mHistoryStore )
+  {
+    if ( hasActiveRequest() )
+      cancelActiveRequest();
+    resetCurrentSessionState( true );
+    emit sessionListChanged();
+    return;
+  }
+
+  const bool sameScope = mHistoryStore->hasExplicitHistoryScopeKey() && mHistoryStore->historyScopeKey() == normalizedScope;
+  if ( sameScope )
+    return;
+
+  const bool promoteUnsavedHistory = mHistoryStore->hasExplicitHistoryScopeKey()
+                                     && mHistoryStore->historyScopeKey().trimmed().isEmpty()
+                                     && !mHistory.isEmpty();
+  if ( !promoteUnsavedHistory && hasActiveRequest() )
+    cancelActiveRequest();
+
+  mHistoryStore->setHistoryScopeKey( normalizedScope );
+  if ( promoteUnsavedHistory )
+    persistCurrentHistoryToStore();
+  else
+    resetCurrentSessionState( true );
+
+  emit sessionListChanged();
+}
+
 void QgsAiAgentSessionManager::ensureActiveSession( const QString &firstUserText )
 {
   if ( !mActiveSessionId.isEmpty() )
     return;
   if ( !mHistoryStore )
+    return;
+  if ( !mHistoryStore->hasPersistentHistoryScope() )
     return;
 
   mActiveSessionId = QUuid::createUuid().toString( QUuid::WithoutBraces );
@@ -304,10 +434,7 @@ void QgsAiAgentSessionManager::startNewSession()
   if ( hasActiveRequest() )
     cancelActiveRequest();
 
-  mHistory.clear();
-  mActiveSessionId.clear();
-  mNextMessageOrdering = 0;
-  emit historyReplaced();
+  resetCurrentSessionState( true );
   // Note: the session row is created lazily on the first user message,
   // so an empty "+ New" with no messages does not pollute the history list.
 }

@@ -64,6 +64,9 @@ void QgsAiChatHistoryStore::resetDatabaseConnection()
 
 void QgsAiChatHistoryStore::onWorkspaceRootChanged()
 {
+  if ( mHasExplicitHistoryScopeKey )
+    return;
+
   resetDatabaseConnection();
   emit sessionListChanged();
 }
@@ -75,9 +78,20 @@ QString QgsAiChatHistoryStore::connectionName() const
 
 QString QgsAiChatHistoryStore::dbPath() const
 {
+  if ( mHasExplicitHistoryScopeKey )
+  {
+    const QString scope = mHistoryScopeKey.trimmed();
+    if ( scope.isEmpty() )
+      return QString();
+
+    const QByteArray hash = QCryptographicHash::hash( scope.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 16 );
+    const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_chat"_s;
+    QDir().mkpath( dir );
+    return QDir( dir ).filePath( u"project_%1.sqlite"_s.arg( QString::fromLatin1( hash ) ) );
+  }
+
   if ( !mContextProvider )
     return QString();
-
   const QString root = mContextProvider->workspaceRoot();
   if ( root.isEmpty() )
     return QString();
@@ -88,13 +102,44 @@ QString QgsAiChatHistoryStore::dbPath() const
   return QDir( dir ).filePath( u"ws_%1.sqlite"_s.arg( QString::fromLatin1( hash ) ) );
 }
 
+void QgsAiChatHistoryStore::setHistoryScopeKey( const QString &scopeKey )
+{
+  const QString normalizedScope = scopeKey.trimmed();
+  if ( mHasExplicitHistoryScopeKey && mHistoryScopeKey == normalizedScope )
+    return;
+
+  mHasExplicitHistoryScopeKey = true;
+  mHistoryScopeKey = normalizedScope;
+  resetDatabaseConnection();
+  emit sessionListChanged();
+}
+
+void QgsAiChatHistoryStore::clearHistoryScopeKey()
+{
+  if ( !mHasExplicitHistoryScopeKey )
+    return;
+
+  mHasExplicitHistoryScopeKey = false;
+  mHistoryScopeKey.clear();
+  resetDatabaseConnection();
+  emit sessionListChanged();
+}
+
+bool QgsAiChatHistoryStore::hasPersistentHistoryScope() const
+{
+  if ( mHasExplicitHistoryScopeKey )
+    return !mHistoryScopeKey.trimmed().isEmpty();
+
+  return mContextProvider && !mContextProvider->workspaceRoot().isEmpty();
+}
+
 bool QgsAiChatHistoryStore::openDatabase( QString *errorMessage ) const
 {
   const QString path = dbPath();
   if ( path.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = u"Workspace root is unset; cannot open chat history."_s;
+      *errorMessage = mHasExplicitHistoryScopeKey ? u"QGIS project is unsaved; cannot open chat history."_s : u"Workspace root is unset; cannot open chat history."_s;
     return false;
   }
 

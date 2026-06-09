@@ -14,6 +14,9 @@ Email                : sherman at mrcc dot com
  ***************************************************************************/
 #include "qgstest.h"
 
+#include <QApplication>
+#include <QFileInfo>
+#include <QPalette>
 #include <QPixmap>
 #include <QString>
 
@@ -45,6 +48,7 @@ class TestQgsApplication : public QgsTest
     void platformName();
     void applicationFullName();
     void themeIcon();
+    void cursorAutoTheme();
 
   private:
     QString getQgisPath();
@@ -114,6 +118,50 @@ void TestQgsApplication::themeIcon()
   icon = QgsApplication::getThemeIcon( u"/mIconFolderParams.svg"_s, QColor( 170, 255, 170 ), QColor( 0, 255, 0 ) );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
   QVERIFY( QGSIMAGECHECK( u"theme_icon_colors_2"_s, u"theme_icon_colors_2"_s, im, QString(), 0 ) );
+}
+
+void TestQgsApplication::cursorAutoTheme()
+{
+  struct ThemeRestorer
+  {
+      QPalette palette = qApp->palette();
+      QString styleSheet = qApp->styleSheet();
+      QString themeName = QgsApplication::themeName();
+
+      ~ThemeRestorer()
+      {
+        QgsApplication::setUITheme( themeName );
+        qApp->setPalette( palette );
+        qApp->setStyleSheet( styleSheet );
+      }
+  } restorer;
+
+  const QHash<QString, QString> themes = QgsApplication::uiThemes();
+  QVERIFY( themes.contains( u"Cursor Auto"_s ) );
+  QVERIFY( QFileInfo::exists( themes.value( u"Cursor Auto"_s ) + "/auto-palette.txt"_L1 ) );
+
+  QPalette darkSeed = restorer.palette;
+  darkSeed.setColor( QPalette::ColorRole::Window, QColor( u"#202020"_s ) );
+  qApp->setPalette( darkSeed );
+  QgsApplication::setUITheme( u"Cursor Auto"_s );
+
+  QCOMPARE( QgsApplication::themeName(), u"Cursor Auto"_s );
+  QVERIFY( !qApp->styleSheet().isEmpty() );
+  QVERIFY( qApp->styleSheet().contains( u"QToolButton"_s ) );
+  QCOMPARE( qApp->palette().color( QPalette::ColorRole::Window ), QColor( u"#1f2028"_s ) );
+  QCOMPARE( qApp->palette().color( QPalette::ColorRole::Base ), QColor( u"#17181f"_s ) );
+  QCOMPARE( qApp->palette().color( QPalette::ColorRole::Highlight ), QColor( u"#4b7dff"_s ) );
+  QVERIFY( qApp->palette().color( QPalette::ColorRole::Window ) != QColor( u"#000000"_s ) );
+
+  QPalette lightSeed = restorer.palette;
+  lightSeed.setColor( QPalette::ColorRole::Window, QColor( u"#ffffff"_s ) );
+  qApp->setPalette( lightSeed );
+  QgsApplication::setUITheme( u"Cursor Auto"_s );
+
+  QCOMPARE( qApp->palette().color( QPalette::ColorRole::Window ), QColor( u"#f5f6fa"_s ) );
+  QCOMPARE( qApp->palette().color( QPalette::ColorRole::Base ), QColor( u"#ffffff"_s ) );
+  QCOMPARE( qApp->palette().color( QPalette::ColorRole::Highlight ), QColor( u"#3f6df6"_s ) );
+  QVERIFY( qApp->palette().color( QPalette::ColorRole::Text ) != QColor( u"#000000"_s ) );
 }
 
 void TestQgsApplication::checkPaths()

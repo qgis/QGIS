@@ -27,10 +27,11 @@
 class QgsAiFileContextProvider;
 
 /**
- * Persists chat sessions per workspace in a SQLite database, mirroring the
- * layout used by QgsAiWorkspaceIndex. One file per workspace, stored under
- * QgsApplication::qgisSettingsDirPath()/ai_chat/ws_<hash>.sqlite where the
- * hash is derived from the workspace root path.
+ * Persists chat sessions in a SQLite database. By default the store keeps the
+ * legacy per-workspace behavior, mirroring the layout used by QgsAiWorkspaceIndex.
+ * Call setHistoryScopeKey() to switch to an explicit per-project history scope.
+ * An explicit empty scope disables persistence, which is used for unsaved QGIS
+ * projects so they never show history from other projects.
  *
  * Two tables: \c sessions (one row per chat) and \c messages (one row per
  * message, with a session_id foreign key and a per-session ordering column).
@@ -55,10 +56,25 @@ class APP_EXPORT QgsAiChatHistoryStore : public QObject
     explicit QgsAiChatHistoryStore( QgsAiFileContextProvider *contextProvider, QObject *parent = nullptr );
     ~QgsAiChatHistoryStore() override;
 
-    //! Opens the SQLite database for the current workspace and creates the schema if missing.
+    //! Sets an explicit history scope. Empty scope disables persistence instead of falling back to the workspace.
+    void setHistoryScopeKey( const QString &scopeKey );
+
+    //! Clears the explicit history scope and returns to legacy workspace-scoped persistence.
+    void clearHistoryScopeKey();
+
+    //! Returns true when an explicit history scope has been set, including an empty scope.
+    bool hasExplicitHistoryScopeKey() const { return mHasExplicitHistoryScopeKey; }
+
+    //! Returns the explicit history scope key, or an empty string when none is set.
+    QString historyScopeKey() const { return mHistoryScopeKey; }
+
+    //! Returns true when the current scope can persist chat history to SQLite.
+    bool hasPersistentHistoryScope() const;
+
+    //! Opens the SQLite database for the current history scope and creates the schema if missing.
     bool ensureReady( QString *errorMessage = nullptr );
 
-    //! Returns the sessions for the current workspace ordered by updatedAt descending.
+    //! Returns the sessions for the current history scope ordered by updatedAt descending.
     QList<SessionInfo> listSessions() const;
 
     //! Returns all messages of the given session ordered by insertion.
@@ -86,7 +102,7 @@ class APP_EXPORT QgsAiChatHistoryStore : public QObject
     int lastOrdering( const QString &sessionId ) const;
 
   signals:
-    //! Emitted when the workspace root changes and the session list may differ.
+    //! Emitted when the active history scope changes and the session list may differ.
     void sessionListChanged();
 
   private slots:
@@ -100,6 +116,8 @@ class APP_EXPORT QgsAiChatHistoryStore : public QObject
     bool openDatabase( QString *errorMessage = nullptr ) const;
 
     QgsAiFileContextProvider *mContextProvider = nullptr;
+    QString mHistoryScopeKey;
+    bool mHasExplicitHistoryScopeKey = false;
     mutable bool mReady = false;
 };
 

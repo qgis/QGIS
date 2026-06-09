@@ -1438,6 +1438,24 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );
   mAiSessionManager->setWorkspaceIndex( mAiWorkspaceIndex.get() );
   mAiSessionManager->setHistoryStore( mAiChatHistoryStore.get() );
+  connect( QgsProject::instance(), &QgsProject::cleared, this, [this]() {
+    if ( mAiSessionManager )
+      mAiSessionManager->resetProjectChatHistoryScope();
+  } );
+  connect( QgsProject::instance(), &QgsProject::fileNameChanged, this, [this]() {
+    if ( !mAiSessionManager )
+      return;
+
+    const QString projectFilePath = QgsProject::instance()->fileName();
+    if ( projectFilePath.trimmed().isEmpty() )
+      mAiSessionManager->resetProjectChatHistoryScope();
+    else
+      mAiSessionManager->setProjectChatHistoryScopeKey( QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( projectFilePath ) );
+  } );
+  if ( QgsProject::instance()->fileName().trimmed().isEmpty() )
+    mAiSessionManager->resetProjectChatHistoryScope();
+  else
+    mAiSessionManager->setProjectChatHistoryScopeKey( QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( QgsProject::instance()->fileName() ) );
 
   mAiChatDock = new QgsAiChatDockWidget( mAiSessionManager.get(), mAiModelRouter.get(), mAiReviewPatchEngine.get(), this );
   connect( mAiChatHistoryStore.get(), &QgsAiChatHistoryStore::sessionListChanged, mAiChatDock, &QgsAiChatDockWidget::rebuildHistoryMenu );

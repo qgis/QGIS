@@ -29,12 +29,15 @@ class TestQgsAiChatHistoryStore : public QObject
     void persistsSessionsWhenWorkspaceConfigured();
     void updatesMessageMetadata();
     void workspaceRootChangeLoadsSeparateHistory();
+    void projectScopesWithSameWorkspaceUseSeparateHistory();
+    void emptyProjectScopeDoesNotUseWorkspaceHistory();
     void workspaceRootSettingRoundTripsViaQgsSettings();
     void autoWorkspaceRootUsesProfileDirectoryWhenUnset();
     void workspaceRootMigratesGeoAiLegacySetting();
 
   private:
     static QString expectedDbPath( const QString &workspaceRoot );
+    static QString expectedProjectDbPath( const QString &scopeKey );
 };
 
 QString TestQgsAiChatHistoryStore::expectedDbPath( const QString &workspaceRoot )
@@ -42,6 +45,13 @@ QString TestQgsAiChatHistoryStore::expectedDbPath( const QString &workspaceRoot 
   const QByteArray hash = QCryptographicHash::hash( workspaceRoot.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 16 );
   const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_chat"_s;
   return QDir( dir ).filePath( u"ws_%1.sqlite"_s.arg( QString::fromLatin1( hash ) ) );
+}
+
+QString TestQgsAiChatHistoryStore::expectedProjectDbPath( const QString &scopeKey )
+{
+  const QByteArray hash = QCryptographicHash::hash( scopeKey.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 16 );
+  const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_chat"_s;
+  return QDir( dir ).filePath( u"project_%1.sqlite"_s.arg( QString::fromLatin1( hash ) ) );
 }
 
 void TestQgsAiChatHistoryStore::persistsSessionsWhenWorkspaceConfigured()
@@ -132,6 +142,63 @@ void TestQgsAiChatHistoryStore::workspaceRootChangeLoadsSeparateHistory()
   QCOMPARE( listSpy.count(), 2 );
   QCOMPARE( store.listSessions().size(), 1 );
   QCOMPARE( store.listSessions().first().title, u"Workspace one"_s );
+}
+
+void TestQgsAiChatHistoryStore::projectScopesWithSameWorkspaceUseSeparateHistory()
+{
+  QTemporaryDir workspace;
+  QVERIFY( workspace.isValid() );
+
+  QgsAiFileContextProvider contextProvider( workspace.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+
+  const QString projectScope1 = u"project:file:/tmp/project-one.qgz"_s;
+  const QString projectScope2 = u"project:file:/tmp/project-two.qgz"_s;
+
+  store.setHistoryScopeKey( projectScope1 );
+  QVERIFY( store.hasExplicitHistoryScopeKey() );
+  QVERIFY( store.hasPersistentHistoryScope() );
+  const QString session1 = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  QVERIFY( store.createSession( session1, u"Project one"_s, u"planner"_s ) );
+  QCOMPARE( store.listSessions().size(), 1 );
+  QCOMPARE( store.listSessions().first().title, u"Project one"_s );
+  QVERIFY( QFileInfo::exists( expectedProjectDbPath( projectScope1 ) ) );
+
+  store.setHistoryScopeKey( projectScope2 );
+  QCOMPARE( store.listSessions().size(), 0 );
+  const QString session2 = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  QVERIFY( store.createSession( session2, u"Project two"_s, u"planner"_s ) );
+  QCOMPARE( store.listSessions().size(), 1 );
+  QCOMPARE( store.listSessions().first().title, u"Project two"_s );
+
+  store.setHistoryScopeKey( projectScope1 );
+  QCOMPARE( store.listSessions().size(), 1 );
+  QCOMPARE( store.listSessions().first().title, u"Project one"_s );
+}
+
+void TestQgsAiChatHistoryStore::emptyProjectScopeDoesNotUseWorkspaceHistory()
+{
+  QTemporaryDir workspace;
+  QVERIFY( workspace.isValid() );
+
+  QgsAiFileContextProvider contextProvider( workspace.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+
+  const QString legacySession = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  QVERIFY( store.createSession( legacySession, u"Legacy workspace chat"_s, u"planner"_s ) );
+  QCOMPARE( store.listSessions().size(), 1 );
+
+  store.setHistoryScopeKey( QString() );
+  QVERIFY( store.hasExplicitHistoryScopeKey() );
+  QVERIFY( !store.hasPersistentHistoryScope() );
+  QCOMPARE( store.listSessions().size(), 0 );
+  QVERIFY( !store.createSession( QUuid::createUuid().toString( QUuid::WithoutBraces ), u"Unsaved project"_s, u"planner"_s ) );
+
+  store.clearHistoryScopeKey();
+  QVERIFY( !store.hasExplicitHistoryScopeKey() );
+  QVERIFY( store.hasPersistentHistoryScope() );
+  QCOMPARE( store.listSessions().size(), 1 );
+  QCOMPARE( store.listSessions().first().title, u"Legacy workspace chat"_s );
 }
 
 void TestQgsAiChatHistoryStore::workspaceRootSettingRoundTripsViaQgsSettings()

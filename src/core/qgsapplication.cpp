@@ -105,6 +105,7 @@
 #include "qgsvaliditycheckregistry.h"
 
 #include <QAuthenticator>
+#include <QColor>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -130,6 +131,54 @@
 #include "moc_qgsapplication.cpp"
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+  double colorLuminance( const QColor &color )
+  {
+    return 0.2126 * color.redF() + 0.7152 * color.greenF() + 0.0722 * color.blueF();
+  }
+
+  void applyCursorAutoPalette( QPalette &palette )
+  {
+    const bool darkBase = colorLuminance( palette.color( QPalette::ColorRole::Window ) ) < 0.5;
+
+    const QColor window = darkBase ? QColor( u"#1f2028"_s ) : QColor( u"#f5f6fa"_s );
+    const QColor base = darkBase ? QColor( u"#17181f"_s ) : QColor( u"#ffffff"_s );
+    const QColor alternateBase = darkBase ? QColor( u"#232630"_s ) : QColor( u"#edf0f6"_s );
+    const QColor button = darkBase ? QColor( u"#252833"_s ) : QColor( u"#f1f3f8"_s );
+    const QColor mid = darkBase ? QColor( u"#383c4a"_s ) : QColor( u"#c8ceda"_s );
+    const QColor text = darkBase ? QColor( u"#e6e8ef"_s ) : QColor( u"#242733"_s );
+    const QColor highlight = darkBase ? QColor( u"#4b7dff"_s ) : QColor( u"#3f6df6"_s );
+    const QColor highlightedText = QColor( u"#ffffff"_s );
+    const QColor disabledText = darkBase ? QColor( u"#858b9a"_s ) : QColor( u"#8a91a1"_s );
+
+    palette.setColor( QPalette::ColorRole::Window, window );
+    palette.setColor( QPalette::ColorRole::Base, base );
+    palette.setColor( QPalette::ColorRole::AlternateBase, alternateBase );
+    palette.setColor( QPalette::ColorRole::Button, button );
+    palette.setColor( QPalette::ColorRole::Mid, mid );
+    palette.setColor( QPalette::ColorRole::Dark, darkBase ? QColor( u"#2c303b"_s ) : QColor( u"#b6bdca"_s ) );
+    palette.setColor( QPalette::ColorRole::Light, darkBase ? QColor( u"#313541"_s ) : QColor( u"#ffffff"_s ) );
+    palette.setColor( QPalette::ColorRole::Midlight, darkBase ? QColor( u"#2a2d38"_s ) : QColor( u"#f7f8fb"_s ) );
+    palette.setColor( QPalette::ColorRole::Text, text );
+    palette.setColor( QPalette::ColorRole::WindowText, text );
+    palette.setColor( QPalette::ColorRole::ButtonText, text );
+    palette.setColor( QPalette::ColorRole::BrightText, highlightedText );
+    palette.setColor( QPalette::ColorRole::Highlight, highlight );
+    palette.setColor( QPalette::ColorRole::HighlightedText, highlightedText );
+    palette.setColor( QPalette::ColorRole::Link, highlight );
+    palette.setColor( QPalette::ColorRole::ToolTipBase, base );
+    palette.setColor( QPalette::ColorRole::ToolTipText, text );
+    palette.setColor( QPalette::ColorRole::PlaceholderText, disabledText );
+
+    palette.setColor( QPalette::ColorGroup::Disabled, QPalette::ColorRole::Text, disabledText );
+    palette.setColor( QPalette::ColorGroup::Disabled, QPalette::ColorRole::WindowText, disabledText );
+    palette.setColor( QPalette::ColorGroup::Disabled, QPalette::ColorRole::ButtonText, disabledText );
+    palette.setColor( QPalette::ColorGroup::Disabled, QPalette::ColorRole::Highlight, mid );
+    palette.setColor( QPalette::ColorGroup::Disabled, QPalette::ColorRole::HighlightedText, disabledText );
+  }
+} // namespace
 
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( u"userLocale"_s, QgsSettingsTree::sTreeLocale, QString() );
 
@@ -1146,9 +1195,25 @@ void QgsApplication::setUITheme( const QString &themeName )
     return;
   }
 
+  bool appliedPalette = false;
+  QFile autoPaletteFile( path + "/auto-palette.txt" );
+  const QFileInfo autoPaletteInfo( autoPaletteFile );
+  if ( autoPaletteInfo.exists() && autoPaletteFile.open( QIODevice::ReadOnly ) )
+  {
+    const QString autoPaletteMode = QString::fromUtf8( autoPaletteFile.readAll() ).trimmed();
+    autoPaletteFile.close();
+    if ( autoPaletteMode.compare( "cursor"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      QPalette pal = qApp->palette();
+      applyCursorAutoPalette( pal );
+      qApp->setPalette( pal );
+      appliedPalette = true;
+    }
+  }
+
   QFile palettefile( path + "/palette.txt" );
   QFileInfo paletteInfo( palettefile );
-  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
+  if ( !appliedPalette && paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
   {
     QPalette pal = qApp->palette();
     QTextStream in( &palettefile );

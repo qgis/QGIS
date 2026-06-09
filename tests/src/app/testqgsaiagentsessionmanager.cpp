@@ -9,6 +9,7 @@
 #include "ai/index/qgsaiembeddingclient.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
+#include "ai/qgsaichathistorystore.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
@@ -105,6 +106,9 @@ class TestQgsAiAgentSessionManager : public QObject
     void readsGeoAiAgentBehaviorSettings();
     void readsLegacyAgentBehaviorSettings();
     void rejectsRulesFolderOutsideWorkspace();
+    void projectHistoryScopeChangeClearsActiveSessionAndTranscript();
+    void unsavedProjectResetClearsEvenWhenScopeEmpty();
+    void unsavedProjectFirstSavePromotesCurrentChat();
     void formatRetrievedContextRendersFileAndLayerHeaders();
     void formatRetrievedContextTruncatesOverBudget();
     void retrievalSkippedWithoutWorkspaceIndex();
@@ -610,6 +614,94 @@ void TestQgsAiAgentSessionManager::rejectsRulesFolderOutsideWorkspace()
   settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::projectHistoryScopeChangeClearsActiveSessionAndTranscript()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  manager.setHistoryStore( &store );
+
+  const QString projectScope1 = QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( tempDir.filePath( u"one.qgz"_s ) );
+  const QString projectScope2 = QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( tempDir.filePath( u"two.qgz"_s ) );
+
+  manager.setProjectChatHistoryScopeKey( projectScope1 );
+  QVERIFY( manager.hasPersistentChatHistoryScope() );
+  manager.sendUserMessage( u"project one chat"_s );
+  QVERIFY( !manager.activeSessionId().isEmpty() );
+  QVERIFY( !manager.history().isEmpty() );
+  QCOMPARE( manager.listSessions().size(), 1 );
+
+  manager.setProjectChatHistoryScopeKey( projectScope2 );
+  QVERIFY( manager.history().isEmpty() );
+  QVERIFY( manager.activeSessionId().isEmpty() );
+  QCOMPARE( manager.listSessions().size(), 0 );
+
+  manager.setProjectChatHistoryScopeKey( projectScope1 );
+  QCOMPARE( manager.listSessions().size(), 1 );
+  QCOMPARE( manager.listSessions().first().title, u"project one chat"_s );
+}
+
+void TestQgsAiAgentSessionManager::unsavedProjectResetClearsEvenWhenScopeEmpty()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  manager.setHistoryStore( &store );
+
+  manager.resetProjectChatHistoryScope();
+  QVERIFY( !manager.hasPersistentChatHistoryScope() );
+  manager.sendUserMessage( u"memory-only chat"_s );
+  QVERIFY( !manager.history().isEmpty() );
+  QVERIFY( manager.activeSessionId().isEmpty() );
+  QCOMPARE( manager.listSessions().size(), 0 );
+
+  manager.resetProjectChatHistoryScope();
+  QVERIFY( manager.history().isEmpty() );
+  QVERIFY( manager.activeSessionId().isEmpty() );
+  QCOMPARE( manager.listSessions().size(), 0 );
+}
+
+void TestQgsAiAgentSessionManager::unsavedProjectFirstSavePromotesCurrentChat()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  manager.setHistoryStore( &store );
+
+  manager.resetProjectChatHistoryScope();
+  manager.sendUserMessage( u"promote this chat"_s );
+  const QList<QgsAiChatMessage> memoryHistory = manager.history();
+  QVERIFY( memoryHistory.size() >= 2 );
+  QVERIFY( manager.activeSessionId().isEmpty() );
+
+  const QString savedProjectScope = QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( tempDir.filePath( u"saved.qgz"_s ) );
+  manager.setProjectChatHistoryScopeKey( savedProjectScope );
+
+  QVERIFY( manager.hasPersistentChatHistoryScope() );
+  QCOMPARE( manager.history().size(), memoryHistory.size() );
+  QVERIFY( !manager.activeSessionId().isEmpty() );
+
+  const QList<QgsAiChatHistoryStore::SessionInfo> sessions = manager.listSessions();
+  QCOMPARE( sessions.size(), 1 );
+  QCOMPARE( sessions.first().title, u"promote this chat"_s );
+
+  const QList<QgsAiChatMessage> persistedMessages = store.loadMessages( manager.activeSessionId() );
+  QCOMPARE( persistedMessages.size(), memoryHistory.size() );
+  QCOMPARE( persistedMessages.first().content, memoryHistory.first().content );
 }
 
 void TestQgsAiAgentSessionManager::formatRetrievedContextRendersFileAndLayerHeaders()

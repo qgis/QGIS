@@ -80,14 +80,14 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
 
     /**
      * Sets the persistent chat history store. When set, every message appended
-     * to the in-memory history is also written to SQLite (one DB per workspace,
-     * mirroring the workspace index layout). Pass nullptr to disable persistence.
+     * to the in-memory history is also written to SQLite when the current
+     * history scope is persistent. Pass nullptr to disable persistence.
      * Ownership is not transferred.
      */
     void setHistoryStore( QgsAiChatHistoryStore *store ) { mHistoryStore = store; }
     QgsAiChatHistoryStore *historyStore() const { return mHistoryStore; }
 
-    //! Returns the persisted sessions for the current workspace ordered by most recent first.
+    //! Returns the persisted sessions for the current history scope ordered by most recent first.
     QList<QgsAiChatHistoryStore::SessionInfo> listSessions() const;
     //! Returns the active session id, or an empty string if no session has been created yet.
     QString activeSessionId() const { return mActiveSessionId; }
@@ -105,6 +105,21 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void renameSession( const QString &sessionId, const QString &title );
     //! Removes \a sessionId from the store. If it was the active one, starts a new session.
     void deleteSession( const QString &sessionId );
+
+    //! Returns a stable per-project chat history scope key for \a projectFilePath.
+    static QString chatHistoryScopeKeyForProjectFile( const QString &projectFilePath );
+
+    //! Applies a per-project chat history scope. Empty scope means unsaved project and disables persistence.
+    void setProjectChatHistoryScopeKey( const QString &scopeKey );
+
+    //! Resets the current chat and switches to the unsaved-project memory-only history scope.
+    void resetProjectChatHistoryScope();
+
+    //! Returns true when the current chat history scope can persist to SQLite.
+    bool hasPersistentChatHistoryScope() const;
+
+    //! Returns the current explicit chat history scope key, or an empty string for unsaved/legacy scopes.
+    QString chatHistoryScopeKey() const;
 
     void sendUserMessage( const QString &text, const QString &filePath = QString(), const QString &selectedText = QString() );
     void sendUserMessage( const QString &text, const QList<QgsAiChatContextFile> &contextFiles );
@@ -215,6 +230,8 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void ensureActiveSession( const QString &firstUserText );
     //! Trims the input to a 50-char single-line title for the session list.
     static QString deriveSessionTitle( const QString &text );
+    void resetCurrentSessionState( bool emitHistorySignal );
+    void persistCurrentHistoryToStore();
 
     QgsAiModelRouter *mRouter = nullptr;
     QgsAiFileContextProvider *mContextProvider = nullptr;

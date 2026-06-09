@@ -442,7 +442,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   mHistoryButton = new QToolButton( container );
   mHistoryButton->setObjectName( u"aiHistoryButton"_s );
   mHistoryButton->setText( tr( "History" ) + u" ▾"_s );
-  mHistoryButton->setToolTip( tr( "Past chats in this workspace" ) );
+  mHistoryButton->setToolTip( tr( "Past chats in this project" ) );
   mHistoryButton->setAutoRaise( true );
   mHistoryButton->setPopupMode( QToolButton::InstantPopup );
   mHistoryButton->setMenu( new QMenu( mHistoryButton ) );
@@ -479,6 +479,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   layout->addWidget( mFileContextChipRow );
 
   mInputTextEdit = new QTextEdit( container );
+  mInputTextEdit->setObjectName( u"aiPromptInput"_s );
   mInputTextEdit->setPlaceholderText( tr( "Ask a question, tag project files with @, or send /patch…  (Shift+Enter for newline)" ) );
   mInputTextEdit->setAcceptRichText( false );
   mInputTextEdit->setTabChangesFocus( true );
@@ -502,12 +503,14 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   bottomBar->setSpacing( 6 );
 
   mModePill = new QToolButton( container );
+  mModePill->setObjectName( u"aiModePill"_s );
   mModePill->setPopupMode( QToolButton::InstantPopup );
   mModePill->setToolButtonStyle( Qt::ToolButtonTextOnly );
   mModePill->setAutoRaise( true );
   bottomBar->addWidget( mModePill );
 
   mModelPill = new QToolButton( container );
+  mModelPill->setObjectName( u"aiModelPill"_s );
   mModelPill->setPopupMode( QToolButton::InstantPopup );
   mModelPill->setToolButtonStyle( Qt::ToolButtonTextOnly );
   mModelPill->setAutoRaise( true );
@@ -524,6 +527,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   bottomBar->addWidget( mAttachButton );
 
   mSettingsButton = new QToolButton( container );
+  mSettingsButton->setObjectName( u"aiProviderSettingsButton"_s );
   mSettingsButton->setIcon( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ) );
   mSettingsButton->setAutoRaise( true );
   mSettingsButton->setFixedSize( 28, 28 );
@@ -531,6 +535,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   bottomBar->addWidget( mSettingsButton );
 
   mSendButton = new QToolButton( container );
+  mSendButton->setObjectName( u"aiSendButton"_s );
   mSendButton->setText( u"↑"_s );
   mSendButton->setToolTip( tr( "Send (Enter)" ) );
   mSendButton->setFixedSize( 28, 28 );
@@ -764,21 +769,54 @@ void QgsAiChatDockWidget::initModelMenu()
 
 void QgsAiChatDockWidget::applyPillStyling()
 {
-  const QPalette pal = QgsApplication::palette();
-  const QString border = pal.mid().color().name();
-  const QString hover = pal.highlight().color().name();
   const QString pillStyle = QStringLiteral(
-                              "QToolButton { border: 1px solid %1; border-radius: 10px; padding: 2px 10px; } "
-                              "QToolButton::menu-indicator { image: none; width: 0; } "
-                              "QToolButton:hover { background: %2; color: palette(highlighted-text); }"
-  )
-                              .arg( border, hover );
+    "QToolButton { color: palette(window-text); background: palette(button); border: 1px solid palette(mid); border-radius: 10px; padding: 3px 10px; } "
+    "QToolButton::menu-indicator { image: none; width: 0; } "
+    "QToolButton:hover { background: palette(alternate-base); border-color: palette(highlight); } "
+    "QToolButton:pressed, QToolButton:checked { background: palette(highlight); color: palette(highlighted-text); border-color: palette(highlight); }"
+  );
+  mNewChatButton->setStyleSheet( pillStyle );
+  mHistoryButton->setStyleSheet( pillStyle );
   mModePill->setStyleSheet( pillStyle );
   mModelPill->setStyleSheet( pillStyle );
 
+  const QString iconButtonStyle = QStringLiteral(
+    "QToolButton { color: palette(window-text); background: palette(button); border: 1px solid palette(mid); border-radius: 14px; padding: 2px; } "
+    "QToolButton:hover { background: palette(alternate-base); border-color: palette(highlight); } "
+    "QToolButton:pressed { background: palette(highlight); color: palette(highlighted-text); border-color: palette(highlight); }"
+  );
+  mAttachButton->setStyleSheet( iconButtonStyle );
+  mSettingsButton->setStyleSheet( iconButtonStyle );
+
   mSendButton->setStyleSheet( QStringLiteral(
-    "QToolButton { border-radius: 14px; background: palette(highlight); color: palette(highlighted-text); font-weight: bold; } "
-    "QToolButton:disabled { background: palette(mid); color: palette(button-text); }"
+    "QToolButton { border: 1px solid palette(highlight); border-radius: 14px; background: palette(highlight); color: palette(highlighted-text); font-weight: 600; } "
+    "QToolButton:hover { background: palette(highlight); border-color: palette(window-text); } "
+    "QToolButton:disabled { background: palette(button); color: palette(mid); border-color: palette(mid); }"
+  ) );
+
+  mInputTextEdit->setStyleSheet( QStringLiteral(
+    "QTextEdit#aiPromptInput { color: palette(text); background: palette(base); border: 1px solid palette(mid); border-radius: 6px; padding: 6px; selection-background-color: palette(highlight); selection-color: palette(highlighted-text); } "
+    "QTextEdit#aiPromptInput:focus { border-color: palette(highlight); } "
+    "QTextEdit#aiPromptInput:disabled { color: palette(mid); background: palette(alternate-base); }"
+  ) );
+  mTranscriptScrollArea->setStyleSheet( QStringLiteral(
+    "QgsScrollArea#aiTranscriptScrollArea { background: palette(window); border: 0; } "
+    "QWidget#aiTranscriptContainer { background: palette(window); }"
+  ) );
+  mMentionPopup->setStyleSheet( QStringLiteral(
+    "QFrame#aiMentionPopup { background: palette(base); border: 1px solid palette(mid); border-radius: 6px; }"
+  ) );
+  mMentionList->setStyleSheet( QStringLiteral(
+    "QListWidget#aiMentionList { color: palette(text); background: palette(base); border: 0; } "
+    "QListWidget#aiMentionList::item { padding: 4px 8px; border-radius: 4px; } "
+    "QListWidget#aiMentionList::item:selected { color: palette(highlighted-text); background: palette(highlight); } "
+    "QListWidget#aiMentionList::item:hover { background: palette(alternate-base); }"
+  ) );
+  mRuntimeStatusLabel->setStyleSheet( u"QLabel#aiRuntimeStatusLabel { color: palette(mid); }"_s );
+  mCancelButton->setStyleSheet( QStringLiteral(
+    "QPushButton#aiCancelRequestButton { color: palette(window-text); background: palette(button); border: 1px solid palette(mid); border-radius: 4px; padding: 3px 9px; } "
+    "QPushButton#aiCancelRequestButton:hover:enabled { background: palette(alternate-base); border-color: palette(highlight); } "
+    "QPushButton#aiCancelRequestButton:disabled { color: palette(mid); background: palette(window); }"
   ) );
 }
 
@@ -838,7 +876,9 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
   applyTranscriptWidthPolicy( card );
   card->setStyleSheet( QStringLiteral(
     "QFrame#aiMessage { border: 1px solid palette(mid); border-radius: 6px; background: palette(base); } "
-    "QLabel#aiMessageRole { color: palette(mid); font-weight: 600; }"
+    "QLabel#aiMessageRole { color: palette(mid); font-weight: 600; } "
+    "QLabel#aiMessageBody { color: palette(text); } "
+    "QLabel#aiPlanStatusLabel, QLabel#aiQuestionsStatusLabel { color: palette(highlight); font-weight: 600; }"
   ) );
 
   QVBoxLayout *cardLayout = new QVBoxLayout( card );
@@ -916,7 +956,7 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
   }
 
   if ( messageRole == QgsAiChatRole::User )
-    card->setStyleSheet( card->styleSheet() + u"QFrame#aiMessage { background: palette(alternate-base); }"_s );
+    card->setStyleSheet( card->styleSheet() + u"QFrame#aiMessage { background: palette(alternate-base); border-color: palette(mid); }"_s );
 
   return card;
 }
@@ -938,6 +978,10 @@ QWidget *QgsAiChatDockWidget::createCollapsibleSection( const QString &title, co
   toggle->setAutoRaise( true );
   toggle->setText( title );
   toggle->setArrowType( collapsed ? Qt::RightArrow : Qt::DownArrow );
+  toggle->setStyleSheet( QStringLiteral(
+    "QToolButton#aiTechnicalToggle { color: palette(window-text); background: palette(button); border: 1px solid palette(mid); border-radius: 4px; padding: 3px 6px; text-align: left; } "
+    "QToolButton#aiTechnicalToggle:hover { background: palette(alternate-base); border-color: palette(highlight); }"
+  ) );
   layout->addWidget( toggle );
 
   QTextEdit *details = new QTextEdit( section );
@@ -947,6 +991,9 @@ QWidget *QgsAiChatDockWidget::createCollapsibleSection( const QString &title, co
   details->setPlainText( content );
   details->setFrameShape( QFrame::StyledPanel );
   applyTranscriptTextEditWrapping( details );
+  details->setStyleSheet( QStringLiteral(
+    "QTextEdit#aiTechnicalContent { color: palette(text); background: palette(alternate-base); border: 1px solid palette(mid); border-radius: 4px; padding: 6px; selection-background-color: palette(highlight); selection-color: palette(highlighted-text); }"
+  ) );
   QFont mono = QFontDatabase::systemFont( QFontDatabase::FixedFont );
   details->setFont( mono );
   details->setMinimumHeight( 80 );
@@ -969,7 +1016,7 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   planCard->setObjectName( u"aiPlanCard"_s );
   planCard->setFrameShape( QFrame::StyledPanel );
   applyTranscriptWidthPolicy( planCard );
-  planCard->setStyleSheet( u"QFrame#aiPlanCard { border: 1px solid palette(highlight); border-radius: 6px; }"_s );
+  planCard->setStyleSheet( u"QFrame#aiPlanCard { background: palette(alternate-base); border: 1px solid palette(highlight); border-radius: 6px; }"_s );
 
   QVBoxLayout *layout = new QVBoxLayout( planCard );
   layout->setContentsMargins( 8, 8, 8, 8 );
@@ -982,9 +1029,11 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   QPushButton *acceptButton = new QPushButton( tr( "Accept plan" ), planCard );
   acceptButton->setObjectName( u"aiAcceptPlanButton"_s );
   acceptButton->setEnabled( pending );
+  acceptButton->setStyleSheet( u"QPushButton#aiAcceptPlanButton { background: palette(highlight); color: palette(highlighted-text); border: 1px solid palette(highlight); border-radius: 4px; padding: 4px 10px; font-weight: 600; } QPushButton#aiAcceptPlanButton:disabled { background: palette(button); color: palette(mid); border-color: palette(mid); }"_s );
   QPushButton *reviseButton = new QPushButton( tr( "Reject / revise" ), planCard );
   reviseButton->setObjectName( u"aiRejectPlanButton"_s );
   reviseButton->setEnabled( pending );
+  reviseButton->setStyleSheet( u"QPushButton#aiRejectPlanButton { background: palette(button); color: palette(window-text); border: 1px solid palette(mid); border-radius: 4px; padding: 4px 10px; } QPushButton#aiRejectPlanButton:hover:enabled { background: palette(base); border-color: palette(highlight); }"_s );
   buttons->addWidget( acceptButton );
   buttons->addWidget( reviseButton );
   buttons->addStretch( 1 );
@@ -997,12 +1046,14 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   revisionEdit->setFixedHeight( 72 );
   revisionEdit->setVisible( false );
   applyTranscriptTextEditWrapping( revisionEdit );
+  revisionEdit->setStyleSheet( u"QTextEdit#aiPlanRevisionEdit { color: palette(text); background: palette(base); border: 1px solid palette(mid); border-radius: 6px; padding: 6px; } QTextEdit#aiPlanRevisionEdit:focus { border-color: palette(highlight); }"_s );
   layout->addWidget( revisionEdit );
 
   QPushButton *sendRevisionButton = new QPushButton( tr( "Send revision" ), planCard );
   sendRevisionButton->setObjectName( u"aiSendPlanRevisionButton"_s );
   sendRevisionButton->setVisible( false );
   sendRevisionButton->setEnabled( pending );
+  sendRevisionButton->setStyleSheet( u"QPushButton#aiSendPlanRevisionButton { background: palette(highlight); color: palette(highlighted-text); border: 1px solid palette(highlight); border-radius: 4px; padding: 4px 10px; } QPushButton#aiSendPlanRevisionButton:disabled { background: palette(button); color: palette(mid); border-color: palette(mid); }"_s );
   layout->addWidget( sendRevisionButton );
 
   connect( acceptButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata]() { acceptPlan( messageId, planMarkdown, metadata ); } );
@@ -1022,7 +1073,7 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
   questionsCard->setObjectName( u"aiQuestionsCard"_s );
   questionsCard->setFrameShape( QFrame::StyledPanel );
   applyTranscriptWidthPolicy( questionsCard );
-  questionsCard->setStyleSheet( u"QFrame#aiQuestionsCard { border: 1px solid palette(highlight); border-radius: 6px; }"_s );
+  questionsCard->setStyleSheet( u"QFrame#aiQuestionsCard { background: palette(alternate-base); border: 1px solid palette(highlight); border-radius: 6px; }"_s );
 
   QVBoxLayout *layout = new QVBoxLayout( questionsCard );
   layout->setContentsMargins( 8, 8, 8, 8 );
@@ -1068,6 +1119,11 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
       button->setEnabled( pending );
       button->setToolTip( description );
       applyTranscriptWidthPolicy( button );
+      button->setStyleSheet( QStringLiteral(
+        "QAbstractButton#aiQuestionOption { color: palette(window-text); background: transparent; border: 0; padding: 2px 4px; } "
+        "QAbstractButton#aiQuestionOption:hover { background: palette(base); border-radius: 4px; } "
+        "QAbstractButton#aiQuestionOption:disabled { color: palette(mid); }"
+      ) );
       if ( singleGroup )
         singleGroup->addButton( button );
       layout->addWidget( button );
@@ -1080,6 +1136,7 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
       other->setProperty( "question_id", questionId );
       other->setPlaceholderText( tr( "Other..." ) );
       other->setEnabled( pending );
+      other->setStyleSheet( u"QLineEdit#aiQuestionOtherLineEdit { color: palette(text); background: palette(base); border: 1px solid palette(mid); border-radius: 4px; padding: 4px 6px; } QLineEdit#aiQuestionOtherLineEdit:focus { border-color: palette(highlight); }"_s );
       layout->addWidget( other );
     }
   }
@@ -1087,6 +1144,7 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
   QPushButton *submit = new QPushButton( tr( "Send answers" ), questionsCard );
   submit->setObjectName( u"aiSubmitQuestionAnswersButton"_s );
   submit->setEnabled( pending );
+  submit->setStyleSheet( u"QPushButton#aiSubmitQuestionAnswersButton { background: palette(highlight); color: palette(highlighted-text); border: 1px solid palette(highlight); border-radius: 4px; padding: 4px 10px; font-weight: 600; } QPushButton#aiSubmitQuestionAnswersButton:disabled { background: palette(button); color: palette(mid); border-color: palette(mid); }"_s );
   layout->addWidget( submit );
 
   connect( submit, &QPushButton::clicked, this, [this, messageId, metadata, questionsCard]() { sendQuestionAnswers( messageId, metadata, questionsCard ); } );
@@ -1340,9 +1398,9 @@ void QgsAiChatDockWidget::rebuildHistoryMenu()
     return;
   }
 
-  if ( mSessionManager->workspaceRoot().isEmpty() )
+  if ( !mSessionManager->hasPersistentChatHistoryScope() )
   {
-    QAction *empty = menu->addAction( tr( "Configure AI workspace root to save chat history" ) );
+    QAction *empty = menu->addAction( tr( "Save or open a QGIS project to save chat history" ) );
     empty->setEnabled( false );
     return;
   }
@@ -1430,7 +1488,7 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
     card->setObjectName( u"aiStreamingMessage"_s );
     card->setFrameShape( QFrame::StyledPanel );
     applyTranscriptWidthPolicy( card );
-    card->setStyleSheet( u"QFrame#aiStreamingMessage { border: 1px solid palette(mid); border-radius: 6px; background: palette(base); }"_s );
+    card->setStyleSheet( u"QFrame#aiStreamingMessage { border: 1px solid palette(mid); border-radius: 6px; background: palette(base); } QLabel#aiMessageRole { color: palette(mid); font-weight: 600; } QTextEdit#aiStreamingTextEdit { color: palette(text); background: transparent; border: 0; }"_s );
     QVBoxLayout *layout = new QVBoxLayout( card );
     layout->setContentsMargins( 8, 6, 8, 8 );
     QLabel *roleLabel = new QLabel( tr( "Assistant" ), card );
@@ -1614,7 +1672,7 @@ void QgsAiChatDockWidget::rebuildAttachmentChips()
   {
     QWidget *chip = new QWidget( mFileContextChipRow );
     chip->setObjectName( u"aiAttachmentChip"_s );
-    chip->setStyleSheet( u"QWidget#aiAttachmentChip { border: 1px solid palette(mid); border-radius: 10px; padding: 1px 4px; }"_s );
+    chip->setStyleSheet( u"QWidget#aiAttachmentChip { color: palette(window-text); background: palette(button); border: 1px solid palette(mid); border-radius: 10px; padding: 1px 4px; } QWidget#aiAttachmentChip:hover { background: palette(alternate-base); border-color: palette(highlight); }"_s );
     QHBoxLayout *chipLayout = new QHBoxLayout( chip );
     chipLayout->setContentsMargins( 6, 1, 2, 1 );
     chipLayout->setSpacing( 3 );
