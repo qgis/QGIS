@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "qgsaiembeddingclient.h"
+#include "qgsaiembeddingprovider.h"
 #include "qgsaifilecontextprovider.h"
 #include "qgsailayerchunker.h"
 #include "qgsapplication.h"
@@ -73,12 +73,23 @@ namespace
       std::memcpy( v.data(), bytes.constData(), bytes.size() );
     return v;
   }
+
+  bool ensureEmbeddingProviderAvailable( QgsAiEmbeddingProvider *provider, QString *errorMessage )
+  {
+    QString providerError;
+    if ( provider && provider->isAvailable( &providerError ) )
+      return true;
+
+    if ( errorMessage )
+      *errorMessage = providerError.isEmpty() ? u"Local embedding model is not installed."_s : providerError;
+    return false;
+  }
 } //namespace
 
-QgsAiWorkspaceIndex::QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingClient *embeddingClient, QObject *parent )
+QgsAiWorkspaceIndex::QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingProvider *embeddingProvider, QObject *parent )
   : QObject( parent )
   , mContextProvider( contextProvider )
-  , mEmbeddingClient( embeddingClient )
+  , mEmbeddingProvider( embeddingProvider )
 {
   if ( mContextProvider )
     connect( mContextProvider, &QgsAiFileContextProvider::workspaceRootChanged, this, &QgsAiWorkspaceIndex::onWorkspaceRootChanged );
@@ -124,7 +135,13 @@ bool QgsAiWorkspaceIndex::isTextFile( const QString &relativePath )
 
 bool QgsAiWorkspaceIndex::hasEmbeddingConfiguration() const
 {
-  return mEmbeddingClient && mEmbeddingClient->hasApiKey();
+  return embeddingProviderAvailable();
+}
+
+bool QgsAiWorkspaceIndex::embeddingProviderAvailable() const
+{
+  QString ignored;
+  return mEmbeddingProvider && mEmbeddingProvider->isAvailable( &ignored );
 }
 
 void QgsAiWorkspaceIndex::onWorkspaceRootChanged()
@@ -528,12 +545,8 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
       *errorMessage = u"AI workspace root is unset. Save the QGIS project or configure the AI workspace root in provider settings."_s;
     return false;
   }
-  if ( !hasEmbeddingConfiguration() )
-  {
-    if ( errorMessage )
-      *errorMessage = u"An embeddings API key is required; configure OpenAI or OpenRouter in AI Provider Settings."_s;
+  if ( !ensureEmbeddingProviderAvailable( mEmbeddingProvider, errorMessage ) )
     return false;
-  }
 
   const int cap = maxFiles > 0 ? maxFiles : DEFAULT_MAX_FILES;
   const QStringList all = mContextProvider->workspaceFileCandidates( QString(), 50000 );
@@ -567,7 +580,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   }
 
   // Build chunks for every file. We keep a parallel list of texts to embed so
-  // we can call the embeddings endpoint in larger batches than per-file.
+  // the provider can process them in batches.
   QList<CachedChunk> built;
   QStringList textsToEmbed;
   QList<int> backRefIndex; // for each text in textsToEmbed, the position in `built`
@@ -605,7 +618,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   }
 
   QList<QVector<float>> vectors;
-  if ( !mEmbeddingClient->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
+  if ( !mEmbeddingProvider->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
     return false;
   if ( vectors.size() != textsToEmbed.size() )
   {
@@ -640,22 +653,18 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &qu
       *errorMessage = u"Empty query."_s;
     return results;
   }
+  if ( !ensureEmbeddingProviderAvailable( mEmbeddingProvider, errorMessage ) )
+    return results;
   if ( mCache.isEmpty() )
   {
     if ( errorMessage )
       *errorMessage = u"Workspace index is empty. Run reindex_workspace first."_s;
     return results;
   }
-  if ( !hasEmbeddingConfiguration() )
-  {
-    if ( errorMessage )
-      *errorMessage = u"An embeddings API key is required for query embedding."_s;
-    return results;
-  }
 
   QStringList qList { query };
   QList<QVector<float>> qEmb;
-  if ( !mEmbeddingClient->embed( qList, qEmb, errorMessage, 1 ) || qEmb.isEmpty() )
+  if ( !mEmbeddingProvider->embed( qList, qEmb, errorMessage, 1 ) || qEmb.isEmpty() )
     return results;
 
   const QVector<float> &qVec = qEmb.first();
@@ -694,12 +703,8 @@ namespace
 
 bool QgsAiWorkspaceIndex::reindexLayers( QString *errorMessage )
 {
-  if ( !hasEmbeddingConfiguration() )
-  {
-    if ( errorMessage )
-      *errorMessage = u"An embeddings API key is required; configure OpenAI or OpenRouter in AI Provider Settings."_s;
+  if ( !ensureEmbeddingProviderAvailable( mEmbeddingProvider, errorMessage ) )
     return false;
-  }
 
   ensureLoaded();
 
@@ -732,7 +737,7 @@ bool QgsAiWorkspaceIndex::reindexLayers( QString *errorMessage )
     textsToEmbed.append( c.text );
 
   QList<QVector<float>> vectors;
-  if ( !mEmbeddingClient->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
+  if ( !mEmbeddingProvider->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
     return false;
   if ( vectors.size() != allChunks.size() )
   {
@@ -756,12 +761,8 @@ bool QgsAiWorkspaceIndex::reindexLayer( const QString &layerId, QString *errorMe
       *errorMessage = u"reindexLayer: empty layerId."_s;
     return false;
   }
-  if ( !hasEmbeddingConfiguration() )
-  {
-    if ( errorMessage )
-      *errorMessage = u"An embeddings API key is required for embeddings."_s;
+  if ( !ensureEmbeddingProviderAvailable( mEmbeddingProvider, errorMessage ) )
     return false;
-  }
 
   ensureLoaded();
 
@@ -783,7 +784,7 @@ bool QgsAiWorkspaceIndex::reindexLayer( const QString &layerId, QString *errorMe
     textsToEmbed.append( c.text );
 
   QList<QVector<float>> vectors;
-  if ( !mEmbeddingClient->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
+  if ( !mEmbeddingProvider->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
     return false;
   if ( vectors.size() != chunks.size() )
   {

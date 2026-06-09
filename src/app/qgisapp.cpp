@@ -92,7 +92,7 @@ using namespace Qt::StringLiterals;
 #include "qgslayerstylingwidget.h"
 #include "qgsdevtoolspanelwidget.h"
 #ifdef HAVE_AI_ASSISTANT
-#include "ai/index/qgsaiembeddingclient.h"
+#include "ai/index/qgsaiembeddingprovider.h"
 #include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
@@ -1415,8 +1415,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiRunPythonTool>( this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiInstallPythonPackageTool>( this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiDownloadFileTool>( mAiFileContextProvider.get(), this ) );
-  mAiEmbeddingClient = std::make_unique<QgsAiEmbeddingClient>( this );
-  mAiWorkspaceIndex = std::make_unique<QgsAiWorkspaceIndex>( mAiFileContextProvider.get(), mAiEmbeddingClient.get(), this );
+  mAiEmbeddingProvider = std::make_unique<QgsAiUnavailableLocalEmbeddingProvider>();
+  mAiWorkspaceIndex = std::make_unique<QgsAiWorkspaceIndex>( mAiFileContextProvider.get(), mAiEmbeddingProvider.get(), this );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiIndexStatusTool>( mAiWorkspaceIndex.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiSearchWorkspaceTool>( mAiWorkspaceIndex.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexWorkspaceTool>( mAiWorkspaceIndex.get() ) );
@@ -1426,13 +1426,14 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   const bool hasLayerIndexingSetting = aiSettings.contains( u"strata/index/enable_layer_indexing"_s )
                                        || aiSettings.contains( u"geoai/index/enable_layer_indexing"_s )
                                        || aiSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
-  const bool defaultLayerIndexingEnabled = mAiWorkspaceIndex->hasEmbeddingConfiguration() && !QgsAiChatDockWidget::requiresLayerIndexingConsent();
-  const bool aiLayerIndexingEnabled = hasLayerIndexingSetting
+  const bool defaultLayerIndexingEnabled = false;
+  const bool requestedLayerIndexing = hasLayerIndexingSetting
                                         ? ( aiSettings.contains( u"strata/index/enable_layer_indexing"_s )  ? aiSettings.value( u"strata/index/enable_layer_indexing"_s, false ).toBool()
                                             : aiSettings.contains( u"geoai/index/enable_layer_indexing"_s ) ? aiSettings.value( u"geoai/index/enable_layer_indexing"_s, false ).toBool()
                                                                                                             : aiSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool() )
                                         : defaultLayerIndexingEnabled;
-  mAiLayerIndexCoordinator->setEnabled( aiLayerIndexingEnabled );
+  const bool canUseLocalEmbeddings = mAiWorkspaceIndex->embeddingProviderAvailable();
+  mAiLayerIndexCoordinator->setEnabled( requestedLayerIndexing && canUseLocalEmbeddings );
   mAiChatHistoryStore = std::make_unique<QgsAiChatHistoryStore>( mAiFileContextProvider.get(), this );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );

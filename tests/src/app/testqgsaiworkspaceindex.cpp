@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "ai/index/qgsaiembeddingclient.h"
+#include "ai/index/qgsaiembeddingprovider.h"
 #include "ai/index/qgsailayerchunker.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaifilecontextprovider.h"
@@ -17,6 +18,7 @@
 
 #include <QByteArray>
 #include <QDir>
+#include <QFile>
 #include <QJsonObject>
 #include <QList>
 #include <QString>
@@ -94,6 +96,34 @@ namespace
       QByteArray mOpenAiEnv;
       QByteArray mOpenRouterEnv;
   };
+
+  class FakeEmbeddingProvider : public QgsAiEmbeddingProvider
+  {
+    public:
+      QString providerId() const override { return u"fake-local"_s; }
+      QString displayName() const override { return u"Fake local embeddings"_s; }
+      bool isAvailable( QString *errorMessage = nullptr ) const override
+      {
+        Q_UNUSED( errorMessage )
+        return true;
+      }
+
+      bool embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage = nullptr, int maxBatch = 64 ) override
+      {
+        Q_UNUSED( errorMessage )
+        Q_UNUSED( maxBatch )
+        out.clear();
+        for ( const QString &text : texts )
+        {
+          QVector<float> v( 3 );
+          v[0] = text.contains( u"alpha"_s, Qt::CaseInsensitive ) ? 1.0f : 0.0f;
+          v[1] = text.contains( u"beta"_s, Qt::CaseInsensitive ) ? 1.0f : 0.0f;
+          v[2] = 0.1f;
+          out.append( v );
+        }
+        return true;
+      }
+  };
 } // namespace
 
 class TestQgsAiWorkspaceIndex : public QObject
@@ -109,11 +139,12 @@ class TestQgsAiWorkspaceIndex : public QObject
     void replaceScopeSingleLayerOnlyTouchesThatLayer();
     void removeLayerDropsOnlyMatchingChunks();
     void workspaceRootChangeLoadsSeparateIndex();
-    void hasEmbeddingConfigurationReflectsSettingsAndEnvironment();
+    void embeddingProviderAvailabilityIgnoresRemoteSettings();
     void embeddingClientDefaultsToOpenAi();
     void embeddingClientUsesOpenRouterSettings();
     void schemaMigrationDropsOldDb();
-    void reindexLayersFailsWithoutApiKey();
+    void reindexAndSearchUseLocalProvider();
+    void reindexLayersFailsWithoutLocalProvider();
     void chunkerOutputPersistsAsLayerChunks();
     void reindexLayersToolRequiresConfirm();
 
@@ -338,7 +369,7 @@ void TestQgsAiWorkspaceIndex::workspaceRootChangeLoadsSeparateIndex()
   QCOMPARE( index.chunks().first().relativePath, u"a.md"_s );
 }
 
-void TestQgsAiWorkspaceIndex::hasEmbeddingConfigurationReflectsSettingsAndEnvironment()
+void TestQgsAiWorkspaceIndex::embeddingProviderAvailabilityIgnoresRemoteSettings()
 {
   ScopedEmbeddingConfiguration scopedConfiguration;
   QgsSettings settings;
@@ -347,24 +378,27 @@ void TestQgsAiWorkspaceIndex::hasEmbeddingConfigurationReflectsSettingsAndEnviro
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );
-  QgsAiEmbeddingClient client;
-  QgsAiWorkspaceIndex index( &contextProvider, &client );
+  QgsAiUnavailableLocalEmbeddingProvider provider;
+  QgsAiWorkspaceIndex index( &contextProvider, &provider );
 
+  QVERIFY( !index.embeddingProviderAvailable() );
   QVERIFY( !index.hasEmbeddingConfiguration() );
 
   settings.setValue( u"ai/provider/openai/apiKey"_s, u"sk-test-settings"_s );
-  QVERIFY( index.hasEmbeddingConfiguration() );
+  QVERIFY( !index.embeddingProviderAvailable() );
+  QVERIFY( !index.hasEmbeddingConfiguration() );
 
   settings.remove( u"ai/provider/openai/apiKey"_s );
   qputenv( "OPENAI_API_KEY", "sk-test-env" );
-  QVERIFY( index.hasEmbeddingConfiguration() );
+  QVERIFY( !index.embeddingProviderAvailable() );
+  QVERIFY( !index.hasEmbeddingConfiguration() );
 
   qunsetenv( "OPENAI_API_KEY" );
   settings.setValue( u"ai/embeddings/provider"_s, u"openrouter"_s );
-  QVERIFY( !index.hasEmbeddingConfiguration() );
-
   settings.setValue( u"ai/provider/openrouter/apiKey"_s, u"sk-or-test-settings"_s );
-  QVERIFY( index.hasEmbeddingConfiguration() );
+  qputenv( "OPENROUTER_API_KEY", "sk-or-test-env" );
+  QVERIFY( !index.embeddingProviderAvailable() );
+  QVERIFY( !index.hasEmbeddingConfiguration() );
 }
 
 void TestQgsAiWorkspaceIndex::embeddingClientDefaultsToOpenAi()
@@ -445,7 +479,35 @@ void TestQgsAiWorkspaceIndex::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsAiWorkspaceIndex::reindexLayersFailsWithoutApiKey()
+void TestQgsAiWorkspaceIndex::reindexAndSearchUseLocalProvider()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QFile alphaFile( QDir( tempDir.path() ).filePath( u"alpha.md"_s ) );
+  QVERIFY( alphaFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  alphaFile.write( "alpha roads and buildings\n" );
+  alphaFile.close();
+
+  QFile betaFile( QDir( tempDir.path() ).filePath( u"beta.md"_s ) );
+  QVERIFY( betaFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  betaFile.write( "beta rivers and parks\n" );
+  betaFile.close();
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  FakeEmbeddingProvider provider;
+  QgsAiWorkspaceIndex index( &contextProvider, &provider );
+
+  QString err;
+  QVERIFY2( index.reindex( 10, &err ), err.toUtf8().constData() );
+  QCOMPARE( index.status().fileChunkCount, 2 );
+
+  const QList<QgsAiWorkspaceIndex::Chunk> hits = index.search( u"alpha"_s, 1, &err );
+  QVERIFY2( !hits.isEmpty(), err.toUtf8().constData() );
+  QVERIFY2( hits.first().text.contains( u"alpha"_s ), hits.first().text.toUtf8().constData() );
+}
+
+void TestQgsAiWorkspaceIndex::reindexLayersFailsWithoutLocalProvider()
 {
   ScopedEmbeddingConfiguration scopedConfiguration;
 
@@ -453,15 +515,23 @@ void TestQgsAiWorkspaceIndex::reindexLayersFailsWithoutApiKey()
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );
 
-  // Use a fresh embedding client without an API key set in QgsSettings — hasApiKey()
-  // must report false and reindexLayers() must surface a clear error.
-  QgsAiEmbeddingClient client;
-  QgsAiWorkspaceIndex index( &contextProvider, &client );
+  QgsAiUnavailableLocalEmbeddingProvider provider;
+  QgsAiWorkspaceIndex index( &contextProvider, &provider );
 
   QString err;
-  const bool ok = index.reindexLayers( &err );
+  bool ok = index.reindex( 10, &err );
   QVERIFY( !ok );
-  QVERIFY2( err.contains( u"API key"_s, Qt::CaseInsensitive ), err.toUtf8().constData() );
+  QVERIFY2( err.contains( u"Local embedding model"_s, Qt::CaseInsensitive ), err.toUtf8().constData() );
+
+  err.clear();
+  ok = index.reindexLayers( &err );
+  QVERIFY( !ok );
+  QVERIFY2( err.contains( u"Local embedding model"_s, Qt::CaseInsensitive ), err.toUtf8().constData() );
+
+  err.clear();
+  const QList<QgsAiWorkspaceIndex::Chunk> hits = index.search( u"alpha"_s, 1, &err );
+  QVERIFY( hits.isEmpty() );
+  QVERIFY2( err.contains( u"Local embedding model"_s, Qt::CaseInsensitive ), err.toUtf8().constData() );
 }
 
 void TestQgsAiWorkspaceIndex::chunkerOutputPersistsAsLayerChunks()
@@ -502,7 +572,7 @@ void TestQgsAiWorkspaceIndex::chunkerOutputPersistsAsLayerChunks()
     QCOMPARE( c.layerId, layer->id() );
   }
 
-  // Reindex of a non-existent layer should fall back to removeLayer (no API key needed).
+  // Reindex of a non-existent layer should fall back to removeLayer (no embedding provider needed).
   QVERIFY( index.removeLayer( layer->id(), &err ) );
   QCOMPARE( index.status().layerChunkCount, 0 );
 }
@@ -515,8 +585,8 @@ void TestQgsAiWorkspaceIndex::reindexLayersToolRequiresConfirm()
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );
 
-  QgsAiEmbeddingClient client;
-  QgsAiWorkspaceIndex index( &contextProvider, &client );
+  QgsAiUnavailableLocalEmbeddingProvider provider;
+  QgsAiWorkspaceIndex index( &contextProvider, &provider );
 
   QgsAiReindexLayersTool tool( &index );
 
@@ -525,12 +595,12 @@ void TestQgsAiWorkspaceIndex::reindexLayersToolRequiresConfirm()
   QVERIFY( !denied.success );
   QVERIFY2( denied.errorMessage.contains( u"confirm"_s, Qt::CaseInsensitive ), denied.errorMessage.toUtf8().constData() );
 
-  // With confirm but no API key, the embedding client error is propagated verbatim.
+  // With confirm but no local model, the provider error is propagated verbatim.
   QJsonObject args;
   args.insert( u"confirm"_s, true );
   const QgsAiToolResult confirmed = tool.execute( args );
   QVERIFY( !confirmed.success );
-  QVERIFY2( confirmed.errorMessage.contains( u"API key"_s, Qt::CaseInsensitive ), confirmed.errorMessage.toUtf8().constData() );
+  QVERIFY2( confirmed.errorMessage.contains( u"Local embedding model"_s, Qt::CaseInsensitive ), confirmed.errorMessage.toUtf8().constData() );
 }
 
 QGSTEST_MAIN( TestQgsAiWorkspaceIndex )

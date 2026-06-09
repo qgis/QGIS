@@ -27,6 +27,7 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
+#include <algorithm>
 #include <QByteArray>
 #include <QString>
 #include <QStringList>
@@ -35,6 +36,18 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
+  constexpr int MAX_VECTOR_FEATURE_SAMPLE = 200;
+  constexpr int MAX_VECTOR_CHUNKS = 20;
+
+  QString fieldsSummary( const QgsFields &fields )
+  {
+    QStringList out;
+    out.reserve( fields.size() );
+    for ( const QgsField &f : fields )
+      out << u"%1:%2"_s.arg( f.name(), f.typeName() );
+    return out.join( ", "_L1 );
+  }
+
   QString serializeFeatureLine( const QgsFeature &feature, const QgsFields &fields, const QString &geometryType )
   {
     QStringList kv;
@@ -87,7 +100,19 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
 
   const QgsFields fields = layer->fields();
   const QString geometryType = QgsWkbTypes::geometryDisplayString( layer->geometryType() );
-  const QString header = u"Vector layer '%1' (id=%2, crs=%3, geometry=%4, fields=%5)\n"_s.arg( layer->name(), layer->id(), layer->crs().authid(), geometryType ).arg( fields.size() );
+  const QgsRectangle extent = layer->extent();
+  const qint64 featureCount = layer->featureCount();
+  const QString header
+    = u"Vector layer '%1' (id=%2, crs=%3, geometry=%4)\nfeature_count=%5; sampled_feature_limit=%6; chunk_limit=%7\nextent=(%8,%9,%10,%11)\nfields=%12\n"_s
+        .arg( layer->name(), layer->id(), layer->crs().authid(), geometryType )
+        .arg( featureCount )
+        .arg( MAX_VECTOR_FEATURE_SAMPLE )
+        .arg( MAX_VECTOR_CHUNKS )
+        .arg( extent.xMinimum() )
+        .arg( extent.yMinimum() )
+        .arg( extent.xMaximum() )
+        .arg( extent.yMaximum() )
+        .arg( fieldsSummary( fields ) );
 
   QString currentText = header;
   QByteArray currentWkts;
@@ -97,6 +122,8 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
 
   auto flush = [&]() {
     if ( firstFid < 0 )
+      return;
+    if ( chunks.size() >= MAX_VECTOR_CHUNKS )
       return;
     QgsAiWorkspaceIndex::Chunk c;
     c.sourceType = QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_LAYER );
@@ -116,9 +143,12 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
     lastFid = -1;
   };
 
-  QgsFeatureIterator it = layer->getFeatures();
+  QgsFeatureRequest request;
+  request.setLimit( MAX_VECTOR_FEATURE_SAMPLE );
+  QgsFeatureIterator it = layer->getFeatures( request );
   QgsFeature feature;
-  while ( it.nextFeature( feature ) )
+  int sampledFeatures = 0;
+  while ( sampledFeatures < MAX_VECTOR_FEATURE_SAMPLE && chunks.size() < MAX_VECTOR_CHUNKS && it.nextFeature( feature ) )
   {
     const QString line = serializeFeatureLine( feature, fields, geometryType );
     const QgsGeometry geom = feature.geometry();
@@ -127,7 +157,11 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
     // Flush before adding if appending would exceed the target *and* the chunk
     // already has at least one feature (avoid empty/header-only chunks).
     if ( firstFid >= 0 && currentText.size() + line.size() + 1 > QgsAiWorkspaceIndex::CHUNK_TARGET_CHARS )
+    {
       flush();
+      if ( chunks.size() >= MAX_VECTOR_CHUNKS )
+        break;
+    }
 
     if ( firstFid < 0 )
       firstFid = feature.id();
@@ -139,8 +173,20 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
     if ( !currentWkts.isEmpty() )
       currentWkts.append( '\n' );
     currentWkts.append( wkt.toUtf8() );
+    ++sampledFeatures;
   }
   flush();
+
+  if ( chunks.isEmpty() )
+  {
+    QgsAiWorkspaceIndex::Chunk c;
+    c.sourceType = QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_LAYER );
+    c.relativePath = layer->name();
+    c.layerId = layer->id();
+    c.chunkIndex = 0;
+    c.text = header + u"(no sampled features)\n"_s;
+    chunks.append( c );
+  }
 
   return chunks;
 }

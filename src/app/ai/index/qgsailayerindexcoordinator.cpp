@@ -163,7 +163,7 @@ void QgsAiLayerIndexCoordinator::scheduleDirty( const QString &layerId )
 {
   if ( layerId.isEmpty() )
     return;
-  if ( !mIndex || !mIndex->hasEmbeddingConfiguration() )
+  if ( !mIndex || !mIndex->embeddingProviderAvailable() )
     return;
   mDirtyLayers.insert( layerId );
   mDebounceTimer.start( mDebounceMs );
@@ -171,7 +171,7 @@ void QgsAiLayerIndexCoordinator::scheduleDirty( const QString &layerId )
 
 void QgsAiLayerIndexCoordinator::flushDirty()
 {
-  if ( !mIndex || !mEnabled || !mIndex->hasEmbeddingConfiguration() )
+  if ( !mIndex || !mEnabled || !mIndex->embeddingProviderAvailable() )
   {
     mDirtyLayers.clear();
     return;

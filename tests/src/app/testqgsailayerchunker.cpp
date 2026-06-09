@@ -5,6 +5,7 @@
 ***************************************************************************/
 
 #include <memory>
+#include <algorithm>
 
 #include "ai/index/qgsailayerchunker.h"
 #include "ai/index/qgsaiworkspaceindex.h"
@@ -49,6 +50,7 @@ void TestQgsAiLayerChunker::chunksCoverEveryFeatureExactlyOnce()
 
   const auto chunks = QgsAiLayerChunker::chunkVector( layer.get() );
   QVERIFY( !chunks.isEmpty() );
+  QVERIFY( chunks.size() <= 20 );
 
   qint64 covered = 0;
   qint64 prevLast = -1;
@@ -62,7 +64,7 @@ void TestQgsAiLayerChunker::chunksCoverEveryFeatureExactlyOnce()
     covered += ( c.lastFeatureId - c.firstFeatureId + 1 );
     prevLast = c.lastFeatureId;
   }
-  QCOMPARE( covered, static_cast<qint64>( layer->featureCount() ) );
+  QCOMPARE( covered, std::min<qint64>( layer->featureCount(), 200 ) );
 }
 
 void TestQgsAiLayerChunker::chunkTextStaysWithinTargetSize()

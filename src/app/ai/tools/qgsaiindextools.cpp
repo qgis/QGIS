@@ -78,7 +78,7 @@ QString QgsAiSearchWorkspaceTool::description() const
 {
   return QStringLiteral(
     "Semantic top-k retrieval over the indexed workspace. Embeds 'query' with "
-    "the configured embeddings provider and returns the best-matching chunks as "
+    "the local embedding model and returns the best-matching chunks as "
     "[{path, chunk_index, score, text}]. The model should typically use this "
     "to locate the right file before reading it with read_file. "
     "If the index is empty, the result will say so — call reindex_workspace first."
@@ -145,9 +145,8 @@ QString QgsAiReindexWorkspaceTool::description() const
 {
   return QStringLiteral(
     "Rebuilds the AI workspace retrieval index. Walks every text-like file in "
-    "the workspace, chunks it, and sends each chunk to the configured embeddings "
-    "endpoint. The user's API key is used for billing; chunks are uploaded to "
-    "the configured provider. The caller MUST set 'confirm: true' to acknowledge this. "
+    "the workspace, chunks it, and embeds each chunk with the local embedding "
+    "model. The caller MUST set 'confirm: true' to acknowledge local CPU work. "
     "Optional 'max_files' caps how many files are processed (default 500)."
   );
 }
@@ -155,7 +154,7 @@ QString QgsAiReindexWorkspaceTool::description() const
 QJsonObject QgsAiReindexWorkspaceTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that file chunks will be sent to the configured embeddings provider."_s ) );
+  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that file chunks will be processed by the local embedding model."_s ) );
   properties.insert( u"max_files"_s, prop( u"integer"_s, u"Cap on indexed files (default 500, hard cap 5000)."_s ) );
   return schemaObject( properties, QJsonArray { u"confirm"_s } );
 }
@@ -166,7 +165,7 @@ QgsAiToolResult QgsAiReindexWorkspaceTool::execute( const QJsonObject &args )
     return QgsAiToolResult::error( u"Workspace index is not available."_s );
 
   if ( !args.value( u"confirm"_s ).toBool( false ) )
-    return QgsAiToolResult::error( u"Refusing to reindex without explicit 'confirm: true' (chunks would be sent to the configured embeddings provider)."_s );
+    return QgsAiToolResult::error( u"Refusing to reindex without explicit 'confirm: true' (local indexing may be CPU-intensive)."_s );
 
   const int requestedMax = args.value( u"max_files"_s ).toInt( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES );
   const int maxFiles = std::clamp( requestedMax, 1, 5000 );
@@ -201,9 +200,8 @@ QString QgsAiReindexLayersTool::description() const
   return QStringLiteral(
     "Rebuilds the layer portion of the AI retrieval index. Walks every vector "
     "and raster layer in the active QgsProject, packs features into auto-sized "
-    "chunks (attributes + bounding boxes), and embeds them via the configured "
-    "embeddings endpoint. File chunks are preserved. The user's API key is used "
-    "for billing; the data is uploaded to the configured provider. The caller MUST set "
+    "chunks (attributes + bounding boxes), and embeds them with the local "
+    "embedding model. File chunks are preserved. The caller MUST set "
     "'confirm: true' to acknowledge this."
   );
 }
@@ -211,7 +209,7 @@ QString QgsAiReindexLayersTool::description() const
 QJsonObject QgsAiReindexLayersTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that layer data will be sent to the configured embeddings provider."_s ) );
+  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that layer data will be processed by the local embedding model."_s ) );
   return schemaObject( properties, QJsonArray { u"confirm"_s } );
 }
 
@@ -221,7 +219,7 @@ QgsAiToolResult QgsAiReindexLayersTool::execute( const QJsonObject &args )
     return QgsAiToolResult::error( u"Workspace index is not available."_s );
 
   if ( !args.value( u"confirm"_s ).toBool( false ) )
-    return QgsAiToolResult::error( u"Refusing to reindex layers without explicit 'confirm: true' (data would be sent to the configured embeddings provider)."_s );
+    return QgsAiToolResult::error( u"Refusing to reindex layers without explicit 'confirm: true' (local indexing may be CPU-intensive)."_s );
 
   const qint64 startedAt = QDateTime::currentMSecsSinceEpoch();
   QString errorMessage;

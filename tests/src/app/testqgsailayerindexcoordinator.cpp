@@ -6,7 +6,7 @@
 
 #include <memory>
 
-#include "ai/index/qgsaiembeddingclient.h"
+#include "ai/index/qgsaiembeddingprovider.h"
 #include "ai/index/qgsailayerchunker.h"
 #include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
@@ -39,6 +39,7 @@ class TestQgsAiLayerIndexCoordinator : public QObject
     void layerChangeSignalsAreDebounced();
     void layerWillBeRemovedDropsChunksImmediately();
     void disabledCoordinatorIgnoresProjectSignals();
+    void unavailableEmbeddingProviderPreventsScheduling();
 
   private:
     /**
@@ -55,7 +56,7 @@ class CountingWorkspaceIndex : public QgsAiWorkspaceIndex
       : QgsAiWorkspaceIndex( contextProvider, nullptr )
     {}
 
-    bool hasEmbeddingConfiguration() const override { return true; }
+    bool embeddingProviderAvailable() const override { return true; }
 
     bool reindexLayer( const QString &layerId, QString *errorMessage = nullptr ) override
     {
@@ -231,6 +232,31 @@ void TestQgsAiLayerIndexCoordinator::disabledCoordinatorIgnoresProjectSignals()
   QVERIFY( layer->commitChanges() );
 
   // Wait twice the debounce window — nothing should have fired.
+  QTest::qWait( 200 );
+  QCOMPARE( doneSpy.count(), 0 );
+
+  QgsProject::instance()->removeMapLayer( layer.release() );
+}
+
+void TestQgsAiLayerIndexCoordinator::unavailableEmbeddingProviderPreventsScheduling()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiUnavailableLocalEmbeddingProvider provider;
+  QgsAiWorkspaceIndex index( &contextProvider, &provider );
+
+  QgsAiLayerIndexCoordinator coord( &index );
+  coord.setDebounceMs( 50 );
+
+  const QString shpPath = copyPointsShapefile( tempDir.path() );
+  auto layer = std::make_unique<QgsVectorLayer>( shpPath, u"points"_s, u"ogr"_s );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayer( layer.get(), false );
+
+  QSignalSpy doneSpy( &coord, &QgsAiLayerIndexCoordinator::reindexFinished );
+  coord.setEnabled( true );
+
   QTest::qWait( 200 );
   QCOMPARE( doneSpy.count(), 0 );
 

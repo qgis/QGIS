@@ -63,8 +63,8 @@ class APP_EXPORT QgsAiSearchWorkspaceTool : public QgsAiTool
 
 /**
  * reindex_workspace: triggers a full rebuild of the workspace index.
- * Sends file chunks to the configured embeddings endpoint, so the user must opt
- * in by setting `confirm: true` on the call. Bounded by `max_files` (default 500).
+ * Uses the local embedding model, so the user must opt in by setting
+ * `confirm: true` on the call. Bounded by `max_files` (default 500).
  *
  * The tool blocks the agent while indexing runs; the chat panel surfaces
  * progress updates via the index's `progress(...)` signal (wired in qgisapp.cpp).
@@ -86,8 +86,8 @@ class APP_EXPORT QgsAiReindexWorkspaceTool : public QgsAiTool
 /**
  * reindex_layers: triggers a full rebuild of the *layer* portion of the index
  * (every QgsVectorLayer + QgsRasterLayer in the active QgsProject). File chunks
- * are preserved. Sends layer attributes + bounding boxes to the configured embeddings provider,
- * so the user must opt in by setting `confirm: true`.
+ * are preserved. Uses layer attributes + bounding boxes with the local embedding
+ * model, so the user must opt in by setting `confirm: true`.
  */
 class APP_EXPORT QgsAiReindexLayersTool : public QgsAiTool
 {

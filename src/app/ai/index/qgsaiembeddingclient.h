@@ -28,7 +28,7 @@
 using namespace Qt::StringLiterals;
 
 /**
- * Synchronous client for the configured embeddings provider.
+ * Legacy synchronous client for remote OpenAI/OpenRouter embeddings.
  * Reuses the same QgsSettings/env-var conventions as QgsAiModelRouter for API
  * keys. Each call to embed() blocks the calling thread via a local QEventLoop
  * until the response arrives or a timeout triggers.
@@ -37,7 +37,8 @@ using namespace Qt::StringLiterals;
  * `openai/text-embedding-3-small`. Pass an explicit override to setModel() to
  * use another embedding model.
  *
- * Used only by the workspace index for retrieval — *not* by the chat router.
+ * Not used by the default workspace index path. Local/on-device embeddings are
+ * represented by QgsAiEmbeddingProvider implementations.
  */
 class APP_EXPORT QgsAiEmbeddingClient : public QObject
 {

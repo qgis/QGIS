@@ -24,7 +24,7 @@
 #include <QString>
 #include <QVector>
 
-class QgsAiEmbeddingClient;
+class QgsAiEmbeddingProvider;
 class QgsAiFileContextProvider;
 
 /**
@@ -37,12 +37,12 @@ class QgsAiFileContextProvider;
  * - Plain SQLite database stored under qgisSettingsDirPath()/ai_index/, one
  *   file per workspace (hashed root path).
  * - One row per text chunk: { file_path, chunk_index, text, embedding BLOB }.
- * - Embeddings come from the configured embeddings provider via QgsAiEmbeddingClient.
+ * - Embeddings come from the configured local embeddings provider.
  * - Retrieval is a linear cosine-similarity scan in C++ (fast enough for
  *   tens of thousands of chunks; we cap reindex at 500 files for the MVP).
  *
- * Privacy: indexing sends the file chunks to the configured embeddings provider. Callers are expected to
- * surface a disclaimer before triggering reindex.
+ * Privacy: the default product path is local/on-device embeddings. Remote
+ * embedding providers must be explicitly selected by future code before use.
  */
 class APP_EXPORT QgsAiWorkspaceIndex : public QObject
 {
@@ -105,15 +105,17 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
         QString workspaceRoot;
     };
 
-    QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingClient *embeddingClient, QObject *parent = nullptr );
+    QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingProvider *embeddingProvider, QObject *parent = nullptr );
     ~QgsAiWorkspaceIndex() override;
 
+    virtual bool embeddingProviderAvailable() const;
+    //! Temporary compatibility wrapper for older call sites.
     virtual bool hasEmbeddingConfiguration() const;
     Status status() const;
 
     /**
      * Walks the workspace, chunks every eligible text file, embeds the chunks
-     * via the configured embeddings endpoint, and stores them in the local SQLite
+     * via the configured local embeddings provider, and stores them in the local SQLite
      * database, replacing any previous content. Returns false on failure with
      * \a errorMessage filled.
      *
@@ -198,7 +200,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     static float cosineSimilarity( const QVector<float> &a, const QVector<float> &b );
 
     QgsAiFileContextProvider *mContextProvider = nullptr;
-    QgsAiEmbeddingClient *mEmbeddingClient = nullptr;
+    QgsAiEmbeddingProvider *mEmbeddingProvider = nullptr;
     QList<CachedChunk> mCache;
     QDateTime mLastSync;
     bool mLoaded = false;

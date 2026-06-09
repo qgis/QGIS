@@ -6,7 +6,7 @@
 
 #include <memory>
 
-#include "ai/index/qgsaiembeddingclient.h"
+#include "ai/index/qgsaiembeddingprovider.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaichathistorystore.h"
@@ -773,13 +773,12 @@ void TestQgsAiAgentSessionManager::retrievalSkippedWithoutWorkspaceIndex()
 
   // Attach an empty index: same outcome — retrieval must short-circuit on
   // status().chunkCount == 0 instead of calling the embedding client.
-  QgsAiEmbeddingClient client;
-  QgsAiWorkspaceIndex emptyIndex( &contextProvider, &client );
+  QgsAiUnavailableLocalEmbeddingProvider provider;
+  QgsAiWorkspaceIndex emptyIndex( &contextProvider, &provider );
   manager.setWorkspaceIndex( &emptyIndex );
   QCOMPARE( emptyIndex.status().chunkCount, 0 );
-  // Re-send: no crash, no error. We rely on the lack of API key in QgsSettings —
-  // if retrieval were attempted, it would log "API key required"; but since the
-  // index is empty, retrieveContextForLastUserMessage() returns "" beforehand.
+  // Re-send: no crash, no error. Retrieval must not attempt embeddings when
+  // the local embedding provider is unavailable.
   manager.sendUserMessage( u"second"_s );
 }
 

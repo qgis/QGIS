@@ -426,6 +426,16 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
 
+  QgsSettings settings;
+  const QString openAiKey = u"ai/provider/openai/apiKey"_s;
+  const QString layerIndexingKey = u"strata/index/enable_layer_indexing"_s;
+  const bool hadOpenAiKey = settings.contains( openAiKey );
+  const QVariant savedOpenAiKey = settings.value( openAiKey );
+  const bool hadLayerIndexing = settings.contains( layerIndexingKey );
+  const QVariant savedLayerIndexing = settings.value( layerIndexingKey );
+  settings.setValue( openAiKey, u"sk-old-test-key"_s );
+  settings.setValue( layerIndexingKey, true );
+
   QgsAiModelRouter router;
   QgsAiFileContextProvider contextProvider( tempDir.path() );
   QgsAiReviewPatchEngine reviewEngine;
@@ -434,21 +444,46 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
 
   bool inspected = false;
   bool controlsFound = false;
-  QTimer::singleShot( 0, [&inspected, &controlsFound]() {
+  bool layerIndexingChecked = true;
+  bool layerIndexingEnabled = true;
+  bool localStatusFound = false;
+  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound]() {
     QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
     if ( settingsDialog )
     {
-      controlsFound = settingsDialog->findChild<QCheckBox *>( u"aiEnableLayerIndexingCheckBox"_s )
+      QCheckBox *layerIndexing = settingsDialog->findChild<QCheckBox *>( u"aiEnableLayerIndexingCheckBox"_s );
+      QLabel *statusLabel = settingsDialog->findChild<QLabel *>( u"aiEmbeddingProviderStatusLabel"_s );
+      controlsFound = layerIndexing
                       && settingsDialog->findChild<QPushButton *>( u"aiRebuildWorkspaceIndexButton"_s )
                       && settingsDialog->findChild<QPushButton *>( u"aiRebuildLayerIndexButton"_s );
+      if ( layerIndexing )
+      {
+        layerIndexingChecked = layerIndexing->isChecked();
+        layerIndexingEnabled = layerIndexing->isEnabled();
+      }
+      localStatusFound = statusLabel && statusLabel->text().contains( u"local embedding model"_s, Qt::CaseInsensitive );
       settingsDialog->reject();
     }
     inspected = true;
   } );
 
-  QVERIFY( QMetaObject::invokeMethod( &dock, "openProviderSettings", Qt::DirectConnection ) );
+  const bool invoked = QMetaObject::invokeMethod( &dock, "openProviderSettings", Qt::DirectConnection );
+
+  if ( hadOpenAiKey )
+    settings.setValue( openAiKey, savedOpenAiKey );
+  else
+    settings.remove( openAiKey );
+  if ( hadLayerIndexing )
+    settings.setValue( layerIndexingKey, savedLayerIndexing );
+  else
+    settings.remove( layerIndexingKey );
+
+  QVERIFY( invoked );
   QVERIFY( inspected );
   QVERIFY( controlsFound );
+  QVERIFY( localStatusFound );
+  QVERIFY( !layerIndexingChecked );
+  QVERIFY( !layerIndexingEnabled );
 }
 
 void TestQgsAiChatDockWidget::historyMenuPromptsForSavedProjectWhenUnsaved()

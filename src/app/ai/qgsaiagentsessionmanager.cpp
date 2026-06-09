@@ -1178,6 +1178,11 @@ QString QgsAiAgentSessionManager::retrieveContextForLastUserMessage() const
     QgsMessageLog::logMessage( u"Retrieval: no user message found in history — skipping."_s, u"AI/Index"_s, Qgis::MessageLevel::Info, false );
     return QString();
   }
+  if ( !mWorkspaceIndex->embeddingProviderAvailable() )
+  {
+    QgsMessageLog::logMessage( u"Retrieval: local embedding model unavailable — skipping."_s, u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+    return QString();
+  }
 
   // Force the on-disk SQLite store into mCache before trusting status().
   // On a fresh QGIS session the cache is empty until ensureLoaded() runs,

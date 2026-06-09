@@ -41,7 +41,6 @@
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QColor>
-#include <QComboBox>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -2103,7 +2102,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   layout->addLayout( behaviorForm );
 
   // ----------------------------------------------------------------------
-  // Workspace indexing (RAG): file + layer chunks → configured embeddings provider.
+  // Workspace indexing (RAG): file + layer chunks → local embeddings provider.
   // ----------------------------------------------------------------------
   QFrame *indexingSeparator = new QFrame( &dialog );
   indexingSeparator->setFrameShape( QFrame::HLine );
@@ -2119,32 +2118,38 @@ void QgsAiChatDockWidget::openProviderSettings()
   QFormLayout *indexingForm = new QFormLayout();
   QgsSettings indexSettings;
 
-  QComboBox *embeddingProvider = new QComboBox( &dialog );
-  embeddingProvider->addItem( tr( "OpenAI" ), u"openai"_s );
-  embeddingProvider->addItem( tr( "OpenRouter" ), u"openrouter"_s );
-  const QString configuredEmbeddingProvider = indexSettings.value( u"ai/embeddings/provider"_s, u"openai"_s ).toString().trimmed().toLower();
-  const int embeddingProviderIndex = embeddingProvider->findData( configuredEmbeddingProvider == "openrouter"_L1 ? u"openrouter"_s : u"openai"_s );
-  embeddingProvider->setCurrentIndex( embeddingProviderIndex >= 0 ? embeddingProviderIndex : 0 );
-  indexingForm->addRow( tr( "Embedding provider" ), embeddingProvider );
+  const bool canUseLocalEmbeddings = mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->embeddingProviderAvailable();
 
-  QLineEdit *openRouterEmbeddingModel = new QLineEdit( indexSettings.value( u"ai/embeddings/openrouter/model"_s, u"openai/text-embedding-3-small"_s ).toString(), &dialog );
-  openRouterEmbeddingModel->setPlaceholderText( u"openai/text-embedding-3-small"_s );
-  indexingForm->addRow( tr( "OpenRouter embedding model" ), openRouterEmbeddingModel );
+  QLabel *embeddingProviderLabel = new QLabel( tr( "Local embedding model" ), &dialog );
+  embeddingProviderLabel->setObjectName( u"aiEmbeddingProviderLabel"_s );
+  indexingForm->addRow( tr( "Embedding provider" ), embeddingProviderLabel );
+
+  QLabel *embeddingStatusLabel = new QLabel( &dialog );
+  embeddingStatusLabel->setObjectName( u"aiEmbeddingProviderStatusLabel"_s );
+  embeddingStatusLabel->setWordWrap( true );
+  embeddingStatusLabel->setText(
+    canUseLocalEmbeddings
+      ? tr( "Local embedding model is available." )
+      : tr( "Workspace indexing requires the local embedding model to be installed. Chat with Claude/Codex works without indexing." )
+  );
+  indexingForm->addRow( QString(), embeddingStatusLabel );
 
   const bool hasLayerIndexingSetting = indexSettings.contains( u"strata/index/enable_layer_indexing"_s )
                                        || indexSettings.contains( u"geoai/index/enable_layer_indexing"_s )
                                        || indexSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
-  const bool defaultLayerIndexingEnabled = mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration() && !requiresLayerIndexingConsent();
-  const bool layerIndexingEnabled
+  const bool defaultLayerIndexingEnabled = false;
+  const bool requestedLayerIndexing
     = hasLayerIndexingSetting
         ? settingValueWithLegacy( indexSettings, u"strata/index/enable_layer_indexing"_s, QStringList { u"geoai/index/enable_layer_indexing"_s, u"qgis_ai/index/enable_layer_indexing"_s }, false ).toBool()
         : defaultLayerIndexingEnabled;
+  const bool layerIndexingEnabled = requestedLayerIndexing && canUseLocalEmbeddings;
 
   QCheckBox *enableLayerIndexing = new QCheckBox( tr( "Enable layer indexing (auto reindex on layer add/remove/edit)" ), &dialog );
   enableLayerIndexing->setObjectName( u"aiEnableLayerIndexingCheckBox"_s );
   enableLayerIndexing->setChecked( layerIndexingEnabled );
+  enableLayerIndexing->setEnabled( canUseLocalEmbeddings );
   enableLayerIndexing->setToolTip(
-    tr( "When enabled, layer attributes and bounding boxes are sent to the configured embeddings endpoint and indexed locally so the assistant can ground its answers on actual layer data." )
+    tr( "When enabled, layer attributes and bounding boxes are embedded locally and indexed so the assistant can ground its answers on actual layer data." )
   );
   indexingForm->addRow( QString(), enableLayerIndexing );
 
@@ -2181,35 +2186,16 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
   };
 
-  auto ensureEmbeddingKey = [this, &dialog, openAiKey, openRouterKey, embeddingProvider]( const QString &actionText ) {
-    const QString providerId = embeddingProvider->currentData().toString();
-    const bool useOpenRouter = providerId == "openrouter"_L1;
-    QLineEdit *keyEdit = useOpenRouter ? openRouterKey : openAiKey;
-    const QgsAiModelRouter::Provider provider = useOpenRouter ? QgsAiModelRouter::Provider::OpenRouter : QgsAiModelRouter::Provider::OpenAi;
-    const QString providerName = useOpenRouter ? tr( "OpenRouter" ) : tr( "OpenAI" );
-    const QString envName = useOpenRouter ? u"OPENROUTER_API_KEY"_s : u"OPENAI_API_KEY"_s;
-    const QString pendingKey = keyEdit->text().trimmed();
-
-    if ( !pendingKey.isEmpty() )
-    {
-      QString keyError;
-      if ( !mModelRouter->storeApiKey( provider, pendingKey, &keyError ) )
-      {
-        QMessageBox::warning( &dialog, tr( "%1 API key" ).arg( providerName ), keyError.isEmpty() ? tr( "Unable to save the %1 API key." ).arg( providerName ) : keyError );
-        return false;
-      }
-      keyEdit->clear();
-      keyEdit->setPlaceholderText( tr( "Saved locally — enter a new key only to replace it" ) );
+  auto ensureLocalEmbeddingProvider = [this, &dialog]() {
+    if ( mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->embeddingProviderAvailable() )
       return true;
-    }
 
-    if ( !mModelRouter->hasStoredApiKey( provider ) && qEnvironmentVariable( envName.toUtf8().constData() ).trimmed().isEmpty() )
-    {
-      QMessageBox::warning( &dialog, tr( "%1 API key" ).arg( providerName ), tr( "Enter a %1 API key, or set %2, before %3." ).arg( providerName, envName, actionText ) );
-      return false;
-    }
-
-    return true;
+    QMessageBox::information(
+      &dialog,
+      tr( "Workspace indexing unavailable" ),
+      tr( "Workspace indexing requires the local embedding model to be installed. Chat with Claude/Codex works without indexing." )
+    );
+    return false;
   };
 
   QPushButton *rebuildWorkspaceIndexButton = new QPushButton( tr( "Rebuild file/workspace index now" ), &dialog );
@@ -2222,11 +2208,11 @@ void QgsAiChatDockWidget::openProviderSettings()
   rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
   indexingForm->addRow( QString(), rebuildLayerIndexButton );
 
-  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingKey, refreshIndexStatusLabel]() {
+  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureLocalEmbeddingProvider, refreshIndexStatusLabel]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
 
-    if ( !ensureEmbeddingKey( tr( "rebuilding the file/workspace index" ) ) )
+    if ( !ensureLocalEmbeddingProvider() )
       return;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -2243,11 +2229,11 @@ void QgsAiChatDockWidget::openProviderSettings()
     QMessageBox::information( &dialog, tr( "Workspace reindex" ), tr( "Done — %1 file chunks indexed." ).arg( status.fileChunkCount ) );
   } );
 
-  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingKey, refreshIndexStatusLabel]() {
+  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureLocalEmbeddingProvider, refreshIndexStatusLabel]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
 
-    if ( !ensureEmbeddingKey( tr( "rebuilding the layer index" ) ) )
+    if ( !ensureLocalEmbeddingProvider() )
       return;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -2447,10 +2433,6 @@ void QgsAiChatDockWidget::openProviderSettings()
 
     if ( mSessionManager && QgsProject::instance() && QgsProject::instance()->homePath().isEmpty() )
       mSessionManager->setWorkspaceRoot( configuredWorkspaceRoot );
-
-    settings.setValue( u"ai/embeddings/provider"_s, embeddingProvider->currentData().toString() );
-    const QString configuredOpenRouterEmbeddingModel = openRouterEmbeddingModel->text().trimmed();
-    settings.setValue( u"ai/embeddings/openrouter/model"_s, configuredOpenRouterEmbeddingModel.isEmpty() ? u"openai/text-embedding-3-small"_s : configuredOpenRouterEmbeddingModel );
   }
 
   QgsAiModelRouter::ProviderSettings claudeSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude );
@@ -2489,19 +2471,24 @@ void QgsAiChatDockWidget::openProviderSettings()
     behaviorSettings.skillsPath = skillsPathEdit->text().trimmed();
     mSessionManager->setAgentBehaviorSettings( behaviorSettings );
 
-    bool layerIndexingChoice = enableLayerIndexing->isChecked();
+    const bool canUseEmbeddings = mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->embeddingProviderAvailable();
+    bool layerIndexingChoice = enableLayerIndexing->isChecked() && canUseEmbeddings;
 
-    // Privacy gate: the first time the user enables layer indexing we must
-    // surface what data leaves the machine and ask for explicit consent.
+    if ( enableLayerIndexing->isChecked() && !canUseEmbeddings )
+    {
+      errorMessages += tr( "Layer indexing requires the local embedding model to be installed." ) + '\n';
+      enableLayerIndexing->setChecked( false );
+    }
+
+    // Gate first-time layer indexing so users explicitly acknowledge the local
+    // background work and local cache before it starts.
     if ( layerIndexingChoice && requiresLayerIndexingConsent() )
     {
       const auto choice = QMessageBox::question(
         &dialog,
         tr( "Enable layer indexing" ),
         tr(
-          "Enabling layer indexing means Strata will send the attributes and bounding boxes of every layer in your project to the configured embeddings endpoint, using your configured API key. "
-          "The "
-          "embeddings are stored locally; the data leaves your machine only during indexing.\n\nProceed?"
+          "Enabling layer indexing means Strata will process layer attributes and bounding boxes with the local embedding model and store the resulting index locally.\n\nProceed?"
         ),
         QMessageBox::Yes | QMessageBox::No,
         QMessageBox::No
@@ -2521,10 +2508,9 @@ void QgsAiChatDockWidget::openProviderSettings()
     layerSettings.setValue( u"strata/index/enable_layer_indexing"_s, layerIndexingChoice );
     layerSettings.remove( u"geoai/index/enable_layer_indexing"_s );
     layerSettings.remove( u"qgis_ai/index/enable_layer_indexing"_s );
-    const bool canUseEmbeddings = mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->hasEmbeddingConfiguration();
     if ( mLayerIndexCoordinator )
     {
-      mLayerIndexCoordinator->setEnabled( layerIndexingChoice );
+      mLayerIndexCoordinator->setEnabled( layerIndexingChoice && canUseEmbeddings );
       if ( layerIndexingChoice && canUseEmbeddings )
         mLayerIndexCoordinator->scheduleAllLayers();
     }
