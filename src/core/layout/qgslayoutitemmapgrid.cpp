@@ -1881,9 +1881,7 @@ int QgsLayoutItemMapGrid::xGridLines() const
       break;
   }
 
-  //consider to round up to the next step in case the left boundary is > 0
-  const double roundCorrection = mapBoundingRect.top() > gridOffsetY ? 1.0 : 0.0;
-  double currentLevel = static_cast< int >( ( mapBoundingRect.top() - gridOffsetY ) / gridIntervalY + roundCorrection ) * gridIntervalY + gridOffsetY;
+  double currentLevel = static_cast< int >( ( mapBoundingRect.top() - gridOffsetY ) / gridIntervalY ) * gridIntervalY + gridOffsetY;
 
   int gridLineCount = 0;
   if ( qgsDoubleNear( mMap->mapRotation(), 0.0 ) || ( mGridUnit != Qgis::MapGridUnit::MapUnits && mGridUnit != Qgis::MapGridUnit::DynamicPageSizeBased ) )
@@ -1982,9 +1980,7 @@ int QgsLayoutItemMapGrid::yGridLines() const
       break;
   }
 
-  //consider to round up to the next step in case the left boundary is > 0
-  const double roundCorrection = mapBoundingRect.left() > gridOffsetX ? 1.0 : 0.0;
-  double currentLevel = static_cast< int >( ( mapBoundingRect.left() - gridOffsetX ) / gridIntervalX + roundCorrection ) * gridIntervalX + gridOffsetX;
+  double currentLevel = static_cast< int >( ( mapBoundingRect.left() - gridOffsetX ) / gridIntervalX ) * gridIntervalX + gridOffsetX;
 
   int gridLineCount = 0;
   if ( qgsDoubleNear( mMap->mapRotation(), 0.0 ) || ( mGridUnit != Qgis::MapGridUnit::MapUnits && mGridUnit != Qgis::MapGridUnit::DynamicPageSizeBased ) )
