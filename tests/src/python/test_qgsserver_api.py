@@ -1003,7 +1003,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             os.path.join(self.temporary_path, "qgis_server", "test_project_api.qgs")
         )
         request = QgsBufferServerRequest(
-            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?limit=1"
+            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?limit=1&foo=bar"
         )
         server = QgsServer()
         response = QgsBufferServerResponse()
@@ -1019,12 +1019,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
         )
         self.assertEqual(headers["OGC-NumberReturned"][0], "1")
         self.assertEqual(
-            headers["Link"],
-            [
-                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json"',
-                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1>; rel="alternate"; title="This document as HTML"; type="text/html"',
-                '<http://server.qgis.org/wfs3/collections/testlayer èé/items.fgb?offset=1&limit=1>; rel="next"; title="Next page"; type="application/flatgeobuf"',
-            ],
+            set(headers["Link"]),
+            set(
+                [
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.fgb?limit=1&foo=bar>; rel="self"; title="This document as FlatGeobuf"; type="application/flatgeobuf"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1&foo=bar>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1&foo=bar>; rel="alternate"; title="This document as HTML"; type="text/html"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer èé/items.fgb?foo=bar&offset=1&limit=1>; rel="next"; title="Next page"; type="application/flatgeobuf"',
+                ]
+            ),
         )
 
         def _get_layer():
