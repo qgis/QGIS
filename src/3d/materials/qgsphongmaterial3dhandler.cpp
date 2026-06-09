@@ -213,12 +213,14 @@ bool QgsPhongMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsPhongMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+QgsMaterial *QgsPhongMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform
+) const
 {
   const QgsPhongMaterialSettings *phongSettings = qgis::down_cast< const QgsPhongMaterialSettings * >( settings );
 
   QgsPhongMaterial *material = new QgsPhongMaterial();
-  material->setInstancingEnabled( true, flags );
+  material->setInstancingEnabled( true, flags, axisTransform, nodeTransform );
   material->setObjectName( u"phongMaterial"_s );
 
   const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();

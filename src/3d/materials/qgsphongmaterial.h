@@ -21,6 +21,8 @@
 #include "qgsmaterial.h"
 
 #include <QColor>
+#include <QMatrix3x3>
+#include <QMatrix4x4>
 #include <QObject>
 
 #define SIP_NO_FILE
@@ -54,7 +56,7 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
      * When \a enabled is TRUE the material uses the instanced vertex shader.
      * \a flags controls which per-instance attributes (scale, rotation) are active.
      */
-    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform );
 
     ~QgsPhongMaterial() override;
 
@@ -88,6 +90,9 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
     bool mDataDefinedEnabled = false;
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
+    Qt3DRender::QParameter *mNodeTransformParameter = nullptr;
+    Qt3DRender::QParameter *mAxisTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNodeNormalTransformParameter = nullptr;
 };
 
 ///@endcond PRIVATE

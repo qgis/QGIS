@@ -22,6 +22,8 @@
 #include "qgspropertycollection.h"
 
 #include <QColor>
+#include <QMatrix3x3>
+#include <QMatrix4x4>
 #include <QString>
 
 #define SIP_NO_FILE
@@ -177,7 +179,13 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      * Subclasses that support instancing must override this method to construct the material with the
      * correct shader from the start.
      */
-    virtual QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const;
+    virtual QgsMaterial *toInstancedMaterial(
+      const QgsAbstractMaterialSettings *settings,
+      const QgsMaterialContext &context,
+      Qgis::InstancedMaterialFlags flags,
+      const QMatrix3x3 &axisTransform = QMatrix3x3(),
+      const QMatrix4x4 &nodeTransform = QMatrix4x4()
+    ) const;
 
     /**
      * Returns the parameters to be exported to .mtl file

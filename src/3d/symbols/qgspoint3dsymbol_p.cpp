@@ -24,17 +24,21 @@
 #include "qgsbillboardgeometry.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
+#include "qgsgltf3dutils.h"
 #include "qgshighlightmaterial.h"
+#include "qgslogger.h"
 #include "qgsmaterial3dhandler.h"
+#include "qgsmetalroughmaterial.h"
 #include "qgsobj3dutils.h"
-#include "qgsphongmaterial3dhandler.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
 #include "qgssourcecache.h"
+#include "qgstexturematerial.h"
 #include "qgsvectorlayer.h"
 
+#include <QFileInfo>
 #include <QString>
 #include <QUrl>
 #include <QVector3D>
@@ -55,7 +59,6 @@
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QTexture>
 
 using namespace Qt::StringLiterals;
 
@@ -327,17 +330,19 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   if ( hasDataDefinedRotation )
     flags |= Qgis::InstancedMaterialFlag::DataDefinedRotation;
 
+  const QMatrix3x3 axisTransform = Qgs3DUtils::axisTransformMatrix( u"y"_s, u"z"_s );
+
   if ( materialContext.isHighlighted() )
   {
     QgsHighlightMaterial *mat = new QgsHighlightMaterial();
-    mat->setInstancingEnabled( true, flags );
+    mat->setInstancingEnabled( true, flags, axisTransform, QMatrix4x4() );
     return mat;
   }
 
   const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
   if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
   {
-    return handler->toInstancedMaterial( settings, materialContext, flags );
+    return handler->toInstancedMaterial( settings, materialContext, flags, axisTransform );
   }
 
   return nullptr;
@@ -683,39 +688,6 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   addInstancedEntities( out.positions, out.scales, out.rotations, mChunkOrigin, mSymbol.get(), parent, materialContext, useEmbeddedTexture );
 }
 
-QVector3D stringToAxis( const QString &axis )
-{
-  if ( axis == "x"_L1 )
-    return QVector3D( 1.0f, 0.0f, 0.0f );
-  if ( axis == "-x"_L1 )
-    return QVector3D( -1.0f, 0.0f, 0.0f );
-  if ( axis == "y"_L1 )
-    return QVector3D( 0.0f, 1.0f, 0.0f );
-  if ( axis == "-y"_L1 )
-    return QVector3D( 0.0f, -1.0f, 0.0f );
-  if ( axis == "z"_L1 )
-    return QVector3D( 0.0f, 0.0f, 1.0f );
-  if ( axis == "-z"_L1 )
-    return QVector3D( 0.0f, 0.0f, -1.0f );
-
-  return QVector3D();
-}
-
-QMatrix4x4 createZUpTransform( const QString &upAxis, const QString &forwardAxis )
-{
-  QVector3D up = stringToAxis( upAxis );
-  QVector3D forward = stringToAxis( forwardAxis );
-
-  if ( up.isNull() || forward.isNull() || std::abs( QVector3D::dotProduct( up, forward ) ) > 1e-6f )
-  {
-    // no transform (identity matrix) on error
-    return QMatrix4x4();
-  }
-
-  QVector3D right = QVector3D::crossProduct( forward, up ).normalized();
-  return QMatrix4x4( right.x(), right.y(), right.z(), 0.0f, forward.x(), forward.y(), forward.z(), 0.0f, up.x(), up.y(), up.z(), 0.0f, 0.0f, 0.0f, 0.0f, 1.0f );
-}
-
 void QgsModelPoint3DSymbolHandler::addInstancedEntities(
   const QVector<QVector3D> &positions,
   const QVector<QVector3D> &scales,
@@ -729,37 +701,47 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
 {
   const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( u"model"_s ).toString() );
 
-  std::vector<QgsObj3DUtils::ObjMaterialMesh> meshes = QgsObj3DUtils::buildObjGeometries( source, materialContext );
+  std::vector<QgsMeshNodeData> meshes;
+
+  const QString suffix = QFileInfo( source ).suffix().toLower();
+  if ( suffix == "gltf"_L1 || suffix == "glb"_L1 )
+  {
+    QStringList gltfErrors;
+    for ( QgsMeshNodeData &m : QgsGltf3DUtils::buildGltfGeometries( source, materialContext, &gltfErrors, parent ) )
+      meshes.push_back( std::move( m ) );
+    if ( !gltfErrors.isEmpty() )
+      QgsDebugError( u"GLTF instancing errors for '%1': %2"_s.arg( source, gltfErrors.join( ", "_L1 ) ) );
+  }
+  else if ( suffix == "obj"_L1 )
+  {
+    for ( QgsMeshNodeData &m : QgsObj3DUtils::buildObjGeometries( source, materialContext ) )
+      meshes.push_back( std::move( m ) );
+  }
+
   if ( meshes.empty() )
+  {
+    QgsDebugMsgLevel( u"No meshes loaded for model symbol source: %1"_s.arg( source ), 2 );
     return;
+  }
 
   const int count = positions.size();
 
   QByteArray translationData( reinterpret_cast<const char *>( positions.constData() ), static_cast<qsizetype>( count * sizeof( QVector3D ) ) );
 
-  // corrected order for the instanced.vert shader
-  QVector<QVector3D> correctedScales( count );
-  for ( int i = 0; i < count; ++i )
-    correctedScales[i] = QVector3D( scales[i].x(), scales[i].z(), scales[i].y() );
-
-  QByteArray scaleData( reinterpret_cast<const char *>( correctedScales.constData() ), static_cast<qsizetype>( count * sizeof( QVector3D ) ) );
-
   const QString upAxis = symbol->shapeProperty( u"upAxis"_s ).toString();
   const QString forwardAxis = symbol->shapeProperty( u"forwardAxis"_s ).toString();
-  const QMatrix4x4 zUpMatrix = createZUpTransform( upAxis, forwardAxis );
 
-  const QQuaternion zUpQuaternion = QQuaternion::fromRotationMatrix( zUpMatrix.toGenericMatrix<3, 3>() );
-  const QQuaternion shaderZUpInverse = QQuaternion::fromAxisAndAngle( QVector3D( 1.0f, 0.0f, 0.0f ), -90.0f );
-  QByteArray rotationData;
-  rotationData.resize( static_cast<qsizetype>( count * sizeof( QVector4D ) ) );
-  QVector4D *rotDst = reinterpret_cast<QVector4D *>( rotationData.data() );
-  for ( int i = 0; i < count; ++i )
-  {
-    const QQuaternion finalRotation = rotations.at( i ) * zUpQuaternion * shaderZUpInverse;
-    rotDst[i] = QVector4D( finalRotation.x(), finalRotation.y(), finalRotation.z(), finalRotation.scalar() );
-  }
+  QByteArray scaleData( reinterpret_cast<const char *>( scales.constData() ), static_cast<qsizetype>( count * sizeof( QVector3D ) ) );
 
   const Qgis::InstancedMaterialFlags instancedFlags = Qgis::InstancedMaterialFlag::DataDefinedScale | Qgis::InstancedMaterialFlag::DataDefinedRotation;
+  const QMatrix3x3 axisTransform = Qgs3DUtils::axisTransformMatrix( upAxis, forwardAxis );
+
+  // maybe we can avoid this if we handle quaternions wxyz in shader instead?
+  QVector<QVector4D> rotationVectors;
+  rotationVectors.reserve( count );
+  for ( const QQuaternion &q : rotations )
+    rotationVectors.append( q.toVector4D() );
+  QByteArray rotationData( reinterpret_cast<const char *>( rotationVectors.constData() ), static_cast<qsizetype>( count * sizeof( QVector4D ) ) );
 
   Qt3DCore::QBuffer *translationBufferData = new Qt3DCore::QBuffer( parent );
   translationBufferData->setData( translationData );
@@ -770,7 +752,7 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
   Qt3DCore::QBuffer *rotationBufferData = new Qt3DCore::QBuffer( parent );
   rotationBufferData->setData( rotationData );
 
-  for ( QgsObj3DUtils::ObjMaterialMesh &mesh : meshes )
+  for ( QgsMeshNodeData &mesh : meshes )
   {
     Qt3DCore::QGeometry *geom = mesh.geometry.release();
 
@@ -815,29 +797,33 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
     if ( materialContext.isHighlighted() )
     {
       QgsHighlightMaterial *highlightMaterial = new QgsHighlightMaterial();
-      highlightMaterial->setInstancingEnabled( true, instancedFlags );
+      highlightMaterial->setInstancingEnabled( true, instancedFlags, axisTransform, mesh.nodeTransform );
       mat = highlightMaterial;
     }
     else if ( useEmbeddedTexture )
     {
       if ( !materialContext.isSelected() && mesh.material )
       {
-        if ( QgsPhongTexturedMaterial *texMat = qobject_cast<QgsPhongTexturedMaterial *>( mesh.material.get() ) )
-          texMat->setInstancingEnabled( true, instancedFlags );
+        if ( QgsPhongTexturedMaterial *phongTexMat = qobject_cast<QgsPhongTexturedMaterial *>( mesh.material.get() ) )
+          phongTexMat->setInstancingEnabled( true, instancedFlags, axisTransform, mesh.nodeTransform );
+        else if ( QgsMetalRoughMaterial *pbrMat = qobject_cast<QgsMetalRoughMaterial *>( mesh.material.get() ) )
+          pbrMat->setInstancingEnabled( true, instancedFlags, axisTransform, mesh.nodeTransform );
+        else if ( QgsTextureMaterial *gltfTexMat = qobject_cast<QgsTextureMaterial *>( mesh.material.get() ) )
+          gltfTexMat->setInstancingEnabled( true, instancedFlags, axisTransform, mesh.nodeTransform );
         mat = mesh.material.release();
       }
       if ( !mat )
       {
         QgsPhongMaterialSettings phongSettings;
         if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( &phongSettings ) )
-          mat = handler->toInstancedMaterial( &phongSettings, materialContext, instancedFlags );
+          mat = handler->toInstancedMaterial( &phongSettings, materialContext, instancedFlags, axisTransform, mesh.nodeTransform );
       }
     }
     else
     {
       const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
       if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
-        mat = handler->toInstancedMaterial( settings, materialContext, instancedFlags );
+        mat = handler->toInstancedMaterial( settings, materialContext, instancedFlags, axisTransform, mesh.nodeTransform );
     }
 
     if ( !mat )

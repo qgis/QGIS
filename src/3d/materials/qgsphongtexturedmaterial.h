@@ -21,6 +21,8 @@
 #include "qgsmaterial.h"
 
 #include <QColor>
+#include <QMatrix3x3>
+#include <QMatrix4x4>
 #include <QObject>
 #include <Qt3DRender/QTexture>
 
@@ -57,7 +59,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
      * texture coordinate support. \a flags controls which per-instance attributes
      * (scale, rotation) are active.
      */
-    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform );
 
   public slots:
     //! Sets ambient color, must be a SRGB color
@@ -92,6 +94,9 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
+    Qt3DRender::QParameter *mNodeTransformParameter = nullptr;
+    Qt3DRender::QParameter *mAxisTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNodeNormalTransformParameter = nullptr;
 };
 
 ///@endcond PRIVATE

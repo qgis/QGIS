@@ -19,18 +19,15 @@
 ///@cond PRIVATE
 
 
-#include <memory>
 #include <vector>
 
 #include "qgis_3d.h"
-#include "qgsmaterial.h"
+#include "qgs3dutils.h"
 
 #define SIP_NO_FILE
 
 class QString;
 class QgsMaterialContext;
-
-#include <Qt3DCore/QGeometry>
 
 /**
  * \ingroup qgis_3d
@@ -42,13 +39,6 @@ class QgsMaterialContext;
 class _3D_EXPORT QgsObj3DUtils
 {
   public:
-    //! Geometry and material pair for a single OBJ material group. Material is nullptr when the group has no texture.
-    struct ObjMaterialMesh
-    {
-        std::unique_ptr<Qt3DCore::QGeometry> geometry; //!< Geometry of the material group.
-        std::unique_ptr<QgsMaterial> material;         //!< Material of the material group, or nullptr if no texture.
-    };
-
     /**
      * Loads an OBJ file from \a filePath and returns one geometry/material pair
      * per material group found in the file.
@@ -57,7 +47,7 @@ class _3D_EXPORT QgsObj3DUtils
      *
      * If a group has no texture, the material remains a NULLPTR.
      */
-    static std::vector<ObjMaterialMesh> buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext );
+    static std::vector<QgsMeshNodeData> buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext );
 };
 
 ///@endcond

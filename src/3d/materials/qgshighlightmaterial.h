@@ -20,10 +20,14 @@
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
+#include <QMatrix3x3>
+#include <QMatrix4x4>
+
 #define SIP_NO_FILE
 
 namespace Qt3DRender
 {
+  class QParameter;
   class QShaderProgram;
 } // namespace Qt3DRender
 
@@ -47,7 +51,7 @@ class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
     explicit QgsHighlightMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsHighlightMaterial() override;
 
-    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform );
 
   private:
     void init();
@@ -57,6 +61,9 @@ class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
     Qgis::MaterialRenderingTechnique mRenderingTechnique;
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
+    Qt3DRender::QParameter *mNodeTransformParameter = nullptr;
+    Qt3DRender::QParameter *mAxisTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNodeNormalTransformParameter = nullptr;
 };
 
 ///@endcond PRIVATE

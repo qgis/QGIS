@@ -25,6 +25,12 @@ out vec2 texCoord;
 out vec4 worldTangent;
 #endif
 
+uniform mat4 nodeTransform;
+
+uniform mat3 axisTransform;
+
+uniform mat3 nodeNormalTransform;
+
 uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
 uniform mat4 mvp;
@@ -42,72 +48,54 @@ vec3 rotateByQuat(vec3 v, vec4 q) {
 
 void main()
 {
-    // vertexPosition uses XY plane as the base plane, with Z going upwards
-    // and the coordinates are local to the object
-
-    const mat3 zUpTransform = mat3(
-        // column 1
-        1.0, 0.0, 0.0,
-        // column 2
-        0.0, 0.0, 1.0,
-        // column 3
-        0.0, -1.0, 0.0
-    );
-    // transposed inverse of z-up transform matrix
-    const mat3 zUpNormalTransform = mat3(
-        // column 1
-        1.0, 0.0, 0.0,
-        // column 2
-        0.0, 0.0, 1.0,
-        // column 3
-        0.0, -1.0, 0.0
-    );
-
     #ifdef USE_INSTANCE_SCALE
-    vec3 thisInstanceScale = instanceScale;
-    vec3 thisInstanceNormalScale = 1.0 / instanceScale;
+    vec3 thisScale = instanceScale;
     #else
-    vec3 thisInstanceScale = symbolScale;
-    vec3 thisInstanceNormalScale = 1.0 / symbolScale;
+    vec3 thisScale = symbolScale;
     #endif
 
     #ifdef USE_INSTANCE_ROTATION
-    vec4 thisInstanceRotation = instanceRotation;
+    vec4 thisRotation = instanceRotation;
     #else
-    vec4 thisInstanceRotation = symbolRotation;
+    vec4 thisRotation = symbolRotation;
     #endif
 
     // order of operations are:
-    // 1. Correct for y-up to z-up
-    // 2. Apply either per-instance scale or default symbol scale
-    // 3. Apply either per-instance rotation or default symbol rotation
-    // 4. Apply per-instance translation
+    // 1. Apply node transform
+    // 2. Apply axis transform
+    // 3. Apply either per-instance scale or default symbol scale
+    // 4. Apply either per-instance rotation or default symbol rotation
+    // 5. Apply per-instance translation
 
-    // for vertices:
-    vec3 zUpPosition = zUpTransform * vertexPosition;
-    vec3 scaledPosition = zUpPosition * thisInstanceScale;
-    vec3 vertexPositionObject = rotateByQuat(scaledPosition, thisInstanceRotation);
+    vec3 nodePosition = (nodeTransform * vec4(vertexPosition, 1.0)).xyz;
+    vec3 axisPosition = axisTransform * nodePosition;
+    vec3 scaledPosition = axisPosition * thisScale;
+    vec3 rotatedPosition = rotateByQuat(scaledPosition, thisRotation);
+    vec3 vertexPositionChunk = rotatedPosition + instanceTranslation;
 
     // for normals:
-    vec3 zUpNormal = zUpNormalTransform * vertexNormal;
-    vec3 scaledNormal = zUpNormal * thisInstanceNormalScale;
-    vec3 vertexNormalObject = rotateByQuat(scaledNormal, thisInstanceRotation);
-
-    vec3 vertexPositionChunk = vertexPositionObject + instanceTranslation;
+    vec3 nodeNormal = nodeNormalTransform * vertexNormal;
+    vec3 axisNormal = axisTransform * nodeNormal;
+    vec3 scaledNormal = axisNormal / thisScale;
+    vec3 rotatedNormal = rotateByQuat(scaledNormal, thisRotation);
 
     // Transform position and normal to world space
     worldPosition = vec3(modelMatrix * vec4(vertexPositionChunk, 1.0));
-    worldNormal = normalize(modelNormalMatrix * vertexNormalObject);
+    worldNormal = normalize(modelNormalMatrix * rotatedNormal);
+
 #ifdef HAS_TEXTURE
     texCoord = vertexTexCoord;
 #endif
+
 #ifdef HAS_TANGENT
-    vec3 tang = rotateByQuat(vertexTangent.xyz * thisInstanceScale, thisInstanceRotation);
-    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(tang, 0.0)));
+    vec3 nodeTangent = mat3(nodeTransform) * vertexTangent.xyz;
+    vec3 axisTangent = axisTransform * nodeTangent;
+    vec3 scaledTangent = axisTangent * thisScale;
+    vec3 rotatedTangent = rotateByQuat(scaledTangent, thisRotation);
+    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(rotatedTangent, 0.0)));
     worldTangent.w = vertexTangent.w;
 #endif
 
-    // Calculate vertex position in clip coordinates
     gl_Position = mvp * vec4(vertexPositionChunk, 1.0);
 
 #ifdef CLIPPING

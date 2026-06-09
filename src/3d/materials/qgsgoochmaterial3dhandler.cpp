@@ -172,12 +172,14 @@ bool QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform
+) const
 {
   const QgsGoochMaterialSettings *goochSettings = qgis::down_cast< const QgsGoochMaterialSettings * >( settings );
 
   QgsGoochMaterial *material = new QgsGoochMaterial();
-  material->setInstancingEnabled( true, flags );
+  material->setInstancingEnabled( true, flags, axisTransform, nodeTransform );
 
   material->setObjectName( u"goochMaterial"_s );
   applySettingsToMaterial( goochSettings, material );

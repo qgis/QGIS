@@ -85,10 +85,40 @@ void QgsGoochMaterial::init()
   updateShaders();
 }
 
-void QgsGoochMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
+void QgsGoochMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform )
 {
   mInstanced = enabled;
   mInstanceFlags = flags;
+
+  if ( mInstanced )
+  {
+    const QMatrix3x3 nodeNormalTransform = nodeTransform.normalMatrix();
+
+    if ( !mNodeTransformParameter )
+    {
+      mNodeTransformParameter = new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( nodeTransform ), this );
+      addParameter( mNodeTransformParameter );
+    }
+    else
+      mNodeTransformParameter->setValue( QVariant::fromValue( nodeTransform ) );
+
+    if ( !mAxisTransformParameter )
+    {
+      mAxisTransformParameter = new Qt3DRender::QParameter( u"axisTransform"_s, QVariant::fromValue( axisTransform ), this );
+      addParameter( mAxisTransformParameter );
+    }
+    else
+      mAxisTransformParameter->setValue( QVariant::fromValue( axisTransform ) );
+
+    if ( !mNodeNormalTransformParameter )
+    {
+      mNodeNormalTransformParameter = new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( nodeNormalTransform ), this );
+      addParameter( mNodeNormalTransformParameter );
+    }
+    else
+      mNodeNormalTransformParameter->setValue( QVariant::fromValue( nodeNormalTransform ) );
+  }
+
   updateShaders();
 }
 

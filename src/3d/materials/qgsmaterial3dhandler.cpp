@@ -50,11 +50,15 @@ void QgsMaterialContext::setIsPreview( bool isPreview )
   mIsPreview = isPreview;
 }
 
-QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform
+) const
 {
   Q_UNUSED( flags )
   Q_UNUSED( settings )
   Q_UNUSED( context )
+  Q_UNUSED( axisTransform )
+  Q_UNUSED( nodeTransform )
   return nullptr;
 }
 

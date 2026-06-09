@@ -17,7 +17,6 @@
 #define TINYOBJLOADER_USE_MAPBOX_EARCUT
 #include "qgsobj3dutils.h"
 
-#include <array>
 #include <tiny_obj_loader.h>
 #include <unordered_map>
 
@@ -31,7 +30,6 @@
 #include <QFileInfo>
 #include <QImage>
 #include <QString>
-#include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
@@ -41,7 +39,7 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-std::vector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext )
+std::vector<QgsMeshNodeData> QgsObj3DUtils::buildObjGeometries( const QString &filePath, const QgsMaterialContext &materialContext )
 {
   tinyobj::ObjReaderConfig config;
   config.triangulate = true;
@@ -67,6 +65,8 @@ std::vector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( c
   const bool hasNormals = !attrib.normals.empty();
   const bool hasTexCoords = !attrib.texcoords.empty();
 
+  const size_t floatsPerVertex = 3 + ( hasNormals ? 3 : 0 ) + ( hasTexCoords ? 2 : 0 );
+
   std::unordered_map<int, std::vector<float>> matDataMap;
 
   // see https://github.com/tinyobjloader/tinyobjloader
@@ -78,6 +78,8 @@ std::vector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( c
       const size_t faceVertexCount = size_t( shapes[shapeIdx].mesh.num_face_vertices[faceIdx] );
       const int matId = shapes[shapeIdx].mesh.material_ids[faceIdx];
       std::vector<float> &data = matDataMap[matId];
+
+      data.reserve( data.size() + faceVertexCount * floatsPerVertex );
 
       for ( size_t v = 0; v < faceVertexCount; v++ )
       {
@@ -121,7 +123,7 @@ std::vector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( c
     }
   }
 
-  std::vector<ObjMaterialMesh> result;
+  std::vector<QgsMeshNodeData> result;
   result.reserve( matDataMap.size() );
 
   for ( auto &[matId, vertices] : matDataMap )
@@ -216,7 +218,7 @@ std::vector<QgsObj3DUtils::ObjMaterialMesh> QgsObj3DUtils::buildObjGeometries( c
       mat = texMat;
     }
 
-    result.push_back( ObjMaterialMesh { std::unique_ptr<Qt3DCore::QGeometry>( geom ), std::unique_ptr<QgsMaterial>( mat ) } );
+    result.push_back( QgsMeshNodeData { std::unique_ptr<Qt3DCore::QGeometry>( geom ), std::unique_ptr<QgsMaterial>( mat ), QMatrix4x4() } );
   }
 
   return result;
