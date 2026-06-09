@@ -118,10 +118,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   mapSettings.setScaleMethod( mScaleMethod );
   mapSettings.setEllipsoid( context.ellipsoid() );
 
-  QgsExpressionContext expContext;
-  expContext.appendScope( QgsExpressionContextUtils::globalScope() );
-  if ( context.project() )
-    expContext.appendScope( QgsExpressionContextUtils::projectScope( context.project() ) );
+  QgsExpressionContext expContext = createExpressionContext( parameters, context );
   expContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapSettings ) );
   mapSettings.setExpressionContext( expContext );
 
