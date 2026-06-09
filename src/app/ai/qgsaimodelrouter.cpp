@@ -162,6 +162,13 @@ QgsAiModelRouter::QgsAiModelRouter( QObject *parent )
   claude.credentialMode = CredentialMode::ApiKey;
   mProviderSettings.insert( Provider::Claude, claude );
 
+  ProviderSettings openRouter;
+  openRouter.endpoint = u"https://openrouter.ai/api/v1/responses"_s;
+  openRouter.model = u"openrouter/auto"_s;
+  openRouter.credentialMode = CredentialMode::ApiKey;
+  openRouter.autoRouting = true;
+  mProviderSettings.insert( Provider::OpenRouter, openRouter );
+
   ProviderSettings plan;
   plan.endpoint = u"https://example.invalid/ai/messages"_s;
   plan.model = u"managed-plan"_s;
@@ -230,6 +237,8 @@ QString QgsAiModelRouter::providerDisplayName( Provider provider ) const
       return u"Codex"_s;
     case Provider::Claude:
       return u"Claude"_s;
+    case Provider::OpenRouter:
+      return u"OpenRouter"_s;
     case Provider::Plan:
       return u"Plan Account"_s;
   }
@@ -239,6 +248,9 @@ QString QgsAiModelRouter::providerDisplayName( Provider provider ) const
 QString QgsAiModelRouter::normalizedModelForProvider( Provider provider, const QString &model ) const
 {
   const QString trimmed = model.trimmed();
+  if ( provider == Provider::OpenRouter )
+    return trimmed.isEmpty() ? u"openrouter/auto"_s : trimmed;
+
   if ( provider != Provider::Codex )
     return trimmed;
 
@@ -337,7 +349,7 @@ void QgsAiModelRouter::appendOpenAiInputItems( Provider provider, const QgsAiCha
     item.insert( u"output"_s, message.content );
     input.push_back( item );
 
-    if ( provider == Provider::OpenAi || provider == Provider::Codex )
+    if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter )
     {
       QString mimeType;
       QString base64Data;
@@ -419,7 +431,7 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
   payload.insert( u"model"_s, normalizedModelForProvider( provider, settings.model ) );
   payload.insert( u"stream"_s, stream );
 
-  if ( provider == Provider::OpenAi || provider == Provider::Codex )
+  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter )
   {
     QJsonArray input;
     QString codexInstructions;
@@ -465,6 +477,17 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
       if ( mCodexPromptCacheKey.isEmpty() )
         mCodexPromptCacheKey = QUuid::createUuid().toString( QUuid::WithoutBraces );
       payload.insert( u"prompt_cache_key"_s, mCodexPromptCacheKey );
+    }
+    else if ( provider == Provider::OpenRouter )
+    {
+      if ( !toolSchemas.isEmpty() )
+      {
+        payload.insert( u"tools"_s, toolSchemas );
+        payload.insert( u"tool_choice"_s, u"auto"_s );
+      }
+
+      if ( settings.autoRouting )
+        payload.insert( u"provider"_s, openRouterProviderPreferences() );
     }
     else if ( !toolSchemas.isEmpty() )
     {
@@ -532,9 +555,30 @@ QString QgsAiModelRouter::sanitizeErrorText( const QString &errorText ) const
 {
   QString sanitized = errorText;
   sanitized.replace( QRegularExpression( u"Bearer\\s+[A-Za-z0-9_\\-\\.~\\+\\/]+=*"_s, QRegularExpression::CaseInsensitiveOption ), u"Bearer [REDACTED]"_s );
+  sanitized.replace( QRegularExpression( u"\\bsk-or-[A-Za-z0-9\\-_]+\\b"_s ), u"[REDACTED_OPENROUTER_KEY]"_s );
   sanitized.replace( QRegularExpression( u"\\bsk-[A-Za-z0-9\\-_]+\\b"_s ), u"[REDACTED_OPENAI_KEY]"_s );
   sanitized.replace( QRegularExpression( u"\\b(x-api-key\\s*[:=]\\s*)([^\\s,;]+)"_s, QRegularExpression::CaseInsensitiveOption ), u"\\1[REDACTED]"_s );
   return sanitized;
+}
+
+QJsonObject QgsAiModelRouter::openRouterProviderPreferences() const
+{
+  QJsonObject provider;
+  provider.insert( u"data_collection"_s, u"deny"_s );
+  provider.insert( u"allow_fallbacks"_s, true );
+
+  switch ( mOpenRouterRoutingProfile )
+  {
+    case OpenRouterRoutingProfile::ToolUseOptimized:
+      provider.insert( u"require_parameters"_s, true );
+      break;
+    case OpenRouterRoutingProfile::CostOptimized:
+    default:
+      provider.insert( u"sort"_s, u"price"_s );
+      break;
+  }
+
+  return provider;
 }
 
 QString QgsAiModelRouter::authHeaderName( Provider provider ) const
@@ -545,6 +589,7 @@ QString QgsAiModelRouter::authHeaderName( Provider provider ) const
       return u"x-api-key"_s;
     case Provider::Codex:
     case Provider::OpenAi:
+    case Provider::OpenRouter:
     case Provider::Plan:
       return u"Authorization"_s;
   }
@@ -553,7 +598,7 @@ QString QgsAiModelRouter::authHeaderName( Provider provider ) const
 
 QString QgsAiModelRouter::authHeaderValue( Provider provider, const QString &secret ) const
 {
-  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::Plan )
+  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter || provider == Provider::Plan )
     return u"Bearer %1"_s.arg( secret );
   return secret;
 }
@@ -568,6 +613,8 @@ QString QgsAiModelRouter::authConfigSettingKey( Provider provider ) const
       return u"ai/provider/codex/authcfg"_s;
     case Provider::Claude:
       return u"ai/provider/claude/authcfg"_s;
+    case Provider::OpenRouter:
+      return u"ai/provider/openrouter/authcfg"_s;
     case Provider::Plan:
       return u"ai/provider/plan/token"_s;
   }
@@ -584,6 +631,8 @@ QString QgsAiModelRouter::providerSettingPrefix( Provider provider ) const
       return u"ai/provider/codex"_s;
     case Provider::Claude:
       return u"ai/provider/claude"_s;
+    case Provider::OpenRouter:
+      return u"ai/provider/openrouter"_s;
     case Provider::Plan:
       return u"ai/provider/plan"_s;
   }
@@ -608,6 +657,11 @@ QString QgsAiModelRouter::enabledSettingKey( Provider provider ) const
 QString QgsAiModelRouter::credentialModeSettingKey( Provider provider ) const
 {
   return providerSettingPrefix( provider ) + u"/credentialMode"_s;
+}
+
+QString QgsAiModelRouter::autoRoutingSettingKey( Provider provider ) const
+{
+  return providerSettingPrefix( provider ) + u"/autoRouting"_s;
 }
 
 QString QgsAiModelRouter::apiKeySettingKey( Provider provider ) const
@@ -651,6 +705,13 @@ QString QgsAiModelRouter::storedApiKey( Provider provider ) const
       const QString anthropicValue = qEnvironmentVariable( "ANTHROPIC_API_KEY" ).trimmed();
       if ( !anthropicValue.isEmpty() )
         return anthropicValue;
+      break;
+    }
+    case Provider::OpenRouter:
+    {
+      const QString envValue = qEnvironmentVariable( "OPENROUTER_API_KEY" ).trimmed();
+      if ( !envValue.isEmpty() )
+        return envValue;
       break;
     }
     case Provider::Plan:
@@ -706,7 +767,7 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
 {
   QgsSettings settings;
 
-  const QList<Provider> providers = { Provider::OpenAi, Provider::Codex, Provider::Claude, Provider::Plan };
+  const QList<Provider> providers = { Provider::OpenAi, Provider::Codex, Provider::Claude, Provider::OpenRouter, Provider::Plan };
   for ( Provider provider : providers )
   {
     ProviderSettings providerSettings = mProviderSettings.value( provider );
@@ -723,13 +784,15 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
     providerSettings.credentialMode = credentialMode.compare( u"oauth"_s, Qt::CaseInsensitive ) == 0 ? CredentialMode::OAuth : CredentialMode::ApiKey;
     if ( provider == Provider::Codex )
       providerSettings.credentialMode = CredentialMode::OAuth;
+    if ( provider == Provider::OpenRouter )
+      providerSettings.autoRouting = settings.value( autoRoutingSettingKey( provider ), providerSettings.autoRouting ).toBool();
 
     if ( provider == Provider::Plan )
     {
       providerSettings.authConfigId = settings.value( planAuthConfigIdSettingKey(), providerSettings.authConfigId ).toString().trimmed();
       providerSettings.enabled = settings.value( enabledSettingKey( provider ), !providerSettings.authConfigId.isEmpty() ).toBool();
     }
-    else if ( provider == Provider::OpenAi )
+    else if ( provider == Provider::OpenAi || provider == Provider::OpenRouter )
     {
       providerSettings.authConfigId.clear();
       providerSettings.enabled = settings.value( enabledSettingKey( provider ), !storedApiKey( provider ).isEmpty() ).toBool();
@@ -754,6 +817,8 @@ void QgsAiModelRouter::persistProviderSettings( Provider provider, const Provide
   appSettings.setValue( modelSettingKey( provider ), normalizedModelForProvider( provider, settings.model ).trimmed() );
   appSettings.setValue( enabledSettingKey( provider ), settings.enabled );
   appSettings.setValue( credentialModeSettingKey( provider ), settings.credentialMode == CredentialMode::OAuth ? u"oauth"_s : u"apiKey"_s );
+  if ( provider == Provider::OpenRouter )
+    appSettings.setValue( autoRoutingSettingKey( provider ), settings.autoRouting );
 
   if ( provider == Provider::Plan )
     appSettings.setValue( planAuthConfigIdSettingKey(), settings.authConfigId.trimmed() );
@@ -1199,7 +1264,7 @@ void QgsAiModelRouter::extractToolCallsFromResponse( Provider provider, const QJ
     return;
   }
 
-  if ( provider == Provider::OpenAi || provider == Provider::Codex )
+  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter )
   {
     // Top-level "status" or per-output items don't carry stop_reason explicitly here;
     // we infer tool_use by the presence of function_call items.
@@ -1283,7 +1348,7 @@ void QgsAiModelRouter::absorbStreamEvent( Provider provider, const QJsonObject &
     return;
   }
 
-  if ( provider == Provider::OpenAi || provider == Provider::Codex )
+  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter )
   {
     const QString eventType = object.value( u"type"_s ).toString();
 
@@ -1548,6 +1613,10 @@ QgsAiModelRouter::Provider QgsAiModelRouter::resolveProvider() const
   const ProviderSettings codex = mProviderSettings.value( Provider::Codex );
   if ( codex.enabled && hasConfiguredCredential( Provider::Codex ) )
     return Provider::Codex;
+
+  const ProviderSettings openRouter = mProviderSettings.value( Provider::OpenRouter );
+  if ( openRouter.enabled && hasConfiguredCredential( Provider::OpenRouter ) )
+    return Provider::OpenRouter;
 
   const ProviderSettings openAi = mProviderSettings.value( Provider::OpenAi );
   if ( openAi.enabled && hasConfiguredCredential( Provider::OpenAi ) )

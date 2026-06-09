@@ -41,6 +41,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
       OpenAi,
       Codex,
       Claude,
+      OpenRouter,
       Plan
     };
     Q_ENUM( Provider )
@@ -52,6 +53,13 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     };
     Q_ENUM( CredentialMode )
 
+    enum class OpenRouterRoutingProfile
+    {
+      CostOptimized,
+      ToolUseOptimized
+    };
+    Q_ENUM( OpenRouterRoutingProfile )
+
     struct ProviderSettings
     {
         QString endpoint;
@@ -59,6 +67,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
         QString authConfigId;
         CredentialMode credentialMode = CredentialMode::ApiKey;
         bool enabled = false;
+        bool autoRouting = true;
     };
 
     explicit QgsAiModelRouter( QObject *parent = nullptr );
@@ -84,6 +93,9 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QString sanitizeErrorText( const QString &errorText ) const;
     bool hasStoredApiKey( Provider provider ) const;
     bool hasStoredOAuthRefreshToken( Provider provider ) const;
+    void setOpenRouterRoutingProfile( OpenRouterRoutingProfile profile ) { mOpenRouterRoutingProfile = profile; }
+    OpenRouterRoutingProfile openRouterRoutingProfile() const { return mOpenRouterRoutingProfile; }
+    QJsonObject openRouterProviderPreferences() const;
 
     /**
      * Sets the tool registry used to advertise tools to the LLM. Pointer is borrowed,
@@ -181,6 +193,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QString modelSettingKey( Provider provider ) const;
     QString enabledSettingKey( Provider provider ) const;
     QString credentialModeSettingKey( Provider provider ) const;
+    QString autoRoutingSettingKey( Provider provider ) const;
     QString apiKeySettingKey( Provider provider ) const;
     QString planAuthConfigIdSettingKey() const;
     QString planSessionTokenSettingKey() const;
@@ -198,6 +211,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     bool mAllowedToolsFilterEnabled = false;
     QStringList mAllowedTools;
     mutable QString mCodexPromptCacheKey;
+    OpenRouterRoutingProfile mOpenRouterRoutingProfile = OpenRouterRoutingProfile::CostOptimized;
 };
 
 #endif // QGSAIMODELROUTER_H

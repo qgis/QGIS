@@ -531,7 +531,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   if ( !hasEmbeddingConfiguration() )
   {
     if ( errorMessage )
-      *errorMessage = u"OpenAI API key is required for embeddings; configure it in AI Provider Settings."_s;
+      *errorMessage = u"An embeddings API key is required; configure OpenAI or OpenRouter in AI Provider Settings."_s;
     return false;
   }
 
@@ -567,7 +567,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   }
 
   // Build chunks for every file. We keep a parallel list of texts to embed so
-  // we can call the OpenAI endpoint in larger batches than per-file.
+  // we can call the embeddings endpoint in larger batches than per-file.
   QList<CachedChunk> built;
   QStringList textsToEmbed;
   QList<int> backRefIndex; // for each text in textsToEmbed, the position in `built`
@@ -649,7 +649,7 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &qu
   if ( !hasEmbeddingConfiguration() )
   {
     if ( errorMessage )
-      *errorMessage = u"OpenAI API key is required for query embedding."_s;
+      *errorMessage = u"An embeddings API key is required for query embedding."_s;
     return results;
   }
 
@@ -697,7 +697,7 @@ bool QgsAiWorkspaceIndex::reindexLayers( QString *errorMessage )
   if ( !hasEmbeddingConfiguration() )
   {
     if ( errorMessage )
-      *errorMessage = u"OpenAI API key is required for embeddings; configure it in AI Provider Settings."_s;
+      *errorMessage = u"An embeddings API key is required; configure OpenAI or OpenRouter in AI Provider Settings."_s;
     return false;
   }
 
@@ -759,7 +759,7 @@ bool QgsAiWorkspaceIndex::reindexLayer( const QString &layerId, QString *errorMe
   if ( !hasEmbeddingConfiguration() )
   {
     if ( errorMessage )
-      *errorMessage = u"OpenAI API key is required for embeddings."_s;
+      *errorMessage = u"An embeddings API key is required for embeddings."_s;
     return false;
   }
 

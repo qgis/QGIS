@@ -37,11 +37,11 @@ class QgsAiFileContextProvider;
  * - Plain SQLite database stored under qgisSettingsDirPath()/ai_index/, one
  *   file per workspace (hashed root path).
  * - One row per text chunk: { file_path, chunk_index, text, embedding BLOB }.
- * - Embeddings come from the OpenAI embeddings endpoint via QgsAiEmbeddingClient.
+ * - Embeddings come from the configured embeddings provider via QgsAiEmbeddingClient.
  * - Retrieval is a linear cosine-similarity scan in C++ (fast enough for
  *   tens of thousands of chunks; we cap reindex at 500 files for the MVP).
  *
- * Privacy: indexing sends the file chunks to OpenAI. Callers are expected to
+ * Privacy: indexing sends the file chunks to the configured embeddings provider. Callers are expected to
  * surface a disclaimer before triggering reindex.
  */
 class APP_EXPORT QgsAiWorkspaceIndex : public QObject
@@ -113,7 +113,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
 
     /**
      * Walks the workspace, chunks every eligible text file, embeds the chunks
-     * via the OpenAI embeddings endpoint, and stores them in the local SQLite
+     * via the configured embeddings endpoint, and stores them in the local SQLite
      * database, replacing any previous content. Returns false on failure with
      * \a errorMessage filled.
      *
@@ -142,7 +142,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
 
     /**
      * Drops the index file from disk and clears the in-memory cache. Useful
-     * when the user wants to revoke the OpenAI embedding cache.
+     * when the user wants to revoke the embedding cache.
      */
     void clear();
 

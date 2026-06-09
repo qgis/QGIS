@@ -36,27 +36,70 @@ using namespace Qt::StringLiterals;
 namespace
 {
   constexpr const char *OPENAI_EMBEDDINGS_ENDPOINT = "https://api.openai.com/v1/embeddings";
+  constexpr const char *OPENROUTER_EMBEDDINGS_ENDPOINT = "https://openrouter.ai/api/v1/embeddings";
   constexpr const char *OPENAI_KEY_SETTING = "ai/provider/openai/apiKey";
+  constexpr const char *OPENROUTER_KEY_SETTING = "ai/provider/openrouter/apiKey";
+  constexpr const char *EMBEDDINGS_PROVIDER_SETTING = "ai/embeddings/provider";
+  constexpr const char *OPENAI_EMBEDDING_MODEL_SETTING = "ai/embeddings/openai/model";
+  constexpr const char *OPENROUTER_EMBEDDING_MODEL_SETTING = "ai/embeddings/openrouter/model";
 } //namespace
 
 QgsAiEmbeddingClient::QgsAiEmbeddingClient( QObject *parent )
   : QObject( parent )
 {}
 
-QString QgsAiEmbeddingClient::openAiApiKey() const
+QgsAiEmbeddingClient::Provider QgsAiEmbeddingClient::provider() const
 {
   const QgsSettings settings;
-  const QString stored = settings.value( OPENAI_KEY_SETTING ).toString().trimmed();
+  const QString configured = settings.value( QString::fromLatin1( EMBEDDINGS_PROVIDER_SETTING ), u"openai"_s ).toString().trimmed();
+  return configured.compare( u"openrouter"_s, Qt::CaseInsensitive ) == 0 ? Provider::OpenRouter : Provider::OpenAi;
+}
+
+QString QgsAiEmbeddingClient::endpoint() const
+{
+  return provider() == Provider::OpenRouter ? QString::fromLatin1( OPENROUTER_EMBEDDINGS_ENDPOINT ) : QString::fromLatin1( OPENAI_EMBEDDINGS_ENDPOINT );
+}
+
+QString QgsAiEmbeddingClient::model() const
+{
+  if ( !mModelOverride.isEmpty() )
+    return mModelOverride;
+
+  const QgsSettings settings;
+  if ( provider() == Provider::OpenRouter )
+  {
+    const QString configured = settings.value( QString::fromLatin1( OPENROUTER_EMBEDDING_MODEL_SETTING ), u"openai/text-embedding-3-small"_s ).toString().trimmed();
+    return configured.isEmpty() ? u"openai/text-embedding-3-small"_s : configured;
+  }
+
+  const QString configured = settings.value( QString::fromLatin1( OPENAI_EMBEDDING_MODEL_SETTING ), u"text-embedding-3-small"_s ).toString().trimmed();
+  return configured.isEmpty() ? u"text-embedding-3-small"_s : configured;
+}
+
+QJsonObject QgsAiEmbeddingClient::openRouterProviderPreferences() const
+{
+  QJsonObject providerPreferences;
+  providerPreferences.insert( u"sort"_s, u"price"_s );
+  providerPreferences.insert( u"data_collection"_s, u"deny"_s );
+  providerPreferences.insert( u"allow_fallbacks"_s, true );
+  return providerPreferences;
+}
+
+QString QgsAiEmbeddingClient::apiKey() const
+{
+  const QgsSettings settings;
+  const bool useOpenRouter = provider() == Provider::OpenRouter;
+  const QString stored = settings.value( QString::fromLatin1( useOpenRouter ? OPENROUTER_KEY_SETTING : OPENAI_KEY_SETTING ) ).toString().trimmed();
   if ( !stored.isEmpty() )
     return stored;
 
-  const QString envValue = qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed();
+  const QString envValue = qEnvironmentVariable( useOpenRouter ? "OPENROUTER_API_KEY" : "OPENAI_API_KEY" ).trimmed();
   return envValue;
 }
 
 bool QgsAiEmbeddingClient::hasApiKey() const
 {
-  return !openAiApiKey().isEmpty();
+  return !apiKey().isEmpty();
 }
 
 bool QgsAiEmbeddingClient::embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage, int maxBatch )
@@ -85,11 +128,14 @@ bool QgsAiEmbeddingClient::embed( const QStringList &texts, QList<QVector<float>
 
 bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage )
 {
-  const QString apiKey = openAiApiKey();
-  if ( apiKey.isEmpty() )
+  const QString key = apiKey();
+  if ( key.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = u"OpenAI API key is not configured (ai/provider/openai/apiKey or OPENAI_API_KEY)."_s;
+    {
+      *errorMessage = provider() == Provider::OpenRouter ? u"OpenRouter API key is not configured (ai/provider/openrouter/apiKey or OPENROUTER_API_KEY)."_s
+                                                         : u"OpenAI API key is not configured (ai/provider/openai/apiKey or OPENAI_API_KEY)."_s;
+    }
     return false;
   }
 
@@ -102,15 +148,17 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
   }
 
   QJsonObject payload;
-  payload.insert( u"model"_s, mModel );
+  payload.insert( u"model"_s, model() );
   QJsonArray input;
   for ( const QString &t : batch )
     input.append( t );
   payload.insert( u"input"_s, input );
+  if ( provider() == Provider::OpenRouter )
+    payload.insert( u"provider"_s, openRouterProviderPreferences() );
 
-  QNetworkRequest request( QUrl( QString::fromUtf8( OPENAI_EMBEDDINGS_ENDPOINT ) ) );
+  QNetworkRequest request { QUrl( endpoint() ) };
   request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
-  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( apiKey ) ).toUtf8() );
+  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( key ) ).toUtf8() );
   request.setTransferTimeout( mTimeoutMs );
 
   QNetworkReply *reply = nam->post( request, QJsonDocument( payload ).toJson( QJsonDocument::Compact ) );

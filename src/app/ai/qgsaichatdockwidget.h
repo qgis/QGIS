@@ -56,7 +56,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
   public:
     /**
      * Returns true when the user has not yet consented to layer indexing
-     * (i.e. attributes + bounding boxes leaving the machine for OpenAI embeddings).
+     * (i.e. attributes + bounding boxes leaving the machine for embeddings).
      * Callers must surface a confirmation dialog before flipping the toggle on.
      */
     static bool requiresLayerIndexingConsent();

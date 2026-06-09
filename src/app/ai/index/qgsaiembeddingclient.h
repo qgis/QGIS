@@ -19,6 +19,7 @@
 #include "qgis_app.h"
 
 #include <QList>
+#include <QJsonObject>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -27,13 +28,14 @@
 using namespace Qt::StringLiterals;
 
 /**
- * Synchronous client for the OpenAI Embeddings API (`/v1/embeddings`).
- * Reuses the same QgsSettings/env-var conventions as QgsAiModelRouter for the
- * OpenAI API key. Each call to embed() blocks the calling thread via a local
- * QEventLoop until the response arrives or a timeout triggers.
+ * Synchronous client for the configured embeddings provider.
+ * Reuses the same QgsSettings/env-var conventions as QgsAiModelRouter for API
+ * keys. Each call to embed() blocks the calling thread via a local QEventLoop
+ * until the response arrives or a timeout triggers.
  *
- * The default model is `text-embedding-3-small` (1536 dimensions). Pass an
- * explicit override to setModel() to use another embedding model.
+ * The default OpenAI model is `text-embedding-3-small`; OpenRouter defaults to
+ * `openai/text-embedding-3-small`. Pass an explicit override to setModel() to
+ * use another embedding model.
  *
  * Used only by the workspace index for retrieval — *not* by the chat router.
  */
@@ -42,13 +44,22 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
     Q_OBJECT
 
   public:
+    enum class Provider
+    {
+      OpenAi,
+      OpenRouter
+    };
+
     explicit QgsAiEmbeddingClient( QObject *parent = nullptr );
 
-    void setModel( const QString &model ) { mModel = model; }
-    QString model() const { return mModel; }
+    void setModel( const QString &model ) { mModelOverride = model.trimmed(); }
+    QString model() const;
+    Provider provider() const;
+    QString endpoint() const;
+    QJsonObject openRouterProviderPreferences() const;
 
     /**
-     * Returns true when an OpenAI API key is configured (settings or env).
+     * Returns true when the configured embeddings provider has an API key (settings or env).
      * Lets callers fail fast with a clear message before walking the workspace.
      */
     bool hasApiKey() const;
@@ -64,10 +75,10 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
     bool embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage = nullptr, int maxBatch = 64 );
 
   private:
-    QString openAiApiKey() const;
+    QString apiKey() const;
     bool embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage );
 
-    QString mModel = u"text-embedding-3-small"_s;
+    QString mModelOverride;
     int mTimeoutMs = 60000;
 };
 

@@ -174,6 +174,8 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     //! Rough token budget for the conversation history sent to the provider (excludes system prompt).
     static constexpr int HISTORY_TOKEN_BUDGET = 32768;
 
+    QList<QgsAiModelRouter::Provider> providerFallbackOrder() const;
+
   signals:
     void messageAdded( const QgsAiChatMessage &message );
     void proposalCreated( const QString &proposalId );
@@ -195,7 +197,6 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
 
   private:
     void startProviderAttempt( QgsAiModelRouter::Provider provider );
-    QList<QgsAiModelRouter::Provider> providerFallbackOrder() const;
     QString actionableError( const QString &providerName, const QString &errorMessage, int httpStatus ) const;
     QgsAiChatMessage buildAssistantMessage( const QString &text ) const;
     QgsAiChatMessage buildAssistantToolUseMessage( const QString &text, const QList<QgsAiToolCall> &calls ) const;

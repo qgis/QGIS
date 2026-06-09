@@ -18,11 +18,83 @@
 #include <QByteArray>
 #include <QDir>
 #include <QJsonObject>
+#include <QList>
 #include <QString>
+#include <QStringList>
 #include <QTemporaryDir>
+#include <QVariant>
 #include <QVector>
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+  class ScopedEmbeddingConfiguration
+  {
+    public:
+      ScopedEmbeddingConfiguration()
+        : mHadOpenAiEnv( qEnvironmentVariableIsSet( "OPENAI_API_KEY" ) )
+        , mHadOpenRouterEnv( qEnvironmentVariableIsSet( "OPENROUTER_API_KEY" ) )
+        , mOpenAiEnv( qgetenv( "OPENAI_API_KEY" ) )
+        , mOpenRouterEnv( qgetenv( "OPENROUTER_API_KEY" ) )
+      {
+        QgsSettings settings;
+        const QStringList keys = {
+          u"ai/provider/openai/apiKey"_s,
+          u"ai/provider/openrouter/apiKey"_s,
+          u"ai/embeddings/provider"_s,
+          u"ai/embeddings/openai/model"_s,
+          u"ai/embeddings/openrouter/model"_s,
+        };
+
+        for ( const QString &key : keys )
+        {
+          SavedSetting saved;
+          saved.key = key;
+          saved.hadValue = settings.contains( key );
+          saved.value = settings.value( key );
+          mSavedSettings.append( saved );
+          settings.remove( key );
+        }
+
+        qunsetenv( "OPENAI_API_KEY" );
+        qunsetenv( "OPENROUTER_API_KEY" );
+      }
+
+      ~ScopedEmbeddingConfiguration()
+      {
+        qunsetenv( "OPENAI_API_KEY" );
+        qunsetenv( "OPENROUTER_API_KEY" );
+        if ( mHadOpenAiEnv )
+          qputenv( "OPENAI_API_KEY", mOpenAiEnv );
+        if ( mHadOpenRouterEnv )
+          qputenv( "OPENROUTER_API_KEY", mOpenRouterEnv );
+
+        QgsSettings settings;
+        for ( const SavedSetting &saved : mSavedSettings )
+        {
+          if ( saved.hadValue )
+            settings.setValue( saved.key, saved.value );
+          else
+            settings.remove( saved.key );
+        }
+      }
+
+    private:
+      struct SavedSetting
+      {
+          QString key;
+          bool hadValue = false;
+          QVariant value;
+      };
+
+      QList<SavedSetting> mSavedSettings;
+      bool mHadOpenAiEnv = false;
+      bool mHadOpenRouterEnv = false;
+      QByteArray mOpenAiEnv;
+      QByteArray mOpenRouterEnv;
+  };
+} // namespace
 
 class TestQgsAiWorkspaceIndex : public QObject
 {
@@ -38,6 +110,8 @@ class TestQgsAiWorkspaceIndex : public QObject
     void removeLayerDropsOnlyMatchingChunks();
     void workspaceRootChangeLoadsSeparateIndex();
     void hasEmbeddingConfigurationReflectsSettingsAndEnvironment();
+    void embeddingClientDefaultsToOpenAi();
+    void embeddingClientUsesOpenRouterSettings();
     void schemaMigrationDropsOldDb();
     void reindexLayersFailsWithoutApiKey();
     void chunkerOutputPersistsAsLayerChunks();
@@ -266,36 +340,9 @@ void TestQgsAiWorkspaceIndex::workspaceRootChangeLoadsSeparateIndex()
 
 void TestQgsAiWorkspaceIndex::hasEmbeddingConfigurationReflectsSettingsAndEnvironment()
 {
-  const char *envName = "OPENAI_API_KEY";
-  const QString key = u"ai/provider/openai/apiKey"_s;
-
-  struct RestoreState
-  {
-      const char *envName = nullptr;
-      bool hadEnv = false;
-      QByteArray savedEnv;
-      QString key;
-      QVariant savedSetting;
-
-      ~RestoreState()
-      {
-        qunsetenv( envName );
-        if ( hadEnv )
-          qputenv( envName, savedEnv );
-
-        QgsSettings settings;
-        if ( savedSetting.isValid() )
-          settings.setValue( key, savedSetting );
-        else
-          settings.remove( key );
-      }
-  };
-
+  ScopedEmbeddingConfiguration scopedConfiguration;
   QgsSettings settings;
-  RestoreState restore { envName, qEnvironmentVariableIsSet( envName ), qgetenv( envName ), key, settings.value( key ) };
-  qunsetenv( envName );
-
-  settings.remove( key );
+  settings.setValue( u"ai/embeddings/provider"_s, u"openai"_s );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
@@ -305,12 +352,58 @@ void TestQgsAiWorkspaceIndex::hasEmbeddingConfigurationReflectsSettingsAndEnviro
 
   QVERIFY( !index.hasEmbeddingConfiguration() );
 
-  settings.setValue( key, u"sk-test-settings"_s );
+  settings.setValue( u"ai/provider/openai/apiKey"_s, u"sk-test-settings"_s );
   QVERIFY( index.hasEmbeddingConfiguration() );
 
-  settings.remove( key );
-  qputenv( envName, "sk-test-env" );
+  settings.remove( u"ai/provider/openai/apiKey"_s );
+  qputenv( "OPENAI_API_KEY", "sk-test-env" );
   QVERIFY( index.hasEmbeddingConfiguration() );
+
+  qunsetenv( "OPENAI_API_KEY" );
+  settings.setValue( u"ai/embeddings/provider"_s, u"openrouter"_s );
+  QVERIFY( !index.hasEmbeddingConfiguration() );
+
+  settings.setValue( u"ai/provider/openrouter/apiKey"_s, u"sk-or-test-settings"_s );
+  QVERIFY( index.hasEmbeddingConfiguration() );
+}
+
+void TestQgsAiWorkspaceIndex::embeddingClientDefaultsToOpenAi()
+{
+  ScopedEmbeddingConfiguration scopedConfiguration;
+
+  QgsAiEmbeddingClient client;
+  QCOMPARE( client.provider(), QgsAiEmbeddingClient::Provider::OpenAi );
+  QCOMPARE( client.endpoint(), u"https://api.openai.com/v1/embeddings"_s );
+  QCOMPARE( client.model(), u"text-embedding-3-small"_s );
+  QVERIFY( !client.hasApiKey() );
+
+  QgsSettings settings;
+  settings.setValue( u"ai/provider/openai/apiKey"_s, u"sk-test-settings"_s );
+  QVERIFY( client.hasApiKey() );
+}
+
+void TestQgsAiWorkspaceIndex::embeddingClientUsesOpenRouterSettings()
+{
+  ScopedEmbeddingConfiguration scopedConfiguration;
+
+  QgsSettings settings;
+  settings.setValue( u"ai/embeddings/provider"_s, u"openrouter"_s );
+  settings.setValue( u"ai/embeddings/openrouter/model"_s, u"openai/text-embedding-3-small"_s );
+  settings.setValue( u"ai/provider/openrouter/apiKey"_s, u"sk-or-test-settings"_s );
+
+  QgsAiEmbeddingClient client;
+  QCOMPARE( client.provider(), QgsAiEmbeddingClient::Provider::OpenRouter );
+  QCOMPARE( client.endpoint(), u"https://openrouter.ai/api/v1/embeddings"_s );
+  QCOMPARE( client.model(), u"openai/text-embedding-3-small"_s );
+  QVERIFY( client.hasApiKey() );
+
+  const QJsonObject preferences = client.openRouterProviderPreferences();
+  QCOMPARE( preferences.value( u"sort"_s ).toString(), u"price"_s );
+  QCOMPARE( preferences.value( u"data_collection"_s ).toString(), u"deny"_s );
+  QCOMPARE( preferences.value( u"allow_fallbacks"_s ).toBool(), true );
+
+  settings.setValue( u"ai/embeddings/openrouter/model"_s, QString() );
+  QCOMPARE( client.model(), u"openai/text-embedding-3-small"_s );
 }
 
 void TestQgsAiWorkspaceIndex::schemaMigrationDropsOldDb()
@@ -354,6 +447,8 @@ void TestQgsAiWorkspaceIndex::cleanupTestCase()
 
 void TestQgsAiWorkspaceIndex::reindexLayersFailsWithoutApiKey()
 {
+  ScopedEmbeddingConfiguration scopedConfiguration;
+
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );
@@ -414,6 +509,8 @@ void TestQgsAiWorkspaceIndex::chunkerOutputPersistsAsLayerChunks()
 
 void TestQgsAiWorkspaceIndex::reindexLayersToolRequiresConfirm()
 {
+  ScopedEmbeddingConfiguration scopedConfiguration;
+
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );

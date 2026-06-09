@@ -8,6 +8,7 @@
 
 #include "ai/qgsaiclaudeoauthclient.h"
 #include "ai/qgsaicodexoauthclient.h"
+#include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaitoolregistry.h"
@@ -122,6 +123,8 @@ class TestQgsAiModelRouter : public QObject
   private slots:
     void initTestCase();
     void buildPayloadForOpenAi();
+    void buildPayloadForOpenRouterCostOptimized();
+    void buildPayloadForOpenRouterToolUseOptimized();
     void buildPayloadForCodexUsesGpt54();
     void codexModelFallback();
     void extractChatGptAccountIdFromIdToken();
@@ -129,6 +132,9 @@ class TestQgsAiModelRouter : public QObject
     void claudeAuthorizationCodeParsing();
     void sanitizeSecrets();
     void storeApiKeyPersistsInSettings();
+    void storeOpenRouterApiKeyPersistsInSettings();
+    void openRouterApiKeyFromEnvironment();
+    void fallbackOrderIncludesOpenRouter();
     void toolUseDisabledOmitsToolsFromOpenAiPayload();
     void toolUseEnabledIncludesToolsForOpenAi();
     void toolUseDisabledOmitsToolsFromClaudePayload();
@@ -164,6 +170,53 @@ void TestQgsAiModelRouter::buildPayloadForOpenAi()
   QCOMPARE( object.value( u"stream"_s ).toBool(), true );
   QCOMPARE( object.value( u"model"_s ).toString(), u"gpt-4.1-mini"_s );
   QVERIFY( object.contains( u"input"_s ) );
+}
+
+void TestQgsAiModelRouter::buildPayloadForOpenRouterCostOptimized()
+{
+  QgsSettings settings;
+  settings.remove( u"ai/provider/openrouter"_s );
+
+  QgsAiModelRouter router;
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenRouter, { message }, true ) ).object();
+  QCOMPARE( object.value( u"stream"_s ).toBool(), true );
+  QCOMPARE( object.value( u"model"_s ).toString(), u"openrouter/auto"_s );
+  QVERIFY( object.contains( u"input"_s ) );
+
+  const QJsonObject provider = object.value( u"provider"_s ).toObject();
+  QCOMPARE( provider.value( u"sort"_s ).toString(), u"price"_s );
+  QCOMPARE( provider.value( u"data_collection"_s ).toString(), u"deny"_s );
+  QCOMPARE( provider.value( u"allow_fallbacks"_s ).toBool(), true );
+  QVERIFY( !provider.contains( u"require_parameters"_s ) );
+}
+
+void TestQgsAiModelRouter::buildPayloadForOpenRouterToolUseOptimized()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setToolUseEnabled( true );
+  router.setOpenRouterRoutingProfile( QgsAiModelRouter::OpenRouterRoutingProfile::ToolUseOptimized );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenRouter, { message }, false ) ).object();
+  QVERIFY( object.contains( u"tools"_s ) );
+  QCOMPARE( object.value( u"tool_choice"_s ).toString(), u"auto"_s );
+
+  const QJsonObject provider = object.value( u"provider"_s ).toObject();
+  QCOMPARE( provider.value( u"require_parameters"_s ).toBool(), true );
+  QCOMPARE( provider.value( u"data_collection"_s ).toString(), u"deny"_s );
+  QCOMPARE( provider.value( u"allow_fallbacks"_s ).toBool(), true );
+  QVERIFY( !provider.contains( u"sort"_s ) );
 }
 
 void TestQgsAiModelRouter::buildPayloadForCodexUsesGpt54()
@@ -246,10 +299,11 @@ void TestQgsAiModelRouter::claudeAuthorizationCodeParsing()
 void TestQgsAiModelRouter::sanitizeSecrets()
 {
   QgsAiModelRouter router;
-  const QString raw = u"Authorization: Bearer sk-verysecrettoken and x-api-key: abc123"_s;
+  const QString raw = u"Authorization: Bearer sk-verysecrettoken and x-api-key: abc123 and sk-or-openroutersecret"_s;
   const QString sanitized = router.sanitizeErrorText( raw );
   QVERIFY( !sanitized.contains( u"verysecrettoken"_s ) );
   QVERIFY( !sanitized.contains( u"abc123"_s ) );
+  QVERIFY( !sanitized.contains( u"openroutersecret"_s ) );
   QVERIFY( sanitized.contains( u"REDACTED"_s ) );
 }
 
@@ -269,6 +323,72 @@ void TestQgsAiModelRouter::storeApiKeyPersistsInSettings()
   QVERIFY( reloadedRouter.providerSettings( QgsAiModelRouter::Provider::OpenAi ).enabled );
 
   settings.remove( u"ai/provider/openai"_s );
+}
+
+void TestQgsAiModelRouter::storeOpenRouterApiKeyPersistsInSettings()
+{
+  QgsSettings settings;
+  settings.remove( u"ai/provider/openrouter"_s );
+
+  QgsAiModelRouter router;
+  QString error;
+  QVERIFY2( router.storeApiKey( QgsAiModelRouter::Provider::OpenRouter, u"sk-or-test-local-storage"_s, &error ), qPrintable( error ) );
+
+  QgsAiModelRouter reloadedRouter;
+  QNetworkRequest request( QUrl( u"https://openrouter.ai/api/v1/responses"_s ) );
+  QVERIFY2( reloadedRouter.applyAuthentication( QgsAiModelRouter::Provider::OpenRouter, request, &error ), qPrintable( error ) );
+  QCOMPARE( request.rawHeader( "Authorization" ), QByteArray( "Bearer sk-or-test-local-storage" ) );
+  QVERIFY( reloadedRouter.providerSettings( QgsAiModelRouter::Provider::OpenRouter ).enabled );
+
+  settings.remove( u"ai/provider/openrouter"_s );
+}
+
+void TestQgsAiModelRouter::openRouterApiKeyFromEnvironment()
+{
+  QgsSettings settings;
+  const QString apiKeyKey = u"ai/provider/openrouter/apiKey"_s;
+  const bool hadApiKeySetting = settings.contains( apiKeyKey );
+  const QVariant savedApiKey = settings.value( apiKeyKey );
+  const bool hadEnv = qEnvironmentVariableIsSet( "OPENROUTER_API_KEY" );
+  const QByteArray savedEnv = qgetenv( "OPENROUTER_API_KEY" );
+  const auto restore = qScopeGuard( [&settings, apiKeyKey, hadApiKeySetting, savedApiKey, hadEnv, savedEnv]() {
+    if ( hadApiKeySetting )
+      settings.setValue( apiKeyKey, savedApiKey );
+    else
+      settings.remove( apiKeyKey );
+
+    qunsetenv( "OPENROUTER_API_KEY" );
+    if ( hadEnv )
+      qputenv( "OPENROUTER_API_KEY", savedEnv );
+  } );
+
+  settings.remove( apiKeyKey );
+  qputenv( "OPENROUTER_API_KEY", "sk-or-test-env" );
+
+  QgsAiModelRouter router;
+  QString error;
+  QNetworkRequest request( QUrl( u"https://openrouter.ai/api/v1/responses"_s ) );
+  QVERIFY2( router.applyAuthentication( QgsAiModelRouter::Provider::OpenRouter, request, &error ), qPrintable( error ) );
+  QCOMPARE( request.rawHeader( "Authorization" ), QByteArray( "Bearer sk-or-test-env" ) );
+}
+
+void TestQgsAiModelRouter::fallbackOrderIncludesOpenRouter()
+{
+  QgsAiModelRouter router;
+  QgsAiAgentSessionManager manager( &router, nullptr, nullptr );
+  const QList<QgsAiModelRouter::Provider> order = manager.providerFallbackOrder();
+  QVERIFY( order.contains( QgsAiModelRouter::Provider::OpenRouter ) );
+  QVERIFY( order.contains( QgsAiModelRouter::Provider::Plan ) );
+  QVERIFY( order.contains( QgsAiModelRouter::Provider::Codex ) );
+  QVERIFY( order.contains( QgsAiModelRouter::Provider::OpenAi ) );
+  QVERIFY( order.contains( QgsAiModelRouter::Provider::Claude ) );
+
+  QList<QgsAiModelRouter::Provider> unique;
+  for ( QgsAiModelRouter::Provider provider : order )
+  {
+    QVERIFY( !unique.contains( provider ) );
+    unique << provider;
+  }
 }
 
 void TestQgsAiModelRouter::toolUseDisabledOmitsToolsFromOpenAiPayload()

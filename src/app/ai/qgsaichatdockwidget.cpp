@@ -41,6 +41,7 @@
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QColor>
+#include <QComboBox>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -107,6 +108,7 @@ namespace
     return {
       { u"GPT-4o"_s, u"gpt-4o"_s, QgsAiModelRouter::Provider::OpenAi },
       { u"GPT-4.1 mini"_s, u"gpt-4.1-mini"_s, QgsAiModelRouter::Provider::OpenAi },
+      { u"OpenRouter Auto"_s, u"openrouter/auto"_s, QgsAiModelRouter::Provider::OpenRouter },
       { u"Codex GPT-5.4"_s, u"gpt-5.4"_s, QgsAiModelRouter::Provider::Codex },
       { u"Codex GPT-5.3 (codex)"_s, u"gpt-5.3-codex"_s, QgsAiModelRouter::Provider::Codex },
       { u"Claude Sonnet 4"_s, u"claude-sonnet-4-20250514"_s, QgsAiModelRouter::Provider::Claude },
@@ -721,6 +723,9 @@ void QgsAiChatDockWidget::initModelMenu()
       {
         case QgsAiModelRouter::Provider::OpenAi:
           header = tr( "OpenAI" );
+          break;
+        case QgsAiModelRouter::Provider::OpenRouter:
+          header = tr( "OpenRouter" );
           break;
         case QgsAiModelRouter::Provider::Codex:
           header = tr( "Codex / ChatGPT" );
@@ -1585,7 +1590,8 @@ void QgsAiChatDockWidget::onModelSelected( QAction *action )
   if ( entry.displayName.isEmpty() )
     return;
 
-  const QList<QgsAiModelRouter::Provider> providers = { QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::Codex, QgsAiModelRouter::Provider::Claude, QgsAiModelRouter::Provider::Plan };
+  const QList<QgsAiModelRouter::Provider> providers
+    = { QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::OpenRouter, QgsAiModelRouter::Provider::Codex, QgsAiModelRouter::Provider::Claude, QgsAiModelRouter::Provider::Plan };
   for ( QgsAiModelRouter::Provider provider : providers )
   {
     QgsAiModelRouter::ProviderSettings settings = mModelRouter->providerSettings( provider );
@@ -1958,6 +1964,16 @@ void QgsAiChatDockWidget::openProviderSettings()
   openAiKey->setEchoMode( QLineEdit::Password );
   openAiKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "sk-..." ) );
 
+  QLineEdit *openRouterEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter ).endpoint, &dialog );
+  QLineEdit *openRouterModel = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter ).model, &dialog );
+  openRouterModel->setPlaceholderText( u"openrouter/auto"_s );
+  QLineEdit *openRouterKey = new QLineEdit( &dialog );
+  openRouterKey->setEchoMode( QLineEdit::Password );
+  openRouterKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenRouter ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "sk-or-..." ) );
+  QCheckBox *openRouterAutoRouting = new QCheckBox( tr( "Use OpenRouter automatic routing" ), &dialog );
+  openRouterAutoRouting->setChecked( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter ).autoRouting );
+  openRouterAutoRouting->setToolTip( tr( "Adds OpenRouter provider routing preferences per mode: cheaper routing for Plan/Ask, tool-aware routing for Agent." ) );
+
   QgsAiCodexOAuthClient::DeviceCode codexDeviceCode;
   QLineEdit *codexEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex ).endpoint, &dialog );
   QLineEdit *codexModel = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex ).model, &dialog );
@@ -2010,6 +2026,10 @@ void QgsAiChatDockWidget::openProviderSettings()
   form->addRow( tr( "OpenAI endpoint" ), openAiEndpoint );
   form->addRow( tr( "OpenAI model" ), openAiModel );
   form->addRow( tr( "OpenAI API key" ), openAiKey );
+  form->addRow( tr( "OpenRouter endpoint" ), openRouterEndpoint );
+  form->addRow( tr( "OpenRouter model" ), openRouterModel );
+  form->addRow( tr( "OpenRouter API key" ), openRouterKey );
+  form->addRow( QString(), openRouterAutoRouting );
   form->addRow( tr( "Codex endpoint" ), codexEndpoint );
   form->addRow( tr( "Codex model" ), codexModel );
   form->addRow( tr( "Codex OAuth status" ), codexStatus );
@@ -2084,7 +2104,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   layout->addLayout( behaviorForm );
 
   // ----------------------------------------------------------------------
-  // Workspace indexing (RAG): file + layer chunks → OpenAI embeddings.
+  // Workspace indexing (RAG): file + layer chunks → configured embeddings provider.
   // ----------------------------------------------------------------------
   QFrame *indexingSeparator = new QFrame( &dialog );
   indexingSeparator->setFrameShape( QFrame::HLine );
@@ -2098,8 +2118,20 @@ void QgsAiChatDockWidget::openProviderSettings()
   layout->addWidget( indexingTitle );
 
   QFormLayout *indexingForm = new QFormLayout();
-
   QgsSettings indexSettings;
+
+  QComboBox *embeddingProvider = new QComboBox( &dialog );
+  embeddingProvider->addItem( tr( "OpenAI" ), u"openai"_s );
+  embeddingProvider->addItem( tr( "OpenRouter" ), u"openrouter"_s );
+  const QString configuredEmbeddingProvider = indexSettings.value( u"ai/embeddings/provider"_s, u"openai"_s ).toString().trimmed().toLower();
+  const int embeddingProviderIndex = embeddingProvider->findData( configuredEmbeddingProvider == "openrouter"_L1 ? u"openrouter"_s : u"openai"_s );
+  embeddingProvider->setCurrentIndex( embeddingProviderIndex >= 0 ? embeddingProviderIndex : 0 );
+  indexingForm->addRow( tr( "Embedding provider" ), embeddingProvider );
+
+  QLineEdit *openRouterEmbeddingModel = new QLineEdit( indexSettings.value( u"ai/embeddings/openrouter/model"_s, u"openai/text-embedding-3-small"_s ).toString(), &dialog );
+  openRouterEmbeddingModel->setPlaceholderText( u"openai/text-embedding-3-small"_s );
+  indexingForm->addRow( tr( "OpenRouter embedding model" ), openRouterEmbeddingModel );
+
   const bool hasLayerIndexingSetting = indexSettings.contains( u"strata/index/enable_layer_indexing"_s )
                                        || indexSettings.contains( u"geoai/index/enable_layer_indexing"_s )
                                        || indexSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
@@ -2113,7 +2145,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   enableLayerIndexing->setObjectName( u"aiEnableLayerIndexingCheckBox"_s );
   enableLayerIndexing->setChecked( layerIndexingEnabled );
   enableLayerIndexing->setToolTip(
-    tr( "When enabled, layer attributes and bounding boxes are sent to the OpenAI embeddings endpoint and indexed locally so the assistant can ground its answers on actual layer data." )
+    tr( "When enabled, layer attributes and bounding boxes are sent to the configured embeddings endpoint and indexed locally so the assistant can ground its answers on actual layer data." )
   );
   indexingForm->addRow( QString(), enableLayerIndexing );
 
@@ -2150,24 +2182,31 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
   };
 
-  auto ensureOpenAiEmbeddingKey = [this, &dialog, openAiKey]( const QString &actionText ) {
-    const QString pendingOpenAiKey = openAiKey->text().trimmed();
-    if ( !pendingOpenAiKey.isEmpty() )
+  auto ensureEmbeddingKey = [this, &dialog, openAiKey, openRouterKey, embeddingProvider]( const QString &actionText ) {
+    const QString providerId = embeddingProvider->currentData().toString();
+    const bool useOpenRouter = providerId == "openrouter"_L1;
+    QLineEdit *keyEdit = useOpenRouter ? openRouterKey : openAiKey;
+    const QgsAiModelRouter::Provider provider = useOpenRouter ? QgsAiModelRouter::Provider::OpenRouter : QgsAiModelRouter::Provider::OpenAi;
+    const QString providerName = useOpenRouter ? tr( "OpenRouter" ) : tr( "OpenAI" );
+    const QString envName = useOpenRouter ? u"OPENROUTER_API_KEY"_s : u"OPENAI_API_KEY"_s;
+    const QString pendingKey = keyEdit->text().trimmed();
+
+    if ( !pendingKey.isEmpty() )
     {
       QString keyError;
-      if ( !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::OpenAi, pendingOpenAiKey, &keyError ) )
+      if ( !mModelRouter->storeApiKey( provider, pendingKey, &keyError ) )
       {
-        QMessageBox::warning( &dialog, tr( "OpenAI API key" ), keyError.isEmpty() ? tr( "Unable to save the OpenAI API key." ) : keyError );
+        QMessageBox::warning( &dialog, tr( "%1 API key" ).arg( providerName ), keyError.isEmpty() ? tr( "Unable to save the %1 API key." ).arg( providerName ) : keyError );
         return false;
       }
-      openAiKey->clear();
-      openAiKey->setPlaceholderText( tr( "Saved locally — enter a new key only to replace it" ) );
+      keyEdit->clear();
+      keyEdit->setPlaceholderText( tr( "Saved locally — enter a new key only to replace it" ) );
       return true;
     }
 
-    if ( !mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) && qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed().isEmpty() )
+    if ( !mModelRouter->hasStoredApiKey( provider ) && qEnvironmentVariable( envName.toUtf8().constData() ).trimmed().isEmpty() )
     {
-      QMessageBox::warning( &dialog, tr( "OpenAI API key" ), tr( "Enter an OpenAI API key, or set OPENAI_API_KEY, before %1." ).arg( actionText ) );
+      QMessageBox::warning( &dialog, tr( "%1 API key" ).arg( providerName ), tr( "Enter a %1 API key, or set %2, before %3." ).arg( providerName, envName, actionText ) );
       return false;
     }
 
@@ -2184,11 +2223,11 @@ void QgsAiChatDockWidget::openProviderSettings()
   rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
   indexingForm->addRow( QString(), rebuildLayerIndexButton );
 
-  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureOpenAiEmbeddingKey, refreshIndexStatusLabel]() {
+  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingKey, refreshIndexStatusLabel]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
 
-    if ( !ensureOpenAiEmbeddingKey( tr( "rebuilding the file/workspace index" ) ) )
+    if ( !ensureEmbeddingKey( tr( "rebuilding the file/workspace index" ) ) )
       return;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -2205,11 +2244,11 @@ void QgsAiChatDockWidget::openProviderSettings()
     QMessageBox::information( &dialog, tr( "Workspace reindex" ), tr( "Done — %1 file chunks indexed." ).arg( status.fileChunkCount ) );
   } );
 
-  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureOpenAiEmbeddingKey, refreshIndexStatusLabel]() {
+  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingKey, refreshIndexStatusLabel]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
 
-    if ( !ensureOpenAiEmbeddingKey( tr( "rebuilding the layer index" ) ) )
+    if ( !ensureEmbeddingKey( tr( "rebuilding the layer index" ) ) )
       return;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -2230,7 +2269,7 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QLabel *helpLabel = new QLabel(
     tr(
-      "OpenAI and Claude API keys are stored locally in application settings. The Codex OAuth refresh token is stored locally in application settings; the Claude OAuth refresh token is stored in the "
+      "OpenAI, OpenRouter and Claude API keys are stored locally in application settings. The Codex OAuth refresh token is stored locally in application settings; the Claude OAuth refresh token is stored in the "
       "encrypted "
       "QGIS authentication store. Leave API key fields empty to keep "
       "the current saved value.\n\nAgent rules and skills are stored locally in application settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended "
@@ -2348,6 +2387,7 @@ void QgsAiChatDockWidget::openProviderSettings()
     return;
 
   const QString pendingOpenAiKey = openAiKey->text().trimmed();
+  const QString pendingOpenRouterKey = openRouterKey->text().trimmed();
   const QString pendingClaudeKey = claudeKey->text().trimmed();
   const QString pendingPlanToken = planToken->text().trimmed();
 
@@ -2359,6 +2399,13 @@ void QgsAiChatDockWidget::openProviderSettings()
   openAiSettings.model = openAiModel->text().trimmed();
   openAiSettings.enabled = !pendingOpenAiKey.isEmpty() || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) || !qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed().isEmpty();
   mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::OpenAi, openAiSettings );
+
+  QgsAiModelRouter::ProviderSettings openRouterSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter );
+  openRouterSettings.endpoint = openRouterEndpoint->text().trimmed();
+  openRouterSettings.model = openRouterModel->text().trimmed();
+  openRouterSettings.autoRouting = openRouterAutoRouting->isChecked();
+  openRouterSettings.enabled = !pendingOpenRouterKey.isEmpty() || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenRouter ) || !qEnvironmentVariable( "OPENROUTER_API_KEY" ).trimmed().isEmpty();
+  mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::OpenRouter, openRouterSettings );
 
   QgsAiModelRouter::ProviderSettings codexSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex );
   codexSettings.endpoint = codexEndpoint->text().trimmed();
@@ -2374,6 +2421,8 @@ void QgsAiChatDockWidget::openProviderSettings()
   mModelRouter->setPlanAuthConfigId( planAuthCfg->text().trimmed() );
 
   if ( !pendingOpenAiKey.isEmpty() && !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::OpenAi, pendingOpenAiKey, &error ) )
+    errorMessages += error + '\n';
+  if ( !pendingOpenRouterKey.isEmpty() && !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::OpenRouter, pendingOpenRouterKey, &error ) )
     errorMessages += error + '\n';
   if ( !pendingClaudeKey.isEmpty() && !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::Claude, pendingClaudeKey, &error ) )
     errorMessages += error + '\n';
@@ -2399,6 +2448,10 @@ void QgsAiChatDockWidget::openProviderSettings()
 
     if ( mSessionManager && QgsProject::instance() && QgsProject::instance()->homePath().isEmpty() )
       mSessionManager->setWorkspaceRoot( configuredWorkspaceRoot );
+
+    settings.setValue( u"ai/embeddings/provider"_s, embeddingProvider->currentData().toString() );
+    const QString configuredOpenRouterEmbeddingModel = openRouterEmbeddingModel->text().trimmed();
+    settings.setValue( u"ai/embeddings/openrouter/model"_s, configuredOpenRouterEmbeddingModel.isEmpty() ? u"openai/text-embedding-3-small"_s : configuredOpenRouterEmbeddingModel );
   }
 
   QgsAiModelRouter::ProviderSettings claudeSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude );
@@ -2447,7 +2500,7 @@ void QgsAiChatDockWidget::openProviderSettings()
         &dialog,
         tr( "Enable layer indexing" ),
         tr(
-          "Enabling layer indexing means Strata will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. "
+          "Enabling layer indexing means Strata will send the attributes and bounding boxes of every layer in your project to the configured embeddings endpoint, using your configured API key. "
           "The "
           "embeddings are stored locally; the data leaves your machine only during indexing.\n\nProceed?"
         ),
@@ -2500,6 +2553,7 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
   // If the user already has a key for any of the standard providers, don't
   // bother them — just remember we've seen it and move on.
   if ( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi )
+       || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenRouter )
        || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Codex )
        || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude )
        || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude )
