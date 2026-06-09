@@ -910,6 +910,12 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
   private:
     QgsLayoutItemMapGrid() = delete;
 
+    static constexpr int MAX_GRID_LINES = 1000;
+    static constexpr int MAX_GRID_ANNOTATIONS = 1000;
+    static constexpr int MAX_GRID_TICKS = 5000;
+    static constexpr int MAX_GRID_FRAME_OBJECTS = std::max( MAX_GRID_TICKS, MAX_GRID_ANNOTATIONS );
+    static constexpr int MAX_GRID_OBJECTS = std::max( MAX_GRID_LINES, MAX_GRID_FRAME_OBJECTS );
+
     struct GridExtension
     {
         GridExtension() = default;
@@ -1097,6 +1103,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     Qgis::MapGridComponentVisibility mEvaluatedRightFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
     Qgis::MapGridComponentVisibility mEvaluatedTopFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
     Qgis::MapGridComponentVisibility mEvaluatedBottomFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
+
+    mutable int mCurrentComponentDrawCount = 0;
 
     /**
      * Updates the grid lines annotation positions
