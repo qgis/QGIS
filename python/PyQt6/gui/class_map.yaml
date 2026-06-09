@@ -1411,7 +1411,7 @@ QgsCodeEditorJavascript: src/gui/codeeditors/qgscodeeditorjs.h#L33
 QgsCodeEditorJson.initializeLexer: src/gui/codeeditors/qgscodeeditorjson.h#L44
 QgsCodeEditorJson.language: src/gui/codeeditors/qgscodeeditorjson.h#L41
 QgsCodeEditorJson: src/gui/codeeditors/qgscodeeditorjson.h#L33
-QgsCodeEditorPython.autoComplete: src/gui/codeeditors/qgscodeeditorpython.h#L167
+QgsCodeEditorPython.autoComplete: src/gui/codeeditors/qgscodeeditorpython.h#L168
 QgsCodeEditorPython.characterAfterCursor: src/gui/codeeditors/qgscodeeditorpython.h#L120
 QgsCodeEditorPython.characterBeforeCursor: src/gui/codeeditors/qgscodeeditorpython.h#L113
 QgsCodeEditorPython.checkSyntax: src/gui/codeeditors/qgscodeeditorpython.h#L129
@@ -1422,10 +1422,11 @@ QgsCodeEditorPython.language: src/gui/codeeditors/qgscodeeditorpython.h#L87
 QgsCodeEditorPython.languageCapabilities: src/gui/codeeditors/qgscodeeditorpython.h#L88
 QgsCodeEditorPython.loadAPIs: src/gui/codeeditors/qgscodeeditorpython.h#L94
 QgsCodeEditorPython.loadScript: src/gui/codeeditors/qgscodeeditorpython.h#L99
-QgsCodeEditorPython.populateContextMenu: src/gui/codeeditors/qgscodeeditorpython.h#L158
-QgsCodeEditorPython.reformatCodeString: src/gui/codeeditors/qgscodeeditorpython.h#L157
+QgsCodeEditorPython.populateContextMenu: src/gui/codeeditors/qgscodeeditorpython.h#L159
+QgsCodeEditorPython.reformatCodeString: src/gui/codeeditors/qgscodeeditorpython.h#L158
 QgsCodeEditorPython.searchSelectedTextInPyQGISDocs: src/gui/codeeditors/qgscodeeditorpython.h#L138
 QgsCodeEditorPython.showApiDocumentation: src/gui/codeeditors/qgscodeeditorpython.h#L145
+QgsCodeEditorPython.showEvent: src/gui/codeeditors/qgscodeeditorpython.h#L157
 QgsCodeEditorPython.toggleComment: src/gui/codeeditors/qgscodeeditorpython.h#L152
 QgsCodeEditorPython.updateCapabilities: src/gui/codeeditors/qgscodeeditorpython.h#L127
 QgsCodeEditorPython: src/gui/codeeditors/qgscodeeditorpython.h#L54
