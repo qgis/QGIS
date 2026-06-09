@@ -5,8 +5,8 @@
 ***************************************************************************/
 
 #include "ai/qgsaiagentsessionmanager.h"
-#include "ai/qgsaichathistorystore.h"
 #include "ai/qgsaichatdockwidget.h"
+#include "ai/qgsaichathistorystore.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"

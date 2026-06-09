@@ -273,9 +273,7 @@ QString QgsAiAgentSessionManager::chatHistoryScopeKeyForProjectFile( const QStri
   if ( normalizedPath.isEmpty() && info.isAbsolute() )
     normalizedPath = QDir::cleanPath( info.absoluteFilePath() );
 
-  const bool looksLikeUri = trimmed.contains( u"://"_s )
-                            || trimmed.startsWith( u"geopackage:"_s, Qt::CaseInsensitive )
-                            || trimmed.startsWith( u"postgresql:"_s, Qt::CaseInsensitive );
+  const bool looksLikeUri = trimmed.contains( u"://"_s ) || trimmed.startsWith( u"geopackage:"_s, Qt::CaseInsensitive ) || trimmed.startsWith( u"postgresql:"_s, Qt::CaseInsensitive );
   if ( normalizedPath.isEmpty() && !looksLikeUri )
     normalizedPath = QDir::cleanPath( info.absoluteFilePath() );
   if ( normalizedPath.isEmpty() )
@@ -372,9 +370,7 @@ void QgsAiAgentSessionManager::setProjectChatHistoryScopeKey( const QString &sco
   if ( sameScope )
     return;
 
-  const bool promoteUnsavedHistory = mHistoryStore->hasExplicitHistoryScopeKey()
-                                     && mHistoryStore->historyScopeKey().trimmed().isEmpty()
-                                     && !mHistory.isEmpty();
+  const bool promoteUnsavedHistory = mHistoryStore->hasExplicitHistoryScopeKey() && mHistoryStore->historyScopeKey().trimmed().isEmpty() && !mHistory.isEmpty();
   if ( !promoteUnsavedHistory && hasActiveRequest() )
     cancelActiveRequest();
 
