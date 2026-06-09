@@ -303,6 +303,16 @@ void QgsModelArrowItem::setShowBadge( bool visible )
   }
 }
 
+void QgsModelArrowItem::setDataViewerButton( QgsModelDesignerDataViewerButtonGraphicItem *button )
+{
+  mDataViewerButton = button;
+  if ( mDataViewerButton )
+  {
+    mDataViewerButton->setPosition();
+  }
+}
+
+
 void QgsModelArrowItem::updatePath()
 {
   QList<QPointF> controlPoints;
@@ -386,7 +396,11 @@ void QgsModelArrowItem::updatePath()
   {
     mBadgeItem->setCenter( path.pointAtPercent( 0.5 ) );
   }
-  emit painterPathUpdated();
+
+  if ( mDataViewerButton )
+  {
+    mDataViewerButton->setPosition();
+  }
 }
 
 QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const

@@ -241,10 +241,9 @@ class GUI_EXPORT QgsModelDesignerDataViewerButtonGraphicItem : public QgsModelDe
   public:
     QgsModelDesignerDataViewerButtonGraphicItem( QgsModelArrowItem *link SIP_TRANSFERTHIS );
 
-  protected:
     /**
-   * Sets the position of the button along the path
-   */
+     * Sets the position of the button along the path
+     */
     void setPosition();
 
   private:

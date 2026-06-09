@@ -308,15 +308,13 @@ QgsModelDesignerDataViewerButtonGraphicItem::QgsModelDesignerDataViewerButtonGra
 
   setPicture( openDataViewerPicture );
   setPosition();
-
-  connect( link, &QgsModelArrowItem::painterPathUpdated, this, &QgsModelDesignerDataViewerButtonGraphicItem::setPosition );
 }
 
 void QgsModelDesignerDataViewerButtonGraphicItem::setPosition()
 {
   QPointF middlePos = mLink->path().pointAtPercent( 0.5 );
   QRectF rect = boundingRect();
-  QPointF offset = rect.center() + QPointF( 0, -30 );
+  QPointF offset = rect.center() + QPointF( 0, -25 );
   setPos( middlePos - offset );
   update();
 }
