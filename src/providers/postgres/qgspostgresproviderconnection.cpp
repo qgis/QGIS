@@ -1969,6 +1969,13 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
     }
   }
 
+  if ( QgsPostgresUtils::tableExists( conn->get(), u"public"_s, u"layer_styles"_s ) )
+  {
+    const QString sqlMoveStyles = u"UPDATE public.layer_styles SET f_table_schema=%1 WHERE f_table_schema=%2 AND f_table_name=%3;"_s
+                                    .arg( QgsPostgresConn::quotedValue( targetSchema ), QgsPostgresConn::quotedValue( sourceSchema ), QgsPostgresConn::quotedValue( tableName ) );
+    sqlAdditionalCommands.append( sqlMoveStyles );
+  }
+
   conn->get()->begin();
 
   QgsPostgresResult resMove( conn->get()->LoggedPQexec( "QgsPostgresProviderConnection", u"%1 %2"_s.arg( sqlMoveTable ).arg( sqlAdditionalCommands ) ) );
