@@ -55,7 +55,7 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
         key.convert( cacheKeyType );
       }
     }
-    return cache.value<QMap<QVariant, QString>>().value( key );
+    return cacheMap.value( key );
   }
 
   const QString fieldName = fieldIndex < layer->fields().size() ? layer->fields().at( fieldIndex ).name() : QObject::tr( "<unknown>" );
