@@ -467,7 +467,7 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   QGridLayout *gLayout = new QGridLayout();
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
-  QLabel *label = new QLabel( tr( "Fixed Range Size" ) );
+  QLabel *label = new QLabel( tr( "Visible Range Size" ) );
   gLayout->addWidget( label, 0, 0 );
 
   mSizeSpin = new QgsDoubleSpinBox();
@@ -476,7 +476,7 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   mSizeSpin->setMaximum( 999999999.0 );
   mSizeSpin->setShowClearButton( false );
   mSizeSpin->setKeyboardTracking( false );
-  mSizeSpin->setToolTip( tr( "Limit elevation range to a fixed size" ) );
+  mSizeSpin->setToolTip( tr( "Currently visible elevation range" ) );
   mSizeSpin->installEventFilter( this );
 
   gLayout->addWidget( mSizeSpin, 0, 1 );
