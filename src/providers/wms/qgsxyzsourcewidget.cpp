@@ -68,6 +68,10 @@ void QgsXyzSourceWidget::setSourceUri( const QString &uri )
   mAuthSettings->setPassword( mSourceParts.value( u"password"_s ).toString() );
   QgsHttpHeaders headers;
   headers.setFromMap( mSourceParts );
+  // ensure the referer key is always present, otherwise QgsHttpHeaderWidget::setHeaders()
+  // will not clear a previously shown referer when the URI has none
+  if ( !headers.keys().contains( QgsHttpHeaders::KEY_REFERER ) )
+    headers[QgsHttpHeaders::KEY_REFERER] = QString();
   mHttpHeaders->setHeaders( headers );
 
   int index = 0; // default is "unknown"
