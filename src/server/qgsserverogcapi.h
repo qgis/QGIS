@@ -51,6 +51,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
   public:
     // Note: non a scoped enum or qHash fails
     //! Rel link types
+    // NOLINTBEGIN(readability-identifier-naming)
     enum Rel
     {
       // The following registered link relation types are used
@@ -72,6 +73,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       profile      //!< "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references"
     };
     Q_ENUM( Rel )
+    // NOLINTEND(readability-identifier-naming)
 
     // Note: cannot be a scoped enum because qHash does not support them
     //! Media types used for content negotiation, insert more specific first
@@ -88,6 +90,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     Q_ENUM( ContentType )
 
     //! JSON profile
+    // NOLINTBEGIN(readability-identifier-naming)
     enum class Profile
     {
       NONE,    //!< No profile
@@ -101,6 +104,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       REL_AS_URI   //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
     };
     Q_ENUM( Profile )
+    // NOLINTEND(readability-identifier-naming)
 
     /**
      * QgsServerOgcApi constructor

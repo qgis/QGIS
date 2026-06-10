@@ -105,7 +105,7 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         assert r.registerProvider(metadata)
 
     # Set to True in child classes to re-generate reference files for this class
-    regeregenerate_api_reference = True
+    regenerate_api_reference = False
 
     def _getJsonResponse(self, url, project, expected_status=200):
         request = QgsBufferServerRequest(url)
