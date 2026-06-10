@@ -3433,6 +3433,34 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         # comparing against results from https://geodesyapps.ga.gov.au/ausgeoid2020
         self.assertAlmostEqual(res.constGet().z(), 5543.325, 3)
 
+    def testRenderProfileReplaceSourceRenderingOrder(self):
+        # For issue #62677
+        def create_layer(name):
+            l = QgsVectorLayer("LineStringZ?crs=EPSG:27700", name, "memory")
+            l.setCrs(QgsCoordinateReferenceSystem())
+            self.assertTrue(l.isValid())
+            return l
+
+        vl = create_layer("above")
+        vl2 = create_layer("below")
+
+        curve = QgsLineString()
+        req = QgsProfileRequest(curve)
+
+        plot_renderer = QgsProfilePlotRenderer([vl2, vl], req)
+        sources = plot_renderer.sourceIds()
+        self.assertEqual(sources, [vl2.id(), vl.id()])
+
+        plot_renderer.replaceSource(
+            vl2
+        )  # E.g., after a change in the elevation profile settings
+        sources = plot_renderer.sourceIds()
+        self.assertEqual(
+            sources,
+            [vl2.id(), vl.id()],
+            "The order of the generators does not correspond to the order of the sources! (i.e., issue #62677)",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
