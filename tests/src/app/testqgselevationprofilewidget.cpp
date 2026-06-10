@@ -51,6 +51,7 @@ class TestQgsAppElevationProfileWidget : public QObject
     void cleanup() {}       // will be called after every testfunction.
 
     void registerCustomProfileAddsCustomNode();
+    void registerCustomProfileInSyncMode();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -95,6 +96,24 @@ void TestQgsAppElevationProfileWidget::registerCustomProfileAddsCustomNode()
   QVERIFY( QgsApplication::profileSourceRegistry()->unregisterProfileSource( u"my-dummy-profile"_s ) );
   QCOMPARE( profile->layerTree()->children().size(), 0 );
   QCOMPARE( profile->layerTree()->findCustomNodeIds().size(), 0 );
+}
+
+void TestQgsAppElevationProfileWidget::registerCustomProfileInSyncMode()
+{
+  QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
+  QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
+  QgsElevationProfileWidget *profileWidget = new QgsElevationProfileWidget( profile, mQgisApp->mapCanvas() );
+  QVERIFY( profileWidget->profile() );
+
+  profile->setUseProjectLayerTree( true ); // Synchronize Layers to Project
+  QVERIFY( !profile->layerTree() );
+
+  // Register a custom profile and check that QGIS does not crash (issue #65056)
+  MyDummyProfileSource *source = new MyDummyProfileSource();
+  QVERIFY( QgsApplication::profileSourceRegistry()->registerProfileSource( source ) );
+
+  // Unregister the custom profile and check that the custom node was removed
+  QVERIFY( QgsApplication::profileSourceRegistry()->unregisterProfileSource( u"my-dummy-profile"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsAppElevationProfileWidget )
