@@ -121,6 +121,7 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_PR_NUMBER: ${{github.event.number}}
+          GITHUB_EVENT_PULL_REQUEST_BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           # Be aware that these instructions are duplicated in run-tests job
           DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} == pull_request ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')
@@ -130,8 +131,12 @@ jobs:
           echo "QT_VERSION=${{ matrix.qt-version }}" >> $GITHUB_ENV
 
           # Compute modified diff range and modified files
-          git fetch origin ${{ github.base_ref }}
-          DIFF_RANGE=origin/${{ github.base_ref }}...HEAD
+          git fetch origin ${GITHUB_EVENT_PULL_REQUEST_BASE_REF}
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
+          git checkout pr-head
+          git merge-base origin/${GITHUB_EVENT_PULL_REQUEST_BASE_REF} pr-head
+          MERGE_BASE=$(git merge-base origin/${GITHUB_EVENT_PULL_REQUEST_BASE_REF} pr-head)
+          DIFF_RANGE=$MERGE_BASE...pr-head
           MODIFIED_FILES=($(git diff --name-only $DIFF_RANGE))
 
           git diff $DIFF_RANGE &> pr.diff
