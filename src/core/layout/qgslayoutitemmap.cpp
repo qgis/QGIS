@@ -453,10 +453,13 @@ void QgsLayoutItemMap::moveContent( double dx, double dy )
   if ( !mDrawing )
   {
     transformShift( dx, dy );
-    mExtent.setXMinimum( mExtent.xMinimum() + dx );
-    mExtent.setXMaximum( mExtent.xMaximum() + dx );
-    mExtent.setYMinimum( mExtent.yMinimum() + dy );
-    mExtent.setYMaximum( mExtent.yMaximum() + dy );
+    if ( !mExtent.isNull() )
+    {
+      mExtent.setXMinimum( mExtent.xMinimum() + dx );
+      mExtent.setXMaximum( mExtent.xMaximum() + dx );
+      mExtent.setYMinimum( mExtent.yMinimum() + dy );
+      mExtent.setYMaximum( mExtent.yMaximum() + dy );
+    }
 
     //in case data defined extents are set, these override the calculated values
     refreshMapExtents();
@@ -469,7 +472,7 @@ void QgsLayoutItemMap::moveContent( double dx, double dy )
 
 void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
 {
-  if ( mDrawing )
+  if ( mDrawing || mExtent.isNull() )
   {
     return;
   }
@@ -2366,17 +2369,20 @@ void QgsLayoutItemMap::painterJobFinished()
 void QgsLayoutItemMap::shapeChanged()
 {
   // keep center as center
-  QgsPointXY oldCenter = mExtent.center();
+  if ( !mExtent.isNull() )
+  {
+    QgsPointXY oldCenter = mExtent.center();
 
-  double w = rect().width();
-  double h = rect().height();
+    double w = rect().width();
+    double h = rect().height();
 
-  // keep same width as before
-  double newWidth = mExtent.width();
-  // but scale height to match item's aspect ratio
-  double newHeight = newWidth * h / w;
+    // keep same width as before
+    double newWidth = mExtent.width();
+    // but scale height to match item's aspect ratio
+    double newHeight = newWidth * h / w;
 
-  mExtent = QgsRectangle::fromCenterAndSize( oldCenter, newWidth, newHeight );
+    mExtent = QgsRectangle::fromCenterAndSize( oldCenter, newWidth, newHeight );
+  }
 
   //recalculate data defined scale and extents
   refreshMapExtents();
