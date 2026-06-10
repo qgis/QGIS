@@ -21,7 +21,9 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDialog>
+#include <QDir>
 #include <QEvent>
+#include <QFile>
 #include <QFrame>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -435,6 +437,8 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   const QString embeddingProviderKey = u"strata/index/embedding_provider"_s;
   const QString automaticIndexingKey = u"strata/index/automatic"_s;
   const QString layerIndexingKey = u"strata/index/enable_layer_indexing"_s;
+  const bool hadE5ModelDirEnv = qEnvironmentVariableIsSet( "STRATA_AI_EMBEDDING_MODEL_DIR" );
+  const QByteArray savedE5ModelDirEnv = qgetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
   const bool hadOpenAiKey = settings.contains( openAiKey );
   const QVariant savedOpenAiKey = settings.value( openAiKey );
   const bool hadLegacyEmbeddingProvider = settings.contains( legacyEmbeddingProviderKey );
@@ -450,10 +454,11 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   settings.remove( embeddingProviderKey );
   settings.setValue( automaticIndexingKey, true );
   settings.setValue( layerIndexingKey, true );
+  qputenv( "STRATA_AI_EMBEDDING_MODEL_DIR", QFile::encodeName( QDir( tempDir.path() ).filePath( u"missing-e5"_s ) ) );
 
   QgsAiModelRouter router;
   QgsAiFileContextProvider contextProvider( tempDir.path() );
-  QgsAiLocalEmbeddingProvider embeddingProvider;
+  QgsAiE5EmbeddingProvider embeddingProvider;
   QgsAiWorkspaceIndex workspaceIndex( &contextProvider, &embeddingProvider );
   QgsAiReviewPatchEngine reviewEngine;
   QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
@@ -465,14 +470,16 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool layerIndexingChecked = true;
   bool layerIndexingEnabled = true;
   bool localStatusFound = false;
+  bool downloadButtonFound = false;
   bool defaultProviderSelected = false;
-  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &defaultProviderSelected]() {
+  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected]() {
     QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
     if ( settingsDialog )
     {
       QCheckBox *layerIndexing = settingsDialog->findChild<QCheckBox *>( u"aiEnableLayerIndexingCheckBox"_s );
       QComboBox *providerCombo = settingsDialog->findChild<QComboBox *>( u"aiEmbeddingProviderComboBox"_s );
       QLabel *statusLabel = settingsDialog->findChild<QLabel *>( u"aiEmbeddingProviderStatusLabel"_s );
+      QPushButton *downloadButton = settingsDialog->findChild<QPushButton *>( u"aiDownloadEmbeddingModelButton"_s );
       controlsFound = layerIndexing
                       && providerCombo
                       && settingsDialog->findChild<QCheckBox *>( u"aiAutomaticIndexingCheckBox"_s )
@@ -484,7 +491,8 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
         layerIndexingEnabled = layerIndexing->isEnabled();
       }
       defaultProviderSelected = providerCombo && providerCombo->currentData().toString() == QgsAiEmbeddingProviderRegistry::defaultProviderId();
-      localStatusFound = statusLabel && statusLabel->text().contains( u"without an API key"_s, Qt::CaseInsensitive );
+      localStatusFound = statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive );
+      downloadButtonFound = downloadButton && downloadButton->isVisible();
       settingsDialog->reject();
     }
     inspected = true;
@@ -512,14 +520,18 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
     settings.setValue( layerIndexingKey, savedLayerIndexing );
   else
     settings.remove( layerIndexingKey );
+  qunsetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
+  if ( hadE5ModelDirEnv )
+    qputenv( "STRATA_AI_EMBEDDING_MODEL_DIR", savedE5ModelDirEnv );
 
   QVERIFY( invoked );
   QVERIFY( inspected );
   QVERIFY( controlsFound );
   QVERIFY( localStatusFound );
+  QVERIFY( downloadButtonFound );
   QVERIFY( defaultProviderSelected );
-  QVERIFY( layerIndexingChecked );
-  QVERIFY( layerIndexingEnabled );
+  QVERIFY( !layerIndexingChecked );
+  QVERIFY( !layerIndexingEnabled );
 }
 
 void TestQgsAiChatDockWidget::historyMenuPromptsForSavedProjectWhenUnsaved()

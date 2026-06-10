@@ -682,6 +682,11 @@ if(WITH_CORE)
   # Password helper
   find_package(Qt6Keychain CONFIG REQUIRED)
 
+  if(ENABLE_AI_ASSISTANT)
+    find_package(onnxruntime CONFIG QUIET)
+    find_package(sentencepiece CONFIG QUIET)
+  endif()
+
   # Master password hash and authentication encryption
   if(WITH_AUTH)
     set(HAVE_AUTH TRUE)

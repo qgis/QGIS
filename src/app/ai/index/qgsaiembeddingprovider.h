@@ -22,6 +22,7 @@
 #include <memory>
 #include <QString>
 #include <QStringList>
+#include <QtGlobal>
 #include <QVector>
 
 using namespace Qt::StringLiterals;
@@ -37,6 +38,14 @@ enum class QgsAiEmbeddingRole
 struct QgsAiEmbeddingOptions
 {
     int maxBatch = 64;
+};
+
+struct APP_EXPORT QgsAiEmbeddingModelDownloadFile
+{
+    QString relativePath;
+    QString url;
+    QString sha256;
+    qint64 size = 0;
 };
 
 /**
@@ -98,17 +107,14 @@ class APP_EXPORT QgsAiUnavailableLocalEmbeddingProvider final : public QgsAiEmbe
  *
  * This is intentionally small and CPU-only. It is NOT an E5 model: it provides
  * deterministic 384 dimensional embeddings from lexical tokens/ngrams (a MinHash
- * style embedder) so indexing works on low-memory machines without external APIs.
- * The provider id reflects this honestly. A future ONNX/SentencePiece E5
- * implementation can keep the same provider registry slot and force a schema
- * rebuild through a different providerId/modelId/modelRevision.
+ * style embedder). It remains available as an explicit fallback when the ONNX E5
+ * model is not installed or cannot run on a machine.
  */
 class APP_EXPORT QgsAiLocalEmbeddingProvider final : public QgsAiEmbeddingProvider
 {
   public:
-    // Keep in sync with QgsAiEmbeddingProviderRegistry::defaultProviderId().
     QString providerId() const override { return u"local:minihash-384"_s; }
-    QString displayName() const override { return u"Local small model"_s; }
+    QString displayName() const override { return u"Local MinHash fallback"_s; }
     QString modelId() const override { return u"strata-local-minihash-384"_s; }
     QString modelRevision() const override { return u"2026-06-09"_s; }
     int embeddingDimension() const override { return 384; }
@@ -118,6 +124,49 @@ class APP_EXPORT QgsAiLocalEmbeddingProvider final : public QgsAiEmbeddingProvid
 
   private:
     QVector<float> embedOne( const QString &text, QgsAiEmbeddingRole role ) const;
+};
+
+class APP_EXPORT QgsAiE5EmbeddingProvider final : public QgsAiEmbeddingProvider
+{
+  public:
+    QgsAiE5EmbeddingProvider();
+    ~QgsAiE5EmbeddingProvider() override;
+
+    static QString staticProviderId();
+    static QString modelName();
+    static QString pinnedModelRevision();
+    static QString developerModelDirectory();
+    static QString userModelDirectory();
+    static QString packagedModelDirectory();
+    static QString activeModelDirectory();
+    static QString modelPath( const QString &modelDirectory );
+    static QString tokenizerPath( const QString &modelDirectory );
+    static bool modelFilesAvailable( const QString &modelDirectory, QString *errorMessage = nullptr );
+    static QList<QgsAiEmbeddingModelDownloadFile> downloadFiles();
+    static qint64 downloadSize();
+    static QString formatInputForRole( const QString &text, QgsAiEmbeddingRole role );
+    static QVector<qint64> tokenIdsWithSpecials( const QVector<int> &pieceIds, int maxSequenceLength = 512 );
+    static QVector<float> meanPoolAndNormalize( const QVector<float> &lastHiddenStates, const QVector<qint64> &attentionMask, int hiddenSize );
+    static QString fileSha256( const QString &path, QString *errorMessage = nullptr );
+    static bool fileMatchesSha256( const QString &path, const QString &expectedSha256, QString *errorMessage = nullptr );
+
+    QString providerId() const override { return staticProviderId(); }
+    QString displayName() const override { return u"Local multilingual E5 small (recommended)"_s; }
+    QString modelId() const override { return modelName(); }
+    QString modelRevision() const override { return pinnedModelRevision(); }
+    int embeddingDimension() const override { return 384; }
+    bool isAvailable( QString *errorMessage = nullptr ) const override;
+    bool embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage = nullptr, int maxBatch = 64 ) override;
+    bool embed( const QStringList &texts, QgsAiEmbeddingRole role, QList<QVector<float>> &out, QString *errorMessage = nullptr, const QgsAiEmbeddingOptions &options = QgsAiEmbeddingOptions() ) override;
+
+  private:
+    struct Runtime;
+
+    bool ensureRuntime( QString *errorMessage = nullptr ) const;
+
+    mutable std::unique_ptr<Runtime> mRuntime;
+    mutable QString mRuntimeError;
+    mutable bool mRuntimeLoadAttempted = false;
 };
 
 class APP_EXPORT QgsAiEmbeddingProviderRegistry

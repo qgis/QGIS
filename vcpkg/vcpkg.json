@@ -61,6 +61,7 @@
     "meshoptimizer",
     "nlohmann-json",
     "o2",
+    "onnxruntime",
     "proj",
     "protobuf",
     {
@@ -94,6 +95,7 @@
     "qtmultimedia",
     "qt5compat",
     "qtkeychain-qt6",
+    "sentencepiece",
     "zlib",
     "zstd"
   ],

@@ -643,6 +643,36 @@ target_link_libraries(qgis_app
   libdxfrw
 )
 
+if (ENABLE_AI_ASSISTANT)
+  set(QGIS_AI_EMBEDDING_LIBRARIES)
+
+  if (TARGET onnxruntime::onnxruntime)
+    list(APPEND QGIS_AI_EMBEDDING_LIBRARIES onnxruntime::onnxruntime)
+  elseif (TARGET onnxruntime)
+    list(APPEND QGIS_AI_EMBEDDING_LIBRARIES onnxruntime)
+  else()
+    find_path(ONNXRUNTIME_INCLUDE_DIR onnxruntime_cxx_api.h PATH_SUFFIXES onnxruntime REQUIRED)
+    find_library(ONNXRUNTIME_LIBRARY NAMES onnxruntime REQUIRED)
+    target_include_directories(qgis_app SYSTEM PRIVATE ${ONNXRUNTIME_INCLUDE_DIR})
+    list(APPEND QGIS_AI_EMBEDDING_LIBRARIES ${ONNXRUNTIME_LIBRARY})
+  endif()
+
+  if (TARGET sentencepiece::sentencepiece)
+    list(APPEND QGIS_AI_EMBEDDING_LIBRARIES sentencepiece::sentencepiece)
+  elseif (TARGET sentencepiece)
+    list(APPEND QGIS_AI_EMBEDDING_LIBRARIES sentencepiece)
+  elseif (TARGET sentencepiece-static)
+    list(APPEND QGIS_AI_EMBEDDING_LIBRARIES sentencepiece-static)
+  else()
+    find_path(SENTENCEPIECE_INCLUDE_DIR sentencepiece_processor.h REQUIRED)
+    find_library(SENTENCEPIECE_LIBRARY NAMES sentencepiece REQUIRED)
+    target_include_directories(qgis_app SYSTEM PRIVATE ${SENTENCEPIECE_INCLUDE_DIR})
+    list(APPEND QGIS_AI_EMBEDDING_LIBRARIES ${SENTENCEPIECE_LIBRARY})
+  endif()
+
+  target_link_libraries(qgis_app PUBLIC ${QGIS_AI_EMBEDDING_LIBRARIES})
+endif()
+
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
 
 if (USE_PRECOMPILED_HEADERS)

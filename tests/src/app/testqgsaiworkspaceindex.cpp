@@ -4,6 +4,7 @@
   begin                : May 2026
 ***************************************************************************/
 
+#include <cmath>
 #include <memory>
 #include <utility>
 
@@ -38,8 +39,10 @@ namespace
       ScopedEmbeddingConfiguration()
         : mHadOpenAiEnv( qEnvironmentVariableIsSet( "OPENAI_API_KEY" ) )
         , mHadOpenRouterEnv( qEnvironmentVariableIsSet( "OPENROUTER_API_KEY" ) )
+        , mHadE5ModelDirEnv( qEnvironmentVariableIsSet( "STRATA_AI_EMBEDDING_MODEL_DIR" ) )
         , mOpenAiEnv( qgetenv( "OPENAI_API_KEY" ) )
         , mOpenRouterEnv( qgetenv( "OPENROUTER_API_KEY" ) )
+        , mE5ModelDirEnv( qgetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" ) )
       {
         QgsSettings settings;
         const QStringList keys = {
@@ -63,16 +66,20 @@ namespace
 
         qunsetenv( "OPENAI_API_KEY" );
         qunsetenv( "OPENROUTER_API_KEY" );
+        qunsetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
       }
 
       ~ScopedEmbeddingConfiguration()
       {
         qunsetenv( "OPENAI_API_KEY" );
         qunsetenv( "OPENROUTER_API_KEY" );
+        qunsetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
         if ( mHadOpenAiEnv )
           qputenv( "OPENAI_API_KEY", mOpenAiEnv );
         if ( mHadOpenRouterEnv )
           qputenv( "OPENROUTER_API_KEY", mOpenRouterEnv );
+        if ( mHadE5ModelDirEnv )
+          qputenv( "STRATA_AI_EMBEDDING_MODEL_DIR", mE5ModelDirEnv );
 
         QgsSettings settings;
         for ( const SavedSetting &saved : mSavedSettings )
@@ -95,8 +102,10 @@ namespace
       QList<SavedSetting> mSavedSettings;
       bool mHadOpenAiEnv = false;
       bool mHadOpenRouterEnv = false;
+      bool mHadE5ModelDirEnv = false;
       QByteArray mOpenAiEnv;
       QByteArray mOpenRouterEnv;
+      QByteArray mE5ModelDirEnv;
   };
 
   class FakeEmbeddingProvider : public QgsAiEmbeddingProvider
@@ -180,6 +189,10 @@ class TestQgsAiWorkspaceIndex : public QObject
     void removeLayerDropsOnlyMatchingChunks();
     void workspaceRootChangeLoadsSeparateIndex();
     void embeddingProviderAvailabilityIgnoresRemoteSettings();
+    void embeddingProviderRegistryDefaultsToE5AndKeepsMinihashFallback();
+    void e5PreprocessingHelpers();
+    void e5ProviderAvailabilityHonorsEnvironmentModelDir();
+    void e5ProviderIntegrationWhenModelDirIsConfigured();
     void embeddingClientDefaultsToOpenAi();
     void embeddingClientUsesOpenRouterSettings();
     void schemaMigrationDropsOldDb();
@@ -422,21 +435,23 @@ void TestQgsAiWorkspaceIndex::embeddingProviderAvailabilityIgnoresRemoteSettings
 
   std::unique_ptr<QgsAiEmbeddingProvider> provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
-  QVERIFY( provider->isAvailable() );
+  QString providerError;
+  QVERIFY( !provider->isAvailable( &providerError ) );
+  QVERIFY2( providerError.contains( u"E5"_s, Qt::CaseInsensitive ), providerError.toUtf8().constData() );
   QgsAiWorkspaceIndex index( &contextProvider, provider.get() );
-  QVERIFY( index.embeddingProviderAvailable() );
-  QVERIFY( index.hasEmbeddingConfiguration() );
+  QVERIFY( !index.embeddingProviderAvailable() );
+  QVERIFY( !index.hasEmbeddingConfiguration() );
 
   settings.setValue( u"ai/provider/openai/apiKey"_s, u"sk-test-settings"_s );
   provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
-  QVERIFY( provider->isAvailable() );
+  QVERIFY( !provider->isAvailable() );
 
   settings.remove( u"ai/provider/openai/apiKey"_s );
   qputenv( "OPENAI_API_KEY", "sk-test-env" );
   provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
-  QVERIFY( provider->isAvailable() );
+  QVERIFY( !provider->isAvailable() );
 
   qunsetenv( "OPENAI_API_KEY" );
   settings.setValue( u"ai/embeddings/provider"_s, u"openrouter"_s );
@@ -444,13 +459,104 @@ void TestQgsAiWorkspaceIndex::embeddingProviderAvailabilityIgnoresRemoteSettings
   qputenv( "OPENROUTER_API_KEY", "sk-or-test-env" );
   provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
-  QVERIFY( provider->isAvailable() );
+  QVERIFY( !provider->isAvailable() );
 
   settings.setValue( u"strata/index/embedding_provider"_s, u"openrouter"_s );
   provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), u"openrouter"_s );
   QVERIFY( provider->isRemote() );
   QVERIFY( provider->isAvailable() );
+}
+
+void TestQgsAiWorkspaceIndex::embeddingProviderRegistryDefaultsToE5AndKeepsMinihashFallback()
+{
+  ScopedEmbeddingConfiguration scopedConfiguration;
+
+  QCOMPARE( QgsAiEmbeddingProviderRegistry::defaultProviderId(), QgsAiE5EmbeddingProvider::staticProviderId() );
+  QVERIFY( QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() ) );
+  QVERIFY( QgsAiEmbeddingProviderRegistry::providerIds().contains( u"local:minihash-384"_s ) );
+
+  std::unique_ptr<QgsAiEmbeddingProvider> defaultProvider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
+  QCOMPARE( defaultProvider->providerId(), QgsAiE5EmbeddingProvider::staticProviderId() );
+  QCOMPARE( defaultProvider->modelId(), QgsAiE5EmbeddingProvider::modelName() );
+  QCOMPARE( defaultProvider->modelRevision(), QgsAiE5EmbeddingProvider::pinnedModelRevision() );
+  QCOMPARE( defaultProvider->embeddingDimension(), 384 );
+
+  std::unique_ptr<QgsAiEmbeddingProvider> fallbackProvider = QgsAiEmbeddingProviderRegistry::createProvider( u"local:minihash-384"_s );
+  QCOMPARE( fallbackProvider->providerId(), u"local:minihash-384"_s );
+  QVERIFY( fallbackProvider->isAvailable() );
+}
+
+void TestQgsAiWorkspaceIndex::e5PreprocessingHelpers()
+{
+  QCOMPARE( QgsAiE5EmbeddingProvider::formatInputForRole( u"roads"_s, QgsAiEmbeddingRole::Query ), u"query: roads"_s );
+  QCOMPARE( QgsAiE5EmbeddingProvider::formatInputForRole( u"query: roads"_s, QgsAiEmbeddingRole::Query ), u"query: roads"_s );
+  QCOMPARE( QgsAiE5EmbeddingProvider::formatInputForRole( u"passage: roads"_s, QgsAiEmbeddingRole::Query ), u"query: roads"_s );
+  QCOMPARE( QgsAiE5EmbeddingProvider::formatInputForRole( u"query: passage: roads"_s, QgsAiEmbeddingRole::Query ), u"query: roads"_s );
+  QCOMPARE( QgsAiE5EmbeddingProvider::formatInputForRole( u"query: roads"_s, QgsAiEmbeddingRole::Passage ), u"passage: roads"_s );
+  QCOMPARE( QgsAiE5EmbeddingProvider::formatInputForRole( QString(), QgsAiEmbeddingRole::Query ), u"query: "_s );
+
+  const QVector<qint64> shortIds = QgsAiE5EmbeddingProvider::tokenIdsWithSpecials( QVector<int> { 10, 11 }, 5 );
+  QCOMPARE( shortIds, ( QVector<qint64> { 0, 10, 11, 2 } ) );
+
+  const QVector<qint64> truncatedIds = QgsAiE5EmbeddingProvider::tokenIdsWithSpecials( QVector<int> { 10, 11, 12, 13 }, 4 );
+  QCOMPARE( truncatedIds, ( QVector<qint64> { 0, 10, 11, 2 } ) );
+
+  const QVector<float> pooled = QgsAiE5EmbeddingProvider::meanPoolAndNormalize(
+    QVector<float> { 3.0f, 0.0f, 0.0f, 4.0f, 100.0f, 100.0f },
+    QVector<qint64> { 1, 1, 0 },
+    2
+  );
+  QCOMPARE( pooled.size(), 2 );
+  QVERIFY( std::abs( pooled.at( 0 ) - 0.6f ) < 0.0001f );
+  QVERIFY( std::abs( pooled.at( 1 ) - 0.8f ) < 0.0001f );
+
+  const QVector<float> emptyPooled = QgsAiE5EmbeddingProvider::meanPoolAndNormalize( QVector<float> { 1.0f, 2.0f }, QVector<qint64> { 0 }, 2 );
+  QCOMPARE( emptyPooled, ( QVector<float> { 0.0f, 0.0f } ) );
+}
+
+void TestQgsAiWorkspaceIndex::e5ProviderAvailabilityHonorsEnvironmentModelDir()
+{
+  ScopedEmbeddingConfiguration scopedConfiguration;
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  qputenv( "STRATA_AI_EMBEDDING_MODEL_DIR", QFile::encodeName( tempDir.path() ) );
+
+  QCOMPARE( QgsAiE5EmbeddingProvider::developerModelDirectory(), QDir::cleanPath( tempDir.path() ) );
+  QCOMPARE( QgsAiE5EmbeddingProvider::activeModelDirectory(), QDir::cleanPath( tempDir.path() ) );
+
+  QgsAiE5EmbeddingProvider provider;
+  QString error;
+  QVERIFY( !provider.isAvailable( &error ) );
+  QVERIFY2( error.contains( tempDir.path() ), error.toUtf8().constData() );
+}
+
+void TestQgsAiWorkspaceIndex::e5ProviderIntegrationWhenModelDirIsConfigured()
+{
+  const QByteArray modelDir = qgetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
+  if ( modelDir.trimmed().isEmpty() )
+    QSKIP( "STRATA_AI_EMBEDDING_MODEL_DIR is not set; skipping optional E5 ONNX integration test." );
+
+  QgsAiE5EmbeddingProvider provider;
+  QString error;
+  QVERIFY2( provider.isAvailable( &error ), error.toUtf8().constData() );
+
+  QList<QVector<float>> queryVectors;
+  QVERIFY2( provider.embed( QStringList { u"query: strade comunali"_s }, QgsAiEmbeddingRole::Query, queryVectors, &error ), error.toUtf8().constData() );
+  QList<QVector<float>> passageVectors;
+  QVERIFY2( provider.embed( QStringList { u"passage: layer con strade e civici"_s }, QgsAiEmbeddingRole::Passage, passageVectors, &error ), error.toUtf8().constData() );
+
+  QList<QVector<float>> vectors = queryVectors + passageVectors;
+  QCOMPARE( vectors.size(), 2 );
+  for ( const QVector<float> &vector : std::as_const( vectors ) )
+  {
+    QCOMPARE( vector.size(), 384 );
+    double norm = 0.0;
+    for ( float value : vector )
+      norm += static_cast<double>( value ) * static_cast<double>( value );
+    QVERIFY( std::abs( std::sqrt( norm ) - 1.0 ) < 0.001 );
+  }
 }
 
 void TestQgsAiWorkspaceIndex::embeddingClientDefaultsToOpenAi()

@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 #include "qgsscrollarea.h"
 #include "qgssettings.h"
@@ -43,11 +44,14 @@
 #include <QCheckBox>
 #include <QColor>
 #include <QComboBox>
+#include <QCryptographicHash>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QDir>
 #include <QEvent>
+#include <QEventLoop>
+#include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFont>
@@ -70,7 +74,10 @@
 #include <QMap>
 #include <QMenu>
 #include <QMessageBox>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPalette>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegularExpression>
@@ -117,6 +124,238 @@ namespace
       { u"Claude Opus 4.1"_s, u"claude-opus-4-1-20250805"_s, QgsAiModelRouter::Provider::Claude },
       { u"Plan backend"_s, u"managed-plan"_s, QgsAiModelRouter::Provider::Plan },
     };
+  }
+
+  QString humanBytes( qint64 bytes )
+  {
+    if ( bytes < 1024 )
+      return u"%1 B"_s.arg( bytes );
+    const double kb = bytes / 1024.0;
+    if ( kb < 1024 )
+      return u"%1 KiB"_s.arg( kb, 0, 'f', 1 );
+    const double mb = kb / 1024.0;
+    if ( mb < 1024 )
+      return u"%1 MiB"_s.arg( mb, 0, 'f', 1 );
+    return u"%1 GiB"_s.arg( mb / 1024.0, 0, 'f', 2 );
+  }
+
+  bool downloadEmbeddingModelFile( const QgsAiEmbeddingModelDownloadFile &file, const QString &baseDir, QProgressDialog &progress, qint64 &completedBytes, QString *errorMessage )
+  {
+    const QString destPath = QDir( baseDir ).filePath( file.relativePath );
+    if ( QFileInfo::exists( destPath ) )
+    {
+      QString hashError;
+      if ( QgsAiE5EmbeddingProvider::fileMatchesSha256( destPath, file.sha256, &hashError ) )
+      {
+        completedBytes += file.size;
+        progress.setValue( static_cast<int>( std::min<qint64>( completedBytes, progress.maximum() ) ) );
+        return true;
+      }
+    }
+
+    QFileInfo destInfo( destPath );
+    if ( !destInfo.dir().exists() && !destInfo.dir().mkpath( u"."_s ) )
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Cannot create model directory: %1" ).arg( destInfo.dir().absolutePath() );
+      return false;
+    }
+
+    QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+    if ( !nam )
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Network manager is not available." );
+      return false;
+    }
+
+    const QString partPath = destPath + u".part"_s;
+    QFile::remove( partPath );
+    QFile outFile( partPath );
+    if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Cannot write model file: %1" ).arg( partPath );
+      return false;
+    }
+
+    QNetworkRequest request( QUrl( file.url ) );
+    request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy );
+    request.setTransferTimeout( 30000 );
+
+    QNetworkReply *reply = nam->get( request );
+    if ( !reply )
+    {
+      outFile.close();
+      QFile::remove( partPath );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Unable to start model download." );
+      return false;
+    }
+
+    QCryptographicHash hash( QCryptographicHash::Sha256 );
+    qint64 fileBytes = 0;
+    auto drainReply = [&]() {
+      const QByteArray chunk = reply->readAll();
+      if ( chunk.isEmpty() )
+        return;
+      outFile.write( chunk );
+      hash.addData( chunk );
+      fileBytes += chunk.size();
+      progress.setValue( static_cast<int>( std::min<qint64>( completedBytes + fileBytes, progress.maximum() ) ) );
+      QApplication::processEvents();
+    };
+
+    QObject::connect( reply, &QNetworkReply::readyRead, reply, drainReply );
+    QObject::connect( &progress, &QProgressDialog::canceled, reply, &QNetworkReply::abort );
+
+    QEventLoop loop;
+    QObject::connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
+    loop.exec();
+    drainReply();
+
+    const bool wasCanceled = progress.wasCanceled();
+    const QNetworkReply::NetworkError networkError = reply->error();
+    const QString networkErrorString = reply->errorString();
+    reply->deleteLater();
+
+    outFile.close();
+    if ( wasCanceled )
+    {
+      QFile::remove( partPath );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Model download canceled." );
+      return false;
+    }
+
+    if ( networkError != QNetworkReply::NoError )
+    {
+      QFile::remove( partPath );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Model download failed: %1" ).arg( networkErrorString );
+      return false;
+    }
+
+    if ( fileBytes != file.size )
+    {
+      QFile::remove( partPath );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Model download size mismatch for %1: expected %2, got %3." ).arg( file.relativePath ).arg( file.size ).arg( fileBytes );
+      return false;
+    }
+
+    const QString actualSha = QString::fromLatin1( hash.result().toHex() );
+    if ( actualSha.compare( file.sha256, Qt::CaseInsensitive ) != 0 )
+    {
+      QFile::remove( partPath );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Model download hash mismatch for %1." ).arg( file.relativePath );
+      return false;
+    }
+
+    QFile::remove( destPath );
+    if ( !QFile::rename( partPath, destPath ) )
+    {
+      QFile::remove( partPath );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Cannot move verified model file into place: %1" ).arg( destPath );
+      return false;
+    }
+
+    completedBytes += file.size;
+    progress.setValue( static_cast<int>( std::min<qint64>( completedBytes, progress.maximum() ) ) );
+    return true;
+  }
+
+  bool downloadEmbeddingModelWithConsent( QWidget *parent, QString *errorMessage )
+  {
+    const QString destination = QgsAiE5EmbeddingProvider::userModelDirectory();
+    const QString question = QObject::tr(
+                               "Strata will download the local multilingual E5 embedding model from Hugging Face.\n\n"
+                               "Source: https://huggingface.co/intfloat/multilingual-e5-small\n"
+                               "License: MIT\n"
+                               "Revision: 614241f622f53c4eeff9890bdc4f31cfecc418b3\n"
+                               "Size: %1\n"
+                               "Destination: %2\n\n"
+                               "The model is used locally for workspace indexing and is not bundled with this release.\n\n"
+                               "Download now?"
+    )
+                               .arg( humanBytes( QgsAiE5EmbeddingProvider::downloadSize() ), destination );
+
+    if ( QMessageBox::question( parent, QObject::tr( "Download local embedding model" ), question, QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Model download was not approved." );
+      return false;
+    }
+
+    QProgressDialog progress( QObject::tr( "Downloading local embedding model..." ), QObject::tr( "Cancel" ), 0, static_cast<int>( QgsAiE5EmbeddingProvider::downloadSize() ), parent );
+    progress.setWindowModality( Qt::WindowModal );
+    progress.setMinimumDuration( 0 );
+    progress.setValue( 0 );
+
+    qint64 completedBytes = 0;
+    for ( const QgsAiEmbeddingModelDownloadFile &file : QgsAiE5EmbeddingProvider::downloadFiles() )
+    {
+      progress.setLabelText( QObject::tr( "Downloading %1" ).arg( file.relativePath ) );
+      QString fileError;
+      if ( !downloadEmbeddingModelFile( file, destination, progress, completedBytes, &fileError ) )
+      {
+        if ( errorMessage )
+          *errorMessage = fileError;
+        return false;
+      }
+    }
+
+    QJsonArray files;
+    for ( const QgsAiEmbeddingModelDownloadFile &file : QgsAiE5EmbeddingProvider::downloadFiles() )
+    {
+      QJsonObject item;
+      item.insert( u"relative_path"_s, file.relativePath );
+      item.insert( u"sha256"_s, file.sha256 );
+      item.insert( u"size"_s, static_cast<double>( file.size ) );
+      files.append( item );
+    }
+
+    QJsonObject manifest;
+    manifest.insert( u"model_id"_s, QgsAiE5EmbeddingProvider::modelName() );
+    manifest.insert( u"model_revision"_s, QgsAiE5EmbeddingProvider::pinnedModelRevision() );
+    manifest.insert( u"license"_s, u"MIT"_s );
+    manifest.insert( u"source"_s, u"https://huggingface.co/intfloat/multilingual-e5-small"_s );
+    manifest.insert( u"source_revision"_s, u"614241f622f53c4eeff9890bdc4f31cfecc418b3"_s );
+    manifest.insert( u"files"_s, files );
+
+    const QString manifestPath = QDir( destination ).filePath( u"manifest.json"_s );
+    const QString manifestPartPath = manifestPath + u".part"_s;
+    QFile::remove( manifestPartPath );
+    QFile manifestFile( manifestPartPath );
+    if ( !manifestFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Cannot write model manifest: %1" ).arg( manifestPartPath );
+      return false;
+    }
+    const QByteArray manifestJson = QJsonDocument( manifest ).toJson( QJsonDocument::Indented );
+    if ( manifestFile.write( manifestJson ) != manifestJson.size() )
+    {
+      manifestFile.close();
+      QFile::remove( manifestPartPath );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Cannot write complete model manifest: %1" ).arg( manifestPartPath );
+      return false;
+    }
+    manifestFile.close();
+    QFile::remove( manifestPath );
+    if ( !QFile::rename( manifestPartPath, manifestPath ) )
+    {
+      QFile::remove( manifestPartPath );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Cannot move verified model manifest into place: %1" ).arg( manifestPath );
+      return false;
+    }
+
+    progress.setValue( progress.maximum() );
+    return true;
   }
 
   void applyTranscriptWidthPolicy( QWidget *widget )
@@ -2134,24 +2373,58 @@ void QgsAiChatDockWidget::openProviderSettings()
   QLabel *embeddingStatusLabel = new QLabel( &dialog );
   embeddingStatusLabel->setObjectName( u"aiEmbeddingProviderStatusLabel"_s );
   embeddingStatusLabel->setWordWrap( true );
-  auto refreshEmbeddingStatusLabel = [embeddingProvider, embeddingStatusLabel, this]() {
+  QPushButton *downloadEmbeddingModelButton = new QPushButton( tr( "Download local E5 model" ), &dialog );
+  downloadEmbeddingModelButton->setObjectName( u"aiDownloadEmbeddingModelButton"_s );
+  auto refreshEmbeddingStatusLabel = [embeddingProvider, embeddingStatusLabel, downloadEmbeddingModelButton]() {
     const QString providerId = embeddingProvider->currentData().toString();
     if ( QgsAiEmbeddingProviderRegistry::isRemoteProviderId( providerId ) )
     {
       embeddingStatusLabel->setText( tr( "Remote workspace indexing will use %1 only because it is explicitly selected here. Saved OpenAI/OpenRouter keys do not switch indexing by themselves." ).arg( QgsAiEmbeddingProviderRegistry::displayNameForProviderId( providerId ) ) );
+      downloadEmbeddingModelButton->setVisible( false );
+    }
+    else if ( providerId == QgsAiE5EmbeddingProvider::staticProviderId() )
+    {
+      QString filesError;
+      const QString modelDir = QgsAiE5EmbeddingProvider::activeModelDirectory();
+      const bool filesAvailable = QgsAiE5EmbeddingProvider::modelFilesAvailable( modelDir, &filesError );
+      const QString developerDir = QgsAiE5EmbeddingProvider::developerModelDirectory();
+      downloadEmbeddingModelButton->setVisible( true );
+      downloadEmbeddingModelButton->setEnabled( developerDir.isEmpty() );
+      downloadEmbeddingModelButton->setToolTip(
+        developerDir.isEmpty()
+          ? tr( "Download the pinned multilingual E5 ONNX model and SentencePiece tokenizer to the local Strata model cache." )
+          : tr( "STRATA_AI_EMBEDDING_MODEL_DIR is set; unset it to use the downloaded cache from this dialog." )
+      );
+      embeddingStatusLabel->setText(
+        filesAvailable
+          ? tr( "Local multilingual E5 model files are installed in %1. Indexing runs on this computer without an API key." ).arg( modelDir )
+          : tr( "Local multilingual E5 model is not installed or not usable: %1\nDownload size: %2. Developers can set STRATA_AI_EMBEDDING_MODEL_DIR." ).arg( filesError, humanBytes( QgsAiE5EmbeddingProvider::downloadSize() ) )
+      );
     }
     else
     {
-      embeddingStatusLabel->setText(
-        mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->embeddingProviderAvailable()
-          ? tr( "Local workspace indexing is available and runs on this computer without an API key." )
-          : tr( "Local workspace indexing is unavailable; chat still works without indexing." )
-      );
+      embeddingStatusLabel->setText( tr( "Local MinHash fallback is available and runs on this computer without an API key. Semantic quality is lower than multilingual E5." ) );
+      downloadEmbeddingModelButton->setVisible( false );
     }
   };
   refreshEmbeddingStatusLabel();
   connect( embeddingProvider, &QComboBox::currentIndexChanged, &dialog, [refreshEmbeddingStatusLabel]( int ) { refreshEmbeddingStatusLabel(); } );
   indexingForm->addRow( QString(), embeddingStatusLabel );
+  indexingForm->addRow( QString(), downloadEmbeddingModelButton );
+  connect( downloadEmbeddingModelButton, &QPushButton::clicked, &dialog, [this, &dialog, refreshEmbeddingStatusLabel]() {
+    QString error;
+    if ( !downloadEmbeddingModelWithConsent( &dialog, &error ) )
+    {
+      if ( !error.contains( tr( "not approved" ), Qt::CaseInsensitive ) )
+        QMessageBox::warning( &dialog, tr( "Embedding model download failed" ), error.isEmpty() ? tr( "Unknown error." ) : error );
+      refreshEmbeddingStatusLabel();
+      return;
+    }
+
+    emit embeddingProviderSettingsChanged();
+    refreshEmbeddingStatusLabel();
+    QMessageBox::information( &dialog, tr( "Embedding model downloaded" ), tr( "The local multilingual E5 embedding model is ready. Existing MinHash indexes will rebuild automatically when E5 is selected." ) );
+  } );
 
   QCheckBox *automaticIndexing = new QCheckBox( tr( "Index workspace automatically in the background" ), &dialog );
   automaticIndexing->setObjectName( u"aiAutomaticIndexingCheckBox"_s );
@@ -2178,6 +2451,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   QCheckBox *enableLayerIndexing = new QCheckBox( tr( "Enable layer indexing (auto reindex on layer add/remove/edit)" ), &dialog );
   enableLayerIndexing->setObjectName( u"aiEnableLayerIndexingCheckBox"_s );
   enableLayerIndexing->setChecked( layerIndexingEnabled );
+  enableLayerIndexing->setEnabled( canUseEmbeddings );
   enableLayerIndexing->setToolTip(
     tr( "When enabled, layer attributes and bounding boxes are embedded with the selected indexing provider and indexed so the assistant can ground its answers on actual layer data." )
   );
