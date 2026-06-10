@@ -1135,16 +1135,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     QString gridAnnotationString( double value, Qgis::MapGridAnnotationType coord, QgsExpressionContext &expressionContext, bool isGeographic ) const;
 
     /**
-     * Computes the grid lines with associated coordinate value
-     * \returns 0 in case of success
+     * Computes the grid lines for the x-coordinates.
     */
-    int xGridLines() const;
+    void calculateXGridLines() const;
 
     /**
      * Computes the grid lines for the y-coordinates. Not vertical in case of rotation
-     * \returns 0 in case of success
     */
-    int yGridLines() const;
+    void calculateYGridLines() const;
 
     int xGridLinesCrsTransform( const QgsRectangle &bbox, const QgsCoordinateTransform &t ) const;
 
