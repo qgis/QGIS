@@ -164,7 +164,7 @@ void TestQgsSvgMarkerSymbol::boundsAnchorPoint()
   // to the center-anchored bounds translated by half the rendered
   // symbol size, in pixels.
 
-  QgsSvgMarkerSymbolLayer layer( QgsSymbolLayerUtils::svgSymbolNameToPath( u"/backgrounds/background_square.svg"_s, QgsPathResolver() ) );
+  QgsSvgMarkerSymbolLayer layer( QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/backgrounds/background_square.svg" ), QgsPathResolver() ) );
   layer.setSize( 24.0 );
   layer.setSizeUnit( Qgis::RenderUnit::Millimeters );
   layer.setFixedAspectRatio( 1.0 );
