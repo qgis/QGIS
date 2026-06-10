@@ -14178,6 +14178,7 @@ void QgisApp::removePluginMenu( const QString &name, QAction *action )
   if ( menu->actions().isEmpty() )
   {
     mPluginMenu->removeAction( menu->menuAction() );
+    menu->deleteLater();
   }
   // Remove separator above plugins in Plugin menu if no plugins remain
   QList<QAction *> actions = mPluginMenu->actions();
@@ -14539,6 +14540,7 @@ void QgisApp::removePluginDatabaseMenu( const QString &name, QAction *action )
   if ( menu->actions().isEmpty() )
   {
     mDatabaseMenu->removeAction( menu->menuAction() );
+    menu->deleteLater();
   }
 
   // remove the Database menu from the menuBar if there are no more actions
@@ -14563,6 +14565,7 @@ void QgisApp::removePluginRasterMenu( const QString &name, QAction *action )
   if ( menu->actions().isEmpty() )
   {
     mRasterMenu->removeAction( menu->menuAction() );
+    menu->deleteLater();
   }
 
   // Remove separator above plugins in Raster menu if no plugins remain
@@ -14581,6 +14584,7 @@ void QgisApp::removePluginVectorMenu( const QString &name, QAction *action )
   if ( menu->actions().isEmpty() )
   {
     mVectorMenu->removeAction( menu->menuAction() );
+    menu->deleteLater();
   }
 
   // remove the Vector menu from the menuBar if there are no more actions
@@ -14605,6 +14609,7 @@ void QgisApp::removePluginWebMenu( const QString &name, QAction *action )
   if ( menu->actions().isEmpty() )
   {
     mWebMenu->removeAction( menu->menuAction() );
+    menu->deleteLater();
   }
 
   // remove the Web menu from the menuBar if there are no more actions
@@ -14629,6 +14634,7 @@ void QgisApp::removePluginMeshMenu( const QString &name, QAction *action )
   if ( menu->actions().isEmpty() )
   {
     mMeshMenu->removeAction( menu->menuAction() );
+    menu->deleteLater();
   }
 
   // remove the Mesh menu from the menuBar if there are no more actions
