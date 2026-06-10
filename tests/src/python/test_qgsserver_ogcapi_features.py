@@ -27,7 +27,6 @@ os.environ["QT_HASH_SEED"] = "1"
 from contextlib import contextmanager
 from urllib import parse
 
-from jsonschema import validate
 from qgis.core import (
     Qgis,
     QgsApplication,
