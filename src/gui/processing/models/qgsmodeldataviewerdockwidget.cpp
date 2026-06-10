@@ -180,6 +180,13 @@ void QgsModelDataViewerDockWidget::loadAttributeTable()
   mTableView->setModel( attributeTableFilterModel );
 
   tableModel->loadLayer();
+
+  /* Workaround there is a dummy column extra column when a the layer has no fields, so we manually hide it */
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
+  if ( vl && vl->fields().isEmpty() )
+  {
+    mTableView->setColumnHidden( 0, true );
+  }
 }
 
 void QgsModelDataViewerDockWidget::attributeTableToggled( bool checked )
