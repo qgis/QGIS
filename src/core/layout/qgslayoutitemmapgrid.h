@@ -958,6 +958,12 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
         }
     };
 
+    static constexpr double GRID_LINE_CLOSE_TO_EDGE_TOLERANCE_MAP_UNITS = 0.00001;
+
+    // we need a little bit of tolerance for showing annotations right at the extremities of their edges,
+    // as we don't want to omit annotations right at the map edges if rounding errors have occurred in the position math
+    static constexpr double ANNOTATION_CLOSE_TO_EDGE_TOLERANCE_MM = 0.01;
+
     struct GridLineAnnotation
     {
         Qgis::MapGridBorderSide border = Qgis::MapGridBorderSide::Left; // border on which the annotation is
