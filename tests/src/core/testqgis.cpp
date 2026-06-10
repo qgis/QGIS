@@ -77,6 +77,8 @@ class TestQgis : public QgsTest
     void testQMapQVariantList();
     void testQgsMapJoin();
     void testQgsSetJoin();
+    void testDoubleNear_data();
+    void testDoubleNear();
     void testDoubleLessThanOrNear_data();
     void testDoubleLessThanOrNear();
     void testDoubleGreaterThanOrNear_data();
@@ -869,6 +871,44 @@ void TestQgis::testQgsSetJoin()
   QVERIFY( res.contains( "5" ) );
 }
 
+void TestQgis::testDoubleNear_data()
+{
+  QTest::addColumn<double>( "a" );
+  QTest::addColumn<double>( "b" );
+  QTest::addColumn<double>( "epsilon" );
+  QTest::addColumn<bool>( "expected" );
+
+  const double eps = 4 * std::numeric_limits<double>::epsilon();
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const double inf = std::numeric_limits<double>::infinity();
+
+  // negative epsilon means "don't specify, use default epsilon"
+  QTest::newRow( "exact equality" ) << 1.0 << 1.0 << -1.0 << true;
+  QTest::newRow( "within default epsilon" ) << 1.0 << 1.0 + eps / 2.0 << -1.0 << true;
+  QTest::newRow( "outside default epsilon" ) << 1.0 << 1.0 + eps * 2.0 << -1.0 << false;
+
+  QTest::newRow( "both NaN" ) << nan << nan << -1.0 << true;
+  QTest::newRow( "one NaN" ) << 1.0 << nan << -1.0 << false;
+  QTest::newRow( "other NaN" ) << nan << 1.0 << -1.0 << false;
+
+  QTest::newRow( "positive infinity equal" ) << inf << inf << -1.0 << true;
+  QTest::newRow( "negative infinity equal" ) << -inf << -inf << -1.0 << true;
+  QTest::newRow( "opposite infinities" ) << inf << -inf << -1.0 << false;
+}
+
+void TestQgis::testDoubleNear()
+{
+  QFETCH( double, a );
+  QFETCH( double, b );
+  QFETCH( double, epsilon );
+  QFETCH( bool, expected );
+
+  if ( epsilon < 0.0 )
+    QCOMPARE( qgsDoubleNear( a, b ), expected );
+  else
+    QCOMPARE( qgsDoubleNear( a, b, epsilon ), expected );
+}
+
 void TestQgis::testDoubleLessThanOrNear_data()
 {
   QTest::addColumn<double>( "a" );
@@ -899,6 +939,9 @@ void TestQgis::testDoubleLessThanOrNear_data()
 
   QTest::newRow( "infinity less" ) << -inf << inf << -1.0 << true;
   QTest::newRow( "infinity greater" ) << inf << -inf << -1.0 << false;
+
+  QTest::newRow( "positive infinity equal" ) << inf << inf << -1.0 << true;
+  QTest::newRow( "negative infinity equal" ) << -inf << -inf << -1.0 << true;
 }
 
 void TestQgis::testDoubleLessThanOrNear()
@@ -944,6 +987,9 @@ void TestQgis::testDoubleGreaterThanOrNear_data()
 
   QTest::newRow( "infinity greater" ) << inf << -inf << -1.0 << true;
   QTest::newRow( "infinity less" ) << -inf << inf << -1.0 << false;
+
+  QTest::newRow( "positive infinity equal" ) << inf << inf << -1.0 << true;
+  QTest::newRow( "negative infinity equal" ) << -inf << -inf << -1.0 << true;
 }
 
 void TestQgis::testDoubleGreaterThanOrNear()
