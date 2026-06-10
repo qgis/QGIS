@@ -286,7 +286,7 @@ algorithm with matching ID.
     void showDataViewerDock( const QString &childId, const QString &paramName );
 %Docstring
 Emitted when the user opts to view the previous log from the child
-algorithm with matching ID.
+algorithm with matching ID and parameter name.
 
 .. versionadded:: 4.2
 %End
