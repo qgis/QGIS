@@ -324,6 +324,17 @@ void QgsModelArrowItem::setDataViewerButton( const QString &childId, const QStri
 }
 
 
+void QgsModelArrowItem::RemoveDataViewerButton()
+{
+  if ( mDataViewerButton )
+  {
+    scene()->removeItem( mDataViewerButton );
+    delete mDataViewerButton;
+    mDataViewerButton = nullptr;
+  }
+}
+
+
 void QgsModelArrowItem::updatePath()
 {
   QList<QPointF> controlPoints;
