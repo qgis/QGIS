@@ -7222,9 +7222,10 @@ inline bool qgsNanCompatibleEquals( double a, double b )
   if ( a == b )
     return true;
 
-  const bool aIsNan = std::isnan( a );
-  const bool bIsNan = std::isnan( b );
-  return aIsNan && bIsNan;
+  if ( std::isnan( a ) && std::isnan( b ) ) [[unlikely]]
+    return true;
+
+  return false;
 }
 
 #ifndef SIP_RUN
@@ -7251,9 +7252,10 @@ template<typename T> inline bool qgsNumberNear( T a, T b, T epsilon = std::numer
     return true;
 
   // defer expensive nan checks to last -- calling std::isnan is NOT cheap!
-  const bool aIsNan = std::isnan( a );
-  const bool bIsNan = std::isnan( b );
-  return aIsNan && bIsNan;
+  if ( std::isnan( a ) && std::isnan( b ) ) [[unlikely]]
+    return true;
+
+  return false;
 }
 #endif
 
@@ -7289,7 +7291,10 @@ inline bool qgsDoubleLessThanOrNear( double a, double b, double epsilon = 4 * st
     return true;
 
   // defer expensive nan checks to last -- calling std::isnan is NOT cheap!
-  return std::isnan( a ) && std::isnan( b );
+  if ( std::isnan( a ) && std::isnan( b ) ) [[unlikely]]
+    return true;
+
+  return false;
 }
 
 /**
@@ -7313,7 +7318,10 @@ inline bool qgsDoubleGreaterThanOrNear( double a, double b, double epsilon = 4 *
     return true;
 
   // defer expensive nan checks to last -- calling std::isnan is NOT cheap!
-  return std::isnan( a ) && std::isnan( b );
+  if ( std::isnan( a ) && std::isnan( b ) ) [[unlikely]]
+    return true;
+
+  return false;
 }
 
 /**
