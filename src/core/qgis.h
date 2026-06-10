@@ -7219,12 +7219,12 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
  */
 inline bool qgsNanCompatibleEquals( double a, double b )
 {
+  if ( a == b )
+    return true;
+
   const bool aIsNan = std::isnan( a );
   const bool bIsNan = std::isnan( b );
-  if ( aIsNan || bIsNan )
-    return aIsNan && bIsNan;
-
-  return a == b;
+  return aIsNan && bIsNan;
 }
 
 #ifndef SIP_RUN
@@ -7243,13 +7243,17 @@ template<typename T> inline bool qgsNumberNear( T a, T b, T epsilon = std::numer
   if ( a == b )
     return true;
 
+  // if either 'a' or 'b' is NaN, 'diff' becomes NaN.
+  // comparisons (>= or <=) against NaN evaluate to false, which will fallback
+  // to the nan related logic at the end of this function
+  const T diff = a - b;
+  if ( diff >= -epsilon && diff <= epsilon )
+    return true;
+
+  // defer expensive nan checks to last -- calling std::isnan is NOT cheap!
   const bool aIsNan = std::isnan( a );
   const bool bIsNan = std::isnan( b );
-  if ( aIsNan || bIsNan )
-    return aIsNan && bIsNan;
-
-  const T diff = a - b;
-  return diff >= -epsilon && diff <= epsilon;
+  return aIsNan && bIsNan;
 }
 #endif
 
@@ -7274,7 +7278,18 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  */
 inline bool qgsDoubleLessThanOrNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
-  return a < b || qgsNumberNear<double>( a, b, epsilon );
+  // fast check first
+  if ( a <= b )
+    return true;
+
+  // => a > b
+  // => a - b > 0
+  // we only need to check the upper epsilon bound for the fuzzy equality
+  if ( a - b <= epsilon )
+    return true;
+
+  // defer expensive nan checks to last -- calling std::isnan is NOT cheap!
+  return std::isnan( a ) && std::isnan( b );
 }
 
 /**
@@ -7287,7 +7302,18 @@ inline bool qgsDoubleLessThanOrNear( double a, double b, double epsilon = 4 * st
  */
 inline bool qgsDoubleGreaterThanOrNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
-  return a > b || qgsNumberNear<double>( a, b, epsilon );
+  // fast check first
+  if ( a >= b )
+    return true;
+
+  // => a < b
+  // => b - a > 0
+  // we only need to check the upper epsilon bound for the fuzzy equality
+  if ( b - a <= epsilon )
+    return true;
+
+  // defer expensive nan checks to last -- calling std::isnan is NOT cheap!
+  return std::isnan( a ) && std::isnan( b );
 }
 
 /**
