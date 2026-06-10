@@ -2006,7 +2006,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   // had to do was to reset the data source in case the validity changed.
   if ( !layerWasStored )
   {
-    mapLayer.release();
+    mapLayer.release(); // NOLINT(bugprone-unused-return-value)
   }
 
   return layerIsValid;

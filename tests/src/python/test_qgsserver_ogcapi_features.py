@@ -81,7 +81,7 @@ class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
         os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
 
     # Set to True in child classes to re-generate reference files for this class
-    regeregenerate_api_reference = True
+    regenerate_api_reference = False
 
     def _getJsonResponse(self, url, project):
         request = QgsBufferServerRequest(url)

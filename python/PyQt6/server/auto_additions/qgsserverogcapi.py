@@ -29,7 +29,7 @@ QgsServerOgcApi.Profile.RFC7946.__doc__ = "GeoJSON profile according to RFC7946"
 QgsServerOgcApi.Profile.REL_AS_LINK.__doc__ = "JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link"
 QgsServerOgcApi.Profile.REL_AS_KEY.__doc__ = "JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key"
 QgsServerOgcApi.Profile.REL_AS_URI.__doc__ = "JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri"
-QgsServerOgcApi.Profile.__doc__ = """JSON profile
+QgsServerOgcApi.Profile.__doc__ = """
 
 * ``NONE``: No profile
 * ``RFC7946``: GeoJSON profile according to RFC7946
