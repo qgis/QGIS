@@ -61,9 +61,14 @@ class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction
     QgsElevationControllerSettingsAction( QWidget *parent = nullptr );
 
     QgsDoubleSpinBox *sizeSpin();
+    QToolButton *lockButton();
+
+  protected:
+    bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
     QgsDoubleSpinBox *mSizeSpin = nullptr;
+    QToolButton *mLockButton = nullptr;
 };
 
 
