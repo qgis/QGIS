@@ -185,7 +185,7 @@ RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     bison \
     ccache \
-    clang \
+    clang-22 \
     cmake \
     flex \
     mold \
@@ -235,6 +235,8 @@ RUN  apt-get update \
     ocl-icd-opencl-dev \
   && apt-get clean
 
+RUN update-alternatives --install /usr/bin/clang   clang   /usr/bin/clang-22  220 \
+    --slave /usr/bin/clang++ clang++ /usr/bin/clang++-22
 
 ENV PATH="/usr/local/bin:${PATH}"
 
