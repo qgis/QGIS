@@ -752,8 +752,8 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
 {
   //get line positions
   mGridLines.clear();
-  yGridLines();
-  xGridLines();
+  calculateYGridLines();
+  calculateXGridLines();
 
   if ( calculateLinesOnly || mGridLines.empty() )
     return;
@@ -1848,11 +1848,11 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( const double value, Qgis::Ma
   return QString(); // no warnings
 }
 
-int QgsLayoutItemMapGrid::xGridLines() const
+void QgsLayoutItemMapGrid::calculateXGridLines() const
 {
   if ( !mMap || mEvaluatedIntervalY <= 0.0 )
   {
-    return 1;
+    return;
   }
 
   QPolygonF mapPolygon = mMap->transformedMapPolygon();
@@ -1900,7 +1900,7 @@ int QgsLayoutItemMapGrid::xGridLines() const
       currentLevel += gridIntervalY;
       gridLineCount++;
     }
-    return 0;
+    return;
   }
 
   //the four border lines
@@ -1942,16 +1942,13 @@ int QgsLayoutItemMapGrid::xGridLines() const
     }
     currentLevel += gridIntervalY;
   }
-
-
-  return 0;
 }
 
-int QgsLayoutItemMapGrid::yGridLines() const
+void QgsLayoutItemMapGrid::calculateYGridLines() const
 {
   if ( !mMap || mEvaluatedIntervalX <= 0.0 )
   {
-    return 1;
+    return;
   }
 
   QPolygonF mapPolygon = mMap->transformedMapPolygon();
@@ -1999,7 +1996,7 @@ int QgsLayoutItemMapGrid::yGridLines() const
       currentLevel += gridIntervalX;
       gridLineCount++;
     }
-    return 0;
+    return;
   }
 
   //the four border lines
@@ -2041,8 +2038,6 @@ int QgsLayoutItemMapGrid::yGridLines() const
     }
     currentLevel += gridIntervalX;
   }
-
-  return 0;
 }
 
 int QgsLayoutItemMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, const QgsCoordinateTransform &t ) const
