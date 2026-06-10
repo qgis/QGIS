@@ -7260,6 +7260,32 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
 }
 
 /**
+ * Compare two doubles to see if one is less than the other or very near to the other.
+ * \param a first double
+ * \param b second double
+ * \param epsilon maximum tolerance when comparing near values
+ *
+ * \since QGIS 4.2
+ */
+inline bool qgsDoubleLessThanOrNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
+{
+  return a < b || qgsNumberNear<double>( a, b, epsilon );
+}
+
+/**
+ * Compare two doubles to see if one is greater than the other or very near to the other.
+ * \param a first double
+ * \param b second double
+ * \param epsilon maximum tolerance when comparing near values
+ *
+ * \since QGIS 4.2
+ */
+inline bool qgsDoubleGreaterThanOrNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
+{
+  return a > b || qgsNumberNear<double>( a, b, epsilon );
+}
+
+/**
  * Compare two floats (but allow some difference)
  * \param a first float
  * \param b second float
