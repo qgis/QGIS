@@ -15,8 +15,9 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.server import QgsServerSettings, QgsServerSettingsEnv
+from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
+from qgis.server import QgsServer, QgsServerSettings, QgsServerSettingsEnv
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 
@@ -256,6 +257,38 @@ class TestQgsServerSettings(unittest.TestCase):
         env = QgsServerSettingsEnv.QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES
         name = QgsServerSettings.name(env)
         self.assertEqual(name, "QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES")
+
+
+class TestQgsServerSettingsCache(unittest.TestCase):
+    def test_env_cache_settings(self):
+        env_cache_size = "QGIS_SERVER_CACHE_SIZE"
+        env_cache_directory = "QGIS_SERVER_CACHE_DIRECTORY"
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        log_path = os.path.join(temp_path, "qgisserv.log")
+
+        # set environment variables for cache settings
+        os.environ[env_cache_size] = "4096"
+        os.environ[env_cache_directory] = os.path.join(temp_path, "cache")
+        os.environ["QGIS_SERVER_LOG_LEVEL"] = "0"
+        os.environ["QGIS_SERVER_LOG_FILE"] = log_path
+
+        app = QgsApplication([], False, "server")
+        server = QgsServer()
+        # Note: QgsNetworkDiskCache is not in the bindings
+        #        so we cannot access it from nam
+        # Check the logs for maximumCacheSize and cacheDirectory
+        with open(log_path) as log_file:
+            logs = log_file.read()
+            self.assertIn("maximumCacheSize: 4096", logs)
+            self.assertIn("cacheDirectory: " + os.path.join(temp_path, "cache"), logs)
+
+        # clear environment variables
+        os.environ.pop(env_cache_size)
+        os.environ.pop(env_cache_directory)
+        os.environ.pop("QGIS_SERVER_LOG_LEVEL")
+        os.environ.pop("QGIS_SERVER_LOG_FILE")
 
 
 if __name__ == "__main__":
