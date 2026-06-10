@@ -462,10 +462,14 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
     }
     return false;
   }
-  else
+  else if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
   {
     QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
     return layer && layer->isSpatial() && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
+  }
+  else
+  {
+    return false;
   }
 }
 

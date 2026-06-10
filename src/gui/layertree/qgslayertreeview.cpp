@@ -986,7 +986,7 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
   {
     return true;
   }
-  else
+  else if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
   {
     QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
     if ( !layer )
@@ -1000,6 +1000,10 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
     if ( mHideValidLayers && layer->isValid() )
       return false;
 
+    return true;
+  }
+  else
+  {
     return true;
   }
 }
