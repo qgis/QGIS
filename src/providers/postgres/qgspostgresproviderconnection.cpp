@@ -218,11 +218,11 @@ void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, c
   executeSqlPrivate( u"ALTER TABLE %1.%2 RENAME TO %3"_s.arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( newName ) ) );
 
   const QgsDataSourceUri dsUri { uri() };
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( dsUri, false ), -1, false );
+  auto conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
 
   if ( conn )
   {
-    if ( QgsPostgresUtils::tableExists( conn, u"public"_s, u"layer_styles"_s ) )
+    if ( QgsPostgresUtils::tableExists( conn->get(), u"public"_s, u"layer_styles"_s ) )
     {
       try
       {
@@ -234,8 +234,6 @@ void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, c
         QgsDebugError( u"Failed to update layer_styles table: %1"_s.arg( e.what() ) );
       }
     }
-
-    QgsPostgresConnPool::instance()->releaseConnection( conn );
   }
 }
 
