@@ -29,6 +29,8 @@ echo "::group::Install clang tidy"
 apt install -y clang-tidy
 echo "::endgroup::"
 
+cd ${SRCDIR}
+
 # Make the clang-tidy report warnings as errors
 # TODO We are currently using clang 20. When switching to clang 21, we could
 # directly add this option to clang-tidy-diff call
@@ -39,7 +41,7 @@ echo "${bold}Run clang-tidy on modifications...${endbold}"
 # We need to add build/src/test dir as extra include directories because when clang-tidy tries to process qgstest.h
 # it has no compile_commands.json instructions to know what are include directories
 # It manages to figure out for other headers though, I don't get how...
-if ! cat pr.diff | clang-tidy-diff -p1 -path=${CTEST_BUILD_DIR} -use-color -extra-arg=-I${CTEST_BUILD_DIR}/src/test/; then
+if ! git diff $DIFF_RANGE | clang-tidy-diff -p1 -path=${CTEST_BUILD_DIR} -use-color -extra-arg=-I${CTEST_BUILD_DIR}/src/test/; then
   echo -e "\e[1;34mTo reproduce locally:"
   echo -e "\e[1;34m - launch cmake with option -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
   echo -e "\e[1;34m - update build by calling Ninja"
