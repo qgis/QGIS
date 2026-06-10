@@ -205,7 +205,15 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     SIP_SKIP void setShowBadge( bool visible );
 
 
-    SIP_SKIP void setDataViewerButton( QgsModelDesignerDataViewerButtonGraphicItem *button );
+    SIP_SKIP void setDataViewerButton( const QString &childId = QString(), const QString &paramOrOutputName = QString() );
+
+  signals:
+    /**
+     * Emitted when the user opts to view the previous log from the child algorithm with matching ID and paramName.
+     *
+     * \since QGIS 4.2
+     */
+    void showDataViewerDock( const QString &childId, const QString &paramName );
 
   public slots:
 

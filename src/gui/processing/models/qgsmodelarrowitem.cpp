@@ -303,12 +303,23 @@ void QgsModelArrowItem::setShowBadge( bool visible )
   }
 }
 
-void QgsModelArrowItem::setDataViewerButton( QgsModelDesignerDataViewerButtonGraphicItem *button )
+void QgsModelArrowItem::setDataViewerButton( const QString &childId, const QString &paramOrOutputName )
 {
-  mDataViewerButton = button;
+  if ( mDataViewerButton )
+  {
+    scene()->removeItem( mDataViewerButton );
+    delete mDataViewerButton;
+    mDataViewerButton = nullptr;
+  }
+
+  QgsModelDesignerDataViewerButtonGraphicItem *openDataViewerButton = new QgsModelDesignerDataViewerButtonGraphicItem( this );
+  mDataViewerButton = openDataViewerButton;
   if ( mDataViewerButton )
   {
     mDataViewerButton->setPosition();
+    connect( openDataViewerButton, &QgsModelDesignerDataViewerButtonGraphicItem::clicked, this, [this, childId = childId, paramOrOutputName = paramOrOutputName] {
+      emit showDataViewerDock( childId, paramOrOutputName );
+    } );
   }
 }
 
