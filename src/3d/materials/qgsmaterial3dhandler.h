@@ -180,11 +180,7 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      * correct shader from the start.
      */
     virtual QgsMaterial *toInstancedMaterial(
-      const QgsAbstractMaterialSettings *settings,
-      const QgsMaterialContext &context,
-      Qgis::InstancedMaterialFlags flags,
-      const QMatrix3x3 &axisTransform = QMatrix3x3(),
-      const QMatrix4x4 &nodeTransform = QMatrix4x4()
+      const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform = QMatrix4x4()
     ) const;
 
     /**

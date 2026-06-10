@@ -41,6 +41,8 @@ QgsGoochMaterial::QgsGoochMaterial( QNode *parent )
   , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 100.0f ) )
   , mAlphaParameter( new Qt3DRender::QParameter( u"alpha"_s, 0.25f ) )
   , mBetaParameter( new Qt3DRender::QParameter( u"beta"_s, 0.5f ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"normalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   setDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
   setSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
@@ -80,46 +82,25 @@ void QgsGoochMaterial::init()
   technique->addRenderPass( renderPass );
 
   effect->addTechnique( technique );
+  effect->addParameter( mTransformParameter );
+  effect->addParameter( mNormalTransformParameter );
   setEffect( effect );
 
   updateShaders();
 }
 
-void QgsGoochMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform )
+void QgsGoochMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
 {
   mInstanced = enabled;
   mInstanceFlags = flags;
-
-  if ( mInstanced )
-  {
-    const QMatrix3x3 nodeNormalTransform = nodeTransform.normalMatrix();
-
-    if ( !mNodeTransformParameter )
-    {
-      mNodeTransformParameter = new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( nodeTransform ), this );
-      addParameter( mNodeTransformParameter );
-    }
-    else
-      mNodeTransformParameter->setValue( QVariant::fromValue( nodeTransform ) );
-
-    if ( !mAxisTransformParameter )
-    {
-      mAxisTransformParameter = new Qt3DRender::QParameter( u"axisTransform"_s, QVariant::fromValue( axisTransform ), this );
-      addParameter( mAxisTransformParameter );
-    }
-    else
-      mAxisTransformParameter->setValue( QVariant::fromValue( axisTransform ) );
-
-    if ( !mNodeNormalTransformParameter )
-    {
-      mNodeNormalTransformParameter = new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( nodeNormalTransform ), this );
-      addParameter( mNodeNormalTransformParameter );
-    }
-    else
-      mNodeNormalTransformParameter->setValue( QVariant::fromValue( nodeNormalTransform ) );
-  }
-
   updateShaders();
+}
+
+void QgsGoochMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
+{
+  const QMatrix3x3 normalTransform = transform.normalMatrix();
+  mTransformParameter->setValue( QVariant::fromValue( transform ) );
+  mNormalTransformParameter->setValue( QVariant::fromValue( normalTransform ) );
 }
 
 void QgsGoochMaterial::updateShaders()

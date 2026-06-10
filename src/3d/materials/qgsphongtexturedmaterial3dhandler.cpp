@@ -117,7 +117,7 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
 }
 
 QgsMaterial *QgsPhongTexturedMaterial3DHandler::toInstancedMaterial(
-  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
 ) const
 {
   const QgsPhongTexturedMaterialSettings *phongSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( settings );
@@ -125,7 +125,8 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toInstancedMaterial(
 
   QgsPhongTexturedMaterial *material = new QgsPhongTexturedMaterial();
   material->setObjectName( u"phongTexturedMaterial"_s );
-  material->setInstancingEnabled( true, flags, axisTransform, nodeTransform );
+  material->setInstancingEnabled( true, flags );
+  material->setInstancingMeshTransform( transform );
 
   const float opacity = static_cast<float>( phongSettings->opacity() );
   QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();

@@ -40,7 +40,7 @@ QgsMaterial *QgsNullMaterial3DHandler::toMaterial( const QgsAbstractMaterialSett
       case Qgis::MaterialRenderingTechnique::InstancedPoints:
       {
         QgsHighlightMaterial *mat = new QgsHighlightMaterial();
-        mat->setInstancingEnabled( true, Qgis::InstancedMaterialFlags(), QMatrix3x3(), QMatrix4x4() );
+        mat->setInstancingEnabled( true, Qgis::InstancedMaterialFlags() );
         return mat;
       }
       case Qgis::MaterialRenderingTechnique::Lines:

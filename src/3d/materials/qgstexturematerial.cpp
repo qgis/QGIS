@@ -39,6 +39,8 @@ QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
   , mGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"normalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   init();
 }
@@ -68,6 +70,8 @@ void QgsTextureMaterial::init()
   mGL3RenderPass->setShaderProgram( mGL3Shader );
   mGL3Technique->addRenderPass( mGL3RenderPass );
   effect->addTechnique( mGL3Technique );
+  effect->addParameter( mTransformParameter );
+  effect->addParameter( mNormalTransformParameter );
 
   setEffect( effect );
 }
@@ -82,39 +86,13 @@ Qt3DRender::QAbstractTexture *QgsTextureMaterial::texture() const
   return mTextureParameter->value().value<Qt3DRender::QAbstractTexture *>();
 }
 
-void QgsTextureMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform )
+void QgsTextureMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
 {
   mInstanced = enabled;
   mInstanceFlags = flags;
 
   if ( mInstanced )
   {
-    const QMatrix3x3 nodeNormalTransform = nodeTransform.normalMatrix();
-
-    if ( !mNodeTransformParameter )
-    {
-      mNodeTransformParameter = new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( nodeTransform ), this );
-      addParameter( mNodeTransformParameter );
-    }
-    else
-      mNodeTransformParameter->setValue( QVariant::fromValue( nodeTransform ) );
-
-    if ( !mAxisTransformParameter )
-    {
-      mAxisTransformParameter = new Qt3DRender::QParameter( u"axisTransform"_s, QVariant::fromValue( axisTransform ), this );
-      addParameter( mAxisTransformParameter );
-    }
-    else
-      mAxisTransformParameter->setValue( QVariant::fromValue( axisTransform ) );
-
-    if ( !mNodeNormalTransformParameter )
-    {
-      mNodeNormalTransformParameter = new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( nodeNormalTransform ), this );
-      addParameter( mNodeNormalTransformParameter );
-    }
-    else
-      mNodeNormalTransformParameter->setValue( QVariant::fromValue( nodeNormalTransform ) );
-
     QStringList defines = { u"HAS_TEXTURE"_s };
     if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
       defines << u"USE_INSTANCE_SCALE"_s;
@@ -127,6 +105,12 @@ void QgsTextureMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMate
   {
     mGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/texture.vert"_s ) ) );
   }
+}
+
+void QgsTextureMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
+{
+  mTransformParameter->setValue( QVariant::fromValue( transform ) );
+  // mNormalTransformParameter->setValue( QVariant::fromValue( transform.normalMatrix() ) );
 }
 
 ///@endcond PRIVATE

@@ -45,6 +45,8 @@ QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )
   , mGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mShaderProgram( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"normalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   setAmbient( QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
   setSpecular( QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
@@ -82,43 +84,16 @@ void QgsPhongTexturedMaterial::init()
   mEffect->addParameter( mSpecularParameter );
   mEffect->addParameter( mShininessParameter );
   mEffect->addParameter( mOpacityParameter );
+  mEffect->addParameter( mTransformParameter );
+  mEffect->addParameter( mNormalTransformParameter );
 
   setEffect( mEffect );
 }
 
-void QgsPhongTexturedMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform )
+void QgsPhongTexturedMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
 {
   mInstanced = enabled;
   mInstanceFlags = flags;
-
-  if ( mInstanced )
-  {
-    const QMatrix3x3 nodeNormalTransform = nodeTransform.normalMatrix();
-
-    if ( !mNodeTransformParameter )
-    {
-      mNodeTransformParameter = new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( nodeTransform ), this );
-      addParameter( mNodeTransformParameter );
-    }
-    else
-      mNodeTransformParameter->setValue( QVariant::fromValue( nodeTransform ) );
-
-    if ( !mAxisTransformParameter )
-    {
-      mAxisTransformParameter = new Qt3DRender::QParameter( u"axisTransform"_s, QVariant::fromValue( axisTransform ), this );
-      addParameter( mAxisTransformParameter );
-    }
-    else
-      mAxisTransformParameter->setValue( QVariant::fromValue( axisTransform ) );
-
-    if ( !mNodeNormalTransformParameter )
-    {
-      mNodeNormalTransformParameter = new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( nodeNormalTransform ), this );
-      addParameter( mNodeNormalTransformParameter );
-    }
-    else
-      mNodeNormalTransformParameter->setValue( QVariant::fromValue( nodeNormalTransform ) );
-  }
 
   updateShaders();
 }
@@ -148,6 +123,13 @@ void QgsPhongTexturedMaterial::updateShaders()
     mShaderProgram->setVertexShaderCode( vertexCode );
   }
   mShaderProgram->setFragmentShaderCode( fragCode );
+}
+
+void QgsPhongTexturedMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
+{
+  const QMatrix3x3 normalTransform = transform.normalMatrix();
+  mTransformParameter->setValue( QVariant::fromValue( transform ) );
+  mNormalTransformParameter->setValue( QVariant::fromValue( normalTransform ) );
 }
 
 void QgsPhongTexturedMaterial::setAmbient( const QColor &ambient )

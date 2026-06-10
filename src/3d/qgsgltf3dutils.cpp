@@ -855,9 +855,9 @@ QVector<Qt3DCore::QEntity *> QgsGltf3DUtils::createInstancedEntities(
 
     // Enable instancing on the material
     if ( QgsMetalRoughMaterial *pbrMat = qobject_cast<QgsMetalRoughMaterial *>( material.get() ) )
-      pbrMat->setInstancingEnabled( true, Qgis::InstancedMaterialFlag::DataDefinedScale | Qgis::InstancedMaterialFlag::DataDefinedRotation, QMatrix3x3(), QMatrix4x4() );
+      pbrMat->setInstancingEnabled( true, Qgis::InstancedMaterialFlag::DataDefinedScale | Qgis::InstancedMaterialFlag::DataDefinedRotation );
     else if ( QgsTextureMaterial *texMat = qobject_cast<QgsTextureMaterial *>( material.get() ) )
-      texMat->setInstancingEnabled( true, Qgis::InstancedMaterialFlag::DataDefinedScale | Qgis::InstancedMaterialFlag::DataDefinedRotation, QMatrix3x3(), QMatrix4x4() );
+      texMat->setInstancingEnabled( true, Qgis::InstancedMaterialFlag::DataDefinedScale | Qgis::InstancedMaterialFlag::DataDefinedRotation );
 
     // Build geometry with raw positions (no transform, no axis flip)
     auto geom = std::make_unique<Qt3DCore::QGeometry>();

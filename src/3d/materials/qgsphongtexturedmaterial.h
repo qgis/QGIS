@@ -60,7 +60,9 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
      * texture coordinate support. \a flags controls which per-instance attributes
      * (scale, rotation) are active.
      */
-    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform );
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+    //! Sets the mesh transform
+    void setInstancingMeshTransform( const QMatrix4x4 &transform );
 
   public slots:
     //! Sets ambient color, must be a SRGB color
@@ -106,15 +108,14 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
 
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
-    Qt3DRender::QParameter *mNodeTransformParameter = nullptr;
-    Qt3DRender::QParameter *mAxisTransformParameter = nullptr;
-    Qt3DRender::QParameter *mNodeNormalTransformParameter = nullptr;
 
     Qt3DRender::QEffect *mEffect = nullptr;
     Qt3DRender::QTechnique *mGL3Technique = nullptr;
     Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
+    Qt3DRender::QParameter *mTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
 
     bool mDataDefinedTextureTransformEnabled = false;
 };

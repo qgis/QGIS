@@ -56,7 +56,9 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
      * When \a enabled is TRUE the material uses the instanced vertex shader.
      * \a flags controls which per-instance attributes (scale, rotation) are active.
      */
-    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags, const QMatrix3x3 &axisTransform, const QMatrix4x4 &nodeTransform );
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+    //! Sets the mesh transform
+    void setInstancingMeshTransform( const QMatrix4x4 &transform );
 
     ~QgsPhongMaterial() override;
 
@@ -90,9 +92,8 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
     bool mDataDefinedEnabled = false;
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
-    Qt3DRender::QParameter *mNodeTransformParameter = nullptr;
-    Qt3DRender::QParameter *mAxisTransformParameter = nullptr;
-    Qt3DRender::QParameter *mNodeNormalTransformParameter = nullptr;
+    Qt3DRender::QParameter *mTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
 };
 
 ///@endcond PRIVATE

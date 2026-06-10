@@ -30,6 +30,7 @@
 #include "qgsmaterial3dhandler.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgsobj3dutils.h"
+#include "qgsphongmaterial.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgspoint3dbillboardmaterial.h"
@@ -330,19 +331,21 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   if ( hasDataDefinedRotation )
     flags |= Qgis::InstancedMaterialFlag::DataDefinedRotation;
 
-  const QMatrix3x3 axisTransform = Qgs3DUtils::axisTransformMatrix( u"y"_s, u"z"_s );
+  const QMatrix3x3 axisTransform = Qgs3DUtils::axisTransformMatrix( u"y"_s, u"-z"_s );
+  const QMatrix4x4 nodeTransform( axisTransform );
 
   if ( materialContext.isHighlighted() )
   {
     QgsHighlightMaterial *mat = new QgsHighlightMaterial();
-    mat->setInstancingEnabled( true, flags, axisTransform, QMatrix4x4() );
+    mat->setInstancingEnabled( true, flags );
+    mat->setInstancingMeshTransform( nodeTransform );
     return mat;
   }
 
   const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
   if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
   {
-    return handler->toInstancedMaterial( settings, materialContext, flags, axisTransform );
+    return handler->toInstancedMaterial( settings, materialContext, flags, nodeTransform );
   }
 
   return nullptr;
@@ -793,37 +796,45 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
     rotationAttribute->setBuffer( rotationBufferData );
     geom->addAttribute( rotationAttribute );
 
+    const QMatrix4x4 nodeTransform = QMatrix4x4( axisTransform ) * mesh.nodeTransform;
+
     QgsMaterial *mat = nullptr;
     if ( materialContext.isHighlighted() )
     {
       QgsHighlightMaterial *highlightMaterial = new QgsHighlightMaterial();
-      highlightMaterial->setInstancingEnabled( true, instancedFlags, axisTransform, mesh.nodeTransform );
+      highlightMaterial->setInstancingEnabled( true, instancedFlags );
+      highlightMaterial->setInstancingMeshTransform( nodeTransform );
       mat = highlightMaterial;
     }
     else if ( useEmbeddedTexture )
     {
-      if ( !materialContext.isSelected() && mesh.material )
+      if ( QgsPhongTexturedMaterial *phongTexMat = qobject_cast<QgsPhongTexturedMaterial *>( mesh.material.get() ) )
       {
-        if ( QgsPhongTexturedMaterial *phongTexMat = qobject_cast<QgsPhongTexturedMaterial *>( mesh.material.get() ) )
-          phongTexMat->setInstancingEnabled( true, instancedFlags, axisTransform, mesh.nodeTransform );
-        else if ( QgsMetalRoughMaterial *pbrMat = qobject_cast<QgsMetalRoughMaterial *>( mesh.material.get() ) )
-          pbrMat->setInstancingEnabled( true, instancedFlags, axisTransform, mesh.nodeTransform );
-        else if ( QgsTextureMaterial *gltfTexMat = qobject_cast<QgsTextureMaterial *>( mesh.material.get() ) )
-          gltfTexMat->setInstancingEnabled( true, instancedFlags, axisTransform, mesh.nodeTransform );
-        mat = mesh.material.release();
+        phongTexMat->setInstancingEnabled( true, instancedFlags );
+        phongTexMat->setInstancingMeshTransform( nodeTransform );
       }
-      if ( !mat )
+      else if ( QgsPhongMaterial *phongMat = qobject_cast<QgsPhongMaterial *>( mesh.material.get() ) )
       {
-        QgsPhongMaterialSettings phongSettings;
-        if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( &phongSettings ) )
-          mat = handler->toInstancedMaterial( &phongSettings, materialContext, instancedFlags, axisTransform, mesh.nodeTransform );
+        phongMat->setInstancingEnabled( true, instancedFlags );
+        phongMat->setInstancingMeshTransform( nodeTransform );
       }
+      else if ( QgsMetalRoughMaterial *pbrMat = qobject_cast<QgsMetalRoughMaterial *>( mesh.material.get() ) )
+      {
+        pbrMat->setInstancingEnabled( true, instancedFlags );
+        pbrMat->setInstancingMeshTransform( nodeTransform );
+      }
+      else if ( QgsTextureMaterial *gltfTexMat = qobject_cast<QgsTextureMaterial *>( mesh.material.get() ) )
+      {
+        gltfTexMat->setInstancingEnabled( true, instancedFlags );
+        gltfTexMat->setInstancingMeshTransform( nodeTransform );
+      }
+      mat = mesh.material.release();
     }
     else
     {
       const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
       if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
-        mat = handler->toInstancedMaterial( settings, materialContext, instancedFlags, axisTransform, mesh.nodeTransform );
+        mat = handler->toInstancedMaterial( settings, materialContext, instancedFlags, nodeTransform );
     }
 
     if ( !mat )

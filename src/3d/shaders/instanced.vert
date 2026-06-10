@@ -27,8 +27,6 @@ out vec4 worldTangent;
 
 uniform mat4 nodeTransform;
 
-uniform mat3 axisTransform;
-
 uniform mat3 nodeNormalTransform;
 
 uniform mat4 modelMatrix;
@@ -62,20 +60,17 @@ void main()
 
     // order of operations are:
     // 1. Apply node transform
-    // 2. Apply axis transform
-    // 3. Apply either per-instance scale or default symbol scale
-    // 4. Apply either per-instance rotation or default symbol rotation
-    // 5. Apply per-instance translation
+    // 2. Apply either per-instance scale or default symbol scale
+    // 3. Apply either per-instance rotation or default symbol rotation
+    // 4. Apply per-instance translation
 
-    vec3 nodePosition = (nodeTransform * vec4(vertexPosition, 1.0)).xyz;
-    vec3 axisPosition = axisTransform * nodePosition;
+    vec3 axisPosition = (nodeTransform * vec4(vertexPosition, 1.0)).xyz;
     vec3 scaledPosition = axisPosition * thisScale;
     vec3 rotatedPosition = rotateByQuat(scaledPosition, thisRotation);
     vec3 vertexPositionChunk = rotatedPosition + instanceTranslation;
 
     // for normals:
-    vec3 nodeNormal = nodeNormalTransform * vertexNormal;
-    vec3 axisNormal = axisTransform * nodeNormal;
+    vec3 axisNormal = nodeNormalTransform * vertexNormal;
     vec3 scaledNormal = axisNormal / thisScale;
     vec3 rotatedNormal = rotateByQuat(scaledNormal, thisRotation);
 
@@ -88,8 +83,7 @@ void main()
 #endif
 
 #ifdef HAS_TANGENT
-    vec3 nodeTangent = mat3(nodeTransform) * vertexTangent.xyz;
-    vec3 axisTangent = axisTransform * nodeTangent;
+    vec3 axisTangent = mat3(nodeTransform) * vertexTangent.xyz;
     vec3 scaledTangent = axisTangent * thisScale;
     vec3 rotatedTangent = rotateByQuat(scaledTangent, thisRotation);
     worldTangent.xyz = normalize(vec3(modelMatrix * vec4(rotatedTangent, 0.0)));
