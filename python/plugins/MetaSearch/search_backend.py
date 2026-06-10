@@ -169,14 +169,14 @@ class CSW202Search(SearchBase):
 
 
 class OARecSearch(SearchBase):
-    def __init__(self, url, timeout, auth):
+    def __init__(self, url, timeout, username=None, password=None, auth=None):
         try:
             from owslib.ogcapi.records import Records
         except ModuleNotFoundError:
             # OWSLIB_OAREC_SUPPORTED already set to False
             pass
 
-        super().__init__(url, timeout, auth)
+        super().__init__(url, timeout, username, password, auth)
 
         self.type = CATALOG_TYPES[1]
         self.format = "json"
