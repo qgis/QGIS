@@ -843,6 +843,11 @@ if (PEDANTIC)
       set(_warnings "${_warnings} -Wno-deprecated-copy")
     endif()
 
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16)
+      # GCC16 sets -Wsfinae-incomplete by default which throws warnings for some Qt headers (qmetatype.h)
+      set(_warnings "${_warnings} -Wno-sfinae-incomplete")
+    endif()
+
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
 
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
