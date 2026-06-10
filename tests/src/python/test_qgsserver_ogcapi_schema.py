@@ -93,6 +93,8 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
+        # Default url has changed in QGIS 4 stick to /wfs3 for the tests
+        os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
         # Register the provider
         r = QgsProviderRegistry.instance()
         metadata = QgsProviderMetadata(
@@ -443,6 +445,7 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         j = self._getJsonResponse(
             "http://server.qgis.org/wfs3/collections/layer1/schema.json", project
         )
+
         self.assertEqual(
             j["properties"]["geom1"],
             {"format": "geometry-any", "type": "string", "x-ogc-propertySeq": 2},
