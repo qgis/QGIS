@@ -1,8 +1,8 @@
 /***************************************************************************
   qgsrubberbandrenderview.h
   --------------------------------------
-  Date                 : august 2022
-  Copyright            : (C) 2022 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
+  Date                 : June 2026
+  Copyright            : (C) 2026 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
   Email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************
  *                                                                         *
@@ -44,7 +44,7 @@ namespace Qt3DCore
  * an RGB texture that can be captured into a QImage and sent to the CPU for
  * calculating real 3D points from mouse coordinates (for zoom, rotation, drag..)
  *
- * \since QGIS 3.44
+ * \since QGIS 4.2
  */
 class QgsRubberBandRenderView : public QgsAbstractRenderView
 {
@@ -54,7 +54,8 @@ class QgsRubberBandRenderView : public QgsAbstractRenderView
     //! Returns entity for all rubber bands (to show them always on top)
     Qt3DCore::QEntity *rubberBandEntity() const;
 
-    Qt3DRender::QRenderTargetSelector *renderTargetSelector() { return mRenderTargetSelector; };
+    //! Returns rubberband tard selector
+    Qt3DRender::QRenderTargetSelector *renderTargetSelector() const;
 
   private:
     Qt3DRender::QLayer *mLayer = nullptr;
