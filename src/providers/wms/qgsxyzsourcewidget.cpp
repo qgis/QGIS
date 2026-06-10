@@ -47,6 +47,7 @@ QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   connect( mAuthSettings, &QgsAuthSettingsWidget::configIdChanged, this, &QgsProviderSourceWidget::changed );
   connect( mAuthSettings, &QgsAuthSettingsWidget::usernameChanged, this, &QgsProviderSourceWidget::changed );
   connect( mAuthSettings, &QgsAuthSettingsWidget::passwordChanged, this, &QgsProviderSourceWidget::changed );
+  connect( mHttpHeaders, &QgsHttpHeaderWidget::changed, this, &QgsProviderSourceWidget::changed );
   connect( mComboTileResolution, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProviderSourceWidget::changed );
 
   mInterpretationCombo = new QgsWmsInterpretationComboBox( this );
