@@ -33,7 +33,7 @@
         <file>shaders/ssao_factor_render.vert</file>
         <file>shaders/ssao_factor_blur.frag</file>
         <file>shaders/ssao_factor_blur.vert</file>
-        <file>shaders/metalrough.frag</file>
+        <file>shaders/pbr.frag</file>
         <file>shaders/default.vert</file>
         <file>shaders/texture.frag</file>
         <file>shaders/texture.vert</file>
@@ -44,6 +44,6 @@
         <file>shaders/shadows.inc.frag</file>
         <file>shaders/bloom_downsample.frag</file>
         <file>shaders/bloom_upsample.frag</file>
-        <file>shaders/metalroughDataDefined.vert</file>
+        <file>shaders/pbrDataDefined.vert</file>
     </qresource>
 </RCC>

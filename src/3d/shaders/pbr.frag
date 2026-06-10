@@ -32,7 +32,7 @@ uniform vec4 baseColor;
 
 #ifdef METALNESS_MAP
 uniform sampler2D metalnessMap;
-#else
+#elif defined(METALNESS)
 uniform float metalness;
 #endif
 
@@ -693,8 +693,10 @@ void main()
 
 #ifdef METALNESS_MAP
     float m = texture(metalnessMap, activeTexCoord).r;
-#else
+#elif defined(METALNESS)
     float m = metalness;
+#else
+    float m = 0;
 #endif
 
 #ifdef ROUGHNESS_MAP
