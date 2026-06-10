@@ -63,8 +63,16 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   mMenu->addAction( mInvertDirectionAction );
 
   connect( mSettingsAction->sizeSpin(), qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size ) {
-    if ( mSettingsAction->lockButton()->isChecked() )
+    if ( mSettingsAction->sizeSpin()->isCleared() )
+    {
+      setFixedRangeSize( -1 );
+      setRange( rangeLimits() );
+      whileBlocking( mSettingsAction->sizeSpin() )->setValue( rangeLimits().upper() - rangeLimits().lower() );
+    }
+    else if ( mSettingsAction->lockButton()->isChecked() )
+    {
       setFixedRangeSize( size );
+    }
   } );
   connect( mSettingsAction->lockButton(), &QToolButton::toggled, this, [this]( bool locked ) {
     if ( locked )
@@ -474,7 +482,7 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   mSizeSpin->setDecimals( 4 );
   mSizeSpin->setMinimum( 0.0 );
   mSizeSpin->setMaximum( 999999999.0 );
-  mSizeSpin->setShowClearButton( false );
+  mSizeSpin->setClearValue( 0, tr( "Full Range" ) );
   mSizeSpin->setKeyboardTracking( false );
   mSizeSpin->setToolTip( tr( "Currently visible elevation range" ) );
   mSizeSpin->installEventFilter( this );
@@ -511,7 +519,8 @@ bool QgsElevationControllerSettingsAction::eventFilter( QObject *watched, QEvent
     if ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter )
     {
       mSizeSpin->interpretText();
-      mLockButton->setChecked( true );
+      if ( !mSizeSpin->isCleared() )
+        mLockButton->setChecked( true );
     }
   }
   return QWidgetAction::eventFilter( watched, event );
