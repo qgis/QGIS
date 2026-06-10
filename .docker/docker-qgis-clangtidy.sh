@@ -45,6 +45,6 @@ if ! git diff $DIFF_RANGE | clang-tidy-diff -p1 -path=${CTEST_BUILD_DIR} -use-co
   echo -e "\e[1;34mTo reproduce locally:"
   echo -e "\e[1;34m - launch cmake with option -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
   echo -e "\e[1;34m - update build by calling Ninja"
-  echo -e "\e[1;34m - launch command: clang-tidy -p <your_build_dir> <source_file>"
+  echo -e "\e[1;34m - launch command ./scripts/clang-tidy.sh -p <your_build_dir> <source_file>"
   exit 1
 fi
