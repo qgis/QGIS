@@ -1,8 +1,8 @@
 /***************************************************************************
   qgsrubberbandrenderview.cpp
   --------------------------------------
-  Date                 : August 2022
-  Copyright            : (C) 2022 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
+  Date                 : June 2026
+  Copyright            : (C) 2026 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
   Email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************
  *                                                                         *
@@ -78,3 +78,8 @@ Qt3DCore::QEntity *QgsRubberBandRenderView::rubberBandEntity() const
 {
   return mRubberBandsRootEntity;
 }
+
+Qt3DRender::QRenderTargetSelector *QgsRubberBandRenderView::renderTargetSelector() const
+{
+  return mRenderTargetSelector;
+};
