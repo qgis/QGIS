@@ -898,6 +898,40 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertAlmostEqual(results.zRange().lower(), 15.0, 2)
         self.assertAlmostEqual(results.zRange().upper(), 22.5000, 2)
 
+    def testPolygonGenerationFollowingLinestringZExactly(self):
+        """
+        Test that a purely vertical line from a polygon is correctly
+        handled by the generator
+        """
+        vl = QgsVectorLayer("PolygonZ?crs=EPSG:3857", "polygon", "memory")
+        self.assertTrue(vl.isValid())
+
+        polygon_wkt = "Polygon Z ((547405.88 6150237.19 0, 547405.88 6150237.19 5, 547413.39 6150203.24 5, 547413.39 6150203.24 0, 547405.88 6150237.19 0))"
+        feature = QgsFeature()
+        feature.setGeometry(QgsGeometry.fromWkt(polygon_wkt))
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            "LineString (547394.297515 6150220.613784, 547416.10922 6150225.219982)"
+        )
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+        results = generator.takeResults()
+
+        self.assertEqual(
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
+            {14.9: 5.0},
+        )
+
+        self.assertAlmostEqual(results.zRange().lower(), 0.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 5.0, 2)
+
     def testPolygonGenerationTerrain(self):
         vl = QgsVectorLayer("PolygonZ?crs=EPSG:27700", "lines", "memory")
         self.assertTrue(vl.isValid())
