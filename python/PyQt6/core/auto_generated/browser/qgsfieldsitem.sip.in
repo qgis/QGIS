@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsFieldsItem : QgsDataItem
 {
 %Docstring(signature="appended")
@@ -149,6 +151,14 @@ Returns the field definition.
 
     virtual bool equal( const QgsDataItem *other );
 
+
+    void setDomain( const QgsFieldDomain *domain );
+%Docstring
+Sets the domain for the field. The item will take ownership of the
+domain and update its display name to include the domain name.
+
+.. versionadded:: 4.2
+%End
 
 };
 

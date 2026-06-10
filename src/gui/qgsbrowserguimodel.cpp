@@ -17,6 +17,7 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsdataitemguiproviderregistry.h"
+#include "qgsfieldsitem.h"
 #include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgsmessagebar.h"
@@ -144,6 +145,16 @@ bool QgsBrowserGuiModel::dropMimeData( const QMimeData *data, Qt::DropAction act
     }
   }
   return false;
+}
+
+QVariant QgsBrowserGuiModel::data( const QModelIndex &index, int role ) const
+{
+  if ( role == Qt::EditRole )
+  {
+    if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( dataItem( index ) ) )
+      return fieldItem->field().name();
+  }
+  return QgsBrowserModel::data( index, role );
 }
 
 bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &value, int role )
