@@ -2485,7 +2485,10 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/lines.shp")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
-        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.LineString)
+        if int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 14, 0):
+            self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.LineString)
+        else:
+            self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.MultiLineString)
         self.assertEqual(res[0].geometryColumnName(), "")
         self.assertEqual(res[0].driverName(), "ESRI Shapefile")
 
@@ -3301,7 +3304,10 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
-        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.Polygon)
+        if int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 14, 0):
+            self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.Polygon)
+        else:
+            self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.MultiPolygon)
         self.assertEqual(res[0].geometryColumnName(), "")
         self.assertEqual(res[0].driverName(), "ESRI Shapefile")
         vl = res[0].toLayer(options)
@@ -3787,9 +3793,14 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(table.geometryColumnCount(), 1)
         self.assertEqual(len(table.geometryColumnTypes()), 1)
         self.assertEqual(table.geometryColumnTypes()[0].crs, layer.crs())
-        self.assertEqual(
-            table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Type.LineString
-        )
+        if int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 14, 0):
+            self.assertEqual(
+                table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Type.LineString
+            )
+        else:
+            self.assertEqual(
+                table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Type.MultiLineString
+            )
         self.assertEqual(
             table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector
         )
@@ -3802,9 +3813,14 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(table.geometryColumnCount(), 1)
         self.assertEqual(len(table.geometryColumnTypes()), 1)
         self.assertEqual(table.geometryColumnTypes()[0].crs, layer.crs())
-        self.assertEqual(
-            table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Type.LineString
-        )
+        if int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 14, 0):
+            self.assertEqual(
+                table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Type.LineString
+            )
+        else:
+            self.assertEqual(
+                table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Type.MultiLineString
+            )
         self.assertEqual(
             table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector
         )
