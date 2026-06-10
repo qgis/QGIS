@@ -7240,6 +7240,9 @@ template<typename T> inline bool qgsNumberNear( T a, T b, T epsilon = std::numer
 {
   static_assert( std::is_floating_point<T>::value, "qgsNumberNear requires floating-point types" );
 
+  if ( a == b )
+    return true;
+
   const bool aIsNan = std::isnan( a );
   const bool bIsNan = std::isnan( b );
   if ( aIsNan || bIsNan )
