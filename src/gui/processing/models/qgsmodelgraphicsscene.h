@@ -293,7 +293,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void showChildAlgorithmLog( const QString &childId );
 
     /**
-     * Emitted when the user opts to view the previous log from the child algorithm with matching ID.
+     * Emitted when the user opts to view the previous log from the child algorithm with matching ID and parameter name.
      *
      * \since QGIS 4.2
      */
