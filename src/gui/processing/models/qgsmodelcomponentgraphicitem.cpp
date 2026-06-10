@@ -1448,6 +1448,18 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
             }
           }
         }
+
+        // const QVariantMap outputs = results.outputs();
+        for ( auto it = outputs.constBegin(); it != outputs.constEnd(); ++it )
+        {
+          if ( const QgsProcessingOutputDefinition *outputDefinition = algorithm->outputDefinition( it.key() ); outputDefinition && outputDefinition->isMapLayer() )
+          {
+            for ( QgsModelArrowItem *arrow : arrows )
+            {
+              arrow->setDataViewerButton( child->childId(), it.key() );
+            }
+          }
+        }
       }
     }
   }
