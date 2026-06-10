@@ -7238,6 +7238,8 @@ inline bool qgsNanCompatibleEquals( double a, double b )
  */
 template<typename T> inline bool qgsNumberNear( T a, T b, T epsilon = std::numeric_limits<T>::epsilon() * 4 )
 {
+  static_assert( std::is_floating_point<T>::value, "qgsNumberNear requires floating-point types" );
+
   const bool aIsNan = std::isnan( a );
   const bool bIsNan = std::isnan( b );
   if ( aIsNan || bIsNan )
