@@ -77,6 +77,8 @@ class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
+        # Default url has changed in QGIS 4 stick to /wfs3 for the tests
+        os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
 
     # Set to True in child classes to re-generate reference files for this class
     regeregenerate_api_reference = True
