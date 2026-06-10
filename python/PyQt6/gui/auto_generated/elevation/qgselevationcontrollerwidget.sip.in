@@ -22,6 +22,11 @@ class QgsElevationControllerSettingsAction : QWidgetAction
     QgsElevationControllerSettingsAction( QWidget *parent = 0 );
 
     QgsDoubleSpinBox *sizeSpin();
+    QToolButton *lockButton();
+
+  protected:
+    virtual bool eventFilter( QObject *watched, QEvent *event );
+
 
 };
 

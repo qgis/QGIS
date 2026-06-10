@@ -7,6 +7,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsElevationControllerSettingsAction.__overridden_methods__ = ['eventFilter']
     QgsElevationControllerSettingsAction.__group__ = ['elevation']
 except (NameError, AttributeError):
     pass
