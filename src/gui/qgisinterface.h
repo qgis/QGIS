@@ -970,7 +970,7 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
 
-    //! Adds an action (icon) to the plugins toolbar
+    //! Adds an action (icon only, no text) to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 
     /**
