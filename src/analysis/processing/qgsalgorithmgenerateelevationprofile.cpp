@@ -125,29 +125,7 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  QStringList fileFilters;
-  const auto supportedFormats { QImageWriter::supportedImageFormats() };
-  for ( const QByteArray &format : supportedFormats )
-  {
-    if ( format == "svg" )
-    {
-      continue;
-    }
-
-    const QString longName = format.toUpper() + QObject::tr( " format" );
-    const QString glob = QStringLiteral( "*." ) + format;
-
-    if ( format == "png" && !fileFilters.empty() )
-    {
-      fileFilters.insert( 0, QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() ) );
-    }
-    else
-    {
-      fileFilters.append( QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() ) );
-    }
-  }
-
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output image" ), fileFilters.join( QLatin1String( ";;" ) ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output image" ), QgsProcessingUtils::supportedImageFileFilters() ) );
 }
 
 QString QgsGenerateElevationProfileAlgorithm::name() const
