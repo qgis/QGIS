@@ -59,6 +59,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspostprocessingentity.h"
+#include "qgsrubberbandrenderview.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsshadowrenderview.h"
 #include "qgsskyboxentity.h"
@@ -1481,7 +1482,8 @@ void Qgs3DMapScene::onOriginChanged()
     transform->setOrigin( mMap.origin() );
   }
 
-  const QList<QgsGeoTransform *> rubberBandGeoTransforms = mEngine->frameGraph()->rubberBandsRootEntity()->findChildren<QgsGeoTransform *>();
+  Qt3DCore::QEntity *parentEntity = mEngine->frameGraph()->rubberBandRenderView().rubberBandEntity();
+  const QList<QgsGeoTransform *> rubberBandGeoTransforms = parentEntity->findChildren<QgsGeoTransform *>();
   for ( QgsGeoTransform *transform : rubberBandGeoTransforms )
   {
     transform->setOrigin( mMap.origin() );

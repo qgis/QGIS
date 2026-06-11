@@ -64,6 +64,7 @@ class QgsOverlayTextureEntity;
 class QgsOverlayTextureRenderView;
 class QgsPostprocessingEntity;
 class QgsPostprocessingRenderView;
+class QgsRubberBandRenderView;
 class QgsRectangle;
 class QgsShadowRenderView;
 class QgsShadowSettings;
@@ -94,9 +95,6 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
-
-    //! Returns entity for all rubber bands (to show them always on top)
-    Qt3DCore::QEntity *rubberBandsRootEntity() { return mRubberBandsRootEntity; }
 
     //! Returns the render capture object used to take an image of the scene
     Qt3DRender::QRenderCapture *renderCapture();
@@ -245,6 +243,12 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     QgsPostprocessingRenderView &postprocessingRenderView();
 
     /**
+     * Returns rubber band renderview
+     * \since QGIS 3.44
+     */
+    QgsRubberBandRenderView &rubberBandRenderView();
+
+    /**
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
      * \since QGIS 3.44
      */
@@ -292,6 +296,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     //! Postprocessing render view name
     static const QString sPostprocRenderView;
     static const QString sHighlightsRenderView;
+    static const QString sRubberRenderView;
 
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
@@ -310,21 +315,11 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QRenderCapture *mThumbnailCapture = nullptr;
     Qt3DRender::QTexture2D *mThumbnailTexture = nullptr;
 
-    // Rubber bands pass
-    Qt3DRender::QCameraSelector *mRubberBandsCameraSelector = nullptr;
-    Qt3DRender::QLayerFilter *mRubberBandsLayerFilter = nullptr;
-    Qt3DRender::QRenderStateSet *mRubberBandsStateSet = nullptr;
-    Qt3DRender::QRenderTargetSelector *mRubberBandsRenderTargetSelector = nullptr;
-
     QSize mSize = QSize( 1024, 768 );
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
     Qt3DCore::QEntity *mRootEntity = nullptr;
-
-    Qt3DRender::QLayer *mRubberBandsLayer = nullptr;
-
-    Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
     //! depth texture debugging
     QgsOverlayTextureEntity *mDepthTextureDebugging = nullptr;
@@ -337,7 +332,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();
     void constructBloomRenderPass();
-    Qt3DRender::QFrameGraphNode *constructRubberBandsPass();
+    void constructRubberBandsPass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
     void constructMsaaBlitNodes();
 
     void constructThumbnailCapturePass();
