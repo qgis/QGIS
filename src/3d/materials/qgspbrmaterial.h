@@ -16,6 +16,7 @@
 #ifndef QGSPBRMATERIAL_H
 #define QGSPBRMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
