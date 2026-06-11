@@ -228,7 +228,7 @@ class CORE_EXPORT QgsCircularString : public QgsCurve
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Rfc7946 ) const override SIP_SKIP;
     bool isEmpty() const override SIP_HOLDGIL;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
     int numPoints() const override SIP_HOLDGIL;

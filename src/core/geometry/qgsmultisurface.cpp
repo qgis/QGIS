@@ -122,7 +122,7 @@ QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QSt
 }
 
 
-json QgsMultiSurface::asJsonObject( int precision ) const
+json QgsMultiSurface::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json polygons( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )

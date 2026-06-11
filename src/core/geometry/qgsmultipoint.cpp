@@ -204,7 +204,7 @@ QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QStri
   return elemMultiPoint;
 }
 
-json QgsMultiPoint::asJsonObject( int precision ) const
+json QgsMultiPoint::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json j {
     { "type", "MultiPoint" },

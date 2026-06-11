@@ -139,7 +139,7 @@ QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const 
   return elemMultiCurve;
 }
 
-json QgsMultiLineString::asJsonObject( int precision ) const
+json QgsMultiLineString::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : mGeometries )

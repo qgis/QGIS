@@ -935,7 +935,7 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   return elemLineString;
 }
 
-json QgsLineString::asJsonObject( int precision ) const
+json QgsLineString::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   QgsPointSequence pts;
   points( pts );

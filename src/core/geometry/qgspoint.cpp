@@ -355,7 +355,7 @@ QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &n
 }
 
 
-json QgsPoint::asJsonObject( int precision ) const
+json QgsPoint::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json j {
     { "type", "Point" },

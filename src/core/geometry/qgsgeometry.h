@@ -2383,11 +2383,18 @@ class CORE_EXPORT QgsGeometry
     QString asJson( int precision = 17 ) const;
 
     /**
+     * Export the geometry to a GeoJSON string, with the given \a precision and following the specified GeoJSON \a profile.
+     * Note: this is identical to asJson() when using the Rfc7946 profile, but differs when using other profiles.
+     * \since QGIS 4.2
+     */
+    QString asGeoJson( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Rfc7946 ) const;
+
+    /**
      * Exports the geometry to a json object.
      * \note not available in Python bindings
      * \since QGIS 3.8
      */
-    virtual json asJsonObject( int precision = 17 ) const SIP_SKIP;
+    virtual json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Rfc7946 ) const SIP_SKIP;
 
     /**
      * Attempts to coerce this geometry into the specified destination \a type.

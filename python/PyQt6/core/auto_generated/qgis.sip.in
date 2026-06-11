@@ -2786,6 +2786,13 @@ The development version
     typedef QFlags<Qgis::LegendJsonRenderFlag> LegendJsonRenderFlags;
 
 
+    enum class GeoJsonProfile /BaseType=IntEnum/
+    {
+      Rfc7946,
+      JsonFg,
+      JsonFgPlus,
+    };
+
     enum class ActionType /BaseType=IntEnum/
     {
       Invalid,

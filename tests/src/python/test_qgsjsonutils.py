@@ -31,6 +31,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QT_VERSION_STR, QLocale, Qt, QVariant
 from qgis.testing import QgisTestCase, start_app
+from utilities import compareWkt
 
 start_app()
 
@@ -1637,6 +1638,17 @@ class TestQgsJsonUtils(QgisTestCase):
                 }"""
         )
         self.assertTrue(res.isNull())
+
+    def test_as_geojson(self):
+        """Test GeoJson round trip with JSON-FG profile"""
+
+        # CircularString
+        wkt = "CIRCULARSTRING (0 0, 1 1, 2 2)"
+        geom = QgsGeometry.fromWkt(wkt)
+        self.assertTrue(compareWkt(geom.asWkt(), wkt))
+        j = geom.asGeoJson(0, Qgis.GeoJsonProfile.JsonFg)
+        geom2 = QgsJsonUtils.geometryFromGeoJson(j)
+        self.assertTrue(compareWkt(geom2.asWkt(), wkt))
 
 
 if __name__ == "__main__":
