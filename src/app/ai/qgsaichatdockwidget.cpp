@@ -92,6 +92,7 @@
 #include <QSet>
 #include <QSize>
 #include <QSizePolicy>
+#include <QStandardItemModel>
 #include <QString>
 #include <QStringList>
 #include <QTextCursor>
@@ -185,6 +186,40 @@ namespace
       QPointer<QgsAiWorkspaceIndex> mIndex;
       QString mWorkspaceRoot;
       QList<QgsAiWorkspaceIndex::WorkspaceFileSnapshot> mSnapshot;
+      QString mErrorMessage;
+  };
+
+  class ManualLayerIndexTask final : public QgsTask
+  {
+    public:
+      ManualLayerIndexTask( QgsAiWorkspaceIndex *index, const QgsAiWorkspaceIndex::WorkspaceLayerSnapshot &snapshot )
+        : QgsTask( QObject::tr( "Rebuild AI layer index" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
+        , mIndex( index )
+        , mSnapshot( snapshot )
+      {}
+
+      QString errorMessage() const { return mErrorMessage; }
+
+    protected:
+      bool run() override
+      {
+        if ( !mIndex )
+        {
+          mErrorMessage = QObject::tr( "Workspace index is unavailable." );
+          return false;
+        }
+
+        QString error;
+        const bool ok = mIndex->reindexLayerSnapshot( mSnapshot, &error );
+        mIndex->closeDatabaseConnectionForCurrentThread();
+        if ( !ok )
+          mErrorMessage = error;
+        return ok && !isCanceled();
+      }
+
+    private:
+      QPointer<QgsAiWorkspaceIndex> mIndex;
+      QgsAiWorkspaceIndex::WorkspaceLayerSnapshot mSnapshot;
       QString mErrorMessage;
   };
 
@@ -2531,8 +2566,24 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QComboBox *embeddingProvider = new QComboBox( &dialog );
   embeddingProvider->setObjectName( u"aiEmbeddingProviderComboBox"_s );
-  for ( const QString &providerId : QgsAiEmbeddingProviderRegistry::providerIds() )
-    embeddingProvider->addItem( QgsAiEmbeddingProviderRegistry::displayNameForProviderId( providerId ), providerId );
+  for ( const QgsAiEmbeddingProviderUiEntry &entry : QgsAiEmbeddingProviderRegistry::providerUiEntries() )
+  {
+    embeddingProvider->addItem( entry.displayName, entry.providerId );
+    const int row = embeddingProvider->count() - 1;
+    if ( !entry.unavailableReason.isEmpty() )
+      embeddingProvider->setItemData( row, entry.unavailableReason, Qt::ToolTipRole );
+    if ( !entry.selectable )
+    {
+      if ( QStandardItemModel *itemModel = qobject_cast<QStandardItemModel *>( embeddingProvider->model() ) )
+      {
+        if ( QStandardItem *item = itemModel->item( row ) )
+        {
+          item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          item->setToolTip( entry.unavailableReason );
+        }
+      }
+    }
+  }
   const QString configuredEmbeddingProvider = QgsAiEmbeddingProviderRegistry::configuredProviderId();
   const int embeddingProviderIndex = embeddingProvider->findData( configuredEmbeddingProvider );
   embeddingProvider->setCurrentIndex( embeddingProviderIndex >= 0 ? embeddingProviderIndex : 0 );
@@ -2569,6 +2620,7 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   auto refreshEmbeddingStatusLabel = [embeddingProvider, embeddingStatusLabel, downloadEmbeddingModelButton]() {
     const QString providerId = embeddingProvider->currentData().toString();
+    const bool e5Compiled = QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() );
     if ( QgsAiEmbeddingProviderRegistry::isRemoteProviderId( providerId ) )
     {
       embeddingStatusLabel->setText( tr( "Remote workspace indexing will use %1 only because it is explicitly selected here. Saved OpenAI/OpenRouter keys do not switch indexing by themselves." ).arg( QgsAiEmbeddingProviderRegistry::displayNameForProviderId( providerId ) ) );
@@ -2576,6 +2628,13 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
     else if ( providerId == QgsAiE5EmbeddingProvider::staticProviderId() )
     {
+      if ( !e5Compiled )
+      {
+        embeddingStatusLabel->setText( tr( "Local multilingual E5 is not available in this build because ONNX Runtime and SentencePiece support were not found at compile time. Use MinHash or rebuild Strata with those dependencies." ) );
+        downloadEmbeddingModelButton->setVisible( false );
+        downloadEmbeddingModelButton->setEnabled( false );
+        return;
+      }
       QString filesError;
       const QString modelDir = QgsAiE5EmbeddingProvider::activeModelDirectory();
       const bool filesAvailable = QgsAiE5EmbeddingProvider::modelFilesAvailable( modelDir, &filesError );
@@ -2595,7 +2654,11 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
     else
     {
-      embeddingStatusLabel->setText( tr( "Local MinHash fallback is available and runs on this computer without an API key. Semantic quality is lower than multilingual E5." ) );
+      embeddingStatusLabel->setText(
+        e5Compiled
+          ? tr( "Local MinHash fallback is available and runs on this computer without an API key. Semantic quality is lower than multilingual E5." )
+          : tr( "Local MinHash fallback is available and runs on this computer without an API key. Multilingual E5 requires ONNX Runtime and SentencePiece support in the Strata build." )
+      );
       downloadEmbeddingModelButton->setVisible( false );
     }
   };
@@ -2777,7 +2840,7 @@ void QgsAiChatDockWidget::openProviderSettings()
     taskManager->addTask( task, 1 );
   } );
 
-  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingProvider, confirmRebuild, refreshIndexStatusLabel]() {
+  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, rebuildLayerIndexButton, ensureEmbeddingProvider, confirmRebuild, refreshIndexStatusLabel]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
 
@@ -2787,18 +2850,49 @@ void QgsAiChatDockWidget::openProviderSettings()
     if ( !confirmRebuild( tr( "layer index" ) ) )
       return;
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
     QString err;
-    const bool ok = mSessionManager->workspaceIndex()->reindexLayers( &err );
-    QApplication::restoreOverrideCursor();
-    if ( !ok )
+    QgsAiWorkspaceIndex::WorkspaceLayerSnapshot snapshot;
+    if ( !mSessionManager->workspaceIndex()->createWorkspaceLayerSnapshot( snapshot, &err ) )
     {
       QMessageBox::warning( &dialog, tr( "Layer reindex failed" ), err.isEmpty() ? tr( "Unknown error." ) : err );
       return;
     }
-    refreshIndexStatusLabel();
-    const auto status = mSessionManager->workspaceIndex()->status();
-    QMessageBox::information( &dialog, tr( "Layer reindex" ), tr( "Done — %1 layer chunks indexed." ).arg( status.layerChunkCount ) );
+
+    QgsTaskManager *taskManager = QgsApplication::taskManager();
+    if ( !taskManager )
+    {
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+      const bool ok = mSessionManager->workspaceIndex()->reindexLayerSnapshot( snapshot, &err );
+      QApplication::restoreOverrideCursor();
+      if ( !ok )
+      {
+        QMessageBox::warning( &dialog, tr( "Layer reindex failed" ), err.isEmpty() ? tr( "Unknown error." ) : err );
+        return;
+      }
+      refreshIndexStatusLabel();
+      const auto status = mSessionManager->workspaceIndex()->status();
+      QMessageBox::information( &dialog, tr( "Layer reindex" ), tr( "Done — %1 layer chunks indexed." ).arg( status.layerChunkCount ) );
+      return;
+    }
+
+    rebuildLayerIndexButton->setEnabled( false );
+    ManualLayerIndexTask *task = new ManualLayerIndexTask( mSessionManager->workspaceIndex(), snapshot );
+    connect( task, &QgsTask::taskCompleted, &dialog, [this, &dialog, rebuildLayerIndexButton, refreshIndexStatusLabel]() {
+      rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
+      refreshIndexStatusLabel();
+      if ( mSessionManager && mSessionManager->workspaceIndex() )
+      {
+        const auto status = mSessionManager->workspaceIndex()->status();
+        QMessageBox::information( &dialog, tr( "Layer reindex" ), tr( "Done — %1 layer chunks indexed." ).arg( status.layerChunkCount ) );
+      }
+    } );
+    connect( task, &QgsTask::taskTerminated, &dialog, [&dialog, rebuildLayerIndexButton, task]() {
+      rebuildLayerIndexButton->setEnabled( true );
+      const QString taskError = task->errorMessage();
+      if ( !taskError.isEmpty() )
+        QMessageBox::warning( &dialog, QObject::tr( "Layer reindex failed" ), taskError );
+    } );
+    taskManager->addTask( task, 1 );
   } );
 
   layout->addLayout( indexingForm );

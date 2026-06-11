@@ -61,16 +61,25 @@ class CountingWorkspaceIndex : public QgsAiWorkspaceIndex
 
     bool reindexLayer( const QString &layerId, QString *errorMessage = nullptr ) override
     {
+      Q_UNUSED( layerId )
       Q_UNUSED( errorMessage )
-      reindexedLayerIds.append( layerId );
+      ++directReindexLayerCalls;
+      return false;
+    }
+
+    bool reindexLayerSnapshot( const QgsAiWorkspaceIndex::WorkspaceLayerSnapshot &snapshot, QString *errorMessage = nullptr ) override
+    {
+      Q_UNUSED( errorMessage )
+      reindexedLayerIds.append( snapshot.scopedLayerId );
       return true;
     }
 
+    int directReindexLayerCalls = 0;
     QStringList reindexedLayerIds;
 };
 
 /**
- * Index whose first reindexLayer() fails and trips the embedding provider to
+ * Index whose first reindexLayerSnapshot() fails and trips the embedding provider to
  * unavailable, simulating a remote 401/403 circuit breaker firing mid-batch.
  */
 class BreakerTrippingIndex : public QgsAiWorkspaceIndex
@@ -84,13 +93,22 @@ class BreakerTrippingIndex : public QgsAiWorkspaceIndex
 
     bool reindexLayer( const QString &layerId, QString *errorMessage = nullptr ) override
     {
-      reindexedLayerIds.append( layerId );
+      Q_UNUSED( layerId )
+      Q_UNUSED( errorMessage )
+      ++directReindexLayerCalls;
+      return false;
+    }
+
+    bool reindexLayerSnapshot( const QgsAiWorkspaceIndex::WorkspaceLayerSnapshot &snapshot, QString *errorMessage = nullptr ) override
+    {
+      reindexedLayerIds.append( snapshot.scopedLayerId );
       mAvailable = false; // the breaker trips on the first failed embed
       if ( errorMessage )
         *errorMessage = u"authentication failed"_s;
       return false;
     }
 
+    int directReindexLayerCalls = 0;
     bool mAvailable = true;
     QStringList reindexedLayerIds;
 };
@@ -152,6 +170,7 @@ void TestQgsAiLayerIndexCoordinator::enablingSchedulesExistingLayers()
   QCOMPARE( doneSpy.first().at( 0 ).toString(), layer->id() );
   QCOMPARE( doneSpy.first().at( 1 ).toBool(), true );
   QCOMPARE( index.reindexedLayerIds, QStringList { layer->id() } );
+  QCOMPARE( index.directReindexLayerCalls, 0 );
 
   QgsProject::instance()->removeMapLayer( layer.release() );
 }
@@ -192,6 +211,7 @@ void TestQgsAiLayerIndexCoordinator::layerChangeSignalsAreDebounced()
   QCOMPARE( doneSpy.first().at( 0 ).toString(), layer->id() );
   QCOMPARE( doneSpy.first().at( 1 ).toBool(), true );
   QCOMPARE( index.reindexedLayerIds, QStringList { layer->id() } );
+  QCOMPARE( index.directReindexLayerCalls, 0 );
 
   QgsProject::instance()->removeMapLayer( layer.release() );
 }
@@ -261,6 +281,7 @@ void TestQgsAiLayerIndexCoordinator::disabledCoordinatorIgnoresProjectSignals()
   // Wait twice the debounce window — nothing should have fired.
   QTest::qWait( 200 );
   QCOMPARE( doneSpy.count(), 0 );
+  QCOMPARE( index.directReindexLayerCalls, 0 );
 
   QgsProject::instance()->removeMapLayer( layer.release() );
 }
@@ -321,6 +342,7 @@ void TestQgsAiLayerIndexCoordinator::providerUnavailableMidBatchStopsBatch()
   QTest::qWait( 300 ); // give any erroneous extra iterations a chance to fire
 
   QCOMPARE( index.reindexedLayerIds.size(), 1 );
+  QCOMPARE( index.directReindexLayerCalls, 0 );
   QCOMPARE( doneSpy.count(), 1 );
   QCOMPARE( doneSpy.first().at( 1 ).toBool(), false );
 

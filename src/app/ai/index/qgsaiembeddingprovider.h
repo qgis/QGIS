@@ -49,6 +49,14 @@ struct APP_EXPORT QgsAiEmbeddingModelDownloadFile
     qint64 size = 0;
 };
 
+struct APP_EXPORT QgsAiEmbeddingProviderUiEntry
+{
+    QString providerId;
+    QString displayName;
+    bool selectable = true;
+    QString unavailableReason;
+};
+
 /**
  * Local embedding provider interface used by the workspace index.
  *
@@ -177,6 +185,7 @@ class APP_EXPORT QgsAiEmbeddingProviderRegistry
     static QString defaultProviderId();
     static QString configuredProviderId();
     static void setConfiguredProviderId( const QString &providerId );
+    static QList<QgsAiEmbeddingProviderUiEntry> providerUiEntries();
     static QStringList providerIds();
     static QString displayNameForProviderId( const QString &providerId );
     static bool isRemoteProviderId( const QString &providerId );

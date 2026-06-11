@@ -803,6 +803,29 @@ QStringList QgsAiEmbeddingProviderRegistry::providerIds()
   return ids;
 }
 
+QList<QgsAiEmbeddingProviderUiEntry> QgsAiEmbeddingProviderRegistry::providerUiEntries()
+{
+  QList<QgsAiEmbeddingProviderUiEntry> entries;
+
+#ifdef HAVE_AI_E5_EMBEDDINGS
+  entries.append( { QgsAiE5EmbeddingProvider::staticProviderId(), u"Local multilingual E5 small (recommended)"_s, true, QString() } );
+#else
+  entries.append(
+    {
+      QgsAiE5EmbeddingProvider::staticProviderId(),
+      u"Local multilingual E5 small (not compiled)"_s,
+      false,
+      u"Local multilingual E5 requires ONNX Runtime and SentencePiece support in this build."_s,
+    }
+  );
+#endif
+
+  entries.append( { u"local:minihash-384"_s, u"Local MinHash fallback"_s, true, QString() } );
+  entries.append( { u"openai"_s, u"OpenAI"_s, true, QString() } );
+  entries.append( { u"openrouter"_s, u"OpenRouter"_s, true, QString() } );
+  return entries;
+}
+
 QString QgsAiEmbeddingProviderRegistry::displayNameForProviderId( const QString &providerId )
 {
   const QString normalized = providerId.trimmed().toLower();

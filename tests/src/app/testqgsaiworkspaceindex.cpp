@@ -4,6 +4,7 @@
   begin                : May 2026
 ***************************************************************************/
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 #include <utility>
@@ -14,6 +15,7 @@
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/tools/qgsaiindextools.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
@@ -199,6 +201,7 @@ class TestQgsAiWorkspaceIndex : public QObject
     void providerMetadataMismatchRebuildsIndex();
     void reindexAndSearchUseLocalProvider();
     void reindexLayersFailsWithoutLocalProvider();
+    void layerSnapshotsReindexWithoutDroppingFileChunks();
     void chunkerOutputPersistsAsLayerChunks();
     void reindexLayersToolRequiresConfirm();
 
@@ -478,6 +481,15 @@ void TestQgsAiWorkspaceIndex::embeddingProviderRegistryDefaultsToE5AndKeepsMinih
   QCOMPARE( QgsAiEmbeddingProviderRegistry::defaultProviderId(), e5ProviderListed ? QgsAiE5EmbeddingProvider::staticProviderId() : u"local:minihash-384"_s );
   QVERIFY( QgsAiEmbeddingProviderRegistry::providerIds().contains( u"local:minihash-384"_s ) );
 
+  const QList<QgsAiEmbeddingProviderUiEntry> uiEntries = QgsAiEmbeddingProviderRegistry::providerUiEntries();
+  auto e5UiIt = std::find_if( uiEntries.constBegin(), uiEntries.constEnd(), []( const QgsAiEmbeddingProviderUiEntry &entry ) {
+    return entry.providerId == QgsAiE5EmbeddingProvider::staticProviderId();
+  } );
+  QVERIFY( e5UiIt != uiEntries.constEnd() );
+  QCOMPARE( e5UiIt->selectable, e5ProviderListed );
+  if ( !e5ProviderListed )
+    QVERIFY2( e5UiIt->unavailableReason.contains( u"ONNX"_s, Qt::CaseInsensitive ) && e5UiIt->unavailableReason.contains( u"SentencePiece"_s, Qt::CaseInsensitive ), e5UiIt->unavailableReason.toUtf8().constData() );
+
   std::unique_ptr<QgsAiEmbeddingProvider> defaultProvider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( defaultProvider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
   if ( e5ProviderListed )
@@ -731,6 +743,51 @@ void TestQgsAiWorkspaceIndex::reindexLayersFailsWithoutLocalProvider()
   const QList<QgsAiWorkspaceIndex::Chunk> hits = index.search( u"alpha"_s, 1, &err );
   QVERIFY( hits.isEmpty() );
   QVERIFY2( err.contains( u"Local embedding model"_s, Qt::CaseInsensitive ), err.toUtf8().constData() );
+}
+
+void TestQgsAiWorkspaceIndex::layerSnapshotsReindexWithoutDroppingFileChunks()
+{
+  QgsProject::instance()->clear();
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  FakeEmbeddingProvider provider;
+  QgsAiWorkspaceIndex index( &contextProvider, &provider );
+
+  QString err;
+  QVERIFY2(
+    index.persistChunks( { makeFileChunk( u"notes.md"_s, 0, u"alpha file chunk"_s ) }, { dummyEmbedding( 0.3f ) }, QgsAiWorkspaceIndex::ReplaceScope::AllFiles, QString(), &err ),
+    err.toUtf8().constData()
+  );
+
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=EPSG:4326&field=name:string"_s, u"snapshot_points"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+  const QString layerId = layer->id();
+  QgsProject::instance()->addMapLayer( layer.get(), false );
+
+  QgsAiWorkspaceIndex::WorkspaceLayerSnapshot allSnapshot;
+  QVERIFY2( index.createWorkspaceLayerSnapshot( allSnapshot, &err ), err.toUtf8().constData() );
+  QCOMPARE( allSnapshot.scope, QgsAiWorkspaceIndex::ReplaceScope::AllLayers );
+  QCOMPARE( allSnapshot.layerCount, 1 );
+  QVERIFY( !allSnapshot.chunks.isEmpty() );
+
+  QVERIFY2( index.reindexLayerSnapshot( allSnapshot, &err ), err.toUtf8().constData() );
+  QCOMPARE( index.status().fileChunkCount, 1 );
+  QVERIFY( index.status().layerChunkCount > 0 );
+
+  QgsAiWorkspaceIndex::WorkspaceLayerSnapshot singleSnapshot;
+  QVERIFY2( index.createWorkspaceLayerSnapshotForLayer( layerId, singleSnapshot, &err ), err.toUtf8().constData() );
+  QCOMPARE( singleSnapshot.scope, QgsAiWorkspaceIndex::ReplaceScope::SingleLayer );
+  QCOMPARE( singleSnapshot.scopedLayerId, layerId );
+  QVERIFY( !singleSnapshot.chunks.isEmpty() );
+
+  QVERIFY2( index.reindexLayerSnapshot( singleSnapshot, &err ), err.toUtf8().constData() );
+  QCOMPARE( index.status().fileChunkCount, 1 );
+  QVERIFY( index.chunks( QgsAiWorkspaceIndex::ReplaceScope::SingleLayer, layerId ).size() > 0 );
+
+  QgsProject::instance()->removeMapLayer( layer.release() );
+  QgsProject::instance()->clear();
 }
 
 void TestQgsAiWorkspaceIndex::chunkerOutputPersistsAsLayerChunks()

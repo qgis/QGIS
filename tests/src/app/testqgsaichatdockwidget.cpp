@@ -475,7 +475,8 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool localStatusFound = false;
   bool downloadButtonFound = false;
   bool defaultProviderSelected = false;
-  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, e5ProviderListed]() {
+  bool e5UiStateFound = false;
+  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, e5ProviderListed]() {
     QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
     if ( settingsDialog )
     {
@@ -494,6 +495,12 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
         layerIndexingEnabled = layerIndexing->isEnabled();
       }
       defaultProviderSelected = providerCombo && providerCombo->currentData().toString() == QgsAiEmbeddingProviderRegistry::defaultProviderId();
+      if ( providerCombo )
+      {
+        const int e5Row = providerCombo->findData( QgsAiE5EmbeddingProvider::staticProviderId() );
+        const QModelIndex e5Index = providerCombo->model()->index( e5Row, 0 );
+        e5UiStateFound = e5Row >= 0 && e5Index.isValid() && static_cast<bool>( providerCombo->model()->flags( e5Index ) & Qt::ItemIsEnabled ) == e5ProviderListed;
+      }
       localStatusFound = e5ProviderListed
                            ? statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive )
                            : statusLabel && statusLabel->text().contains( u"MinHash"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"available"_s, Qt::CaseInsensitive );
@@ -535,6 +542,7 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   QVERIFY( localStatusFound );
   QVERIFY( downloadButtonFound );
   QVERIFY( defaultProviderSelected );
+  QVERIFY( e5UiStateFound );
   QCOMPARE( layerIndexingChecked, !e5ProviderListed );
   QCOMPARE( layerIndexingEnabled, !e5ProviderListed );
 }

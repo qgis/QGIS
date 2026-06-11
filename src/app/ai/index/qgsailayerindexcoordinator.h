@@ -19,6 +19,7 @@
 #include "qgis_app.h"
 
 #include <QObject>
+#include <QPointer>
 #include <QSet>
 #include <QString>
 #include <QTimer>
@@ -26,6 +27,7 @@
 class QgsAiWorkspaceIndex;
 class QgsMapLayer;
 class QgsProject;
+class QgsTask;
 
 /**
  * Listens to QgsProject layer-add/remove events and to per-layer data/editing
@@ -76,6 +78,7 @@ class APP_EXPORT QgsAiLayerIndexCoordinator : public QObject
     QgsProject *mProject = nullptr;
     QSet<QString> mDirtyLayers;
     QTimer mDebounceTimer;
+    QPointer<QgsTask> mRunningTask;
     bool mEnabled = false;
     int mDebounceMs = 5000;
 };

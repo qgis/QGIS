@@ -20,6 +20,7 @@
 
 #include <QDateTime>
 #include <QList>
+#include <QMutex>
 #include <QObject>
 #include <QRecursiveMutex>
 #include <QString>
@@ -115,6 +116,14 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
         qint64 sourceMTime = 0;
     };
 
+    struct WorkspaceLayerSnapshot
+    {
+        ReplaceScope scope = ReplaceScope::AllLayers;
+        QString scopedLayerId;
+        int layerCount = 0;
+        QList<Chunk> chunks;
+    };
+
     QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingProvider *embeddingProvider, QObject *parent = nullptr );
     ~QgsAiWorkspaceIndex() override;
 
@@ -139,6 +148,15 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
 
     //! Reindexes file chunks from a prebuilt snapshot without reading the context provider.
     bool reindex( const QList<WorkspaceFileSnapshot> &snapshot, const QString &workspaceRoot, QString *errorMessage = nullptr );
+
+    //! Creates immutable layer chunks on the caller thread for background indexing.
+    bool createWorkspaceLayerSnapshot( WorkspaceLayerSnapshot &snapshot, QString *errorMessage = nullptr ) const;
+
+    //! Creates immutable chunks for one layer id on the caller thread.
+    bool createWorkspaceLayerSnapshotForLayer( const QString &layerId, WorkspaceLayerSnapshot &snapshot, QString *errorMessage = nullptr ) const;
+
+    //! Embeds and persists a prebuilt layer snapshot without reading QgsProject or QgsMapLayer.
+    virtual bool reindexLayerSnapshot( const WorkspaceLayerSnapshot &snapshot, QString *errorMessage = nullptr );
 
     /**
      * Embeds \a query and returns the top-\a k chunks by cosine similarity.
@@ -233,6 +251,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     QList<CachedChunk> mCache;
     QDateTime mLastSync;
     bool mLoaded = false;
+    mutable QMutex mProviderUseMutex;
     mutable QRecursiveMutex mMutex;
 };
 
