@@ -248,6 +248,8 @@ ${conflict_markers}"
   assert_git_grep "HAVE_AI_ASSISTANT" src/app/CMakeLists.txt src/app/qgisapp.cpp src/app/qgisapp.h
   assert_git_grep "onnxruntime" CMakeLists.txt src/app/CMakeLists.txt vcpkg/vcpkg.json
   assert_git_grep "sentencepiece" CMakeLists.txt src/app/CMakeLists.txt vcpkg/vcpkg.json
+  assert_git_grep "HAVE_AI_E5_EMBEDDINGS" src/app/CMakeLists.txt src/app/ai/index/qgsaiembeddingprovider.cpp
+  assert_file_lacks "src/app/CMakeLists.txt" "onnxruntime[^\\n]*REQUIRED|sentencepiece[^\\n]*REQUIRED|onnxruntime_cxx_api\\.h[^\\n]*REQUIRED|sentencepiece_processor\\.h[^\\n]*REQUIRED"
 
   assert_file_contains ".github/workflows/build-macos-qt6.yml" "strata-app-"
   assert_file_contains ".github/workflows/build-macos-qt6.yml" "strata-sdk-"

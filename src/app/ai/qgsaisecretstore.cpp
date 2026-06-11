@@ -299,19 +299,25 @@ void QgsAiSecretStore::warnPlaintextStorageOnce()
 
 QString QgsAiSecretStore::encryptValue( const QString &plain )
 {
+  const EncryptionResult result = tryEncryptValue( plain );
+  return result.encrypted ? result.value : plain;
+}
+
+QgsAiSecretStore::EncryptionResult QgsAiSecretStore::tryEncryptValue( const QString &plain )
+{
   if ( plain.isEmpty() )
-    return QString();
+    return { QString(), true, false, QString() };
 
   const QString key = dataEncryptionKey();
   if ( key.isEmpty() )
-    return plain;
+    return { plain, false, false, u"AI storage encryption key is unavailable."_s };
 
   const QString ivHex = randomHex( CIPHER_IV_BYTES );
   const QString cipherHex = QgsAuthCrypto::encrypt( key, ivHex, plain );
   if ( cipherHex.isEmpty() )
-    return plain;
+    return { plain, false, false, u"AI storage encryption failed."_s };
 
-  return QString::fromUtf8( ENCRYPTED_VALUE_PREFIX ) + ivHex + ':' + cipherHex;
+  return { QString::fromUtf8( ENCRYPTED_VALUE_PREFIX ) + ivHex + ':' + cipherHex, true, true, QString() };
 }
 
 QString QgsAiSecretStore::decryptValue( const QString &stored )
@@ -346,12 +352,18 @@ QString QgsAiSecretStore::decryptValue( const QString &stored )
 
 QByteArray QgsAiSecretStore::encryptBlob( const QByteArray &blob )
 {
+  const BlobEncryptionResult result = tryEncryptBlob( blob );
+  return result.encrypted ? result.value : blob;
+}
+
+QgsAiSecretStore::BlobEncryptionResult QgsAiSecretStore::tryEncryptBlob( const QByteArray &blob )
+{
   if ( blob.isEmpty() )
-    return QByteArray();
-  const QString encrypted = encryptValue( QString::fromLatin1( blob.toBase64() ) );
-  if ( !encrypted.startsWith( QString::fromUtf8( ENCRYPTED_VALUE_PREFIX ) ) )
-    return blob; // encryption unavailable: keep the raw blob
-  return encrypted.toLatin1();
+    return { QByteArray(), true, false, QString() };
+  const EncryptionResult encrypted = tryEncryptValue( QString::fromLatin1( blob.toBase64() ) );
+  if ( !encrypted.ok || !encrypted.encrypted )
+    return { blob, encrypted.ok, false, encrypted.errorMessage };
+  return { encrypted.value.toLatin1(), true, true, QString() };
 }
 
 QByteArray QgsAiSecretStore::decryptBlob( const QByteArray &stored )

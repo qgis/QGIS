@@ -116,5 +116,10 @@ tests/testdata/widget_config.qlr
 tests/testdata/zip/testtar.tgz.properties
 venv
 .env.test
+/ai_chat/
+/ai_index/
+/ai_models/
+/ai_audit.log
+/symbology-style.db
 tests_ai/Dati/*.gpkg
 tests_ai/Dati/*.tif

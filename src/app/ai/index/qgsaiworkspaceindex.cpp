@@ -118,6 +118,60 @@ namespace
     return providerDimension > 0 ? providerDimension : embedding.size();
   }
 
+  bool bindEncryptedIndexValue( QSqlQuery &query, const QString &plain, bool encryptionAvailable, bool requireEncryption, QString *errorMessage )
+  {
+    if ( !encryptionAvailable )
+    {
+      query.addBindValue( plain );
+      return true;
+    }
+
+    const QgsAiSecretStore::EncryptionResult encrypted = QgsAiSecretStore::tryEncryptValue( plain );
+    if ( encrypted.ok )
+    {
+      query.addBindValue( encrypted.value );
+      return true;
+    }
+
+    if ( requireEncryption )
+    {
+      if ( errorMessage )
+        *errorMessage = encrypted.errorMessage.isEmpty() ? u"Workspace index encryption failed."_s : encrypted.errorMessage;
+      return false;
+    }
+
+    QgsAiSecretStore::warnPlaintextStorageOnce();
+    query.addBindValue( plain );
+    return true;
+  }
+
+  bool bindEncryptedIndexBlob( QSqlQuery &query, const QByteArray &blob, bool encryptionAvailable, bool requireEncryption, QString *errorMessage )
+  {
+    if ( !encryptionAvailable )
+    {
+      query.addBindValue( blob );
+      return true;
+    }
+
+    const QgsAiSecretStore::BlobEncryptionResult encrypted = QgsAiSecretStore::tryEncryptBlob( blob );
+    if ( encrypted.ok )
+    {
+      query.addBindValue( encrypted.value );
+      return true;
+    }
+
+    if ( requireEncryption )
+    {
+      if ( errorMessage )
+        *errorMessage = encrypted.errorMessage.isEmpty() ? u"Workspace index encryption failed."_s : encrypted.errorMessage;
+      return false;
+    }
+
+    QgsAiSecretStore::warnPlaintextStorageOnce();
+    query.addBindValue( blob );
+    return true;
+  }
+
   QString textHash( const QString &text, const QByteArray &extra = QByteArray() )
   {
     QCryptographicHash hash( QCryptographicHash::Sha1 );
@@ -145,6 +199,20 @@ namespace
   {
     return sourceType + QChar( 0x1f ) + relativePath + QChar( 0x1f ) + layerId + QChar( 0x1f ) + QString::number( chunkIndex );
   }
+
+  QString readSnapshotTextFile( const QString &absolutePath, int maxBytes )
+  {
+    QFile file( absolutePath );
+    if ( !file.open( QIODevice::ReadOnly ) )
+      return QString();
+
+    QByteArray content = file.read( std::max( 0, maxBytes ) + 1 );
+    if ( content.size() > maxBytes )
+      content.truncate( maxBytes );
+    if ( content.contains( '\0' ) )
+      return QString();
+    return QString::fromUtf8( content );
+  }
 } //namespace
 
 QgsAiWorkspaceIndex::QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingProvider *embeddingProvider, QObject *parent )
@@ -158,10 +226,20 @@ QgsAiWorkspaceIndex::QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvi
 
 QgsAiWorkspaceIndex::~QgsAiWorkspaceIndex()
 {
-  // Make sure we close any database connection we opened.
+  closeDatabaseConnectionForCurrentThread();
+}
+
+void QgsAiWorkspaceIndex::closeDatabaseConnectionForCurrentThread() const
+{
   const QString name = connectionName();
   if ( QSqlDatabase::contains( name ) )
+  {
+    {
+      QSqlDatabase db = QSqlDatabase::database( name );
+      db.close();
+    }
     QSqlDatabase::removeDatabase( name );
+  }
 }
 
 QString QgsAiWorkspaceIndex::connectionName() const
@@ -176,7 +254,12 @@ QString QgsAiWorkspaceIndex::dbPath() const
   if ( !mContextProvider )
     return QString();
 
-  const QString root = mContextProvider->workspaceRoot();
+  return dbPathForRoot( mContextProvider->workspaceRoot() );
+}
+
+QString QgsAiWorkspaceIndex::dbPathForRoot( const QString &workspaceRoot ) const
+{
+  const QString root = workspaceRoot.trimmed().isEmpty() ? QString() : QDir( workspaceRoot ).absolutePath();
   if ( root.isEmpty() )
     return QString();
 
@@ -370,9 +453,14 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::chunks( ReplaceScope scop
 
 bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
 {
+  return loadAll( QString(), errorMessage );
+}
+
+bool QgsAiWorkspaceIndex::loadAll( const QString &workspaceRoot, QString *errorMessage )
+{
   QMutexLocker<QRecursiveMutex> locker( &mMutex );
   mCache.clear();
-  const QString path = dbPath();
+  const QString path = workspaceRoot.trimmed().isEmpty() ? dbPath() : dbPathForRoot( workspaceRoot );
   if ( path.isEmpty() || !QFileInfo::exists( path ) )
     return true; // Nothing to load yet — that's not an error.
 
@@ -470,8 +558,13 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
 
 bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceScope scope, const QString &scopedLayerId, QString *errorMessage )
 {
+  return persistAll( chunks, scope, scopedLayerId, QString(), errorMessage );
+}
+
+bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceScope scope, const QString &scopedLayerId, const QString &workspaceRoot, QString *errorMessage )
+{
   QMutexLocker<QRecursiveMutex> locker( &mMutex );
-  const QString path = dbPath();
+  const QString path = workspaceRoot.trimmed().isEmpty() ? dbPath() : dbPathForRoot( workspaceRoot );
   if ( path.isEmpty() )
   {
     if ( errorMessage )
@@ -546,10 +639,12 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
   // Encrypt-at-rest when the data key is available; otherwise warn once and
   // persist plaintext (or refuse when the user requires encryption).
   const bool encryptionAvailable = QgsAiSecretStore::storageEncryptionAvailable();
+  bool requireEncryption = false;
   if ( !encryptionAvailable )
   {
     QgsSettings appSettings;
-    if ( appSettings.value( u"ai/storage/requireEncryption"_s, false ).toBool() )
+    requireEncryption = appSettings.value( u"ai/storage/requireEncryption"_s, false ).toBool();
+    if ( requireEncryption )
     {
       if ( errorMessage )
         *errorMessage = u"Encryption is required (ai/storage/requireEncryption) but the authentication vault is unavailable."_s;
@@ -557,6 +652,11 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
       return false;
     }
     QgsAiSecretStore::warnPlaintextStorageOnce();
+  }
+  else
+  {
+    QgsSettings appSettings;
+    requireEncryption = appSettings.value( u"ai/storage/requireEncryption"_s, false ).toBool();
   }
 
   const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
@@ -579,9 +679,25 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
     q.addBindValue( c.chunk.firstFeatureId < 0 ? QVariant( QMetaType::fromType<qint64>() ) : QVariant( c.chunk.firstFeatureId ) );
     q.addBindValue( c.chunk.lastFeatureId < 0 ? QVariant( QMetaType::fromType<qint64>() ) : QVariant( c.chunk.lastFeatureId ) );
     q.addBindValue( c.chunk.chunkIndex );
-    q.addBindValue( encryptionAvailable ? QgsAiSecretStore::encryptValue( c.chunk.text ) : c.chunk.text );
-    q.addBindValue( c.chunk.wktBlob.isEmpty() ? QVariant( QMetaType::fromType<QByteArray>() ) : QVariant( encryptionAvailable ? QgsAiSecretStore::encryptBlob( c.chunk.wktBlob ) : c.chunk.wktBlob ) );
-    q.addBindValue( encryptionAvailable ? QgsAiSecretStore::encryptBlob( vectorToBytes( c.embedding ) ) : vectorToBytes( c.embedding ) );
+    if ( !bindEncryptedIndexValue( q, c.chunk.text, encryptionAvailable, requireEncryption, errorMessage ) )
+    {
+      db.rollback();
+      return false;
+    }
+    if ( c.chunk.wktBlob.isEmpty() )
+    {
+      q.addBindValue( QVariant( QMetaType::fromType<QByteArray>() ) );
+    }
+    else if ( !bindEncryptedIndexBlob( q, c.chunk.wktBlob, encryptionAvailable, requireEncryption, errorMessage ) )
+    {
+      db.rollback();
+      return false;
+    }
+    if ( !bindEncryptedIndexBlob( q, vectorToBytes( c.embedding ), encryptionAvailable, requireEncryption, errorMessage ) )
+    {
+      db.rollback();
+      return false;
+    }
     q.addBindValue( nowMs );
     q.addBindValue( providerId );
     q.addBindValue( modelId );
@@ -703,16 +819,58 @@ bool QgsAiWorkspaceIndex::removeLayer( const QString &layerId, QString *errorMes
   return true;
 }
 
-bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
+bool QgsAiWorkspaceIndex::createWorkspaceFileSnapshot( int maxFiles, QString &workspaceRoot, QList<WorkspaceFileSnapshot> &snapshot, QString *errorMessage ) const
 {
   QMutexLocker<QRecursiveMutex> locker( &mMutex );
+  snapshot.clear();
+  workspaceRoot.clear();
   if ( !mContextProvider )
   {
     if ( errorMessage )
       *errorMessage = u"Workspace context provider is unavailable."_s;
     return false;
   }
-  if ( mContextProvider->workspaceRoot().isEmpty() )
+
+  workspaceRoot = mContextProvider->workspaceRoot();
+  if ( workspaceRoot.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"AI workspace root is unset. Save the QGIS project or configure the AI workspace root in provider settings."_s;
+    return false;
+  }
+
+  const int cap = maxFiles > 0 ? maxFiles : DEFAULT_MAX_FILES;
+  const QStringList all = mContextProvider->workspaceFileCandidates( QString(), 50000 );
+  for ( const QString &rel : all )
+  {
+    if ( !isTextFile( rel ) )
+      continue;
+    const QString abs = mContextProvider->resolveWorkspaceFile( rel );
+    if ( abs.isEmpty() )
+      continue;
+    const QFileInfo fileInfo( abs );
+    if ( fileInfo.size() > MAX_FILE_BYTES )
+      continue;
+    snapshot.append( { rel, abs, fileInfo.exists() ? fileInfo.lastModified().toMSecsSinceEpoch() : 0 } );
+    if ( snapshot.size() >= cap )
+      break;
+  }
+  return true;
+}
+
+bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
+{
+  QString workspaceRoot;
+  QList<WorkspaceFileSnapshot> snapshot;
+  if ( !createWorkspaceFileSnapshot( maxFiles, workspaceRoot, snapshot, errorMessage ) )
+    return false;
+  return reindex( snapshot, workspaceRoot, errorMessage );
+}
+
+bool QgsAiWorkspaceIndex::reindex( const QList<WorkspaceFileSnapshot> &snapshot, const QString &workspaceRoot, QString *errorMessage )
+{
+  QMutexLocker<QRecursiveMutex> locker( &mMutex );
+  if ( workspaceRoot.trimmed().isEmpty() )
   {
     if ( errorMessage )
       *errorMessage = u"AI workspace root is unset. Save the QGIS project or configure the AI workspace root in provider settings."_s;
@@ -721,7 +879,14 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   if ( !ensureEmbeddingProviderAvailable( mEmbeddingProvider, errorMessage ) )
     return false;
 
-  ensureLoaded();
+  QString loadError;
+  if ( !mLoaded && !loadAll( workspaceRoot, &loadError ) )
+  {
+    QgsMessageLog::logMessage( u"Workspace index load failed: %1"_s.arg( loadError ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+    mCache.clear();
+    mLastSync = QDateTime();
+    mLoaded = true;
+  }
 
   QHash<QString, CachedChunk> reusableFileChunks;
   for ( const CachedChunk &cached : std::as_const( mCache ) )
@@ -738,59 +903,34 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
     }
   }
 
-  const int cap = maxFiles > 0 ? maxFiles : DEFAULT_MAX_FILES;
-  const QStringList all = mContextProvider->workspaceFileCandidates( QString(), 50000 );
-
-  // Restrict to text-ish files inside the size cap.
-  QStringList eligible;
-  for ( const QString &rel : all )
+  if ( snapshot.isEmpty() )
   {
-    if ( !isTextFile( rel ) )
-      continue;
-    const QString abs = mContextProvider->resolveWorkspaceFile( rel );
-    if ( abs.isEmpty() )
-      continue;
-    if ( QFileInfo( abs ).size() > MAX_FILE_BYTES )
-      continue;
-    eligible.append( rel );
-    if ( eligible.size() >= cap )
-      break;
-  }
-
-  if ( eligible.isEmpty() )
-  {
-    // Clear file chunks from cache; preserve any existing layer chunks.
     mCache.erase(
       std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end()
     );
     mLastSync = QDateTime::currentDateTimeUtc();
     QString err;
-    persistAll( {}, ReplaceScope::AllFiles, QString(), &err );
+    persistAll( {}, ReplaceScope::AllFiles, QString(), workspaceRoot, &err );
     return true;
   }
 
-  // Build chunks for every file. We keep a parallel list of texts to embed so
-  // the provider can process them in batches.
   QList<CachedChunk> built;
   QStringList textsToEmbed;
-  QList<int> backRefIndex; // for each text in textsToEmbed, the position in `built`
-  for ( int fileIdx = 0; fileIdx < eligible.size(); ++fileIdx )
+  QList<int> backRefIndex;
+  for ( int fileIdx = 0; fileIdx < snapshot.size(); ++fileIdx )
   {
-    const QString rel = eligible.at( fileIdx );
-    emit progress( fileIdx + 1, eligible.size(), rel );
+    const WorkspaceFileSnapshot &file = snapshot.at( fileIdx );
+    emit progress( fileIdx + 1, snapshot.size(), file.relativePath );
 
-    const QString abs = mContextProvider->resolveWorkspaceFile( rel );
-    const QFileInfo fileInfo( abs );
-    const qint64 sourceMTime = fileInfo.exists() ? fileInfo.lastModified().toMSecsSinceEpoch() : 0;
-    const QgsAiFileContext fileContext = mContextProvider->buildContext( rel, QString(), MAX_FILE_BYTES );
-    if ( fileContext.fileSnippet.isEmpty() || fileContext.binary )
+    const QString fileText = readSnapshotTextFile( file.absolutePath, MAX_FILE_BYTES );
+    if ( fileText.isEmpty() )
       continue;
 
-    const QStringList chunks = chunkText( fileContext.fileSnippet );
+    const QStringList chunks = chunkText( fileText );
     for ( int ci = 0; ci < chunks.size(); ++ci )
     {
       CachedChunk c;
-      c.chunk.relativePath = rel;
+      c.chunk.relativePath = file.relativePath;
       c.chunk.chunkIndex = ci;
       c.chunk.text = chunks.at( ci );
       c.chunk.sourceType = QString::fromLatin1( SOURCE_TYPE_FILE );
@@ -798,9 +938,9 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
       c.modelId = storageModelId( mEmbeddingProvider );
       c.modelRevision = storageModelRevision( mEmbeddingProvider );
       c.contentHash = textHash( c.chunk.text );
-      c.sourceMTime = sourceMTime;
+      c.sourceMTime = file.sourceMTime;
 
-      const QString reuseKey = chunkReuseKey( QString::fromLatin1( SOURCE_TYPE_FILE ), rel, QString(), ci );
+      const QString reuseKey = chunkReuseKey( QString::fromLatin1( SOURCE_TYPE_FILE ), file.relativePath, QString(), ci );
       const auto reusableIt = reusableFileChunks.constFind( reuseKey );
       if ( reusableIt != reusableFileChunks.constEnd() && reusableIt->contentHash == c.contentHash && reusableIt->sourceMTime == c.sourceMTime && !reusableIt->embedding.isEmpty() )
       {
@@ -823,7 +963,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
     );
     mLastSync = QDateTime::currentDateTimeUtc();
     QString err;
-    persistAll( {}, ReplaceScope::AllFiles, QString(), &err );
+    persistAll( {}, ReplaceScope::AllFiles, QString(), workspaceRoot, &err );
     return true;
   }
 
@@ -849,16 +989,15 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
     }
   }
 
-  if ( !persistAll( built, ReplaceScope::AllFiles, QString(), errorMessage ) )
+  if ( !persistAll( built, ReplaceScope::AllFiles, QString(), workspaceRoot, errorMessage ) )
     return false;
 
-  // Replace only file chunks in the cache; preserve any existing layer chunks.
   mCache
     .erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
   mCache.append( built );
   mLastSync = QDateTime::currentDateTimeUtc();
   mLoaded = true;
-  QgsMessageLog::logMessage( u"Workspace index built: files=%1 chunks=%2"_s.arg( eligible.size() ).arg( built.size() ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::logMessage( u"Workspace index built: files=%1 chunks=%2"_s.arg( snapshot.size() ).arg( built.size() ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
   return true;
 }
 

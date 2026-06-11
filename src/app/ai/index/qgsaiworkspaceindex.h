@@ -108,6 +108,13 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
         QString embeddingModelId;
     };
 
+    struct WorkspaceFileSnapshot
+    {
+        QString relativePath;
+        QString absolutePath;
+        qint64 sourceMTime = 0;
+    };
+
     QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingProvider *embeddingProvider, QObject *parent = nullptr );
     ~QgsAiWorkspaceIndex() override;
 
@@ -126,6 +133,12 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
      * \param maxFiles    Cap on the number of files indexed in one run (default 500).
      */
     bool reindex( int maxFiles, QString *errorMessage = nullptr );
+
+    //! Creates an immutable file snapshot on the caller thread for background indexing.
+    bool createWorkspaceFileSnapshot( int maxFiles, QString &workspaceRoot, QList<WorkspaceFileSnapshot> &snapshot, QString *errorMessage = nullptr ) const;
+
+    //! Reindexes file chunks from a prebuilt snapshot without reading the context provider.
+    bool reindex( const QList<WorkspaceFileSnapshot> &snapshot, const QString &workspaceRoot, QString *errorMessage = nullptr );
 
     /**
      * Embeds \a query and returns the top-\a k chunks by cosine similarity.
@@ -182,6 +195,9 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
      */
     bool ensureLoaded();
 
+    //! Closes the SQLite connection owned by the current thread, if one exists.
+    void closeDatabaseConnectionForCurrentThread() const;
+
   signals:
     void progress( int current, int total, const QString &filePath );
 
@@ -202,8 +218,11 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     };
 
     bool persistAll( const QList<CachedChunk> &chunks, ReplaceScope scope, const QString &scopedLayerId, QString *errorMessage );
+    bool persistAll( const QList<CachedChunk> &chunks, ReplaceScope scope, const QString &scopedLayerId, const QString &workspaceRoot, QString *errorMessage );
     bool loadAll( QString *errorMessage );
+    bool loadAll( const QString &workspaceRoot, QString *errorMessage );
     QString dbPath() const;
+    QString dbPathForRoot( const QString &workspaceRoot ) const;
     QString connectionName() const;
     static QStringList chunkText( const QString &content );
     static bool isTextFile( const QString &relativePath );

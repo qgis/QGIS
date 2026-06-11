@@ -18,6 +18,7 @@
 
 #include "qgis_app.h"
 
+#include <QByteArray>
 #include <QString>
 #include <QStringList>
 
@@ -43,6 +44,22 @@
 class APP_EXPORT QgsAiSecretStore
 {
   public:
+    struct EncryptionResult
+    {
+        QString value;
+        bool ok = false;
+        bool encrypted = false;
+        QString errorMessage;
+    };
+
+    struct BlobEncryptionResult
+    {
+        QByteArray value;
+        bool ok = false;
+        bool encrypted = false;
+        QString errorMessage;
+    };
+
     //! True when the auth vault is ALREADY unlocked for this session (this store never unlocks it).
     static bool vaultUsable();
 
@@ -98,6 +115,9 @@ class APP_EXPORT QgsAiSecretStore
      */
     static QString encryptValue( const QString &plain );
 
+    //! Encrypts \a plain and reports whether encryption actually succeeded.
+    static EncryptionResult tryEncryptValue( const QString &plain );
+
     /**
      * Decrypts a value produced by encryptValue(). Values without the `enc1:`
      * prefix are returned as-is (legacy plaintext rows, mixed-mode DBs). Returns
@@ -108,6 +128,7 @@ class APP_EXPORT QgsAiSecretStore
 
     //! Blob variants: base64-encode, then encryptValue. Pass-through for non-encrypted blobs.
     static QByteArray encryptBlob( const QByteArray &blob );
+    static BlobEncryptionResult tryEncryptBlob( const QByteArray &blob );
     static QByteArray decryptBlob( const QByteArray &stored );
 
     //! Logs the "AI data stored unencrypted" warning once per session.

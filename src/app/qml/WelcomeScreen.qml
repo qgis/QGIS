@@ -362,7 +362,7 @@ Item {
 
             Text {
               Layout.fillWidth: true
-              text: newsSwitch.checked && newsListView.count != 0 ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
+              text: newsSwitch.checked && newsListView.count != 0 ? qsTr("QGIS upstream news") : qsTr("Welcome to Strata!")
               font.pointSize: Application.font.pointSize * 1.3
               font.bold: true
               color: "#ffffff"
@@ -470,7 +470,7 @@ Item {
                   id: welcomeDescription
                   anchors.fill: parent
                   anchors.margins: 16
-                  text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
+                  text: qsTr("Strata is an AI-native GIS desktop built as an independent, unofficial fork of QGIS. It combines QGIS cartography, editing, analysis, and plugin compatibility with a built-in assistant for working with layers, projects, and geospatial workflows.")
                   font.pointSize: Application.font.pointSize * 0.8
                   color: "black"
                   wrapMode: Text.WordWrap
@@ -500,7 +500,7 @@ Item {
 
                   Text {
                     Layout.fillWidth: true
-                    text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
+                    text: qsTr("Would you like to enable the QGIS upstream news feed to stay updated on QGIS releases, features, and community highlights?")
                     font.pointSize: Application.font.pointSize * 0.8
                     color: "black"
                     wrapMode: Text.WordWrap
@@ -595,12 +595,8 @@ Item {
           bottomMargin: 0
         }
 
-        onSupportClicked: {
-          Qt.openUrlExternally("https://www.qgis.org/funding/donate/")
-        }
-
-        onWebsiteClicked: {
-          Qt.openUrlExternally("https://www.qgis.org/")
+        onIssueTrackerClicked: {
+          Qt.openUrlExternally("https://github.com/francemazzi/strata/issues")
         }
       }
       
@@ -669,6 +665,7 @@ Item {
       radius: 16
       visible: false
       color: mainCard.color
+      buttonText: qsTr("Open QGIS download")
 
       onInstallClicked: {
         Qt.openUrlExternally("https://download.qgis.org/")
@@ -692,7 +689,7 @@ Item {
     target: welcomeScreenController
     
     function onNewVersionAvailable(versionString) {
-      qgisUpdateBar.message = qsTr("QGIS %1 is out!").arg(versionString);
+      qgisUpdateBar.message = qsTr("QGIS upstream %1 is available").arg(versionString);
       qgisUpdateBar.visible = true;
     }
     

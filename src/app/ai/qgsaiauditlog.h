@@ -24,8 +24,9 @@
  * Append-only audit trail for the risky AI tool executions the user approved
  * (run_python, install_python_package, download_file).
  *
- * Each entry is one line in `<qgisSettingsDirPath>/ai_audit.log`:
- * `ISO8601Z | tool | workspaceRoot | sha256=<hex> | <detail, first 200 chars>`.
+ * Each entry is one line in `<qgisSettingsDirPath>/ai_audit.log` and records a
+ * redacted summary plus a SHA-256 hash of the original detail. Raw code, full
+ * URLs, query strings and absolute paths are not written.
  * Best-effort: an unwritable log never blocks tool execution (one warning per
  * session in the message log).
  */

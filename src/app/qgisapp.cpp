@@ -1051,7 +1051,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   // load GUI: actions, menus, toolbars
   startProfile( tr( "Setting up UI" ) );
   setupUi( this );
-  mStrataToolBar->hide();
   endProfile();
 
   mScreenHelper = new QgsScreenHelper( this );
@@ -1508,8 +1507,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   connect( mActionAiAssistant, &QAction::toggled, mAiChatDock, &QgsDockWidget::setUserVisible );
   connect( mAiChatDock, &QgsDockWidget::visibilityChanged, mActionAiAssistant, &QAction::setChecked );
   mPluginMenu->addAction( mActionAiAssistant );
-  mStrataToolBar->addAction( mActionAiAssistant );
-  mStrataToolBar->show();
+  mFileToolBar->addAction( mActionAiAssistant );
   endProfile();
 #endif
 
@@ -2233,7 +2231,6 @@ QgisApp::QgisApp()
 {
   sInstance = this;
   setupUi( this );
-  mStrataToolBar->hide();
 
   mScreenHelper = new QgsScreenHelper( this );
 
@@ -3741,9 +3738,6 @@ void QgisApp::createToolBars()
     << mSnappingToolBar
     << mMeshToolBar
     << mAnnotationsToolBar;
-#ifdef HAVE_AI_ASSISTANT
-  toolbarMenuToolBars << mStrataToolBar;
-#endif
 
   mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
   mSnappingWidget->setObjectName( u"mSnappingWidget"_s );

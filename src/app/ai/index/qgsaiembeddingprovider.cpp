@@ -27,8 +27,10 @@
 #include <string>
 #include <vector>
 
+#ifdef HAVE_AI_E5_EMBEDDINGS
 #include <onnxruntime_cxx_api.h>
 #include <sentencepiece_processor.h>
+#endif
 
 #include <QByteArray>
 #include <QChar>
@@ -37,6 +39,7 @@
 #include <QFile>
 #include <QFileDevice>
 #include <QFileInfo>
+#include <QMutexLocker>
 #include <QObject>
 #include <QThread>
 
@@ -128,10 +131,12 @@ namespace
     return u"https://huggingface.co/intfloat/multilingual-e5-small/resolve/%1/%2"_s.arg( QString::fromLatin1( E5_HF_REVISION ), relativePath );
   }
 
+#ifdef HAVE_AI_E5_EMBEDDINGS
   std::string pathForOrt( const QString &path )
   {
     return QFile::encodeName( QDir::toNativeSeparators( path ) ).toStdString();
   }
+#endif
 
   class RemoteEmbeddingProvider final : public QgsAiEmbeddingProvider
   {
@@ -187,6 +192,7 @@ namespace
   };
 } // namespace
 
+#ifdef HAVE_AI_E5_EMBEDDINGS
 struct QgsAiE5EmbeddingProvider::Runtime
 {
     Runtime()
@@ -200,6 +206,11 @@ struct QgsAiE5EmbeddingProvider::Runtime
     std::vector<std::string> outputNames;
     int outputIndex = 0;
 };
+#else
+struct QgsAiE5EmbeddingProvider::Runtime
+{
+};
+#endif
 
 QgsAiE5EmbeddingProvider::QgsAiE5EmbeddingProvider() = default;
 
@@ -424,6 +435,15 @@ bool QgsAiE5EmbeddingProvider::fileMatchesSha256( const QString &path, const QSt
 
 bool QgsAiE5EmbeddingProvider::ensureRuntime( QString *errorMessage ) const
 {
+  QMutexLocker locker( &mRuntimeMutex );
+
+#ifndef HAVE_AI_E5_EMBEDDINGS
+  mRuntimeError = u"Local multilingual E5 embedding support was not compiled because ONNX Runtime and/or SentencePiece were not found."_s;
+  mRuntimeLoadAttempted = true;
+  if ( errorMessage )
+    *errorMessage = mRuntimeError;
+  return false;
+#else
   if ( mRuntime )
     return true;
 
@@ -519,6 +539,7 @@ bool QgsAiE5EmbeddingProvider::ensureRuntime( QString *errorMessage ) const
   if ( errorMessage )
     *errorMessage = mRuntimeError;
   return false;
+#endif
 }
 
 bool QgsAiE5EmbeddingProvider::isAvailable( QString *errorMessage ) const
@@ -542,6 +563,12 @@ bool QgsAiE5EmbeddingProvider::embed( const QStringList &texts, QgsAiEmbeddingRo
   if ( !ensureRuntime( errorMessage ) )
     return false;
 
+#ifndef HAVE_AI_E5_EMBEDDINGS
+  Q_UNUSED( role )
+  Q_UNUSED( options )
+  return false;
+#else
+  QMutexLocker locker( &mRuntimeMutex );
   const int requestedBatch = options.maxBatch > 0 ? options.maxBatch : 1;
   const int batchLimit = std::max( 1, requestedBatch );
   const int textCount = static_cast<int>( texts.size() );
@@ -669,6 +696,7 @@ bool QgsAiE5EmbeddingProvider::embed( const QStringList &texts, QgsAiEmbeddingRo
   }
 
   return out.size() == texts.size();
+#endif
 }
 
 bool QgsAiLocalEmbeddingProvider::isAvailable( QString *errorMessage ) const
@@ -738,7 +766,11 @@ QVector<float> QgsAiLocalEmbeddingProvider::embedOne( const QString &text, QgsAi
 
 QString QgsAiEmbeddingProviderRegistry::defaultProviderId()
 {
+#ifdef HAVE_AI_E5_EMBEDDINGS
   return QgsAiE5EmbeddingProvider::staticProviderId();
+#else
+  return u"local:minihash-384"_s;
+#endif
 }
 
 QString QgsAiEmbeddingProviderRegistry::configuredProviderId()
@@ -763,12 +795,25 @@ void QgsAiEmbeddingProviderRegistry::setConfiguredProviderId( const QString &pro
 
 QStringList QgsAiEmbeddingProviderRegistry::providerIds()
 {
-  return { defaultProviderId(), u"local:minihash-384"_s, u"openai"_s, u"openrouter"_s };
+  QStringList ids;
+#ifdef HAVE_AI_E5_EMBEDDINGS
+  ids << QgsAiE5EmbeddingProvider::staticProviderId();
+#endif
+  ids << u"local:minihash-384"_s << u"openai"_s << u"openrouter"_s;
+  return ids;
 }
 
 QString QgsAiEmbeddingProviderRegistry::displayNameForProviderId( const QString &providerId )
 {
   const QString normalized = providerId.trimmed().toLower();
+  if ( normalized == QgsAiE5EmbeddingProvider::staticProviderId() )
+  {
+#ifdef HAVE_AI_E5_EMBEDDINGS
+    return u"Local multilingual E5 small (recommended)"_s;
+#else
+    return u"Local multilingual E5 small (not compiled)"_s;
+#endif
+  }
   if ( normalized == "local:minihash-384"_L1 )
     return u"Local MinHash fallback"_s;
   if ( normalized == "openai"_L1 )
@@ -796,8 +841,18 @@ std::unique_ptr<QgsAiEmbeddingProvider> QgsAiEmbeddingProviderRegistry::createPr
     return std::make_unique<RemoteEmbeddingProvider>( QgsAiEmbeddingClient::Provider::OpenAi, parent );
   if ( normalized == "openrouter"_L1 )
     return std::make_unique<RemoteEmbeddingProvider>( QgsAiEmbeddingClient::Provider::OpenRouter, parent );
+  if ( normalized == QgsAiE5EmbeddingProvider::staticProviderId() )
+  {
+#ifdef HAVE_AI_E5_EMBEDDINGS
+    Q_UNUSED( parent )
+    return std::make_unique<QgsAiE5EmbeddingProvider>();
+#else
+    Q_UNUSED( parent )
+    return std::make_unique<QgsAiLocalEmbeddingProvider>();
+#endif
+  }
   if ( normalized == "local:minihash-384"_L1 )
     return std::make_unique<QgsAiLocalEmbeddingProvider>();
   Q_UNUSED( parent )
-  return std::make_unique<QgsAiE5EmbeddingProvider>();
+  return std::make_unique<QgsAiLocalEmbeddingProvider>();
 }

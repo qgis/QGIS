@@ -19,6 +19,7 @@
 #include "qgis_app.h"
 
 #include <QList>
+#include <QMutex>
 #include <memory>
 #include <QString>
 #include <QStringList>
@@ -164,6 +165,7 @@ class APP_EXPORT QgsAiE5EmbeddingProvider final : public QgsAiEmbeddingProvider
 
     bool ensureRuntime( QString *errorMessage = nullptr ) const;
 
+    mutable QMutex mRuntimeMutex;
     mutable std::unique_ptr<Runtime> mRuntime;
     mutable QString mRuntimeError;
     mutable bool mRuntimeLoadAttempted = false;

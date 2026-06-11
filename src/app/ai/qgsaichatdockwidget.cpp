@@ -37,6 +37,7 @@
 #include "qgsproject.h"
 #include "qgsscrollarea.h"
 #include "qgssettings.h"
+#include "qgstaskmanager.h"
 
 #include <QAbstractButton>
 #include <QAbstractScrollArea>
@@ -81,6 +82,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QPalette>
+#include <QPointer>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QRadioButton>
@@ -143,6 +145,48 @@ namespace
       return u"%1 MiB"_s.arg( mb, 0, 'f', 1 );
     return u"%1 GiB"_s.arg( mb / 1024.0, 0, 'f', 2 );
   }
+
+  class ManualWorkspaceIndexTask final : public QgsTask
+  {
+    public:
+      ManualWorkspaceIndexTask( QgsAiWorkspaceIndex *index, const QString &workspaceRoot, const QList<QgsAiWorkspaceIndex::WorkspaceFileSnapshot> &snapshot )
+        : QgsTask( QObject::tr( "Rebuild AI workspace index" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
+        , mIndex( index )
+        , mWorkspaceRoot( workspaceRoot )
+        , mSnapshot( snapshot )
+      {}
+
+      QString errorMessage() const { return mErrorMessage; }
+
+    protected:
+      bool run() override
+      {
+        if ( !mIndex )
+        {
+          mErrorMessage = QObject::tr( "Workspace index is unavailable." );
+          return false;
+        }
+
+        const QMetaObject::Connection conn = connect( mIndex.data(), &QgsAiWorkspaceIndex::progress, this, [this]( int current, int total, const QString & ) {
+          if ( total > 0 )
+            setProgress( 100.0 * static_cast<double>( current ) / static_cast<double>( total ) );
+        }, Qt::DirectConnection );
+
+        QString error;
+        const bool ok = mIndex->reindex( mSnapshot, mWorkspaceRoot, &error );
+        disconnect( conn );
+        mIndex->closeDatabaseConnectionForCurrentThread();
+        if ( !ok )
+          mErrorMessage = error;
+        return ok && !isCanceled();
+      }
+
+    private:
+      QPointer<QgsAiWorkspaceIndex> mIndex;
+      QString mWorkspaceRoot;
+      QList<QgsAiWorkspaceIndex::WorkspaceFileSnapshot> mSnapshot;
+      QString mErrorMessage;
+  };
 
   bool downloadEmbeddingModelFile( const QgsAiEmbeddingModelDownloadFile &file, const QString &baseDir, QProgressDialog &progress, qint64 &completedBytes, QString *errorMessage )
   {
@@ -2359,12 +2403,28 @@ void QgsAiChatDockWidget::openProviderSettings()
                                : tr( "AI credentials and data are stored unencrypted — unlock or set a QGIS master password (Options ▸ Authentication) to enable encryption." ) );
 
   // Workspace trust: gates rules/skills loading and the risky tools.
-  const QString currentTrustRoot = QgsAiWorkspaceTrust::currentWorkspaceRoot();
   QCheckBox *trustWorkspace = new QCheckBox( tr( "Trust this workspace (enables rules/skills files and run_python, install_python_package, download_file)" ), &dialog );
   trustWorkspace->setObjectName( u"aiTrustWorkspaceCheckBox"_s );
-  trustWorkspace->setChecked( QgsAiWorkspaceTrust::isTrusted( currentTrustRoot ) );
-  trustWorkspace->setToolTip( currentTrustRoot.isEmpty() ? tr( "No workspace configured." ) : tr( "Current workspace: %1" ).arg( currentTrustRoot ) );
-  trustWorkspace->setEnabled( !currentTrustRoot.isEmpty() );
+  QString trustRootForCheckbox;
+  auto dialogTrustRoot = [aiWorkspaceRoot]() {
+    if ( QgsProject::instance() )
+    {
+      const QString projectHome = QgsProject::instance()->homePath().trimmed();
+      if ( !projectHome.isEmpty() )
+        return QDir( projectHome ).absolutePath();
+    }
+
+    const QString requestedWorkspaceRoot = aiWorkspaceRoot->text().trimmed();
+    return requestedWorkspaceRoot.isEmpty() ? QString() : QDir( requestedWorkspaceRoot ).absolutePath();
+  };
+  auto refreshTrustWorkspace = [trustWorkspace, dialogTrustRoot, &trustRootForCheckbox]() {
+    trustRootForCheckbox = dialogTrustRoot();
+    const bool hasRoot = !trustRootForCheckbox.isEmpty();
+    trustWorkspace->setEnabled( hasRoot );
+    trustWorkspace->setChecked( hasRoot && QgsAiWorkspaceTrust::isTrusted( trustRootForCheckbox ) );
+    trustWorkspace->setToolTip( hasRoot ? QObject::tr( "Current workspace: %1" ).arg( trustRootForCheckbox ) : QObject::tr( "No workspace configured." ) );
+  };
+  refreshTrustWorkspace();
 
   form->addRow( tr( "OpenAI endpoint" ), openAiEndpoint );
   form->addRow( tr( "OpenAI model" ), openAiModel );
@@ -2661,7 +2721,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
   indexingForm->addRow( QString(), rebuildLayerIndexButton );
 
-  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingProvider, confirmRebuild, refreshIndexStatusLabel]() {
+  connect( rebuildWorkspaceIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, rebuildWorkspaceIndexButton, ensureEmbeddingProvider, confirmRebuild, refreshIndexStatusLabel]() {
     if ( !mSessionManager || !mSessionManager->workspaceIndex() )
       return;
 
@@ -2671,18 +2731,50 @@ void QgsAiChatDockWidget::openProviderSettings()
     if ( !confirmRebuild( tr( "file/workspace index" ) ) )
       return;
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
     QString err;
-    const bool ok = mSessionManager->workspaceIndex()->reindex( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES, &err );
-    QApplication::restoreOverrideCursor();
-    if ( !ok )
+    QString workspaceRoot;
+    QList<QgsAiWorkspaceIndex::WorkspaceFileSnapshot> snapshot;
+    if ( !mSessionManager->workspaceIndex()->createWorkspaceFileSnapshot( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES, workspaceRoot, snapshot, &err ) )
     {
       QMessageBox::warning( &dialog, tr( "Workspace reindex failed" ), err.isEmpty() ? tr( "Unknown error." ) : err );
       return;
     }
-    refreshIndexStatusLabel();
-    const auto status = mSessionManager->workspaceIndex()->status();
-    QMessageBox::information( &dialog, tr( "Workspace reindex" ), tr( "Done — %1 file chunks indexed." ).arg( status.fileChunkCount ) );
+
+    QgsTaskManager *taskManager = QgsApplication::taskManager();
+    if ( !taskManager )
+    {
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+      const bool ok = mSessionManager->workspaceIndex()->reindex( snapshot, workspaceRoot, &err );
+      QApplication::restoreOverrideCursor();
+      if ( !ok )
+      {
+        QMessageBox::warning( &dialog, tr( "Workspace reindex failed" ), err.isEmpty() ? tr( "Unknown error." ) : err );
+        return;
+      }
+      refreshIndexStatusLabel();
+      const auto status = mSessionManager->workspaceIndex()->status();
+      QMessageBox::information( &dialog, tr( "Workspace reindex" ), tr( "Done — %1 file chunks indexed." ).arg( status.fileChunkCount ) );
+      return;
+    }
+
+    rebuildWorkspaceIndexButton->setEnabled( false );
+    ManualWorkspaceIndexTask *task = new ManualWorkspaceIndexTask( mSessionManager->workspaceIndex(), workspaceRoot, snapshot );
+    connect( task, &QgsTask::taskCompleted, &dialog, [this, &dialog, rebuildWorkspaceIndexButton, refreshIndexStatusLabel]() {
+      rebuildWorkspaceIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
+      refreshIndexStatusLabel();
+      if ( mSessionManager && mSessionManager->workspaceIndex() )
+      {
+        const auto status = mSessionManager->workspaceIndex()->status();
+        QMessageBox::information( &dialog, tr( "Workspace reindex" ), tr( "Done — %1 file chunks indexed." ).arg( status.fileChunkCount ) );
+      }
+    } );
+    connect( task, &QgsTask::taskTerminated, &dialog, [&dialog, rebuildWorkspaceIndexButton, task]() {
+      rebuildWorkspaceIndexButton->setEnabled( true );
+      const QString taskError = task->errorMessage();
+      if ( !taskError.isEmpty() )
+        QMessageBox::warning( &dialog, QObject::tr( "Workspace reindex failed" ), taskError );
+    } );
+    taskManager->addTask( task, 1 );
   } );
 
   connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, ensureEmbeddingProvider, confirmRebuild, refreshIndexStatusLabel]() {
@@ -2806,6 +2898,9 @@ void QgsAiChatDockWidget::openProviderSettings()
     if ( !dir.isEmpty() )
       aiWorkspaceRoot->setText( QDir::cleanPath( dir ) );
   } );
+  connect( aiWorkspaceRoot, &QLineEdit::textChanged, &dialog, [refreshTrustWorkspace]( const QString & ) {
+    refreshTrustWorkspace();
+  } );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog );
   connect( buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
@@ -2893,11 +2988,11 @@ void QgsAiChatDockWidget::openProviderSettings()
     if ( mSessionManager && QgsProject::instance() && QgsProject::instance()->homePath().isEmpty() )
       mSessionManager->setWorkspaceRoot( configuredWorkspaceRoot );
 
-    // Persist the trust decision for the workspace that is active after the
-    // (possibly changed) root has been applied.
-    const QString trustRoot = QgsAiWorkspaceTrust::currentWorkspaceRoot();
-    if ( !trustRoot.isEmpty() )
-      QgsAiWorkspaceTrust::setState( trustRoot, trustWorkspace->isChecked() ? QgsAiWorkspaceTrust::State::Trusted : QgsAiWorkspaceTrust::State::Untrusted );
+    // Persist the trust decision only for the workspace represented by the
+    // checkbox. Changing the root in this dialog recalculates the checkbox state,
+    // so trust is never inherited from a previous root.
+    if ( !trustRootForCheckbox.isEmpty() )
+      QgsAiWorkspaceTrust::setState( trustRootForCheckbox, trustWorkspace->isChecked() ? QgsAiWorkspaceTrust::State::Trusted : QgsAiWorkspaceTrust::State::Untrusted );
 
     QgsAiEmbeddingProviderRegistry::setConfiguredProviderId( embeddingProvider->currentData().toString() );
     if ( QgsAiEmbeddingProviderRegistry::isRemoteProviderId( embeddingProvider->currentData().toString() ) )

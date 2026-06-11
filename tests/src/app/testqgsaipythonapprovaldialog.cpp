@@ -84,7 +84,7 @@ void TestQgsAiPythonApprovalDialog::auditLogAppendWritesLine()
 
   const QString code = u"print('hello')\nimport os"_s;
   QgsAiAuditLog::append( u"run_python"_s, code );
-  QgsAiAuditLog::append( u"download_file"_s, u"https://example.com/a.geojson -> data/a.geojson"_s );
+  QgsAiAuditLog::append( u"download_file"_s, u"https://example.com/a.geojson?token=secret -> /tmp/private/a.geojson"_s );
 
   QFile file( auditPath );
   QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
@@ -94,9 +94,14 @@ void TestQgsAiPythonApprovalDialog::auditLogAppendWritesLine()
   const QString expectedDigest = QString::fromLatin1( QCryptographicHash::hash( code.toUtf8(), QCryptographicHash::Sha256 ).toHex() );
   QVERIFY2( lines.at( 0 ).contains( u"| run_python |"_s ), qPrintable( lines.at( 0 ) ) );
   QVERIFY( lines.at( 0 ).contains( u"sha256=%1"_s.arg( expectedDigest ) ) );
-  // Newlines in the detail are flattened in the excerpt.
-  QVERIFY( lines.at( 0 ).contains( u"print('hello') import os"_s ) );
+  QVERIFY( lines.at( 0 ).contains( u"code_chars=24"_s ) );
+  QVERIFY( !lines.at( 0 ).contains( u"print('hello')"_s ) );
   QVERIFY( lines.at( 1 ).contains( u"| download_file |"_s ) );
+  QVERIFY( lines.at( 1 ).contains( u"host=example.com"_s ) );
+  QVERIFY( lines.at( 1 ).contains( u"path=/a.geojson"_s ) );
+  QVERIFY( lines.at( 1 ).contains( u"dest_file=a.geojson"_s ) );
+  QVERIFY( !lines.at( 1 ).contains( u"token=secret"_s ) );
+  QVERIFY( !lines.at( 1 ).contains( u"/tmp/private"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsAiPythonApprovalDialog )

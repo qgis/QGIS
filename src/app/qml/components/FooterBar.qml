@@ -5,19 +5,23 @@ import QtQuick.Controls
 Rectangle {
   id: root
   
-  signal supportClicked
-  signal websiteClicked
+  signal issueTrackerClicked
+
+  readonly property bool compactLayout: width < 640
   
-  implicitHeight: 60
+  implicitHeight: compactLayout ? 88 : 60
   color: "transparent"
 
-  RowLayout {
+  GridLayout {
     anchors.fill: parent
-    spacing: 8
+    columns: root.compactLayout ? 1 : 2
+    columnSpacing: 12
+    rowSpacing: 8
 
     Text {
-      text: qsTr("QGIS is a community project that relies on sustaining memberships and donations to fund many of our improvements and activities.")
+      text: qsTr("Strata combines QGIS-based GIS tools with native AI assistance. Report bugs and feature requests in the Strata issue tracker.")
       Layout.fillWidth: true
+      Layout.alignment: Qt.AlignVCenter
       font.pointSize: Application.font.pointSize * 0.8
       font.bold: true
       color: "#f9fafb"
@@ -27,33 +31,48 @@ Rectangle {
       lineHeight: 1.3
     }
 
-    RoundButton {
-      radius: 20
-      Layout.preferredHeight: 50
-      Layout.preferredWidth: implicitWidth * 1.2
-      highlighted: true
-      Material.accent: "#589632"
-      text: qsTr("Support QGIS")
-      icon.color: "#c53e38"
-      icon.source: "../images/love.svg"
-      icon.width: 20
-      icon.height: 20
-      font.bold: true
-      background.layer.enabled: false
-      onClicked: root.supportClicked()
-    }
+    Rectangle {
+      id: issueTrackerField
 
-    RoundButton {
-      radius: 20
-      Layout.preferredHeight: 50
-      Layout.preferredWidth: implicitWidth * 1.2
-      visible: root.width >= 310
-      highlighted: true
-      Material.accent: "#8c8c8c"
-      text: qsTr("Go to qgis.org")
-      font.bold: true
-      background.layer.enabled: false
-      onClicked: root.websiteClicked()
+      Layout.preferredWidth: root.compactLayout ? Math.min(root.width, 380) : Math.min(Math.max(root.width * 0.34, 260), 370)
+      Layout.preferredHeight: 42
+      Layout.alignment: root.compactLayout ? Qt.AlignLeft : Qt.AlignRight | Qt.AlignVCenter
+      radius: 21
+      color: issueTrackerMouseArea.containsMouse ? "#163a4d" : "#0a2b3c"
+      border.width: 1
+      border.color: issueTrackerMouseArea.containsMouse ? "#93b023" : "#566775"
+
+      RowLayout {
+        anchors.fill: parent
+        anchors.leftMargin: 14
+        anchors.rightMargin: 14
+        spacing: 8
+
+        Text {
+          text: qsTr("Report issue")
+          font.pointSize: Application.font.pointSize * 0.8
+          font.bold: true
+          color: "#ffffff"
+          elide: Text.ElideRight
+        }
+
+        Text {
+          Layout.fillWidth: true
+          text: qsTr("github.com/francemazzi/strata/issues")
+          font.pointSize: Application.font.pointSize * 0.75
+          color: "#cfe6ef"
+          elide: Text.ElideMiddle
+          horizontalAlignment: Text.AlignRight
+        }
+      }
+
+      MouseArea {
+        id: issueTrackerMouseArea
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        hoverEnabled: true
+        onClicked: root.issueTrackerClicked()
+      }
     }
   }
 }

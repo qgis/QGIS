@@ -38,6 +38,39 @@
 
 using namespace Qt::StringLiterals;
 
+namespace
+{
+  bool requireStorageEncryption()
+  {
+    const QgsSettings settings;
+    return settings.value( u"ai/storage/requireEncryption"_s, false ).toBool();
+  }
+
+  QString encryptedChatValueForPersistence( const QString &plain, bool *ok )
+  {
+    if ( ok )
+      *ok = true;
+
+    if ( !QgsAiSecretStore::storageEncryptionAvailable() )
+      return plain;
+
+    const QgsAiSecretStore::EncryptionResult encrypted = QgsAiSecretStore::tryEncryptValue( plain );
+    if ( encrypted.ok )
+      return encrypted.value;
+
+    if ( requireStorageEncryption() )
+    {
+      if ( ok )
+        *ok = false;
+      QgsMessageLog::logMessage( encrypted.errorMessage.isEmpty() ? u"Chat history encryption failed; refusing plaintext persistence because encryption is required."_s : encrypted.errorMessage, u"AI/ChatHistory"_s, Qgis::MessageLevel::Warning, false );
+      return QString();
+    }
+
+    QgsAiSecretStore::warnPlaintextStorageOnce();
+    return plain;
+  }
+} // namespace
+
 QgsAiChatHistoryStore::QgsAiChatHistoryStore( QgsAiFileContextProvider *contextProvider, QObject *parent )
   : QObject( parent )
   , mContextProvider( contextProvider )
@@ -205,8 +238,21 @@ void QgsAiChatHistoryStore::migratePlaintextRows( QSqlDatabase &db )
       update.prepare( u"UPDATE messages SET content = ?, metadata_json = ? WHERE message_id = ?"_s );
       for ( const PendingRow &row : std::as_const( rows ) )
       {
-        update.addBindValue( row.content.startsWith( "enc1:"_L1 ) ? row.content : QgsAiSecretStore::encryptValue( row.content ) );
-        update.addBindValue( row.metaJson.isEmpty() || row.metaJson.startsWith( "enc1:"_L1 ) ? row.metaJson : QgsAiSecretStore::encryptValue( row.metaJson ) );
+        bool encrypted = true;
+        const QString content = row.content.startsWith( "enc1:"_L1 ) ? row.content : encryptedChatValueForPersistence( row.content, &encrypted );
+        if ( !encrypted )
+        {
+          ok = false;
+          break;
+        }
+        const QString metaJson = row.metaJson.isEmpty() || row.metaJson.startsWith( "enc1:"_L1 ) ? row.metaJson : encryptedChatValueForPersistence( row.metaJson, &encrypted );
+        if ( !encrypted )
+        {
+          ok = false;
+          break;
+        }
+        update.addBindValue( content );
+        update.addBindValue( metaJson );
         update.addBindValue( row.id );
         if ( !update.exec() )
         {
@@ -236,7 +282,14 @@ void QgsAiChatHistoryStore::migratePlaintextRows( QSqlDatabase &db )
       update.prepare( u"UPDATE sessions SET title = ? WHERE id = ?"_s );
       for ( const QPair<QString, QString> &row : std::as_const( rows ) )
       {
-        update.addBindValue( QgsAiSecretStore::encryptValue( row.second ) );
+        bool encrypted = true;
+        const QString title = encryptedChatValueForPersistence( row.second, &encrypted );
+        if ( !encrypted )
+        {
+          ok = false;
+          break;
+        }
+        update.addBindValue( title );
         update.addBindValue( row.first );
         if ( !update.exec() )
         {
@@ -434,8 +487,11 @@ bool QgsAiChatHistoryStore::createSession( const QString &id, const QString &tit
   QSqlQuery q( db );
   const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
   q.prepare( u"INSERT INTO sessions (id, title, agent, created_at, updated_at) VALUES (?, ?, ?, ?, ?)"_s );
+  bool encryptionOk = true;
   q.addBindValue( id );
-  q.addBindValue( QgsAiSecretStore::encryptValue( title ) );
+  q.addBindValue( encryptedChatValueForPersistence( title, &encryptionOk ) );
+  if ( !encryptionOk )
+    return false;
   q.addBindValue( agent );
   q.addBindValue( nowMs );
   q.addBindValue( nowMs );
@@ -464,10 +520,15 @@ bool QgsAiChatHistoryStore::appendMessage( const QString &sessionId, const QgsAi
   q.addBindValue( msg.id.isEmpty() ? QUuid::createUuid().toString( QUuid::WithoutBraces ) : msg.id );
   q.addBindValue( sessionId );
   q.addBindValue( qgsAiChatRoleToString( msg.role ) );
-  q.addBindValue( QgsAiSecretStore::encryptValue( msg.content ) );
+  bool encryptionOk = true;
+  q.addBindValue( encryptedChatValueForPersistence( msg.content, &encryptionOk ) );
+  if ( !encryptionOk )
+    return false;
   q.addBindValue( msg.timestamp.isValid() ? msg.timestamp.toMSecsSinceEpoch() : QDateTime::currentMSecsSinceEpoch() );
   const QString metaJson = msg.metadata.isEmpty() ? QString() : QString::fromUtf8( QJsonDocument( QJsonObject::fromVariantMap( msg.metadata ) ).toJson( QJsonDocument::Compact ) );
-  q.addBindValue( QgsAiSecretStore::encryptValue( metaJson ) );
+  q.addBindValue( encryptedChatValueForPersistence( metaJson, &encryptionOk ) );
+  if ( !encryptionOk )
+    return false;
   q.addBindValue( ordering );
   if ( !q.exec() )
   {
@@ -488,7 +549,10 @@ bool QgsAiChatHistoryStore::updateMessageMetadata( const QString &sessionId, con
   QSqlDatabase db = QSqlDatabase::database( connectionName() );
   QSqlQuery q( db );
   q.prepare( u"UPDATE messages SET metadata_json = ? WHERE session_id = ? AND message_id = ?"_s );
-  q.addBindValue( QgsAiSecretStore::encryptValue( QString::fromUtf8( QJsonDocument( QJsonObject::fromVariantMap( metadata ) ).toJson( QJsonDocument::Compact ) ) ) );
+  bool encryptionOk = true;
+  q.addBindValue( encryptedChatValueForPersistence( QString::fromUtf8( QJsonDocument( QJsonObject::fromVariantMap( metadata ) ).toJson( QJsonDocument::Compact ) ), &encryptionOk ) );
+  if ( !encryptionOk )
+    return false;
   q.addBindValue( sessionId );
   q.addBindValue( messageId );
   if ( !q.exec() )
@@ -510,7 +574,10 @@ bool QgsAiChatHistoryStore::renameSession( const QString &sessionId, const QStri
   QSqlDatabase db = QSqlDatabase::database( connectionName() );
   QSqlQuery q( db );
   q.prepare( u"UPDATE sessions SET title = ?, updated_at = ? WHERE id = ?"_s );
-  q.addBindValue( QgsAiSecretStore::encryptValue( newTitle ) );
+  bool encryptionOk = true;
+  q.addBindValue( encryptedChatValueForPersistence( newTitle, &encryptionOk ) );
+  if ( !encryptionOk )
+    return false;
   q.addBindValue( QDateTime::currentMSecsSinceEpoch() );
   q.addBindValue( sessionId );
   if ( !q.exec() )

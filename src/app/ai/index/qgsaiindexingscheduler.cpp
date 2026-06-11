@@ -29,9 +29,11 @@ namespace
   class QgsAiWorkspaceIndexTask final : public QgsTask
   {
     public:
-      explicit QgsAiWorkspaceIndexTask( QgsAiWorkspaceIndex *index )
+      QgsAiWorkspaceIndexTask( QgsAiWorkspaceIndex *index, const QString &workspaceRoot, const QList<QgsAiWorkspaceIndex::WorkspaceFileSnapshot> &snapshot )
         : QgsTask( QObject::tr( "Index AI workspace" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
         , mIndex( index )
+        , mWorkspaceRoot( workspaceRoot )
+        , mSnapshot( snapshot )
       {}
 
       QString errorMessage() const { return mErrorMessage; }
@@ -56,8 +58,9 @@ namespace
         }, Qt::DirectConnection );
 
         QString error;
-        const bool ok = mIndex->reindex( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES, &error );
+        const bool ok = mIndex->reindex( mSnapshot, mWorkspaceRoot, &error );
         disconnect( conn );
+        mIndex->closeDatabaseConnectionForCurrentThread();
         if ( !ok )
           mErrorMessage = error;
         return ok && !isCanceled();
@@ -65,6 +68,8 @@ namespace
 
     private:
       QPointer<QgsAiWorkspaceIndex> mIndex;
+      QString mWorkspaceRoot;
+      QList<QgsAiWorkspaceIndex::WorkspaceFileSnapshot> mSnapshot;
       QString mErrorMessage;
   };
 } // namespace
@@ -116,13 +121,25 @@ void QgsAiIndexingScheduler::startWorkspaceIndexing()
   if ( !manager )
   {
     QString error;
-    const bool ok = mIndex->reindex( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES, &error );
+    QString workspaceRoot;
+    QList<QgsAiWorkspaceIndex::WorkspaceFileSnapshot> snapshot;
+    const bool snapshotOk = mIndex->createWorkspaceFileSnapshot( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES, workspaceRoot, snapshot, &error );
+    const bool ok = snapshotOk && mIndex->reindex( snapshot, workspaceRoot, &error );
     if ( !ok && !error.isEmpty() )
       QgsMessageLog::logMessage( u"AI workspace indexing failed: %1"_s.arg( error ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
     return;
   }
 
-  QgsAiWorkspaceIndexTask *task = new QgsAiWorkspaceIndexTask( mIndex );
+  QString workspaceRoot;
+  QList<QgsAiWorkspaceIndex::WorkspaceFileSnapshot> snapshot;
+  QString snapshotError;
+  if ( !mIndex->createWorkspaceFileSnapshot( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES, workspaceRoot, snapshot, &snapshotError ) )
+  {
+    QgsMessageLog::logMessage( u"AI workspace indexing snapshot failed: %1"_s.arg( snapshotError ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+    return;
+  }
+
+  QgsAiWorkspaceIndexTask *task = new QgsAiWorkspaceIndexTask( mIndex, workspaceRoot, snapshot );
   mRunningTask = task;
   connect( task, &QgsTask::taskCompleted, this, [this, task]() {
     QgsMessageLog::logMessage( u"AI workspace index updated in background."_s, u"AI/Index"_s, Qgis::MessageLevel::Info, false );

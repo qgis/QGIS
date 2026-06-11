@@ -432,26 +432,28 @@ void TestQgsAiWorkspaceIndex::embeddingProviderAvailabilityIgnoresRemoteSettings
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
   QgsAiFileContextProvider contextProvider( tempDir.path() );
+  const bool e5ProviderListed = QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() );
 
   std::unique_ptr<QgsAiEmbeddingProvider> provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
   QString providerError;
-  QVERIFY( !provider->isAvailable( &providerError ) );
-  QVERIFY2( providerError.contains( u"E5"_s, Qt::CaseInsensitive ), providerError.toUtf8().constData() );
+  QCOMPARE( provider->isAvailable( &providerError ), !e5ProviderListed );
+  if ( e5ProviderListed )
+    QVERIFY2( providerError.contains( u"E5"_s, Qt::CaseInsensitive ), providerError.toUtf8().constData() );
   QgsAiWorkspaceIndex index( &contextProvider, provider.get() );
-  QVERIFY( !index.embeddingProviderAvailable() );
-  QVERIFY( !index.hasEmbeddingConfiguration() );
+  QCOMPARE( index.embeddingProviderAvailable(), !e5ProviderListed );
+  QCOMPARE( index.hasEmbeddingConfiguration(), !e5ProviderListed );
 
   settings.setValue( u"ai/provider/openai/apiKey"_s, u"sk-test-settings"_s );
   provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
-  QVERIFY( !provider->isAvailable() );
+  QCOMPARE( provider->isAvailable(), !e5ProviderListed );
 
   settings.remove( u"ai/provider/openai/apiKey"_s );
   qputenv( "OPENAI_API_KEY", "sk-test-env" );
   provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
-  QVERIFY( !provider->isAvailable() );
+  QCOMPARE( provider->isAvailable(), !e5ProviderListed );
 
   qunsetenv( "OPENAI_API_KEY" );
   settings.setValue( u"ai/embeddings/provider"_s, u"openrouter"_s );
@@ -459,7 +461,7 @@ void TestQgsAiWorkspaceIndex::embeddingProviderAvailabilityIgnoresRemoteSettings
   qputenv( "OPENROUTER_API_KEY", "sk-or-test-env" );
   provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
   QCOMPARE( provider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
-  QVERIFY( !provider->isAvailable() );
+  QCOMPARE( provider->isAvailable(), !e5ProviderListed );
 
   settings.setValue( u"strata/index/embedding_provider"_s, u"openrouter"_s );
   provider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
@@ -472,14 +474,22 @@ void TestQgsAiWorkspaceIndex::embeddingProviderRegistryDefaultsToE5AndKeepsMinih
 {
   ScopedEmbeddingConfiguration scopedConfiguration;
 
-  QCOMPARE( QgsAiEmbeddingProviderRegistry::defaultProviderId(), QgsAiE5EmbeddingProvider::staticProviderId() );
-  QVERIFY( QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() ) );
+  const bool e5ProviderListed = QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() );
+  QCOMPARE( QgsAiEmbeddingProviderRegistry::defaultProviderId(), e5ProviderListed ? QgsAiE5EmbeddingProvider::staticProviderId() : u"local:minihash-384"_s );
   QVERIFY( QgsAiEmbeddingProviderRegistry::providerIds().contains( u"local:minihash-384"_s ) );
 
   std::unique_ptr<QgsAiEmbeddingProvider> defaultProvider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
-  QCOMPARE( defaultProvider->providerId(), QgsAiE5EmbeddingProvider::staticProviderId() );
-  QCOMPARE( defaultProvider->modelId(), QgsAiE5EmbeddingProvider::modelName() );
-  QCOMPARE( defaultProvider->modelRevision(), QgsAiE5EmbeddingProvider::pinnedModelRevision() );
+  QCOMPARE( defaultProvider->providerId(), QgsAiEmbeddingProviderRegistry::defaultProviderId() );
+  if ( e5ProviderListed )
+  {
+    QCOMPARE( defaultProvider->modelId(), QgsAiE5EmbeddingProvider::modelName() );
+    QCOMPARE( defaultProvider->modelRevision(), QgsAiE5EmbeddingProvider::pinnedModelRevision() );
+  }
+  else
+  {
+    QCOMPARE( defaultProvider->modelId(), u"strata-local-minihash-384"_s );
+    QVERIFY( defaultProvider->isAvailable() );
+  }
   QCOMPARE( defaultProvider->embeddingDimension(), 384 );
 
   std::unique_ptr<QgsAiEmbeddingProvider> fallbackProvider = QgsAiEmbeddingProviderRegistry::createProvider( u"local:minihash-384"_s );
@@ -529,11 +539,17 @@ void TestQgsAiWorkspaceIndex::e5ProviderAvailabilityHonorsEnvironmentModelDir()
   QgsAiE5EmbeddingProvider provider;
   QString error;
   QVERIFY( !provider.isAvailable( &error ) );
-  QVERIFY2( error.contains( tempDir.path() ), error.toUtf8().constData() );
+  if ( QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() ) )
+    QVERIFY2( error.contains( tempDir.path() ), error.toUtf8().constData() );
+  else
+    QVERIFY2( error.contains( u"not compiled"_s, Qt::CaseInsensitive ), error.toUtf8().constData() );
 }
 
 void TestQgsAiWorkspaceIndex::e5ProviderIntegrationWhenModelDirIsConfigured()
 {
+  if ( !QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() ) )
+    QSKIP( "Local E5 embeddings were not compiled because ONNX Runtime and/or SentencePiece were not found." );
+
   const QByteArray modelDir = qgetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
   if ( modelDir.trimmed().isEmpty() )
     QSKIP( "STRATA_AI_EMBEDDING_MODEL_DIR is not set; skipping optional E5 ONNX integration test." );

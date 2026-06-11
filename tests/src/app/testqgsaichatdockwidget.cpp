@@ -4,6 +4,8 @@
   begin                : April 2026
 ***************************************************************************/
 
+#include <memory>
+
 #include "ai/index/qgsaiembeddingprovider.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
@@ -259,9 +261,9 @@ void TestQgsAiChatDockWidget::transcriptMessagesFitNarrowDockWithoutHorizontalSc
       "| Nome layer | Tipo layer | Geometria | N. feature | CRS |\n"
       "| --- | --- | --- | ---: | --- |\n"
       "| dbgt_AB_CDA_AB_CDA_SUP_SR_nome_molto_lungo_senza_spazi | vector | MultiPolygonZWithVeryLongGeometryName | 19382 | EPSG:7791-long-crs-description-without-natural-breaks |\n"
-      "| dbgt_ACC_PC_ACC_PC_POS_layer_con_nome_esteso | vector | Point | 41942 | non definito - percorso /Users/francesco/Sviluppo/frasma_lab/strata/tests_ai/Dati/strata_test_brescia.qgz |\n\n"
+      "| dbgt_ACC_PC_ACC_PC_POS_layer_con_nome_esteso | vector | Point | 41942 | non definito - percorso /workspace/strata/tests_ai/Dati/strata_test_brescia.qgz |\n\n"
       "```json\n"
-      "{\"project_file\":\"/Users/francesco/Sviluppo/frasma_lab/strata/tests_ai/Dati/strata_test_brescia.qgz\",\"layer_count\":118}\n"
+      "{\"project_file\":\"/workspace/strata/tests_ai/Dati/strata_test_brescia.qgz\",\"layer_count\":118}\n"
       "```"_s;
 
   manager.messageAdded( assistantMessage );
@@ -458,8 +460,9 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
 
   QgsAiModelRouter router;
   QgsAiFileContextProvider contextProvider( tempDir.path() );
-  QgsAiE5EmbeddingProvider embeddingProvider;
-  QgsAiWorkspaceIndex workspaceIndex( &contextProvider, &embeddingProvider );
+  const bool e5ProviderListed = QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() );
+  std::unique_ptr<QgsAiEmbeddingProvider> embeddingProvider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings();
+  QgsAiWorkspaceIndex workspaceIndex( &contextProvider, embeddingProvider.get() );
   QgsAiReviewPatchEngine reviewEngine;
   QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
   manager.setWorkspaceIndex( &workspaceIndex );
@@ -472,7 +475,7 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool localStatusFound = false;
   bool downloadButtonFound = false;
   bool defaultProviderSelected = false;
-  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected]() {
+  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, e5ProviderListed]() {
     QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
     if ( settingsDialog )
     {
@@ -491,8 +494,10 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
         layerIndexingEnabled = layerIndexing->isEnabled();
       }
       defaultProviderSelected = providerCombo && providerCombo->currentData().toString() == QgsAiEmbeddingProviderRegistry::defaultProviderId();
-      localStatusFound = statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive );
-      downloadButtonFound = downloadButton && downloadButton->isVisible();
+      localStatusFound = e5ProviderListed
+                           ? statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive )
+                           : statusLabel && statusLabel->text().contains( u"MinHash"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"available"_s, Qt::CaseInsensitive );
+      downloadButtonFound = downloadButton && downloadButton->isVisible() == e5ProviderListed;
       settingsDialog->reject();
     }
     inspected = true;
@@ -530,8 +535,8 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   QVERIFY( localStatusFound );
   QVERIFY( downloadButtonFound );
   QVERIFY( defaultProviderSelected );
-  QVERIFY( !layerIndexingChecked );
-  QVERIFY( !layerIndexingEnabled );
+  QCOMPARE( layerIndexingChecked, !e5ProviderListed );
+  QCOMPARE( layerIndexingEnabled, !e5ProviderListed );
 }
 
 void TestQgsAiChatDockWidget::historyMenuPromptsForSavedProjectWhenUnsaved()

@@ -23,6 +23,9 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
+#include <QStringList>
+#include <QUrl>
 
 using namespace Qt::StringLiterals;
 
@@ -30,6 +33,32 @@ namespace
 {
   QString sAuditFilePathOverride;
   bool sWriteFailureWarned = false;
+
+  QString redactedDetailSummary( const QString &tool, const QString &detail )
+  {
+    if ( tool == "run_python"_L1 )
+      return u"code_chars=%1"_s.arg( detail.size() );
+
+    if ( tool == "download_file"_L1 )
+    {
+      const int separator = detail.indexOf( u" -> "_s );
+      const QString urlText = separator >= 0 ? detail.left( separator ) : detail;
+      const QString destText = separator >= 0 ? detail.mid( separator + 4 ) : QString();
+      const QUrl url( urlText );
+      const QString host = url.host().isEmpty() ? u"unknown-host"_s : url.host();
+      const QString path = url.path().isEmpty() ? u"/"_s : url.path();
+      const QString destFile = QFileInfo( destText ).fileName();
+      return u"host=%1 path=%2 dest_file=%3"_s.arg( host, path, destFile.isEmpty() ? u"<none>"_s : destFile );
+    }
+
+    if ( tool == "install_python_package"_L1 )
+    {
+      const QStringList packages = detail.split( ' ', Qt::SkipEmptyParts );
+      return u"package_count=%1"_s.arg( packages.size() );
+    }
+
+    return u"detail_chars=%1"_s.arg( detail.size() );
+  }
 } //namespace
 
 QString QgsAiAuditLog::filePath()
@@ -47,11 +76,13 @@ void QgsAiAuditLog::setFilePathOverride( const QString &path )
 void QgsAiAuditLog::append( const QString &tool, const QString &detail )
 {
   const QString digest = QString::fromLatin1( QCryptographicHash::hash( detail.toUtf8(), QCryptographicHash::Sha256 ).toHex() );
-  QString excerpt = detail.left( 200 );
-  excerpt.replace( '\r', ' ' );
-  excerpt.replace( '\n', ' ' );
+  const QString workspaceRoot = QgsAiWorkspaceTrust::currentWorkspaceRoot();
+  const QString workspaceHash = workspaceRoot.isEmpty() ? u"none"_s : QgsAiWorkspaceTrust::workspaceHash( workspaceRoot );
+  QString summary = redactedDetailSummary( tool, detail );
+  summary.replace( '\r', ' ' );
+  summary.replace( '\n', ' ' );
 
-  const QString line = u"%1 | %2 | %3 | sha256=%4 | %5\n"_s.arg( QDateTime::currentDateTimeUtc().toString( Qt::ISODate ), tool, QgsAiWorkspaceTrust::currentWorkspaceRoot(), digest, excerpt );
+  const QString line = u"%1 | %2 | workspace=%3 | sha256=%4 | bytes=%5 | %6\n"_s.arg( QDateTime::currentDateTimeUtc().toString( Qt::ISODate ), tool, workspaceHash, digest, QString::number( detail.toUtf8().size() ), summary );
 
   QFile file( filePath() );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text ) )
