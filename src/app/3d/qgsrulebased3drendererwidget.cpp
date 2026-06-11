@@ -15,13 +15,17 @@
 
 #include "qgsrulebased3drendererwidget.h"
 
+#include "qgisapp.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgs3dsymbolutils.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgsrulebasedrenderer.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
 
@@ -57,6 +61,7 @@ QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
 
   connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsRuleBased3DRendererWidget::* )( const QModelIndex & )>( &QgsRuleBased3DRendererWidget::editRule ) );
 
+  connect( mBtnUpdateRulesFrom2D, &QAbstractButton::clicked, this, &QgsRuleBased3DRendererWidget::updateRulesFrom2D );
   connect( btnAddRule, &QAbstractButton::clicked, this, &QgsRuleBased3DRendererWidget::addRule );
   connect( btnEditRule, &QAbstractButton::clicked, this, static_cast<void ( QgsRuleBased3DRendererWidget::* )()>( &QgsRuleBased3DRendererWidget::editRule ) );
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsRuleBased3DRendererWidget::removeRule );
@@ -94,6 +99,21 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBased3DRendererWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBased3DRendererWidget::widgetChanged );
+
+  if ( mLayer )
+  {
+    QgsFeatureRenderer *renderer2D = mLayer->renderer();
+    if ( renderer2D && renderer2D->type() == "RuleRenderer"_L1 )
+    {
+      mBtnUpdateRulesFrom2D->setEnabled( true );
+      mBtnUpdateRulesFrom2D->setToolTip( QString() );
+    }
+    else
+    {
+      mBtnUpdateRulesFrom2D->setEnabled( false );
+      mBtnUpdateRulesFrom2D->setToolTip( tr( "Requires a rule-based 2D renderer" ) );
+    }
+  }
 }
 
 void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
@@ -111,6 +131,60 @@ void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
   QgsPanelWidget::setDockMode( dockMode );
 }
 
+void QgsRuleBased3DRendererWidget::updateRulesFrom2D()
+{
+  QgsFeatureRenderer *renderer2D = mLayer->renderer();
+  // Add missing rules from the 2D renderer
+  // and remove 3D rules which do not exist in the 2D renderer.
+  if ( renderer2D )
+  {
+    const QgsRuleBasedRenderer *ruleRenderer2D = dynamic_cast<const QgsRuleBasedRenderer *>( renderer2D );
+    if ( ruleRenderer2D )
+    {
+      const auto ruleKey = []( const auto *rule ) { return ( rule->isElse() ? u"ELSE|"_s : u"RULE|"_s ) + rule->filterExpression(); };
+
+      QSet<QString> existingRules3DKeys;
+      for ( const QgsRuleBased3DRenderer::Rule *rule3D : mRootRule->children() )
+      {
+        existingRules3DKeys.insert( ruleKey( rule3D ) );
+      }
+
+      QSet<QString> rules2DKeys;
+      QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
+      for ( const QgsRuleBasedRenderer::Rule *rule2D : ruleRenderer2D->rootRule()->children() )
+      {
+        const QString rule2DKey = ruleKey( rule2D );
+        rules2DKeys.insert( rule2DKey );
+
+        // Add rules which exist in the 2D renderer but are missing
+        // from the 3D renderer.
+        if ( !existingRules3DKeys.contains( rule2DKey ) )
+        {
+          std::unique_ptr<QgsAbstract3DSymbol> symbol3D = Qgs3DSymbolUtils::create3DSymbolFrom2D( mLayer, rule2D->symbol(), context );
+          QgsRuleBased3DRenderer::Rule *rule3D = new QgsRuleBased3DRenderer::Rule( symbol3D.release(), rule2D->filterExpression(), rule2D->label(), rule2D->isElse() );
+          mModel->insertRule( QModelIndex(), mModel->rowCount(), rule3D );
+        }
+      }
+
+      // Remove 3D rules which do not exist in the 2D renderer.
+      QList<int> rulesToDelete;
+      QgsRuleBased3DRenderer::RuleList children3D = mRootRule->children();
+      for ( int rowIdx = 0; rowIdx < children3D.count(); ++rowIdx )
+      {
+        const QString key3D = ruleKey( children3D[rowIdx] );
+        if ( !rules2DKeys.contains( key3D ) )
+        {
+          rulesToDelete.append( rowIdx );
+        }
+      }
+      std::sort( rulesToDelete.begin(), rulesToDelete.end(), std::greater<int>() );
+      for ( int rowIdx : rulesToDelete )
+      {
+        mModel->removeRows( rowIdx, 1, QModelIndex() );
+      }
+    }
+  }
+}
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
