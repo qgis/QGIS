@@ -155,7 +155,7 @@ using namespace Qt::StringLiterals;
 
 #include "qgsdockablewidgethelper.h"
 
-#include "qgsviewsettingsmenu.h"
+#include "qgspersistentmenu.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"
@@ -3447,9 +3447,9 @@ void QgisApp::createMenus()
   // Layer menu
 
   // Panel and Toolbar Submenus
-  mPanelMenu = new QgsViewSettingsMenu( tr( "Panels" ), this );
+  mPanelMenu = new QgsPersistentMenu( tr( "Panels" ), this );
   mPanelMenu->setObjectName( u"mPanelMenu"_s );
-  mToolbarMenu = new QgsViewSettingsMenu( tr( "Toolbars" ), this );
+  mToolbarMenu = new QgsPersistentMenu( tr( "Toolbars" ), this );
   mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
 
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
