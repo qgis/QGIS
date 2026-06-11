@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 
 #include <QColor>
+#include <QHash>
 #include <QSettings>
 #include <QString>
 
@@ -73,6 +74,48 @@ class CORE_EXPORT QgsSettingsEntryBase
 #endif
 
   public:
+
+    /**
+     * Sets the path to the global settings INI file and loads all keys
+     * into an in-memory hash for use as default values by QgsSettingsEntry.
+     *
+     * This must be called once at application startup, before QgsApplication
+     * initialization, and only from the main thread.
+     *
+     * \param path the path to the global settings INI file.
+     * \return TRUE if the file was successfully loaded, FALSE if the path was empty or the file did not exist.
+     *
+     * \since QGIS 4.2
+     */
+    static bool setGlobalSettingsPath( const QString &path );
+
+    /**
+     * Returns TRUE if the global settings INI file contains a value for the given \a key.
+     *
+     * \since QGIS 4.2
+     */
+    static bool hasGlobalDefault( const QString &key ) SIP_SKIP;
+
+    /**
+     * Returns the global default value for the given \a key,
+     * or an invalid QVariant if not found.
+     *
+     * \since QGIS 4.2
+     */
+    static QVariant globalDefault( const QString &key ) SIP_SKIP;
+
+    /**
+     * Returns the list of child group names found under \a prefix
+     * in the global defaults hash.
+     *
+     * The \a prefix is a tree-based key (may start with '/').
+     * A trailing '/' is added automatically if not present.
+     *
+     * \note This is intended for internal use by QgsSettingsTreeNamedListNode.
+     *
+     * \since QGIS 4.2
+     */
+    static QStringList globalChildGroups( const QString &prefix ) SIP_SKIP;
 
     /**
      * Configures QSettings to use IniFormat at the given \a profilePath
@@ -220,6 +263,8 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Returns the origin of the setting if it exists
      * \note it will return Qgis::SettingsOrigin::Any if the key doesn't exist
+     * \note Global takes precedence: if the key is defined in the global settings file,
+     * the origin is Qgis::SettingsOrigin::Global regardless of whether the user also overrides it.
      * \since QGIS 3.30
      */
     Qgis::SettingsOrigin origin( const QStringList &dynamicKeyPartList ) const;
@@ -382,9 +427,14 @@ class CORE_EXPORT QgsSettingsEntryBase
     bool hasChanged() const { return mHasChanged; }
 
   private:
+    QVariant valueFromSettingsWithGlobalDefault( const QString &resolvedKey, const QVariant &defaultValue ) const SIP_SKIP;
     QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
 
     QString completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const;
+
+    static QString sanitizeGlobalKey( const QString &key );
+
+    static QHash<QString, QVariant> sGlobalDefaults;
 
     QgsSettingsTreeNode *mParentTreeElement = nullptr;
     QString mName;
