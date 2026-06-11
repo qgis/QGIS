@@ -3658,6 +3658,17 @@ namespace QgsWms
           bufferSettings.setSize( static_cast<double>( param.mBufferSize ) );
         }
 
+        if (param.mFrameSize > 0) {
+          QgsTextBackgroundSettings background;
+          background.setEnabled( true );
+          background.setSize( QSize( param.mFrameSize, param.mFrameSize ) );
+          background.setType( QgsTextBackgroundSettings::ShapeRectangle );
+          background.setStrokeColor( param.mFrameOutlineColor );
+          background.setStrokeWidth( param.mFrameOutlineWidth );
+          background.setFillColor( param.mFrameBackgroundColor );
+          textFormat.setBackground( background );
+        }
+
         textFormat.setBuffer( bufferSettings );
         palSettings.setFormat( textFormat );
 

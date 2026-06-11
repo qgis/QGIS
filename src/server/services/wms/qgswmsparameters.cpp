@@ -297,6 +297,18 @@ namespace QgsWms
     const QgsWmsParameter pHighlightBufferSize( QgsWmsParameter::HIGHLIGHT_LABELBUFFERSIZE );
     save( pHighlightBufferSize );
 
+    const QgsWmsParameter pHighlightFrameBackgroundColor( QgsWmsParameter::HIGHLIGHT_LABELFRAMEBACKGROUNDCOLOR );
+    save( pHighlightFrameBackgroundColor );
+
+    const QgsWmsParameter pHighlightFrameOutlineColor( QgsWmsParameter::HIGHLIGHT_LABELFRAMEOUTLINECOLOR );
+    save( pHighlightFrameOutlineColor );
+
+    const QgsWmsParameter pHighlightFrameOutlineWidth( QgsWmsParameter::HIGHLIGHT_LABELFRAMEOUTLINEWIDTH );
+    save( pHighlightFrameOutlineWidth );
+
+    const QgsWmsParameter pHighlightFrameSize( QgsWmsParameter::HIGHLIGHT_LABELFRAMESIZE);
+    save( pHighlightFrameSize );
+
     const QgsWmsParameter pLabelRotation( QgsWmsParameter::HIGHLIGHT_LABEL_ROTATION, QMetaType::Type::Double );
     save( pLabelRotation );
 
@@ -1324,6 +1336,46 @@ namespace QgsWms
     return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELBUFFERSIZE ).toDoubleList( ';', false );
   }
 
+  QStringList QgsWmsParameters::highlightLabelFrameBackgroundColor() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELFRAMEBACKGROUNDCOLOR ).toStringList( ';', false );
+  }
+
+  QList<QColor> QgsWmsParameters::highlightLabelFrameBackgroundColorAsColor() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELFRAMEBACKGROUNDCOLOR ).toColorList( ';', false );
+  }
+
+  QStringList QgsWmsParameters::highlightLabelFrameOutlineColor() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELFRAMEOUTLINECOLOR ).toStringList( ';', false );
+  }
+
+  QList<QColor> QgsWmsParameters::highlightLabelFrameOutlineColorAsColor() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELFRAMEOUTLINECOLOR ).toColorList( ';', false );
+  }
+
+  QStringList QgsWmsParameters::highlightLabelFrameOutlineWidth() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELFRAMEOUTLINEWIDTH ).toStringList( ';', false );
+  }
+
+  QList<double> QgsWmsParameters::highlightLabelFrameOutlineWidthAsFloat() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELFRAMEOUTLINEWIDTH ).toDoubleList( ';', false );
+  }
+
+  QStringList QgsWmsParameters::highlightLabelFrameSize() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELFRAMESIZE ).toStringList( ';', false );
+  }
+
+  QList<double> QgsWmsParameters::highlightLabelFrameSizeAsFloat() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABELFRAMESIZE ).toDoubleList( ';', false );
+  }
+
   QList<double> QgsWmsParameters::highlightLabelRotation() const
   {
     return mWmsParameters.value( QgsWmsParameter::HIGHLIGHT_LABEL_ROTATION ).toDoubleList( ';', false );
@@ -1613,6 +1665,10 @@ namespace QgsWms
     const QStringList fonts = highlightLabelFont();
     const QList<QColor> bufferColors = highlightLabelBufferColorAsColor();
     const QList<double> bufferSizes = highlightLabelBufferSizeAsFloat();
+    const QList<QColor> frameBackgroundColors = highlightLabelFrameBackgroundColorAsColor();
+    const QList<QColor> frameOutlineColors = highlightLabelFrameOutlineColorAsColor();
+    const QList<double> frameOutlineWidths = highlightLabelFrameOutlineWidthAsFloat();
+    const QList<double> frameSizes = highlightLabelFrameSizeAsFloat();
     const QList<double> rotation = highlightLabelRotation();
     const QList<double> distance = highlightLabelDistance();
     const QStringList hali = highlightLabelHorizontalAlignment();
@@ -1646,6 +1702,18 @@ namespace QgsWms
 
       if ( i < bufferSizes.count() )
         param.mBufferSize = bufferSizes[i];
+
+      if ( i < frameBackgroundColors.count() )
+        param.mFrameBackgroundColor = frameBackgroundColors[i];
+
+      if ( i < frameOutlineColors.count() )
+        param.mFrameOutlineColor = frameOutlineColors[i];
+
+      if ( i < frameOutlineWidths.count() )
+        param.mFrameOutlineWidth = frameOutlineWidths[i];
+
+      if ( i < frameSizes.count() )
+        param.mFrameSize = frameSizes[i];
 
       if ( i < rotation.count() )
         param.mLabelRotation = rotation[i];
@@ -1862,6 +1930,34 @@ namespace QgsWms
       bufferSizes = wmsParam.toDoubleList( ';', false );
     }
 
+    QList<QColor> frameBackgroundColors;
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELFRAMEBACKGROUNDCOLOR, mapId );
+    if ( wmsParam.isValid() )
+    {
+      frameBackgroundColors = wmsParam.toColorList( ';', false );
+    }
+
+    QList<QColor> frameOutlineColors;
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELFRAMEOUTLINECOLOR, mapId );
+    if ( wmsParam.isValid() )
+    {
+      frameOutlineColors = wmsParam.toColorList( ';', false );
+    }
+
+    QList<double> frameOutlineWidths;
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELFRAMEOUTLINEWIDTH, mapId );
+    if ( wmsParam.isValid() )
+    {
+      frameOutlineWidths = wmsParam.toDoubleList( ';', false );
+    }
+
+    QList<double> frameSizes;
+    wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABELFRAMESIZE, mapId );
+    if ( wmsParam.isValid() )
+    {
+      frameSizes = wmsParam.toDoubleList( ';', false );
+    }
+
     QList<double> rotations;
     wmsParam = idParameter( QgsWmsParameter::HIGHLIGHT_LABEL_ROTATION, mapId );
     if ( wmsParam.isValid() )
@@ -1915,6 +2011,18 @@ namespace QgsWms
 
       if ( i < bufferColors.count() )
         hParam.mBufferColor = bufferColors[i];
+
+      if ( i < frameBackgroundColors.count() )
+        hParam.mFrameBackgroundColor = frameBackgroundColors[i];
+
+      if ( i < frameOutlineColors.count() )
+        hParam.mFrameOutlineColor = frameOutlineColors[i];
+
+      if ( i < frameOutlineWidths.count() )
+        hParam.mFrameOutlineWidth = frameOutlineWidths[i];
+
+      if ( i < frameSizes.count() )
+        hParam.mFrameSize = frameSizes[i];
 
       if ( i < bufferSizes.count() )
         hParam.mBufferSize = bufferSizes[i];
