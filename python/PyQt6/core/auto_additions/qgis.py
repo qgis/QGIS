@@ -8712,6 +8712,22 @@ Qgis.LegendJsonRenderFlags = lambda flags=0: Qgis.LegendJsonRenderFlag(flags)
 Qgis.LegendJsonRenderFlags.baseClass = Qgis
 LegendJsonRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.GeoJsonProfile.Rfc7946.__doc__ = "GeoJson profile compliant with RFC7946 standard \"http://www.opengis.net/def/profile/OGC/0/rfc7946\""
+Qgis.GeoJsonProfile.JsonFg.__doc__ = "GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg\""
+Qgis.GeoJsonProfile.JsonFgPlus.__doc__ = "GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus\""
+Qgis.GeoJsonProfile.__doc__ = """GeoJson export Profile according to OGC Features and Geometries JSON - Part 1: Core
+https://docs.ogc.org/is/21-045r1/21-045r1.html
+
+.. versionadded:: 4.2
+
+* ``Rfc7946``: GeoJson profile compliant with RFC7946 standard \"http://www.opengis.net/def/profile/OGC/0/rfc7946\"
+* ``JsonFg``: GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg\"
+* ``JsonFgPlus``: GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus\"
+
+"""
+# --
+Qgis.GeoJsonProfile.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ActionType.Invalid.__doc__ = "Invalid"
 Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
 Qgis.ActionType.AttributeAction.__doc__ = "Custom actions (manually defined in layer properties), corresponds to QgsAction class."

@@ -308,7 +308,7 @@ QDomElement QgsPolyhedralSurface::asGml3( QDomDocument &doc, int precision, cons
   return elemPolyhedralSurface;
 }
 
-json QgsPolyhedralSurface::asJsonObject( int precision ) const
+json QgsPolyhedralSurface::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   // GeoJSON format does not support PolyhedralSurface geometry
   // Return a multipolygon instead;

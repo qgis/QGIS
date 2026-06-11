@@ -397,7 +397,7 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
   return elemCurvePolygon;
 }
 
-json QgsCurvePolygon::asJsonObject( int precision ) const
+json QgsCurvePolygon::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json coordinates( json::array() );
   if ( auto *lExteriorRing = exteriorRing() )

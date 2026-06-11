@@ -322,11 +322,24 @@ QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const Q
 }
 
 
-json QgsCircularString::asJsonObject( int precision ) const
+json QgsCircularString::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
-  // GeoJSON does not support curves
-  std::unique_ptr< QgsLineString > line( curveToLine() );
-  return line->asJsonObject( precision );
+  switch ( profile )
+  {
+    case Qgis::GeoJsonProfile::Rfc7946:
+    {
+      std::unique_ptr< QgsLineString > line( curveToLine() );
+      return line->asJsonObject( precision, profile );
+    }
+    case Qgis::GeoJsonProfile::JsonFg:
+    case Qgis::GeoJsonProfile::JsonFgPlus:
+    {
+      QgsPointSequence pts;
+      points( pts );
+      return { { "type", "CircularString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision ) } };
+    }
+  }
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsCircularString::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const

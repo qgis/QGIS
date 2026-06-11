@@ -124,7 +124,7 @@ QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QStri
   return elemMultiCurve;
 }
 
-json QgsMultiCurve::asJsonObject( int precision ) const
+json QgsMultiCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )

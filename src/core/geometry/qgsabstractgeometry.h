@@ -393,7 +393,14 @@ class CORE_EXPORT QgsAbstractGeometry
     QString asJson( int precision = 17 );
 
     /**
-     * Returns a json object representation of the geometry.
+      * Export the geometry to a GeoJSON string, with the given \a precision and following the specified GeoJSON \a profile.
+      * Note: this is identical to asJson() when using the Rfc7946 profile, but differs when using other profiles.
+      * \since QGIS 4.2
+      */
+    QString asGeoJson(int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Rfc7946 );
+
+    /**
+     * Returns a json object representation of the geometry with the given \a precision and \a profile.
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
@@ -402,7 +409,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    virtual json asJsonObject( int precision = 17 ) SIP_SKIP const;
+    virtual json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Rfc7946 ) SIP_SKIP const;
 
     /**
      * Returns a KML representation of the geometry.

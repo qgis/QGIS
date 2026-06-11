@@ -1748,7 +1748,7 @@ QDomElement QgsNurbsCurve::asGml3( QDomDocument &doc, int precision, const QStri
   return line->asGml3( doc, precision, ns, axisOrder );
 }
 
-json QgsNurbsCurve::asJsonObject( int precision ) const
+json QgsNurbsCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   std::unique_ptr<QgsLineString> line( curveToLine() );
   if ( !line )
