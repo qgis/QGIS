@@ -15,6 +15,8 @@
 
 #include "qgsaiworkspaceindex.h"
 
+#include "ai/qgsaisecretstore.h"
+
 #include <algorithm>
 #include <cmath>
 #include <utility>
@@ -444,9 +446,10 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
     c.chunk.firstFeatureId = q.value( 3 ).isNull() ? -1 : q.value( 3 ).toLongLong();
     c.chunk.lastFeatureId = q.value( 4 ).isNull() ? -1 : q.value( 4 ).toLongLong();
     c.chunk.chunkIndex = q.value( 5 ).toInt();
-    c.chunk.text = q.value( 6 ).toString();
-    c.chunk.wktBlob = q.value( 7 ).toByteArray();
-    c.embedding = bytesToVector( q.value( 8 ).toByteArray() );
+    // Per-value `enc1:` detection keeps legacy plaintext rows readable (mixed mode).
+    c.chunk.text = QgsAiSecretStore::decryptValue( q.value( 6 ).toString() );
+    c.chunk.wktBlob = QgsAiSecretStore::decryptBlob( q.value( 7 ).toByteArray() );
+    c.embedding = bytesToVector( QgsAiSecretStore::decryptBlob( q.value( 8 ).toByteArray() ) );
     const qint64 syncMs = q.value( 9 ).toLongLong();
     c.providerId = q.value( 10 ).toString();
     c.modelId = q.value( 11 ).toString();
@@ -540,6 +543,22 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
     return false;
   }
 
+  // Encrypt-at-rest when the data key is available; otherwise warn once and
+  // persist plaintext (or refuse when the user requires encryption).
+  const bool encryptionAvailable = QgsAiSecretStore::storageEncryptionAvailable();
+  if ( !encryptionAvailable )
+  {
+    QgsSettings appSettings;
+    if ( appSettings.value( u"ai/storage/requireEncryption"_s, false ).toBool() )
+    {
+      if ( errorMessage )
+        *errorMessage = u"Encryption is required (ai/storage/requireEncryption) but the authentication vault is unavailable."_s;
+      db.rollback();
+      return false;
+    }
+    QgsAiSecretStore::warnPlaintextStorageOnce();
+  }
+
   const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
   q.prepare( QStringLiteral(
     "INSERT INTO chunks (source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync, provider_id, model_id, model_revision, embedding_dimension, content_hash, source_mtime) "
@@ -551,6 +570,8 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
     const QString modelId = c.modelId.isEmpty() ? storageModelId( mEmbeddingProvider ) : c.modelId;
     const QString modelRevision = c.modelRevision.isEmpty() ? storageModelRevision( mEmbeddingProvider ) : c.modelRevision;
     const int dimension = c.embeddingDimension > 0 ? c.embeddingDimension : storageDimension( mEmbeddingProvider, c.embedding );
+    // The content hash stays computed over the PLAINTEXT so chunk-reuse keys
+    // remain stable across encrypted and plaintext sessions.
     const QString hash = c.contentHash.isEmpty() ? textHash( c.chunk.text, c.chunk.wktBlob ) : c.contentHash;
     q.addBindValue( c.chunk.sourceType.isEmpty() ? QString::fromLatin1( SOURCE_TYPE_FILE ) : c.chunk.sourceType );
     q.addBindValue( c.chunk.relativePath );
@@ -558,9 +579,9 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
     q.addBindValue( c.chunk.firstFeatureId < 0 ? QVariant( QMetaType::fromType<qint64>() ) : QVariant( c.chunk.firstFeatureId ) );
     q.addBindValue( c.chunk.lastFeatureId < 0 ? QVariant( QMetaType::fromType<qint64>() ) : QVariant( c.chunk.lastFeatureId ) );
     q.addBindValue( c.chunk.chunkIndex );
-    q.addBindValue( c.chunk.text );
-    q.addBindValue( c.chunk.wktBlob.isEmpty() ? QVariant( QMetaType::fromType<QByteArray>() ) : QVariant( c.chunk.wktBlob ) );
-    q.addBindValue( vectorToBytes( c.embedding ) );
+    q.addBindValue( encryptionAvailable ? QgsAiSecretStore::encryptValue( c.chunk.text ) : c.chunk.text );
+    q.addBindValue( c.chunk.wktBlob.isEmpty() ? QVariant( QMetaType::fromType<QByteArray>() ) : QVariant( encryptionAvailable ? QgsAiSecretStore::encryptBlob( c.chunk.wktBlob ) : c.chunk.wktBlob ) );
+    q.addBindValue( encryptionAvailable ? QgsAiSecretStore::encryptBlob( vectorToBytes( c.embedding ) ) : vectorToBytes( c.embedding ) );
     q.addBindValue( nowMs );
     q.addBindValue( providerId );
     q.addBindValue( modelId );

@@ -7,6 +7,9 @@
 
 #include <memory>
 
+#include "ai/qgsaifilecontextprovider.h"
+#include "ai/qgsaiworkspacetrust.h"
+#include "ai/tools/qgsaidownloadfiletool.h"
 #include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsaitoolregistry.h"
 #include "qgsapplication.h"
@@ -22,6 +25,7 @@
 #include <QJsonObject>
 #include <QSignalSpy>
 #include <QString>
+#include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
 
@@ -95,6 +99,7 @@ class TestQgsAiToolRegistry : public QObject
     void captureMapCanvasRequiresConsent();
     void captureMapCanvasCreatesCappedPng();
     void clearEmptiesRegistry();
+    void trustGatingHidesRiskyTools();
 };
 
 void TestQgsAiToolRegistry::initTestCase()
@@ -261,6 +266,31 @@ void TestQgsAiToolRegistry::clearEmptiesRegistry()
   registry.clear();
   QCOMPARE( registry.count(), 0 );
   QVERIFY( !registry.find( u"echo"_s ) );
+}
+
+void TestQgsAiToolRegistry::trustGatingHidesRiskyTools()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiDownloadFileTool>( &contextProvider, nullptr ) );
+
+  // Unknown trust state ⇒ restricted: the risky tool is neither advertised nor executable.
+  QCOMPARE( QgsAiWorkspaceTrust::state( tempDir.path() ), QgsAiWorkspaceTrust::State::Unknown );
+  QVERIFY( !registry.availableToolNames().contains( u"download_file"_s ) );
+  QgsAiToolResult blocked = registry.execute( u"download_file"_s, QJsonObject() );
+  QVERIFY( !blocked.success );
+  QVERIFY2( blocked.errorMessage.contains( u"not trusted"_s ), qPrintable( blocked.errorMessage ) );
+
+  // Trusted ⇒ advertised again.
+  QgsAiWorkspaceTrust::setState( tempDir.path(), QgsAiWorkspaceTrust::State::Trusted );
+  QVERIFY( registry.availableToolNames().contains( u"download_file"_s ) );
+
+  // Revoking trust hides it once more.
+  QgsAiWorkspaceTrust::setState( tempDir.path(), QgsAiWorkspaceTrust::State::Untrusted );
+  QVERIFY( !registry.availableToolNames().contains( u"download_file"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsAiToolRegistry )

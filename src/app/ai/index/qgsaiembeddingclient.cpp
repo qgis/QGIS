@@ -15,6 +15,7 @@
 
 #include "qgsaiembeddingclient.h"
 
+#include "ai/qgsaisecretstore.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
@@ -94,14 +95,11 @@ QJsonObject QgsAiEmbeddingClient::openRouterProviderPreferences() const
 
 QString QgsAiEmbeddingClient::apiKey() const
 {
-  const QgsSettings settings;
   const bool useOpenRouter = provider() == Provider::OpenRouter;
-  const QString stored = settings.value( QString::fromLatin1( useOpenRouter ? OPENROUTER_KEY_SETTING : OPENAI_KEY_SETTING ) ).toString().trimmed();
-  if ( !stored.isEmpty() )
-    return stored;
-
-  const QString envValue = qEnvironmentVariable( useOpenRouter ? "OPENROUTER_API_KEY" : "OPENAI_API_KEY" ).trimmed();
-  return envValue;
+  return QgsAiSecretStore::readSecret(
+    QString::fromLatin1( useOpenRouter ? OPENROUTER_KEY_SETTING : OPENAI_KEY_SETTING ),
+    { useOpenRouter ? u"OPENROUTER_API_KEY"_s : u"OPENAI_API_KEY"_s }
+  );
 }
 
 bool QgsAiEmbeddingClient::hasApiKey() const
@@ -133,13 +131,67 @@ bool QgsAiEmbeddingClient::embed( const QStringList &texts, QList<QVector<float>
   return true;
 }
 
+bool QgsAiEmbeddingClient::performRequest( const QByteArray &payload, const QString &key, int &httpStatus, QByteArray &body, int &networkError, int &retryAfterSeconds, QString *errorMessage )
+{
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  if ( !nam )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Network manager is not available."_s;
+    return false;
+  }
+
+  QNetworkRequest request { QUrl( endpoint() ) };
+  request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
+  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( key ) ).toUtf8() );
+  request.setTransferTimeout( mTimeoutMs );
+  if ( provider() == Provider::OpenRouter )
+  {
+    // App attribution headers recommended by OpenRouter.
+    request.setRawHeader( "HTTP-Referer", "https://github.com/francemazzi/strata" );
+    request.setRawHeader( "X-Title", "Strata" );
+  }
+
+  QNetworkReply *reply = nam->post( request, payload );
+  if ( !reply )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Failed to start embeddings request."_s;
+    return false;
+  }
+
+  // Block until finished. setTransferTimeout above guards against hangs.
+  QEventLoop loop;
+  connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  httpStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
+  body = reply->readAll();
+  networkError = static_cast<int>( reply->error() );
+  retryAfterSeconds = -1;
+  if ( reply->hasRawHeader( "Retry-After" ) )
+  {
+    bool parsedOk = false;
+    const int parsed = QString::fromLatin1( reply->rawHeader( "Retry-After" ) ).trimmed().toInt( &parsedOk );
+    if ( parsedOk && parsed >= 0 )
+      retryAfterSeconds = parsed;
+  }
+  reply->deleteLater();
+  return true;
+}
+
 bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage )
 {
+  const QString providerName = provider() == Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s;
+
   if ( mAuthenticationFailed )
   {
     if ( errorMessage )
-      *errorMessage = provider() == Provider::OpenRouter ? u"OpenRouter embeddings are disabled after an authentication failure. Check the API key and retry."_s
-                                                         : u"OpenAI embeddings are disabled after an authentication failure. Check the API key and retry."_s;
+    {
+      *errorMessage = mCreditsExhausted
+                        ? u"%1 embeddings are disabled after running out of credits. Top up the account and retry."_s.arg( providerName )
+                        : u"%1 embeddings are disabled after an authentication failure. Check the API key and retry."_s.arg( providerName );
+    }
     return false;
   }
 
@@ -154,14 +206,6 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
     return false;
   }
 
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-  if ( !nam )
-  {
-    if ( errorMessage )
-      *errorMessage = u"Network manager is not available."_s;
-    return false;
-  }
-
   QJsonObject payload;
   payload.insert( u"model"_s, model() );
   QJsonArray input;
@@ -170,31 +214,29 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
   payload.insert( u"input"_s, input );
   if ( provider() == Provider::OpenRouter )
     payload.insert( u"provider"_s, openRouterProviderPreferences() );
+  const QByteArray payloadBytes = QJsonDocument( payload ).toJson( QJsonDocument::Compact );
 
-  QNetworkRequest request { QUrl( endpoint() ) };
-  request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
-  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( key ) ).toUtf8() );
-  request.setTransferTimeout( mTimeoutMs );
-
-  QNetworkReply *reply = nam->post( request, QJsonDocument( payload ).toJson( QJsonDocument::Compact ) );
-  if ( !reply )
-  {
-    if ( errorMessage )
-      *errorMessage = u"Failed to start embeddings request."_s;
+  int httpStatus = 0;
+  QByteArray body;
+  int networkError = 0;
+  int retryAfterSeconds = -1;
+  if ( !performRequest( payloadBytes, key, httpStatus, body, networkError, retryAfterSeconds, errorMessage ) )
     return false;
+
+  // One retry for transient failures (408/429/5xx), honoring Retry-After when present.
+  const bool transientFailure = httpStatus == 408 || httpStatus == 429 || ( httpStatus >= 500 && httpStatus <= 599 );
+  if ( transientFailure )
+  {
+    const int delayMs = retryAfterSeconds >= 0 ? std::min( retryAfterSeconds, 10 ) * 1000 : 1000;
+    QgsMessageLog::logMessage( u"Embeddings request hit HTTP %1; retrying once in %2 ms."_s.arg( httpStatus ).arg( delayMs ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+    QEventLoop waitLoop;
+    QTimer::singleShot( delayMs, &waitLoop, &QEventLoop::quit );
+    waitLoop.exec();
+    if ( !performRequest( payloadBytes, key, httpStatus, body, networkError, retryAfterSeconds, errorMessage ) )
+      return false;
   }
 
-  // Block until finished. setTransferTimeout above guards against hangs.
-  QEventLoop loop;
-  connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
-  loop.exec();
-
-  const int httpStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
-  const QByteArray body = reply->readAll();
-  const QNetworkReply::NetworkError netError = reply->error();
-  reply->deleteLater();
-
-  if ( netError != QNetworkReply::NoError || httpStatus < 200 || httpStatus >= 300 )
+  if ( networkError != 0 || httpStatus < 200 || httpStatus >= 300 )
   {
     QString detail;
     const QJsonDocument doc = QJsonDocument::fromJson( body );
@@ -208,16 +250,31 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
       mAuthenticationFailed = true;
       if ( !mAuthFailureLogged )
       {
-        QgsMessageLog::logMessage( u"Embeddings authentication failed for %1; disabling this remote embedding provider until settings are changed."_s.arg( provider() == Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+        QgsMessageLog::logMessage( u"Embeddings authentication failed for %1; disabling this remote embedding provider until settings are changed."_s.arg( providerName ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
         mAuthFailureLogged = true;
       }
+      if ( errorMessage )
+        *errorMessage = u"%1 embeddings authentication failed (HTTP %2)%3"_s.arg( providerName ).arg( httpStatus ).arg( detail.isEmpty() ? u"."_s : u": %1"_s.arg( detail ) );
+      return false;
     }
-    else
+    if ( httpStatus == 402 )
     {
-      QgsMessageLog::logMessage(
-        u"Embeddings request failed httpStatus=%1 networkError=%2 detail=%3"_s.arg( httpStatus ).arg( static_cast<int>( netError ) ).arg( detail.left( 300 ) ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false
-      );
+      // Out of credits: trip the breaker so indexing doesn't hammer a paid API.
+      mAuthenticationFailed = true;
+      mCreditsExhausted = true;
+      if ( !mAuthFailureLogged )
+      {
+        QgsMessageLog::logMessage( u"%1 account has insufficient credits for embeddings; disabling this remote embedding provider until settings are changed."_s.arg( providerName ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+        mAuthFailureLogged = true;
+      }
+      if ( errorMessage )
+        *errorMessage = u"%1 account has insufficient credits for embeddings%2"_s.arg( providerName ).arg( provider() == Provider::OpenRouter ? u" — top up at openrouter.ai/credits."_s : u"."_s );
+      return false;
     }
+
+    QgsMessageLog::logMessage(
+      u"Embeddings request failed httpStatus=%1 networkError=%2 detail=%3"_s.arg( httpStatus ).arg( networkError ).arg( detail.left( 300 ) ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false
+    );
     if ( errorMessage )
       *errorMessage = detail.isEmpty() ? u"Embeddings request failed (HTTP %1)."_s.arg( httpStatus ) : u"Embeddings request failed: %1"_s.arg( detail );
     return false;

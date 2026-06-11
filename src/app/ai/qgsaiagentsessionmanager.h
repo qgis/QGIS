@@ -153,6 +153,16 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     static QString formatRetrievedContext( const QList<QgsAiWorkspaceIndex::Chunk> &chunks, int byteCap = RETRIEVAL_BYTE_CAP );
 
     /**
+     * Wraps untrusted content (RAG chunks, file snippets, free-text tool output)
+     * in an `<untrusted-data source="…">` block, neutralizing any nested wrapper
+     * markers so the content cannot escape the block. Public for unit testing.
+     */
+    static QString wrapUntrusted( const QString &sourceLabel, const QString &text );
+
+    //! Flattens an untrusted label (layer/file name) to a single safe line for the wrapper attribute.
+    static QString sanitizeUntrustedLabel( const QString &label );
+
+    /**
      * Returns the current agent behavior settings (rules, skills, custom actions toggle).
      * The values are kept in sync with QgsSettings.
      */
@@ -168,6 +178,12 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString collectRulesContent() const;
     //! Returns the skills text combined from inline settings and workspace files.
     QString collectSkillsContent() const;
+
+    /**
+     * Returns the cumulative token/cost accounting for the current session,
+     * summed across every model response (including tool-call rounds).
+     */
+    QgsAiUsage sessionUsage() const { return mSessionUsage; }
 
     //! Maximum tool-use rounds the agent will run before bailing out for a single user turn.
     static constexpr int MAX_TOOL_ITERATIONS_PER_TURN = 8;
@@ -252,6 +268,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QgsAiChatHistoryStore *mHistoryStore = nullptr;
     QString mActiveSessionId;
     int mNextMessageOrdering = 0;
+    QgsAiUsage mSessionUsage;
 };
 
 #endif // QGSAIAGENTSESSIONMANAGER_H

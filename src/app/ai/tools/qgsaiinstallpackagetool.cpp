@@ -16,6 +16,8 @@
 #include "qgsaiinstallpackagetool.h"
 
 #include "qgsaipipinstallapprovaldialog.h"
+#include "qgsaiauditlog.h"
+#include "qgsaiworkspacetrust.h"
 #include "qgsaitoolschemautil.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
@@ -117,12 +119,14 @@ QgsAiInstallPythonPackageTool::QgsAiInstallPythonPackageTool( QWidget *dialogPar
 
 bool QgsAiInstallPythonPackageTool::isAvailable() const
 {
-  return QgsPythonRunner::isValid();
+  return QgsPythonRunner::isValid() && QgsAiWorkspaceTrust::isCurrentWorkspaceTrusted();
 }
 
 QString QgsAiInstallPythonPackageTool::availabilityReason() const
 {
-  return u"Python package installation is not available because the QGIS Python runner is unavailable. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s;
+  if ( !QgsPythonRunner::isValid() )
+    return u"Python package installation is not available because the QGIS Python runner is unavailable. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s;
+  return u"install_python_package is disabled because this workspace is not trusted. Trust the workspace from the AI provider settings to enable package installation."_s;
 }
 
 QString QgsAiInstallPythonPackageTool::description() const
@@ -217,6 +221,7 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
   }
 
   QgsMessageLog::logMessage( u"install_python_package: executing approved install (packages=%1)"_s.arg( packages.size() ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
+  QgsAiAuditLog::append( u"install_python_package"_s, packages.join( u" "_s ) );
 
   constexpr int TIMEOUT_SECONDS = 300;
   const QString wrapper = QString::fromUtf8( PIP_WRAPPER_TEMPLATE ).arg( escapePipPath( outPath ), escapePipPath( argsPath ), QString::number( TIMEOUT_SECONDS ) );

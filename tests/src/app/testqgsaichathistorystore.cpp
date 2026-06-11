@@ -7,6 +7,7 @@
 #include "ai/qgsaichathistorystore.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgstest.h"
@@ -14,7 +15,10 @@
 #include <QCryptographicHash>
 #include <QDir>
 #include <QFileInfo>
+#include <QScopeGuard>
 #include <QSignalSpy>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QString>
 #include <QTemporaryDir>
 #include <QUuid>
@@ -26,6 +30,7 @@ class TestQgsAiChatHistoryStore : public QObject
     Q_OBJECT
 
   private slots:
+    void initTestCase();
     void persistsSessionsWhenWorkspaceConfigured();
     void updatesMessageMetadata();
     void workspaceRootChangeLoadsSeparateHistory();
@@ -34,11 +39,21 @@ class TestQgsAiChatHistoryStore : public QObject
     void workspaceRootSettingRoundTripsViaQgsSettings();
     void autoWorkspaceRootUsesProfileDirectoryWhenUnset();
     void workspaceRootMigratesGeoAiLegacySetting();
+    void chatV1MigratesInPlacePreservingHistory();
+    void requireEncryptionBlocksPlaintextPersistence();
 
   private:
     static QString expectedDbPath( const QString &workspaceRoot );
     static QString expectedProjectDbPath( const QString &scopeKey );
 };
+
+void TestQgsAiChatHistoryStore::initTestCase()
+{
+  // Other suites sharing the same settings dir (e.g. the agent session manager
+  // tests) leave history DBs behind; wipe them so the scope assertions below
+  // always start from a clean slate.
+  QDir( QgsApplication::qgisSettingsDirPath() + u"ai_chat"_s ).removeRecursively();
+}
 
 QString TestQgsAiChatHistoryStore::expectedDbPath( const QString &workspaceRoot )
 {
@@ -276,6 +291,74 @@ void TestQgsAiChatHistoryStore::workspaceRootMigratesGeoAiLegacySetting()
   QVERIFY( !settings.contains( qgisAiLegacyKey ) );
 
   settings.remove( settingsKey );
+}
+
+void TestQgsAiChatHistoryStore::chatV1MigratesInPlacePreservingHistory()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  // Build a v1 database by hand (plaintext rows, user_version = 1).
+  const QString dbPath = expectedDbPath( QDir( tempDir.path() ).absolutePath() );
+  QDir().mkpath( QFileInfo( dbPath ).absolutePath() );
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase( u"QSQLITE"_s, u"chat_v1_fixture"_s );
+    db.setDatabaseName( dbPath );
+    QVERIFY( db.open() );
+    QSqlQuery q( db );
+    QVERIFY( q.exec( u"CREATE TABLE sessions (id TEXT PRIMARY KEY, title TEXT NOT NULL, agent TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)"_s ) );
+    QVERIFY( q.exec( u"CREATE TABLE messages (message_id TEXT PRIMARY KEY, session_id TEXT NOT NULL, role TEXT NOT NULL, content TEXT NOT NULL, timestamp INTEGER NOT NULL, metadata_json TEXT, ordering INTEGER NOT NULL, FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE)"_s ) );
+    QVERIFY( q.exec( u"INSERT INTO sessions VALUES ('s1', 'Legacy chat', 'plan', 1, 1)"_s ) );
+    QVERIFY( q.exec( u"INSERT INTO messages VALUES ('m1', 's1', 'User', 'old plaintext message', 1, NULL, 0)"_s ) );
+    QVERIFY( q.exec( u"PRAGMA user_version = 1"_s ) );
+    db.close();
+  }
+  QSqlDatabase::removeDatabase( u"chat_v1_fixture"_s );
+
+  // Opening through the store migrates in place: the history is PRESERVED.
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+
+  const QList<QgsAiChatHistoryStore::SessionInfo> sessions = store.listSessions();
+  QCOMPARE( sessions.size(), 1 );
+  QCOMPARE( sessions.first().title, u"Legacy chat"_s );
+
+  const QList<QgsAiChatMessage> messages = store.loadMessages( u"s1"_s );
+  QCOMPARE( messages.size(), 1 );
+  QCOMPARE( messages.first().content, u"old plaintext message"_s );
+
+  // The version was bumped (no DROP happened).
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase( u"QSQLITE"_s, u"chat_v1_verify"_s );
+    db.setDatabaseName( dbPath );
+    QVERIFY( db.open() );
+    QSqlQuery v( db );
+    QVERIFY( v.exec( u"PRAGMA user_version"_s ) && v.next() );
+    QCOMPARE( v.value( 0 ).toInt(), QgsAiChatHistoryStore::SCHEMA_VERSION );
+    db.close();
+  }
+  QSqlDatabase::removeDatabase( u"chat_v1_verify"_s );
+}
+
+void TestQgsAiChatHistoryStore::requireEncryptionBlocksPlaintextPersistence()
+{
+  QgsAuthManager *authManager = QgsApplication::authManager();
+  if ( authManager && authManager->masterPasswordIsSet() )
+    QSKIP( "Master password set: encryption is available, the block path is not reachable." );
+
+  QgsSettings settings;
+  settings.setValue( u"ai/storage/requireEncryption"_s, true );
+  const auto cleanup = qScopeGuard( [&settings]() { settings.remove( u"ai/storage/requireEncryption"_s ); } );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiChatHistoryStore store( &contextProvider );
+
+  QString error;
+  QVERIFY( !store.ensureReady( &error ) );
+  QVERIFY2( error.contains( u"Encryption is required"_s ), qPrintable( error ) );
+  QVERIFY( !store.createSession( u"s1"_s, u"blocked"_s, u"plan"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsAiChatHistoryStore )

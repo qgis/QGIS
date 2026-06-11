@@ -316,6 +316,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/index/qgsailayerindexcoordinator.cpp
     ai/index/qgsaiworkspaceindex.cpp
     ai/qgsaiagentsessionmanager.cpp
+    ai/qgsaiauditlog.cpp
     ai/qgsaichatdockwidget.cpp
     ai/qgsaichathistorystore.cpp
     ai/qgsaiclaudeoauthclient.cpp
@@ -323,11 +324,14 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaifilecontextprovider.cpp
     ai/qgsaimodelrouter.cpp
     ai/qgsaimodels.cpp
+    ai/qgsaiopenroutermodelcatalog.cpp
     ai/qgsaipipinstallapprovaldialog.cpp
     ai/qgsaipythonapprovaldialog.cpp
     ai/qgsaimessagelogbuffer.cpp
     ai/qgsaireviewdialog.cpp
     ai/qgsaireviewpatchengine.cpp
+    ai/qgsaisecretstore.cpp
+    ai/qgsaiworkspacetrust.cpp
     ai/tools/qgsaidownloadfiletool.cpp
     ai/tools/qgsaiechotool.cpp
     ai/tools/qgsaiedittools.cpp

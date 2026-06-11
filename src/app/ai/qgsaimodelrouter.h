@@ -95,7 +95,13 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     bool hasStoredOAuthRefreshToken( Provider provider ) const;
     void setOpenRouterRoutingProfile( OpenRouterRoutingProfile profile ) { mOpenRouterRoutingProfile = profile; }
     OpenRouterRoutingProfile openRouterRoutingProfile() const { return mOpenRouterRoutingProfile; }
-    QJsonObject openRouterProviderPreferences() const;
+
+    /**
+     * Returns the OpenRouter `provider` routing preferences object. When
+     * \a toolsAdvertised is true, `require_parameters` is always requested so
+     * OpenRouter only routes to providers that support tool calling.
+     */
+    QJsonObject openRouterProviderPreferences( bool toolsAdvertised = false ) const;
 
     /**
      * Sets the tool registry used to advertise tools to the LLM. Pointer is borrowed,
@@ -135,11 +141,28 @@ class APP_EXPORT QgsAiModelRouter : public QObject
      */
     void toolCallsRequested( const QString &requestId, const QString &providerName, const QString &assistantText, const QList<QgsAiToolCall> &calls );
 
+    /**
+     * Emitted once per completed model response carrying token/cost accounting,
+     * including responses that end in a tool-call turn. \a model is the model that
+     * actually served the response when the provider reports it (OpenRouter routing
+     * may differ from the requested model), otherwise the configured model.
+     */
+    void usageReported( const QString &requestId, const QString &providerName, const QString &model, const QgsAiUsage &usage );
+
   private slots:
     void onReplyReadyRead();
     void onReplyFinished();
 
   private:
+    //! Wire protocol used to build payloads and parse responses, decoupled from Provider.
+    enum class ApiWireFormat
+    {
+      OpenAiResponses,       //!< OpenAI Responses API (`input` items, `response.*` SSE events)
+      OpenAiChatCompletions, //!< OpenAI Chat Completions API (`messages`, `choices[].delta` SSE chunks)
+      AnthropicMessages,     //!< Anthropic Messages API
+      PlainMessages          //!< Simple `{role, content}` messages (Plan backend)
+    };
+
     struct PendingToolCall
     {
         QString id; // tool_use_id (Anthropic) / call_id (OpenAI)
@@ -162,10 +185,13 @@ class APP_EXPORT QgsAiModelRouter : public QObject
         QString aggregatedText;
         QString stopReason;                       // "end_turn", "tool_use", "stop", etc.
         QList<PendingToolCall> toolCalls;         // collected during streaming/parse
-        QMap<int, int> streamItemIndexToToolCall; // Claude content_block index OR OpenAI output_index → toolCalls index
+        QMap<int, int> streamItemIndexToToolCall; // Claude content_block index OR OpenAI output_index/tool_calls index → toolCalls index
         QNetworkReply *reply = nullptr;
         QTimer *watchdogTimer = nullptr;
         QString preDispatchError;
+        QString midStreamError; // error delivered inside the SSE stream over HTTP 200
+        QgsAiUsage usage;       // token/cost accounting harvested from the response
+        QString responseModel;  // model that actually served the response (may differ from the requested one under routing)
     };
 
     bool dispatchRequest( RequestContext &context );
@@ -179,10 +205,14 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     void extractToolCallsFromResponse( Provider provider, const QJsonObject &object, RequestContext &context ) const;
     void absorbStreamEvent( Provider provider, const QJsonObject &object, RequestContext &context );
     QString extractErrorMessageFromBody( Provider provider, const QByteArray &body ) const; //#spellok
+    QString composeHttpErrorMessage( Provider provider, int httpStatus, const QByteArray &body ) const;
     QString roleForProvider( Provider provider, QgsAiChatRole role ) const;
     QJsonArray buildAnthropicAssistantContent( const QgsAiChatMessage &message ) const;
     QJsonArray buildAnthropicUserContent( const QgsAiChatMessage &message ) const;
     void appendOpenAiInputItems( Provider provider, const QgsAiChatMessage &message, QJsonArray &input ) const;
+    void appendOpenAiChatMessages( const QgsAiChatMessage &message, QJsonArray &messages, QJsonArray &pendingImageMessages ) const;
+    ApiWireFormat wireFormatForProvider( Provider provider ) const;
+    void finalizePendingToolCallArguments( RequestContext &context ) const;
 
     static QString generateRequestId();
     QString authHeaderName( Provider provider ) const;

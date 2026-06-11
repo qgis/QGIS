@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QString>
 
+class QSqlDatabase;
+
 class QgsAiFileContextProvider;
 
 /**
@@ -51,7 +53,8 @@ class APP_EXPORT QgsAiChatHistoryStore : public QObject
         int messageCount = 0;
     };
 
-    static constexpr int SCHEMA_VERSION = 1;
+    // v2: values (title, content, metadata_json) encrypted at rest via QgsAiSecretStore.
+    static constexpr int SCHEMA_VERSION = 2;
 
     explicit QgsAiChatHistoryStore( QgsAiFileContextProvider *contextProvider, QObject *parent = nullptr );
     ~QgsAiChatHistoryStore() override;
@@ -114,6 +117,13 @@ class APP_EXPORT QgsAiChatHistoryStore : public QObject
     QString connectionName() const;
     QString dbPath() const;
     bool openDatabase( QString *errorMessage = nullptr ) const;
+
+    /**
+     * Encrypts every plaintext value (no `enc1:` prefix) in place, inside a
+     * transaction (rollback on failure keeps the plaintext readable). No-op
+     * when storage encryption is unavailable.
+     */
+    void migratePlaintextRows( QSqlDatabase &db );
 
     QgsAiFileContextProvider *mContextProvider = nullptr;
     QString mHistoryScopeKey;

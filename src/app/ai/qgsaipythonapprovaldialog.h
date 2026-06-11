@@ -40,6 +40,14 @@ class APP_EXPORT QgsAiPythonApprovalDialog : public QDialog
      */
     QgsAiPythonApprovalDialog( const QString &description, const QString &code, QWidget *parent = nullptr );
 
+    /**
+     * Heuristic scan of \a code for risky operations (network access, file
+     * writes, process spawning, dynamic code execution…). Returns localized
+     * marker labels shown as informative chips in the dialog — detection is
+     * advisory only and never blocks the Run button. Public for unit testing.
+     */
+    static QStringList detectRiskMarkers( const QString &code );
+
   private:
     QgsCodeEditorPython *mEditor = nullptr;
 };

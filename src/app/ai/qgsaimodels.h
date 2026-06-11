@@ -60,6 +60,32 @@ struct APP_EXPORT QgsAiToolCall
     static QgsAiToolCall fromJson( const QJsonObject &json );
 };
 
+/**
+ * Token and cost accounting for a single model response. OpenRouter always
+ * includes usage in its responses; other providers report a subset of fields.
+ */
+struct APP_EXPORT QgsAiUsage
+{
+    qint64 promptTokens = 0;
+    qint64 completionTokens = 0;
+    qint64 totalTokens = 0;
+    qint64 cachedTokens = 0;    // prompt tokens served from the provider prompt cache
+    qint64 reasoningTokens = 0; // thinking tokens for reasoning models
+    double costUsd = 0.0;       // total amount charged (OpenRouter `cost` field)
+
+    bool isValid() const { return promptTokens > 0 || completionTokens > 0 || totalTokens > 0; }
+
+    void add( const QgsAiUsage &other )
+    {
+      promptTokens += other.promptTokens;
+      completionTokens += other.completionTokens;
+      totalTokens += other.totalTokens;
+      cachedTokens += other.cachedTokens;
+      reasoningTokens += other.reasoningTokens;
+      costUsd += other.costUsd;
+    }
+};
+
 struct APP_EXPORT QgsAiPatchHunk
 {
     QString filePath;

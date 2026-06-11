@@ -16,6 +16,8 @@
 #include "qgsaidownloadfiletool.h"
 
 #include "qgsaifilecontextprovider.h"
+#include "qgsaiauditlog.h"
+#include "qgsaiworkspacetrust.h"
 #include "qgsaitoolschemautil.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
@@ -85,12 +87,14 @@ QgsAiDownloadFileTool::QgsAiDownloadFileTool( QgsAiFileContextProvider *contextP
 
 bool QgsAiDownloadFileTool::isAvailable() const
 {
-  return mContextProvider && !mContextProvider->workspaceRoot().isEmpty();
+  return mContextProvider && !mContextProvider->workspaceRoot().isEmpty() && QgsAiWorkspaceTrust::isTrusted( mContextProvider->workspaceRoot() );
 }
 
 QString QgsAiDownloadFileTool::availabilityReason() const
 {
-  return u"download_file is not available because the AI workspace root is not configured. Save the QGIS project or set strata/workspace/root before downloading files."_s;
+  if ( !mContextProvider || mContextProvider->workspaceRoot().isEmpty() )
+    return u"download_file is not available because the AI workspace root is not configured. Save the QGIS project or set strata/workspace/root before downloading files."_s;
+  return u"download_file is disabled because this workspace is not trusted. Trust the workspace from the AI provider settings to enable downloads."_s;
 }
 
 QString QgsAiDownloadFileTool::description() const
@@ -170,14 +174,21 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   // Modal approval. v1 uses a QMessageBox::question — not as polished as a dedicated
   // dialog but the pertinent fields (URL, dest, cap) are right there in the prompt.
   {
-    const QString question = QObject::tr(
-                               "The AI assistant wants to download:\n\n"
-                               "  URL: %1\n"
-                               "  Destination: %2\n"
-                               "  Max size: %3\n\n"
-                               "Allow the download?"
+    QString question = QObject::tr(
+                         "The AI assistant wants to download:\n\n"
+                         "  URL: %1\n"
+                         "  Destination: %2\n"
+                         "  Max size: %3\n"
     )
-                               .arg( url.toString( QUrl::FullyEncoded ), destPath, humanBytes( maxBytes ) );
+                         .arg( url.toString( QUrl::FullyEncoded ), destPath, humanBytes( maxBytes ) );
+
+    // Informative warning when the destination looks executable.
+    static const QStringList executableSuffixes = { u"exe"_s, u"bat"_s, u"cmd"_s, u"sh"_s, u"ps1"_s, u"py"_s, u"pyw"_s, u"dylib"_s, u"so"_s, u"dll"_s, u"app"_s, u"jar"_s, u"com"_s, u"scr"_s, u"msi"_s, u"vbs"_s, u"command"_s };
+    const QString suffix = QFileInfo( destPath ).suffix().toLower();
+    if ( executableSuffixes.contains( suffix ) )
+      question += QObject::tr( "\nWarning: the destination has an executable file extension (.%1). Only allow this if you expect to download a program.\n" ).arg( suffix );
+
+    question += QObject::tr( "\nAllow the download?" );
     QMessageBox::StandardButton answer = QMessageBox::question( mDialogParent, QObject::tr( "AI: confirm file download" ), question, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
     if ( answer != QMessageBox::Yes )
     {
@@ -186,6 +197,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
       output.insert( u"status"_s, u"user_rejected"_s );
       return QgsAiToolResult::ok( output );
     }
+    QgsAiAuditLog::append( u"download_file"_s, u"%1 -> %2"_s.arg( url.toString( QUrl::FullyEncoded ), destPath ) );
   }
 
   // Make sure the destination directory exists (relative paths into a fresh workspace

@@ -104,6 +104,17 @@ QJsonArray QgsAiToolRegistry::schemasJsonForFormat( WireFormat format, const QSt
         entry.insert( u"description"_s, tool->description() );
         entry.insert( u"parameters"_s, tool->schema() );
         break;
+
+      case WireFormat::OpenAiChatCompletions:
+      {
+        QJsonObject function;
+        function.insert( u"name"_s, tool->name() );
+        function.insert( u"description"_s, tool->description() );
+        function.insert( u"parameters"_s, tool->schema() );
+        entry.insert( u"type"_s, u"function"_s );
+        entry.insert( u"function"_s, function );
+        break;
+      }
     }
     array.append( entry );
   }

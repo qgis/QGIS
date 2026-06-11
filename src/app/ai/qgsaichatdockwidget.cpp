@@ -26,6 +26,9 @@
 #include "qgsaiclaudeoauthclient.h"
 #include "qgsaicodexoauthclient.h"
 #include "qgsaimodelrouter.h"
+#include "qgsaiopenroutermodelcatalog.h"
+#include "qgsaisecretstore.h"
+#include "qgsaiworkspacetrust.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsapplication.h"
 #include "qgsmessagebar.h"
@@ -44,6 +47,7 @@
 #include <QCheckBox>
 #include <QColor>
 #include <QComboBox>
+#include <QCompleter>
 #include <QCryptographicHash>
 #include <QDesktopServices>
 #include <QDialog>
@@ -116,6 +120,7 @@ namespace
     return {
       { u"GPT-4o"_s, u"gpt-4o"_s, QgsAiModelRouter::Provider::OpenAi },
       { u"GPT-4.1 mini"_s, u"gpt-4.1-mini"_s, QgsAiModelRouter::Provider::OpenAi },
+      { u"Claude Sonnet 4.6 (OpenRouter)"_s, u"anthropic/claude-sonnet-4.6"_s, QgsAiModelRouter::Provider::OpenRouter },
       { u"OpenRouter Auto"_s, u"openrouter/auto"_s, QgsAiModelRouter::Provider::OpenRouter },
       { u"Codex GPT-5.4"_s, u"gpt-5.4"_s, QgsAiModelRouter::Provider::Codex },
       { u"Codex GPT-5.3 (codex)"_s, u"gpt-5.3-codex"_s, QgsAiModelRouter::Provider::Codex },
@@ -1850,6 +1855,30 @@ void QgsAiChatDockWidget::onModelSelected( QAction *action )
   mModelPill->setText( entry.displayName + u" ▾"_s );
 }
 
+void QgsAiChatDockWidget::ensureWorkspaceTrustDecision()
+{
+  const QString root = QgsAiWorkspaceTrust::currentWorkspaceRoot();
+  if ( root.isEmpty() || QgsAiWorkspaceTrust::state( root ) != QgsAiWorkspaceTrust::State::Unknown )
+    return;
+
+  QMessageBox box( this );
+  box.setIcon( QMessageBox::Question );
+  box.setWindowTitle( tr( "Trust this workspace?" ) );
+  box.setText( tr( "The AI assistant is about to work in:\n%1\n\n"
+                   "Trusted workspaces can load AI rules/skills files (.strata/rules, .strata/skills) "
+                   "into the assistant's instructions and enable the risky tools "
+                   "(run_python, install_python_package, download_file).\n\n"
+                   "Only trust workspaces whose content you control. You can change this "
+                   "any time from the AI provider settings." )
+                 .arg( root ) );
+  QPushButton *trustButton = box.addButton( tr( "Trust workspace" ), QMessageBox::AcceptRole );
+  QPushButton *dontTrustButton = box.addButton( tr( "Don't trust" ), QMessageBox::RejectRole );
+  box.setDefaultButton( dontTrustButton );
+  box.exec();
+
+  QgsAiWorkspaceTrust::setState( root, box.clickedButton() == trustButton ? QgsAiWorkspaceTrust::State::Trusted : QgsAiWorkspaceTrust::State::Untrusted );
+}
+
 void QgsAiChatDockWidget::sendMessage()
 {
   if ( !mSessionManager )
@@ -1858,6 +1887,10 @@ void QgsAiChatDockWidget::sendMessage()
   const QList<QgsAiChatContextFile> contextFiles = contextFilesForCurrentMessage( input );
   if ( input.isEmpty() && contextFiles.isEmpty() )
     return;
+
+  // First AI interaction with an undecided workspace: ask for the trust decision.
+  // Never blocks sending — untrusted just restricts rules/skills and risky tools.
+  ensureWorkspaceTrustDecision();
 
   mInputTextEdit->clear();
   hideMentionPopup();
@@ -2204,14 +2237,69 @@ void QgsAiChatDockWidget::openProviderSettings()
   openAiKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "sk-..." ) );
 
   QLineEdit *openRouterEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter ).endpoint, &dialog );
-  QLineEdit *openRouterModel = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter ).model, &dialog );
-  openRouterModel->setPlaceholderText( u"openrouter/auto"_s );
+
+  // Editable, searchable model picker fed by the async OpenRouter catalog
+  // (tool-capable models with context size and pricing). Free text stays valid:
+  // the current text is what gets persisted.
+  QComboBox *openRouterModel = new QComboBox( &dialog );
+  openRouterModel->setObjectName( u"aiOpenRouterModelComboBox"_s );
+  openRouterModel->setEditable( true );
+  openRouterModel->setInsertPolicy( QComboBox::NoInsert );
+  openRouterModel->lineEdit()->setPlaceholderText( u"anthropic/claude-sonnet-4.6"_s );
+  const QString configuredOpenRouterModel = mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter ).model;
+  openRouterModel->setEditText( configuredOpenRouterModel );
+
+  QgsAiOpenRouterModelCatalog *openRouterCatalog = new QgsAiOpenRouterModelCatalog( &dialog );
+  connect( openRouterCatalog, &QgsAiOpenRouterModelCatalog::modelsReady, &dialog, [openRouterModel]( const QList<QgsAiOpenRouterModelCatalog::ModelInfo> &models, bool ) {
+    const QString currentText = openRouterModel->currentText();
+    openRouterModel->clear();
+    for ( const QgsAiOpenRouterModelCatalog::ModelInfo &model : models )
+      openRouterModel->addItem( model.displayLabel(), model.id );
+    QCompleter *completer = new QCompleter( openRouterModel->model(), openRouterModel );
+    completer->setFilterMode( Qt::MatchContains );
+    completer->setCaseSensitivity( Qt::CaseInsensitive );
+    openRouterModel->setCompleter( completer );
+    openRouterModel->setEditText( currentText );
+  } );
+  // Selecting a catalog entry replaces the display label with the model id.
+  connect( openRouterModel, QOverload<int>::of( &QComboBox::activated ), &dialog, [openRouterModel]( int index ) {
+    const QString modelId = openRouterModel->itemData( index ).toString();
+    if ( !modelId.isEmpty() )
+      openRouterModel->setEditText( modelId );
+  } );
+  openRouterCatalog->refresh();
+
   QLineEdit *openRouterKey = new QLineEdit( &dialog );
   openRouterKey->setEchoMode( QLineEdit::Password );
   openRouterKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenRouter ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "sk-or-..." ) );
+
+  // Connection test: validates the pending (or stored) key against GET /key and
+  // shows the credits summary inline.
+  QPushButton *openRouterTestButton = new QPushButton( tr( "Test connection" ), &dialog );
+  openRouterTestButton->setObjectName( u"aiOpenRouterTestConnectionButton"_s );
+  QLabel *openRouterTestResult = new QLabel( &dialog );
+  openRouterTestResult->setObjectName( u"aiOpenRouterTestConnectionLabel"_s );
+  openRouterTestResult->setWordWrap( true );
+  connect( openRouterCatalog, &QgsAiOpenRouterModelCatalog::keyInfoReady, &dialog, [openRouterTestButton, openRouterTestResult]( const QString &summary ) {
+    openRouterTestButton->setEnabled( true );
+    openRouterTestResult->setText( summary );
+  } );
+  connect( openRouterCatalog, &QgsAiOpenRouterModelCatalog::keyInfoFailed, &dialog, [openRouterTestButton, openRouterTestResult]( const QString &errorMessage ) {
+    openRouterTestButton->setEnabled( true );
+    openRouterTestResult->setText( errorMessage );
+  } );
+  connect( openRouterTestButton, &QPushButton::clicked, &dialog, [openRouterCatalog, openRouterKey, openRouterTestButton, openRouterTestResult]() {
+    QString key = openRouterKey->text().trimmed();
+    if ( key.isEmpty() )
+      key = QgsAiSecretStore::readSecret( u"ai/provider/openrouter/apiKey"_s, { u"OPENROUTER_API_KEY"_s } );
+    openRouterTestButton->setEnabled( false );
+    openRouterTestResult->setText( tr( "Testing…" ) );
+    openRouterCatalog->fetchKeyInfo( key );
+  } );
+
   QCheckBox *openRouterAutoRouting = new QCheckBox( tr( "Use OpenRouter automatic routing" ), &dialog );
   openRouterAutoRouting->setChecked( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter ).autoRouting );
-  openRouterAutoRouting->setToolTip( tr( "Adds OpenRouter provider routing preferences per mode: cheaper routing for Plan/Ask, tool-aware routing for Agent." ) );
+  openRouterAutoRouting->setToolTip( tr( "Adds OpenRouter provider routing preferences (tool-capable providers, price/throughput sorting) and falls back to the Auto router if the pinned model is unavailable." ) );
 
   QgsAiCodexOAuthClient::DeviceCode codexDeviceCode;
   QLineEdit *codexEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex ).endpoint, &dialog );
@@ -2262,12 +2350,22 @@ void QgsAiChatDockWidget::openProviderSettings()
   workspaceRootLayout->addWidget( aiWorkspaceRoot, 1 );
   workspaceRootLayout->addWidget( browseWorkspaceRoot );
 
+  // Workspace trust: gates rules/skills loading and the risky tools.
+  const QString currentTrustRoot = QgsAiWorkspaceTrust::currentWorkspaceRoot();
+  QCheckBox *trustWorkspace = new QCheckBox( tr( "Trust this workspace (enables rules/skills files and run_python, install_python_package, download_file)" ), &dialog );
+  trustWorkspace->setObjectName( u"aiTrustWorkspaceCheckBox"_s );
+  trustWorkspace->setChecked( QgsAiWorkspaceTrust::isTrusted( currentTrustRoot ) );
+  trustWorkspace->setToolTip( currentTrustRoot.isEmpty() ? tr( "No workspace configured." ) : tr( "Current workspace: %1" ).arg( currentTrustRoot ) );
+  trustWorkspace->setEnabled( !currentTrustRoot.isEmpty() );
+
   form->addRow( tr( "OpenAI endpoint" ), openAiEndpoint );
   form->addRow( tr( "OpenAI model" ), openAiModel );
   form->addRow( tr( "OpenAI API key" ), openAiKey );
   form->addRow( tr( "OpenRouter endpoint" ), openRouterEndpoint );
   form->addRow( tr( "OpenRouter model" ), openRouterModel );
   form->addRow( tr( "OpenRouter API key" ), openRouterKey );
+  form->addRow( QString(), openRouterTestButton );
+  form->addRow( QString(), openRouterTestResult );
   form->addRow( QString(), openRouterAutoRouting );
   form->addRow( tr( "Codex endpoint" ), codexEndpoint );
   form->addRow( tr( "Codex model" ), codexModel );
@@ -2283,6 +2381,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   form->addRow( tr( "Plan OAuth authcfg ID" ), planAuthCfg );
   form->addRow( tr( "Plan session token" ), planToken );
   form->addRow( tr( "AI workspace root" ), workspaceRootWidget );
+  form->addRow( QString(), trustWorkspace );
   layout->addLayout( form );
 
   // ----------------------------------------------------------------------
@@ -2375,6 +2474,30 @@ void QgsAiChatDockWidget::openProviderSettings()
   embeddingStatusLabel->setWordWrap( true );
   QPushButton *downloadEmbeddingModelButton = new QPushButton( tr( "Download local E5 model" ), &dialog );
   downloadEmbeddingModelButton->setObjectName( u"aiDownloadEmbeddingModelButton"_s );
+
+  // Remote embedding model id, shown only when a remote provider is selected.
+  QLineEdit *remoteEmbeddingModel = new QLineEdit( &dialog );
+  remoteEmbeddingModel->setObjectName( u"aiRemoteEmbeddingModelLineEdit"_s );
+  QLabel *remoteEmbeddingModelLabel = new QLabel( tr( "Remote embedding model" ), &dialog );
+  auto remoteEmbeddingModelSettingKey = []( const QString &providerId ) {
+    return providerId.compare( u"openrouter"_s, Qt::CaseInsensitive ) == 0 ? u"ai/embeddings/openrouter/model"_s : u"ai/embeddings/openai/model"_s;
+  };
+  auto remoteEmbeddingModelDefault = []( const QString &providerId ) {
+    return providerId.compare( u"openrouter"_s, Qt::CaseInsensitive ) == 0 ? u"openai/text-embedding-3-small"_s : u"text-embedding-3-small"_s;
+  };
+  auto refreshRemoteEmbeddingModelField = [embeddingProvider, remoteEmbeddingModel, remoteEmbeddingModelLabel, remoteEmbeddingModelSettingKey, remoteEmbeddingModelDefault]() {
+    const QString providerId = embeddingProvider->currentData().toString();
+    const bool remote = QgsAiEmbeddingProviderRegistry::isRemoteProviderId( providerId );
+    remoteEmbeddingModel->setVisible( remote );
+    remoteEmbeddingModelLabel->setVisible( remote );
+    if ( remote )
+    {
+      QgsSettings settings;
+      remoteEmbeddingModel->setText( settings.value( remoteEmbeddingModelSettingKey( providerId ), remoteEmbeddingModelDefault( providerId ) ).toString() );
+      remoteEmbeddingModel->setPlaceholderText( remoteEmbeddingModelDefault( providerId ) );
+    }
+  };
+
   auto refreshEmbeddingStatusLabel = [embeddingProvider, embeddingStatusLabel, downloadEmbeddingModelButton]() {
     const QString providerId = embeddingProvider->currentData().toString();
     if ( QgsAiEmbeddingProviderRegistry::isRemoteProviderId( providerId ) )
@@ -2408,7 +2531,12 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
   };
   refreshEmbeddingStatusLabel();
-  connect( embeddingProvider, &QComboBox::currentIndexChanged, &dialog, [refreshEmbeddingStatusLabel]( int ) { refreshEmbeddingStatusLabel(); } );
+  refreshRemoteEmbeddingModelField();
+  connect( embeddingProvider, &QComboBox::currentIndexChanged, &dialog, [refreshEmbeddingStatusLabel, refreshRemoteEmbeddingModelField]( int ) {
+    refreshEmbeddingStatusLabel();
+    refreshRemoteEmbeddingModelField();
+  } );
+  indexingForm->addRow( remoteEmbeddingModelLabel, remoteEmbeddingModel );
   indexingForm->addRow( QString(), embeddingStatusLabel );
   indexingForm->addRow( QString(), downloadEmbeddingModelButton );
   connect( downloadEmbeddingModelButton, &QPushButton::clicked, &dialog, [this, &dialog, refreshEmbeddingStatusLabel]() {
@@ -2645,7 +2773,7 @@ void QgsAiChatDockWidget::openProviderSettings()
       return;
 
     QString error;
-    if ( !QgsAiClaudeOAuthClient::exchangeAuthorizationCode( code, authRequest.codeVerifier, authRequest.redirectUri, &error ) )
+    if ( !QgsAiClaudeOAuthClient::exchangeAuthorizationCode( code, authRequest.codeVerifier, authRequest.redirectUri, authRequest.state, &error ) )
     {
       QMessageBox::warning( &dialog, QObject::tr( "Claude login failed" ), error );
       return;
@@ -2709,7 +2837,7 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QgsAiModelRouter::ProviderSettings openRouterSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter );
   openRouterSettings.endpoint = openRouterEndpoint->text().trimmed();
-  openRouterSettings.model = openRouterModel->text().trimmed();
+  openRouterSettings.model = openRouterModel->currentText().trimmed();
   openRouterSettings.autoRouting = openRouterAutoRouting->isChecked();
   openRouterSettings.enabled = !pendingOpenRouterKey.isEmpty() || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenRouter ) || !qEnvironmentVariable( "OPENROUTER_API_KEY" ).trimmed().isEmpty();
   mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::OpenRouter, openRouterSettings );
@@ -2756,7 +2884,22 @@ void QgsAiChatDockWidget::openProviderSettings()
     if ( mSessionManager && QgsProject::instance() && QgsProject::instance()->homePath().isEmpty() )
       mSessionManager->setWorkspaceRoot( configuredWorkspaceRoot );
 
+    // Persist the trust decision for the workspace that is active after the
+    // (possibly changed) root has been applied.
+    const QString trustRoot = QgsAiWorkspaceTrust::currentWorkspaceRoot();
+    if ( !trustRoot.isEmpty() )
+      QgsAiWorkspaceTrust::setState( trustRoot, trustWorkspace->isChecked() ? QgsAiWorkspaceTrust::State::Trusted : QgsAiWorkspaceTrust::State::Untrusted );
+
     QgsAiEmbeddingProviderRegistry::setConfiguredProviderId( embeddingProvider->currentData().toString() );
+    if ( QgsAiEmbeddingProviderRegistry::isRemoteProviderId( embeddingProvider->currentData().toString() ) )
+    {
+      const QString embeddingModelKey = remoteEmbeddingModelSettingKey( embeddingProvider->currentData().toString() );
+      const QString embeddingModelValue = remoteEmbeddingModel->text().trimmed();
+      if ( embeddingModelValue.isEmpty() )
+        settings.remove( embeddingModelKey );
+      else
+        settings.setValue( embeddingModelKey, embeddingModelValue );
+    }
     settings.setValue( u"strata/index/automatic"_s, automaticIndexing->isChecked() );
   }
 

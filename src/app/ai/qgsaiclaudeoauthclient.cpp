@@ -40,7 +40,25 @@ namespace
   constexpr const char *CLAUDE_AUTHORIZE_URL = "https://platform.claude.com/oauth/authorize";
   constexpr const char *CLAUDE_TOKEN_URL = "https://platform.claude.com/v1/oauth/token";
   constexpr const char *CLAUDE_REDIRECT_URI = "https://platform.claude.com/oauth/code/callback";
-  constexpr const char *CLAUDE_SCOPE = "org:create_api_key user:profile user:inference";
+  constexpr const char *CLAUDE_SCOPE = "user:inference user:profile user:sessions:claude_code user:mcp_servers user:file_upload";
+  constexpr int CLAUDE_TOKEN_EXCHANGE_TIMEOUT_MS = 120000;
+  constexpr int CLAUDE_TOKEN_REFRESH_TIMEOUT_MS = 30000;
+
+  QString &tokenUrlOverride()
+  {
+    static QString override;
+    return override;
+  }
+
+  QString normalizedOAuthInput( const QString &input )
+  {
+    QString normalized = input.trimmed();
+    normalized.replace( '\r', '\n' );
+    const int newlineIndex = normalized.indexOf( '\n' );
+    if ( newlineIndex >= 0 )
+      normalized = normalized.left( newlineIndex ).trimmed();
+    return normalized;
+  }
 
   QString base64Url( const QByteArray &value )
   {
@@ -56,9 +74,32 @@ namespace
     return base64Url( bytes );
   }
 
-  QJsonObject postJsonBlocking( const QJsonObject &payload, int timeoutMs, int &httpStatus, QString *errorMessage )
+  QString tokenEndpointUrl()
+  {
+    const QString override = tokenUrlOverride().trimmed();
+    return override.isEmpty() ? QString::fromUtf8( CLAUDE_TOKEN_URL ) : override;
+  }
+
+  QString formatTokenResponseError( const QJsonObject &object, const QByteArray &rawBody )
+  {
+    if ( !object.value( u"access_token"_s ).toString().isEmpty() )
+      return u"Claude OAuth token response is incomplete: access token was returned but refresh token is missing."_s;
+
+    if ( object.isEmpty() )
+    {
+      const QString bodyExcerpt = QString::fromUtf8( rawBody.left( 200 ) ).trimmed();
+      if ( !bodyExcerpt.isEmpty() )
+        return u"Claude OAuth token response did not include a refresh token (response body: %1)."_s.arg( bodyExcerpt );
+      return u"Claude OAuth token response did not include a refresh token (empty response body)."_s;
+    }
+
+    return u"Claude OAuth response did not include a refresh token."_s;
+  }
+
+  QJsonObject postJsonBlocking( const QJsonObject &payload, int timeoutMs, int &httpStatus, QByteArray &rawBody, QString *errorMessage )
   {
     httpStatus = 0;
+    rawBody.clear();
     QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
     if ( !nam )
     {
@@ -67,8 +108,10 @@ namespace
       return QJsonObject();
     }
 
-    QNetworkRequest request( QUrl( QString::fromUtf8( CLAUDE_TOKEN_URL ) ) );
+    const QUrl endpoint( tokenEndpointUrl() );
+    QNetworkRequest request( endpoint );
     request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
+    request.setRawHeader( "Accept", "application/json" );
     request.setRawHeader( "anthropic-beta", "oauth-2025-04-20" );
     request.setTransferTimeout( timeoutMs );
 
@@ -94,11 +137,11 @@ namespace
       reply->abort();
 
     httpStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
-    const QByteArray body = reply->readAll();
+    rawBody = reply->readAll();
     const QNetworkReply::NetworkError networkError = reply->error();
     reply->deleteLater();
 
-    const QJsonDocument doc = QJsonDocument::fromJson( body );
+    const QJsonDocument doc = QJsonDocument::fromJson( rawBody );
     const QJsonObject object = doc.isObject() ? doc.object() : QJsonObject();
     if ( networkError != QNetworkReply::NoError || httpStatus < 200 || httpStatus >= 300 )
     {
@@ -110,7 +153,7 @@ namespace
         if ( detail.isEmpty() )
           detail = object.value( u"error"_s ).toString();
         if ( detail.isEmpty() )
-          detail = QString::fromUtf8( body.left( 500 ) );
+          detail = QString::fromUtf8( rawBody.left( 500 ) );
         *errorMessage = u"Claude OAuth request failed (HTTP %1): %2"_s.arg( httpStatus ).arg( detail );
       }
       return QJsonObject();
@@ -186,15 +229,11 @@ QgsAiClaudeOAuthClient::AuthorizationRequest QgsAiClaudeOAuthClient::buildAuthor
 
 QString QgsAiClaudeOAuthClient::authorizationCodeFromInput( const QString &input )
 {
-  QString code = input.trimmed();
-  code.replace( '\r', '\n' );
-  const int newlineIndex = code.indexOf( '\n' );
-  if ( newlineIndex >= 0 )
-    code = code.left( newlineIndex ).trimmed();
+  const QString normalized = normalizedOAuthInput( input );
 
-  if ( code.startsWith( "http://"_L1 ) || code.startsWith( "https://"_L1 ) )
+  if ( normalized.startsWith( "http://"_L1 ) || normalized.startsWith( "https://"_L1 ) )
   {
-    const QUrl callbackUrl( code );
+    const QUrl callbackUrl( normalized );
     QString parsedCode = QUrlQuery( callbackUrl ).queryItemValue( u"code"_s ).trimmed();
     if ( parsedCode.isEmpty() )
       parsedCode = QUrlQuery( callbackUrl.fragment() ).queryItemValue( u"code"_s ).trimmed();
@@ -203,18 +242,42 @@ QString QgsAiClaudeOAuthClient::authorizationCodeFromInput( const QString &input
     return parsedCode;
   }
 
-  const QString queryCode = QUrlQuery( code ).queryItemValue( u"code"_s ).trimmed();
+  const QString queryCode = QUrlQuery( normalized ).queryItemValue( u"code"_s ).trimmed();
   if ( !queryCode.isEmpty() )
     return queryCode;
 
-  const int fragmentIndex = code.indexOf( '#'_L1 );
+  const int fragmentIndex = normalized.indexOf( '#'_L1 );
   if ( fragmentIndex > 0 )
-    code = code.left( fragmentIndex ).trimmed();
+    return normalized.left( fragmentIndex ).trimmed();
 
-  return code;
+  return normalized;
 }
 
-bool QgsAiClaudeOAuthClient::exchangeAuthorizationCode( const QString &authorizationCode, const QString &codeVerifier, const QString &redirectUri, QString *errorMessage )
+QString QgsAiClaudeOAuthClient::authorizationStateFromInput( const QString &input )
+{
+  const QString normalized = normalizedOAuthInput( input );
+
+  if ( normalized.startsWith( "http://"_L1 ) || normalized.startsWith( "https://"_L1 ) )
+  {
+    const QUrl callbackUrl( normalized );
+    QString parsedState = QUrlQuery( callbackUrl ).queryItemValue( u"state"_s ).trimmed();
+    if ( parsedState.isEmpty() )
+      parsedState = QUrlQuery( callbackUrl.fragment() ).queryItemValue( u"state"_s ).trimmed();
+    return parsedState;
+  }
+
+  const QString queryState = QUrlQuery( normalized ).queryItemValue( u"state"_s ).trimmed();
+  if ( !queryState.isEmpty() )
+    return queryState;
+
+  const int fragmentIndex = normalized.indexOf( '#'_L1 );
+  if ( fragmentIndex > 0 && fragmentIndex < normalized.size() - 1 )
+    return normalized.mid( fragmentIndex + 1 ).trimmed();
+
+  return QString();
+}
+
+bool QgsAiClaudeOAuthClient::exchangeAuthorizationCode( const QString &authorizationCode, const QString &codeVerifier, const QString &redirectUri, const QString &expectedState, QString *errorMessage )
 {
   const QString code = authorizationCodeFromInput( authorizationCode );
   if ( code.isEmpty() )
@@ -224,20 +287,32 @@ bool QgsAiClaudeOAuthClient::exchangeAuthorizationCode( const QString &authoriza
     return false;
   }
 
+  QString resolvedState = authorizationStateFromInput( authorizationCode ).trimmed();
+  if ( resolvedState.isEmpty() )
+    resolvedState = expectedState.trimmed();
+  if ( resolvedState.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"OAuth state is missing. Paste the full callback URL or code#state value from Claude."_s;
+    return false;
+  }
+
   QJsonObject payload;
   payload.insert( u"grant_type"_s, u"authorization_code"_s );
   payload.insert( u"code"_s, code );
+  payload.insert( u"state"_s, resolvedState );
   payload.insert( u"code_verifier"_s, codeVerifier );
   payload.insert( u"client_id"_s, QString::fromUtf8( CLAUDE_CLIENT_ID ) );
   payload.insert( u"redirect_uri"_s, redirectUri );
 
   int httpStatus = 0;
-  const QJsonObject object = postJsonBlocking( payload, 30000, httpStatus, errorMessage );
+  QByteArray rawBody;
+  const QJsonObject object = postJsonBlocking( payload, CLAUDE_TOKEN_EXCHANGE_TIMEOUT_MS, httpStatus, rawBody, errorMessage );
   const QString refreshToken = object.value( u"refresh_token"_s ).toString();
   if ( refreshToken.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = u"Claude OAuth response did not include a refresh token."_s;
+      *errorMessage = formatTokenResponseError( object, rawBody );
     return false;
   }
   return storeRefreshToken( refreshToken, errorMessage );
@@ -259,7 +334,8 @@ bool QgsAiClaudeOAuthClient::refreshAccessToken( TokenSet &tokens, QString *erro
   payload.insert( u"client_id"_s, QString::fromUtf8( CLAUDE_CLIENT_ID ) );
 
   int httpStatus = 0;
-  const QJsonObject object = postJsonBlocking( payload, 30000, httpStatus, errorMessage );
+  QByteArray rawBody;
+  const QJsonObject object = postJsonBlocking( payload, CLAUDE_TOKEN_REFRESH_TIMEOUT_MS, httpStatus, rawBody, errorMessage );
   if ( object.isEmpty() )
     return false;
 
@@ -303,4 +379,14 @@ bool QgsAiClaudeOAuthClient::clearRefreshToken( QString *errorMessage )
 QString QgsAiClaudeOAuthClient::refreshTokenSettingKey()
 {
   return u"ai/provider/claude/oauth/refreshToken"_s;
+}
+
+void QgsAiClaudeOAuthClient::setTokenUrlForTesting( const QString &url )
+{
+  tokenUrlOverride() = url.trimmed();
+}
+
+void QgsAiClaudeOAuthClient::clearTokenUrlForTesting()
+{
+  tokenUrlOverride().clear();
 }

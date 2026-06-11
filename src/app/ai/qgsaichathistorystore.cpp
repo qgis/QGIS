@@ -15,9 +15,12 @@
 
 #include "qgsaichathistorystore.h"
 
+#include "qgsaisecretstore.h"
+
 #include "qgsaifilecontextprovider.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
+#include "qgssettings.h"
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -162,30 +165,155 @@ bool QgsAiChatHistoryStore::openDatabase( QString *errorMessage ) const
   return true;
 }
 
+void QgsAiChatHistoryStore::migratePlaintextRows( QSqlDatabase &db )
+{
+  if ( !QgsAiSecretStore::storageEncryptionAvailable() )
+  {
+    QgsAiSecretStore::warnPlaintextStorageOnce();
+    return;
+  }
+
+  if ( !db.transaction() )
+    return;
+
+  bool ok = true;
+
+  // Collect first, update after: stepping a SELECT while UPDATE-ing the same
+  // table on the same SQLite connection has undefined row-visiting behavior.
+
+  // Messages: content + metadata_json.
+  {
+    struct PendingRow
+    {
+        QString id;
+        QString content;
+        QString metaJson;
+    };
+    QList<PendingRow> rows;
+    QSqlQuery select( db );
+    if ( select.exec( u"SELECT message_id, content, metadata_json FROM messages WHERE content NOT LIKE 'enc1:%' OR (metadata_json IS NOT NULL AND metadata_json != '' AND metadata_json NOT LIKE 'enc1:%')"_s ) )
+    {
+      while ( select.next() )
+        rows.append( { select.value( 0 ).toString(), select.value( 1 ).toString(), select.value( 2 ).toString() } );
+    }
+    else
+      ok = false;
+
+    if ( ok )
+    {
+      QSqlQuery update( db );
+      update.prepare( u"UPDATE messages SET content = ?, metadata_json = ? WHERE message_id = ?"_s );
+      for ( const PendingRow &row : std::as_const( rows ) )
+      {
+        update.addBindValue( row.content.startsWith( "enc1:"_L1 ) ? row.content : QgsAiSecretStore::encryptValue( row.content ) );
+        update.addBindValue( row.metaJson.isEmpty() || row.metaJson.startsWith( "enc1:"_L1 ) ? row.metaJson : QgsAiSecretStore::encryptValue( row.metaJson ) );
+        update.addBindValue( row.id );
+        if ( !update.exec() )
+        {
+          ok = false;
+          break;
+        }
+      }
+    }
+  }
+
+  // Session titles.
+  if ( ok )
+  {
+    QList<QPair<QString, QString>> rows; // id, title
+    QSqlQuery select( db );
+    if ( select.exec( u"SELECT id, title FROM sessions WHERE title NOT LIKE 'enc1:%'"_s ) )
+    {
+      while ( select.next() )
+        rows.append( { select.value( 0 ).toString(), select.value( 1 ).toString() } );
+    }
+    else
+      ok = false;
+
+    if ( ok )
+    {
+      QSqlQuery update( db );
+      update.prepare( u"UPDATE sessions SET title = ? WHERE id = ?"_s );
+      for ( const QPair<QString, QString> &row : std::as_const( rows ) )
+      {
+        update.addBindValue( QgsAiSecretStore::encryptValue( row.second ) );
+        update.addBindValue( row.first );
+        if ( !update.exec() )
+        {
+          ok = false;
+          break;
+        }
+      }
+    }
+  }
+
+  if ( ok )
+  {
+    db.commit();
+    QgsMessageLog::logMessage( u"Chat history encrypted in place."_s, u"AI/ChatHistory"_s, Qgis::MessageLevel::Info, false );
+  }
+  else
+  {
+    // Rollback keeps the plaintext rows readable (per-value prefix detection).
+    db.rollback();
+    QgsMessageLog::logMessage( u"Chat history encryption migration failed; keeping plaintext rows."_s, u"AI/ChatHistory"_s, Qgis::MessageLevel::Warning, false );
+  }
+}
+
 bool QgsAiChatHistoryStore::ensureReady( QString *errorMessage )
 {
   if ( mReady )
     return true;
+
+  // Hard-block plaintext persistence when the user requires encryption: the
+  // in-memory chat keeps working, only SQLite persistence is disabled.
+  if ( !QgsAiSecretStore::storageEncryptionAvailable() )
+  {
+    const QgsSettings settings;
+    if ( settings.value( u"ai/storage/requireEncryption"_s, false ).toBool() )
+    {
+      if ( errorMessage )
+        *errorMessage = u"Encryption is required (ai/storage/requireEncryption) but the authentication vault is unavailable."_s;
+      return false;
+    }
+  }
 
   if ( !openDatabase( errorMessage ) )
     return false;
 
   QSqlDatabase db = QSqlDatabase::database( connectionName() );
 
-  // Schema migration: read PRAGMA user_version. If older than SCHEMA_VERSION
-  // drop the tables — chat history is non-critical user data; an upgrade that
-  // changes the schema will reset it.
+  // Schema migration: v1 → v2 only changed the VALUE encoding (encryption at
+  // rest), so it migrates IN PLACE and preserves the history. Truly unknown
+  // older versions still reset.
   {
     QSqlQuery v( db );
     int currentVersion = 0;
     if ( v.exec( u"PRAGMA user_version"_s ) && v.next() )
       currentVersion = v.value( 0 ).toInt();
-    if ( currentVersion > 0 && currentVersion < SCHEMA_VERSION )
+    if ( currentVersion == 1 )
+    {
+      migratePlaintextRows( db );
+      QSqlQuery setVersion( db );
+      // Per-value `enc1:` prefix detection keeps mixed rows readable, so the
+      // version can be bumped even when encryption was not available yet.
+      setVersion.exec( u"PRAGMA user_version = %1"_s.arg( SCHEMA_VERSION ) );
+      QgsMessageLog::logMessage( u"Chat history schema upgrade: 1 → %1 (in place, history preserved)"_s.arg( SCHEMA_VERSION ), u"AI/ChatHistory"_s, Qgis::MessageLevel::Info, false );
+    }
+    else if ( currentVersion > 0 && currentVersion < SCHEMA_VERSION )
     {
       QgsMessageLog::logMessage( u"Chat history schema upgrade: %1 → %2 (resetting)"_s.arg( currentVersion ).arg( SCHEMA_VERSION ), u"AI/ChatHistory"_s, Qgis::MessageLevel::Info, false );
       QSqlQuery drop( db );
       drop.exec( u"DROP TABLE IF EXISTS messages"_s );
       drop.exec( u"DROP TABLE IF EXISTS sessions"_s );
+    }
+    else if ( currentVersion == SCHEMA_VERSION )
+    {
+      // Opportunistic sweep: plaintext rows written during a vault-less session
+      // converge to encrypted once the vault becomes available.
+      QSqlQuery probe( db );
+      if ( QgsAiSecretStore::storageEncryptionAvailable() && probe.exec( u"SELECT EXISTS(SELECT 1 FROM messages WHERE content NOT LIKE 'enc1:%' LIMIT 1)"_s ) && probe.next() && probe.value( 0 ).toInt() == 1 )
+        migratePlaintextRows( db );
     }
   }
 
@@ -250,7 +378,7 @@ QList<QgsAiChatHistoryStore::SessionInfo> QgsAiChatHistoryStore::listSessions() 
   {
     SessionInfo s;
     s.id = q.value( 0 ).toString();
-    s.title = q.value( 1 ).toString();
+    s.title = QgsAiSecretStore::decryptValue( q.value( 1 ).toString() );
     s.agent = q.value( 2 ).toString();
     s.createdAt = QDateTime::fromMSecsSinceEpoch( q.value( 3 ).toLongLong() );
     s.updatedAt = QDateTime::fromMSecsSinceEpoch( q.value( 4 ).toLongLong() );
@@ -283,9 +411,9 @@ QList<QgsAiChatMessage> QgsAiChatHistoryStore::loadMessages( const QString &sess
     QgsAiChatMessage m;
     m.id = q.value( 0 ).toString();
     m.role = qgsAiChatRoleFromString( q.value( 1 ).toString() );
-    m.content = q.value( 2 ).toString();
+    m.content = QgsAiSecretStore::decryptValue( q.value( 2 ).toString() );
     m.timestamp = QDateTime::fromMSecsSinceEpoch( q.value( 3 ).toLongLong() );
-    const QString metaJson = q.value( 4 ).toString();
+    const QString metaJson = QgsAiSecretStore::decryptValue( q.value( 4 ).toString() );
     if ( !metaJson.isEmpty() )
     {
       const QJsonDocument doc = QJsonDocument::fromJson( metaJson.toUtf8() );
@@ -307,7 +435,7 @@ bool QgsAiChatHistoryStore::createSession( const QString &id, const QString &tit
   const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
   q.prepare( u"INSERT INTO sessions (id, title, agent, created_at, updated_at) VALUES (?, ?, ?, ?, ?)"_s );
   q.addBindValue( id );
-  q.addBindValue( title );
+  q.addBindValue( QgsAiSecretStore::encryptValue( title ) );
   q.addBindValue( agent );
   q.addBindValue( nowMs );
   q.addBindValue( nowMs );
@@ -336,10 +464,10 @@ bool QgsAiChatHistoryStore::appendMessage( const QString &sessionId, const QgsAi
   q.addBindValue( msg.id.isEmpty() ? QUuid::createUuid().toString( QUuid::WithoutBraces ) : msg.id );
   q.addBindValue( sessionId );
   q.addBindValue( qgsAiChatRoleToString( msg.role ) );
-  q.addBindValue( msg.content );
+  q.addBindValue( QgsAiSecretStore::encryptValue( msg.content ) );
   q.addBindValue( msg.timestamp.isValid() ? msg.timestamp.toMSecsSinceEpoch() : QDateTime::currentMSecsSinceEpoch() );
   const QString metaJson = msg.metadata.isEmpty() ? QString() : QString::fromUtf8( QJsonDocument( QJsonObject::fromVariantMap( msg.metadata ) ).toJson( QJsonDocument::Compact ) );
-  q.addBindValue( metaJson );
+  q.addBindValue( QgsAiSecretStore::encryptValue( metaJson ) );
   q.addBindValue( ordering );
   if ( !q.exec() )
   {
@@ -360,7 +488,7 @@ bool QgsAiChatHistoryStore::updateMessageMetadata( const QString &sessionId, con
   QSqlDatabase db = QSqlDatabase::database( connectionName() );
   QSqlQuery q( db );
   q.prepare( u"UPDATE messages SET metadata_json = ? WHERE session_id = ? AND message_id = ?"_s );
-  q.addBindValue( QString::fromUtf8( QJsonDocument( QJsonObject::fromVariantMap( metadata ) ).toJson( QJsonDocument::Compact ) ) );
+  q.addBindValue( QgsAiSecretStore::encryptValue( QString::fromUtf8( QJsonDocument( QJsonObject::fromVariantMap( metadata ) ).toJson( QJsonDocument::Compact ) ) ) );
   q.addBindValue( sessionId );
   q.addBindValue( messageId );
   if ( !q.exec() )
@@ -382,7 +510,7 @@ bool QgsAiChatHistoryStore::renameSession( const QString &sessionId, const QStri
   QSqlDatabase db = QSqlDatabase::database( connectionName() );
   QSqlQuery q( db );
   q.prepare( u"UPDATE sessions SET title = ?, updated_at = ? WHERE id = ?"_s );
-  q.addBindValue( newTitle );
+  q.addBindValue( QgsAiSecretStore::encryptValue( newTitle ) );
   q.addBindValue( QDateTime::currentMSecsSinceEpoch() );
   q.addBindValue( sessionId );
   if ( !q.exec() )

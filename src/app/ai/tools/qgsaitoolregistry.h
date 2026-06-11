@@ -58,8 +58,9 @@ class APP_EXPORT QgsAiToolRegistry : public QObject
 
     enum class WireFormat
     {
-      AnthropicTools, //!< `[{name, description, input_schema}]` for Anthropic Messages API
-      OpenAiResponses //!< `[{type:"function", name, description, parameters}]` for OpenAI Responses API
+      AnthropicTools,       //!< `[{name, description, input_schema}]` for Anthropic Messages API
+      OpenAiResponses,      //!< `[{type:"function", name, description, parameters}]` for OpenAI Responses API
+      OpenAiChatCompletions //!< `[{type:"function", function:{name, description, parameters}}]` for OpenAI Chat Completions API
     };
 
     /**

@@ -72,10 +72,13 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
     QString endpoint() const;
     QJsonObject openRouterProviderPreferences() const;
     bool authenticationFailed() const { return mAuthenticationFailed; }
+    //! Returns true after an HTTP 402 (insufficient credits) tripped the breaker.
+    bool creditsExhausted() const { return mCreditsExhausted; }
     void resetCircuitBreaker()
     {
       mAuthenticationFailed = false;
       mAuthFailureLogged = false;
+      mCreditsExhausted = false;
     }
 
     /**
@@ -97,6 +100,8 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
   private:
     QString apiKey() const;
     bool embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage );
+    //! One blocking HTTP round trip. Outputs status/body/network error and the parsed Retry-After seconds (-1 when absent).
+    bool performRequest( const QByteArray &payload, const QString &key, int &httpStatus, QByteArray &body, int &networkError, int &retryAfterSeconds, QString *errorMessage );
 
     QString mModelOverride;
     QString mEndpointOverride;
@@ -105,6 +110,7 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
     bool mHasProviderOverride = false;
     bool mAuthenticationFailed = false;
     bool mAuthFailureLogged = false;
+    bool mCreditsExhausted = false;
 };
 
 #endif // QGSAIEMBEDDINGCLIENT_H

@@ -91,6 +91,8 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
 
   private:
     QString selectedProposalId() const;
+    //! Prompts for the workspace trust decision on the first AI interaction with an undecided workspace.
+    void ensureWorkspaceTrustDecision();
     void appendTranscriptMessage( const QString &role, const QString &content );
     void appendTranscriptMessage( const QgsAiChatMessage &message );
     QString renderToolMessageMarkdown( const QgsAiChatMessage &message ) const;

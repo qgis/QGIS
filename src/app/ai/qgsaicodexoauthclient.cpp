@@ -15,6 +15,8 @@
 
 #include "qgsaicodexoauthclient.h"
 
+#include "qgsaisecretstore.h"
+
 #include <algorithm>
 
 #include "qgsnetworkaccessmanager.h"
@@ -176,13 +178,13 @@ namespace
 
   bool storeCodexRefreshToken( const QString &refreshToken, QString * )
   {
-    QgsSettings().setValue( QgsAiCodexOAuthClient::refreshTokenSettingKey(), refreshToken.trimmed() );
-    return true;
+    // Encrypted vault when usable, cleartext QgsSettings fallback otherwise.
+    return QgsAiSecretStore::writeSecret( QgsAiCodexOAuthClient::refreshTokenSettingKey(), refreshToken.trimmed() );
   }
 
   QString storedCodexRefreshToken()
   {
-    return QgsSettings().value( QgsAiCodexOAuthClient::refreshTokenSettingKey() ).toString().trimmed();
+    return QgsAiSecretStore::readSecret( QgsAiCodexOAuthClient::refreshTokenSettingKey() );
   }
 
   void sleepWithEvents( int seconds )
@@ -325,12 +327,12 @@ bool QgsAiCodexOAuthClient::refreshAccessToken( TokenSet &tokens, QString *error
 
 bool QgsAiCodexOAuthClient::hasRefreshToken()
 {
-  return !QgsSettings().value( refreshTokenSettingKey() ).toString().isEmpty();
+  return QgsAiSecretStore::hasSecret( refreshTokenSettingKey() );
 }
 
 bool QgsAiCodexOAuthClient::clearRefreshToken( QString * )
 {
-  QgsSettings().remove( refreshTokenSettingKey() );
+  QgsAiSecretStore::removeSecret( refreshTokenSettingKey() );
   return true;
 }
 

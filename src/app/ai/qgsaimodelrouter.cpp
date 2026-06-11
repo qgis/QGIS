@@ -19,6 +19,7 @@
 
 #include "qgsaiclaudeoauthclient.h"
 #include "qgsaicodexoauthclient.h"
+#include "qgsaisecretstore.h"
 #include "qgsaitoolregistry.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
@@ -48,6 +49,17 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
+  // OpenRouter production endpoint (Chat Completions). The Responses endpoint is
+  // beta and kept only as an escape hatch for explicitly configured endpoints.
+  constexpr const char *OPENROUTER_DEFAULT_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+  constexpr const char *OPENROUTER_LEGACY_RESPONSES_ENDPOINT = "https://openrouter.ai/api/v1/responses";
+  // Pinned default: a strong tool-calling model beats openrouter/auto for the agent loop.
+  constexpr const char *OPENROUTER_DEFAULT_MODEL = "anthropic/claude-sonnet-4.6";
+  constexpr const char *OPENROUTER_AUTO_MODEL = "openrouter/auto";
+  // App attribution headers recommended by OpenRouter.
+  constexpr const char *OPENROUTER_REFERER = "https://github.com/francemazzi/strata";
+  constexpr const char *OPENROUTER_APP_TITLE = "Strata";
+
   QString extractTextRecursive( const QJsonValue &value )
   {
     if ( value.isString() )
@@ -92,6 +104,56 @@ namespace
     }
 
     return QString();
+  }
+
+  /**
+   * Parses a `usage` JSON object into QgsAiUsage, accepting both the Chat
+   * Completions naming (prompt_tokens/completion_tokens) and the Responses /
+   * Anthropic naming (input_tokens/output_tokens).
+   */
+  QgsAiUsage parseUsageObject( const QJsonObject &usage )
+  {
+    QgsAiUsage parsed;
+    parsed.promptTokens = usage.value( u"prompt_tokens"_s ).toVariant().toLongLong();
+    if ( parsed.promptTokens == 0 )
+      parsed.promptTokens = usage.value( u"input_tokens"_s ).toVariant().toLongLong();
+    parsed.completionTokens = usage.value( u"completion_tokens"_s ).toVariant().toLongLong();
+    if ( parsed.completionTokens == 0 )
+      parsed.completionTokens = usage.value( u"output_tokens"_s ).toVariant().toLongLong();
+    parsed.totalTokens = usage.value( u"total_tokens"_s ).toVariant().toLongLong();
+    if ( parsed.totalTokens == 0 )
+      parsed.totalTokens = parsed.promptTokens + parsed.completionTokens;
+    parsed.cachedTokens = usage.value( u"prompt_tokens_details"_s ).toObject().value( u"cached_tokens"_s ).toVariant().toLongLong();
+    if ( parsed.cachedTokens == 0 )
+      parsed.cachedTokens = usage.value( u"input_tokens_details"_s ).toObject().value( u"cached_tokens"_s ).toVariant().toLongLong();
+    if ( parsed.cachedTokens == 0 )
+      parsed.cachedTokens = usage.value( u"cache_read_input_tokens"_s ).toVariant().toLongLong();
+    parsed.reasoningTokens = usage.value( u"completion_tokens_details"_s ).toObject().value( u"reasoning_tokens"_s ).toVariant().toLongLong();
+    if ( parsed.reasoningTokens == 0 )
+      parsed.reasoningTokens = usage.value( u"output_tokens_details"_s ).toObject().value( u"reasoning_tokens"_s ).toVariant().toLongLong();
+    parsed.costUsd = usage.value( u"cost"_s ).toDouble();
+    return parsed;
+  }
+
+  //! Overwrites \a target fields with non-zero values from \a parsed (cumulative streaming updates).
+  void mergeUsage( QgsAiUsage &target, const QgsAiUsage &parsed )
+  {
+    if ( parsed.promptTokens > 0 )
+      target.promptTokens = parsed.promptTokens;
+    if ( parsed.completionTokens > 0 )
+      target.completionTokens = parsed.completionTokens;
+    if ( parsed.totalTokens > 0 )
+      target.totalTokens = parsed.totalTokens;
+    if ( parsed.cachedTokens > 0 )
+      target.cachedTokens = parsed.cachedTokens;
+    if ( parsed.reasoningTokens > 0 )
+      target.reasoningTokens = parsed.reasoningTokens;
+    if ( parsed.costUsd > 0 )
+      target.costUsd = parsed.costUsd;
+
+    // Anthropic streams report input and output tokens in separate events, so a
+    // partial event's synthesized total must never shadow the accumulated one.
+    target.totalTokens = std::max( target.totalTokens, target.promptTokens + target.completionTokens );
   }
 
   bool aiFullToolLogDetails()
@@ -163,8 +225,8 @@ QgsAiModelRouter::QgsAiModelRouter( QObject *parent )
   mProviderSettings.insert( Provider::Claude, claude );
 
   ProviderSettings openRouter;
-  openRouter.endpoint = u"https://openrouter.ai/api/v1/responses"_s;
-  openRouter.model = u"openrouter/auto"_s;
+  openRouter.endpoint = QString::fromUtf8( OPENROUTER_DEFAULT_ENDPOINT );
+  openRouter.model = QString::fromUtf8( OPENROUTER_DEFAULT_MODEL );
   openRouter.credentialMode = CredentialMode::ApiKey;
   openRouter.autoRouting = true;
   mProviderSettings.insert( Provider::OpenRouter, openRouter );
@@ -175,6 +237,7 @@ QgsAiModelRouter::QgsAiModelRouter( QObject *parent )
   mProviderSettings.insert( Provider::Plan, plan );
 
   loadPersistedProviderSettings();
+  QgsAiSecretStore::migrateLegacySecrets();
 }
 
 QgsAiModelRouter::ProviderSettings QgsAiModelRouter::providerSettings( Provider provider ) const
@@ -249,7 +312,7 @@ QString QgsAiModelRouter::normalizedModelForProvider( Provider provider, const Q
 {
   const QString trimmed = model.trimmed();
   if ( provider == Provider::OpenRouter )
-    return trimmed.isEmpty() ? u"openrouter/auto"_s : trimmed;
+    return trimmed.isEmpty() ? QString::fromUtf8( OPENROUTER_DEFAULT_MODEL ) : trimmed;
 
   if ( provider != Provider::Codex )
     return trimmed;
@@ -424,14 +487,177 @@ void QgsAiModelRouter::appendOpenAiInputItems( Provider provider, const QgsAiCha
   input.push_back( item );
 }
 
+void QgsAiModelRouter::appendOpenAiChatMessages( const QgsAiChatMessage &message, QJsonArray &messages, QJsonArray &pendingImageMessages ) const
+{
+  // Tool results are emitted as role:"tool" messages keyed by tool_call_id.
+  if ( message.role == QgsAiChatRole::Tool )
+  {
+    QJsonObject item;
+    item.insert( u"role"_s, u"tool"_s );
+    item.insert( u"tool_call_id"_s, message.metadata.value( u"tool_call_id"_s ).toString() );
+    item.insert( u"content"_s, message.content );
+    messages.push_back( item );
+
+    QString mimeType;
+    QString base64Data;
+    if ( readVisualContextImage( message, mimeType, base64Data ) )
+    {
+      // Chat Completions uses a nested image_url object, unlike Responses' input_image.
+      // The image rides as a user message, which must NOT be interleaved between the
+      // tool messages of a parallel tool-call turn (every tool message has to directly
+      // follow the assistant tool_calls message) — the caller flushes pendingImageMessages
+      // only once the tool-result block ends.
+      QJsonObject imageMessage;
+      imageMessage.insert( u"role"_s, u"user"_s );
+
+      QJsonArray content;
+      QJsonObject textBlock;
+      textBlock.insert( u"type"_s, u"text"_s );
+      textBlock.insert( u"text"_s, u"Visual context image captured from the QGIS map canvas for the preceding tool result."_s );
+      content.push_back( textBlock );
+
+      QJsonObject imageUrl;
+      imageUrl.insert( u"url"_s, u"data:%1;base64,%2"_s.arg( mimeType, base64Data ) );
+      QJsonObject imageBlock;
+      imageBlock.insert( u"type"_s, u"image_url"_s );
+      imageBlock.insert( u"image_url"_s, imageUrl );
+      content.push_back( imageBlock );
+
+      imageMessage.insert( u"content"_s, content );
+      pendingImageMessages.push_back( imageMessage );
+    }
+    return;
+  }
+
+  // Assistant turn: text content plus any tool calls in the nested function format.
+  if ( message.role == QgsAiChatRole::Assistant )
+  {
+    QJsonObject item;
+    item.insert( u"role"_s, u"assistant"_s );
+
+    const QVariantList toolCalls = message.metadata.value( u"tool_calls"_s ).toList();
+    if ( !toolCalls.isEmpty() )
+    {
+      QJsonArray callsArray;
+      for ( const QVariant &call : toolCalls )
+      {
+        const QVariantMap callMap = call.toMap();
+        QJsonObject function;
+        function.insert( u"name"_s, callMap.value( u"name"_s ).toString() );
+        const QJsonObject argsObj = QJsonObject::fromVariantMap( callMap.value( u"args"_s ).toMap() );
+        function.insert( u"arguments"_s, QString::fromUtf8( QJsonDocument( argsObj ).toJson( QJsonDocument::Compact ) ) );
+
+        QJsonObject callObj;
+        callObj.insert( u"id"_s, callMap.value( u"id"_s ).toString() );
+        callObj.insert( u"type"_s, u"function"_s );
+        callObj.insert( u"function"_s, function );
+        callsArray.push_back( callObj );
+      }
+      item.insert( u"tool_calls"_s, callsArray );
+      // Content is null when the assistant turn carried only tool calls.
+      item.insert( u"content"_s, message.content.isEmpty() ? QJsonValue() : QJsonValue( message.content ) );
+    }
+    else
+    {
+      item.insert( u"content"_s, message.content );
+    }
+    messages.push_back( item );
+    return;
+  }
+
+  // user / system: plain {role, content} message.
+  QJsonObject item;
+  item.insert( u"role"_s, roleForProvider( Provider::OpenRouter, message.role ) );
+  item.insert( u"content"_s, message.content );
+  messages.push_back( item );
+}
+
+QgsAiModelRouter::ApiWireFormat QgsAiModelRouter::wireFormatForProvider( Provider provider ) const
+{
+  switch ( provider )
+  {
+    case Provider::OpenAi:
+    case Provider::Codex:
+      return ApiWireFormat::OpenAiResponses;
+    case Provider::Claude:
+      return ApiWireFormat::AnthropicMessages;
+    case Provider::OpenRouter:
+    {
+      // Production path is Chat Completions; a custom endpoint ending in
+      // /responses keeps the legacy OpenAI Responses wire format.
+      const QString endpointPath = QUrl( mProviderSettings.value( provider ).endpoint ).path();
+      return endpointPath.endsWith( "/responses"_L1 ) ? ApiWireFormat::OpenAiResponses : ApiWireFormat::OpenAiChatCompletions;
+    }
+    case Provider::Plan:
+      return ApiWireFormat::PlainMessages;
+  }
+  return ApiWireFormat::PlainMessages;
+}
+
 QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList<QgsAiChatMessage> &messages, bool stream ) const
 {
   QJsonObject payload;
   const ProviderSettings settings = providerSettings( provider );
-  payload.insert( u"model"_s, normalizedModelForProvider( provider, settings.model ) );
+  const QString model = normalizedModelForProvider( provider, settings.model );
+  payload.insert( u"model"_s, model );
   payload.insert( u"stream"_s, stream );
 
-  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter )
+  const ApiWireFormat wireFormat = wireFormatForProvider( provider );
+
+  if ( wireFormat == ApiWireFormat::OpenAiChatCompletions )
+  {
+    // OpenRouter production path: Chat Completions wire format.
+    QJsonArray chatMessages;
+    QJsonArray pendingImageMessages;
+    for ( const QgsAiChatMessage &message : messages )
+    {
+      // Flush deferred visual-context images only once the tool-result block ends,
+      // preserving the assistant→tool adjacency required by Chat Completions.
+      if ( message.role != QgsAiChatRole::Tool && !pendingImageMessages.isEmpty() )
+      {
+        for ( const QJsonValue &imageMessage : std::as_const( pendingImageMessages ) )
+          chatMessages.push_back( imageMessage );
+        pendingImageMessages = QJsonArray();
+      }
+      appendOpenAiChatMessages( message, chatMessages, pendingImageMessages );
+    }
+    for ( const QJsonValue &imageMessage : std::as_const( pendingImageMessages ) )
+      chatMessages.push_back( imageMessage );
+    payload.insert( u"messages"_s, chatMessages );
+
+    QJsonArray toolSchemas;
+    if ( mToolUseEnabled && mToolRegistry && mToolRegistry->count() > 0 )
+    {
+      if ( !mAllowedToolsFilterEnabled )
+        toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiChatCompletions );
+      else if ( !mAllowedTools.isEmpty() )
+        toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiChatCompletions, mAllowedTools );
+    }
+    if ( !toolSchemas.isEmpty() )
+    {
+      payload.insert( u"tools"_s, toolSchemas );
+      payload.insert( u"tool_choice"_s, u"auto"_s );
+    }
+
+    QgsSettings appSettings;
+    const int maxTokens = std::max( 256, appSettings.value( u"ai/provider/openrouter/maxTokens"_s, 8192 ).toInt() );
+    payload.insert( u"max_tokens"_s, maxTokens );
+
+    if ( settings.autoRouting )
+    {
+      payload.insert( u"provider"_s, openRouterProviderPreferences( !toolSchemas.isEmpty() ) );
+
+      // Pinned model with automatic failover to the auto router if it is unavailable.
+      if ( model != QString::fromUtf8( OPENROUTER_AUTO_MODEL ) )
+      {
+        QJsonArray fallbackModels;
+        fallbackModels.append( model );
+        fallbackModels.append( QString::fromUtf8( OPENROUTER_AUTO_MODEL ) );
+        payload.insert( u"models"_s, fallbackModels );
+      }
+    }
+  }
+  else if ( wireFormat == ApiWireFormat::OpenAiResponses )
   {
     QJsonArray input;
     QString codexInstructions;
@@ -480,6 +706,7 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
     }
     else if ( provider == Provider::OpenRouter )
     {
+      // Legacy Responses escape hatch (custom endpoint ending in /responses).
       if ( !toolSchemas.isEmpty() )
       {
         payload.insert( u"tools"_s, toolSchemas );
@@ -487,7 +714,7 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
       }
 
       if ( settings.autoRouting )
-        payload.insert( u"provider"_s, openRouterProviderPreferences() );
+        payload.insert( u"provider"_s, openRouterProviderPreferences( !toolSchemas.isEmpty() ) );
     }
     else if ( !toolSchemas.isEmpty() )
     {
@@ -561,21 +788,23 @@ QString QgsAiModelRouter::sanitizeErrorText( const QString &errorText ) const
   return sanitized;
 }
 
-QJsonObject QgsAiModelRouter::openRouterProviderPreferences() const
+QJsonObject QgsAiModelRouter::openRouterProviderPreferences( bool toolsAdvertised ) const
 {
   QJsonObject provider;
   provider.insert( u"data_collection"_s, u"deny"_s );
   provider.insert( u"allow_fallbacks"_s, true );
 
-  switch ( mOpenRouterRoutingProfile )
+  // Whenever tools are advertised, only route to providers that support every
+  // request parameter — a cheap model that drops `tools` breaks the agent loop.
+  if ( toolsAdvertised || mOpenRouterRoutingProfile == OpenRouterRoutingProfile::ToolUseOptimized )
+    provider.insert( u"require_parameters"_s, true );
+
+  if ( mOpenRouterRoutingProfile == OpenRouterRoutingProfile::CostOptimized )
   {
-    case OpenRouterRoutingProfile::ToolUseOptimized:
-      provider.insert( u"require_parameters"_s, true );
-      break;
-    case OpenRouterRoutingProfile::CostOptimized:
-    default:
-      provider.insert( u"sort"_s, u"price"_s );
-      break;
+    QgsSettings settings;
+    const QString sort = settings.value( u"ai/provider/openrouter/sort"_s, u"price"_s ).toString().trimmed().toLower();
+    if ( sort == "price"_L1 || sort == "throughput"_L1 )
+      provider.insert( u"sort"_s, sort );
   }
 
   return provider;
@@ -681,43 +910,24 @@ QString QgsAiModelRouter::planSessionTokenSettingKey() const
 
 QString QgsAiModelRouter::storedApiKey( Provider provider ) const
 {
-  QgsSettings settings;
-  const QString savedValue = settings.value( apiKeySettingKey( provider ) ).toString().trimmed();
-  if ( !savedValue.isEmpty() )
-    return savedValue;
-
+  QStringList envFallbacks;
   switch ( provider )
   {
     case Provider::OpenAi:
-    {
-      const QString envValue = qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed();
-      if ( !envValue.isEmpty() )
-        return envValue;
+      envFallbacks << u"OPENAI_API_KEY"_s;
       break;
-    }
-    case Provider::Codex:
-      return QString();
     case Provider::Claude:
-    {
-      const QString claudeValue = qEnvironmentVariable( "CLAUDE_API_KEY" ).trimmed();
-      if ( !claudeValue.isEmpty() )
-        return claudeValue;
-      const QString anthropicValue = qEnvironmentVariable( "ANTHROPIC_API_KEY" ).trimmed();
-      if ( !anthropicValue.isEmpty() )
-        return anthropicValue;
+      envFallbacks << u"CLAUDE_API_KEY"_s << u"ANTHROPIC_API_KEY"_s;
       break;
-    }
     case Provider::OpenRouter:
-    {
-      const QString envValue = qEnvironmentVariable( "OPENROUTER_API_KEY" ).trimmed();
-      if ( !envValue.isEmpty() )
-        return envValue;
+      envFallbacks << u"OPENROUTER_API_KEY"_s;
       break;
-    }
+    case Provider::Codex:
     case Provider::Plan:
       return QString();
   }
-  return QString();
+
+  return QgsAiSecretStore::readSecret( apiKeySettingKey( provider ), envFallbacks );
 }
 
 bool QgsAiModelRouter::hasStoredApiKey( Provider provider ) const
@@ -725,8 +935,7 @@ bool QgsAiModelRouter::hasStoredApiKey( Provider provider ) const
   if ( provider == Provider::Plan || provider == Provider::Codex )
     return false;
 
-  QgsSettings settings;
-  return !settings.value( apiKeySettingKey( provider ) ).toString().trimmed().isEmpty();
+  return QgsAiSecretStore::hasSecret( apiKeySettingKey( provider ) );
 }
 
 bool QgsAiModelRouter::hasStoredOAuthRefreshToken( Provider provider ) const
@@ -785,7 +994,33 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
     if ( provider == Provider::Codex )
       providerSettings.credentialMode = CredentialMode::OAuth;
     if ( provider == Provider::OpenRouter )
+    {
       providerSettings.autoRouting = settings.value( autoRoutingSettingKey( provider ), providerSettings.autoRouting ).toBool();
+
+      // One-time migration away from the beta Responses endpoint and the
+      // unpredictable auto-routed default model. Runs once: an explicit user
+      // choice made afterwards (including openrouter/auto) is respected forever.
+      const QString migrationFlagKey = providerSettingPrefix( provider ) + u"/defaultModelMigrated_v1"_s;
+      if ( !settings.value( migrationFlagKey, false ).toBool() )
+      {
+        if ( providerSettings.endpoint == QString::fromUtf8( OPENROUTER_LEGACY_RESPONSES_ENDPOINT ) )
+        {
+          providerSettings.endpoint = QString::fromUtf8( OPENROUTER_DEFAULT_ENDPOINT );
+          settings.setValue( endpointSettingKey( provider ), providerSettings.endpoint );
+          QgsMessageLog::logMessage( u"Migrated OpenRouter endpoint from beta Responses API to Chat Completions."_s, u"AI"_s, Qgis::MessageLevel::Info, false );
+        }
+        // Only re-pin the model on official openrouter.ai endpoints: on a custom
+        // gateway an explicit openrouter/auto choice may be deliberate.
+        const bool officialEndpoint = QUrl( providerSettings.endpoint ).host().compare( u"openrouter.ai"_s, Qt::CaseInsensitive ) == 0;
+        if ( officialEndpoint && providerSettings.model == QString::fromUtf8( OPENROUTER_AUTO_MODEL ) )
+        {
+          providerSettings.model = QString::fromUtf8( OPENROUTER_DEFAULT_MODEL );
+          settings.setValue( modelSettingKey( provider ), providerSettings.model );
+          QgsMessageLog::logMessage( u"Migrated OpenRouter default model from openrouter/auto to %1."_s.arg( providerSettings.model ), u"AI"_s, Qgis::MessageLevel::Info, false );
+        }
+        settings.setValue( migrationFlagKey, true );
+      }
+    }
 
     if ( provider == Provider::Plan )
     {
@@ -831,7 +1066,8 @@ QString QgsAiModelRouter::startChatRequest( Provider provider, const QList<QgsAi
   context.provider = provider;
   context.messages = messages;
   context.stream = stream;
-  context.maxRetries = 1;
+  QgsSettings appSettings;
+  context.maxRetries = std::clamp( appSettings.value( u"ai/network/maxRetries"_s, 2 ).toInt(), 0, 5 );
   mRequests.insert( context.requestId, context );
 
   RequestContext &storedContext = mRequests[context.requestId];
@@ -890,8 +1126,7 @@ bool QgsAiModelRouter::storeApiKey( Provider provider, const QString &apiKey, QS
   }
 
   ProviderSettings settings = mProviderSettings.value( provider );
-  QgsSettings appSettings;
-  appSettings.setValue( apiKeySettingKey( provider ), apiKey.trimmed() );
+  QgsAiSecretStore::writeSecret( apiKeySettingKey( provider ), apiKey.trimmed() );
   settings.authConfigId.clear();
   settings.credentialMode = CredentialMode::ApiKey;
   settings.enabled = true;
@@ -1074,6 +1309,15 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
       request.setRawHeader( "anthropic-beta", "oauth-2025-04-20" );
   }
 
+  if ( context.provider == Provider::OpenRouter )
+  {
+    // App attribution headers recommended by OpenRouter.
+    request.setRawHeader( "HTTP-Referer", OPENROUTER_REFERER );
+    request.setRawHeader( "X-Title", OPENROUTER_APP_TITLE );
+    if ( context.stream )
+      request.setRawHeader( "Accept", "text/event-stream" );
+  }
+
   QString authenticationError;
   if ( !applyAuthentication( context.provider, request, &authenticationError ) )
   {
@@ -1093,7 +1337,15 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
 
   context.startedAtMs = QDateTime::currentMSecsSinceEpoch();
   context.attempt++;
+  // Reset per-attempt state so a retry doesn't inherit partial data from a failed attempt.
   context.streamingBuffer.clear();
+  context.aggregatedText.clear();
+  context.stopReason.clear();
+  context.toolCalls.clear();
+  context.streamItemIndexToToolCall.clear();
+  context.midStreamError.clear();
+  context.usage = QgsAiUsage();
+  context.responseModel.clear();
   const QByteArray payload = buildRequestPayload( context.provider, context.messages, context.stream );
   QgsMessageLog::logMessage(
     u"Dispatching request id=%1 provider=%2 endpointHost=%3 model=%4 attempt=%5 payloadBytes=%6 stream=%7"_s
@@ -1183,12 +1435,18 @@ bool QgsAiModelRouter::shouldRetry( int httpStatus, QNetworkReply::NetworkError 
   if ( attempt > maxRetries )
     return false;
 
+  // Check the HTTP status first: Qt also sets a NetworkError for HTTP >= 400
+  // replies (e.g. ServiceUnavailableError for 503), so testing networkError
+  // first would make the status-based retry unreachable.
+  if ( httpStatus == 408 || httpStatus == 429 || ( httpStatus >= 500 && httpStatus <= 599 ) )
+    return true;
+
   if ( networkError != QNetworkReply::NoError )
   {
     return networkError == QNetworkReply::TimeoutError || networkError == QNetworkReply::TemporaryNetworkFailureError || networkError == QNetworkReply::NetworkSessionFailedError;
   }
 
-  return httpStatus == 429 || ( httpStatus >= 500 && httpStatus <= 599 );
+  return false;
 }
 
 QString QgsAiModelRouter::extractTextFromResponse( Provider provider, const QJsonObject &object ) const
@@ -1205,6 +1463,16 @@ QString QgsAiModelRouter::extractTextFromResponse( Provider provider, const QJso
     }
     if ( !text.isEmpty() )
       return text;
+  }
+
+  // Chat Completions: text lives at choices[0].message.content. Return without
+  // the recursive fallback, which would leak tool_calls JSON into chat text.
+  if ( wireFormatForProvider( provider ) == ApiWireFormat::OpenAiChatCompletions )
+  {
+    const QJsonArray choices = object.value( u"choices"_s ).toArray();
+    if ( !choices.isEmpty() )
+      return choices.first().toObject().value( u"message"_s ).toObject().value( u"content"_s ).toString();
+    return QString();
   }
 
   return extractTextRecursive( object );
@@ -1225,6 +1493,17 @@ QString QgsAiModelRouter::extractTextFromStreamEvent( Provider provider, const Q
     return QString();
   }
 
+  // Chat Completions streaming: text deltas come as choices[0].delta.content.
+  // Must return before the recursive fallback below, which would otherwise leak
+  // tool-call argument fragments into the chat text.
+  if ( wireFormatForProvider( provider ) == ApiWireFormat::OpenAiChatCompletions )
+  {
+    const QJsonArray choices = object.value( u"choices"_s ).toArray();
+    if ( choices.isEmpty() )
+      return QString();
+    return choices.first().toObject().value( u"delta"_s ).toObject().value( u"content"_s ).toString();
+  }
+
   // OpenAI Responses API streaming: text deltas come as response.output_text.delta
   const QString eventType = object.value( u"type"_s ).toString();
   if ( eventType == "response.output_text.delta"_L1 )
@@ -1240,6 +1519,21 @@ QString QgsAiModelRouter::extractTextFromStreamEvent( Provider provider, const Q
     return extractTextRecursive( deltaObject );
 
   return QString();
+}
+
+void QgsAiModelRouter::finalizePendingToolCallArguments( RequestContext &context ) const
+{
+  for ( PendingToolCall &call : context.toolCalls )
+  {
+    if ( call.argumentsArePreParsed )
+      continue;
+    const QJsonDocument doc = QJsonDocument::fromJson( call.argumentsRaw.toUtf8() );
+    if ( doc.isObject() )
+    {
+      call.argumentsObject = doc.object();
+      call.argumentsArePreParsed = true;
+    }
+  }
 }
 
 void QgsAiModelRouter::extractToolCallsFromResponse( Provider provider, const QJsonObject &object, RequestContext &context ) const
@@ -1264,7 +1558,42 @@ void QgsAiModelRouter::extractToolCallsFromResponse( Provider provider, const QJ
     return;
   }
 
-  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter )
+  const ApiWireFormat wireFormat = wireFormatForProvider( provider );
+
+  if ( wireFormat == ApiWireFormat::OpenAiChatCompletions )
+  {
+    const QJsonArray choices = object.value( u"choices"_s ).toArray();
+    if ( choices.isEmpty() )
+      return;
+
+    const QJsonObject choice = choices.first().toObject();
+    const QJsonArray toolCalls = choice.value( u"message"_s ).toObject().value( u"tool_calls"_s ).toArray();
+    for ( const QJsonValue &item : toolCalls )
+    {
+      const QJsonObject obj = item.toObject();
+      const QJsonObject function = obj.value( u"function"_s ).toObject();
+
+      PendingToolCall call;
+      call.id = obj.value( u"id"_s ).toString();
+      call.name = function.value( u"name"_s ).toString();
+      call.argumentsRaw = function.value( u"arguments"_s ).toString();
+      const QJsonDocument doc = QJsonDocument::fromJson( call.argumentsRaw.toUtf8() );
+      if ( doc.isObject() )
+      {
+        call.argumentsObject = doc.object();
+        call.argumentsArePreParsed = true;
+      }
+      context.toolCalls.append( call );
+    }
+
+    if ( !context.toolCalls.isEmpty() )
+      context.stopReason = u"tool_use"_s;
+    else if ( !choice.value( u"finish_reason"_s ).toString().isEmpty() )
+      context.stopReason = u"stop"_s;
+    return;
+  }
+
+  if ( wireFormat == ApiWireFormat::OpenAiResponses )
   {
     // Top-level "status" or per-output items don't carry stop_reason explicitly here;
     // we infer tool_use by the presence of function_call items.
@@ -1299,7 +1628,14 @@ void QgsAiModelRouter::absorbStreamEvent( Provider provider, const QJsonObject &
   {
     const QString eventType = object.value( u"type"_s ).toString();
 
-    if ( eventType == "content_block_start"_L1 )
+    if ( eventType == "message_start"_L1 )
+    {
+      const QJsonObject message = object.value( u"message"_s ).toObject();
+      mergeUsage( context.usage, parseUsageObject( message.value( u"usage"_s ).toObject() ) );
+      if ( !message.value( u"model"_s ).toString().isEmpty() )
+        context.responseModel = message.value( u"model"_s ).toString();
+    }
+    else if ( eventType == "content_block_start"_L1 )
     {
       const int blockIndex = object.value( u"index"_s ).toInt();
       const QJsonObject block = object.value( u"content_block"_s ).toObject();
@@ -1344,11 +1680,81 @@ void QgsAiModelRouter::absorbStreamEvent( Provider provider, const QJsonObject &
       const QString reason = delta.value( u"stop_reason"_s ).toString();
       if ( !reason.isEmpty() )
         context.stopReason = reason;
+      mergeUsage( context.usage, parseUsageObject( object.value( u"usage"_s ).toObject() ) );
     }
     return;
   }
 
-  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter )
+  const ApiWireFormat wireFormat = wireFormatForProvider( provider );
+
+  if ( wireFormat == ApiWireFormat::OpenAiChatCompletions )
+  {
+    // Usage and the routed model ride on top-level fields; the final usage chunk
+    // may carry an empty choices array, so harvest them before the choices check.
+    if ( object.contains( u"usage"_s ) )
+      mergeUsage( context.usage, parseUsageObject( object.value( u"usage"_s ).toObject() ) );
+    if ( !object.value( u"model"_s ).toString().isEmpty() )
+      context.responseModel = object.value( u"model"_s ).toString();
+
+    const QJsonArray choices = object.value( u"choices"_s ).toArray();
+    if ( choices.isEmpty() )
+      return;
+
+    const QJsonObject choice = choices.first().toObject();
+    const QJsonObject delta = choice.value( u"delta"_s ).toObject();
+
+    // Tool call fragments accumulate per tool_calls[].index across chunks.
+    const QJsonArray toolCallDeltas = delta.value( u"tool_calls"_s ).toArray();
+    for ( const QJsonValue &value : toolCallDeltas )
+    {
+      const QJsonObject callDelta = value.toObject();
+      const int callIndex = callDelta.value( u"index"_s ).toInt();
+      int toolIndex = context.streamItemIndexToToolCall.value( callIndex, -1 );
+      if ( toolIndex < 0 )
+      {
+        context.toolCalls.append( PendingToolCall() );
+        toolIndex = context.toolCalls.size() - 1;
+        context.streamItemIndexToToolCall.insert( callIndex, toolIndex );
+      }
+
+      PendingToolCall &call = context.toolCalls[toolIndex];
+      const QString id = callDelta.value( u"id"_s ).toString();
+      if ( !id.isEmpty() )
+        call.id = id;
+      const QJsonObject function = callDelta.value( u"function"_s ).toObject();
+      call.name += function.value( u"name"_s ).toString();
+      call.argumentsRaw += function.value( u"arguments"_s ).toString();
+    }
+
+    const QString finishReason = choice.value( u"finish_reason"_s ).toString();
+    if ( !finishReason.isEmpty() )
+    {
+      if ( finishReason == "error"_L1 )
+      {
+        if ( context.midStreamError.isEmpty() )
+          context.midStreamError = u"The provider reported a mid-stream error (finish_reason=error)."_s;
+      }
+      else if ( finishReason == "length"_L1 && !context.toolCalls.isEmpty() )
+      {
+        // max_tokens hit in the middle of a tool call: the accumulated arguments
+        // JSON is truncated and must never be dispatched as empty args.
+        if ( context.midStreamError.isEmpty() )
+          context.midStreamError = u"The response hit the max_tokens limit while emitting a tool call; the tool arguments were truncated."_s;
+      }
+      else if ( finishReason == "tool_calls"_L1 || !context.toolCalls.isEmpty() )
+      {
+        context.stopReason = u"tool_use"_s;
+        finalizePendingToolCallArguments( context );
+      }
+      else
+      {
+        context.stopReason = u"stop"_s;
+      }
+    }
+    return;
+  }
+
+  if ( wireFormat == ApiWireFormat::OpenAiResponses )
   {
     const QString eventType = object.value( u"type"_s ).toString();
 
@@ -1398,6 +1804,11 @@ void QgsAiModelRouter::absorbStreamEvent( Provider provider, const QJsonObject &
         context.stopReason = u"tool_use"_s;
       else
         context.stopReason = u"stop"_s;
+
+      const QJsonObject response = object.value( u"response"_s ).toObject();
+      mergeUsage( context.usage, parseUsageObject( response.value( u"usage"_s ).toObject() ) );
+      if ( !response.value( u"model"_s ).toString().isEmpty() )
+        context.responseModel = response.value( u"model"_s ).toString();
     }
   }
 }
@@ -1421,17 +1832,52 @@ void QgsAiModelRouter::onReplyReadyRead()
     if ( rawLine.isEmpty() )
       continue;
 
+    // SSE comment lines (e.g. OpenRouter's ": OPENROUTER PROCESSING" keep-alives) are not data.
+    if ( rawLine.startsWith( ':'_L1 ) )
+      continue;
+
     QString dataLine = rawLine;
-    if ( dataLine.startsWith( "data:"_L1 ) )
+    const bool isDataLine = dataLine.startsWith( "data:"_L1 );
+    if ( isDataLine )
       dataLine = dataLine.mid( 5 ).trimmed();
     if ( dataLine == "[DONE]"_L1 )
       continue;
 
     const QJsonDocument doc = QJsonDocument::fromJson( dataLine.toUtf8() );
     if ( !doc.isObject() )
+    {
+      // A corrupted data frame can silently lose tool-call arguments: log it.
+      if ( isDataLine )
+        QgsMessageLog::logMessage( u"Skipping malformed SSE data line for request id=%1: %2"_s.arg( context->requestId, sanitizeErrorText( dataLine.left( 200 ) ) ), u"AI"_s, Qgis::MessageLevel::Warning, false );
       continue;
+    }
 
     const QJsonObject event = doc.object();
+
+    // Providers can deliver errors inside the stream over HTTP 200 — both as a
+    // top-level error object (OpenRouter chat/completions) and as a typed error
+    // event (Anthropic / OpenAI Responses).
+    if ( context->midStreamError.isEmpty() )
+    {
+      const QJsonValue errorValue = event.value( u"error"_s );
+      if ( errorValue.isObject() )
+      {
+        const QJsonObject errorObj = errorValue.toObject();
+        QString message = errorObj.value( u"message"_s ).toString();
+        if ( message.isEmpty() && errorObj.contains( u"code"_s ) )
+          message = u"Provider returned error code %1."_s.arg( errorObj.value( u"code"_s ).toVariant().toString() );
+        if ( !message.isEmpty() )
+          context->midStreamError = message;
+      }
+      else if ( errorValue.isString() && !errorValue.toString().isEmpty() )
+      {
+        context->midStreamError = errorValue.toString();
+      }
+      else if ( event.value( u"type"_s ).toString() == "error"_L1 && !event.value( u"message"_s ).toString().isEmpty() )
+      {
+        context->midStreamError = event.value( u"message"_s ).toString();
+      }
+    }
 
     // Update tool-call state regardless of whether the event also carries text.
     absorbStreamEvent( context->provider, event, *context );
@@ -1498,6 +1944,69 @@ QString QgsAiModelRouter::extractErrorMessageFromBody( Provider provider, const 
   return QString();
 }
 
+QString QgsAiModelRouter::composeHttpErrorMessage( Provider provider, int httpStatus, const QByteArray &body ) const
+{
+  const QString bodyMessage = extractErrorMessageFromBody( provider, body ); //#spellok
+
+  QString prefix;
+  switch ( httpStatus )
+  {
+    case 401:
+      prefix = tr( "Authentication failed — the API key is invalid or expired. Check Provider Settings." );
+      break;
+    case 402:
+      prefix = provider == Provider::OpenRouter
+                 ? tr( "Insufficient credits on your OpenRouter account — top up at openrouter.ai/credits." )
+                 : tr( "Payment required — the account has insufficient credits." );
+      break;
+    case 403:
+    {
+      prefix = tr( "The request was refused (forbidden)." );
+      // OpenRouter moderation errors carry metadata.reasons and a flagged_input excerpt.
+      const QJsonDocument doc = QJsonDocument::fromJson( body );
+      if ( doc.isObject() )
+      {
+        const QJsonObject metadata = doc.object().value( u"error"_s ).toObject().value( u"metadata"_s ).toObject();
+        const QJsonArray reasons = metadata.value( u"reasons"_s ).toArray();
+        if ( !reasons.isEmpty() )
+        {
+          QStringList reasonList;
+          for ( const QJsonValue &reason : reasons )
+            reasonList << reason.toString();
+          prefix = tr( "The request was flagged by moderation: %1." ).arg( reasonList.join( u", "_s ) );
+          const QString flagged = metadata.value( u"flagged_input"_s ).toString();
+          if ( !flagged.isEmpty() )
+            prefix += u" "_s + tr( "Flagged input: \"%1\"" ).arg( flagged.left( 100 ) );
+        }
+      }
+      break;
+    }
+    case 408:
+      prefix = tr( "The provider timed out before completing the response." );
+      break;
+    case 429:
+      prefix = tr( "Rate limited by the provider — wait a moment before retrying." );
+      break;
+    case 502:
+      // The routing-specific wording only makes sense for OpenRouter.
+      prefix = provider == Provider::OpenRouter
+                 ? tr( "The upstream model provider failed to return a valid response — retry, or switch model." )
+                 : tr( "The provider returned an invalid upstream response (HTTP 502) — retry shortly." );
+      break;
+    case 503:
+      prefix = provider == Provider::OpenRouter
+                 ? tr( "No provider currently matches the requested model and routing requirements — try a different model or relax the routing preferences." )
+                 : tr( "The provider is temporarily unavailable (HTTP 503) — retry shortly." );
+      break;
+    default:
+      break;
+  }
+
+  if ( prefix.isEmpty() )
+    return bodyMessage;
+  return bodyMessage.isEmpty() ? prefix : prefix + u" · "_s + bodyMessage;
+}
+
 void QgsAiModelRouter::onReplyFinished()
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
@@ -1525,16 +2034,37 @@ void QgsAiModelRouter::onReplyFinished()
     if ( doc.isObject() )
     {
       responseText = extractTextFromResponse( context->provider, doc.object() );
-      // Non-streaming: also harvest tool calls from the body.
+      // Non-streaming: also harvest tool calls and usage accounting from the body.
       if ( context->toolCalls.isEmpty() )
         extractToolCallsFromResponse( context->provider, doc.object(), *context );
+      mergeUsage( context->usage, parseUsageObject( doc.object().value( u"usage"_s ).toObject() ) );
+      if ( !doc.object().value( u"model"_s ).toString().isEmpty() )
+        context->responseModel = doc.object().value( u"model"_s ).toString();
     }
     else
       responseText = QString::fromUtf8( responseBody );
   }
 
-  const bool success = networkError == QNetworkReply::NoError && ( httpStatus == 0 || ( httpStatus >= 200 && httpStatus < 300 ) );
-  const bool wantsToolUse = success && !context->toolCalls.isEmpty();
+  // Providers can deliver errors inside the SSE stream over HTTP 200.
+  const bool success = networkError == QNetworkReply::NoError && ( httpStatus == 0 || ( httpStatus >= 200 && httpStatus < 300 ) ) && context->midStreamError.isEmpty();
+
+  // Safety net: a stream can end without its finish chunk (connection cut, or a
+  // malformed final SSE line). Parse any pending tool-call arguments now, and
+  // never dispatch a call whose accumulated arguments could not be parsed —
+  // executing tools with silently-emptied args is worse than failing the turn.
+  finalizePendingToolCallArguments( *context );
+  bool hasUnparsedToolArguments = false;
+  for ( const PendingToolCall &pending : std::as_const( context->toolCalls ) )
+  {
+    if ( !pending.argumentsArePreParsed && !pending.argumentsRaw.trimmed().isEmpty() )
+    {
+      hasUnparsedToolArguments = true;
+      break;
+    }
+  }
+
+  const bool wantsToolUse = success && !context->toolCalls.isEmpty() && !hasUnparsedToolArguments;
+  const bool retriable = !success && shouldRetry( httpStatus, networkError, context->attempt, context->maxRetries );
   QgsMessageLog::logMessage(
     u"Reply id=%1 provider=%2 httpStatus=%3 networkError=%4 latencyMs=%5 textLen=%6 bodyBytes=%7 success=%8 toolCalls=%9 stopReason=%10"_s.arg( requestId, providerName )
       .arg( httpStatus )
@@ -1549,6 +2079,31 @@ void QgsAiModelRouter::onReplyFinished()
     success ? Qgis::MessageLevel::Info : Qgis::MessageLevel::Warning,
     false
   );
+
+  // Report usage only when this attempt is final — a retried attempt would
+  // otherwise double-count tokens in the per-session accumulation.
+  if ( context->usage.isValid() && !retriable )
+  {
+    const QString servedModel = !context->responseModel.isEmpty() ? context->responseModel : providerSettings( context->provider ).model;
+    QgsMessageLog::logMessage(
+      u"Usage id=%1 provider=%2 model=%3 promptTokens=%4 completionTokens=%5 cachedTokens=%6 reasoningTokens=%7 costUsd=%8"_s.arg( requestId, providerName, servedModel )
+        .arg( context->usage.promptTokens )
+        .arg( context->usage.completionTokens )
+        .arg( context->usage.cachedTokens )
+        .arg( context->usage.reasoningTokens )
+        .arg( context->usage.costUsd, 0, 'f', 6 ),
+      u"AI"_s,
+      Qgis::MessageLevel::Info,
+      false
+    );
+    emit usageReported( requestId, providerName, servedModel, context->usage );
+  }
+
+  if ( success && !context->toolCalls.isEmpty() && hasUnparsedToolArguments )
+  {
+    finishRequest( requestId, false, QString(), tr( "The model response ended with incomplete tool-call arguments (stream truncated); the turn was aborted." ), httpStatus, context->attempt - 1, false, latencyMs );
+    return;
+  }
 
   if ( wantsToolUse )
   {
@@ -1574,19 +2129,40 @@ void QgsAiModelRouter::onReplyFinished()
     return;
   }
 
-  const bool retriable = shouldRetry( httpStatus, networkError, context->attempt, context->maxRetries );
   if ( retriable )
   {
-    clearRequestTransport( *context );
-    if ( !dispatchRequest( *context ) )
+    // Honor the server's Retry-After header (seconds form, clamped) when present;
+    // otherwise back off linearly with the attempt count.
+    int retryAfterSeconds = -1;
+    if ( reply->hasRawHeader( "Retry-After" ) )
     {
-      const QString retryError = !context->preDispatchError.isEmpty() ? context->preDispatchError : u"Retry dispatch failed."_s;
-      finishRequest( requestId, false, QString(), sanitizeErrorText( retryError ), httpStatus, context->attempt - 1, true, latencyMs );
+      bool parsedOk = false;
+      const int parsed = QString::fromLatin1( reply->rawHeader( "Retry-After" ) ).trimmed().toInt( &parsedOk );
+      if ( parsedOk && parsed >= 0 )
+        retryAfterSeconds = parsed;
     }
+    const int backoffMs = retryAfterSeconds >= 0 ? std::min( retryAfterSeconds, 30 ) * 1000 : 1000 * context->attempt;
+
+    clearRequestTransport( *context );
+    QgsMessageLog::logMessage( u"Request id=%1 provider=%2 retrying in %3 ms (attempt %4 of %5)."_s.arg( requestId, providerName ).arg( backoffMs ).arg( context->attempt + 1 ).arg( context->maxRetries + 1 ), u"AI"_s, Qgis::MessageLevel::Info, false );
+    QTimer::singleShot( backoffMs, this, [this, requestId, httpStatus]() {
+      // The request may have been cancelled while waiting for the backoff.
+      if ( !mRequests.contains( requestId ) )
+        return;
+
+      RequestContext &retryContext = mRequests[requestId];
+      if ( !dispatchRequest( retryContext ) )
+      {
+        const QString retryError = !retryContext.preDispatchError.isEmpty() ? retryContext.preDispatchError : u"Retry dispatch failed."_s;
+        finishRequest( requestId, false, QString(), sanitizeErrorText( retryError ), httpStatus, retryContext.attempt - 1, true, 0 );
+      }
+    } );
     return;
   }
 
-  QString errorMessage = extractErrorMessageFromBody( context->provider, responseBody ); //#spellok
+  QString errorMessage = context->midStreamError;
+  if ( errorMessage.isEmpty() )
+    errorMessage = composeHttpErrorMessage( context->provider, httpStatus, responseBody );
   if ( errorMessage.isEmpty() )
     errorMessage = reply->errorString();
   if ( errorMessage.isEmpty() )

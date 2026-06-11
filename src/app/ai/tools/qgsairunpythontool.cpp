@@ -16,6 +16,8 @@
 #include "qgsairunpythontool.h"
 
 #include "qgsaipythonapprovaldialog.h"
+#include "qgsaiauditlog.h"
+#include "qgsaiworkspacetrust.h"
 #include "qgsaitoolschemautil.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
@@ -102,12 +104,14 @@ QgsAiRunPythonTool::QgsAiRunPythonTool( QWidget *dialogParent )
 
 bool QgsAiRunPythonTool::isAvailable() const
 {
-  return QgsPythonRunner::isValid();
+  return QgsPythonRunner::isValid() && QgsAiWorkspaceTrust::isCurrentWorkspaceTrusted();
 }
 
 QString QgsAiRunPythonTool::availabilityReason() const
 {
-  return u"Python runner is not available in this QGIS instance. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s;
+  if ( !QgsPythonRunner::isValid() )
+    return u"Python runner is not available in this QGIS instance. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s;
+  return u"run_python is disabled because this workspace is not trusted. Trust the workspace from the AI provider settings to enable Python execution."_s;
 }
 
 QString QgsAiRunPythonTool::description() const
@@ -169,6 +173,7 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
   }
 
   QgsMessageLog::logMessage( u"run_python: executing approved code (codeChars=%1)"_s.arg( code.size() ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
+  QgsAiAuditLog::append( u"run_python"_s, code );
 
   // Build the wrapper with safely-quoted paths.
   const QString wrapper = QString::fromUtf8( PY_WRAPPER_TEMPLATE ).arg( escapeRunPythonPath( codePath ), escapeRunPythonPath( outPath ) );

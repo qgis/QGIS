@@ -55,7 +55,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
     static constexpr int DEFAULT_MAX_FILES = 500;
     static constexpr int EMBEDDING_BATCH = 16;
     //! Bumped when the on-disk SQLite schema changes; older DBs are dropped on first load.
-    static constexpr int SCHEMA_VERSION = 3;
+    static constexpr int SCHEMA_VERSION = 4;
 
     //! Discriminates between workspace-file chunks and layer-data chunks.
     static constexpr const char *SOURCE_TYPE_FILE = "file";

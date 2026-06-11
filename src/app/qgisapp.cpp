@@ -103,6 +103,7 @@ using namespace Qt::StringLiterals;
 #include "ai/qgsaimessagelogbuffer.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "ai/qgsaisecretstore.h"
 #include "ai/tools/qgsaidownloadfiletool.h"
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaiedittools.h"
@@ -1088,6 +1089,10 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   // setup connections to auth system
   masterPasswordSetup();
+#ifdef HAVE_AI_ASSISTANT
+  // The AI secret store may now trigger interactive vault unlock (keychain or prompt).
+  QgsAiSecretStore::setInteractiveUnlockAllowed( true );
+#endif
 
   QgsSettings settings;
 
@@ -1388,6 +1393,11 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 #ifdef HAVE_AI_ASSISTANT
   startProfile( tr( "AI assistant dock" ) );
   mAiModelRouter = std::make_unique<QgsAiModelRouter>( this );
+  // Warm the AI storage encryption key on the MAIN thread: the indexing task
+  // runs on workers, where an interactive vault unlock is never allowed — with
+  // the key already cached, worker-thread persists encrypt from the start.
+  QgsAiSecretStore::dataEncryptionKey();
+
   const QString aiWorkspaceRoot = QgsAiFileContextProvider::resolveWorkspaceRoot();
   mAiFileContextProvider = std::make_unique<QgsAiFileContextProvider>( aiWorkspaceRoot, this );
   connect( QgsProject::instance(), &QgsProject::homePathChanged, this, [this]() {

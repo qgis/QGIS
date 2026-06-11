@@ -41,11 +41,16 @@ class APP_EXPORT QgsAiClaudeOAuthClient
     static AuthorizationRequest buildAuthorizationRequest();
     static AuthorizationRequest buildAuthorizationRequest( const QString &redirectUri );
     static QString authorizationCodeFromInput( const QString &input );
-    static bool exchangeAuthorizationCode( const QString &authorizationCode, const QString &codeVerifier, const QString &redirectUri, QString *errorMessage = nullptr );
+    static QString authorizationStateFromInput( const QString &input );
+    static bool exchangeAuthorizationCode( const QString &authorizationCode, const QString &codeVerifier, const QString &redirectUri, const QString &expectedState, QString *errorMessage = nullptr );
     static bool refreshAccessToken( TokenSet &tokens, QString *errorMessage = nullptr );
     static bool hasRefreshToken();
     static bool clearRefreshToken( QString *errorMessage = nullptr );
     static QString refreshTokenSettingKey();
+
+    //! Redirects token POSTs to a loopback server (unit tests only).
+    static void setTokenUrlForTesting( const QString &url );
+    static void clearTokenUrlForTesting();
 };
 
 #endif // QGSAICLAUDEOAUTHCLIENT_H
