@@ -70,7 +70,7 @@ namespace
     return settings.value( u"geoai/visual_context/image_send_consent"_s, false ).toBool();
   }
 
-  QJsonObject extentJson( const QgsRectangle &extent )
+  QJsonObject readToolsExtentJson( const QgsRectangle &extent )
   {
     QJsonObject e;
     e.insert( u"xmin"_s, extent.xMinimum() );
@@ -80,7 +80,7 @@ namespace
     return e;
   }
 
-  QString layerTreePath( QgsLayerTreeLayer *node )
+  QString readToolsLayerTreePath( QgsLayerTreeLayer *node )
   {
     if ( !node )
       return QString();
@@ -105,7 +105,7 @@ namespace
     summary.insert( u"visible"_s, node ? node->isVisible() : true );
     summary.insert( u"checked"_s, node ? node->itemVisibilityChecked() : true );
     if ( node )
-      summary.insert( u"tree_path"_s, layerTreePath( node ) );
+      summary.insert( u"tree_path"_s, readToolsLayerTreePath( node ) );
     if ( renderOrder >= 0 )
       summary.insert( u"render_order"_s, renderOrder );
 
@@ -608,8 +608,8 @@ QgsAiToolResult QgsAiCaptureMapCanvasTool::execute( const QJsonObject &args )
   imageJson.insert( u"height"_s, image.height() );
 
   QJsonObject canvasJson;
-  canvasJson.insert( u"extent"_s, extentJson( settings.extent() ) );
-  canvasJson.insert( u"visible_extent"_s, extentJson( settings.visibleExtent() ) );
+  canvasJson.insert( u"extent"_s, readToolsExtentJson( settings.extent() ) );
+  canvasJson.insert( u"visible_extent"_s, readToolsExtentJson( settings.visibleExtent() ) );
   canvasJson.insert( u"crs"_s, settings.destinationCrs().authid() );
   canvasJson.insert( u"scale"_s, settings.scale() );
   canvasJson.insert( u"rotation"_s, settings.rotation() );
