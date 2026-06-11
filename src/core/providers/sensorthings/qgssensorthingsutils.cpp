@@ -873,7 +873,7 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       break;
 
     case Qgis::SensorThingsEntity::Sampling:
-      // https://hylkevds.github.io/24-046/24-046.html#_20a589d4-cc3d-88f9-2e13-2292194061c9
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
@@ -886,7 +886,7 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       break;
 
     case Qgis::SensorThingsEntity::SamplingProcedure:
-      // https://hylkevds.github.io/24-046/24-046.html#_98197442-7c4a-d97c-5cfd-67e2382f8012
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
@@ -894,7 +894,7 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       break;
 
     case Qgis::SensorThingsEntity::Sampler:
-      // https://hylkevds.github.io/24-046/24-046.html#_6d3c932c-3d6c-e4d4-ccdf-8c63e03d503a
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
@@ -903,7 +903,7 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       break;
 
     case Qgis::SensorThingsEntity::PreparationStep:
-      // https://hylkevds.github.io/24-046/24-046.html#_6ec4909c-d8de-111a-721b-ff0b24e834f9
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
@@ -916,7 +916,7 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       break;
 
     case Qgis::SensorThingsEntity::PreparationProcedure:
-      // https://hylkevds.github.io/24-046/24-046.html#_48e9f88b-b0be-dff8-9e0b-1134e953ae57
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
@@ -924,17 +924,17 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       break;
 
     case Qgis::SensorThingsEntity::DatastreamRelation:
-      // https://hylkevds.github.io/24-046/24-046.html#_64d8723b-f8ea-4386-29f7-b4d998a0ff6f
+      // https://hylkevds.github.io/24-046/24-046.html#relations-extension
       fields.append( QgsField( u"externalTarget"_s, QMetaType::Type::QString ) );
       break;
 
     case Qgis::SensorThingsEntity::ThingRelation:
-      // https://hylkevds.github.io/24-046/24-046.html#_9923460e-af76-b918-06a5-3a474a0d7681
+      // https://hylkevds.github.io/24-046/24-046.html#relations-extension
       fields.append( QgsField( u"externalTarget"_s, QMetaType::Type::QString ) );
       break;
 
     case Qgis::SensorThingsEntity::RelationRole:
-      // https://hylkevds.github.io/24-046/24-046.html#_38327d4d-37c9-14e4-414d-46e6aaed18bd
+      // https://hylkevds.github.io/24-046/24-046.html#relations-extension
       fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
       fields.append( QgsField( u"inverseName"_s, QMetaType::Type::QString ) );
