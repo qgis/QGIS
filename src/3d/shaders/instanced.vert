@@ -36,6 +36,20 @@ uniform mat4 mvp;
 uniform vec4 symbolRotation;
 uniform vec3 symbolScale;
 
+#ifdef HAS_TEXTURE
+#ifdef DATA_DEFINED_TEXTURE_TRANSFORMS
+in vec4 ddTextureTransform;
+#elif defined(TEXTURE_ROTATION) || defined(TEXTURE_OFFSET)
+uniform float texCoordScale;
+#ifdef TEXTURE_OFFSET
+uniform vec2 texCoordOffset;
+#endif
+#ifdef TEXTURE_ROTATION
+uniform float texCoordRotation;
+#endif
+#endif
+#endif
+
 #ifdef CLIPPING
     #pragma include clipplane.shaderinc
 #endif
@@ -79,7 +93,35 @@ void main()
     worldNormal = normalize(modelNormalMatrix * rotatedNormal);
 
 #ifdef HAS_TEXTURE
+#ifdef DATA_DEFINED_TEXTURE_TRANSFORMS
+    vec2 currentTextureOffset = ddTextureTransform.xy;
+    float currentTextureScale = ddTextureTransform.z;
+    float currentTextureRotation = ddTextureTransform.w;
+    float rad = radians(currentTextureRotation);
+    float c = cos(rad);
+    float s = sin(rad);
+    mat2 rotMat = mat2(c, s, -s, c);
+    texCoord = rotMat * ((vertexTexCoord - currentTextureOffset) * currentTextureScale) + currentTextureOffset;
+#elif defined(TEXTURE_ROTATION) || defined(TEXTURE_OFFSET)
+    float currentTextureScale = texCoordScale;
+#ifdef TEXTURE_OFFSET
+    vec2 currentTextureOffset = texCoordOffset;
+#else
+    vec2 currentTextureOffset = vec2(0.0);
+#endif
+#ifdef TEXTURE_ROTATION
+    float currentTextureRotation = texCoordRotation;
+    float rad = radians(currentTextureRotation);
+    float c = cos(rad);
+    float s = sin(rad);
+    mat2 rotMat = mat2(c, s, -s, c);
+    texCoord = rotMat * ((vertexTexCoord - currentTextureOffset) * currentTextureScale) + currentTextureOffset;
+#else
+    texCoord = (vertexTexCoord - currentTextureOffset) * currentTextureScale + currentTextureOffset;
+#endif
+#else
     texCoord = vertexTexCoord;
+#endif
 #endif
 
 #ifdef HAS_TANGENT

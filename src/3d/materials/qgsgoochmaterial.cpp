@@ -42,7 +42,7 @@ QgsGoochMaterial::QgsGoochMaterial( QNode *parent )
   , mAlphaParameter( new Qt3DRender::QParameter( u"alpha"_s, 0.25f ) )
   , mBetaParameter( new Qt3DRender::QParameter( u"beta"_s, 0.5f ) )
   , mTransformParameter( new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
-  , mNormalTransformParameter( new Qt3DRender::QParameter( u"normalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   setDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
   setSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );

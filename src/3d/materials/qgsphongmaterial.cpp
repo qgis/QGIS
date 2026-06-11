@@ -40,7 +40,7 @@ QgsPhongMaterial::QgsPhongMaterial( QNode *parent )
   , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 0.0f ) )
   , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
   , mTransformParameter( new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
-  , mNormalTransformParameter( new Qt3DRender::QParameter( u"normalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   setAmbient( QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) );
   setDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );

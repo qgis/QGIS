@@ -62,7 +62,7 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
   , mTransformParameter( new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
-  , mNormalTransformParameter( new Qt3DRender::QParameter( u"normalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   init();
 }
@@ -454,6 +454,7 @@ void QgsMetalRoughMaterial::updateShaders()
       defines << u"USE_INSTANCE_SCALE"_s;
     if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
       defines << u"USE_INSTANCE_ROTATION"_s;
+    defines << u"TEXTURE_ROTATION"_s << u"TEXTURE_OFFSET"_s;
     const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
     mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
   }
@@ -522,22 +523,6 @@ void QgsMetalRoughMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedM
 {
   mInstanced = enabled;
   mInstanceFlags = flags;
-
-  if ( mInstanced )
-  {
-    QStringList defines = { u"HAS_TEXTURE"_s, u"HAS_TANGENT"_s };
-    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
-      defines << u"USE_INSTANCE_SCALE"_s;
-    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
-      defines << u"USE_INSTANCE_ROTATION"_s;
-    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
-    mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
-  }
-  else
-  {
-    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
-    mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, { u"TEXTURE_ROTATION"_s } ) );
-  }
   updateShaders();
 }
 

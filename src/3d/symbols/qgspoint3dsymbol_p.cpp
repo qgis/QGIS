@@ -331,7 +331,11 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   if ( hasDataDefinedRotation )
     flags |= Qgis::InstancedMaterialFlag::DataDefinedRotation;
 
-  const QMatrix3x3 axisTransform = Qgs3DUtils::axisTransformMatrix( u"y"_s, u"-z"_s );
+  const QString upAxis = symbol->shapeProperty( u"upAxis"_s ).toString();
+  const QString forwardAxis = symbol->shapeProperty( u"forwardAxis"_s ).toString();
+
+  const QMatrix3x3 axisTransform = Qgs3DUtils::axisTransformMatrix( !upAxis.isEmpty() ? upAxis : u"y"_s, !forwardAxis.isEmpty() ? forwardAxis : u"-z"_s );
+
   const QMatrix4x4 nodeTransform( axisTransform );
 
   if ( materialContext.isHighlighted() )
