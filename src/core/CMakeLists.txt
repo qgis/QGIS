@@ -2341,6 +2341,14 @@ elseif(EMSCRIPTEN)
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
   set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
   set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
+  # Use -O0 to avoid pathological multi-hour SROA times in the generated font data tables
+  # (mirrors the EMSCRIPTEN branch above; observed 4h+ at -O2 with Xcode clang on macOS).
+  # SKIP_PRECOMPILE_HEADERS is required: the shared PCH is built with -O2 and clang
+  # rejects mixing it with a -O0 TU (__OPTIMIZE__ mismatch).
+  set_source_files_properties(textrenderer/qgsfontmanager.cpp PROPERTIES
+    COMPILE_FLAGS "-O0"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
 endif()
 
 # Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
