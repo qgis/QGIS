@@ -1150,7 +1150,7 @@ void QgsAiChatDockWidget::applyPillStyling()
     "QgsScrollArea#aiTranscriptScrollArea { background: palette(window); border: 0; } "
     "QWidget#aiTranscriptContainer { background: palette(window); }"
   ) );
-  mMentionPopup->setStyleSheet( QStringLiteral( "QFrame#aiMentionPopup { background: palette(base); border: 0; border-radius: 8px; }" ) );
+  mMentionPopup->setStyleSheet( u"QFrame#aiMentionPopup { background: palette(base); border: 0; border-radius: 8px; }"_s );
   mMentionList->setStyleSheet( QStringLiteral(
     "QListWidget#aiMentionList { color: palette(text); background: palette(base); border: 0; } "
     "QListWidget#aiMentionList::item { padding: 4px 8px; border-radius: 4px; } "
@@ -1929,7 +1929,13 @@ void QgsAiChatDockWidget::updateSessionUsage( const QgsAiUsage &total )
     text += u" · $%1"_s.arg( total.costUsd, 0, 'f', 4 );
   mUsageLabel->setText( text );
   mUsageLabel->setToolTip( tr( "Session usage — prompt: %1, completion: %2, cached: %3, reasoning: %4%5" )
-                             .arg( humanTokens( total.promptTokens ), humanTokens( total.completionTokens ), humanTokens( total.cachedTokens ), humanTokens( total.reasoningTokens ), total.costUsd > 0.0 ? tr( ", cost: $%1" ).arg( total.costUsd, 0, 'f', 6 ) : QString() ) );
+                             .arg(
+                               humanTokens( total.promptTokens ),
+                               humanTokens( total.completionTokens ),
+                               humanTokens( total.cachedTokens ),
+                               humanTokens( total.reasoningTokens ),
+                               total.costUsd > 0.0 ? tr( ", cost: $%1" ).arg( total.costUsd, 0, 'f', 6 ) : QString()
+                             ) );
   mUsageLabel->setVisible( true );
 }
 

@@ -935,10 +935,8 @@ void TestQgsAiAgentSessionManager::sessionUsageSignalAccumulatesAndResets()
 
   // Loopback OpenRouter returning a response WITH usage accounting.
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse(
-    200, "OK",
-    QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":4,\"total_tokens\":15,\"cost\":0.0003}}" )
-  );
+  server.responses << QgsAiTestLoopbackServer::
+      jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":4,\"total_tokens\":15,\"cost\":0.0003}}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   settings.setValue( u"ai/provider/openrouter/apiKey"_s, u"sk-or-loopback-test"_s );
