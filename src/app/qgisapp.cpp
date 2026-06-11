@@ -1816,14 +1816,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     initPythonConsoleOptions();
     endProfile();
   }
-  else if ( mActionShowPythonDialog )
 #endif
-  {
-    // python is disabled so get rid of the action for python console
-    // and installing plugin from ZUIP
-    delete mActionShowPythonDialog;
-    mActionShowPythonDialog = nullptr;
-  }
 
   functionProfile( &QgisApp::readSettings, this, u"Read theme settings"_s );
 
@@ -3453,7 +3446,14 @@ void QgisApp::showPythonDialog()
 {
 #ifdef WITH_BINDINGS
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
+  {
+    visibleMessageBar()->pushMessage(
+      tr( "Python Console" ),
+      tr( "Python support is not available in this QGIS instance. Check that PyQGIS loads correctly and that the QScintilla/PyQt Qsci bindings are available." ),
+      Qgis::MessageLevel::Warning
+    );
     return;
+  }
 
   bool res = mPythonUtils->runString(
     "import console\n"
@@ -3474,6 +3474,12 @@ void QgisApp::showPythonDialog()
     addWindow( mActionShowPythonDialog );
   }
 #endif
+#else
+  visibleMessageBar()->pushMessage(
+    tr( "Python Console" ),
+    tr( "Python support is not available because this QGIS build was compiled without Python bindings." ),
+    Qgis::MessageLevel::Warning
+  );
 #endif
 }
 
