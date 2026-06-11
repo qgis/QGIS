@@ -28,6 +28,7 @@
 #include "qgsprofilerequest.h"
 #include "qgsterrainprovider.h"
 #include "qgscurve.h"
+#include <QImageWriter>
 
 ///@cond PRIVATE
 
@@ -124,7 +125,29 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output image" ) ) );
+  QStringList fileFilters;
+  const auto supportedFormats { QImageWriter::supportedImageFormats() };
+  for ( const QByteArray &format : supportedFormats )
+  {
+    if ( format == "svg" )
+    {
+      continue;
+    }
+
+    const QString longName = format.toUpper() + QObject::tr( " format" );
+    const QString glob = QStringLiteral( "*." ) + format;
+
+    if ( format == "png" && !fileFilters.empty() )
+    {
+      fileFilters.insert( 0, QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() ) );
+    }
+    else
+    {
+      fileFilters.append( QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() ) );
+    }
+  }
+
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output image" ), fileFilters.join( QLatin1String( ";;" ) ) ) );
 }
 
 QString QgsGenerateElevationProfileAlgorithm::name() const
