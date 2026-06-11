@@ -6727,8 +6727,14 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
 {
   const QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
 
+  bool translate = true;
+  if ( values.length() == 3 )
+  {
+    translate = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+  }
+
   bool foundLayer = false;
-  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [layerProperty]( QgsMapLayer * layer )-> QVariant
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [layerProperty, translate]( QgsMapLayer * layer ) -> QVariant
   {
     if ( !layer )
       return QVariant();
@@ -6796,23 +6802,23 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
       switch ( layer->type() )
       {
         case Qgis::LayerType::Vector:
-          return QCoreApplication::translate( "expressions", "Vector" );
+          return translate ? QCoreApplication::translate( "expressions", "Vector" ) : QStringLiteral( "Vector" );
         case Qgis::LayerType::Raster:
-          return QCoreApplication::translate( "expressions", "Raster" );
+          return translate ? QCoreApplication::translate( "expressions", "Raster" ) : QStringLiteral( "Raster" );
         case Qgis::LayerType::Mesh:
-          return QCoreApplication::translate( "expressions", "Mesh" );
+          return translate ?  QCoreApplication::translate( "expressions", "Mesh" ) : QStringLiteral( "Mesh" );
         case Qgis::LayerType::VectorTile:
-          return QCoreApplication::translate( "expressions", "Vector Tile" );
+          return translate ?  QCoreApplication::translate( "expressions", "Vector Tile" ) : QStringLiteral( "Vector Tile" );
         case Qgis::LayerType::Plugin:
-          return QCoreApplication::translate( "expressions", "Plugin" );
+          return translate ?  QCoreApplication::translate( "expressions", "Plugin" ) : QStringLiteral( "Plugin" );
         case Qgis::LayerType::Annotation:
-          return QCoreApplication::translate( "expressions", "Annotation" );
+          return translate ?  QCoreApplication::translate( "expressions", "Annotation" ) : QStringLiteral( "Annotation" );
         case Qgis::LayerType::PointCloud:
-          return QCoreApplication::translate( "expressions", "Point Cloud" );
+          return translate ?  QCoreApplication::translate( "expressions", "Point Cloud" ) : QStringLiteral( "Point Cloud" );
         case Qgis::LayerType::Group:
-          return QCoreApplication::translate( "expressions", "Group" );
+          return translate ?  QCoreApplication::translate( "expressions", "Group" ) : QStringLiteral( "Group" );
         case Qgis::LayerType::TiledScene:
-          return QCoreApplication::translate( "expressions", "Tiled Scene" );
+          return translate ?  QCoreApplication::translate( "expressions", "Tiled Scene" ) : QStringLiteral( "Tiled Scene" );
       }
     }
     else
@@ -9462,7 +9468,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     // **General** functions
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "layer_property" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "property" ) ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "property" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "translate" ), true, true ),
                                             fcnGetLayerProperty, QStringLiteral( "Map Layers" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "decode_uri" ),
                                             QgsExpressionFunction::ParameterList()
