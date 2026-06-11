@@ -2350,6 +2350,14 @@ void QgsAiChatDockWidget::openProviderSettings()
   workspaceRootLayout->addWidget( aiWorkspaceRoot, 1 );
   workspaceRootLayout->addWidget( browseWorkspaceRoot );
 
+  // Credential/data encryption status (best-effort vault policy: never prompts).
+  QLabel *encryptionStatus = new QLabel( &dialog );
+  encryptionStatus->setObjectName( u"aiCredentialEncryptionStatusLabel"_s );
+  encryptionStatus->setWordWrap( true );
+  encryptionStatus->setText( QgsAiSecretStore::vaultUsable()
+                               ? tr( "AI credentials and data are encrypted in the QGIS authentication vault." )
+                               : tr( "AI credentials and data are stored unencrypted — unlock or set a QGIS master password (Options ▸ Authentication) to enable encryption." ) );
+
   // Workspace trust: gates rules/skills loading and the risky tools.
   const QString currentTrustRoot = QgsAiWorkspaceTrust::currentWorkspaceRoot();
   QCheckBox *trustWorkspace = new QCheckBox( tr( "Trust this workspace (enables rules/skills files and run_python, install_python_package, download_file)" ), &dialog );
@@ -2382,6 +2390,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   form->addRow( tr( "Plan session token" ), planToken );
   form->addRow( tr( "AI workspace root" ), workspaceRootWidget );
   form->addRow( QString(), trustWorkspace );
+  form->addRow( QString(), encryptionStatus );
   layout->addLayout( form );
 
   // ----------------------------------------------------------------------

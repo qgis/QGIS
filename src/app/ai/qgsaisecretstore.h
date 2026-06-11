@@ -24,17 +24,17 @@
 /**
  * Central store for AI provider secrets (API keys, OAuth refresh tokens).
  *
- * Secrets live in the encrypted QGIS authentication vault (qgis-auth.db) when
- * it is usable; a cleartext QgsSettings fallback keeps configuration working
- * (with a once-per-session warning) when the vault is unavailable — e.g. QCA
- * missing, no master password, or headless test runs.
+ * Best-effort, never-prompt policy: this store NEVER initiates a vault unlock —
+ * no master password dialog, no keychain access. The encrypted QGIS
+ * authentication vault (qgis-auth.db) is used only when another component has
+ * already unlocked it for the session; otherwise secrets fall back to cleartext
+ * QgsSettings with a once-per-session actionable hint (set a master password in
+ * Settings ▸ Options ▸ Authentication to enable encryption). As soon as the
+ * vault gets unlocked, new writes go encrypted and legacy cleartext secrets
+ * migrate opportunistically.
  *
  * A cleartext boolean presence flag (`<secretKey>_inVault`) marks secrets that
  * live in the vault, so existence checks never need to unlock it.
- *
- * Interactive vault unlock (master password prompt / keychain read) is only
- * allowed after QgisApp calls setInteractiveUnlockAllowed(true) — test
- * binaries never enable it, keeping them deterministic and keychain-free.
  *
  * Key-loss note: if qgis-auth.db or the master password is lost, vault-stored
  * secrets are unrecoverable (same blast radius as any other QGIS credential);
@@ -43,10 +43,7 @@
 class APP_EXPORT QgsAiSecretStore
 {
   public:
-    //! Allows the vault to trigger interactive unlock (GUI only; never call in tests).
-    static void setInteractiveUnlockAllowed( bool allowed );
-
-    //! True when the auth vault can be used for reads/writes under the current unlock policy.
+    //! True when the auth vault is ALREADY unlocked for this session (this store never unlocks it).
     static bool vaultUsable();
 
     //! Cleartext presence-flag key for \a secretKey.
@@ -122,7 +119,6 @@ class APP_EXPORT QgsAiSecretStore
   private:
     static void warnCleartextOnce();
 
-    static bool sInteractiveUnlockAllowed;
     static bool sCleartextWarned;
     static bool sMigrationRetryRegistered;
 };

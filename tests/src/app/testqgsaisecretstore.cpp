@@ -63,7 +63,7 @@ void TestQgsAiSecretStore::cleanupTestCase()
 
 void TestQgsAiSecretStore::cleartextFallbackWhenVaultLocked()
 {
-  // Interactive unlock is never enabled in tests; without a master password
+  // The store never initiates a vault unlock (best-effort policy); without a master password
   // the vault is unusable and writes must land in cleartext settings.
   const QString key = u"ai/test/secretstore/cleartext"_s;
   const auto cleanup = qScopeGuard( [key]() { wipeSecret( key ); } );

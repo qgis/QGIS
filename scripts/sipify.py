@@ -89,6 +89,7 @@ class Context:
         self.line_idx: int = 0
         self.output: list[str] = []
         self.output_python: list[str] = []
+        self.has_sip_if_module: bool = False
         self.doxy_inside_sip_run: int = 0
         self.has_pushed_force_int: bool = False
         self.attribute_docstrings = defaultdict(dict)
@@ -1969,6 +1970,7 @@ def try_process_sip_directive():
 def try_skip_sip_if_module():
     if re.match(r"^\s*(#define\s+)?SIP_IF_MODULE\(.*\)$", CONTEXT.current_line):
         dbg_info("skipping SIP include condition macro")
+        CONTEXT.has_sip_if_module = True
         return True
 
 
@@ -3871,6 +3873,26 @@ def generate_cpp_output():
         )
 
 
+def guard_conditional_python_output(python_output: str) -> str:
+    """
+    Guards generated monkey patches for classes which may be omitted from SIP
+    output by SIP_IF_MODULE feature conditions.
+    """
+    output_lines = ["try:\n"]
+    in_triple_quoted_string = False
+    for line in python_output.splitlines(keepends=True):
+        if in_triple_quoted_string:
+            output_lines.append(line)
+        else:
+            output_lines.append(f"    {line}")
+
+        if line.count('"""') % 2:
+            in_triple_quoted_string = not in_triple_quoted_string
+
+    output_lines.append("except (NameError, AttributeError):\n    pass\n")
+    return "".join(output_lines)
+
+
 def generate_python_output():
     class_additions = defaultdict(list)
 
@@ -4012,7 +4034,10 @@ def generate_python_output():
     if args.python_output and CONTEXT.output_python:
         with open(args.python_output, "w") as f:
             f.write("".join(python_header()))
-            f.write("".join(CONTEXT.output_python))
+            python_output = "".join(CONTEXT.output_python)
+            if CONTEXT.has_sip_if_module:
+                python_output = guard_conditional_python_output(python_output)
+            f.write(python_output)
 
 
 if __name__ == "__main__":

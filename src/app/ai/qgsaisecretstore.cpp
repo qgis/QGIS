@@ -21,12 +21,10 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
-#include <QCoreApplication>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QObject>
 #include <QRandomGenerator>
-#include <QThread>
 
 using namespace Qt::StringLiterals;
 
@@ -64,14 +62,8 @@ namespace
   }
 } //namespace
 
-bool QgsAiSecretStore::sInteractiveUnlockAllowed = false;
 bool QgsAiSecretStore::sCleartextWarned = false;
 bool QgsAiSecretStore::sMigrationRetryRegistered = false;
-
-void QgsAiSecretStore::setInteractiveUnlockAllowed( bool allowed )
-{
-  sInteractiveUnlockAllowed = allowed;
-}
 
 bool QgsAiSecretStore::vaultUsable()
 {
@@ -79,15 +71,14 @@ bool QgsAiSecretStore::vaultUsable()
   if ( !authManager || authManager->isDisabled() )
     return false;
 
-  // Off the main thread (e.g. the indexing QgsTask, remote embedding batches),
-  // the vault is only usable when it is ALREADY unlocked: an interactive unlock
-  // (keychain access or master password dialog) must never run on a worker.
-  if ( QCoreApplication::instance() && QThread::currentThread() != QCoreApplication::instance()->thread() )
-    return authManager->masterPasswordIsSet();
-
-  // Without an unlocked vault, storeAuthSetting/authSetting would trigger a
-  // keychain read or a master password prompt: only allow that in the GUI app.
-  return authManager->masterPasswordIsSet() || sInteractiveUnlockAllowed;
+  // Best-effort, never-prompt policy: the vault is used ONLY when it is
+  // already unlocked for this session. Calling storeAuthSetting/authSetting on
+  // a locked vault would trigger a keychain read (macOS ACL prompt on every
+  // dev rebuild) or a master password dialog — the AI store must never be the
+  // one to initiate that, from any thread. masterPasswordIsSet() is a cached
+  // const check, so this is also safe from worker threads (indexing task,
+  // remote embedding batches).
+  return authManager->masterPasswordIsSet();
 }
 
 QString QgsAiSecretStore::flagKey( const QString &secretKey )
@@ -100,7 +91,7 @@ void QgsAiSecretStore::warnCleartextOnce()
   if ( sCleartextWarned )
     return;
   sCleartextWarned = true;
-  QgsMessageLog::logMessage( u"Stored AI credential unencrypted — the QGIS authentication vault is unavailable (missing QCA plugin or master password)."_s, u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
+  QgsMessageLog::logMessage( u"AI credentials are stored unencrypted. Unlock or set a QGIS master password (Settings ▸ Options ▸ Authentication) to store them encrypted in the authentication vault."_s, u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
 }
 
 QString QgsAiSecretStore::readSecret( const QString &key, const QStringList &envFallbacks )
@@ -303,7 +294,7 @@ void QgsAiSecretStore::warnPlaintextStorageOnce()
   if ( sPlaintextStorageWarned )
     return;
   sPlaintextStorageWarned = true;
-  QgsMessageLog::logMessage( u"AI data (RAG index / chat history) is stored unencrypted — the QGIS authentication vault or QCA is unavailable. Set a master password to enable encryption at rest."_s, u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
+  QgsMessageLog::logMessage( u"AI data (RAG index / chat history) is stored unencrypted. Unlock or set a QGIS master password (Settings ▸ Options ▸ Authentication) to enable encryption at rest."_s, u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
 }
 
 QString QgsAiSecretStore::encryptValue( const QString &plain )
