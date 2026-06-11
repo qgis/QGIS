@@ -27,9 +27,9 @@
 #include "qgsaicodexoauthclient.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaiopenroutermodelcatalog.h"
+#include "qgsaireviewpatchengine.h"
 #include "qgsaisecretstore.h"
 #include "qgsaiworkspacetrust.h"
-#include "qgsaireviewpatchengine.h"
 #include "qgsapplication.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
@@ -168,10 +168,16 @@ namespace
           return false;
         }
 
-        const QMetaObject::Connection conn = connect( mIndex.data(), &QgsAiWorkspaceIndex::progress, this, [this]( int current, int total, const QString & ) {
-          if ( total > 0 )
-            setProgress( 100.0 * static_cast<double>( current ) / static_cast<double>( total ) );
-        }, Qt::DirectConnection );
+        const QMetaObject::Connection conn = connect(
+          mIndex.data(),
+          &QgsAiWorkspaceIndex::progress,
+          this,
+          [this]( int current, int total, const QString & ) {
+            if ( total > 0 )
+              setProgress( 100.0 * static_cast<double>( current ) / static_cast<double>( total ) );
+          },
+          Qt::DirectConnection
+        );
 
         QString error;
         const bool ok = mIndex->reindex( mSnapshot, mWorkspaceRoot, &error );
@@ -1128,7 +1134,8 @@ void QgsAiChatDockWidget::applyPillStyling()
   ) );
 
   mInputTextEdit->setStyleSheet( QStringLiteral(
-    "QTextEdit#aiPromptInput { color: palette(text); background: palette(base); border: 0; border-radius: 8px; padding: 7px; selection-background-color: palette(highlight); selection-color: palette(highlighted-text); } "
+    "QTextEdit#aiPromptInput { color: palette(text); background: palette(base); border: 0; border-radius: 8px; padding: 7px; selection-background-color: palette(highlight); selection-color: "
+    "palette(highlighted-text); } "
     "QTextEdit#aiPromptInput:focus { background: palette(base); } "
     "QTextEdit#aiPromptInput:disabled { color: palette(mid); background: palette(alternate-base); }"
   ) );
@@ -1136,9 +1143,7 @@ void QgsAiChatDockWidget::applyPillStyling()
     "QgsScrollArea#aiTranscriptScrollArea { background: palette(window); border: 0; } "
     "QWidget#aiTranscriptContainer { background: palette(window); }"
   ) );
-  mMentionPopup->setStyleSheet( QStringLiteral(
-    "QFrame#aiMentionPopup { background: palette(base); border: 0; border-radius: 8px; }"
-  ) );
+  mMentionPopup->setStyleSheet( QStringLiteral( "QFrame#aiMentionPopup { background: palette(base); border: 0; border-radius: 8px; }" ) );
   mMentionList->setStyleSheet( QStringLiteral(
     "QListWidget#aiMentionList { color: palette(text); background: palette(base); border: 0; } "
     "QListWidget#aiMentionList::item { padding: 4px 8px; border-radius: 4px; } "
@@ -1334,7 +1339,8 @@ QWidget *QgsAiChatDockWidget::createCollapsibleSection( const QString &title, co
   details->setFrameShape( QFrame::NoFrame );
   applyTranscriptTextEditWrapping( details );
   details->setStyleSheet( QStringLiteral(
-    "QTextEdit#aiTechnicalContent { color: palette(text); background: palette(alternate-base); border: 0; border-radius: 6px; padding: 6px; selection-background-color: palette(highlight); selection-color: palette(highlighted-text); }"
+    "QTextEdit#aiTechnicalContent { color: palette(text); background: palette(alternate-base); border: 0; border-radius: 6px; padding: 6px; selection-background-color: palette(highlight); "
+    "selection-color: palette(highlighted-text); }"
   ) );
   QFont mono = QFontDatabase::systemFont( QFontDatabase::FixedFont );
   details->setFont( mono );
@@ -1371,11 +1377,15 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   QPushButton *acceptButton = new QPushButton( tr( "Accept plan" ), planCard );
   acceptButton->setObjectName( u"aiAcceptPlanButton"_s );
   acceptButton->setEnabled( pending );
-  acceptButton->setStyleSheet( u"QPushButton#aiAcceptPlanButton { background: palette(highlight); color: palette(highlighted-text); border: 0; border-radius: 6px; padding: 4px 10px; font-weight: 600; } QPushButton#aiAcceptPlanButton:disabled { background: palette(button); color: palette(mid); }"_s );
+  acceptButton->setStyleSheet(
+    u"QPushButton#aiAcceptPlanButton { background: palette(highlight); color: palette(highlighted-text); border: 0; border-radius: 6px; padding: 4px 10px; font-weight: 600; } QPushButton#aiAcceptPlanButton:disabled { background: palette(button); color: palette(mid); }"_s
+  );
   QPushButton *reviseButton = new QPushButton( tr( "Reject / revise" ), planCard );
   reviseButton->setObjectName( u"aiRejectPlanButton"_s );
   reviseButton->setEnabled( pending );
-  reviseButton->setStyleSheet( u"QPushButton#aiRejectPlanButton { background: palette(button); color: palette(window-text); border: 0; border-radius: 6px; padding: 4px 10px; } QPushButton#aiRejectPlanButton:hover:enabled { background: palette(alternate-base); }"_s );
+  reviseButton->setStyleSheet(
+    u"QPushButton#aiRejectPlanButton { background: palette(button); color: palette(window-text); border: 0; border-radius: 6px; padding: 4px 10px; } QPushButton#aiRejectPlanButton:hover:enabled { background: palette(alternate-base); }"_s
+  );
   buttons->addWidget( acceptButton );
   buttons->addWidget( reviseButton );
   buttons->addStretch( 1 );
@@ -1389,14 +1399,18 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   revisionEdit->setVisible( false );
   revisionEdit->setFrameShape( QFrame::NoFrame );
   applyTranscriptTextEditWrapping( revisionEdit );
-  revisionEdit->setStyleSheet( u"QTextEdit#aiPlanRevisionEdit { color: palette(text); background: palette(alternate-base); border: 0; border-radius: 8px; padding: 6px; } QTextEdit#aiPlanRevisionEdit:focus { background: palette(base); }"_s );
+  revisionEdit->setStyleSheet(
+    u"QTextEdit#aiPlanRevisionEdit { color: palette(text); background: palette(alternate-base); border: 0; border-radius: 8px; padding: 6px; } QTextEdit#aiPlanRevisionEdit:focus { background: palette(base); }"_s
+  );
   layout->addWidget( revisionEdit );
 
   QPushButton *sendRevisionButton = new QPushButton( tr( "Send revision" ), planCard );
   sendRevisionButton->setObjectName( u"aiSendPlanRevisionButton"_s );
   sendRevisionButton->setVisible( false );
   sendRevisionButton->setEnabled( pending );
-  sendRevisionButton->setStyleSheet( u"QPushButton#aiSendPlanRevisionButton { background: palette(highlight); color: palette(highlighted-text); border: 0; border-radius: 6px; padding: 4px 10px; } QPushButton#aiSendPlanRevisionButton:disabled { background: palette(button); color: palette(mid); }"_s );
+  sendRevisionButton->setStyleSheet(
+    u"QPushButton#aiSendPlanRevisionButton { background: palette(highlight); color: palette(highlighted-text); border: 0; border-radius: 6px; padding: 4px 10px; } QPushButton#aiSendPlanRevisionButton:disabled { background: palette(button); color: palette(mid); }"_s
+  );
   layout->addWidget( sendRevisionButton );
 
   connect( acceptButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata]() { acceptPlan( messageId, planMarkdown, metadata ); } );
@@ -1480,7 +1494,9 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
       other->setPlaceholderText( tr( "Other..." ) );
       other->setEnabled( pending );
       other->setFrame( false );
-      other->setStyleSheet( u"QLineEdit#aiQuestionOtherLineEdit { color: palette(text); background: palette(alternate-base); border: 0; border-radius: 6px; padding: 4px 6px; } QLineEdit#aiQuestionOtherLineEdit:focus { background: palette(base); }"_s );
+      other->setStyleSheet(
+        u"QLineEdit#aiQuestionOtherLineEdit { color: palette(text); background: palette(alternate-base); border: 0; border-radius: 6px; padding: 4px 6px; } QLineEdit#aiQuestionOtherLineEdit:focus { background: palette(base); }"_s
+      );
       layout->addWidget( other );
     }
   }
@@ -1488,7 +1504,9 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
   QPushButton *submit = new QPushButton( tr( "Send answers" ), questionsCard );
   submit->setObjectName( u"aiSubmitQuestionAnswersButton"_s );
   submit->setEnabled( pending );
-  submit->setStyleSheet( u"QPushButton#aiSubmitQuestionAnswersButton { background: palette(highlight); color: palette(highlighted-text); border: 0; border-radius: 6px; padding: 4px 10px; font-weight: 600; } QPushButton#aiSubmitQuestionAnswersButton:disabled { background: palette(button); color: palette(mid); }"_s );
+  submit->setStyleSheet(
+    u"QPushButton#aiSubmitQuestionAnswersButton { background: palette(highlight); color: palette(highlighted-text); border: 0; border-radius: 6px; padding: 4px 10px; font-weight: 600; } QPushButton#aiSubmitQuestionAnswersButton:disabled { background: palette(button); color: palette(mid); }"_s
+  );
   layout->addWidget( submit );
 
   connect( submit, &QPushButton::clicked, this, [this, messageId, metadata, questionsCard]() { sendQuestionAnswers( messageId, metadata, questionsCard ); } );
@@ -1832,7 +1850,9 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
     card->setObjectName( u"aiStreamingMessage"_s );
     card->setFrameShape( QFrame::NoFrame );
     applyTranscriptWidthPolicy( card );
-    card->setStyleSheet( u"QFrame#aiStreamingMessage { border: 0; border-radius: 0; background: palette(base); } QLabel#aiMessageRole { color: palette(mid); font-weight: 600; } QTextEdit#aiStreamingTextEdit { color: palette(text); background: transparent; border: 0; }"_s );
+    card->setStyleSheet(
+      u"QFrame#aiStreamingMessage { border: 0; border-radius: 0; background: palette(base); } QLabel#aiMessageRole { color: palette(mid); font-weight: 600; } QTextEdit#aiStreamingTextEdit { color: palette(text); background: transparent; border: 0; }"_s
+    );
     QVBoxLayout *layout = new QVBoxLayout( card );
     layout->setContentsMargins( 8, 6, 8, 8 );
     QLabel *roleLabel = new QLabel( tr( "Assistant" ), card );
@@ -1943,12 +1963,14 @@ void QgsAiChatDockWidget::ensureWorkspaceTrustDecision()
   QMessageBox box( this );
   box.setIcon( QMessageBox::Question );
   box.setWindowTitle( tr( "Trust this workspace?" ) );
-  box.setText( tr( "The AI assistant is about to work in:\n%1\n\n"
-                   "Trusted workspaces can load AI rules/skills files (.strata/rules, .strata/skills) "
-                   "into the assistant's instructions and enable the risky tools "
-                   "(run_python, install_python_package, download_file).\n\n"
-                   "Only trust workspaces whose content you control. You can change this "
-                   "any time from the AI provider settings." )
+  box.setText( tr(
+                 "The AI assistant is about to work in:\n%1\n\n"
+                 "Trusted workspaces can load AI rules/skills files (.strata/rules, .strata/skills) "
+                 "into the assistant's instructions and enable the risky tools "
+                 "(run_python, install_python_package, download_file).\n\n"
+                 "Only trust workspaces whose content you control. You can change this "
+                 "any time from the AI provider settings."
+  )
                  .arg( root ) );
   QPushButton *trustButton = box.addButton( tr( "Trust workspace" ), QMessageBox::AcceptRole );
   QPushButton *dontTrustButton = box.addButton( tr( "Don't trust" ), QMessageBox::RejectRole );
@@ -2045,7 +2067,9 @@ void QgsAiChatDockWidget::rebuildAttachmentChips()
   {
     QWidget *chip = new QWidget( mFileContextChipRow );
     chip->setObjectName( u"aiAttachmentChip"_s );
-    chip->setStyleSheet( u"QWidget#aiAttachmentChip { color: palette(window-text); background: palette(button); border: 0; border-radius: 10px; padding: 1px 4px; } QWidget#aiAttachmentChip:hover { background: palette(alternate-base); }"_s );
+    chip->setStyleSheet(
+      u"QWidget#aiAttachmentChip { color: palette(window-text); background: palette(button); border: 0; border-radius: 10px; padding: 1px 4px; } QWidget#aiAttachmentChip:hover { background: palette(alternate-base); }"_s
+    );
     QHBoxLayout *chipLayout = new QHBoxLayout( chip );
     chipLayout->setContentsMargins( 6, 1, 2, 1 );
     chipLayout->setSpacing( 3 );
@@ -2378,7 +2402,9 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QCheckBox *openRouterAutoRouting = new QCheckBox( tr( "Use OpenRouter automatic routing" ), &dialog );
   openRouterAutoRouting->setChecked( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenRouter ).autoRouting );
-  openRouterAutoRouting->setToolTip( tr( "Adds OpenRouter provider routing preferences (tool-capable providers, price/throughput sorting) and falls back to the Auto router if the pinned model is unavailable." ) );
+  openRouterAutoRouting->setToolTip(
+    tr( "Adds OpenRouter provider routing preferences (tool-capable providers, price/throughput sorting) and falls back to the Auto router if the pinned model is unavailable." )
+  );
 
   QgsAiCodexOAuthClient::DeviceCode codexDeviceCode;
   QLineEdit *codexEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex ).endpoint, &dialog );
@@ -2433,9 +2459,10 @@ void QgsAiChatDockWidget::openProviderSettings()
   QLabel *encryptionStatus = new QLabel( &dialog );
   encryptionStatus->setObjectName( u"aiCredentialEncryptionStatusLabel"_s );
   encryptionStatus->setWordWrap( true );
-  encryptionStatus->setText( QgsAiSecretStore::vaultUsable()
-                               ? tr( "AI credentials and data are encrypted in the QGIS authentication vault." )
-                               : tr( "AI credentials and data are stored unencrypted — unlock or set a QGIS master password (Options ▸ Authentication) to enable encryption." ) );
+  encryptionStatus->setText(
+    QgsAiSecretStore::vaultUsable() ? tr( "AI credentials and data are encrypted in the QGIS authentication vault." )
+                                    : tr( "AI credentials and data are stored unencrypted — unlock or set a QGIS master password (Options ▸ Authentication) to enable encryption." )
+  );
 
   // Workspace trust: gates rules/skills loading and the risky tools.
   QCheckBox *trustWorkspace = new QCheckBox( tr( "Trust this workspace (enables rules/skills files and run_python, install_python_package, download_file)" ), &dialog );
@@ -2623,14 +2650,17 @@ void QgsAiChatDockWidget::openProviderSettings()
     const bool e5Compiled = QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() );
     if ( QgsAiEmbeddingProviderRegistry::isRemoteProviderId( providerId ) )
     {
-      embeddingStatusLabel->setText( tr( "Remote workspace indexing will use %1 only because it is explicitly selected here. Saved OpenAI/OpenRouter keys do not switch indexing by themselves." ).arg( QgsAiEmbeddingProviderRegistry::displayNameForProviderId( providerId ) ) );
+      embeddingStatusLabel->setText( tr( "Remote workspace indexing will use %1 only because it is explicitly selected here. Saved OpenAI/OpenRouter keys do not switch indexing by themselves." )
+                                       .arg( QgsAiEmbeddingProviderRegistry::displayNameForProviderId( providerId ) ) );
       downloadEmbeddingModelButton->setVisible( false );
     }
     else if ( providerId == QgsAiE5EmbeddingProvider::staticProviderId() )
     {
       if ( !e5Compiled )
       {
-        embeddingStatusLabel->setText( tr( "Local multilingual E5 is not available in this build because ONNX Runtime and SentencePiece support were not found at compile time. Use MinHash or rebuild Strata with those dependencies." ) );
+        embeddingStatusLabel->setText( tr(
+          "Local multilingual E5 is not available in this build because ONNX Runtime and SentencePiece support were not found at compile time. Use MinHash or rebuild Strata with those dependencies."
+        ) );
         downloadEmbeddingModelButton->setVisible( false );
         downloadEmbeddingModelButton->setEnabled( false );
         return;
@@ -2642,22 +2672,20 @@ void QgsAiChatDockWidget::openProviderSettings()
       downloadEmbeddingModelButton->setVisible( true );
       downloadEmbeddingModelButton->setEnabled( developerDir.isEmpty() );
       downloadEmbeddingModelButton->setToolTip(
-        developerDir.isEmpty()
-          ? tr( "Download the pinned multilingual E5 ONNX model and SentencePiece tokenizer to the local Strata model cache." )
-          : tr( "STRATA_AI_EMBEDDING_MODEL_DIR is set; unset it to use the downloaded cache from this dialog." )
+        developerDir.isEmpty() ? tr( "Download the pinned multilingual E5 ONNX model and SentencePiece tokenizer to the local Strata model cache." )
+                               : tr( "STRATA_AI_EMBEDDING_MODEL_DIR is set; unset it to use the downloaded cache from this dialog." )
       );
       embeddingStatusLabel->setText(
-        filesAvailable
-          ? tr( "Local multilingual E5 model files are installed in %1. Indexing runs on this computer without an API key." ).arg( modelDir )
-          : tr( "Local multilingual E5 model is not installed or not usable: %1\nDownload size: %2. Developers can set STRATA_AI_EMBEDDING_MODEL_DIR." ).arg( filesError, humanBytes( QgsAiE5EmbeddingProvider::downloadSize() ) )
+        filesAvailable ? tr( "Local multilingual E5 model files are installed in %1. Indexing runs on this computer without an API key." ).arg( modelDir )
+                       : tr( "Local multilingual E5 model is not installed or not usable: %1\nDownload size: %2. Developers can set STRATA_AI_EMBEDDING_MODEL_DIR." )
+                           .arg( filesError, humanBytes( QgsAiE5EmbeddingProvider::downloadSize() ) )
       );
     }
     else
     {
       embeddingStatusLabel->setText(
-        e5Compiled
-          ? tr( "Local MinHash fallback is available and runs on this computer without an API key. Semantic quality is lower than multilingual E5." )
-          : tr( "Local MinHash fallback is available and runs on this computer without an API key. Multilingual E5 requires ONNX Runtime and SentencePiece support in the Strata build." )
+        e5Compiled ? tr( "Local MinHash fallback is available and runs on this computer without an API key. Semantic quality is lower than multilingual E5." )
+                   : tr( "Local MinHash fallback is available and runs on this computer without an API key. Multilingual E5 requires ONNX Runtime and SentencePiece support in the Strata build." )
       );
       downloadEmbeddingModelButton->setVisible( false );
     }
@@ -2691,9 +2719,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   // Default ON only when an embedding provider is actually available; if the user
   // already chose a value, keep it. The toggle is disabled when no provider is available.
   const bool hasAutomaticSetting = indexSettings.contains( u"strata/index/automatic"_s );
-  automaticIndexing->setChecked( hasAutomaticSetting
-                                   ? indexSettings.value( u"strata/index/automatic"_s, true ).toBool()
-                                   : canUseEmbeddings );
+  automaticIndexing->setChecked( hasAutomaticSetting ? indexSettings.value( u"strata/index/automatic"_s, true ).toBool() : canUseEmbeddings );
   automaticIndexing->setEnabled( canUseEmbeddings );
   automaticIndexing->setToolTip( tr( "When enabled, Strata refreshes the local retrieval index after opening or changing the project. The task is cancellable." ) );
   indexingForm->addRow( QString(), automaticIndexing );
@@ -2754,11 +2780,7 @@ void QgsAiChatDockWidget::openProviderSettings()
     if ( mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->embeddingProviderAvailable() )
       return true;
 
-    QMessageBox::information(
-      &dialog,
-      tr( "Workspace indexing unavailable" ),
-      tr( "Workspace indexing requires the selected embedding provider to be available. Chat with Claude/Codex works without indexing." )
-    );
+    QMessageBox::information( &dialog, tr( "Workspace indexing unavailable" ), tr( "Workspace indexing requires the selected embedding provider to be available. Chat with Claude/Codex works without indexing." ) );
     return false;
   };
 
@@ -2769,8 +2791,7 @@ void QgsAiChatDockWidget::openProviderSettings()
     const QString message = QgsAiEmbeddingProviderRegistry::isRemoteProviderId( providerId )
                               ? tr( "Rebuilding the %1 will re-embed content with the remote provider %2. This sends data to that service and may incur API costs.\n\nProceed?" )
                                   .arg( what, QgsAiEmbeddingProviderRegistry::displayNameForProviderId( providerId ) )
-                              : tr( "Rebuilding the %1 will re-embed content on this computer and may use significant CPU for a while.\n\nProceed?" )
-                                  .arg( what );
+                              : tr( "Rebuilding the %1 will re-embed content on this computer and may use significant CPU for a while.\n\nProceed?" ).arg( what );
     return QMessageBox::question( &dialog, tr( "Rebuild index" ), message, QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes;
   };
 
@@ -2899,7 +2920,8 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QLabel *helpLabel = new QLabel(
     tr(
-      "OpenAI, OpenRouter and Claude API keys are stored locally in application settings. The Codex OAuth refresh token is stored locally in application settings; the Claude OAuth refresh token is stored in the "
+      "OpenAI, OpenRouter and Claude API keys are stored locally in application settings. The Codex OAuth refresh token is stored locally in application settings; the Claude OAuth refresh token is "
+      "stored in the "
       "encrypted "
       "QGIS authentication store. Leave API key fields empty to keep "
       "the current saved value.\n\nAgent rules and skills are stored locally in application settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended "
@@ -2992,9 +3014,7 @@ void QgsAiChatDockWidget::openProviderSettings()
     if ( !dir.isEmpty() )
       aiWorkspaceRoot->setText( QDir::cleanPath( dir ) );
   } );
-  connect( aiWorkspaceRoot, &QLineEdit::textChanged, &dialog, [refreshTrustWorkspace]( const QString & ) {
-    refreshTrustWorkspace();
-  } );
+  connect( aiWorkspaceRoot, &QLineEdit::textChanged, &dialog, [refreshTrustWorkspace]( const QString & ) { refreshTrustWorkspace(); } );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog );
   connect( buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
@@ -3037,7 +3057,9 @@ void QgsAiChatDockWidget::openProviderSettings()
   openRouterSettings.endpoint = openRouterEndpoint->text().trimmed();
   openRouterSettings.model = openRouterModel->currentText().trimmed();
   openRouterSettings.autoRouting = openRouterAutoRouting->isChecked();
-  openRouterSettings.enabled = !pendingOpenRouterKey.isEmpty() || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenRouter ) || !qEnvironmentVariable( "OPENROUTER_API_KEY" ).trimmed().isEmpty();
+  openRouterSettings.enabled = !pendingOpenRouterKey.isEmpty()
+                               || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenRouter )
+                               || !qEnvironmentVariable( "OPENROUTER_API_KEY" ).trimmed().isEmpty();
   mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::OpenRouter, openRouterSettings );
 
   QgsAiModelRouter::ProviderSettings codexSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex );

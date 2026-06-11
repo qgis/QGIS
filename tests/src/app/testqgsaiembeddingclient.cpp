@@ -74,7 +74,7 @@ namespace
     {
       if ( args.size() < 2 )
         continue;
-      if ( args.at( 1 ).toString() == u"AI/Index"_s && args.at( 0 ).toString().contains( u"authentication failed"_s, Qt::CaseInsensitive ) )
+      if ( args.at( 1 ).toString() == "AI/Index"_L1 && args.at( 0 ).toString().contains( u"authentication failed"_s, Qt::CaseInsensitive ) )
         ++count;
     }
     return count;
@@ -151,8 +151,10 @@ void TestQgsAiEmbeddingClient::authFailureTripsBreakerAndLogsOnce()
 void TestQgsAiEmbeddingClient::retryAfterHonoredForEmbeddings429()
 {
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse( 429, "Too Many Requests", QByteArrayLiteral( "{\"error\":{\"code\":429,\"message\":\"slow down\"}}" ), { { QByteArrayLiteral( "Retry-After" ), QByteArrayLiteral( "1" ) } } )
-                   << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"data\":[{\"embedding\":[0.1,0.2],\"index\":0}]}" ) );
+  server.responses
+    << QgsAiTestLoopbackServer::
+         jsonResponse( 429, "Too Many Requests", QByteArrayLiteral( "{\"error\":{\"code\":429,\"message\":\"slow down\"}}" ), { { QByteArrayLiteral( "Retry-After" ), QByteArrayLiteral( "1" ) } } )
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"data\":[{\"embedding\":[0.1,0.2],\"index\":0}]}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsSettings settings;

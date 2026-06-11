@@ -149,7 +149,7 @@ void TestQgsApplication::strataAutoTheme()
   QCOMPARE( QgsApplication::themeName(), u"Strata Auto"_s );
   QVERIFY( !qApp->styleSheet().isEmpty() );
   QVERIFY( qApp->styleSheet().contains( u"QToolButton"_s ) );
-  const qsizetype toolbarToolButtonIndex = qApp->styleSheet().indexOf( u"QToolBar QToolButton\n{"_s );
+  const qsizetype toolbarToolButtonIndex = qApp->styleSheet().indexOf( "QToolBar QToolButton\n{"_L1 );
   QVERIFY( toolbarToolButtonIndex >= 0 );
   const qsizetype toolbarToolButtonBlockEnd = qApp->styleSheet().indexOf( u"}"_s, toolbarToolButtonIndex );
   QVERIFY( toolbarToolButtonBlockEnd > toolbarToolButtonIndex );

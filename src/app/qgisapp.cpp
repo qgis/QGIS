@@ -3450,11 +3450,8 @@ void QgisApp::showPythonDialog()
 #ifdef WITH_BINDINGS
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
   {
-    visibleMessageBar()->pushMessage(
-      tr( "Python Console" ),
-      tr( "Python support is not available in this QGIS instance. Check that PyQGIS loads correctly and that the QScintilla/PyQt Qsci bindings are available." ),
-      Qgis::MessageLevel::Warning
-    );
+    visibleMessageBar()
+      ->pushMessage( tr( "Python Console" ), tr( "Python support is not available in this QGIS instance. Check that PyQGIS loads correctly and that the QScintilla/PyQt Qsci bindings are available." ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -3478,11 +3475,7 @@ void QgisApp::showPythonDialog()
   }
 #endif
 #else
-  visibleMessageBar()->pushMessage(
-    tr( "Python Console" ),
-    tr( "Python support is not available because this QGIS build was compiled without Python bindings." ),
-    Qgis::MessageLevel::Warning
-  );
+  visibleMessageBar()->pushMessage( tr( "Python Console" ), tr( "Python support is not available because this QGIS build was compiled without Python bindings." ), Qgis::MessageLevel::Warning );
 #endif
 }
 

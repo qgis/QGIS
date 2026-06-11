@@ -15,12 +15,14 @@
 
 #include "qgsaiindexingscheduler.h"
 
+#include <algorithm>
+
 #include "qgsaiworkspaceindex.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgstaskmanager.h"
 
-#include <algorithm>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 
@@ -52,10 +54,16 @@ namespace
         // Relay the index's progress to the task so the task manager shows real
         // per-file progress. reindex() runs synchronously on this worker thread, so
         // the progress signal is delivered here; a direct connection is safe.
-        const QMetaObject::Connection conn = connect( mIndex.data(), &QgsAiWorkspaceIndex::progress, this, [this]( int current, int total, const QString & ) {
-          if ( total > 0 )
-            setProgress( 100.0 * static_cast<double>( current ) / static_cast<double>( total ) );
-        }, Qt::DirectConnection );
+        const QMetaObject::Connection conn = connect(
+          mIndex.data(),
+          &QgsAiWorkspaceIndex::progress,
+          this,
+          [this]( int current, int total, const QString & ) {
+            if ( total > 0 )
+              setProgress( 100.0 * static_cast<double>( current ) / static_cast<double>( total ) );
+          },
+          Qt::DirectConnection
+        );
 
         QString error;
         const bool ok = mIndex->reindex( mSnapshot, mWorkspaceRoot, &error );

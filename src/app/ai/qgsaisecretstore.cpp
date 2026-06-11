@@ -25,6 +25,7 @@
 #include <QMutexLocker>
 #include <QObject>
 #include <QRandomGenerator>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 
@@ -91,7 +92,8 @@ void QgsAiSecretStore::warnCleartextOnce()
   if ( sCleartextWarned )
     return;
   sCleartextWarned = true;
-  QgsMessageLog::logMessage( u"AI credentials are stored unencrypted. Unlock or set a QGIS master password (Settings ▸ Options ▸ Authentication) to store them encrypted in the authentication vault."_s, u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
+  QgsMessageLog::
+    logMessage( u"AI credentials are stored unencrypted. Unlock or set a QGIS master password (Settings ▸ Options ▸ Authentication) to store them encrypted in the authentication vault."_s, u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
 }
 
 QString QgsAiSecretStore::readSecret( const QString &key, const QStringList &envFallbacks )
@@ -209,10 +211,16 @@ void QgsAiSecretStore::migrateLegacySecrets()
     if ( !sMigrationRetryRegistered )
     {
       sMigrationRetryRegistered = true;
-      QObject::connect( authManager, &QgsAuthManager::masterPasswordVerified, authManager, []( bool verified ) {
-        if ( verified )
-          QgsAiSecretStore::migrateLegacySecrets();
-      }, Qt::SingleShotConnection );
+      QObject::connect(
+        authManager,
+        &QgsAuthManager::masterPasswordVerified,
+        authManager,
+        []( bool verified ) {
+          if ( verified )
+            QgsAiSecretStore::migrateLegacySecrets();
+        },
+        Qt::SingleShotConnection
+      );
     }
     QgsMessageLog::logMessage( u"AI credential migration into the authentication vault deferred until the vault is unlocked."_s, u"AI/Security"_s, Qgis::MessageLevel::Info, false );
     return;
@@ -294,7 +302,8 @@ void QgsAiSecretStore::warnPlaintextStorageOnce()
   if ( sPlaintextStorageWarned )
     return;
   sPlaintextStorageWarned = true;
-  QgsMessageLog::logMessage( u"AI data (RAG index / chat history) is stored unencrypted. Unlock or set a QGIS master password (Settings ▸ Options ▸ Authentication) to enable encryption at rest."_s, u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
+  QgsMessageLog::
+    logMessage( u"AI data (RAG index / chat history) is stored unencrypted. Unlock or set a QGIS master password (Settings ▸ Options ▸ Authentication) to enable encryption at rest."_s, u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
 }
 
 QString QgsAiSecretStore::encryptValue( const QString &plain )

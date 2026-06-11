@@ -16,15 +16,16 @@
 #ifndef QGSAIEMBEDDINGPROVIDER_H
 #define QGSAIEMBEDDINGPROVIDER_H
 
+#include <memory>
+
 #include "qgis_app.h"
 
 #include <QList>
 #include <QMutex>
-#include <memory>
 #include <QString>
 #include <QStringList>
-#include <QtGlobal>
 #include <QVector>
+#include <QtGlobal>
 
 using namespace Qt::StringLiterals;
 

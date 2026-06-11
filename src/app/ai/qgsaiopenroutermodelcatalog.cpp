@@ -27,6 +27,7 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsaiopenroutermodelcatalog.cpp"
@@ -226,7 +227,8 @@ void QgsAiOpenRouterModelCatalog::refresh( bool force )
         return;
       }
     }
-    QgsMessageLog::logMessage( u"OpenRouter model catalog fetch failed (HTTP %1); using %2."_s.arg( httpStatus ).arg( hasCache ? u"stale cache"_s : u"curated fallback list"_s ), u"AI"_s, Qgis::MessageLevel::Warning, false );
+    QgsMessageLog::
+      logMessage( u"OpenRouter model catalog fetch failed (HTTP %1); using %2."_s.arg( httpStatus ).arg( hasCache ? u"stale cache"_s : u"curated fallback list"_s ), u"AI"_s, Qgis::MessageLevel::Warning, false );
     emit modelsReady( hasCache ? cached : curatedFallback(), true );
   } );
 }

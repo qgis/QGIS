@@ -15,10 +15,9 @@
 
 #include "qgsaicodexoauthclient.h"
 
-#include "qgsaisecretstore.h"
-
 #include <algorithm>
 
+#include "qgsaisecretstore.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 

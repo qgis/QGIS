@@ -1955,9 +1955,8 @@ QString QgsAiModelRouter::composeHttpErrorMessage( Provider provider, int httpSt
       prefix = tr( "Authentication failed — the API key is invalid or expired. Check Provider Settings." );
       break;
     case 402:
-      prefix = provider == Provider::OpenRouter
-                 ? tr( "Insufficient credits on your OpenRouter account — top up at openrouter.ai/credits." )
-                 : tr( "Payment required — the account has insufficient credits." );
+      prefix = provider == Provider::OpenRouter ? tr( "Insufficient credits on your OpenRouter account — top up at openrouter.ai/credits." )
+                                                : tr( "Payment required — the account has insufficient credits." );
       break;
     case 403:
     {
@@ -1973,7 +1972,7 @@ QString QgsAiModelRouter::composeHttpErrorMessage( Provider provider, int httpSt
           QStringList reasonList;
           for ( const QJsonValue &reason : reasons )
             reasonList << reason.toString();
-          prefix = tr( "The request was flagged by moderation: %1." ).arg( reasonList.join( u", "_s ) );
+          prefix = tr( "The request was flagged by moderation: %1." ).arg( reasonList.join( ", "_L1 ) );
           const QString flagged = metadata.value( u"flagged_input"_s ).toString();
           if ( !flagged.isEmpty() )
             prefix += u" "_s + tr( "Flagged input: \"%1\"" ).arg( flagged.left( 100 ) );
@@ -1989,14 +1988,12 @@ QString QgsAiModelRouter::composeHttpErrorMessage( Provider provider, int httpSt
       break;
     case 502:
       // The routing-specific wording only makes sense for OpenRouter.
-      prefix = provider == Provider::OpenRouter
-                 ? tr( "The upstream model provider failed to return a valid response — retry, or switch model." )
-                 : tr( "The provider returned an invalid upstream response (HTTP 502) — retry shortly." );
+      prefix = provider == Provider::OpenRouter ? tr( "The upstream model provider failed to return a valid response — retry, or switch model." )
+                                                : tr( "The provider returned an invalid upstream response (HTTP 502) — retry shortly." );
       break;
     case 503:
-      prefix = provider == Provider::OpenRouter
-                 ? tr( "No provider currently matches the requested model and routing requirements — try a different model or relax the routing preferences." )
-                 : tr( "The provider is temporarily unavailable (HTTP 503) — retry shortly." );
+      prefix = provider == Provider::OpenRouter ? tr( "No provider currently matches the requested model and routing requirements — try a different model or relax the routing preferences." )
+                                                : tr( "The provider is temporarily unavailable (HTTP 503) — retry shortly." );
       break;
     default:
       break;
@@ -2144,7 +2141,8 @@ void QgsAiModelRouter::onReplyFinished()
     const int backoffMs = retryAfterSeconds >= 0 ? std::min( retryAfterSeconds, 30 ) * 1000 : 1000 * context->attempt;
 
     clearRequestTransport( *context );
-    QgsMessageLog::logMessage( u"Request id=%1 provider=%2 retrying in %3 ms (attempt %4 of %5)."_s.arg( requestId, providerName ).arg( backoffMs ).arg( context->attempt + 1 ).arg( context->maxRetries + 1 ), u"AI"_s, Qgis::MessageLevel::Info, false );
+    QgsMessageLog::
+      logMessage( u"Request id=%1 provider=%2 retrying in %3 ms (attempt %4 of %5)."_s.arg( requestId, providerName ).arg( backoffMs ).arg( context->attempt + 1 ).arg( context->maxRetries + 1 ), u"AI"_s, Qgis::MessageLevel::Info, false );
     QTimer::singleShot( backoffMs, this, [this, requestId, httpStatus]() {
       // The request may have been cancelled while waiting for the backoff.
       if ( !mRequests.contains( requestId ) )

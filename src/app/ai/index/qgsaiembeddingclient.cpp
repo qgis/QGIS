@@ -15,12 +15,12 @@
 
 #include "qgsaiembeddingclient.h"
 
+#include <algorithm>
+
 #include "ai/qgsaisecretstore.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
-
-#include <algorithm>
 
 #include <QEventLoop>
 #include <QJsonArray>
@@ -96,10 +96,7 @@ QJsonObject QgsAiEmbeddingClient::openRouterProviderPreferences() const
 QString QgsAiEmbeddingClient::apiKey() const
 {
   const bool useOpenRouter = provider() == Provider::OpenRouter;
-  return QgsAiSecretStore::readSecret(
-    QString::fromLatin1( useOpenRouter ? OPENROUTER_KEY_SETTING : OPENAI_KEY_SETTING ),
-    { useOpenRouter ? u"OPENROUTER_API_KEY"_s : u"OPENAI_API_KEY"_s }
-  );
+  return QgsAiSecretStore::readSecret( QString::fromLatin1( useOpenRouter ? OPENROUTER_KEY_SETTING : OPENAI_KEY_SETTING ), { useOpenRouter ? u"OPENROUTER_API_KEY"_s : u"OPENAI_API_KEY"_s } );
 }
 
 bool QgsAiEmbeddingClient::hasApiKey() const
@@ -188,9 +185,8 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
   {
     if ( errorMessage )
     {
-      *errorMessage = mCreditsExhausted
-                        ? u"%1 embeddings are disabled after running out of credits. Top up the account and retry."_s.arg( providerName )
-                        : u"%1 embeddings are disabled after an authentication failure. Check the API key and retry."_s.arg( providerName );
+      *errorMessage = mCreditsExhausted ? u"%1 embeddings are disabled after running out of credits. Top up the account and retry."_s.arg( providerName )
+                                        : u"%1 embeddings are disabled after an authentication failure. Check the API key and retry."_s.arg( providerName );
     }
     return false;
   }
@@ -250,7 +246,8 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
       mAuthenticationFailed = true;
       if ( !mAuthFailureLogged )
       {
-        QgsMessageLog::logMessage( u"Embeddings authentication failed for %1; disabling this remote embedding provider until settings are changed."_s.arg( providerName ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+        QgsMessageLog::
+          logMessage( u"Embeddings authentication failed for %1; disabling this remote embedding provider until settings are changed."_s.arg( providerName ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
         mAuthFailureLogged = true;
       }
       if ( errorMessage )
@@ -264,7 +261,8 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
       mCreditsExhausted = true;
       if ( !mAuthFailureLogged )
       {
-        QgsMessageLog::logMessage( u"%1 account has insufficient credits for embeddings; disabling this remote embedding provider until settings are changed."_s.arg( providerName ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+        QgsMessageLog::
+          logMessage( u"%1 account has insufficient credits for embeddings; disabling this remote embedding provider until settings are changed."_s.arg( providerName ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
         mAuthFailureLogged = true;
       }
       if ( errorMessage )
@@ -272,9 +270,8 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
       return false;
     }
 
-    QgsMessageLog::logMessage(
-      u"Embeddings request failed httpStatus=%1 networkError=%2 detail=%3"_s.arg( httpStatus ).arg( networkError ).arg( detail.left( 300 ) ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false
-    );
+    QgsMessageLog::
+      logMessage( u"Embeddings request failed httpStatus=%1 networkError=%2 detail=%3"_s.arg( httpStatus ).arg( networkError ).arg( detail.left( 300 ) ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
     if ( errorMessage )
       *errorMessage = detail.isEmpty() ? u"Embeddings request failed (HTTP %1)."_s.arg( httpStatus ) : u"Embeddings request failed: %1"_s.arg( detail );
     return false;

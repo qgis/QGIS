@@ -307,7 +307,9 @@ void TestQgsAiChatHistoryStore::chatV1MigratesInPlacePreservingHistory()
     QVERIFY( db.open() );
     QSqlQuery q( db );
     QVERIFY( q.exec( u"CREATE TABLE sessions (id TEXT PRIMARY KEY, title TEXT NOT NULL, agent TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)"_s ) );
-    QVERIFY( q.exec( u"CREATE TABLE messages (message_id TEXT PRIMARY KEY, session_id TEXT NOT NULL, role TEXT NOT NULL, content TEXT NOT NULL, timestamp INTEGER NOT NULL, metadata_json TEXT, ordering INTEGER NOT NULL, FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE)"_s ) );
+    QVERIFY( q.exec(
+      u"CREATE TABLE messages (message_id TEXT PRIMARY KEY, session_id TEXT NOT NULL, role TEXT NOT NULL, content TEXT NOT NULL, timestamp INTEGER NOT NULL, metadata_json TEXT, ordering INTEGER NOT NULL, FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE)"_s
+    ) );
     QVERIFY( q.exec( u"INSERT INTO sessions VALUES ('s1', 'Legacy chat', 'plan', 1, 1)"_s ) );
     QVERIFY( q.exec( u"INSERT INTO messages VALUES ('m1', 's1', 'User', 'old plaintext message', 1, NULL, 0)"_s ) );
     QVERIFY( q.exec( u"PRAGMA user_version = 1"_s ) );

@@ -15,17 +15,19 @@
 
 #include "qgsaiembeddingprovider.h"
 
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "qgsaiembeddingclient.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
-#include <algorithm>
-#include <array>
-#include <cstdint>
-#include <cmath>
-#include <memory>
-#include <string>
-#include <vector>
+#include <QString>
 
 #ifdef HAVE_AI_E5_EMBEDDINGS
 #include <onnxruntime_cxx_api.h>
@@ -148,15 +150,9 @@ namespace
         mClient.setProvider( provider );
       }
 
-      QString providerId() const override
-      {
-        return mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"openrouter"_s : u"openai"_s;
-      }
+      QString providerId() const override { return mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"openrouter"_s : u"openai"_s; }
 
-      QString displayName() const override
-      {
-        return mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s;
-      }
+      QString displayName() const override { return mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s; }
 
       QString modelId() const override { return mClient.model(); }
       QString modelRevision() const override { return u"remote"_s; }
@@ -175,10 +171,7 @@ namespace
         return false;
       }
 
-      bool embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage = nullptr, int maxBatch = 64 ) override
-      {
-        return mClient.embed( texts, out, errorMessage, maxBatch );
-      }
+      bool embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage = nullptr, int maxBatch = 64 ) override { return mClient.embed( texts, out, errorMessage, maxBatch ); }
 
       bool embed( const QStringList &texts, QgsAiEmbeddingRole role, QList<QVector<float>> &out, QString *errorMessage = nullptr, const QgsAiEmbeddingOptions &options = QgsAiEmbeddingOptions() ) override
       {
@@ -208,8 +201,7 @@ struct QgsAiE5EmbeddingProvider::Runtime
 };
 #else
 struct QgsAiE5EmbeddingProvider::Runtime
-{
-};
+{};
 #endif
 
 QgsAiE5EmbeddingProvider::QgsAiE5EmbeddingProvider() = default;
@@ -312,7 +304,10 @@ QList<QgsAiEmbeddingModelDownloadFile> QgsAiE5EmbeddingProvider::downloadFiles()
 {
   return {
     { QString::fromLatin1( E5_ONNX_RELATIVE_PATH ), modelDownloadUrl( QString::fromLatin1( E5_ONNX_RELATIVE_PATH ) ), QString::fromLatin1( E5_ONNX_SHA256 ), E5_ONNX_SIZE },
-    { QString::fromLatin1( E5_SENTENCEPIECE_RELATIVE_PATH ), modelDownloadUrl( QString::fromLatin1( E5_SENTENCEPIECE_RELATIVE_PATH ) ), QString::fromLatin1( E5_SENTENCEPIECE_SHA256 ), E5_SENTENCEPIECE_SIZE },
+    { QString::fromLatin1( E5_SENTENCEPIECE_RELATIVE_PATH ),
+      modelDownloadUrl( QString::fromLatin1( E5_SENTENCEPIECE_RELATIVE_PATH ) ),
+      QString::fromLatin1( E5_SENTENCEPIECE_SHA256 ),
+      E5_SENTENCEPIECE_SIZE },
   };
 }
 
@@ -461,9 +456,12 @@ bool QgsAiE5EmbeddingProvider::ensureRuntime( QString *errorMessage ) const
   if ( !modelFilesAvailable( modelDir, &filesError ) )
   {
     const QString developerDir = developerModelDirectory();
-    mRuntimeError = developerDir.isEmpty()
-                      ? u"Local multilingual E5 embedding model is not installed. Download it from the AI settings dialog or set STRATA_AI_EMBEDDING_MODEL_DIR for development builds. Expected cache: %1"_s.arg( userModelDirectory() )
-                      : u"STRATA_AI_EMBEDDING_MODEL_DIR is set to %1, but the local multilingual E5 files are not usable: %2"_s.arg( developerDir, filesError );
+    mRuntimeError
+      = developerDir.isEmpty()
+          ? u"Local multilingual E5 embedding model is not installed. Download it from the AI settings dialog or set STRATA_AI_EMBEDDING_MODEL_DIR for development builds. Expected cache: %1"_s.arg(
+              userModelDirectory()
+            )
+          : u"STRATA_AI_EMBEDDING_MODEL_DIR is set to %1, but the local multilingual E5 files are not usable: %2"_s.arg( developerDir, filesError );
     if ( errorMessage )
       *errorMessage = mRuntimeError;
     return false;
@@ -474,7 +472,7 @@ bool QgsAiE5EmbeddingProvider::ensureRuntime( QString *errorMessage ) const
 
   try
   {
-    std::unique_ptr<Runtime> runtime = std::make_unique<Runtime>();
+    auto runtime = std::make_unique<Runtime>();
 
     runtime->tokenizer = std::make_unique<sentencepiece::SentencePieceProcessor>();
     const auto tokenizerStatus = runtime->tokenizer->Load( QFile::encodeName( spPath ).toStdString() );
@@ -646,7 +644,7 @@ bool QgsAiE5EmbeddingProvider::embed( const QStringList &texts, QgsAiEmbeddingRo
     std::vector<Ort::Value> outputTensors;
     try
     {
-      outputTensors = mRuntime->session->Run( Ort::RunOptions{ nullptr }, inputNamePtrs.data(), inputTensors.data(), inputTensors.size(), &outputNamePtr, 1 );
+      outputTensors = mRuntime->session->Run( Ort::RunOptions { nullptr }, inputNamePtrs.data(), inputTensors.data(), inputTensors.size(), &outputNamePtr, 1 );
     }
     catch ( const Ort::Exception &e )
     {
@@ -810,14 +808,12 @@ QList<QgsAiEmbeddingProviderUiEntry> QgsAiEmbeddingProviderRegistry::providerUiE
 #ifdef HAVE_AI_E5_EMBEDDINGS
   entries.append( { QgsAiE5EmbeddingProvider::staticProviderId(), u"Local multilingual E5 small (recommended)"_s, true, QString() } );
 #else
-  entries.append(
-    {
-      QgsAiE5EmbeddingProvider::staticProviderId(),
-      u"Local multilingual E5 small (not compiled)"_s,
-      false,
-      u"Local multilingual E5 requires ONNX Runtime and SentencePiece support in this build."_s,
-    }
-  );
+  entries.append( {
+    QgsAiE5EmbeddingProvider::staticProviderId(),
+    u"Local multilingual E5 small (not compiled)"_s,
+    false,
+    u"Local multilingual E5 requires ONNX Runtime and SentencePiece support in this build."_s,
+  } );
 #endif
 
   entries.append( { u"local:minihash-384"_s, u"Local MinHash fallback"_s, true, QString() } );

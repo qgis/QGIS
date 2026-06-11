@@ -6,9 +6,9 @@
 
 #include <memory>
 
+#include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaiclaudeoauthclient.h"
 #include "ai/qgsaicodexoauthclient.h"
-#include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaitoolregistry.h"
@@ -403,30 +403,18 @@ void TestQgsAiModelRouter::claudeAuthorizationStateParsing()
 void TestQgsAiModelRouter::claudeTokenExchangeIncludesState()
 {
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse(
-    200,
-    "OK",
-    QByteArrayLiteral( "{\"access_token\":\"sk-ant-oat01-test\",\"refresh_token\":\"sk-ant-ort01-test\",\"expires_in\":3600}" )
-  );
+  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"access_token\":\"sk-ant-oat01-test\",\"refresh_token\":\"sk-ant-ort01-test\",\"expires_in\":3600}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   const QString loopbackUrl = u"http://127.0.0.1:%1/token"_s.arg( server.serverPort() );
   QgsAiClaudeOAuthClient::setTokenUrlForTesting( loopbackUrl );
-  const auto clearTokenUrl = qScopeGuard( [] {
-    QgsAiClaudeOAuthClient::clearTokenUrlForTesting();
-  } );
+  const auto clearTokenUrl = qScopeGuard( [] { QgsAiClaudeOAuthClient::clearTokenUrlForTesting(); } );
 
   const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = QgsAiClaudeOAuthClient::buildAuthorizationRequest();
   const QString callbackInput = u"https://platform.claude.com/oauth/code/callback?code=exchange-code&state=callback-state"_s;
 
   QString error;
-  const bool exchanged = QgsAiClaudeOAuthClient::exchangeAuthorizationCode(
-    callbackInput,
-    authRequest.codeVerifier,
-    authRequest.redirectUri,
-    authRequest.state,
-    &error
-  );
+  const bool exchanged = QgsAiClaudeOAuthClient::exchangeAuthorizationCode( callbackInput, authRequest.codeVerifier, authRequest.redirectUri, authRequest.state, &error );
 
   QCOMPARE( server.requestCount, 1 );
   const QJsonObject requestObject = QJsonDocument::fromJson( server.lastRequestBody() ).object();
@@ -1313,7 +1301,9 @@ void TestQgsAiModelRouter::openRouterStreamFinishReasonLengthWithToolCallFails()
   // must fail instead of executing the tool with empty args.
   QgsAiTestLoopbackServer server;
   server.responses << QgsAiTestLoopbackServer::sseResponse( {
-    QByteArrayLiteral( "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_a\",\"type\":\"function\",\"function\":{\"name\":\"run_python\",\"arguments\":\"{\\\"code\\\":\\\"print(\"}}]}}]}\n\n" ),
+    QByteArrayLiteral(
+      "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_a\",\"type\":\"function\",\"function\":{\"name\":\"run_python\",\"arguments\":\"{\\\"code\\\":\\\"print(\"}}]}}]}\n\n"
+    ),
     QByteArrayLiteral( "data: {\"choices\":[{\"delta\":{},\"finish_reason\":\"length\"}]}\n\ndata: [DONE]\n\n" ),
   } );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
@@ -1366,7 +1356,9 @@ void TestQgsAiModelRouter::openRouterStreamWithoutFinishChunkHandlesToolArgument
   {
     QgsAiTestLoopbackServer server;
     server.responses << QgsAiTestLoopbackServer::sseResponse( {
-      QByteArrayLiteral( "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_a\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"hi\\\"}\"}}]}}]}\n\n" ),
+      QByteArrayLiteral(
+        "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_a\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"hi\\\"}\"}}]}}]}\n\n"
+      ),
     } );
     QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
@@ -1390,10 +1382,8 @@ void TestQgsAiModelRouter::openRouterNonStreamingToolCalls()
   const auto cleanup = qScopeGuard( []() { removeOpenRouterTestSettings(); } );
 
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse(
-    200, "OK",
-    QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_1\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"hi\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}]}" )
-  );
+  server.responses << QgsAiTestLoopbackServer::
+      jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_1\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"hi\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}]}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsAiModelRouter router;
@@ -1509,8 +1499,10 @@ void TestQgsAiModelRouter::retryHonorsRetryAfterHeader()
   const auto cleanup = qScopeGuard( []() { removeOpenRouterTestSettings(); } );
 
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse( 429, "Too Many Requests", QByteArrayLiteral( "{\"error\":{\"code\":429,\"message\":\"slow down\"}}" ), { { QByteArrayLiteral( "Retry-After" ), QByteArrayLiteral( "1" ) } } )
-                   << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}]}" ) );
+  server.responses
+    << QgsAiTestLoopbackServer::
+         jsonResponse( 429, "Too Many Requests", QByteArrayLiteral( "{\"error\":{\"code\":429,\"message\":\"slow down\"}}" ), { { QByteArrayLiteral( "Retry-After" ), QByteArrayLiteral( "1" ) } } )
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}]}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsAiModelRouter router;
@@ -1537,8 +1529,9 @@ void TestQgsAiModelRouter::http408IsRetriable()
   const auto cleanup = qScopeGuard( []() { removeOpenRouterTestSettings(); } );
 
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse( 408, "Request Timeout", QByteArrayLiteral( "{\"error\":{\"code\":408,\"message\":\"timed out\"}}" ) )
-                   << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}]}" ) );
+  server.responses
+    << QgsAiTestLoopbackServer::jsonResponse( 408, "Request Timeout", QByteArrayLiteral( "{\"error\":{\"code\":408,\"message\":\"timed out\"}}" ) )
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}]}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsAiModelRouter router;
@@ -1582,10 +1575,8 @@ void TestQgsAiModelRouter::http403ModerationIncludesReasons()
   const auto cleanup = qScopeGuard( []() { removeOpenRouterTestSettings(); } );
 
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse(
-    403, "Forbidden",
-    QByteArrayLiteral( "{\"error\":{\"code\":403,\"message\":\"Forbidden\",\"metadata\":{\"reasons\":[\"unsafe content\"],\"flagged_input\":\"redacted text\",\"provider_name\":\"X\",\"model_slug\":\"y\"}}}" )
-  );
+  server.responses << QgsAiTestLoopbackServer::
+      jsonResponse( 403, "Forbidden", QByteArrayLiteral( "{\"error\":{\"code\":403,\"message\":\"Forbidden\",\"metadata\":{\"reasons\":[\"unsafe content\"],\"flagged_input\":\"redacted text\",\"provider_name\":\"X\",\"model_slug\":\"y\"}}}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsAiModelRouter router;
@@ -1633,7 +1624,11 @@ void TestQgsAiModelRouter::openRouterUsageParsedFromFinalStreamChunk()
   server.responses << QgsAiTestLoopbackServer::sseResponse( {
     QByteArrayLiteral( "data: {\"model\":\"anthropic/claude-sonnet-4.6\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"OK\"}}]}\n\n" ),
     QByteArrayLiteral( "data: {\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\n" ),
-    QByteArrayLiteral( "data: {\"choices\":[],\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":4,\"total_tokens\":16,\"cost\":0.000123,\"prompt_tokens_details\":{\"cached_tokens\":6},\"completion_tokens_details\":{\"reasoning_tokens\":2}}}\n\ndata: [DONE]\n\n" ),
+    QByteArrayLiteral(
+      "data: "
+      "{\"choices\":[],\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":4,\"total_tokens\":16,\"cost\":0.000123,\"prompt_tokens_details\":{\"cached_tokens\":6},\"completion_tokens_details\":{"
+      "\"reasoning_tokens\":2}}}\n\ndata: [DONE]\n\n"
+    ),
   } );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
@@ -1665,10 +1660,8 @@ void TestQgsAiModelRouter::openRouterUsageParsedFromNonStreamingBody()
   const auto cleanup = qScopeGuard( []() { removeOpenRouterTestSettings(); } );
 
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse(
-    200, "OK",
-    QByteArrayLiteral( "{\"model\":\"served/model\",\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":7,\"completion_tokens\":3,\"total_tokens\":10,\"cost\":0.0005}}" )
-  );
+  server.responses << QgsAiTestLoopbackServer::
+      jsonResponse( 200, "OK", QByteArrayLiteral( "{\"model\":\"served/model\",\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":7,\"completion_tokens\":3,\"total_tokens\":10,\"cost\":0.0005}}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsAiModelRouter router;
@@ -1751,7 +1744,8 @@ void TestQgsAiModelRouter::liveOpenRouterRequest()
   QgsAiModelRouter router;
   // Allow overriding the model under test; default to the pinned production model
   // so this test also verifies that the pinned slug is still valid on OpenRouter.
-  const QString model = !qEnvironmentVariable( "OPENROUTER_MODEL" ).trimmed().isEmpty() ? qEnvironmentVariable( "OPENROUTER_MODEL" ) : router.providerSettings( QgsAiModelRouter::Provider::OpenRouter ).model;
+  const QString model = !qEnvironmentVariable( "OPENROUTER_MODEL" ).trimmed().isEmpty() ? qEnvironmentVariable( "OPENROUTER_MODEL" )
+                                                                                        : router.providerSettings( QgsAiModelRouter::Provider::OpenRouter ).model;
 
   QNetworkRequest request( QUrl( u"https://openrouter.ai/api/v1/chat/completions"_s ) );
   request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );

@@ -20,6 +20,7 @@
 
 #include <QCryptographicHash>
 #include <QDir>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 

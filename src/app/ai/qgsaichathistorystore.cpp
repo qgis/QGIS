@@ -15,9 +15,8 @@
 
 #include "qgsaichathistorystore.h"
 
-#include "qgsaisecretstore.h"
-
 #include "qgsaifilecontextprovider.h"
+#include "qgsaisecretstore.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
@@ -62,7 +61,8 @@ namespace
     {
       if ( ok )
         *ok = false;
-      QgsMessageLog::logMessage( encrypted.errorMessage.isEmpty() ? u"Chat history encryption failed; refusing plaintext persistence because encryption is required."_s : encrypted.errorMessage, u"AI/ChatHistory"_s, Qgis::MessageLevel::Warning, false );
+      QgsMessageLog::
+        logMessage( encrypted.errorMessage.isEmpty() ? u"Chat history encryption failed; refusing plaintext persistence because encryption is required."_s : encrypted.errorMessage, u"AI/ChatHistory"_s, Qgis::MessageLevel::Warning, false );
       return QString();
     }
 
@@ -224,7 +224,9 @@ void QgsAiChatHistoryStore::migratePlaintextRows( QSqlDatabase &db )
     };
     QList<PendingRow> rows;
     QSqlQuery select( db );
-    if ( select.exec( u"SELECT message_id, content, metadata_json FROM messages WHERE content NOT LIKE 'enc1:%' OR (metadata_json IS NOT NULL AND metadata_json != '' AND metadata_json NOT LIKE 'enc1:%')"_s ) )
+    if ( select.exec(
+           u"SELECT message_id, content, metadata_json FROM messages WHERE content NOT LIKE 'enc1:%' OR (metadata_json IS NOT NULL AND metadata_json != '' AND metadata_json NOT LIKE 'enc1:%')"_s
+         ) )
     {
       while ( select.next() )
         rows.append( { select.value( 0 ).toString(), select.value( 1 ).toString(), select.value( 2 ).toString() } );
@@ -365,7 +367,10 @@ bool QgsAiChatHistoryStore::ensureReady( QString *errorMessage )
       // Opportunistic sweep: plaintext rows written during a vault-less session
       // converge to encrypted once the vault becomes available.
       QSqlQuery probe( db );
-      if ( QgsAiSecretStore::storageEncryptionAvailable() && probe.exec( u"SELECT EXISTS(SELECT 1 FROM messages WHERE content NOT LIKE 'enc1:%' LIMIT 1)"_s ) && probe.next() && probe.value( 0 ).toInt() == 1 )
+      if ( QgsAiSecretStore::storageEncryptionAvailable()
+           && probe.exec( u"SELECT EXISTS(SELECT 1 FROM messages WHERE content NOT LIKE 'enc1:%' LIMIT 1)"_s )
+           && probe.next()
+           && probe.value( 0 ).toInt() == 1 )
         migratePlaintextRows( db );
     }
   }

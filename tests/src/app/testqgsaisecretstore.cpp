@@ -11,6 +11,7 @@
 #include "qgstest.h"
 
 #include <QScopeGuard>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 
@@ -233,7 +234,7 @@ void TestQgsAiSecretStore::dataKeyBootstrapAndRoundTrip()
   const QString secretText = u"sensitive layer attribute"_s;
   const QString encryptedA = QgsAiSecretStore::encryptValue( secretText );
   const QString encryptedB = QgsAiSecretStore::encryptValue( secretText );
-  QVERIFY( encryptedA.startsWith( u"enc1:"_s ) );
+  QVERIFY( encryptedA.startsWith( "enc1:"_L1 ) );
   QVERIFY( encryptedA != encryptedB ); // different IVs
   QVERIFY( !encryptedA.contains( u"sensitive"_s ) );
   QCOMPARE( QgsAiSecretStore::decryptValue( encryptedA ), secretText );

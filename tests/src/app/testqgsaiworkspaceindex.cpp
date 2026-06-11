@@ -146,7 +146,11 @@ namespace
   {
     public:
       MetaEmbeddingProvider( QString providerId, QString modelId, QString revision, int dimension )
-        : mProviderId( std::move( providerId ) ), mModelId( std::move( modelId ) ), mRevision( std::move( revision ) ), mDimension( dimension ) {}
+        : mProviderId( std::move( providerId ) )
+        , mModelId( std::move( modelId ) )
+        , mRevision( std::move( revision ) )
+        , mDimension( dimension )
+      {}
 
       QString providerId() const override { return mProviderId; }
       QString displayName() const override { return mProviderId; }
@@ -524,11 +528,7 @@ void TestQgsAiWorkspaceIndex::e5PreprocessingHelpers()
   const QVector<qint64> truncatedIds = QgsAiE5EmbeddingProvider::tokenIdsWithSpecials( QVector<int> { 10, 11, 12, 13 }, 4 );
   QCOMPARE( truncatedIds, ( QVector<qint64> { 0, 10, 11, 2 } ) );
 
-  const QVector<float> pooled = QgsAiE5EmbeddingProvider::meanPoolAndNormalize(
-    QVector<float> { 3.0f, 0.0f, 0.0f, 4.0f, 100.0f, 100.0f },
-    QVector<qint64> { 1, 1, 0 },
-    2
-  );
+  const QVector<float> pooled = QgsAiE5EmbeddingProvider::meanPoolAndNormalize( QVector<float> { 3.0f, 0.0f, 0.0f, 4.0f, 100.0f, 100.0f }, QVector<qint64> { 1, 1, 0 }, 2 );
   QCOMPARE( pooled.size(), 2 );
   QVERIFY( std::abs( pooled.at( 0 ) - 0.6f ) < 0.0001f );
   QVERIFY( std::abs( pooled.at( 1 ) - 0.8f ) < 0.0001f );
@@ -756,10 +756,7 @@ void TestQgsAiWorkspaceIndex::layerSnapshotsReindexWithoutDroppingFileChunks()
   QgsAiWorkspaceIndex index( &contextProvider, &provider );
 
   QString err;
-  QVERIFY2(
-    index.persistChunks( { makeFileChunk( u"notes.md"_s, 0, u"alpha file chunk"_s ) }, { dummyEmbedding( 0.3f ) }, QgsAiWorkspaceIndex::ReplaceScope::AllFiles, QString(), &err ),
-    err.toUtf8().constData()
-  );
+  QVERIFY2( index.persistChunks( { makeFileChunk( u"notes.md"_s, 0, u"alpha file chunk"_s ) }, { dummyEmbedding( 0.3f ) }, QgsAiWorkspaceIndex::ReplaceScope::AllFiles, QString(), &err ), err.toUtf8().constData() );
 
   auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=EPSG:4326&field=name:string"_s, u"snapshot_points"_s, u"memory"_s );
   QVERIFY( layer->isValid() );

@@ -15,10 +15,10 @@
 
 #include "qgsairunpythontool.h"
 
-#include "qgsaipythonapprovaldialog.h"
 #include "qgsaiauditlog.h"
-#include "qgsaiworkspacetrust.h"
+#include "qgsaipythonapprovaldialog.h"
 #include "qgsaitoolschemautil.h"
+#include "qgsaiworkspacetrust.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
 

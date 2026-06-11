@@ -13,6 +13,7 @@
 #include <QFile>
 #include <QLabel>
 #include <QScopeGuard>
+#include <QString>
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;

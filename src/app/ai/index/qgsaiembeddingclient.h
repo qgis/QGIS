@@ -18,8 +18,8 @@
 
 #include "qgis_app.h"
 
-#include <QList>
 #include <QJsonObject>
+#include <QList>
 #include <QObject>
 #include <QString>
 #include <QStringList>

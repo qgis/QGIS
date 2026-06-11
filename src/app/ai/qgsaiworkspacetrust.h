@@ -24,10 +24,11 @@
  * Per-workspace trust state for the AI assistant (VS Code-style workspace trust).
  *
  * Untrusted (or not-yet-decided) workspaces:
- *  - do not load `.strata/rules` / `.strata/skills` files into the system prompt
- *    (defense against indirect prompt injection from shared/downloaded projects);
- *  - do not expose the risky tools (run_python, install_python_package,
- *    download_file) to the model.
+ *
+ * - do not load `.strata/rules` / `.strata/skills` files into the system prompt
+ *   (defense against indirect prompt injection from shared/downloaded projects);
+ * - do not expose the risky tools (run_python, install_python_package,
+ *   download_file) to the model.
  *
  * The decision is persisted per workspace-root hash in QgsSettings and can be
  * changed any time from the AI provider settings dialog.
@@ -37,7 +38,7 @@ class APP_EXPORT QgsAiWorkspaceTrust
   public:
     enum class State
     {
-      Unknown,  //!< Never decided — treated as NOT trusted (restricted until answered)
+      Unknown, //!< Never decided — treated as NOT trusted (restricted until answered)
       Trusted,
       Untrusted
     };

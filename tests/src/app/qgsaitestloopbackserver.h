@@ -31,8 +31,8 @@ class QgsAiTestLoopbackServer : public QTcpServer
     {
         QByteArray statusLine = QByteArrayLiteral( "HTTP/1.1 200 OK" );
         QList<QPair<QByteArray, QByteArray>> headers;
-        QByteArray body;             //!< plain body; Content-Length is added automatically
-        QList<QByteArray> sseChunks; //!< when non-empty, streamed as text/event-stream instead of \a body
+        QByteArray body;             //!< Plain body; Content-Length is added automatically
+        QList<QByteArray> sseChunks; //!< When non-empty, streamed as text/event-stream instead of \a body
         int interChunkDelayMs = 0;
     };
 
@@ -58,7 +58,7 @@ class QgsAiTestLoopbackServer : public QTcpServer
     QList<ScriptedResponse> responses;
     int requestCount = 0;
     QList<QByteArray> requestBodies;
-    QList<QByteArray> rawRequests; //!< full request including headers, for asserting on sent headers
+    QList<QByteArray> rawRequests; //!< Full request including headers, for asserting on sent headers
 
     QByteArray lastRequestBody() const { return requestBodies.isEmpty() ? QByteArray() : requestBodies.last(); }
     QByteArray lastRawRequest() const { return rawRequests.isEmpty() ? QByteArray() : rawRequests.last(); }

@@ -15,10 +15,10 @@
 
 #include "qgsaidownloadfiletool.h"
 
-#include "qgsaifilecontextprovider.h"
 #include "qgsaiauditlog.h"
-#include "qgsaiworkspacetrust.h"
+#include "qgsaifilecontextprovider.h"
 #include "qgsaitoolschemautil.h"
+#include "qgsaiworkspacetrust.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
@@ -183,7 +183,8 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
                          .arg( url.toString( QUrl::FullyEncoded ), destPath, humanBytes( maxBytes ) );
 
     // Informative warning when the destination looks executable.
-    static const QStringList executableSuffixes = { u"exe"_s, u"bat"_s, u"cmd"_s, u"sh"_s, u"ps1"_s, u"py"_s, u"pyw"_s, u"dylib"_s, u"so"_s, u"dll"_s, u"app"_s, u"jar"_s, u"com"_s, u"scr"_s, u"msi"_s, u"vbs"_s, u"command"_s };
+    static const QStringList executableSuffixes
+      = { u"exe"_s, u"bat"_s, u"cmd"_s, u"sh"_s, u"ps1"_s, u"py"_s, u"pyw"_s, u"dylib"_s, u"so"_s, u"dll"_s, u"app"_s, u"jar"_s, u"com"_s, u"scr"_s, u"msi"_s, u"vbs"_s, u"command"_s };
     const QString suffix = QFileInfo( destPath ).suffix().toLower();
     if ( executableSuffixes.contains( suffix ) )
       question += QObject::tr( "\nWarning: the destination has an executable file extension (.%1). Only allow this if you expect to download a program.\n" ).arg( suffix );

@@ -15,6 +15,8 @@
 
 #include "qgsailayerchunker.h"
 
+#include <algorithm>
+
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
@@ -27,7 +29,6 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
-#include <algorithm>
 #include <QByteArray>
 #include <QString>
 #include <QStringList>
@@ -102,17 +103,16 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
   const QString geometryType = QgsWkbTypes::geometryDisplayString( layer->geometryType() );
   const QgsRectangle extent = layer->extent();
   const qint64 featureCount = layer->featureCount();
-  const QString header
-    = u"Vector layer '%1' (id=%2, crs=%3, geometry=%4)\nfeature_count=%5; sampled_feature_limit=%6; chunk_limit=%7\nextent=(%8,%9,%10,%11)\nfields=%12\n"_s
-        .arg( layer->name(), layer->id(), layer->crs().authid(), geometryType )
-        .arg( featureCount )
-        .arg( MAX_VECTOR_FEATURE_SAMPLE )
-        .arg( MAX_VECTOR_CHUNKS )
-        .arg( extent.xMinimum() )
-        .arg( extent.yMinimum() )
-        .arg( extent.xMaximum() )
-        .arg( extent.yMaximum() )
-        .arg( fieldsSummary( fields ) );
+  const QString header = u"Vector layer '%1' (id=%2, crs=%3, geometry=%4)\nfeature_count=%5; sampled_feature_limit=%6; chunk_limit=%7\nextent=(%8,%9,%10,%11)\nfields=%12\n"_s
+                           .arg( layer->name(), layer->id(), layer->crs().authid(), geometryType )
+                           .arg( featureCount )
+                           .arg( MAX_VECTOR_FEATURE_SAMPLE )
+                           .arg( MAX_VECTOR_CHUNKS )
+                           .arg( extent.xMinimum() )
+                           .arg( extent.yMinimum() )
+                           .arg( extent.xMaximum() )
+                           .arg( extent.yMaximum() )
+                           .arg( fieldsSummary( fields ) );
 
   QString currentText = header;
   QByteArray currentWkts;

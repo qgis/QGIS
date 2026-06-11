@@ -15,10 +15,10 @@
 
 #include "qgsaiinstallpackagetool.h"
 
-#include "qgsaipipinstallapprovaldialog.h"
 #include "qgsaiauditlog.h"
-#include "qgsaiworkspacetrust.h"
+#include "qgsaipipinstallapprovaldialog.h"
 #include "qgsaitoolschemautil.h"
+#include "qgsaiworkspacetrust.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
 
@@ -221,7 +221,7 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
   }
 
   QgsMessageLog::logMessage( u"install_python_package: executing approved install (packages=%1)"_s.arg( packages.size() ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
-  QgsAiAuditLog::append( u"install_python_package"_s, packages.join( u" "_s ) );
+  QgsAiAuditLog::append( u"install_python_package"_s, packages.join( ' '_L1 ) );
 
   constexpr int TIMEOUT_SECONDS = 300;
   const QString wrapper = QString::fromUtf8( PIP_WRAPPER_TEMPLATE ).arg( escapePipPath( outPath ), escapePipPath( argsPath ), QString::number( TIMEOUT_SECONDS ) );

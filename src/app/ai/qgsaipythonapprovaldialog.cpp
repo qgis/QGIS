@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QRegularExpression>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgsaipythonapprovaldialog.cpp"
@@ -81,7 +82,7 @@ QgsAiPythonApprovalDialog::QgsAiPythonApprovalDialog( const QString &description
     risks->setObjectName( u"aiPythonRiskMarkersLabel"_s );
     risks->setTextFormat( Qt::PlainText );
     risks->setWordWrap( true );
-    risks->setText( tr( "Detected: %1" ).arg( riskMarkers.join( u", "_s ) ) );
+    risks->setText( tr( "Detected: %1" ).arg( riskMarkers.join( ", "_L1 ) ) );
     risks->setStyleSheet( u"QLabel { color: #842029; font-weight: bold; }"_s );
     layout->addWidget( risks );
   }

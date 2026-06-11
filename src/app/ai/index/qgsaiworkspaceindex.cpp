@@ -15,12 +15,11 @@
 
 #include "qgsaiworkspaceindex.h"
 
-#include "ai/qgsaisecretstore.h"
-
 #include <algorithm>
 #include <cmath>
 #include <utility>
 
+#include "ai/qgsaisecretstore.h"
 #include "qgsaiembeddingprovider.h"
 #include "qgsaifilecontextprovider.h"
 #include "qgsailayerchunker.h"
@@ -543,7 +542,8 @@ bool QgsAiWorkspaceIndex::loadAll( const QString &workspaceRoot, QString *errorM
       const int dimension = metadata.value( 3 ).toInt();
       if ( !metadataMatchesProvider( providerId, modelId, modelRevision, dimension, mEmbeddingProvider ) )
       {
-        QgsMessageLog::logMessage( u"Workspace index provider changed (%1/%2 -> %3/%4); dropping old chunks"_s.arg( providerId, modelId, storageProviderId( mEmbeddingProvider ), storageModelId( mEmbeddingProvider ) ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+        QgsMessageLog::
+          logMessage( u"Workspace index provider changed (%1/%2 -> %3/%4); dropping old chunks"_s.arg( providerId, modelId, storageProviderId( mEmbeddingProvider ), storageModelId( mEmbeddingProvider ) ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
         QSqlQuery drop( db );
         drop.exec( u"DROP TABLE IF EXISTS chunks"_s );
         drop.exec( u"PRAGMA user_version = %1"_s.arg( SCHEMA_VERSION ) );
@@ -553,7 +553,9 @@ bool QgsAiWorkspaceIndex::loadAll( const QString &workspaceRoot, QString *errorM
   }
 
   QSqlQuery q( db );
-  if ( !q.exec( u"SELECT source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync, provider_id, model_id, model_revision, embedding_dimension, content_hash, source_mtime FROM chunks ORDER BY id"_s ) )
+  if ( !q.exec(
+         u"SELECT source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync, provider_id, model_id, model_revision, embedding_dimension, content_hash, source_mtime FROM chunks ORDER BY id"_s
+       ) )
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
@@ -698,7 +700,8 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceS
 
   const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
   q.prepare( QStringLiteral(
-    "INSERT INTO chunks (source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync, provider_id, model_id, model_revision, embedding_dimension, content_hash, source_mtime) "
+    "INSERT INTO chunks (source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync, provider_id, model_id, model_revision, "
+    "embedding_dimension, content_hash, source_mtime) "
     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   ) );
   for ( const CachedChunk &c : chunks )
@@ -939,10 +942,7 @@ bool QgsAiWorkspaceIndex::reindex( const QList<WorkspaceFileSnapshot> &snapshot,
       {
         if ( metadataMatchesProvider( cached.providerId, cached.modelId, cached.modelRevision, cached.embeddingDimension, activeProvider ) )
         {
-          reusableFileChunks.insert(
-            chunkReuseKey( QString::fromLatin1( SOURCE_TYPE_FILE ), cached.chunk.relativePath, QString(), cached.chunk.chunkIndex ),
-            cached
-          );
+          reusableFileChunks.insert( chunkReuseKey( QString::fromLatin1( SOURCE_TYPE_FILE ), cached.chunk.relativePath, QString(), cached.chunk.chunkIndex ), cached );
         }
       }
     }
@@ -1053,7 +1053,9 @@ bool QgsAiWorkspaceIndex::reindex( const QList<WorkspaceFileSnapshot> &snapshot,
     if ( !persistAll( built, ReplaceScope::AllFiles, QString(), workspaceRoot, errorMessage ) )
       return false;
 
-    mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
+    mCache.erase(
+      std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end()
+    );
     mCache.append( built );
     mLastSync = QDateTime::currentDateTimeUtc();
     mLoaded = true;
@@ -1219,9 +1221,8 @@ bool QgsAiWorkspaceIndex::reindexLayerSnapshot( const WorkspaceLayerSnapshot &sn
     return false;
 
   QgsMessageLog::logMessage(
-    snapshot.scope == ReplaceScope::AllLayers
-      ? u"Workspace index: layer reindex done — layers=%1 chunks=%2"_s.arg( snapshot.layerCount ).arg( snapshot.chunks.size() )
-      : u"Workspace index: layer reindex done — layer=%1 chunks=%2"_s.arg( snapshot.scopedLayerId, QString::number( snapshot.chunks.size() ) ),
+    snapshot.scope == ReplaceScope::AllLayers ? u"Workspace index: layer reindex done — layers=%1 chunks=%2"_s.arg( snapshot.layerCount ).arg( snapshot.chunks.size() )
+                                              : u"Workspace index: layer reindex done — layer=%1 chunks=%2"_s.arg( snapshot.scopedLayerId, QString::number( snapshot.chunks.size() ) ),
     u"AI/Index"_s,
     Qgis::MessageLevel::Info,
     false

@@ -4,8 +4,8 @@
   begin                : May 2026
 ***************************************************************************/
 
-#include <memory>
 #include <algorithm>
+#include <memory>
 
 #include "ai/index/qgsailayerchunker.h"
 #include "ai/index/qgsaiworkspaceindex.h"

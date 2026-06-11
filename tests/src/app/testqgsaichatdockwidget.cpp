@@ -501,9 +501,8 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
         const QModelIndex e5Index = providerCombo->model()->index( e5Row, 0 );
         e5UiStateFound = e5Row >= 0 && e5Index.isValid() && static_cast<bool>( providerCombo->model()->flags( e5Index ) & Qt::ItemIsEnabled ) == e5ProviderListed;
       }
-      localStatusFound = e5ProviderListed
-                           ? statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive )
-                           : statusLabel && statusLabel->text().contains( u"MinHash"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"available"_s, Qt::CaseInsensitive );
+      localStatusFound = e5ProviderListed ? statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive )
+                                          : statusLabel && statusLabel->text().contains( u"MinHash"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"available"_s, Qt::CaseInsensitive );
       downloadButtonFound = downloadButton && downloadButton->isVisible() == e5ProviderListed;
       settingsDialog->reject();
     }

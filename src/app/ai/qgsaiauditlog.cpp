@@ -24,6 +24,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QString>
 #include <QStringList>
 #include <QUrl>
 
@@ -41,7 +42,7 @@ namespace
 
     if ( tool == "download_file"_L1 )
     {
-      const int separator = detail.indexOf( u" -> "_s );
+      const int separator = detail.indexOf( " -> "_L1 );
       const QString urlText = separator >= 0 ? detail.left( separator ) : detail;
       const QString destText = separator >= 0 ? detail.mid( separator + 4 ) : QString();
       const QUrl url( urlText );
@@ -82,7 +83,8 @@ void QgsAiAuditLog::append( const QString &tool, const QString &detail )
   summary.replace( '\r', ' ' );
   summary.replace( '\n', ' ' );
 
-  const QString line = u"%1 | %2 | workspace=%3 | sha256=%4 | bytes=%5 | %6\n"_s.arg( QDateTime::currentDateTimeUtc().toString( Qt::ISODate ), tool, workspaceHash, digest, QString::number( detail.toUtf8().size() ), summary );
+  const QString line
+    = u"%1 | %2 | workspace=%3 | sha256=%4 | bytes=%5 | %6\n"_s.arg( QDateTime::currentDateTimeUtc().toString( Qt::ISODate ), tool, workspaceHash, digest, QString::number( detail.toUtf8().size() ), summary );
 
   QFile file( filePath() );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text ) )

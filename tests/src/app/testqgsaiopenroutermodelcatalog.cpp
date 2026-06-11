@@ -16,6 +16,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSignalSpy>
+#include <QString>
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
@@ -82,7 +83,7 @@ void TestQgsAiOpenRouterModelCatalog::filtersOutNonToolModels()
 {
   const QList<QgsAiOpenRouterModelCatalog::ModelInfo> models = QgsAiOpenRouterModelCatalog::parseModelsJson( MODELS_FIXTURE );
   for ( const QgsAiOpenRouterModelCatalog::ModelInfo &model : models )
-    QVERIFY( model.id != u"some/no-tools-model"_s );
+    QVERIFY( model.id != "some/no-tools-model"_L1 );
 }
 
 void TestQgsAiOpenRouterModelCatalog::cacheRoundTripRespectsTtl()
@@ -180,7 +181,7 @@ void TestQgsAiOpenRouterModelCatalog::offlineFallsBackToCuratedList()
   bool hasPinnedDefault = false;
   for ( const QgsAiOpenRouterModelCatalog::ModelInfo &model : models )
   {
-    if ( model.id == u"anthropic/claude-sonnet-4.6"_s )
+    if ( model.id == "anthropic/claude-sonnet-4.6"_L1 )
       hasPinnedDefault = true;
   }
   QVERIFY( hasPinnedDefault );
