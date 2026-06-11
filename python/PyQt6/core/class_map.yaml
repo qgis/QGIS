@@ -7846,9 +7846,9 @@ QgsLayoutItemMapAtlasClippingSettings.setLayersToClip: src/core/layout/qgslayout
 QgsLayoutItemMapAtlasClippingSettings.setRestrictToLayers: src/core/layout/qgslayoutitemmap.h#L123
 QgsLayoutItemMapAtlasClippingSettings.writeXml: src/core/layout/qgslayoutitemmap.h#L150
 QgsLayoutItemMapAtlasClippingSettings: src/core/layout/qgslayoutitemmap.h#L41
-QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L913
-QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L955
-QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L967
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L919
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L961
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L973
 QgsLayoutItemMapGrid.accept: src/core/layout/qgslayoutitemmapgrid.h#L891
 QgsLayoutItemMapGrid.annotationDirection: src/core/layout/qgslayoutitemmapgrid.h#L571
 QgsLayoutItemMapGrid.annotationDisplay: src/core/layout/qgslayoutitemmapgrid.h#L526
