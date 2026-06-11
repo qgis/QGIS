@@ -64,6 +64,12 @@ bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, con
         query.addQueryItem( u"FILTER"_s, filter );
       }
 
+      const QStringList propertyNames( mUri.propertyName() );
+      if ( !propertyNames.isEmpty() )
+      {
+        query.addQueryItem( u"PROPERTYNAME"_s, propertyNames.join( ',' ) );
+      }
+
       if ( hitsOnly )
       {
         query.addQueryItem( u"RESULTTYPE"_s, "hits" );
@@ -98,6 +104,22 @@ bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, con
           queryElement.appendChild( filterDoc.documentElement() );
         }
       }
+
+      const QStringList propertyNames( mUri.propertyName() );
+      if ( !propertyNames.isEmpty() && useVersion2 )
+      {
+        queryElement.setAttribute( u"propertyName"_s, propertyNames.join( ',' ) );
+      }
+      else if ( !propertyNames.isEmpty() )
+      {
+        for ( const QString &prop : propertyNames )
+        {
+          QDomElement propNameElem = postDocument.createElement( u"wfs:PropertyName"_s );
+          propNameElem.appendChild( postDocument.createTextNode( prop ) );
+          queryElement.appendChild( propNameElem );
+        }
+      }
+
       getFeatureElement.appendChild( queryElement );
 
       if ( hitsOnly )
