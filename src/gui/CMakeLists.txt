@@ -762,6 +762,7 @@ set(QGIS_GUI_SRCS
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
   qgspercentagewidget.cpp
+  qgspersistentmenu.cpp
   qgspixmaplabel.cpp
   qgsplaybackcontrollerwidget.cpp
   qgspluginmanagerinterface.cpp
@@ -834,7 +835,6 @@ set(QGIS_GUI_SRCS
   qgsvariableeditorwidget.cpp
   qgsvectorlayertemporalpropertieswidget.cpp
   qgsvertexmarker.cpp
-  qgsviewsettingsmenu.cpp
   qgsfiledownloaderdialog.cpp
   qgsvscrollarea.cpp
   qgsdatasourcemanagerdialog.cpp
@@ -1037,6 +1037,7 @@ set(QGIS_GUI_HDRS
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
   qgspercentagewidget.h
+  qgspersistentmenu.h
   qgspixmaplabel.h
   qgsplaybackcontrollerwidget.h
   qgspluginmanagerinterface.h
@@ -1113,7 +1114,6 @@ set(QGIS_GUI_HDRS
   qgsvariableeditorwidget.h
   qgsvectorlayertemporalpropertieswidget.h
   qgsvertexmarker.h
-  qgsviewsettingsmenu.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 

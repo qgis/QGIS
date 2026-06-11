@@ -1,5 +1,5 @@
 /***************************************************************************
-    QgsViewSettingsMenu.h  -  menu to be used for toolbars
+    QgsPersistentMenu.h  -  menu to be used for toolbars
     ---------------------
     begin                : June 2026
     copyright            : (C) 2026 by Till Frankenbach
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QgsViewSettingsMenu_H
-#define QgsViewSettingsMenu_H
+#ifndef QgsPersistentMenu_H
+#define QgsPersistentMenu_H
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
@@ -35,21 +35,21 @@
  * Menu doesn't close when an action is triggered, and allows triggering multiple actions in a row.
  * \since QGIS 4.2
  */
-class GUI_EXPORT QgsViewSettingsMenu : public QMenu
+class GUI_EXPORT QgsPersistentMenu : public QMenu
 {
     Q_OBJECT
 
   public:
     /**
-     * \brief QgsViewSettingsMenu is a menu to be used with toolbars.
+     * \brief QgsPersistentMenu is a menu to be used with toolbars.
      */
-    explicit QgsViewSettingsMenu( const QString &title, QWidget *parent = nullptr );
+    explicit QgsPersistentMenu( const QString &title, QWidget *parent = nullptr );
 
     void mouseReleaseEvent( QMouseEvent *e ) override;
 
     void keyPressEvent( QKeyEvent *e ) override;
 
-    ~QgsViewSettingsMenu() override;
+    ~QgsPersistentMenu() override;
 };
 
-#endif // QgsViewSettingsMenu_H
+#endif // QgsPersistentMenu_H

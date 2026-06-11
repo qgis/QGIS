@@ -1,5 +1,5 @@
 /***************************************************************************
-    QgsViewSettingsMenu.cpp  -  menu to be used in toolbar
+    QgsPersistentMenu.cpp  -  menu to be used in toolbar
     ---------------------
     begin                : June 2026
     copyright            : (C) 2026 by Till Frankenbach
@@ -13,22 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsviewsettingsmenu.h"
+#include "qgspersistentmenu.h"
 
 #include <QAction>
 #include <QMouseEvent>
 #include <QSignalBlocker>
 
-#include "moc_qgsviewsettingsmenu.cpp"
+#include "moc_qgspersistentmenu.cpp"
 
-QgsViewSettingsMenu::QgsViewSettingsMenu( const QString &title, QWidget *parent )
+QgsPersistentMenu::QgsPersistentMenu( const QString &title, QWidget *parent )
   : QMenu( title, parent )
 {}
 
-QgsViewSettingsMenu::~QgsViewSettingsMenu()
+QgsPersistentMenu::~QgsPersistentMenu()
 {}
 
-void QgsViewSettingsMenu::mouseReleaseEvent( QMouseEvent *e )
+void QgsPersistentMenu::mouseReleaseEvent( QMouseEvent *e )
 {
   QAction *action = activeAction();
   if ( action && action->isEnabled() )
@@ -40,7 +40,7 @@ void QgsViewSettingsMenu::mouseReleaseEvent( QMouseEvent *e )
     QMenu::mouseReleaseEvent( e );
 }
 
-void QgsViewSettingsMenu::keyPressEvent( QKeyEvent *e )
+void QgsPersistentMenu::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter || e->key() == Qt::Key_Space )
   {
