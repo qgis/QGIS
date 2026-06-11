@@ -23,6 +23,8 @@
 
 #include <QMenu>
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \brief Builds a menu to be used with toolbars.
