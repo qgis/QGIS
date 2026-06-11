@@ -2178,27 +2178,23 @@ bool QgsAiModelRouter::isUsablePlanEndpoint( const QString &endpoint )
   return !trimmed.contains( "example.invalid"_L1, Qt::CaseInsensitive );
 }
 
+bool QgsAiModelRouter::isProviderUsable( Provider provider ) const
+{
+  const ProviderSettings settings = mProviderSettings.value( provider );
+  if ( !settings.enabled || !hasConfiguredCredential( provider ) )
+    return false;
+  // The Plan backend additionally needs a real endpoint (the default is a placeholder).
+  if ( provider == Provider::Plan && !isUsablePlanEndpoint( settings.endpoint ) )
+    return false;
+  return true;
+}
+
 QgsAiModelRouter::Provider QgsAiModelRouter::resolveProvider() const
 {
-  const ProviderSettings plan = mProviderSettings.value( Provider::Plan );
-  if ( plan.enabled && isUsablePlanEndpoint( plan.endpoint ) && hasConfiguredCredential( Provider::Plan ) )
-    return Provider::Plan;
-
-  const ProviderSettings codex = mProviderSettings.value( Provider::Codex );
-  if ( codex.enabled && hasConfiguredCredential( Provider::Codex ) )
-    return Provider::Codex;
-
-  const ProviderSettings openRouter = mProviderSettings.value( Provider::OpenRouter );
-  if ( openRouter.enabled && hasConfiguredCredential( Provider::OpenRouter ) )
-    return Provider::OpenRouter;
-
-  const ProviderSettings openAi = mProviderSettings.value( Provider::OpenAi );
-  if ( openAi.enabled && hasConfiguredCredential( Provider::OpenAi ) )
-    return Provider::OpenAi;
-
-  const ProviderSettings claude = mProviderSettings.value( Provider::Claude );
-  if ( claude.enabled && hasConfiguredCredential( Provider::Claude ) )
-    return Provider::Claude;
-
+  for ( Provider provider : { Provider::Plan, Provider::Codex, Provider::OpenRouter, Provider::OpenAi, Provider::Claude } )
+  {
+    if ( isProviderUsable( provider ) )
+      return provider;
+  }
   return Provider::OpenAi;
 }

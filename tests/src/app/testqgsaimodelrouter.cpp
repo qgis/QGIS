@@ -174,7 +174,7 @@ class TestQgsAiModelRouter : public QObject
     void storeApiKeyPersistsInSettings();
     void storeOpenRouterApiKeyPersistsInSettings();
     void openRouterApiKeyFromEnvironment();
-    void fallbackOrderIncludesOpenRouter();
+    void fallbackOrderContainsOnlyUsableProviders();
     void toolUseDisabledOmitsToolsFromOpenAiPayload();
     void toolUseEnabledIncludesToolsForOpenAi();
     void toolUseDisabledOmitsToolsFromClaudePayload();
@@ -510,22 +510,56 @@ void TestQgsAiModelRouter::openRouterApiKeyFromEnvironment()
   QCOMPARE( request.rawHeader( "Authorization" ), QByteArray( "Bearer sk-or-test-env" ) );
 }
 
-void TestQgsAiModelRouter::fallbackOrderIncludesOpenRouter()
+void TestQgsAiModelRouter::fallbackOrderContainsOnlyUsableProviders()
 {
-  QgsAiModelRouter router;
-  QgsAiAgentSessionManager manager( &router, nullptr, nullptr );
-  const QList<QgsAiModelRouter::Provider> order = manager.providerFallbackOrder();
-  QVERIFY( order.contains( QgsAiModelRouter::Provider::OpenRouter ) );
-  QVERIFY( order.contains( QgsAiModelRouter::Provider::Plan ) );
-  QVERIFY( order.contains( QgsAiModelRouter::Provider::Codex ) );
-  QVERIFY( order.contains( QgsAiModelRouter::Provider::OpenAi ) );
-  QVERIFY( order.contains( QgsAiModelRouter::Provider::Claude ) );
-
-  QList<QgsAiModelRouter::Provider> unique;
-  for ( QgsAiModelRouter::Provider provider : order )
+  // initTestCase loads .env.test: neutralize the env fallbacks so this test
+  // controls exactly which providers count as configured.
+  const QList<QByteArray> envNames = { "OPENAI_API_KEY", "CLAUDE_API_KEY", "ANTHROPIC_API_KEY", "OPENROUTER_API_KEY" };
+  QList<QPair<QByteArray, QByteArray>> savedEnv;
+  for ( const QByteArray &name : envNames )
   {
-    QVERIFY( !unique.contains( provider ) );
-    unique << provider;
+    if ( qEnvironmentVariableIsSet( name.constData() ) )
+      savedEnv.append( { name, qgetenv( name.constData() ) } );
+    qunsetenv( name.constData() );
+  }
+  QgsSettings settings;
+  const QStringList groups = { u"ai/provider/openai"_s, u"ai/provider/claude"_s, u"ai/provider/openrouter"_s, u"ai/provider/codex"_s, u"ai/provider/plan"_s };
+  for ( const QString &group : groups )
+    settings.remove( group );
+  const auto restore = qScopeGuard( [&settings, groups, savedEnv]() {
+    for ( const QString &group : groups )
+      settings.remove( group );
+    settings.remove( u"ai/security/secretsMigrated_v1"_s );
+    for ( const QPair<QByteArray, QByteArray> &entry : savedEnv )
+      qputenv( entry.first.constData(), entry.second );
+  } );
+
+  // Nothing configured: the chain is EMPTY (no blind attempts).
+  {
+    QgsAiModelRouter router;
+    QgsAiAgentSessionManager manager( &router, nullptr, nullptr );
+    QVERIFY( manager.providerFallbackOrder().isEmpty() );
+    QVERIFY( !router.isProviderUsable( QgsAiModelRouter::Provider::OpenAi ) );
+  }
+
+  // Configure OpenRouter + Claude only: the chain contains exactly those two,
+  // preferred (OpenRouter, higher priority) first, no duplicates.
+  {
+    QgsAiModelRouter router;
+    QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::OpenRouter, u"sk-or-fallback-test"_s ) );
+    QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::Claude, u"sk-ant-fallback-test"_s ) );
+
+    QVERIFY( router.isProviderUsable( QgsAiModelRouter::Provider::OpenRouter ) );
+    QVERIFY( router.isProviderUsable( QgsAiModelRouter::Provider::Claude ) );
+    QVERIFY( !router.isProviderUsable( QgsAiModelRouter::Provider::OpenAi ) );
+    QVERIFY( !router.isProviderUsable( QgsAiModelRouter::Provider::Codex ) );
+    QVERIFY( !router.isProviderUsable( QgsAiModelRouter::Provider::Plan ) );
+
+    QgsAiAgentSessionManager manager( &router, nullptr, nullptr );
+    const QList<QgsAiModelRouter::Provider> order = manager.providerFallbackOrder();
+    QCOMPARE( order.size(), 2 );
+    QCOMPARE( order.at( 0 ), QgsAiModelRouter::Provider::OpenRouter );
+    QCOMPARE( order.at( 1 ), QgsAiModelRouter::Provider::Claude );
   }
 }
 

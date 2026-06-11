@@ -113,6 +113,8 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void appendStreamChunk( const QString &chunk );
     void closeStreamingAssistantMessage();
     void updateRuntimeState( const QString &state, const QString &detail );
+    //! Refreshes the per-session token/cost label in the status row.
+    void updateSessionUsage( const QgsAiUsage &total );
     void applyPillStyling();
     void initModeMenu();
     void initModelMenu();
@@ -164,6 +166,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QListWidget *mProposalList = nullptr;
     QLabel *mReviewStatusLabel = nullptr;
     QLabel *mRuntimeStatusLabel = nullptr;
+    QLabel *mUsageLabel = nullptr;
 
     bool mStreamingInProgress = false;
     QTextEdit *mStreamingTextEdit = nullptr;

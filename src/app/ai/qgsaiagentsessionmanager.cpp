@@ -163,6 +163,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
       if ( requestId != mActiveRequestId )
         return;
       mSessionUsage.add( usage );
+      emit sessionUsageChanged( mSessionUsage );
     } );
 
     connect( mRouter, &QgsAiModelRouter::requestProgress, this, [this]( const QString &requestId, const QString &chunk ) {
@@ -308,6 +309,8 @@ void QgsAiAgentSessionManager::resetCurrentSessionState( bool emitHistorySignal 
   mStreamedText.clear();
   mToolIterations = 0;
   mSessionUsage = QgsAiUsage();
+  // Runtime accumulation only (not persisted): the UI resets its usage display.
+  emit sessionUsageChanged( mSessionUsage );
   if ( emitHistorySignal )
     emit historyReplaced();
 }
@@ -505,13 +508,21 @@ void QgsAiAgentSessionManager::setWorkspaceRoot( const QString &workspaceRoot )
 
 QList<QgsAiModelRouter::Provider> QgsAiAgentSessionManager::providerFallbackOrder() const
 {
+  // Only providers that are actually ready (enabled + credentials) enter the
+  // chain: attempting unconfigured ones just produced a noisy sequence of
+  // "retrying" transitions before the inevitable failure. The list can be
+  // empty — sendUserMessage() then reports the actionable "no provider" error.
   QList<QgsAiModelRouter::Provider> order;
-  const QgsAiModelRouter::Provider preferred = mRouter ? mRouter->resolveProvider() : QgsAiModelRouter::Provider::OpenAi;
-  order << preferred;
+  if ( !mRouter )
+    return order;
+
+  const QgsAiModelRouter::Provider preferred = mRouter->resolveProvider();
+  if ( mRouter->isProviderUsable( preferred ) )
+    order << preferred;
   for ( QgsAiModelRouter::Provider provider :
         { QgsAiModelRouter::Provider::Plan, QgsAiModelRouter::Provider::OpenRouter, QgsAiModelRouter::Provider::Codex, QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::Claude } )
   {
-    if ( !order.contains( provider ) )
+    if ( !order.contains( provider ) && mRouter->isProviderUsable( provider ) )
       order << provider;
   }
   return order;
@@ -739,8 +750,10 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
   mPendingProviders = providerFallbackOrder();
   if ( mPendingProviders.isEmpty() || !mRouter )
   {
-    const QgsAiChatMessage assistant = buildAssistantMessage( u"No provider is configured."_s );
+    const QString noProviderMessage = u"No AI provider is configured. Open the provider settings (gear icon) and add an API key or sign in."_s;
+    const QgsAiChatMessage assistant = buildAssistantMessage( noProviderMessage );
     recordHistoryMessage( assistant );
+    emit requestStateChanged( u"failed"_s, noProviderMessage );
     return;
   }
 

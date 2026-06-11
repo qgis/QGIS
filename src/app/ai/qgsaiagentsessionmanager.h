@@ -190,6 +190,11 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     //! Rough token budget for the conversation history sent to the provider (excludes system prompt).
     static constexpr int HISTORY_TOKEN_BUDGET = 32768;
 
+    /**
+     * Returns the providers to try for the next request, preferred one first.
+     * Only USABLE providers (enabled + configured credentials) are included,
+     * so the list may be empty when nothing is configured.
+     */
     QList<QgsAiModelRouter::Provider> providerFallbackOrder() const;
 
   signals:
@@ -198,6 +203,13 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void responseChunkReceived( const QString &chunk );
     void requestStateChanged( const QString &state, const QString &detail );
     void requestRunningChanged( bool running );
+
+    /**
+     * Emitted whenever the cumulative per-session token/cost accounting changes:
+     * after every model response carrying usage, and with an empty total when a
+     * new session starts (runtime accumulation only, not persisted).
+     */
+    void sessionUsageChanged( const QgsAiUsage &total );
 
     /**
      * Emitted after loadSession() / startNewSession(). The UI should clear the

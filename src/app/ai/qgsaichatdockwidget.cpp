@@ -887,6 +887,12 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   statusRow->setSpacing( 6 );
   statusRow->addWidget( mRuntimeStatusLabel, 1 );
 
+  // Per-session token/cost accounting (runtime only); hidden until usage arrives.
+  mUsageLabel = new QLabel( container );
+  mUsageLabel->setObjectName( u"aiSessionUsageLabel"_s );
+  mUsageLabel->setVisible( false );
+  statusRow->addWidget( mUsageLabel );
+
   mCancelButton = new QPushButton( tr( "Cancel" ), container );
   mCancelButton->setObjectName( u"aiCancelRequestButton"_s );
   mCancelButton->setEnabled( false );
@@ -956,6 +962,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
     connect( mSessionManager, &QgsAiAgentSessionManager::requestStateChanged, this, &QgsAiChatDockWidget::updateRuntimeState );
     connect( mSessionManager, &QgsAiAgentSessionManager::requestRunningChanged, this, &QgsAiChatDockWidget::setRequestRunning );
     connect( mSessionManager, &QgsAiAgentSessionManager::historyReplaced, this, &QgsAiChatDockWidget::reloadTranscriptFromHistory );
+    connect( mSessionManager, &QgsAiAgentSessionManager::sessionUsageChanged, this, &QgsAiChatDockWidget::updateSessionUsage );
     connect( mSessionManager, &QgsAiAgentSessionManager::sessionListChanged, this, &QgsAiChatDockWidget::rebuildHistoryMenu );
   }
 
@@ -1894,6 +1901,36 @@ void QgsAiChatDockWidget::updateRuntimeState( const QString &state, const QStrin
   mRuntimeStatusLabel->setText( text );
   if ( mSendButton )
     mSendButton->setToolTip( mRequestRunning ? tr( "Stop (%1)" ).arg( text ) : tr( "Send (Enter)" ) );
+}
+
+void QgsAiChatDockWidget::updateSessionUsage( const QgsAiUsage &total )
+{
+  if ( !mUsageLabel )
+    return;
+
+  if ( !total.isValid() )
+  {
+    // New/empty session: hide until the first response brings usage back.
+    mUsageLabel->setVisible( false );
+    mUsageLabel->clear();
+    return;
+  }
+
+  const auto humanTokens = []( qint64 tokens ) -> QString {
+    if ( tokens >= 1000000 )
+      return u"%1M"_s.arg( tokens / 1000000.0, 0, 'f', 1 );
+    if ( tokens >= 1000 )
+      return u"%1k"_s.arg( tokens / 1000.0, 0, 'f', 1 );
+    return QString::number( tokens );
+  };
+
+  QString text = tr( "≈%1 tok" ).arg( humanTokens( total.totalTokens ) );
+  if ( total.costUsd > 0.0 )
+    text += u" · $%1"_s.arg( total.costUsd, 0, 'f', 4 );
+  mUsageLabel->setText( text );
+  mUsageLabel->setToolTip( tr( "Session usage — prompt: %1, completion: %2, cached: %3, reasoning: %4%5" )
+                             .arg( humanTokens( total.promptTokens ), humanTokens( total.completionTokens ), humanTokens( total.cachedTokens ), humanTokens( total.reasoningTokens ), total.costUsd > 0.0 ? tr( ", cost: $%1" ).arg( total.costUsd, 0, 'f', 6 ) : QString() ) );
+  mUsageLabel->setVisible( true );
 }
 
 void QgsAiChatDockWidget::setRequestRunning( bool running )

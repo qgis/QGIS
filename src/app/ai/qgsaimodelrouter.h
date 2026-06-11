@@ -86,6 +86,15 @@ class APP_EXPORT QgsAiModelRouter : public QObject
 
     bool applyAuthentication( Provider provider, QNetworkRequest &request, QString *errorMessage = nullptr ) const;
     Provider resolveProvider() const;
+
+    /**
+     * Returns true when \a provider is ready to serve a request: enabled, with
+     * stored credentials (API key, OAuth token or env fallback) and — for the
+     * Plan backend — a usable endpoint. The provider fallback chain only
+     * contains usable providers.
+     */
+    bool isProviderUsable( Provider provider ) const;
+
     static bool isUsablePlanEndpoint( const QString &endpoint );
 
     QString providerDisplayName( Provider provider ) const;

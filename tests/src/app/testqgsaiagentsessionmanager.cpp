@@ -71,10 +71,21 @@ namespace
     settings.remove( u"ai/provider/claude"_s );
   }
 
+  /**
+   * Makes Codex/OpenAI/Claude USABLE (fake credentials so they survive the
+   * fallback-chain filter) but with empty endpoints so every dispatch fails
+   * pre-network. Plan is left unconfigured: with an unusable endpoint it is
+   * excluded from the chain by design. Resulting chain size: 3.
+   */
   void forceProviderPreDispatchFailures( QgsAiModelRouter &router )
   {
+    QgsSettings appSettings;
+    appSettings.setValue( u"ai/provider/openai/apiKey"_s, u"sk-fake-test"_s );
+    appSettings.setValue( u"ai/provider/claude/apiKey"_s, u"sk-ant-fake-test"_s );
+    // Cleartext refresh token: hasSecret() sees it while the vault is locked.
+    appSettings.setValue( u"ai/provider/codex/oauth/refreshToken"_s, u"fake-refresh-token"_s );
+
     const QList<QgsAiModelRouter::Provider> providers = {
-      QgsAiModelRouter::Provider::Plan,
       QgsAiModelRouter::Provider::Codex,
       QgsAiModelRouter::Provider::OpenAi,
       QgsAiModelRouter::Provider::Claude,
@@ -118,6 +129,8 @@ class TestQgsAiAgentSessionManager : public QObject
     void retrievalSkippedWithoutWorkspaceIndex();
     void preDispatchFailureUnlocksRunningState();
     void fallbackPreDispatchFailuresAreDrained();
+    void sendWithoutConfiguredProvidersFailsActionably();
+    void sessionUsageSignalAccumulatesAndResets();
 
     // Prompt-injection mitigations + workspace trust
     void wrapUntrustedEscapesSentinel();
@@ -201,9 +214,12 @@ void TestQgsAiAgentSessionManager::allowsExplicitExternalAttachmentContext()
   QSignalSpy messageSpy( &manager, &QgsAiAgentSessionManager::messageAdded );
   manager.sendUserMessage( u"hello"_s, QList<QgsAiChatContextFile>() << contextFile );
 
-  QVERIFY( stateSpy.isEmpty() );
+  // The external attachment is accepted (no blocked-context error); without a
+  // router the turn ends on the actionable no-provider failure state.
+  QCOMPARE( stateSpy.count(), 1 );
+  QCOMPARE( stateSpy.first().at( 0 ).toString(), u"failed"_s );
   QVERIFY( messageSpy.count() >= 2 );
-  QVERIFY( manager.history().last().content.contains( u"No provider"_s, Qt::CaseInsensitive ) );
+  QVERIFY( manager.history().last().content.contains( u"No AI provider"_s, Qt::CaseInsensitive ) );
 }
 
 void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
@@ -866,6 +882,99 @@ void TestQgsAiAgentSessionManager::fallbackPreDispatchFailuresAreDrained()
   QCOMPARE( runningSpy.last().at( 0 ).toBool(), false );
 
   clearProviderSettings();
+}
+
+void TestQgsAiAgentSessionManager::sendWithoutConfiguredProvidersFailsActionably()
+{
+  clearProviderSettings();
+  QgsSettings settings;
+  settings.remove( u"ai/provider/openrouter"_s );
+  const auto cleanup = qScopeGuard( [&settings]() {
+    clearProviderSettings();
+    settings.remove( u"ai/provider/openrouter"_s );
+  } );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+
+  QVERIFY( manager.providerFallbackOrder().isEmpty() );
+
+  QSignalSpy runningSpy( &manager, &QgsAiAgentSessionManager::requestRunningChanged );
+  QSignalSpy stateSpy( &manager, &QgsAiAgentSessionManager::requestStateChanged );
+
+  manager.sendUserMessage( u"hello"_s );
+
+  // Immediate actionable failure: no blind provider chain, no running state.
+  QVERIFY( !manager.hasActiveRequest() );
+  QCOMPARE( runningSpy.count(), 0 );
+  QVERIFY( manager.history().last().content.contains( u"provider settings"_s, Qt::CaseInsensitive ) );
+  bool sawFailed = false;
+  for ( const QList<QVariant> &args : stateSpy )
+  {
+    if ( args.at( 0 ).toString() == "failed"_L1 )
+      sawFailed = true;
+  }
+  QVERIFY( sawFailed );
+}
+
+void TestQgsAiAgentSessionManager::sessionUsageSignalAccumulatesAndResets()
+{
+  clearProviderSettings();
+  QgsSettings settings;
+  settings.remove( u"ai/provider/openrouter"_s );
+  const auto cleanup = qScopeGuard( [&settings]() {
+    settings.remove( u"ai/provider/openrouter"_s );
+    settings.remove( u"ai/network/maxRetries"_s );
+    clearProviderSettings();
+  } );
+
+  // Loopback OpenRouter returning a response WITH usage accounting.
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::jsonResponse(
+    200, "OK",
+    QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":4,\"total_tokens\":15,\"cost\":0.0003}}" )
+  );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  settings.setValue( u"ai/provider/openrouter/apiKey"_s, u"sk-or-loopback-test"_s );
+  settings.setValue( u"ai/network/maxRetries"_s, 0 );
+
+  QgsAiModelRouter router;
+  QgsAiModelRouter::ProviderSettings providerSettings = router.providerSettings( QgsAiModelRouter::Provider::OpenRouter );
+  providerSettings.endpoint = u"http://127.0.0.1:%1/api/v1/chat/completions"_s.arg( server.serverPort() );
+  providerSettings.model = u"test/model"_s;
+  providerSettings.enabled = true;
+  router.setProviderSettings( QgsAiModelRouter::Provider::OpenRouter, providerSettings );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+
+  QSignalSpy usageSpy( &manager, &QgsAiAgentSessionManager::sessionUsageChanged );
+
+  manager.sendUserMessage( u"hello"_s );
+  QTRY_VERIFY_WITH_TIMEOUT( !manager.hasActiveRequest(), 10000 );
+
+  // The session accumulated the response usage and notified the UI.
+  QVERIFY( manager.sessionUsage().isValid() );
+  QCOMPARE( manager.sessionUsage().totalTokens, static_cast<qint64>( 15 ) );
+  QVERIFY( usageSpy.count() >= 1 );
+  const QgsAiUsage reported = usageSpy.last().at( 0 ).value<QgsAiUsage>();
+  QCOMPARE( reported.totalTokens, static_cast<qint64>( 15 ) );
+
+  // A new session resets the accumulation and notifies with an empty total.
+  usageSpy.clear();
+  manager.startNewSession();
+  QVERIFY( !manager.sessionUsage().isValid() );
+  QVERIFY( usageSpy.count() >= 1 );
+  QVERIFY( !usageSpy.last().at( 0 ).value<QgsAiUsage>().isValid() );
 }
 
 void TestQgsAiAgentSessionManager::wrapUntrustedEscapesSentinel()

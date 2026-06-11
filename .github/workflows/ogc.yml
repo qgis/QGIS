@@ -5,6 +5,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -16,6 +17,7 @@ on:
     - 'src/providers/**'
     - 'src/server/**'
     - 'src/CMakeLists.txt'
+    - 'cmake/**'
     - 'external/**'
     - 'CMakeLists.txt'
     - '.github/workflows/ogc.yml'
@@ -30,6 +32,7 @@ on:
     - 'src/providers/**'
     - 'src/server/**'
     - 'src/CMakeLists.txt'
+    - 'cmake/**'
     - 'external/**'
     - 'CMakeLists.txt'
     - '.github/workflows/ogc.yml'
