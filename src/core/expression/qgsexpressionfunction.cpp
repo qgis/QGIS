@@ -6728,9 +6728,9 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
   const QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
 
   bool translate = true;
-  if ( values.length() == 3 )
+  if ( values.length() >= 3 )
   {
-    translate = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+    translate = QgsExpressionUtils::getTVLValue( values.at( 2 ), parent ) == QgsExpressionUtils::TVL::True;
   }
 
   bool foundLayer = false;
