@@ -84,23 +84,7 @@ void QgsLayoutToImageAlgorithm::initAlgorithm( const QVariantMap & )
   antialias->setFlags( antialias->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( antialias.release() );
 
-  QStringList imageFilters;
-  const auto supportedImageFormats { QImageWriter::supportedImageFormats() };
-  for ( const QByteArray &format : supportedImageFormats )
-  {
-    if ( format == "svg" )
-      continue;
-
-    const QString longName = format.toUpper() + QObject::tr( " format" );
-    const QString glob = QStringLiteral( "*." ) + format;
-
-    if ( format == "png" && !imageFilters.empty() )
-      imageFilters.insert( 0, QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() ) );
-    else
-      imageFilters.append( QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() ) );
-  }
-
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Image file" ), imageFilters.join( QLatin1String( ";;" ) ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Image file" ), QgsProcessingUtils::supportedImageFileFilters() ) );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsLayoutToImageAlgorithm::flags() const
