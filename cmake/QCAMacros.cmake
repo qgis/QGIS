@@ -161,7 +161,7 @@ endfunction(FIND_QCAOSSL_PLUGIN PLUGIN_REQUIRED)
 
 function(FIND_QCA_PLUGIN_DIR DIR_REQUIRED)
 
-  FIND_QCATOOL(1)
+  FIND_QCATOOL(${DIR_REQUIRED})
   get_filename_component(_qcatool ${QCATOOL_EXECUTABLE} REALPATH)
 
   if(EXISTS "${_qcatool}")

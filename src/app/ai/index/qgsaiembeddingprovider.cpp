@@ -50,8 +50,10 @@ using namespace Qt::StringLiterals;
 namespace
 {
   constexpr int LOCAL_DIMENSION = 384;
+#ifdef HAVE_AI_E5_EMBEDDINGS
   constexpr int E5_DIMENSION = 384;
   constexpr int E5_MAX_SEQUENCE_LENGTH = 512;
+#endif
   constexpr qint64 E5_ONNX_SIZE = 118346824;
   constexpr qint64 E5_SENTENCEPIECE_SIZE = 5069051;
   constexpr const char *INDEX_PROVIDER_SETTING = "strata/index/embedding_provider";
