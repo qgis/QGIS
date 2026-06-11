@@ -168,16 +168,9 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   const QString directory = parameterAsFileOutput( parameters, QStringLiteral( "FOLDER" ), context );
   const QString fileName = QDir( directory ).filePath( QStringLiteral( "atlas" ) );
 
-  QStringList imageFormats;
-  const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
-  for ( const QByteArray &format : supportedImageFormats )
-  {
-    if ( format == QByteArray( "svg" ) )
-      continue;
-    imageFormats << QString( format );
-  }
+  const QStringList imageFormats = QgsProcessingUtils::supportedImageFormats();
   const int idx = parameterAsEnum( parameters, QStringLiteral( "EXTENSION" ), context );
-  const QString extension = '.' + imageFormats.at( idx );
+  const QString extension = '.' + imageFormats.at( idx ).toLower();
 
   QgsLayoutExporter::ImageExportSettings settings;
 
