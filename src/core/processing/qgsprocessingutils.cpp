@@ -38,6 +38,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
 #include "qgstiledscenelayer.h"
+#include <QImageWriter>
 #include <QRegularExpression>
 #include <QTextCodec>
 #include <QUuid>
@@ -1746,6 +1747,54 @@ QString QgsProcessingUtils::resolveDefaultEncoding( const QString &defaultEncodi
   }
 
   return defaultEncoding;
+}
+
+QStringList QgsProcessingUtils::supportedImageFormats()
+{
+  const QList<QByteArray> supportedFormats = QImageWriter::supportedImageFormats();
+  QStringList formats;
+  formats.reserve( supportedFormats.size() );
+
+  for ( const QByteArray &format : supportedFormats )
+  {
+    if ( format == "svg" )
+    {
+      continue;
+    }
+    formats.append( QString::fromUtf8( format ).toUpper() );
+  }
+
+  std::sort( formats.begin(), formats.end(), []( const QString & a, const QString & b ) -> bool
+  {
+    if ( a ==  QLatin1String( "PNG" ) )
+    {
+      return true;
+    }
+    if ( b == QLatin1String( "PNG" ) )
+    {
+      return false;
+    }
+    return a.localeAwareCompare( b ) < 0;
+  } );
+
+  return formats;
+}
+
+QString QgsProcessingUtils::supportedImageFileFilters()
+{
+  const QStringList formats = supportedImageFormats();
+  QStringList fileFilters;
+  fileFilters.reserve( formats.size() );
+
+  for ( const QString &format : formats )
+  {
+    const QString longName = format + QObject::tr( " format" );
+    const QString glob = QStringLiteral( "*." ) + format;
+
+    fileFilters.append( QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob ) );
+  }
+
+  return fileFilters.join( QLatin1String( ";;" ) );
 }
 
 //
