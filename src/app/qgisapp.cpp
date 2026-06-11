@@ -31,6 +31,7 @@
 #include <QEvent>
 #include <QFile>
 #include <QFileInfo>
+#include <QIcon>
 #include <QImageWriter>
 #include <QInputDialog>
 #include <QKeyEvent>
@@ -1050,6 +1051,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   // load GUI: actions, menus, toolbars
   startProfile( tr( "Setting up UI" ) );
   setupUi( this );
+  mStrataToolBar->hide();
   endProfile();
 
   mScreenHelper = new QgsScreenHelper( this );
@@ -1501,10 +1503,13 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   mActionAiAssistant = new QAction( tr( "AI Assistant" ), this );
   mActionAiAssistant->setCheckable( true );
-  mActionAiAssistant->setIcon( QgsApplication::getThemeIcon( u"console/mIconRunConsole.svg"_s ) );
+  mActionAiAssistant->setIcon( QIcon( u":/images/icons/strata-icon.svg"_s ) );
+  mActionAiAssistant->setToolTip( tr( "Show or hide Strata AI Assistant" ) );
   connect( mActionAiAssistant, &QAction::toggled, mAiChatDock, &QgsDockWidget::setUserVisible );
   connect( mAiChatDock, &QgsDockWidget::visibilityChanged, mActionAiAssistant, &QAction::setChecked );
   mPluginMenu->addAction( mActionAiAssistant );
+  mStrataToolBar->addAction( mActionAiAssistant );
+  mStrataToolBar->show();
   endProfile();
 #endif
 
@@ -2228,6 +2233,7 @@ QgisApp::QgisApp()
 {
   sInstance = this;
   setupUi( this );
+  mStrataToolBar->hide();
 
   mScreenHelper = new QgsScreenHelper( this );
 
@@ -3735,6 +3741,9 @@ void QgisApp::createToolBars()
     << mSnappingToolBar
     << mMeshToolBar
     << mAnnotationsToolBar;
+#ifdef HAVE_AI_ASSISTANT
+  toolbarMenuToolBars << mStrataToolBar;
+#endif
 
   mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
   mSnappingWidget->setObjectName( u"mSnappingWidget"_s );
@@ -4421,7 +4430,7 @@ void QgisApp::setTheme( const QString &themeName )
     mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( u"console/mIconRunConsole.svg"_s ) );
 #ifdef HAVE_AI_ASSISTANT
   if ( mActionAiAssistant )
-    mActionAiAssistant->setIcon( QgsApplication::getThemeIcon( u"console/mIconRunConsole.svg"_s ) );
+    mActionAiAssistant->setIcon( QIcon( u":/images/icons/strata-icon.svg"_s ) );
 #endif
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( u"/mIconSuccess.svg"_s ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
