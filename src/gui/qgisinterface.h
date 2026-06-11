@@ -983,7 +983,7 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Removes an action (icon) from the plugin toolbar
+    //! Removes an action (icon only, no text) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -996,13 +996,13 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addRasterToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Adds an action (icon) to the Raster toolbar
+    //! Adds an action (icon only, no text) to the Raster toolbar
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
 
-    //! Removes an action (icon) from the Raster toolbar
+    //! Removes an action (icon only, no text) from the Raster toolbar
     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
 
-    //! Adds an action (icon) to the Vector toolbar
+    //! Adds an action (icon only, no text) to the Vector toolbar
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -1015,10 +1015,10 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addVectorToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Removes an action (icon) from the Vector toolbar
+    //! Removes an action (icon only, no text) from the Vector toolbar
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
 
-    //! Adds an action (icon) to the Database toolbar
+    //! Adds an action (icon only, no text) to the Database toolbar
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -1031,10 +1031,10 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Removes an action (icon) from the Database toolbar
+    //! Removes an action (icon only, no text) from the Database toolbar
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
 
-    //! Adds an action (icon) to the Web toolbar
+    //! Adds an action (icon only, no text) to the Web toolbar
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -1047,7 +1047,7 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *addWebToolBarWidget( QWidget *widget SIP_TRANSFER ) = 0;
 
-    //! Removes an action (icon) from the Web toolbar
+    //! Removes an action (icon only, no text) from the Web toolbar
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Adds toolbar with specified name
