@@ -33,6 +33,7 @@
 #include "qgsfeaturesource.h"
 #include "qgsfields.h"
 #include "qgsmaplayer.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayertoolscontext.h"
 #include "qgsvectorsimplifymethod.h"
@@ -81,7 +82,6 @@ class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
-class QgsStyleEntityVisitorInterface;
 class QgsVectorLayerSelectionProperties;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
