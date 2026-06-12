@@ -576,7 +576,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     setMouseParameters( MouseOperation::RotationCenter, mMousePos );
 
     float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
-    float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
+    float pitchDiff = -180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
     float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
 
     if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenPivoting )
@@ -604,7 +604,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     setMouseParameters( MouseOperation::RotationCamera );
     // rotate/tilt using mouse (camera stays at one position as it rotates)
-    float diffPitch = 0.2f * static_cast<float>( dy );
+    float diffPitch = -0.2f * static_cast<float>( dy );
     const float diffYaw = -0.2f * dx;
     if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging )
       diffPitch *= -1.0f;
@@ -771,7 +771,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
     setMouseParameters( MouseOperation::RotationCenter, mMousePos );
 
     const float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
-    float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
+    float pitchDiff = -180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
     const float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
 
     if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenPivoting )
@@ -1293,6 +1293,7 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
       float diffPitch = -0.2f * dy;
       if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging )
         diffPitch *= -1;
+
       const float diffYaw = -0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
     }
