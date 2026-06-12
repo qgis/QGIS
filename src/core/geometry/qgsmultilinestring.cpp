@@ -149,7 +149,7 @@ json QgsMultiLineString::asJsonObject( int precision, Qgis::GeoJsonProfile profi
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
       QgsPointSequence pts;
       lineString->points( pts );
-      coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision, profile ) );
     }
   }
   return { { "type", "MultiLineString" }, { "coordinates", coordinates } };

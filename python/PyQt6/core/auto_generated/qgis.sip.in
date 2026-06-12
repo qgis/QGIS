@@ -2788,6 +2788,7 @@ The development version
 
     enum class GeoJsonProfile /BaseType=IntEnum/
     {
+      Legacy,
       Rfc7946,
       JsonFg,
       JsonFgPlus,

@@ -567,6 +567,7 @@ json QgsCircularString::asJsonObject( int precision, Qgis::GeoJsonProfile profil
 {
   switch ( profile )
   {
+    case Qgis::GeoJsonProfile::Legacy:
     case Qgis::GeoJsonProfile::Rfc7946:
     {
       std::unique_ptr< QgsLineString > line( curveToLine() );
@@ -577,7 +578,7 @@ json QgsCircularString::asJsonObject( int precision, Qgis::GeoJsonProfile profil
     {
       QgsPointSequence pts;
       points( pts );
-      return { { "type", "CircularString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision ) } };
+      return { { "type", "CircularString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision, profile ) } };
     }
   }
   BUILTIN_UNREACHABLE

@@ -153,7 +153,7 @@ json QgsMultiPolygon::asJsonObject( int precision, Qgis::GeoJsonProfile profile 
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
-      coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision, profile ) );
 
       std::unique_ptr< QgsLineString > interiorLineString;
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
@@ -161,7 +161,7 @@ json QgsMultiPolygon::asJsonObject( int precision, Qgis::GeoJsonProfile profile 
         interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
         QgsPointSequence interiorPts;
         interiorLineString->points( interiorPts );
-        coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision ) );
+        coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision, profile ) );
       }
       polygons.push_back( coordinates );
     }

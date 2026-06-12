@@ -2533,15 +2533,19 @@ Exports the geometry to WKT
 
     QString asJson( int precision = 17 ) const;
 %Docstring
-Exports the geometry to a GeoJSON string.
+Exports the geometry to a GeoJSON RFC7946 string.
+
+.. seealso:: :py:func:`asGeoJson` for exporting using other GeoJSON profiles
 %End
 
-    QString asGeoJson( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Rfc7946 ) const;
+    QString asGeoJson( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const;
 %Docstring
 Export the geometry to a GeoJSON string, with the given ``precision``
 and following the specified GeoJSON ``profile``. Note: this is identical
-to :py:func:`~QgsGeometry.asJson` when using the Rfc7946 profile, but
-differs when using other profiles.
+to :py:func:`~QgsGeometry.asJson` when using the Legacy and Rfc7946
+profile, but differs when using other profiles with "CircularString,"
+"CompoundCurve," "CurvePolygon," "MultiCurve," or "MultiSurface"
+geometries.
 
 .. versionadded:: 4.2
 %End
