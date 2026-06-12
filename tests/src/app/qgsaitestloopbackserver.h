@@ -133,10 +133,10 @@ class QgsAiTestLoopbackServer : public QTcpServer // clazy:exclude=missing-qobje
       head += "Connection: close\r\n\r\n";
       socket->write( head );
       socket->flush();
-      writeNextChunk( socket, response.sseChunks, 0, response.interChunkDelayMs );
+      writeChunk( socket, response.sseChunks, 0, response.interChunkDelayMs );
     }
 
-    void writeNextChunk( QTcpSocket *socket, const QList<QByteArray> &chunks, int index, int delayMs )
+    void writeChunk( QTcpSocket *socket, const QList<QByteArray> &chunks, int index, int delayMs )
     {
       QTimer::singleShot( delayMs, socket, [this, socket, chunks, index, delayMs]() {
         if ( socket->state() != QAbstractSocket::ConnectedState )
@@ -148,7 +148,7 @@ class QgsAiTestLoopbackServer : public QTcpServer // clazy:exclude=missing-qobje
         }
         socket->write( chunks.at( index ) );
         socket->flush();
-        writeNextChunk( socket, chunks, index + 1, delayMs );
+        writeChunk( socket, chunks, index + 1, delayMs );
       } );
     }
 };
