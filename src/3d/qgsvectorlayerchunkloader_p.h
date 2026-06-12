@@ -128,8 +128,13 @@ class QgsVectorLayerChunkedEntity : public QgsAbstractFeatureBasedChunkedEntity
 
     ~QgsVectorLayerChunkedEntity() override;
 
+    //! update already loaded nodes (add to the queue)
+    void updateNodes( const QList<QgsChunkNode *> &nodes );
+
   private:
     bool applyTerrainOffset() const override;
+
+    std::unique_ptr<QgsChunkQueueJobFactory> mUpdateJobFactory;
 };
 
 /// @endcond
