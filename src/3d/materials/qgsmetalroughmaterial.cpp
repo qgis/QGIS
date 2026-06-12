@@ -61,8 +61,8 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
-  , mTransformParameter( new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
-  , mNormalTransformParameter( new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"meshMatrix"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"meshNormalMatrix"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   init();
 }
@@ -454,7 +454,6 @@ void QgsMetalRoughMaterial::updateShaders()
       defines << u"USE_INSTANCE_SCALE"_s;
     if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
       defines << u"USE_INSTANCE_ROTATION"_s;
-    defines << u"TEXTURE_ROTATION"_s << u"TEXTURE_OFFSET"_s;
     const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
     mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
   }

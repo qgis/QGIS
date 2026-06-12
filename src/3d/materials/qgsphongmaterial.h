@@ -21,11 +21,12 @@
 #include "qgsmaterial.h"
 
 #include <QColor>
-#include <QMatrix3x3>
-#include <QMatrix4x4>
 #include <QObject>
 
 #define SIP_NO_FILE
+
+class QMatrix4x4;
+
 
 namespace Qt3DRender
 {
@@ -57,7 +58,11 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
      * \a flags controls which per-instance attributes (scale, rotation) are active.
      */
     void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
-    //! Sets the mesh transform
+
+    /**
+     * Sets the transform from mesh space to object space
+     * \note Only applies when instancing is enabled
+     */
     void setInstancingMeshTransform( const QMatrix4x4 &transform );
 
     ~QgsPhongMaterial() override;

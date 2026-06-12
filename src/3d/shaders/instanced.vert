@@ -25,30 +25,20 @@ out vec2 texCoord;
 out vec4 worldTangent;
 #endif
 
-uniform mat4 nodeTransform;
+// transform from mesh space (raw input vertex coordinates) to object space.
+// Often this is an identity matrix, but it could be an axis flip and/or a transform
+// from the gltf node of the source mesh.
+uniform mat4 meshMatrix;
+uniform mat3 meshNormalMatrix;
 
-uniform mat3 nodeNormalTransform;
-
+// transform from chunk space to world space (from entity's QTransform),
+// applied at the very end.
 uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
 uniform mat4 mvp;
 
 uniform vec4 symbolRotation;
 uniform vec3 symbolScale;
-
-#ifdef HAS_TEXTURE
-#ifdef DATA_DEFINED_TEXTURE_TRANSFORMS
-in vec4 ddTextureTransform;
-#elif defined(TEXTURE_ROTATION) || defined(TEXTURE_OFFSET)
-uniform float texCoordScale;
-#ifdef TEXTURE_OFFSET
-uniform vec2 texCoordOffset;
-#endif
-#ifdef TEXTURE_ROTATION
-uniform float texCoordRotation;
-#endif
-#endif
-#endif
 
 #ifdef CLIPPING
     #pragma include clipplane.shaderinc
@@ -61,78 +51,46 @@ vec3 rotateByQuat(vec3 v, vec4 q) {
 void main()
 {
     #ifdef USE_INSTANCE_SCALE
-    vec3 thisScale = instanceScale;
+    vec3 thisInstanceScale = instanceScale;
     #else
-    vec3 thisScale = symbolScale;
+    vec3 thisInstanceScale = symbolScale;
     #endif
 
     #ifdef USE_INSTANCE_ROTATION
-    vec4 thisRotation = instanceRotation;
+    vec4 thisInstanceRotation = instanceRotation;
     #else
-    vec4 thisRotation = symbolRotation;
+    vec4 thisInstanceRotation = symbolRotation;
     #endif
 
     // order of operations are:
-    // 1. Apply node transform
-    // 2. Apply either per-instance scale or default symbol scale
-    // 3. Apply either per-instance rotation or default symbol rotation
-    // 4. Apply per-instance translation
+    // 1. mesh space to object space: apply mesh matrix
+    // 2. object space to chunk space: apply per-instance scale, rotation, translation (in this order)
+    // 3. chunk space to world space: apply model matrix
 
-    vec3 axisPosition = (nodeTransform * vec4(vertexPosition, 1.0)).xyz;
-    vec3 scaledPosition = axisPosition * thisScale;
-    vec3 rotatedPosition = rotateByQuat(scaledPosition, thisRotation);
-    vec3 vertexPositionChunk = rotatedPosition + instanceTranslation;
+    // for vertices
+    vec3 objectPosition = (meshMatrix * vec4(vertexPosition, 1.0)).xyz;
+    vec3 chunkPosition = rotateByQuat(objectPosition * thisInstanceScale, thisInstanceRotation) + instanceTranslation;
 
-    // for normals:
-    vec3 axisNormal = nodeNormalTransform * vertexNormal;
-    vec3 scaledNormal = axisNormal / thisScale;
-    vec3 rotatedNormal = rotateByQuat(scaledNormal, thisRotation);
+    // for normals
+    vec3 objectNormal = meshNormalMatrix * vertexNormal;
+    vec3 chunkNormal = rotateByQuat(objectNormal / thisInstanceScale, thisInstanceRotation);
 
     // Transform position and normal to world space
-    worldPosition = vec3(modelMatrix * vec4(vertexPositionChunk, 1.0));
-    worldNormal = normalize(modelNormalMatrix * rotatedNormal);
+    worldPosition = vec3(modelMatrix * vec4(chunkPosition, 1.0));
+    worldNormal = normalize(modelNormalMatrix * chunkNormal);
 
 #ifdef HAS_TEXTURE
-#ifdef DATA_DEFINED_TEXTURE_TRANSFORMS
-    vec2 currentTextureOffset = ddTextureTransform.xy;
-    float currentTextureScale = ddTextureTransform.z;
-    float currentTextureRotation = ddTextureTransform.w;
-    float rad = radians(currentTextureRotation);
-    float c = cos(rad);
-    float s = sin(rad);
-    mat2 rotMat = mat2(c, s, -s, c);
-    texCoord = rotMat * ((vertexTexCoord - currentTextureOffset) * currentTextureScale) + currentTextureOffset;
-#elif defined(TEXTURE_ROTATION) || defined(TEXTURE_OFFSET)
-    float currentTextureScale = texCoordScale;
-#ifdef TEXTURE_OFFSET
-    vec2 currentTextureOffset = texCoordOffset;
-#else
-    vec2 currentTextureOffset = vec2(0.0);
-#endif
-#ifdef TEXTURE_ROTATION
-    float currentTextureRotation = texCoordRotation;
-    float rad = radians(currentTextureRotation);
-    float c = cos(rad);
-    float s = sin(rad);
-    mat2 rotMat = mat2(c, s, -s, c);
-    texCoord = rotMat * ((vertexTexCoord - currentTextureOffset) * currentTextureScale) + currentTextureOffset;
-#else
-    texCoord = (vertexTexCoord - currentTextureOffset) * currentTextureScale + currentTextureOffset;
-#endif
-#else
     texCoord = vertexTexCoord;
-#endif
 #endif
 
 #ifdef HAS_TANGENT
-    vec3 axisTangent = mat3(nodeTransform) * vertexTangent.xyz;
-    vec3 scaledTangent = axisTangent * thisScale;
-    vec3 rotatedTangent = rotateByQuat(scaledTangent, thisRotation);
-    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(rotatedTangent, 0.0)));
+    vec3 chunkTangent = rotateByQuat(vertexTangent.xyz * thisInstanceScale, thisInstanceRotation);
+    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(chunkTangent, 0.0)));
     worldTangent.w = vertexTangent.w;
 #endif
 
-    gl_Position = mvp * vec4(vertexPositionChunk, 1.0);
+    // Calculate vertex position in clip coordinates
+    gl_Position = mvp * vec4(chunkPosition, 1.0);
 
 #ifdef CLIPPING
     setClipDistance(worldPosition);

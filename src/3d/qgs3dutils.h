@@ -71,7 +71,7 @@ struct _3D_EXPORT QgsMeshNodeData
 {
     std::unique_ptr<Qt3DCore::QGeometry> geometry; //!< Geometry
     std::unique_ptr<QgsMaterial> material;         //!< Material
-    QMatrix4x4 nodeTransform;                      //!< Local-to-model-space transform
+    QMatrix4x4 meshTransform;                      //!< Mesh space (raw coordinates) to object space transform
 };
 
 /**
@@ -395,14 +395,6 @@ class _3D_EXPORT Qgs3DUtils
     static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
 
     /**
-     * Converts an axis string ("x", "-x", "y", "-y", "z", "-z") to a unit QVector3D.
-     * Returns a null vector for any unrecognised input.
-     *
-     * \since QGIS 4.2
-     */
-    static QVector3D axisStringToVector( const QString &axis );
-
-    /**
      * Computes a 3x3 orientation matrix from the given up and forward axis strings.
      *
      * \a upAxis and \a forwardAxis are case-sensitive axis strings: "x", "-x", "y", "-y",
@@ -410,7 +402,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 4.2
      */
-    static QMatrix3x3 axisTransformMatrix( const QString &upAxis, const QString &forwardAxis );
+    static QMatrix4x4 axisTransformMatrix( const QString &upAxis, const QString &forwardAxis );
 
     /**
      * Removes some define macros from a shader source code.
@@ -556,6 +548,13 @@ class _3D_EXPORT Qgs3DUtils
     // height will exceed this amount!
     static constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
     static constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
+
+  private:
+    /**
+     * Converts an axis string ("x", "-x", "y", "-y", "z", "-z") to a unit QVector3D.
+     * Returns a null vector for any unrecognised input.
+    */
+    static QVector3D axisStringToVector( const QString &axis );
 };
 
 #endif // QGS3DUTILS_H

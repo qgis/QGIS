@@ -154,8 +154,8 @@ class _3D_EXPORT QgsGltf3DUtils
     /**
      * Loads a GLTF file from \a filePath and returns one QgsMeshNodeData entry per
      * triangle primitive found across the entire scene. Each entry holds the geometry,
-     * material, and the accumulated node-to-model-space transform; vertex positions
-     * are kept in local space.
+     * material, and the accumulated mesh space to object space transform; vertex positions
+     * are kept verbatim in the original mesh space.
      *
      * \a context is used to configure the created materials.
      * \a bufferParent is used as the Qt3D parent for any GPU buffers that are created.

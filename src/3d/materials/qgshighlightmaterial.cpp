@@ -36,8 +36,8 @@ using namespace Qt::StringLiterals;
 
 QgsHighlightMaterial::QgsHighlightMaterial( QNode *parent )
   : QgsMaterial( parent )
-  , mTransformParameter( new Qt3DRender::QParameter( u"nodeTransform"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
-  , mNormalTransformParameter( new Qt3DRender::QParameter( u"nodeNormalTransform"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"meshMatrix"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"meshNormalMatrix"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   init();
 }

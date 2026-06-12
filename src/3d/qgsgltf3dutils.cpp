@@ -1023,16 +1023,12 @@ static void collectGltfPrimitives(
   const QgsMaterialContext &context,
   std::vector<QgsMeshNodeData> &result,
   QStringList *errors,
-  QSet<int> &visitedNodes,
   QHash<int, Qt3DCore::QBuffer *> &bufferViewCache,
   Qt3DCore::QNode *bufferParent
 )
 {
   if ( nodeIndex < 0 || static_cast<std::size_t>( nodeIndex ) >= model.nodes.size() )
     return;
-  if ( visitedNodes.contains( nodeIndex ) )
-    return;
-  visitedNodes.insert( nodeIndex );
 
   tinygltf::Node &node = model.nodes[nodeIndex];
 
@@ -1107,7 +1103,7 @@ static void collectGltfPrimitives(
   }
 
   for ( int childIndex : node.children )
-    collectGltfPrimitives( model, childIndex, currentTransform, baseUri, context, result, errors, visitedNodes, bufferViewCache, bufferParent );
+    collectGltfPrimitives( model, childIndex, currentTransform, baseUri, context, result, errors, bufferViewCache, bufferParent );
 }
 
 std::vector<QgsMeshNodeData> QgsGltf3DUtils::buildGltfGeometries( const QString &filePath, const QgsMaterialContext &context, QStringList *errors, Qt3DCore::QNode *bufferParent )
@@ -1145,10 +1141,9 @@ std::vector<QgsMeshNodeData> QgsGltf3DUtils::buildGltfGeometries( const QString 
   const QString baseUri = QUrl::fromLocalFile( filePath ).toString();
   std::vector<QgsMeshNodeData> result;
 
-  QSet<int> visitedNodes;
   QHash<int, Qt3DCore::QBuffer *> bufferViewCache;
   for ( const int nodeIndex : model.scenes[sceneIndex].nodes )
-    collectGltfPrimitives( model, nodeIndex, QMatrix4x4(), baseUri, context, result, errors, visitedNodes, bufferViewCache, bufferParent );
+    collectGltfPrimitives( model, nodeIndex, QMatrix4x4(), baseUri, context, result, errors, bufferViewCache, bufferParent );
 
   return result;
 }

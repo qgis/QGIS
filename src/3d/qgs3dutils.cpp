@@ -1024,17 +1024,17 @@ QVector3D Qgs3DUtils::axisStringToVector( const QString &axis )
   return QVector3D();
 }
 
-QMatrix3x3 Qgs3DUtils::axisTransformMatrix( const QString &upAxis, const QString &forwardAxis )
+QMatrix4x4 Qgs3DUtils::axisTransformMatrix( const QString &upAxis, const QString &forwardAxis )
 {
   const QVector3D up = axisStringToVector( upAxis );
   const QVector3D forward = axisStringToVector( forwardAxis );
 
   if ( up.isNull() || forward.isNull() )
-    return QMatrix3x3();
+    return QMatrix4x4();
 
   const QVector3D right = QVector3D::crossProduct( forward, up );
   if ( right.isNull() )
-    return QMatrix3x3();
+    return QMatrix4x4();
 
   const float data[9] = {
     right.x(),
@@ -1047,7 +1047,7 @@ QMatrix3x3 Qgs3DUtils::axisTransformMatrix( const QString &upAxis, const QString
     up.y(),
     up.z(),
   };
-  return QMatrix3x3( data );
+  return QMatrix4x4( QMatrix3x3( data ) );
 }
 
 QByteArray Qgs3DUtils::removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines )

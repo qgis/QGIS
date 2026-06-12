@@ -39,9 +39,8 @@ QgsMaterial *QgsNullMaterial3DHandler::toMaterial( const QgsAbstractMaterialSett
       }
       case Qgis::MaterialRenderingTechnique::InstancedPoints:
       {
-        QgsHighlightMaterial *mat = new QgsHighlightMaterial();
-        mat->setInstancingEnabled( true, Qgis::InstancedMaterialFlags() );
-        return mat;
+        Q_ASSERT( false );
+        return nullptr;
       }
       case Qgis::MaterialRenderingTechnique::Lines:
       case Qgis::MaterialRenderingTechnique::Points:

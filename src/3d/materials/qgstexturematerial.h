@@ -20,11 +20,12 @@
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
-#include <QMatrix3x3>
-#include <QMatrix4x4>
 #include <QObject>
 
 #define SIP_NO_FILE
+
+class QMatrix4x4;
+
 
 // adapted from Qt's qtexturematerial.h
 namespace Qt3DRender
@@ -65,7 +66,11 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
      * \a flags controls which per-instance attributes (scale, rotation) are active.
      */
     void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
-    //! Sets the mesh transform
+
+    /**
+     * Sets the transform from mesh space to object space
+     * \note Only applies when instancing is enabled
+     */
     void setInstancingMeshTransform( const QMatrix4x4 &transform );
 
   public slots:
@@ -89,7 +94,6 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
     Qt3DRender::QParameter *mTransformParameter = nullptr;
-    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
 };
 
 ///@endcond PRIVATE

@@ -222,16 +222,13 @@ std::vector<QgsMeshNodeData> QgsObj3DUtils::buildObjGeometries( const QString &f
     {
       const tinyobj::material_t &m = materials[matId];
       QgsPhongMaterial *phong = new QgsPhongMaterial();
-      phong->setAmbient( QColor::fromRgbF( m.ambient[0], m.ambient[1], m.ambient[2] ), 0 );
+      // we explicitly avoid setting the ambient color, it is defined as white in most MTL files
+      // ideally, we should be using PBR material, rather than Phong
       phong->setDiffuse( QColor::fromRgbF( m.diffuse[0], m.diffuse[1], m.diffuse[2] ) );
       phong->setSpecular( QColor::fromRgbF( m.specular[0], m.specular[1], m.specular[2] ) );
       phong->setShininess( m.shininess );
       phong->setOpacity( m.dissolve );
       mat = phong;
-    }
-    else
-    {
-      mat = new QgsPhongMaterial();
     }
 
     result.push_back( QgsMeshNodeData { std::unique_ptr<Qt3DCore::QGeometry>( geom ), std::unique_ptr<QgsMaterial>( mat ), QMatrix4x4() } );
