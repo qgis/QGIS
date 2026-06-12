@@ -1928,7 +1928,7 @@ void QgsAiChatDockWidget::updateSessionUsage( const QgsAiUsage &total )
   if ( total.costUsd > 0.0 )
     text += u" · $%1"_s.arg( total.costUsd, 0, 'f', 4 );
   mUsageLabel->setText( text );
-  mUsageLabel->setToolTip( tr( "Session usage — prompt: %1, completion: %2, cached: %3, reasoning: %4%5" )
+  mUsageLabel->setToolTip( tr( "Session usage - prompt: %1, completion: %2, cached: %3, reasoning: %4%5" )
                              .arg(
                                humanTokens( total.promptTokens ),
                                humanTokens( total.completionTokens ),
@@ -2408,7 +2408,7 @@ void QgsAiChatDockWidget::openProviderSettings()
     openRouterModel->setEditText( currentText );
   } );
   // Selecting a catalog entry replaces the display label with the model id.
-  connect( openRouterModel, QOverload<int>::of( &QComboBox::activated ), &dialog, [openRouterModel]( int index ) {
+  connect( openRouterModel, qOverload<int>( &QComboBox::activated ), &dialog, [openRouterModel]( int index ) {
     const QString modelId = openRouterModel->itemData( index ).toString();
     if ( !modelId.isEmpty() )
       openRouterModel->setEditText( modelId );
