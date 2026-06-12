@@ -8997,8 +8997,10 @@ Can't recognize service requested.
         )
         self.assertTrue(vl.isValid())
 
-        # Complex Structure in spatial sampling features
-        # Test with geometry held in a complex structure https://github.com/qgis/QGIS/pull/66066
+    @unittest.skipIf(gdal.GetDriverByName("GMLAS") is None, "OGR GMLAS driver required")
+    def testWFSComplexFeaturesNestedGeoms(self):
+        """Test reading features with geometry held in a complex structure https://github.com/qgis/QGIS/pull/66066"""
+
         endpoint = (
             self.__class__.basetestpath
             + "/fake_qgis_http_endpoint_WFS_complex_spatial_sampling_features"
@@ -9126,8 +9128,10 @@ Can't recognize service requested.
         assert vl.isSpatial()
         self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Point)
 
-        # Complex Structure in geologic features
-        # Test with geometry held in a complex structure of referenced features https://github.com/qgis/QGIS/pull/66192
+    @unittest.skipIf(gdal.GetDriverByName("GMLAS") is None, "OGR GMLAS driver required")
+    def testWFSComplexFeaturesGeomInRelatedFeatures(self):
+        """Test with geometry held in a complex structure of referenced features https://github.com/qgis/QGIS/pull/66192"""
+
         endpoint = (
             self.__class__.basetestpath
             + "/fake_qgis_http_endpoint_WFS_complex_features_geologgic_feature"

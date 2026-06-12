@@ -247,6 +247,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
 
     QgsSettings settings;
     QString cacheDirectory = settings.value( u"cache/directory"_s ).toString();
+    qDebug() << "------------------ " << cacheDirectory << " -------------------------------";
     if ( cacheDirectory.isEmpty() )
       cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
     if ( !cacheDirectory.endsWith( QDir::separator() ) )
@@ -255,6 +256,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
     }
     // Must be kept in sync with QgsOptions::clearCache()
     cacheDirectory += "gmlas_xsd_cache"_L1;
+    qDebug() << "------------------ " << cacheDirectory << " -------------------------------";
     QgsDebugMsgLevel( u"cacheDirectory = %1"_s.arg( cacheDirectory ), 4 );
     char *pszEscaped = CPLEscapeString( cacheDirectory.toStdString().c_str(), -1, CPLES_XML );
     QString config = QStringLiteral(
@@ -295,6 +297,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
     )
                        .arg( pszEscaped );
     CPLFree( pszEscaped );
+    qDebug() << "konfig:::::: " << config << " war die konfig";
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "CONFIG_FILE", config.toStdString().c_str() );
 
     QgsXmlSchemaAnalyzerGMLASErrorHandlerUserData userData;
@@ -941,6 +944,8 @@ QList<QPair<QString, Qgis::WkbType>> QgsXmlSchemaAnalyzer::geometryInfoFromRefer
 {
   // We go one level deep by checking all layers in the dataset for foreign keys to the current layer.
   QList<QPair<QString, Qgis::WkbType>> geometryInfoFromReferencingLayers;
+  // We create the pattern for the PKs. An alternate approach would be to get the layers by
+  // reading features of https://gdal.org/en/stable/drivers/vector/gmlas_metadata_layers.html#ogr-layer-relationships-layer
   const QString fkNamePartToCurrentLayer = u"_%1_pkid"_s.arg( layerName.toLower() );
   int nLayerCount = GDALDatasetGetLayerCount( dataset );
   for ( int i = 0; i < nLayerCount; i++ )
