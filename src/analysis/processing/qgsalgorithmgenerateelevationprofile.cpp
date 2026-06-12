@@ -125,7 +125,7 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output image" ), QgsProcessingUtils::supportedImageFileFilters() ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output image" ), QgsProcessingUtils::supportedImageFileFilters() ) );
 }
 
 QString QgsGenerateElevationProfileAlgorithm::name() const
