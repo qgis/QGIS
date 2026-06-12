@@ -802,9 +802,13 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
 
 json QgsLineString::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
+  // The current profiles do not make any difference for LineString,
+  // but we keep the parameter in case we need to add specific handling
+  // for future profiles
+  Q_UNUSED( profile )
   QgsPointSequence pts;
   points( pts );
-  return { { "type", "LineString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision ) } };
+  return { { "type", "LineString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision, profile ) } };
 }
 
 QString QgsLineString::asKml( int precision ) const

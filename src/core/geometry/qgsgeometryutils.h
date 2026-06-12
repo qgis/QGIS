@@ -345,14 +345,15 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Returns a geoJSON coordinates string.
      * \note not available in Python bindings
+     * \deprecated QGIS 4.2. Use pointsToJson() instead.
      */
-    static QString pointsToJSON( const QgsPointSequence &points, int precision ) SIP_SKIP;
+    Q_DECL_DEPRECATED static QString pointsToJSON( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /**
      * Returns coordinates as json object.
      * \note not available in Python bindings
      */
-    static json pointsToJson( const QgsPointSequence &points, int precision ) SIP_SKIP;
+    static json pointsToJson( const QgsPointSequence &points, int precision, Qgis::GeoJsonProfile profile ) SIP_SKIP;
 
     /**
      * Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")

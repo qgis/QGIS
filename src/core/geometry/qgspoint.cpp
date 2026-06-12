@@ -369,6 +369,10 @@ json QgsPoint::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
     {
       j["coordinates"].push_back( qgsRound( mZ, precision ) );
     }
+    if ( isMeasure() && ( profile == Qgis::GeoJsonProfile::JsonFg || profile == Qgis::GeoJsonProfile::JsonFgPlus ) )
+    {
+      j["coordinates"].push_back( qgsRound( mM, precision ) );
+    }
   }
   return j;
 }

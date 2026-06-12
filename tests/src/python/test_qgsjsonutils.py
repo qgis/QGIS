@@ -10,10 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "3/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+import json
 import unittest
 
 from qgis.core import (
     NULL,
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsEditorWidgetSetup,
     QgsFeature,
@@ -1103,7 +1105,7 @@ class TestQgsJsonUtils(QgisTestCase):
                     "coordinates": [1,2,3,4]
                 }"""
         )
-        self.assertTrue(res.isNull())
+        self.assertEqual(res.wkbType(), Qgis.WkbType.PointZM)
         res = QgsJsonUtils.geometryFromGeoJson(
             """{
                     "type": "Point"
@@ -1160,6 +1162,13 @@ class TestQgsJsonUtils(QgisTestCase):
             """{
                     "type": "MultiPoint",
                     "coordinates": [[1,2,3,4]]
+                }"""
+        )
+        self.assertEqual(res.wkbType(), Qgis.WkbType.MultiPointZM)
+        res = QgsJsonUtils.geometryFromGeoJson(
+            """{
+                    "type": "MultiPoint",
+                    "coordinates": [[1,2,3,4,5]]
                 }"""
         )
         self.assertTrue(res.isNull())
@@ -1639,16 +1648,203 @@ class TestQgsJsonUtils(QgisTestCase):
         )
         self.assertTrue(res.isNull())
 
+    def _round_trip(self, wkt, expected=None, profile=Qgis.GeoJsonProfile.JsonFg):
+
+        geom = QgsGeometry.fromWkt(wkt)
+        wkb_type = geom.wkbType()
+        exporter = QgsJsonExporter()
+        exporter.setGeoJsonProfile(profile)
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        # Export single feature
+        j = json.loads(exporter.exportFeature(f))
+        features = QgsJsonUtils.stringToFeatureList(json.dumps(j))
+        self.assertEqual(len(features), 1)
+
+        if expected is None:
+            self.assertEqual(
+                features[0].geometry().wkbType(),
+                wkb_type,
+                f"WKB type {profile} mismatch: {features[0].geometry().wkbType()} != {wkb_type}\n{j}",
+            )
+
+        if expected is not None:
+            wkt = expected
+
+        if expected == "":
+            self.assertIn(
+                features[0].geometry().asWkt(),
+                "EMPTY",
+                f"Expected empty geometry for {profile} but got: {features[0].geometry().asWkt()}\n{j}",
+            )
+
+        # Now export the features as a collection
+        j = json.loads(exporter.exportFeatures([features[0]]))
+        features = QgsJsonUtils.stringToFeatureList(json.dumps(j))
+        self.assertEqual(len(features), 1)
+
+        if expected is None:
+            self.assertEqual(
+                features[0].geometry().wkbType(),
+                wkb_type,
+                f"WKB type mismatch for collection: {features[0].geometry().wkbType()} != {wkb_type}\n{j}",
+            )
+
+        self.assertTrue(
+            compareWkt(features[0].geometry().asWkt(), wkt),
+            f"Round trip failed for collection: {features[0].geometry().asWkt()} != {wkt}\n{j}",
+        )
+
+        return j
+
+    def _round_trip_jsonfg_profiles(self, wkt, expected=None):
+        for profile in (Qgis.GeoJsonProfile.JsonFg, Qgis.GeoJsonProfile.JsonFgPlus):
+            self._round_trip(wkt, expected, profile)
+
     def test_as_geojson(self):
         """Test GeoJson round trip with JSON-FG profile"""
 
         # CircularString
-        wkt = "CIRCULARSTRING (0 0, 1 1, 2 2)"
-        geom = QgsGeometry.fromWkt(wkt)
-        self.assertTrue(compareWkt(geom.asWkt(), wkt))
-        j = geom.asGeoJson(0, Qgis.GeoJsonProfile.JsonFg)
-        geom2 = QgsJsonUtils.geometryFromGeoJson(j)
-        self.assertTrue(compareWkt(geom2.asWkt(), wkt))
+        self._round_trip_jsonfg_profiles("CIRCULARSTRING (0 0, 1 1, 2 0)")
+        # CompoundCurve
+        self._round_trip_jsonfg_profiles(
+            "COMPOUNDCURVE (CIRCULARSTRING (0 0, 1 1, 2 0), (2 0, 3 1, 3 2))"
+        )
+        # CurvePolygon
+        self._round_trip_jsonfg_profiles(
+            "CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0), (1 1, 3 3, 3 1, 1 1))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING (0 0,1 -1,2 0),(2 0,0 0)))"
+        )
+        # Note: this is not GEOS valid (example taken from https://postgis.net/docs/using_postgis_dbmanagement.html#MultiSurface)
+        self._round_trip_jsonfg_profiles(
+            "CURVEPOLYGON((10 10, 14 12, 11 10, 10 10), (11 11, 11.5 11, 11 11.5, 11 11))"
+        )
+        # MultiCurve
+        self._round_trip_jsonfg_profiles(
+            "MULTICURVE(LINESTRING(0 0, 2 2), CIRCULARSTRING(2 2, 4 1, 6 2))"
+        )
+        # MultiSurfaces
+        self._round_trip_jsonfg_profiles(
+            "MULTISURFACE (CURVEPOLYGON(CIRCULARSTRING( 0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1)), CURVEPOLYGON((10 10, 14 12, 11 10, 10 10), (11 11, 11.5 11, 11 11.5, 11 11)))"
+        )
+
+        # Test empty geometries
+        self._round_trip_jsonfg_profiles("POLYGON EMPTY")
+        self._round_trip_jsonfg_profiles("CIRCULARSTRING EMPTY")
+        self._round_trip_jsonfg_profiles("COMPOUNDCURVE EMPTY")
+        self._round_trip_jsonfg_profiles("CURVEPOLYGON EMPTY")
+        self._round_trip_jsonfg_profiles("MULTICURVE EMPTY")
+        self._round_trip_jsonfg_profiles("MULTISURFACE EMPTY")
+
+        # Test Z values - should be preserved in round trip
+        self._round_trip_jsonfg_profiles("LINESTRING Z (0 0 1, 1 1 2)")
+        self._round_trip_jsonfg_profiles(
+            "POLYGON Z ((0 0 1, 4 0 1, 4 4 1, 0 4 1, 0 0 1))"
+        )
+        self._round_trip("POINT Z (1 2 3)")
+        self._round_trip("CIRCULARSTRING Z (0 0 1, 1 1 2, 2 0 3)")
+        self._round_trip_jsonfg_profiles(
+            "COMPOUNDCURVE Z (CIRCULARSTRING Z (0 0 1, 1 1 2, 2 0 3), (2 0 3, 3 1 4, 3 2 5))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "CURVEPOLYGON Z (CIRCULARSTRING Z (0 0 1, 4 0 1, 4 4 1, 0 4 1, 0 0 1), (1 1 2, 3 3 2, 3 1 2, 1 1 2))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "MULTICURVE Z (LINESTRING Z (0 0 1, 2 2 3), CIRCULARSTRING Z (2 2 3, 4 1 4, 6 2 5))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "MULTISURFACE Z (CURVEPOLYGON Z (CIRCULARSTRING Z ( 0 0 1, 4 0 1, 4 4 1, 0 4 1, 0 0 1),(1 1 2, 3 3 2, 3 1 2, 1 1 2)), CURVEPOLYGON Z ((10 10 3, 14 12 3, 11 10 3, 10 10 3), (11 11 4, 11.5 11 4, 11 11.5 4, 11 11 4)))"
+        )
+
+    def test_jsonfg_m_values(self):
+
+        # Test M values are preserved in round trip
+        self._round_trip_jsonfg_profiles("POINT M (1 2 3)")
+        self._round_trip_jsonfg_profiles("LINESTRING M (0 0 1, 1 1 2)")
+        self._round_trip_jsonfg_profiles(
+            "POLYGON M ((0 0 1, 4 0 1, 4 4 1, 0 4 1, 0 0 1))"
+        )
+        self._round_trip_jsonfg_profiles("CIRCULARSTRING M (0 0 1, 1 1 2, 2 0 3)")
+        self._round_trip_jsonfg_profiles(
+            "COMPOUNDCURVE M (CIRCULARSTRING M (0 0 1, 1 1 2, 2 0 3), (2 0 3, 3 1 4, 3 2 5))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "CURVEPOLYGON M (CIRCULARSTRING M (0 0 1, 4 0 1, 4 4 1, 0 4 1, 0 0 1), (1 1 2, 3 3 2, 3 1 2, 1 1 2))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "MULTICURVE M (LINESTRING M (0 0 1, 2 2 3), CIRCULARSTRING M (2 2 3, 4 1 4, 6 2 5))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "MULTISURFACE M (CURVEPOLYGON M (CIRCULARSTRING M ( 0 0 1, 4 0 1, 4 4 1, 0 4 1, 0 0 1),(1 1 2, 3 3 2, 3 1 2, 1 1 2)), CURVEPOLYGON M ((10 10 3, 14 12 3, 11 10 3, 10 10 3), (11 11 4, 11.5 11 4, 11 11.5 4, 11 11 4)))"
+        )
+
+    def test_jsonfg_zm_values(self):
+
+        # Test ZM values are preserved in round trip
+        self._round_trip_jsonfg_profiles("POINT ZM (1 2 3 4)")
+        self._round_trip_jsonfg_profiles("LINESTRING ZM (0 0 1 2, 1 1 3 4)")
+        self._round_trip_jsonfg_profiles(
+            "POLYGON ZM ((0 0 1 2, 4 0 1 2, 4 4 1 2, 0 4 1 2, 0 0 1 2))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "CIRCULARSTRING ZM (0 0 1 2, 1 1 3 4, 2 0 5 6)"
+        )
+        self._round_trip_jsonfg_profiles(
+            "COMPOUNDCURVE ZM (CIRCULARSTRING ZM (0 0 1 2, 1 1 3 4, 2 0 5 6), (2 0 5 6, 3 1 7 8, 3 2 9 10))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "CURVEPOLYGON ZM (CIRCULARSTRING ZM (0 0 1 2, 4 0 1 2, 4 4 1 2, 0 4 1 2, 0 0 1 2), (1 1 3 4, 3 3 3 4, 3 1 3 4, 1 1 3 4))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "MULTICURVE ZM (LINESTRING ZM (0 0 1 2, 2 2 3 4), CIRCULARSTRING ZM (2 2 3 4, 4 1 5 6, 6 2 7 8))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "MULTISURFACE ZM (CURVEPOLYGON ZM (CIRCULARSTRING ZM ( 0 0 1 2, 4 0 1 2, 4 4 1 2, 0 4 1 2, 0 0 1 2),(1 1 3 4, 3 3 3 4, 3 1 3 4, 1 1 3 4)), CURVEPOLYGON ZM ((10 10 3 4, 14 12 3 4, 11 10 3 4, 10 10 3 4), (11 11 4 1, 11.5 11 4 2, 11 11.5 4 2, 11 11 4 1)))"
+        )
+
+    def test_jsonfg_crs(self):
+
+        vl = QgsVectorLayer("Point?crs=epsg:3857", "test", "memory")
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt("POINT (2116003 5323382)"))
+        vl.dataProvider().addFeatures([f])
+
+        exporter = QgsJsonExporter(vl)
+        exporter.setGeoJsonProfile(Qgis.GeoJsonProfile.JsonFgPlus)
+        j = json.loads(exporter.exportFeatures([f]))
+        self.assertAlmostEqual(
+            j["features"][0]["geometry"]["coordinates"][0], 19, places=0
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["geometry"]["coordinates"][1], 43, places=0
+        )
+        self.assertEqual(
+            j["conformsTo"], [["http://www.opengis.net/spec/json-fg-1/1.0/conf/core"]]
+        )
+        self.assertEqual(
+            j["coordRefSys"], "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        )
+
+        # Export to 3857
+        exporter.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        j = json.loads(exporter.exportFeatures([f]))
+        # Check we have both geometry and place
+        self.assertEqual(j["coordRefSys"], "http://www.opengis.net/def/crs/EPSG/0/3857")
+        self.assertAlmostEqual(
+            j["features"][0]["geometry"]["coordinates"][0], 19, places=0
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["geometry"]["coordinates"][1], 43, places=0
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["place"]["coordinates"][0], 2116003, places=0
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["place"]["coordinates"][1], 5323382, places=0
+        )
 
 
 if __name__ == "__main__":

@@ -360,12 +360,12 @@ Returns a GeoJSON representation of the geometry as a string.
 .. seealso:: :py:func:`asJsonObject`
 %End
 
-    QString asGeoJson(int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Rfc7946 );
+    QString asGeoJson(int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy );
 %Docstring
 Export the geometry to a GeoJSON string, with the given ``precision``
 and following the specified GeoJSON ``profile``. Note: this is identical
-to :py:func:`~QgsAbstractGeometry.asJson` when using the Rfc7946
-profile, but differs when using other profiles.
+to :py:func:`~QgsAbstractGeometry.asJson` when using the Legacy profile,
+but differs when using other profiles.
 
 .. versionadded:: 4.2
 %End

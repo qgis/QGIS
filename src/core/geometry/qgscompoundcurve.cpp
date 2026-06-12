@@ -346,9 +346,26 @@ QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QS
 
 json QgsCompoundCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
-  // GeoJSON does not support curves
-  std::unique_ptr< QgsLineString > line( curveToLine() );
-  return line->asJsonObject( precision );
+  switch ( profile )
+  {
+    case Qgis::GeoJsonProfile::Rfc7946:
+    case Qgis::GeoJsonProfile::Legacy:
+    {
+      std::unique_ptr< QgsLineString > line( curveToLine() );
+      return line->asJsonObject( precision );
+    }
+    case Qgis::GeoJsonProfile::JsonFg:
+    case Qgis::GeoJsonProfile::JsonFgPlus:
+    {
+      json geometries = json::array();
+      for ( const QgsCurve *curve : mCurves )
+      {
+        geometries.push_back( curve->asJsonObject( precision, profile ) );
+      }
+      return { { "type", "CompoundCurve" }, { "geometries", geometries } };
+    }
+  }
+  BUILTIN_UNREACHABLE
 }
 
 double QgsCompoundCurve::length() const
