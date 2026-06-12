@@ -51,7 +51,7 @@ QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toMaterial( const QgsAbstra
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return new QgsHighlightMaterial();
       }
 
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial( nullptr );
@@ -67,13 +67,16 @@ QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toMaterial( const QgsAbstra
   }
 }
 
-QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
 {
   const QgsMetalRoughTexturedMaterialSettings *texturedSettings = qgis::down_cast< const QgsMetalRoughTexturedMaterialSettings * >( settings );
 
   QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial();
   material->setEnvironmentalLightingEnabled( true );
   material->setInstancingEnabled( true, flags );
+  material->setInstancingMeshTransform( transform );
 
   material->setObjectName( u"metalRoughTexturedMaterial"_s );
   applySettingsToMaterial( texturedSettings, material, context );

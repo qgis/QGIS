@@ -23,9 +23,13 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
+#include "qgsmaterial.h"
 #include "qgsray3d.h"
 #include "qgsraycastresult.h"
 
+#include <QMatrix3x3>
+#include <QMatrix4x4>
+#include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCullFace>
 
@@ -56,6 +60,19 @@ class QSurface;
 class Qgs3DRenderContext;
 class QgsRayCastContext;
 class QgsMaterialContext;
+
+/**
+ * \ingroup qgis_3d
+ * \brief Pairs a Qt3D geometry with its material and transform. Used as a return type when loading 3D model files (GLTF, OBJ).
+ * \note Not available in Python bindings
+ * \since QGIS 4.2
+ */
+struct _3D_EXPORT QgsMeshNodeData
+{
+    std::unique_ptr<Qt3DCore::QGeometry> geometry; //!< Geometry
+    std::unique_ptr<QgsMaterial> material;         //!< Material
+    QMatrix4x4 meshTransform;                      //!< Mesh space (raw coordinates) to object space transform
+};
 
 /**
  * \ingroup qgis_3d
@@ -378,6 +395,16 @@ class _3D_EXPORT Qgs3DUtils
     static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
 
     /**
+     * Computes a 3x3 orientation matrix from the given up and forward axis strings.
+     *
+     * \a upAxis and \a forwardAxis are case-sensitive axis strings: "x", "-x", "y", "-y",
+     * "z", or "-z".
+     *
+     * \since QGIS 4.2
+     */
+    static QMatrix4x4 axisTransformMatrix( const QString &upAxis, const QString &forwardAxis );
+
+    /**
      * Removes some define macros from a shader source code.
      *
      * \param shaderCode shader code
@@ -521,6 +548,13 @@ class _3D_EXPORT Qgs3DUtils
     // height will exceed this amount!
     static constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
     static constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
+
+  private:
+    /**
+     * Converts an axis string ("x", "-x", "y", "-y", "z", "-z") to a unit QVector3D.
+     * Returns a null vector for any unrecognised input.
+    */
+    static QVector3D axisStringToVector( const QString &axis );
 };
 
 #endif // QGS3DUTILS_H

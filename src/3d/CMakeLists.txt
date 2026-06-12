@@ -41,6 +41,7 @@ set(QGIS_3D_SRCS
   qgslayerstylewatcher.cpp
   qgsmapoverlayentity.cpp
   qgsmapoverlaytexturegenerator_p.cpp
+  qgsobj3dutils.cpp
   qgsoffscreen3dengine.cpp
   qgsraycastingutils.cpp
   qgsraycastcontext.cpp
@@ -204,6 +205,7 @@ set(QGIS_3D_HDRS
   qgsmapoverlayentity.h
   qgsmapoverlaytexturegenerator_p.h
   qgsmeshlayer3drenderer.h
+  qgsobj3dutils.h
   qgsoffscreen3dengine.h
   qgsraycastingutils.h
   qgsraycastcontext.h
@@ -368,6 +370,8 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/tinygltf
   ${CMAKE_SOURCE_DIR}/external/rectpack2D
+  ${CMAKE_SOURCE_DIR}/external/tinyobj
+  ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
 target_link_libraries(qgis_3d

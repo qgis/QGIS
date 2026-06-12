@@ -50,7 +50,7 @@ QgsMaterial *QgsPhongMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return new QgsHighlightMaterial();
       }
 
       const QgsPhongMaterialSettings *phongSettings = dynamic_cast< const QgsPhongMaterialSettings * >( settings );
@@ -216,12 +216,15 @@ bool QgsPhongMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsPhongMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+QgsMaterial *QgsPhongMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
 {
   const QgsPhongMaterialSettings *phongSettings = qgis::down_cast< const QgsPhongMaterialSettings * >( settings );
 
   QgsPhongMaterial *material = new QgsPhongMaterial();
   material->setInstancingEnabled( true, flags );
+  material->setInstancingMeshTransform( transform );
   material->setObjectName( u"phongMaterial"_s );
 
   const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();

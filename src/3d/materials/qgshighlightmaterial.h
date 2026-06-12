@@ -22,6 +22,16 @@
 
 #define SIP_NO_FILE
 
+class QMatrix4x4;
+
+
+namespace Qt3DRender
+{
+  class QParameter;
+  class QShaderProgram;
+} // namespace Qt3DRender
+
+
 ///@cond PRIVATE
 
 /**
@@ -38,11 +48,27 @@ class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
     /**
      * Constructor for QgsHighlightMaterial, using the specified \a technique and \a parent node.
      */
-    explicit QgsHighlightMaterial( Qgis::MaterialRenderingTechnique technique, Qt3DCore::QNode *parent = nullptr );
+    explicit QgsHighlightMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsHighlightMaterial() override;
 
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+
+    /**
+     * Sets the transform from mesh space to object space
+     * \note Only applies when instancing is enabled
+     */
+    void setInstancingMeshTransform( const QMatrix4x4 &transform );
+
   private:
-    void init( Qgis::MaterialRenderingTechnique technique );
+    void init();
+    void updateShaders();
+
+    Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
+    Qgis::MaterialRenderingTechnique mRenderingTechnique;
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
+    Qt3DRender::QParameter *mTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
 };
 
 ///@endcond PRIVATE
