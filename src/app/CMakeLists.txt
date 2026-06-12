@@ -365,6 +365,7 @@ if (WITH_3D)
     3d/qgs3doptions.cpp
     3d/qgsannotationlayer3drendererwidget.cpp
     3d/qgscategorized3drendererwidget.cpp
+    3d/qgsclothmaterialwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp

@@ -85,7 +85,7 @@ void QgsAbstractMaterialSettings::initPropertyDefinitions() const
     { static_cast<int>( Property::EmissionColor ), QgsPropertyDefinition( "emissionColor", QObject::tr( "Emission color" ), QgsPropertyDefinition::ColorNoAlpha, origin ) },
     { static_cast<int>( Property::TextureScale ), QgsPropertyDefinition( "textureScale", QObject::tr( "Texture scale" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { static_cast<int>( Property::TextureRotation ), QgsPropertyDefinition( "textureRotation", QObject::tr( "Texture rotation" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast<int>( Property::TextureOffset ), QgsPropertyDefinition( "textureOffset", QObject::tr( "Texture offset" ), QgsPropertyDefinition::Offset, origin ) }
-
+    { static_cast<int>( Property::TextureOffset ), QgsPropertyDefinition( "textureOffset", QObject::tr( "Texture offset" ), QgsPropertyDefinition::Offset, origin ) },
+    { static_cast<int>( Property::SheenColor ), QgsPropertyDefinition( "sheenColor", QObject::tr( "Sheen color" ), QgsPropertyDefinition::ColorNoAlpha, origin ) }
   };
 }

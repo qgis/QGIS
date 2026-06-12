@@ -21,7 +21,7 @@ in vec3 worldNormal;
 #ifdef DATA_DEFINED
 in DataColor {
     vec3 base;
-    vec3 emission;
+    vec3 secondary;
 } vs_in;
 #elif defined(BASE_COLOR_MAP)
 uniform sampler2D baseColorMap;
@@ -32,7 +32,7 @@ uniform vec4 baseColor;
 
 #ifdef METALNESS_MAP
 uniform sampler2D metalnessMap;
-#else
+#elif defined(METALNESS)
 uniform float metalness;
 #endif
 
@@ -72,13 +72,17 @@ uniform float clearCoatRoughness;
 #endif
 
 #ifdef DATA_DEFINED
-// DataColor has emission color
+// DataColor has emission color as secondary color
 #elif defined(EMISSION_MAP)
 uniform sampler2D emissionMap;
 #else
 uniform vec3 emissiveColor;
 #endif
 uniform float emissiveFactor = 1;
+
+#ifdef CLOTH_MATERIAL
+uniform vec3 sheenColor;
+#endif
 
 #if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP)|| defined(HEIGHT_MAP) || defined(EMISSION_MAP)
 in vec2 texCoord;
@@ -588,6 +592,7 @@ vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
 }
 #endif
 
+#if defined(METALNESS_MAP) || defined(METALNESS)
 vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float metalness,
                         const in float roughness,
@@ -637,7 +642,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     }
 
 #ifdef DATA_DEFINED
-    cLinear += vs_in.emission * emissiveFactor;
+    cLinear += vs_in.secondary * emissiveFactor;
 #elif defined(EMISSION_MAP)
     vec3 emission = texture(emissionMap, activeTexCoord).rgb * emissiveFactor;
     cLinear += emission;
@@ -646,7 +651,145 @@ vec4 metalRoughFunction(const in vec4 baseColor,
 #endif
     return vec4(cLinear, 1.0);
 }
+#endif
 
+#ifdef CLOTH_MATERIAL
+
+float charlieDistribution(const in float nDotH, const in float alpha)
+{
+    // Estevez and Kulla 2017, "Production Friendly Microfacet Sheen BRDF"
+    // max is to prevent artifacts on edges of sharp objects if roughness is low --
+    float invAlpha = 1.0 / max(alpha,0.015);
+    float cos2h = nDotH * nDotH;
+    // as per https://github.com/google/filament/blob/f91d15189cd3cad799ef384026782e9290ae3c0f/shaders/src/surface_brdf.fs#L98
+    float sin2h = max(1.0 - cos2h, 0.0078125);
+    return (2.0 + invAlpha) * pow(sin2h, invAlpha * 0.5) / (2.0 * PI);
+}
+
+float neubeltVisibility(const in float sDotN, const in float vDotN)
+{
+    // Neubelt and Pettineo 2013, "Crafting a Next-gen Material Pipeline for The Order: 1886"
+
+    // as per https://github.com/google/filament/blob/f91d15189cd3cad799ef384026782e9290ae3c0f/shaders/src/surface_brdf.fs#L142C61-L142C71
+    return 1.0 / max(4.0 * (sDotN + vDotN - sDotN * vDotN), 0.00001532);
+}
+
+vec3 clothSpecularModel(const in vec3 sheenColor,
+                        const in float nDotH,
+                        const in float sDotN,
+                        const in float vDotN,
+                        const in float alpha)
+{
+    float D = charlieDistribution(nDotH, alpha);
+    float V = neubeltVisibility(sDotN, vDotN);
+
+    // For cloth, Fresnel is usually baked directly into the sheen color
+    // to give authors direct control over the fuzz tint.
+    return sheenColor * D * V;
+}
+
+#ifdef ENABLE_IBL
+vec3 clothIblModel(const in vec3 n, // NORMALIZED world normal
+                   const in vec3 baseColor,
+                   const in float ambientOcclusion)
+{
+    // Advanced cloth specular IBL requires a separate pre-computed Look-Up Table (LUT)
+    // for the Charlie distribution. For this implementation, we handle diffuse IBL
+    // so ambient lighting still works, leaving the sheen to direct lighting.
+
+    // Calculate environmental irradiance from spherical harmonics
+    const float c1 = 0.429043;
+    const float c2 = 0.511664;
+    const float c3 = 0.743125;
+    const float c4 = 0.886227;
+    const float c5 = 0.247708;
+    vec3 envIrradiance =
+        c1 * envLightSh[8] * (n.x * n.x - n.y * n.y) +
+        c3 * envLightSh[6] * n.z * n.z +
+        c4 * envLightSh[0] -
+        c5 * envLightSh[6] +
+        2.0 * c1 * (envLightSh[4] * n.x * n.y + envLightSh[7] * n.x * n.z + envLightSh[5] * n.y * n.z) +
+        2.0 * c2 * (envLightSh[3] * n.x + envLightSh[1] * n.y + envLightSh[2] * n.z);
+    envIrradiance = max(envIrradiance, vec3(0.0));
+
+    vec3 diffuse = baseColor * envIrradiance;
+    return diffuse * ambientOcclusion;
+}
+#endif
+
+vec3 clothModel(const in int lightIndex,
+                const in vec3 wPosition,
+                const in vec3 n, // NORMALIZED world normal
+                const in vec3 wView,
+                const in vec3 baseColor,
+                const in vec3 sheenColor,
+                const in float alpha,
+                const in float ambientOcclusion)
+{
+    vec3 v = wView;
+
+    float vDotN = max(dot(wView, n), 0.001);
+
+    LightParams light = calculateLightParams(lightIndex, wPosition, n, wView);
+
+    // Diffuse Component (Softer Lambert)
+    // We do not multiply the diffuse term by the Fresnel term as discussed in
+    // Neubelt and Pettineo 2013, "Crafting a Next-gen Material Pipeline for The Order: 1886"
+    // as per https://github.com/google/filament/blob/c28dfde4b23af06f4ed796e2b35c9cf2ae8152e8/shaders/src/surface_shading_model_cloth.fs#L35
+    vec3 diffuse = (baseColor * lights[lightIndex].color) * light.sDotN / PI;
+
+    // Specular Component (Sheen)
+    vec3 specularFactor = vec3(0.0); // "Fr" from filament
+    if (light.sDotN > 0.0) {
+        specularFactor = clothSpecularModel(sheenColor, light.nDotH, light.sDotN, vDotN, alpha);
+    }
+
+    vec3 specular = specularFactor * light.sDotN;
+
+    // Combine diffuse and specular
+    // as per https://github.com/google/filament/blob/c28dfde4b23af06f4ed796e2b35c9cf2ae8152e8/shaders/src/surface_shading_model_cloth.fs#L56-L57
+    vec3 color = (diffuse + specular);
+    color *= light.visibilityFactor * light.att * lights[lightIndex].intensity * lights[lightIndex].color;
+    color *= ambientOcclusion;
+
+    return color;
+}
+
+vec4 clothFunction(const in vec4 baseColor,
+                   const in vec3 sheen,
+                   const in float roughness,
+                   const in float ambientOcclusion,
+                   const in vec3 worldPosition,
+                   const in vec3 worldView,
+                   const in vec3 n, // NORMALIZED world normal
+                   const in vec2 activeTexCoord)
+{
+    // Remap roughness for a perceptually more linear correspondence
+    float alpha = remapRoughness(roughness);
+    vec3 cLinear = vec3(0.0);
+
+#ifdef ENABLE_IBL
+    if ( envLightMode == 1 && envLightStrength > 0 )
+    {
+        cLinear += clothIblModel(n,
+                                 baseColor.rgb,
+                                 ambientOcclusion);
+    }
+#endif
+
+    for (int i = 0; i < lightCount; ++i) {
+        cLinear += clothModel(i,
+                              worldPosition,
+                              n,
+                              worldView,
+                              baseColor.rgb,
+                              sheen,
+                              alpha,
+                              ambientOcclusion);
+    }
+    return vec4(cLinear, 1.0);
+}
+#endif
 
 out vec4 fragColor;
 
@@ -693,8 +836,10 @@ void main()
 
 #ifdef METALNESS_MAP
     float m = texture(metalnessMap, activeTexCoord).r;
-#else
+#elif defined(METALNESS)
     float m = metalness;
+#else
+    float m = 0;
 #endif
 
 #ifdef ROUGHNESS_MAP
@@ -734,8 +879,21 @@ void main()
     float aniso = 0;
 #endif
 
+#if defined(METALNESS_MAP) || defined(METALNESS)
     fragColor = vec4(metalRoughFunction(c, m, r, reflectance, ao, aniso,
                                    worldPosition,
                                    worldView,
                                    n, t, b, activeTexCoord).rgb, opacity);
+#elif defined(CLOTH_MATERIAL)
+    // cloth material
+#ifdef DATA_DEFINED
+    vec3 sheen = vs_in.secondary;
+#else
+    vec3 sheen = sheenColor;
+#endif
+    fragColor = vec4(clothFunction(c, sheen, r, ao,
+                                   worldPosition,
+                                   worldView,
+                                   n, activeTexCoord).rgb, opacity);
+#endif
 }

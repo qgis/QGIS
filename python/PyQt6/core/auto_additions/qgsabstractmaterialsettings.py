@@ -30,6 +30,9 @@ QgsAbstractMaterialSettings.TextureRotation.__doc__ = "Texture rotation \n.. ver
 QgsAbstractMaterialSettings.TextureOffset = QgsAbstractMaterialSettings.Property.TextureOffset
 QgsAbstractMaterialSettings.TextureOffset.is_monkey_patched = True
 QgsAbstractMaterialSettings.TextureOffset.__doc__ = "Texture offset \n.. versionadded:: 4.2"
+QgsAbstractMaterialSettings.SheenColor = QgsAbstractMaterialSettings.Property.SheenColor
+QgsAbstractMaterialSettings.SheenColor.is_monkey_patched = True
+QgsAbstractMaterialSettings.SheenColor.__doc__ = "Sheen color (cloth material) \n.. versionadded:: 4.2"
 QgsAbstractMaterialSettings.Property.__doc__ = """Data definable properties.
 
 * ``Diffuse``: Diffuse color (phong material)
@@ -54,6 +57,10 @@ QgsAbstractMaterialSettings.Property.__doc__ = """Data definable properties.
   .. versionadded:: 4.2
 
 * ``TextureOffset``: Texture offset
+
+  .. versionadded:: 4.2
+
+* ``SheenColor``: Sheen color (cloth material)
 
   .. versionadded:: 4.2
 

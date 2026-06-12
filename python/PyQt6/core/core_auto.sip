@@ -232,6 +232,7 @@
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/./3d/qgsabstractpointcloud3drenderer.sip
 %Include auto_generated/./3d/materials/qgsabstractmaterialsettings.sip
+%Include auto_generated/./3d/materials/qgsclothmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsgoochmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsmaterialregistry.sip
 %Include auto_generated/./3d/materials/qgsmetalroughmaterialsettings.sip

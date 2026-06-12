@@ -23,6 +23,7 @@
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgsclothmaterialsettings.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsflatterraingenerator.h"
@@ -92,6 +93,12 @@ class TestQgs3DMaterialRendering : public QgsTest
     void testExtrudedPolygonsDataDefinedMetalRoughEmission();
     void testMetalRoughEnvironmentLight_data();
     void testMetalRoughEnvironmentLight();
+
+    void testClothMaterial_data();
+    void testClothMaterial();
+
+    void testClothMaterialEnvironmentLight_data();
+    void testClothMaterialEnvironmentLight();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -1430,6 +1437,169 @@ void TestQgs3DMaterialRendering::testExtrudedPolygonsMetalRoughTexturedShadingNo
 
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_textured_metalrough_normals", "polygon3d_extrusion_textured_metalrough_normals", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
+
+void TestQgs3DMaterialRendering::testClothMaterial_data()
+{
+  QTest::addColumn<QColor>( "baseColor" );
+  QTest::addColumn<double>( "roughness" );
+  QTest::addColumn<QColor>( "sheenColor" );
+  QTest::addColumn<QString>( "reference" );
+
+  QTest::newRow( "red velvet" ) << QColor::fromRgbF( 0.05, 0.0, 0.0 ) << 0.9 << QColor::fromRgbF( 0.85, 0.1, 0.1 ) << "cloth1";
+  QTest::newRow( "smooth silk" ) << QColor::fromRgbF( 0.5, 0.35, 0.15 ) << 0.3 << QColor::fromRgbF( 0.9, 0.85, 0.7 ) << "cloth2";
+  QTest::newRow( "denim" ) << QColor::fromRgbF( 0.04, 0.08, 0.15 ) << 0.9 << QColor::fromRgbF( 0.04, 0.04, 0.04 ) << "cloth3";
+  QTest::newRow( "shot silk" ) << QColor::fromRgbF( 0.15, 0.0, 0.3 ) << 0.4 << QColor::fromRgbF( 0.2, 0.7, 0.3 ) << "cloth4";
+  QTest::newRow( "nylon" ) << QColor::fromRgbF( 0.9, 0.4, 0.0 ) << 0.55 << QColor::fromRgbF( 0.5, 0.5, 0.5 ) << "cloth5";
+}
+
+void TestQgs3DMaterialRendering::testClothMaterial()
+{
+  QFETCH( QColor, baseColor );
+  QFETCH( double, roughness );
+  QFETCH( QColor, sheenColor );
+
+  QFETCH( QString, reference );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildings->isValid() );
+
+  QgsClothMaterialSettings materialSettings;
+  materialSettings.setBaseColor( baseColor );
+  materialSettings.setSheenColor( sheenColor );
+  materialSettings.setRoughness( roughness );
+
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 1.7 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 100, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( reference, reference, img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DMaterialRendering::testClothMaterialEnvironmentLight_data()
+{
+  QTest::addColumn<QColor>( "baseColor" );
+  QTest::addColumn<double>( "roughness" );
+  QTest::addColumn<QColor>( "sheenColor" );
+  QTest::addColumn<QString>( "reference" );
+
+  QTest::newRow( "red velvet" ) << QColor::fromRgbF( 0.05, 0.0, 0.0 ) << 0.9 << QColor::fromRgbF( 0.85, 0.1, 0.1 ) << "red_velvet";
+  QTest::newRow( "smooth silk" ) << QColor::fromRgbF( 0.5, 0.35, 0.15 ) << 0.3 << QColor::fromRgbF( 0.9, 0.85, 0.7 ) << "smooth_silk";
+  QTest::newRow( "denim" ) << QColor::fromRgbF( 0.04, 0.08, 0.15 ) << 0.9 << QColor::fromRgbF( 0.04, 0.04, 0.04 ) << "denim";
+  QTest::newRow( "shot silk" ) << QColor::fromRgbF( 0.15, 0.0, 0.3 ) << 0.4 << QColor::fromRgbF( 0.2, 0.7, 0.3 ) << "shot_silk";
+  QTest::newRow( "nylon" ) << QColor::fromRgbF( 0.9, 0.4, 0.0 ) << 0.55 << QColor::fromRgbF( 0.5, 0.5, 0.5 ) << "nylon";
+}
+
+void TestQgs3DMaterialRendering::testClothMaterialEnvironmentLight()
+{
+  QFETCH( QColor, baseColor );
+  QFETCH( double, roughness );
+  QFETCH( QColor, sheenColor );
+
+  QFETCH( QString, reference );
+
+  const QgsRectangle fullExtent( -100, -100, 100, 100 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:3857&field=field1:int&field=field2:int&field=field3:int", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 0, 0, 0 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+
+  f1.setAttributes( QgsAttributes() << 1 << 2 << 3 );
+  f1.setGeometry( QgsGeometry( p1 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Sphere );
+
+  QVariantMap props;
+  props[u"slices"_s] = 64;
+  props[u"rings"_s] = 64;
+
+  symbol->setShapeProperties( props );
+  QgsClothMaterialSettings materialSettings;
+  materialSettings.setBaseColor( baseColor );
+  materialSettings.setSheenColor( sheenColor );
+  materialSettings.setRoughness( roughness );
+  symbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsDirectionalLightSettings directionalLight;
+  directionalLight.setDirection( QgsVector3D( 0.32, 0.27, -0.91 ) );
+  directionalLight.setIntensity( 2.0 );
+  mapSettings->setLightSources( { directionalLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mProject->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+  mapSettings->setTerrainRenderingEnabled( false );
+
+  QgsSkyboxSettings skyboxSettings;
+  skyboxSettings.setCubeMapping( Qgis::SkyboxCubeMapping::LeftHandedYUpMirrored );
+  skyboxSettings.setCubeMapFace( u"posX"_s, testDataPath( "/3d/skybox/skybox_right.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"posY"_s, testDataPath( "/3d/skybox/skybox_front.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"posZ"_s, testDataPath( "/3d/skybox/skybox_up.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negX"_s, testDataPath( "/3d/skybox/skybox_left.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negY"_s, testDataPath( "/3d/skybox/skybox_back.jpg" ) );
+  skyboxSettings.setCubeMapFace( u"negZ"_s, testDataPath( "/3d/skybox/skybox_down.jpg" ) );
+  skyboxSettings.setEnvironmentalLightingEnabled( true );
+  skyboxSettings.setEnvironmentalLightStrength( 0.5 );
+  mapSettings->setBackgroundSettings( skyboxSettings.clone() );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 30, 90, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  const QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( reference, reference, img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
 
 QGSTEST_MAIN( TestQgs3DMaterialRendering )
 #include "testqgs3dmaterialrendering.moc"

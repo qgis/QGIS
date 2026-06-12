@@ -4,14 +4,14 @@ in vec3 vertexPosition;
 in vec3 vertexNormal;
 
 in vec3 dataDefinedBaseColor;
-in vec3 dataDefinedEmissionColor;
+in vec3 dataDefinedSecondaryColor;
 
 out vec3 worldPosition;
 out vec3 worldNormal;
 
 out DataColor {
     vec3 base;
-    vec3 emission;
+    vec3 secondary;
 } vs_out;
 
 uniform mat4 modelMatrix;
@@ -29,7 +29,7 @@ void main()
 
     // colors defined data
     vs_out.base = dataDefinedBaseColor;
-    vs_out.emission = dataDefinedEmissionColor;
+    vs_out.secondary = dataDefinedSecondaryColor;
 
     gl_Position = mvp * vec4( vertexPosition, 1.0 );
 

@@ -22,7 +22,6 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
-#include <Qt3DRender/QSeamlessCubemap>
 #include <Qt3DRender/QShaderProgramBuilder>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
@@ -33,71 +32,22 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
-  : QgsMaterial( parent )
-  , mBaseColorParameter( new Qt3DRender::QParameter( u"baseColor"_s, Qgs3DUtils::srgbToLinear( QColor( "grey" ) ), this ) )
+  : QgsPBRMaterial( parent )
   , mMetalnessParameter( new Qt3DRender::QParameter( u"metalness"_s, 0.0f, this ) )
-  , mRoughnessParameter( new Qt3DRender::QParameter( u"roughness"_s, 0.0f, this ) )
   , mReflectanceParameter( new Qt3DRender::QParameter( u"reflectance"_s, 0.5f, this ) )
   , mAnisotropyParameter( new Qt3DRender::QParameter( u"anisotropy"_s, 0.0f, this ) )
   , mAnisotropyRotationParameter( new Qt3DRender::QParameter( u"anisotropyRotation"_s, 0.0f, this ) )
-  , mBaseColorMapParameter( new Qt3DRender::QParameter( u"baseColorMap"_s, QVariant(), this ) )
   , mMetalnessMapParameter( new Qt3DRender::QParameter( u"metalnessMap"_s, QVariant(), this ) )
-  , mRoughnessMapParameter( new Qt3DRender::QParameter( u"roughnessMap"_s, QVariant(), this ) )
-  , mAmbientOcclusionMapParameter( new Qt3DRender::QParameter( u"ambientOcclusionMap"_s, QVariant(), this ) )
-  , mNormalMapParameter( new Qt3DRender::QParameter( u"normalMap"_s, QVariant(), this ) )
-  , mHeightMapParameter( new Qt3DRender::QParameter( u"heightMap"_s, QVariant(), this ) )
-  , mParallaxScaleParameter( new Qt3DRender::QParameter( u"parallaxScale"_s, 0.1f, this ) )
   , mEmissionMapParameter( new Qt3DRender::QParameter( u"emissionMap"_s, QVariant(), this ) )
   , mEmissiveColorParameter( new Qt3DRender::QParameter( u"emissiveColor"_s, Qgs3DUtils::srgbToLinear( QColor( 0, 0, 0 ) ), this ) )
   , mEmissionFactorParameter( new Qt3DRender::QParameter( u"emissiveFactor"_s, 1.0f, this ) )
   , mClearCoatFactorParameter( new Qt3DRender::QParameter( u"clearCoatFactor"_s, 0.0f, this ) )
   , mClearCoatRoughnessParameter( new Qt3DRender::QParameter( u"clearCoatRoughness"_s, 0.0f, this ) )
-  , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
-  , mTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f, this ) )
-  , mTextureOffsetParameter( new Qt3DRender::QParameter( u"texCoordOffset"_s, QVariant::fromValue( QVector2D( 0, 0 ) ), this ) )
-  , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
-  , mMetalRoughEffect( new Qt3DRender::QEffect( this ) )
-  , mMetalRoughGL3Technique( new Qt3DRender::QTechnique( this ) )
-  , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
-  , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram( this ) )
-  , mFilterKey( new Qt3DRender::QFilterKey( this ) )
 {
   init();
 }
 
 QgsMetalRoughMaterial::~QgsMetalRoughMaterial() = default;
-
-void QgsMetalRoughMaterial::setBaseColor( const QColor &baseColor )
-{
-  mBaseColorParameter->setValue( Qgs3DUtils::srgbToLinear( baseColor ) );
-  bool oldUsingBaseColorMap = mUsingBaseColorMap;
-
-  mUsingBaseColorMap = false;
-  if ( mMetalRoughEffect->parameters().contains( mBaseColorMapParameter ) )
-    mMetalRoughEffect->removeParameter( mBaseColorMapParameter );
-  mMetalRoughEffect->addParameter( mBaseColorParameter );
-
-  if ( oldUsingBaseColorMap != mUsingBaseColorMap )
-  {
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setBaseColorTexture( Qt3DRender::QAbstractTexture *baseColor )
-{
-  mBaseColorMapParameter->setValue( QVariant::fromValue( baseColor ) );
-  bool oldUsingBaseColorMap = mUsingBaseColorMap;
-
-  mUsingBaseColorMap = true;
-  mMetalRoughEffect->addParameter( mBaseColorMapParameter );
-  if ( mMetalRoughEffect->parameters().contains( mBaseColorParameter ) )
-    mMetalRoughEffect->removeParameter( mBaseColorParameter );
-
-  if ( oldUsingBaseColorMap != mUsingBaseColorMap )
-  {
-    updateShaders();
-  }
-}
 
 void QgsMetalRoughMaterial::setMetalness( float metalness )
 {
@@ -105,9 +55,9 @@ void QgsMetalRoughMaterial::setMetalness( float metalness )
   bool oldUsingMetalnessMap = mUsingMetalnessMap;
 
   mUsingMetalnessMap = false;
-  if ( mMetalRoughEffect->parameters().contains( mMetalnessMapParameter ) )
-    mMetalRoughEffect->removeParameter( mMetalnessMapParameter );
-  mMetalRoughEffect->addParameter( mMetalnessParameter );
+  if ( mEffect->parameters().contains( mMetalnessMapParameter ) )
+    mEffect->removeParameter( mMetalnessMapParameter );
+  mEffect->addParameter( mMetalnessParameter );
 
   if ( oldUsingMetalnessMap != mUsingMetalnessMap )
   {
@@ -121,43 +71,11 @@ void QgsMetalRoughMaterial::setMetalnessTexture( Qt3DRender::QAbstractTexture *m
   bool oldUsingMetalnessMap = mUsingMetalnessMap;
 
   mUsingMetalnessMap = true;
-  mMetalRoughEffect->addParameter( mMetalnessMapParameter );
-  if ( mMetalRoughEffect->parameters().contains( mMetalnessParameter ) )
-    mMetalRoughEffect->removeParameter( mMetalnessParameter );
+  mEffect->addParameter( mMetalnessMapParameter );
+  if ( mEffect->parameters().contains( mMetalnessParameter ) )
+    mEffect->removeParameter( mMetalnessParameter );
 
   if ( oldUsingMetalnessMap != mUsingMetalnessMap )
-  {
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setRoughness( float roughness )
-{
-  mRoughnessParameter->setValue( roughness );
-  bool oldUsingRoughnessMap = mUsingRoughnessMap;
-
-  mUsingRoughnessMap = false;
-  if ( mMetalRoughEffect->parameters().contains( mRoughnessMapParameter ) )
-    mMetalRoughEffect->removeParameter( mRoughnessMapParameter );
-  mMetalRoughEffect->addParameter( mRoughnessParameter );
-
-  if ( oldUsingRoughnessMap != mUsingRoughnessMap )
-  {
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setRoughnessTexture( Qt3DRender::QAbstractTexture *roughness )
-{
-  mRoughnessMapParameter->setValue( QVariant::fromValue( roughness ) );
-  bool oldUsingRoughnessMap = mUsingRoughnessMap;
-
-  mUsingRoughnessMap = true;
-  mMetalRoughEffect->addParameter( mRoughnessMapParameter );
-  if ( mMetalRoughEffect->parameters().contains( mRoughnessParameter ) )
-    mMetalRoughEffect->removeParameter( mRoughnessParameter );
-
-  if ( oldUsingRoughnessMap != mUsingRoughnessMap )
   {
     updateShaders();
   }
@@ -170,21 +88,21 @@ void QgsMetalRoughMaterial::setReflectance( float reflectance )
 
 void QgsMetalRoughMaterial::setAnisotropy( float anisotropy )
 {
-  const bool oldUsingAnisotropy = mMetalRoughEffect->parameters().contains( mAnisotropyParameter );
+  const bool oldUsingAnisotropy = mEffect->parameters().contains( mAnisotropyParameter );
   mAnisotropyParameter->setValue( anisotropy );
   const bool newUsingAnisotropy = anisotropy > 0;
   if ( newUsingAnisotropy )
   {
     if ( !oldUsingAnisotropy )
     {
-      mMetalRoughEffect->addParameter( mAnisotropyParameter );
-      mMetalRoughEffect->addParameter( mAnisotropyRotationParameter );
+      mEffect->addParameter( mAnisotropyParameter );
+      mEffect->addParameter( mAnisotropyRotationParameter );
     }
   }
   else if ( oldUsingAnisotropy )
   {
-    mMetalRoughEffect->removeParameter( mAnisotropyParameter );
-    mMetalRoughEffect->removeParameter( mAnisotropyRotationParameter );
+    mEffect->removeParameter( mAnisotropyParameter );
+    mEffect->removeParameter( mAnisotropyRotationParameter );
   }
 
   if ( oldUsingAnisotropy != newUsingAnisotropy )
@@ -198,92 +116,15 @@ void QgsMetalRoughMaterial::setAnisotropyRotation( float rotation )
   mAnisotropyRotationParameter->setValue( M_PI * rotation / 180.0 );
 }
 
-void QgsMetalRoughMaterial::setAmbientOcclusionTexture( Qt3DRender::QAbstractTexture *ambientOcclusion )
-{
-  bool oldUsingAmbientOcclusionMap = mUsingAmbientOcclusionMap;
-
-  if ( ambientOcclusion )
-  {
-    mAmbientOcclusionMapParameter->setValue( QVariant::fromValue( ambientOcclusion ) );
-    mUsingAmbientOcclusionMap = true;
-    mMetalRoughEffect->addParameter( mAmbientOcclusionMapParameter );
-  }
-  else
-  {
-    mAmbientOcclusionMapParameter->setValue( QVariant() );
-    mUsingAmbientOcclusionMap = false;
-    if ( mMetalRoughEffect->parameters().contains( mAmbientOcclusionMapParameter ) )
-      mMetalRoughEffect->removeParameter( mAmbientOcclusionMapParameter );
-  }
-
-  if ( oldUsingAmbientOcclusionMap != mUsingAmbientOcclusionMap )
-  {
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setNormalTexture( Qt3DRender::QAbstractTexture *normal )
-{
-  bool oldUsingNormalMap = mUsingNormalMap;
-
-  if ( normal )
-  {
-    mNormalMapParameter->setValue( QVariant::fromValue( normal ) );
-    mUsingNormalMap = true;
-    mMetalRoughEffect->addParameter( mNormalMapParameter );
-  }
-  else
-  {
-    mNormalMapParameter->setValue( QVariant() );
-    mUsingNormalMap = false;
-    if ( mMetalRoughEffect->parameters().contains( mNormalMapParameter ) )
-      mMetalRoughEffect->removeParameter( mNormalMapParameter );
-  }
-
-  if ( oldUsingNormalMap != mUsingNormalMap )
-  {
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setHeightTexture( Qt3DRender::QAbstractTexture *height )
-{
-  bool oldUsingHeightMap = mUsingHeightMap;
-
-  if ( height )
-  {
-    mHeightMapParameter->setValue( QVariant::fromValue( height ) );
-    mUsingHeightMap = true;
-    mMetalRoughEffect->addParameter( mHeightMapParameter );
-  }
-  else
-  {
-    mHeightMapParameter->setValue( QVariant() );
-    mUsingHeightMap = false;
-    if ( mMetalRoughEffect->parameters().contains( mHeightMapParameter ) )
-      mMetalRoughEffect->removeParameter( mHeightMapParameter );
-  }
-
-  if ( oldUsingHeightMap != mUsingHeightMap )
-  {
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setParallaxScale( double scale )
-{
-  mParallaxScaleParameter->setValue( scale );
-}
-
 void QgsMetalRoughMaterial::setEmissionColor( const QColor &color )
 {
   mEmissiveColorParameter->setValue( Qgs3DUtils::srgbToLinear( color ) );
   const bool oldUsingEmissionMap = mUsingEmissionMap;
 
   mUsingEmissionMap = false;
-  if ( mMetalRoughEffect->parameters().contains( mEmissionMapParameter ) )
-    mMetalRoughEffect->removeParameter( mEmissionMapParameter );
-  mMetalRoughEffect->addParameter( mEmissiveColorParameter );
+  if ( mEffect->parameters().contains( mEmissionMapParameter ) )
+    mEffect->removeParameter( mEmissionMapParameter );
+  mEffect->addParameter( mEmissiveColorParameter );
 
   if ( oldUsingEmissionMap != mUsingEmissionMap )
   {
@@ -299,17 +140,17 @@ void QgsMetalRoughMaterial::setEmissionTexture( Qt3DRender::QAbstractTexture *em
   {
     mEmissionMapParameter->setValue( QVariant::fromValue( emission ) );
     mUsingEmissionMap = true;
-    mMetalRoughEffect->addParameter( mEmissionMapParameter );
-    if ( mMetalRoughEffect->parameters().contains( mEmissiveColorParameter ) )
-      mMetalRoughEffect->removeParameter( mEmissiveColorParameter );
+    mEffect->addParameter( mEmissionMapParameter );
+    if ( mEffect->parameters().contains( mEmissiveColorParameter ) )
+      mEffect->removeParameter( mEmissiveColorParameter );
   }
   else
   {
     mEmissionMapParameter->setValue( QVariant() );
     mUsingEmissionMap = false;
-    if ( mMetalRoughEffect->parameters().contains( mEmissionMapParameter ) )
-      mMetalRoughEffect->removeParameter( mEmissionMapParameter );
-    mMetalRoughEffect->addParameter( mEmissiveColorParameter );
+    if ( mEffect->parameters().contains( mEmissionMapParameter ) )
+      mEffect->removeParameter( mEmissionMapParameter );
+    mEffect->addParameter( mEmissiveColorParameter );
   }
 
   if ( oldUsingEmissionMap != mUsingEmissionMap )
@@ -326,20 +167,20 @@ void QgsMetalRoughMaterial::setEmissionFactor( double factor )
 void QgsMetalRoughMaterial::setClearCoatFactor( float factor )
 {
   mClearCoatFactorParameter->setValue( factor );
-  const bool oldUsingClearCoat = mMetalRoughEffect->parameters().contains( mClearCoatFactorParameter );
+  const bool oldUsingClearCoat = mEffect->parameters().contains( mClearCoatFactorParameter );
   const bool newUsingClearCoat = factor > 0;
   if ( newUsingClearCoat )
   {
     if ( !oldUsingClearCoat )
     {
-      mMetalRoughEffect->addParameter( mClearCoatFactorParameter );
-      mMetalRoughEffect->addParameter( mClearCoatRoughnessParameter );
+      mEffect->addParameter( mClearCoatFactorParameter );
+      mEffect->addParameter( mClearCoatRoughnessParameter );
     }
   }
   else if ( oldUsingClearCoat )
   {
-    mMetalRoughEffect->removeParameter( mClearCoatFactorParameter );
-    mMetalRoughEffect->removeParameter( mClearCoatRoughnessParameter );
+    mEffect->removeParameter( mClearCoatFactorParameter );
+    mEffect->removeParameter( mClearCoatRoughnessParameter );
   }
 
   if ( oldUsingClearCoat != newUsingClearCoat )
@@ -353,172 +194,36 @@ void QgsMetalRoughMaterial::setClearCoatRoughness( float roughness )
   mClearCoatRoughnessParameter->setValue( roughness );
 }
 
-void QgsMetalRoughMaterial::setTextureScale( float textureScale )
-{
-  mTextureScaleParameter->setValue( textureScale );
-}
-
-void QgsMetalRoughMaterial::setTextureRotation( float textureRotation )
-{
-  mTextureRotationParameter->setValue( textureRotation );
-}
-
-void QgsMetalRoughMaterial::setTextureOffset( float textureOffsetX, float textureOffsetY )
-{
-  mTextureOffsetParameter->setValue( QVariant::fromValue( QVector2D( textureOffsetX, textureOffsetY ) ) );
-}
-
 void QgsMetalRoughMaterial::init()
 {
-  mMetalRoughGL3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
-  mMetalRoughGL3Technique->graphicsApiFilter()->setMajorVersion( 3 );
-  mMetalRoughGL3Technique->graphicsApiFilter()->setMinorVersion( 3 );
-  mMetalRoughGL3Technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
+  initMaterial();
 
-  mFilterKey->setParent( this );
-  mFilterKey->setName( u"renderingStyle"_s );
-  mFilterKey->setValue( u"forward"_s );
+  // give parameters a parent
+  mMetalnessMapParameter->setParent( mEffect );
+  mEmissionMapParameter->setParent( mEffect );
 
-  mMetalRoughGL3Technique->addFilterKey( mFilterKey );
-  mMetalRoughGL3RenderPass->setShaderProgram( mMetalRoughGL3Shader );
-  mMetalRoughGL3Technique->addRenderPass( mMetalRoughGL3RenderPass );
-  mMetalRoughEffect->addTechnique( mMetalRoughGL3Technique );
-
-  // ensure IBL cubemaps are seamless -- this should be safe to do here, the only cubemap
-  // lookups happening in the metalrough shader is for IBL
-  mMetalRoughGL3RenderPass->addRenderState( new Qt3DRender::QSeamlessCubemap( this ) );
-
-  // Given parameters a parent
-  mBaseColorMapParameter->setParent( mMetalRoughEffect );
-  mMetalnessMapParameter->setParent( mMetalRoughEffect );
-  mRoughnessMapParameter->setParent( mMetalRoughEffect );
-  mNormalMapParameter->setParent( mMetalRoughEffect );
-  mHeightMapParameter->setParent( mMetalRoughEffect );
-  mAmbientOcclusionMapParameter->setParent( mMetalRoughEffect );
-  mEmissionMapParameter->setParent( mMetalRoughEffect );
-
-  mMetalRoughEffect->addParameter( mBaseColorParameter );
-  mMetalRoughEffect->addParameter( mMetalnessParameter );
-  mMetalRoughEffect->addParameter( mRoughnessParameter );
-  mMetalRoughEffect->addParameter( mReflectanceParameter );
-  mMetalRoughEffect->addParameter( mParallaxScaleParameter );
-  mMetalRoughEffect->addParameter( mEmissiveColorParameter );
-  mMetalRoughEffect->addParameter( mEmissionFactorParameter );
-  mMetalRoughEffect->addParameter( mTextureScaleParameter );
-  mMetalRoughEffect->addParameter( mTextureRotationParameter );
-  mMetalRoughEffect->addParameter( mTextureOffsetParameter );
-  mMetalRoughEffect->addParameter( mOpacityParameter );
-
-  setEffect( mMetalRoughEffect );
-
-  updateShaders();
+  mEffect->addParameter( mMetalnessParameter );
+  mEffect->addParameter( mReflectanceParameter );
+  mEffect->addParameter( mEmissiveColorParameter );
+  mEffect->addParameter( mEmissionFactorParameter );
 }
 
-void QgsMetalRoughMaterial::updateShaders()
+QStringList QgsMetalRoughMaterial::fragmentShaderDefines() const
 {
-  QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/metalrough.frag"_s ) );
+  QStringList defines = QgsPBRMaterial::fragmentShaderDefines();
 
-  // pre-process fragment shader and add #defines based on whether using maps for some properties
-  QStringList fragShaderDefines;
-  if ( mUsingBaseColorMap )
-    fragShaderDefines += "BASE_COLOR_MAP";
   if ( mUsingMetalnessMap )
-    fragShaderDefines += "METALNESS_MAP";
-  if ( mUsingRoughnessMap )
-    fragShaderDefines += "ROUGHNESS_MAP";
-  if ( mUsingAmbientOcclusionMap )
-    fragShaderDefines += "AMBIENT_OCCLUSION_MAP";
-  if ( mUsingNormalMap )
-    fragShaderDefines += "NORMAL_MAP";
-  if ( mUsingHeightMap )
-    fragShaderDefines += "HEIGHT_MAP";
-  if ( mUsingEmissionMap )
-    fragShaderDefines += "EMISSION_MAP";
-  if ( mFlatShading )
-    fragShaderDefines += "FLAT_SHADING";
-  if ( mMetalRoughEffect->parameters().contains( mAnisotropyParameter ) )
-    fragShaderDefines += "ANISOTROPY";
-  if ( mMetalRoughEffect->parameters().contains( mClearCoatFactorParameter ) )
-    fragShaderDefines += "CLEAR_COAT";
-  if ( mEnableEnvironmentalLighting )
-    fragShaderDefines += "ENABLE_IBL";
-
-  if ( mInstanced )
-  {
-    QStringList defines = { u"HAS_TEXTURE"_s, u"HAS_TANGENT"_s };
-    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
-      defines << u"USE_INSTANCE_SCALE"_s;
-    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
-      defines << u"USE_INSTANCE_ROTATION"_s;
-    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
-    mMetalRoughGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
-  }
-  else if ( mDataDefinedEnabled )
-  {
-    fragShaderDefines += "DATA_DEFINED";
-    mMetalRoughGL3Shader->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/metalroughDataDefined.vert"_s ) ) );
-  }
+    defines << "METALNESS_MAP";
   else
-  {
-    const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
-    QStringList defines { u"TEXTURE_ROTATION"_s, u"TEXTURE_OFFSET"_s };
-    if ( mDataDefinedTextureTransformEnabled )
-      defines << u"DATA_DEFINED_TEXTURE_TRANSFORMS"_s;
+    defines << "METALNESS";
+  if ( mUsingEmissionMap )
+    defines << "EMISSION_MAP";
+  if ( mEffect->parameters().contains( mAnisotropyParameter ) )
+    defines << "ANISOTROPY";
+  if ( mEffect->parameters().contains( mClearCoatFactorParameter ) )
+    defines << "CLEAR_COAT";
 
-    const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, defines );
-    mMetalRoughGL3Shader->setVertexShaderCode( finalVertexShaderCode );
-  }
-
-  const QByteArray finalShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, fragShaderDefines );
-  mMetalRoughGL3Shader->setFragmentShaderCode( finalShaderCode );
-}
-
-void QgsMetalRoughMaterial::setFlatShadingEnabled( bool enabled )
-{
-  if ( enabled != mFlatShading )
-  {
-    mFlatShading = enabled;
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setOpacity( float opacity )
-{
-  mOpacityParameter->setValue( opacity );
-}
-
-void QgsMetalRoughMaterial::setDataDefinedEnabled( bool enabled )
-{
-  if ( enabled != mDataDefinedEnabled )
-  {
-    mDataDefinedEnabled = enabled;
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setDataDefinedTextureTransformEnabled( bool enabled )
-{
-  if ( enabled != mDataDefinedTextureTransformEnabled )
-  {
-    mDataDefinedTextureTransformEnabled = enabled;
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setEnvironmentalLightingEnabled( bool enabled )
-{
-  if ( enabled != mEnableEnvironmentalLighting )
-  {
-    mEnableEnvironmentalLighting = enabled;
-    updateShaders();
-  }
-}
-
-void QgsMetalRoughMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
-{
-  mInstanced = enabled;
-  mInstanceFlags = flags;
-  updateShaders();
+  return defines;
 }
 
 ///@endcond PRIVATE

@@ -70,6 +70,10 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     {
       sipType = sipType_QgsMetalRoughTexturedMaterialSettings;
     }
+    else if ( sipCpp->type() == "cloth" )
+    {
+      sipType = sipType_QgsClothMaterialSettings;
+    }
     else
     {
       sipType = 0;
@@ -135,6 +139,7 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
       TextureScale,    //!< Texture scale \since QGIS 4.2
       TextureRotation, //!< Texture rotation \since QGIS 4.2
       TextureOffset,   //!< Texture offset \since QGIS 4.2
+      SheenColor       //!< Sheen color (cloth material) \since QGIS 4.2
     };
     // *INDENT-ON*
 

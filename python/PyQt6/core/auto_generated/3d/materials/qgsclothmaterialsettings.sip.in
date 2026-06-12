@@ -1,0 +1,131 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsclothmaterialsettings.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsClothMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring(signature="appended")
+A PBR cloth shading material used for rendering.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsclothmaterialsettings.h"
+%End
+  public:
+    QgsClothMaterialSettings();
+
+    virtual QString type() const;
+
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
+
+    static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the
+metal rough material.
+%End
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsClothMaterialSettings.
+%End
+
+    virtual QgsClothMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
+
+    QColor baseColor() const;
+%Docstring
+Returns the base material color.
+
+.. seealso:: :py:func:`setBaseColor`
+%End
+
+    QColor sheenColor() const;
+%Docstring
+Returns the base sheen color.
+
+.. seealso:: :py:func:`setSheenColor`
+%End
+
+    double roughness() const;
+%Docstring
+Returns the material's roughness, as a value between 0 and 1.
+
+.. seealso:: :py:func:`setRoughness`
+%End
+
+    double opacity() const;
+%Docstring
+Returns the opacity of the surface
+
+.. seealso:: :py:func:`setOpacity`
+%End
+
+    virtual QColor averageColor() const;
+
+
+    void setBaseColor( const QColor &color );
+%Docstring
+Sets the base material ``color``.
+
+.. seealso:: :py:func:`baseColor`
+%End
+
+    void setSheenColor( const QColor &color );
+%Docstring
+Sets the material sheen ``color``.
+
+.. seealso:: :py:func:`sheenColor`
+%End
+
+    void setRoughness( double roughness );
+%Docstring
+Sets the material's ``roughness``, as a value between 0 and 1.
+
+.. seealso:: :py:func:`roughness`
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Sets the ``opacity`` of the surface.
+
+.. seealso:: :py:func:`opacity`
+%End
+
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+
+    bool operator==( const QgsClothMaterialSettings &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsclothmaterialsettings.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

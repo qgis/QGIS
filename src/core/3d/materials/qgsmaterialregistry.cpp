@@ -17,6 +17,7 @@
 
 #include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
+#include "qgsclothmaterialsettings.h"
 #include "qgsgoochmaterialsettings.h"
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgsmetalroughtexturedmaterialsettings.h"
@@ -59,7 +60,9 @@ bool QgsMaterialRegistry::populate()
   addMaterialSettingsType(
     new QgsMaterialSettingsMetadata( u"gooch"_s, QObject::tr( "CAD (Gooch)" ), QgsGoochMaterialSettings::create, QgsGoochMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) )
   );
-
+  addMaterialSettingsType(
+    new QgsMaterialSettingsMetadata( u"cloth"_s, QObject::tr( "Cloth" ), QgsClothMaterialSettings::create, QgsClothMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) )
+  );
   addMaterialSettingsType(
     new QgsMaterialSettingsMetadata( u"phong"_s, QObject::tr( "Legacy (Phong)" ), QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongMaterial.svg"_s ) )
   );
