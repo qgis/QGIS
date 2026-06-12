@@ -84,7 +84,7 @@ void QgsLayoutToImageAlgorithm::initAlgorithm( const QVariantMap & )
   antialias->setFlags( antialias->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( antialias.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Image file" ), QgsProcessingUtils::supportedImageFileFilters() ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Image file" ), QgsProcessingUtils::supportedImageFileFilters() ) );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsLayoutToImageAlgorithm::flags() const

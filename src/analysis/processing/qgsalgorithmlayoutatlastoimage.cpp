@@ -83,7 +83,7 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
-  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( u"EXTENSION"_s, QObject::tr( "Image format" ), QgsProcessingUtils::supportedImageFormats(), false, 0 );
+  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "EXTENSION" ), QObject::tr( "Image format" ), QgsProcessingUtils::supportedImageFormats(), false, 0 );
   extensionParam->setFlags( extensionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extensionParam.release() );
 
