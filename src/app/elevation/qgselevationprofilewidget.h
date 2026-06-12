@@ -214,6 +214,8 @@ class APP_EXPORT QgsElevationProfileWidget : public QWidget
     std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
 
     QPointer< QgsLayerTree > mLayerTree;
+
+    friend class TestQgsAppElevationProfileWidget;
 };
 
 
