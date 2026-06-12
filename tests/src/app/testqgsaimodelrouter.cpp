@@ -423,7 +423,7 @@ void TestQgsAiModelRouter::claudeTokenExchangeIncludesState()
   QCOMPARE( requestObject.value( u"state"_s ).toString(), u"callback-state"_s );
   QCOMPARE( requestObject.value( u"code_verifier"_s ).toString(), authRequest.codeVerifier );
   QCOMPARE( requestObject.value( u"redirect_uri"_s ).toString(), authRequest.redirectUri );
-  QVERIFY( server.lastRawRequest().contains( "Accept: application/json" ) );
+  QVERIFY( server.lastRawRequest().toLower().contains( "accept: application/json" ) );
 
   QgsAuthManager *authManager = QgsApplication::authManager();
   if ( authManager && !authManager->isDisabled() )

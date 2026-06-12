@@ -20,6 +20,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QBitmap>
+#include <QByteArray>
 #include <QCheckBox>
 #include <QClipboard>
 #include <QColor>
@@ -1428,8 +1429,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiIndexingScheduler = std::make_unique<QgsAiIndexingScheduler>( mAiWorkspaceIndex.get(), this );
   mAiLayerIndexCoordinator = std::make_unique<QgsAiLayerIndexCoordinator>( mAiWorkspaceIndex.get(), this );
   QgsSettings aiSettings;
+  const bool runningCiTests = qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QByteArrayLiteral( "true" );
   const bool automaticIndexing = aiSettings.value( u"strata/index/automatic"_s, true ).toBool();
-  mAiIndexingScheduler->setAutomaticEnabled( automaticIndexing );
+  mAiIndexingScheduler->setAutomaticEnabled( automaticIndexing && !runningCiTests );
   const bool hasLayerIndexingSetting = aiSettings.contains( u"strata/index/enable_layer_indexing"_s )
                                        || aiSettings.contains( u"geoai/index/enable_layer_indexing"_s )
                                        || aiSettings.contains( u"qgis_ai/index/enable_layer_indexing"_s );
@@ -1440,8 +1442,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
                                                                                                             : aiSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool() )
                                         : defaultLayerIndexingEnabled;
   const bool canUseLocalEmbeddings = mAiWorkspaceIndex->embeddingProviderAvailable();
-  mAiLayerIndexCoordinator->setEnabled( requestedLayerIndexing && canUseLocalEmbeddings );
-  mAiIndexingScheduler->scheduleStartupIndexing();
+  mAiLayerIndexCoordinator->setEnabled( requestedLayerIndexing && canUseLocalEmbeddings && !runningCiTests );
+  if ( !runningCiTests )
+    mAiIndexingScheduler->scheduleStartupIndexing();
   mAiChatHistoryStore = std::make_unique<QgsAiChatHistoryStore>( mAiFileContextProvider.get(), this );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );
@@ -1501,6 +1504,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiChatDock->hide();
 
   mActionAiAssistant = new QAction( tr( "AI Assistant" ), this );
+  mActionAiAssistant->setObjectName( u"mActionAiAssistant"_s );
   mActionAiAssistant->setCheckable( true );
   mActionAiAssistant->setIcon( QIcon( u":/images/icons/strata-icon.svg"_s ) );
   mActionAiAssistant->setToolTip( tr( "Show or hide Strata AI Assistant" ) );

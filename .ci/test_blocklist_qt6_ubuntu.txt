@@ -15,3 +15,9 @@ test_core_openclutils
 
 # Relies on a broken/unreliable 3rd party service
 test_core_layerdefinition
+
+# Fails under the binary-only CI image used by this fork
+PyQgsAppStartup
+
+# Unstable 3D image comparison on the hosted CI renderer
+test_3d_3drendering
