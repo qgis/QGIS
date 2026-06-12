@@ -20,7 +20,9 @@
 #include "qgssettingstreenode.h"
 #include "qgsthreadingutils.h"
 
+#include <QCoreApplication>
 #include <QDir>
+#include <QFile>
 #include <QRegularExpression>
 #include <QSettings>
 #include <QString>
@@ -64,6 +66,89 @@ void QgsSettingsEntryBase::setupUserSettings( const QString &profilePath )
 QSettings &QgsSettingsEntryBase::userSettings()
 {
   return sUserSettings();
+}
+
+QHash<QString, QVariant> QgsSettingsEntryBase::sGlobalDefaults;
+
+bool QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
+{
+  // if this is called before the application is created
+  if ( QCoreApplication::instance() )
+  {
+    QGIS_CHECK_MAIN_THREAD_ACCESS
+  }
+
+  static bool sGlobalDefaultsLoaded = false;
+  if ( sGlobalDefaultsLoaded )
+    QgsDebugMsgLevel( u"Global settings are being reloaded from %1"_s.arg( path ), 2 );
+  sGlobalDefaultsLoaded = true;
+
+  sGlobalDefaults.clear();
+  if ( path.isEmpty() || !QFile::exists( path ) )
+    return false;
+
+  const QSettings globalSettings( path, QSettings::IniFormat );
+  const QStringList keys = globalSettings.allKeys();
+  sGlobalDefaults.reserve( keys.size() );
+  for ( const QString &key : keys )
+  {
+    sGlobalDefaults.insert( key, globalSettings.value( key ) );
+  }
+
+  return true;
+}
+
+bool QgsSettingsEntryBase::hasGlobalDefault( const QString &key )
+{
+  return sGlobalDefaults.contains( sanitizeGlobalKey( key ) );
+}
+
+QVariant QgsSettingsEntryBase::globalDefault( const QString &key )
+{
+  return sGlobalDefaults.value( sanitizeGlobalKey( key ) );
+}
+
+QStringList QgsSettingsEntryBase::globalChildGroups( const QString &prefix )
+{
+  QString normalizedPrefix = sanitizeGlobalKey( prefix );
+  if ( !normalizedPrefix.endsWith( '/' ) )
+    normalizedPrefix.append( '/' );
+
+  const int prefixLen = normalizedPrefix.size();
+  QStringList result;
+
+  for ( QHash<QString, QVariant>::const_iterator it = sGlobalDefaults.constBegin(); it != sGlobalDefaults.constEnd(); ++it )
+  {
+    if ( it.key().startsWith( normalizedPrefix ) )
+    {
+      const int slashPos = it.key().indexOf( '/', prefixLen );
+      const QString group = ( slashPos < 0 ) ? it.key().mid( prefixLen ) : it.key().mid( prefixLen, slashPos - prefixLen );
+      if ( !group.isEmpty() && !result.contains( group ) )
+        result.append( group );
+    }
+  }
+  return result;
+}
+
+QString QgsSettingsEntryBase::sanitizeGlobalKey( const QString &key )
+{
+  if ( key.startsWith( '/' ) )
+    return key.mid( 1 );
+  return key;
+}
+
+QVariant QgsSettingsEntryBase::valueFromSettingsWithGlobalDefault( const QString &resolvedKey, const QVariant &defaultValue ) const
+{
+  if ( sUserSettings().contains( resolvedKey ) )
+    return sUserSettings().value( resolvedKey );
+
+  // sGlobalDefaults is populated once on the main thread before any worker
+  // threads start, so concurrent reads are safe (no concurrent modification).
+  const QHash<QString, QVariant>::const_iterator it = sGlobalDefaults.constFind( sanitizeGlobalKey( resolvedKey ) );
+  if ( it != sGlobalDefaults.constEnd() )
+    return it.value();
+
+  return defaultValue;
 }
 
 QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parent, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
@@ -159,17 +244,24 @@ bool QgsSettingsEntryBase::hasDynamicKey() const
 
 bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const
 {
-  return sUserSettings().contains( key( dynamicKeyPart ) );
+  const QString resolvedKey = key( dynamicKeyPart );
+  return sUserSettings().contains( resolvedKey ) || sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) );
 }
 
 bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
 {
-  return sUserSettings().contains( key( dynamicKeyPartList ) );
+  const QString resolvedKey = key( dynamicKeyPartList );
+  return sUserSettings().contains( resolvedKey ) || sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) );
 }
 
 Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
 {
-  if ( sUserSettings().contains( key( dynamicKeyPartList ) ) )
+  const QString resolvedKey = key( dynamicKeyPartList );
+
+  if ( sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) ) )
+    return Qgis::SettingsOrigin::Global;
+
+  if ( sUserSettings().contains( resolvedKey ) )
     return Qgis::SettingsOrigin::Local;
 
   return Qgis::SettingsOrigin::Any;
@@ -212,7 +304,16 @@ bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString
     }
   }
 
-  sUserSettings().setValue( resolvedKey, value );
+  // If the new value matches a global default, remove the user override
+  const QString sanitizedKey = sanitizeGlobalKey( resolvedKey );
+  if ( sGlobalDefaults.contains( sanitizedKey ) && sGlobalDefaults.value( sanitizedKey ) == value )
+  {
+    sUserSettings().remove( resolvedKey );
+  }
+  else
+  {
+    sUserSettings().setValue( resolvedKey, value );
+  }
   return true;
 }
 
@@ -231,7 +332,7 @@ QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart ) c
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList ) const
 {
-  return sUserSettings().value( key( dynamicKeyPartList ), mDefaultValue );
+  return valueFromSettingsWithGlobalDefault( key( dynamicKeyPartList ), mDefaultValue );
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
@@ -244,19 +345,19 @@ QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart, bo
 QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
   if ( useDefaultValueOverride )
-    return sUserSettings().value( key( dynamicKeyPartList ), defaultValueOverride );
+    return valueFromSettingsWithGlobalDefault( key( dynamicKeyPartList ), defaultValueOverride );
   else
-    return sUserSettings().value( key( dynamicKeyPartList ), mDefaultValue );
+    return valueFromSettingsWithGlobalDefault( key( dynamicKeyPartList ), mDefaultValue );
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QString &dynamicKeyPart ) const
 {
-  return sUserSettings().value( key( dynamicKeyPart ), defaultValueOverride );
+  return valueFromSettingsWithGlobalDefault( key( dynamicKeyPart ), defaultValueOverride );
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QStringList &dynamicKeyPartList ) const
 {
-  return sUserSettings().value( key( dynamicKeyPartList ), defaultValueOverride );
+  return valueFromSettingsWithGlobalDefault( key( dynamicKeyPartList ), defaultValueOverride );
 }
 
 QVariant QgsSettingsEntryBase::defaultValueAsVariant() const
