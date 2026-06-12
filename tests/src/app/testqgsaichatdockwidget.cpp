@@ -476,7 +476,7 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool downloadButtonFound = false;
   bool defaultProviderSelected = false;
   bool e5UiStateFound = false;
-  QTimer::singleShot( 0, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, e5ProviderListed]() {
+  QTimer::singleShot( 0, &dock, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, e5ProviderListed]() {
     QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
     if ( settingsDialog )
     {

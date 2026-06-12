@@ -7,6 +7,8 @@
 #ifndef QGSAITESTLOOPBACKSERVER_H
 #define QGSAITESTLOOPBACKSERVER_H
 
+#include <algorithm>
+
 #include <QByteArray>
 #include <QList>
 #include <QPair>
@@ -24,7 +26,7 @@
  * the connection is closed. Received request bodies are recorded so tests can
  * assert on the exact payload that was sent.
  */
-class QgsAiTestLoopbackServer : public QTcpServer
+class QgsAiTestLoopbackServer : public QTcpServer // clazy:exclude=missing-qobject-macro
 {
   public:
     struct ScriptedResponse
@@ -107,7 +109,7 @@ class QgsAiTestLoopbackServer : public QTcpServer
       requestBodies.append( bodySoFar.left( contentLength ) );
       rawRequests.append( buffered );
 
-      const int responseIndex = qMin( requestCount - 1, static_cast<int>( responses.size() ) - 1 );
+      const int responseIndex = std::min( requestCount - 1, static_cast<int>( responses.size() ) - 1 );
       const ScriptedResponse response = responseIndex >= 0 ? responses.at( responseIndex ) : ScriptedResponse();
       writeResponse( socket, response );
     }
