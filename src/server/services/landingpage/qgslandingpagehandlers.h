@@ -30,6 +30,7 @@ using namespace Qt::StringLiterals;
 class QgsFeatureRequest;
 class QgsServerOgcApi;
 class QgsFeature;
+class QgsServerInterface;
 
 /**
  * The QgsLandingPageHandler implements the landing page handler.
@@ -59,7 +60,7 @@ class QgsLandingPageHandler : public QgsServerOgcApiHandler
 
 
   private:
-    json projectsData( const QgsServerRequest &request ) const;
+    json projectsData( const QgsServerRequest &request, const QgsServerInterface *serverInterface ) const;
 
     const QgsServerSettings *mSettings = nullptr;
 };
