@@ -203,7 +203,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // These 2 connections should be made after mCanvas is created, since they will
   // override canvas sources, set by a connection made in canvas constructor
-  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, mLayerTreeView, &QgsElevationProfileLayerTreeView::addNodeForRegisteredSource );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsElevationProfileWidget::handleNodeForNewlyRegisteredSource );
   connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, mLayerTreeView, &QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource );
 
   mZoomTool = new QgsPlotToolZoom( mCanvas );
@@ -803,6 +803,22 @@ void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
   connect( mLayerTree, &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
 
   updateCanvasSources();
+}
+
+void QgsElevationProfileWidget::handleNodeForNewlyRegisteredSource( const QString &sourceId, const QString &sourceName )
+{
+  if ( mProfile->useProjectLayerTree() )
+  {
+    // Skip custom node creation and override
+    // canvas sources to match the layer tree sources
+    updateCanvasSources();
+  }
+  else
+  {
+    // Add a custom node to the layer tree, and let layerOrderChanged
+    // signal trigger an update of canvas sources
+    mLayerTreeView->addNodeForRegisteredSource( sourceId, sourceName );
+  }
 }
 
 void QgsElevationProfileWidget::cancelJobs()
