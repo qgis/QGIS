@@ -19,6 +19,7 @@ jobs:
 
     permissions:
       pull-requests: write
+      issues: write
 
     runs-on: ubuntu-latest
     steps:
@@ -66,6 +67,10 @@ jobs:
             if (fs.existsSync('./summary.md'))
             {
               const issue_number = Number(fs.readFileSync('./pr_number'));
+              if (!Number.isInteger(issue_number) || issue_number <= 0) {
+                core.info('No pull request number found for this workflow run; skipping test failure comment.');
+                return;
+              }
               const git_sha = String(fs.readFileSync('./git_commit')).trim();
               const prComments = await github.rest.issues.listComments({
                 owner: context.repo.owner,
