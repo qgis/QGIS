@@ -1407,8 +1407,9 @@ int main( int argc, char *argv[] )
       libPaths.prepend( QT_PLUGINS_DIR );
     }
 
-    if ( qEnvironmentVariableIsEmpty( "QCA_PLUGIN_PATH" ) && !QStringLiteral( QCA_PLUGIN_DIR ).isEmpty() )
-      qputenv( "QCA_PLUGIN_PATH", QByteArray( QCA_PLUGIN_DIR ) );
+    const QByteArray qcaPluginDir = QByteArrayLiteral( QCA_PLUGIN_DIR );
+    if ( qEnvironmentVariableIsEmpty( "QCA_PLUGIN_PATH" ) && !qcaPluginDir.isEmpty() )
+      qputenv( "QCA_PLUGIN_PATH", qcaPluginDir );
   }
 
   QgsDebugMsgLevel( u"Prepending QgsApplication::pluginPath to libraryPaths"_s, 4 );
