@@ -13452,7 +13452,6 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
     connect( profileWidget, &QgsElevationProfileWidget::profileDataChanged, widget, &Qgs3DMapCanvasWidget::setProfileData );
     connect( profileWidget, &QgsElevationProfileWidget::profileDataRemoved, widget, &Qgs3DMapCanvasWidget::removeProfileData );
     connect( profileWidget, &QgsElevationProfileWidget::profileCursorMoved, widget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
-    profileWidget->updateCurveIn3D();
   }
 
   return widget;
@@ -13650,6 +13649,11 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
 
     canvasWidget->setMapSettings( map );
 
+    for ( QgsElevationProfileWidget *profileWidget : std::as_const( mElevationProfileWidgets ) )
+    {
+      profileWidget->updateCurveIn3D();
+    }
+
     // configure initial position of the camera (it should approximate the current 2D view)
     switch ( sceneMode )
     {
@@ -13692,9 +13696,11 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
       }
     }
 
-    const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
-    if ( canvasWidget->mapCanvas3D()->cameraController() )
-      canvasWidget->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
+    if ( QgsCameraController *cameraController = canvasWidget->mapCanvas3D()->cameraController() )
+    {
+      const Qgis::VerticalAxisInversionFlags axisInversion = settings.flagValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversionFlags(), QgsSettings::App );
+      cameraController->setVerticalAxisInversion( axisInversion );
+    }
 
     QDomImplementation DomImplementation;
     QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );

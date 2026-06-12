@@ -44,7 +44,9 @@ class _3D_EXPORT QgsMetalRoughTexturedMaterial3DHandler : public QgsAbstractMate
 
     QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const override;
     QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override;
-    QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const override;
+    QgsMaterial *toInstancedMaterial(
+      const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform = QMatrix4x4()
+    ) const override;
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 
   private:

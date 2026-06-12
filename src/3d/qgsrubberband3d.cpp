@@ -496,7 +496,7 @@ void QgsRubberBand3D::updateMarkerMaterial()
       mMarkerMaterial = new QgsPoint3DBillboardMaterial();
       mMarkerEntity->addComponent( mMarkerMaterial );
       //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param
-      QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this] { mMarkerMaterial->setViewportSize( mEngine->size() ); } );
+      QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [material = mMarkerMaterial, engine = mEngine] { material->setViewportSize( engine->size() ); } );
     }
 
     mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol.get(), Qgs3DRenderContext::fromMapSettings( mMapSettings ) );

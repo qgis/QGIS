@@ -99,13 +99,13 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Returns the vertical axis inversion behavior.
      * \since QGIS 3.18
      */
-    Qgis::VerticalAxisInversion verticalAxisInversion() const { return mVerticalAxisInversion; }
+    Qgis::VerticalAxisInversionFlags verticalAxisInversion() const { return mVerticalAxisInversion; }
 
     /**
      * Sets the vertical axis \a inversion behavior.
      * \since QGIS 3.18
      */
-    void setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
+    void setVerticalAxisInversion( Qgis::VerticalAxisInversionFlags inversion );
 
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
@@ -499,7 +499,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
     bool mInputHandlersEnabled = true;
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
-    Qgis::VerticalAxisInversion mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
+    Qgis::VerticalAxisInversionFlags mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenPivoting | Qgis::VerticalAxisInversion::WhenRotatingDragging;
     double mCameraMovementSpeed = 5.0;
 
     QSet<int> mDepressedKeys;
