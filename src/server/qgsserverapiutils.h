@@ -153,6 +153,7 @@ class SERVER_EXPORT QgsServerApiUtils
      */
     static QVariantList temporalExtentList( const QgsVectorLayer *layer ) SIP_PYNAME( temporalExtent );
 
+
     /**
      * Parses the CRS URI \a bboxCrs (example: "http://www.opengis.net/def/crs/OGC/1.3/CRS84") into a QGIS CRS object
      */

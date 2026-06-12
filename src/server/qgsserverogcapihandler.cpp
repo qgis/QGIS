@@ -121,6 +121,7 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::GEOJSON:
     case QgsServerOgcApi::ContentType::JSON:
     case QgsServerOgcApi::ContentType::OPENAPI3:
+    case QgsServerOgcApi::ContentType::SCHEMA_JSON:
       jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ).first() );
       break;
     case QgsServerOgcApi::ContentType::XML:
@@ -224,7 +225,7 @@ QString QgsServerOgcApiHandler::headerLink(
 
   if ( !profileStr.isEmpty() )
   {
-    hrefStr += u"&profile="_s + profileStr;
+    hrefStr += "&profile="_L1 + profileStr;
   }
 
   QString titleStr = !title.isEmpty() ? title : QString::fromStdString( linkTitle() );
@@ -240,7 +241,7 @@ QString QgsServerOgcApiHandler::headerLink(
 
   if ( !profileStr.isEmpty() )
   {
-    linkStr += QString( "; profile=\"%1\"" ).arg( profileStr );
+    linkStr += u"; profile=\"%1\""_s.arg( profileStr );
   }
 
   return linkStr;
@@ -569,6 +570,55 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
   }
   return result;
+}
+
+QgsServerOgcApi::Profile QgsServerOgcApiHandler::profileFromString( const QString &profile, bool &ok )
+{
+  QMetaEnum profiles = QMetaEnum::fromType<QgsServerOgcApi::Profile>();
+  for ( int i = 0; i < profiles.keyCount(); ++i )
+  {
+    QString profileStr = profiles.key( i );
+    if ( profileStr.compare( profile, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+    {
+      ok = true;
+      return static_cast<QgsServerOgcApi::Profile>( profiles.value( i ) );
+    }
+    else if ( profileStr.contains( '_' ) )
+    {
+      // Try with hyphen instead of underscore
+      QString profileHyphen { profileStr.replace( '_', '-' ) };
+      if ( profileHyphen.compare( profile, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      {
+        ok = true;
+        return static_cast<QgsServerOgcApi::Profile>( profiles.value( i ) );
+      }
+    }
+  }
+  ok = false;
+  return QgsServerOgcApi::Profile::NONE;
+}
+
+QList<QgsServerOgcApi::Profile> QgsServerOgcApiHandler::profilesFromRequest( const QgsServerRequest *request ) const
+{
+  const QStringList profileStrings { request->queryParameter( u"profile"_s ).split( ',', Qt::SkipEmptyParts ) };
+  QList<QgsServerOgcApi::Profile> profiles;
+  if ( !profileStrings.isEmpty() )
+  {
+    for ( const auto &profileString : std::as_const( profileStrings ) )
+    {
+      bool ok { false };
+      const QgsServerOgcApi::Profile p { profileFromString( profileString, ok ) };
+      if ( ok )
+      {
+        profiles.push_back( p );
+      }
+      else
+      {
+        throw QgsServerApiBadRequestException( u"Unsupported profile requested: %1"_s.arg( profileString ) );
+      }
+    }
+  }
+  return profiles;
 }
 
 QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
