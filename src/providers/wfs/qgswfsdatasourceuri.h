@@ -149,6 +149,9 @@ class QgsWFSDataSourceURI
     //! Returns how to analyze DescribeFeatureType response.
     FeatureMode featureMode() const;
 
+    //! Gets the list of property names to request in GetFeature (WFS propertyName parameter). Empty means all properties.
+    QStringList propertyName() const;
+
     //! Builds a derived uri from a base uri
     static QString build( const QString &uri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent, const QString &featureFormat );
 

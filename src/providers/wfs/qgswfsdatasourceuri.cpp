@@ -198,6 +198,7 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_SQL,
     QgsWFSConstants::URI_PARAM_HTTPMETHOD,
     QgsWFSConstants::URI_PARAM_FEATURE_MODE,
+    QgsWFSConstants::URI_PARAM_PROPERTYNAME,
   };
 
   QSet<QString> l_unknownParamKeys;
@@ -523,6 +524,13 @@ QgsWFSDataSourceURI::FeatureMode QgsWFSDataSourceURI::featureMode() const
     QgsMessageLog::logMessage( QObject::tr( "Unknown value for featureMode URI parameter '%1'" ).arg( val ), QObject::tr( "WFS" ) );
     return FeatureMode::Default;
   }
+}
+
+QStringList QgsWFSDataSourceURI::propertyName() const
+{
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_PROPERTYNAME ) )
+    return QStringList();
+  return mURI.param( QgsWFSConstants::URI_PARAM_PROPERTYNAME ).split( ',' );
 }
 
 QString QgsWFSDataSourceURI::build(

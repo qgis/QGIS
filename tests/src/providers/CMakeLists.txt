@@ -13,6 +13,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/providers/virtualraster
   ${CMAKE_SOURCE_DIR}/src/providers/virtual
+  ${CMAKE_SOURCE_DIR}/src/providers/wfs
   ${CMAKE_SOURCE_DIR}/src/test
 )
 include_directories(SYSTEM
@@ -29,6 +30,7 @@ endif()
 #############################################################
 # Tests:
 
+add_qgis_test(testqgswfsprovider.cpp MODULE provider LINKEDLIBRARIES provider_wfs_a qgis_core)
 add_qgis_test(testqgswcsprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
 # Temporarily set to old version until server is reconfigured
 #set(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
