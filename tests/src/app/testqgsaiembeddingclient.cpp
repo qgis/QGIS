@@ -34,7 +34,7 @@ namespace
    * and counts how many requests it received. Used to drive the embedding client's
    * authentication circuit breaker without touching a live API.
    */
-  class Loopback401Server : public QTcpServer
+  class Loopback401Server : public QTcpServer // clazy:exclude=missing-qobject-macro
   {
     public:
       int requestCount = 0;

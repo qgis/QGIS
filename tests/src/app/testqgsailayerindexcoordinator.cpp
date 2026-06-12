@@ -50,7 +50,7 @@ class TestQgsAiLayerIndexCoordinator : public QObject
     static QString copyPointsShapefile( const QString &destDir );
 };
 
-class CountingWorkspaceIndex : public QgsAiWorkspaceIndex
+class CountingWorkspaceIndex : public QgsAiWorkspaceIndex // clazy:exclude=missing-qobject-macro
 {
   public:
     explicit CountingWorkspaceIndex( QgsAiFileContextProvider *contextProvider )
@@ -82,7 +82,7 @@ class CountingWorkspaceIndex : public QgsAiWorkspaceIndex
  * Index whose first reindexLayerSnapshot() fails and trips the embedding provider to
  * unavailable, simulating a remote 401/403 circuit breaker firing mid-batch.
  */
-class BreakerTrippingIndex : public QgsAiWorkspaceIndex
+class BreakerTrippingIndex : public QgsAiWorkspaceIndex // clazy:exclude=missing-qobject-macro
 {
   public:
     explicit BreakerTrippingIndex( QgsAiFileContextProvider *contextProvider )
