@@ -1306,6 +1306,9 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   apiContext.response()->setHeader( u"Content-Crs"_s, featureRequest.destinationCrs().toOgcUri() );
   apiContext.response()->setHeader( u"OGC-NumberReturned"_s, QString::number( featureList.count() ) );
 
+  // Add self link
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::self, QgsServerOgcApi::ContentType::FLATGEOBUF, QgsServerOgcApi::Profile::NONE, u"This document as FlatGeobuf"_s ) );
+
   // Add alternate links
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::RFC7946, u"This document as GEOJSON"_s ) );
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::NONE, u"This document as HTML"_s ) );
