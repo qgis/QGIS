@@ -12,7 +12,7 @@
     <name>Francesco Mazzi</name>
   </developer>
   <description>
-    <p>An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.</p>
+    <p>An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace - right inside the desktop.</p>
     <p>Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
     <p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. Strata preserves QGIS copyright notices and GPL licensing while adding native AI assistance.</p>
   </description>
