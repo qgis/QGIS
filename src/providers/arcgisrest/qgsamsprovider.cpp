@@ -1043,7 +1043,11 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
       QgsSetRequestInitiatorClass( request, u"QgsAmsTiledImageDownloadHandler"_s );
       QgsSetRequestInitiatorId( request, QString::number( tileReqNo ) );
       mRequestHeaders.updateNetworkRequest( request );
-      if ( !mAuth.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuth ) )
+
+      // only use authcfg if redirecting to same host
+      const bool useAuthCfg( !mAuth.isEmpty() && redirect.toUrl().host() == reply->request().url().host() );
+
+      if ( useAuthCfg && !QgsApplication::authManager()->updateNetworkRequest( request, mAuth ) )
       {
         const QString error = tr( "network request update failed for authentication config" );
         // mErrors.append( error );
