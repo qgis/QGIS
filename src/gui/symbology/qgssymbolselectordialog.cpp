@@ -20,6 +20,7 @@
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
+#include "qgssymbollayermodel.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
 
@@ -37,7 +38,6 @@ using namespace Qt::StringLiterals;
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgsproject.h"
-#include "qgsguiutils.h"
 #include "qgsgui.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
@@ -45,7 +45,6 @@ using namespace Qt::StringLiterals;
 
 #include <QColorDialog>
 #include <QPainter>
-#include <QStandardItemModel>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QKeyEvent>
@@ -53,12 +52,10 @@ using namespace Qt::StringLiterals;
 
 #include <QWidget>
 #include <QFile>
-#include <QStandardItem>
 #include <memory>
 
 /// @cond PRIVATE
 
-static const int SYMBOL_LAYER_ITEM_TYPE = QStandardItem::UserType + 1;
 
 DataDefinedRestorer::DataDefinedRestorer( QgsSymbol *symbol, const QgsSymbolLayer *symbolLayer )
 
@@ -117,128 +114,6 @@ void DataDefinedRestorer::restore()
   }
   save();
 }
-
-// Hybrid item which may represent a symbol or a layer
-// Check using item->isLayer()
-class SymbolLayerItem : public QStandardItem
-{
-  public:
-    explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer, QScreen *screen )
-      : mVectorLayer( vectorLayer )
-    {
-      setLayer( layer, symbolType, screen );
-    }
-
-    explicit SymbolLayerItem( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, QScreen *screen )
-      : mVectorLayer( vectorLayer )
-    {
-      setSymbol( symbol, screen );
-    }
-
-    void setLayer( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QScreen *screen )
-    {
-      mLayer = layer;
-      mIsLayer = true;
-      mSymbol = nullptr;
-      mSymbolType = symbolType;
-      updatePreview( screen );
-    }
-
-    void setSymbol( QgsSymbol *symbol, QScreen *screen )
-    {
-      mSymbol = symbol;
-      mIsLayer = false;
-      mLayer = nullptr;
-      updatePreview( screen );
-    }
-
-    void updatePreview( QScreen *screen )
-    {
-      if ( !mSize.isValid() )
-      {
-        const int size = QgsGuiUtils::scaleIconSize( 16 );
-        mSize = QSize( size, size );
-      }
-      QIcon icon;
-      if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( screen ) );
-      else
-      {
-        QgsExpressionContext expContext;
-        expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
-        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr, QgsScreenProperties( screen ) ) );
-      }
-      setIcon( icon );
-
-      if ( auto *lParent = parent() )
-        static_cast<SymbolLayerItem *>( lParent )->updatePreview( screen );
-    }
-
-    int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
-    bool isLayer() const { return mIsLayer; }
-
-    // returns the symbol pointer; helpful in determining a layer's parent symbol
-    QgsSymbol *symbol() { return mSymbol; }
-
-    QgsSymbolLayer *layer() { return mLayer; }
-
-    QVariant data( int role ) const override
-    {
-      if ( role == Qt::DisplayRole || role == Qt::EditRole )
-      {
-        if ( mIsLayer )
-        {
-          QgsSymbolLayerAbstractMetadata *m = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( mLayer->layerType() );
-          if ( m )
-            return m->visibleName();
-          else
-            return QString();
-        }
-        else
-        {
-          switch ( mSymbol->type() )
-          {
-            case Qgis::SymbolType::Marker:
-              return QCoreApplication::translate( "SymbolLayerItem", "Marker" );
-            case Qgis::SymbolType::Fill:
-              return QCoreApplication::translate( "SymbolLayerItem", "Fill" );
-            case Qgis::SymbolType::Line:
-              return QCoreApplication::translate( "SymbolLayerItem", "Line" );
-            default:
-              return "Symbol";
-          }
-        }
-      }
-      else if ( role == Qt::ForegroundRole && mIsLayer )
-      {
-        if ( !mLayer->enabled() )
-        {
-          QPalette pal = qApp->palette();
-          QBrush brush = QStandardItem::data( role ).value<QBrush>();
-          brush.setColor( pal.color( QPalette::Disabled, QPalette::WindowText ) );
-          return brush;
-        }
-        else
-        {
-          return QVariant();
-        }
-      }
-
-      //      if ( role == Qt::SizeHintRole )
-      //        return QVariant( QSize( 32, 32 ) );
-      if ( role == Qt::CheckStateRole )
-        return QVariant(); // could be true/false
-      return QStandardItem::data( role );
-    }
-
-  protected:
-    QgsSymbolLayer *mLayer = nullptr;
-    QgsSymbol *mSymbol = nullptr;
-    QPointer<QgsVectorLayer> mVectorLayer;
-    bool mIsLayer = false;
-    QSize mSize;
-    Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
-};
 
 ///@endcond
 
@@ -302,7 +177,8 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowUp.svg" ) ) );
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
 
-  mSymbolLayersModel = new QStandardItemModel( layersTree );
+  mSymbolLayersModel = new QgsSymbolLayerModel( mVectorLayer, layersTree, screen() );
+
   // Set the symbol
   layersTree->setModel( mSymbolLayersModel );
   layersTree->setHeaderHidden( true );
@@ -328,7 +204,10 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   QItemSelectionModel *selModel = layersTree->selectionModel();
   connect( selModel, &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
 
-  loadSymbol( mSymbol, static_cast<SymbolLayerItem *>( mSymbolLayersModel->invisibleRootItem() ) );
+  mSymbolLayersModel->setSymbol( mSymbol );
+
+  updateExpandedStateFromNode( mSymbolLayersModel->rootNode() );
+  // loadSymbol( mSymbol, static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->invisibleRootItem() ) );
   updatePreview();
 
   connect( btnUp, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::moveLayerUp );
@@ -356,6 +235,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
 
   // set symbol as active item in the tree
   const QModelIndex newIndex = layersTree->model()->index( 0, 0 );
+
   layersTree->setCurrentIndex( newIndex );
 
   setPanelTitle( tr( "Symbol Selector" ) );
@@ -436,49 +316,21 @@ QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
   return mContext;
 }
 
-void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
+
+void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol )
 {
   if ( !symbol )
     return;
 
-  if ( !parent )
-  {
-    mSymbol = symbol;
-    mSymbolLayersModel->clear();
-    parent = static_cast<SymbolLayerItem *>( mSymbolLayersModel->invisibleRootItem() );
-  }
-
-  SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol, mVectorLayer, screen() );
-  QFont boldFont = symbolItem->font();
-  boldFont.setBold( true );
-  symbolItem->setFont( boldFont );
-  parent->appendRow( symbolItem );
-
-  const int count = symbol->symbolLayerCount();
-  for ( int i = count - 1; i >= 0; i-- )
-  {
-    SymbolLayerItem *layerItem = new SymbolLayerItem( symbol->symbolLayer( i ), symbol->type(), mVectorLayer, screen() );
-    layerItem->setEditable( false );
-    symbolItem->appendRow( layerItem );
-    if ( symbol->symbolLayer( i )->subSymbol() )
-    {
-      loadSymbol( symbol->symbolLayer( i )->subSymbol(), layerItem );
-    }
-    layersTree->setExpanded( layerItem->index(), true );
-  }
-  layersTree->setExpanded( symbolItem->index(), true );
-
-  if ( mSymbol == symbol && !layersTree->currentIndex().isValid() )
-  {
-    // make sure root item for symbol is selected in tree
-    layersTree->setCurrentIndex( symbolItem->index() );
-  }
+  mSymbol = symbol;
+  mSymbolLayersModel->setSymbol( symbol );
 }
 
 void QgsSymbolSelectorWidget::reloadSymbol()
 {
-  mSymbolLayersModel->clear();
-  loadSymbol( mSymbol, static_cast<SymbolLayerItem *>( mSymbolLayersModel->invisibleRootItem() ) );
+  mSymbolLayersModel->setSymbol( mSymbol );
+  // loadSymbol( mSymbol, static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->invisibleRootItem() ) );
+  updateExpandedStateFromNode( mSymbolLayersModel->rootNode() );
 }
 
 void QgsSymbolSelectorWidget::updateUi()
@@ -487,8 +339,8 @@ void QgsSymbolSelectorWidget::updateUi()
   if ( !currentIdx.isValid() )
     return;
 
-  SymbolLayerItem *item = static_cast<SymbolLayerItem *>( mSymbolLayersModel->itemFromIndex( currentIdx ) );
-  if ( !item->isLayer() )
+  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( currentIdx ) );
+  if ( !node->isLayer() )
   {
     btnUp->setEnabled( false );
     btnDown->setEnabled( false );
@@ -498,8 +350,10 @@ void QgsSymbolSelectorWidget::updateUi()
     return;
   }
 
-  const int rowCount = item->parent()->rowCount();
-  const int currentRow = item->row();
+  const int rowCount = node->parent()->rowCount();
+  const int currentRow = node->rowIndex();
+  // const int rowCount = mSymbolLayersModel->rowCount( mSymbolLayersModel->node2index( node->parent() ) );
+
 
   btnUp->setEnabled( currentRow > 0 );
   btnDown->setEnabled( currentRow < rowCount - 1 );
@@ -521,24 +375,25 @@ void QgsSymbolSelectorWidget::updatePreview()
 void QgsSymbolSelectorWidget::updateLayerPreview()
 {
   // get current layer item and update its icon
-  SymbolLayerItem *item = currentLayerItem();
-  if ( item )
-    item->updatePreview( screen() );
+
+  QgsSymbolLayerModelNode *node = currentLayerNode();
+  if ( node )
+    mSymbolLayersModel->updatePreview( node );
   // update also preview of the whole symbol
   updatePreview();
 }
 
-SymbolLayerItem *QgsSymbolSelectorWidget::currentLayerItem()
+QgsSymbolLayerModelNode *QgsSymbolSelectorWidget::currentLayerNode()
 {
   const QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
     return nullptr;
 
-  SymbolLayerItem *item = static_cast<SymbolLayerItem *>( mSymbolLayersModel->itemFromIndex( idx ) );
-  if ( !item->isLayer() )
+  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( idx ) );
+  if ( !node->isLayer() )
     return nullptr;
 
-  return item;
+  return node;
 }
 
 QgsSymbolLayer *QgsSymbolSelectorWidget::currentLayer()
@@ -547,9 +402,9 @@ QgsSymbolLayer *QgsSymbolSelectorWidget::currentLayer()
   if ( !idx.isValid() )
     return nullptr;
 
-  SymbolLayerItem *item = static_cast<SymbolLayerItem *>( mSymbolLayersModel->itemFromIndex( idx ) );
-  if ( item->isLayer() )
-    return item->layer();
+  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( idx ) );
+  if ( node->isLayer() )
+    return node->layer();
 
   return nullptr;
 }
@@ -558,15 +413,15 @@ void QgsSymbolSelectorWidget::layerChanged()
 {
   updateUi();
 
-  SymbolLayerItem *currentItem = static_cast<SymbolLayerItem *>( mSymbolLayersModel->itemFromIndex( layersTree->currentIndex() ) );
-  if ( !currentItem )
+  QgsSymbolLayerModelNode *currentNode = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( layersTree->currentIndex() ) );
+  if ( !currentNode )
     return;
 
-  if ( currentItem->isLayer() )
+  if ( currentNode->isLayer() )
   {
-    SymbolLayerItem *parent = static_cast<SymbolLayerItem *>( currentItem->parent() );
-    mDataDefineRestorer = std::make_unique<DataDefinedRestorer>( parent->symbol(), currentItem->layer() );
-    QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
+    QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( currentNode->parent() );
+    mDataDefineRestorer = std::make_unique<DataDefinedRestorer>( parent->symbol(), currentNode->layer() );
+    QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentNode->layer(), parent->symbol(), mVectorLayer );
     layerProp->setDockMode( this->dockMode() );
     layerProp->setContext( mContext );
     setWidget( layerProp );
@@ -583,10 +438,10 @@ void QgsSymbolSelectorWidget::layerChanged()
     // then it must be a symbol
     mDataDefineRestorer.reset();
     Q_NOWARN_DEPRECATED_PUSH
-    currentItem->symbol()->setLayer( mVectorLayer );
+    currentNode->symbol()->setLayer( mVectorLayer );
     Q_NOWARN_DEPRECATED_POP
     // Now populate symbols of that type using the symbols list widget:
-    QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
+    QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentNode->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
     symbolsList->setContext( mContext );
 
     setWidget( symbolsList );
@@ -597,20 +452,21 @@ void QgsSymbolSelectorWidget::layerChanged()
 
 void QgsSymbolSelectorWidget::symbolChanged()
 {
-  SymbolLayerItem *currentItem = static_cast<SymbolLayerItem *>( mSymbolLayersModel->itemFromIndex( layersTree->currentIndex() ) );
-  if ( !currentItem || currentItem->isLayer() )
+  QgsSymbolLayerModelNode *currentNode = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( layersTree->currentIndex() ) );
+  if ( !currentNode || currentNode->isLayer() )
     return;
   // disconnect to avoid recreating widget
   disconnect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
-  if ( currentItem->parent() )
+  if ( currentNode->parent() && !currentNode->parent()->isRootNode() )
   {
     // it is a sub-symbol
-    QgsSymbol *symbol = currentItem->symbol();
-    SymbolLayerItem *parent = static_cast<SymbolLayerItem *>( currentItem->parent() );
-    parent->removeRow( 0 );
-    loadSymbol( symbol, parent );
-    layersTree->setCurrentIndex( parent->child( 0 )->index() );
-    parent->updatePreview( screen() );
+
+    QgsSymbol *symbol = currentNode->symbol();
+    QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( currentNode->parent() );
+
+    mSymbolLayersModel->updateNode( symbol, parent );
+    updateExpandedStateFromNode( parent );
+    layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parent->children().at( 0 ) ) );
   }
   else
   {
@@ -624,6 +480,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
   // connect it back once things are set
   connect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
 }
+
 
 void QgsSymbolSelectorWidget::setWidget( QWidget *widget )
 {
@@ -639,7 +496,9 @@ void QgsSymbolSelectorWidget::updateLockButton()
   QgsSymbolLayer *layer = currentLayer();
   if ( !layer )
     return;
-  mLockColorAction->setChecked( layer->isLocked() );
+  bool locked = layer->isLocked();
+  qDebug() << "after is locked ";
+  mLockColorAction->setChecked( locked );
   mLockSelectionColorAction->setChecked( layer->userFlags() & Qgis::SymbolLayerUserFlag::DisableSelectionRecoloring );
 
   updateLockButtonIcon();
@@ -664,28 +523,26 @@ void QgsSymbolSelectorWidget::addLayer()
     return;
 
   int insertIdx = -1;
-  SymbolLayerItem *item = static_cast<SymbolLayerItem *>( mSymbolLayersModel->itemFromIndex( idx ) );
-  if ( item->isLayer() )
+  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( idx ) );
+  if ( node->isLayer() )
   {
-    insertIdx = item->row();
-    item = static_cast<SymbolLayerItem *>( item->parent() );
+    insertIdx = node->rowIndex();
+    node = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
   }
 
-  QgsSymbol *parentSymbol = item->symbol();
+  QgsSymbol *parentSymbol = node->symbol();
 
   // save data-defined values at marker level
   const QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize() : QgsProperty() );
   const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle() : QgsProperty() );
   const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth() : QgsProperty() );
 
-  QgsSymbolLayer *newLayerPtr = nullptr;
   {
     std::unique_ptr< QgsSymbolLayer > newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
-    newLayerPtr = newLayer.get();
     if ( insertIdx == -1 )
       parentSymbol->appendSymbolLayer( newLayer.release() );
     else
-      parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer.release() );
+      parentSymbol->insertSymbolLayer( node->rowCount() - insertIdx, newLayer.release() );
   }
 
   // restore data-defined values at marker level
@@ -696,13 +553,11 @@ void QgsSymbolSelectorWidget::addLayer()
   if ( ddWidth )
     static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
-  // TODO -- using newLayerPtr is not safe in some circumstances here. This needs reworking so that SymbolLayerItem does has
-  // its own owned QgsSymbolLayer clone, and isn't reliant on a pointer to the object owned by parentSymbol.
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayerPtr, parentSymbol->type(), mVectorLayer, screen() ); // cppcheck-suppress invalidLifetime
-  item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
-  item->updatePreview( screen() );
 
-  layersTree->setCurrentIndex( mSymbolLayersModel->indexFromItem( newLayerItem ) );
+  mSymbolLayersModel->updateNode( parentSymbol, node );
+  updateExpandedStateFromNode( node );
+
+  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( node->children().at( 0 ) ) );
   updateUi();
   updatePreview();
   emitSymbolModified();
@@ -710,18 +565,17 @@ void QgsSymbolSelectorWidget::addLayer()
 
 void QgsSymbolSelectorWidget::removeLayer()
 {
-  SymbolLayerItem *item = currentLayerItem();
-  const int row = item->row();
-  SymbolLayerItem *parent = static_cast<SymbolLayerItem *>( item->parent() );
-
+  QgsSymbolLayerModelNode *node = currentLayerNode();
+  const int row = node->rowIndex();
+  QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
   const int layerIdx = parent->rowCount() - row - 1; // IMPORTANT
   QgsSymbol *parentSymbol = parent->symbol();
   QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
 
-  parent->removeRow( row );
-  parent->updatePreview( screen() );
+  mSymbolLayersModel->updateNode( parentSymbol, parent );
+  updateExpandedStateFromNode( parent );
 
-  const QModelIndex newIdx = parent->child( 0 )->index();
+  const QModelIndex newIdx = mSymbolLayersModel->node2index( parent->children().at( 0 ) );
   layersTree->setCurrentIndex( newIdx );
 
   updateUi();
@@ -743,12 +597,12 @@ void QgsSymbolSelectorWidget::moveLayerUp()
 
 void QgsSymbolSelectorWidget::moveLayerByOffset( int offset )
 {
-  SymbolLayerItem *item = currentLayerItem();
-  if ( !item )
+  QgsSymbolLayerModelNode *node = currentLayerNode();
+  if ( !node )
     return;
-  const int row = item->row();
+  const int row = node->rowIndex();
 
-  SymbolLayerItem *parent = static_cast<SymbolLayerItem *>( item->parent() );
+  QgsSymbolLayerModelNode *parent = node->parent();
   QgsSymbol *parentSymbol = parent->symbol();
 
   const int layerIdx = parent->rowCount() - row - 1;
@@ -756,12 +610,10 @@ void QgsSymbolSelectorWidget::moveLayerByOffset( int offset )
   QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
   parentSymbol->insertSymbolLayer( layerIdx - offset, tmpLayer );
 
-  QList<QStandardItem *> rowItems = parent->takeRow( row );
-  parent->insertRows( row + offset, rowItems );
-  parent->updatePreview( screen() );
+  mSymbolLayersModel->updateNode( parentSymbol, parent );
+  updateExpandedStateFromNode( parent );
 
-  const QModelIndex newIdx = rowItems[0]->index();
-  layersTree->setCurrentIndex( newIdx );
+  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parent->children().at( row + offset ) ) );
 
   updatePreview();
   emitSymbolModified();
@@ -784,34 +636,28 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   if ( !idx.isValid() )
     return;
 
-  SymbolLayerItem *item = static_cast<SymbolLayerItem *>( mSymbolLayersModel->itemFromIndex( idx ) );
-  if ( !item->isLayer() )
+  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( idx ) );
+  if ( !node->isLayer() )
     return;
 
-  QgsSymbolLayer *source = item->layer();
+  QgsSymbolLayer *source = node->layer();
+  const int insertIdx = node->rowIndex();
+  node = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
 
-  const int insertIdx = item->row();
-  item = static_cast<SymbolLayerItem *>( item->parent() );
-
-  QgsSymbol *parentSymbol = item->symbol();
+  QgsSymbol *parentSymbol = node->symbol();
 
   QgsSymbolLayer *newLayer = source->clone();
   QgsSymbolLayerUtils::resetSymbolLayerIds( newLayer );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else
-    parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
+    parentSymbol->insertSymbolLayer( node->rowCount() - insertIdx, newLayer );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer, screen() );
-  item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
-  if ( newLayer->subSymbol() )
-  {
-    loadSymbol( newLayer->subSymbol(), newLayerItem );
-    layersTree->setExpanded( newLayerItem->index(), true );
-  }
-  item->updatePreview( screen() );
 
-  layersTree->setCurrentIndex( mSymbolLayersModel->indexFromItem( newLayerItem ) );
+  mSymbolLayersModel->updateNode( parentSymbol, node );
+  updateExpandedStateFromNode( node );
+
+  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( node->children().at( insertIdx == -1 ? 0 : insertIdx ) ) );
   updateUi();
   updatePreview();
   emitSymbolModified();
@@ -819,28 +665,18 @@ void QgsSymbolSelectorWidget::duplicateLayer()
 
 void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
 {
-  SymbolLayerItem *item = currentLayerItem();
+  QgsSymbolLayerModelNode *node = currentLayerNode();
+  QgsSymbolLayerModelNode *parentNode = node->parent();
 
-  if ( item->rowCount() > 0 )
-  {
-    item->removeRow( 0 );
-  }
-  QgsSymbol *symbol = static_cast<SymbolLayerItem *>( item->parent() )->symbol();
+  QgsSymbol *symbol = static_cast<QgsSymbolLayerModelNode *>( parentNode )->symbol();
 
-  // update symbol layer item
-  item->setLayer( newLayer, symbol->type(), screen() );
-  // When it is a marker symbol
-  if ( newLayer->subSymbol() )
-  {
-    loadSymbol( newLayer->subSymbol(), item );
-    layersTree->setExpanded( item->index(), true );
-  }
 
-  // Change the symbol at last to avoid deleting item's layer
-  const int layerIdx = item->parent()->rowCount() - item->row() - 1;
+  const int layerIdx = parentNode->rowCount() - node->rowIndex() - 1;
   symbol->changeSymbolLayer( layerIdx, newLayer );
 
-  item->updatePreview( screen() );
+  mSymbolLayersModel->updateNode( symbol, parentNode );
+  updateExpandedStateFromNode( parentNode );
+  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parentNode->children().at( layerIdx ) ) );
   updatePreview();
   emitSymbolModified();
   // Important: This lets the layer have its own layer properties widget
@@ -848,21 +684,9 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
 }
 
 void QgsSymbolSelectorWidget::updateListIcons()
-{
-  QScreen *currentScreen = screen();
-  std::function<void( SymbolLayerItem * item )> updateItem;
-  updateItem = [currentScreen, &updateItem]( SymbolLayerItem *item ) {
-    for ( int row = 0; row < item->rowCount(); ++row )
-    {
-      if ( auto child = dynamic_cast< SymbolLayerItem * >( item->child( row ) ) )
-      {
-        updateItem( child );
-        child->updatePreview( currentScreen );
-      }
-    }
-  };
 
-  updateItem( static_cast<SymbolLayerItem *>( mSymbolLayersModel->invisibleRootItem() ) );
+{
+  // mSymbolLayersModel->setScreen( screen() );
 }
 
 
@@ -938,9 +762,9 @@ void QgsSymbolSelectorDialog::reloadSymbol()
   mSelectorWidget->reloadSymbol();
 }
 
-void QgsSymbolSelectorDialog::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
+void QgsSymbolSelectorDialog::loadSymbol( QgsSymbol *symbol )
 {
-  mSelectorWidget->loadSymbol( symbol, parent );
+  mSelectorWidget->loadSymbol( symbol );
 }
 
 void QgsSymbolSelectorDialog::updateUi()
@@ -953,9 +777,9 @@ void QgsSymbolSelectorDialog::updateLockButton()
   mSelectorWidget->updateLockButton();
 }
 
-SymbolLayerItem *QgsSymbolSelectorDialog::currentLayerItem()
+QgsSymbolLayerModelNode *QgsSymbolSelectorDialog::currentLayerNode()
 {
-  return mSelectorWidget->currentLayerItem();
+  return mSelectorWidget->currentLayerNode();
 }
 
 QgsSymbolLayer *QgsSymbolSelectorDialog::currentLayer()
@@ -1052,6 +876,16 @@ void QgsSymbolSelectorWidget::layersAboutToBeRemoved( const QList<QgsMapLayer *>
   {
     disconnect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
   }
+}
+
+void QgsSymbolSelectorWidget::updateExpandedStateFromNode( QgsSymbolLayerModelNode *node )
+{
+  const QModelIndex idx = mSymbolLayersModel->node2index( node );
+  layersTree->setExpanded( idx, node->expanded() );
+
+  const auto constChildren = node->children();
+  for ( QgsSymbolLayerModelNode *child : constChildren )
+    updateExpandedStateFromNode( child );
 }
 
 void QgsSymbolSelectorWidget::emitSymbolModified()
