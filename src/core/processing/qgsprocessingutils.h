@@ -617,6 +617,26 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
 
+    /**
+    * Returns a list of image format extensions supported by QImageWriter.
+    *
+    * The returned list excludes SVG as it is typically handled via other exporters, and has the PNG format
+    * listed first as the recommended default. Remaining formats are sorted alphabetically.
+    *
+    * \since QGIS 4.2
+    */
+    static QStringList supportedImageFormats();
+
+    /**
+     * Returns a file filter string of all supported image formats, suitable for use in file picker dialogs.
+     *
+     * The returned string excludes SVG formats and prioritizes the PNG format as the recommended default.
+     * Remaining filters are sorted alphabetically.
+     *
+     * \since QGIS 4.2
+     */
+    static QString supportedImageFileFilters();
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );

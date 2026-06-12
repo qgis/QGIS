@@ -28,6 +28,7 @@
 #include "qgsprofilerequest.h"
 #include "qgsterrainprovider.h"
 #include "qgscurve.h"
+#include <QImageWriter>
 
 ///@cond PRIVATE
 
@@ -124,7 +125,7 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output image" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output image" ), QgsProcessingUtils::supportedImageFileFilters() ) );
 }
 
 QString QgsGenerateElevationProfileAlgorithm::name() const
