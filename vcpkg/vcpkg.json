@@ -61,7 +61,10 @@
     "meshoptimizer",
     "nlohmann-json",
     "o2",
-    "onnxruntime",
+    {
+      "name": "onnxruntime",
+      "platform": "!emscripten"
+    },
     "proj",
     "protobuf",
     {
@@ -95,7 +98,10 @@
     "qtmultimedia",
     "qt5compat",
     "qtkeychain-qt6",
-    "sentencepiece",
+    {
+      "name": "sentencepiece",
+      "platform": "!emscripten"
+    },
     "zlib",
     "zstd"
   ],
