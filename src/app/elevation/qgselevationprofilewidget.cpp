@@ -603,7 +603,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     scheduleUpdate();
   } );
 
-  updateCanvasSources();
   setMainCanvas( canvas );
 
   if ( mProfile->distanceUnit() != Qgis::DistanceUnit::Unknown )
@@ -802,6 +801,8 @@ void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
 
   connect( mLayerTree, &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
   connect( mLayerTree, &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+
+  updateCanvasSources();
 }
 
 void QgsElevationProfileWidget::cancelJobs()
