@@ -183,9 +183,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mProxyTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProxyTypeComboBox_currentIndexChanged );
   connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
   connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
-  connect( mCheckStrataUpdatesButton, &QPushButton::clicked, this, [] {
-    QMetaObject::invokeMethod( QgisApp::instance(), "checkQgisVersion" );
-  } );
+  connect( mCheckStrataUpdatesButton, &QPushButton::clicked, this, [] { QMetaObject::invokeMethod( QgisApp::instance(), "checkQgisVersion" ); } );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
   connect( cboGlobalLocale, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { updateSampleLocaleText(); } );
   connect( cbShowGroupSeparator, &QCheckBox::toggled, this, [this]( bool ) { updateSampleLocaleText(); } );
