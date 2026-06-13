@@ -514,8 +514,8 @@ void QgsApplication::init( QString profileFolder )
 
   // Application members can be initialized before the final profile and data
   // paths are available during desktop startup, so refresh path-backed themes.
-  if ( instance()->mApplicationMembers )
-    instance()->mApplicationMembers->mApplicationThemeRegistry = std::make_unique<QgsApplicationThemeRegistry>();
+  if ( QgsApplication *app = instance(); app && app->mApplicationMembers )
+    app->mApplicationMembers->mApplicationThemeRegistry = std::make_unique<QgsApplicationThemeRegistry>();
 
   // Determine the auth DB URI, the first match wins:
   // 1 - get it from QGIS_AUTH_DB_URI environment variable
