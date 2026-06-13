@@ -23,11 +23,15 @@
 #include "qgssettings.h"
 
 #include <QApplication>
+#include <QDockWidget>
 #include <QFontDialog>
 #include <QImageWriter>
+#include <QMainWindow>
+#include <QMenu>
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QString>
+#include <QTabBar>
 
 using namespace Qt::StringLiterals;
 
@@ -386,6 +390,109 @@ namespace QgsGuiUtils
            )
            == QMessageBox::Yes;
   }
+
+  void addDockWidget( QMainWindow *window, Qt::DockWidgetArea area, QDockWidget *dockwidget )
+  {
+    window->addDockWidget( area, dockwidget );
+    // Make the right and left docks consume all vertical space and top
+    // and bottom docks nest between them
+    window->setCorner( Qt::TopLeftCorner, Qt::LeftDockWidgetArea );
+    window->setCorner( Qt::BottomLeftCorner, Qt::LeftDockWidgetArea );
+    window->setCorner( Qt::TopRightCorner, Qt::RightDockWidgetArea );
+    window->setCorner( Qt::BottomRightCorner, Qt::RightDockWidgetArea );
+    // add to the Panel submenu, if it exists
+    if ( auto menu = window->findChild< QMenu * >( u"mPanelMenu"_s ) )
+    {
+      menu->addAction( dockwidget->toggleViewAction() );
+    }
+
+    dockwidget->show();
+  }
+
+  void addTabifiedDockWidget( QMainWindow *window, Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith, bool raiseTab )
+  {
+    QList<QDockWidget *> dockWidgetsInArea;
+    const QList<QDockWidget *> allDockWidgets = window->findChildren<QDockWidget *>();
+    for ( QDockWidget *w : allDockWidgets )
+    {
+      if ( w->isVisible() && window->dockWidgetArea( w ) == area )
+      {
+        dockWidgetsInArea << w;
+      }
+    }
+
+    addDockWidget( window, area, dockWidget ); // First add the dock widget, then attempt to tabify
+    if ( dockWidgetsInArea.empty() )
+      return;
+
+    // Get the base dock widget that we'll use to tabify our new dockWidget
+    QDockWidget *tabifyWithDockWidget = nullptr;
+    for ( const QString &targetName : tabifyWith )
+    {
+      auto it = std::find_if( dockWidgetsInArea.begin(), dockWidgetsInArea.end(), [&targetName]( QDockWidget *cw ) {
+        return cw->objectName() == targetName || cw->property( "dock_uuid" ).toString() == targetName;
+      } );
+
+      if ( it != dockWidgetsInArea.end() )
+      {
+        tabifyWithDockWidget = *it;
+        break;
+      }
+    }
+
+    if ( !tabifyWithDockWidget )
+    {
+      // fallback to the first available dock widget if no matches were found, or if no tabifyWith names were specified
+      tabifyWithDockWidget = dockWidgetsInArea.at( 0 );
+    }
+    if ( tabifyWithDockWidget == dockWidget )
+      return;
+
+    // find the currently active dock widget so that we can restore that if we're not raising the new tab
+    QTabBar *existingTabBar = nullptr;
+    int currentTabIndex = -1;
+    if ( !raiseTab && dockWidgetsInArea.length() > 1 )
+    {
+      // Chances are we've already got a tabBar, if so, get
+      // currentTabIndex to restore status after inserting our new tab
+      const QList<QTabBar *> tabBars = window->findChildren<QTabBar *>( QString(), Qt::FindDirectChildrenOnly );
+      bool tabBarFound = false;
+      for ( QTabBar *tabBar : tabBars )
+      {
+        for ( int i = 0; i < tabBar->count(); i++ )
+        {
+          if ( tabBar->tabText( i ) == tabifyWithDockWidget->windowTitle() )
+          {
+            existingTabBar = tabBar;
+            currentTabIndex = tabBar->currentIndex();
+            tabBarFound = true;
+            break;
+          }
+        }
+        if ( tabBarFound )
+        {
+          break;
+        }
+      }
+    }
+
+    // Now we can put the new dockWidget on top of tabifyWith
+    window->tabifyDockWidget( tabifyWithDockWidget, dockWidget );
+
+    // Should we restore dock widgets status?
+    if ( !raiseTab )
+    {
+      if ( existingTabBar )
+      {
+        existingTabBar->setCurrentIndex( currentTabIndex );
+      }
+      else
+      {
+        tabifyWithDockWidget->raise(); // Single base dock widget, we can just raise it
+      }
+    }
+  }
+
 } // namespace QgsGuiUtils
 
 //

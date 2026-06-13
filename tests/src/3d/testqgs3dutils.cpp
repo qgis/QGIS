@@ -90,6 +90,12 @@ class TestQgs3DUtils : public QgsTest
     void test3DSceneRay3D();
     void testSrgbToLinear_data();
     void testSrgbToLinear();
+    void testCalculateDirectionalLightUpVector_data();
+    void testCalculateDirectionalLightUpVector();
+    void testCalculateCascadeSplits_data();
+    void testCalculateCascadeSplits();
+    void testCalculateViewSpaceOrthographicBounds_data();
+    void testCalculateViewSpaceOrthographicBounds();
 
   private:
     QgsRasterLayer *mLayerRgb;
@@ -578,6 +584,120 @@ void TestQgs3DUtils::testSrgbToLinear()
   QGSCOMPARENEAR( linear.greenF(), green, 0.0001 );
   QGSCOMPARENEAR( linear.blueF(), blue, 0.0001 );
   QGSCOMPARENEAR( linear.alphaF(), alpha, 0.0001 );
+}
+
+void TestQgs3DUtils::testCalculateDirectionalLightUpVector_data()
+{
+  QTest::addColumn<QVector3D>( "lightDirection" );
+  QTest::addColumn<QVector3D>( "expected" );
+
+  QTest::newRow( "horizontal x" ) << QVector3D( 1.0f, 0.0f, 0.0f ).normalized() << QVector3D( 0.0f, 1.0f, 0.0f );
+  QTest::newRow( "angled 45deg" ) << QVector3D( 1.0f, -1.0f, 0.0f ).normalized() << QVector3D( 0.0f, 1.0f, 0.0f );
+  QTest::newRow( "straight down" ) << QVector3D( 0.0f, -1.0f, 0.0f ).normalized() << QVector3D( 0.0f, 0.0f, 1.0f );
+  QTest::newRow( "straight up" ) << QVector3D( 0.0f, 1.0f, 0.0f ).normalized() << QVector3D( 0.0f, 0.0f, 1.0f );
+  QTest::newRow( "almost straight down" ) << QVector3D( 0.0f, -0.995f, 0.099f ).normalized() << QVector3D( 0.0f, 0.0f, 1.0f );
+}
+
+void TestQgs3DUtils::testCalculateDirectionalLightUpVector()
+{
+  QFETCH( QVector3D, lightDirection );
+  QFETCH( QVector3D, expected );
+
+  const QVector3D actualUp = Qgs3DUtils::calculateDirectionalLightUpVector( lightDirection );
+  QGSCOMPARENEARVECTOR3D( actualUp, expected, 0.00001 );
+}
+
+void TestQgs3DUtils::testCalculateCascadeSplits_data()
+{
+  QTest::addColumn<int>( "numberCascades" );
+  QTest::addColumn<float>( "nearPlane" );
+  QTest::addColumn<float>( "farPlane" );
+  QTest::addColumn<float>( "lambda" );
+  QTest::addColumn< QList<float> >( "expectedSplits" );
+
+  QTest::newRow( "2 cascades" ) << 2 << 1.0f << 100.0f << 0.5f << QList<float> { 1.0f, 30.25f, 100.0f };
+  QTest::newRow( "zero near plane no math error" ) << 1 << 0.0f << 100.0f << 1.0f << QList<float> { 0.0f, 100.0f };
+  QTest::newRow( "uniform split" ) << 4 << 0.0f << 100.0f << 0.0f << QList<float> { 0.0f, 25.0f, 50.0f, 75.0f, 100.0f };
+}
+
+void TestQgs3DUtils::testCalculateCascadeSplits()
+{
+  QFETCH( int, numberCascades );
+  QFETCH( float, nearPlane );
+  QFETCH( float, farPlane );
+  QFETCH( float, lambda );
+  QFETCH( QList<float>, expectedSplits );
+
+  const std::vector<float> actualSplits = Qgs3DUtils::calculateCascadeSplits( numberCascades, nearPlane, farPlane, lambda );
+
+  QCOMPARE( static_cast<int>( actualSplits.size() ), expectedSplits.size() );
+  for ( int i = 0; i < expectedSplits.size(); ++i )
+  {
+    QGSCOMPARENEAR( actualSplits[i], expectedSplits[i], 0.001f );
+  }
+}
+
+void TestQgs3DUtils::testCalculateViewSpaceOrthographicBounds_data()
+{
+  QTest::addColumn< QList<QVector3D> >( "cornersList" );
+  QTest::addColumn< QMatrix4x4 >( "viewMatrix" );
+  QTest::addColumn< float >( "expectedLeft" );
+  QTest::addColumn< float >( "expectedRight" );
+  QTest::addColumn< float >( "expectedBottom" );
+  QTest::addColumn< float >( "expectedTop" );
+  QTest::addColumn< float >( "expectedNear" );
+  QTest::addColumn< float >( "expectedFar" );
+
+  QList<QVector3D> standardCube
+    = { QVector3D( -1, -1, -1 ), QVector3D( 1, -1, -1 ), QVector3D( 1, 1, -1 ), QVector3D( -1, 1, -1 ), QVector3D( -1, -1, 1 ), QVector3D( 1, -1, 1 ), QVector3D( 1, 1, 1 ), QVector3D( -1, 1, 1 ) };
+
+  QMatrix4x4 identity;
+
+  QMatrix4x4 translatedView;
+  translatedView.translate( 10.0f, 0.0f, 0.0f );
+
+  QMatrix4x4 rotatedView;
+  rotatedView.rotate( 90.0f, 1.0f, 0.0f, 0.0f );
+
+  QTest::newRow( "identity matrix" ) << standardCube << identity << -1.0f << 1.0f << -1.0f << 1.0f << -1.0f << 1.0f;
+
+  QTest::newRow( "translated matrix" ) << standardCube << translatedView << 9.0f << 11.0f << -1.0f << 1.0f << -1.0f << 1.0f;
+
+  QTest::newRow( "rotated matrix" ) << standardCube << rotatedView << -1.0f << 1.0f << -1.0f << 1.0f << -1.0f << 1.0f;
+}
+
+void TestQgs3DUtils::testCalculateViewSpaceOrthographicBounds()
+{
+  QFETCH( QList<QVector3D>, cornersList );
+  QFETCH( QMatrix4x4, viewMatrix );
+  QFETCH( float, expectedLeft );
+  QFETCH( float, expectedRight );
+  QFETCH( float, expectedBottom );
+  QFETCH( float, expectedTop );
+  QFETCH( float, expectedNear );
+  QFETCH( float, expectedFar );
+
+  QVector3D cornersArray[8];
+  for ( int i = 0; i < 8; ++i )
+  {
+    cornersArray[i] = cornersList[i];
+  }
+
+  float actualLeft = 0;
+  float actualRight = 0;
+  float actualBottom = 0;
+  float actualTop = 0;
+  float actualNear = 0;
+  float actualFar = 0;
+
+  Qgs3DUtils::calculateViewSpaceOrthographicBounds( cornersArray, viewMatrix, actualLeft, actualRight, actualBottom, actualTop, actualNear, actualFar );
+
+  QGSCOMPARENEAR( actualLeft, expectedLeft, 0.0001f );
+  QGSCOMPARENEAR( actualRight, expectedRight, 0.0001f );
+  QGSCOMPARENEAR( actualBottom, expectedBottom, 0.0001f );
+  QGSCOMPARENEAR( actualTop, expectedTop, 0.0001f );
+  QGSCOMPARENEAR( actualNear, expectedNear, 0.0001f );
+  QGSCOMPARENEAR( actualFar, expectedFar, 0.0001f );
 }
 
 

@@ -103,9 +103,6 @@ set(QGIS_APP_SRCS
   qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolscalefeature.cpp
-  qgsmaptoolselect.cpp
-  qgsmaptoolselectionhandler.cpp
-  qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsplitparts.cpp
@@ -368,6 +365,7 @@ if (WITH_3D)
     3d/qgs3dnavigationwidget.cpp
     3d/qgs3doptions.cpp
     3d/qgsannotationlayer3drendererwidget.cpp
+    3d/qgscategorized3drendererwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
@@ -381,6 +379,7 @@ if (WITH_3D)
     3d/qgsphongmaterialwidget.cpp
     3d/qgsphongtexturedmaterialwidget.cpp
     3d/qgsrulebased3drendererwidget.cpp
+    3d/qgs3dsymbolbutton.cpp
     3d/qgssimplelinematerialwidget.cpp
     3d/qgssymbol3dwidget.cpp
     3d/qgstiledscenelayer3drendererwidget.cpp

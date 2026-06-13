@@ -52,6 +52,7 @@ email                : sherman at mrcc.com
 #include "qgsmapthemecollection.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptopixel.h"
+#include "qgsmessagebar.h"
 #include "qgsmessagelog.h"
 #include "qgsmimedatautils.h"
 #include "qgsoverlaywidgetlayout.h"
@@ -73,6 +74,7 @@ email                : sherman at mrcc.com
 #include "qgssymbollayerutils.h"
 #include "qgstemporalcontroller.h"
 #include "qgstemporalnavigationobject.h"
+#include "qgsuserinputwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
@@ -106,6 +108,10 @@ email                : sherman at mrcc.com
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsMapCanvas::settingsCustomCoordinateCrs = new QgsSettingsEntryString( u"custom-coordinate-crs"_s, QgsSettingsTree::sTreeMap, QString() );
+const QgsSettingsEntryBool *QgsMapCanvas::settingsMainCanvasPreviewJobs
+  = new QgsSettingsEntryBool( u"main-canvas-preview-jobs"_s, QgsSettingsTree::sTreeRendering, true, u"Whether the main map canvas displays preview tiles while rendering"_s );
+const QgsSettingsEntryBool *QgsMapCanvas::settingsEnableRenderCaching
+  = new QgsSettingsEntryBool( u"enable-render-caching"_s, QgsSettingsTree::sTreeRendering, true, u"Whether map rendering uses a cache to speed up redraws"_s );
 
 /**
  * \ingroup gui
@@ -1064,6 +1070,26 @@ void QgsMapCanvas::setStatusBar( QgsStatusBar *bar )
   mStatusBar = bar;
 }
 
+void QgsMapCanvas::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsMapCanvas::messageBar()
+{
+  return mMessageBar.data();
+}
+
+void QgsMapCanvas::setUserInputWidget( QgsUserInputWidget *userInputWidget )
+{
+  mUserInputWidget = userInputWidget;
+}
+
+QgsUserInputWidget *QgsMapCanvas::userInputWidget()
+{
+  return mUserInputWidget.data();
+}
+
 bool QgsMapCanvas::previewJobsEnabled() const
 {
   return mUsePreviewJobs;
@@ -1261,10 +1287,10 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
       QAction *copyCoordinateAction = new QAction( u"%5 (%1%2, %3%4)"_s.arg( firstNumber, firstSuffix, secondNumber, secondSuffix, identifier ), &menu );
 
-      connect( copyCoordinateAction, &QAction::triggered, this, [firstNumber, firstSuffix, secondNumber, secondSuffix, transformedPoint] {
+      connect( copyCoordinateAction, &QAction::triggered, this, [firstNumber, secondNumber, transformedPoint] {
         QClipboard *clipboard = QApplication::clipboard();
 
-        const QString coordinates = u"%1%2, %3%4"_s.arg( firstNumber, firstSuffix, secondNumber, secondSuffix );
+        const QString coordinates = firstNumber + ',' + secondNumber;
 
         //if we are on x11 system put text into selection ready for middle button pasting
         if ( clipboard->supportsSelection() )

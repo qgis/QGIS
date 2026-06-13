@@ -4,6 +4,18 @@ QgsMapTool.EditTool = QgsMapTool.Flag.EditTool
 QgsMapTool.AllowZoomRect = QgsMapTool.Flag.AllowZoomRect
 QgsMapTool.ShowContextMenu = QgsMapTool.Flag.ShowContextMenu
 QgsMapTool.Flags = lambda flags=0: QgsMapTool.Flag(flags)
+# monkey patching scoped based enum
+QgsMapTool.PropertyStatus.Valid.__doc__ = "Property is valid"
+QgsMapTool.PropertyStatus.DoesNotExist.__doc__ = "Property does not exist"
+QgsMapTool.PropertyStatus.CurrentExpressionInvalid.__doc__ = "Property is an invalid expression"
+QgsMapTool.PropertyStatus.__doc__ = """Property status used in method dealing with property
+
+* ``Valid``: Property is valid
+* ``DoesNotExist``: Property does not exist
+* ``CurrentExpressionInvalid``: Property is an invalid expression
+
+"""
+# --
 from enum import Enum
 
 

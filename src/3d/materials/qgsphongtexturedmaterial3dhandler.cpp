@@ -98,6 +98,13 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
       material->setDiffuseTexture( texture );
       material->setDiffuseTextureScale( static_cast<float>( phongSettings->textureScale() ) );
       material->setDiffuseTextureRotation( static_cast<float>( phongSettings->textureRotation() ) );
+      material->setDiffuseTextureOffset( static_cast<float>( phongSettings->textureOffset().x() ), static_cast<float>( phongSettings->textureOffset().y() ) );
+
+      const QgsPropertyCollection ddProps = phongSettings->dataDefinedProperties();
+      const bool hasDDTextureTransform = ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureOffset )
+                                         || ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureScale )
+                                         || ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureRotation );
+      material->setDataDefinedTextureTransformEnabled( hasDDTextureTransform );
 
       return material;
     }
@@ -119,22 +126,6 @@ QMap<QString, QString> QgsPhongTexturedMaterial3DHandler::toExportParameters( co
   parameters[u"Ks"_s] = u"%1 %2 %3"_s.arg( phongSettings->specular().redF() ).arg( phongSettings->specular().greenF() ).arg( phongSettings->specular().blueF() );
   parameters[u"Ns"_s] = QString::number( phongSettings->shininess() );
   return parameters;
-}
-
-void QgsPhongTexturedMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const
-{
-  const QgsPhongTexturedMaterialSettings *phongSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( settings );
-  Q_ASSERT( phongSettings );
-
-  const QColor ambientColor = Qgs3DUtils::srgbToLinear( materialContext.isSelected() ? materialContext.selectionColor().darker() : phongSettings->ambient() );
-
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( u"ambientColor"_s, ambientColor );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( u"specularColor"_s, Qgs3DUtils::srgbToLinear( phongSettings->specular() ) );
-  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( u"shininess"_s, static_cast<float>( phongSettings->shininess() ) );
-
-  effect->addParameter( ambientParameter );
-  effect->addParameter( specularParameter );
-  effect->addParameter( shininessParameter );
 }
 
 bool QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
@@ -159,6 +150,8 @@ bool QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *s
     p->setValue( phongSettings->textureScale() );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordRotation"_s ) )
     p->setValue( phongSettings->textureRotation() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordOffset"_s ) )
+    p->setValue( QVariant::fromValue( QVector2D( static_cast< float>( phongSettings->textureOffset().x() ), static_cast< float >( phongSettings->textureOffset().y() ) ) ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"specularColor"_s ) )
     p->setValue( Qgs3DUtils::srgbToLinear( phongSettings->specular() ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"shininess"_s ) )

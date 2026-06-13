@@ -780,6 +780,39 @@ be of type Solid
 
 
 
+    static std::unique_ptr<QgsSfcgalGeometry> createBox( double sizeX, double sizeY, double sizeZ );
+%Docstring
+Create a box primitive
+
+:param sizeX: the box width
+:param sizeY: the box depth
+:param sizeZ: the box height
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
+%End
+
+    static std::unique_ptr<QgsSfcgalGeometry> createCone( double bottomRadius, double height, double topRadius, unsigned int radial );
+%Docstring
+Create a cone primitive
+
+:param bottomRadius: The bottom face radius of the cone
+:param height: The height of the cone
+:param topRadius: The top face radius of the cone
+:param radial: The number of radial divisions
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
+%End
+
     static std::unique_ptr<QgsSfcgalGeometry> createCube( double size );
 %Docstring
 Create a cube primitive
@@ -790,6 +823,55 @@ Create a cube primitive
                             operation
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    static std::unique_ptr<QgsSfcgalGeometry> createCylinder( double radius, double height, unsigned int radial );
+%Docstring
+Create a cylinder primitive
+
+:param radius: The radius of the cylinder
+:param height: The height of the cylinder
+:param radial: The number of radial divisions
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
+%End
+
+    static std::unique_ptr<QgsSfcgalGeometry> createSphere( double radius, unsigned int subdivisions );
+%Docstring
+Create a sphere primitive
+
+:param radius: The radius of the sphere
+:param subdivisions: The number of icosahedron subdivisions (0=12
+                     vertices, 1=42, 2=162, etc.)
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
+%End
+
+    static std::unique_ptr<QgsSfcgalGeometry> createTorus( double mainRadius, double tubeRadius, unsigned int mainRadial, unsigned int tubeRadial );
+%Docstring
+Create a torus primitive
+
+:param mainRadius: The main radius of the torus
+:param tubeRadius: The tube radius of the torus
+:param mainRadial: The number of main radial divisions
+:param tubeRadial: The number of tube radial divisions
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
 %End
 
     QList<std::pair<QString, QString>> primitiveParameters() const;

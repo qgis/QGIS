@@ -29,11 +29,13 @@
 
 
 #include <memory>
+#include <optional>
 
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgscoordinatetransform.h"
 
+#include <QMatrix4x4>
 #include <QVector>
 
 #define SIP_NO_FILE
@@ -241,6 +243,24 @@ class CORE_EXPORT QgsGltfUtils
      * \since QGIS 4.0
      */
     static bool writeGltfModel( const tinygltf::Model &model, const QString &outputFilename );
+
+    /**
+     * Represents a single mesh primitive with per-instance placement in tile space.
+     * Produced by QgsCesiumUtils::resolveInstancing() — format-agnostic, consumed directly by renderers.
+     * \since QGIS 4.2
+     */
+    struct InstancedPrimitive
+    {
+        int meshIndex = -1;      //!< Index into tinygltf::Model::meshes
+        int primitiveIndex = -1; //!< Index within the mesh's primitives
+        int materialIndex = -1;  //!< For material lookup (-1 = default)
+
+        /**
+         * Per-instance 4x4 transform matrices in "tile space" (Z-up, ECEF-relative).
+         * Each matrix transforms raw mesh vertices to tile-space positions.
+         */
+        QVector<QMatrix4x4> instanceTransforms;
+    };
 };
 
 ///@endcond

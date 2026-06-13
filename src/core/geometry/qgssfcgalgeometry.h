@@ -689,12 +689,83 @@ class CORE_EXPORT QgsSfcgalGeometry
     SIP_SKIP QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type );
 
     /**
+     * Create a box primitive
+     *
+     * \param sizeX the box width
+     * \param sizeY the box depth
+     * \param sizeZ the box height
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createBox( double sizeX, double sizeY, double sizeZ ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
+
+    /**
+     * Create a cone primitive
+     *
+     * \param bottomRadius The bottom face radius of the cone
+     * \param height The height of the cone
+     * \param topRadius The top face radius of the cone
+     * \param radial The number of radial divisions
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createCone( double bottomRadius, double height, double topRadius, unsigned int radial ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
+
+    /**
      * Create a cube primitive
      * \param size the cube size
      * \throws QgsSfcgalException if an error was encountered during the operation
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
      */
     static std::unique_ptr<QgsSfcgalGeometry> createCube( double size ) SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Create a cylinder primitive
+     *
+     * \param radius The radius of the cylinder
+     * \param height The height of the cylinder
+     * \param radial The number of radial divisions
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createCylinder( double radius, double height, unsigned int radial ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
+
+    /**
+     * Create a sphere primitive
+     *
+     * \param radius The radius of the sphere
+     * \param subdivisions The number of icosahedron subdivisions (0=12 vertices, 1=42, 2=162, etc.)
+
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createSphere( double radius, unsigned int subdivisions ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
+
+    /**
+     * Create a torus primitive
+     *
+     * \param mainRadius The main radius of the torus
+     * \param tubeRadius The tube radius of the torus
+     * \param mainRadial The number of main radial divisions
+     * \param tubeRadial The number of tube radial divisions
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createTorus( double mainRadius, double tubeRadius, unsigned int mainRadial, unsigned int tubeRadial ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Returns the list of available parameter description for this primitive.
@@ -756,14 +827,8 @@ class CORE_EXPORT QgsSfcgalGeometry
     bool mIsPrimitive = false;
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
-    void setPrimitiveTranslate( const QgsVector3D &translation );
-    void setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center );
-    //!The rotation angle is in radians.
-    void setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center );
-
     sfcgal::shared_prim mSfcgalPrim;
     sfcgal::primitiveType mPrimType;
-    QgsMatrix4x4 mPrimTransform;
 #endif
 };
 

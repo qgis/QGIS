@@ -98,7 +98,7 @@ point in the sequence.
               double d = PyFloat_AsDouble( element );
               if ( PyErr_Occurred() )
               {
-                Py_DECREF( value );
+                Py_DECREF( element );
                 sipIsErr = 1;
                 break;
               }
@@ -726,6 +726,8 @@ approximation of the curve.
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
 
     virtual bool deleteVertex( QgsVertexId position );
+
+    virtual bool deleteVertices( const QSet<QgsVertexId> &positions );
 
 
     virtual QgsLineString *reversed() const /Factory/;

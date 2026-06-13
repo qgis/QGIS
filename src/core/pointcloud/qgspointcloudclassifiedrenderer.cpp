@@ -99,6 +99,8 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
   QHash< int, QColor > colors;
   QHash< int, int > pointSizes;
+
+  bool dataDefinedPropertiesActive = dataDefinedProperties().isActive( QgsPointCloudRenderer::Property::Color );
   for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     if ( !category.renderState() )
@@ -127,9 +129,12 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
     int attributeValue = 0;
     context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
-    const QColor color = colors.value( attributeValue );
+    QColor color = colors.value( attributeValue );
     if ( !color.isValid() )
       continue;
+
+    if ( dataDefinedPropertiesActive )
+      color = colorFromExpression( block, i, color, context );
 
     pointXY( context, ptr, i, x, y );
     if ( visibleExtent.contains( x, y ) )
@@ -266,9 +271,9 @@ QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsR
   return rendererElem;
 }
 
-QSet<QString> QgsPointCloudClassifiedRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+QSet<QString> QgsPointCloudClassifiedRenderer::usedAttributes( const QgsPointCloudRenderContext &context ) const
 {
-  QSet<QString> res;
+  QSet<QString> res = QgsPointCloudRenderer::usedAttributes( context );
   res << mAttribute;
   return res;
 }

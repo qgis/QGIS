@@ -513,7 +513,7 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
   if ( !mInputHandlersEnabled )
     return;
 
-  QgsEventTracing::ScopedEvent traceEvent( u"3D"_s, u"QgsCameraController::onPositionChanged"_s );
+  QgsScopedEvent traceEvent( u"3D"_s, u"QgsCameraController::onPositionChanged"_s );
 
   switch ( mCameraNavigationMode )
   {

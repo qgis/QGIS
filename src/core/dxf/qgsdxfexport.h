@@ -68,6 +68,8 @@ static const bool DEFAULT_DXF_DATA_DEFINED_BLOCKS = true;
 class CORE_EXPORT QgsDxfExport : public QgsLabelSink
 {
 #endif
+    friend class TestQgsDxfExport;
+
   public:
     /**
      * Encapsulates the properties of a vector layer containing features that will be exported to the DXF file.
@@ -555,8 +557,16 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * \param symbolUnits the symbol output units
      * \param mapUnits the map units
      * \param mapUnitsPerPixel Map units per pixel
+     * \deprecated QGIS 4.2. Use the overload taking a QgsRenderContext instead.
     */
-    static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
+    Q_DECL_DEPRECATED static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 ) SIP_DEPRECATED;
+
+    /**
+     * Returns the scale factor for conversion of a symbol size in \a symbolUnits to map units,
+     * using the symbology scale and map-to-pixel transform from \a renderContext.
+     * \since QGIS 4.2
+    */
+    static double mapUnitScaleFactor( const QgsRenderContext &renderContext, Qgis::RenderUnit symbolUnits );
 
     /**
      * Clips value to scale minimum/maximum
@@ -687,12 +697,14 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers( QgsRenderContext &context );
     static int nLineTypes( const QList< QPair< QgsSymbolLayer *, QgsSymbol *> > &symbolLayers );
     static bool hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol );
+    //! Returns TRUE if the symbol layer is enabled (static flag + data-defined LayerEnabled property)
+    static bool isSymbolLayerEnabled( const QgsSymbolLayer *layer, QgsSymbolRenderContext &context );
     void writeSymbolTableBlockRef( const QString &blockName );
     void writeSymbolLayerBlock( const QString &blockName, const QgsMarkerSymbolLayer *ml, QgsSymbolRenderContext &ctx );
     void writePointBlockReference(
       const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize
     );
-    static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop );
+    static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop, const QgsExpressionContext &context );
 
     double dashSize() const;
     double dotSize() const;

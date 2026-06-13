@@ -25,10 +25,11 @@ using namespace Qt::StringLiterals;
 
 QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   : mRenderShadows( other.mRenderShadows )
-  , mSelectedDirectionalLight( other.mSelectedDirectionalLight )
+  , mLightSourceId( other.mLightSourceId )
   , mMaximumShadowRenderingDistance( other.mMaximumShadowRenderingDistance )
   , mShadowBias( other.mShadowBias )
-  , mShadowMapResolution( other.mShadowMapResolution )
+  , mShadowQuality( other.mShadowQuality )
+  , mShowCascadeSplits( other.mShowCascadeSplits )
 {}
 
 QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
@@ -37,10 +38,11 @@ QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
     return *this;
 
   this->mRenderShadows = rhs.mRenderShadows;
-  this->mSelectedDirectionalLight = rhs.mSelectedDirectionalLight;
+  this->mLightSourceId = rhs.mLightSourceId;
   this->mMaximumShadowRenderingDistance = rhs.mMaximumShadowRenderingDistance;
   this->mShadowBias = rhs.mShadowBias;
-  this->mShadowMapResolution = rhs.mShadowMapResolution;
+  this->mShadowQuality = rhs.mShadowQuality;
+  this->mShowCascadeSplits = rhs.mShowCascadeSplits;
   return *this;
 }
 
@@ -48,18 +50,44 @@ void QgsShadowSettings::readXml( const QDomElement &element, const QgsReadWriteC
 {
   Q_UNUSED( context );
   mRenderShadows = element.attribute( u"shadow-rendering-enabled"_s, u"0"_s ).toInt();
-  mSelectedDirectionalLight = element.attribute( u"selected-directional-light"_s, u"-1"_s ).toInt();
+  mLightSourceId = element.attribute( u"light-source"_s );
   mMaximumShadowRenderingDistance = element.attribute( u"max-shadow-rendering-distance"_s, u"1500"_s ).toInt();
   mShadowBias = element.attribute( u"shadow-bias"_s, u"0.00001"_s ).toFloat();
-  mShadowMapResolution = element.attribute( u"shadow-map-resolution"_s, u"2048"_s ).toInt();
 }
 
 void QgsShadowSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context );
   element.setAttribute( u"shadow-rendering-enabled"_s, mRenderShadows );
-  element.setAttribute( u"selected-directional-light"_s, mSelectedDirectionalLight );
+  element.setAttribute( u"light-source"_s, mLightSourceId );
   element.setAttribute( u"max-shadow-rendering-distance"_s, mMaximumShadowRenderingDistance );
   element.setAttribute( u"shadow-bias"_s, mShadowBias );
-  element.setAttribute( u"shadow-map-resolution"_s, mShadowMapResolution );
+}
+
+int QgsShadowSettings::qualityToMapResolution( Qgis::ShadowQuality quality )
+{
+  switch ( quality )
+  {
+    case Qgis::ShadowQuality::Low:
+      return 512;
+    case Qgis::ShadowQuality::Medium:
+      return 1024;
+    case Qgis::ShadowQuality::High:
+      return 2048;
+    case Qgis::ShadowQuality::VeryHigh:
+      return 4096;
+    case Qgis::ShadowQuality::Extreme:
+      return 8192;
+  }
+  BUILTIN_UNREACHABLE
+}
+
+bool QgsShadowSettings::showCascadeSplits() const
+{
+  return mShowCascadeSplits;
+}
+
+void QgsShadowSettings::setShowCascadeSplits( bool newShowCascadeSplits )
+{
+  mShowCascadeSplits = newShowCascadeSplits;
 }

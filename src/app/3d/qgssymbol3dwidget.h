@@ -18,6 +18,7 @@
 
 #include <memory>
 
+#include "qgspanelwidget.h"
 #include "qgsstyle.h"
 
 #include <QWidget>
@@ -36,7 +37,7 @@ class QgsVectorLayer;
 /**
  * Widget for selection of 3D symbol
  */
-class QgsSymbol3DWidget : public QWidget
+class QgsSymbol3DWidget : public QgsPanelWidget
 {
     Q_OBJECT
 
@@ -48,9 +49,6 @@ class QgsSymbol3DWidget : public QWidget
 
     //! Sets symbol and layer (does not take ownership)
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *vlayer );
-
-  signals:
-    void widgetChanged();
 
   private slots:
 

@@ -58,10 +58,13 @@ class TestQgsArcGisRestUtils : public QObject
     void testParseEsriLineStyle();
     void testParseEsriColorJson();
     void testParseMarkerSymbol();
+    void testParseMarkerSymbolNullOutline();
     void testPictureMarkerSymbol();
     void testParseLineSymbol();
     void testParseFillSymbol();
+    void testParseFillSymbolNullOutline();
     void testParsePictureFillSymbol();
+    void testParsePictureFillSymbolNullOutline();
     void testParseRendererSimple();
     void testParseRendererCategorized();
     void testParseLabeling();
@@ -341,6 +344,40 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QVERIFY( !symbol );
 }
 
+void TestQgsArcGisRestUtils::testParseMarkerSymbolNullOutline()
+{
+  // Test that null outline is handled correctly - should result in no outline
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"esriSMS\","
+    "\"style\": \"esriSMSCircle\","
+    "\"color\": ["
+    "115,"
+    "76,"
+    "10,"
+    "200"
+    "],"
+    "\"size\": 8,"
+    "\"angle\": 0,"
+    "\"xoffset\": 0,"
+    "\"yoffset\": 0,"
+    "\"outline\": null"
+    "}"
+  );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
+  QVERIFY( marker );
+  QCOMPARE( marker->symbolLayerCount(), 1 );
+  QgsSimpleMarkerSymbolLayer *markerLayer = dynamic_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) );
+  QVERIFY( markerLayer );
+  QCOMPARE( markerLayer->color(), QColor( 115, 76, 10, 200 ) );
+  QCOMPARE( markerLayer->size(), 8.0 );
+  QCOMPARE( markerLayer->sizeUnit(), Qgis::RenderUnit::Points );
+  QCOMPARE( markerLayer->shape(), Qgis::MarkerShape::Circle );
+  // Verify no outline
+  QCOMPARE( markerLayer->strokeStyle(), Qt::NoPen );
+}
+
 void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
 {
   const QVariantMap map = jsonStringToMap(
@@ -445,6 +482,35 @@ void TestQgsArcGisRestUtils::testParseFillSymbol()
   QCOMPARE( fillLayer->strokeStyle(), Qt::DashDotLine );
 }
 
+void TestQgsArcGisRestUtils::testParseFillSymbolNullOutline()
+{
+  // Test that null outline is handled correctly - based on real-world ArcGIS service
+  // (ChBfsVolkszaehlungBevoelkerungsstatistikEinwohner)
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "255,"
+    "254,"
+    "180,"
+    "255"
+    "],"
+    "\"outline\": null"
+    "}"
+  );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
+  QVERIFY( fill );
+  QCOMPARE( fill->symbolLayerCount(), 1 );
+  QgsSimpleFillSymbolLayer *fillLayer = dynamic_cast<QgsSimpleFillSymbolLayer *>( fill->symbolLayer( 0 ) );
+  QVERIFY( fillLayer );
+  QCOMPARE( fillLayer->fillColor(), QColor( 255, 254, 180, 255 ) );
+  QCOMPARE( fillLayer->brushStyle(), Qt::SolidPattern );
+  // Verify no outline
+  QCOMPARE( fillLayer->strokeStyle(), Qt::NoPen );
+}
+
 
 void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
 {
@@ -485,6 +551,33 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
   QCOMPARE( lineLayer->width(), 5.0 );
   QCOMPARE( lineLayer->widthUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( lineLayer->penStyle(), Qt::DashDotLine );
+}
+
+void TestQgsArcGisRestUtils::testParsePictureFillSymbolNullOutline()
+{
+  // Test that null outline is handled correctly - picture fill should have no outline layer
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"esriPFS\","
+    "\"url\": \"866880A0\","
+    "\"imageData\": \"abcdef\","
+    "\"contentType\": \"image/png\","
+    "\"width\": 20,"
+    "\"height\": 25,"
+    "\"angle\": 0,"
+    "\"outline\": null"
+    "}"
+  );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
+  QVERIFY( fill );
+  // With null outline, should only have 1 layer (raster fill), not 2
+  QCOMPARE( fill->symbolLayerCount(), 1 );
+  QgsRasterFillSymbolLayer *fillLayer = dynamic_cast<QgsRasterFillSymbolLayer *>( fill->symbolLayer( 0 ) );
+  QVERIFY( fillLayer );
+  QCOMPARE( fillLayer->imageFilePath(), QString( "base64:abcdef" ) );
+  QCOMPARE( fillLayer->width(), 20.0 );
+  QCOMPARE( fillLayer->sizeUnit(), Qgis::RenderUnit::Points );
 }
 
 void TestQgsArcGisRestUtils::testParseRendererSimple()

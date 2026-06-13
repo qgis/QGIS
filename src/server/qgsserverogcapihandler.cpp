@@ -126,6 +126,9 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::XML:
       // Not handled yet
       break;
+    case QgsServerOgcApi::ContentType::FLATGEOBUF:
+      // Handled separately in the handler if supported, so do nothing here
+      break;
   }
 }
 
@@ -210,6 +213,37 @@ json QgsServerOgcApiHandler::link( const QgsServerApiContext &context, const Qgs
     { "title", title != "" ? title : linkTitle() },
   };
   return l;
+}
+
+QString QgsServerOgcApiHandler::headerLink(
+  const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType, const QgsServerOgcApi::ContentType contentType, const QgsServerOgcApi::Profile &profile, const QString &title
+) const
+{
+  const QString profileStr { profile != QgsServerOgcApi::Profile::NONE ? QgsServerOgcApi::profileToString( profile ) : QString() };
+  QString hrefStr = QString::fromStdString( href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) );
+
+  if ( !profileStr.isEmpty() )
+  {
+    hrefStr += u"&profile="_s + profileStr;
+  }
+
+  QString titleStr = !title.isEmpty() ? title : QString::fromStdString( linkTitle() );
+  titleStr.replace( '\\', "\\\\"_L1 );
+  titleStr.replace( '"', "\\\""_L1 );
+
+  QString linkStr = u"<%1>; rel=\"%2\"; title=\"%3\"; type=\"%4\""_s.arg(
+    QString::fromStdString( href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) ),
+    QString::fromStdString( QgsServerOgcApi::relToString( linkType ) ),
+    titleStr,
+    QString::fromStdString( QgsServerOgcApi::mimeType( contentType ) )
+  );
+
+  if ( !profileStr.isEmpty() )
+  {
+    linkStr += QString( "; profile=\"%1\"" ).arg( profileStr );
+  }
+
+  return linkStr;
 }
 
 json QgsServerOgcApiHandler::links( const QgsServerApiContext &context ) const
@@ -461,7 +495,27 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
     else
     {
-      QgsMessageLog::logMessage( u"The client requested an unsupported extension: %1"_s.arg( extension ), u"Server"_s, Qgis::MessageLevel::Warning );
+      // Hardcoded aliases
+#if 0
+    // This not supported yet but I am leaving it here because
+    // I am very optimistic that it will be supported soon!
+
+      if ( ( extension.compare( u"JSONFG"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 ) || ( extension.compare( u"JSONFG-PLUS"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 ) )
+      {
+        result = QgsServerOgcApi::ContentType::JSON;
+        found = true;
+      }
+      else
+#endif
+      if ( extension.compare( u"FGB"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      {
+        result = QgsServerOgcApi::ContentType::FLATGEOBUF;
+        found = true;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( u"The client requested an unsupported extension: %1"_s.arg( extension ), u"Server"_s, Qgis::MessageLevel::Warning );
+      }
     }
   }
   // ... then "Accept"

@@ -15,6 +15,8 @@
 
 #include "qgstexturematerial.h"
 
+#include "qgs3dutils.h"
+
 #include <QString>
 #include <QUrl>
 #include <Qt3DRender/QEffect>
@@ -78,6 +80,27 @@ void QgsTextureMaterial::setTexture( Qt3DRender::QAbstractTexture *texture )
 Qt3DRender::QAbstractTexture *QgsTextureMaterial::texture() const
 {
   return mTextureParameter->value().value<Qt3DRender::QAbstractTexture *>();
+}
+
+void QgsTextureMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
+{
+  mInstanced = enabled;
+  mInstanceFlags = flags;
+
+  if ( mInstanced )
+  {
+    QStringList defines = { u"HAS_TEXTURE"_s };
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    mGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
+  }
+  else
+  {
+    mGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/texture.vert"_s ) ) );
+  }
 }
 
 ///@endcond PRIVATE

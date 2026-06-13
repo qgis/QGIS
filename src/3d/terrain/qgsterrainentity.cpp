@@ -25,6 +25,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
+#include "qgslayerstylewatcher.h"
 #include "qgsraycastingutils.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -65,15 +66,15 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   map->terrainGenerator()->setTerrain( this );
   mIsValid = map->terrainGenerator()->isValid();
 
+  mLayerWatcher = make_qobject_unique<QgsLayerStyleWatcher>( map );
+  connect( mLayerWatcher.get(), &QgsLayerStyleWatcher::styleChanged, this, &QgsTerrainEntity::invalidateMapImages );
+
   connect( map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
   connect( map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::showLabelsChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
-
-  connectToLayersRepaintRequest();
 
   mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
@@ -165,9 +166,8 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
 
 void QgsTerrainEntity::onShowBoundingBoxesChanged()
 {
-  setShowBoundingBoxes( mMapSettings->showTerrainBoundingBoxes() );
+  setShowBoundingBoxes( mMapSettings->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes ) );
 }
-
 
 void QgsTerrainEntity::invalidateMapImages()
 {
@@ -193,27 +193,6 @@ void QgsTerrainEntity::invalidateMapImages()
   updateNodes( inactiveNodes, mUpdateJobFactory.get() );
 
   setNeedsUpdate( true );
-}
-
-void QgsTerrainEntity::onLayersChanged()
-{
-  connectToLayersRepaintRequest();
-  invalidateMapImages();
-}
-
-void QgsTerrainEntity::connectToLayersRepaintRequest()
-{
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
-  {
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
-  }
-
-  mLayers = mMapSettings->layers();
-
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
-  {
-    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
-  }
 }
 
 void QgsTerrainEntity::onTerrainElevationOffsetChanged()

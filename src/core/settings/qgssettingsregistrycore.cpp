@@ -34,6 +34,7 @@
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnewsfeedparser.h"
+#include "qgsogrdbconnection.h"
 #include "qgsogrproviderutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
@@ -674,6 +675,33 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
     }
     settings->endGroup();
+  }
+
+  // OGR DB connections (GeoPackage, SpatiaLite) - dynamic per-driver and per-connection key
+  // old keys: providers/ogr/<driver>/connections/<conn>/path and providers/ogr/<driver>/connections/selected
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"ogr"_s, QgsSettings::Section::Providers );
+    const QStringList drivers = settings->childGroups();
+    for ( const QString &driver : drivers )
+    {
+      settings->beginGroup( driver );
+      settings->beginGroup( u"connections"_s );
+      const QStringList connNames = settings->childGroups();
+      for ( const QString &connName : connNames )
+      {
+        const QString path = settings->value( u"%1/path"_s.arg( connName ) ).toString();
+        if ( !path.isEmpty() )
+          QgsOgrDbConnection::settingsOgrConnectionPath->setValue( path, { driver, connName } );
+      }
+      const QString selected = settings->value( u"selected"_s ).toString();
+      if ( !selected.isEmpty() )
+        QgsOgrDbConnection::sTreeOgrConnectionItems->setSelectedItem( selected, { driver } );
+      settings->endGroup(); // connections
+      settings->endGroup(); // driver
+    }
+    settings->endGroup(); // ogr
+    settings->remove( u"ogr"_s, QgsSettings::Section::Providers );
   }
 }
 

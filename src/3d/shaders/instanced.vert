@@ -2,6 +2,12 @@
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+#ifdef HAS_TEXTURE
+in vec2 vertexTexCoord;
+#endif
+#ifdef HAS_TANGENT
+in vec4 vertexTangent;
+#endif
 in vec3 instanceTranslation;
 #ifdef USE_INSTANCE_SCALE
 in vec3 instanceScale;
@@ -12,6 +18,12 @@ in vec4 instanceRotation;
 
 out vec3 worldPosition;
 out vec3 worldNormal;
+#ifdef HAS_TEXTURE
+out vec2 texCoord;
+#endif
+#ifdef HAS_TANGENT
+out vec4 worldTangent;
+#endif
 
 uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
@@ -86,6 +98,14 @@ void main()
     // Transform position and normal to world space
     worldPosition = vec3(modelMatrix * vec4(vertexPositionChunk, 1.0));
     worldNormal = normalize(modelNormalMatrix * vertexNormalObject);
+#ifdef HAS_TEXTURE
+    texCoord = vertexTexCoord;
+#endif
+#ifdef HAS_TANGENT
+    vec3 tang = rotateByQuat(vertexTangent.xyz * thisInstanceScale, thisInstanceRotation);
+    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(tang, 0.0)));
+    worldTangent.w = vertexTangent.w;
+#endif
 
     // Calculate vertex position in clip coordinates
     gl_Position = mvp * vec4(vertexPositionChunk, 1.0);

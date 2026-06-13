@@ -23,6 +23,7 @@
 #include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgsgltfutils.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
@@ -31,6 +32,7 @@
 #include "qgstiledscenetile.h"
 
 #include <QString>
+#include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
 #include <QtConcurrentRun>
 
@@ -132,30 +134,64 @@ void QgsTiledSceneChunkLoader::start()
     }
     else if ( format == "cesiumtiles"_L1 )
     {
-      const QVector<QgsCesiumUtils::TileContents> tileContents = QgsCesiumUtils::extractTileContent( content );
+      const QVector<QgsCesiumUtils::TileContents> tileContents = QgsCesiumUtils::extractTileContent( content, uri );
       if ( tileContents.isEmpty() )
         return;
 
-      if ( tileContents.size() == 1 )
-      {
-        if ( tileContents[0].gltf.isEmpty() )
-          return;
-        entityTransform.tileTransform.translate( tileContents[0].rtcCenter );
-        mEntity = QgsGltf3DUtils::gltfToEntity( tileContents[0].gltf, entityTransform, uri, mFactory.mRenderContext, &errors );
-      }
-      else
-      {
-        mEntity = new Qt3DCore::QEntity;
-        for ( const QgsCesiumUtils::TileContents &innerContent : tileContents )
-        {
-          if ( innerContent.gltf.isEmpty() )
-            continue;
+      QVector<Qt3DCore::QEntity *> childEntities;
 
-          QgsGltf3DUtils::EntityTransform innerTransform = entityTransform;
-          innerTransform.tileTransform.translate( innerContent.rtcCenter );
-          Qt3DCore::QEntity *childEntity = QgsGltf3DUtils::gltfToEntity( innerContent.gltf, innerTransform, uri, mFactory.mRenderContext, &errors );
-          if ( childEntity )
-            childEntity->setParent( mEntity );
+      for ( const QgsCesiumUtils::TileContents &innerContent : tileContents )
+      {
+        if ( innerContent.gltf.isEmpty() )
+          continue;
+
+        QgsGltf3DUtils::EntityTransform innerTransform = entityTransform;
+        innerTransform.tileTransform.translate( innerContent.rtcCenter );
+
+        // Check for instancing (i3dm or EXT_mesh_gpu_instancing)
+        tinygltf::Model model;
+        QString gltfErrors, gltfWarnings;
+        if ( !QgsGltfUtils::loadGltfModel( innerContent.gltf, model, &gltfErrors, &gltfWarnings ) )
+        {
+          errors.append( u"GLTF load error: "_s + gltfErrors );
+          continue;
+        }
+
+        const QgsMatrix4x4 rawTileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
+        const auto instancedPrimitives = QgsCesiumUtils::resolveInstancing( model, innerContent.instancing, innerTransform.gltfUpAxis, rawTileTransform, innerContent.rtcCenter );
+
+        if ( instancedPrimitives.isEmpty() )
+        {
+          // the common case (b3dm or glTF tile without EXT_mesh_gpu_instancing)
+          Qt3DCore::QEntity *e = QgsGltf3DUtils::parsedGltfToEntity( model, innerTransform, uri, mFactory.mRenderContext, &errors );
+          if ( e )
+            childEntities << e;
+        }
+        else
+        {
+          // the instanced case (i3dm or glTF tile with EXT_mesh_gpu_instancing)
+          QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( mFactory.mRenderContext );
+          childEntities << QgsGltf3DUtils::createInstancedEntities( model, instancedPrimitives, innerTransform, uri, materialContext, &errors );
+
+          if ( !innerContent.instancing.has_value() )
+          {
+            // for glTF tiles with EXT_mesh_gpu_instancing, the model can have a mixture of instanced
+            // and non-instanced nodes. Handle the non-instanced nodes here (if any).
+            Qt3DCore::QEntity *nonInstancedEntity = QgsGltf3DUtils::parsedGltfToEntity( model, innerTransform, uri, mFactory.mRenderContext, &errors );
+            if ( nonInstancedEntity )
+              childEntities << nonInstancedEntity;
+          }
+        }
+
+        if ( childEntities.size() == 1 )
+        {
+          mEntity = childEntities[0];
+        }
+        else
+        {
+          mEntity = new Qt3DCore::QEntity;
+          for ( Qt3DCore::QEntity *e : childEntities )
+            e->setParent( mEntity );
         }
       }
     }
@@ -489,7 +525,9 @@ QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Qgs
     result.append( hit );
   }
 
+#ifdef QGISDEBUG
   QgsDebugMsgLevel( u"Active Nodes: %1, checked nodes: %2, hits found: %3"_s.arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
+#endif
   return result;
 }
 

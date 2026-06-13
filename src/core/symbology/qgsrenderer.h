@@ -124,6 +124,8 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_QgsRuleBasedRenderer;
     else if ( type == "heatmapRenderer"_L1 )
       sipType = sipType_QgsHeatmapRenderer;
+    else if ( type == "mergedFeatureRenderer"_L1 )
+      sipType = sipType_QgsMergedFeatureRenderer;
     else if ( type == "invertedPolygonRenderer"_L1 )
       sipType = sipType_QgsInvertedPolygonRenderer;
     else if ( type == "pointCluster"_L1 )

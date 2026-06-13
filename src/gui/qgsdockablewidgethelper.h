@@ -16,6 +16,7 @@
 #ifndef QGSDOCKABLEWIDGETHELPER_H
 #define QGSDOCKABLEWIDGETHELPER_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsgui.h"
 #include "qgssettingsentryenumflag.h"
@@ -66,13 +67,6 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     Q_OBJECT
   public:
-    enum class OpeningMode : int
-    {
-      RespectSetting, //! Respect the setting used
-      ForceDocked,    //! Force the widget to be docked, despite its settings
-      ForceDialog,    //! Force the widget to be shown in a dialog, despite its settings
-    };
-
     enum class Option : int
     {
       RaiseTab = 1 << 1,        //!< Raise Tab
@@ -96,7 +90,7 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
       QMainWindow *ownerWindow,
       const QString &dockId,
       const QStringList &tabifyWith = QStringList(),
-      OpeningMode openingMode = OpeningMode::RespectSetting,
+      Qgis::DockableWidgetInitialState openingMode = Qgis::DockableWidgetInitialState::RestorePreviousState,
       bool defaultIsDocked = false,
       Qt::DockWidgetArea defaultDockArea = Qt::DockWidgetArea::RightDockWidgetArea,
       Options options = Options()
@@ -135,6 +129,13 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     QString dockObjectName() const;
 
     /**
+     * Sets the setting key \a id to use for storing previous state settings for the widget.
+     *
+     * Set to an empty string to prevent any storage of the widget's state.
+     */
+    void setSettingKeyDockId( const QString &id );
+
+    /**
      * Returns TRUE if the widget is a visible dialog or a user-visible
      * dock widget.
      */
@@ -153,7 +154,6 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
-    static std::function<void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool )> sAddTabifiedDockWidgetFunction;
     static std::function<QString()> sAppStylesheetFunction;
 
     static QMainWindow *sOwnerWindow;
@@ -169,6 +169,16 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     void toggleDockMode( bool docked );
 
     void setUserVisible( bool visible );
+
+    /**
+     * Rejects the widget.
+     *
+     * If the widget is shown as a dialog, calls QDialog::reject(). If it's shown as dock widget,
+     * the widget is closed.
+     *
+     * \since QGIS 4.2
+     */
+    void reject();
 
   private:
     void setupDockWidget( const QStringList &tabSiblings = QStringList() );
@@ -194,8 +204,9 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     // Unique identifier of dock
     QString mUuid;
 
+    QString mSettingKeyDockId;
 
-    const QString mSettingKeyDockId;
+    friend class TestQgsDockableWidgetHelper;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDockableWidgetHelper::Options )

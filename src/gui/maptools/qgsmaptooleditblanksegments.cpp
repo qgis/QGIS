@@ -17,12 +17,14 @@
 
 #include <line_p.h>
 
+#include "qgsauxiliarystorage.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
 #include "qgsguiutils.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+#include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnullpainterdevice.h"
 #include "qgsrubberband.h"
 #include "qgssettingsentryimpl.h"
@@ -306,11 +308,11 @@ class QgsMapToolEditBlankSegmentsBase::QgsBlankSegmentRubberBand : public QgsRub
     const FeaturePoints &mPoints; //! all feature rendered points
 };
 
-QgsMapToolEditBlankSegmentsBase::QgsMapToolEditBlankSegmentsBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsLineSymbolLayer *symbolLayer, int blankSegmentFieldIndex )
+QgsMapToolEditBlankSegmentsBase::QgsMapToolEditBlankSegmentsBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton )
   : QgsMapTool( canvas )
   , mLayer( layer )
-  , mSymbolLayerId( symbolLayer->id() )
-  , mBlankSegmentsFieldIndex( blankSegmentFieldIndex )
+  , mSymbolLayer( symbolLayer )
+  , mPropertyButton( propertyButton )
   , mEditedBlankSegment( new QgsBlankSegmentRubberBand( canvas, mPoints ) )
   , mStartRubberBand( new QgsRubberBand( canvas, Qgis::GeometryType::Point ) )
   , mEndRubberBand( new QgsRubberBand( canvas, Qgis::GeometryType::Point ) )
@@ -325,27 +327,35 @@ QgsMapToolEditBlankSegmentsBase::QgsMapToolEditBlankSegmentsBase( QgsMapCanvas *
   initRubberBand( mEndRubberBand );
 
   mEditedBlankSegment->setHighlighted( true );
+
+  connect( mPropertyButton, &QgsPropertyOverrideButton::changed, this, [this] {
+    mBlankSegmentsFieldIndex = dataDefinedColumnIndex( static_cast<int>( QgsSymbolLayer::Property::BlankSegments ), mSymbolLayer->dataDefinedProperties(), mLayer );
+
+    mCurrentFeatureId = FID_NULL;
+    mState = SelectFeature;
+    loadFeaturePoints();
+  } );
 }
 
 QgsMapToolEditBlankSegmentsBase::~QgsMapToolEditBlankSegmentsBase() = default;
 
 void QgsMapToolEditBlankSegmentsBase::activate()
 {
-  if ( !mLayer || !mLayer->renderer() )
+  if ( !mLayer || !mLayer->renderer() || !mSymbolLayer )
     return;
 
-  if ( !mSymbol || !mSymbolLayer )
+  if ( !mSymbol || !mRenderedPointsSymbolLayer )
   {
     // search and symbol and symbol layer
-    QgsSymbolLayerFinder finder( mSymbolLayerId );
+    QgsSymbolLayerFinder finder( mSymbolLayer->id() );
     mLayer->renderer()->accept( &finder );
     if ( finder.symbol() && finder.symbolLayer() && finder.symbolLayerIndex() > -1 )
     {
       mSymbol.reset( finder.symbol()->clone() );
-      if ( mSymbolLayer = createRenderedPointsSymbolLayer( finder.symbolLayer() ); mSymbolLayer )
+      if ( mRenderedPointsSymbolLayer = createRenderedPointsSymbolLayer( finder.symbolLayer() ); mRenderedPointsSymbolLayer )
       {
         // set our on symbol layer to later retrieve rendered points
-        mSymbol->changeSymbolLayer( finder.symbolLayerIndex(), mSymbolLayer );
+        mSymbol->changeSymbolLayer( finder.symbolLayerIndex(), mRenderedPointsSymbolLayer );
       }
       else
       {
@@ -442,26 +452,83 @@ void QgsMapToolEditBlankSegmentsBase::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
+void QgsMapToolEditBlankSegmentsBase::selectFeature( QgsMapMouseEvent *event )
+{
+  if ( !mLayer || !mSymbolLayer || !mPropertyButton || mPropertyButton->propertyKey() != static_cast<int>( QgsSymbolLayer::Property::BlankSegments ) )
+    return;
+
+  // find the closest feature to the pressed position
+  const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( event->pos(), QgsPointLocator::Types( QgsPointLocator::Edge ) );
+  if ( !m.isValid() )
+  {
+    emit
+      messageEmitted( tr( "No feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::MessageLevel::Critical );
+    return;
+  }
+
+  // initialize field index if not already done
+  if ( mBlankSegmentsFieldIndex < 0 )
+  {
+    mBlankSegmentsFieldIndex = dataDefinedColumnIndex( static_cast<int>( QgsSymbolLayer::Property::BlankSegments ), mSymbolLayer->dataDefinedProperties(), mLayer );
+  }
+
+  // No data defined property, create one
+  if ( mBlankSegmentsFieldIndex < 0 )
+  {
+    if ( !mLayer->auxiliaryLayer() )
+    {
+      QgsNewAuxiliaryLayerDialog dlg( mLayer );
+      dlg.exec();
+    }
+
+    if ( !mLayer->auxiliaryLayer() )
+      return;
+
+    mBlankSegmentsFieldIndex = QgsAuxiliaryLayer::createProperty( QgsSymbolLayer::Property::BlankSegments, mLayer, mSymbolLayer, false );
+    if ( mBlankSegmentsFieldIndex < 0 )
+    {
+      emit messageEmitted( tr( "Failed to create blank segments auxiliary field for layer '%1'" ).arg( mLayer->name() ) );
+      return;
+    }
+
+    // update property override button from new property
+    QgsPropertyCollection c = mSymbolLayer->dataDefinedProperties();
+    QgsProperty property = c.property( static_cast<int>( QgsSymbolLayer::Property::BlankSegments ) );
+    mPropertyButton->updateFieldLists();
+    mPropertyButton->setToProperty( property );
+    emit mPropertyButton->changed(); // setToProperty doesn't fire the changed signal
+  }
+
+  // start editing
+
+  const bool usesAuxFields = mLayer->fields().fieldOrigin( mBlankSegmentsFieldIndex ) == Qgis::FieldOrigin::Join;
+  if ( !usesAuxFields && !mLayer->isEditable() )
+  {
+    if ( mLayer->startEditing() )
+    {
+      emit messageEmitted( tr( "Layer “%1” was made editable" ).arg( mLayer->name() ) );
+    }
+    else
+    {
+      emit messageEmitted( tr( "Cannot modify blank segments — the layer “%1” could not be made editable" ).arg( mLayer->name() ) );
+      return;
+    }
+  }
+
+  mCurrentFeatureId = m.featureId();
+  loadFeaturePoints();
+  updateHoveredBlankSegment( event->pos() );
+
+  mState = State::FeatureSelected;
+}
+
 void QgsMapToolEditBlankSegmentsBase::canvasPressEvent( QgsMapMouseEvent *e )
 {
   switch ( mState )
   {
     case State::SelectFeature:
     {
-      //find the closest feature to the pressed position
-      const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Edge ) );
-      if ( !m.isValid() )
-      {
-        emit
-          messageEmitted( tr( "No feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::MessageLevel::Critical );
-        return;
-      }
-
-      mCurrentFeatureId = m.featureId();
-      loadFeaturePoints();
-      updateHoveredBlankSegment( e->pos() );
-
-      mState = State::FeatureSelected;
+      selectFeature( e );
       break;
     }
     case State::FeatureSelected:
@@ -811,26 +878,26 @@ void QgsMapToolEditBlankSegmentsBase::setCurrentBlankSegment( int currentBlankSe
 
 void QgsMapToolEditBlankSegmentsBase::updateAttribute()
 {
-  if ( !mSymbolLayer )
+  if ( !mRenderedPointsSymbolLayer )
     return;
 
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> blankSegments;
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> blankSegments;
   for ( const QObjectUniquePtr<QgsBlankSegmentRubberBand> &blankSegment : mBlankSegments )
   {
     try
     {
-      QPair<double, double> startEndDistance = blankSegment->getStartEndDistance( mSymbolLayer->blankSegmentsUnit() );
+      QPair<double, double> startEndDistance = blankSegment->getStartEndDistance( mRenderedPointsSymbolLayer->blankSegmentsUnit() );
 
       const int partIndex = blankSegment->getPartIndex();
       if ( partIndex >= blankSegments.count() )
         blankSegments.resize( partIndex + 1 );
 
-      QList<QgsBlankSegmentUtils::BlankSegments> &rings = blankSegments[partIndex];
+      QList<QgsSymbolLayerUtils::BlankSegments> &rings = blankSegments[partIndex];
       const int ringIndex = blankSegment->getRingIndex();
       if ( ringIndex >= rings.count() )
         rings.resize( ringIndex + 1 );
 
-      QgsBlankSegmentUtils::BlankSegments &segments = rings[ringIndex];
+      QgsSymbolLayerUtils::BlankSegments &segments = rings[ringIndex];
       segments << startEndDistance;
     }
     catch ( std::invalid_argument &e )
@@ -841,10 +908,10 @@ void QgsMapToolEditBlankSegmentsBase::updateAttribute()
   }
 
   QStringList strParts;
-  for ( QList<QgsBlankSegmentUtils::BlankSegments> &part : blankSegments )
+  for ( QList<QgsSymbolLayerUtils::BlankSegments> &part : blankSegments )
   {
     QStringList strRings;
-    for ( QgsBlankSegmentUtils::BlankSegments &ring : part )
+    for ( QgsSymbolLayerUtils::BlankSegments &ring : part )
     {
       std::sort( ring.begin(), ring.end() );
       QStringList strDistances;
@@ -881,7 +948,7 @@ void QgsMapToolEditBlankSegmentsBase::loadFeaturePoints()
   mBlankSegments.clear();
   setCurrentBlankSegment( -1 );
 
-  if ( FID_IS_NULL( mCurrentFeatureId ) || !mSymbolLayer )
+  if ( FID_IS_NULL( mCurrentFeatureId ) || !mRenderedPointsSymbolLayer )
     return;
 
   QgsFeature feature;
@@ -904,7 +971,7 @@ void QgsMapToolEditBlankSegmentsBase::loadFeaturePoints()
     return;
 
   QString error;
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> allBlankSegments = QgsBlankSegmentUtils::parseBlankSegments( currentBlankSegments, context, mSymbolLayer->blankSegmentsUnit(), error );
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> allBlankSegments = QgsSymbolLayerUtils::parseBlankSegments( currentBlankSegments, context, mRenderedPointsSymbolLayer->blankSegmentsUnit(), error );
   if ( !error.isEmpty() )
   {
     emit messageEmitted( tr( "Error while parsing feature blank segments: %1" ).arg( error ), Qgis::MessageLevel::Critical );
@@ -920,7 +987,7 @@ void QgsMapToolEditBlankSegmentsBase::loadFeaturePoints()
       if ( iPart >= allBlankSegments.count() || iRing >= allBlankSegments.at( iPart ).count() )
         continue;
 
-      const QgsBlankSegmentUtils::BlankSegments &blankSegments = allBlankSegments.at( iPart ).at( iRing );
+      const QgsSymbolLayerUtils::BlankSegments &blankSegments = allBlankSegments.at( iPart ).at( iRing );
 
       double currentLength = 0;
       int iPoint = 0;

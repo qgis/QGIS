@@ -12,7 +12,7 @@
   }, {
     "arg": "allow_holes",
     "optional": true,
-    "default": false,
+    "default": "false",
     "description": "optional argument specifying whether to allow holes within the output geometry. Defaults to FALSE, set to TRUE to allow including holes in the output geometry."
   }],
   "examples": [{

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>677</width>
-    <height>402</height>
+    <width>700</width>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,8 +46,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>677</width>
-         <height>402</height>
+         <width>700</width>
+         <height>538</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
@@ -117,8 +117,12 @@
            <string>Rendering Quality</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
-           <item row="1" column="1">
-            <widget class="QComboBox" name="mTextureFilterQualityCombo"/>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Shadow quality</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_2">
@@ -127,12 +131,18 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0" colspan="2">
+           <item row="4" column="0" colspan="2">
             <widget class="QCheckBox" name="mMSAA">
              <property name="text">
               <string>Enable multisample anti-aliasing (MSAA)</string>
              </property>
             </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="mTextureFilterQualityCombo"/>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="mShadowQualityCombo"/>
            </item>
           </layout>
          </widget>
@@ -247,6 +257,7 @@
   <tabstop>mInvertVerticalAxisCombo</tabstop>
   <tabstop>mGpuMemoryLimit</tabstop>
   <tabstop>mTextureFilterQualityCombo</tabstop>
+  <tabstop>mShadowQualityCombo</tabstop>
   <tabstop>mMSAA</tabstop>
  </tabstops>
  <resources/>

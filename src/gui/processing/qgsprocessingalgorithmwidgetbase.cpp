@@ -21,6 +21,7 @@
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "processing/qgsprocessingprovider.h"
 #include "qgsapplication.h"
+#include "qgsdockablewidgethelper.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsjsonutils.h"
@@ -36,6 +37,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QMainWindow>
 #include <QMenu>
 #include <QMimeData>
 #include <QScrollBar>
@@ -48,64 +50,21 @@ using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
-QgsProcessingAlgorithmDialogFeedback::QgsProcessingAlgorithmDialogFeedback()
-  : QgsProcessingFeedback( false )
+//
+// QgsProcessingFeedbackGenerator
+//
+
+QgsProcessingFeedbackGenerator::~QgsProcessingFeedbackGenerator()
 {}
-
-void QgsProcessingAlgorithmDialogFeedback::setProgressText( const QString &text )
-{
-  QgsProcessingFeedback::setProgressText( text );
-  emit progressTextChanged( text );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error, bool fatalError )
-{
-  QgsProcessingFeedback::reportError( error, fatalError );
-  emit errorReported( error, fatalError );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushWarning( const QString &warning )
-{
-  QgsProcessingFeedback::pushWarning( warning );
-  emit warningPushed( warning );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushInfo( const QString &info )
-{
-  QgsProcessingFeedback::pushInfo( info );
-  emit infoPushed( info );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushCommandInfo( const QString &info )
-{
-  QgsProcessingFeedback::pushCommandInfo( info );
-  emit commandInfoPushed( info );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushDebugInfo( const QString &info )
-{
-  QgsProcessingFeedback::pushDebugInfo( info );
-  emit debugInfoPushed( info );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushConsoleInfo( const QString &info )
-{
-  QgsProcessingFeedback::pushConsoleInfo( info );
-  emit consoleInfoPushed( info );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushFormattedMessage( const QString &html, const QString &text )
-{
-  QgsProcessingFeedback::pushFormattedMessage( html, text );
-  emit formattedMessagePushed( html );
-}
 
 //
 // QgsProcessingAlgorithmWidgetBase
 //
 
-QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *parent, WidgetMode mode )
-  : QDialog( parent )
+QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
+  QMainWindow *parentWindow, WidgetMode mode, QgsProcessingAlgorithmWidgetBase::WidgetFlags flags, Qgis::DockableWidgetInitialState initialState
+)
+  : QWidget()
   , mMode( mode )
 {
   setupUi( this );
@@ -143,8 +102,28 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *par
   mButtonChangeParameters = mButtonBox->button( QDialogButtonBox::Yes );
   mButtonChangeParameters->setText( tr( "Change Parameters" ) );
 
+  connect( buttonCancel, &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancel );
   buttonCancel->setEnabled( false );
   mButtonClose = mButtonBox->button( QDialogButtonBox::Close );
+
+  if ( !parentWindow )
+    parentWindow = qobject_cast< QMainWindow * >( QApplication::activeWindow() );
+
+  bool defaultIsDocked = false;
+  QString dockId = u"ProcessingAlgorithm"_s;
+  if ( flags.testFlags( QgsProcessingAlgorithmWidgetBase::WidgetFlag::NoDocking ) )
+  {
+    initialState = Qgis::DockableWidgetInitialState::ForceDialog;
+    dockId = u"ProcessingAlgorithmNonDockable"_s;
+  }
+  else if ( initialState == Qgis::DockableWidgetInitialState::ForceDocked )
+  {
+    dockId = u"ProcessingAlgorithmForceDocked"_s;
+  }
+
+  mDockableWidgetHelper
+    = new QgsDockableWidgetHelper( tr( "Processing" ), this, parentWindow, dockId, QStringList(), initialState, defaultIsDocked, Qt::DockWidgetArea::RightDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, &QgsProcessingAlgorithmWidgetBase::closeClicked );
 
   switch ( mMode )
   {
@@ -312,8 +291,6 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *par
   connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::copyLogToClipboard );
   connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::clearLog );
 
-  connect( buttonCancel, &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancelRequested );
-
   connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsProcessingAlgorithmWidgetBase::mTabWidget_currentChanged );
 
   mMessageBar = new QgsMessageBar();
@@ -323,10 +300,29 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *par
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskTriggered, this, &QgsProcessingAlgorithmWidgetBase::taskTriggered );
 }
 
-QgsProcessingAlgorithmWidgetBase::~QgsProcessingAlgorithmWidgetBase() = default;
+QgsProcessingAlgorithmWidgetBase::~QgsProcessingAlgorithmWidgetBase()
+{
+  delete mDockableWidgetHelper;
+}
 
 void QgsProcessingAlgorithmWidgetBase::setParameters( const QVariantMap & )
 {}
+
+void QgsProcessingAlgorithmWidgetBase::setTitle( const QString &title )
+{
+  mDockableWidgetHelper->setWindowTitle( title );
+}
+
+void QgsProcessingAlgorithmWidgetBase::exec()
+{
+  // when forcing the widget to show as a dialog, we use a distinct setting key
+  // to prevent the setting for freely dockable algorithm widgets from getting
+  // overridden, which would otherwise reset that setting so that the widgets
+  // are ALWAYS opened as dialogs
+  mDockableWidgetHelper->setSettingKeyDockId( u"ProcessingAlgorithmNonDockable"_s );
+  mDockableWidgetHelper->toggleDockMode( false );
+  mDockableWidgetHelper->dialog()->exec();
+}
 
 void QgsProcessingAlgorithmWidgetBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
@@ -342,8 +338,7 @@ void QgsProcessingAlgorithmWidgetBase::setAlgorithm( QgsProcessingAlgorithm *alg
   {
     title = mAlgorithm->group().isEmpty() ? mAlgorithm->displayName() : u"%1 - %2"_s.arg( mAlgorithm->group(), mAlgorithm->displayName() );
   }
-
-  setWindowTitle( title );
+  mDockableWidgetHelper->setWindowTitle( title );
 
   const QString algHelp = formatHelp( algorithm );
   if ( algHelp.isEmpty() )
@@ -391,7 +386,7 @@ void QgsProcessingAlgorithmWidgetBase::setMainWidget( QgsPanelWidget *widget )
   widget->setDockMode( true );
 
   mMainWidget = widget;
-  connect( mMainWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+  connect( mMainWidget, &QgsPanelWidget::panelAccepted, mDockableWidgetHelper, &QgsDockableWidgetHelper::reject );
 }
 
 QgsPanelWidget *QgsProcessingAlgorithmWidgetBase::mainWidget()
@@ -420,18 +415,31 @@ void QgsProcessingAlgorithmWidgetBase::saveLogToFile( const QString &path, const
   }
 }
 
+void QgsProcessingAlgorithmWidgetBase::registerProcessingFeedbackGenerator( QgsProcessingFeedbackGenerator *factory )
+{
+  mFeedbackFactory = factory;
+}
+
 QgsProcessingFeedback *QgsProcessingAlgorithmWidgetBase::createFeedback()
 {
-  auto feedback = std::make_unique<QgsProcessingAlgorithmDialogFeedback>();
+  std::unique_ptr< QgsProcessingFeedback > feedback;
+  if ( mFeedbackFactory )
+  {
+    feedback.reset( mFeedbackFactory->createFeedback() );
+  }
+  if ( !feedback )
+  {
+    feedback = std::make_unique< QgsProcessingFeedback >();
+  }
   connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmWidgetBase::setPercentage );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushCommandInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushConsoleInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::debugInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushDebugInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::errorReported, this, &QgsProcessingAlgorithmWidgetBase::reportError );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::warningPushed, this, &QgsProcessingAlgorithmWidgetBase::pushWarning );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmWidgetBase::pushFormattedMessage );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmWidgetBase::setProgressText );
+  connect( feedback.get(), &QgsProcessingFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushCommandInfo );
+  connect( feedback.get(), &QgsProcessingFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushConsoleInfo );
+  connect( feedback.get(), &QgsProcessingFeedback::debugInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushDebugInfo );
+  connect( feedback.get(), &QgsProcessingFeedback::errorReported, this, &QgsProcessingAlgorithmWidgetBase::reportError );
+  connect( feedback.get(), &QgsProcessingFeedback::warningPushed, this, &QgsProcessingAlgorithmWidgetBase::pushWarning );
+  connect( feedback.get(), &QgsProcessingFeedback::infoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushInfo );
+  connect( feedback.get(), &QgsProcessingFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmWidgetBase::pushFormattedMessage );
+  connect( feedback.get(), &QgsProcessingFeedback::progressTextChanged, this, &QgsProcessingAlgorithmWidgetBase::setProgressText );
   connect( this, &QgsProcessingAlgorithmWidgetBase::cancelRequested, feedback.get(), &QgsProcessingFeedback::cancel );
   return feedback.release();
 }
@@ -584,16 +592,22 @@ void QgsProcessingAlgorithmWidgetBase::taskTriggered( QgsTask *task )
 
 void QgsProcessingAlgorithmWidgetBase::showWidget()
 {
-  show();
-  raise();
-  setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
-  activateWindow();
+  mDockableWidgetHelper->setUserVisible( true );
 }
 
 void QgsProcessingAlgorithmWidgetBase::closeClicked()
 {
-  reject();
-  close();
+  disconnect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, &QgsProcessingAlgorithmWidgetBase::closeClicked );
+
+  if ( isRunning() )
+  {
+    mDockableWidgetHelper->setUserVisible( false );
+  }
+  else
+  {
+    reject();
+    close();
+  }
 }
 
 void QgsProcessingAlgorithmWidgetBase::urlClicked( const QUrl &url )
@@ -604,7 +618,6 @@ void QgsProcessingAlgorithmWidgetBase::urlClicked( const QUrl &url )
   else
     QDesktopServices::openUrl( url );
 }
-
 
 Qgis::ProcessingLogLevel QgsProcessingAlgorithmWidgetBase::logLevel() const
 {
@@ -671,7 +684,7 @@ QDialog *QgsProcessingAlgorithmWidgetBase::createProgressDialog()
   dialog->setWindowTitle( windowTitle() );
   dialog->setGeometry( geometry() ); // match size/position to this dialog
   connect( progressBar, &QProgressBar::valueChanged, dialog->progressBar(), &QProgressBar::setValue );
-  connect( dialog->cancelButton(), &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancelRequested );
+  connect( dialog->cancelButton(), &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancel );
   dialog->logTextEdit()->setHtml( txtLog->toHtml() );
   connect( txtLog, &QTextEdit::textChanged, dialog, [this, dialog]() {
     dialog->logTextEdit()->setHtml( txtLog->toHtml() );
@@ -735,7 +748,7 @@ void QgsProcessingAlgorithmWidgetBase::closeEvent( QCloseEvent *e )
     settings.setValue( u"/Processing/dialogBaseSplitter"_s, splitter->saveState() );
   }
 
-  QDialog::closeEvent( e );
+  QWidget::closeEvent( e );
 
   if ( !mAlgorithmTask && isFinalized() )
   {
@@ -976,7 +989,8 @@ void QgsProcessingAlgorithmWidgetBase::reject()
   {
     setAttribute( Qt::WA_DeleteOnClose );
   }
-  QDialog::reject();
+
+  mDockableWidgetHelper->reject();
 }
 
 void QgsProcessingAlgorithmWidgetBase::forceClose()

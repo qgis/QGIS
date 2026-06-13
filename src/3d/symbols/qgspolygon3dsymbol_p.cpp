@@ -25,17 +25,20 @@
 #include "qgslinevertexdata_p.h"
 #include "qgsmaterial3dhandler.h"
 #include "qgsmessagelog.h"
+#include "qgsmetalroughtexturedmaterialsettings.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgspolygon.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgspolyhedralsurface.h"
+#include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
 #include "qgsvectorlayer.h"
 
-#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <QString>
+#include <Qt3DCore/QBuffer>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAbstractTextureImage>
 #include <Qt3DRender/QCullFace>
@@ -43,6 +46,8 @@
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
@@ -67,9 +72,21 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
         QVector<QgsFeatureId> triangleIndexFids;
         QVector<uint> triangleIndexStartingIndices;
         QByteArray materialDataDefined;
+        QVector<float> ddTextureTransformData;
     };
 
-    void processPolygon( const QgsPolygon *poly, QgsFeatureId fid, float offset, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
+    void processPolygon(
+      const QgsPolygon *poly,
+      QgsFeatureId fid,
+      float offset,
+      float extrusionHeight,
+      float dataDefinedTextureScale,
+      float dataDefinedTextureRotation,
+      float dataDefinedTextureOffsetX,
+      float dataDefinedTextureOffsetY,
+      const Qgs3DRenderContext &context,
+      PolygonData &out
+    );
     void processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
     QgsMaterial *material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
@@ -98,8 +115,9 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, mChunkOrigin );
 
-  const bool requiresTextureCoordinates = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates();
-  const bool requiresTangents = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTangents();
+  const QgsAbstractMaterialSettings *materialSettings = mSymbol->materialSettings();
+  const bool requiresTextureCoordinates = materialSettings->requiresTextureCoordinates();
+  const bool requiresTangents = materialSettings->requiresTangents();
 
   auto tessellator = std::make_unique<QgsTessellator>();
   tessellator->setOrigin( mChunkOrigin );
@@ -127,12 +145,23 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
 
   QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
-  attrs = mSymbol->materialSettings()->dataDefinedProperties().referencedFields( context.expressionContext() );
+  attrs = materialSettings->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   return true;
 }
 
-void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatureId fid, float offset, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
+void QgsPolygon3DSymbolHandler::processPolygon(
+  const QgsPolygon *poly,
+  QgsFeatureId fid,
+  float offset,
+  float extrusionHeight,
+  float dataDefinedTextureScale,
+  float dataDefinedTextureRotation,
+  float dataDefinedTextureOffsetX,
+  float dataDefinedTextureOffsetY,
+  const Qgs3DRenderContext &context,
+  PolygonData &out
+)
 {
   std::unique_ptr<QgsPolygon> polyClone( poly->clone() );
 
@@ -231,16 +260,31 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
     QgsMessageLog::logMessage( out.tessellator->error(), QObject::tr( "3D" ) );
   }
 
-  if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
+  const QgsPropertyCollection &dataDefinedProperties = mSymbol->materialSettings()->dataDefinedProperties();
+  if ( dataDefinedProperties.hasActiveProperties() )
   {
     const uint newUniqueVertices = out.tessellator->uniqueVertexCount() - oldVertexCount;
     processMaterialDatadefined( newUniqueVertices, context.expressionContext(), out );
+
+    if ( dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::TextureScale )
+         || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::TextureRotation )
+         || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::TextureOffset ) )
+    {
+      for ( uint i = 0; i < newUniqueVertices; ++i )
+      {
+        out.ddTextureTransformData << dataDefinedTextureOffsetX << dataDefinedTextureOffsetY << dataDefinedTextureScale << dataDefinedTextureRotation;
+      }
+    }
   }
 }
 
 void QgsPolygon3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsPolygon3DSymbolHandler::PolygonData &out )
 {
-  const QByteArray bytes = Qgs3D::materialDataDefinedVertexColorsAsByte( mSymbol->materialSettings(), context );
+  QByteArray bytes;
+  if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) )
+  {
+    bytes = handler->dataDefinedVertexColorsAsByte( mSymbol->materialSettings(), context );
+  }
   out.materialDataDefined.append( bytes.repeated( verticesCount ) );
 }
 
@@ -277,16 +321,64 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   if ( hasDDExtrusion )
     extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ExtrusionHeight, context.expressionContext(), extrusionHeight );
 
+  const QgsAbstractMaterialSettings *materialSettings = mSymbol->materialSettings();
+  const bool hasTextureScale = materialSettings
+                               && materialSettings->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::TextureScale )
+                               && materialSettings->supportedProperties().contains( QgsAbstractMaterialSettings::Property::TextureScale );
+  const bool hasTextureRotation = materialSettings
+                                  && materialSettings->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::TextureRotation )
+                                  && materialSettings->supportedProperties().contains( QgsAbstractMaterialSettings::Property::TextureRotation );
+  const bool hasTextureOffset = materialSettings
+                                && materialSettings->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::TextureOffset )
+                                && materialSettings->supportedProperties().contains( QgsAbstractMaterialSettings::Property::TextureOffset );
+  float dataDefinedTextureRotation = 0;
+  float dataDefinedTextureScale = 1;
+  float dataDefinedTextureOffsetX = 0;
+  float dataDefinedTextureOffsetY = 0;
+  if ( auto phongTexturedMaterial = dynamic_cast<const QgsPhongTexturedMaterialSettings * >( materialSettings ) )
+  {
+    dataDefinedTextureRotation = phongTexturedMaterial->textureRotation();
+    dataDefinedTextureScale = phongTexturedMaterial->textureScale();
+    dataDefinedTextureOffsetX = phongTexturedMaterial->textureOffset().x();
+    dataDefinedTextureOffsetY = phongTexturedMaterial->textureOffset().y();
+  }
+  else if ( auto metalRoughTexturedMaterial = dynamic_cast<const QgsMetalRoughTexturedMaterialSettings * >( materialSettings ) )
+  {
+    dataDefinedTextureRotation = metalRoughTexturedMaterial->textureRotation();
+    dataDefinedTextureScale = metalRoughTexturedMaterial->textureScale();
+    dataDefinedTextureOffsetX = metalRoughTexturedMaterial->textureOffset().x();
+    dataDefinedTextureOffsetY = metalRoughTexturedMaterial->textureOffset().y();
+  }
+
+  if ( hasTextureScale || hasTextureRotation || hasTextureOffset )
+  {
+    dataDefinedTextureRotation = static_cast< float >(
+      materialSettings->dataDefinedProperties().valueAsDouble( QgsAbstractMaterialSettings::Property::TextureRotation, context.expressionContext(), dataDefinedTextureRotation )
+    );
+    dataDefinedTextureScale = static_cast< float >(
+      100 / materialSettings->dataDefinedProperties().valueAsDouble( QgsAbstractMaterialSettings::Property::TextureScale, context.expressionContext(), 100 / dataDefinedTextureScale )
+    );
+
+    QVariant offsetValue = materialSettings->dataDefinedProperties().value( QgsAbstractMaterialSettings::Property::TextureOffset, context.expressionContext() );
+    bool ok = false;
+    const QPointF ddOffset = QgsSymbolLayerUtils::toPoint( offsetValue, &ok );
+    if ( ok )
+    {
+      dataDefinedTextureOffsetX = static_cast< float >( ddOffset.x() );
+      dataDefinedTextureOffsetY = static_cast< float >( ddOffset.y() );
+    }
+  }
+
   if ( const QgsPolygon *poly = qgsgeometry_cast<const QgsPolygon *>( g ) )
   {
-    processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
+    processPolygon( poly, f.id(), offset, extrusionHeight, dataDefinedTextureScale, dataDefinedTextureRotation, dataDefinedTextureOffsetX, dataDefinedTextureOffsetY, context, out );
   }
   else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast<const QgsMultiPolygon *>( g ) )
   {
     for ( int i = 0; i < mpoly->numGeometries(); ++i )
     {
       const QgsPolygon *poly = mpoly->polygonN( i );
-      processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
+      processPolygon( poly, f.id(), offset, extrusionHeight, dataDefinedTextureScale, dataDefinedTextureRotation, dataDefinedTextureOffsetX, dataDefinedTextureOffsetY, context, out );
     }
   }
   else if ( const QgsGeometryCollection *gc = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
@@ -297,7 +389,7 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
       if ( QgsWkbTypes::flatType( g2->wkbType() ) == Qgis::WkbType::Polygon )
       {
         const QgsPolygon *poly = static_cast<const QgsPolygon *>( g2 );
-        processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
+        processPolygon( poly, f.id(), offset, extrusionHeight, dataDefinedTextureScale, dataDefinedTextureRotation, dataDefinedTextureOffsetX, dataDefinedTextureOffsetY, context, out );
       }
     }
   }
@@ -306,7 +398,7 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
     for ( int i = 0; i < polySurface->numPatches(); ++i )
     {
       const QgsPolygon *poly = polySurface->patchN( i );
-      processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
+      processPolygon( poly, f.id(), offset, extrusionHeight, dataDefinedTextureScale, dataDefinedTextureRotation, dataDefinedTextureOffsetX, dataDefinedTextureOffsetY, context, out );
     }
   }
   else
@@ -381,7 +473,31 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
   {
-    Qgs3D::applyMaterialDataDefinedToGeometry( mSymbol->materialSettings(), geometry, vertexCount, polyData.materialDataDefined );
+    if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) )
+    {
+      handler->applyDataDefinedToGeometry( mSymbol->materialSettings(), geometry, vertexCount, polyData.materialDataDefined );
+    }
+
+    if ( !polyData.ddTextureTransformData.isEmpty() )
+    {
+      auto textureTransformBuffer = new Qt3DCore::QBuffer( geometry );
+
+      QByteArray byteArray(
+        reinterpret_cast<const char *>( polyData.ddTextureTransformData.data() ),
+        static_cast<int>( polyData.ddTextureTransformData.size() * sizeof( float ) )
+      ); // makes a deep copy
+      textureTransformBuffer->setData( byteArray );
+      auto textureTransformAttribute = new Qt3DCore::QAttribute( geometry );
+      textureTransformAttribute->setName( u"ddTextureTransform"_s );
+      textureTransformAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+      textureTransformAttribute->setVertexSize( 4 );
+      textureTransformAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+      textureTransformAttribute->setBuffer( textureTransformBuffer );
+      textureTransformAttribute->setByteStride( 4 * sizeof( float ) );
+      textureTransformAttribute->setCount( vertexCount );
+
+      geometry->addAttribute( textureTransformAttribute );
+    }
   }
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
@@ -441,7 +557,7 @@ namespace Qgs3DSymbolImpl
 {
 
 
-  QgsFeature3DHandler *handlerForPolygon3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+  QgsFeature3DHandler *handlerForPolygon3DSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
     const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
     if ( !polygonSymbol )

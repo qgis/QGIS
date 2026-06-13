@@ -37,7 +37,14 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
 {
   switch ( technique )
   {
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
+    {
+      Q_ASSERT( false );
+      return nullptr;
+    }
+
     case Qgis::MaterialRenderingTechnique::Triangles:
+    case Qgis::MaterialRenderingTechnique::Points:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
     case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
@@ -47,20 +54,31 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
         return new QgsHighlightMaterial( technique );
       }
 
-      return buildMaterial( settings, context );
+      const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
+      Q_ASSERT( goochSettings );
+      const QgsPropertyCollection &dataDefinedProperties = goochSettings->dataDefinedProperties();
+
+      QgsGoochMaterial *material = new QgsGoochMaterial();
+      material->setObjectName( u"goochMaterial"_s );
+      applySettingsToMaterial( goochSettings, material );
+      if ( context.isSelected() )
+        material->setDiffuse( context.selectionColor() );
+      material->setDataDefinedEnabled(
+        dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Warm )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Cool )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Diffuse )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Specular )
+      );
+
+      return material;
     }
 
     case Qgis::MaterialRenderingTechnique::Lines:
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
-    case Qgis::MaterialRenderingTechnique::Points:
     case Qgis::MaterialRenderingTechnique::Billboards:
       return nullptr;
   }
   return nullptr;
 }
-
-void QgsGoochMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
-{}
 
 QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
@@ -93,11 +111,6 @@ QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAb
   *fptr++ = static_cast<unsigned char>( specular.blue() );
 
   return array;
-}
-
-int QgsGoochMaterial3DHandler::dataDefinedByteStride( const QgsAbstractMaterialSettings * ) const
-{
-  return 12 * sizeof( unsigned char );
 }
 
 void QgsGoochMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
@@ -164,19 +177,17 @@ bool QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
+QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
 {
-  const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
-  Q_ASSERT( goochSettings );
-  const QgsPropertyCollection &dataDefinedProperties = goochSettings->dataDefinedProperties();
+  const QgsGoochMaterialSettings *goochSettings = qgis::down_cast< const QgsGoochMaterialSettings * >( settings );
 
-  QgsGoochMaterial *material = new QgsGoochMaterial;
+  QgsGoochMaterial *material = new QgsGoochMaterial();
+  material->setInstancingEnabled( true, flags );
+
   material->setObjectName( u"goochMaterial"_s );
-
   applySettingsToMaterial( goochSettings, material );
   if ( context.isSelected() )
     material->setDiffuse( context.selectionColor() );
-  material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
 
   return material;
 }

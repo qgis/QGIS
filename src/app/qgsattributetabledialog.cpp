@@ -68,6 +68,9 @@ const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefau
 
 const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( u"autosize-attribute-table"_s, QgsSettingsTree::sTreeAttributeTable, false );
 
+const QgsSettingsEntryEnumFlag<QgsAttributeTableDialog::InitialView> *QgsAttributeTableDialog::settingsAttributeTableInitialView = new QgsSettingsEntryEnumFlag<
+  QgsAttributeTableDialog::InitialView>( u"attribute-table-initial-view"_s, QgsSettingsTree::sTreeAttributeTable, QgsAttributeTableDialog::RememberLast, u"Initial attribute table view (or remember last used view)"_s );
+
 const QgsSettingsEntryEnumFlag<QgsAttributeTableConfig::AddFeatureMethod> *QgsAttributeTableDialog::settingsDefaultAddFeatureMethod = new QgsSettingsEntryEnumFlag<
   QgsAttributeTableConfig::AddFeatureMethod>( u"default-add-feature-method"_s, QgsSettingsTree::sTreeAttributeTable, QgsAttributeTableConfig::AddFeatureMethod::Table, u"Default method used to add a new feature from the attribute table when no per-layer method is set."_s );
 
@@ -309,10 +312,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [] { QgisApp::instance()->saveEdits(); } );
 
-  QgsDockableWidgetHelper::OpeningMode openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? QgsDockableWidgetHelper::OpeningMode::ForceDocked
-                                                                                                                           : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
+  Qgis::DockableWidgetInitialState openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? Qgis::DockableWidgetInitialState::ForceDocked
+                                                                                                                       : Qgis::DockableWidgetInitialState::ForceDialog;
   if ( initiallyDocked )
-    openingMode = *initiallyDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
+    openingMode = *initiallyDocked ? Qgis::DockableWidgetInitialState::ForceDocked : Qgis::DockableWidgetInitialState::ForceDialog;
   mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), u"attribute-table"_s, QStringList(), openingMode, false, Qt::BottomDockWidgetArea );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { close(); } );
@@ -428,10 +431,15 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
     mUpdateExpressionText->setLayer( mLayer );
     mUpdateExpressionText->setLeftHandButtonStyle( true );
 
-    int initialView = settings.value( u"qgis/attributeTableView"_s, -1 ).toInt();
-    if ( initialView < 0 )
+    int initialView;
+    const QgsAttributeTableDialog::InitialView configuredView = QgsAttributeTableDialog::settingsAttributeTableInitialView->value();
+    if ( configuredView == QgsAttributeTableDialog::RememberLast )
     {
       initialView = settings.value( u"qgis/attributeTableLastView"_s, QgsDualView::AttributeTable ).toInt();
+    }
+    else
+    {
+      initialView = static_cast<int>( configuredView );
     }
     mMainView->setView( static_cast<QgsDualView::ViewMode>( initialView ) );
     mMainViewButtonGroup->button( initialView )->setChecked( true );

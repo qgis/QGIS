@@ -2015,7 +2015,9 @@ void QgsPostgresConn::deduceEndian()
     if ( resOID.PQresultStatus() == PGRES_FATAL_ERROR )
     {
       errorCounter++;
+#ifdef QGISDEBUG
       QgsDebugMsgLevel( u"QUERY #%1 PGRES_FATAL_ERROR %2"_s.arg( queryCounter ).arg( PQerrorMessage().trimmed() ), 2 );
+#endif
       continue;
     }
 
@@ -2040,7 +2042,9 @@ void QgsPostgresConn::deduceEndian()
     return;
   }
 
+#ifdef QGISDEBUG
   QgsDebugMsgLevel( u"Back to old deduceEndian(): PQstatus() - %1, queryCounter = %2, errorCounter = %3"_s.arg( PQstatus() ).arg( queryCounter ).arg( errorCounter ), 2 );
+#endif
 
   QgsPostgresResult res( LoggedPQexec( u"QgsPostgresConn"_s, u"select regclass('pg_class')::oid"_s ) );
   QString oidValue = res.PQgetvalue( 0, 0 );

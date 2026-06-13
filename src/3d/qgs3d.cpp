@@ -22,6 +22,7 @@
 #include "qgs3dterrainregistry.h"
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
+#include "qgscategorized3drenderer.h"
 #include "qgsgoochmaterial3dhandler.h"
 #include "qgsline3dsymbol.h"
 #include "qgsline3dsymbol_p.h"
@@ -50,9 +51,11 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *Qgs3D::settingMsaaEnabled = new QgsSettingsEntryBool( u"msaa-enabled"_s, QgsSettingsTree::sTree3DMap, false, u"Whether MSAA is enabled for 3D map rendering"_s );
+const QgsSettingsEntryBool *Qgs3D::settingMsaaEnabled = new QgsSettingsEntryBool( u"msaa-enabled"_s, QgsSettingsTree::sTree3DMap, true, u"Whether MSAA is enabled for 3D map rendering"_s );
 const QgsSettingsEntryEnumFlag<Qgis::TextureFilterQuality> *Qgs3D::settingTextureFilterQuality
   = new QgsSettingsEntryEnumFlag<Qgis::TextureFilterQuality>( u"texture-filter"_s, QgsSettingsTree::sTree3DMap, Qgis::TextureFilterQuality::Anisotropic16x, u"Texture filter quality"_s );
+const QgsSettingsEntryEnumFlag<Qgis::ShadowQuality> *Qgs3D::settingShadowQuality
+  = new QgsSettingsEntryEnumFlag<Qgis::ShadowQuality>( u"shadow-quality"_s, QgsSettingsTree::sTree3DMap, Qgis::ShadowQuality::High, u"Shadow rendering quality"_s );
 
 Qgs3D *Qgs3D::instance()
 {
@@ -103,6 +106,7 @@ void Qgs3D::initialize()
 
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
+  QgsApplication::renderer3DRegistry()->addRenderer( new QgsCategorized3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsPointCloudLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsTiledSceneLayer3DRendererMetadata );
@@ -152,49 +156,6 @@ QgsMaterial *Qgs3D::toMaterial( const QgsAbstractMaterialSettings *settings, Qgi
     return handler->toMaterial( settings, technique, context );
   }
   return nullptr;
-}
-
-QMap<QString, QString> Qgs3D::toMaterialExportParameters( const QgsAbstractMaterialSettings *settings )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->toExportParameters( settings );
-  }
-  return {};
-}
-
-void Qgs3D::addMaterialParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    handler->addParametersToEffect( effect, settings, materialContext );
-  }
-}
-
-void Qgs3D::applyMaterialDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    handler->applyDataDefinedToGeometry( settings, geometry, vertexCount, dataDefinedBytes );
-  }
-}
-
-QByteArray Qgs3D::materialDataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->dataDefinedVertexColorsAsByte( settings, expressionContext );
-  }
-  return QByteArray();
-}
-
-int Qgs3D::materialDataDefinedByteStride( const QgsAbstractMaterialSettings *settings )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->dataDefinedByteStride( settings );
-  }
-  return 0;
 }
 
 Qgs3D::Qgs3D()

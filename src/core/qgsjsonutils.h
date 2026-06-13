@@ -219,12 +219,14 @@ class CORE_EXPORT QgsJsonExporter
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
      * \param indent number of indentation spaces for generated JSON (defaults to none)
-     * \param featureType optional feature type to pass, like the layer name. If omitted, it is not written (since QGIS 4.2)
+     * \param extraMembers are optional foreign members as e.g. the layer name to pass as featureType. If omitted, it is not written (since QGIS 4.2)
      * \returns GeoJSON string
      * \see exportFeatures()
      * \see exportFeatureToJsonObject()
      */
-    QString exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), int indent = -1, const QString &featureType = QString() ) const;
+    QString exportFeature(
+      const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), int indent = -1, const QVariantMap &extraMembers = QVariantMap()
+    ) const;
 
     /**
      * Returns a QJsonObject representation of a feature.
@@ -232,11 +234,11 @@ class CORE_EXPORT QgsJsonExporter
      * \param extraProperties map of extra attributes to include in feature's properties
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
-     * \param featureType optional feature type to pass, like the layer name. If omitted, it is not written (since QGIS 4.2)
+     * \param extraMembers are optional foreign members as e.g. the layer name to pass as featureType. If omitted, it is not written (since QGIS 4.2)
      * \returns json object
      * \see exportFeatures()
      */
-    json exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), const QString &featureType = QString() ) const
+    json exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), const QVariantMap &extraMembers = QVariantMap() ) const
       SIP_SKIP;
 
 

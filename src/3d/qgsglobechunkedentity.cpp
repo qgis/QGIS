@@ -467,14 +467,16 @@ class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
 QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
   : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoaderFactory( mapSettings ), true )
 {
-  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [this, mapSettings] { setShowBoundingBoxes( mapSettings->showTerrainBoundingBoxes() ); } );
+  mLayerWatcher = make_qobject_unique<QgsLayerStyleWatcher>( mapSettings );
+  connect( mLayerWatcher.get(), &QgsLayerStyleWatcher::styleChanged, this, &QgsGlobeEntity::invalidateMapImages );
+
+  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [this, mapSettings] {
+    setShowBoundingBoxes( mapSettings->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes ) );
+  } );
   connect( mapSettings, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::showLabelsChanged, this, &QgsGlobeEntity::invalidateMapImages );
-  connect( mapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsGlobeEntity::onLayersChanged );
   connect( mapSettings, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsGlobeEntity::invalidateMapImages );
-
-  connectToLayersRepaintRequest();
 
   mUpdateJobFactory = std::make_unique<QgsGlobeMapUpdateJobFactory>( mapSettings );
 }
@@ -526,7 +528,6 @@ QList<QgsRayCastHit> QgsGlobeEntity::rayIntersection( const QgsRay3D &ray, const
   return { hit };
 }
 
-
 void QgsGlobeEntity::invalidateMapImages()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, u"3D"_s, u"Invalidate textures"_s );
@@ -555,25 +556,5 @@ void QgsGlobeEntity::invalidateMapImages()
   setNeedsUpdate( true );
 }
 
-void QgsGlobeEntity::onLayersChanged()
-{
-  connectToLayersRepaintRequest();
-  invalidateMapImages();
-}
-
-void QgsGlobeEntity::connectToLayersRepaintRequest()
-{
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
-  {
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsGlobeEntity::invalidateMapImages );
-  }
-
-  mLayers = mMapSettings->layers();
-
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
-  {
-    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsGlobeEntity::invalidateMapImages );
-  }
-}
 
 /// @endcond

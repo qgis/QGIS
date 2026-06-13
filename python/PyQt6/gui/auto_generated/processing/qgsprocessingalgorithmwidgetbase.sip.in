@@ -12,8 +12,33 @@
 
 
 
+class QgsProcessingFeedbackGenerator
+{
+%Docstring(signature="appended")
+Factory for creating :py:class:`QgsProcessingFeedback` objects.
 
-class QgsProcessingAlgorithmWidgetBase : QDialog, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
+.. note::
+
+   This is not considered stable API and may change in future QGIS versions.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingalgorithmwidgetbase.h"
+%End
+  public:
+    virtual ~QgsProcessingFeedbackGenerator();
+
+    virtual QgsProcessingFeedback *createFeedback() = 0 /Factory/;
+%Docstring
+Creates a new :py:class:`QgsProcessingFeedback` object, and transfers
+ownership to the caller.
+%End
+};
+
+
+class QgsProcessingAlgorithmWidgetBase : QWidget, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
 {
 %Docstring(signature="appended")
 Base class for widgets which contain settings for running Processing
@@ -40,7 +65,20 @@ algorithms.
       Batch,
     };
 
-    QgsProcessingAlgorithmWidgetBase( QWidget *parent /TransferThis/ = 0, QgsProcessingAlgorithmWidgetBase::WidgetMode mode = QgsProcessingAlgorithmWidgetBase::WidgetMode::Single );
+    enum class WidgetFlag /BaseType=IntFlag/
+    {
+      NoDocking
+    };
+
+    typedef QFlags<QgsProcessingAlgorithmWidgetBase::WidgetFlag> WidgetFlags;
+
+
+    QgsProcessingAlgorithmWidgetBase(
+      QMainWindow *parentWindow /TransferThis/,
+      QgsProcessingAlgorithmWidgetBase::WidgetMode mode = QgsProcessingAlgorithmWidgetBase::WidgetMode::Single,
+      QgsProcessingAlgorithmWidgetBase::WidgetFlags flags = QgsProcessingAlgorithmWidgetBase::WidgetFlags(),
+      Qgis::DockableWidgetInitialState initialState = Qgis::DockableWidgetInitialState::RestorePreviousState
+    );
 %Docstring
 Constructor for QgsProcessingAlgorithmWidgetBase.
 %End
@@ -108,10 +146,28 @@ Returns the results returned by the algorithm executed.
 .. seealso:: :py:func:`setResults`
 %End
 
+    void registerProcessingFeedbackGenerator( QgsProcessingFeedbackGenerator *generator );
+%Docstring
+Registers a ``generator`` for creating :py:class:`QgsProcessingFeedback`
+objects for use in the widget.
+
+Ownership of ``generator`` is not transferred, the caller is responsible
+for ensuring that it exists for the lifetime of the widget.
+
+If no generator is registered then a default
+:py:class:`QgsProcessingFeedback` object will be created.
+
+.. seealso:: :py:func:`createFeedback`
+
+.. versionadded:: 4.2
+%End
+
     QgsProcessingFeedback *createFeedback() /Factory/;
 %Docstring
 Creates a new processing feedback object, automatically connected to the
 appropriate slots in this widget.
+
+.. seealso:: :py:func:`registerProcessingFeedbackFactory`
 %End
 
     void saveLogToFile( const QString &path, QgsProcessingAlgorithmWidgetBase::LogFormat format = QgsProcessingAlgorithmWidgetBase::LogFormat::FormatPlainText );
@@ -151,7 +207,26 @@ Sets the parameter ``values`` to show in the widget.
 .. versionadded:: 3.24
 %End
 
+    void setTitle( const QString &title );
+%Docstring
+Sets the window (or dock) ``title``.
+
+.. versionadded:: 4.2
+%End
+
   public slots:
+
+    void exec();
+%Docstring
+Opens the widget in the top-level dialog mode, and blocks further
+execution until the dialog is dismissed.
+
+.. warning::
+
+   This does NOT open the dialog as a modal dialog. The user may continue to interact with the QGIS
+   application while the dialog is open. As per Qt QDialog.exec() documentation, it is recommended to avoid
+   calling this method.
+%End
 
     void reportError( const QString &error, bool fatalError );
 %Docstring
@@ -278,17 +353,26 @@ THEN closing the widget.
 .. versionadded:: 4.2
 %End
 
-    virtual void reject();
+    void reject();
 
+    void hideShortHelp();
+%Docstring
+Hides the short help panel.
+%End
 
-  protected:
-    virtual void closeEvent( QCloseEvent *e );
-
+    QgsMessageBar *messageBar();
+%Docstring
+Returns the widget's message bar.
+%End
 
     QPushButton *runButton();
 %Docstring
 Returns the widget's run button.
 %End
+
+  protected:
+    virtual void closeEvent( QCloseEvent *e );
+
 
     QPushButton *cancelButton();
 %Docstring
@@ -371,16 +455,6 @@ algorithm is running.
 %Docstring
 For subclasses to register their own GUI controls to be blocked while
 the algorithm is running.
-%End
-
-    QgsMessageBar *messageBar();
-%Docstring
-Returns the widget's message bar.
-%End
-
-    void hideShortHelp();
-%Docstring
-Hides the short help panel.
 %End
 
     void setCurrentTask( QgsProcessingAlgRunnerTask *task /Transfer/ );

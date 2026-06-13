@@ -291,6 +291,8 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   materialContext.setIsSelected( selected );
   materialContext.setIsHighlighted( mHighlightingEnabled );
   QgsMaterial *mat = material( mSymbol.get(), materialContext, !out.scales.empty(), !out.rotations.empty() );
+  if ( !mat )
+    return;
 
   mat->addParameter( new Qt3DRender::QParameter( "symbolScale", mSymbolScale, mat ) );
   mat->addParameter( new Qt3DRender::QParameter( "symbolRotation", mSymbolRotation.toVector4D(), mat ) );
@@ -313,52 +315,21 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
 QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext, bool hasDataDefinedScale, bool hasDataDefinedRotation )
 {
-  std::unique_ptr<QgsMaterial> material;
-
   if ( materialContext.isHighlighted() )
-  {
-    material = std::make_unique<QgsHighlightMaterial>( Qgis::MaterialRenderingTechnique::InstancedPoints );
-  }
-  else
-  {
-    Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-    filterKey->setName( u"renderingStyle"_s );
-    filterKey->setValue( "forward" );
+    return new QgsHighlightMaterial( Qgis::MaterialRenderingTechnique::InstancedPoints );
 
-    Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
-
-    const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
-    QStringList defines;
+  const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
+  if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
+  {
+    Qgis::InstancedMaterialFlags flags;
     if ( hasDataDefinedScale )
-      defines << u"USE_INSTANCE_SCALE"_s;
+      flags |= Qgis::InstancedMaterialFlag::DataDefinedScale;
     if ( hasDataDefinedRotation )
-      defines << u"USE_INSTANCE_ROTATION"_s;
-
-    const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, defines );
-    shaderProgram->setVertexShaderCode( finalVertexShaderCode );
-    shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) ) );
-
-    Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
-    renderPass->setShaderProgram( shaderProgram );
-
-    Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
-    technique->addFilterKey( filterKey );
-    technique->addRenderPass( renderPass );
-    technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
-    technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
-    technique->graphicsApiFilter()->setMajorVersion( 3 );
-    technique->graphicsApiFilter()->setMinorVersion( 2 );
-
-    Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
-    effect->addTechnique( technique );
-
-    Qgs3D::addMaterialParametersToEffect( effect, symbol->materialSettings(), materialContext );
-
-    material = std::make_unique<QgsMaterial>();
-    material->setEffect( effect );
+      flags |= Qgis::InstancedMaterialFlag::DataDefinedRotation;
+    return handler->toInstancedMaterial( settings, materialContext, flags );
   }
 
-  return material.release();
+  return nullptr;
 }
 
 Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer(
@@ -460,8 +431,15 @@ Qt3DCore::QGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const Qgs
     case Qgis::Point3DShape::Sphere:
     {
       const float radius = symbol->shapeProperty( u"radius"_s ).toFloat();
+      const int rings = symbol->shapeProperty( u"rings"_s ).toInt();
+      const int slices = symbol->shapeProperty( u"slices"_s ).toInt();
+
+      const bool tangents = symbol->materialSettings() && symbol->materialSettings()->requiresTangents();
       Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
       g->setRadius( radius );
+      g->setRings( rings );
+      g->setSlices( slices );
+      g->setGenerateTangents( tangents );
       return g;
     }
 
@@ -991,7 +969,7 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 namespace Qgs3DSymbolImpl
 {
 
-  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+  QgsFeature3DHandler *handlerForPoint3DSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
     const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
     if ( !pointSymbol )

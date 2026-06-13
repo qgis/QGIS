@@ -22,7 +22,6 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsmodeldesignerdialog.h"
 #include "qgsprocessinggui.h"
 #include "qgsvectorlayer.h"
 
@@ -44,6 +43,7 @@ class QgsProcessingAbstractParameterDefinitionWidget;
 class QgsMessageBar;
 class QgsBrowserGuiModel;
 class QgsModelGraphicsScene;
+class QgsModelDesignerDialog;
 
 /**
  * \class QgsProcessingContextGenerator

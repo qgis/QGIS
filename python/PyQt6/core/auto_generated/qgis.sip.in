@@ -2413,6 +2413,18 @@ The development version
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
 
+    enum class Map3DDebugFlag /BaseType=IntFlag/
+    {
+      ShowTerrainBoundingBoxes,
+      ShowTerrainTileInfo,
+      ShowCameraViewCenter,
+      ShowCameraRotationCenter,
+      ShowLightSourceOrigins,
+      ShowFPS,
+      ShowDebugPanel,
+    };
+    typedef QFlags<Qgis::Map3DDebugFlag> Map3DDebugFlags;
+
 
     enum class Point3DShape /BaseType=IntEnum/
     {
@@ -2439,6 +2451,14 @@ The development version
       Billboards,
     };
 
+    enum class InstancedMaterialFlag /BaseType=IntFlag/
+    {
+      DataDefinedScale,
+      DataDefinedRotation,
+    };
+    typedef QFlags<Qgis::InstancedMaterialFlag> InstancedMaterialFlags;
+
+
     enum class TextureFilterQuality /BaseType=IntEnum/
     {
       Trilinear,
@@ -2448,10 +2468,20 @@ The development version
       Anisotropic16x,
     };
 
+    enum class ShadowQuality /BaseType=IntEnum/
+    {
+      Low,
+      Medium,
+      High,
+      VeryHigh,
+      Extreme,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,
       Directional,
+      Sun,
     };
 
     enum class Map3DBackgroundType /BaseType=IntEnum/
@@ -2488,6 +2518,12 @@ The development version
       Never,
       WhenDragging,
       Always,
+    };
+
+    enum class ToneMappingMethod /BaseType=IntEnum/
+    {
+      Clamp,
+      Aces,
     };
 
     enum class Export3DSceneFormat /BaseType=IntEnum/
@@ -2691,6 +2727,13 @@ The development version
       AboveInsertionPoint,
       TopOfTree,
       OptimalInInsertionGroup,
+    };
+
+    enum class LegendLayerDoubleClickAction /BaseType=IntEnum/
+    {
+      LayerProperties,
+      AttributeTable,
+      LayerStyling,
     };
 
     enum class LayerTreeFilterFlag /BaseType=IntFlag/
@@ -3629,6 +3672,23 @@ The development version
     typedef QFlags<Qgis::RasterBandStatistic> RasterBandStatistics;
 
 
+    enum class SensorThingsVersion /BaseType=IntEnum/
+    {
+        Version1_1,
+        Version2_0,
+    };
+
+    enum class SensorThingsExtension /BaseType=IntFlag/
+    {
+      MultiDatastream,
+      SensingExtensionObservationsMeasurements,
+      SensingExtensionSampling,
+      SensingExtensionRelations,
+    };
+
+    typedef QFlags<Qgis::SensorThingsExtension> SensorThingsExtensions;
+
+
     enum class SensorThingsEntity /BaseType=IntEnum/
     {
       Invalid,
@@ -3641,6 +3701,21 @@ The development version
       Observation,
       FeatureOfInterest,
       MultiDatastream,
+      // version 2.0
+      Feature,
+      FeatureType,
+      Deployment,
+      ObservingProcedure,
+      Sampling,
+      SamplingProcedure,
+      Sampler,
+      PreparationStep,
+      PreparationProcedure,
+      ThingRelation,
+      RelationRole,
+      FeatureRelation,
+      DatastreamRelation,
+      ObservationRelation,
     };
 
     enum class ColorModel /BaseType=IntEnum/
@@ -3757,6 +3832,19 @@ The development version
     {
       ConstrainedDelaunay,
       Earcut
+    };
+
+    enum class WmsGroupRequestMode /BaseType=IntEnum/
+    {
+      Normal,
+      Opaque,
+    };
+
+    enum class DockableWidgetInitialState /BaseType=IntEnum/
+    {
+      RestorePreviousState,
+      ForceDocked,
+      ForceDialog,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -4098,6 +4186,12 @@ QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapabilit
 
 QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapability f1, QFlags<Qgis::ArcGisRestServiceCapability> f2);
 
+QFlags<Qgis::InstancedMaterialFlag> operator|(Qgis::InstancedMaterialFlag f1, QFlags<Qgis::InstancedMaterialFlag> f2);
+
+QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map3DDebugFlag> f2);
+
+QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QFlags<Qgis::SensorThingsExtension> f2);
+
 
 
 
@@ -4134,6 +4228,30 @@ Compare two doubles (but allow some difference)
 :param a: first double
 :param b: second double
 :param epsilon: maximum difference allowable between doubles
+%End
+
+bool qgsDoubleLessThanOrNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
+%Docstring
+Compare two doubles to see if one is less than the other or very near to
+the other.
+
+:param a: first double
+:param b: second double
+:param epsilon: maximum tolerance when comparing near values
+
+.. versionadded:: 4.2
+%End
+
+bool qgsDoubleGreaterThanOrNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
+%Docstring
+Compare two doubles to see if one is greater than the other or very near
+to the other.
+
+:param a: first double
+:param b: second double
+:param epsilon: maximum tolerance when comparing near values
+
+.. versionadded:: 4.2
 %End
 
 bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON );

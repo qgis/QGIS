@@ -23,6 +23,8 @@
 #include <QRegularExpression>
 #include <QString>
 
+#include "moc_qgslayermetadata.cpp"
+
 using namespace Qt::StringLiterals;
 
 QgsLayerMetadata *QgsLayerMetadata::clone() const

@@ -21,6 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import datetime
 import time
+from typing import Optional
 
 from qgis.core import (
     Qgis,
@@ -37,9 +38,16 @@ from qgis.gui import (
     QgsProcessingContextGenerator,
     QgsProcessingParametersGenerator,
 )
+from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor, QPalette
-from qgis.PyQt.QtWidgets import QDialogButtonBox, QMessageBox, QPushButton, QWidget
+from qgis.PyQt.QtWidgets import (
+    QDialogButtonBox,
+    QMainWindow,
+    QMessageBox,
+    QPushButton,
+    QWidget,
+)
 from qgis.utils import iface
 
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
@@ -57,8 +65,19 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
     QgsProcessingAlgorithmWidgetBase with python specific logic
     """
 
-    def __init__(self, alg, in_place=False, parent=None):
-        super().__init__(parent)
+    def __init__(
+        self,
+        alg: QgsProcessingAlgorithm,
+        in_place: bool = False,
+        parent: Optional[QMainWindow] = None,
+        flags: QgsProcessingAlgorithmWidgetBase.WidgetFlags = QgsProcessingAlgorithmWidgetBase.WidgetFlags(),
+        initialState: Qgis.DockableWidgetInitialState = Qgis.DockableWidgetInitialState.RestorePreviousState,
+    ):
+        super().__init__(
+            parent or (iface and iface.mainWindow()),
+            flags=flags,
+            initialState=initialState,
+        )
 
         self.feedback_dialog = None
         self.in_place = in_place
@@ -116,9 +135,8 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
         return panel
 
     def runAsBatch(self):
-        self.close()
-        dlg = BatchAlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
-        dlg.show()
+        self.reject()
+        dlg = BatchAlgorithmDialog(self.algorithm().create())
         dlg.exec()
 
     def resetAdditionalGui(self):
@@ -354,6 +372,9 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
                 )
 
                 def on_complete(ok, results):
+                    if sip.isdeleted(self):
+                        return
+
                     if ok:
                         self.feedback.pushInfo(
                             self.tr("Execution completed in {}").format(
@@ -446,6 +467,8 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
         )
         generated_html_outputs = False
 
+        self._is_running = False
+
         if not in_place and self.iterateParam is None:
             # add html results to results dock
             for out in self.algorithm().outputDefinitions():
@@ -465,7 +488,6 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
                 self.resetGui()
                 return
 
-        self._is_running = False
         self.setExecuted(True)
         self.setResults(result)
         self.setInfo(

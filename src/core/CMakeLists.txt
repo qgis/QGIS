@@ -101,7 +101,6 @@ set(QGIS_CORE_SRCS
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
-  symbology/qgsblanksegmentutils.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscombinedstylemodel.cpp
@@ -305,6 +304,7 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelchildparametersource.cpp
   processing/models/qgsprocessingmodelcomment.cpp
   processing/models/qgsprocessingmodelcomponent.cpp
+  processing/models/qgsprocessingmodelfeedback.cpp
   processing/models/qgsprocessingmodelgroupbox.cpp
   processing/models/qgsprocessingmodelconfig.cpp
   processing/models/qgsprocessingmodelparameter.cpp
@@ -1354,6 +1354,7 @@ set(QGIS_CORE_HDRS
   qgsruntimeprofiler.h
   qgsscalecalculator.h
   qgsscaleutils.h
+  qgsscopedconnection.h
   qgsscreenproperties.h
   qgsselectioncontext.h
   qgsshapegenerator.h
@@ -1892,6 +1893,7 @@ set(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelcomment.h
   processing/models/qgsprocessingmodelcomponent.h
   processing/models/qgsprocessingmodelconfig.h
+  processing/models/qgsprocessingmodelfeedback.h
   processing/models/qgsprocessingmodelgroupbox.h
   processing/models/qgsprocessingmodeloutput.h
   processing/models/qgsprocessingmodelparameter.h
@@ -2072,8 +2074,8 @@ set(QGIS_CORE_HDRS
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
 
-  symbology/qgsblanksegmentutils.h
   symbology/qgscategorizedsymbolrenderer.h
+  symbology/qgscategorizedsymbolutils.h
   symbology/qgscolorbrewerpalette.h
   symbology/qgscombinedstylemodel.h
   symbology/qgscptcityarchive.h
@@ -2338,6 +2340,7 @@ if(MSVC)
       expression/qgsexpressionfunction.cpp
       proj/qgscoordinatereferencesystem.cpp
       textrenderer/qgsfontmanager.cpp
+      vector/qgsvectorlayer.cpp
       qgsapplication.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
@@ -2356,8 +2359,15 @@ elseif(EMSCRIPTEN)
     SKIP_PRECOMPILE_HEADERS ON
   )
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES
+    COMPILE_FLAGS "-O1"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
   set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
+  set_source_files_properties(textrenderer/qgsfontmanager.cpp PROPERTIES
+    COMPILE_FLAGS "-O0"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
 endif()
 
 # Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
@@ -2870,6 +2880,10 @@ endif()
 
 if (WITH_DRACO)
   target_link_libraries(qgis_core ${DRACO_LIBRARY})
+endif()
+
+if (WITH_TRACY)
+  target_link_libraries(qgis_core Tracy::TracyClient)
 endif()
 
 if (WITH_SPATIALITE)

@@ -228,6 +228,9 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
+
     void setAllLayersMapServerUri( const QgsMimeDataUtils::Uri &uri ) { mAllLayersMapServerUri = uri; }
     const QgsMimeDataUtils::Uri &allLayersMapServerUri() const { return mAllLayersMapServerUri; }
 
@@ -352,16 +355,13 @@ class QgsArcGisFeatureServiceLayerItem : public QgsArcGisRestLayerItem
       const QgsHttpHeaders &headers,
       const QString urlPrefix,
       Qgis::BrowserLayerType geometryType,
-      bool isMapServerWithQueryCapability,
-      const QString &mapServerFormat,
-      const QString &mapServerLayerId
+      bool isMapServerWithQueryCapability
     );
 
-    QgsMimeDataUtils::Uri mapServerMimeUri() const;
-    QList< LayerUriWithDetails > layerUrisWithDetails() const override;
+    Qgis::BrowserItemFilterFlags filterFlags() const override;
 
   private:
-    QString mMapServerUri;
+    bool mIsMapServerWithQueryCapability = false;
 };
 
 /**
@@ -385,15 +385,15 @@ class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
       const QString &urlPrefix,
       bool isMapServerWithQueryCapability
     );
-    Qgis::BrowserItemFilterFlags filterFlags() const override;
-
+    QgsMimeDataUtils::Uri featureServerMimeUri() const;
+    QList< LayerUriWithDetails > layerUrisWithDetails() const override;
 
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
     QString supportedFormats() const { return mSupportedFormats; }
 
   private:
     QString mSupportedFormats;
-    bool mIsMapServerWithQueryCapability = false;
+    QString mFeatureServerUri;
 };
 
 

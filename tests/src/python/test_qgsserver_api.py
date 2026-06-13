@@ -54,7 +54,7 @@ from qgis.server import (
 )
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
-from utilities import unitTestDataPath
+from utilities import compareWkt, unitTestDataPath
 
 
 class QgsServerAPIUtilsTest(QgsServerTestBase):
@@ -223,7 +223,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
     """QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regeregenerate_api_reference = False
+    regenerate_api_reference = False
 
     def assertEqualBrackets(self, actual, expected):
         """Also counts parenthesis"""
@@ -312,7 +312,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
                 result = result.replace(k, v)
 
         path = os.path.join(self.temporary_path, "qgis_server", subdir, reference_file)
-        if self.regeregenerate_api_reference:
+        if self.regenerate_api_reference:
             overwrite_path = os.path.join(
                 unitTestDataPath("qgis_server"), subdir, reference_file
             )
@@ -995,6 +995,143 @@ class QgsServerAPITest(QgsServerAPITestBase):
             project,
             "test_wfs3_collections_items_as-areas-short-name_3857.json",
         )
+
+    def test_wfs3_collection_items_flatgeobuf(self):
+        """Test WFS3 API items"""
+        project = QgsProject()
+        project.read(
+            os.path.join(self.temporary_path, "qgis_server", "test_project_api.qgs")
+        )
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?limit=1"
+        )
+        server = QgsServer()
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        body = response.body()
+
+        # Check headers
+        headers = response.fullHeaders()
+        self.assertEqual(headers["Content-Type"][0], "application/flatgeobuf")
+        self.assertEqual(headers["OGC-NumberReturned"][0], "1")
+        self.assertEqual(
+            headers["Content-Disposition"][0], 'inline; filename="testlayer èé.fgb"'
+        )
+        self.assertEqual(headers["OGC-NumberReturned"][0], "1")
+        self.assertEqual(
+            headers["Link"],
+            [
+                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json"',
+                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1>; rel="alternate"; title="This document as HTML"; type="text/html"',
+                '<http://server.qgis.org/wfs3/collections/testlayer èé/items.fgb?offset=1&limit=1>; rel="next"; title="Next page"; type="application/flatgeobuf"',
+            ],
+        )
+
+        def _get_layer():
+            # Save to temporary file .fgb
+            path = os.path.join(
+                self.temporary_path, "qgis_server", "api", "testlayer.fgb"
+            )
+            with open(path, "wb") as f:
+                f.write(bytes(response.body()))
+            # Open file with QgsVectorLayer and check features
+            layer = QgsVectorLayer(path, "testlayer", "ogr")
+            self.assertTrue(layer.isValid())
+            return layer
+
+        layer = _get_layer()
+        self.assertEqual(layer.getFeature(0).attributes(), [1, "one", "one èé"])
+        geom = layer.getFeature(0).geometry()
+        self.assertAlmostEqual(geom.asPoint().x(), 8.20349, 4)
+        self.assertAlmostEqual(geom.asPoint().y(), 44.90148, 4)
+
+        # Request 2 features from next page
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?offset=1&limit=2"
+        )
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        # Check headers
+        headers = response.fullHeaders()
+        self.assertEqual(headers["OGC-NumberReturned"][0], "2")
+
+        layer = _get_layer()
+        self.assertEqual(layer.getFeature(0).attributes(), [2, "two", "two àò"])
+        geom = layer.getFeature(0).geometry()
+        self.assertAlmostEqual(geom.asPoint().x(), 8.20354, 4)
+        self.assertAlmostEqual(geom.asPoint().y(), 44.90148, 4)
+
+        self.assertEqual(layer.getFeature(1).attributes(), [3, "three", "three èé↓"])
+        geom = layer.getFeature(1).geometry()
+        self.assertAlmostEqual(geom.asPoint().x(), 8.20345, 4)
+        self.assertAlmostEqual(geom.asPoint().y(), 44.90139, 4)
+
+    def test_wfs3_collection_items_geobuf_qgsfid(self):
+
+        mem_layer = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=id:integer&field=qgs_fid:integer",
+            "mem_layer",
+            "memory",
+        )
+        self.assertTrue(mem_layer.isValid())
+        f = QgsFeature(mem_layer.fields())
+        f.setAttributes([1, 123])
+        f.setGeometry(QgsGeometry.fromWkt("POINT(4 5)"))
+        self.assertTrue(mem_layer.dataProvider().addFeatures([f]))
+        project = QgsProject()
+        project.addMapLayer(mem_layer)
+        # Expose to WFS3 API
+        project.writeEntry("WFSLayers", "/", [mem_layer.id()])
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/mem_layer/items.fgb?limit=1"
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        # Open response body as FGB and check attributes
+        temp_dir = QtCore.QTemporaryDir()
+        temp_path = temp_dir.path()
+        path = os.path.join(temp_path, "mem_layer.fgb")
+        with open(path.encode("utf8"), "wb") as f:
+            f.write(response.body())
+        layer = QgsVectorLayer(path, "mem_layer", "ogr")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.getFeature(0).attributes(), [1, 123])
+        # Check geometry
+        geom = layer.getFeature(0).geometry()
+        self.assertTrue(compareWkt(geom.asWkt(), "POINT (4 5)"))
+
+    def test_wfs3_collection_items_aspatial_flatgeobuf(self):
+        """Test flatgeobuf output for non spatial layer"""
+
+        fields = QgsFields()
+        fields.append(QgsField("name", QtCore.QMetaType.Type.QString))
+        layer = QgsMemoryProviderUtils.createMemoryLayer("aspatial", fields)
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.isSpatial())
+
+        f = QgsFeature(fields)
+        f.setAttribute("name", "feature 123")
+        layer.dataProvider().addFeatures([f])
+
+        p = QgsProject()
+        p.addMapLayer(layer)
+        p.writeEntry("WFSLayers", "/", [layer.id()])
+
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/aspatial/items.fgb?limit=1"
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, p)
+
+        temp_dir = QtCore.QTemporaryDir()
+        temp_path = temp_dir.path()
+        path = os.path.join(temp_path, "aspatial.fgb")
+        with open(path.encode("utf8"), "wb") as f:
+            f.write(response.body())
+        v = QgsVectorLayer(path, "aspatial", "ogr")
+        self.assertTrue(v.isValid())
+        f = next(v.getFeatures())
+        self.assertEqual(f["name"], "feature 123")
 
     def test_invalid_args(self):
         """Test wrong args"""
@@ -2934,6 +3071,32 @@ class HandlerException(QgsServerOgcApiHandler):
 
 class QgsServerOgcAPITest(QgsServerAPITestBase):
     """QGIS OGC API server tests"""
+
+    def testQgsServerOgcApiHandlerLink(self):
+        """Test OGC API handlers header link function"""
+
+        h = Handler1()
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/services/api1/handlerone?value1=42"
+        )
+        response = QgsBufferServerResponse()
+        project = QgsProject()
+        ctx = QgsServerApiContext(
+            "/services/api1", request, response, project, self.server.serverInterface()
+        )
+        title = 'a title with special chars: èé and "quotes" and back \\ slash'
+        hlink = h.headerLink(
+            ctx,
+            QgsServerOgcApi.Rel.alternate,
+            QgsServerOgcApi.ContentType.JSON,
+            QgsServerOgcApi.Profile.NONE,
+            title,
+        )
+
+        self.assertEqual(
+            hlink,
+            '<http://server.qgis.org/services/api1/handlerone.json?value1=42>; rel="alternate"; title="a title with special chars: èé and \\"quotes\\" and back \\\\ slash"; type="application/json"',
+        )
 
     def testOgcApi(self):
         """Test OGC API"""

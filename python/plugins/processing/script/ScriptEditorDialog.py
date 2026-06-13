@@ -33,7 +33,13 @@ from qgis.core import (
     QgsProcessingFeatureBasedAlgorithm,
     QgsSettings,
 )
-from qgis.gui import QgsCodeEditorWidget, QgsErrorDialog, QgsGui, QgsShortcutsManager
+from qgis.gui import (
+    QgsCodeEditorWidget,
+    QgsErrorDialog,
+    QgsGui,
+    QgsProcessingAlgorithmWidgetBase,
+    QgsShortcutsManager,
+)
 from qgis.processing import alg as algfactory
 from qgis.PyQt import sip, uic
 from qgis.PyQt.QtCore import Qt
@@ -302,19 +308,13 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         self.run_widget = alg.createCustomParametersWidget(self)
         if not self.run_widget:
-            self.run_widget = AlgorithmWidget(alg, parent=self)
-
-        canvas = iface.mapCanvas()
-        prevMapTool = canvas.mapTool()
+            self.run_widget = AlgorithmWidget(
+                alg,
+                parent=self,
+                flags=QgsProcessingAlgorithmWidgetBase.WidgetFlag.NoDocking,
+            )
 
         self.run_widget.show()
-
-        if canvas.mapTool() != prevMapTool:
-            try:
-                canvas.mapTool().reset()
-            except:
-                pass
-            canvas.setMapTool(prevMapTool)
 
     def _loadFile(self, filePath):
 

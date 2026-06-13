@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodeldesignerconfigwidget.h"
+#include "qgsmodeldesignerdialog.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgroupboxdefinitionwidget.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"

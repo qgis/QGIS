@@ -16,6 +16,7 @@
 #ifndef QGSPHONGMATERIAL_H
 #define QGSPHONGMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -47,6 +48,14 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
      * Constructor for QgsPhongMaterial, with the specified \a parent node.
      */
     explicit QgsPhongMaterial( Qt3DCore::QNode *parent = nullptr );
+
+    /**
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader.
+     * \a flags controls which per-instance attributes (scale, rotation) are active.
+     */
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+
     ~QgsPhongMaterial() override;
 
   public slots:
@@ -77,6 +86,8 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
     Qt3DRender::QParameter *mOpacityParameter = nullptr;
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     bool mDataDefinedEnabled = false;
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
 };
 
 ///@endcond PRIVATE

@@ -353,6 +353,17 @@ expression context.
    where the actual available field names may not be known beforehand.
 %End
 
+    QSet<QString> referencedVariables() const;
+%Docstring
+Returns the set of any variables referenced by the property's
+expression.
+
+Returns an empty set if the property is inactive or not of type
+:py:class:`Qgis`.PropertyType.Expression.
+
+.. versionadded:: 4.2
+%End
+
     bool isProjectColor() const;
 %Docstring
 Returns ``True`` if the property is set to a linked project color.

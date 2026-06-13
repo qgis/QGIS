@@ -461,9 +461,13 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     if ( sourceCrs().mapUnits() != Qgis::DistanceUnit::Meters )
     {
       distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, sourceCrs().mapUnits() ) );
+      p2 = p1.project( distance, azimuth );
       result = p1.distance( p2 );
     }
-    p2 = p1.project( distance, azimuth );
+    else
+    {
+      p2 = p1.project( distance, azimuth );
+    }
   }
   QgsDebugMsgLevel(
     u"Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]"_s

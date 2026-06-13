@@ -235,10 +235,14 @@ Parses a capabilities string to known values.
 
     static Qgis::DataType dataTypeFromString( const QString &pixelType );
 %Docstring
-Returns the raster data type corresponding to an ESRI pixelType string.
+Returns the raster data type corresponding to an ESRI ``pixelType``
+string.
 
 .. versionadded:: 4.2
 %End
+
+
+
 
     static Qgis::RasterColorInterpretation colorInterpretationFromBandName( const QString &bandName );
 %Docstring

@@ -39,16 +39,12 @@ class _3D_EXPORT QgsGoochMaterial3DHandler : public QgsAbstractMaterial3DHandler
 
     QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const override;
     QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override;
-    void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
+    QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const override;
     QByteArray dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const override;
-    int dataDefinedByteStride( const QgsAbstractMaterialSettings *settings ) const override;
     void applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 
   private:
-    //! Constructs a material from shader files
-    QgsMaterial *buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const;
-
     static void applySettingsToMaterial( const QgsGoochMaterialSettings *settings, QgsGoochMaterial *material );
 };
 

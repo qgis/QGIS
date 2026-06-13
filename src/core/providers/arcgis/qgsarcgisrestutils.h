@@ -282,11 +282,53 @@ class CORE_EXPORT QgsArcGisRestUtils
     static Qgis::ArcGisRestServiceCapabilities serviceCapabilitiesFromString( const QString &capabilities );
 
     /**
-     * Returns the raster data type corresponding to an ESRI pixelType string.
+     * Returns the raster data type corresponding to an ESRI \a pixelType string.
      *
      * \since QGIS 4.2
      */
     static Qgis::DataType dataTypeFromString( const QString &pixelType );
+
+#ifndef SIP_RUN
+    /**
+     * Struct representing whether the theoretical limits of a pixel type are
+     * useful for describing actual data boundaries.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    struct PixelTypeLimitUsefulness
+    {
+        //! TRUE if the theoretical minimum value is a useful data boundary (e.g., 0 for unsigned types)
+        bool minIsUseful = false;
+        //! TRUE if the theoretical maximum value is a useful data boundary (e.g., 255 for U8)
+        bool maxIsUseful = false;
+    };
+#endif
+
+    /**
+     * Returns whether the theoretical minimum and maximum values for a given ESRI
+     * \a pixelType are practically useful for representing expected data ranges.
+     *
+     * For instance, an unsigned 8-bit integer ('U8') has a useful minimum (0)
+     * and maximum (255). Conversely, floating-point types ('F32'/'F64') return FALSE
+     * because their maximum theoretical limits are too large to represent a useful
+     * indication of the actual data present in a layer.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    SIP_SKIP static PixelTypeLimitUsefulness pixelTypeLimitUsefulness( const QString &pixelType );
+
+    /**
+     * Returns the valid data range given an ESRI \a pixelType string.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    SIP_SKIP static std::optional< std::pair< double, double > > rangeForPixelType( const QString &pixelType );
 
     /**
      * Attempts to match arbitrary band name strings to a QGIS raster color interpretation.

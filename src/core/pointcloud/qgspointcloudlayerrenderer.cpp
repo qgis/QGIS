@@ -229,7 +229,7 @@ bool QgsPointCloudLayerRenderer::render()
     const double overviewSwitchingScale = mRenderer->overviewSwitchingScale();
     const bool zoomedOut = renderExtent.width() > mAverageSubIndexWidth * overviewSwitchingScale || renderExtent.height() > mAverageSubIndexHeight * overviewSwitchingScale;
 
-    bool shouldRenderOverviews, shouldRenderExtents;
+    bool shouldRenderOverviews = false, shouldRenderExtents = false;
     switch ( mRenderer->zoomOutBehavior() )
     {
       case Qgis::PointCloudZoomOutRenderBehavior::RenderOverview:

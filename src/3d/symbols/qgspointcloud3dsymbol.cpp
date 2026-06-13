@@ -127,6 +127,13 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
   pcDestination->mVerticalTriangleFilter = mVerticalTriangleFilter;
 }
 
+void QgsPointCloud3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
+{
+  Q_UNUSED( materialSettings );
+  throw QgsNotSupportedException( u"QgsPointCloud3DSymbol does not support material settings"_s );
+}
+
+
 // QgsSingleColorPointCloud3DSymbol
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
@@ -169,8 +176,6 @@ void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
 
 void QgsSingleColorPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::SingleColor );
-  mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );
   const QColor linearColor = Qgs3DUtils::srgbToLinear( mSingleColor );
@@ -252,8 +257,6 @@ void QgsColorRampPointCloud3DSymbol::setColorRampShaderMinMax( double min, doubl
 
 void QgsColorRampPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::ColorRamp );
-  mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );
   // Create the texture to pass the color ramp
@@ -387,8 +390,6 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
 
 void QgsRgbPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::RgbRendering );
-  mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );
 }
@@ -573,10 +574,6 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 void QgsClassificationPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
   const QgsColorRampShader mColorRampShader = colorRampShader();
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::Classification );
-  mat->addParameter( renderingStyle );
-  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
-  mat->addParameter( pointSizeParameter );
   // Create the texture to pass the color ramp
   Qt3DRender::QTexture1D *colorRampTexture = nullptr;
   if ( mColorRampShader.colorRampItemList().count() > 0 )

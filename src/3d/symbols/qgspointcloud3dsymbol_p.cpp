@@ -273,17 +273,21 @@ QgsPointCloud3DSymbolHandler::QgsPointCloud3DSymbolHandler()
 {}
 
 
-void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context, const QgsPointCloud3DSymbolHandler::PointData &out, bool selected )
+void QgsPointCloud3DSymbolHandler::makeEntity(
+  Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context, const QgsPointCloud3DSymbolHandler::PointData &out, bool selected, const QStringList &shaderDefines
+)
 {
   Q_UNUSED( selected )
 
   if ( out.positions.empty() )
     return;
 
+  const bool isTriangulated = !out.triangles.isEmpty();
+
   // Geometry
   Qt3DCore::QGeometry *geom = makeGeometry( parent, out, context.symbol()->byteStride() );
   Qt3DRender::QGeometryRenderer *gr = new Qt3DRender::QGeometryRenderer;
-  if ( context.symbol()->renderAsTriangles() && !out.triangles.isEmpty() )
+  if ( context.symbol()->renderAsTriangles() && isTriangulated )
   {
     gr->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
     gr->setVertexCount( out.triangles.size() / sizeof( quint32 ) );
@@ -306,13 +310,20 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
     context.symbol()->fillMaterial( mat );
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( mat );
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/pointcloud.vert"_s ) ) );
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/pointcloud.frag"_s ) ) );
+  const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/pointcloud.vert"_s ) );
+  const QByteArray fragCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/pointcloud.frag"_s ) );
+  QStringList defines = shaderDefines;
+  if ( isTriangulated )
+  {
+    defines << u"TRIANGULATE"_s;
+  }
+  shaderProgram->setFragmentShaderCode( Qgs3DUtils::addDefinesToShaderCode( fragCode, defines ) );
+  shaderProgram->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( mat );
   renderPass->setShaderProgram( shaderProgram );
 
-  if ( out.triangles.isEmpty() )
+  if ( !isTriangulated )
   {
     Qt3DRender::QPointSize *pointSize = new Qt3DRender::QPointSize( renderPass );
     pointSize->setSizeMode( Qt3DRender::QPointSize::Programmable ); // supported since OpenGL 3.2
@@ -331,7 +342,6 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
   technique->graphicsApiFilter()->setMajorVersion( 3 );
   technique->graphicsApiFilter()->setMinorVersion( 1 );
-  technique->addParameter( new Qt3DRender::QParameter( "triangulate", !out.triangles.isEmpty() ) );
 
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect;
   eff->addTechnique( technique );
@@ -635,7 +645,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &p
 
 void QgsSingleColorPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context )
 {
-  makeEntity( parent, context, outNormal, false );
+  makeEntity( parent, context, outNormal, false, { u"STYLE_SINGLE_COLOR"_s } );
 }
 
 Qt3DCore::QGeometry *QgsSingleColorPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
@@ -771,7 +781,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc,
 
 void QgsColorRampPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context )
 {
-  makeEntity( parent, context, outNormal, false );
+  makeEntity( parent, context, outNormal, false, { u"STYLE_COLOR_RAMP"_s } );
 }
 
 Qt3DCore::QGeometry *QgsColorRampPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
@@ -915,7 +925,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc, QgsPo
 
 void QgsRGBPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context )
 {
-  makeEntity( parent, context, outNormal, false );
+  makeEntity( parent, context, outNormal, false, { u"STYLE_RGB"_s } );
 }
 
 Qt3DCore::QGeometry *QgsRGBPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
@@ -1064,7 +1074,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 
 void QgsClassificationPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context )
 {
-  makeEntity( parent, context, outNormal, false );
+  makeEntity( parent, context, outNormal, false, { u"STYLE_CLASSIFICATION"_s } );
 }
 
 Qt3DCore::QGeometry *QgsClassificationPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )

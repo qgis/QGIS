@@ -51,6 +51,15 @@ Initializes matrix by setting all values in row-major order
 
     bool operator!=( const QgsMatrix4x4 &other ) const;
 
+
+    bool fuzzyEqual( const QgsMatrix4x4 &other, double epsilon = 1e-8 ) const /HoldGIL/;
+%Docstring
+Performs fuzzy comparison between this matrix and ``other`` using an
+``epsilon``.
+
+.. versionadded:: 4.2
+%End
+
     QList< double > dataList() const /PyName=data,HoldGIL/;
 %Docstring
 Returns matrix data (in column-major order)
@@ -66,7 +75,28 @@ components of a ``vector``.
 %Docstring
 Matrix-vector multiplication (vector is converted to homogeneous
 coordinates [X,Y,Z,1] and back)
+
+.. seealso:: :py:func:`mapVector`
+
+.. note::
+
+   This function is not the same as :py:func:`~QgsMatrix4x4.mapVector`.
+   For points, always use :py:func:`~QgsMatrix4x4.map`. :py:func:`~QgsMatrix4x4.mapVector` is suitable for vectors (directions) only.
 %End
+
+    QgsVector3D mapVector( const QgsVector3D &vector ) const /HoldGIL/;
+%Docstring
+Maps vector by multiplying the top 3x3 portion of this matrix by
+``vector``. The translation and projection components of this matrix are
+ignored. The matrix is applied pre-vector.
+
+:param vector: input vector to transform
+
+.. seealso:: :py:func:`map`
+
+.. versionadded:: 4.2
+%End
+
 
     bool isIdentity() const /HoldGIL/;
 %Docstring
@@ -97,6 +127,13 @@ Multiples this matrix by another that rotates coordinates through
 %Docstring
 Multiples this matrix by another that rotates coordinates through
 ``angle`` degrees about ``vector``.
+
+.. versionadded:: 4.2
+%End
+
+    double determinant() const;
+%Docstring
+Returns the determinant of this matrix.
 
 .. versionadded:: 4.2
 %End

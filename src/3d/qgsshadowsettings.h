@@ -16,6 +16,7 @@
 #ifndef QGSSHADOWSETTINGS_H
 #define QGSSHADOWSETTINGS_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 
 #include <QMap>
@@ -46,8 +47,14 @@ class _3D_EXPORT QgsShadowSettings
 
     //! Returns whether shadow rendering is enabled
     bool renderShadows() const { return mRenderShadows; }
-    //! Returns the selected direcctional light used to cast shadows
-    int selectedDirectionalLight() const { return mSelectedDirectionalLight; }
+
+    /**
+     * Returns the ID of the light source casting shadows.
+     *
+     * \see setLightSource()
+     * \since QGIS 4.2
+     */
+    QString lightSource() const { return mLightSourceId; }
 
     /**
      * Returns the maximum shadow rendering distance accounted for when rendering shadows
@@ -65,15 +72,23 @@ class _3D_EXPORT QgsShadowSettings
     double shadowBias() const { return mShadowBias; }
 
     /**
-     * Returns the resolution of the shadow map texture used to generate the shadows
-     * \since QGIS 3.16
+     * Returns the quality of the shadow map texture used to generate the shadows.
+     *
+     * \see setShadowQuality()
+     * \since QGIS 4.2
      */
-    int shadowMapResolution() const { return mShadowMapResolution; }
+    Qgis::ShadowQuality shadowQuality() const { return mShadowQuality; }
 
     //! Sets whether shadow rendering is enabled
     void setRenderShadows( bool enabled ) { mRenderShadows = enabled; }
-    //! Sets which directional light is used to generate shadows
-    void setSelectedDirectionalLight( int selectedLight ) { mSelectedDirectionalLight = selectedLight; }
+
+    /**
+     * Sets the \a id of the light source casting shadows.
+     *
+     * \see lightSource()
+     * \since QGIS 4.2
+     */
+    void setLightSource( const QString &id ) { mLightSourceId = id; }
 
     /**
      * Sets the maximum shadow rendering distance accounted for when rendering shadows
@@ -92,17 +107,45 @@ class _3D_EXPORT QgsShadowSettings
     void setShadowBias( double shadowBias ) { mShadowBias = shadowBias; }
 
     /**
-     * Sets the resolution of the shadow map texture (this can be used to generate higher quality shadows)
-     * \since QGIS 3.16
+     * Sets the \a quality of the shadow map texture.
+     *
+     * \see shadowQuality()
+     * \since QGIS 4.2
      */
-    void setShadowMapResolution( int resolution ) { mShadowMapResolution = resolution; }
+    void setShadowQuality( Qgis::ShadowQuality quality ) { mShadowQuality = quality; }
+
+    /**
+     * Returns the shadow map resolution corresponding to the specified shadow \a quality.
+     *
+     * \since QGIS 4.2
+     */
+    static int qualityToMapResolution( Qgis::ShadowQuality quality );
+
+    /**
+     * Returns TRUE if the cascading shadow splits should be tinted in the view.
+     *
+     * For debugging and testing purposes only.
+     *
+     * \see setShowCascadeSplits()
+     */
+    bool showCascadeSplits() const;
+
+    /**
+     * Sets whether the cascading shadow splits should be tinted in the view.
+     *
+     * For debugging and testing purposes only.
+     *
+     * \see showCascadeSplits()
+     */
+    void setShowCascadeSplits( bool show );
 
   private:
     bool mRenderShadows = false;
-    int mSelectedDirectionalLight = 0;
+    QString mLightSourceId;
     double mMaximumShadowRenderingDistance = 1500.0;
     double mShadowBias = 0.00001;
-    int mShadowMapResolution = 2048;
+    Qgis::ShadowQuality mShadowQuality = Qgis::ShadowQuality::High;
+    bool mShowCascadeSplits = false;
 };
 
 #endif // QGSSKYBOXSETTINGS_H

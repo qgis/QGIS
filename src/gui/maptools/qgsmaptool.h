@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgspropertycollection.h"
 
 #include <QCursor>
 #include <QGestureEvent>
@@ -284,6 +285,28 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Transforms a \a point from screen coordinates to map coordinates.
     QgsPointXY toMapCoordinates( QPoint point );
+
+    /**
+     * Property status used in method dealing with property
+     */
+    enum class PropertyStatus
+    {
+      Valid,                   //!< Property is valid
+      DoesNotExist,            //!< Property does not exist
+      CurrentExpressionInvalid //!< Property is an invalid expression
+    };
+
+    /**
+     * Returns data defined property column name for the \a propertyKey from \a properties associated to the \a layer
+     * \a status is updated with current property status
+     */
+    QString dataDefinedColumnName( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *layer, PropertyStatus &status ) const;
+
+    /**
+     * Returns data defined property column index for the \a propertyKey from \a properties associated to the \a layer
+     */
+    int dataDefinedColumnIndex( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *vlayer ) const;
+
 
   signals:
 

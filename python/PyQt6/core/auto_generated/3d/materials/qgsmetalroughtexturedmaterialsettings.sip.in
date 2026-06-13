@@ -48,6 +48,8 @@ Returns a new instance of QgsMetalRoughTexturedMaterialSettings.
 
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
 
     QString baseColorTexturePath() const;
 %Docstring
@@ -127,9 +129,10 @@ Returns the path to the ambient occlusion texture map.
 %Docstring
 Returns the texture scale.
 
-The texture scale changes the size of the displayed texture in the 3D
-scene. If the texture scale is less than 1, the texture will be
-stretched.
+The texture scale changes the size of the material's textures in the 3D
+scene.
+
+If the texture scale is less than 1 the textures will be stretched.
 
 .. seealso:: :py:func:`setTextureScale`
 %End
@@ -139,6 +142,15 @@ stretched.
 Returns the texture rotation, in degrees.
 
 .. seealso:: :py:func:`setTextureRotation`
+%End
+
+    QPointF textureOffset() const;
+%Docstring
+Returns the texture offset.
+
+.. seealso:: :py:func:`setTextureOffset`
+
+.. versionadded:: 4.2
 %End
 
     double opacity() const;
@@ -242,6 +254,13 @@ Sets the texture ``rotation``, in degrees.
 .. seealso:: :py:func:`textureRotation`
 %End
 
+    void setTextureOffset( QPointF offset );
+%Docstring
+Sets the texture ``offset``.
+
+.. seealso:: :py:func:`textureOffset`
+%End
+
     void setOpacity( double opacity );
 %Docstring
 Sets the ``opacity`` of the surface.
@@ -259,6 +278,30 @@ Sets the ``opacity`` of the surface.
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
+
+    virtual QColor averageColor() const;
+
+%Docstring
+Returns an approximate color representing the blended material color.
+
+This function returns an approximation of the material's appearance
+based on the average color of the base color texture and the emission
+texture. Other texture maps are not taken into account.
+%End
+
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+%Docstring
+Decomposes a base color into the material's color components, and sets
+the material's colors accordingly.
+
+This method has no effect for QgsMetalRoughTexturedMaterialSettings, as
+the material is fully defined by texture maps.
+
+:param baseColor: The color to decompose (ignored)
+
+.. versionadded:: 4.2
+%End
 
     bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const;
 

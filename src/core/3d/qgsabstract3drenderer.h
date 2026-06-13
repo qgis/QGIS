@@ -56,6 +56,8 @@ class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
 
     if ( sipCpp->type() == "annotation"_L1 )
       sipType = sipFindType( "QgsAnnotationLayer3DRenderer" );
+    else if ( sipCpp->type() == "categorized"_L1 )
+      sipType = sipFindType( "QgsCategorized3DRenderer" );
     else if ( sipCpp->type() == "pointcloud"_L1 )
       sipType = sipFindType( "QgsPointCloudLayer3DRenderer" );
     else if ( sipCpp->type() == "rulebased"_L1 )

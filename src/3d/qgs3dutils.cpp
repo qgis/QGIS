@@ -1086,64 +1086,80 @@ QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, con
   return mapPoint;
 }
 
-// computes the portion of the Y=y plane the camera is looking at
-void Qgs3DUtils::calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
+QVector3D Qgs3DUtils::calculateDirectionalLightUpVector( const QVector3D &lightDirection )
 {
-  const QVector3D cameraPos = camera->position();
-  const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
-  const QMatrix4x4 viewMatrix = camera->viewMatrix();
-  float depth = 1.0f;
-  QVector4D viewCenter = viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
-  viewCenter /= viewCenter.w();
-  viewCenter = projectionMatrix * viewCenter;
-  viewCenter /= viewCenter.w();
-  depth = viewCenter.z();
-  // clang-format off
-  QVector<QVector3D> viewFrustumPoints = {
-    QVector3D( 0.0f, 0.0f, depth ),
-    QVector3D( 0.0f, 1.0f, depth ),
-    QVector3D( 1.0f, 0.0f, depth ),
-    QVector3D( 1.0f, 1.0f, depth ),
-    QVector3D( 0.0f, 0.0f, 0 ),
-    QVector3D( 0.0f, 1.0f, 0 ),
-    QVector3D( 1.0f, 0.0f, 0 ),
-    QVector3D( 1.0f, 1.0f, 0 )
-  };
-  // clang-format on
-  maxX = std::numeric_limits<float>::lowest();
-  maxY = std::numeric_limits<float>::lowest();
-  maxZ = std::numeric_limits<float>::lowest();
-  minX = std::numeric_limits<float>::max();
-  minY = std::numeric_limits<float>::max();
-  minZ = std::numeric_limits<float>::max();
-  for ( int i = 0; i < viewFrustumPoints.size(); ++i )
+  QVector3D up( 0.0f, 1.0f, 0.0f );
+  if ( std::abs( QVector3D::dotProduct( lightDirection, up ) ) > 0.99f )
+    up = QVector3D( 0.0f, 0.0f, 1.0f );
+  return up;
+}
+
+std::vector<float> Qgs3DUtils::calculateCascadeSplits( int numberCascades, float nearPlane, float farPlane, float lambda )
+{
+  // prevent division by zero if nearPlane is 0 or negative
+  const float safeNearPlane = std::max( nearPlane, 0.0001f );
+
+  std::vector<float> cascadeSplits( numberCascades + 1 );
+
+  // "Practical Split Scheme" for cascading shadow maps.
+  for ( int i = 0; i <= numberCascades; ++i )
   {
-    // convert from view port space to world space
-    viewFrustumPoints[i] = viewFrustumPoints[i].unproject( viewMatrix, projectionMatrix, QRect( 0, 0, 1, 1 ) );
-    minX = std::min( minX, viewFrustumPoints[i].x() );
-    maxX = std::max( maxX, viewFrustumPoints[i].x() );
-    minY = std::min( minY, viewFrustumPoints[i].y() );
-    maxY = std::max( maxY, viewFrustumPoints[i].y() );
-    minZ = std::min( minZ, viewFrustumPoints[i].z() );
-    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
-    // find the intersection between the line going from cameraPos to the frustum quad point
-    // and the horizontal plane Z=z
-    // if the intersection is on the back side of the viewing panel we get a point that is
-    // maxRenderingDistance units in front of the camera
-    const QVector3D pt = cameraPos;
-    const QVector3D vect = ( viewFrustumPoints[i] - pt ).normalized();
-    float t = ( z - pt.z() ) / vect.z();
-    if ( t < 0 )
-      t = maxRenderingDistance;
-    else
-      t = std::min( t, maxRenderingDistance );
-    viewFrustumPoints[i] = pt + t * vect;
-    minX = std::min( minX, viewFrustumPoints[i].x() );
-    maxX = std::max( maxX, viewFrustumPoints[i].x() );
-    minY = std::min( minY, viewFrustumPoints[i].y() );
-    maxY = std::max( maxY, viewFrustumPoints[i].y() );
-    minZ = std::min( minZ, viewFrustumPoints[i].z() );
-    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
+    const float p = static_cast<float>( i ) / static_cast<float>( numberCascades );
+    const float logSplit = safeNearPlane * std::pow( farPlane / safeNearPlane, p );
+    const float uniSplit = safeNearPlane + ( farPlane - safeNearPlane ) * p;
+    cascadeSplits[i] = lambda * logSplit + ( 1.0f - lambda ) * uniSplit;
+  }
+  return cascadeSplits;
+}
+
+void Qgs3DUtils::calculateFrustumSliceCorners( float zNear, float zFar, float fov, float aspectRatio, const QMatrix4x4 &invertedCameraView, QVector3D ( &corners )[8], QVector3D &center )
+{
+  const float fovC = static_cast< float >( std::tan( fov * M_PI / 360.0 ) );
+  const float halfYNear = zNear * fovC;
+  const float halfXNear = halfYNear * aspectRatio;
+  const float halfYFar = zFar * fovC;
+  const float halfXFar = halfYFar * aspectRatio;
+
+  // calculate the 8 corners of the camera frustum slice in camera view space, and transform to world space
+  corners[0] = invertedCameraView.map( QVector3D( -halfXNear, -halfYNear, -zNear ) );
+  corners[1] = invertedCameraView.map( QVector3D( halfXNear, -halfYNear, -zNear ) );
+  corners[2] = invertedCameraView.map( QVector3D( halfXNear, halfYNear, -zNear ) );
+  corners[3] = invertedCameraView.map( QVector3D( -halfXNear, halfYNear, -zNear ) );
+  corners[4] = invertedCameraView.map( QVector3D( -halfXFar, -halfYFar, -zFar ) );
+  corners[5] = invertedCameraView.map( QVector3D( halfXFar, -halfYFar, -zFar ) );
+  corners[6] = invertedCameraView.map( QVector3D( halfXFar, halfYFar, -zFar ) );
+  corners[7] = invertedCameraView.map( QVector3D( -halfXFar, halfYFar, -zFar ) );
+
+  // find the center
+  center = QVector3D( 0, 0, 0 );
+  for ( int j = 0; j < 8; ++j )
+  {
+    center += corners[j];
+  }
+  center /= 8.0f;
+}
+
+void Qgs3DUtils::calculateViewSpaceOrthographicBounds(
+  const QVector3D ( &worldCorners )[8], const QMatrix4x4 &viewMatrix, float &left, float &right, float &bottom, float &top, float &nearPlane, float &farPlane
+)
+{
+  // transform corners to find the bounding box
+  left = std::numeric_limits<float>::max();
+  right = std::numeric_limits<float>::lowest();
+  bottom = std::numeric_limits<float>::max();
+  top = std::numeric_limits<float>::lowest();
+  nearPlane = std::numeric_limits<float>::max();
+  farPlane = std::numeric_limits<float>::lowest();
+  for ( int j = 0; j < 8; ++j )
+  {
+    const QVector3D lightSpaceCorner = viewMatrix.map( worldCorners[j] );
+    left = std::min( left, lightSpaceCorner.x() );
+    right = std::max( right, lightSpaceCorner.x() );
+    bottom = std::min( bottom, lightSpaceCorner.y() );
+    top = std::max( top, lightSpaceCorner.y() );
+    const float zDistance = -lightSpaceCorner.z();
+    nearPlane = std::min( nearPlane, zDistance );
+    farPlane = std::max( farPlane, zDistance );
   }
 }
 

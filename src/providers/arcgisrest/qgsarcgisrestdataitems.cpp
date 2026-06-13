@@ -46,7 +46,7 @@ QgsArcGisRestRootItem::QgsArcGisRestRootItem( QgsDataItem *parent, const QString
   : QgsConnectionsRootItem( parent, name, path, u"AFS"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = u"mIconAfs.svg"_s;
+  mIconName = u"mIconEsriRest.svg"_s;
   populate();
 }
 
@@ -220,31 +220,27 @@ void addLayerItems(
         switch ( details.serviceType )
         {
           case Qgis::ArcGisRestServiceType::FeatureServer:
-            layerItem = std::make_unique<QgsArcGisFeatureServiceLayerItem>(
-              parent, details.url, details.name, details.crs, authcfg, headers, urlPrefix, browserLayerGeometryType, details.isMapServerWithQueryCapability, details.format, details.layerId
-            );
+            layerItem = std::make_unique<
+              QgsArcGisFeatureServiceLayerItem>( parent, details.url, details.name, details.crs, authcfg, headers, urlPrefix, browserLayerGeometryType, details.isMapServerWithQueryCapability );
             break;
 
           case Qgis::ArcGisRestServiceType::MapServer:
           {
-            {
-              layerItem = std::make_unique<
-                QgsArcGisMapServiceLayerItem>( parent, details.url, details.layerId, details.name, details.crs, details.format, authcfg, headers, urlPrefix, details.isMapServerWithQueryCapability );
-              static_cast<QgsArcGisMapServiceLayerItem *>( layerItem.get() )->setSupportedFormats( supportedFormats );
-              break;
-            }
+            layerItem = std::make_unique<
+              QgsArcGisMapServiceLayerItem>( parent, details.url, details.layerId, details.name, details.crs, details.format, authcfg, headers, urlPrefix, details.isMapServerWithQueryCapability );
+            static_cast<QgsArcGisMapServiceLayerItem *>( layerItem.get() )->setSupportedFormats( supportedFormats );
+            break;
+          }
 
-            case Qgis::ArcGisRestServiceType::ImageServer:
-            {
-              layerItem = std::make_unique< QgsArcGisImageServiceLayerItem>( parent, details.url, details.name, details.crs, authcfg, headers, urlPrefix );
-              break;
-            }
+          case Qgis::ArcGisRestServiceType::ImageServer:
+          {
+            layerItem = std::make_unique< QgsArcGisImageServiceLayerItem>( parent, details.url, details.name, details.crs, authcfg, headers, urlPrefix );
+            break;
           }
 
           case Qgis::ArcGisRestServiceType::SceneServer:
             layerItem = std::make_unique<QgsArcGisSceneServiceLayerItem>( parent, details.url, details.name, details.crs, authcfg, headers, urlPrefix );
             break;
-
 
           case Qgis::ArcGisRestServiceType::GlobeServer:
           case Qgis::ArcGisRestServiceType::GPServer:
@@ -746,6 +742,19 @@ bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
+bool QgsArcGisMapServiceItem::hasDragEnabled() const
+{
+  return mAllLayersMapServerUri.isValid();
+}
+
+QgsMimeDataUtils::UriList QgsArcGisMapServiceItem::mimeUris() const
+{
+  QgsMimeDataUtils::UriList res;
+  if ( mAllLayersMapServerUri.isValid() )
+    res << mAllLayersMapServerUri;
+  return res;
+}
+
 
 //
 // QgsArcGisImageServiceItem
@@ -761,7 +770,7 @@ QgsArcGisImageServiceItem::QgsArcGisImageServiceItem(
   , mUrlPrefix( urlPrefix )
   , mForceRefresh( forceRefresh )
 {
-  mIconName = u"mIconAms.svg"_s;
+  mIconName = u"mIconImageServer.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( u"<p><b>ImageServer</b></p><p>%1</p>"_s.arg( path ) );
 }
@@ -878,11 +887,10 @@ QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem(
   const QgsHttpHeaders &headers,
   const QString urlPrefix,
   Qgis::BrowserLayerType geometryType,
-  bool isMapServerWithQueryCapability,
-  const QString &mapServerFormat,
-  const QString &mapServerLayerId
+  bool isMapServerWithQueryCapability
 )
   : QgsArcGisRestLayerItem( parent, url, title, crs, geometryType, u"arcgisfeatureserver"_s )
+  , mIsMapServerWithQueryCapability( isMapServerWithQueryCapability )
 {
   mUri = u"url='%1'"_s.arg( url );
   if ( !authcfg.isEmpty() )
@@ -893,52 +901,20 @@ QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem(
 
   mUri += headers.toSpacedString();
 
-  if ( isMapServerWithQueryCapability )
-  {
-    const QString trimmedUrl = mapServerLayerId.isEmpty() ? url : url.left( url.length() - 1 - mapServerLayerId.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
-    mMapServerUri = u"format='%1' layer='%2' url='%3'"_s.arg( mapServerFormat, mapServerLayerId, trimmedUrl );
-    if ( !authcfg.isEmpty() )
-      mMapServerUri += u" authcfg='%1'"_s.arg( authcfg );
-
-    if ( !urlPrefix.isEmpty() )
-      mMapServerUri += u" urlprefix='%1'"_s.arg( urlPrefix );
-
-    mMapServerUri += headers.toSpacedString();
-
-    setIconName( u"/mIconRasterVector.svg"_s );
-  }
-
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( url );
 }
 
-QgsMimeDataUtils::Uri QgsArcGisFeatureServiceLayerItem::mapServerMimeUri() const
+Qgis::BrowserItemFilterFlags QgsArcGisFeatureServiceLayerItem::filterFlags() const
 {
-  QgsMimeDataUtils::Uri uri;
-  uri.layerType = QgsMapLayerFactory::typeToString( Qgis::LayerType::Raster );
-  uri.providerKey = u"arcgismapserver"_s;
-  uri.name = layerName();
-  uri.uri = mMapServerUri;
-  uri.supportedCrs = supportedCrs();
-
-  return uri;
-}
-
-QList<QgsLayerItem::LayerUriWithDetails> QgsArcGisFeatureServiceLayerItem::layerUrisWithDetails() const
-{
-  LayerUriWithDetails vector;
-  vector.uri = mimeUris().at( 0 );
-  vector.userFriendlyDescription = tr( "Vector Layer (FeatureServer)" );
-  if ( mMapServerUri.isEmpty() )
+  Qgis::BrowserItemFilterFlags res;
+  if ( mIsMapServerWithQueryCapability )
   {
-    return { vector };
+    res.setFlag( Qgis::BrowserItemFilterFlag::HideWhenNotFilteringByLayerType );
   }
-  LayerUriWithDetails raster;
-  raster.uri = mapServerMimeUri();
-  raster.userFriendlyDescription = tr( "Raster Layer (MapServer)" );
-
-  return { vector, raster };
+  return res;
 }
+
 
 //
 // QgsArcGisMapServiceLayerItem
@@ -957,7 +933,6 @@ QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem(
   bool isMapServerWithQueryCapability
 )
   : QgsArcGisRestLayerItem( parent, url, title, crs, Qgis::BrowserLayerType::Raster, u"arcgismapserver"_s )
-  , mIsMapServerWithQueryCapability( isMapServerWithQueryCapability )
 {
   const QString trimmedUrl = id.isEmpty() ? url : url.left( url.length() - 1 - id.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
   mUri = u"format='%1' layer='%2' url='%3'"_s.arg( format, id, trimmedUrl );
@@ -969,18 +944,50 @@ QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem(
 
   mUri += headers.toSpacedString();
 
+  if ( isMapServerWithQueryCapability )
+  {
+    mFeatureServerUri = u"url='%1'"_s.arg( url );
+    if ( !authcfg.isEmpty() )
+      mFeatureServerUri += u" authcfg='%1'"_s.arg( authcfg );
+
+    if ( !urlPrefix.isEmpty() )
+      mFeatureServerUri += u" urlprefix='%1'"_s.arg( urlPrefix );
+
+    mFeatureServerUri += headers.toSpacedString();
+    setIconName( u"/mIconRasterVector.svg"_s );
+  }
+
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( mPath );
 }
 
-Qgis::BrowserItemFilterFlags QgsArcGisMapServiceLayerItem::filterFlags() const
+QgsMimeDataUtils::Uri QgsArcGisMapServiceLayerItem::featureServerMimeUri() const
 {
-  Qgis::BrowserItemFilterFlags res;
-  if ( mIsMapServerWithQueryCapability )
+  QgsMimeDataUtils::Uri uri;
+  uri.layerType = QgsMapLayerFactory::typeToString( Qgis::LayerType::Vector );
+  uri.providerKey = u"arcgisfeatureserver"_s;
+  uri.name = layerName();
+  uri.uri = mFeatureServerUri;
+  uri.supportedCrs = supportedCrs();
+
+  return uri;
+}
+
+QList<QgsLayerItem::LayerUriWithDetails> QgsArcGisMapServiceLayerItem::layerUrisWithDetails() const
+{
+  LayerUriWithDetails raster;
+  raster.uri = mimeUris().at( 0 );
+  raster.userFriendlyDescription = tr( "Raster Layer (MapServer)" );
+  if ( mFeatureServerUri.isEmpty() )
   {
-    res.setFlag( Qgis::BrowserItemFilterFlag::HideWhenNotFilteringByLayerType );
+    return { raster };
   }
-  return res;
+
+  LayerUriWithDetails vector;
+  vector.uri = featureServerMimeUri();
+  vector.userFriendlyDescription = tr( "Vector Layer (FeatureServer)" );
+
+  return { vector, raster };
 }
 
 

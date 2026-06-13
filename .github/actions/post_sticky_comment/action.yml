@@ -13,23 +13,47 @@ inputs:
     description: Pull Request Number
     required: true
     type: string
+  key:
+    description: >-
+      Optional suffix appended to the comment JSON filename and the upload
+      artifact name. Required when the action is called multiple times from
+      the same job (e.g. inside a matrix) to avoid artifact-name collisions.
+      Defaults to the marker so each marker section uploads independently.
+    required: false
+    default: ''
+    type: string
 
 runs:
   using: composite
   steps:
+    - name: Resolve artifact key
+      id: key
+      shell: bash
+      env:
+        INPUT_KEY: ${{ inputs.key }}
+        INPUT_MARKER: ${{ inputs.marker }}
+      run: |
+        # Build a filesystem-safe key. Prefer the explicit input, fall back
+        # to the marker (which is itself unique per sticky-comment section).
+        raw_key="${INPUT_KEY:-${INPUT_MARKER}}"
+        safe_key=$(printf '%s' "${raw_key}" | tr -c 'A-Za-z0-9._-' '-')
+        echo "value=${safe_key}" >> "$GITHUB_OUTPUT"
+
     - name: Create metadata
       uses: actions/github-script@v7
       env:
         BODY: ${{ inputs.body }}
+        KEY: ${{ steps.key.outputs.value }}
       with:
         script: |
           const fs = require('fs');
-          
+
           try {
             // Get inputs from the GitHub Action
             const marker = "${{ inputs.marker }}";
             const body = process.env.BODY; // Transfer input via env variable as it's not possible to access it directly https://github.com/actions/github-script/issues/56#issuecomment-642188313
             const pr = ${{ inputs.pr }};
+            const key = process.env.KEY;
 
             // Create the content of the JSON file
             const content = JSON.stringify({
@@ -38,9 +62,9 @@ runs:
               pr_number: pr
             }, null, 2);
             console.debug(content)
-          
-            fs.writeFileSync('comment-${{ github.job }}.json', content);
-          
+
+            fs.writeFileSync(`comment-${key}.json`, content);
+
             console.log('comment.json file has been written successfully.');
           } catch (error) {
             core.setFailed(`Action failed with error: ${error}`);
@@ -49,6 +73,6 @@ runs:
     - name: 📤 Upload data
       uses: actions/upload-artifact@v4
       with:
-        name: comment_artifacts-${{ github.job }}
+        name: comment_artifacts-${{ steps.key.outputs.value }}
         path: |
-          comment-${{ github.job }}.json
+          comment-${{ steps.key.outputs.value }}.json

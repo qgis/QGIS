@@ -109,7 +109,7 @@ void QgsTerrainTextureGenerator::waitForFinished()
 
     QImage img = mapJob->renderedImage();
 
-    if ( mMap.showTerrainTilesInfo() )
+    if ( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowTerrainTileInfo ) )
     {
       // extra tile information for debugging
       QPainter p( &img );
@@ -143,7 +143,7 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
 
   QImage img = mapJob->renderedImage();
 
-  if ( mMap.showTerrainTilesInfo() )
+  if ( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowTerrainTileInfo ) )
   {
     // extra tile information for debugging
     QPainter p( &img );

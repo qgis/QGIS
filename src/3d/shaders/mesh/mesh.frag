@@ -44,7 +44,7 @@ uniform sampler2D arrowTexture;
 // Sets the arrows color
 uniform vec4 arrowsColor;
 
-#pragma include ../light.inc.frag
+#pragma include ../phong.inc.frag
 
 // modified copy from Qt source : examples/qt3d/wireframe/robustwireframe.frag
 vec4 wireframeShadeLine( const in vec4 color )

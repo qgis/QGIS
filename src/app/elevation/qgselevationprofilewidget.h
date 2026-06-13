@@ -23,6 +23,7 @@
 #include "qgsdockwidget.h"
 #include "qgselevationprofilelayertreeview.h"
 #include "qgsgeometry.h"
+#include "qgsprofilepoint.h"
 #include "qobjectuniqueptr.h"
 
 #include <QElapsedTimer>
@@ -52,7 +53,6 @@ class QgsLayerTreeRegistryBridge;
 class QgsElevationProfileToolIdentify;
 class QgsElevationProfileToolMeasure;
 class QLabel;
-class QgsProfilePoint;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryString;

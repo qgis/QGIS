@@ -52,6 +52,7 @@ class TestQgsDistanceArea : public QObject
     void regression16820();
     void regression61299();
     void setCrsEllipsoidLogic();
+    void measureLineProjectedCartesian();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -533,6 +534,26 @@ void TestQgsDistanceArea::setCrsEllipsoidLogic()
   QCOMPARE( transform.destinationCrs().ellipsoidAcronym(), u"PARAMETER:1737400:1737400"_s );
   QVERIFY( !calc.mCoordTransformDirty );
   QVERIFY( transform.isValid() );
+}
+
+void TestQgsDistanceArea::measureLineProjectedCartesian()
+{
+  // source CRS is not in meters and no ellipsoid is set
+
+  QgsDistanceArea da;
+  da.setSourceCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsProject::instance()->transformContext() );
+  da.setEllipsoid( Qgis::geoNone() );
+  QVERIFY( !da.willUseEllipsoid() );
+
+  const QgsPointXY p1( 10.0, 45.0 );
+  QgsPointXY projected;
+  const double r1 = da.measureLineProjected( p1, 1.0, 0.0, &projected );
+  QVERIFY( std::isfinite( projected.x() ) );
+  QVERIFY( std::isfinite( projected.y() ) );
+
+  // expected: 1 meter expressed in degrees of arc at the source CRS
+  const double expected = QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, Qgis::DistanceUnit::Degrees );
+  QGSCOMPARENEAR( r1, expected, 1e-12 );
 }
 
 QGSTEST_MAIN( TestQgsDistanceArea )

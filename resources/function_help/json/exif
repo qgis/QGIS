@@ -9,7 +9,7 @@
   }, {
     "arg": "tag",
     "optional": true,
-    "description": "The tag to return. If empty, a map with all exif tag values will be returned."
+    "description": "The tag to return. If empty, a map with all possible Exif <a href='https://exiftool.org/TagNames/EXIF.html'>tag values</a> will be returned."
   }],
   "examples": [{
     "expression": "exif('/my/photo.jpg','Exif.Image.Orientation')",
