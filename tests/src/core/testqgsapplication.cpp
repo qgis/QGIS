@@ -143,10 +143,7 @@ void TestQgsApplication::strataAutoTheme()
   const QString strataAutoThemePath = themes.value( u"Strata Auto"_s );
   QVERIFY( QFileInfo::exists( strataAutoThemePath ) );
   QVERIFY( QFileInfo::exists( strataAutoThemePath + "/auto-palette.txt"_L1 ) );
-  QCOMPARE(
-    QFileInfo( strataAutoThemePath ).dir().absolutePath(),
-    QDir( QgsApplication::defaultThemesFolder() ).absolutePath()
-  );
+  QCOMPARE( QFileInfo( strataAutoThemePath ).dir().absolutePath(), QDir( QgsApplication::defaultThemesFolder() ).absolutePath() );
 
   QPalette darkSeed = restorer.palette;
   darkSeed.setColor( QPalette::ColorRole::Window, QColor( u"#202020"_s ) );

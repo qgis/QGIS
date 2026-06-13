@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsversioninfo.h"
 
 #include "qgsapplication.h"
-#include "qgsconfig.h"
 #include "qgsnetworkaccessmanager.h"
 
 #include <QJsonArray>
@@ -113,7 +113,7 @@ bool QgsVersionInfo::releaseDetailsFromGitHubReleases( const QByteArray &content
       continue;
 
     details.versionCode = versionCode;
-    details.version = tagName.mid( QStringLiteral( "strata-v" ).size() );
+    details.version = tagName.mid( u"strata-v"_s.size() );
     details.url = release.value( u"html_url"_s ).toString();
     details.body = release.value( u"body"_s ).toString();
   }

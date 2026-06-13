@@ -27,10 +27,10 @@ class QgsVersionInfo : public QObject
   public:
     struct ReleaseDetails
     {
-      int versionCode = 0;
-      QString version;
-      QString url;
-      QString body;
+        int versionCode = 0;
+        QString version;
+        QString url;
+        QString body;
     };
 
     explicit QgsVersionInfo( QObject *parent = nullptr );

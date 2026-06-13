@@ -4,8 +4,8 @@
   begin                : June 2026
 ***************************************************************************/
 
-#include "qgsversioninfo.h"
 #include "qgstest.h"
+#include "qgsversioninfo.h"
 
 #include <QByteArray>
 #include <QObject>
