@@ -17,11 +17,14 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  actions: read
   contents: write
   packages: write
 
 env:
   IS_STRATA_RELEASE: ${{ startsWith(github.ref, 'refs/tags/strata-v') || startsWith(github.event.release.tag_name, 'strata-v') }}
+  WINDOWS_RELEASE_SDK_RUN_ID: '26423962164'
+  WINDOWS_RELEASE_SDK_ARTIFACT_NAME: qgis-sdk-x64-windows
 
 jobs:
   build:
@@ -51,7 +54,39 @@ jobs:
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1
 
+      - name: 📥 Download Windows SDK
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v6.0.1
+        with:
+          name: ${{ env.WINDOWS_RELEASE_SDK_ARTIFACT_NAME }}
+          run-id: ${{ env.WINDOWS_RELEASE_SDK_RUN_ID }}
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: sdk-artifact
+
+      - name: 📦 Extract Windows SDK
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        shell: bash
+        run: |
+          mkdir -p sdk-root
+          SDK_ZIP=$(find sdk-artifact -name 'vcpkg-export-*.zip' -print -quit)
+          if [ -z "${SDK_ZIP}" ]; then
+            echo "ERROR: vcpkg export zip not found in SDK artifact"
+            find sdk-artifact -maxdepth 3 -type f -print
+            exit 1
+          fi
+          7z x "${SDK_ZIP}" -osdk-root -y
+          SDK_DIR=$(find sdk-root -mindepth 1 -maxdepth 1 -type d -name 'vcpkg-export-*' -print -quit)
+          if [ -z "${SDK_DIR}" ]; then
+            echo "ERROR: extracted SDK root not found"
+            find sdk-root -maxdepth 3 -type d -print
+            exit 1
+          fi
+          SDK_DIR_ABS=$(cd "${SDK_DIR}" && pwd -W)
+          echo "WINDOWS_SDK_PATH=${SDK_DIR_ABS}" >> "${GITHUB_ENV}"
+
       - name: 🎡 Setup vcpkg
+        if: ${{ env.IS_STRATA_RELEASE != 'true' }}
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
@@ -103,17 +138,32 @@ jobs:
             STRATA_VERSION_OPT=''
           fi
 
+          VCPKG_OPTS=(
+                -D VCPKG_TARGET_TRIPLET=x64-windows-release
+                -D VCPKG_HOST_TRIPLET=x64-windows-release
+          )
+
+          if [ -n "${WINDOWS_SDK_PATH:-}" ]; then
+            VCPKG_OPTS+=(-D "SDK_PATH=${WINDOWS_SDK_PATH}")
+          else
+            VCPKG_OPTS+=(
+                -D WITH_VCPKG=ON
+                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src"
+                -D NUGET_BINARY_SOURCE_MODE=readwrite
+                -D "NUGET_USERNAME=${GITHUB_ACTOR}"
+                -D NUGET_PUSH_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            )
+          fi
+
           cmake -S "${SOURCE_DIR}" \
                 -B "${BUILD_DIR}" \
                 -G Ninja \
                 -D CMAKE_BUILD_TYPE=Release \
-                -D WITH_VCPKG=ON \
                 -D CREATE_ZIP=ON \
                 ${NSIS_OPT} \
                 ${APP_NAME_OPT} \
                 ${STRATA_VERSION_OPT} \
-                -D VCPKG_TARGET_TRIPLET=x64-windows-release \
-                -D VCPKG_HOST_TRIPLET=x64-windows-release \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
@@ -121,16 +171,12 @@ jobs:
                 -D WITH_SFCGAL=OFF \
                 -D ENABLE_TESTS=OFF \
                 -D USE_CCACHE=ON \
-                -D ENABLE_UNITY_BUILDS=OFF \
+                -D ENABLE_UNITY_BUILDS=ON \
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
                 -D USE_CCACHE=ON \
                 -D WITH_QTWEBENGINE=OFF \
-                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
-                -D NUGET_BINARY_SOURCE_MODE=read \
-                -D "NUGET_USERNAME=${GITHUB_ACTOR}" \
-                -D NUGET_PUSH_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
-                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
+                "${VCPKG_OPTS[@]}"
 
       - name: 🌋 Build
         shell: bash
@@ -146,11 +192,13 @@ jobs:
           cmake --build "${{ github.workspace }}/build" --target bundle --config Release
 
       - name: 📦 Create SDK
+        if: ${{ env.IS_STRATA_RELEASE != 'true' }}
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
           vcpkg.exe export --zip --output-dir=./sdk --x-install-root=./build/vcpkg_installed --x-manifest-root=vcpkg
 
       - name: 📤 Upload sdk
+        if: ${{ env.IS_STRATA_RELEASE != 'true' }}
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
 
@@ -176,6 +224,7 @@ jobs:
           name: strata-windows-qt6
           path: |
             build/*-win64.zip
+            build/*-Setup.exe
 
       - name: Upload release assets
         if: ${{ github.event_name == 'release' || env.IS_STRATA_RELEASE == 'true' }}

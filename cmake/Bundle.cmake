@@ -29,6 +29,7 @@ set(CPACK_PACKAGE_EXECUTABLES "${QGIS_APP_NAME}" "Strata")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
 
 if(CREATE_NSIS)
+  list(APPEND CPACK_GENERATOR "NSIS")
   # The win_build/sidebar.bmp referenced by upstream QGIS does not exist in
   # this fork — leave CPACK_PACKAGE_ICON unset so NSIS uses its default header.
   set(CPACK_NSIS_INSTALLED_ICON_NAME "\\\\${QGIS_APP_NAME}.exe")
