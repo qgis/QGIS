@@ -137,12 +137,23 @@ jobs:
           # Patch is applied on the runner only — repo file stays untouched.
           sed -i '' 's|FIND_QCATOOL(1)|FIND_QCATOOL(0)|g' cmake/QCAMacros.cmake
 
+          STRATA_VERSION_OPT=""
+          if [[ "${{ env.IS_STRATA_RELEASE }}" == "true" ]]; then
+            if [[ "${{ github.event_name }}" == "release" ]]; then
+              STRATA_TAG="${{ github.event.release.tag_name }}"
+            else
+              STRATA_TAG="${GITHUB_REF#refs/tags/}"
+            fi
+            STRATA_VERSION_OPT="-DSTRATA_VERSION=${STRATA_TAG#strata-v}"
+          fi
+
           # Install first only with binarycaching, then deduplicate binaries and replace copies with symlinks.
           # Nuget doesn't understand the symlink concept
           cmake -S . \
                 -G Ninja \
                 -B build \
                 -D "QGIS_APP_NAME=${{ env.IS_STRATA_RELEASE == 'true' && 'Strata' || format('Strata-{0}', steps.workflow-artifact-ids.outputs.display-name) }}" \
+                ${STRATA_VERSION_OPT} \
                 -D WITH_VCPKG=ON \
                 -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \

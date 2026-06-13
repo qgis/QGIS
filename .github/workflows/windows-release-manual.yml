@@ -126,6 +126,9 @@ jobs:
           if [[ "${RELEASE_TAG}" == strata-v* ]]; then
             APP_NAME_OPT="-DQGIS_APP_NAME=Strata"
             NSIS_OPT="-DCREATE_NSIS=TRUE"
+            STRATA_VERSION_OPT="-DSTRATA_VERSION=${RELEASE_TAG#strata-v}"
+          else
+            STRATA_VERSION_OPT=""
           fi
 
           VCPKG_OPTS=(
@@ -153,6 +156,7 @@ jobs:
                 -D CREATE_ZIP=ON \
                 ${NSIS_OPT} \
                 ${APP_NAME_OPT} \
+                ${STRATA_VERSION_OPT} \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \

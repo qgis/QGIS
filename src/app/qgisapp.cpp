@@ -12723,32 +12723,43 @@ void QgisApp::versionReplyFinished()
 
     if ( versionInfo->newVersionAvailable() )
     {
-      info = tr( "There is a new version of QGIS available" );
+      info = tr( "There is a new version of Strata available" );
     }
     else if ( versionInfo->isDevelopmentVersion() )
     {
-      info = tr( "You are running a development version of QGIS" );
+      info = tr( "You are running a newer development version of Strata" );
     }
     else
     {
-      info = tr( "You are running the current version of QGIS" );
+      info = tr( "You are running the current version of Strata" );
     }
 
     info = u"<b>%1</b>"_s.arg( info );
+    info += u"<br>%1: %2"_s.arg( tr( "Current version" ), QString::fromUtf8( STRATA_VERSION ) );
+    info += u"<br>%1: %2"_s.arg( tr( "Latest version" ), versionInfo->latestVersion() );
 
     if ( versionInfo->newVersionAvailable() )
-      info += "<br>" + QgsStringUtils::insertLinks( versionInfo->downloadInfo() );
+      info += u"<br>%1"_s.arg( versionInfo->downloadInfo().toHtmlEscaped() );
 
-    QMessageBox mb( QMessageBox::Information, tr( "QGIS Version Information" ), info );
+    QMessageBox mb( QMessageBox::Information, tr( "Strata Update Check" ), info );
     mb.setInformativeText( versionInfo->html() );
+    mb.setStandardButtons( QMessageBox::Ok );
+    QPushButton *releaseButton = nullptr;
+    if ( versionInfo->newVersionAvailable() && !versionInfo->releaseUrl().isEmpty() )
+      releaseButton = mb.addButton( tr( "Open GitHub Releases" ), QMessageBox::ActionRole );
     mb.exec();
+
+    if ( releaseButton && mb.clickedButton() == releaseButton )
+      QDesktopServices::openUrl( QUrl( versionInfo->releaseUrl() ) );
   }
   else
   {
-    QMessageBox mb( QMessageBox::Warning, tr( "QGIS Version Information" ), tr( "Unable to get current version information from server" ) );
+    QMessageBox mb( QMessageBox::Warning, tr( "Strata Update Check" ), tr( "Unable to get current Strata release information from GitHub" ) );
     mb.setDetailedText( versionInfo->errorString() );
     mb.exec();
   }
+
+  versionInfo->deleteLater();
 }
 
 void QgisApp::configureShortcuts()

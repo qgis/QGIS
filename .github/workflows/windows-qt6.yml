@@ -91,9 +91,16 @@ jobs:
           if [[ "${IS_STRATA_RELEASE}" == "true" ]]; then
             APP_NAME_OPT='-DQGIS_APP_NAME=Strata'
             NSIS_OPT='-DCREATE_NSIS=TRUE'
+            if [[ "${{ github.event_name }}" == "release" ]]; then
+              STRATA_TAG="${{ github.event.release.tag_name }}"
+            else
+              STRATA_TAG="${GITHUB_REF#refs/tags/}"
+            fi
+            STRATA_VERSION_OPT="-DSTRATA_VERSION=${STRATA_TAG#strata-v}"
           else
             APP_NAME_OPT=''
             NSIS_OPT=''
+            STRATA_VERSION_OPT=''
           fi
 
           cmake -S "${SOURCE_DIR}" \
@@ -104,6 +111,7 @@ jobs:
                 -D CREATE_ZIP=ON \
                 ${NSIS_OPT} \
                 ${APP_NAME_OPT} \
+                ${STRATA_VERSION_OPT} \
                 -D VCPKG_TARGET_TRIPLET=x64-windows-release \
                 -D VCPKG_HOST_TRIPLET=x64-windows-release \
                 -D WITH_DESKTOP=ON \

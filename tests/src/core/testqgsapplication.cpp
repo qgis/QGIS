@@ -15,6 +15,7 @@ Email                : sherman at mrcc dot com
 #include "qgstest.h"
 
 #include <QApplication>
+#include <QDir>
 #include <QFileInfo>
 #include <QPalette>
 #include <QPixmap>
@@ -139,7 +140,13 @@ void TestQgsApplication::strataAutoTheme()
   const QHash<QString, QString> themes = QgsApplication::uiThemes();
   QVERIFY( themes.contains( u"Strata Auto"_s ) );
   QVERIFY( !themes.contains( u"Cursor Auto"_s ) );
-  QVERIFY( QFileInfo::exists( themes.value( u"Strata Auto"_s ) + "/auto-palette.txt"_L1 ) );
+  const QString strataAutoThemePath = themes.value( u"Strata Auto"_s );
+  QVERIFY( QFileInfo::exists( strataAutoThemePath ) );
+  QVERIFY( QFileInfo::exists( strataAutoThemePath + "/auto-palette.txt"_L1 ) );
+  QCOMPARE(
+    QFileInfo( strataAutoThemePath ).dir().absolutePath(),
+    QDir( QgsApplication::defaultThemesFolder() ).absolutePath()
+  );
 
   QPalette darkSeed = restorer.palette;
   darkSeed.setColor( QPalette::ColorRole::Window, QColor( u"#202020"_s ) );

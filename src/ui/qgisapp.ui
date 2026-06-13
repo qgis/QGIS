@@ -1988,10 +1988,10 @@ Shift+O to turn segments into straight or curve lines.</string>
      <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
    </property>
    <property name="text">
-    <string>Check QGIS Version</string>
+    <string>Check for Strata Updates</string>
    </property>
    <property name="statusTip">
-    <string>Check if your QGIS version is up to date (requires internet access)</string>
+    <string>Check if your Strata version is up to date (requires internet access)</string>
    </property>
   </action>
   <action name="mActionAbout">

@@ -182,6 +182,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mProxyTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProxyTypeComboBox_currentIndexChanged );
   connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
   connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
+  connect( mCheckStrataUpdatesButton, &QPushButton::clicked, QgisApp::instance(), &QgisApp::checkQgisVersion );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
   connect( cboGlobalLocale, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { updateSampleLocaleText(); } );
   connect( cbShowGroupSeparator, &QCheckBox::toggled, this, [this]( bool ) { updateSampleLocaleText(); } );
@@ -765,6 +766,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( u"/qgis/checkVersion"_s, true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( u"/qgis/allowVersionCheck"_s, true ).toBool() );
+  mCheckStrataUpdatesButton->setVisible( cbxCheckVersion->isVisible() );
   cbxAttributeTableDocked->setChecked( QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() );
   cbxAutosizeAttributeTable->setChecked( QgsAttributeTableDialog::settingsAutosizeAttributeTable->value() );
 

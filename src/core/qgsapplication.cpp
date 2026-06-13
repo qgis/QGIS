@@ -512,6 +512,11 @@ void QgsApplication::init( QString profileFolder )
   *sConfigPath() = profileFolder + '/'; // make sure trailing slash is included
   *sDefaultSvgPaths() << qgisSettingsDirPath() + u"svg/"_s;
 
+  // Application members can be initialized before the final profile and data
+  // paths are available during desktop startup, so refresh path-backed themes.
+  if ( instance()->mApplicationMembers )
+    instance()->mApplicationMembers->mApplicationThemeRegistry = std::make_unique<QgsApplicationThemeRegistry>();
+
   // Determine the auth DB URI, the first match wins:
   // 1 - get it from QGIS_AUTH_DB_URI environment variable
   // 2 - get it from QGIS_AUTH_DB_DIR_PATH environment variable, assume QSQLITE driver and add "qgis-auth.db"

@@ -514,7 +514,14 @@
                     <item row="2" column="0">
                      <widget class="QCheckBox" name="cbxCheckVersion">
                       <property name="text">
-                       <string>Check QGIS version at startup</string>
+                       <string>Check for Strata updates at startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QPushButton" name="mCheckStrataUpdatesButton">
+                      <property name="text">
+                       <string>Check for updates</string>
                       </property>
                      </widget>
                     </item>
@@ -5639,6 +5646,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <tabstop>cbxHideSplash</tabstop>
   <tabstop>cbxShowNews</tabstop>
   <tabstop>cbxCheckVersion</tabstop>
+  <tabstop>mCheckStrataUpdatesButton</tabstop>
   <tabstop>mNativeColorDialogsChkBx</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>

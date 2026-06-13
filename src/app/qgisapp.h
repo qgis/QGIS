@@ -1914,7 +1914,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void supportProviders();
     //! Open the QGIS homepage in users browser
     void helpQgisHomePage();
-    //! Check qgis version against the qgis version server
+    //! Check Strata version against GitHub releases
     void checkQgisVersion();
     //!Invoke the custom projection dialog
     void customProjection();

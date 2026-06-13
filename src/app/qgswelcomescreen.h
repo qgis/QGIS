@@ -54,7 +54,7 @@ class QgsWelcomeScreenController : public QObject
     Q_INVOKABLE void forwardDrop( const QString &text, const QStringList &urls, const QVariantMap &formatsData );
 
   signals:
-    void newVersionAvailable( const QString &versionString );
+    void newVersionAvailable( const QString &versionString, const QString &releaseUrl );
     void pluginUpdatesAvailable( const QStringList &plugins );
 
   private:

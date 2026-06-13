@@ -665,10 +665,11 @@ Item {
       radius: 16
       visible: false
       color: mainCard.color
-      buttonText: qsTr("Open QGIS download")
+      buttonText: qsTr("Open GitHub Releases")
+      property string releaseUrl: "https://github.com/francemazzi/strata/releases"
 
       onInstallClicked: {
-        Qt.openUrlExternally("https://download.qgis.org/")
+        Qt.openUrlExternally(releaseUrl)
       }
     }
   }
@@ -688,8 +689,9 @@ Item {
   Connections {
     target: welcomeScreenController
     
-    function onNewVersionAvailable(versionString) {
-      qgisUpdateBar.message = qsTr("QGIS upstream %1 is available").arg(versionString);
+    function onNewVersionAvailable(versionString, releaseUrl) {
+      qgisUpdateBar.message = qsTr("Strata %1 is available").arg(versionString);
+      qgisUpdateBar.releaseUrl = releaseUrl || "https://github.com/francemazzi/strata/releases";
       qgisUpdateBar.visible = true;
     }
     

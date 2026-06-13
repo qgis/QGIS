@@ -16,13 +16,23 @@
 #ifndef QGSVERSIONINFO_H
 #define QGSVERSIONINFO_H
 
+#include <QByteArray>
 #include <QNetworkReply>
 #include <QObject>
+#include <QString>
 
 class QgsVersionInfo : public QObject
 {
     Q_OBJECT
   public:
+    struct ReleaseDetails
+    {
+      int versionCode = 0;
+      QString version;
+      QString url;
+      QString body;
+    };
+
     explicit QgsVersionInfo( QObject *parent = nullptr );
 
     QString html() const { return mAdditionalHtml; }
@@ -30,6 +40,10 @@ class QgsVersionInfo : public QObject
     QString downloadInfo() const { return mDownloadInfo; }
 
     int latestVersionCode() const { return mLatestVersion; }
+
+    QString latestVersion() const { return mLatestVersionString; }
+
+    QString releaseUrl() const { return mReleaseUrl; }
 
     bool newVersionAvailable() const;
 
@@ -39,10 +53,16 @@ class QgsVersionInfo : public QObject
 
     QString errorString() const { return mErrorString; }
 
+    static int versionCodeFromString( const QString &versionString, bool *ok = nullptr );
+
+    static int versionCodeFromTag( const QString &tagName, bool *ok = nullptr );
+
+    static bool releaseDetailsFromGitHubReleases( const QByteArray &content, ReleaseDetails &details, QString *errorString = nullptr );
+
   public slots:
 
     /**
-     * Connects to qgis.org and checks for new versions.
+     * Connects to GitHub and checks for new Strata versions.
      */
     void checkVersion();
 
@@ -54,6 +74,8 @@ class QgsVersionInfo : public QObject
 
   private:
     int mLatestVersion = 0;
+    QString mLatestVersionString;
+    QString mReleaseUrl;
     QString mDownloadInfo;
     QString mAdditionalHtml;
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
