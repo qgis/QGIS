@@ -999,6 +999,20 @@ img {
   margin: 0 auto 24px;
 }
 
+.download-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  margin: 0 auto 20px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
 .download-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

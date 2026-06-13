@@ -36,7 +36,7 @@
           <button type="button" data-lang="it" aria-pressed="true">IT</button>
           <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-primary" data-i18n="nav.downloadBtn">Scarica</a>
+        <a href="https://github.com/francemazzi/strata/releases" class="btn btn-primary" data-release-link data-i18n="nav.downloadBtn">Scarica</a>
         <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M4 6h16M4 12h16M4 18h16"/>
@@ -59,7 +59,7 @@
           Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace. <!--#spellok-->
         </p>
         <div class="hero-cta">
-          <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-primary btn-lg" data-i18n="hero.ctaPrimary">Scarica Strata</a>
+          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-primary btn-lg" data-release-link data-i18n="hero.ctaPrimary">Scarica Strata</a>
           <a href="#setup" class="btn btn-secondary btn-lg" data-i18n="hero.ctaSecondary">Come configurarlo</a>
         </div>
       </div>
@@ -410,7 +410,8 @@
         <p class="section-subtitle" data-i18n="download.subtitle">
           Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.
         </p>
-        <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-primary btn-lg" data-i18n="download.cta">Vai alle Releases</a>
+        <p class="download-status" data-release-status data-i18n="download.status.fallback">Releases GitHub</p>
+        <a href="https://github.com/francemazzi/strata/releases" class="btn btn-primary btn-lg" data-release-link data-i18n="download.cta">Vai alle Releases</a>
       </div>
 
       <div class="download-grid">
@@ -418,27 +419,27 @@
           <div class="download-os" aria-hidden="true">🍎</div>
           <h3 data-i18n="download.macos.title">macOS</h3>
           <p class="download-sub" data-i18n="download.macos.sub">Intel + Apple Silicon</p>
-          <p class="download-file" data-i18n="download.macos.file">File .dmg</p>
+          <p class="download-file" data-download-file="macos" data-i18n="download.macos.file">File .dmg</p>
           <p class="download-note" data-i18n="download.macos.note">Trascina Strata in Applicazioni. Poi: xattr -d com.apple.quarantine "/Applications/Strata.app"</p>
-          <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="macos" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
         <article class="download-card">
           <div class="download-os" aria-hidden="true">🪟</div>
           <h3 data-i18n="download.windows.title">Windows</h3>
           <p class="download-sub" data-i18n="download.windows.sub">10/11 x64</p>
-          <p class="download-file" data-i18n="download.windows.file">File -win64.zip</p>
+          <p class="download-file" data-download-file="windows" data-i18n="download.windows.file">File -win64.zip</p>
           <p class="download-note" data-i18n="download.windows.note">Estrai ovunque, lancia l'eseguibile Strata. SmartScreen: Maggiori informazioni → Esegui comunque.</p>
-          <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="windows" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
         <article class="download-card">
           <div class="download-os" aria-hidden="true">🐧</div>
           <h3 data-i18n="download.linux.title">Linux</h3>
           <p class="download-sub" data-i18n="download.linux.sub">x86_64</p>
-          <p class="download-file" data-i18n="download.linux.file">File .AppImage</p>
+          <p class="download-file" data-download-file="linux" data-i18n="download.linux.file">File .AppImage</p>
           <p class="download-note" data-i18n="download.linux.note">chmod +x Strata-*.AppImage &amp;&amp; ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.</p>
-          <a href="https://github.com/francemazzi/strata/releases/latest" class="btn btn-secondary" data-i18n="nav.downloadBtn">Scarica</a>
+          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="linux" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
       </div>
     </div>
@@ -454,7 +455,7 @@
       </div>
       <div class="footer-links">
         <a href="https://github.com/francemazzi/strata" data-i18n="footer.github">GitHub</a>
-        <a href="https://github.com/francemazzi/strata/releases/latest" data-i18n="nav.download">Download</a>
+        <a href="https://github.com/francemazzi/strata/releases" data-release-link data-i18n="nav.download">Download</a>
         <a href="mailto:francemazzi@gmail.com" data-i18n="footer.contact">Contatto</a>
       </div>
       <div class="lang-toggle" role="group" aria-label="Language">

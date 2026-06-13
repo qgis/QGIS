@@ -1,6 +1,13 @@
 (function () {
   const STORAGE_KEY = "strata_lang";
-  const RELEASES_URL = "https://github.com/francemazzi/strata/releases/latest";
+  const REPOSITORY_URL = "https://github.com/francemazzi/strata";
+  const RELEASES_URL = `${REPOSITORY_URL}/releases`;
+  const RELEASES_API_URL = "https://api.github.com/repos/francemazzi/strata/releases?per_page=20";
+  const REQUIRED_RELEASE_ASSETS = {
+    macos: /\.dmg$/i,
+    windows: /-win64\.zip$/i,
+    linux: /\.AppImage$/i,
+  };
 
   const translations = {
     it: {
@@ -198,6 +205,8 @@
       "download.subtitle":
         "Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.",
       "download.cta": "Vai alle Releases",
+      "download.status.fallback": "Releases GitHub",
+      "download.status.complete": "Ultima release completa: {version}",
       "download.macos.title": "macOS",
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": "File .dmg",
@@ -416,6 +425,8 @@
       "download.subtitle":
         "Prebuilt binaries from GitHub Releases. Packages are unsigned — follow one-time OS instructions below.",
       "download.cta": "Go to Releases",
+      "download.status.fallback": "GitHub Releases",
+      "download.status.complete": "Latest complete release: {version}",
       "download.macos.title": "macOS",
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": ".dmg file",
@@ -449,6 +460,117 @@
   }
 
   let currentLang = detectLanguage();
+  let latestCompleteRelease = null;
+
+  function translate(key, replacements = {}) {
+    let text = translations[currentLang]?.[key] || translations.it[key] || "";
+    Object.entries(replacements).forEach(([name, value]) => {
+      text = text.replaceAll(`{${name}}`, value);
+    });
+    return text;
+  }
+
+  function strataVersionFromTag(tagName) {
+    const match = String(tagName || "").match(/^strata-v(\d+)\.(\d+)\.(\d+)$/);
+    if (!match) return null;
+
+    return {
+      label: `${match[1]}.${match[2]}.${match[3]}`,
+      parts: match.slice(1).map((value) => Number(value)),
+    };
+  }
+
+  function normalizeCompleteRelease(release) {
+    const version = strataVersionFromTag(release?.tag_name);
+    if (!version || release.draft || release.prerelease) return null;
+
+    const assets = Array.isArray(release.assets) ? release.assets : [];
+    const requiredAssets = {};
+
+    for (const [platform, matcher] of Object.entries(REQUIRED_RELEASE_ASSETS)) {
+      const asset = assets.find((candidate) => {
+        return matcher.test(candidate?.name || "") && candidate?.browser_download_url;
+      });
+
+      if (!asset) return null;
+      requiredAssets[platform] = asset;
+    }
+
+    return {
+      html_url: release.html_url || `${RELEASES_URL}/tag/${release.tag_name}`,
+      published_at: release.published_at || "",
+      tag_name: release.tag_name,
+      version: version.label,
+      versionParts: version.parts,
+      requiredAssets,
+    };
+  }
+
+  function compareCompleteReleases(a, b) {
+    for (let index = 0; index < a.versionParts.length; index += 1) {
+      if (a.versionParts[index] !== b.versionParts[index]) {
+        return b.versionParts[index] - a.versionParts[index];
+      }
+    }
+
+    return String(b.published_at).localeCompare(String(a.published_at));
+  }
+
+  function findLatestCompleteRelease(releases) {
+    if (!Array.isArray(releases)) return null;
+
+    return releases
+      .map(normalizeCompleteRelease)
+      .filter(Boolean)
+      .sort(compareCompleteReleases)[0] || null;
+  }
+
+  function updateDownloadReleaseUi() {
+    const releaseUrl = latestCompleteRelease?.html_url || RELEASES_URL;
+
+    document.querySelectorAll("[data-release-link]").forEach((link) => {
+      link.setAttribute("href", releaseUrl);
+    });
+
+    document.querySelectorAll("[data-download-asset]").forEach((link) => {
+      const platform = link.getAttribute("data-download-asset");
+      const asset = latestCompleteRelease?.requiredAssets?.[platform];
+      link.setAttribute("href", asset?.browser_download_url || releaseUrl);
+    });
+
+    document.querySelectorAll("[data-download-file]").forEach((el) => {
+      const platform = el.getAttribute("data-download-file");
+      const asset = latestCompleteRelease?.requiredAssets?.[platform];
+      if (asset?.name) {
+        el.textContent = asset.name;
+      }
+    });
+
+    const status = document.querySelector("[data-release-status]");
+    if (status) {
+      status.textContent = latestCompleteRelease
+        ? translate("download.status.complete", { version: latestCompleteRelease.version })
+        : translate("download.status.fallback");
+    }
+  }
+
+  async function initDownloadReleaseLinks() {
+    try {
+      const response = await fetch(RELEASES_API_URL, {
+        headers: { Accept: "application/vnd.github+json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`GitHub releases request failed: ${response.status}`);
+      }
+
+      latestCompleteRelease = findLatestCompleteRelease(await response.json());
+    } catch (_error) {
+      latestCompleteRelease = null;
+    }
+
+    updateDownloadReleaseUi();
+  }
 
   function applyTranslations(lang) {
     const dict = translations[lang];
@@ -498,6 +620,8 @@
       btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
       btn.setAttribute("aria-pressed", btn.getAttribute("data-lang") === lang ? "true" : "false");
     });
+
+    updateDownloadReleaseUi();
   }
 
   function setLanguage(lang) {
@@ -572,6 +696,7 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     applyTranslations(currentLang);
+    initDownloadReleaseLinks();
     initDemoCarousel();
 
     document.querySelectorAll("[data-lang]").forEach((btn) => {
@@ -607,5 +732,5 @@
     });
   });
 
-  window.STRATA_I18N = { setLanguage, RELEASES_URL };
+  window.STRATA_I18N = { setLanguage, RELEASES_URL, RELEASES_API_URL, findLatestCompleteRelease };
 })();
