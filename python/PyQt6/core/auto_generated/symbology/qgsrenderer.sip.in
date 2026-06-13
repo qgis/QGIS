@@ -398,6 +398,18 @@ Sets the symbol to be used for a legend symbol item.
 .. seealso:: :py:func:`legendKeys`
 %End
 
+    virtual void setLegendSymbolItemLabel( const QString &key, const QString &label );
+%Docstring
+Sets the label for a legend symbol item.
+
+:param key: rule key for legend symbol
+:param label: new label for the legend item
+
+.. seealso:: :py:func:`legendKeys`
+
+.. versionadded:: 4.2
+%End
+
     virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok /Out/ ) const;
 %Docstring
 Attempts to convert the specified legend rule ``key`` to a QGIS
