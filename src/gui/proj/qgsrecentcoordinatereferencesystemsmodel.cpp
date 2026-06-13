@@ -216,10 +216,18 @@ bool QgsRecentCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int source
     case Qgis::CrsType::Other:
       break;
 
-    case Qgis::CrsType::Geodetic:
     case Qgis::CrsType::Geocentric:
-    case Qgis::CrsType::Geographic2d:
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterGeocentric ) )
+        return false;
+      break;
+
     case Qgis::CrsType::Geographic3d:
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterGeographic3d ) )
+        return false;
+      break;
+
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geographic2d:
     case Qgis::CrsType::Projected:
     case Qgis::CrsType::Temporal:
     case Qgis::CrsType::Engineering:

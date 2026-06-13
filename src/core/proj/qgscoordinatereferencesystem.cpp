@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <proj.h>
+#include <proj_constants.h>
 #include <proj_experimental.h>
 #include <sqlite3.h>
 
@@ -2244,6 +2245,13 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     }
 
     mNativeFormat = qgsEnumKeyToValue<Qgis::CrsDefinitionFormat>( srsNode.toElement().attribute( u"nativeFormat"_s ), Qgis::CrsDefinitionFormat::Wkt );
+
+    const QDomNode topoBaseCrsNode = srsNode.namedItem( u"topocentricBaseCrs"_s );
+    if ( !topoBaseCrsNode.isNull() )
+    {
+      d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem() );
+      d->mTopocentricBaseCrs->readXml( topoBaseCrsNode );
+    }
   }
   else
   {
@@ -2307,6 +2315,13 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc )
 
   geographicFlagElement.appendChild( doc.createTextNode( geoFlagText ) );
   srsElement.appendChild( geographicFlagElement );
+
+  if ( d->mTopocentricBaseCrs && d->mTopocentricBaseCrs->isValid() )
+  {
+    QDomElement topoBaseCrsElement = doc.createElement( u"topocentricBaseCrs"_s );
+    d->mTopocentricBaseCrs->writeXml( topoBaseCrsElement, doc );
+    srsElement.appendChild( topoBaseCrsElement );
+  }
 
   layerNode.appendChild( srsElement );
 
@@ -3232,6 +3247,133 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
   {
     return QString();
   }
+}
+
+bool QgsCoordinateReferenceSystem::topocentricOrigin( double &latDeg, double &lonDeg ) const
+{
+  if ( !isValid() )
+    return false;
+
+  PJ_CONTEXT *ctx = QgsProjContext::get();
+  const PJ *pj = projObject();
+  if ( !pj )
+    return false;
+
+  QgsProjUtils::proj_pj_unique_ptr conversion( proj_crs_get_coordoperation( ctx, pj ) );
+  if ( !conversion )
+    return false;
+
+  const int paramCount = proj_coordoperation_get_param_count( ctx, conversion.get() );
+  bool hasLat = false, hasLon = false;
+
+  for ( int i = 0; i < paramCount; i++ )
+  {
+    const char *paramName = nullptr, *authName = nullptr, *code = nullptr, *valueString = nullptr, *unitName = nullptr, *unitAuthName = nullptr, *unitCode = nullptr, *unitCategory = nullptr;
+    double value = 0.0;
+    double unitConvFactor = 1.0;
+    if ( !proj_coordoperation_get_param( ctx, conversion.get(), i, &paramName, &authName, &code, &value, &valueString, &unitConvFactor, &unitName, &unitAuthName, &unitCode, &unitCategory ) )
+      continue;
+
+    const int paramCode = QString( code ).toInt();
+
+    if ( paramCode == EPSG_CODE_PARAMETER_LATITUDE_TOPOGRAPHIC_ORIGIN )
+    {
+      latDeg = value * unitConvFactor * 180.0 / M_PI;
+      hasLat = true;
+    }
+    else if ( paramCode == EPSG_CODE_PARAMETER_LONGITUDE_TOPOGRAPHIC_ORIGIN )
+    {
+      lonDeg = value * unitConvFactor * 180.0 / M_PI;
+      hasLon = true;
+    }
+  }
+
+  return hasLat && hasLon;
+}
+
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( double latitude, double longitude ) const
+{
+  if ( !isValid() )
+    return QgsCoordinateReferenceSystem();
+
+
+  PJ_CONTEXT *ctx = QgsProjContext::get();
+  const PJ *pj = projObject();
+  if ( !pj )
+    return QgsCoordinateReferenceSystem();
+
+  QgsProjUtils::proj_pj_unique_ptr baseCrs;
+  double lat = 0.0, lon = 0.0;
+  if ( topocentricOrigin( lat, lon ) )
+  {
+    baseCrs.reset( proj_get_source_crs( ctx, pj ) );
+    if ( baseCrs )
+      pj = baseCrs.get();
+  }
+
+  QgsProjUtils::proj_pj_unique_ptr geodeticCrs( proj_crs_get_geodetic_crs( ctx, pj ) );
+  if ( !geodeticCrs )
+    return QgsCoordinateReferenceSystem();
+
+  if ( proj_get_type( geodeticCrs.get() ) == PJ_TYPE_GEOGRAPHIC_2D_CRS )
+  {
+    QgsProjUtils::proj_pj_unique_ptr geodetic3DCrs( proj_crs_promote_to_3D( ctx, nullptr, geodeticCrs.get() ) );
+    if ( geodetic3DCrs )
+      geodeticCrs = std::move( geodetic3DCrs );
+  }
+
+  if ( proj_get_type( geodeticCrs.get() ) == PJ_TYPE_GEOCENTRIC_CRS )
+  {
+    QgsProjUtils::proj_pj_unique_ptr cs( proj_create_ellipsoidal_2D_cs( ctx, PJ_ELLPS2D_LONGITUDE_LATITUDE, "Degree", 0 ) );
+    QgsProjUtils::proj_pj_unique_ptr datum( proj_crs_get_datum( ctx, geodeticCrs.get() ) );
+    QgsProjUtils::proj_pj_unique_ptr datumEnsemble( proj_crs_get_datum_ensemble( ctx, geodeticCrs.get() ) );
+    if ( !datum && !datumEnsemble )
+      return QgsCoordinateReferenceSystem();
+    geodeticCrs.reset( proj_create_geographic_crs_from_datum( ctx, nullptr, datum ? datum.get() : datumEnsemble.get(), cs.get() ) );
+    if ( !geodeticCrs )
+      return QgsCoordinateReferenceSystem();
+  }
+
+  const char *projWkt = proj_as_wkt( ctx, geodeticCrs.get(), PJ_WKT2_2019, nullptr );
+  if ( !projWkt )
+    return QgsCoordinateReferenceSystem();
+
+  QString baseWkt = QString::fromUtf8( projWkt );
+  if ( baseWkt.startsWith( "GEOGCRS["_L1 ) )
+    baseWkt.replace( 0, 8, "BASEGEOGCRS["_L1 );
+  else
+    return QgsCoordinateReferenceSystem();
+
+  const QString wkt = u"GEODCRS[\"Topocentric\","
+                      "%1,"
+                      "DERIVINGCONVERSION[\"Geographic/topocentric\","
+                      "  METHOD[\"Geographic/topocentric conversions\",ID[\"EPSG\",9837]],"
+                      "  PARAMETER[\"Latitude of topocentric origin\",%2,"
+                      "    ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8834]],"
+                      "  PARAMETER[\"Longitude of topocentric origin\",%3,"
+                      "    ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8835]],"
+                      "  PARAMETER[\"Ellipsoidal height of topocentric origin\",0,"
+                      "    LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8836]]],"
+                      "CS[Cartesian,3],"
+                      "AXIS[\"(X)\",east,ORDER[1],LENGTHUNIT[\"metre\",1]],"
+                      "AXIS[\"(Y)\",north,ORDER[2],LENGTHUNIT[\"metre\",1]],"
+                      "AXIS[\"(Z)\",up,ORDER[3],LENGTHUNIT[\"metre\",1]]]"_s.arg( baseWkt )
+                        .arg( qgsDoubleToString( latitude ) )
+                        .arg( qgsDoubleToString( longitude ) );
+
+  QgsProjUtils::proj_pj_unique_ptr topocentric( proj_create_from_wkt( ctx, wkt.toUtf8().constData(), nullptr, nullptr, nullptr ) );
+  if ( !topocentric )
+    return QgsCoordinateReferenceSystem();
+
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProjObject( topocentric.get() );
+  crs.d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem( *this ) );
+  return crs;
+}
+
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::topocentricBaseCrs() const
+{
+  return d->mTopocentricBaseCrs ? *d->mTopocentricBaseCrs : QgsCoordinateReferenceSystem();
 }
 
 PJ *QgsCoordinateReferenceSystem::projObject() const

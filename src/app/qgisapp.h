@@ -169,6 +169,7 @@ class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
 class QgsCustomization;
 class QgsCustomizationDialog;
+class QgsTopocentricWidget;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -181,6 +182,7 @@ class QgsCustomizationDialog;
 #include "qgsattributetablefiltermodel.h"
 #include "qgsauthmanager.h"
 #include "qgsbrowserdockwidget.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayoutdesignerinterface.h"
 #include "qgsmaplayeractionregistry.h"
@@ -2670,6 +2672,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QLabel *mOnTheFlyProjectionStatusLabel = nullptr;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton *mOnTheFlyProjectionStatusButton = nullptr;
+    //! Popup menu shown on the CRS button when the project uses a topocentric CRS
+    QMenu *mTopocentricMenu = nullptr;
+    //! Widget embedded in mTopocentricMenu to display the topocentric origin
+    QgsTopocentricWidget *mTopocentricWidget = nullptr;
     QToolButton *mMessageButton = nullptr;
     //! Menu that contains the list of actions of the selected vector layer
     QMenu *mFeatureActionMenu = nullptr;

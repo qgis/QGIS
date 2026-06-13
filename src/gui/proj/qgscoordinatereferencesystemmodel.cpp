@@ -683,10 +683,18 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
       case Qgis::CrsType::Other:
         break;
 
-      case Qgis::CrsType::Geodetic:
       case Qgis::CrsType::Geocentric:
-      case Qgis::CrsType::Geographic2d:
+        if ( !mFilters.testFlag( Filter::FilterHorizontal ) && !mFilters.testFlag( Filter::FilterGeocentric ) )
+          return false;
+        break;
+
       case Qgis::CrsType::Geographic3d:
+        if ( !mFilters.testFlag( Filter::FilterHorizontal ) && !mFilters.testFlag( Filter::FilterGeographic3d ) )
+          return false;
+        break;
+
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geographic2d:
       case Qgis::CrsType::Projected:
       case Qgis::CrsType::Temporal:
       case Qgis::CrsType::Engineering:
