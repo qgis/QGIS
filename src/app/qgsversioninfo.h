@@ -16,12 +16,14 @@
 #ifndef QGSVERSIONINFO_H
 #define QGSVERSIONINFO_H
 
+#include "qgis_app.h"
+
 #include <QByteArray>
 #include <QNetworkReply>
 #include <QObject>
 #include <QString>
 
-class QgsVersionInfo : public QObject
+class APP_EXPORT QgsVersionInfo : public QObject
 {
     Q_OBJECT
   public:
