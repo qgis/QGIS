@@ -631,6 +631,13 @@ std::unique_ptr< QgsSymbol > QgsArcGisRestUtils::convertSymbol( const QVariantMa
   return QgsSymbolConverterEsriRest().createSymbol( symbolData, context );
 }
 
+std::unique_ptr< QgsSymbol > QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData )
+{
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  return convertSymbol( symbolData, context );
+}
+
 std::unique_ptr<QgsAbstractVectorLayerLabeling > QgsArcGisRestUtils::convertLabeling( const QVariantList &labelingData )
 {
   if ( labelingData.empty() )
@@ -1066,6 +1073,13 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     return nullptr;
   }
   return nullptr;
+}
+
+std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData )
+{
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  return convertRenderer( rendererData, context );
 }
 
 QString QgsArcGisRestUtils::convertLabelingExpression( const QString &string )

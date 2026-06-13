@@ -157,6 +157,15 @@ class CORE_EXPORT QgsArcGisRestUtils
     static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition, QgsSymbolConverterContext &context );
 
     /**
+     * Converts a symbol JSON \a definition to a QgsSymbol.
+     *
+     * \param definition symbol JSON definition
+     * \returns the converted symbol, or nullptr on failure. Caller takes ownership of the returned symbol.
+     * \deprecated QGIS 4.2. Use the overload with a QgsSymbolConverterContext argument instead.
+     */
+    Q_DECL_DEPRECATED static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition ) SIP_DEPRECATED;
+
+    /**
      * Converts renderer JSON \a data to an equivalent QgsFeatureRenderer.
      *
      * \param rendererData renderer JSON data
@@ -165,6 +174,15 @@ class CORE_EXPORT QgsArcGisRestUtils
      * \note The \a context parameter was added in QGIS 4.2
      */
     static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context );
+
+    /**
+     * Converts renderer JSON \a data to an equivalent QgsFeatureRenderer.
+     *
+     * \param rendererData renderer JSON data
+     * \returns the converted renderer, or nullptr on failure. Caller takes ownership of the returned renderer.
+     * \deprecated QGIS 4.2. Use the overload with a QgsSymbolConverterContext argument instead.
+     */
+    Q_DECL_DEPRECATED static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData ) SIP_DEPRECATED;
 
     /**
      * Converts labeling JSON \a data to an equivalent QGIS vector labeling.
