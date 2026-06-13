@@ -2342,6 +2342,7 @@ if(MSVC)
       textrenderer/qgsfontmanager.cpp
       vector/qgsvectorlayer.cpp
       qgsapplication.cpp
+      qgis.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 elseif(EMSCRIPTEN)
