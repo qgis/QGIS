@@ -1,0 +1,624 @@
+{
+  "type": "FeatureCollection",
+  "name": "qgis-versions",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "1.6",
+        "codename": "Copiapó",
+        "date": "2010-11",
+        "continent": "South America",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.3344,
+          -27.0556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "1.7",
+        "codename": "Wrocław",
+        "date": "2011-06",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.0385,
+          51.1079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "1.8",
+        "codename": "Lisboa",
+        "date": "2012-06",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.1393,
+          38.7223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.0",
+        "codename": "Dufour",
+        "date": "2013-09",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.7481,
+          46.0207
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.2",
+        "codename": "Valmiera",
+        "date": "2014-02",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.4226,
+          57.535
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.4",
+        "codename": "Chugiak",
+        "date": "2014-06",
+        "continent": "North America",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -149.4936,
+          61.3248
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.6",
+        "codename": "Brighton",
+        "date": "2014-11",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1372,
+          50.8225
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.8",
+        "codename": "Wien",
+        "date": "2015-02",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.3738,
+          48.2082
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.10",
+        "codename": "Pisa",
+        "date": "2015-06",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.4017,
+          43.7228
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.12",
+        "codename": "Lyon",
+        "date": "2015-10",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8357,
+          45.764
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.14",
+        "codename": "Essen",
+        "date": "2016-02",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.0116,
+          51.4556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.16",
+        "codename": "Nødebo",
+        "date": "2016-07",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.3043,
+          55.9776
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "2.18",
+        "codename": "Las Palmas",
+        "date": "2016-10",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -15.4363,
+          28.1235
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.0",
+        "codename": "Girona",
+        "date": "2018-02",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.8214,
+          41.9794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.2",
+        "codename": "Bonn",
+        "date": "2018-06",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.0982,
+          50.7374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.4",
+        "codename": "Madeira",
+        "date": "2018-11",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.9595,
+          32.7607
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.6",
+        "codename": "Noosa",
+        "date": "2019-02",
+        "continent": "Oceania",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          153.0938,
+          -26.402
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.8",
+        "codename": "Zanzibar",
+        "date": "2019-06",
+        "continent": "Africa",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.2026,
+          -6.1659
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.10",
+        "codename": "A Coruña",
+        "date": "2019-10",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.4115,
+          43.3623
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.12",
+        "codename": "București",
+        "date": "2020-02",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          26.1025,
+          44.4268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.16",
+        "codename": "Hannover",
+        "date": "2020-10",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.732,
+          52.3759
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.18",
+        "codename": "Zürich",
+        "date": "2021-02",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.5417,
+          47.3769
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.20",
+        "codename": "Odense",
+        "date": "2021-06",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.4024,
+          55.4038
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.22",
+        "codename": "Białowieża",
+        "date": "2021-10",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.8509,
+          52.7047
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.24",
+        "codename": "Tisler",
+        "date": "2022-02",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.8333,
+          58.9833
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.26",
+        "codename": "Buenos Aires",
+        "date": "2022-06",
+        "continent": "South America",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -58.3816,
+          -34.6037
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.28",
+        "codename": "Firenze",
+        "date": "2022-10",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.2558,
+          43.7696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.30",
+        "codename": "’s-Hertogenbosch",
+        "date": "2023-03",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.3037,
+          51.687
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.32",
+        "codename": "Lima",
+        "date": "2023-06",
+        "continent": "South America",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.0428,
+          -12.0464
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.34",
+        "codename": "Prizren",
+        "date": "2023-10",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.7419,
+          42.215
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.36",
+        "codename": "Maidenhead",
+        "date": "2024-02",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.729,
+          51.522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.38",
+        "codename": "Grenoble",
+        "date": "2024-06",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.7245,
+          45.1885
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.40",
+        "codename": "Bratislava",
+        "date": "2024-10",
+        "continent": "Europe",
+        "LTR": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.1077,
+          48.1486
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.42",
+        "codename": "Münster",
+        "date": "2025-02",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.6261,
+          51.9607
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "3.44",
+        "codename": "Solothurn",
+        "date": "2025-06",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.5321,
+          47.2083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "version": "4.0",
+        "codename": "Norrköping",
+        "date": "2026-03",
+        "continent": "Europe",
+        "LTR": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.1773,
+          58.5890
+        ]
+      }
+    }
+  ]
+}
