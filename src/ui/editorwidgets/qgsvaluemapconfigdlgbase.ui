@@ -14,44 +14,22 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="3">
-    <widget class="QLabel" name="valueMapLabel">
-     <property name="text">
-      <string>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</string>
+   <item row="2" column="2">
+    <widget class="QPushButton" name="lockButton">
+     <property name="toolTip">
+      <string>Lock the Value Map table to avoid accidental modification of values</string>
      </property>
-     <property name="wordWrap">
+     <property name="icon">
+      <iconset resource="../../../images/images.qrc">
+       <normaloff>:/images/themes/default/unlockedGray.svg</normaloff>
+       <normalon>:/images/themes/default/lockedGray.svg</normalon>:/images/themes/default/unlockedGray.svg</iconset>
+     </property>
+     <property name="checkable">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="loadFromLayerButton">
-     <property name="text">
-      <string>Load Data from Layer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="loadFromCSVButton">
-     <property name="text">
-      <string>Load Data from CSV File</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>339</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="0" colspan="3">
+   <item row="3" column="0" colspan="5">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QTableWidget" name="tableWidget">
@@ -88,7 +66,14 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0" colspan="3">
+   <item row="2" column="0">
+    <widget class="QPushButton" name="loadFromLayerButton">
+     <property name="text">
+      <string>Load Data from Layer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="5">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="addNullButton">
@@ -107,7 +92,7 @@
      <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -119,15 +104,46 @@
      </item>
     </layout>
    </item>
+   <item row="0" column="0" colspan="5">
+    <widget class="QLabel" name="valueMapLabel">
+     <property name="text">
+      <string>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>339</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="loadFromCSVButton">
+     <property name="text">
+      <string>Load Data from CSV File</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>loadFromLayerButton</tabstop>
-  <tabstop>loadFromCSVButton</tabstop>
   <tabstop>tableWidget</tabstop>
   <tabstop>addNullButton</tabstop>
   <tabstop>removeSelectedButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
