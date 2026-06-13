@@ -133,7 +133,11 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
 
-  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldComment | Qgis::DatabaseProviderConnectionCapability2::SetTableComment;
+  mCapabilities2 = {
+    Qgis::DatabaseProviderConnectionCapability2::SetFieldComment,
+    Qgis::DatabaseProviderConnectionCapability2::SetTableComment,
+    Qgis::DatabaseProviderConnectionCapability2::StyleStorage,
+  };
 
   // see https://www.postgresql.org/docs/current/ddl-system-columns.html
   mIllegalFieldNames = {

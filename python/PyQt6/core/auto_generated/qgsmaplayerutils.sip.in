@@ -140,8 +140,66 @@ Returns the consistent tooltip for the given layer.
 
 .. versionadded:: 4.2
 %End
+
+    static QgsSaveStyleResult saveLayerStyleToDatabase(
+      QgsMapLayer *layer,
+      const QString &providerKey,
+      const QString &targetDataSource,
+      const QString &name,
+      const QString &description,
+      bool useAsDefault,
+      const QString &uiFileContent,
+      const Qgis::SaveStyleFormats formats = Qgis::SaveStyleFormats( Qgis::SaveStyleFormat::QML | Qgis::SaveStyleFormat::SLD ),
+      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
+    );
+%Docstring
+Saves QML and SLD representations of ``layer``'s style to a table in the
+database identified by ``providerKey`` and associates it with
+``targetDataSource`` which can be different from the layer's own data
+source.
+
+Unlike :py:func:`QgsMapLayer.saveStyleToDatabaseV2()`, this method
+allows saving the style from one layer to a different layer in a
+database. The target layer is identified by the ``targetDataSource``
+argument, which is a URI that specifies the layer in the database to
+which the style should be associated.
+
+:param layer: Source layer whose style will be exported.
+:param providerKey: Provider key for the target database.
+:param targetDataSource: URI of the target layer in the database.
+:param name: Style name.
+:param description: A description of the style.
+:param useAsDefault: Set to ``True`` if style should be used as the
+                     default style for the layer.
+:param uiFileContent: Optional UI file content associated with the
+                      style.
+:param formats: Flag specifying which style formats to save.
+:param categories: The style categories to be saved.
+
+:return: Flags representing whether QML or SLD storing was successful.
+
+.. versionadded:: 4.2
+%End
 };
 
+class QgsSaveStyleResult
+{
+%Docstring(signature="appended")
+Represents the result of saving a style.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerutils.h"
+%End
+  public:
+    QgsMapLayer::SaveStyleResults saveResult;
+    QStringList sldErrorMessages;
+    QStringList sldWarningMessages;
+    QString providerSaveStyleError;
+    QString qmlError;
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
