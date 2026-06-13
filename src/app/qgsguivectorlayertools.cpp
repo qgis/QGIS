@@ -95,6 +95,11 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
 
   if ( layer->isModified() )
   {
+    if ( !QgisApp::instance()->tryCommitChanges( layer ) )
+    {
+      return false;
+    }
+
     if ( !layer->commitChanges() )
     {
       commitError( layer );
@@ -129,6 +134,12 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
         break;
 
       case QMessageBox::Save:
+        if ( !QgisApp::instance()->tryCommitChanges( layer ) )
+        {
+          res = false;
+          break;
+        }
+
         if ( !layer->commitChanges() )
         {
           commitError( layer );

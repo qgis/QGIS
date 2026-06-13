@@ -355,6 +355,11 @@ void QgsAppGpsDigitizing::createFeature()
         {
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
+            if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
+            {
+              break;
+            }
+
             // should canvas->isDrawing() be checked?
             if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
             {
@@ -394,6 +399,11 @@ void QgsAppGpsDigitizing::createFeature()
         {
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
+            if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
+            {
+              break;
+            }
+
             if ( !vlayer->commitChanges() )
             {
               QgisApp::instance()
