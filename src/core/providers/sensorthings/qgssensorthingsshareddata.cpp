@@ -231,7 +231,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
       auto rootContent = json::parse( content.content().toStdString() );
       if ( !rootContent.contains( countKey ) )
       {
-        mError = QObject::tr( "No '%1' value in response" ).arg( countKey );
+        mError = QObject::tr( "No '%1' value in response" ).arg( QString::fromStdString( countKey ) );
         return mFeatureCount;
       }
 
