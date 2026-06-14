@@ -54,7 +54,7 @@ jobs:
             | Sistema | File | Note |
             |---|---|---|
             | **macOS** (Intel + Apple Silicon) | `*.dmg` | Universal binary, **firmato Apple Developer ID + notarizzato**. Doppio click sul DMG, trascina l'app in Applications, lancia. |
-            | **Windows** (x64) | `*-win64.zip`, `*-Setup.exe` | ZIP portable oppure installer NSIS. |
+            | **Windows** (x64) | `*-win64.zip`, `*-win64.exe` | ZIP portable oppure installer NSIS. |
             | **Linux** (x86_64) | `*.AppImage` | `chmod +x` poi doppio click. |
 
             > ⚠️ I pacchetti **Windows** e **Linux** non sono firmati. Al primo avvio l'OS mostra un warning.

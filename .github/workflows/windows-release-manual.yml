@@ -184,7 +184,6 @@ jobs:
           name: strata-windows-${{ inputs.release_tag }}
           path: |
             build/*-win64.zip
-            build/*-Setup.exe
             build/*.exe
 
       - name: Upload release assets
@@ -193,7 +192,6 @@ jobs:
           tag_name: ${{ inputs.release_tag }}
           files: |
             build/*-win64.zip
-            build/*-Setup.exe
             build/*.exe
 
       - name: 📑 Upload dep build logs
