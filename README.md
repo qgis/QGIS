@@ -24,6 +24,7 @@ QGIS is part of the Open-Source Geospatial Foundation ([OSGeo](https://www.osgeo
 - [Download](#download)
 - [Demo](#demo--see-it-in-action)
 - [Configure AI](#configure-ai-on-first-launch)
+- [Roadmap](strata_cursor_roadmap.md)
 - [QGIS upstream](#qgis-upstream--original-documentation)
 
 ---
@@ -98,6 +99,14 @@ Where to get API keys:
 - **Claude OAuth**: in the settings dialog, choose “Login with Claude” and paste the authorization code when prompted.
 
 Keys are stored **locally only** in the application settings on your machine. OAuth logins save only the refresh token in QGIS's encrypted auth store. Credentials are never sent to any server other than the provider you chose.
+
+---
+
+## Roadmap
+
+Product direction and release planning for Strata: [strata_cursor_roadmap.md](strata_cursor_roadmap.md).
+
+Covers phased delivery (assistant MVP → Context Engine → GIS Tab → Agent v2 → workflows → vertical packs → enterprise), backlog priorities, and metrics. Cursor agents are configured to consult this document automatically.
 
 ---
 

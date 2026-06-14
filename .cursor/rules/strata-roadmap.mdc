@@ -1,0 +1,17 @@
+---
+description: Strata product roadmap — consult before planning features or releases
+alwaysApply: true
+---
+
+# Strata product roadmap
+
+Before proposing features, architecture changes, or release priorities for Strata, read [strata_cursor_roadmap.md](../../strata_cursor_roadmap.md) at the repository root.
+
+That document defines:
+
+- North Star and product principles (context-first, action-first, review-first, local-first)
+- Phased roadmap (Phase 0–10): assistant MVP → Context Engine → GIS Tab → Agent v2 → Workflow Composer → Vertical Packs → Enterprise → CLI/Workers → GIS Review → Marketplace
+- Detailed backlog IDs (CTX-*, AGT-*, TAB-*, REV-*, WFL-*, ENT-*)
+- Priority order and what to avoid
+
+Align new work with the current phase and backlog priorities. Do not skip foundational items (tool registry, safety layer, context engine, diff/rollback) in favor of speculative features.
