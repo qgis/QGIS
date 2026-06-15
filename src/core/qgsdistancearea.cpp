@@ -934,7 +934,8 @@ void QgsDistanceArea::computeAreaInit() const
   }
 
   mGeod = std::make_unique<geod_geodesic>();
-  geod_init( mGeod.get(), mSemiMajor, 1 / mInvFlattening );
+  const double flattening = qgsDoubleNear( mInvFlattening, 0.0 ) ? 0.0 : 1.0 / mInvFlattening;
+  geod_init( mGeod.get(), mSemiMajor, flattening );
 }
 
 void QgsDistanceArea::setFromParams( const QgsEllipsoidUtils::EllipsoidParameters &params )
