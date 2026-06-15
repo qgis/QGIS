@@ -73,15 +73,15 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
 
     enum class Profile
     {
-      NONE,
-      RFC7946,
+      None,
+      Rfc7946,
       // This not supported yet but I am leaving it here because
       // I am very optimistic that it will be supported soon!
-      //  JSONFG,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
-      //  JSONFG_PLUS //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
-      REL_AS_LINK,
-      REL_AS_KEY,
-      REL_AS_URI
+      //  JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
+      //  JsonFgPlus //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      RelAsLink,
+      RelAsKey,
+      RelAsUri
     };
 
     QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() );

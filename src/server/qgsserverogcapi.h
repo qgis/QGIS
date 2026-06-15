@@ -77,6 +77,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 
     // Note: cannot be a scoped enum because qHash does not support them
     //! Media types used for content negotiation, insert more specific first
+    // NOLINTBEGIN(readability-identifier-naming)
     enum ContentType
     {
       GEOJSON,
@@ -88,23 +89,22 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       FLATGEOBUF //!< "application/flatgeobuf"
     };
     Q_ENUM( ContentType )
+    // NOLINTEND(readability-identifier-naming)
 
     //! JSON profile
-    // NOLINTBEGIN(readability-identifier-naming)
     enum class Profile
     {
-      NONE,    //!< No profile
-      RFC7946, //!< GeoJSON profile according to RFC7946
+      None,    //!< No profile
+      Rfc7946, //!< GeoJSON profile according to RFC7946
       // This not supported yet but I am leaving it here because
       // I am very optimistic that it will be supported soon!
-      //  JSONFG,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
-      //  JSONFG_PLUS //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
-      REL_AS_LINK, //!< JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
-      REL_AS_KEY,  //!< JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
-      REL_AS_URI   //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
+      //  JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
+      //  JsonFgPlus //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      RelAsLink, //!< JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
+      RelAsKey,  //!< JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
+      RelAsUri   //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
     };
     Q_ENUM( Profile )
-    // NOLINTEND(readability-identifier-naming)
 
     /**
      * QgsServerOgcApi constructor
