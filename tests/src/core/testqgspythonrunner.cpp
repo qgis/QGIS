@@ -16,6 +16,8 @@
 #include "qgspythonrunner.h"
 #include "qgstest.h"
 
+#include <QString>
+
 using namespace Qt::StringLiterals;
 
 class TestPythonRunnerImpl : public QgsPythonRunner

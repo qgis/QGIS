@@ -563,7 +563,8 @@ void QgsProcessingExec::showUsage( const QString &appName )
     << "\tplugins list --all\tlist all installed plugins, including non-Processing plugins\n"
     << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
     << "\tplugins disable\tdisables an installed plugin. The plugin name must be specified, e.g. \"plugins disable cartography_tools\"\n"
-    << "\tplugins call\tcalls an explicitly declared plugin method. The plugin name, method name and '-' must be specified, e.g. \"plugins call cartography_tools export -\". The JSON input is read from STDIN as an object with optional \"args\" and \"kwargs\" keys.\n"
+    << "\tplugins call\tcalls an explicitly declared plugin method. The plugin name, method name and '-' must be specified, e.g. \"plugins call cartography_tools export -\". The JSON input is read "
+       "from STDIN as an object with optional \"args\" and \"kwargs\" keys.\n"
     << "\tlist\t\tlist all available processing algorithms\n"
     << "\thelp\t\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
     << "\trun\t\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified after -- with PARAMETER=VALUE syntax. Ordered "
@@ -710,9 +711,7 @@ void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded, bool showAll
 
       if ( !useJson )
       {
-        const bool marked = showAll ? mPythonUtils->isPluginLoaded( plugin )
-                            : ( showLoaded ? mPythonUtils->isPluginLoaded( plugin )
-                                           : mPythonUtils->isPluginEnabled( plugin ) );
+        const bool marked = showAll ? mPythonUtils->isPluginLoaded( plugin ) : ( showLoaded ? mPythonUtils->isPluginLoaded( plugin ) : mPythonUtils->isPluginEnabled( plugin ) );
         if ( marked )
           std::cout << "* ";
         else

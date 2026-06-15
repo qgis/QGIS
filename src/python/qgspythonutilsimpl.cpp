@@ -900,19 +900,14 @@ QString QgsPythonUtilsImpl::getPluginMetadata( const QString &pluginName, const 
 QStringList QgsPythonUtilsImpl::pluginCallableMethods( const QString &packageName )
 {
   QString output;
-  evalString(
-    u"'\\n'.join(qgis.utils.pluginCallableMethods(%1))"_s.arg( QgsProcessingUtils::stringToPythonLiteral( packageName ) ),
-    output
-  );
+  evalString( u"'\\n'.join(qgis.utils.pluginCallableMethods(%1))"_s.arg( QgsProcessingUtils::stringToPythonLiteral( packageName ) ), output );
   return output.split( QChar( '\n' ), Qt::SkipEmptyParts );
 }
 
 bool QgsPythonUtilsImpl::callPluginMethod( const QString &packageName, const QString &methodName, const QString &payloadJson, QString &responseJson )
 {
   const QString str = u"qgis.utils.callPluginMethod(%1, %2, %3)"_s
-                        .arg( QgsProcessingUtils::stringToPythonLiteral( packageName ),
-                              QgsProcessingUtils::stringToPythonLiteral( methodName ),
-                              QgsProcessingUtils::stringToPythonLiteral( payloadJson ) );
+                        .arg( QgsProcessingUtils::stringToPythonLiteral( packageName ), QgsProcessingUtils::stringToPythonLiteral( methodName ), QgsProcessingUtils::stringToPythonLiteral( payloadJson ) );
   return evalString( str, responseJson );
 }
 

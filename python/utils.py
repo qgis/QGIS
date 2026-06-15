@@ -463,7 +463,9 @@ def _qgis_process_plugin_call_response(result=None, error=None) -> str:
     try:
         return json.dumps(response)
     except TypeError as e:
-        return json.dumps({"ok": False, "error": f"Result is not JSON serializable: {e}"})
+        return json.dumps(
+            {"ok": False, "error": f"Result is not JSON serializable: {e}"}
+        )
 
 
 def callPluginMethod(packageName: str, methodName: str, payloadJson: str) -> str:

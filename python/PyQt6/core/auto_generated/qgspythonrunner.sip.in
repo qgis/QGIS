@@ -45,14 +45,16 @@ Execute a Python ``filename``, showing an error message if one occurred.
 %Docstring
 Execute a Python ``filename`` without showing an error dialog.
 
-:return: ``True`` if no error occurred. On failure, ``errorOut`` is set to the Python traceback.
+:return: ``True`` if no error occurred. On failure, ``errorOut`` is set
+         to the Python traceback.
 %End
 
     static bool runCaptureError( const QString &command, QString &errorOut /Out/ );
 %Docstring
 Execute a Python ``command`` without showing an error dialog.
 
-:return: ``True`` if no error occurred. On failure, ``errorOut`` is set to the Python traceback.
+:return: ``True`` if no error occurred. On failure, ``errorOut`` is set
+         to the Python traceback.
 %End
 
     static bool eval( const QString &command, QString &result /Out/ );
@@ -92,12 +94,14 @@ Runs the code from the given file.
 
     virtual bool runFileCaptureErrorCommand( const QString &filename, QString &errorOut ) = 0;
 %Docstring
-Runs the code from the given file, returning traceback in ``errorOut`` on failure.
+Runs the code from the given file, returning traceback in ``errorOut``
+on failure.
 %End
 
     virtual bool runCaptureErrorCommand( const QString &command, QString &errorOut ) = 0;
 %Docstring
-Runs the given statement, returning traceback in ``errorOut`` on failure.
+Runs the given statement, returning traceback in ``errorOut`` on
+failure.
 %End
 
     virtual bool evalCommand( QString command, QString &result ) = 0;
