@@ -1223,7 +1223,14 @@ void QgsCustomization::loadProcessingProviders()
 
   for ( QgsProcessingProvider *provider : QgsApplication::processingRegistry()->providers() )
   {
-    auto providerItem = std::make_unique<QgsProcessingProviderItem>( provider->id(), provider->name(), mProcessingProviders.get() );
+    QgsProcessingProviderItem *providerItem = mProcessingProviders->getChild<QgsProcessingProviderItem>( provider->id() );
+    if ( !providerItem )
+    {
+      auto p = std::make_unique<QgsProcessingProviderItem>( provider->id(), provider->name(), mProcessingProviders.get() );
+      mProcessingProviders->addChild( std::move( p ) );
+      providerItem = mProcessingProviders->lastChild<QgsProcessingProviderItem>();
+    }
+
     providerItem->setIcon( provider->icon() );
     for ( const QgsProcessingAlgorithm *algorithm : provider->algorithms() )
     {
@@ -1231,17 +1238,18 @@ void QgsCustomization::loadProcessingProviders()
       QgsProcessingGroupItem *group = providerItem->getChild<QgsProcessingGroupItem>( groupId );
       if ( !group )
       {
-        auto g = std::make_unique<QgsProcessingGroupItem>( groupId, algorithm->group(), providerItem.get() );
+        auto g = std::make_unique<QgsProcessingGroupItem>( groupId, algorithm->group(), providerItem );
         providerItem->addChild( std::move( g ) );
         group = providerItem->lastChild<QgsProcessingGroupItem>();
       }
 
-      auto processingItem = std::make_unique<QgsProcessingAlgorithmItem>( algorithm->id(), algorithm->displayName(), group );
-      processingItem->setIcon( algorithm->icon() );
-      group->addChild( std::move( processingItem ) );
+      if ( !group->getChild<QgsProcessingAlgorithmItem>( algorithm->id() ) )
+      {
+        auto processingItem = std::make_unique<QgsProcessingAlgorithmItem>( algorithm->id(), algorithm->displayName(), group );
+        processingItem->setIcon( algorithm->icon() );
+        group->addChild( std::move( processingItem ) );
+      }
     }
-
-    mProcessingProviders->addChild( std::move( providerItem ) );
   }
 }
 
