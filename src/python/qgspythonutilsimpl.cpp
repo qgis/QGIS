@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
+#include "qgsprocessingutils.h"
 #include "qgssettings.h"
 
 #include <QDebug>
@@ -894,6 +895,25 @@ QString QgsPythonUtilsImpl::getPluginMetadata( const QString &pluginName, const 
   evalString( str, res );
   //QgsDebugMsgLevel("metadata "+pluginName+" - '"+function+"' = "+res, 2);
   return res;
+}
+
+QStringList QgsPythonUtilsImpl::pluginCallableMethods( const QString &packageName )
+{
+  QString output;
+  evalString(
+    u"'\\n'.join(qgis.utils.pluginCallableMethods(%1))"_s.arg( QgsProcessingUtils::stringToPythonLiteral( packageName ) ),
+    output
+  );
+  return output.split( QChar( '\n' ), Qt::SkipEmptyParts );
+}
+
+bool QgsPythonUtilsImpl::callPluginMethod( const QString &packageName, const QString &methodName, const QString &payloadJson, QString &responseJson )
+{
+  const QString str = u"qgis.utils.callPluginMethod(%1, %2, %3)"_s
+                        .arg( QgsProcessingUtils::stringToPythonLiteral( packageName ),
+                              QgsProcessingUtils::stringToPythonLiteral( methodName ),
+                              QgsProcessingUtils::stringToPythonLiteral( payloadJson ) );
+  return evalString( str, responseJson );
 }
 
 bool QgsPythonUtilsImpl::pluginHasProcessingProvider( const QString &pluginName )

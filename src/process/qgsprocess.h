@@ -84,8 +84,9 @@ class QgsProcessingExec
   private:
     void loadPlugins();
     void listAlgorithms();
-    void listPlugins( bool useJson, bool showLoaded );
+    void listPlugins( bool useJson, bool showLoaded, bool showAll = false );
     int enablePlugin( const QString &name, bool enabled );
+    int callPluginMethod( const QString &pluginName, const QString &methodName );
     int showAlgorithmHelp( const QString &id );
     int execute(
       const QString &algId,
@@ -100,6 +101,7 @@ class QgsProcessingExec
     void addVersionInformation( QVariantMap &json );
     void addAlgorithmInformation( QVariantMap &json, const QgsProcessingAlgorithm *algorithm );
     void addProviderInformation( QVariantMap &json, QgsProcessingProvider *provider );
+    void addPluginInformation( QVariantMap &json, const QString &pluginName );
 
     Flags mFlags;
 #ifdef WITH_BINDINGS

@@ -210,6 +210,30 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual QString getPluginMetadata( const QString &pluginName, const QString &function ) = 0;
 
     /**
+     * Returns the list of methods explicitly declared by a plugin as callable
+     * from qgis_process.
+     *
+     * The list is read from the plugin's qgisProcessCallableMethods metadata entry.
+     *
+     * \since QGIS 3.44
+     */
+    virtual QStringList pluginCallableMethods( const QString &packageName ) = 0;
+
+    /**
+     * Calls a plugin method explicitly declared as callable from qgis_process.
+     *
+     * \param packageName plugin package name
+     * \param methodName declared method to call
+     * \param payloadJson JSON object containing optional "args" and "kwargs" entries
+     * \param responseJson will be set to a JSON object containing "ok" and either
+     * "result" or "error"
+     * \returns TRUE if the Python helper was executed and returned a response
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool callPluginMethod( const QString &packageName, const QString &methodName, const QString &payloadJson, QString &responseJson ) = 0;
+
+    /**
      * Returns TRUE if a plugin implements a Processing provider.
      *
      * This is determined by checking the plugin metadata for the "hasProcessingProvider=yes"

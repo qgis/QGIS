@@ -41,6 +41,15 @@ class Test:
     def run(self):
         pass
 
+    def echo(self, *args, **kwargs):
+        return {"args": list(args), "kwargs": kwargs}
+
+    def add(self, a, b):
+        return a + b
+
+    def raises(self):
+        raise RuntimeError("call failed")
+
 
 def name():
     return "plugin path test"

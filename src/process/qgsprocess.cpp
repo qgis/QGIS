@@ -303,6 +303,15 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
       listPlugins( mFlags & Flag::UseJson, !( mFlags & Flag::SkipLoadingPlugins ) );
       return 0;
     }
+    else if ( args.size() == 4 && args.at( 2 ) == "list"_L1 && args.at( 3 ) == "--all"_L1 )
+    {
+      listPlugins( mFlags & Flag::UseJson, false, true );
+      return 0;
+    }
+    else if ( args.size() == 6 && args.at( 2 ) == "call"_L1 && args.at( 5 ) == "-"_L1 )
+    {
+      return callPluginMethod( args.at( 3 ), args.at( 4 ) );
+    }
     else if ( args.size() == 4 && args.at( 2 ) == "enable"_L1 )
     {
       return enablePlugin( args.at( 3 ), true );
@@ -551,8 +560,10 @@ void QgsProcessingExec::showUsage( const QString &appName )
     << "\t--skip-loading-plugins\tAvoid loading enabled plugins (results in faster startup)\n"
     << "Available commands:\n"
     << "\tplugins\t\tlist available and active plugins\n"
+    << "\tplugins list --all\tlist all installed plugins, including non-Processing plugins\n"
     << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
     << "\tplugins disable\tdisables an installed plugin. The plugin name must be specified, e.g. \"plugins disable cartography_tools\"\n"
+    << "\tplugins call\tcalls an explicitly declared plugin method. The plugin name, method name and '-' must be specified, e.g. \"plugins call cartography_tools export -\". The JSON input is read from STDIN as an object with optional \"args\" and \"kwargs\" keys.\n"
     << "\tlist\t\tlist all available processing algorithms\n"
     << "\thelp\t\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
     << "\trun\t\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified after -- with PARAMETER=VALUE syntax. Ordered "
@@ -668,14 +679,16 @@ void QgsProcessingExec::listAlgorithms()
   }
 }
 
-void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded )
+void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded, bool showAll )
 {
   QVariantMap json;
 
   if ( !useJson )
   {
     std::cout << "Available plugins\n";
-    if ( showLoaded )
+    if ( showAll )
+      std::cout << "(* indicates loaded plugins)\n\n";
+    else if ( showLoaded )
       std::cout << "(* indicates loaded plugins which implement Processing providers)\n\n";
     else
       std::cout << "(* indicates enabled plugins which implement Processing providers)\n\n";
@@ -692,21 +705,37 @@ void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded )
     const QStringList plugins = mPythonUtils->pluginList();
     for ( const QString &plugin : plugins )
     {
-      if ( !mPythonUtils->pluginHasProcessingProvider( plugin ) )
+      if ( !showAll && !mPythonUtils->pluginHasProcessingProvider( plugin ) )
         continue;
 
       if ( !useJson )
       {
-        if ( showLoaded ? mPythonUtils->isPluginLoaded( plugin ) : mPythonUtils->isPluginEnabled( plugin ) )
+        const bool marked = showAll ? mPythonUtils->isPluginLoaded( plugin )
+                            : ( showLoaded ? mPythonUtils->isPluginLoaded( plugin )
+                                           : mPythonUtils->isPluginEnabled( plugin ) );
+        if ( marked )
           std::cout << "* ";
         else
           std::cout << "  ";
-        std::cout << plugin.toLocal8Bit().constData() << "\n";
+        std::cout << plugin.toLocal8Bit().constData();
+        if ( showAll )
+        {
+          const QString name = mPythonUtils->getPluginMetadata( plugin, u"name"_s );
+          const QString version = mPythonUtils->getPluginMetadata( plugin, u"version"_s );
+          if ( name != "__error__"_L1 )
+            std::cout << "\t" << name.toLocal8Bit().constData();
+          if ( version != "__error__"_L1 )
+            std::cout << "\t" << version.toLocal8Bit().constData();
+        }
+        std::cout << "\n";
       }
       else
       {
         QVariantMap jsonPlugin;
-        jsonPlugin.insert( u"loaded"_s, showLoaded ? mPythonUtils->isPluginLoaded( plugin ) : mPythonUtils->isPluginEnabled( plugin ) );
+        if ( showAll )
+          addPluginInformation( jsonPlugin, plugin );
+        else
+          jsonPlugin.insert( u"loaded"_s, showLoaded ? mPythonUtils->isPluginLoaded( plugin ) : mPythonUtils->isPluginEnabled( plugin ) );
         jsonPlugins.insert( plugin, jsonPlugin );
       }
     }
@@ -717,6 +746,31 @@ void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded )
     json.insert( u"plugins"_s, jsonPlugins );
     std::cout << QgsJsonUtils::jsonFromVariant( json ).dump( 2 );
   }
+#endif
+}
+
+void QgsProcessingExec::addPluginInformation( QVariantMap &json, const QString &pluginName )
+{
+#ifdef WITH_BINDINGS
+  if ( !mPythonUtils )
+    return;
+
+  json.insert( u"id"_s, pluginName );
+  const QString name = mPythonUtils->getPluginMetadata( pluginName, u"name"_s );
+  if ( name != "__error__"_L1 )
+    json.insert( u"name"_s, name );
+
+  const QString version = mPythonUtils->getPluginMetadata( pluginName, u"version"_s );
+  if ( version != "__error__"_L1 )
+    json.insert( u"version"_s, version );
+
+  json.insert( u"enabled"_s, mPythonUtils->isPluginEnabled( pluginName ) );
+  json.insert( u"loaded"_s, mPythonUtils->isPluginLoaded( pluginName ) );
+  json.insert( u"has_processing_provider"_s, mPythonUtils->pluginHasProcessingProvider( pluginName ) );
+  json.insert( u"callable_methods"_s, mPythonUtils->pluginCallableMethods( pluginName ) );
+#else
+  Q_UNUSED( json )
+  Q_UNUSED( pluginName )
 #endif
 }
 
@@ -794,6 +848,98 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
   return 0;
 #else
   std::cerr << "No Python support\n";
+  return 1;
+#endif
+}
+
+int QgsProcessingExec::callPluginMethod( const QString &pluginName, const QString &methodName )
+{
+#ifdef WITH_BINDINGS
+  const auto writeJsonResponse = [this, &pluginName, &methodName]( const QString &errorMessage, const QVariant &result = QVariant(), bool includePluginDetails = true ) {
+    QVariantMap json;
+    addVersionInformation( json );
+
+    QVariantMap pluginDetails;
+    if ( includePluginDetails )
+      addPluginInformation( pluginDetails, pluginName );
+    else
+      pluginDetails.insert( u"id"_s, pluginName );
+
+    json.insert( u"plugin_details"_s, pluginDetails );
+    json.insert( u"method"_s, methodName );
+    if ( errorMessage.isEmpty() )
+      json.insert( u"result"_s, result );
+    else
+      json.insert( u"error"_s, errorMessage );
+
+    std::cout << QgsJsonUtils::jsonFromVariant( json ).dump( 2 );
+  };
+
+  if ( !mPythonUtils )
+  {
+    writeJsonResponse( u"Python not available"_s, QVariant(), false );
+    return 1;
+  }
+
+  const QStringList plugins = mPythonUtils->pluginList();
+  if ( !plugins.contains( pluginName ) )
+  {
+    writeJsonResponse( u"No matching plugins found: %1"_s.arg( pluginName ), QVariant(), false );
+    return 1;
+  }
+
+  std::string stdinJson;
+  for ( std::string line; std::getline( std::cin, line ); )
+  {
+    stdinJson.append( line + '\n' );
+  }
+
+  QString error;
+  const QVariant input = QgsJsonUtils::parseJson( stdinJson, error );
+  if ( !error.isEmpty() )
+  {
+    writeJsonResponse( u"Could not parse JSON plugin call parameters: %1"_s.arg( error ) );
+    return 1;
+  }
+  if ( input.type() != QVariant::Map )
+  {
+    writeJsonResponse( u"JSON plugin call parameters must be an object"_s );
+    return 1;
+  }
+
+  QString responseJson;
+  if ( !mPythonUtils->callPluginMethod( pluginName, methodName, QString::fromStdString( stdinJson ), responseJson ) )
+  {
+    writeJsonResponse( u"Error calling plugin method %1.%2"_s.arg( pluginName, methodName ) );
+    return 1;
+  }
+
+  QString responseError;
+  const QVariantMap response = QgsJsonUtils::parseJson( responseJson.toStdString(), responseError ).toMap();
+  if ( !responseError.isEmpty() )
+  {
+    writeJsonResponse( u"Plugin returned invalid JSON response: %1"_s.arg( responseError ) );
+    return 1;
+  }
+
+  if ( !response.value( u"ok"_s ).toBool() )
+  {
+    writeJsonResponse( response.value( u"error"_s ).toString() );
+    return 1;
+  }
+
+  writeJsonResponse( QString(), response.value( u"result"_s ) );
+
+  return 0;
+#else
+  QVariantMap json;
+  addVersionInformation( json );
+  QVariantMap pluginDetails;
+  pluginDetails.insert( u"id"_s, pluginName );
+  json.insert( u"plugin_details"_s, pluginDetails );
+  json.insert( u"method"_s, methodName );
+  json.insert( u"error"_s, u"No Python support"_s );
+  std::cout << QgsJsonUtils::jsonFromVariant( json ).dump( 2 );
   return 1;
 #endif
 }

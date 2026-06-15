@@ -42,12 +42,14 @@ class TestQgsProcessExecutablePt1(QgisTestCase):
         super().tearDownClass()
         shutil.rmtree(cls.TMP_DIR, ignore_errors=True)
 
-    def run_process(self, arguments):
+    def run_process(self, arguments, extra_env=None):
         call = [QGIS_PROCESS_BIN] + arguments
         print(" ".join(call))
 
         myenv = os.environ.copy()
         myenv["QGIS_DEBUG"] = "0"
+        if extra_env:
+            myenv.update(extra_env)
 
         p = subprocess.Popen(
             call, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=myenv
@@ -57,12 +59,14 @@ class TestQgsProcessExecutablePt1(QgisTestCase):
 
         return rc, output.decode(), err.decode()
 
-    def run_process_stdin(self, arguments, stdin_string: str):
+    def run_process_stdin(self, arguments, stdin_string: str, extra_env=None):
         call = [QGIS_PROCESS_BIN] + arguments
         print(" ".join(call))
 
         myenv = os.environ.copy()
         myenv["QGIS_DEBUG"] = "0"
+        if extra_env:
+            myenv.update(extra_env)
 
         p = subprocess.Popen(
             call,
@@ -171,6 +175,81 @@ class TestQgsProcessExecutablePt1(QgisTestCase):
         self.assertIn("processing", res["plugins"])
         self.assertTrue(res["plugins"]["processing"]["loaded"])
         self.assertEqual(rc, 0)
+
+    def testPluginsListAllJson(self):
+        rc, output, err = self.run_process(
+            ["plugins", "list", "--all", "--json"],
+            {"QGIS_PLUGINPATH": TEST_DATA_DIR + "/test_plugin_path"},
+        )
+        self.assertFalse(self.strip_std_ignorable_errors(err))
+        res = json.loads(output)
+        self.assertIn("plugins", res)
+        self.assertIn("PluginPathTest", res["plugins"])
+        plugin = res["plugins"]["PluginPathTest"]
+        self.assertEqual(plugin["id"], "PluginPathTest")
+        self.assertEqual(plugin["name"], "plugin path test")
+        self.assertEqual(plugin["version"], "0.1")
+        self.assertFalse(plugin["has_processing_provider"])
+        self.assertEqual(plugin["callable_methods"], ["echo", "add", "raises"])
+        self.assertEqual(rc, 0)
+
+    def testPluginCall(self):
+        rc, output, err = self.run_process_stdin(
+            ["plugins", "call", "PluginPathTest", "echo", "-"],
+            json.dumps({"args": ["value"], "kwargs": {"name": "test"}}),
+            {"QGIS_PLUGINPATH": TEST_DATA_DIR + "/test_plugin_path"},
+        )
+        self.assertFalse(self.strip_std_ignorable_errors(err))
+        res = json.loads(output)
+        self.assertEqual(res["plugin_details"]["id"], "PluginPathTest")
+        self.assertEqual(res["method"], "echo")
+        self.assertEqual(res["result"]["args"], ["value"])
+        self.assertEqual(res["result"]["kwargs"], {"name": "test"})
+        self.assertEqual(rc, 0)
+
+    def testPluginCallBadInput(self):
+        rc, output, err = self.run_process_stdin(
+            ["plugins", "call", "PluginPathTest", "echo", "-"],
+            '{"not valid json"}',
+            {"QGIS_PLUGINPATH": TEST_DATA_DIR + "/test_plugin_path"},
+        )
+        self.assertEqual(rc, 1)
+        self.assertFalse(self.strip_std_ignorable_errors(err))
+        res = json.loads(output)
+        self.assertIn("Could not parse JSON plugin call parameters", res["error"])
+
+    def testPluginCallMissingPlugin(self):
+        rc, output, err = self.run_process_stdin(
+            ["plugins", "call", "MissingPlugin", "echo", "-"],
+            "{}",
+            {"QGIS_PLUGINPATH": TEST_DATA_DIR + "/test_plugin_path"},
+        )
+        self.assertEqual(rc, 1)
+        self.assertFalse(self.strip_std_ignorable_errors(err))
+        res = json.loads(output)
+        self.assertIn("No matching plugins found", res["error"])
+
+    def testPluginCallUndeclaredMethod(self):
+        rc, output, err = self.run_process_stdin(
+            ["plugins", "call", "PluginPathTest", "notDeclared", "-"],
+            "{}",
+            {"QGIS_PLUGINPATH": TEST_DATA_DIR + "/test_plugin_path"},
+        )
+        self.assertEqual(rc, 1)
+        self.assertFalse(self.strip_std_ignorable_errors(err))
+        res = json.loads(output)
+        self.assertIn("not declared", res["error"])
+
+    def testPluginCallNoPython(self):
+        rc, output, err = self.run_process_stdin(
+            ["--no-python", "plugins", "call", "PluginPathTest", "echo", "-"],
+            "{}",
+            {"QGIS_PLUGINPATH": TEST_DATA_DIR + "/test_plugin_path"},
+        )
+        self.assertEqual(rc, 1)
+        self.assertFalse(self.strip_std_ignorable_errors(err))
+        res = json.loads(output)
+        self.assertIn("Python not available", res["error"])
 
     def testAlgorithmList(self):
         rc, output, err = self.run_process(["list"])

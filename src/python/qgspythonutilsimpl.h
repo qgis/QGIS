@@ -93,6 +93,8 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool startProcessingPlugin( const QString &packageName ) final;
     bool finalizeProcessingStartup() final;
     QString getPluginMetadata( const QString &pluginName, const QString &function ) final;
+    QStringList pluginCallableMethods( const QString &packageName ) final;
+    bool callPluginMethod( const QString &packageName, const QString &methodName, const QString &payloadJson, QString &responseJson ) final;
     bool pluginHasProcessingProvider( const QString &pluginName ) final;
     bool canUninstallPlugin( const QString &packageName ) final;
     bool unloadPlugin( const QString &packageName ) final;

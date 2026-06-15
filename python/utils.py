@@ -27,8 +27,10 @@ import builtins
 import configparser
 import functools
 import glob
+import json
 import os
 import os.path
+import re
 import sys
 import time
 import traceback
@@ -425,6 +427,105 @@ def pluginMetadata(packageName: str, fct: str) -> str:
         return plugins_metadata_parser[packageName].get("general", fct)
     except Exception:
         return "__error__"
+
+
+_qgis_process_method_name_re = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def pluginCallableMethods(packageName: str) -> list[str]:
+    """Returns qgis_process callable methods declared by a plugin."""
+    if packageName not in plugins_metadata_parser:
+        updateAvailablePlugins(sort_by_dependencies=True)
+
+    methods = pluginMetadata(packageName, "qgisProcessCallableMethods")
+    if methods == "__error__":
+        return []
+
+    result = []
+    for method in methods.split(","):
+        method = method.strip()
+        if not method:
+            continue
+        if not _qgis_process_method_name_re.match(method):
+            continue
+        if method not in result:
+            result.append(method)
+    return result
+
+
+def _qgis_process_plugin_call_response(result=None, error=None) -> str:
+    response = {"ok": error is None}
+    if error is None:
+        response["result"] = result
+    else:
+        response["error"] = str(error)
+
+    try:
+        return json.dumps(response)
+    except TypeError as e:
+        return json.dumps({"ok": False, "error": f"Result is not JSON serializable: {e}"})
+
+
+def callPluginMethod(packageName: str, methodName: str, payloadJson: str) -> str:
+    """Calls an explicitly declared qgis_process plugin method."""
+    if not _qgis_process_method_name_re.match(methodName):
+        return _qgis_process_plugin_call_response(
+            error=f"Invalid plugin method name: {methodName}"
+        )
+
+    if packageName not in available_plugins:
+        updateAvailablePlugins(sort_by_dependencies=True)
+
+    if packageName not in available_plugins:
+        return _qgis_process_plugin_call_response(
+            error=f"No matching plugin found: {packageName}"
+        )
+
+    callable_methods = pluginCallableMethods(packageName)
+    if methodName not in callable_methods:
+        return _qgis_process_plugin_call_response(
+            error=f"Plugin method is not declared as callable: {methodName}"
+        )
+
+    try:
+        payload = json.loads(payloadJson)
+    except json.JSONDecodeError as e:
+        return _qgis_process_plugin_call_response(
+            error=f"Could not parse JSON plugin call parameters: {e}"
+        )
+
+    if not isinstance(payload, dict):
+        return _qgis_process_plugin_call_response(
+            error="JSON plugin call parameters must be an object"
+        )
+
+    args = payload.get("args", [])
+    kwargs = payload.get("kwargs", {})
+    if not isinstance(args, list):
+        return _qgis_process_plugin_call_response(error='"args" must be a list')
+    if not isinstance(kwargs, dict):
+        return _qgis_process_plugin_call_response(error='"kwargs" must be an object')
+
+    if packageName not in sys.modules and not loadPlugin(packageName):
+        return _qgis_process_plugin_call_response(
+            error=f"Could not load plugin: {packageName}"
+        )
+
+    try:
+        plugin = plugins.get(packageName)
+        if plugin is None:
+            package = sys.modules[packageName]
+            plugin = package.classFactory(iface)
+
+        method = getattr(plugin, methodName, None)
+        if not callable(method):
+            return _qgis_process_plugin_call_response(
+                error=f"Plugin method is not callable: {methodName}"
+            )
+
+        return _qgis_process_plugin_call_response(result=method(*args, **kwargs))
+    except Exception as e:
+        return _qgis_process_plugin_call_response(error=e)
 
 
 def loadPlugin(packageName: str) -> bool:

@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsjsonutils.h"
 #include "qgspythonutils.h"
 #include "qgstest.h"
 
@@ -46,6 +47,7 @@ class TestQgisAppPython : public QObject
     void plugins();
     void pythonPlugin();
     void pluginMetadata();
+    void pluginCallableMethods();
     void pythonPluginDependencyOrder();
     void runString();
     void evalString();
@@ -125,6 +127,40 @@ void TestQgisAppPython::pluginMetadata()
   // hasProcessingProvider also accepts true/True
   QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"ProcessingPluginTest2"_s, u"hasProcessingProvider"_s ), u"True"_s );
   QVERIFY( mQgisApp->mPythonUtils->pluginHasProcessingProvider( u"ProcessingPluginTest2"_s ) );
+}
+
+void TestQgisAppPython::pluginCallableMethods()
+{
+  QCOMPARE( mQgisApp->mPythonUtils->pluginCallableMethods( u"PluginPathTest"_s ), QStringList() << u"echo"_s << u"add"_s << u"raises"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->pluginCallableMethods( u"ProcessingPluginTest"_s ), QStringList() );
+
+  QString response;
+  QVERIFY( mQgisApp->mPythonUtils->callPluginMethod( u"PluginPathTest"_s, u"echo"_s, QStringLiteral( R"({"args":["value"],"kwargs":{"name":"test"}})" ), response ) );
+  QString error;
+  QVariantMap json = QgsJsonUtils::parseJson( response.toStdString(), error ).toMap();
+  QVERIFY2( error.isEmpty(), error.toLocal8Bit().constData() );
+  QVERIFY( json.value( u"ok"_s ).toBool() );
+  const QVariantMap echoResult = json.value( u"result"_s ).toMap();
+  QCOMPARE( echoResult.value( u"args"_s ).toList().at( 0 ).toString(), u"value"_s );
+  QCOMPARE( echoResult.value( u"kwargs"_s ).toMap().value( u"name"_s ).toString(), u"test"_s );
+
+  QVERIFY( mQgisApp->mPythonUtils->callPluginMethod( u"PluginPathTest"_s, u"add"_s, QStringLiteral( R"({"args":[2,3]})" ), response ) );
+  json = QgsJsonUtils::parseJson( response.toStdString(), error ).toMap();
+  QVERIFY2( error.isEmpty(), error.toLocal8Bit().constData() );
+  QVERIFY( json.value( u"ok"_s ).toBool() );
+  QCOMPARE( json.value( u"result"_s ).toInt(), 5 );
+
+  QVERIFY( mQgisApp->mPythonUtils->callPluginMethod( u"PluginPathTest"_s, u"notDeclared"_s, QStringLiteral( R"({})" ), response ) );
+  json = QgsJsonUtils::parseJson( response.toStdString(), error ).toMap();
+  QVERIFY2( error.isEmpty(), error.toLocal8Bit().constData() );
+  QVERIFY( !json.value( u"ok"_s ).toBool() );
+  QVERIFY( json.value( u"error"_s ).toString().contains( u"not declared"_s ) );
+
+  QVERIFY( mQgisApp->mPythonUtils->callPluginMethod( u"PluginPathTest"_s, u"raises"_s, QStringLiteral( R"({})" ), response ) );
+  json = QgsJsonUtils::parseJson( response.toStdString(), error ).toMap();
+  QVERIFY2( error.isEmpty(), error.toLocal8Bit().constData() );
+  QVERIFY( !json.value( u"ok"_s ).toBool() );
+  QVERIFY( json.value( u"error"_s ).toString().contains( u"call failed"_s ) );
 }
 
 void TestQgisAppPython::pythonPluginDependencyOrder()
