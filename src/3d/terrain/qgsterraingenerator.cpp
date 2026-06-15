@@ -84,11 +84,11 @@ QgsTerrainGenerator::Capabilities QgsTerrainGenerator::capabilities() const
 void QgsTerrainGenerator::computeHeightMapMinMax( const QByteArray &heightMap, float &zMin, float &zMax )
 {
   const float *zBits = ( const float * ) heightMap.constData();
-  int zCount = heightMap.count() / sizeof( float );
+  size_t zCount = heightMap.count() / sizeof( float );
   bool first = true;
 
   zMin = zMax = std::numeric_limits<float>::quiet_NaN();
-  for ( int i = 0; i < zCount; ++i )
+  for ( size_t i = 0; i < zCount; ++i )
   {
     float z = zBits[i];
     if ( std::isnan( z ) )
