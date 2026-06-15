@@ -1159,6 +1159,11 @@ class APP_EXPORT QgsCustomization
      */
     static QAction *findQAction( const QString &path );
 
+    /**
+     * Returns true if \a widget is a user defined menu or toolbar
+     */
+    static bool isUserDefined( QWidget *widget );
+
     QString uniqueItemName( const QString &baseName ) const;
     QAction *findAction( const QString &path ) const;
 

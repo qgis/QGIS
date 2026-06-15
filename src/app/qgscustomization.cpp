@@ -1151,12 +1151,17 @@ QgsCustomization::QgsProcessingProvidersItem *QgsCustomization::processingProvid
 
 void QgsCustomization::addActions( QgsItem *item, QWidget *widget ) const
 {
-  if ( !item || !widget )
+  if ( !item
+       || !widget
+       // don't load user defined widget, we already hold any valuable information in QgsCustomization
+       || isUserDefined( widget ) )
     return;
 
   for ( QgsQActionsIterator::Info it : QgsQActionsIterator( widget ) )
   {
-    if ( it.name.isEmpty() )
+    if ( it.name.isEmpty() ||
+         // don't load user defined widget, we already hold any valuable information in QgsCustomization
+         isUserDefined( it.widget ) )
       continue;
 
     // submenu
@@ -1175,6 +1180,12 @@ void QgsCustomization::addActions( QgsItem *item, QWidget *widget ) const
       }
 
       childItem = item->lastChild<QgsActionItem>();
+    }
+
+    if ( !childItem )
+    {
+      QgsDebugError( "Null customization child action item" );
+      continue;
     }
 
     childItem->setIcon( it.icon );
@@ -1536,6 +1547,12 @@ QAction *QgsCustomization::findQAction( const QString &path )
   const QList<QAction *>::const_iterator actionIt = std::find_if( actions.cbegin(), actions.cend(), [&actionName]( QAction *action ) { return action->objectName() == actionName; } );
   return actionIt != actions.cend() ? *actionIt : nullptr;
 }
+
+bool QgsCustomization::isUserDefined( QWidget *widget )
+{
+  return widget && ( widget->property( USER_MENU_PROPERTY ).toBool() || widget->property( USER_TOOLBAR_PROPERTY ).toBool() );
+}
+
 
 template<class WidgetType> void QgsCustomization::updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget ) const
 {
