@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🐩 Install CMake and Ninja
         uses: lukka/get-cmake@628dd514bed37cb0a609e84a6186cbbaa2fc0140 # latest
@@ -186,7 +186,7 @@ jobs:
     needs: build
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🔨 Prepare build env
         run: |
