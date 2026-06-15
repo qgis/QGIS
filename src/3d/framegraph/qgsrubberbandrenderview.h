@@ -49,6 +49,7 @@ namespace Qt3DCore
 class QgsRubberBandRenderView : public QgsAbstractRenderView
 {
   public:
+    //! Default constructor
     QgsRubberBandRenderView( const QString &viewName, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *rootSceneEntity, Qt3DRender::QRenderTarget *fwdRenderTarget );
 
     //! Returns entity for all rubber bands (to show them always on top)
