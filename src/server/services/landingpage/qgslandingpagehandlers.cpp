@@ -85,12 +85,17 @@ QString QgsLandingPageHandler::prefix( const QgsServerSettings *settings )
   return prefix;
 }
 
-json QgsLandingPageHandler::projectsData( const QgsServerRequest &request, const QgsServerInterface *serverInterface ) const
+json QgsLandingPageHandler::projectsData( const QgsServerRequest &request, QgsServerInterface *serverInterface ) const
 {
   json j = json::array();
+  const QString originalConfigFilePath { serverInterface ? serverInterface->configFilePath() : QString() };
   const QMap<QString, QString> availableProjects = QgsLandingPageUtils::projects( *mSettings );
   for ( auto it = availableProjects.constBegin(); it != availableProjects.constEnd(); ++it )
   {
+    if ( serverInterface )
+    {
+      serverInterface->setConfigFilePath( it.value() );
+    }
     try
     {
       j.push_back( QgsLandingPageUtils::projectInfo( it.value(), mSettings, request, serverInterface ) );
@@ -98,6 +103,18 @@ json QgsLandingPageHandler::projectsData( const QgsServerRequest &request, const
     catch ( QgsServerException & )
     {
       QgsMessageLog::logMessage( u"Could not open project '%1': skipping."_s.arg( it.value() ), u"Landing Page"_s, Qgis::MessageLevel::Critical );
+    }
+    catch ( ... )
+    {
+      if ( serverInterface )
+      {
+        serverInterface->setConfigFilePath( originalConfigFilePath );
+      }
+      throw;
+    }
+    if ( serverInterface )
+    {
+      serverInterface->setConfigFilePath( originalConfigFilePath );
     }
   }
   return j;
@@ -119,7 +136,27 @@ void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context
   {
     throw QgsServerApiNotFoundError( u"Requested project hash not found!"_s );
   }
-  data["project"] = QgsLandingPageUtils::projectInfo( projectPath, mSettings, *context.request(), context.serverInterface() );
+  const QString originalConfigFilePath { context.serverInterface() ? context.serverInterface()->configFilePath() : QString() };
+  if ( context.serverInterface() )
+  {
+    context.serverInterface()->setConfigFilePath( projectPath );
+  }
+  try
+  {
+    data["project"] = QgsLandingPageUtils::projectInfo( projectPath, mSettings, *context.request(), context.serverInterface() );
+  }
+  catch ( ... )
+  {
+    if ( context.serverInterface() )
+    {
+      context.serverInterface()->setConfigFilePath( originalConfigFilePath );
+    }
+    throw;
+  }
+  if ( context.serverInterface() )
+  {
+    context.serverInterface()->setConfigFilePath( originalConfigFilePath );
+  }
   write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
 }
 

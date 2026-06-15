@@ -60,7 +60,7 @@ class QgsLandingPageHandler : public QgsServerOgcApiHandler
 
 
   private:
-    json projectsData( const QgsServerRequest &request, const QgsServerInterface *serverInterface ) const;
+    json projectsData( const QgsServerRequest &request, QgsServerInterface *serverInterface ) const;
 
     const QgsServerSettings *mSettings = nullptr;
 };
