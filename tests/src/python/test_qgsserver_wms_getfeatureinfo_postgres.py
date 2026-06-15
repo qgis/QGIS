@@ -26,12 +26,14 @@ import xml.etree.ElementTree as ET
 
 from qgis.core import (
     QgsExpression,
+    QgsFeature,
     QgsFeatureRequest,
+    QgsGeometry,
     QgsProject,
     QgsProviderRegistry,
     QgsVectorLayer,
 )
-from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse
+from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse, QgsServer
 from qgis.testing import unittest
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 
@@ -88,6 +90,8 @@ class TestQgsServerWMSGetFeatureInfoPG(TestQgsServerWMSTestBase):
             cls.dbconn
             + " sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table=\"qgis_test\".\"multiple_pks\" (geom)"
         )
+
+        cls.conn = conn
 
     def _baseFilterTest(self, info_format):
 
@@ -376,6 +380,140 @@ class TestQgsServerWMSGetFeatureInfoPG(TestQgsServerWMSTestBase):
             "wms_getfeatureinfo-values3-text-xml",
             "test_project_values_postgres.qgz",
         )
+
+    def testGetFeatureInfoNullValues(self):
+
+        self.conn.executeSql(
+            'DROP TABLE IF EXISTS "qgis_test"."test_server_gfi_null_values"'
+        )
+        self.conn.executeSql("""
+            CREATE TABLE "qgis_test"."test_server_gfi_null_values" (
+                "id" SERIAL PRIMARY KEY,
+                "name" VARCHAR(50),
+                "value" INTEGER
+            )
+        """)
+
+        # Add polygon geometry column
+        self.conn.executeSql(
+            "SELECT AddGeometryColumn('qgis_test', 'test_server_gfi_null_values', 'geom', 3857, 'POLYGON', 2)"
+        )
+
+        uri = (
+            self.conn.uri()
+            + ' sslmode=disable key=\'pk\' srid=3857 type=POLYGON  checkPrimaryKeyUnicity=0 table="qgis_test"."test_server_gfi_null_values" (geom) sql='
+        )
+        vl = QgsVectorLayer(uri, "gfi_test", "postgres")
+        self.assertTrue(vl.isValid())
+        f = QgsFeature(vl.fields())
+        f.setGeometry(
+            QgsGeometry.fromWkt(
+                "POLYGON((100 100, 100 200, 200 200, 200 100, 100 100))"
+            )
+        )
+        f.setAttribute("name", "test1")
+        f.setAttribute("value", "1234")
+        self.assertTrue(vl.dataProvider().addFeatures([f]))
+        p = QgsProject()
+        self.assertTrue(p.addMapLayer(vl))
+
+        def _test_val(vl, name, value, expected):
+
+            self.assertTrue(
+                vl.dataProvider().changeAttributeValues(
+                    {
+                        1: {
+                            vl.fields().indexFromName("name"): name,
+                            vl.fields().indexFromName("value"): value,
+                        }
+                    }
+                )
+            )
+
+            server = QgsServer()
+            uri = (
+                "http://www.qgis.org/?SERVICE=WMS&REQUEST=GetFeatureInfo&"
+                + "LAYERS=gfi_test&styles=&"
+                + "VERSION=1.3.0&"
+                + "INFO_FORMAT=application/json&"
+                + "WIDTH=100&HEIGHT=100"
+                + "&BBOX=90,90, 200,200"
+                + "&CRS=EPSG:3857"
+                + "&FEATURE_COUNT=10"
+                + "&WITH_GEOMETRY=False"
+                + "&QUERY_LAYERS=gfi_test&I=50&J=50"
+            )
+
+            request = QgsBufferServerRequest(uri)
+
+            response = QgsBufferServerResponse()
+            server.handleRequest(request, response, p)
+
+            j = json.loads(bytes(response.body()).decode("utf8"))
+            self.assertEqual(j["features"][0]["properties"], expected)
+
+            # Same request with XML format
+            request = QgsBufferServerRequest(
+                uri.replace("INFO_FORMAT=application/json", "INFO_FORMAT=text/xml")
+            )
+            response = QgsBufferServerResponse()
+            server.handleRequest(request, response, p)
+
+            xml = bytes(response.body()).decode("utf8")
+            exp_val = value if value is not None else "NULL"
+            exp_name = name if name is not None else "NULL"
+            # Current behavior for XML is to return 'NULL' string for null values
+            self.assertIn(
+                f'<Attribute name="value" value="{exp_val}"/>',
+                xml,
+                f"Expected value '{exp_val}' in XML response, got: {xml}",
+            )
+            self.assertIn(
+                f'<Attribute name="name" value="{exp_name}"/>',
+                xml,
+                f"Expected name '{exp_name}' in XML response, got: {xml}",
+            )
+
+            # Try GML
+            request = QgsBufferServerRequest(
+                uri.replace(
+                    "INFO_FORMAT=application/json",
+                    "INFO_FORMAT=application/vnd.ogc.gml",
+                )
+            )
+            response = QgsBufferServerResponse()
+            server.handleRequest(request, response, p)
+            xml = bytes(response.body()).decode("utf8")
+
+            if value is not None:
+                self.assertIn(
+                    f"<qgs:value>{value}</qgs:value>",
+                    xml,
+                    f"Expected value '{value}' in GML response, got: {xml}",
+                )
+            else:
+                self.assertIn(
+                    f'<qgs:value xsi:nil="true"/>',
+                    xml,
+                    f"Expected value '{value}' in GML response, got: {xml}",
+                )
+
+            if name is not None:
+                self.assertIn(
+                    f"<qgs:name>{name}</qgs:name>",
+                    xml,
+                    f"Expected name '{name}' in GML response, got: {xml}",
+                )
+            else:
+                self.assertIn(
+                    f'<qgs:name xsi:nil="true"/>',
+                    xml,
+                    f"Expected name '{name}' in GML response, got: {xml}",
+                )
+
+        _test_val(vl, None, None, {"id": 1, "name": None, "value": None})
+        _test_val(vl, "test1", 1234, {"id": 1, "name": "test1", "value": 1234})
+        _test_val(vl, "", 0, {"id": 1, "name": "", "value": 0})
 
 
 if __name__ == "__main__":
