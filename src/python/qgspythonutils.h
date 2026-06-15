@@ -105,6 +105,12 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual bool runFile( const QString &filename, const QString &messageOnError = QString() ) = 0;
 
     /**
+     * Runs a Python \a filename without showing an error dialog.
+     * \returns empty QString if no error occurred, or Python traceback as a QString on error.
+     */
+    virtual QString runFileUnsafe( const QString &filename ) = 0;
+
+    /**
      * Evaluates a Python \a command and stores the result in a the \a result string.
      */
     virtual bool evalString( const QString &command, QString &result ) = 0;

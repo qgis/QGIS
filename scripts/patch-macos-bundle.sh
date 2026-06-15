@@ -25,6 +25,22 @@ mkdir -p "${RESOURCES}"
 cp "${INFO_SRC}" "${CONTENTS}/Info.plist"
 cp "${ICON_SRC}" "${RESOURCES}/strata.icns"
 
+DATA_RESOURCES="${OUTPUT}/data/resources"
+SRS_SRC="${BUILD}/resources/srs.db"
+if [[ -f "${SRS_SRC}" && ! -f "${DATA_RESOURCES}/srs.db" ]]; then
+  mkdir -p "${DATA_RESOURCES}"
+  cp "${SRS_SRC}" "${DATA_RESOURCES}/srs.db"
+fi
+
+LAUNCHER="${OUTPUT}/Launch Strata.command"
+cat > "${LAUNCHER}" <<EOF
+#!/usr/bin/env bash
+cd "${ROOT}"
+exec "${ROOT}/scripts/run-strata-dev.sh"
+EOF
+chmod +x "${LAUNCHER}"
+
 echo "Patched bundle:"
 echo "  ${CONTENTS}/Info.plist"
 echo "  ${RESOURCES}/strata.icns"
+echo "  ${LAUNCHER}"

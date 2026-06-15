@@ -171,6 +171,7 @@ set(TESTS
  testqgsprojutils.cpp
  testqgsproperty.cpp
  testqgsprovidermetadata.cpp
+ testqgspythonrunner.cpp
  testqgsquantizedmeshtiles.cpp
  testqgsrange.cpp
  testqgsrasterblock.cpp

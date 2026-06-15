@@ -47,6 +47,18 @@ class CORE_EXPORT QgsPythonRunner
      */
     static bool runFile( const QString &filename, const QString &messageOnError = QString() );
 
+    /**
+     * Execute a Python \a filename without showing an error dialog.
+     * \returns TRUE if no error occurred. On failure, \a errorOut is set to the Python traceback.
+     */
+    static bool runFileCaptureError( const QString &filename, QString &errorOut SIP_OUT );
+
+    /**
+     * Execute a Python \a command without showing an error dialog.
+     * \returns TRUE if no error occurred. On failure, \a errorOut is set to the Python traceback.
+     */
+    static bool runCaptureError( const QString &command, QString &errorOut SIP_OUT );
+
     //! Eval a Python statement
     static bool eval( const QString &command, QString &result SIP_OUT );
 
@@ -70,6 +82,12 @@ class CORE_EXPORT QgsPythonRunner
 
     //! Runs the code from the given file.
     virtual bool runFileCommand( const QString &filename, const QString &messageOnError = QString() ) = 0;
+
+    //! Runs the code from the given file, returning traceback in \a errorOut on failure.
+    virtual bool runFileCaptureErrorCommand( const QString &filename, QString &errorOut ) = 0;
+
+    //! Runs the given statement, returning traceback in \a errorOut on failure.
+    virtual bool runCaptureErrorCommand( const QString &command, QString &errorOut ) = 0;
 
     //! Evaluates the given expression, producing a result.
     virtual bool evalCommand( QString command, QString &result ) = 0;

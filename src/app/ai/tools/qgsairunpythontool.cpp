@@ -67,12 +67,16 @@ except BaseException:
 sys.stdout = __qgsai_old_stdout
 sys.stderr = __qgsai_old_stderr
 
-with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
-    json.dump({
-        "stdout": __qgsai_stdout.getvalue(),
-        "stderr": __qgsai_stderr.getvalue(),
-        "error": __qgsai_error,
-    }, __qgsai_f)
+try:
+    with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
+        json.dump({
+            "stdout": __qgsai_stdout.getvalue(),
+            "stderr": __qgsai_stderr.getvalue(),
+            "error": __qgsai_error,
+        }, __qgsai_f)
+except BaseException:
+    if not __qgsai_error:
+        __qgsai_error = traceback.format_exc()
 )";
 
   /**
@@ -164,6 +168,7 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
   const QString tmpDir = QDir::tempPath();
   const QString codePath = QDir( tmpDir ).filePath( u"qgsai_pycode_%1.py"_s.arg( uniqueId ) );
   const QString outPath = QDir( tmpDir ).filePath( u"qgsai_pyout_%1.json"_s.arg( uniqueId ) );
+  const QString wrapperPath = QDir( tmpDir ).filePath( u"qgsai_pywrapper_%1.py"_s.arg( uniqueId ) );
 
   {
     QFile codeFile( codePath );
@@ -178,7 +183,15 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
   // Build the wrapper with safely-quoted paths.
   const QString wrapper = QString::fromUtf8( PY_WRAPPER_TEMPLATE ).arg( escapeRunPythonPath( codePath ), escapeRunPythonPath( outPath ) );
 
-  const bool ranOk = QgsPythonRunner::run( wrapper );
+  {
+    QFile wrapperFile( wrapperPath );
+    if ( !wrapperFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+      return QgsAiToolResult::error( u"Cannot write temp wrapper file: %1"_s.arg( wrapperPath ) );
+    wrapperFile.write( wrapper.toUtf8() );
+  }
+
+  QString runnerError;
+  const bool ranOk = QgsPythonRunner::runFileCaptureError( wrapperPath, runnerError );
 
   QString stdoutText;
   QString stderrText;
@@ -203,11 +216,13 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
   // Best-effort cleanup of the temp files.
   QFile::remove( codePath );
   QFile::remove( outPath );
+  QFile::remove( wrapperPath );
 
   if ( !ranOk )
   {
-    QgsMessageLog::logMessage( u"run_python: QgsPythonRunner::run() returned false (wrapper failed)."_s, u"AI/Python"_s, Qgis::MessageLevel::Warning, false );
-    return QgsAiToolResult::error( u"Python wrapper failed to execute. %1"_s.arg( tracebackText.isEmpty() ? QString() : tracebackText ) );
+    QgsMessageLog::logMessage( u"run_python: QgsPythonRunner::runFileCaptureError() returned false (wrapper failed)."_s, u"AI/Python"_s, Qgis::MessageLevel::Warning, false );
+    const QString detail = !runnerError.isEmpty() ? runnerError : tracebackText;
+    return QgsAiToolResult::error( u"Python wrapper failed to execute. %1"_s.arg( detail ) );
   }
 
   const bool hadException = !tracebackText.isEmpty();

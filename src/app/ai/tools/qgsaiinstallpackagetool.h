@@ -35,9 +35,10 @@ class QWidget;
  * `<name>[<op><version>]`, blocking URLs, `git+...`, `-r requirements.txt`,
  * and any shell-injection vector.
  *
- * The install runs in the QGIS-bundled Python interpreter via QgsPythonRunner,
- * shelling out to `sys.executable -m pip install --user`. Output is captured
- * into a temp JSON file and returned to the model (truncated to 32 KB per stream).
+ * The install runs via QgsPythonRunner, shelling out to a validated Python
+ * interpreter with matching major/minor version using `python -m pip install
+ * --user`. Output is captured into a temp JSON file and returned to the model
+ * (truncated to 32 KB per stream).
  *
  * Hard caps:
  *

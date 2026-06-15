@@ -12591,6 +12591,38 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
       return false;
     }
 
+    bool runFileCaptureErrorCommand( const QString &filename, QString &errorOut ) override
+    {
+#ifdef WITH_BINDINGS
+      if ( mPythonUtils && mPythonUtils->isEnabled() )
+      {
+        errorOut = mPythonUtils->runFileUnsafe( filename );
+        return errorOut.isEmpty();
+      }
+      errorOut = u"Python support is disabled."_s;
+#else
+      Q_UNUSED( filename )
+      errorOut = u"Python bindings are not available."_s;
+#endif
+      return false;
+    }
+
+    bool runCaptureErrorCommand( const QString &command, QString &errorOut ) override
+    {
+#ifdef WITH_BINDINGS
+      if ( mPythonUtils && mPythonUtils->isEnabled() )
+      {
+        errorOut = mPythonUtils->runStringUnsafe( command, false );
+        return errorOut.isEmpty();
+      }
+      errorOut = u"Python support is disabled."_s;
+#else
+      Q_UNUSED( command )
+      errorOut = u"Python bindings are not available."_s;
+#endif
+      return false;
+    }
+
     bool evalCommand( QString command, QString &result ) override
     {
 #ifdef WITH_BINDINGS

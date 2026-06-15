@@ -58,6 +58,36 @@ bool QgsPythonRunner::runFile( const QString &filename, const QString &messageOn
   }
 }
 
+bool QgsPythonRunner::runFileCaptureError( const QString &filename, QString &errorOut )
+{
+  if ( sInstance )
+  {
+    QgsDebugMsgLevel( "Running " + filename, 3 );
+    return sInstance->runFileCaptureErrorCommand( filename, errorOut );
+  }
+  else
+  {
+    QgsDebugError( u"Unable to run Python command: runner not available!"_s );
+    errorOut = u"Python runner not available."_s;
+    return false;
+  }
+}
+
+bool QgsPythonRunner::runCaptureError( const QString &command, QString &errorOut )
+{
+  if ( sInstance )
+  {
+    QgsDebugMsgLevel( "Running " + command, 3 );
+    return sInstance->runCaptureErrorCommand( command, errorOut );
+  }
+  else
+  {
+    QgsDebugError( u"Unable to run Python command: runner not available!"_s );
+    errorOut = u"Python runner not available."_s;
+    return false;
+  }
+}
+
 bool QgsPythonRunner::eval( const QString &command, QString &result )
 {
   if ( sInstance )
