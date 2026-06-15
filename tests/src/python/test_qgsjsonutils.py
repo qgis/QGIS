@@ -1781,6 +1781,20 @@ class TestQgsJsonUtils(QgisTestCase):
             "MULTISURFACE M (CURVEPOLYGON M (CIRCULARSTRING M ( 0 0 1, 4 0 1, 4 4 1, 0 4 1, 0 0 1),(1 1 2, 3 3 2, 3 1 2, 1 1 2)), CURVEPOLYGON M ((10 10 3, 14 12 3, 11 10 3, 10 10 3), (11 11 4, 11.5 11 4, 11 11.5 4, 11 11 4)))"
         )
 
+        # Multi
+        self._round_trip_jsonfg_profiles("MULTIPOINT M ((1 2 3), (4 5 6))")
+        self._round_trip_jsonfg_profiles(
+            "MULTILINESTRING M ((0 0 1, 1 1 2), (2 2 3, 3 3 4))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "MULTIPOLYGON M (((0 0 1, 4 0 1, 4 4 1, 0 4 1, 0 0 1)), ((10 10 3, 14 12 3, 11 10 3, 10 10 3), (11 11 4, 11.5 11 4, 11 11.5 4, 11 11 4)))"
+        )
+
+        # Geometry collection
+        self._round_trip_jsonfg_profiles(
+            "GEOMETRYCOLLECTION M (POINT M (1 2 3), LINESTRING M (0 0 1, 1 1 2))"
+        )
+
     def test_jsonfg_zm_values(self):
 
         # Test ZM values are preserved in round trip
@@ -1803,6 +1817,20 @@ class TestQgsJsonUtils(QgisTestCase):
         )
         self._round_trip_jsonfg_profiles(
             "MULTISURFACE ZM (CURVEPOLYGON ZM (CIRCULARSTRING ZM ( 0 0 1 2, 4 0 1 2, 4 4 1 2, 0 4 1 2, 0 0 1 2),(1 1 3 4, 3 3 3 4, 3 1 3 4, 1 1 3 4)), CURVEPOLYGON ZM ((10 10 3 4, 14 12 3 4, 11 10 3 4, 10 10 3 4), (11 11 4 1, 11.5 11 4 2, 11 11.5 4 2, 11 11 4 1)))"
+        )
+
+        # Multi
+        self._round_trip_jsonfg_profiles("MULTIPOINT ZM ((1 2 3 4), (5 6 7 8))")
+        self._round_trip_jsonfg_profiles(
+            "MULTILINESTRING ZM ((0 0 1 2, 1 1 3 4), (2 2 5 6, 3 3 7 8))"
+        )
+        self._round_trip_jsonfg_profiles(
+            "MULTIPOLYGON ZM (((0 0 1 2, 4 0 1 2, 4 4 1 2, 0 4 1 2, 0 0 1 2)), ((10 10 3 4, 14 12 3 4, 11 10 3 4, 10 10 3 4), (11 11 4 1, 11.5 11 4 2, 11 11.5 4 2, 11 11 4 1)))"
+        )
+
+        # Geometry collection
+        self._round_trip_jsonfg_profiles(
+            "GEOMETRYCOLLECTION ZM (POINT ZM (1 2 3 4), LINESTRING ZM (0 0 1 2, 1 1 3 4), POLYGON ZM ((0 0 1 2, 4 0 1 2, 4 4 1 2, 0 4 1 2, 0 0 1 2)))"
         )
 
     def test_jsonfg_crs(self):
@@ -1845,6 +1873,54 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertAlmostEqual(
             j["features"][0]["place"]["coordinates"][1], 5323382, places=0
         )
+
+        # Export to EPSG:3111
+        exporter.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:32632"))
+        j = json.loads(exporter.exportFeatures([f]))
+        self.assertEqual(
+            j["coordRefSys"], "http://www.opengis.net/def/crs/EPSG/0/32632"
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["geometry"]["coordinates"][0], 19, places=0
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["geometry"]["coordinates"][1], 43, places=0
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["place"]["coordinates"][0], 1315042, places=0
+        )
+        self.assertAlmostEqual(
+            j["features"][0]["place"]["coordinates"][1], 4818009, places=0
+        )
+
+        # Loading back the JSON should give us the geometry in 32632
+        features = QgsJsonUtils.stringToFeatureList(json.dumps(j))
+        self.assertEqual(len(features), 1)
+        self.assertTrue(
+            compareWkt(features[0].geometry().asWkt(), "POINT (1315042 4818009)", tol=1)
+        )
+
+    def test_no_geometry_features(self):
+
+        # Test that features with no geometry are exported correctly
+        vl = QgsVectorLayer("NoGeometry?field=name:string", "test", "memory")
+
+        f1 = QgsFeature(vl.fields())
+        f1.setAttribute("name", "Feature 1")
+        f2 = QgsFeature(vl.fields())
+        f2.setAttribute("name", "Feature 2")
+        vl.dataProvider().addFeatures([f1, f2])
+
+        exporter = QgsJsonExporter(vl)
+        exporter.setGeoJsonProfile(Qgis.GeoJsonProfile.JsonFgPlus)
+        j = json.loads(exporter.exportFeatures([f1, f2]))
+
+        self.assertEqual(len(j["features"]), 2)
+
+        self.assertEqual(j["features"][0]["properties"]["name"], "Feature 1")
+        self.assertEqual(j["features"][0]["geometry"], None)
+        self.assertEqual(j["features"][1]["properties"]["name"], "Feature 2")
+        self.assertEqual(j["features"][1]["geometry"], None)
 
 
 if __name__ == "__main__":

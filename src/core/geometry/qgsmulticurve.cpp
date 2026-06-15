@@ -128,6 +128,7 @@ json QgsMultiCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) 
 {
   switch ( profile )
   {
+    case Qgis::GeoJsonProfile::Legacy:
     case Qgis::GeoJsonProfile::Rfc7946:
     {
       json coordinates( json::array() );

@@ -500,7 +500,7 @@ json QgsGeometryCollection::asJsonObject( int precision, Qgis::GeoJsonProfile pr
   json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
-    coordinates.push_back( geom->asJsonObject( precision ) );
+    coordinates.push_back( geom->asJsonObject( precision, profile ) );
   }
   return { { "type", "GeometryCollection" }, { "geometries", coordinates } };
 }

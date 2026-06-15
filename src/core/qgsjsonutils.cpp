@@ -120,9 +120,19 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   const bool requiresCRS84geom = mGeoJsonProfile == Qgis::GeoJsonProfile::Rfc7946 || mGeoJsonProfile == Qgis::GeoJsonProfile::JsonFgPlus;
 
   QgsGeometry geom = feature.geometry();
-  const bool includeGeometryInformation { !geom.isNull() && mIncludeGeometry };
 
-  bool featureHasM { QgsWkbTypes::hasM( geom.wkbType() ) };
+  const bool includeGeometryInformation { !geom.isNull() && mIncludeGeometry };
+  const Qgis::WkbType flatType = QgsWkbTypes::flatType( feature.geometry().wkbType() );
+  const bool featureHasM { QgsWkbTypes::hasM( geom.wkbType() ) };
+  const bool mainGeometryIsRfc7946Compliant {
+    !featureHasM
+    && destinationCrsIsRfc7946Compliant
+    && flatType != Qgis::WkbType::CircularString
+    && flatType != Qgis::WkbType::CompoundCurve
+    && flatType != Qgis::WkbType::CurvePolygon
+    && flatType != Qgis::WkbType::MultiCurve
+    && flatType != Qgis::WkbType::MultiSurface
+  };
 
 
   json featureJson {
@@ -218,7 +228,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       case Qgis::GeoJsonProfile::Rfc7946:
       case Qgis::GeoJsonProfile::Legacy:
       {
-        if ( QgsWkbTypes::flatType( geom.wkbType() ) != Qgis::WkbType::Point )
+        if ( flatType != Qgis::WkbType::Point )
         {
           const QgsRectangle box = geom.boundingBox();
           featureJson["bbox"] = { qgsRound( box.xMinimum(), mPrecision ), qgsRound( box.yMinimum(), mPrecision ), qgsRound( box.xMaximum(), mPrecision ), qgsRound( box.yMaximum(), mPrecision ) };
@@ -228,21 +238,30 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       }
       case Qgis::GeoJsonProfile::JsonFgPlus:
       {
-        featureJson["geometry"] = transformedCRS84Geom.asJsonObject( mPrecision, Qgis::GeoJsonProfile::Rfc7946 );
-        [[fallthrough]];
-      }
-      case Qgis::GeoJsonProfile::JsonFg:
-      {
+        // See: https://docs.ogc.org/is/21-045r1/21-045r1.html#_use_of_geometry_andor_place
         // If the geometry is a valid GeoJSON geometry (that is, conformant to the GeoJSON RFC7946 specification),
         // the geometry is encoded as the value of the "geometry" member. The "place" member then has the value null or is omitted.
-        const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom.wkbType() );
-        if ( featureHasM
-             || !destinationCrsIsRfc7946Compliant
-             || ( flatType == Qgis::WkbType::CircularString || flatType == Qgis::WkbType::CompoundCurve || flatType == Qgis::WkbType::CurvePolygon || flatType == Qgis::WkbType::MultiCurve || flatType == Qgis::WkbType::MultiSurface ) )
+
+        // PLUS version: always add the fallback geometry as "geometry" member, so that the output is always compliant with RFC7946.
+        // If the geometry is not compliant with RFC7946 also add the original geometry as "place" member.
+        featureJson["geometry"] = transformedCRS84Geom.asJsonObject( mPrecision, Qgis::GeoJsonProfile::Rfc7946 );
+
+        if ( !mainGeometryIsRfc7946Compliant )
         {
           featureJson["place"] = geom.asJsonObject( mPrecision, mGeoJsonProfile );
         }
-        else if ( mGeoJsonProfile != Qgis::GeoJsonProfile::JsonFgPlus )
+        break;
+      }
+      case Qgis::GeoJsonProfile::JsonFg:
+      {
+        // See: https://docs.ogc.org/is/21-045r1/21-045r1.html#_use_of_geometry_andor_place
+        // Add "geometry" or "place" depending on whether the geometry is compliant with RFC7946 or not.
+        // In the latter case, the "geometry" member is omitted.
+        if ( !mainGeometryIsRfc7946Compliant )
+        {
+          featureJson["place"] = geom.asJsonObject( mPrecision, mGeoJsonProfile );
+        }
+        else
         {
           featureJson["geometry"] = geom.asJsonObject( mPrecision, mGeoJsonProfile );
         }
@@ -346,7 +365,6 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features, int ind
 json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features ) const
 {
   json data { { "type", "FeatureCollection" }, { "features", json::array() } };
-  QgsJsonUtils::addCrsInfo( data, mDestinationCrs, mGeoJsonProfile );
   const bool omitCollectionLevelInformation = mOmitCollectionLevelInformation;
   mOmitCollectionLevelInformation = true;
   switch ( mGeoJsonProfile )
@@ -364,12 +382,13 @@ json QgsJsonExporter::exportFeaturesToJsonObject( const QgsFeatureList &features
     case Qgis::GeoJsonProfile::JsonFgPlus:
     {
       json conformsTo = json::array( { { "http://www.opengis.net/spec/json-fg-1/1.0/conf/core" } } );
-
+      QgsJsonUtils::addCrsInfo( data, mDestinationCrs, mGeoJsonProfile );
       bool hasCircularArcs = false;
       bool hasMeasure = false;
       for ( const QgsFeature &feature : features )
       {
-        const Qgis::WkbType flatType = QgsWkbTypes::flatType( feature.geometry().wkbType() );
+        const QgsGeometry geom = feature.geometry();
+        const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom.wkbType() );
         if ( flatType == Qgis::WkbType::CircularString || flatType == Qgis::WkbType::CompoundCurve || flatType == Qgis::WkbType::CurvePolygon )
         {
           hasCircularArcs = true;
@@ -1303,6 +1322,7 @@ void QgsJsonUtils::addCrsInfo( json &value, const QgsCoordinateReferenceSystem &
 
   switch ( profile )
   {
+    case Qgis::GeoJsonProfile::Legacy:
     case Qgis::GeoJsonProfile::Rfc7946:
     {
       value["crs"]["type"] = "name";
