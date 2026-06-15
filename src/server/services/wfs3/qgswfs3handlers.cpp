@@ -211,14 +211,14 @@ json QgsWfs3AbstractItemsHandler::relatedFeatureReference(
 {
   switch ( relAs )
   {
-    case QgsServerOgcApi::Profile::REL_AS_URI:
-    case QgsServerOgcApi::Profile::REL_AS_LINK:
+    case QgsServerOgcApi::Profile::RelAsUri:
+    case QgsServerOgcApi::Profile::RelAsLink:
     {
       // Build the URI calling uri()
       const QMap<QString, QVariant> fieldValueMap { { referencedInfo.referencedFieldOapifIdentifier, referencedFeatureValue } };
       const std::string uriStr = uri( referencedInfo.referencedLayerOapifIdentifier, fieldValueMap, context ).toStdString();
 
-      if ( relAs == QgsServerOgcApi::Profile::REL_AS_LINK )
+      if ( relAs == QgsServerOgcApi::Profile::RelAsLink )
       {
         return { { "title", "Related feature from layer '" + referencedInfo.referencedLayerOapifIdentifier.toStdString() + "'" }, { "href", uriStr } };
       }
@@ -227,7 +227,7 @@ json QgsWfs3AbstractItemsHandler::relatedFeatureReference(
         return uriStr;
       }
     }
-    case QgsServerOgcApi::Profile::REL_AS_KEY:
+    case QgsServerOgcApi::Profile::RelAsKey:
     default:
       return QgsJsonUtils::jsonFromVariant( referencedFeatureValue );
   }
@@ -1749,12 +1749,12 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
 
   if ( hasReferencedObjects )
   {
-    if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_URI ) )
-      relAs = QgsServerOgcApi::Profile::REL_AS_URI;
-    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_LINK ) )
-      relAs = QgsServerOgcApi::Profile::REL_AS_LINK;
-    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_KEY ) )
-      relAs = QgsServerOgcApi::Profile::REL_AS_KEY;
+    if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsUri ) )
+      relAs = QgsServerOgcApi::Profile::RelAsUri;
+    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsLink ) )
+      relAs = QgsServerOgcApi::Profile::RelAsLink;
+    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsKey ) )
+      relAs = QgsServerOgcApi::Profile::RelAsKey;
   }
 
   // Exporter for JSON output
@@ -2719,12 +2719,12 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
     if ( hasReferencedObjects )
     {
-      if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_URI ) )
-        relAs = QgsServerOgcApi::Profile::REL_AS_URI;
-      else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_LINK ) )
-        relAs = QgsServerOgcApi::Profile::REL_AS_LINK;
-      else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::REL_AS_KEY ) )
-        relAs = QgsServerOgcApi::Profile::REL_AS_KEY;
+      if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsUri ) )
+        relAs = QgsServerOgcApi::Profile::RelAsUri;
+      else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsLink ) )
+        relAs = QgsServerOgcApi::Profile::RelAsLink;
+      else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsKey ) )
+        relAs = QgsServerOgcApi::Profile::RelAsKey;
 
       if ( relAs != QgsServerOgcApi::Profile::NONE )
       {

@@ -24,18 +24,18 @@ QgsServerOgcApi.XML = QgsServerOgcApi.ContentType.XML
 QgsServerOgcApi.FLATGEOBUF = QgsServerOgcApi.ContentType.FLATGEOBUF
 QgsServerOgcApi.ContentType.baseClass = QgsServerOgcApi
 # monkey patching scoped based enum
-QgsServerOgcApi.Profile.NONE.__doc__ = "No profile"
-QgsServerOgcApi.Profile.RFC7946.__doc__ = "GeoJSON profile according to RFC7946"
-QgsServerOgcApi.Profile.REL_AS_LINK.__doc__ = "JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link"
-QgsServerOgcApi.Profile.REL_AS_KEY.__doc__ = "JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key"
-QgsServerOgcApi.Profile.REL_AS_URI.__doc__ = "JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri"
-QgsServerOgcApi.Profile.__doc__ = """
+QgsServerOgcApi.Profile.None.__doc__ = "No profile"
+QgsServerOgcApi.Profile.Rfc7946.__doc__ = "GeoJSON profile according to RFC7946"
+QgsServerOgcApi.Profile.RelAsLink.__doc__ = "JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link"
+QgsServerOgcApi.Profile.RelAsKey.__doc__ = "JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key"
+QgsServerOgcApi.Profile.RelAsUri.__doc__ = "JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri"
+QgsServerOgcApi.Profile.__doc__ = """JSON profile
 
-* ``NONE``: No profile
-* ``RFC7946``: GeoJSON profile according to RFC7946
-* ``REL_AS_LINK``: JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
-* ``REL_AS_KEY``: JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
-* ``REL_AS_URI``: JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
+* ``None``: No profile
+* ``Rfc7946``: GeoJSON profile according to RFC7946
+* ``RelAsLink``: JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
+* ``RelAsKey``: JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
+* ``RelAsUri``: JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
 
 """
 # --
