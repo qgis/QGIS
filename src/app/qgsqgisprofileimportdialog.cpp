@@ -25,6 +25,7 @@
 #include <QLineEdit>
 #include <QListWidget>
 #include <QPushButton>
+#include <QString>
 #include <QVBoxLayout>
 
 using namespace Qt::StringLiterals;
@@ -46,7 +47,8 @@ QgsQgisProfileImportDialog::QgsQgisProfileImportDialog( const QList<QgsQgisProfi
   title->setFont( titleFont );
   layout->addWidget( title );
 
-  QLabel *description = new QLabel( tr( "The import copies QGIS preferences, user databases, authentication data, Python plugins, templates, scripts, styles, fonts, palettes, SVGs, and plugin enabled state." ), this );
+  QLabel *description
+    = new QLabel( tr( "The import copies QGIS preferences, user databases, authentication data, Python plugins, templates, scripts, styles, fonts, palettes, SVGs, and plugin enabled state." ), this );
   description->setWordWrap( true );
   layout->addWidget( description );
 

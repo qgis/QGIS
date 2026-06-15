@@ -34,18 +34,18 @@ class APP_EXPORT QgsQgisProfileImporter
   public:
     struct Candidate
     {
-      QString profileName;
-      QString profilePath;
-      QString sourceRoot;
-      QString sourceVersionLabel;
-      int pluginCount = 0;
+        QString profileName;
+        QString profilePath;
+        QString sourceRoot;
+        QString sourceVersionLabel;
+        int pluginCount = 0;
     };
 
     struct ImportResult
     {
-      QStringList importedProfileNames;
-      QString activeProfileName;
-      QgsError errors;
+        QStringList importedProfileNames;
+        QString activeProfileName;
+        QgsError errors;
     };
 
     static QList<Candidate> detectCandidates( const QString &configLocalStorageLocation, const QString &targetRootProfileFolder );

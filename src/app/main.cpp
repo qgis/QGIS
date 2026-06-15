@@ -1168,7 +1168,8 @@ int main( int argc, char *argv[] )
       }
       else
       {
-        QMessageBox::warning( nullptr, QObject::tr( "Import QGIS Environment" ), QObject::tr( "Strata could not import the selected QGIS profile data.\n\n%1" ).arg( importResult.errors.message( QgsErrorMessage::Text ) ) );
+        QMessageBox::
+          warning( nullptr, QObject::tr( "Import QGIS Environment" ), QObject::tr( "Strata could not import the selected QGIS profile data.\n\n%1" ).arg( importResult.errors.message( QgsErrorMessage::Text ) ) );
         QgsQgisProfileImporter::markFirstRunImportDeclined( rootProfileFolder );
       }
     }

@@ -26,6 +26,7 @@
 #include <QObject>
 #include <QSet>
 #include <QSettings>
+#include <QString>
 #include <QStringList>
 #include <QUuid>
 
@@ -34,185 +35,185 @@ using namespace Qt::StringLiterals;
 namespace
 {
 
-const QString IMPORT_TAG = QStringLiteral( "Strata QGIS profile import" );
+  const QString IMPORT_TAG = u"Strata QGIS profile import"_s;
 
-QString canonicalOrAbsolutePath( const QString &path )
-{
-  const QFileInfo info( path );
-  const QString canonicalPath = info.canonicalFilePath();
-  if ( !canonicalPath.isEmpty() )
-    return QDir::cleanPath( canonicalPath );
-
-  return QDir::cleanPath( info.absoluteFilePath() );
-}
-
-QString profilesIniPath( const QString &rootProfileFolder )
-{
-  return QDir( rootProfileFolder ).filePath( u"profiles.ini"_s );
-}
-
-QString targetSettingsFileName()
-{
-  QString applicationName = QCoreApplication::applicationName();
-  if ( applicationName.isEmpty() )
-    applicationName = QString::fromLatin1( QgsApplication::QGIS_APPLICATION_NAME );
-
-  return applicationName + u".ini"_s;
-}
-
-QString cleanProfileName( QString name )
-{
-  name = name.trimmed();
-  name.replace( '/', '_' );
-  name.replace( '\\', '_' );
-  if ( name.isEmpty() )
-    name = u"default"_s;
-
-  return name;
-}
-
-int countPythonPlugins( const QString &profilePath )
-{
-  const QDir pluginsDir( QDir( profilePath ).filePath( u"python/plugins"_s ) );
-  if ( !pluginsDir.exists() )
-    return 0;
-
-  return pluginsDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ).size();
-}
-
-bool containsCandidateName( const QList<QgsQgisProfileImporter::Candidate> &candidates, const QString &profileName, const QString &sourceRoot = QString() )
-{
-  for ( const QgsQgisProfileImporter::Candidate &candidate : candidates )
+  QString canonicalOrAbsolutePath( const QString &path )
   {
-    if ( candidate.profileName == profileName && ( sourceRoot.isEmpty() || canonicalOrAbsolutePath( candidate.sourceRoot ) == canonicalOrAbsolutePath( sourceRoot ) ) )
-      return true;
+    const QFileInfo info( path );
+    const QString canonicalPath = info.canonicalFilePath();
+    if ( !canonicalPath.isEmpty() )
+      return QDir::cleanPath( canonicalPath );
+
+    return QDir::cleanPath( info.absoluteFilePath() );
   }
 
-  return false;
-}
-
-QString sourceProfilesSetting( const QString &sourceRoot, const QString &key )
-{
-  QSettings settings( profilesIniPath( sourceRoot ), QSettings::IniFormat );
-  return settings.value( key ).toString();
-}
-
-QString sourceSelectionPolicy( const QString &sourceRoot )
-{
-  QSettings settings( profilesIniPath( sourceRoot ), QSettings::IniFormat );
-  return settings.value( u"/core/selectionPolicy"_s ).toString();
-}
-
-QStringList copyExcludePatterns()
-{
-  return {
-    u".*\\b__pycache__$"_s,
-    u".*\\.[pP][yY][cC]$"_s,
-    u".*[\\\\/]cache$"_s,
-    u".*[\\\\/]previewImages$"_s,
-    u".*[\\\\/]gdal_pam$"_s,
-  };
-}
-
-bool prepareSettingsFile( const QString &profilePath, QString *settingsPath, QgsError *errors )
-{
-  QDir qgisSettingsDir( QDir( profilePath ).filePath( u"QGIS"_s ) );
-  if ( !qgisSettingsDir.exists() && !qgisSettingsDir.mkpath( "." ) )
+  QString profilesIniPath( const QString &rootProfileFolder )
   {
-    if ( errors )
-      errors->append( QObject::tr( "Cannot create settings folder for imported profile: %1" ).arg( qgisSettingsDir.path() ), IMPORT_TAG );
+    return QDir( rootProfileFolder ).filePath( u"profiles.ini"_s );
+  }
+
+  QString targetSettingsFileName()
+  {
+    QString applicationName = QCoreApplication::applicationName();
+    if ( applicationName.isEmpty() )
+      applicationName = QString::fromLatin1( QgsApplication::QGIS_APPLICATION_NAME );
+
+    return applicationName + u".ini"_s;
+  }
+
+  QString cleanProfileName( QString name )
+  {
+    name = name.trimmed();
+    name.replace( '/', '_' );
+    name.replace( '\\', '_' );
+    if ( name.isEmpty() )
+      name = u"default"_s;
+
+    return name;
+  }
+
+  int countPythonPlugins( const QString &profilePath )
+  {
+    const QDir pluginsDir( QDir( profilePath ).filePath( u"python/plugins"_s ) );
+    if ( !pluginsDir.exists() )
+      return 0;
+
+    return pluginsDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ).size();
+  }
+
+  bool containsCandidateName( const QList<QgsQgisProfileImporter::Candidate> &candidates, const QString &profileName, const QString &sourceRoot = QString() )
+  {
+    for ( const QgsQgisProfileImporter::Candidate &candidate : candidates )
+    {
+      if ( candidate.profileName == profileName && ( sourceRoot.isEmpty() || canonicalOrAbsolutePath( candidate.sourceRoot ) == canonicalOrAbsolutePath( sourceRoot ) ) )
+        return true;
+    }
+
     return false;
   }
 
-  const QString targetIniPath = qgisSettingsDir.filePath( targetSettingsFileName() );
-  if ( QFile::exists( targetIniPath ) )
+  QString sourceProfilesSetting( const QString &sourceRoot, const QString &key )
   {
-    if ( settingsPath )
-      *settingsPath = targetIniPath;
-    return true;
+    QSettings settings( profilesIniPath( sourceRoot ), QSettings::IniFormat );
+    return settings.value( key ).toString();
   }
 
-  const QStringList candidateSettingsFiles {
-    qgisSettingsDir.filePath( u"QGIS4.ini"_s ),
-    qgisSettingsDir.filePath( u"QGIS3.ini"_s ),
-  };
-
-  for ( const QString &candidatePath : candidateSettingsFiles )
+  QString sourceSelectionPolicy( const QString &sourceRoot )
   {
-    if ( candidatePath == targetIniPath || !QFile::exists( candidatePath ) )
-      continue;
+    QSettings settings( profilesIniPath( sourceRoot ), QSettings::IniFormat );
+    return settings.value( u"/core/selectionPolicy"_s ).toString();
+  }
 
-    if ( QFile::rename( candidatePath, targetIniPath ) )
+  QStringList copyExcludePatterns()
+  {
+    return {
+      u".*\\b__pycache__$"_s,
+      u".*\\.[pP][yY][cC]$"_s,
+      u".*[\\\\/]cache$"_s,
+      u".*[\\\\/]previewImages$"_s,
+      u".*[\\\\/]gdal_pam$"_s,
+    };
+  }
+
+  bool prepareSettingsFile( const QString &profilePath, QString *settingsPath, QgsError *errors )
+  {
+    QDir qgisSettingsDir( QDir( profilePath ).filePath( u"QGIS"_s ) );
+    if ( !qgisSettingsDir.exists() && !qgisSettingsDir.mkpath( "." ) )
+    {
+      if ( errors )
+        errors->append( QObject::tr( "Cannot create settings folder for imported profile: %1" ).arg( qgisSettingsDir.path() ), IMPORT_TAG );
+      return false;
+    }
+
+    const QString targetIniPath = qgisSettingsDir.filePath( targetSettingsFileName() );
+    if ( QFile::exists( targetIniPath ) )
     {
       if ( settingsPath )
         *settingsPath = targetIniPath;
       return true;
     }
 
-    if ( errors )
-      errors->append( QObject::tr( "Cannot rename settings file %1 to %2" ).arg( candidatePath, targetIniPath ), IMPORT_TAG );
-    return false;
+    const QStringList candidateSettingsFiles {
+      qgisSettingsDir.filePath( u"QGIS4.ini"_s ),
+      qgisSettingsDir.filePath( u"QGIS3.ini"_s ),
+    };
+
+    for ( const QString &candidatePath : candidateSettingsFiles )
+    {
+      if ( candidatePath == targetIniPath || !QFile::exists( candidatePath ) )
+        continue;
+
+      if ( QFile::rename( candidatePath, targetIniPath ) )
+      {
+        if ( settingsPath )
+          *settingsPath = targetIniPath;
+        return true;
+      }
+
+      if ( errors )
+        errors->append( QObject::tr( "Cannot rename settings file %1 to %2" ).arg( candidatePath, targetIniPath ), IMPORT_TAG );
+      return false;
+    }
+
+    QFile newSettingsFile( targetIniPath );
+    if ( !newSettingsFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+      if ( errors )
+        errors->append( QObject::tr( "Cannot create settings file for imported profile: %1" ).arg( targetIniPath ), IMPORT_TAG );
+      return false;
+    }
+
+    newSettingsFile.close();
+    if ( settingsPath )
+      *settingsPath = targetIniPath;
+    return true;
   }
 
-  QFile newSettingsFile( targetIniPath );
-  if ( !newSettingsFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  void replaceProfilePathsInSettings( const QString &settingsPath, const QString &sourceProfilePath, const QString &targetProfilePath )
   {
-    if ( errors )
-      errors->append( QObject::tr( "Cannot create settings file for imported profile: %1" ).arg( targetIniPath ), IMPORT_TAG );
-    return false;
+    const QString cleanSourcePath = QDir::cleanPath( QFileInfo( sourceProfilePath ).absoluteFilePath() );
+    const QString cleanTargetPath = QDir::cleanPath( QFileInfo( targetProfilePath ).absoluteFilePath() );
+
+    QgsFileUtils::replaceTextInFile( settingsPath, cleanSourcePath, cleanTargetPath );
+    QgsFileUtils::replaceTextInFile( settingsPath, QDir::toNativeSeparators( cleanSourcePath ), QDir::toNativeSeparators( cleanTargetPath ) );
   }
 
-  newSettingsFile.close();
-  if ( settingsPath )
-    *settingsPath = targetIniPath;
-  return true;
-}
+  void writeImportMarkers( const QString &settingsPath, const QgsQgisProfileImporter::Candidate &candidate )
+  {
+    QSettings settings( settingsPath, QSettings::IniFormat );
+    settings.remove( u"/PythonPlugins/watchDogTimestamp"_s );
+    settings.remove( u"PythonPlugins/watchDogTimestamp"_s );
+    settings.remove( u"/PythonPlugins/watchDog"_s );
+    settings.remove( u"PythonPlugins/watchDog"_s );
+    settings.remove( u"/Plugins/watchDogTimestamp"_s );
+    settings.remove( u"Plugins/watchDogTimestamp"_s );
 
-void replaceProfilePathsInSettings( const QString &settingsPath, const QString &sourceProfilePath, const QString &targetProfilePath )
-{
-  const QString cleanSourcePath = QDir::cleanPath( QFileInfo( sourceProfilePath ).absoluteFilePath() );
-  const QString cleanTargetPath = QDir::cleanPath( QFileInfo( targetProfilePath ).absoluteFilePath() );
+    settings.setValue( u"migration/migrated_from_3"_s, true );
+    settings.setValue( u"strata/qgisImport/imported"_s, true );
+    settings.setValue( u"strata/qgisImport/sourceProfileName"_s, QFileInfo( candidate.profilePath ).fileName() );
+    settings.setValue( u"strata/qgisImport/sourceProfilePath"_s, candidate.profilePath );
+    settings.setValue( u"strata/qgisImport/sourceVersion"_s, candidate.sourceVersionLabel );
+    settings.setValue( u"strata/qgisImport/importedAt"_s, QDateTime::currentDateTimeUtc().toString( Qt::ISODate ) );
+    settings.sync();
+  }
 
-  QgsFileUtils::replaceTextInFile( settingsPath, cleanSourcePath, cleanTargetPath );
-  QgsFileUtils::replaceTextInFile( settingsPath, QDir::toNativeSeparators( cleanSourcePath ), QDir::toNativeSeparators( cleanTargetPath ) );
-}
+  bool postProcessProfile( const QgsQgisProfileImporter::Candidate &candidate, const QString &stagedProfilePath, const QString &finalProfilePath, QgsError *errors )
+  {
+    QString settingsPath;
+    if ( !prepareSettingsFile( stagedProfilePath, &settingsPath, errors ) )
+      return false;
 
-void writeImportMarkers( const QString &settingsPath, const QgsQgisProfileImporter::Candidate &candidate )
-{
-  QSettings settings( settingsPath, QSettings::IniFormat );
-  settings.remove( u"/PythonPlugins/watchDogTimestamp"_s );
-  settings.remove( u"PythonPlugins/watchDogTimestamp"_s );
-  settings.remove( u"/PythonPlugins/watchDog"_s );
-  settings.remove( u"PythonPlugins/watchDog"_s );
-  settings.remove( u"/Plugins/watchDogTimestamp"_s );
-  settings.remove( u"Plugins/watchDogTimestamp"_s );
+    replaceProfilePathsInSettings( settingsPath, candidate.profilePath, finalProfilePath );
+    writeImportMarkers( settingsPath, candidate );
+    return true;
+  }
 
-  settings.setValue( u"migration/migrated_from_3"_s, true );
-  settings.setValue( u"strata/qgisImport/imported"_s, true );
-  settings.setValue( u"strata/qgisImport/sourceProfileName"_s, QFileInfo( candidate.profilePath ).fileName() );
-  settings.setValue( u"strata/qgisImport/sourceProfilePath"_s, candidate.profilePath );
-  settings.setValue( u"strata/qgisImport/sourceVersion"_s, candidate.sourceVersionLabel );
-  settings.setValue( u"strata/qgisImport/importedAt"_s, QDateTime::currentDateTimeUtc().toString( Qt::ISODate ) );
-  settings.sync();
-}
-
-bool postProcessProfile( const QgsQgisProfileImporter::Candidate &candidate, const QString &stagedProfilePath, const QString &finalProfilePath, QgsError *errors )
-{
-  QString settingsPath;
-  if ( !prepareSettingsFile( stagedProfilePath, &settingsPath, errors ) )
-    return false;
-
-  replaceProfilePathsInSettings( settingsPath, candidate.profilePath, finalProfilePath );
-  writeImportMarkers( settingsPath, candidate );
-  return true;
-}
-
-void appendErrors( QgsError &destination, const QgsError &source )
-{
-  const QList<QgsErrorMessage> messages = source.messageList();
-  for ( const QgsErrorMessage &message : messages )
-    destination.append( message );
-}
+  void appendErrors( QgsError &destination, const QgsError &source )
+  {
+    const QList<QgsErrorMessage> messages = source.messageList();
+    for ( const QgsErrorMessage &message : messages )
+      destination.append( message );
+  }
 
 } // namespace
 
@@ -303,10 +304,10 @@ QgsQgisProfileImporter::ImportResult QgsQgisProfileImporter::importProfiles( con
 
   struct PendingImport
   {
-    Candidate candidate;
-    QString targetName;
-    QString stagedPath;
-    QString finalPath;
+      Candidate candidate;
+      QString targetName;
+      QString stagedPath;
+      QString finalPath;
   };
 
   QList<PendingImport> pendingImports;
@@ -436,9 +437,7 @@ QString QgsQgisProfileImporter::uniqueProfileName( const QString &requestedName,
     reserved.insert( reservedName );
   const QString baseName = cleanProfileName( requestedName );
 
-  auto isAvailable = [&]( const QString &name ) {
-    return !reserved.contains( name ) && !QFileInfo::exists( targetRoot.filePath( name ) );
-  };
+  auto isAvailable = [&]( const QString &name ) { return !reserved.contains( name ) && !QFileInfo::exists( targetRoot.filePath( name ) ); };
 
   if ( isAvailable( baseName ) )
     return baseName;

@@ -9,8 +9,8 @@
 
 #include <QCoreApplication>
 #include <QFileInfo>
-#include <QSettings>
 #include <QScopeGuard>
+#include <QSettings>
 #include <QString>
 #include <QTemporaryDir>
 
