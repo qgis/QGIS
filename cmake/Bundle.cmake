@@ -10,6 +10,7 @@ if(WIN32 AND NOT UNIX)
   set (CREATE_NSIS FALSE CACHE BOOL "Create an installer using NSIS")
 endif()
 set (CREATE_ZIP FALSE CACHE BOOL "Create a ZIP package")
+set (STRATA_WINDOWS_CODE_SIGN FALSE CACHE BOOL "Sign Windows packages using Azure Artifact Signing")
 
 # Do not warn about runtime libs when building using VS Express
 if(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
@@ -45,6 +46,21 @@ if(CREATE_ZIP)
   list(APPEND CPACK_GENERATOR "ZIP")
 endif()
 
+if(WIN32 AND STRATA_WINDOWS_CODE_SIGN)
+  configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake/StrataWindowsCodeSignPreBuild.cmake.in"
+    "${CMAKE_BINARY_DIR}/StrataWindowsCodeSignPreBuild.cmake"
+    @ONLY
+  )
+  configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake/StrataWindowsCodeSignPostBuild.cmake.in"
+    "${CMAKE_BINARY_DIR}/StrataWindowsCodeSignPostBuild.cmake"
+    @ONLY
+  )
+  list(APPEND CPACK_PRE_BUILD_SCRIPTS "${CMAKE_BINARY_DIR}/StrataWindowsCodeSignPreBuild.cmake")
+  list(APPEND CPACK_POST_BUILD_SCRIPTS "${CMAKE_BINARY_DIR}/StrataWindowsCodeSignPostBuild.cmake")
+  message(STATUS "   + Windows code signing              YES")
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND QGIS_MAC_BUNDLE)
   set(CREATE_DMG FALSE CACHE BOOL "Create a dmg bundle")

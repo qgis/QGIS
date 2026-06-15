@@ -35,25 +35,11 @@ All packages are available from **[Releases](../../releases/latest)**.
 
 | Platform | Download | What to do next |
 |---|---|---|
-| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Double-click → drag Strata to Applications. See *Bypass the macOS warning* below. |
-| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Extract the folder anywhere, open `bin/`, and double-click the Strata executable. See *Bypass SmartScreen*. |
+| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Signed and notarized universal build. Double-click → drag Strata to Applications. |
+| 🪟 **Windows 10/11** (x64) | `*-win64.exe`, `*-win64.zip` | Signed NSIS installer, plus portable ZIP with signed binaries. Verify the publisher before running. |
 | 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x Strata-*.AppImage` then double-click. No installation required. |
 
-> ⚠️ Packages are **not signed**. This is expected. On first launch, your OS will show a warning — follow the steps below. It is a one-time procedure.
-
-### 🍎 Bypass the macOS warning (Gatekeeper)
-
-After dragging `Strata.app` to Applications, open Terminal and paste:
-
-```
-xattr -d com.apple.quarantine "/Applications/Strata.app"
-```
-
-Then open the app normally.
-
-### 🪟 Bypass SmartScreen on Windows
-
-On first launch, Windows may show *"Windows protected your PC"*. Click **More info** → **Run anyway**.
+> ⚠️ Linux AppImage builds are currently not signed. Windows builds are Authenticode-signed, but SmartScreen reputation may still warm up for new releases.
 
 ### 🐧 AppImage on Linux
 

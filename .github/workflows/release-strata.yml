@@ -54,11 +54,10 @@ jobs:
             | Sistema | File | Note |
             |---|---|---|
             | **macOS** (Intel + Apple Silicon) | `*.dmg` | Universal binary, **firmato Apple Developer ID + notarizzato**. Doppio click sul DMG, trascina l'app in Applications, lancia. |
-            | **Windows** (x64) | `*-win64.zip`, `*-win64.exe` | ZIP portable oppure installer NSIS. |
+            | **Windows** (x64) | `*-win64.exe`, `*-win64.zip` | Installer NSIS firmato Authenticode; ZIP portable con binari firmati. Verifica il publisher prima di avviare. |
             | **Linux** (x86_64) | `*.AppImage` | `chmod +x` poi doppio click. |
 
-            > ⚠️ I pacchetti **Windows** e **Linux** non sono firmati. Al primo avvio l'OS mostra un warning.
-            > Istruzioni dettagliate per bypassarlo nel [README](https://github.com/${{ github.repository }}#download).
+            > ⚠️ Il pacchetto **Linux** non è ancora firmato. Su Windows la firma è presente, ma la reputazione SmartScreen può richiedere alcuni download reali prima di stabilizzarsi.
 
             ## Configurazione AI
 

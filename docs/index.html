@@ -408,7 +408,7 @@
         <span class="section-label" data-i18n="download.label">Download</span>
         <h2 class="section-title" data-i18n="download.title">Scarica Strata</h2>
         <p class="section-subtitle" data-i18n="download.subtitle">
-          Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.
+          Binari precompilati da GitHub Releases. macOS e Windows sono firmati; Linux AppImage richiede ancora verifica manuale.
         </p>
         <p class="download-status" data-release-status data-i18n="download.status.fallback">Releases GitHub</p>
         <a href="https://github.com/francemazzi/strata/releases" class="btn btn-primary btn-lg" data-release-link data-i18n="download.cta">Vai alle Releases</a>
@@ -420,7 +420,7 @@
           <h3 data-i18n="download.macos.title">macOS</h3>
           <p class="download-sub" data-i18n="download.macos.sub">Intel + Apple Silicon</p>
           <p class="download-file" data-download-file="macos" data-i18n="download.macos.file">File .dmg</p>
-          <p class="download-note" data-i18n="download.macos.note">Trascina Strata in Applicazioni. Poi: xattr -d com.apple.quarantine "/Applications/Strata.app"</p>
+          <p class="download-note" data-i18n="download.macos.note">Build universal firmata e notarizzata. Trascina Strata in Applicazioni e avvia.</p>
           <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="macos" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
@@ -428,8 +428,8 @@
           <div class="download-os" aria-hidden="true">🪟</div>
           <h3 data-i18n="download.windows.title">Windows</h3>
           <p class="download-sub" data-i18n="download.windows.sub">10/11 x64</p>
-          <p class="download-file" data-download-file="windows" data-i18n="download.windows.file">File -win64.zip</p>
-          <p class="download-note" data-i18n="download.windows.note">Estrai ovunque, lancia l'eseguibile Strata. SmartScreen: Maggiori informazioni → Esegui comunque.</p>
+          <p class="download-file" data-download-file="windows" data-i18n="download.windows.file">File -win64.exe</p>
+          <p class="download-note" data-i18n="download.windows.note">Installer NSIS firmato Authenticode. Verifica il publisher; la reputazione SmartScreen può richiedere tempo.</p>
           <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="windows" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 

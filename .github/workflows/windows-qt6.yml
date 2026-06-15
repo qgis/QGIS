@@ -19,6 +19,7 @@ concurrency:
 permissions:
   actions: read
   contents: write
+  id-token: write
   packages: write
 
 env:
@@ -115,6 +116,23 @@ jobs:
         run: choco install nsis -y --no-progress
         shell: bash
 
+      - name: 🔐 Azure login for Windows code signing
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        uses: azure/login@2dd0bbf4064d5a1812889dc200bb8eed2597f82a # v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: 🔏 Prepare Windows code signing tools
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        shell: powershell
+        env:
+          AZURE_ARTIFACT_SIGNING_ENDPOINT: ${{ vars.AZURE_ARTIFACT_SIGNING_ENDPOINT }}
+          AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME: ${{ vars.AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME }}
+          AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME: ${{ vars.AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME }}
+        run: .\scripts\ci\prepare-windows-signing.ps1
+
       - name: 🌱 Install dependencies and generate project files
         shell: bash
         env:
@@ -132,10 +150,12 @@ jobs:
               STRATA_TAG="${GITHUB_REF#refs/tags/}"
             fi
             STRATA_VERSION_OPT="-DSTRATA_VERSION=${STRATA_TAG#strata-v}"
+            CODE_SIGN_OPT='-DSTRATA_WINDOWS_CODE_SIGN=ON'
           else
             APP_NAME_OPT=''
             NSIS_OPT=''
             STRATA_VERSION_OPT=''
+            CODE_SIGN_OPT=''
           fi
 
           VCPKG_OPTS=(
@@ -164,6 +184,7 @@ jobs:
                 ${NSIS_OPT} \
                 ${APP_NAME_OPT} \
                 ${STRATA_VERSION_OPT} \
+                ${CODE_SIGN_OPT} \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
@@ -190,6 +211,16 @@ jobs:
         shell: bash
         run: |
           cmake --build "${{ github.workspace }}/build" --target bundle --config Release
+
+      - name: 🔎 Verify signed Windows release artifacts
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        shell: powershell
+        run: |
+          $files = @(Get-ChildItem -Path "${{ github.workspace }}\build" -File | Where-Object { $_.Name -like "*.exe" -or $_.Name -like "*-win64.zip" } | Select-Object -ExpandProperty FullName)
+          if ($files.Count -eq 0) {
+            throw "No Windows release artifacts found under build/."
+          }
+          .\scripts\ci\sign-windows-artifacts.ps1 -Mode package -PackageFiles $files -VerifyOnly
 
       - name: 📦 Create SDK
         if: ${{ env.IS_STRATA_RELEASE != 'true' }}

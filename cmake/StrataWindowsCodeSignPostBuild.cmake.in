@@ -1,0 +1,29 @@
+if(NOT WIN32)
+  return()
+endif()
+
+set(_strata_sign_script "@CMAKE_SOURCE_DIR@/scripts/ci/sign-windows-artifacts.ps1")
+
+if(NOT EXISTS "${_strata_sign_script}")
+  message(FATAL_ERROR "Windows signing script not found: ${_strata_sign_script}")
+endif()
+
+if(NOT DEFINED CPACK_PACKAGE_FILES OR "${CPACK_PACKAGE_FILES}" STREQUAL "")
+  message(FATAL_ERROR "CPACK_PACKAGE_FILES is not available for Windows package signing")
+endif()
+
+foreach(_strata_sign_env STRATA_SIGNTOOL_PATH STRATA_AZURE_CODESIGN_DLIB_PATH STRATA_AZURE_CODESIGN_METADATA_PATH)
+  if("$ENV{${_strata_sign_env}}" STREQUAL "")
+    message(FATAL_ERROR "Environment variable ${_strata_sign_env} is required for Windows code signing")
+  endif()
+endforeach()
+
+message(STATUS "Signing/verifying Windows package files: ${CPACK_PACKAGE_FILES}")
+execute_process(
+  COMMAND powershell -NoProfile -ExecutionPolicy Bypass -File "${_strata_sign_script}" -Mode package -PackageFiles ${CPACK_PACKAGE_FILES}
+  RESULT_VARIABLE _strata_sign_result
+)
+
+if(NOT _strata_sign_result EQUAL 0)
+  message(FATAL_ERROR "Windows package file signing failed with exit code ${_strata_sign_result}")
+endif()

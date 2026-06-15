@@ -5,7 +5,7 @@
   const RELEASES_API_URL = "https://api.github.com/repos/francemazzi/strata/releases?per_page=20";
   const REQUIRED_RELEASE_ASSETS = {
     macos: /\.dmg$/i,
-    windows: /-win64\.zip$/i,
+    windows: /-win64\.exe$/i,
     linux: /\.AppImage$/i,
   };
 
@@ -203,7 +203,7 @@
       "download.label": "Download",
       "download.title": "Scarica Strata",
       "download.subtitle":
-        "Binari precompilati da GitHub Releases. Pacchetti non firmati — segui le istruzioni una tantum per il tuo OS.",
+        "Binari precompilati da GitHub Releases. macOS e Windows sono firmati; Linux AppImage richiede ancora verifica manuale.",
       "download.cta": "Vai alle Releases",
       "download.status.fallback": "Releases GitHub",
       "download.status.complete": "Ultima release completa: {version}",
@@ -211,12 +211,12 @@
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": "File .dmg",
       "download.macos.note":
-        "Trascina Strata in Applicazioni. Poi: xattr -d com.apple.quarantine \"/Applications/Strata.app\"",
+        "Build universal firmata e notarizzata. Trascina Strata in Applicazioni e avvia.",
       "download.windows.title": "Windows",
       "download.windows.sub": "10/11 x64",
-      "download.windows.file": "File -win64.zip",
+      "download.windows.file": "File -win64.exe",
       "download.windows.note":
-        "Estrai ovunque, lancia l'eseguibile Strata. SmartScreen: Maggiori informazioni → Esegui comunque.",
+        "Installer NSIS firmato Authenticode. Verifica il publisher; la reputazione SmartScreen può richiedere tempo.",
       "download.linux.title": "Linux",
       "download.linux.sub": "x86_64",
       "download.linux.file": "File .AppImage",
@@ -423,7 +423,7 @@
       "download.label": "Download",
       "download.title": "Download Strata",
       "download.subtitle":
-        "Prebuilt binaries from GitHub Releases. Packages are unsigned — follow one-time OS instructions below.",
+        "Prebuilt binaries from GitHub Releases. macOS and Windows are signed; Linux AppImage still requires manual verification.",
       "download.cta": "Go to Releases",
       "download.status.fallback": "GitHub Releases",
       "download.status.complete": "Latest complete release: {version}",
@@ -431,12 +431,12 @@
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": ".dmg file",
       "download.macos.note":
-        "Drag Strata to Applications. Then: xattr -d com.apple.quarantine \"/Applications/Strata.app\"",
+        "Signed and notarized universal build. Drag Strata to Applications and launch.",
       "download.windows.title": "Windows",
       "download.windows.sub": "10/11 x64",
-      "download.windows.file": "-win64.zip file",
+      "download.windows.file": "-win64.exe file",
       "download.windows.note":
-        "Extract anywhere, run the Strata executable. SmartScreen: More info → Run anyway.",
+        "Signed Authenticode NSIS installer. Verify the publisher; SmartScreen reputation can take time to warm up.",
       "download.linux.title": "Linux",
       "download.linux.sub": "x86_64",
       "download.linux.file": ".AppImage file",

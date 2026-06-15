@@ -47,7 +47,7 @@
 
 | Fase | Completamento | Già presente | Gap principali |
 |---:|---:|---|---|
-| 0 Fondamenta | ~30% | Release multi-piattaforma (`release-strata.yml`), macOS sign+notarize in CI, landing page (`docs/`), branding Strata | Demo project bundled, auto-update in-app, telemetria opt-in, onboarding wizard, checksum release, Windows signing |
+| 0 Fondamenta | ~45% | Release multi-piattaforma (`release-strata.yml`), macOS sign+notarize in CI, Windows Azure Artifact Signing in CI, landing page (`docs/`), branding Strata, import completo profili QGIS (`qgsqgisprofileimporter`) | Demo project bundled, auto-update in-app, telemetria opt-in, onboarding AI/provider/privacy/modello, checksum release, dry-run firma Windows |
 | 1 Assistant MVP | ~75% | Dock assistant (`qgsaichatdockwidget`), 5 provider LLM (`qgsaimodelrouter`), 21 tool (`tools/`), Ask/Plan/Agent, `run_python`, safety/trust/audit, review file | Tool GIS nativi (Processing/style/layout/export), risk classification formale, execution log strutturato, modalità Expert |
 | 2 Context Engine | ~60% | RAG locale SQLite (`qgsaiworkspaceindex`), layer chunking, embeddings ONNX, semantic search, privacy consents | Project graph completo, CRS/stili/layout indexing, context packs espliciti, context preview UI |
 | 3 GIS Tab | 0% | — | Intera fase da costruire |
@@ -74,7 +74,7 @@ flowchart LR
 
 1. Tool GIS nativi (`run_processing_algorithm`, `style_layer`, `create_layout`, `export_map`, inspect strutturati).
 2. GIS diff/rollback + risk classification formale.
-3. Completare Fase 0 (demo project, onboarding wizard, telemetria opt-in, auto-update).
+3. Completare Fase 0 (demo project, onboarding AI/provider/privacy/modello, telemetria opt-in, auto-update).
 4. GIS Tab rule-based.
 5. Workflow Composer `.strataflow`.
 
@@ -162,7 +162,7 @@ Strata deve diventare il workspace GIS dove un tecnico può passare da una richi
 
 | Fase | Orizzonte | Obiettivo | Esito atteso | Stato |
 |---:|---:|---|---|---|
-| 0 | 0–4 settimane | Stabilizzare base tecnica e posizionamento | Strata installabile, misurabile, demo ripetibile | `[PARZIALE ~30%]` |
+| 0 | 0–4 settimane | Stabilizzare base tecnica e posizionamento | Strata installabile, misurabile, demo ripetibile | `[PARZIALE ~45%]` |
 | 1 | 1–2 mesi | Chat agentica utile in QGIS | L’assistente esegue task GIS base con sicurezza | `[PARZIALE ~75%]` |
 | 2 | 2–4 mesi | Context Engine | Strata capisce realmente il progetto | `[PARZIALE ~60%]` |
 | 3 | 4–6 mesi | GIS Tab | Suggerimenti automatici contestuali | `[MANCANTE 0%]` |
@@ -174,15 +174,15 @@ Strata deve diventare il workspace GIS dove un tecnico può passare da una richi
 
 ---
 
-# Fase 0 — Fondamenta prodotto e distribuzione [PARZIALE ~30%]
+# Fase 0 — Fondamenta prodotto e distribuzione [PARZIALE ~45%]
 
 ## Obiettivo
 
 Rendere Strata provabile senza attrito, stabile abbastanza per early adopter e misurabile.
 
-**Già fatto:** pipeline release su tag `strata-v*` (`.github/workflows/release-strata.yml`), build macOS/Linux/Windows, firma+notarizzazione macOS in CI (`build-macos-qt6.yml`), landing page (`docs/`), README con setup AI, check versione Strata (`qgsversioninfo.cpp`).
+**Già fatto:** pipeline release su tag `strata-v*` (`.github/workflows/release-strata.yml`), build macOS/Linux/Windows, firma+notarizzazione macOS in CI (`build-macos-qt6.yml`), Windows code signing via Azure Artifact Signing nei workflow release (`windows-qt6.yml`, `windows-release-manual.yml`), landing page (`docs/`), README con setup AI, check versione Strata (`qgsversioninfo.cpp`), import completo ambiente QGIS al primo avvio/manuale con preferenze, profili, plugin Python, auth DB e marker Strata (`qgsqgisprofileimporter`, `qgsqgisprofileimportdialog`).
 
-**Da completare:** demo project bundled, auto-update in-app, telemetria opt-in, onboarding wizard AI, checksum pubblici, Windows code signing, crash reporting Strata-branded.
+**Da completare:** demo project bundled, auto-update in-app, telemetria opt-in, onboarding AI completo per provider/privacy/modello/demo, checksum pubblici, dry-run firma Windows con account Azure configurato, crash reporting Strata-branded.
 
 Questa fase è fondamentale perché un prodotto “alla Cursor” deve essere facile da provare. Se l’utente deve superare warning di sicurezza, installare dipendenze manualmente o leggere troppa documentazione, la crescita individual-led diventa difficile.
 
@@ -190,12 +190,12 @@ Questa fase è fondamentale perché un prodotto “alla Cursor” deve essere fa
 
 | Priorità | Feature | Descrizione | Stato | Implementazione |
 |---|---|---|---|---|
-| P0 | Installer firmati | Firma macOS, Windows code signing, notarizzazione Apple, checksum pubblici | `[PARZIALE]` | macOS CI sign+notarize; Win/Linux non firmati; checksum assenti |
+| P0 | Installer firmati | Firma macOS, Windows code signing, notarizzazione Apple, checksum pubblici | `[PARZIALE]` | macOS CI sign+notarize; Windows Azure Artifact Signing agganciato a CPack/CI; Linux non firmato; checksum assenti; dry-run Azure da fare |
 | P0 | Auto-update | Aggiornamento in-app con canale stable/beta/nightly | `[PARZIALE]` | Check versione + banner welcome (`qgswelcomescreen.cpp`); no install in-app |
 | P0 | Crash reporting opt-in | Log anonimi, errori PyQGIS, errori agent, OS, versione QGIS base | `[PARZIALE]` | Crash handler QGIS upstream (`src/crashhandler/`); no opt-in upload, no campi agent |
 | P0 | Demo project incluso | Progetto QGIS campione con layer, errori CRS, layout, dati tabellari | `[MANCANTE]` | Solo progetti test in `tests_ai/Dati/` (non shipped) |
 | P0 | Telemetria locale/opt-in | Eventi minimi: feature usate, task completati, failure rate | `[MANCANTE]` | — |
-| P1 | First-run onboarding | Config provider AI, privacy mode, scelta modello, progetto demo | `[PARZIALE]` | Banner one-shot (`maybeShowWelcomeBanner`); settings dialog provider |
+| P1 | First-run onboarding | Import ambiente QGIS, config provider AI, privacy mode, scelta modello, progetto demo | `[PARZIALE]` | Import profili QGIS completo al primo avvio e da Welcome/User Profiles; banner one-shot e settings dialog provider; restano wizard AI/demo |
 | P1 | Documentation minima | “5 task che Strata risolve in 5 minuti” | `[PARZIALE]` | README + landing; manca guida operativa |
 | P1 | Benchmark baseline | Misurare tempo utente vs tempo Strata su workflow ripetibili | `[MANCANTE]` | Solo claim illustrativo in landing |
 
@@ -1667,7 +1667,7 @@ Obiettivo: tool GIS nativi, diff/rollback GIS, demo ripetibile.
 ### Sprint 3 — Fase 0 gap critici
 
 - Demo project bundled (`municipality_boundary.gpkg`, `parcels.gpkg`, `land_use.gpkg`, `roads.gpkg` + `.qgz`).
-- First-run onboarding wizard AI (provider → privacy → modello → demo).
+- First-run onboarding AI (provider → privacy → modello → demo; import QGIS già implementato).
 - Checksum SHA256 nelle release GitHub.
 - Guida “5 task in 5 minuti”.
 
@@ -1788,7 +1788,7 @@ Se si dovesse ridurre tutto a 10 feature, ecco lo stato e il focus:
 
 1. Tool GIS nativi + risk classification formale (chiude gap Fase 1).
 2. GIS diff/rollback + execution log strutturato (chiude gap Fase 4).
-3. Demo project + onboarding wizard (chiude gap Fase 0 critici).
+3. Demo project + onboarding AI/provider/privacy/modello (chiude gap Fase 0 critici).
 
 Queste 10 feature creano il loop di valore:
 
@@ -1853,11 +1853,11 @@ utilities
 # 10. Roadmap compatta
 
 ```markdown
-## Phase 0 — Product foundation [PARZIALE ~30%]
-- [PARZIALE] Signed installers (macOS CI only)
+## Phase 0 — Product foundation [PARZIALE ~45%]
+- [PARZIALE] Signed installers (macOS done; Windows Azure signing wired, dry-run pending)
 - [PARZIALE] Auto-update (check versione, no install in-app)
 - [MANCANTE] Demo project
-- [PARZIALE] First-run onboarding (banner only)
+- [PARZIALE] First-run onboarding (import profili QGIS completo; manca wizard AI/demo)
 - [PARZIALE] Crash/log telemetry opt-in (crash handler upstream)
 
 ## Phase 1 — Operational assistant MVP [PARZIALE ~75%]
@@ -1972,7 +1972,7 @@ La priorità vera è:
 
 ```text
 tool GIS nativi + diff/rollback GIS
-→ completare Fase 0 (demo, onboarding)
+→ completare Fase 0 (demo, onboarding AI)
 → GIS Tab
 → workflow riproducibili (.strataflow)
 → verticali
@@ -1987,4 +1987,3 @@ contesto → piano → azione → verifica → diff → output → workflow → 
 ```
 
 può diventare un prodotto realmente differenziato rispetto a una semplice chat dentro QGIS.
-
