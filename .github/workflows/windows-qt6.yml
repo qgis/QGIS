@@ -24,6 +24,7 @@ permissions:
 
 env:
   IS_STRATA_RELEASE: ${{ startsWith(github.ref, 'refs/tags/strata-v') || startsWith(github.event.release.tag_name, 'strata-v') }}
+  WINDOWS_CODESIGN_CONFIGURED: ${{ secrets.AZURE_CLIENT_ID != '' && secrets.AZURE_TENANT_ID != '' && secrets.AZURE_SUBSCRIPTION_ID != '' && vars.AZURE_ARTIFACT_SIGNING_ENDPOINT != '' && vars.AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME != '' && vars.AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME != '' }}
   WINDOWS_RELEASE_SDK_RUN_ID: '26423962164'
   WINDOWS_RELEASE_SDK_ARTIFACT_NAME: qgis-sdk-x64-windows
 
@@ -117,7 +118,7 @@ jobs:
         shell: bash
 
       - name: 🔐 Azure login for Windows code signing
-        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' && env.WINDOWS_CODESIGN_CONFIGURED == 'true' }}
         uses: azure/login@2dd0bbf4064d5a1812889dc200bb8eed2597f82a # v3
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -125,13 +126,19 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: 🔏 Prepare Windows code signing tools
-        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' && env.WINDOWS_CODESIGN_CONFIGURED == 'true' }}
         shell: powershell
         env:
           AZURE_ARTIFACT_SIGNING_ENDPOINT: ${{ vars.AZURE_ARTIFACT_SIGNING_ENDPOINT }}
           AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME: ${{ vars.AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME }}
           AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME: ${{ vars.AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME }}
         run: .\scripts\ci\prepare-windows-signing.ps1
+
+      - name: ⚠️ Windows code signing not configured
+        if: ${{ env.IS_STRATA_RELEASE == 'true' && env.WINDOWS_CODESIGN_CONFIGURED != 'true' }}
+        shell: bash
+        run: |
+          echo "::warning::Windows code signing is disabled because Azure signing secrets/variables are not configured. Release assets will be uploaded unsigned."
 
       - name: 🌱 Install dependencies and generate project files
         shell: bash
@@ -150,7 +157,11 @@ jobs:
               STRATA_TAG="${GITHUB_REF#refs/tags/}"
             fi
             STRATA_VERSION_OPT="-DSTRATA_VERSION=${STRATA_TAG#strata-v}"
-            CODE_SIGN_OPT='-DSTRATA_WINDOWS_CODE_SIGN=ON'
+            if [[ "${WINDOWS_CODESIGN_CONFIGURED}" == "true" ]]; then
+              CODE_SIGN_OPT='-DSTRATA_WINDOWS_CODE_SIGN=ON'
+            else
+              CODE_SIGN_OPT=''
+            fi
           else
             APP_NAME_OPT=''
             NSIS_OPT=''
@@ -213,7 +224,7 @@ jobs:
           cmake --build "${{ github.workspace }}/build" --target bundle --config Release
 
       - name: 🔎 Verify signed Windows release artifacts
-        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        if: ${{ env.IS_STRATA_RELEASE == 'true' && env.WINDOWS_CODESIGN_CONFIGURED == 'true' }}
         shell: powershell
         run: |
           $files = @(Get-ChildItem -Path "${{ github.workspace }}\build" -File | Where-Object { $_.Name -like "*.exe" -or $_.Name -like "*-win64.zip" } | Select-Object -ExpandProperty FullName)
