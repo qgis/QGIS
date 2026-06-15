@@ -349,9 +349,19 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        QByteArray ba = value( key, metaEnum.valueToKeys( static_cast< const int >( defaultValue ) ) ).toString().toUtf8();
-        const char *vs = ba.data();
-        v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
+        const QByteArray defaultKeys = metaEnum.valueToKeys( static_cast< const int >( defaultValue ) );
+        const QByteArray ba = value( key, defaultKeys, section ).toString().toUtf8();
+        if ( ba.isEmpty() )
+        {
+          ok = defaultKeys.isEmpty() || contains( key, section );
+          if ( ok )
+            v = T( 0 );
+        }
+        else
+        {
+          const char *vs = ba.data();
+          v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
+        }
       }
       if ( !ok )
       {
@@ -364,8 +374,8 @@ class CORE_EXPORT QgsSettings : public QObject
             // check that the int value does correspond to a flag
             // see https://stackoverflow.com/a/68495949/1548052
             const QByteArray keys = metaEnum.valueToKeys( intValue );
-            const int intValueCheck = metaEnum.keysToValue( keys );
-            if ( intValue != intValueCheck )
+            const int intValueCheck = keys.isEmpty() ? 0 : metaEnum.keysToValue( keys );
+            if ( intValue != intValueCheck || ( keys.isEmpty() && intValue != 0 ) )
             {
               v = defaultValue;
             }

@@ -88,6 +88,14 @@ void TestQgsSettings::flagValue()
   QCOMPARE( v5s, pointAndPolygon );
   const QString v5ss = settings.value( u"qgis/testing/my_value_for_a_flag_as_string"_s, u"myDummyString"_s, QgsSettings::NoSection ).toString();
   QCOMPARE( v5ss, u"PointLayer|PolygonLayer"_s );
+
+  const Qgis::LayerFilters noFilters;
+  settings.remove( u"qgis/testing/my_value_for_a_zero_flag"_s );
+  QCOMPARE( settings.flagValue( u"qgis/testing/my_value_for_a_zero_flag"_s, noFilters ), noFilters );
+  settings.setFlagValue( u"qgis/testing/my_value_for_a_zero_flag"_s, noFilters );
+  QCOMPARE( settings.flagValue( u"qgis/testing/my_value_for_a_zero_flag"_s, pointAndLine ), noFilters );
+  settings.setValue( u"qgis/testing/my_value_for_a_zero_flag"_s, 0 );
+  QCOMPARE( settings.flagValue( u"qgis/testing/my_value_for_a_zero_flag"_s, pointAndLine ), noFilters );
 }
 
 

@@ -948,9 +948,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        QByteArray ba = customProperty( key, metaEnum.valueToKeys( defaultValue ) ).toString().toUtf8();
-        const char *vs = ba.data();
-        v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
+        const QByteArray defaultKeys = metaEnum.valueToKeys( defaultValue );
+        const QByteArray ba = customProperty( key, defaultKeys ).toString().toUtf8();
+        if ( ba.isEmpty() )
+        {
+          ok = defaultKeys.isEmpty() || mCustomProperties.contains( key );
+          if ( ok )
+            v = T( 0 );
+        }
+        else
+        {
+          const char *vs = ba.data();
+          v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
+        }
       }
       if ( !ok )
       {
@@ -963,8 +973,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
             // check that the int value does correspond to a flag
             // see https://stackoverflow.com/a/68495949/1548052
             const QByteArray keys = metaEnum.valueToKeys( intValue );
-            const int intValueCheck = metaEnum.keysToValue( keys );
-            if ( intValue != intValueCheck )
+            const int intValueCheck = keys.isEmpty() ? 0 : metaEnum.keysToValue( keys );
+            if ( intValue != intValueCheck || ( keys.isEmpty() && intValue != 0 ) )
             {
               v = defaultValue;
             }

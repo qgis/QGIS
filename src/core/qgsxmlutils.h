@@ -121,13 +121,22 @@ class CORE_EXPORT QgsXmlUtils
       T value = defaultValue;
       // Get source categories
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
-      const QString sourceCategoriesStr( element.attribute( attributeName, metaEnum.valueToKeys( static_cast<int>( defaultValue ) ) ) );
+      const QByteArray defaultKeys = metaEnum.valueToKeys( static_cast<int>( defaultValue ) );
+      const QString sourceCategoriesStr( element.attribute( attributeName, defaultKeys ) );
       if ( metaEnum.isValid() )
       {
-        bool ok = false;
-        const int newValue = metaEnum.keysToValue( sourceCategoriesStr.toUtf8().constData(), &ok );
-        if ( ok )
-          value = static_cast<T>( newValue );
+        if ( sourceCategoriesStr.isEmpty() )
+        {
+          if ( defaultKeys.isEmpty() || element.hasAttribute( attributeName ) )
+            value = T( 0 );
+        }
+        else
+        {
+          bool ok = false;
+          const int newValue = metaEnum.keysToValue( sourceCategoriesStr.toUtf8().constData(), &ok );
+          if ( ok )
+            value = static_cast<T>( newValue );
+        }
       }
       return value;
     }

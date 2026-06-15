@@ -7322,8 +7322,8 @@ template<class T> QString qgsFlagValueToKeys( const T &value, bool *returnOk = n
   const QByteArray ba = metaEnum.valueToKeys( intValue );
   // check that the int value does correspond to a flag
   // see https://stackoverflow.com/a/68495949/1548052
-  const int intValueCheck = metaEnum.keysToValue( ba );
-  bool ok = intValue == intValueCheck;
+  const int intValueCheck = ba.isEmpty() ? 0 : metaEnum.keysToValue( ba );
+  bool ok = intValue == intValueCheck && ( !ba.isEmpty() || intValue == 0 );
   if ( returnOk )
     *returnOk = ok;
   return ok ? QString::fromUtf8( ba ) : QString();
@@ -7340,6 +7340,14 @@ template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultVal
 {
   if ( keys.isEmpty() )
   {
+    if ( static_cast<int>( defaultValue ) == 0 )
+    {
+      if ( returnOk )
+      {
+        *returnOk = true;
+      }
+      return defaultValue;
+    }
     if ( returnOk )
     {
       *returnOk = false;
@@ -7368,8 +7376,8 @@ template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultVal
       if ( canConvert )
       {
         const QByteArray keyArray = metaEnum.valueToKeys( intValue );
-        const int intValueCheck = metaEnum.keysToValue( keyArray );
-        if ( !keyArray.isEmpty() && intValue == intValueCheck )
+        const int intValueCheck = keyArray.isEmpty() ? 0 : metaEnum.keysToValue( keyArray );
+        if ( intValue == intValueCheck && ( !keyArray.isEmpty() || intValue == 0 ) )
         {
           if ( returnOk )
           {

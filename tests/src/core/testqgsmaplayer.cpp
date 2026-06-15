@@ -511,6 +511,12 @@ void TestQgsMapLayer::customEnumFlagProperties()
   QCOMPARE( v5s, pointAndPolygon );
   const QString v5ss = ml->customProperty( u"my_property_for_a_flag_as_string"_s, u"myDummyString"_s ).toString();
   QCOMPARE( v5ss, u"PointLayer|PolygonLayer"_s );
+
+  const Qgis::LayerFilters noFilters;
+  ml->setCustomFlagProperty( u"my_property_for_a_zero_flag"_s, noFilters );
+  QCOMPARE( ml->customFlagProperty( u"my_property_for_a_zero_flag"_s, pointAndLine ), noFilters );
+  ml->setCustomProperty( u"my_property_for_a_zero_flag"_s, 0 );
+  QCOMPARE( ml->customFlagProperty( u"my_property_for_a_zero_flag"_s, pointAndLine ), noFilters );
 }
 
 void TestQgsMapLayer::readCustomProperties()

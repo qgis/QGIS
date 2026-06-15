@@ -761,6 +761,8 @@ void TestQgis::testQgsFlagValueToKeys()
   QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double;
   QCOMPARE( qgsFlagValueToKeys( filters, &ok ), u"String|Double"_s );
   QCOMPARE( ok, true );
+  QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters(), &ok ), QString() );
+  QCOMPARE( ok, true );
   QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters( -10 ), &ok ), QString() );
   QCOMPARE( ok, false );
 }
@@ -773,6 +775,8 @@ void TestQgis::testQgsFlagKeysToValue()
   bool ok = true;
   QCOMPARE( qgsFlagKeysToValue( QString(), defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
+  QCOMPARE( qgsFlagKeysToValue( QString(), QgsFieldProxyModel::Filters(), false, &ok ), QgsFieldProxyModel::Filters() );
+  QCOMPARE( ok, true );
 
   QCOMPARE( qgsFlagKeysToValue( u"String|Double"_s, defaultValue, false, &ok ), newValue );
   QCOMPARE( ok, true );
