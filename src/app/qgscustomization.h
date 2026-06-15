@@ -468,13 +468,13 @@ class APP_EXPORT QgsCustomization
         QgsToolBarItem( const QString &name, const QString &title, QgsItem *parent );
 
         /**
-         * Sets original dock widget visible state
+         * Sets original toolbar visible state
          * \see wasVisible()
          */
         void setWasVisible( const bool &wasVisible );
 
         /**
-         * Returns original dock widget visible state
+         * Returns original toolbar visible state
          * \see setWasVisible()
          */
         bool wasVisible() const;
