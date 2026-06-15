@@ -124,7 +124,7 @@ class CORE_EXPORT QgsPolygon : public QgsCurvePolygon
       return nullptr;
     }
 
-    json asJsonObject(int precision, Qgis::GeoJsonProfile profile) const override;
+    json asJsonObject(int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const override;
 
 #endif
 

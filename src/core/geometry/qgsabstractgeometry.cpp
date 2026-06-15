@@ -241,6 +241,7 @@ QString QgsAbstractGeometry::asGeoJson( int precision, Qgis::GeoJsonProfile prof
 
 json QgsAbstractGeometry::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
+  Q_UNUSED( profile )
   Q_UNUSED( precision )
   return nullptr;
 }

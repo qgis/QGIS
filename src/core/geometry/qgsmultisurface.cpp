@@ -126,6 +126,7 @@ json QgsMultiSurface::asJsonObject( int precision, Qgis::GeoJsonProfile profile 
 {
   switch ( profile )
   {
+    case Qgis::GeoJsonProfile::Legacy:
     case Qgis::GeoJsonProfile::Rfc7946:
     {
       json polygons( json::array() );
