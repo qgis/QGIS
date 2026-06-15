@@ -87,6 +87,11 @@ void QgsWelcomeScreenController::showPluginManager()
   QgisApp::instance()->showPluginManager( static_cast<int>( QgsPluginManager::Tabs::UpgradeablePlugins ) );
 }
 
+void QgsWelcomeScreenController::importQgisProfile()
+{
+  QgisApp::instance()->importQgisProfile();
+}
+
 void QgsWelcomeScreenController::hideScene()
 {
   if ( mWelcomeScreen )

@@ -49,6 +49,8 @@ class QgsWelcomeScreenController : public QObject
 
     Q_INVOKABLE void showPluginManager();
 
+    Q_INVOKABLE void importQgisProfile();
+
     Q_INVOKABLE void hideScene();
 
     Q_INVOKABLE void forwardDrop( const QString &text, const QStringList &urls, const QVariantMap &formatsData );

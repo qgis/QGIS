@@ -78,6 +78,14 @@ Item {
             height: 1
             color: "#566775"
           }
+
+          Button {
+            width: parent.width
+            text: qsTr("Import QGIS Profile")
+            onClicked: {
+              welcomeScreenController.importQgisProfile();
+            }
+          }
         }
 
 

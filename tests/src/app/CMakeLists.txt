@@ -16,6 +16,7 @@ set(TESTS
   testqgisappclipboard.cpp
   testqgisappdockwidgets.cpp
   testqgsversioninfo.cpp
+  testqgsqgisprofileimporter.cpp
   testqgsadvanceddigitizing.cpp
   testqgsattributetable.cpp
   testqgsapplocatorfilters.cpp

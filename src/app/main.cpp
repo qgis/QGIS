@@ -105,6 +105,8 @@ typedef SInt32 SRefCon;
 #include "qgsziputils.h"
 #include "qgsversionmigration.h"
 #include "qgsfirstrundialog.h"
+#include "qgsqgisprofileimportdialog.h"
+#include "qgsqgisprofileimporter.h"
 #include "qgsproxystyle.h"
 #include "qgsmessagebar.h"
 
@@ -665,6 +667,8 @@ int main( int argc, char *argv[] )
 
   bool myHideSplash = false;
   bool settingsMigrationForce = false;
+  bool profileNameWasExplicit = false;
+  bool skipLegacySettingsMigration = false;
   bool hideBrowser = false;
 #if defined( ANDROID )
   QgsDebugMsgLevel( u"Android: Splash hidden"_s, 2 );
@@ -778,6 +782,7 @@ int main( int argc, char *argv[] )
         else if ( i + 1 < argc && ( arg == "--profile"_L1 ) )
         {
           profileName = args[++i];
+          profileNameWasExplicit = true;
         }
         else if ( i + 1 < argc && ( arg == "--profiles-path"_L1 || arg == "-S"_L1 ) )
         {
@@ -1144,14 +1149,43 @@ int main( int argc, char *argv[] )
     QgsApplication::setTranslation( QLocale().name() );
   }
 
-  if ( !preventSettingsMigration )
+  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
+
+  QSettings strataImportSettings( QDir( rootProfileFolder ).filePath( u"profiles.ini"_s ), QSettings::IniFormat );
+  skipLegacySettingsMigration = strataImportSettings.value( u"strata/qgisImport/decisionMade"_s, false ).toBool();
+
+  const QList<QgsQgisProfileImporter::Candidate> qgisProfileImportCandidates = QgsQgisProfileImporter::detectCandidates( configLocalStorageLocation, rootProfileFolder );
+  if ( QgsQgisProfileImporter::shouldOfferFirstRunImport( rootProfileFolder, qgisProfileImportCandidates, myUseGuiFlag, profileNameWasExplicit, preventSettingsMigration ) )
+  {
+    QgsQgisProfileImportDialog importDialog( qgisProfileImportCandidates, rootProfileFolder, QgsQgisProfileImportDialog::Mode::FirstRun );
+    if ( importDialog.exec() == QDialog::Accepted )
+    {
+      const QgsQgisProfileImporter::ImportResult importResult = QgsQgisProfileImporter::importProfiles( importDialog.selectedCandidates(), rootProfileFolder );
+      skipLegacySettingsMigration = true;
+      if ( importResult.errors.isEmpty() )
+      {
+        profileName = importResult.activeProfileName;
+      }
+      else
+      {
+        QMessageBox::warning( nullptr, QObject::tr( "Import QGIS Environment" ), QObject::tr( "Strata could not import the selected QGIS profile data.\n\n%1" ).arg( importResult.errors.message( QgsErrorMessage::Text ) ) );
+        QgsQgisProfileImporter::markFirstRunImportDeclined( rootProfileFolder );
+      }
+    }
+    else
+    {
+      QgsQgisProfileImporter::markFirstRunImportDeclined( rootProfileFolder );
+      skipLegacySettingsMigration = true;
+    }
+  }
+
+  if ( !preventSettingsMigration && !skipLegacySettingsMigration )
   {
     // before doing any profile management, sync the available SET of profiles to an existing QGIS3 set.
     // This doesn't actually COPY any profiles, just makes them available for selection on QGIS 4
     copyProfileNamesFromQgis3( configLocalStorageLocation );
   }
 
-  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
 
   QString missingLastProfile;
@@ -1296,7 +1330,7 @@ int main( int argc, char *argv[] )
   const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
   const QDir qgis3ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/%1"_s.arg( profileName ) ) ) );
   const QDir qgis4ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/%1"_s.arg( profileName ) ) ) );
-  if ( !preventSettingsMigration && qgis3ProfilePath.exists() )
+  if ( !preventSettingsMigration && !skipLegacySettingsMigration && qgis3ProfilePath.exists() )
   {
     QgsDebugMsgLevel( u"Considering migration from %1 to %2"_s.arg( qgis3ProfilePath.path(), qgis4ProfilePath.path() ), 2 );
     QgsSettings migSettings;

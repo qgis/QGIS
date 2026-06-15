@@ -91,6 +91,8 @@ using namespace Qt::StringLiterals;
 #include "qgssettingsregistrygui.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
+#include "qgsqgisprofileimportdialog.h"
+#include "qgsqgisprofileimporter.h"
 #include "qgslayerstylingwidget.h"
 #include "qgsdevtoolspanelwidget.h"
 #ifdef HAVE_AI_ASSISTANT
@@ -3690,6 +3692,10 @@ void QgisApp::refreshProfileMenu()
   QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open Active Profile Folder" ) );
   openProfileFolderAction->setObjectName( "mActionOpenActiveProfileFolder" );
   connect( openProfileFolderAction, &QAction::triggered, this, [this]() { QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) ); } );
+
+  QAction *importQgisProfileAction = mConfigMenu->addAction( tr( "Import QGIS Profile…" ) );
+  importQgisProfileAction->setObjectName( "mActionImportQgisProfile" );
+  connect( importQgisProfileAction, &QAction::triggered, this, &QgisApp::importQgisProfile );
 
   QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
   newProfileAction->setObjectName( "mActionNewProfile" );
@@ -16453,6 +16459,31 @@ void QgisApp::newProfile()
     QMessageBox::warning( this, tr( "New Profile" ), tr( "Cannot create folder '%1'" ).arg( profileName ) );
     return;
   }
+}
+
+void QgisApp::importQgisProfile()
+{
+  const QString targetRootProfileFolder = userProfileManager()->rootLocation();
+  const QString configLocalStorageLocation = QFileInfo( targetRootProfileFolder ).absoluteDir().absolutePath();
+  const QList<QgsQgisProfileImporter::Candidate> candidates = QgsQgisProfileImporter::detectCandidates( configLocalStorageLocation, targetRootProfileFolder );
+
+  QgsQgisProfileImportDialog dlg( candidates, targetRootProfileFolder, QgsQgisProfileImportDialog::Mode::Manual, this );
+  if ( dlg.exec() != QDialog::Accepted )
+    return;
+
+  const QList<QgsQgisProfileImporter::Candidate> selectedCandidates = dlg.selectedCandidates();
+  if ( selectedCandidates.isEmpty() )
+    return;
+
+  const QgsQgisProfileImporter::ImportResult importResult = QgsQgisProfileImporter::importProfileAsNewProfile( selectedCandidates.constFirst(), targetRootProfileFolder, dlg.targetProfileName() );
+  if ( !importResult.errors.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Import QGIS Profile" ), tr( "Strata could not import the selected QGIS profile.\n\n%1" ).arg( importResult.errors.message( QgsErrorMessage::Text ) ) );
+    return;
+  }
+
+  QMessageBox::information( this, tr( "Import QGIS Profile" ), tr( "The QGIS profile was imported as '%1'. Strata will open a new window with the imported profile." ).arg( importResult.activeProfileName ) );
+  userProfileManager()->loadUserProfile( importResult.activeProfileName );
 }
 
 void QgisApp::onTaskCompleteShowNotify( long taskId, int status )

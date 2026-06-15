@@ -62,6 +62,8 @@ set(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmapsavedialog.cpp
   qgspuzzlewidget.cpp
+  qgsqgisprofileimportdialog.cpp
+  qgsqgisprofileimporter.cpp
   qgsversionmigration.cpp
   qgsrasterattributetableapputils.cpp
   qgssnappinglayertreemodel.cpp

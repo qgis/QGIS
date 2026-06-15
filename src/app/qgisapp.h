@@ -1548,6 +1548,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Opens the plugin manager (since QGIS 4.0)
     void showPluginManager( int tabIndex = -1 );
 
+    //! Imports an existing QGIS user profile into a new Strata profile.
+    void importQgisProfile();
+
   protected:
     void showEvent( QShowEvent *event ) override;
 
