@@ -17,9 +17,6 @@
 #define QgsPersistentMenu_H
 
 #include "qgis_gui.h"
-#include "qgsexpressioncontext.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgsmaptoolidentify.h"
 
 #include <QMenu>
 
