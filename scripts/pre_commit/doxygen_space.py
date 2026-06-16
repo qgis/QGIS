@@ -67,7 +67,7 @@ def process_file(file_path):
             exit_with_error(
                 f"Correct doxygen tag for suffixed documentation is '//!<', not '//<!': {line}"
             )
-        elif match := re.match(r".*//<.*", line):
+        elif match := re.match(r".*[a-zA-Z0-9,]\s*//<.*", line):
             exit_with_error(
                 f"Correct doxygen tag for suffixed documentation is '//!<', not '//<': {line}"
             )
