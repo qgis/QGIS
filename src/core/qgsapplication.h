@@ -604,8 +604,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   //! Constants for endian-ness
   enum endian_t
   {
-    XDR = 0, // network, or big-endian, byte order
-    NDR = 1 // little-endian byte order
+    XDR = 0, //!< network, or big-endian, byte order
+    NDR = 1 //!< little-endian byte order
   };
   // clang-format on
 

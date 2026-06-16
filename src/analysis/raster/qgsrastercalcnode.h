@@ -63,15 +63,15 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opASIN,
       opACOS,
       opATAN,
-      opEQ, // =
-      opNE, // !=
-      opGT, // >
-      opLT, // <
-      opGE, // >=
-      opLE, // <=
+      opEQ, //!< =
+      opNE, //!< !=
+      opGT, //!< >
+      opLT, //!< <
+      opGE, //!< >=
+      opLE, //!< <=
       opAND,
       opOR,
-      opSIGN, // change sign
+      opSIGN, //!< change sign
       opLOG,
       opLOG10,
       opABS,

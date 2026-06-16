@@ -354,12 +354,12 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! List of possible operations with the mouse in TerrainBased navigation
     enum class MouseOperation
     {
-      None = 0,       // no operation
-      Translation,    // left button pressed, no modifier
-      RotationCamera, // left button pressed + ctrl modifier
-      RotationCenter, // left button pressed + shift modifier
-      Zoom,           // right button pressed
-      ZoomWheel       // mouse wheel scroll
+      None = 0,       //!< No operation
+      Translation,    //!< Left button pressed, no modifier
+      RotationCamera, //!< Left button pressed + ctrl modifier
+      RotationCenter, //!< Left button pressed + shift modifier
+      Zoom,           //!< Right button pressed
+      ZoomWheel       //!< Mouse wheel scroll
     };
 
     // This list gathers all the rotation and translation operations.
