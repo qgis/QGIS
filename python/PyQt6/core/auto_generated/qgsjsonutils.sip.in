@@ -309,14 +309,14 @@ when the automatic geometry transformation is active (it is by default).
 %Docstring
 Returns the GeoJSON profile to use for export.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
     void setGeoJsonProfile( Qgis::GeoJsonProfile profile );
 %Docstring
 Sets the GeoJSON profile to use for export. Default profile is RFC7946.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 };

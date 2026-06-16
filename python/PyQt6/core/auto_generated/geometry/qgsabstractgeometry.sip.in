@@ -367,7 +367,7 @@ and following the specified GeoJSON ``profile``. Note: this is identical
 to :py:func:`~QgsAbstractGeometry.asJson` when using the Legacy profile,
 but differs when using other profiles.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 
