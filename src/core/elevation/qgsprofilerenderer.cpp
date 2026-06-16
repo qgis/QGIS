@@ -238,13 +238,11 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
     return false;
 
   QString sourceId = generator->sourceId();
-  bool res = false;
   for ( auto &job : mJobs )
   {
     if ( job->generator && job->generator->sourceId() == sourceId )
     {
       job->mutex.lock();
-      res = true;
       if ( clearPreviousResults || job->generator->type() != generator->type() )
       {
         job->results.reset();
@@ -263,13 +261,13 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
         {
           it = mGenerators.erase( it );
           mGenerators.emplace( it, std::move( generator ) );
-          break;
+          return true;
         }
         it++;
       }
     }
   }
-  return res;
+  return false;
 }
 
 void QgsProfilePlotRenderer::regenerateInvalidatedResults()
