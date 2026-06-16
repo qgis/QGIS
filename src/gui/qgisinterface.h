@@ -113,7 +113,8 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Adds an \a action to context menu for layers in the layer tree.
-     * If allLayers is TRUE, then the action will be available for all layers of given type,
+     *
+     * If \a allLayers is TRUE, then the action will be available for all layers of given type,
      * otherwise the action will be available only for specific layers added with addCustomActionForLayer()
      * after this call.
      *
@@ -127,6 +128,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Adds an \a action to context menu for a specific layer in the layer tree.
+     *
      * It is necessary to first call addCustomActionForLayerType() with allLayers=false
      * in order for this method to have any effect.
      * \see addCustomActionForLayerType()
@@ -134,7 +136,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
 
     /**
-     * Removes \a action for layers in the layer tree previously added with addCustomActionForLayerType()
+     * Removes \a action for layers in the layer tree previously added with addCustomActionForLayerType().
+     *
      * \see addCustomActionForLayerType()
      */
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
@@ -178,13 +181,15 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void closeMapCanvas3D( const QString &name ) = 0;
 
     /**
-     * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size
-     * for toolbars contained within docks is returned.
+     * Returns the toolbar icon size.
+     *
+     * If \a dockedToolbar is TRUE, the icon size for toolbars contained within docks is returned.
      */
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
 
     /**
-     * Returns vector layers in edit mode
+     * Returns vector layers in edit mode.
+     *
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
     */
@@ -219,7 +224,6 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
 
-
     //! Returns changeable options built from settings and/or defaults
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 
@@ -227,7 +231,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QFont defaultStyleSheetFont() = 0;
 
     /**
-     * Advanced digitizing dock widget
+     * Returns a reference to the app's advanced digitizing dock widget.
      */
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
 
@@ -554,63 +558,174 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QActionGroup *mapToolActionGroup() = 0;
 
     // View menu actions
-    //! Returns the native pan action. Call trigger() on it to set the default pan map tool.
+
+    /**
+     * Returns the native pan action.
+     *
+     * Call trigger() on it to set the default pan map tool.
+     */
     virtual QAction *actionPan() = 0;
-    //! Returns the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
+
+    /**
+     * Returns the native pan to selected action.
+     *
+     * Call trigger() on it to pan the map canvas to the selection.
+     */
     virtual QAction *actionPanToSelected() = 0;
-    //! Returns the native zoom in action. Call trigger() on it to set the default zoom in map tool.
+
+    /**
+     * Returns the native zoom in action.
+     *
+     * Call trigger() on it to set the default zoom in map tool.
+     */
     virtual QAction *actionZoomIn() = 0;
-    //! Returns the native zoom out action. Call trigger() on it to set the default zoom out map tool.
+
+    /**
+     * Returns the native zoom out action.
+     *
+     * Call trigger() on it to set the default zoom out map tool.
+     */
     virtual QAction *actionZoomOut() = 0;
-    //! Returns the native select action. Call trigger() on it to set the default select map tool.
+
+    /**
+     * Returns the native select action.
+     *
+     * Call trigger() on it to set the default select map tool.
+     */
     virtual QAction *actionSelect() = 0;
-    //! Returns the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
+
+    /**
+     * Returns the native select rectangle action.
+     *
+     * Call trigger() on it to set the default select rectangle map tool.
+     */
     virtual QAction *actionSelectRectangle() = 0;
-    //! Returns the native select polygon action. Call trigger() on it to set the default select polygon map tool.
+
+    /**
+     * Returns the native select polygon action.
+     *
+     * Call trigger() on it to set the default select polygon map tool.
+     */
     virtual QAction *actionSelectPolygon() = 0;
-    //! Returns the native select freehand action. Call trigger() on it to set the default select freehand map tool.
+
+    /**
+     * Returns the native select freehand action.
+     *
+     * Call trigger() on it to set the default select freehand map tool.
+     */
     virtual QAction *actionSelectFreehand() = 0;
-    //! Returns the native select radius action. Call trigger() on it to set the default select radius map tool.
+
+    /**
+     * Returns the native select radius action.
+     *
+     * Call trigger() on it to set the default select radius map tool.
+     */
     virtual QAction *actionSelectRadius() = 0;
-    //! Returns the native identify action. Call trigger() on it to set the default identify map tool.
+
+    /**
+     * Returns the native identify action.
+     *
+     * Call trigger() on it to set the default identify map tool.
+     */
     virtual QAction *actionIdentify() = 0;
-    //! Returns the native run action feature action. Call trigger() on it to set the default run feature action map tool.
+
+    /**
+     * Returns the native run action feature action.
+     *
+     * Call trigger() on it to set the default run feature action map tool.
+     */
     virtual QAction *actionFeatureAction() = 0;
-    //! Returns the native measure action. Call trigger() on it to set the default measure map tool.
+
+    /**
+     * Returns the native measure action.
+     *
+     * Call trigger() on it to set the default measure map tool.
+     */
     virtual QAction *actionMeasure() = 0;
-    //! Returns the native measure area action. Call trigger() on it to set the default measure area map tool.
+
+    /**
+     * Returns the native measure area action.
+     *
+     * Call trigger() on it to set the default measure area map tool.
+     */
     virtual QAction *actionMeasureArea() = 0;
-    //! Returns the native zoom full extent action. Call trigger() on it to zoom to the full extent.
+
+    /**
+     * Returns the native zoom full extent action.
+     *
+     * Call trigger() on it to zoom to the full extent.
+     */
     virtual QAction *actionZoomFullExtent() = 0;
 
     /**
-     *  Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
+     * Returns the native zoom to layer action.
      *
-     *  \deprecated QGIS 3.40. Use actionZoomToLayers() instead.
+     * Call trigger() on it to zoom to the active layer.
+     *
+     * \deprecated QGIS 3.40. Use actionZoomToLayers() instead.
      */
     Q_DECL_DEPRECATED virtual QAction *actionZoomToLayer() = 0 SIP_DEPRECATED;
 
     /**
-     * Returns the native zoom to layers action. Call trigger() on it to zoom to the selected layers.
+     * Returns the native zoom to layers action.
+     *
+     * Call trigger() on it to zoom to the selected layers.
      * \since QGIS 3.18
      */
     virtual QAction *actionZoomToLayers() = 0;
 
-    //! Returns the native zoom to selected action. Call trigger() on it to zoom to the current selection.
+    /**
+     * Returns the native zoom to selected action.
+     *
+     * Call trigger() on it to zoom to the current selection.
+     */
     virtual QAction *actionZoomToSelected() = 0;
-    //! Returns the native zoom last action. Call trigger() on it to zoom to last.
+
+    /**
+     * Returns the native zoom last action.
+     *
+     * Call trigger() on it to zoom to last.
+     */
     virtual QAction *actionZoomLast() = 0;
-    //! Returns the native zoom next action. Call trigger() on it to zoom to next.
+
+    /**
+     * Returns the native zoom next action.
+     *
+     * Call trigger() on it to zoom to next.
+     */
     virtual QAction *actionZoomNext() = 0;
-    //! Returns the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
+
+    /**
+     * Returns the native zoom resolution (100%) action.
+     *
+     * Call trigger() on it to zoom to actual size.
+     */
     virtual QAction *actionZoomActualSize() = 0;
-    //! Returns the native map tips action. Call trigger() on it to toggle map tips.
+
+    /**
+     * Returns the native map tips action.
+     *
+     * Call trigger() on it to toggle map tips.
+     */
     virtual QAction *actionMapTips() = 0;
-    //! Returns the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
+
+    /**
+     * Returns the native new bookmark action.
+     *
+     * Call trigger() on it to open the new bookmark dialog.
+     */
     virtual QAction *actionNewBookmark() = 0;
-    //! Returns the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
+
+    /**
+     * Returns the native show bookmarks action.
+     *
+     * Call trigger() on it to open the bookmarks dialog.
+     */
     virtual QAction *actionShowBookmarks() = 0;
-    //! Returns the native draw action.
+
+    /**
+     * Returns the native draw action.
+     */
     virtual QAction *actionDraw() = 0;
 
     // Layer menu actions
@@ -710,103 +825,136 @@ class GUI_EXPORT QgisInterface : public QObject
     // Shape digitize actions
 
     /**
-     * Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
+     * Returns the native add circle from 2 points action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircle2Points() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
+     * Returns the native add circle from 3 points action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircle3Points() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
+     * Returns the native add circle from 3 tangents action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircle3Tangents() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
+     * Returns the native add circle from 2 tangents and a point action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircle2TangentsPoint() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add circle from center action. Call trigger() on it to set the map tool.
+     * Returns the native add circle from center action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionCircleCenterPoint() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
+     * Returns the native add ellipse from center and 2 points action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionEllipseCenter2Points() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
+     * Returns the native add ellipse from center and a point action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionEllipseCenterPoint() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
+     * Returns the native add ellipse from an extent action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionEllipseExtent() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
+     * Returns the native add ellipse from foci action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionEllipseFoci() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
+     * Returns the native add rectangle from center and a point action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRectangleCenterPoint() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
+     * Returns the native add rectangle from extent action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRectangleExtent() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
+     * Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRectangle3PointsDistance() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
+     * Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRectangle3PointsProjected() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
+     * Returns the native add regular polygon from 2 points action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRegularPolygon2Points() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
+     * Returns the native add regular polygon from center and a point action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRegularPolygonCenterPoint() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
-     * Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
+     * Returns the native add regular polygon from center and a corner action.
+     *
+     * Call trigger() on it to set the map tool.
      * \deprecated QGIS 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture::setCurrentCaptureTechnique() and then QgsMapToolCapture::setCurrentShapeMapTool().
      */
     Q_DECL_DEPRECATED virtual QAction *actionRegularPolygonCenterCorner() SIP_DEPRECATED { return actionAddFeature(); }
 
     /**
      * Access the vector layer tools instance.
+     *
      * With the help of this you can access methods like addFeature, startEditing
      * or stopEditing while giving the user the appropriate dialogs.
      *
@@ -818,8 +966,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual int messageTimeout() = 0;
 
     /**
-     * Returns a pointer to the app's status bar interface. This should be
-     * used for interacting and adding widgets and messages to the app's
+     * Returns a pointer to the app's status bar interface.
+     *
+     * This should be used for interacting and adding widgets and messages to the app's
      * status bar (do not use the native Qt statusBar() method).
      */
     virtual QgsStatusBar *statusBarIface() = 0;
@@ -839,6 +988,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns the insertion point.
+     *
      * This represents the current layer tree group and index where newly added map layers should be inserted into.
      * \since QGIS 3.10
      */
@@ -948,6 +1098,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Triggered when connections have changed.
+     *
      * This calls reloadConnections in the main application and triggers a signal that is
      * forwarded to the GUI elements that needs to be updated (i.e. the source
      * select dialogs and the browser widgets)
@@ -955,8 +1106,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void reloadConnections() = 0;
 
     /**
-     * Set the active layer (layer gets selected in the legend)
-     * returns TRUE if the layer exists, FALSE otherwise
+     * Set the active layer (layer gets selected in the legend).
+     *
+     * \returns TRUE if the layer exists, FALSE otherwise
      */
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 
@@ -975,6 +1127,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Adds a widget to the plugins toolbar.
+     *
      * To remove this widget again, call removeToolBarIcon()
      * with the returned QAction.
      *
@@ -988,6 +1141,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Adds a widget to the raster toolbar.
+     *
      * To remove this widget again, call removeRasterToolBarIcon()
      * with the returned QAction.
      *
@@ -1007,6 +1161,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Adds a widget to the vector toolbar.
+     *
      * To remove this widget again, call removeVectorToolBarIcon()
      * with the returned QAction.
      *
@@ -1023,6 +1178,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Adds a widget to the database toolbar.
+     *
      * To remove this widget again, call removeDatabaseToolBarIcon()
      * with the returned QAction.
      *
@@ -1039,6 +1195,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Adds a widget to the web toolbar.
+     *
      * To remove this widget again, call removeWebToolBarIcon()
      * with the returned QAction.
      *
@@ -1081,13 +1238,17 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
 
     /**
-     * Opens the options dialog. The \a currentPage argument can be used to force
+     * Opens the options dialog.
+     *
+     * The \a currentPage argument can be used to force
      * the dialog to open at a specific page.
      */
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) = 0;
 
     /**
-     * Opens the project properties dialog. The \a currentPage argument can be used to force
+     * Opens the project properties dialog.
+     *
+     * The \a currentPage argument can be used to force
      * the dialog to open at a specific page.
      * \since QGIS 3.16
      */
@@ -1162,8 +1323,9 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Adds a dock widget to the given area and tabify it (if other dock widgets
-     * exist in the same \a area). The new tab will be below other tabs unless
-     * \a raiseTab is passed as TRUE.
+     * exist in the same \a area).
+     *
+     * The new tab will be below other tabs unless \a raiseTab is passed as TRUE.
      *
      * \a tabifyWith is a list of dock widget object names, ordered by
      * priority, with which the new dock widget should be tabified. Only the
@@ -1185,6 +1347,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Opens layer properties dialog for the layer \a l.
+     *
      * Optionally, a \a page to open can be specified (since QGIS 3.20).
      * The list below contains valid page names:
      *
@@ -1222,13 +1385,17 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;
 
     /**
-     * Adds window to Window menu. The action title is the window title
+     * Adds window to Window menu.
+     *
+     * The action title is the window title
      * and the action should raise, unminimize and activate the window.
     */
     virtual void addWindow( QAction *action ) = 0;
 
     /**
-     * Remove window from Window menu. Calling this is necessary only for
+     * Remove window from Window menu.
+     *
+     * Calling this is necessary only for
      * windows which are hidden rather than deleted when closed.
     */
     virtual void removeWindow( QAction *action ) = 0;
@@ -1413,7 +1580,9 @@ class GUI_EXPORT QgisInterface : public QObject
     // TODO is this deprecated in favour of QgsContextHelp?
 
     /**
-     * Opens a url in the users browser. By default the QGIS doc directory is used
+     * Opens a url in the users browser.
+     *
+     * By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to FALSE.
      * \param url URL to open
@@ -1428,7 +1597,8 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Opens a new feature form.
-     * Returns TRUE if dialog was accepted (if shown modal, TRUE otherwise).
+     *
+     * \returns TRUE if dialog was accepted (if shown modal, TRUE otherwise).
      * \param l vector layer
      * \param f feature to show/modify
      * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
@@ -1449,6 +1619,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * This method is only needed when using a UI form with a custom widget plugin and calling
      * openFeatureForm or getFeatureForm from Python (PyQt) and you haven't used the info tool first.
+     *
      * Python will crash bringing QGIS with it
      * if the custom form is not loaded from a C++ method call.
      *
@@ -1469,7 +1640,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void locatorSearch( const QString &searchText ) = 0;
 
     /**
-     * Registers a locator \a filter for the app's locator bar. Ownership of the filter is transferred to the
+     * Registers a locator \a filter for the app's locator bar.
+     *
+     * Ownership of the filter is transferred to the
      * locator.
      * \warning Plugins which register filters to the locator bar must take care to correctly call
      * deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
@@ -1478,8 +1651,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerLocatorFilter( QgsLocatorFilter *filter SIP_TRANSFER ) = 0;
 
     /**
-     * Deregisters a locator \a filter from the app's locator bar and deletes it. Calling this will block whilst
-     * any currently running query is terminated.
+     * Deregisters a locator \a filter from the app's locator bar and deletes it.
+     *
+     * Calling this will block whilst any currently running query is terminated.
      *
      * Plugins which register filters to the locator bar must take care to correctly call
      * deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.
@@ -1499,13 +1673,17 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
       * Checks available datum transforms and ask user if several are available and none
-      * is chosen. Dialog is shown only if global option is set accordingly.
+      * is chosen.
+      *
+      * Dialog is shown only if global option is set accordingly.
       * \returns TRUE if a datum transform has been specifically chosen by user or only one is available.
       */
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
 
     /**
-     * Returns the application browser model. Using this shared model is more efficient than
+     * Returns the application browser model.
+     *
+     * Using this shared model is more efficient than
      * creating a new browser model for every use.
      * \since QGIS 3.4
      */
@@ -1542,7 +1720,8 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Emitted whenever current (selected) layer changes.
-     *  The pointer to layer can be NULLPTR if no layer is selected.
+     *
+     * The pointer to layer can be NULLPTR if no layer is selected.
      */
     void currentLayerChanged( QgsMapLayer *layer );
 
