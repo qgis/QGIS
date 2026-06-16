@@ -132,10 +132,10 @@ json QgsMultiSurface::asJsonObject( int precision, Qgis::GeoJsonProfile profile 
       json polygons( json::array() );
       for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
       {
-        if ( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
+        if ( auto curveGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
         {
           json coordinates( json::array() );
-          std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
+          std::unique_ptr< QgsPolygon > polygon( curveGeom->surfaceToPolygon() );
           std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
           QgsPointSequence exteriorPts;
           exteriorLineString->points( exteriorPts );
