@@ -1272,7 +1272,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mStopUpdates = false;                                                                                //!< Whether to stop updating scene on zoom
     QList<QgsLightSource *> mLightSources;                                                                    //!< List of light sources in the scene (owned by the settings)
     double mFieldOfView = 45.0;                                                                               //!< Camera lens field of view value
-    Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection; //<! Camera lens projection type
+    Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection; //!< Camera lens projection type
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
     QList<QgsMapLayerRef> mLayers; //!< Layers to be rendered

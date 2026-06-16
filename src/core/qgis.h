@@ -4493,9 +4493,9 @@ int QgisEvent = QEvent::User + 1;
 
       // Legacy aliases for old flying-only enum:
 
-      Never = WhenRotatingDragging | WhenRotatingCaptured | WhenPivoting, //<! Never invert vertical axis movements \deprecated QGIS 4.2
-      WhenDragging = WhenRotatingCaptured | WhenPivoting,                 //<! Invert vertical axis movements when dragging in first person modes \deprecated QGIS 4.2
-      Always = WhenPivoting,                                              //<! Always invert vertical axis movements \deprecated QGIS 4.2
+      Never = WhenRotatingDragging | WhenRotatingCaptured | WhenPivoting, //!< Never invert vertical axis movements \deprecated QGIS 4.2
+      WhenDragging = WhenRotatingCaptured | WhenPivoting,                 //!< Invert vertical axis movements when dragging in first person modes \deprecated QGIS 4.2
+      Always = WhenPivoting,                                              //!< Always invert vertical axis movements \deprecated QGIS 4.2
     };
     Q_ENUM( VerticalAxisInversion )
     Q_DECLARE_FLAGS( VerticalAxisInversionFlags, VerticalAxisInversion )
