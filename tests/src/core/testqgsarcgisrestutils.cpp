@@ -377,7 +377,9 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbolNullOutline()
     "\"outline\": null"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
   QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
@@ -521,7 +523,9 @@ void TestQgsArcGisRestUtils::testParseFillSymbolNullOutline()
     "\"outline\": null"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
   QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 1 );
@@ -593,7 +597,9 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbolNullOutline()
     "\"outline\": null"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
   QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   // With null outline, should only have 1 layer (raster fill), not 2
