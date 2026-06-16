@@ -3211,56 +3211,66 @@ OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
 
 OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
 {
-  QMutexLocker locker( &ds->mutex );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 9, 0 )
+  QMutexLocker locker( &ds->mutex );
   return OGR_L_GetExtent3D( hLayer, /* iGeomField = */ 0, psExtent3D, bForce );
 #else
-
-  QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
+  QString driverName;
+  QByteArray geomColCopy;
   OGRErr err = OGRERR_UNSUPPORTED_OPERATION;
-  const char *geomCol = OGR_L_GetGeometryColumn( hLayer );
-  if ( geomCol && strlen( geomCol ) > 0 )
+
   {
-    QgsDebugMsgLevel( u"WITH geomCol: %1"_s.arg( geomCol ), 3 );
-
-    psExtent3D->MinZ = std::numeric_limits<double>::quiet_NaN();
-    psExtent3D->MaxZ = std::numeric_limits<double>::quiet_NaN();
-
-    OGREnvelope envelope2D;
-    err = OGR_L_GetExtent( hLayer, &envelope2D, bForce );
-    if ( err == OGRERR_NONE )
+    QMutexLocker locker( &ds->mutex );
+    driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
+    const char *geomCol = OGR_L_GetGeometryColumn( hLayer );
+    if ( geomCol && strlen( geomCol ) > 0 )
     {
-      psExtent3D->MinX = envelope2D.MinX;
-      psExtent3D->MinY = envelope2D.MinY;
-      psExtent3D->MaxX = envelope2D.MaxX;
-      psExtent3D->MaxY = envelope2D.MaxY;
-      err = isSpatialiteEnabled();
-    }
+      QgsDebugMsgLevel( u"WITH geomCol: %1"_s.arg( geomCol ), 3 );
+      geomColCopy = geomCol;
 
-    if ( err == OGRERR_NONE )
-    {
-      // try to retrieve minZ/maxZ
-      err = OGRERR_UNSUPPORTED_OPERATION;
-      ResetReading();
-      QByteArray geomColQuoted = QgsOgrProviderUtils::quotedIdentifier( geomCol, driverName );
-      QByteArray sql = "SELECT MIN(ST_MinZ(" + geomColQuoted + ")), MAX(ST_MaxZ(" + geomColQuoted + ")) FROM " + QgsOgrProviderUtils::quotedIdentifier( name(), driverName );
-      QgsDebugMsgLevel( u"sql: %1"_s.arg( sql.toStdString().c_str() ), 3 );
+      psExtent3D->MinZ = std::numeric_limits<double>::quiet_NaN();
+      psExtent3D->MaxZ = std::numeric_limits<double>::quiet_NaN();
 
-      CPLPushErrorHandler( CPLQuietErrorHandler );
-      QgsOgrLayerUniquePtr l = ExecuteSQL( sql );
-      CPLPopErrorHandler();
-      if ( l )
+      OGREnvelope envelope2D;
+      err = OGR_L_GetExtent( hLayer, &envelope2D, bForce );
+      if ( err == OGRERR_NONE )
       {
-        gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
-        if ( f )
-        {
-          psExtent3D->MinZ = OGR_F_GetFieldAsDouble( f.get(), 0 );
-          psExtent3D->MaxZ = OGR_F_GetFieldAsDouble( f.get(), 1 );
-          QgsDebugMsgLevel( u"done with Z! %1/%2"_s.arg( psExtent3D->MinZ ).arg( psExtent3D->MaxZ ), 3 );
-          err = OGRERR_NONE;
-        }
-        ResetReading();
+        psExtent3D->MinX = envelope2D.MinX;
+        psExtent3D->MinY = envelope2D.MinY;
+        psExtent3D->MaxX = envelope2D.MaxX;
+        psExtent3D->MaxY = envelope2D.MaxY;
       }
+    }
+  }
+
+  if ( err == OGRERR_NONE )
+  {
+    err = isSpatialiteEnabled();
+  }
+
+  if ( err == OGRERR_NONE )
+  {
+    // try to retrieve minZ/maxZ
+    err = OGRERR_UNSUPPORTED_OPERATION;
+    ResetReading();
+    QByteArray geomColQuoted = QgsOgrProviderUtils::quotedIdentifier( geomColCopy, driverName );
+    QByteArray sql = "SELECT MIN(ST_MinZ(" + geomColQuoted + ")), MAX(ST_MaxZ(" + geomColQuoted + ")) FROM " + QgsOgrProviderUtils::quotedIdentifier( name(), driverName );
+    QgsDebugMsgLevel( u"sql: %1"_s.arg( sql.toStdString().c_str() ), 3 );
+
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    QgsOgrLayerUniquePtr l = ExecuteSQL( sql );
+    CPLPopErrorHandler();
+    if ( l )
+    {
+      gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+      if ( f )
+      {
+        psExtent3D->MinZ = OGR_F_GetFieldAsDouble( f.get(), 0 );
+        psExtent3D->MaxZ = OGR_F_GetFieldAsDouble( f.get(), 1 );
+        QgsDebugMsgLevel( u"done with Z! %1/%2"_s.arg( psExtent3D->MinZ ).arg( psExtent3D->MaxZ ), 3 );
+        err = OGRERR_NONE;
+      }
+      ResetReading();
     }
   }
 
