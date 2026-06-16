@@ -16,6 +16,11 @@
 
 set -e
 
+if [ -z "$DIFF_RANGE" ]; then
+  echo "DIFF_RANGE environment variable must be set"
+  exit 1;
+fi
+
 SRCDIR=${CTEST_SOURCE_DIR-/root/QGIS}
 cd ${SRCDIR}
 
