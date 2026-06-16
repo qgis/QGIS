@@ -665,6 +665,16 @@ void TestQgsCustomization::testModel()
 
   QCOMPARE( model.rowCount(), 5 );
 
+  QgsCustomizationDialog::QgsCustomizationModel modelActionSelector( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ActionSelector );
+  QAbstractItemModelTester modelActionSelectorTester( &modelActionSelector, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  const QModelIndexList addPartActionIndexes
+    = modelActionSelector.match( modelActionSelector.index( 0, 0 ), Qt::ItemDataRole::DisplayRole, u"mActionAddPart"_s, -1, Qt::MatchRecursive | Qt::MatchFixedString );
+  QCOMPARE( addPartActionIndexes.count(), 2 );
+
+  std::unique_ptr<QMimeData> mimeData( modelActionSelector.mimeData( QModelIndexList() << addPartActionIndexes.at( 0 ) ) );
+  QVERIFY( mimeData );
+
   // Uncheck ToolBars/mLayerToolBar/mActionAddRasterLayer item
   {
     QModelIndex toolBarsIndex = model.index( 4, 0 );
@@ -814,6 +824,38 @@ void TestQgsCustomization::testModel()
     QVERIFY( findQWidget( "ToolBars/UserToolBar_1" ) );
     actions = findQActions( mQgisApp->toolBarMenu(), u"UserToolBar_1"_s );
     QCOMPARE( actions.count(), 1 );
+
+    // drop an action ref in the toolbar
+
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newItemIndex ) );
+    QCOMPARE( model.rowCount( newItemIndex ), 0 );
+    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newItemIndex ) );
+    QCOMPARE( model.rowCount( newItemIndex ), 1 );
+
+    QModelIndex actionIndex = model.index( 0, 0, newItemIndex );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::DisplayRole ), u"ActionRef_mActionAddPart_1"_s );
+    QCOMPARE( model.data( model.index( 0, 1, newItemIndex ), Qt::ItemDataRole::DisplayRole ), u"Add Part"_s );
+    QVERIFY( !model.data( actionIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
+
+    QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
+    QCOMPARE( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" )->childrenCount(), 0 );
+
+    model.apply();
+
+    QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( "ToolBars/UserToolBar_1/ActionRef_mActionAddPart_1" ) );
+    QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( "ToolBars/UserToolBar_1/ActionRef_mActionAddPart_1" )->isVisible() );
+    QVERIFY( findQAction( u"ToolBars/UserToolBar_1/mActionAddPart"_s ) );
+
+    // hide new added action ref TODO
+    model.setData( actionIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
+    model.apply();
+
+    QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( "ToolBars/UserToolBar_1/ActionRef_mActionAddPart_1" ) );
+    QVERIFY( !getItem<QgsCustomization::QgsActionRefItem>( "ToolBars/UserToolBar_1/ActionRef_mActionAddPart_1" )->isVisible() );
+    QVERIFY( !findQAction( u"ToolBars/UserToolBar_1/mActionAddPart"_s ) );
+
+    // delete tool bar
 
     model.deleteUserItems( QList<QModelIndex>() << newItemIndex );
 
