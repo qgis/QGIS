@@ -2,9 +2,9 @@ name: Sync QGIS upstream
 
 on:
   schedule:
-    # 02:00 Europe/Rome is 00:00 UTC during daylight saving time.
+    # Target ~02:00 Europe/Rome. GitHub Actions often delays cron jobs by hours;
+    # scheduled runs are accepted any time between 02:00 and 09:59 Europe/Rome.
     - cron: '0 0 * * *'
-    # 02:00 Europe/Rome is 01:00 UTC during standard time.
     - cron: '0 1 * * *'
   workflow_dispatch:
 
@@ -31,8 +31,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Check local schedule guard
-        id: schedule_guard
+      - name: Check schedule window
+        id: schedule_window
         shell: bash
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -41,30 +41,30 @@ jobs:
             exit 0
           fi
 
-          local_hour="$(TZ=Europe/Rome date +%H)"
-          if [ "$local_hour" = "02" ]; then
+          local_hour=$((10#$(TZ=Europe/Rome date +%H)))
+          if [ "$local_hour" -ge 2 ] && [ "$local_hour" -le 9 ]; then
             echo "should_run=true" >> "$GITHUB_OUTPUT"
-            echo "Scheduled run is at 02:00 Europe/Rome."
+            echo "Scheduled run within Europe/Rome window 02:00-09:59 (hour ${local_hour})."
           else
             echo "should_run=false" >> "$GITHUB_OUTPUT"
-            echo "Skipping duplicate scheduled run; Europe/Rome hour is ${local_hour}."
+            echo "Outside sync window; Europe/Rome hour is ${local_hour}."
           fi
 
       - name: Checkout
-        if: steps.schedule_guard.outputs.should_run == 'true'
+        if: steps.schedule_window.outputs.should_run == 'true'
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           persist-credentials: true
 
       - name: Configure git identity
-        if: steps.schedule_guard.outputs.should_run == 'true'
+        if: steps.schedule_window.outputs.should_run == 'true'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Merge QGIS upstream into sync branch
-        if: steps.schedule_guard.outputs.should_run == 'true'
+        if: steps.schedule_window.outputs.should_run == 'true'
         shell: bash
         run: scripts/ci/sync-qgis-upstream.sh
