@@ -52,6 +52,7 @@ class TestQgsAppElevationProfileWidget : public QObject
     void cleanup();         // will be called after every testfunction.
 
     void registerCustomProfileAddsCustomNode();
+    void registerCustomProfileAndThenInitializeProfile();
     void registerCustomProfileInSyncModeNoCrash();
     void registerCustomProfileInSyncMode();
     void registerCustomProfileInNonSyncMode();
@@ -112,6 +113,32 @@ void TestQgsAppElevationProfileWidget::registerCustomProfileAddsCustomNode()
   QVERIFY( QgsApplication::profileSourceRegistry()->unregisterProfileSource( u"my-dummy-profile"_s ) );
   QCOMPARE( profile->layerTree()->children().size(), 0 );
   QCOMPARE( profile->layerTree()->findCustomNodeIds().size(), 0 );
+}
+
+void TestQgsAppElevationProfileWidget::registerCustomProfileAndThenInitializeProfile()
+{
+  // First, register a custom profile
+  MyDummyProfileSource *source = new MyDummyProfileSource();
+  QVERIFY( QgsApplication::profileSourceRegistry()->registerProfileSource( source ) );
+
+  // Then, create a new profile widget
+  QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
+  QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
+  QgsElevationProfileWidget *profileWidget = new QgsElevationProfileWidget( profile, mQgisApp->mapCanvas() );
+  QVERIFY( profileWidget->profile() );
+
+  // Check that Canvas has custom source
+  QVERIFY( profileWidget->mCanvas->sources().contains( source ) );
+
+  // Check that Elevation tree has custom node
+  QVERIFY( !profile->layerTree()->findCustomNodeIds().isEmpty() );
+  QVERIFY( profile->layerTree()->findCustomNode( source->profileSourceId() ) );
+
+  // Check that QGIS layer tree has no custom node
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findCustomNodeIds().isEmpty() );
+
+  // Unregister the custom profile
+  QVERIFY( QgsApplication::profileSourceRegistry()->unregisterProfileSource( u"my-dummy-profile"_s ) );
 }
 
 void TestQgsAppElevationProfileWidget::registerCustomProfileInSyncModeNoCrash()
