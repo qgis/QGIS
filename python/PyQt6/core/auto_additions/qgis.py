@@ -7973,9 +7973,9 @@ Qgis.SceneMode.baseClass = Qgis
 Qgis.VerticalAxisInversion.WhenRotatingDragging.__doc__ = "When rotating camera around self with mouse captured \n.. versionadded:: 4.2"
 Qgis.VerticalAxisInversion.WhenRotatingCaptured.__doc__ = "When rotating camera around self with mouse button pressed \n.. versionadded:: 4.2"
 Qgis.VerticalAxisInversion.WhenPivoting.__doc__ = "When pivoting camera around point in terrain \n.. versionadded:: 4.2"
-Qgis.VerticalAxisInversion.Never.__doc__ = ""
-Qgis.VerticalAxisInversion.WhenDragging.__doc__ = ""
-Qgis.VerticalAxisInversion.Always.__doc__ = ""
+Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements \n.. deprecated:: 4.2"
 Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D views.
 
 .. versionadded:: 3.30
@@ -7992,9 +7992,18 @@ Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D v
 
   .. versionadded:: 4.2
 
-* ``Never``: 
-* ``WhenDragging``: 
-* ``Always``: 
+* ``Never``: Never invert vertical axis movements
+
+  .. deprecated:: 4.2
+
+* ``WhenDragging``: Invert vertical axis movements when dragging in first person modes
+
+  .. deprecated:: 4.2
+
+* ``Always``: Always invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 
 """
 # --
