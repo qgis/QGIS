@@ -17,6 +17,8 @@ from qgis.core import (
     NULL,
     Qgis,
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
     QgsEditorWidgetSetup,
     QgsFeature,
     QgsField,
@@ -1648,12 +1650,20 @@ class TestQgsJsonUtils(QgisTestCase):
         )
         self.assertTrue(res.isNull())
 
-    def _round_trip(self, wkt, expected=None, profile=Qgis.GeoJsonProfile.JsonFg):
+    def _round_trip(
+        self,
+        wkt,
+        expected=None,
+        profile=Qgis.GeoJsonProfile.JsonFg,
+        in_crs=None,
+        out_crs=None,
+    ):
 
         geom = QgsGeometry.fromWkt(wkt)
         wkb_type = geom.wkbType()
         exporter = QgsJsonExporter()
         exporter.setGeoJsonProfile(profile)
+
         f = QgsFeature()
         f.setGeometry(geom)
 
@@ -1833,11 +1843,10 @@ class TestQgsJsonUtils(QgisTestCase):
             "GEOMETRYCOLLECTION ZM (POINT ZM (1 2 3 4), LINESTRING ZM (0 0 1 2, 1 1 3 4), POLYGON ZM ((0 0 1 2, 4 0 1 2, 4 4 1 2, 0 4 1 2, 0 0 1 2)))"
         )
 
-    def test_jsonfg_crs(self):
-
-        vl = QgsVectorLayer("Point?crs=epsg:3857", "test", "memory")
+    def _test_jsonfg_crs(self, crs, coords):
+        vl = QgsVectorLayer(f"Point?crs=epsg:{crs}", "test", "memory")
         f = QgsFeature()
-        f.setGeometry(QgsGeometry.fromWkt("POINT (2116003 5323382)"))
+        f.setGeometry(QgsGeometry.fromWkt(f"POINT ( {coords[0]} {coords[1]} )"))
         vl.dataProvider().addFeatures([f])
 
         exporter = QgsJsonExporter(vl)
@@ -1867,12 +1876,8 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertAlmostEqual(
             j["features"][0]["geometry"]["coordinates"][1], 43, places=0
         )
-        self.assertAlmostEqual(
-            j["features"][0]["place"]["coordinates"][0], 2116003, places=0
-        )
-        self.assertAlmostEqual(
-            j["features"][0]["place"]["coordinates"][1], 5323382, places=0
-        )
+        self.assertEqual(int(j["features"][0]["place"]["coordinates"][0]), 2115070)
+        self.assertEqual(int(j["features"][0]["place"]["coordinates"][1]), 5311971)
 
         # Export to EPSG:3111
         exporter.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:32632"))
@@ -1880,24 +1885,133 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(
             j["coordRefSys"], "http://www.opengis.net/def/crs/EPSG/0/32632"
         )
-        self.assertAlmostEqual(
-            j["features"][0]["geometry"]["coordinates"][0], 19, places=0
-        )
-        self.assertAlmostEqual(
-            j["features"][0]["geometry"]["coordinates"][1], 43, places=0
-        )
-        self.assertAlmostEqual(
-            j["features"][0]["place"]["coordinates"][0], 1315042, places=0
-        )
-        self.assertAlmostEqual(
-            j["features"][0]["place"]["coordinates"][1], 4818009, places=0
-        )
+        self.assertEqual(int(j["features"][0]["geometry"]["coordinates"][0]), 19)
+        self.assertEqual(int(j["features"][0]["geometry"]["coordinates"][1]), 43)
+        self.assertEqual(int(j["features"][0]["place"]["coordinates"][0]), 1315361)
+        self.assertEqual(int(j["features"][0]["place"]["coordinates"][1]), 4809599)
 
         # Loading back the JSON should give us the geometry in 32632
         features = QgsJsonUtils.stringToFeatureList(json.dumps(j))
         self.assertEqual(len(features), 1)
         self.assertTrue(
-            compareWkt(features[0].geometry().asWkt(), "POINT (1315042 4818009)", tol=1)
+            compareWkt(features[0].geometry().asWkt(), "POINT (1315361 4809599)", tol=1)
+        )
+
+        # Export to 4258 which has lat/long order
+        exporter.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:4258"))
+
+        j = json.loads(exporter.exportFeatures([f]))
+        self.assertEqual(j["coordRefSys"], "http://www.opengis.net/def/crs/EPSG/0/4258")
+        self.assertEqual(int(j["features"][0]["geometry"]["coordinates"][0]), 19)
+        self.assertEqual(int(j["features"][0]["geometry"]["coordinates"][1]), 43)
+        self.assertEqual(int(j["features"][0]["place"]["coordinates"][0]), 43)
+        self.assertEqual(int(j["features"][0]["place"]["coordinates"][1]), 19)
+
+    def test_jsonfg_plus_crs(self):
+
+        self._test_jsonfg_crs(4326, (19, 43))
+        self._test_jsonfg_crs(4258, (19, 43))
+        self._test_jsonfg_crs(32632, (1315361.91, 4809599.55))
+        self._test_jsonfg_crs(3857, (2115070.32, 5311971.84))
+
+        # Test complex geometries ZM coordinates are exported in the correct order and with the correct CRS
+        # MULTISURFACE in 4258
+        wkt = "MULTISURFACE ZM (CURVEPOLYGON ZM (CIRCULARSTRING ZM ( 0 0 1 2, 4 0 1 2, 4 4 1 2, 0 4 1 2, 0 0 1 2),(1 1 3 4, 3 3 3 4, 3 1 3 4, 1 1 3 4)), CURVEPOLYGON ZM ((10 10 3 4, 14 12 3 4, 11 10 3 4, 10 10 3 4), (11 11 4 1, 11.5 11 4 2, 11 11.5 4 2, 11 11 4 1)))"
+        vl = QgsVectorLayer(f"{wkt}?crs=epsg:4258", "test", "memory")
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt(wkt))
+        self.assertTrue(vl.dataProvider().addFeatures([f]))
+
+        # Export to 32632 and check we get the expected geometry back when loading the JSON
+        exporter = QgsJsonExporter(vl)
+        exporter.setGeoJsonProfile(Qgis.GeoJsonProfile.JsonFgPlus)
+        exporter.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:32632"))
+        j_str = exporter.exportFeatures([f])
+        features = QgsJsonUtils.stringToFeatureList(j_str)
+        geom = features[0].geometry()
+        geom.transform(
+            QgsCoordinateTransform(
+                QgsCoordinateReferenceSystem("EPSG:32632"),
+                QgsCoordinateReferenceSystem("EPSG:4258"),
+                QgsCoordinateTransformContext(),
+            )
+        )
+        geom_wkt = geom.asWkt()
+        self.assertTrue(
+            compareWkt(geom_wkt, wkt, tol=0.01), f"Expected {wkt} but got {geom_wkt}"
+        )
+
+    def test_rfc7946_crs(self):
+        """Test that when exporting to RFC7946, the CRS is always CRS84 and coordinates are in longitude/latitude order"""
+
+        def _test_rfc7946_crs(self, crs, coords):
+            vl = QgsVectorLayer(f"Point?crs=epsg:{crs}", "test", "memory")
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(f"POINT ( {coords[0]} {coords[1]} )"))
+            vl.dataProvider().addFeatures([f])
+
+            exporter = QgsJsonExporter(vl)
+            exporter.setGeoJsonProfile(Qgis.GeoJsonProfile.Rfc7946)
+            j = json.loads(exporter.exportFeatures([f]))
+
+            self.assertAlmostEqual(
+                j["features"][0]["geometry"]["coordinates"][0], 19, places=0
+            )
+            self.assertAlmostEqual(
+                j["features"][0]["geometry"]["coordinates"][1], 43, places=0
+            )
+
+        _test_rfc7946_crs(self, 4326, (19, 43))
+        _test_rfc7946_crs(self, 4258, (19, 43))
+        _test_rfc7946_crs(self, 32632, (1315361.91, 4809599.55))
+        _test_rfc7946_crs(self, 3857, (2115070.32, 5311971.84))
+
+    def test_circularstring_export_15_point(self):
+
+        wkt = "CIRCULARSTRING M (0 0 2, 1 1 4, 2 0 5, 3 1 6, 4 0 7, 5 1 8, 6 0 9, 7 1 10, 8 0 11, 9 1 12, 10 0 13, 11 1 14, 12 0 15, 13 1 16, 14 0 17)"
+        vl = QgsVectorLayer(f"{wkt}?crs=epsg:4326", "test", "memory")
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt(wkt))
+        self.assertTrue(vl.dataProvider().addFeatures([f]))
+        exporter = QgsJsonExporter(vl)
+        exporter.setGeoJsonProfile(Qgis.GeoJsonProfile.JsonFgPlus)
+        j = json.loads(exporter.exportFeatures([f]))
+        self.assertEqual(
+            len(j["features"][0]["place"]["geometries"][0]["coordinates"]), 11
+        )
+        self.assertEqual(
+            len(j["features"][0]["place"]["geometries"][1]["coordinates"]), 5
+        )
+        self.assertEqual(
+            j["features"][0]["place"]["geometries"],
+            [
+                {
+                    "coordinates": [
+                        [0.0, 0.0, 2.0],
+                        [1.0, 1.0, 4.0],
+                        [2.0, 0.0, 5.0],
+                        [3.0, 1.0, 6.0],
+                        [4.0, 0.0, 7.0],
+                        [5.0, 1.0, 8.0],
+                        [6.0, 0.0, 9.0],
+                        [7.0, 1.0, 10.0],
+                        [8.0, 0.0, 11.0],
+                        [9.0, 1.0, 12.0],
+                        [10.0, 0.0, 13.0],
+                    ],
+                    "type": "CircularString",
+                },
+                {
+                    "coordinates": [
+                        [10.0, 0.0, 13.0],
+                        [11.0, 1.0, 14.0],
+                        [12.0, 0.0, 15.0],
+                        [13.0, 1.0, 16.0],
+                        [14.0, 0.0, 17.0],
+                    ],
+                    "type": "CircularString",
+                },
+            ],
         )
 
     def test_no_geometry_features(self):

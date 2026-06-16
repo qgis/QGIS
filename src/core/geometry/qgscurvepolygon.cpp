@@ -405,7 +405,7 @@ json QgsCurvePolygon::asJsonObject( int precision, Qgis::GeoJsonProfile profile 
     case Qgis::GeoJsonProfile::Rfc7946:
     {
       json coordinates( json::array() );
-      if ( QgsCurve *lExteriorRing = exteriorRing() )
+      if ( const QgsCurve *lExteriorRing = exteriorRing() )
       {
         std::unique_ptr< QgsLineString > exteriorLineString( lExteriorRing->curveToLine() );
         QgsPointSequence exteriorPts;
@@ -427,7 +427,7 @@ json QgsCurvePolygon::asJsonObject( int precision, Qgis::GeoJsonProfile profile 
     case Qgis::GeoJsonProfile::JsonFgPlus:
     {
       json geometries = json::array();
-      if ( QgsCurve *lExteriorRing = exteriorRing() )
+      if ( const QgsCurve *lExteriorRing = exteriorRing() )
       {
         geometries.push_back( lExteriorRing->asJsonObject( precision, profile ) );
         for ( int i = 0, n = numInteriorRings(); i < n; ++i )
