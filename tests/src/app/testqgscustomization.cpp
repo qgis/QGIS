@@ -53,6 +53,7 @@ class TestQgsCustomization : public QgsTest
     void testClone();
     void testModel();
     void testModelProcessing();
+    void testToolBarPosition();
 
   private:
     template<class T> T *getItem( QgsCustomization *customization, const QString &path ) const { return dynamic_cast<T *>( getItem( customization, path ) ); }
@@ -928,6 +929,39 @@ void TestQgsCustomization::testModelProcessing()
     QVERIFY( !getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" ) );
     QVERIFY( !findQAction( u"ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1"_s ) );
   }
+}
+
+void TestQgsCustomization::testToolBarPosition()
+{
+  // check that we keep toolbar position when we call apply()
+
+  mQgisApp->customization()->setEnabled( true );
+
+  const QString name = "my_super_toolbar";
+  mQgisApp->customization()->toolBarsItem()->addChild( std::make_unique<QgsCustomization::QgsUserToolBarItem>( name, name, mQgisApp->customization()->toolBarsItem() ) );
+
+  QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/my_super_toolbar" ) );
+
+  mQgisApp->customization()->apply();
+
+  QWidget *mySuperToolBar = findQWidget( "ToolBars/my_super_toolbar" );
+  QVERIFY( mySuperToolBar );
+
+  QToolBar *newToolBar = new QToolBar( "another_toolbar", QgisApp::instance() );
+  newToolBar->addAction( new QAction( "new_action" ) );
+  QgisApp::instance()->addToolBar( newToolBar );
+
+  QApplication::processEvents();
+  QPoint mySuperToolBarPos = mySuperToolBar->mapToGlobal( QPoint( 0, 0 ) );
+
+  mQgisApp->customization()->apply();
+
+  QApplication::processEvents();
+
+  mySuperToolBar = findQWidget( "ToolBars/my_super_toolbar" );
+  QVERIFY( mySuperToolBar );
+
+  QCOMPARE( mySuperToolBarPos, mySuperToolBar->mapToGlobal( QPoint( 0, 0 ) ) );
 }
 
 

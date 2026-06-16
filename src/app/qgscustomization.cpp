@@ -1693,6 +1693,7 @@ void QgsCustomization::applyToToolBars() const
     return;
 
   const auto toolBarWidgets = mQgisApp->findChildren<QToolBar *>( QString(), Qt::FindDirectChildrenOnly );
+  QMap<QString, QToolBar *> userToolBars;
   for ( QToolBar *tb : toolBarWidgets )
   {
     if ( !tb )
@@ -1700,9 +1701,10 @@ void QgsCustomization::applyToToolBars() const
 
     if ( tb->property( USER_TOOLBAR_PROPERTY ).toBool() )
     {
-      // delete old toolbar, will recreate it later
-      QgisApp::instance()->removeToolBar( tb );
-      delete tb;
+      // we don't delete toolbar (yet) in order to keep their actual position if they still exists
+      // after we finish to create user defined tool bars
+      userToolBars[tb->objectName()] = tb;
+      tb->clear();
     }
     else if ( QgsToolBarItem *t = mToolBars->getChild<QgsToolBarItem>( tb->objectName() ) )
     {
@@ -1716,10 +1718,18 @@ void QgsCustomization::applyToToolBars() const
   {
     if ( QgsCustomization::QgsUserToolBarItem *userToolBar = dynamic_cast<QgsCustomization::QgsUserToolBarItem *>( childItem.get() ); userToolBar && userToolBar->isVisible() )
     {
-      QToolBar *toolBar = new QToolBar( userToolBar->title(), QgisApp::instance() );
-      toolBar->setProperty( USER_TOOLBAR_PROPERTY, true );
-      toolBar->setObjectName( userToolBar->name() );
-      QgisApp::instance()->addToolBar( toolBar );
+      QToolBar *toolBar = nullptr;
+      if ( userToolBars.contains( userToolBar->name() ) )
+      {
+        toolBar = userToolBars.take( userToolBar->name() );
+      }
+      else
+      {
+        toolBar = new QToolBar( userToolBar->title(), QgisApp::instance() );
+        toolBar->setProperty( USER_TOOLBAR_PROPERTY, true );
+        toolBar->setObjectName( userToolBar->name() );
+        QgisApp::instance()->addToolBar( toolBar );
+      }
 
       for ( const std::unique_ptr<QgsCustomization::QgsItem> &actionRefItem : userToolBar->childItemList() )
       {
@@ -1734,6 +1744,13 @@ void QgsCustomization::applyToToolBars() const
 
       updateActionVisibility( userToolBar, toolBar );
     }
+  }
+
+  // delete user tool bar not existing anymore
+  for ( QToolBar *toolBar : userToolBars )
+  {
+    QgisApp::instance()->removeToolBar( toolBar );
+    delete toolBar;
   }
 }
 
