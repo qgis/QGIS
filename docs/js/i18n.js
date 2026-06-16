@@ -29,6 +29,7 @@
         "Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace.", // #spellok
       "hero.ctaPrimary": "Scarica Strata",
       "hero.ctaSecondary": "Come configurarlo",
+      "hero.ctaStar": "Metti una stella su GitHub",
 
       "mockup.mapLabel": "Mappa GIS",
       "mockup.chatTitle": "AI Assistant",
@@ -227,6 +228,7 @@
       "footer.disclaimer":
         "Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
+      "footer.star": "Stella",
       "footer.license": "Licenza GPLv2+",
       "footer.contact": "Contatto",
     },
@@ -249,6 +251,7 @@
         "An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.",
       "hero.ctaPrimary": "Download Strata",
       "hero.ctaSecondary": "How to set up",
+      "hero.ctaStar": "Star on GitHub",
 
       "mockup.mapLabel": "GIS map",
       "mockup.chatTitle": "AI Assistant",
@@ -447,6 +450,7 @@
       "footer.disclaimer":
         "Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
+      "footer.star": "Star",
       "footer.license": "GPLv2+ License",
       "footer.contact": "Contact",
     },
