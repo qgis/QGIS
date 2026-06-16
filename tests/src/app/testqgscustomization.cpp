@@ -160,6 +160,7 @@ void TestQgsCustomization::init()
   mQgisApp->show();
 
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
 
   mCustomizationFile = std::make_unique<QTemporaryFile>();
   QVERIFY( mCustomizationFile->open() ); // fileName is not available until open
@@ -654,6 +655,11 @@ void TestQgsCustomization::testModel()
 {
   mQgisApp->customization()->setEnabled( true );
 
+  // We change visibility of help toolbar, it has to stay invisible all the time we use the model
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
+  findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->setVisible( false );
+
   QgsCustomizationDialog::QgsCustomizationModel model( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ItemVisibility );
   QAbstractItemModelTester modelTester( &model, QAbstractItemModelTester::FailureReportingMode::Fatal );
 
@@ -678,12 +684,16 @@ void TestQgsCustomization::testModel()
 
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
 
   // revert values
   model.reset();
 
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
 
   {
     QModelIndex toolBarsIndex = model.index( 4, 0 );
@@ -719,8 +729,10 @@ void TestQgsCustomization::testModel()
 
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
 
-  // revert values
+  // apply values
   model.apply();
 
   {
@@ -741,6 +753,9 @@ void TestQgsCustomization::testModel()
 
   // the action is no longer visible
   QVERIFY( !findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
 
   // test add/setVisible/setHidden/delete for user menu
   {

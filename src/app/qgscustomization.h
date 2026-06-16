@@ -952,6 +952,11 @@ class APP_EXPORT QgsCustomization
     void apply() const;
 
     /**
+     * Update customization model with current application customization elements (actions, menus, dockWidgets...)
+     */
+    void load();
+
+    /**
      * Reads customization file (given at construction time) to update customization content
      */
     void read();
@@ -1015,11 +1020,6 @@ class APP_EXPORT QgsCustomization
      * Add action items as children of \a item for each \a widget actions
      */
     void addActions( QgsItem *item, QWidget *widget ) const;
-
-    /**
-     * Update customization model with current application customization elements (actins, menus, dockWidgets...)
-     */
-    void load();
 
     /**
      * Update customization model with current application QgsBrowserDockWidget elements
