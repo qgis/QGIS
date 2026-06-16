@@ -167,7 +167,6 @@ class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
 class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
-class QgsCustomization;
 class QgsCustomizationDialog;
 
 #include "qgsconfig.h"
@@ -181,6 +180,7 @@ class QgsCustomizationDialog;
 #include "qgsattributetablefiltermodel.h"
 #include "qgsauthmanager.h"
 #include "qgsbrowserdockwidget.h"
+#include "qgscustomization.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayoutdesignerinterface.h"
 #include "qgsmaplayeractionregistry.h"
@@ -270,7 +270,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       const QString &rootProfileLocation = QString(),
       const QString &activeProfile = QString(),
       QWidget *parent = nullptr,
-      Qt::WindowFlags fl = Qt::Window
+      Qt::WindowFlags fl = Qt::Window,
+      std::unique_ptr<QgsCustomization> customization = nullptr
     );
     //! Constructor for unit tests
     QgisApp();
