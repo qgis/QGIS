@@ -395,7 +395,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
       * Export the geometry to a GeoJSON string, with the given \a precision and following the specified GeoJSON \a profile.
       * Note: this is identical to asJson() when using the Legacy profile, but differs when using other profiles.
-      * \since QGIS 4.2
+      * \since QGIS 4.4
       */
     QString asGeoJson(int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy );
 

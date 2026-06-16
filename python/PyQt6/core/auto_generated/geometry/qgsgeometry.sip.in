@@ -2547,7 +2547,7 @@ profile, but differs when using other profiles with "CircularString,"
 "CompoundCurve," "CurvePolygon," "MultiCurve," or "MultiSurface"
 geometries.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 

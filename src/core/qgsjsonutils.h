@@ -272,13 +272,13 @@ class CORE_EXPORT QgsJsonExporter
 
     /**
      * Returns the GeoJSON profile to use for export.
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     Qgis::GeoJsonProfile geoJsonProfile() const;
 
     /**
      * Sets the GeoJSON profile to use for export. Default profile is RFC7946.
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     void setGeoJsonProfile( Qgis::GeoJsonProfile profile );
 
