@@ -597,7 +597,7 @@ std::unique_ptr< QgsPoint> parsePointFromGeoJson( const json &coords, bool hasM 
   }
   else if ( coords.size() == 3 )
   {
-    const double z_or_m = coords[2].get< double >();
+    const double zOrM = coords[2].get< double >();
     if ( hasM )
       return std::make_unique< QgsPoint >( x, y, std::numeric_limits<double>::quiet_NaN(), z_or_m );
     else
@@ -719,7 +719,7 @@ std::unique_ptr< QgsPolygon > parsePolygonFromGeoJson( const json &coords, bool 
   return polygon;
 }
 
-std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geometry, bool hasM_in = false )
+std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geometry, bool hasMIn = false )
 {
   const auto hasM = hasM_in || ( geometry.contains( "measures" ) && geometry["measures"].contains( "enabled" ) && geometry["measures"]["enabled"].get<bool>() );
 

@@ -134,9 +134,9 @@ json QgsMultiCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) 
       json coordinates( json::array() );
       for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
       {
-        if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
+        if ( auto curveGeom = qgsgeometry_cast<const QgsCurve *>( geom ) )
         {
-          std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
+          std::unique_ptr< QgsLineString > lineString( curveGeom->curveToLine() );
           QgsPointSequence pts;
           lineString->points( pts );
           coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision, profile ) );
@@ -150,9 +150,9 @@ json QgsMultiCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) 
       json geometries( json::array() );
       for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
       {
-        if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
+        if ( auto curveGeom = qgsgeometry_cast<const QgsCurve *>( geom ) )
         {
-          geometries.push_back( static_cast<const QgsCurve *>( geom )->asJsonObject( precision, profile ) );
+          geometries.push_back( curveGeom->asJsonObject( precision, profile ) );
         }
       }
       return { { "type", "MultiCurve" }, { "geometries", geometries } };
