@@ -823,20 +823,6 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
   }
 }
 
-void QgsArcGisRestUtils::applyVisualVariablesToRenderer( const QVariantMap &rendererData, QgsFeatureRenderer *renderer, QgsSymbolConverterContext &context )
-{
-  if ( !renderer )
-    return;
-
-  // Apply visual variables to all symbols in the renderer
-  QgsRenderContext renderContext;
-  const QgsSymbolList symbols = renderer->symbols( renderContext );
-  for ( QgsSymbol *symbol : symbols )
-  {
-    applyVisualVariables( rendererData, symbol, context );
-  }
-}
-
 std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context )
 {
   const QString type = rendererData.value( u"type"_s ).toString();
@@ -886,6 +872,9 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( categoryData.value( u"symbol"_s ).toMap(), context ) );
       if ( symbol )
       {
+        // Apply visual variables (e.g., rotation) to the symbol
+        applyVisualVariables( rendererData, symbol.get(), context );
+
         categoryList.append( QgsRendererCategory( value, symbol.release(), label ) );
       }
     }
@@ -893,6 +882,9 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     std::unique_ptr< QgsSymbol > defaultSymbol( convertSymbol( rendererData.value( u"defaultSymbol"_s ).toMap(), context ) );
     if ( defaultSymbol )
     {
+      // Apply visual variables (e.g., rotation) to the symbol
+      applyVisualVariables( rendererData, defaultSymbol.get(), context );
+
       categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), rendererData.value( u"defaultLabel"_s ).toString() ) );
     }
 
@@ -900,10 +892,6 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       return nullptr;
 
     auto renderer = std::make_unique< QgsCategorizedSymbolRenderer >( attribute, categoryList );
-
-    // Apply visual variables (e.g., rotation) to all category symbols
-    applyVisualVariablesToRenderer( rendererData, renderer.get(), context );
-
     return renderer;
   }
   else if ( type == "classBreaks"_L1 )
@@ -1046,6 +1034,9 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       double classMaxValue = classBreakInfo.toMap().value( u"classMaxValue"_s ).toDouble();
       const QString label = classBreakInfo.toMap().value( u"label"_s ).toString();
 
+      // Apply visual variables (e.g., rotation) to the symbol
+      applyVisualVariables( rendererData, symbol.get(), context );
+
       QgsRendererRange range;
 
       range.setLowerValue( lastValue );
@@ -1056,9 +1047,6 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       lastValue = classMaxValue;
       graduatedRenderer->addClass( range );
     }
-
-    // Apply visual variables (e.g., rotation) to all class symbols
-    applyVisualVariablesToRenderer( rendererData, graduatedRenderer.get(), context );
 
     return graduatedRenderer;
   }

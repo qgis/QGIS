@@ -386,14 +386,6 @@ class CORE_EXPORT QgsArcGisRestUtils
     static void applyVisualVariables( const QVariantMap &rendererData, QgsSymbol *symbol, QgsSymbolConverterContext &context );
 
     /**
-     * Applies visual variables from renderer JSON \a data to all symbols in a \a renderer.
-     *
-     * Currently only rotation visual variables (\c rotationInfo) are supported.
-     * Warnings and errors encountered during conversion are pushed to \a context.
-     */
-    static void applyVisualVariablesToRenderer( const QVariantMap &rendererData, QgsFeatureRenderer *renderer, QgsSymbolConverterContext &context );
-
-    /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.
      */
     static std::unique_ptr< QgsPoint > convertPoint( const QVariantList &list, Qgis::WkbType type );
