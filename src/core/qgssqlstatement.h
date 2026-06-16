@@ -1,3 +1,4 @@
+
 /***************************************************************************
                                qgssqlstatement.h
                              ---------------------
@@ -140,12 +141,12 @@ class CORE_EXPORT QgsSQLStatement
       boAnd,
 
       // comparison
-      boEQ, // =
-      boNE, // <>
-      boLE, // <=
-      boGE, // >=
-      boLT, // <
-      boGT, // >
+      boEQ, //!< =
+      boNE, //!< <>
+      boLE, //!< <=
+      boGE, //!< >=
+      boLT, //!< <
+      boGT, //!< >
       boLike,
       boNotLike,
       boILike,
