@@ -578,7 +578,36 @@ json QgsCircularString::asJsonObject( int precision, Qgis::GeoJsonProfile profil
     {
       QgsPointSequence pts;
       points( pts );
-      return { { "type", "CircularString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision, profile ) } };
+      // Work around the 11 points limit
+      constexpr int MAX_POINT = 11;
+      if ( pts.size() > MAX_POINT )
+      {
+        json geometries = json::array();
+        json subCs = { { "type", "CircularString" } };
+        subCs["coordinates"] = json::array();
+        for ( int i = 0; i < pts.size(); i++ )
+        {
+          const json pointCoords = pts[i].asJsonObject( precision, profile )["coordinates"];
+          subCs["coordinates"].push_back( pointCoords );
+          if ( subCs["coordinates"].size() == MAX_POINT )
+          {
+            geometries.push_back( subCs );
+            // Clear array
+            subCs["coordinates"] = json::array();
+            subCs["coordinates"].push_back( pointCoords );
+          }
+        }
+        // Last one (if any)
+        if ( subCs["coordinates"].size() > 0 )
+        {
+          geometries.push_back( subCs );
+        }
+        return { { "type", "CompoundCurve" }, { "geometries", geometries } };
+      }
+      else
+      {
+        return { { "type", "CircularString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision, profile ) } };
+      }
     }
   }
   BUILTIN_UNREACHABLE

@@ -116,7 +116,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   transformToCRS84.setDestinationCrs( QgsCoordinateReferenceSystem( u"OGC:CRS84"_s ) );
 
   const bool destinationCrsIsRfc7946Compliant = mDestinationCrs.authid() == "OGC:CRS84";
-  const bool sourceCrsIsRfc7946Compliant = mCrs.authid() == "OGC:CRS84";
+  const bool sourceCrsIsRfc7946Compliant = ( mCrs.authid() == "OGC:CRS84" || mCrs.authid() == "EPSG:4326" );
   const bool requiresCRS84geom = mGeoJsonProfile == Qgis::GeoJsonProfile::Rfc7946 || mGeoJsonProfile == Qgis::GeoJsonProfile::JsonFgPlus;
 
   QgsGeometry geom = feature.geometry();
@@ -127,13 +127,8 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   const bool mainGeometryIsRfc7946Compliant {
     !featureHasM
     && destinationCrsIsRfc7946Compliant
-    && flatType != Qgis::WkbType::CircularString
-    && flatType != Qgis::WkbType::CompoundCurve
-    && flatType != Qgis::WkbType::CurvePolygon
-    && flatType != Qgis::WkbType::MultiCurve
-    && flatType != Qgis::WkbType::MultiSurface
+    && ( flatType == Qgis::WkbType::LineString || flatType == Qgis::WkbType::MultiLineString || flatType == Qgis::WkbType::Polygon || flatType == Qgis::WkbType::MultiPolygon || flatType == Qgis::WkbType::Point || flatType == Qgis::WkbType::MultiPoint || flatType == Qgis::WkbType::GeometryCollection )
   };
-
 
   json featureJson {
     { "type", "Feature" },
@@ -223,17 +218,60 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       }
     }
 
+    std::function<void( json & )> invertCoords;
+    invertCoords = [&invertCoords]( json &geometry ) {
+      if ( geometry.contains( "coordinates" ) )
+      {
+        invertCoords( geometry["coordinates"] );
+      }
+      else if ( geometry.contains( "geometries" ) )
+      {
+        for ( json &geom : geometry["geometries"] )
+        {
+          invertCoords( geom );
+        }
+      }
+      else if ( geometry.is_array() && geometry.size() > 0 )
+      {
+        if ( geometry[0].is_array() )
+        {
+          for ( json &geom : geometry )
+          {
+            invertCoords( geom );
+          }
+        }
+        else
+        {
+          if ( geometry.size() >= 2 && geometry[0].is_number() && geometry[1].is_number() )
+          {
+            std::swap( geometry[0], geometry[1] );
+          }
+        }
+      }
+    };
+
+    auto addBbox = [&featureJson, &flatType]( const QgsGeometry &geometry ) {
+      if ( flatType == Qgis::WkbType::Point )
+      {
+        // For points, the bbox is just the coordinates of the point (or the points)
+        return;
+      }
+      auto bbox = geometry.boundingBox();
+      featureJson["bbox"] = { bbox.xMinimum(), bbox.yMinimum(), bbox.xMaximum(), bbox.yMaximum() };
+    };
+
     switch ( mGeoJsonProfile )
     {
       case Qgis::GeoJsonProfile::Rfc7946:
+      {
+        featureJson["geometry"] = transformedCRS84Geom.asJsonObject( mPrecision, Qgis::GeoJsonProfile::Rfc7946 );
+        addBbox( transformedCRS84Geom );
+        break;
+      }
       case Qgis::GeoJsonProfile::Legacy:
       {
-        if ( flatType != Qgis::WkbType::Point )
-        {
-          const QgsRectangle box = geom.boundingBox();
-          featureJson["bbox"] = { qgsRound( box.xMinimum(), mPrecision ), qgsRound( box.yMinimum(), mPrecision ), qgsRound( box.xMaximum(), mPrecision ), qgsRound( box.yMaximum(), mPrecision ) };
-        }
         featureJson["geometry"] = geom.asJsonObject( mPrecision, Qgis::GeoJsonProfile::Rfc7946 );
+        addBbox( geom );
         break;
       }
       case Qgis::GeoJsonProfile::JsonFgPlus:
@@ -245,10 +283,15 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
         // PLUS version: always add the fallback geometry as "geometry" member, so that the output is always compliant with RFC7946.
         // If the geometry is not compliant with RFC7946 also add the original geometry as "place" member.
         featureJson["geometry"] = transformedCRS84Geom.asJsonObject( mPrecision, Qgis::GeoJsonProfile::Rfc7946 );
-
+        addBbox( transformedCRS84Geom );
         if ( !mainGeometryIsRfc7946Compliant )
         {
-          featureJson["place"] = geom.asJsonObject( mPrecision, mGeoJsonProfile );
+          json place = geom.asJsonObject( mPrecision, mGeoJsonProfile );
+          if ( mDestinationCrs.hasAxisInverted() )
+          {
+            invertCoords( place );
+          }
+          featureJson["place"] = place;
         }
         break;
       }
@@ -259,7 +302,12 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
         // In the latter case, the "geometry" member is omitted.
         if ( !mainGeometryIsRfc7946Compliant )
         {
-          featureJson["place"] = geom.asJsonObject( mPrecision, mGeoJsonProfile );
+          json place = geom.asJsonObject( mPrecision, mGeoJsonProfile );
+          if ( mDestinationCrs.hasAxisInverted() )
+          {
+            invertCoords( place );
+          }
+          featureJson["place"] = place;
         }
         else
         {
@@ -599,9 +647,9 @@ std::unique_ptr< QgsPoint> parsePointFromGeoJson( const json &coords, bool hasM 
   {
     const double zOrM = coords[2].get< double >();
     if ( hasM )
-      return std::make_unique< QgsPoint >( x, y, std::numeric_limits<double>::quiet_NaN(), z_or_m );
+      return std::make_unique< QgsPoint >( x, y, std::numeric_limits<double>::quiet_NaN(), zOrM );
     else
-      return std::make_unique< QgsPoint >( x, y, z_or_m );
+      return std::make_unique< QgsPoint >( x, y, zOrM );
   }
   else
   {
@@ -721,7 +769,7 @@ std::unique_ptr< QgsPolygon > parsePolygonFromGeoJson( const json &coords, bool 
 
 std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geometry, bool hasMIn = false )
 {
-  const auto hasM = hasM_in || ( geometry.contains( "measures" ) && geometry["measures"].contains( "enabled" ) && geometry["measures"]["enabled"].get<bool>() );
+  const auto hasM = hasMIn || ( geometry.contains( "measures" ) && geometry["measures"].contains( "enabled" ) && geometry["measures"]["enabled"].get<bool>() );
 
   if ( !geometry.is_object() )
   {
