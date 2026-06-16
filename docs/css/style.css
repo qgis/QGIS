@@ -242,11 +242,6 @@ img {
   font-size: 0.9375rem;
 }
 
-.btn-github .btn-github-icon {
-  color: #f0c14b;
-  flex-shrink: 0;
-}
-
 .nav-toggle {
   display: none;
   background: none;
