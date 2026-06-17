@@ -982,30 +982,29 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
   if ( !node )
     return true;
 
-  if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
+  switch ( node->nodeType() )
   {
-    return true;
-  }
-  else if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
-  {
-    QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-    if ( !layer )
-      return true;
-    if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
-      return false;
-    if ( !mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+    case QgsLayerTreeNode::NodeLayer:
     {
-      return false;
-    }
-    if ( mHideValidLayers && layer->isValid() )
-      return false;
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      if ( !layer )
+        return true;
+      if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
+        return false;
+      if ( !mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+      {
+        return false;
+      }
+      if ( mHideValidLayers && layer->isValid() )
+        return false;
 
-    return true;
+      return true;
+    }
+    case QgsLayerTreeNode::NodeGroup:
+    case QgsLayerTreeNode::NodeCustom:
+      return true;
   }
-  else
-  {
-    return true;
-  }
+  return true;
 }
 
 bool QgsLayerTreeProxyModel::showPrivateLayers() const
