@@ -39,8 +39,17 @@ from pathlib import Path
 
 profile = Path(sys.argv[1])
 keys = ("strata/index/enable_layer_indexing", "strata/index/automatic")
+# QSettings usually stores the INI under the org subdir (qgis.org/QGIS4.ini);
+# probe the org/QGIS/top-level layouts so the lookup is not a silent no-op.
+inis = sorted(
+    {
+        *profile.glob("QGIS*.ini"),
+        *profile.glob("QGIS/QGIS*.ini"),
+        *profile.glob("qgis.org/QGIS*.ini"),
+    }
+)
 found = False
-for ini in list(profile.glob("QGIS*.ini")) + list((profile / "QGIS").glob("QGIS*.ini")):
+for ini in inis:
     text = ini.read_text(encoding="utf-8", errors="replace")
     for key in keys:
         for line in text.splitlines():

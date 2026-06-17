@@ -24,7 +24,16 @@ import sys
 from pathlib import Path
 
 profile = Path(sys.argv[1])
-ini_candidates = list(profile.glob("QGIS*.ini")) + list((profile / "QGIS").glob("QGIS*.ini"))
+# QSettings stores the INI under the organisation subdir (e.g. qgis.org/QGIS4.ini)
+# on most installs; older/custom layouts keep it directly under the profile or in a
+# QGIS/ subdir. Probe all known locations.
+ini_candidates = sorted(
+    {
+        *profile.glob("QGIS*.ini"),
+        *profile.glob("QGIS/QGIS*.ini"),
+        *profile.glob("qgis.org/QGIS*.ini"),
+    }
+)
 if not ini_candidates:
     print(f"No QGIS*.ini found under {profile}", file=sys.stderr)
     sys.exit(1)
@@ -35,7 +44,14 @@ stale_markers = (
     "LLM_MODELS",
 )
 
+# QGIS injects built-in marker search paths (e.g. "/svg/") that it resolves at
+# runtime relative to its install; they are not real on-disk directories, so the
+# exists() heuristic must never classify them as stale.
+builtin_svg_paths = ("/svg/",)
+
 def is_stale(path: str) -> bool:
+    if path in builtin_svg_paths:
+        return False
     if any(marker in path for marker in stale_markers):
         return True
     if path.startswith("/Volumes/") and not Path(path).exists():
@@ -44,7 +60,9 @@ def is_stale(path: str) -> bool:
 
 changed = 0
 for ini_path in ini_candidates:
-    text = ini_path.read_text(encoding="utf-8", errors="replace")
+    # surrogateescape round-trips any non-UTF8 byte losslessly, so unrelated
+    # settings are never corrupted on write-back.
+    text = ini_path.read_text(encoding="utf-8", errors="surrogateescape")
     lines = text.splitlines(keepends=True)
     out = []
     i = 0
@@ -53,15 +71,23 @@ for ini_path in ini_candidates:
     while i < len(lines):
         line = lines[i]
         if re.match(r"^searchPathsForSVG\\size=", line):
-            size = int(line.split("=", 1)[1].strip())
+            try:
+                size = int(line.split("=", 1)[1].strip())
+            except ValueError:
+                out.append(line)
+                i += 1
+                continue
             entries = []
+            consumed = 1  # the size= line itself
             for j in range(1, size + 1):
-                key_prefix = f"searchPathsForSVG\\{j}="
-                entry_line = lines[i + j]
-                if not entry_line.startswith(key_prefix):
-                    out.append(entry_line)
-                    continue
-                value = entry_line.split("=", 1)[1].strip()
+                idx = i + j
+                # Stop if the declared size overruns the file or the numbered
+                # entries end early; the remaining lines are then reprocessed
+                # normally by the outer loop instead of being swallowed.
+                if idx >= len(lines) or not lines[idx].startswith(f"searchPathsForSVG\\{j}="):
+                    break
+                consumed += 1
+                value = lines[idx].split("=", 1)[1].strip()
                 if is_stale(value):
                     file_changed = True
                     print(f"Removing stale SVG path from {ini_path.name}: {value}")
@@ -74,7 +100,7 @@ for ini_path in ini_candidates:
             else:
                 out.append("searchPathsForSVG\\size=0\n")
                 file_changed = True
-            i += size + 1
+            i += consumed
             continue
 
         if line.startswith("searchPathsForSVG=") and "\\" not in line.split("=", 1)[0]:
@@ -97,7 +123,7 @@ for ini_path in ini_candidates:
         i += 1
 
     if file_changed:
-        ini_path.write_text("".join(out), encoding="utf-8")
+        ini_path.write_text("".join(out), encoding="utf-8", errors="surrogateescape")
         changed += 1
 
 if changed:

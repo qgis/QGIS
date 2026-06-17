@@ -22,7 +22,6 @@
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"

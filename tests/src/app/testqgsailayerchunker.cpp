@@ -126,7 +126,7 @@ void TestQgsAiLayerChunker::vectorHeaderSkipsFeatureCountScan()
 
 void TestQgsAiLayerChunker::rasterMetadataSkipsBandStatistics()
 {
-  auto layer = std::make_unique<QgsRasterLayer>( QStringLiteral( TEST_DATA_DIR ) + u"/raster/landsat.tif"_s, u"landsat"_s );
+  auto layer = std::make_unique<QgsRasterLayer>( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, u"landsat"_s );
   if ( !layer->isValid() )
     QSKIP( "landsat raster fixture unavailable" );
 
