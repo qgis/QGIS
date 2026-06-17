@@ -190,7 +190,7 @@ its mime type, returns an empty string if there are not matches.
       const QgsServerApiContext &context,
       const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
       const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
-      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::NONE,
+      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::None,
       const QString &title = ""
     ) const;
 %Docstring
@@ -285,7 +285,7 @@ default content type of the handler if none of the above matches.
     static QgsServerOgcApi::Profile profileFromString( const QString &profile, bool &ok /Out/ );
 %Docstring
 Returns the Profile from the string representation in ``profile``, or
-Profile.NONE if the string was not recognized.
+Profile.None if the string was not recognized.
 
 :param profile: the string representation of the profile, for example
                 "rel-as-key" or "RFC7946"
