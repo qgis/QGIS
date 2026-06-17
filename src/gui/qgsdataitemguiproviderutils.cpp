@@ -122,7 +122,7 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection(
     context.messageBar()->pushWidget( item, Qgis::MessageLevel::Warning );
   };
 
-  QgsVectorLayer *styleSourceLayer = dialog.sourceLayer();
+  QgsVectorLayer *styleSourceLayer = dialog.saveStyleToDatabase() ? dialog.sourceLayer() : nullptr;
 
   // when export is successful:
   QObject::connect(
@@ -237,7 +237,7 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection(
     context.messageBar()->pushWidget( item, Qgis::MessageLevel::Warning );
   };
 
-  QgsVectorLayer *styleSourceLayer = dialog.sourceLayer();
+  QgsVectorLayer *styleSourceLayer = dialog.saveStyleToDatabase() ? dialog.sourceLayer() : nullptr;
 
   // when export is successful:
   QObject::connect(
