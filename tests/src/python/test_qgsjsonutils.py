@@ -1966,8 +1966,10 @@ class TestQgsJsonUtils(QgisTestCase):
         _test_rfc7946_crs(self, 32632, (1315361.91, 4809599.55))
         _test_rfc7946_crs(self, 3857, (2115070.32, 5311971.84))
 
-    def test_circularstring_export_15_point(self):
+    def test_circularstring_export_11_points_limit(self):
+        # Test > 11 points circularstring is exported correctly with the 11 points limit in JSON-FG+ profile
 
+        # 15 points
         wkt = "CIRCULARSTRING M (0 0 2, 1 1 4, 2 0 5, 3 1 6, 4 0 7, 5 1 8, 6 0 9, 7 1 10, 8 0 11, 9 1 12, 10 0 13, 11 1 14, 12 0 15, 13 1 16, 14 0 17)"
         vl = QgsVectorLayer(f"{wkt}?crs=epsg:4326", "test", "memory")
         f = QgsFeature()
@@ -2013,6 +2015,18 @@ class TestQgsJsonUtils(QgisTestCase):
                 },
             ],
         )
+
+        # 11 points
+        wkt = "CIRCULARSTRING M (0 0 2, 1 1 4, 2 0 5, 3 1 6, 4 0 7, 5 1 8, 6 0 9, 7 1 10, 8 0 11, 9 1 12, 10 0 13)"
+        vl = QgsVectorLayer(f"{wkt}?crs=epsg:4326", "test", "memory")
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt(wkt))
+        self.assertTrue(vl.dataProvider().addFeatures([f]))
+        exporter = QgsJsonExporter(vl)
+        exporter.setGeoJsonProfile(Qgis.GeoJsonProfile.JsonFgPlus)
+        j = json.loads(exporter.exportFeatures([f]))
+        self.assertEqual(j["features"][0]["place"]["type"], "CircularString")
+        self.assertEqual(len(j["features"][0]["place"]["coordinates"]), 11)
 
     def test_no_geometry_features(self):
 
