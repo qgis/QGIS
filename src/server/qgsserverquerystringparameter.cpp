@@ -31,19 +31,29 @@ QgsServerQueryStringParameter::~QgsServerQueryStringParameter()
 
 QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &context ) const
 {
+  // Case insensitive check
+  const QUrlQuery urlQuery( context.request()->url() );
+  const QList<std::pair<QString, QString>> items = urlQuery.queryItems();
+  QString nameInQueryString;
+  QVariant value;
+  for ( const auto &pair : std::as_const( items ) )
+  {
+    if ( pair.first.compare( mName, Qt::CaseInsensitive ) == 0 )
+    {
+      nameInQueryString = pair.first;
+      value = pair.second;
+      break;
+    }
+  }
+
   // 1: check required
-  if ( mRequired && !QUrlQuery( context.request()->url() ).hasQueryItem( mName ) )
+  if ( mRequired && nameInQueryString.isEmpty() )
   {
     throw QgsServerApiBadRequestException( QStringLiteral( "Missing required argument: '%1'" ).arg( mName ) );
   }
 
   // 2: get value from query string or set it to the default
-  QVariant value;
-  if ( QUrlQuery( context.request()->url() ).hasQueryItem( mName ) )
-  {
-    value = QUrlQuery( context.request()->url() ).queryItemValue( mName, QUrl::FullyDecoded );
-  }
-  else if ( mDefaultValue.isValid() )
+  if ( nameInQueryString.isEmpty() && mDefaultValue.isValid() )
   {
     value = mDefaultValue;
   }
