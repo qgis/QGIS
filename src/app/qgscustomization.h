@@ -1079,6 +1079,12 @@ class APP_EXPORT QgsCustomization
     void applyToToolBars() const;
 
     /**
+     * Find recursively \a rootItem QgsActionRefItem children and set their icon
+     * using referenced action one.
+     */
+    void loadActionRefItemIcons( QgsItem *rootItem );
+
+    /**
      * Find recursively \a rootItem QgsProcessingAlgorithmRefItem children and set their icon
      * using referenced algorithm one.
      */

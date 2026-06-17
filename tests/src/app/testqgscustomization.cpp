@@ -53,6 +53,8 @@ class TestQgsCustomization : public QgsTest
     void testClone();
     void testModel();
     void testModelProcessing();
+    void testModelUserAction_data();
+    void testModelUserAction();
     void testToolBarPosition();
 
   private:
@@ -835,6 +837,7 @@ void TestQgsCustomization::testModel()
     QModelIndex actionIndex = model.index( 0, 0, newItemIndex );
     QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::DisplayRole ), u"ActionRef_mActionAddPart_1"_s );
     QCOMPARE( model.data( model.index( 0, 1, newItemIndex ), Qt::ItemDataRole::DisplayRole ), u"Add Part"_s );
+    QVERIFY( !model.data( actionIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
 
     QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
     QCOMPARE( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" )->childrenCount(), 0 );
@@ -896,10 +899,10 @@ void TestQgsCustomization::testModelProcessing()
     QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
     QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
 
-    QVERIFY( modelActionSelector.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
 
     QCOMPARE( model.rowCount( newMenuItemIndex ), 0 );
-    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
     QCOMPARE( model.rowCount( newMenuItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newMenuItemIndex );
@@ -947,10 +950,10 @@ void TestQgsCustomization::testModelProcessing()
     QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
     QVERIFY( findQWidget( "ToolBars/UserToolBar_1" ) );
 
-    QVERIFY( modelActionSelector.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
 
     QCOMPARE( model.rowCount( newToolBarItemIndex ), 0 );
-    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
     QCOMPARE( model.rowCount( newToolBarItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newToolBarItemIndex );
@@ -985,6 +988,116 @@ void TestQgsCustomization::testModelProcessing()
     QVERIFY( !getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" ) );
     QVERIFY( !findQAction( u"ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1"_s ) );
   }
+}
+
+void TestQgsCustomization::testModelUserAction_data()
+{
+  QTest::addColumn<QString>( "rootName" );
+  QTest::addColumn<QString>( "itemName" );
+  QTest::addColumn<int>( "rootRow" );
+
+  QTest::newRow( "ToolBars" ) << u"ToolBars"_s << "UserToolBar_1" << 4;
+  QTest::newRow( "Menus" ) << u"Menus"_s << "UserMenu_1" << 2;
+}
+
+void TestQgsCustomization::testModelUserAction()
+{
+  // test that we reload correctly action icon and title
+
+  QFETCH( QString, rootName );
+  QFETCH( QString, itemName );
+  QFETCH( int, rootRow );
+
+  mQgisApp->customization()->setEnabled( true );
+
+  QgsCustomizationDialog::QgsCustomizationModel model( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ItemVisibility );
+  QAbstractItemModelTester modelTester( &model, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  QCOMPARE( model.rowCount(), 5 );
+
+  QgsCustomizationDialog::QgsCustomizationModel modelActionSelector( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ActionSelector );
+  QAbstractItemModelTester modelActionSelectorTester( &modelActionSelector, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  // create a user tool bar
+  const QModelIndex rootItemIndex = model.index( rootRow, 0 );
+  QCOMPARE( model.data( rootItemIndex, Qt::ItemDataRole::DisplayRole ), rootName );
+
+  const QModelIndex newItemIndex = model.addUserItem( rootItemIndex );
+  QCOMPARE( model.data( newItemIndex, Qt::ItemDataRole::DisplayRole ), itemName );
+
+  // drop an action ref in the toolbar
+  {
+    const QModelIndexList addPartActionIndexes
+      = modelActionSelector.match( modelActionSelector.index( 0, 0 ), Qt::ItemDataRole::DisplayRole, u"mActionAddPart"_s, -1, Qt::MatchRecursive | Qt::MatchFixedString );
+    QCOMPARE( addPartActionIndexes.count(), 2 );
+
+    std::unique_ptr<QMimeData> mimeData( modelActionSelector.mimeData( QModelIndexList() << addPartActionIndexes.at( 0 ) ) );
+    QVERIFY( mimeData );
+
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QCOMPARE( model.rowCount( newItemIndex ), 0 );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QCOMPARE( model.rowCount( newItemIndex ), 1 );
+
+    QModelIndex actionIndex = model.index( 0, 0, newItemIndex );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::DisplayRole ), u"ActionRef_mActionAddPart_1"_s );
+    QCOMPARE( model.data( model.index( 0, 1, newItemIndex ), Qt::ItemDataRole::DisplayRole ), u"Add Part"_s );
+    QVERIFY( !model.data( actionIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
+  }
+
+  {
+    const QModelIndexList bufferActionIndexes
+      = modelActionSelector.match( modelActionSelector.index( 0, 0 ), Qt::ItemDataRole::DisplayRole, u"native:buffer"_s, -1, Qt::MatchRecursive | Qt::MatchFixedString );
+    QCOMPARE( bufferActionIndexes.count(), 1 );
+
+    std::unique_ptr<QMimeData> mimeData( modelActionSelector.mimeData( QModelIndexList() << bufferActionIndexes.at( 0 ) ) );
+    QVERIFY( mimeData );
+
+    // drop a processing action ref
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+
+    QCOMPARE( model.rowCount( newItemIndex ), 1 );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QCOMPARE( model.rowCount( newItemIndex ), 2 );
+
+    QModelIndex actionIndex = model.index( 1, 0, newItemIndex );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::DisplayRole ), u"ProcessingAlgorithmRef_buffer_1"_s );
+    QCOMPARE( model.data( model.index( 1, 1, newItemIndex ), Qt::ItemDataRole::DisplayRole ), u"Buffer"_s );
+    QVERIFY( !model.data( actionIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
+  }
+
+  model.apply();
+
+  QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( u"%1/%2/ActionRef_mActionAddPart_1"_s.arg( rootName, itemName ) ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( u"%1/%2/ActionRef_mActionAddPart_1"_s.arg( rootName, itemName ) )->isVisible() );
+  QVERIFY( findQAction( u"%1/%2/mActionAddPart"_s.arg( rootName, itemName ) ) );
+  QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( u"%1/%2/ProcessingAlgorithmRef_buffer_1"_s.arg( rootName, itemName ) ) );
+  QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( u"%1/%2/ProcessingAlgorithmRef_buffer_1"_s.arg( rootName, itemName ) )->isVisible() );
+  QVERIFY( findQAction( u"%1/%2/ProcessingAlgorithmRef_buffer_1"_s.arg( rootName, itemName ) ) );
+
+  mQgisApp->customization()->write();
+
+  // re-read written customization
+  auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
+
+  mQgisApp->setCustomization( std::move( customization ) );
+
+  QgsCustomizationDialog::QgsCustomizationModel otherModel( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ItemVisibility );
+  QAbstractItemModelTester otherModelTester( &otherModel, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  const QModelIndexList userRootItemIndexes = otherModel.match( otherModel.index( 0, 0 ), Qt::ItemDataRole::DisplayRole, itemName, -1, Qt::MatchRecursive | Qt::MatchFixedString );
+  QCOMPARE( userRootItemIndexes.count(), 1 );
+  QModelIndex userRootItemIndex = userRootItemIndexes.at( 0 );
+
+  QModelIndex addPartActionIndex = otherModel.index( 0, 0, userRootItemIndex );
+  QCOMPARE( otherModel.data( addPartActionIndex, Qt::ItemDataRole::DisplayRole ), u"ActionRef_mActionAddPart_1"_s );
+  QCOMPARE( otherModel.data( otherModel.index( addPartActionIndex.row(), 1, addPartActionIndex.parent() ), Qt::ItemDataRole::DisplayRole ), u"Add Part"_s );
+  QVERIFY( !otherModel.data( addPartActionIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
+
+  QModelIndex actionBufferIndex = otherModel.index( 1, 0, userRootItemIndex );
+  QCOMPARE( otherModel.data( actionBufferIndex, Qt::ItemDataRole::DisplayRole ), u"ProcessingAlgorithmRef_buffer_1"_s );
+  QCOMPARE( otherModel.data( otherModel.index( actionBufferIndex.row(), 1, actionBufferIndex.parent() ), Qt::ItemDataRole::DisplayRole ), u"Buffer"_s );
+  QVERIFY( !otherModel.data( actionBufferIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
 }
 
 void TestQgsCustomization::testToolBarPosition()

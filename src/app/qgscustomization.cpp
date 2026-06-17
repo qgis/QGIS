@@ -138,7 +138,7 @@ void QgsCustomization::QgsItem::addChild( std::unique_ptr<QgsItem> item )
 {
   if ( mChildItems.contains( item->name() ) )
   {
-    QgsDebugError( "Customization item alread exists" );
+    QgsDebugError( u"Customization item '%1' already exists"_s.arg( item->name() ) );
     return;
   }
 
@@ -1059,6 +1059,9 @@ void QgsCustomization::setQgisApp( QgisApp *qgisApp )
   loadProcessingAlgorithmItemIcons( mToolBars.get() );
   loadProcessingAlgorithmItemIcons( mMenus.get() );
 
+  loadActionRefItemIcons( mToolBars.get() );
+  loadActionRefItemIcons( mMenus.get() );
+
   apply();
 }
 
@@ -1740,6 +1743,23 @@ void QgsCustomization::applyToToolBars() const
   {
     QgisApp::instance()->removeToolBar( toolBar );
     delete toolBar;
+  }
+}
+
+void QgsCustomization::loadActionRefItemIcons( QgsItem *rootItem )
+{
+  if ( QgsCustomization::QgsActionRefItem *actionRefItem = dynamic_cast<QgsCustomization::QgsActionRefItem *>( rootItem ) )
+  {
+    if ( QAction *action = findQAction( actionRefItem->actionRefPath() ) )
+    {
+      actionRefItem->setIcon( action->icon() );
+      actionRefItem->setTitle( action->text().remove( "&" ) );
+    }
+  }
+
+  for ( const std::unique_ptr<QgsItem> &childItem : rootItem->childItemList() )
+  {
+    loadActionRefItemIcons( childItem.get() );
   }
 }
 
