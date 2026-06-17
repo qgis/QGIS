@@ -185,10 +185,19 @@ class CORE_EXPORT QgsMapLayerUtils
 class CORE_EXPORT QgsSaveStyleResult
 {
   public:
+    //! Flags representing which style formats (QML and/or SLD) were successfully saved.
     QgsMapLayer::SaveStyleResults saveResult;
+
+    //! List of error messages generated while exporting the style to SLD.
     QStringList sldErrorMessages;
+
+    //! List of warning messages generated while exporting the style to SLD.
     QStringList sldWarningMessages;
+
+    //! Error message reported by the data provider when saving the style, or an empty string if no error occurred.
     QString providerSaveStyleError;
+
+    //! Error message generated while saving the style as QML, or an empty string if no error occurred.
     QString qmlError;
 };
 #endif // QGSMAPLAYERUTILS_H
