@@ -649,12 +649,7 @@ static void setTitleBarText_( QWidget &qgisApp )
   if ( QgsProject::instance()->isDirty() )
     caption.prepend( '*' );
 
-  caption += QgisApp::tr( "QGIS" );
-
-  if ( Qgis::version().endsWith( "Master"_L1 ) )
-  {
-    caption += u" %1"_s.arg( Qgis::devVersion() );
-  }
+  caption += QgisApp::tr( "Strata" );
 
   // Add current profile (if it's not the default one)
   if ( QgisApp::instance()->userProfileManager()->allProfiles().count() > 1 )
@@ -1712,7 +1707,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgisApp::refreshActionFeatureAction );
 
   // set application's caption
-  QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::version(), Qgis::releaseName() );
+  QString caption = tr( "Strata" );
   setWindowTitle( caption );
 
   // QgsMessageLog::logMessage( tr( "QGIS starting…" ), QString(), Qgis::MessageLevel::Info );
@@ -5695,23 +5690,18 @@ QString QgisApp::getVersionString()
   const QString compLabel = tr( "Compiled" );
   const QString runLabel = tr( "Running" );
 
-  versionString += u"<tr><td>%1</td><td>%2</td>"_s.arg( tr( "QGIS version" ), Qgis::version() );
+  versionString += u"<tr><td>%1</td><td>%2</td>"_s.arg( tr( "Strata version" ), QString::fromUtf8( STRATA_VERSION ) );
+  versionString += "</tr><tr>"_L1;
+  versionString += u"<td>%1</td><td>%2</td>"_s.arg( tr( "Based on QGIS" ), Qgis::version() );
   versionString += "</tr><tr>"_L1;
   if ( QString( Qgis::devVersion() ) == "exported"_L1 )
   {
-    versionString += u"<td>%1</td>"_s.arg( tr( "QGIS code branch" ) );
-    if ( Qgis::version().endsWith( "Master"_L1 ) )
-    {
-      versionString += "<td><a href=\"https://github.com/qgis/QGIS/tree/master\">master</a></td>"_L1;
-    }
-    else
-    {
-      versionString += u"<td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>"_s.arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 );
-    }
+    versionString += u"<td>%1</td>"_s.arg( tr( "Strata code branch" ) );
+    versionString += "<td><a href=\"https://github.com/francemazzi/strata/tree/master\">master</a></td>"_L1;
   }
   else
   {
-    versionString += u"<td>%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%2\">%2</a></td>"_s.arg( tr( "QGIS code revision" ), Qgis::devVersion() );
+    versionString += u"<td>%1</td><td><a href=\"https://github.com/francemazzi/strata/commit/%2\">%2</a></td>"_s.arg( tr( "Strata code revision" ), Qgis::devVersion() );
   }
   versionString += "</tr><tr>"_L1;
 

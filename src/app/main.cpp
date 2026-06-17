@@ -124,7 +124,7 @@ typedef SInt32 SRefCon;
  */
 void version()
 {
-  const QString msg = u"QGIS %1 '%2' (%3)\n"_s.arg( VERSION ).arg( RELEASE_NAME ).arg( QGSVERSION );
+  const QString msg = u"Strata %1 (based on QGIS %2, %3)\n"_s.arg( STRATA_VERSION ).arg( VERSION ).arg( QGSVERSION );
   std::cout << msg.toStdString();
 }
 

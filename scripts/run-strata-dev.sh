@@ -22,7 +22,10 @@ elif [[ -z "${PYTHONHOME:-}" ]]; then
     awk -F= '/^Python_EXECUTABLE:/ { print $2; exit }' "${BUILD}/CMakeCache.txt" 2>/dev/null || true
   )"
   if [[ -n "${PYTHON_EXECUTABLE}" && -x "${PYTHON_EXECUTABLE}" ]]; then
-    export PYTHONHOME="$("${PYTHON_EXECUTABLE}" -c 'import sys; print(sys.base_prefix)')"
+    # Declare and assign separately so the command substitution's exit status
+    # isn't masked by `export` (shellcheck SC2155).
+    PYTHONHOME="$("${PYTHON_EXECUTABLE}" -c 'import sys; print(sys.base_prefix)')"
+    export PYTHONHOME
   fi
 fi
 

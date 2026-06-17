@@ -86,6 +86,14 @@ Item {
               welcomeScreenController.importQgisProfile();
             }
           }
+
+          Button {
+            width: parent.width
+            text: qsTr("Settings")
+            onClicked: {
+              welcomeScreenController.openSettings();
+            }
+          }
         }
 
 

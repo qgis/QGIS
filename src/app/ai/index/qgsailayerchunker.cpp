@@ -83,7 +83,7 @@ namespace
     if ( !dp )
       return out + "(no data provider)\n"_L1;
 
-    out += u"(band statistics skipped during fast layer snapshot)\n"_s;
+    out += "(band statistics skipped during fast layer snapshot)\n"_L1;
     return out;
   }
 } // namespace
