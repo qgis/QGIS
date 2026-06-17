@@ -927,7 +927,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
 
     if ( coords.empty() )
     {
-      return std::move( std::make_unique< QgsCircularString >() );
+      return std::make_unique< QgsCircularString >();
     }
 
     if ( !coords.is_array() || coords.size() % 2 == 0 || coords.size() < 3 )
@@ -964,7 +964,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
       if ( hasM )
         m.append( point->m() );
     }
-    return std::move( std::make_unique< QgsCircularString >( x, y, z, m ) );
+    return std::make_unique< QgsCircularString >( x, y, z, m );
   }
   else if ( type.compare( "CompoundCurve"_L1, Qt::CaseInsensitive ) == 0 )
   {
@@ -995,7 +995,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
       }
       compoundCurve->addCurve( static_cast< QgsCurve * >( object.release() ) );
     }
-    return std::move( compoundCurve );
+    return compoundCurve;
   }
   else if ( type.compare( "CurvePolygon"_L1, Qt::CaseInsensitive ) == 0 )
   {
@@ -1035,7 +1035,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
         curvePolygon->addInteriorRing( static_cast< QgsCurve * >( object.release() ) );
       }
     }
-    return std::move( curvePolygon );
+    return curvePolygon;
   }
   else if ( type.compare( "MultiCurve"_L1, Qt::CaseInsensitive ) == 0 )
   {
@@ -1066,7 +1066,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
       }
       multiCurve->addGeometry( static_cast< QgsCurve * >( object.release() ) );
     }
-    return std::move( multiCurve );
+    return multiCurve;
   }
   else if ( type.compare( "MultiSurface"_L1, Qt::CaseInsensitive ) == 0 )
   {
@@ -1097,7 +1097,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
       }
       multiSurface->addGeometry( static_cast< QgsSurface * >( object.release() ) );
     }
-    return std::move( multiSurface );
+    return multiSurface;
   }
   else if ( type.compare( "GeometryCollection"_L1, Qt::CaseInsensitive ) == 0 )
   {

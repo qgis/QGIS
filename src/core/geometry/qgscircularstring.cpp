@@ -357,7 +357,7 @@ json QgsCircularString::asJsonObject( int precision, Qgis::GeoJsonProfile profil
           }
         }
         // Last one (if any)
-        if ( subCs["coordinates"].size() > 0 )
+        if ( subCs["coordinates"].size() > 1 )
         {
           geometries.push_back( subCs );
         }
