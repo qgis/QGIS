@@ -179,6 +179,62 @@ QToolBar QToolButton:disabled
   border: 0;
 }
 
+/* Dropdown arrow on toolbuttons that carry a popup menu.
+   popupMode 1 = MenuButtonPopup (separate arrow region),
+   popupMode 2 = InstantPopup (arrow overlays the icon).
+   Reserve a wide gutter on the right so the caret sits well clear of the icon,
+   and keep the arrow region completely flat (no grey box/border/background). */
+QToolButton[popupMode="1"],
+QToolButton[popupMode="2"]
+{
+  padding-right: 1.4em;
+}
+
+QToolButton::menu-button,
+QToolButton::menu-button:hover,
+QToolButton::menu-button:pressed,
+QToolButton::menu-button:checked,
+QToolButton::menu-button:disabled
+{
+  width: 1em;
+  border: none;
+  border-left: none;
+  border-radius: 0;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+QToolButton::menu-arrow
+{
+  subcontrol-origin: padding;
+  subcontrol-position: center right;
+  image: url(@theme_path/icons/caret-down.svg);
+  width: 0.6em;
+  height: 0.6em;
+  right: 0.18em;
+}
+
+QToolButton::menu-arrow:disabled
+{
+  image: url(@theme_path/icons/arrow-down-disabled.svg);
+}
+
+QToolButton::menu-indicator
+{
+  subcontrol-origin: padding;
+  subcontrol-position: center right;
+  image: url(@theme_path/icons/caret-down.svg);
+  width: 0.6em;
+  height: 0.6em;
+  right: 0.18em;
+}
+
+QToolButton::menu-indicator:disabled
+{
+  image: url(@theme_path/icons/arrow-down-disabled.svg);
+}
+
 QLineEdit,
 QTextEdit,
 QPlainTextEdit,
