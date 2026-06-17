@@ -4466,6 +4466,8 @@ QFlags<Qgis::RubberBandComponent> operator|(Qgis::RubberBandComponent f1, QFlags
 
 QFlags<Qgis::ScaleBarUnitLabelPlacement> operator|(Qgis::ScaleBarUnitLabelPlacement f1, QFlags<Qgis::ScaleBarUnitLabelPlacement> f2);
 
+QFlags<Qgis::SaveStyleFormat> operator|(Qgis::SaveStyleFormat f1, QFlags<Qgis::SaveStyleFormat> f2);
+
 
 
 
