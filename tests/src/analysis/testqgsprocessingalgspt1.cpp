@@ -4984,6 +4984,9 @@ void TestQgsProcessingAlgsPt1::compareDatasets()
   QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
   QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 0LL );
 
+  // Prepare an empty geometry for subsequent checks
+  std::unique_ptr< QgsAbstractGeometry > emptyGeom( f.geometry().constGet()->createEmptyWithSameType() );
+
   // null geometry comparisons
   f.setAttributes( QgsAttributes() << 5 << u"d1"_s << u"g1"_s );
   f.clearGeometry();
@@ -5009,6 +5012,32 @@ void TestQgsProcessingAlgsPt1::compareDatasets()
   QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 4LL );
   QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
   QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 1LL );
+
+  // empty geometry comparisons
+  f.setAttributes( QgsAttributes() << 7 << u"g1"_s << u"a1"_s );
+  f.setGeometry( std::move( emptyGeom ) );
+  originalLayer->dataProvider()->addFeature( f );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 4LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 2LL );
+
+  f.setAttributes( QgsAttributes() << 7 << u"g1"_s << u"c1"_s );
+  originalLayer->dataProvider()->addFeature( f );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 4LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 3LL );
+
+  f.setAttributes( QgsAttributes() << 7 << u"g1"_s << u"a1"_s );
+  revisedLayer->dataProvider()->addFeature( f );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 5LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 2LL );
 }
 
 void TestQgsProcessingAlgsPt1::shapefileEncoding()
