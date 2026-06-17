@@ -4153,7 +4153,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( functionNodes.size(), 5 );
       QgsExpressionFunction *fd;
       QSet<QString> actualFunctions;
-      for ( const auto &f : functionNodes )
+      for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
         fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
@@ -4167,12 +4167,25 @@ class TestQgsExpression : public QObject
       QList<const QgsExpressionNodeBinaryOperator *> binaryOpsNodes( exp.findNodes<QgsExpressionNodeBinaryOperator>() );
       QCOMPARE( binaryOpsNodes.size(), 2 );
       QSet<QgsExpressionNodeBinaryOperator::BinaryOperator> actualBinaryOps;
-      for ( const auto &f : binaryOpsNodes )
+      for ( const QgsExpressionNodeBinaryOperator *f : std::as_const( binaryOpsNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntBinaryOperator );
         actualBinaryOps << f->op();
       }
       QCOMPARE( actualBinaryOps, expectedBinaryOps );
+
+      exp.setExpression( R"(if(current_value('a') in (1, 2), 'yes', 'no'))"_L1 );
+      functionNodes = exp.findNodes<QgsExpressionNodeFunction>();
+      actualFunctions.clear();
+      for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
+      {
+        QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
+        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        actualFunctions << fd->name();
+      }
+      expectedFunctions.clear();
+      expectedFunctions << u"if"_s << u"current_value"_s;
+      QCOMPARE( actualFunctions, expectedFunctions );
     }
 
     void referenced_columns_all_attributes()
