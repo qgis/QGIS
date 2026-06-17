@@ -12742,14 +12742,14 @@ Qgis.DockableWidgetInitialState.__doc__ = """Dockable widget initial states.
 # --
 Qgis.DockableWidgetInitialState.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.SaveStyleFormat.QML.__doc__ = ""
-Qgis.SaveStyleFormat.SLD.__doc__ = ""
+Qgis.SaveStyleFormat.QML.__doc__ = "QML style format"
+Qgis.SaveStyleFormat.SLD.__doc__ = "SLD style format"
 Qgis.SaveStyleFormat.__doc__ = """Style save format
 
 .. versionadded:: 4.2
 
-* ``QML``: 
-* ``SLD``: 
+* ``QML``: QML style format
+* ``SLD``: SLD style format
 
 """
 # --

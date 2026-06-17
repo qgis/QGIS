@@ -6775,8 +6775,8 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class SaveStyleFormat : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      QML = 0,
-      SLD = 1 << 0,
+      QML = 0,      //!< QML style format
+      SLD = 1 << 0, //!< SLD style format
     };
     Q_ENUM( SaveStyleFormat )
     Q_DECLARE_FLAGS( SaveStyleFormats, SaveStyleFormat )
@@ -7073,6 +7073,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ArcGisRestServiceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::InstancedMaterialFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SaveStyleFormats )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
