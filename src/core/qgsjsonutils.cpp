@@ -1368,6 +1368,12 @@ void QgsJsonUtils::addCrsInfo( json &value, const QgsCoordinateReferenceSystem &
   if ( !crs.isValid() )
     return;
 
+  if ( crs.authid() == "EPSG:4326" || crs.authid() == "CRS:84" )
+  {
+    // per spec, default is WGS84, so no need to add anything
+    return;
+  }
+
   switch ( profile )
   {
     case Qgis::GeoJsonProfile::Legacy:
