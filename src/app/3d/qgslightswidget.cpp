@@ -279,7 +279,7 @@ void QgsLightsWidget::onAddLight()
 {
   if ( mLightsModel->pointLights().size() >= 8 )
   {
-    QMessageBox::warning( this, tr( "Add Light" ), tr( "It is not possible to add more than 8 lights to the scene." ) );
+    QMessageBox::warning( this, tr( "Add Light" ), tr( "It is not possible to add more than 8 point lights to the scene." ) );
     return;
   }
 
@@ -299,7 +299,7 @@ void QgsLightsWidget::onAddDirectionalLight()
 {
   if ( mLightsModel->directionalLights().size() + mLightsModel->sunLights().size() >= 4 )
   {
-    QMessageBox::warning( this, tr( "Add Directional Light" ), tr( "It is not possible to add more than 4 directional lights to the scene." ) );
+    QMessageBox::warning( this, tr( "Add Directional Light" ), tr( "It is not possible to add more than 4 directional and sun lights to the scene." ) );
     return;
   }
 
@@ -401,7 +401,7 @@ void QgsLightsWidget::onAddSunLight()
 
   if ( mLightsModel->directionalLights().size() + mLightsModel->sunLights().size() >= 4 )
   {
-    QMessageBox::warning( this, tr( "Add Sun Light" ), tr( "It is not possible to add more than 4 directional lights to the scene." ) );
+    QMessageBox::warning( this, tr( "Add Sun Light" ), tr( "It is not possible to add more than 4 directional and sun lights to the scene." ) );
     return;
   }
 
