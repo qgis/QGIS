@@ -595,7 +595,10 @@
        <item row="5" column="1">
         <widget class="QgsDoubleSpinBox" name="mSunElevationSpin">
          <property name="suffix">
-          <string/>
+          <string>m</string>
+         </property>
+         <property name="decimals">
+          <number>0</number>
          </property>
          <property name="maximum">
           <double>9999.000000000000000</double>
