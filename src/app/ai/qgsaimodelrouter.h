@@ -95,6 +95,22 @@ class APP_EXPORT QgsAiModelRouter : public QObject
      */
     bool isProviderUsable( Provider provider ) const;
 
+    /**
+     * Returns true when \a provider is "synced": it has stored credentials
+     * (and, for the Plan backend, a usable endpoint), independent of the
+     * \c enabled flag or the active selection. Used to filter the model picker
+     * so only configured providers' models are offered.
+     */
+    bool isProviderAvailable( Provider provider ) const;
+
+    /**
+     * The provider the user explicitly selected as active. Persisted across
+     * sessions in QgsSettings (\c ai/activeProvider). resolveProvider() returns
+     * it when usable, otherwise it falls back to the priority chain.
+     */
+    Provider activeProvider() const;
+    void setActiveProvider( Provider provider );
+
     static bool isUsablePlanEndpoint( const QString &endpoint );
 
     QString providerDisplayName( Provider provider ) const;
@@ -244,6 +260,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     RequestContext *contextFromReply( QNetworkReply *reply );
 
     QMap<Provider, ProviderSettings> mProviderSettings;
+    Provider mActiveProvider = Provider::OpenAi;
     QMap<QString, RequestContext> mRequests;
     QgsAiToolRegistry *mToolRegistry = nullptr;
     bool mToolUseEnabled = false;

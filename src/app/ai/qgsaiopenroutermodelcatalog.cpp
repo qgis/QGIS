@@ -128,6 +128,9 @@ QList<QgsAiOpenRouterModelCatalog::ModelInfo> QgsAiOpenRouterModelCatalog::curat
     entry( u"openai/gpt-5.1"_s, u"GPT-5.1"_s, 400000 ),
     entry( u"google/gemini-3.5-flash"_s, u"Gemini 3.5 Flash"_s, 1000000 ),
     entry( u"deepseek/deepseek-v4-flash"_s, u"DeepSeek V4 Flash"_s, 1000000 ),
+    entry( u"deepseek/deepseek-r1"_s, u"DeepSeek R1"_s, 128000 ),
+    entry( u"qwen/qwen3-235b-a22b"_s, u"Qwen3 235B"_s, 256000 ),
+    entry( u"moonshotai/kimi-k2"_s, u"Kimi K2"_s, 128000 ),
   };
 }
 

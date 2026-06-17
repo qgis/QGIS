@@ -123,7 +123,11 @@ namespace
     return {
       { u"GPT-4o"_s, u"gpt-4o"_s, QgsAiModelRouter::Provider::OpenAi },
       { u"GPT-4.1 mini"_s, u"gpt-4.1-mini"_s, QgsAiModelRouter::Provider::OpenAi },
-      { u"Claude Sonnet 4.6 (OpenRouter)"_s, u"anthropic/claude-sonnet-4.6"_s, QgsAiModelRouter::Provider::OpenRouter },
+      { u"Claude Sonnet 4.6"_s, u"anthropic/claude-sonnet-4.6"_s, QgsAiModelRouter::Provider::OpenRouter },
+      { u"Qwen3 235B"_s, u"qwen/qwen3-235b-a22b"_s, QgsAiModelRouter::Provider::OpenRouter },
+      { u"DeepSeek V4 Flash"_s, u"deepseek/deepseek-v4-flash"_s, QgsAiModelRouter::Provider::OpenRouter },
+      { u"DeepSeek R1"_s, u"deepseek/deepseek-r1"_s, QgsAiModelRouter::Provider::OpenRouter },
+      { u"Kimi K2"_s, u"moonshotai/kimi-k2"_s, QgsAiModelRouter::Provider::OpenRouter },
       { u"OpenRouter Auto"_s, u"openrouter/auto"_s, QgsAiModelRouter::Provider::OpenRouter },
       { u"Codex GPT-5.4"_s, u"gpt-5.4"_s, QgsAiModelRouter::Provider::Codex },
       { u"Codex GPT-5.3 (codex)"_s, u"gpt-5.3-codex"_s, QgsAiModelRouter::Provider::Codex },
@@ -1048,13 +1052,92 @@ void QgsAiChatDockWidget::initModeMenu()
 
 void QgsAiChatDockWidget::initModelMenu()
 {
+  // The menu content depends on which providers are synced, which can change at
+  // runtime (Provider Settings, OAuth login/logout). rebuildModelMenu() is the
+  // repeatable builder and is also called after those events.
+  rebuildModelMenu();
+}
+
+QString QgsAiChatDockWidget::modelPillLabel( QgsAiModelRouter::Provider provider, const QString &displayName ) const
+{
+  const QString providerName = mModelRouter ? mModelRouter->providerDisplayName( provider ) : QString();
+  if ( providerName.isEmpty() )
+    return displayName + u" ▾"_s;
+  return providerName + u" · "_s + displayName + u" ▾"_s;
+}
+
+void QgsAiChatDockWidget::rebuildModelMenu()
+{
+  if ( !mModelPill )
+    return;
+
+  // Replace any previous menu (and its action group) wholesale to avoid stale
+  // actions; the old menu is owned by mModelPill and scheduled for deletion.
+  if ( QMenu *oldMenu = mModelPill->menu() )
+  {
+    mModelPill->setMenu( nullptr );
+    oldMenu->deleteLater();
+  }
+
   QMenu *menu = new QMenu( mModelPill );
+
+  // Only offer models whose provider is actually synced (credentialed).
+  QVector<ModelEntry> models;
+  if ( mModelRouter )
+  {
+    for ( const ModelEntry &entry : predefinedModels() )
+    {
+      if ( mModelRouter->isProviderAvailable( entry.provider ) )
+        models.append( entry );
+    }
+  }
+
+  // Nothing synced yet: guide the user to Provider Settings instead of offering
+  // models that cannot be used.
+  if ( models.isEmpty() )
+  {
+    QAction *none = menu->addAction( tr( "No AI providers configured" ) );
+    none->setEnabled( false );
+    menu->addSeparator();
+    QAction *openSettings = menu->addAction( tr( "Open provider settings…" ) );
+    connect( openSettings, &QAction::triggered, this, &QgsAiChatDockWidget::openProviderSettings );
+    mModelPill->setMenu( menu );
+    mModelPill->setText( tr( "No model ▾" ) );
+    return;
+  }
+
+  const QgsAiModelRouter::Provider currentProvider = mModelRouter->resolveProvider();
+  const QString currentModel = mModelRouter->providerSettings( currentProvider ).model;
+
+  // Make sure the active model is always represented, even when it was chosen
+  // from the full Settings catalog rather than the curated list.
+  bool activeRepresented = false;
+  for ( const ModelEntry &entry : models )
+  {
+    if ( entry.provider == currentProvider && entry.model == currentModel )
+    {
+      activeRepresented = true;
+      break;
+    }
+  }
+  if ( !activeRepresented && !currentModel.isEmpty() && mModelRouter->isProviderAvailable( currentProvider ) )
+  {
+    // Insert after the last row of the same provider so it lands in the right section.
+    int insertAt = models.size();
+    for ( int i = 0; i < models.size(); ++i )
+    {
+      if ( models.at( i ).provider == currentProvider )
+        insertAt = i + 1;
+    }
+    models.insert( insertAt, ModelEntry { currentModel, currentModel, currentProvider } );
+  }
+
   QActionGroup *group = new QActionGroup( menu );
   group->setExclusive( true );
 
-  const QVector<ModelEntry> models = predefinedModels();
   QgsAiModelRouter::Provider currentSection = QgsAiModelRouter::Provider::OpenAi;
   bool first = true;
+  const ModelEntry *pillEntry = &models.first();
   for ( const ModelEntry &entry : models )
   {
     if ( first || entry.provider != currentSection )
@@ -1086,29 +1169,15 @@ void QgsAiChatDockWidget::initModelMenu()
     action->setCheckable( true );
     action->setData( QVariant::fromValue( entry ) );
     group->addAction( action );
+    if ( entry.provider == currentProvider && entry.model == currentModel )
+    {
+      action->setChecked( true );
+      pillEntry = &entry;
+    }
   }
 
   mModelPill->setMenu( menu );
-
-  QString initialDisplay = models.isEmpty() ? QString() : models.first().displayName;
-  if ( mModelRouter )
-  {
-    const QgsAiModelRouter::Provider currentProvider = mModelRouter->resolveProvider();
-    const QString currentModel = mModelRouter->providerSettings( currentProvider ).model;
-    for ( QAction *action : menu->actions() )
-    {
-      if ( !action->isCheckable() )
-        continue;
-      const ModelEntry entry = action->data().value<ModelEntry>();
-      if ( entry.provider == currentProvider && entry.model == currentModel )
-      {
-        action->setChecked( true );
-        initialDisplay = entry.displayName;
-        break;
-      }
-    }
-  }
-  mModelPill->setText( initialDisplay + u" ▾"_s );
+  mModelPill->setText( modelPillLabel( pillEntry->provider, pillEntry->displayName ) );
 
   connect( group, &QActionGroup::triggered, this, &QgsAiChatDockWidget::onModelSelected );
 }
@@ -1978,23 +2047,16 @@ void QgsAiChatDockWidget::onModelSelected( QAction *action )
   if ( entry.displayName.isEmpty() )
     return;
 
-  const QList<QgsAiModelRouter::Provider> providers
-    = { QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::OpenRouter, QgsAiModelRouter::Provider::Codex, QgsAiModelRouter::Provider::Claude, QgsAiModelRouter::Provider::Plan };
-  for ( QgsAiModelRouter::Provider provider : providers )
-  {
-    QgsAiModelRouter::ProviderSettings settings = mModelRouter->providerSettings( provider );
-    if ( provider == entry.provider )
-    {
-      settings.model = entry.model;
-      settings.enabled = true;
-    }
-    else
-    {
-      settings.enabled = false;
-    }
-    mModelRouter->setProviderSettings( provider, settings );
-  }
-  mModelPill->setText( entry.displayName + u" ▾"_s );
+  // Record the choice on its own provider and mark that provider active, WITHOUT
+  // disabling the others — every synced provider stays synced so switching back
+  // and forth (e.g. Codex <-> OpenRouter) is instant and reversible.
+  QgsAiModelRouter::ProviderSettings settings = mModelRouter->providerSettings( entry.provider );
+  settings.model = entry.model;
+  settings.enabled = true;
+  mModelRouter->setProviderSettings( entry.provider, settings );
+  mModelRouter->setActiveProvider( entry.provider );
+
+  mModelPill->setText( modelPillLabel( entry.provider, entry.displayName ) );
 }
 
 void QgsAiChatDockWidget::ensureWorkspaceTrustDecision()
@@ -3251,6 +3313,10 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   if ( !errorMessages.isEmpty() )
     QMessageBox::warning( this, tr( "Provider configuration warnings" ), errorMessages.trimmed() );
+
+  // Credentials/sync state may have changed (API keys, Codex/Claude OAuth
+  // login/logout); refresh the picker so it lists exactly the synced providers.
+  rebuildModelMenu();
 }
 
 void QgsAiChatDockWidget::showEvent( QShowEvent *event )

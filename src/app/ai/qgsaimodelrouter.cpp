@@ -34,6 +34,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QMetaEnum>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QRegularExpression>
@@ -1042,6 +1043,18 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
     }
 
     mProviderSettings.insert( provider, providerSettings );
+  }
+
+  // Restore the explicit active selection (runs after the per-provider loop, so
+  // it is unaffected by the OpenRouter one-time migration above). A not-yet-synced
+  // value is fine: resolveProvider() falls back when the active provider is unusable.
+  const QString activeKey = settings.value( u"ai/activeProvider"_s ).toString().trimmed();
+  if ( !activeKey.isEmpty() )
+  {
+    bool ok = false;
+    const int value = QMetaEnum::fromType<Provider>().keyToValue( activeKey.toUtf8().constData(), &ok );
+    if ( ok )
+      mActiveProvider = static_cast<Provider>( value );
   }
 }
 
@@ -2189,8 +2202,39 @@ bool QgsAiModelRouter::isProviderUsable( Provider provider ) const
   return true;
 }
 
+bool QgsAiModelRouter::isProviderAvailable( Provider provider ) const
+{
+  if ( !hasConfiguredCredential( provider ) )
+    return false;
+  // The Plan backend additionally needs a real endpoint (the default is a placeholder).
+  if ( provider == Provider::Plan && !isUsablePlanEndpoint( mProviderSettings.value( provider ).endpoint ) )
+    return false;
+  return true;
+}
+
+QgsAiModelRouter::Provider QgsAiModelRouter::activeProvider() const
+{
+  return mActiveProvider;
+}
+
+void QgsAiModelRouter::setActiveProvider( Provider provider )
+{
+  mActiveProvider = provider;
+  const char *key = QMetaEnum::fromType<Provider>().valueToKey( static_cast<int>( provider ) );
+  if ( key )
+  {
+    QgsSettings settings;
+    settings.setValue( u"ai/activeProvider"_s, QString::fromUtf8( key ) );
+  }
+}
+
 QgsAiModelRouter::Provider QgsAiModelRouter::resolveProvider() const
 {
+  // Honor the user's explicit choice when it is actually usable; otherwise fall
+  // back through the priority chain so a stale/unconfigured selection never
+  // strands the assistant.
+  if ( isProviderUsable( mActiveProvider ) )
+    return mActiveProvider;
   for ( Provider provider : { Provider::Plan, Provider::Codex, Provider::OpenRouter, Provider::OpenAi, Provider::Claude } )
   {
     if ( isProviderUsable( provider ) )
