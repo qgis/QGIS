@@ -45,10 +45,10 @@ namespace
   class QgsAiLayerIndexTask final : public QgsTask
   {
     public:
-      QgsAiLayerIndexTask( QgsAiWorkspaceIndex *index, const QString &layerId )
+      QgsAiLayerIndexTask( QgsAiWorkspaceIndex *index, QgsAiWorkspaceIndex::WorkspaceLayerSnapshot snapshot )
         : QgsTask( QObject::tr( "Index AI layers" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
         , mIndex( index )
-        , mLayerId( layerId )
+        , mSnapshot( std::move( snapshot ) )
       {}
 
       LayerIndexResult result() const { return mResult; }
@@ -60,22 +60,7 @@ namespace
         if ( !mIndex )
         {
           mErrorMessage = QObject::tr( "Workspace index is unavailable." );
-          mResult = { mLayerId, false, mErrorMessage };
-          return false;
-        }
-
-        if ( isCanceled() )
-        {
-          mIndex->closeDatabaseConnectionForCurrentThread();
-          return false;
-        }
-
-        QgsAiWorkspaceIndex::WorkspaceLayerSnapshot snapshot;
-        QString snapshotError;
-        if ( !mIndex->createWorkspaceLayerSnapshotForLayer( mLayerId, snapshot, &snapshotError ) )
-        {
-          mResult = { mLayerId, false, snapshotError };
-          mIndex->closeDatabaseConnectionForCurrentThread();
+          mResult = { mSnapshot.scopedLayerId, false, mErrorMessage };
           return false;
         }
 
@@ -86,8 +71,8 @@ namespace
         }
 
         QString reindexError;
-        const bool ok = mIndex->reindexLayerSnapshot( snapshot, &reindexError );
-        mResult = { mLayerId, ok, reindexError };
+        const bool ok = mIndex->reindexLayerSnapshot( mSnapshot, &reindexError );
+        mResult = { mSnapshot.scopedLayerId, ok, reindexError };
         if ( !ok && !mIndex->embeddingProviderAvailable() )
           mErrorMessage = reindexError;
 
@@ -97,7 +82,7 @@ namespace
 
     private:
       QPointer<QgsAiWorkspaceIndex> mIndex;
-      QString mLayerId;
+      QgsAiWorkspaceIndex::WorkspaceLayerSnapshot mSnapshot;
       LayerIndexResult mResult;
       QString mErrorMessage;
   };
@@ -278,30 +263,34 @@ void QgsAiLayerIndexCoordinator::flushDirty()
 
   emit reindexStarted( layerId );
 
+  // Build one layer snapshot on the main thread (QgsMapLayer is not thread-safe).
+  // Embedding and SQLite writes run in QgsAiLayerIndexTask on a worker thread.
+  QgsAiWorkspaceIndex::WorkspaceLayerSnapshot snapshot;
+  QString snapshotError;
+  if ( !mIndex->createWorkspaceLayerSnapshotForLayer( layerId, snapshot, &snapshotError ) )
+  {
+    emit reindexFinished( layerId, false, snapshotError );
+    QgsMessageLog::logMessage( u"Layer index: snapshot(%1) failed: %2"_s.arg( layerId, snapshotError ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
+    if ( mEnabled && !mDirtyLayers.isEmpty() && mIndex && mIndex->embeddingProviderAvailable() )
+      mDebounceTimer.start( 0 );
+    return;
+  }
+
   QgsTaskManager *taskManager = QgsApplication::taskManager();
   if ( !taskManager )
   {
-    QgsAiWorkspaceIndex::WorkspaceLayerSnapshot snapshot;
     QString err;
-    if ( !mIndex->createWorkspaceLayerSnapshotForLayer( layerId, snapshot, &err ) )
-    {
-      emit reindexFinished( layerId, false, err );
-      QgsMessageLog::logMessage( u"Layer index: snapshot(%1) failed: %2"_s.arg( layerId, err ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
-    }
-    else
-    {
-      const bool ok = mIndex->reindexLayerSnapshot( snapshot, &err );
-      emit reindexFinished( layerId, ok, err );
-      if ( !ok )
-        QgsMessageLog::logMessage( u"Layer index: reindexLayer(%1) failed: %2"_s.arg( layerId, err ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
-    }
+    const bool ok = mIndex->reindexLayerSnapshot( snapshot, &err );
+    emit reindexFinished( layerId, ok, err );
+    if ( !ok )
+      QgsMessageLog::logMessage( u"Layer index: reindexLayer(%1) failed: %2"_s.arg( layerId, err ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
 
     if ( mEnabled && !mDirtyLayers.isEmpty() && mIndex && mIndex->embeddingProviderAvailable() )
       mDebounceTimer.start( 0 );
     return;
   }
 
-  QgsAiLayerIndexTask *task = new QgsAiLayerIndexTask( mIndex, layerId );
+  QgsAiLayerIndexTask *task = new QgsAiLayerIndexTask( mIndex, std::move( snapshot ) );
   mRunningTask = task;
 
   auto finishTask = [this, task]( bool terminated ) {

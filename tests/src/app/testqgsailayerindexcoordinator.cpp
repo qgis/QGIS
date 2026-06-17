@@ -42,6 +42,7 @@ class TestQgsAiLayerIndexCoordinator : public QObject
     void unavailableEmbeddingProviderPreventsScheduling();
     void providerUnavailableMidBatchStopsBatch();
     void multipleLayersAreIndexedOneAtATime();
+    void bulkReindexUsesLongerDebounceWindow();
 
   private:
     /**
@@ -394,6 +395,38 @@ void TestQgsAiLayerIndexCoordinator::multipleLayersAreIndexedOneAtATime()
   coord.setEnabled( false );
   for ( QgsVectorLayer *layer : layers )
     QgsProject::instance()->removeMapLayer( layer );
+}
+
+void TestQgsAiLayerIndexCoordinator::bulkReindexUsesLongerDebounceWindow()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+
+  CountingWorkspaceIndex index( &contextProvider );
+
+  QgsAiLayerIndexCoordinator coord( &index );
+  coord.setDebounceMs( 50 );
+  coord.setBulkDebounceMs( 400 );
+
+  for ( int i = 0; i < 2; ++i )
+  {
+    auto *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=id:integer"_s, u"mem%1"_s.arg( i ), u"memory"_s );
+    QVERIFY( layer->isValid() );
+    QgsProject::instance()->addMapLayer( layer, false );
+  }
+
+  QSignalSpy doneSpy( &coord, &QgsAiLayerIndexCoordinator::reindexFinished );
+  coord.setEnabled( true );
+
+  QTest::qWait( 150 );
+  QCOMPARE( doneSpy.count(), 0 );
+
+  QVERIFY( doneSpy.wait( 5000 ) );
+  QVERIFY( doneSpy.count() >= 1 );
+
+  coord.setEnabled( false );
+  QgsProject::instance()->clear();
 }
 
 

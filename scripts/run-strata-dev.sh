@@ -37,8 +37,8 @@ export PYTHONPATH="${BUILD_OUTPUT}/python${PYTHONPATH:+:${PYTHONPATH}}"
 # Performance tips (dev builds):
 # - Layer auto-indexing can add background work after add/open layer; disable in
 #   AI Assistant settings (strata/index/enable_layer_indexing) to compare load time.
-# - Remove stale SVG paths from the QGIS profile (Options > System) if they point
-#   to unmounted volumes or old build trees.
+# - Run ./scripts/verify-layer-index-perf.sh for a structured on/off comparison.
+# - Remove stale SVG paths: ./scripts/clean-stale-svg-paths.sh
 # - Skip Python plugins when profiling startup: ./scripts/run-strata-dev.sh -- -P
 
 exec "${STRATA_BIN}" "$@"
