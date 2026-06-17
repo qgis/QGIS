@@ -33,4 +33,12 @@ export PYTHONPATH="${BUILD_OUTPUT}/python${PYTHONPATH:+:${PYTHONPATH}}"
 
 "${ROOT}/scripts/patch-macos-bundle.sh" >/dev/null
 
+
+# Performance tips (dev builds):
+# - Layer auto-indexing can add background work after add/open layer; disable in
+#   AI Assistant settings (strata/index/enable_layer_indexing) to compare load time.
+# - Remove stale SVG paths from the QGIS profile (Options > System) if they point
+#   to unmounted volumes or old build trees.
+# - Skip Python plugins when profiling startup: ./scripts/run-strata-dev.sh -- -P
+
 exec "${STRATA_BIN}" "$@"

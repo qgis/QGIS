@@ -49,6 +49,8 @@ class APP_EXPORT QgsAiLayerIndexCoordinator : public QObject
 
     int debounceMs() const { return mDebounceMs; }
     void setDebounceMs( int ms );
+    int bulkDebounceMs() const { return mBulkDebounceMs; }
+    void setBulkDebounceMs( int ms );
     void scheduleAllLayers();
 
     /**
@@ -73,6 +75,7 @@ class APP_EXPORT QgsAiLayerIndexCoordinator : public QObject
     void disconnectProjectSignals();
     void connectLayerSignals( QgsMapLayer *layer );
     void scheduleDirty( const QString &layerId );
+    void startDebounceTimer();
 
     QgsAiWorkspaceIndex *mIndex = nullptr;
     QgsProject *mProject = nullptr;
@@ -80,7 +83,9 @@ class APP_EXPORT QgsAiLayerIndexCoordinator : public QObject
     QTimer mDebounceTimer;
     QPointer<QgsTask> mRunningTask;
     bool mEnabled = false;
+    bool mUseBulkDebounce = false;
     int mDebounceMs = 5000;
+    int mBulkDebounceMs = 15000;
 };
 
 #endif // QGSAILAYERINDEXCOORDINATOR_H
