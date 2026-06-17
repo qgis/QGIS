@@ -2169,7 +2169,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   context.response()->setHeader( u"OGC-NumberReturned"_s, QString::number( featureList.count() ) );
 
   // Add alternate links
-  context.response()->addHeader( u"Link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::RFC7946, u"This document as GEOJSON"_s ) );
+  context.response()->addHeader( u"Link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::Rfc7946, u"This document as GEOJSON"_s ) );
   context.response()->addHeader( u"Link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::None, u"This document as HTML"_s ) );
 #if 0
     // This not supported yet but I am leaving it here because
