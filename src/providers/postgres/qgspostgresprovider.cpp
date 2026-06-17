@@ -17,6 +17,8 @@
 
 #include "qgspostgresprovider.h"
 
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdbquerylog.h"
@@ -2408,7 +2410,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QgsAttributes attrs2 = flist[i].attributes();
         QVariant v2 = attrs2.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ); // default to NULL for missing attributes
 
-        if ( v2 != attributeValue )
+        if ( !qgsVariantEqual( v2, attributeValue ) )
           break;
       }
 
@@ -2525,14 +2527,28 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QString v;
         if ( QgsVariantUtils::isNull( value ) || QgsVariantUtils::isUnsetAttributeValue( value ) )
         {
-          QgsField fld = field( attrIdx );
+          const QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[i], defaultValues[i] );
           feature->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
         }
         else
         {
+          const QgsField fld = field( attrIdx );
+          const QString fieldTypeName = fld.typeName();
           // the conversion functions expects the list as a string, so convert it
-          if ( value.userType() == QMetaType::Type::QStringList )
+          if ( fieldTypeName == "json"_L1 )
+          {
+            v = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump() );
+          }
+          else if ( fieldTypeName == "jsonb"_L1 )
+          {
+            v = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump() );
+          }
+          else if ( fieldTypeName == "bytea"_L1 )
+          {
+            v = "\\x" + value.toByteArray().toHex();
+          }
+          else if ( value.userType() == QMetaType::Type::QStringList )
           {
             QStringList list_vals = value.toStringList();
             // all strings need to be double quoted to allow special postgres
@@ -2551,9 +2567,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             v = paramValue( value.toString(), defaultValues[i] );
           }
 
-          if ( v != value.toString() )
+          if ( v != value.toString() && fieldTypeName != "json"_L1 && fieldTypeName != "jsonb"_L1 && fieldTypeName != "bytea"_L1 )
           {
-            QgsField fld = field( attrIdx );
             feature->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
           }
         }
