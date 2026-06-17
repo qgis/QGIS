@@ -660,6 +660,12 @@
   <tabstop>sliderAltitude</tabstop>
   <tabstop>btnDirectionalColor</tabstop>
   <tabstop>spinDirectionalIntensity</tabstop>
+  <tabstop>mSunTimeWidget</tabstop>
+  <tabstop>mSunColorButton</tabstop>
+  <tabstop>mSunIntensitySpin</tabstop>
+  <tabstop>mSunTemperatureSpin</tabstop>
+  <tabstop>mSunPressureSpin</tabstop>
+  <tabstop>mSunElevationSpin</tabstop>
  </tabstops>
  <resources/>
  <connections/>
