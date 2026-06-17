@@ -1138,14 +1138,9 @@ class APP_EXPORT QgsCustomization
     void loadOldIniFile( const QString &filePath );
 
     /**
-     * Update action \a widget visibility based on \a item
+     * Apply \a item configuration to \a widget
      */
-    void updateActionVisibility( QgsCustomization::QgsItem *item, QWidget *widget ) const;
-
-    /**
-     * Update menu \a widget visibility based on \a item
-     */
-    template<class WidgetType> void updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget ) const;
+    void applyItemToWidget( QgsCustomization::QgsItem *item, QWidget *widget ) const;
 
     /**
      * Returns QWidget corresponding to \a path. Path is a '/' separated list of

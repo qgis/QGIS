@@ -54,6 +54,7 @@ class TestQgsCustomization : public QgsTest
     void testModel();
     void testModelProcessing();
     void testToolBarPosition();
+    void testMenuOrder();
 
   private:
     template<class T> T *getItem( QgsCustomization *customization, const QString &path ) const { return dynamic_cast<T *>( getItem( customization, path ) ); }
@@ -1020,6 +1021,54 @@ void TestQgsCustomization::testToolBarPosition()
   QCOMPARE( mySuperToolBarPos, mySuperToolBar->mapToGlobal( QPoint( 0, 0 ) ) );
 }
 
+void TestQgsCustomization::testMenuOrder()
+{
+  // mix action ref and sub menu and check that everything is in the appropriate order
+
+  mQgisApp->customization()->setEnabled( true );
+
+  mQgisApp->customization()->menusItem()->addChild( std::make_unique<QgsCustomization::QgsUserMenuItem>( "MyMenu", "My menu", mQgisApp->customization()->menusItem() ) );
+  QgsCustomization::QgsMenuItem *menuItem = getItem<QgsCustomization::QgsMenuItem>( "Menus/MyMenu" );
+  QVERIFY( menuItem );
+
+  {
+    const QString actionPath = "Menus/mEditMenu/mActionRedo";
+    QgsCustomization::QgsActionItem *actionItem = getItem<QgsCustomization::QgsActionItem>( actionPath );
+    QVERIFY( actionItem );
+    QVERIFY( getItem<QgsCustomization::QgsActionItem>( actionPath )->isVisible() );
+
+    menuItem->addChild( std::make_unique<QgsCustomization::QgsActionRefItem>( mQgisApp->customization()->uniqueActionName( actionItem->name() ), actionItem->title(), actionPath, menuItem ) );
+    QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( "Menus/MyMenu/ActionRef_mActionRedo_1" ) );
+    QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( "Menus/MyMenu/ActionRef_mActionRedo_1" )->isVisible() );
+  }
+
+  menuItem->addChild( std::make_unique<QgsCustomization::QgsUserMenuItem>( "MySubMenu", "My sub menu", menuItem ) );
+  getItem<QgsCustomization::QgsMenuItem>( "Menus/MyMenu/MySubMenu" );
+
+  {
+    const QString actionPath = "Menus/mEditMenu/mActionUndo";
+    QgsCustomization::QgsActionItem *actionItem = getItem<QgsCustomization::QgsActionItem>( actionPath );
+    QVERIFY( actionItem );
+    QVERIFY( getItem<QgsCustomization::QgsActionItem>( actionPath )->isVisible() );
+
+    menuItem->addChild( std::make_unique<QgsCustomization::QgsActionRefItem>( mQgisApp->customization()->uniqueActionName( actionItem->name() ), actionItem->title(), actionPath, menuItem ) );
+    QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( "Menus/MyMenu/ActionRef_mActionUndo_1" ) );
+    QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( "Menus/MyMenu/ActionRef_mActionUndo_1" )->isVisible() );
+  }
+
+  mQgisApp->customization()->apply();
+
+  QMenu *menu = findQWidget<QMenu>( "Menus/MyMenu" );
+  QVERIFY( menu );
+  QCOMPARE( menu->actions().count(), 3 );
+
+  QVERIFY( !menu->actions().at( 0 )->menu() );
+  QCOMPARE( menu->actions().at( 0 )->text(), "&Redo" );
+  QVERIFY( menu->actions().at( 1 )->menu() );
+  QCOMPARE( menu->actions().at( 1 )->text(), "My sub menu" );
+  QVERIFY( !menu->actions().at( 2 )->menu() );
+  QCOMPARE( menu->actions().at( 2 )->text(), "&Undo" );
+}
 
 QGSTEST_MAIN( TestQgsCustomization )
 #include "testqgscustomization.moc"
