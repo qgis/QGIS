@@ -6775,8 +6775,8 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class SaveStyleFormat : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      QML = 0,      //!< QML style format
-      SLD = 1 << 0, //!< SLD style format
+      QML = 1 << 0, //!< QML style format
+      SLD = 1 << 1, //!< SLD style format
     };
     Q_ENUM( SaveStyleFormat )
     Q_DECLARE_FLAGS( SaveStyleFormats, SaveStyleFormat )
