@@ -2662,8 +2662,8 @@ QgsMapLayer::SaveStyleResults QgsMapLayer::saveStyleToDatabaseV2(
   return result.saveResult;
 }
 
-QgsSaveStyleResult saveStyleToDatabaseV3(
-  const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, const Qgis::SaveStyleFormats formats, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
+QgsSaveStyleResult QgsMapLayer::saveStyleToDatabaseV3(
+  const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, const Qgis::SaveStyleFormats formats, QgsMapLayer::StyleCategories categories
 )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
