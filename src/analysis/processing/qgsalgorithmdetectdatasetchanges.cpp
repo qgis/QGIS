@@ -201,6 +201,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   QHash<QgsFeatureId, QgsAttributes> originalAttributes;
   QHash<QgsAttributes, QgsFeatureId> originalNullGeometryAttributes;
   QHash<QgsAttributes, QgsFeatureId> originalEmptyGeometryAttributes;
+  QgsGeometry emptyGeometry = QgsGeometry(); // if an EMPTY geom is found, we'll store it here
   long current = 0;
 
   QgsAttributes attrs;
@@ -226,6 +227,11 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
     }
     else if ( f.hasGeometry() && f.geometry().isEmpty() )
     {
+      if ( emptyGeometry.isNull() )
+      {
+        emptyGeometry = f.geometry(); // save geometry to use it later
+      }
+
       if ( originalEmptyGeometryAttributes.contains( attrs ) )
       {
         feedback->reportError(
@@ -401,13 +407,21 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   current = 0;
   long deleted = 0;
   QgsFeature f;
+  QgsGeometry g;
+  QList<QgsFeatureId> emptyGeometryIds = originalEmptyGeometryAttributes.values();
+
   while ( it.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       break;
 
-    // use already fetched geometry
-    f.setGeometry( originalGeometries.value( f.id(), QgsGeometry() ) );
+    // attempt to use already fetched geometry
+    g = originalGeometries.value( f.id(), QgsGeometry() );
+    if ( g.isNull() && emptyGeometryIds.contains( f.id() ) )
+    {
+      g = emptyGeometry;
+    }
+    f.setGeometry( g );
 
     if ( unchangedOriginalIds.contains( f.id() ) )
     {
