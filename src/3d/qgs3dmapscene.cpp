@@ -68,6 +68,7 @@
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsunlitmaterial.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgswindow3dengine.h"
@@ -80,7 +81,6 @@
 #include <QUrl>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QCamera>
@@ -1152,8 +1152,9 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   mEntityCameraViewCenter->addComponent( trCameraViewCenter );
   connect( camera, &Qt3DRender::QCamera::viewCenterChanged, this, [trCameraViewCenter, camera] { trCameraViewCenter->setTranslation( camera->viewCenter() ); } );
 
-  Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
-  materialCameraViewCenter->setAmbient( Qt::red );
+  auto materialCameraViewCenter = new QgsUnlitMaterial();
+  materialCameraViewCenter->setColor( Qt::red );
+  materialCameraViewCenter->setCastsShadows( false );
   mEntityCameraViewCenter->addComponent( materialCameraViewCenter );
 
   Qt3DExtras::QSphereMesh *rendererCameraViewCenter = new Qt3DExtras::QSphereMesh;
@@ -1442,8 +1443,11 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
 
   Qt3DCore::QTransform *trRotationCenter = new Qt3DCore::QTransform;
   mEntityRotationCenter->addComponent( trRotationCenter );
-  Qt3DExtras::QPhongMaterial *materialRotationCenter = new Qt3DExtras::QPhongMaterial;
-  materialRotationCenter->setAmbient( Qt::blue );
+
+  auto materialRotationCenter = new QgsUnlitMaterial();
+  materialRotationCenter->setColor( Qt::blue );
+  materialRotationCenter->setCastsShadows( false );
+
   mEntityRotationCenter->addComponent( materialRotationCenter );
   Qt3DExtras::QSphereMesh *rendererRotationCenter = new Qt3DExtras::QSphereMesh;
   rendererRotationCenter->setRadius( 10 );
