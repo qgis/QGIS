@@ -1087,7 +1087,21 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
       }
       else if ( const QgsLineString *intersectionCurve = qgsgeometry_cast< const QgsLineString * >( *it ) )
       {
-        processIntersectionCurve( intersectionCurve, feature );
+        // Intersection geometries may not preserve the original Z values
+        // Rebuild the intersection curve by recovering the 3D coordinates from featGeomPart
+        auto lineInterpolated = std::make_unique<QgsLineString>();
+        for ( int i = 0; i < intersectionCurve->numPoints(); ++i )
+        {
+          const QgsPoint pt = intersectionCurve->pointN( i );
+
+          QString err;
+          const double distance = featGeomPartGeos.lineLocatePoint( pt, &err );
+
+          std::unique_ptr<QgsPoint> pointWithInterpolatedZM( featGeomPart->interpolatePoint( distance ) );
+          lineInterpolated->addVertex( *pointWithInterpolatedZM );
+        }
+
+        processIntersectionCurve( lineInterpolated.get(), feature );
       }
     }
   };
