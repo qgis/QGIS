@@ -37,9 +37,9 @@
       <ogr:InputID>points.1</ogr:InputID>
       <ogr:TargetID_1>points.2</ogr:TargetID_1>
       <ogr:Dist_1>1.4142135623731</ogr:Dist_1>
-      <ogr:TargetID_2>points.4</ogr:TargetID_2>
+      <ogr:TargetID_2>points.3</ogr:TargetID_2>
       <ogr:Dist_2>2.23606797749979</ogr:Dist_2>
-      <ogr:TargetID_3>points.3</ogr:TargetID_3>
+      <ogr:TargetID_3>points.4</ogr:TargetID_3>
       <ogr:Dist_3>2.23606797749979</ogr:Dist_3>
       <ogr:TargetID_4>points.0</ogr:TargetID_4>
       <ogr:Dist_4>2.82842712474619</ogr:Dist_4>
@@ -106,17 +106,17 @@
       <ogr:InputID>points.4</ogr:InputID>
       <ogr:TargetID_1>points.3</ogr:TargetID_1>
       <ogr:Dist_1>1.4142135623731</ogr:Dist_1>
-      <ogr:TargetID_2>points.2</ogr:TargetID_2>
+      <ogr:TargetID_2>points.1</ogr:TargetID_2>
       <ogr:Dist_2>2.23606797749979</ogr:Dist_2>
-      <ogr:TargetID_3>points.1</ogr:TargetID_3>
+      <ogr:TargetID_3>points.2</ogr:TargetID_3>
       <ogr:Dist_3>2.23606797749979</ogr:Dist_3>
       <ogr:TargetID_4>points.0</ogr:TargetID_4>
       <ogr:Dist_4>3</ogr:Dist_4>
       <ogr:TargetID_5>points.7</ogr:TargetID_5>
       <ogr:Dist_5>3.60555127546399</ogr:Dist_5>
-      <ogr:TargetID_6>points.8</ogr:TargetID_6>
+      <ogr:TargetID_6>points.6</ogr:TargetID_6>
       <ogr:Dist_6>4.47213595499958</ogr:Dist_6>
-      <ogr:TargetID_7>points.6</ogr:TargetID_7>
+      <ogr:TargetID_7>points.8</ogr:TargetID_7>
       <ogr:Dist_7>4.47213595499958</ogr:Dist_7>
       <ogr:TargetID_8>points.5</ogr:TargetID_8>
       <ogr:Dist_8>7.21110255092798</ogr:Dist_8>
@@ -175,9 +175,9 @@
       <ogr:InputID>points.7</ogr:InputID>
       <ogr:TargetID_1>points.6</ogr:TargetID_1>
       <ogr:Dist_1>1</ogr:Dist_1>
-      <ogr:TargetID_2>points.4</ogr:TargetID_2>
+      <ogr:TargetID_2>points.3</ogr:TargetID_2>
       <ogr:Dist_2>3.60555127546399</ogr:Dist_2>
-      <ogr:TargetID_3>points.3</ogr:TargetID_3>
+      <ogr:TargetID_3>points.4</ogr:TargetID_3>
       <ogr:Dist_3>3.60555127546399</ogr:Dist_3>
       <ogr:TargetID_4>points.1</ogr:TargetID_4>
       <ogr:Dist_4>5.65685424949238</ogr:Dist_4>

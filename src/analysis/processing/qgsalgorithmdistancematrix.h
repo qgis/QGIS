@@ -48,6 +48,7 @@ class QgsDistanceMatrixAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsDistanceMatrixAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -62,8 +63,10 @@ class QgsDistanceMatrixAlgorithm : public QgsProcessingAlgorithm
       Summary     //!< N x 5: one row per input with mean/stddev/min/max
     };
 
-    QVariantMap linearMatrix( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
-    QVariantMap regularMatrix( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap linearMatrixCartesian( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap regularMatrixCartesian( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap linearMatrixEllipsoid( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap regularMatrixEllipsoid( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     std::unique_ptr<QgsFeatureSource> mSource;
     std::unique_ptr<QgsFeatureSource> mTarget;
@@ -72,6 +75,7 @@ class QgsDistanceMatrixAlgorithm : public QgsProcessingAlgorithm
     MatrixType mMatrixType = Linear;
     long long mKPoints = 0;
     bool mSameLayer = false;
+    bool mUseEllipsoid = true;
 };
 
 ///@endcond PRIVATE
