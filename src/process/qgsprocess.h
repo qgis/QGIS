@@ -101,6 +101,8 @@ class QgsProcessingExec
     void addVersionInformation( QVariantMap &json );
     void addAlgorithmInformation( QVariantMap &json, const QgsProcessingAlgorithm *algorithm );
     void addProviderInformation( QVariantMap &json, QgsProcessingProvider *provider );
+    // Callers are guarded by #ifdef WITH_BINDINGS, so cppcheck reports a false positive.
+    // cppcheck-suppress unusedPrivateFunction
     void addPluginInformation( QVariantMap &json, const QString &pluginName );
 
     Flags mFlags;
