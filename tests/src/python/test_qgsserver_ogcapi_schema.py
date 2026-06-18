@@ -95,6 +95,10 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         super().setUpClass()
         # Default url has changed in QGIS 4 stick to /wfs3 for the tests
         os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
+        iface = self.server.serverInterface()
+        iface.reloadSettings()
+        iface.serviceRegistry().cleanUp()
+        iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
         # Register the provider
         r = QgsProviderRegistry.instance()
         metadata = QgsProviderMetadata(

@@ -3096,7 +3096,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             ctx,
             QgsServerOgcApi.Rel.alternate,
             QgsServerOgcApi.ContentType.JSON,
-            QgsServerOgcApi.Profile.NONE,
+            QgsServerOgcApi.Profile.Unset,
             title,
         )
 
