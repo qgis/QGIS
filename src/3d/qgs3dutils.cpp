@@ -1007,6 +1007,49 @@ QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, con
   return newShaderCode;
 }
 
+QVector3D Qgs3DUtils::axisStringToVector( const QString &axis )
+{
+  if ( axis == "x"_L1 )
+    return QVector3D( 1.0f, 0.0f, 0.0f );
+  if ( axis == "-x"_L1 )
+    return QVector3D( -1.0f, 0.0f, 0.0f );
+  if ( axis == "y"_L1 )
+    return QVector3D( 0.0f, 1.0f, 0.0f );
+  if ( axis == "-y"_L1 )
+    return QVector3D( 0.0f, -1.0f, 0.0f );
+  if ( axis == "z"_L1 )
+    return QVector3D( 0.0f, 0.0f, 1.0f );
+  if ( axis == "-z"_L1 )
+    return QVector3D( 0.0f, 0.0f, -1.0f );
+  return QVector3D();
+}
+
+QMatrix4x4 Qgs3DUtils::axisTransformMatrix( const QString &upAxis, const QString &forwardAxis )
+{
+  const QVector3D up = axisStringToVector( upAxis );
+  const QVector3D forward = axisStringToVector( forwardAxis );
+
+  if ( up.isNull() || forward.isNull() )
+    return QMatrix4x4();
+
+  const QVector3D right = QVector3D::crossProduct( forward, up );
+  if ( right.isNull() )
+    return QMatrix4x4();
+
+  const float data[9] = {
+    right.x(),
+    right.y(),
+    right.z(),
+    forward.x(),
+    forward.y(),
+    forward.z(),
+    up.x(),
+    up.y(),
+    up.z(),
+  };
+  return QMatrix4x4( QMatrix3x3( data ) );
+}
+
 QByteArray Qgs3DUtils::removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines )
 {
   QByteArray newShaderCode = shaderCode;

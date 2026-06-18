@@ -87,16 +87,6 @@ QMap<QString, QString> QgsSimpleLineMaterial3DHandler::toExportParameters( const
   return parameters;
 }
 
-void QgsSimpleLineMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const
-{
-  const QgsSimpleLineMaterialSettings *lineSettings = dynamic_cast< const QgsSimpleLineMaterialSettings * >( settings );
-  Q_ASSERT( lineSettings );
-
-  const QColor ambient = Qgs3DUtils::srgbToLinear( materialContext.isSelected() ? materialContext.selectionColor().darker() : lineSettings->ambient() );
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( u"ambientColor"_s, ambient );
-  effect->addParameter( ambientParameter );
-}
-
 QByteArray QgsSimpleLineMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
   const QgsSimpleLineMaterialSettings *lineSettings = dynamic_cast< const QgsSimpleLineMaterialSettings * >( settings );

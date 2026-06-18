@@ -19,6 +19,7 @@ set(QGIS_3D_SRCS
   qgs3dmapsettings.cpp
   qgs3dmaptool.cpp
   qgs3dmapcanvas.cpp
+  qgscolorgradingsettings.cpp
   qgscrosssection.cpp
   qgs3drendercontext.cpp
   qgs3dsceneexporter.cpp
@@ -29,6 +30,7 @@ set(QGIS_3D_SRCS
   qgscamerapose.cpp
   qgscategorized3drenderer.cpp
   qgscategorizedchunkloader_p.cpp
+  qgsenvironmentlight.cpp
   qgsfeature3dhandler_p.cpp
   qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
@@ -39,6 +41,7 @@ set(QGIS_3D_SRCS
   qgslayerstylewatcher.cpp
   qgsmapoverlayentity.cpp
   qgsmapoverlaytexturegenerator_p.cpp
+  qgsobj3dutils.cpp
   qgsoffscreen3dengine.cpp
   qgsraycastingutils.cpp
   qgsraycastcontext.cpp
@@ -78,6 +81,7 @@ set(QGIS_3D_SRCS
   lights/qgsdirectionallightsettings.cpp
   lights/qgslightsource.cpp
   lights/qgspointlightsettings.cpp
+  lights/qgssunlightsettings.cpp
 
   materials/qgsglobematerial.cpp
   materials/qgsgoochmaterial.cpp
@@ -115,6 +119,7 @@ set(QGIS_3D_SRCS
   framegraph/qgsoverlaytexturerenderview.cpp
   framegraph/qgspostprocessingentity.cpp
   framegraph/qgsrenderpassquad.cpp
+  framegraph/qgspostprocessingrenderview.cpp
   framegraph/qgsshadowrenderview.cpp
   framegraph/qgsframegraph.cpp
   framegraph/qgsframegraphutils.cpp
@@ -176,6 +181,7 @@ set(QGIS_3D_HDRS
   qgs3dtypes.h
   qgs3dutils.h
   qgs3dmapcanvas.h
+  qgscolorgradingsettings.h
   qgscrosssection.h
   qgs3dwiredmesh_p.h
   qgsaabb.h
@@ -189,6 +195,7 @@ set(QGIS_3D_HDRS
   qgscamerapose.h
   qgscategorized3drenderer.h
   qgscategorizedchunkloader_p.h
+  qgsenvironmentlight.h
   qgsfonttextureatlasgenerator.h
   qgsgeotransform.h
   qgsglobechunkedentity.h
@@ -198,6 +205,7 @@ set(QGIS_3D_HDRS
   qgsmapoverlayentity.h
   qgsmapoverlaytexturegenerator_p.h
   qgsmeshlayer3drenderer.h
+  qgsobj3dutils.h
   qgsoffscreen3dengine.h
   qgsraycastingutils.h
   qgsraycastcontext.h
@@ -223,6 +231,7 @@ set(QGIS_3D_HDRS
   lights/qgsdirectionallightsettings.h
   lights/qgslightsource.h
   lights/qgspointlightsettings.h
+  lights/qgssunlightsettings.h
 
   materials/qgsglobematerial.h
   materials/qgsgoochmaterial.h
@@ -259,6 +268,7 @@ set(QGIS_3D_HDRS
   framegraph/qgsoverlaytexturerenderview.h
   framegraph/qgspostprocessingentity.h
   framegraph/qgsrenderpassquad.h
+  framegraph/qgspostprocessingrenderview.h
   framegraph/qgsshadowrenderview.h
 
   symbols/qgs3dsymbolutils.h
@@ -360,6 +370,8 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/tinygltf
   ${CMAKE_SOURCE_DIR}/external/rectpack2D
+  ${CMAKE_SOURCE_DIR}/external/tinyobj
+  ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
 target_link_libraries(qgis_3d

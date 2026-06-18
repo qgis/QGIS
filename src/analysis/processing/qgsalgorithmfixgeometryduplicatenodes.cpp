@@ -207,6 +207,8 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
+    else
+      feedback->featureAddedToSink( u"REPORT"_s );
   }
   multiStepFeedback.setProgress( 100 );
 
@@ -225,8 +227,15 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
   multiStepFeedback.setProgress( 100 );
+
+  sink_report->finalize();
+  feedback->featureSinkFinalized( u"REPORT"_s );
+  sink_output->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest_output );

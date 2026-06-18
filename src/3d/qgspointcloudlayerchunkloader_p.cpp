@@ -92,7 +92,7 @@ void QgsPointCloudLayerChunkLoader::start()
 
   const QgsBox3D box3D = node->box3D();
   const QFuture<void> future = QtConcurrent::run( [pc = std::move( pc ), pcNode, box3D, this] {
-    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"PC chunk load"_s );
+    const QgsScopedEvent e( u"3D"_s, u"PC chunk load"_s );
 
     if ( mContext.isCanceled() )
     {

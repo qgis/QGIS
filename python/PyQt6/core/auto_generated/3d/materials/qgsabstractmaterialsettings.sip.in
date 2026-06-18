@@ -113,8 +113,20 @@ triangulation.
       Ambient,
       Warm,
       Cool,
-      Specular
+      Specular,
+      BaseColor,
+      EmissionColor,
+      TextureScale,
+      TextureRotation,
+      TextureOffset,
     };
+
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+%Docstring
+Returns the set of data-defined properties supported by this material.
+
+.. versionadded:: 4.2
+%End
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring

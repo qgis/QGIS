@@ -27,10 +27,18 @@ uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
 uniform mat4 mvp;
 
+#ifdef DATA_DEFINED_TEXTURE_TRANSFORMS
+in vec4 ddTextureTransform;
+#else
 uniform float texCoordScale;
+#ifdef TEXTURE_OFFSET
+uniform vec2 texCoordOffset;
+#endif
 #ifdef TEXTURE_ROTATION
 uniform float texCoordRotation;
 #endif
+#endif
+
 
 #ifdef CLIPPING
     #pragma include clipplane.shaderinc
@@ -51,18 +59,33 @@ void main()
     vec3 tang = vertexTangent.xyz;
 #endif
 
-#ifdef TEXTURE_ROTATION
+#ifdef DATA_DEFINED_TEXTURE_TRANSFORMS
+    vec2 currentTextureOffset = ddTextureTransform.xy;
+    float currentTextureScale = ddTextureTransform.z;
+    float currentTextureRotation = ddTextureTransform.w;
+#else
+    float currentTextureScale = texCoordScale;
+#ifdef TEXTURE_OFFSET
+    vec2 currentTextureOffset = texCoordOffset;
+#else
+    vec2 currentTextureOffset = vec2(0.0);
+#endif
+    #ifdef TEXTURE_ROTATION
+    float currentTextureRotation = texCoordRotation;
+    #endif
+#endif
+
+#if defined(TEXTURE_ROTATION) || defined(DATA_DEFINED_TEXTURE_TRANSFORMS)
     // handle texture rotation
-    float rad = radians(texCoordRotation);
+    float rad = radians(currentTextureRotation);
     float c = cos(rad);
     float s = sin(rad);
     mat2 rotMat = mat2(c, s, -s, c);
 
-    // rotate and scale texture coordinates
-    texCoord = (rotMat * vertexTexCoord) * texCoordScale;
+    texCoord = rotMat*((vertexTexCoord- currentTextureOffset)*currentTextureScale) + currentTextureOffset;
 #else
     // scale texture coordinates
-    texCoord = vertexTexCoord * texCoordScale;
+    texCoord = (vertexTexCoord - currentTextureOffset) * currentTextureScale + currentTextureOffset;
 #endif
 
     // Transform position, normal, and tangent to world space

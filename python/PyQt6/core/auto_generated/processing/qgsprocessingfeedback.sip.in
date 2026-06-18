@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProcessingFeedback : QgsFeedback
 {
 %Docstring(signature="appended")
@@ -197,6 +198,52 @@ pushed to the feedback object.
 .. versionadded:: 3.14
 %End
 
+    void reportSourceLoaded( const QString &parameterName, long long featureCount );
+%Docstring
+Reports that a feature source was retrieved for the specified algorithm
+input parameter.
+
+.. seealso:: :py:func:`sourceLoaded`
+
+.. versionadded:: 4.2
+%End
+
+    void featureAddedToSink( const QString &output );
+%Docstring
+Reports that a feature was added to the the sink associated with the
+specified algorithm ``output``.
+
+.. seealso:: :py:func:`sinkFeatureCountChanged`
+
+.. seealso:: :py:func:`featureSinkFinalized`
+
+.. versionadded:: 4.2
+%End
+
+    void featureSinkFinalized( const QString &output );
+%Docstring
+Reports that a feature sink has been finalized.
+
+The ``output`` argument specifies the associated algorithm output name.
+
+This will cause an immediate emission of
+:py:func:`~QgsProcessingFeedback.sinkFeatureCountChanged` signal with
+the final sink size, even if it is zero.
+
+.. seealso:: :py:func:`featureAddedToSink`
+
+.. seealso:: :py:func:`sinkFeatureCountChanged`
+
+.. versionadded:: 4.2
+%End
+
+    void resetFeatureSinkCounts();
+%Docstring
+Resets all stored feature sink counts.
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void progressTextChanged( const QString &text );
@@ -267,6 +314,34 @@ Emitted when console information ``text`` is pushed.
 Emitted when a formatted ``html`` message is pushed.
 
 .. seealso:: :py:func:`pushFormattedMessage`
+
+.. versionadded:: 4.2
+%End
+
+    void sinkFeatureCountChanged( const QString &output, long long featureCount );
+%Docstring
+Emitted when the count of features pushed to a sink has changed.
+
+The ``output`` argument specifies the associated algorithm output name.
+
+.. note::
+
+   For performance, this signal is not emitted for every individual feature
+   added to the sink. It is instead emitted only once for every 100 features added.
+
+.. seealso:: :py:func:`featureAddedToSink`
+
+.. seealso:: :py:func:`featureSinkFinalized`
+
+.. versionadded:: 4.2
+%End
+
+    void sourceLoaded( const QString &parameterName, long long featureCount );
+%Docstring
+Emitted when a feature source was retrieved for the specified algorithm
+input parameter.
+
+.. seealso:: :py:func:`reportSourceLoaded`
 
 .. versionadded:: 4.2
 %End

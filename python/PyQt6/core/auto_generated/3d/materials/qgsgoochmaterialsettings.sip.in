@@ -48,6 +48,8 @@ Gooch material.
 
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
 
     QColor warm() const;
 %Docstring

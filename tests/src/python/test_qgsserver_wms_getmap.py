@@ -3177,7 +3177,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         """Test if OPACITIES is also applied to labels"""
 
         layer = QgsVectorLayer(
-            "Point?crs=epsg:4326&field=pk:integer&field=name:string&key=pk",
+            "Point?crs=epsg:4326&field=pk:integer&field=name:string",
             "test",
             "memory",
         )

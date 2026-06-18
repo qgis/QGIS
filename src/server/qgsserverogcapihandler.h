@@ -297,6 +297,23 @@ class SERVER_EXPORT QgsServerOgcApiHandler
 #endif // SIP skipped
 
     /**
+     * Builds and returns a header link to the resource.
+     *
+     * \param context request context
+     * \param linkType type of the link (rel attribute), default to SELF
+     * \param contentType content type of the link (default to JSON)
+     * \param title title of the link
+     * \note not available in Python bindings
+     */
+    QString headerLink(
+      const QgsServerApiContext &context,
+      const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
+      const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
+      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::NONE,
+      const QString &title = ""
+    ) const;
+
+    /**
      * Writes \a data to the \a context response stream, content-type is calculated from the \a context request,
      * optional \a htmlMetadata for the HTML templates can be specified and will be added as "metadata" to
      * the HTML template variables.

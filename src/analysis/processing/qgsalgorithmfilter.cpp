@@ -134,6 +134,8 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
       {
         if ( !output->sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( output->sink.get(), parameters, output->name ) );
+        else
+          feedback->featureAddedToSink( output->name );
       }
     }
 
@@ -144,6 +146,8 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
   QVariantMap outputs;
   for ( const Output *output : std::as_const( mOutputs ) )
   {
+    output->sink->finalize();
+    feedback->featureSinkFinalized( output->name );
     outputs.insert( output->name, output->destinationIdentifier );
   }
   qDeleteAll( mOutputs );

@@ -462,68 +462,125 @@ theme is not overridden and the current map theme will be used.
 %End
 
 
-    void setShowTerrainBoundingBoxes( bool enabled );
+    void setDebugFlags( Qgis::Map3DDebugFlags flags );
 %Docstring
-Sets whether to display bounding boxes of terrain tiles (for debugging)
-%End
-    bool showTerrainBoundingBoxes() const;
-%Docstring
-Returns whether to display bounding boxes of terrain tiles (for
-debugging)
-%End
-    void setShowTerrainTilesInfo( bool enabled );
-%Docstring
-Sets whether to display extra tile info on top of terrain tiles (for
-debugging)
-%End
-    bool showTerrainTilesInfo() const;
-%Docstring
-Returns whether to display extra tile info on top of terrain tiles (for
-debugging)
+Sets flags that control debugging options for the map.
+
+.. warning::
+
+   These are debugging options only, and are not considered part of stable API.
+
+.. seealso:: :py:func:`debugFlags`
+
+.. versionadded:: 4.2
 %End
 
-    void setShowCameraViewCenter( bool enabled );
+    Qgis::Map3DDebugFlags debugFlags() const;
+%Docstring
+Returns the flags that control debugging options for the map.
+
+.. warning::
+
+   These are debugging options only, and are not considered part of stable API.
+
+.. seealso:: :py:func:`setDebugFlags`
+
+.. versionadded:: 4.2
+%End
+
+ void setShowTerrainBoundingBoxes( bool enabled ) /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
+%Docstring
+Sets whether to display bounding boxes of terrain tiles (for debugging).
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
+%End
+
+ bool showTerrainBoundingBoxes() const /Deprecated="Since 4.2. Use debugFlags() instead."/;
+%Docstring
+Returns whether to display bounding boxes of terrain tiles (for
+debugging).
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.debugFlags` instead.
+%End
+
+ void setShowTerrainTilesInfo( bool enabled ) /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
+%Docstring
+Sets whether to display extra tile info on top of terrain tiles (for
+debugging).
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
+%End
+
+ bool showTerrainTilesInfo() const /Deprecated="Since 4.2. Use debugFlags() instead."/;
+%Docstring
+Returns whether to display extra tile info on top of terrain tiles (for
+debugging).
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.debugFlags` instead.
+%End
+
+ void setShowCameraViewCenter( bool enabled ) /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
 %Docstring
 Sets whether to show camera's view center as a sphere (for debugging)
 
-.. versionadded:: 3.4
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
 %End
 
-    bool showCameraViewCenter() const;
+ bool showCameraViewCenter() const /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
 %Docstring
 Returns whether to show camera's view center as a sphere (for debugging)
 
-.. versionadded:: 3.4
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
 %End
 
-    void setShowCameraRotationCenter( bool enabled );
+ void setShowCameraRotationCenter( bool enabled ) /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
 %Docstring
 Sets whether to show camera's rotation center as a sphere (for
 debugging)
 
-.. versionadded:: 3.24
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
 %End
 
-    bool showCameraRotationCenter() const;
+ bool showCameraRotationCenter() const /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
 %Docstring
 Returns whether to show camera's rotation center as a sphere (for
 debugging)
 
-.. versionadded:: 3.24
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
 %End
 
-    void setShowLightSourceOrigins( bool enabled );
+ void setShowLightSourceOrigins( bool enabled ) /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
 %Docstring
 Sets whether to show light source origins as a sphere (for debugging)
 
-.. versionadded:: 3.16
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
 %End
 
-    bool showLightSourceOrigins() const;
+ bool showLightSourceOrigins() const /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
 %Docstring
 Returns whether to show light source origins as a sphere (for debugging)
 
-.. versionadded:: 3.16
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
 %End
 
     void setShowLabels( bool enabled );
@@ -681,14 +738,14 @@ Ownership of the lights is transferred to the settings.
 .. versionadded:: 3.26
 %End
 
-    float fieldOfView() const;
+    double fieldOfView() const;
 %Docstring
 Returns the camera lens' field of view
 
 .. versionadded:: 3.8
 %End
 
-    void setFieldOfView( const float fieldOfView );
+    void setFieldOfView( double fieldOfView );
 %Docstring
 Sets the camera lens' field of view
 
@@ -738,6 +795,8 @@ pixels Default value is 96
 
 
 
+
+
  bool isSkyboxEnabled() const /Deprecated="Since 4.2. Use backgroundSettings() instead."/;
 %Docstring
 Returns whether the skybox is enabled.
@@ -764,22 +823,22 @@ Sets whether the skybox is enabled.
    Use :py:func:`~Qgs3DMapSettings.setBackgroundSettings` instead.
 %End
 
-    bool isFpsCounterEnabled() const;
+ bool isFpsCounterEnabled() const /Deprecated="Since 4.2. Use debugFlags() instead."/;
 %Docstring
 Returns whether FPS counter label is enabled
 
-.. seealso:: :py:func:`setIsFpsCounterEnabled`
+.. deprecated:: 4.2
 
-.. versionadded:: 3.18
+   Use :py:func:`~Qgs3DMapSettings.debugFlags` instead.
 %End
 
-    void setIsFpsCounterEnabled( bool fpsCounterEnabled );
+ void setIsFpsCounterEnabled( bool fpsCounterEnabled ) /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
 %Docstring
-Sets whether FPS counter label is enabled
+Sets whether FPS counter label is enabled.
 
-.. seealso:: :py:func:`isFpsCounterEnabled`
+.. deprecated:: 4.2
 
-.. versionadded:: 3.18
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
 %End
 
     bool terrainRenderingEnabled() const;
@@ -889,18 +948,22 @@ Sets whether the extent is displayed on the main 2D map canvas
 .. versionadded:: 3.32
 %End
 
-    void setShowDebugPanel( bool enabled );
+ void setShowDebugPanel( bool enabled ) /Deprecated="Since 4.2. Use setDebugFlags() instead."/;
 %Docstring
 Sets whether the debug side panel is shown
 
-.. versionadded:: 3.42
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.setDebugFlags` instead.
 %End
 
-    bool showDebugPanel() const;
+ bool showDebugPanel() const /Deprecated="Since 4.2. Use debugFlags() instead."/;
 %Docstring
 Returns whether the debug side panel is shown
 
-.. versionadded:: 3.42
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.debugFlags` instead.
 %End
 
     bool is2DMapOverlayEnabled() const;
@@ -1241,6 +1304,17 @@ Emitted when the bloom lighting effect settings are changed.
 .. seealso:: :py:func:`bloomSettings`
 
 .. seealso:: :py:func:`setBloomSettings`
+
+.. versionadded:: 4.2
+%End
+
+    void colorGradingSettingsChanged();
+%Docstring
+Emitted when the color grading settings are changed.
+
+.. seealso:: :py:func:`colorGradingSettings`
+
+.. seealso:: :py:func:`setColorGradingSettings`
 
 .. versionadded:: 4.2
 %End

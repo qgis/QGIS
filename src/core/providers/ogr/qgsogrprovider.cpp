@@ -3757,6 +3757,13 @@ void QgsOgrProvider::computeCapabilities()
 #endif
   }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 5, 0 )
+  if ( GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FIELD_DOMAINS, nullptr ) )
+  {
+    ability |= Qgis::VectorProviderCapability::ReadFieldDomains;
+  }
+#endif
+
   ability |= Qgis::VectorProviderCapability::ReadLayerMetadata;
   ability |= Qgis::VectorProviderCapability::ReloadData;
 

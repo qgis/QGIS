@@ -32,6 +32,7 @@
 
 #include "qgschunkedentity.h"
 #include "qgschunkqueuejob.h"
+#include "qgslayerstylewatcher.h"
 #include "qobjectuniqueptr.h"
 
 #define SIP_NO_FILE

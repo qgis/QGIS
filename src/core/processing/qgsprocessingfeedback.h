@@ -21,6 +21,8 @@
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 
+#include <QMap>
+
 class QgsProcessingProvider;
 class QgsProcessingAlgorithm;
 class QgsProcessingContext;
@@ -176,6 +178,44 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      */
     virtual QString textLog() const;
 
+    /**
+     * Reports that a feature source was retrieved for the specified algorithm input parameter.
+     *
+     * \see sourceLoaded()
+     * \since QGIS 4.2
+     */
+    void reportSourceLoaded( const QString &parameterName, long long featureCount );
+
+    /**
+     * Reports that a feature was added to the the sink associated with the specified algorithm \a output.
+     *
+     * \see sinkFeatureCountChanged()
+     * \see featureSinkFinalized()
+     * \since QGIS 4.2
+     */
+    void featureAddedToSink( const QString &output );
+
+    /**
+     * Reports that a feature sink has been finalized.
+     *
+     * The \a output argument specifies the associated algorithm output name.
+     *
+     * This will cause an immediate emission of sinkFeatureCountChanged() signal with the final sink size,
+     * even if it is zero.
+     *
+     * \see featureAddedToSink()
+     * \see sinkFeatureCountChanged()
+     * \since QGIS 4.2
+     */
+    void featureSinkFinalized( const QString &output );
+
+    /**
+     * Resets all stored feature sink counts.
+     *
+     * \since QGIS 4.2
+     */
+    void resetFeatureSinkCounts();
+
   signals:
 
     /**
@@ -242,6 +282,28 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      */
     void formattedMessagePushed( const QString &html );
 
+    /**
+     * Emitted when the count of features pushed to a sink has changed.
+     *
+     * The \a output argument specifies the associated algorithm output name.
+     *
+     * \note For performance, this signal is not emitted for every individual feature
+     * added to the sink. It is instead emitted only once for every 100 features added.
+     *
+     * \see featureAddedToSink()
+     * \see featureSinkFinalized()
+     * \since QGIS 4.2
+     */
+    void sinkFeatureCountChanged( const QString &output, long long featureCount );
+
+    /**
+     * Emitted when a feature source was retrieved for the specified algorithm input parameter.
+     *
+     * \see reportSourceLoaded()
+     * \since QGIS 4.2
+     */
+    void sourceLoaded( const QString &parameterName, long long featureCount );
+
   private:
     void log( const QString &htmlMessage, const QString &textMessage );
 
@@ -249,6 +311,14 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     QString mHtmlLog;
     QString mTextLog;
     int mMessageLoggedCount = 0;
+
+    struct SinkStats
+    {
+        long long featureCount = 0;
+        long long countAtLastSignal = 0;
+    };
+
+    QMap< QString, SinkStats > mSinkFeatureCounts;
 };
 
 

@@ -30,6 +30,7 @@
 #include "qgsterrainprovider.h"
 #include "qgstextformat.h"
 
+#include <QImageWriter>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -146,7 +147,7 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output image" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output image" ), QgsProcessingUtils::supportedImageFileFilters() ) );
 }
 
 QString QgsGenerateElevationProfileAlgorithm::name() const

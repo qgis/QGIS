@@ -20,7 +20,7 @@
 #include "qgsgui.h"
 #include "qgsmaterialregistry.h"
 #include "qgsmaterialsettingswidget.h"
-#include "qgsphongmaterialsettings.h"
+#include "qgsmetalroughmaterialsettings.h"
 #include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
 
@@ -53,7 +53,7 @@ QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
   materialTypeChanged();
 
-  setSettings( new QgsPhongMaterialSettings(), nullptr );
+  setSettings( new QgsMetalRoughMaterialSettings(), nullptr );
 }
 
 QgsMaterialWidget::~QgsMaterialWidget() = default;
@@ -85,10 +85,10 @@ void QgsMaterialWidget::rebuildAvailableTypes()
   const int prevIndex = mMaterialTypeComboBox->findData( prevType );
   if ( prevIndex == -1 )
   {
-    // if phong material type is available, default to it (for now?)
-    const int phongIndex = mMaterialTypeComboBox->findData( u"phong"_s );
-    if ( phongIndex >= 0 )
-      mMaterialTypeComboBox->setCurrentIndex( phongIndex );
+    // if metalrough material type is available, default to it
+    const int metalroughIndex = mMaterialTypeComboBox->findData( u"metalrough"_s );
+    if ( metalroughIndex >= 0 )
+      mMaterialTypeComboBox->setCurrentIndex( metalroughIndex );
     else
       mMaterialTypeComboBox->setCurrentIndex( 0 );
   }

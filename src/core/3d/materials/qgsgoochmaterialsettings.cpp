@@ -65,6 +65,11 @@ bool QgsGoochMaterialSettings::equals( const QgsAbstractMaterialSettings *other 
   return *this == *otherGooch;
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsGoochMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::Warm, QgsAbstractMaterialSettings::Property::Cool, QgsAbstractMaterialSettings::Property::Diffuse, QgsAbstractMaterialSettings::Property::Specular };
+}
+
 QColor QgsGoochMaterialSettings::averageColor() const
 {
   const double kDiffuse = 0.8;

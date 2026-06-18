@@ -369,10 +369,11 @@ class TcpServerWorker : public QObject
       }
 
       clientConnection->write( u"Server: QGIS\r\n"_s.toUtf8() );
-      const auto responseHeaders { response.headers() };
+      const auto responseHeaders { response.fullHeaders() };
       for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
       {
-        clientConnection->write( u"%1: %2\r\n"_s.arg( it.key(), it.value() ).toUtf8() );
+        for ( const QString &headerValue : std::as_const( it.value() ) )
+          clientConnection->write( u"%1: %2\r\n"_s.arg( it.key(), headerValue ).toUtf8() );
       }
       clientConnection->write( "\r\n" );
       const QByteArray body { response.body() };

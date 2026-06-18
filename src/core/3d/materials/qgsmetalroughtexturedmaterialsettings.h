@@ -51,6 +51,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
 
     QgsMetalRoughTexturedMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     /**
      * Returns the path to the base color texture map.
@@ -124,8 +125,9 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     /**
      * Returns the texture scale.
      *
-     * The texture scale changes the size of the displayed texture in the 3D scene.
-     * If the texture scale is less than 1, the texture will be stretched.
+     * The texture scale changes the size of the material's textures in the 3D scene.
+     *
+     * If the texture scale is less than 1 the textures will be stretched.
      *
      * \see setTextureScale()
      */
@@ -137,6 +139,14 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      * \see setTextureRotation()
      */
     double textureRotation() const { return mTextureRotation; }
+
+    /**
+     * Returns the texture offset.
+     *
+     * \see setTextureOffset()
+     * \since QGIS 4.2
+     */
+    QPointF textureOffset() const { return mTextureOffset; }
 
     /**
      * Returns the opacity of the surface
@@ -233,6 +243,13 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     void setTextureRotation( double rotation ) { mTextureRotation = rotation; }
 
     /**
+     * Sets the texture \a offset.
+     *
+     * \see textureOffset()
+     */
+    void setTextureOffset( QPointF offset ) { mTextureOffset = offset; }
+
+    /**
      * Sets the \a opacity of the surface.
      *
      * \see opacity()
@@ -280,6 +297,8 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
              && qgsDoubleNear( mTextureRotation, other.mTextureRotation )
              && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
              && qgsDoubleNear( mParallaxScale, other.mParallaxScale )
+             && qgsDoubleNear( mTextureOffset.x(), other.mTextureOffset.x() )
+             && qgsDoubleNear( mTextureOffset.y(), other.mTextureOffset.y() )
              && qgsDoubleNear( mOpacity, other.mOpacity )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
@@ -302,6 +321,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
 
     double mTextureScale { 1.0 };
     double mTextureRotation { 0.0 };
+    QPointF mTextureOffset { 0.0, 0.0 };
     double mOpacity { 1.0 };
 
     mutable std::optional<QColor> mAverageColor;

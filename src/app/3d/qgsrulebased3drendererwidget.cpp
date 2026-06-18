@@ -88,7 +88,7 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
     mRootRule = std::make_unique<QgsRuleBased3DRenderer::Rule>( nullptr );
   }
 
-  mModel.reset( new QgsRuleBased3DRendererModel( mRootRule.get() ) );
+  mModel = make_qobject_unique<QgsRuleBased3DRendererModel>( mRootRule.get() );
   viewRules->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::widgetChanged );

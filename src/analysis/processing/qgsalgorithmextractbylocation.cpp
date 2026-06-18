@@ -586,6 +586,7 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
   process( context, input.get(), intersectSource.get(), selectedPredicates, addToSink, false, feedback );
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

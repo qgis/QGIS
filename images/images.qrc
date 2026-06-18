@@ -1096,6 +1096,8 @@
         <file>themes/default/interpolation/InCubic.svg</file>
         <file>themes/default/interpolation/InCirc.svg</file>
         <file>themes/default/mIconRasterVector.svg</file>
+        <file>themes/default/mIconEsriRest.svg</file>
+        <file>themes/default/mIconImageServer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

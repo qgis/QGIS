@@ -43,7 +43,7 @@ jobs:
       matrix:
         include:
           - distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             qt-version: 6
             run-tests: true
             with-3d: ON
@@ -68,7 +68,7 @@ jobs:
             unity-builds: ON
 
           - distro: fedora
-            distro-version: '42'
+            distro-version: '44'
             qt-version: 6
             run-tests: true
             with-3d: ON
@@ -81,7 +81,7 @@ jobs:
             with-sfcgal: ON
             with-compile-commands: OFF
             with-model-test: OFF
-            with-internal-spatialindex: OFF
+            with-internal-spatialindex: ON
             with-pg-test: OFF
             with-mssql-test: OFF
             with-hana-test: OFF
@@ -143,7 +143,7 @@ jobs:
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  # v7.1.0
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf  # v7.2.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -272,42 +272,42 @@ jobs:
         include:
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             docker-target: binary-only
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             test-batch: ALL_BUT_PROVIDERS
 
           - qt-version: 6
             distro: fedora
-            distro-version: '42'
+            distro-version: '44'
             docker-target: binary-only
             test-blocklist-file: .ci/test_blocklist_qt6_fedora.txt
             test-batch: ALL_BUT_PROVIDERS
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             test-batch: POSTGRES
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             test-batch: HANA
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             test-batch: SQLSERVER
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             test-batch: ORACLE
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-for-oracle
@@ -353,7 +353,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  # v7.1.0
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf  # v7.2.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -444,7 +444,7 @@ jobs:
       matrix:
         include:
           - distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             qt-version: 6
 
     steps:
@@ -471,7 +471,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  #  v7.1.0
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf  #  v7.2.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile

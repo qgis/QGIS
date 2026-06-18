@@ -117,6 +117,73 @@ QString QgsOAPIFJson::findLink( const std::vector<QgsOAPIFJson::Link> &links, co
   return resultHref;
 }
 
+// Parse stuff like:
+//  <http://127.0.0.1:8000/ogcapi/collections/points/items.geojson?limit=1000&bbox=3.73157209270740253,47.85947790913954947,12.14601359659364022,51.56769206482390899>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json", <http://127.0.0.1:8000/ogcapi/collections/points/items.html?limit=1000&bbox=3.73157209270740253,47.85947790913954947,12.14601359659364022,51.56769206482390899>; rel="alternate"; title="This document as HTML"; type="text/html", <http://127.0.0.1:8000/ogcapi/collections/points/items.fgb?bbox=3.73157209270740253,47.85947790913954947,12.14601359659364022,51.56769206482390899&offset=1000&limit=1000>; rel="next"; title="Next page"; type="application/flatgeobuf"
+//
+// Split on commas, except when they are in double quotes or between <...>, and skip padding space before/after separator
+static QStringList splitLinkHeaderOnComma( const QString &header )
+{
+  QStringList parts;
+  QString currentPart;
+
+  bool inQuotes = false;
+  bool inAngle = false;
+  bool inEscape = false;
+
+  for ( QChar ch : header )
+  {
+    if ( inQuotes )
+    {
+      if ( inEscape )
+      {
+        inEscape = false;
+      }
+      else if ( ch == '"' )
+      {
+        inQuotes = false;
+      }
+      else if ( ch == '\\' )
+      {
+        inEscape = true;
+      }
+      currentPart += ch;
+    }
+    else if ( ch == '"' )
+    {
+      inQuotes = true;
+      currentPart += ch;
+    }
+    else if ( inAngle )
+    {
+      if ( ch == '>' )
+      {
+        inAngle = false;
+      }
+      currentPart += ch;
+    }
+    else if ( ch == '<' )
+    {
+      inAngle = true;
+      currentPart += ch;
+    }
+    else if ( ch == ',' )
+    {
+      parts << currentPart.trimmed();
+      currentPart.clear();
+    }
+    else
+    {
+      currentPart += ch;
+    }
+  }
+
+  currentPart = currentPart.trimmed();
+  if ( !currentPart.isEmpty() )
+    parts << currentPart;
+
+  return parts;
+}
+
 QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHeaderPair> &responseHeaders, const QString &formatType )
 {
   QString nextUrl;
@@ -126,10 +193,12 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
     {
       // Parse stuff like:
       //  <https://ogc-api.nrw.de/lika/v1/collections/flurstueck/items?f=html>; rel="alternate"; title="This document as HTML"; type="text/html", <https://ogc-api.nrw.de/lika/v1/collections/flurstueck/items?f=fgb&offset=10>; rel="next"; title="Next page"; type="application/flatgeobuf"
+      // Note that QgsNetworkReply::rawHeaderPairs() folds multiple link values
+      // in a pseudo-single one, with values separated by commas.
+      // Cf https://doc.qt.io/archives/qt-6.9/qnetworkreply.html#setRawHeader
 
       // Split on commas, except when they are in double quotes or between <...>, and skip padding space before/after separator
-      const thread_local QRegularExpression splitOnComma( R"(\s*,\s*(?=(?:[^"<]|"[^"]*"|<[^>]*>)*$))" );
-      const QStringList links = QString::fromUtf8( headerKeyValue.second ).split( splitOnComma );
+      const QStringList links = splitLinkHeaderOnComma( QString::fromUtf8( headerKeyValue.second ) );
       QString nextUrlCandidate, nextUrlCandidateJsonFGPlus, nextUrlCandidateJsonFG;
       for ( const QString &link : std::as_const( links ) )
       {

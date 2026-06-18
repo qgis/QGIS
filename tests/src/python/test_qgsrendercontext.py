@@ -948,6 +948,7 @@ class TestQgsRenderContext(QgisTestCase):
         ms.setOutputSize(QSize(1108, 1108))
         ms.setOutputDpi(300)
         ms.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        ms.setEllipsoid("WGS84")
         r = QgsRenderContext.fromMapSettings(ms)
 
         meters = r.convertFromPainterUnits(100, Qgis.RenderUnit.MetersInMapUnits)

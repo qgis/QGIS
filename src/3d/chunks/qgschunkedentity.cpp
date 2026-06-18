@@ -63,6 +63,10 @@ static bool hasAnyActiveChildren( QgsChunkNode *node, QList<QgsChunkNode *> &act
   return false;
 }
 
+static void addTileTraceEvent( QObject &self, QgsChunkNode &node, QgsEventTracing::EventType eventType, QString name )
+{
+  QgsEventTracing::addEvent( eventType, u"3D"_s, name + u" "_s + node.tileId().text(), u"%1 %2"_s.arg( self.objectName(), node.tileId().text() ) );
+}
 
 QgsChunkedEntity::QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitiveBudget, Qt3DCore::QNode *parent )
   : Qgs3DMapSceneEntity( mapSettings, parent )
@@ -218,6 +222,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 
+#ifdef QGISDEBUG
   QgsDebugMsgLevel(
     u"update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms"_s.arg( mActiveNodes.count() )
       .arg( enabled )
@@ -229,6 +234,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
       .arg( t.elapsed() ),
     2
   );
+#endif
 }
 
 
@@ -637,10 +643,9 @@ void QgsChunkedEntity::onActiveJobFinished()
     Q_ASSERT( loader );
     Q_ASSERT( node->loader() == loader );
 
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Load "_s + node->tileId().text(), node->tileId().text() );
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Load"_s, node->tileId().text() );
+    addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Load"_s );
 
-    QgsEventTracing::ScopedEvent e( "3D", QString( "create" ) );
+    QgsScopedEvent e( "3D", QString( "create" ) );
     // mark as loaded + create entity
     Qt3DCore::QEntity *entity = node->loader()->createEntity( this );
 
@@ -685,7 +690,7 @@ void QgsChunkedEntity::onActiveJobFinished()
       emit newEntityCreated( newEntity );
     }
 
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Update"_s, node->tileId().text() );
+    addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Update"_s );
     node->setUpdated();
   }
 
@@ -719,8 +724,7 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
 {
   if ( node->state() == QgsChunkNode::QueuedForLoad )
   {
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"Load"_s, node->tileId().text() );
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"Load "_s + node->tileId().text(), node->tileId().text() );
+    addTileTraceEvent( *this, *node, QgsEventTracing::AsyncBegin, u"Load"_s );
 
     QgsChunkLoader *loader = mChunkLoaderFactory->createChunkLoader( node );
     connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
@@ -730,7 +734,7 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
   }
   else if ( node->state() == QgsChunkNode::QueuedForUpdate )
   {
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"Update"_s, node->tileId().text() );
+    addTileTraceEvent( *this, *node, QgsEventTracing::AsyncBegin, u"Update"_s );
 
     node->setUpdating();
     connect( node->updater(), &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
@@ -756,15 +760,14 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob *job )
     // return node back to skeleton
     node->cancelLoading();
 
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Load "_s + node->tileId().text(), node->tileId().text() );
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Load"_s, node->tileId().text() );
+    addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Load"_s );
   }
   else if ( node->state() == QgsChunkNode::Updating )
   {
     // return node back to loaded state
     node->cancelUpdating();
 
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Update"_s, node->tileId().text() );
+    addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Update"_s );
   }
   else
   {

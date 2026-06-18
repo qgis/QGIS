@@ -108,6 +108,10 @@ email                : sherman at mrcc.com
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsMapCanvas::settingsCustomCoordinateCrs = new QgsSettingsEntryString( u"custom-coordinate-crs"_s, QgsSettingsTree::sTreeMap, QString() );
+const QgsSettingsEntryBool *QgsMapCanvas::settingsMainCanvasPreviewJobs
+  = new QgsSettingsEntryBool( u"main-canvas-preview-jobs"_s, QgsSettingsTree::sTreeRendering, true, u"Whether the main map canvas displays preview tiles while rendering"_s );
+const QgsSettingsEntryBool *QgsMapCanvas::settingsEnableRenderCaching
+  = new QgsSettingsEntryBool( u"enable-render-caching"_s, QgsSettingsTree::sTreeRendering, true, u"Whether map rendering uses a cache to speed up redraws"_s );
 
 /**
  * \ingroup gui

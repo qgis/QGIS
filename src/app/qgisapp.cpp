@@ -155,6 +155,8 @@ using namespace Qt::StringLiterals;
 
 #include "qgsdockablewidgethelper.h"
 
+#include "qgspersistentmenu.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -691,10 +693,9 @@ void QgisApp::emitCustomCrsValidation( QgsCoordinateReferenceSystem &srs )
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
 {
   Q_UNUSED( index )
-  QgsSettings settings;
-  switch ( settings.value( u"qgis/legendDoubleClickAction"_s, 0 ).toInt() )
+  switch ( settingsLegendDoubleClickAction->value() )
   {
-    case 0:
+    case Qgis::LegendLayerDoubleClickAction::LayerProperties:
     {
       //show properties
       if ( mLayerTreeView )
@@ -725,14 +726,14 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
       QgisApp::instance()->layerProperties();
       break;
     }
-    case 1:
+    case Qgis::LegendLayerDoubleClickAction::AttributeTable:
     {
       QgsSettings settings;
       QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll );
       QgisApp::instance()->attributeTable( initialMode );
       break;
     }
-    case 2:
+    case Qgis::LegendLayerDoubleClickAction::LayerStyling:
       mapStyleDock( true );
       break;
     default:
@@ -767,14 +768,13 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
 
 void QgisApp::toggleEventTracing()
 {
-  QgsSettings settings;
-  if ( !settings.value( u"qgis/enableEventTracing"_s, false ).toBool() )
+  if ( !settingsEnableEventTracing->value() )
   {
     // make sure the setting is available in Options > Advanced
-    if ( !settings.contains( u"qgis/enableEventTracing"_s ) )
-      settings.setValue( u"qgis/enableEventTracing"_s, false );
+    if ( !settingsEnableEventTracing->exists() )
+      settingsEnableEventTracing->setValue( false );
 
-    messageBar()->pushWarning( tr( "Event Tracing" ), tr( "Tracing is not enabled. Look for \"enableEventTracing\" in Options > Advanced." ) );
+    messageBar()->pushWarning( tr( "Event Tracing" ), tr( "Tracing is not enabled. Look for \"enable-event-tracing\" in Options > Advanced." ) );
     return;
   }
 
@@ -989,6 +989,31 @@ QgisApp *QgisApp::sInstance = nullptr;
 const QgisApp::AppOptions QgisApp::DEFAULT_OPTIONS = QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins ) | QgisApp::AppOption::EnablePython;
 
 const QgsSettingsEntryBool *QgisApp::settingsAskToDeleteFeatures = new QgsSettingsEntryBool( u"ask-to-delete-features"_s, QgsSettingsTree::sTreeApp, true );
+const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *QgisApp::settingsLegendDoubleClickAction = new QgsSettingsEntryEnumFlag<
+  Qgis::LegendLayerDoubleClickAction>( u"legend-double-click-action"_s, QgsSettingsTree::sTreeApp, Qgis::LegendLayerDoubleClickAction::LayerProperties, u"Action performed when double-clicking a layer in the legend"_s );
+const QgsSettingsEntryBool *QgisApp::settingsEnableEventTracing
+  = new QgsSettingsEntryBool( u"enable-event-tracing"_s, QgsSettingsTree::sTreeApp, false, u"Whether event tracing is enabled for performance diagnostics"_s );
+const QgsSettingsEntryBool *QgisApp::settingsHideSplash = new QgsSettingsEntryBool( u"hide-splash"_s, QgsSettingsTree::sTreeApp, false, u"Whether the splash screen is hidden at QGIS startup"_s );
+const QgsSettingsEntryBool *QgisApp::settingsMapTipsEnabled = new QgsSettingsEntryBool( u"enabled"_s, QgsSettingsTree::sTreeMapTips, false, u"Whether map tips are enabled"_s );
+const QgsSettingsEntryInteger *QgisApp::settingsMapTipsDelay = new QgsSettingsEntryInteger( u"delay"_s, QgsSettingsTree::sTreeMapTips, 850, u"Delay in milliseconds before a map tip is displayed"_s );
+const QgsSettingsEntryBool *QgisApp::settingsAskToSaveProjectChanges
+  = new QgsSettingsEntryBool( u"ask-to-save-project-changes"_s, QgsSettingsTree::sTreeProject, true, u"Whether to ask the user to save project changes when closing"_s );
+const QgsSettingsEntryBool *QgisApp::settingsWarnOldProjectVersion
+  = new QgsSettingsEntryBool( u"warn-old-project-version"_s, QgsSettingsTree::sTreeProject, true, u"Whether to warn when opening a project saved with an older QGIS version"_s );
+const QgsSettingsEntryBool *QgisApp::settingsNewProjectDefault
+  = new QgsSettingsEntryBool( u"new-project-default"_s, QgsSettingsTree::sTreeProject, false, u"Whether new projects open from the default project template"_s );
+const QgsSettingsEntryInteger *QgisApp::settingsProjOpenAtLaunch
+  = new QgsSettingsEntryInteger( u"proj-open-at-launch"_s, QgsSettingsTree::sTreeProject, 0, u"Behavior when QGIS launches: 0=new project, 1=most recent, 2=welcome page, 3=specific project"_s );
+const QgsSettingsEntryString *QgisApp::settingsProjOpenAtLaunchPath
+  = new QgsSettingsEntryString( u"proj-open-at-launch-path"_s, QgsSettingsTree::sTreeProject, QString(), u"Path of the specific project to open at launch"_s );
+const QgsSettingsEntryBool *QgisApp::settingsProjOpenedOKAtLaunch
+  = new QgsSettingsEntryBool( u"project-opened-ok-at-launch"_s, QgsSettingsTree::sTreeProject, true, u"Whether the project specified to open at launch was opened successfully last time"_s );
+const QgsSettingsEntryBool *QgisApp::settingsShowScriptWarning
+  = new QgsSettingsEntryBool( u"show-script-warning"_s, QgsSettingsTree::sTreeApp, true, u"Whether to warn the user before running a Python script embedded in a project"_s );
+const QgsSettingsEntryBool *QgisApp::settingsDisplayWaylandWarning
+  = new QgsSettingsEntryBool( u"display-wayland-warning"_s, QgsSettingsTree::sTreeGui, true, u"Whether to show the warning dialog when running QGIS under Wayland"_s );
+const QgsSettingsEntryBool *QgisApp::settingsRestoreDefaultWindowState
+  = new QgsSettingsEntryBool( u"restore-default-window-state"_s, QgsSettingsTree::sTreeApp, false, u"Whether to restore the default window state on next QGIS startup"_s );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -1092,12 +1117,12 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
 
-  if ( !settings.value( u"qgis/main_canvas_preview_jobs"_s ).isValid() )
+  if ( !QgsMapCanvas::settingsMainCanvasPreviewJobs->exists() )
   {
     // So that it appears in advanced settings
-    settings.setValue( u"qgis/main_canvas_preview_jobs"_s, true );
+    QgsMapCanvas::settingsMainCanvasPreviewJobs->setValue( true );
   }
-  mMapCanvas->setPreviewJobsEnabled( settings.value( u"qgis/main_canvas_preview_jobs"_s, true ).toBool() );
+  mMapCanvas->setPreviewJobsEnabled( QgsMapCanvas::settingsMainCanvasPreviewJobs->value() );
   // record profiling time on the main canvas only
   mMapCanvas->mapSettings().setFlag( Qgis::MapSettingsFlag::RecordProfile );
 
@@ -1109,7 +1134,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   endProfile();
 
   // what type of project to auto-open
-  mProjOpen = settings.value( u"qgis/projOpenAtLaunch"_s, 0 ).toInt();
+  mProjOpen = settingsProjOpenAtLaunch->value();
 
   // a bar to warn the user with non-blocking messages
   startProfile( tr( "Message bar" ) );
@@ -1747,7 +1772,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   mMapTipsVisible = false;
   // This turns on the map tip if they where active in the last session
-  if ( settings.value( u"qgis/enableMapTips"_s, false ).toBool() )
+  if ( settingsMapTipsEnabled->value() )
   {
     toggleMapTips( true );
   }
@@ -1979,7 +2004,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   if ( QGuiApplication::platformName() == "wayland"_L1 )
   {
-    const bool displayWaylandWarning = settings.value( u"/UI/displayWaylandWarning"_s, true ).toBool();
+    const bool displayWaylandWarning = settingsDisplayWaylandWarning->value();
     if ( displayWaylandWarning )
     {
       const QString shortMessage = tr( "Wayland session detected: User experience will be degraded" );
@@ -2008,7 +2033,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
       QPushButton *ignoreButton = new QPushButton( tr( "Ignore" ) );
       connect( ignoreButton, &QPushButton::clicked, this, [this, messageWidget] {
-        QgsSettings().setValue( u"/UI/displayWaylandWarning"_s, false );
+        QgisApp::settingsDisplayWaylandWarning->setValue( false );
         messageBar()->popWidget( messageWidget );
       } );
       messageWidget->layout()->addWidget( ignoreButton );
@@ -2915,7 +2940,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
   canvas->enableAntiAliasing( QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
   double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
   canvas->setWheelFactor( zoomFactor );
-  canvas->setCachingEnabled( settings.value( u"qgis/enable_render_caching"_s, true ).toBool() );
+  canvas->setCachingEnabled( QgsMapCanvas::settingsEnableRenderCaching->value() );
   canvas->setParallelRenderingEnabled( settings.value( u"qgis/parallel_rendering"_s, true ).toBool() );
   canvas->setMapUpdateInterval( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
   canvas->setSegmentationTolerance( QgsSettingsRegistryGui::settingsSegmentationTolerance->value() );
@@ -3422,9 +3447,9 @@ void QgisApp::createMenus()
   // Layer menu
 
   // Panel and Toolbar Submenus
-  mPanelMenu = new QMenu( tr( "Panels" ), this );
+  mPanelMenu = new QgsPersistentMenu( tr( "Panels" ), this );
   mPanelMenu->setObjectName( u"mPanelMenu"_s );
-  mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
+  mToolbarMenu = new QgsPersistentMenu( tr( "Toolbars" ), this );
   mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
 
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
@@ -5152,7 +5177,7 @@ void QgisApp::createMapTips()
   // set the delay to 0.850 seconds or time defined in the Settings
   // timer will be started next time the mouse moves
   QgsSettings settings;
-  int timerInterval = settings.value( u"qgis/mapTipsDelay"_s, 850 ).toInt();
+  int timerInterval = settingsMapTipsDelay->value();
   mpMapTipsTimer->setInterval( timerInterval );
   mpMapTipsTimer->setSingleShot( true );
 
@@ -5440,7 +5465,7 @@ void QgisApp::updateProjectFromTemplates()
   }
 
   // add <blank> entry, which loads a blank template (regardless of "default template")
-  if ( settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+  if ( settingsNewProjectDefault->value() )
     mProjectFromTemplateMenu->addAction( tr( "< Blank >" ) );
 }
 
@@ -5942,10 +5967,10 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // don't open template if last auto-opening of a project failed
   if ( !forceBlank )
   {
-    forceBlank = !settings.value( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) ).toBool();
+    forceBlank = !settingsProjOpenedOKAtLaunch->value();
   }
 
-  if ( !forceBlank && settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+  if ( !forceBlank && settingsNewProjectDefault->value() )
   {
     fileNewFromDefaultTemplate();
   }
@@ -6055,11 +6080,11 @@ void QgisApp::fileOpenAfterLaunch()
   }
   if ( mProjOpen == 2 ) // specific project
   {
-    projPath = settings.value( u"qgis/projOpenAtLaunchPath"_s ).toString();
+    projPath = settingsProjOpenAtLaunchPath->value();
   }
 
   // whether last auto-opening of a project failed
-  bool projOpenedOK = settings.value( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) ).toBool();
+  bool projOpenedOK = settingsProjOpenedOKAtLaunch->value();
 
   // notify user if last attempt at auto-opening a project failed
 
@@ -6071,10 +6096,10 @@ void QgisApp::fileOpenAfterLaunch()
   if ( !projOpenedOK )
   {
     // only show the following 'auto-open project failed' message once, at launch
-    settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) );
+    settingsProjOpenedOKAtLaunch->setValue( true );
 
     // set auto-open project back to 'New' to avoid re-opening bad project
-    settings.setValue( u"qgis/projOpenAtLaunch"_s, QVariant( 0 ) );
+    settingsProjOpenAtLaunch->setValue( 0 );
 
     visibleMessageBar()->pushMessage( autoOpenMsgTitle, tr( "Failed to open: %1" ).arg( projPath ), Qgis::MessageLevel::Critical );
     return;
@@ -6083,7 +6108,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( mProjOpen == 3 ) // new project
   {
     // open default template, if defined
-    if ( settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+    if ( settingsNewProjectDefault->value() )
     {
       fileNewFromDefaultTemplate();
     }
@@ -6107,7 +6132,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( projectIsFromStorage || QFile::exists( projPath ) )
   {
     // set flag to check on next app launch if the following project opened OK
-    settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( false ) );
+    settingsProjOpenedOKAtLaunch->setValue( false );
 
     if ( !addProject( projPath ) )
     {
@@ -6127,8 +6152,7 @@ void QgisApp::fileOpenAfterLaunch()
 
 void QgisApp::fileOpenedOKAfterLaunch()
 {
-  QgsSettings settings;
-  settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) );
+  settingsProjOpenedOKAtLaunch->setValue( true );
 }
 
 void QgisApp::fileNewFromTemplateAction( QAction *qAction )
@@ -6851,6 +6875,7 @@ void QgisApp::dxfExport()
 
     QgsMapSettings settings( mapCanvas()->mapSettings() );
     settings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( d.mapTheme() ) );
+
     dxfExport.setMapSettings( settings );
     dxfExport.addLayers( d.layers() );
     dxfExport.setSymbologyScale( d.symbologyScale() );
@@ -7003,7 +7028,7 @@ void QgisApp::runScript( const QString &filePath )
     return;
 
   QgsSettings settings;
-  bool showScriptWarning = settings.value( u"UI/showScriptWarning"_s, true ).toBool();
+  bool showScriptWarning = settingsShowScriptWarning->value();
 
   QMessageBox msgbox;
   if ( showScriptWarning )
@@ -7017,7 +7042,7 @@ void QgisApp::runScript( const QString &filePath )
     QCheckBox *cb = new QCheckBox( tr( "Don't show this again." ) );
     msgbox.setCheckBox( cb );
     msgbox.exec();
-    settings.setValue( u"UI/showScriptWarning"_s, !msgbox.checkBox()->isChecked() );
+    settingsShowScriptWarning->setValue( !msgbox.checkBox()->isChecked() );
   }
 
   if ( !showScriptWarning || msgbox.result() == QMessageBox::Yes )
@@ -10716,7 +10741,7 @@ void QgisApp::toggleMapTips( bool enabled )
 {
   mMapTipsVisible = enabled;
   // Store if maptips are active
-  QgsSettings().setValue( u"/qgis/enableMapTips"_s, mMapTipsVisible );
+  QgisApp::settingsMapTipsEnabled->setValue( mMapTipsVisible );
 
   // if off, stop the timer
   if ( !mMapTipsVisible )
@@ -12604,7 +12629,7 @@ void QgisApp::customize()
 
   if ( !mCustomizationDialog )
   {
-    mCustomizationDialog.reset( new QgsCustomizationDialog( this ) );
+    mCustomizationDialog = make_qobject_unique<QgsCustomizationDialog>( this );
   }
 
   mCustomizationDialog->show();
@@ -13430,7 +13455,6 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
     connect( profileWidget, &QgsElevationProfileWidget::profileDataChanged, widget, &Qgs3DMapCanvasWidget::setProfileData );
     connect( profileWidget, &QgsElevationProfileWidget::profileDataRemoved, widget, &Qgs3DMapCanvasWidget::removeProfileData );
     connect( profileWidget, &QgsElevationProfileWidget::profileCursorMoved, widget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
-    profileWidget->updateCurveIn3D();
   }
 
   return widget;
@@ -13613,13 +13637,25 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     }
 
     // new scenes default to a single directional light
-    map->setLightSources( QList<QgsLightSource *>() << new QgsDirectionalLightSettings() );
+    auto directionalLight = std::make_unique< QgsDirectionalLightSettings >();
+    const QString lightId = directionalLight->id();
+    map->setLightSources( { directionalLight.release() } );
+    // set this light to be the default shadow source, but don't enable shadows by default
+    QgsShadowSettings shadow = map->shadowSettings();
+    shadow.setLightSource( lightId );
+    map->setShadowSettings( shadow );
+
     map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
     map->setRendererUsage( Qgis::RendererUsage::View );
 
     connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map] { map->setTransformContext( QgsProject::instance()->transformContext() ); } );
 
     canvasWidget->setMapSettings( map );
+
+    for ( QgsElevationProfileWidget *profileWidget : std::as_const( mElevationProfileWidgets ) )
+    {
+      profileWidget->updateCurveIn3D();
+    }
 
     // configure initial position of the camera (it should approximate the current 2D view)
     switch ( sceneMode )
@@ -13663,9 +13699,11 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
       }
     }
 
-    const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
-    if ( canvasWidget->mapCanvas3D()->cameraController() )
-      canvasWidget->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
+    if ( QgsCameraController *cameraController = canvasWidget->mapCanvas3D()->cameraController() )
+    {
+      const Qgis::VerticalAxisInversionFlags axisInversion = settings.flagValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversionFlags(), QgsSettings::App );
+      cameraController->setVerticalAxisInversion( axisInversion );
+    }
 
     QDomImplementation DomImplementation;
     QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
@@ -13732,7 +13770,7 @@ bool QgisApp::saveDirty()
   QgsCanvasRefreshBlocker refreshBlocker;
 
   QgsSettings settings;
-  bool askThem = settings.value( u"qgis/askToSaveProjectChanges"_s, true ).toBool();
+  bool askThem = settingsAskToSaveProjectChanges->value();
 
   if ( askThem && QgsProject::instance()->isDirty() )
   {
@@ -16411,7 +16449,7 @@ void QgisApp::projectVersionMismatchOccurred( const QString &projectVersion )
   {
     QgsSettings settings;
 
-    if ( settings.value( u"qgis/warnOldProjectVersion"_s, QVariant( true ) ).toBool() )
+    if ( settingsWarnOldProjectVersion->value() )
     {
       QString smalltext = tr(
                             "This project file was saved by QGIS version %1."

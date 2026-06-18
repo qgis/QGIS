@@ -44,5 +44,6 @@
         <file>shaders/shadows.inc.frag</file>
         <file>shaders/bloom_downsample.frag</file>
         <file>shaders/bloom_upsample.frag</file>
+        <file>shaders/metalroughDataDefined.vert</file>
     </qresource>
 </RCC>

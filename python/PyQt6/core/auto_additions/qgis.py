@@ -1033,6 +1033,9 @@ QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embe
 QgsVectorDataProvider.CacheData = Qgis.VectorProviderCapability.CacheData
 QgsVectorDataProvider.CacheData.is_monkey_patched = True
 QgsVectorDataProvider.CacheData.__doc__ = "Provider caches source data and should force provider data reloads when dependent layers are committed \n.. versionadded:: 4.2"
+QgsVectorDataProvider.ReadFieldDomains = Qgis.VectorProviderCapability.ReadFieldDomains
+QgsVectorDataProvider.ReadFieldDomains.is_monkey_patched = True
+QgsVectorDataProvider.ReadFieldDomains.__doc__ = "Provider can read field domains and their properties \n.. versionadded:: 4.2"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -1082,6 +1085,10 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
   .. versionadded:: 3.20
 
 * ``CacheData``: Provider caches source data and should force provider data reloads when dependent layers are committed
+
+  .. versionadded:: 4.2
+
+* ``ReadFieldDomains``: Provider can read field domains and their properties
 
   .. versionadded:: 4.2
 
@@ -7735,6 +7742,36 @@ Qgis.PlotToolFlags = lambda flags=0: Qgis.PlotToolFlag(flags)
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Map3DDebugFlag.ShowTerrainBoundingBoxes.__doc__ = "Displays bounding boxes of terrain tiles."
+Qgis.Map3DDebugFlag.ShowTerrainTileInfo.__doc__ = "Displays extra tile info on top of terrain tiles."
+Qgis.Map3DDebugFlag.ShowCameraViewCenter.__doc__ = "Shows the camera's view center as a sphere."
+Qgis.Map3DDebugFlag.ShowCameraRotationCenter.__doc__ = "Shows the camera's rotation center as a sphere."
+Qgis.Map3DDebugFlag.ShowLightSourceOrigins.__doc__ = "Shows the light source origins as a sphere."
+Qgis.Map3DDebugFlag.ShowFPS.__doc__ = "Shows the frames per second (FPS)."
+Qgis.Map3DDebugFlag.ShowDebugPanel.__doc__ = "Shows the debug panel next to the map."
+Qgis.Map3DDebugFlag.__doc__ = """Flags that control debug options for 3D maps.
+
+.. warning::
+
+   These are debugging options only, and are not considered part of stable API.
+
+.. versionadded:: 4.2
+
+* ``ShowTerrainBoundingBoxes``: Displays bounding boxes of terrain tiles.
+* ``ShowTerrainTileInfo``: Displays extra tile info on top of terrain tiles.
+* ``ShowCameraViewCenter``: Shows the camera's view center as a sphere.
+* ``ShowCameraRotationCenter``: Shows the camera's rotation center as a sphere.
+* ``ShowLightSourceOrigins``: Shows the light source origins as a sphere.
+* ``ShowFPS``: Shows the frames per second (FPS).
+* ``ShowDebugPanel``: Shows the debug panel next to the map.
+
+"""
+# --
+Qgis.Map3DDebugFlag.baseClass = Qgis
+Qgis.Map3DDebugFlags = lambda flags=0: Qgis.Map3DDebugFlag(flags)
+Qgis.Map3DDebugFlags.baseClass = Qgis
+Map3DDebugFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
 Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
 Qgis.Point3DShape.Cone.__doc__ = "Cone"
@@ -7852,12 +7889,17 @@ Qgis.ShadowQuality.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
+Qgis.LightSourceType.Sun.__doc__ = "Sun based light source \n.. versionadded:: 4.2"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 
 .. versionadded:: 3.26
 
 * ``Point``: Point light source
 * ``Directional``: Directional light source
+* ``Sun``: Sun based light source
+
+  .. versionadded:: 4.2
+
 
 """
 # --
@@ -7928,20 +7970,61 @@ Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
 # --
 Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
-Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
-Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements"
+Qgis.VerticalAxisInversion.WhenRotatingDragging.__doc__ = "When rotating camera around self with mouse captured \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenRotatingCaptured.__doc__ = "When rotating camera around self with mouse button pressed \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenPivoting.__doc__ = "When pivoting camera around point in terrain \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements \n.. deprecated:: 4.2"
 Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D views.
 
 .. versionadded:: 3.30
 
+* ``WhenRotatingDragging``: When rotating camera around self with mouse captured
+
+  .. versionadded:: 4.2
+
+* ``WhenRotatingCaptured``: When rotating camera around self with mouse button pressed
+
+  .. versionadded:: 4.2
+
+* ``WhenPivoting``: When pivoting camera around point in terrain
+
+  .. versionadded:: 4.2
+
 * ``Never``: Never invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 * ``WhenDragging``: Invert vertical axis movements when dragging in first person modes
+
+  .. deprecated:: 4.2
+
 * ``Always``: Always invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 
 """
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
+Qgis.VerticalAxisInversionFlags = lambda flags=0: Qgis.VerticalAxisInversion(flags)
+Qgis.VerticalAxisInversionFlags.baseClass = Qgis
+VerticalAxisInversionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ToneMappingMethod.Clamp.__doc__ = "Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail."
+Qgis.ToneMappingMethod.Aces.__doc__ = "Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness."
+Qgis.ToneMappingMethod.__doc__ = """Defines the method used to map High Dynamic Range (HDR) scene colors
+to the Standard Dynamic Range (SDR) of a display monitor.
+
+.. versionadded:: 4.2
+
+* ``Clamp``: Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail.
+* ``Aces``: Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness.
+
+"""
+# --
+Qgis.ToneMappingMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.Export3DSceneFormat.Obj.__doc__ = "Wavefront OBJ format."
 Qgis.Export3DSceneFormat.StlAscii.__doc__ = "STL ascii format."
@@ -8501,6 +8584,21 @@ Qgis.LayerTreeInsertionMethod.__doc__ = """Layer tree insertion methods
 """
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LegendLayerDoubleClickAction.LayerProperties.__doc__ = "Open the layer properties dialog"
+Qgis.LegendLayerDoubleClickAction.AttributeTable.__doc__ = "Open the attribute table"
+Qgis.LegendLayerDoubleClickAction.LayerStyling.__doc__ = "Open the layer styling dock"
+Qgis.LegendLayerDoubleClickAction.__doc__ = """Action performed when double-clicking a layer in the legend.
+
+.. versionadded:: 4.0
+
+* ``LayerProperties``: Open the layer properties dialog
+* ``AttributeTable``: Open the attribute table
+* ``LayerStyling``: Open the layer styling dock
+
+"""
+# --
+Qgis.LegendLayerDoubleClickAction.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LayerTreeFilterFlag.SkipVisibilityCheck.__doc__ = "If set, the standard visibility check should be skipped"
 Qgis.LayerTreeFilterFlag.__doc__ = """Layer tree filter flags.
@@ -12422,6 +12520,39 @@ Qgis.RasterBandStatistics = lambda flags=0: Qgis.RasterBandStatistic(flags)
 Qgis.RasterBandStatistics.baseClass = Qgis
 RasterBandStatistics = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.SensorThingsVersion.Version1_1.__doc__ = "1.1"
+Qgis.SensorThingsVersion.Version2_0.__doc__ = "2.0"
+Qgis.SensorThingsVersion.__doc__ = """OGC SensorThings API versions.
+
+.. versionadded:: 4.2
+
+* ``Version1_1``: 1.1
+* ``Version2_0``: 2.0
+
+"""
+# --
+Qgis.SensorThingsVersion.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SensorThingsExtension.MultiDatastream.__doc__ = "MultiDatastream extension"
+Qgis.SensorThingsExtension.SensingExtensionObservationsMeasurements.__doc__ = "Sensing Extension (Observations & Measurements)"
+Qgis.SensorThingsExtension.SensingExtensionSampling.__doc__ = "Sensing Extension (Sampling)"
+Qgis.SensorThingsExtension.SensingExtensionRelations.__doc__ = "Sensing Extension (Relations)"
+Qgis.SensorThingsExtension.__doc__ = """OGC SensorThings extensions.
+
+.. versionadded:: 4.2
+
+* ``MultiDatastream``: MultiDatastream extension
+* ``SensingExtensionObservationsMeasurements``: Sensing Extension (Observations & Measurements)
+* ``SensingExtensionSampling``: Sensing Extension (Sampling)
+* ``SensingExtensionRelations``: Sensing Extension (Relations)
+
+"""
+# --
+Qgis.SensorThingsExtension.baseClass = Qgis
+Qgis.SensorThingsExtensions = lambda flags=0: Qgis.SensorThingsExtension(flags)
+Qgis.SensorThingsExtensions.baseClass = Qgis
+SensorThingsExtensions = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SensorThingsEntity.Invalid.__doc__ = "An invalid/unknown entity"
 Qgis.SensorThingsEntity.Thing.__doc__ = "A Thing is an object of the physical world (physical things) or the information world (virtual things) that is capable of being identified and integrated into communication networks"
 Qgis.SensorThingsEntity.Location.__doc__ = "A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing"
@@ -12432,6 +12563,20 @@ Qgis.SensorThingsEntity.ObservedProperty.__doc__ = "An ObservedProperty specifie
 Qgis.SensorThingsEntity.Observation.__doc__ = "An Observation is the act of measuring or otherwise determining the value of a property"
 Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ = "In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed"
 Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\". \n.. versionadded:: 3.38"
+Qgis.SensorThingsEntity.Feature.__doc__ = "A Feature is an abstraction of real-world phenomena. It acts as an independent entity that can represent the proximate feature (e.g., a physical sample) or the ultimate real-world object being observed, replacing the v1.1 FeatureOfInterest. \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.FeatureType.__doc__ = "A FeatureType provides the classification and schema definition for a Feature, describing the common properties and structure expected for a specific category of Features. \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Deployment.__doc__ = "A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ObservingProcedure.__doc__ = "An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Sampling.__doc__ = "The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.SamplingProcedure.__doc__ = "The SamplingProcedure describes the method, or procedure, that the Sampler uses to create Samples. A Sampler must implement at least one SamplingProcedure, but can implement many. A Sample is created using one SamplingProcedure, though this SamplingProcedure may not be known. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Sampler.__doc__ = "The Sampler describes the machine, device, human or other entity that executed the sampling procedure to produce a sample. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.PreparationStep.__doc__ = "When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.PreparationProcedure.__doc__ = "After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ThingRelation.__doc__ = "A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.RelationRole.__doc__ = "The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.FeatureRelation.__doc__ = "A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.DatastreamRelation.__doc__ = "A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ObservationRelation.__doc__ = "A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
 Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 
 .. versionadded:: 3.36
@@ -12448,6 +12593,62 @@ Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 * ``MultiDatastream``: A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\".
 
   .. versionadded:: 3.38
+
+* ``Feature``: A Feature is an abstraction of real-world phenomena. It acts as an independent entity that can represent the proximate feature (e.g., a physical sample) or the ultimate real-world object being observed, replacing the v1.1 FeatureOfInterest.
+
+  .. versionadded:: 4.2
+
+* ``FeatureType``: A FeatureType provides the classification and schema definition for a Feature, describing the common properties and structure expected for a specific category of Features.
+
+  .. versionadded:: 4.2
+
+* ``Deployment``: A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\".
+
+  .. versionadded:: 4.2
+
+* ``ObservingProcedure``: An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\".
+
+  .. versionadded:: 4.2
+
+* ``Sampling``: The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``SamplingProcedure``: The SamplingProcedure describes the method, or procedure, that the Sampler uses to create Samples. A Sampler must implement at least one SamplingProcedure, but can implement many. A Sample is created using one SamplingProcedure, though this SamplingProcedure may not be known. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``Sampler``: The Sampler describes the machine, device, human or other entity that executed the sampling procedure to produce a sample. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``PreparationStep``: When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``PreparationProcedure``: After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``ThingRelation``: A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``RelationRole``: The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``FeatureRelation``: A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``DatastreamRelation``: A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``ObservationRelation``: A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
 
 
 """

@@ -103,6 +103,8 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
     QString mHtmlLog;
 };
 
+Q_DECLARE_METATYPE( QgsProcessingModelChildAlgorithmResult );
+
 /**
  * \ingroup core
  * \brief Encapsulates the results of running a Processing model.

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
+    <width>465</width>
     <height>633</height>
    </rect>
   </property>
@@ -33,7 +33,7 @@
           <string>...</string>
          </property>
          <property name="popupMode">
-          <enum>QToolButton::InstantPopup</enum>
+          <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
          </property>
         </widget>
        </item>
@@ -47,7 +47,7 @@
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -64,7 +64,7 @@
    <item>
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page_2"/>
      <widget class="QWidget" name="page">
@@ -280,7 +280,7 @@
          <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -364,10 +364,10 @@
             <bool>true</bool>
            </property>
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
+            <enum>Qt::Orientation::Vertical</enum>
            </property>
            <property name="tickPosition">
-            <enum>QSlider::NoTicks</enum>
+            <enum>QSlider::TickPosition::NoTicks</enum>
            </property>
            <property name="tickInterval">
             <number>2</number>
@@ -377,7 +377,7 @@
          <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -483,6 +483,140 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="mPageSunLight">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="1" column="1">
+        <widget class="QgsColorButton" name="mSunColorButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_18">
+         <property name="text">
+          <string>Intensity</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_21">
+         <property name="text">
+          <string>Atmospheric pressure (hPa)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>Color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QgsDateTimeEdit" name="mSunTimeWidget">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::TimeSpec::LocalTime</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_22">
+         <property name="text">
+          <string>Reference elevation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QgsDoubleSpinBox" name="mSunTemperatureSpin">
+         <property name="suffix">
+          <string>°</string>
+         </property>
+         <property name="minimum">
+          <double>-273.149999999999977</double>
+         </property>
+         <property name="maximum">
+          <double>1000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="mLabelSunTime">
+         <property name="text">
+          <string>Reference time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QgsDoubleSpinBox" name="mSunIntensitySpin">
+         <property name="decimals">
+          <number>2</number>
+         </property>
+         <property name="maximum">
+          <double>999999.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_20">
+         <property name="text">
+          <string>Temperature (Celsius)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QgsDoubleSpinBox" name="mSunPressureSpin">
+         <property name="suffix">
+          <string/>
+         </property>
+         <property name="maximum">
+          <double>5000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QgsDoubleSpinBox" name="mSunElevationSpin">
+         <property name="suffix">
+          <string/>
+         </property>
+         <property name="maximum">
+          <double>360.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -498,6 +632,11 @@
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

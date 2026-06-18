@@ -731,7 +731,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   mCaptureCurveFromFeatureMapTool->setAction( mCaptureCurveFromFeatureAction );
   connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, [this]( const QgsGeometry &curve ) { setProfileCurve( curve, true ); } );
 
-  mMapPointRubberBand.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Point ) );
+  mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Point );
   mMapPointRubberBand->setZValue( 1000 );
   mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
   mMapPointRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 8 ) );
@@ -1372,7 +1372,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
 {
   if ( !mRubberBand )
   {
-    mRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Line ) );
+    mRubberBand = make_qobject_unique<QgsRubberBand>( mMainCanvas, Qgis::GeometryType::Line );
     mRubberBand->setZValue( 1000 );
     mRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
 
@@ -1425,7 +1425,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
   {
     if ( !mToleranceRubberBand )
     {
-      mToleranceRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Polygon ) );
+      mToleranceRubberBand = make_qobject_unique<QgsRubberBand>( mMainCanvas, Qgis::GeometryType::Polygon );
       mToleranceRubberBand->setZValue( 999 );
 
       QgsSymbolLayerList layers;

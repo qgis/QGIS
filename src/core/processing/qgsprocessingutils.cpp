@@ -39,6 +39,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectortilelayer.h"
 
+#include <QImageWriter>
 #include <QRegularExpression>
 #include <QString>
 #include <QTextCodec>
@@ -1364,6 +1365,18 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   return s;
 }
 
+int QgsProcessingUtils::parameterDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name )
+{
+  int index = 0;
+  for ( const QgsProcessingParameterDefinition *def : algorithm->parameterDefinitions() )
+  {
+    if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
+      return index;
+    index++;
+  }
+  return -1;
+}
+
 int QgsProcessingUtils::outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name )
 {
   int index = 0;
@@ -1580,7 +1593,6 @@ QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const Qgs
   return outFields;
 }
 
-
 QList<int> QgsProcessingUtils::fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields )
 {
   QList<int> indices;
@@ -1602,7 +1614,6 @@ QList<int> QgsProcessingUtils::fieldNamesToIndices( const QStringList &fieldName
   }
   return indices;
 }
-
 
 QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const QgsFields &fields )
 {
@@ -1788,6 +1799,53 @@ QString QgsProcessingUtils::resolveDefaultEncoding( const QString &defaultEncodi
   }
 
   return defaultEncoding;
+}
+
+QStringList QgsProcessingUtils::supportedImageFormats()
+{
+  const QList<QByteArray> supportedFormats = QImageWriter::supportedImageFormats();
+  QStringList formats;
+  formats.reserve( supportedFormats.size() );
+
+  for ( const QByteArray &format : supportedFormats )
+  {
+    if ( format == "svg" )
+    {
+      continue;
+    }
+    formats.append( QString::fromUtf8( format ).toUpper() );
+  }
+
+  std::sort( formats.begin(), formats.end(), []( const QString &a, const QString &b ) -> bool {
+    if ( a == "PNG"_L1 )
+    {
+      return true;
+    }
+    if ( b == "PNG"_L1 )
+    {
+      return false;
+    }
+    return a.localeAwareCompare( b ) < 0;
+  } );
+
+  return formats;
+}
+
+QString QgsProcessingUtils::supportedImageFileFilters()
+{
+  const QStringList formats = supportedImageFormats();
+  QStringList fileFilters;
+  fileFilters.reserve( formats.size() );
+
+  for ( const QString &format : formats )
+  {
+    const QString longName = format + QObject::tr( " format" );
+    const QString glob = u"*."_s + format;
+
+    fileFilters.append( u"%1 (%2 %3)"_s.arg( longName, glob.toLower(), glob ) );
+  }
+
+  return fileFilters.join( ";;"_L1 );
 }
 
 //

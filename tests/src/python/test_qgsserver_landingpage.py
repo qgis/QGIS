@@ -41,7 +41,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
     """QGIS Server Landing Page tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    # regeregenerate_api_reference = True
+    regenerate_api_reference = False
 
     @classmethod
     def setUpClass(cls):
@@ -120,7 +120,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         actual_projects = {p["title"]: p for p in actual_j["projects"]}
         expected_projects = {p["title"]: p for p in expected_j["projects"]}
 
-        if self.regeregenerate_api_reference:
+        if self.regenerate_api_reference:
             # Try to change timestamp
             try:
                 content = actual.split("\n")

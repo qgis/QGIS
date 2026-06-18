@@ -642,7 +642,12 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
 
   if ( !mTextFontFound )
   {
-    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( mTextFontFamily ) );
+    // don't show warning for MS Shell Dlg font -- if someone is using that, then they don't care
+    // at all about the appearance of their map
+    if ( mTextFontFamily.compare( "MS Shell Dlg"_L1, Qt::CaseInsensitive ) != 0 && mTextFontFamily.compare( "MS Shell Dlg 2"_L1, Qt::CaseInsensitive ) != 0 )
+    {
+      context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( mTextFontFamily ) );
+    }
   }
 
   if ( textStyleElem.hasAttribute( u"fontSize"_s ) )

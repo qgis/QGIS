@@ -125,13 +125,25 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     //! Data definable properties.
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractMaterialSettings, Property ) : int
     {
-      Diffuse, //!< Diffuse color
-      Ambient, //!< Ambient color (phong material)
-      Warm,    //!< Warm color (gooch material)
-      Cool,    //!< Cool color (gooch material)
-      Specular //!< Specular color
+      Diffuse,         //!< Diffuse color (phong material)
+      Ambient,         //!< Ambient color (phong material)
+      Warm,            //!< Warm color (gooch material)
+      Cool,            //!< Cool color (gooch material)
+      Specular,        //!< Specular color
+      BaseColor,       //!< Base color (metal-rough material) \since QGIS 4.2
+      EmissionColor,   //!< Emission color (metal-rough material) \since QGIS 4.2
+      TextureScale,    //!< Texture scale \since QGIS 4.2
+      TextureRotation, //!< Texture rotation \since QGIS 4.2
+      TextureOffset,   //!< Texture offset \since QGIS 4.2
     };
     // *INDENT-ON*
+
+    /**
+     * Returns the set of data-defined properties supported by this material.
+     *
+     * \since QGIS 4.2
+     */
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
 
     /**
      * Sets the material property collection, used for data defined overrides.
