@@ -294,7 +294,7 @@ QUrlQuery QgsWfs3AbstractItemsHandler::removeOffsetAndLimit( const QUrlQuery &ur
   // Since headers are stored in a case sensitive map,
   // make sure we are clearing the correct case if any
   QUrlQuery query( urlQuery );
-  const QList<std::pair<QString, QString>> items = query.queryItems();
+  const QList<QPair<QString, QString>> items = query.queryItems();
   for ( const auto &pair : std::as_const( items ) )
   {
     if ( pair.first.compare( QLatin1String( "offset" ), Qt::CaseInsensitive ) == 0 )
