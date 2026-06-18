@@ -33,7 +33,7 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
 {
   // Case insensitive check
   const QUrlQuery urlQuery( context.request()->url() );
-  const QList<std::pair<QString, QString>> items = urlQuery.queryItems();
+  const QList<QPair<QString, QString>> items = urlQuery.queryItems();
   QString nameInQueryString;
   QVariant value;
   for ( const auto &pair : std::as_const( items ) )
