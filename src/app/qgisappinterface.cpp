@@ -1263,6 +1263,10 @@ QAction *QgisAppInterface::actionToggleFullScreen()
 {
   return qgis->actionToggleFullScreen();
 }
+QAction *QgisAppInterface::actionNew3DMapCanvas()
+{
+  return qgis->actionNew3DMapCanvas();
+}
 QAction *QgisAppInterface::actionOptions()
 {
   return qgis->actionOptions();
