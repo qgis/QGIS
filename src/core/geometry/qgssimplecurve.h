@@ -100,11 +100,9 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
   /**
    * Returns the point at the specified index.
    *
-   * - Indexes can be less than 0, in which case they correspond to positions from the end of the simple curve. E.g. an index of -1
+   * Indexes can be less than 0, in which case they correspond to positions from the end of the simple curve. E.g. an index of -1 corresponds to the last point in the simple curve.
    *
-   * corresponds to the last point in the simple curve.
-   *
-   * - \throws IndexError if no point with the specified index exists.
+   * \throws IndexError if no point with the specified index exists.
    */
   SIP_PYOBJECT pointN( int i ) const SIP_TYPEHINT( QgsPoint );
   % MethodCode
@@ -269,11 +267,9 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
   /**
    * Returns the x-coordinate of the specified node in the simple curve.
    *
-   * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+   * Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1 corresponds to the last point in the curve.
    *
-   * corresponds to the last point in the curve.
-   *
-   * - \throws IndexError if no point with the specified index exists.
+   * \throws IndexError if no point with the specified index exists.
    */
   double xAt( int index ) const override;
   % MethodCode
@@ -302,11 +298,9 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
       /**
        * Returns the y-coordinate of the specified node in the simple curve.
        *
-       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       * Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1 corresponds to the last point in the curve.
        *
-       * corresponds to the last point in the curve.
-       *
-       * - \throws IndexError if no point with the specified index exists.
+       * \throws IndexError if no point with the specified index exists.
        */
       double yAt( int index ) const override;
   % MethodCode
@@ -349,12 +343,10 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
       /**
        * Returns the z-coordinate of the specified node in the simple curve.
        *
-       * - If the SimpleCurve does not have a z-dimension then ``NaN`` will be returned.
-       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       * If the SimpleCurve does not have a z-dimension then ``NaN`` will be returned.
+       * Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1 corresponds to the last point in the curve.
        *
-       * corresponds to the last point in the curve.
-       *
-       * - \throws IndexError if no point with the specified index exists.
+       * \throws IndexError if no point with the specified index exists.
        */
       double zAt( int index ) const override;
   % MethodCode
@@ -397,12 +389,10 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
       /**
        * Returns the m value of the specified node in the simple curve.
        *
-       * - If the SimpleCurve does not have m values then ``NaN`` will be returned.
-       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       * If the SimpleCurve does not have m values then ``NaN`` will be returned.
+       * Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1 corresponds to the last point in the curve.
        *
-       * corresponds to the last point in the curve.
-       *
-       * - \throws IndexError if no point with the specified index exists.
+       * \throws IndexError if no point with the specified index exists.
        */
       double mAt( int index ) const override;
   % MethodCode
@@ -440,12 +430,10 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
        * Sets the x-coordinate of the specified node in the simple curve.
        * The corresponding node must already exist in simple curve.
        *
-       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       * Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1 corresponds to the last point in the curve.
        *
-       * corresponds to the last point in the curve.
-       *
-       * - \throws IndexError if no point with the specified index exists.
-       * - \see xAt()
+       * \throws IndexError if no point with the specified index exists.
+       * \see xAt()
        */
       void setXAt( int index, double x );
   % MethodCode
@@ -483,12 +471,10 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
        * Sets the y-coordinate of the specified node in the simple curve.
        * The corresponding node must already exist in the simple curve.
        *
-       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       * Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1 corresponds to the last point in the curve.
        *
-       * corresponds to the last point in the curve.
-       *
-       * - \throws IndexError if no point with the specified index exists.
-       * - \see yAt()
+       * \throws IndexError if no point with the specified index exists.
+       * \see yAt()
        */
       void setYAt( int index, double y );
   % MethodCode
@@ -530,11 +516,9 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
        * Sets the z-coordinate of the specified node in the simple curve.
        * The corresponding node must already exist in the simple curve and the simple curve must have z-dimension.
        *
-       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       * Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1 corresponds to the last point in the curve.
        *
-       * corresponds to the last point in the curve.
-       *
-       * - \throws IndexError if no point with the specified index exists.
+       * \throws IndexError if no point with the specified index exists.
        *
        * \see zAt()
        */
@@ -578,11 +562,9 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
        * Sets the m-coordinate of the specified node in the simple curve.
        * The corresponding node must already exist in the simple curve and the simple curve must have m-dimension.
        *
-       * - Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1
+       * Indexes can be less than 0, in which case they correspond to positions from the end of the curve. E.g. an index of -1 corresponds to the last point in the curve.
        *
-       * corresponds to the last point in the curve.
-       *
-       * - \throws IndexError if no point with the specified index exists.
+       * \throws IndexError if no point with the specified index exists.
        *
        * \see mAt()
        */
