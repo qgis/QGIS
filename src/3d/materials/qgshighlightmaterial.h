@@ -18,7 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_3d.h"
-#include "qgsmaterial.h"
+#include "qgsunlitmaterial.h"
 
 #define SIP_NO_FILE
 
@@ -40,35 +40,15 @@ namespace Qt3DRender
  * Uses the highlight color and opacity defined in qgis settings Map/highlight
  * \since QGIS 4.0
  */
-class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
+class _3D_EXPORT QgsHighlightMaterial : public QgsUnlitMaterial
 {
     Q_OBJECT
 
   public:
     /**
-     * Constructor for QgsHighlightMaterial, using the specified \a technique and \a parent node.
+     * Constructor for QgsHighlightMaterial, with the specified \a parent node.
      */
     explicit QgsHighlightMaterial( Qt3DCore::QNode *parent = nullptr );
-    ~QgsHighlightMaterial() override;
-
-    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
-
-    /**
-     * Sets the transform from mesh space to object space
-     * \note Only applies when instancing is enabled
-     */
-    void setInstancingMeshTransform( const QMatrix4x4 &transform );
-
-  private:
-    void init();
-    void updateShaders();
-
-    Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
-    Qgis::MaterialRenderingTechnique mRenderingTechnique;
-    bool mInstanced = false;
-    Qgis::InstancedMaterialFlags mInstanceFlags;
-    Qt3DRender::QParameter *mTransformParameter = nullptr;
-    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
 };
 
 ///@endcond PRIVATE
