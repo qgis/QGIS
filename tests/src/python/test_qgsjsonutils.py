@@ -1861,9 +1861,7 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(
             j["conformsTo"], [["http://www.opengis.net/spec/json-fg-1/1.0/conf/core"]]
         )
-        self.assertEqual(
-            j["coordRefSys"], "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-        )
+        self.assertNotIn("coordRefSys", j)
 
         # Export to 3857
         exporter.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))

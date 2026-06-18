@@ -115,8 +115,8 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   QgsCoordinateTransform transformToCRS84 { mTransform };
   transformToCRS84.setDestinationCrs( QgsCoordinateReferenceSystem( u"OGC:CRS84"_s ) );
 
-  const bool destinationCrsIsRfc7946Compliant = mDestinationCrs.authid() == "OGC:CRS84";
-  const bool sourceCrsIsRfc7946Compliant = ( mCrs.authid() == "OGC:CRS84" || mCrs.authid() == "EPSG:4326" );
+  const bool destinationCrsIsRfc7946Compliant = mDestinationCrs.authid() == "OGC:CRS84" || mDestinationCrs.authid() == "EPSG:4326" || mDestinationCrs.authid() == "CRS:84";
+  const bool sourceCrsIsRfc7946Compliant = ( mCrs.authid() == "OGC:CRS84" || mCrs.authid() == "CRS:84" || mCrs.authid() == "EPSG:4326" );
   const bool requiresCRS84geom = mGeoJsonProfile == Qgis::GeoJsonProfile::Rfc7946 || mGeoJsonProfile == Qgis::GeoJsonProfile::JsonFgPlus;
 
   QgsGeometry geom = feature.geometry();
@@ -187,33 +187,36 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   {
     // If it is JSON-FG plus we need both CRS84 and the requested CRS
     QgsGeometry transformedCRS84Geom = geom;
-    if ( mCrs.isValid() && !sourceCrsIsRfc7946Compliant && ( requiresCRS84geom || destinationCrsIsRfc7946Compliant ) )
+    if ( mTransformGeometries )
     {
-      try
-      {
-        transformedCRS84Geom.transform( transformToCRS84 );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse )
-      }
-    }
-    // Do we need to transform the main geometry to the destination CRS?
-    if ( mGeoJsonProfile != Qgis::GeoJsonProfile::Rfc7946 )
-    {
-      if ( destinationCrsIsRfc7946Compliant )
-      {
-        geom = transformedCRS84Geom;
-      }
-      else if ( mCrs.isValid() && mTransformGeometries )
+      if ( mCrs.isValid() && !sourceCrsIsRfc7946Compliant && ( requiresCRS84geom || destinationCrsIsRfc7946Compliant ) )
       {
         try
         {
-          geom.transform( mTransform );
+          transformedCRS84Geom.transform( transformToCRS84 );
         }
         catch ( QgsCsException &cse )
         {
           Q_UNUSED( cse )
+        }
+      }
+      // Do we need to transform the main geometry to the destination CRS?
+      if ( mGeoJsonProfile != Qgis::GeoJsonProfile::Rfc7946 )
+      {
+        if ( destinationCrsIsRfc7946Compliant )
+        {
+          geom = transformedCRS84Geom;
+        }
+        else if ( mCrs.isValid() && mTransformGeometries )
+        {
+          try
+          {
+            geom.transform( mTransform );
+          }
+          catch ( QgsCsException &cse )
+          {
+            Q_UNUSED( cse )
+          }
         }
       }
     }
@@ -1368,7 +1371,7 @@ void QgsJsonUtils::addCrsInfo( json &value, const QgsCoordinateReferenceSystem &
   if ( !crs.isValid() )
     return;
 
-  if ( crs.authid() == "EPSG:4326" || crs.authid() == "CRS:84" )
+  if ( crs.authid() == "EPSG:4326" || crs.authid() == "CRS:84" || crs.authid() == "OGC:CRS84" )
   {
     // per spec, default is WGS84, so no need to add anything
     return;
