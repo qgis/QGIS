@@ -1992,14 +1992,17 @@ void TestQgsCircularString::cast()
 
   cs.fromWkt( u"CircularString Z (10 0 1, 10 1 1, 10 2 1)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"CircularString M (10 0 1, 10 1 1, 10 2 1)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"CircularString ZM (10 0 1 2, 10 1 1 2, 10 2 1 2)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 }
 

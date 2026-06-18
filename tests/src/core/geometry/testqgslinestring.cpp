@@ -3042,14 +3042,17 @@ void TestQgsLineString::cast()
 
   cs.fromWkt( u"LineString Z (6 0 -0.6, 6.5 0 -0.4)"_s );
   QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"LineString M (6 0 -0.6, 6.5 0 -0.4)"_s );
   QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"LineString ZM (6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8)"_s );
   QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 }
 
