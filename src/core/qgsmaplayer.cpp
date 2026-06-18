@@ -2656,7 +2656,8 @@ QgsMapLayer::SaveStyleResults QgsMapLayer::saveStyleToDatabaseV2(
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsSaveStyleResult result = QgsMapLayerUtils::saveLayerStyleToDatabase( this, mProviderKey, mDataSource, name, description, useAsDefault, uiFileContent, categories );
+  QgsSaveStyleResult result = QgsMapLayerUtils::
+    saveLayerStyleToDatabase( this, mProviderKey, mDataSource, name, description, useAsDefault, uiFileContent, Qgis::SaveStyleFormats( Qgis::SaveStyleFormat::QML | Qgis::SaveStyleFormat::SLD ), categories );
   msgError = result.providerSaveStyleError.isEmpty() ? result.qmlError : result.providerSaveStyleError;
   return result.saveResult;
 }
