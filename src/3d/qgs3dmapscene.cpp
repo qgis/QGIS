@@ -1164,6 +1164,9 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   mEntityCameraViewCenter->setEnabled( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter ) );
   mEntityCameraViewCenter->setParent( this );
 
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  mEntityCameraViewCenter->addComponent( frameGraph->forwardRenderView().renderLayer() );
+
   connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this] { mEntityCameraViewCenter->setEnabled( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter ) ); } );
 }
 
@@ -1454,6 +1457,9 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
   mEntityRotationCenter->addComponent( rendererRotationCenter );
   mEntityRotationCenter->setEnabled( false );
   mEntityRotationCenter->setParent( this );
+
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  mEntityRotationCenter->addComponent( frameGraph->forwardRenderView().renderLayer() );
 
   connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center ) { trRotationCenter->setTranslation( center ); } );
 
