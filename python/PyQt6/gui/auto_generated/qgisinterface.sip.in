@@ -796,6 +796,11 @@ dialog.
 Returns the native draw action.
 %End
 
+    virtual QAction *actionNew3DMapCanvas() = 0;
+%Docstring
+Returns the native action for new 3d map canvas.
+%End
+
     virtual QAction *actionNewVectorLayer() = 0;
     virtual QAction *actionAddOgrLayer() = 0;
     virtual QAction *actionAddRasterLayer() = 0;
