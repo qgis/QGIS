@@ -2019,7 +2019,7 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
   }
 
   // Add rel-as- links based on requested profile
-  // Note: for NONE profile we don't add any rel-as- link
+  // Note: for Unset profile we don't add any rel-as- link
   if ( relAs != QgsServerOgcApi::Profile::Unset )
   {
     const std::string profileStr { QgsServerOgcApi::profileToString( relAs ).toStdString() };
@@ -2169,7 +2169,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   apiContext.response()->setHeader( u"OGC-NumberReturned"_s, QString::number( featureList.count() ) );
 
   // Add self link
-  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::self, QgsServerOgcApi::ContentType::FLATGEOBUF, QgsServerOgcApi::Profile::NONE, u"This document as FlatGeobuf"_s ) );
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::self, QgsServerOgcApi::ContentType::FLATGEOBUF, QgsServerOgcApi::Profile::Unset, u"This document as FlatGeobuf"_s ) );
 
   // Add alternate links
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::Rfc7946, u"This document as GEOJSON"_s ) );
