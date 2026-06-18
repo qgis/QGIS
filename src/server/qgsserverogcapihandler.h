@@ -309,7 +309,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
       const QgsServerApiContext &context,
       const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
       const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
-      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::NONE,
+      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::Unset,
       const QString &title = ""
     ) const;
 
@@ -374,6 +374,20 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \throws QgsServerApiBadRequestError if the content type of the request is not compatible with the handler (\see contentTypes member)
      */
     QgsServerOgcApi::ContentType contentTypeFromRequest( const QgsServerRequest *request ) const;
+
+    /**
+     * Returns the Profile from the string representation in \a profile, or Profile::None if the string was not recognized.
+     * \param profile the string representation of the profile, for example "rel-as-key" or "RFC7946"
+     * \param ok output parameter set to true if the profile string was recognized, false otherwise
+     * \since QGIS Server 4.2
+     */
+    static QgsServerOgcApi::Profile profileFromString( const QString &profile, bool &ok SIP_OUT );
+
+    /**
+     * Return a list of the profiles in the request, extracted from the "profile" query parameter.
+     * \since QGIS Server 4.2
+     */
+    QList<QgsServerOgcApi::Profile> profilesFromRequest( const QgsServerRequest *request ) const;
 
     /**
      * Returns a link to the parent page up to \a levels in the HTML hierarchy from the given \a url, MAP query argument is preserved
