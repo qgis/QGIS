@@ -220,7 +220,7 @@ QString QgsServerOgcApiHandler::headerLink(
   const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType, const QgsServerOgcApi::ContentType contentType, const QgsServerOgcApi::Profile &profile, const QString &title
 ) const
 {
-  const QString profileStr { profile != QgsServerOgcApi::Profile::None ? QgsServerOgcApi::profileToString( profile ) : QString() };
+  const QString profileStr { profile != QgsServerOgcApi::Profile::Unset ? QgsServerOgcApi::profileToString( profile ) : QString() };
   QString hrefStr = QString::fromStdString( href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) );
 
   if ( !profileStr.isEmpty() )
@@ -595,7 +595,7 @@ QgsServerOgcApi::Profile QgsServerOgcApiHandler::profileFromString( const QStrin
     }
   }
   ok = false;
-  return QgsServerOgcApi::Profile::None;
+  return QgsServerOgcApi::Profile::Unset;
 }
 
 QList<QgsServerOgcApi::Profile> QgsServerOgcApiHandler::profilesFromRequest( const QgsServerRequest *request ) const

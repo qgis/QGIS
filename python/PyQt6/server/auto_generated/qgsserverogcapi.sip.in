@@ -73,7 +73,7 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
 
     enum class Profile
     {
-      None,
+      Unset,
       Rfc7946,
       // This not supported yet but I am leaving it here because
       // I am very optimistic that it will be supported soon!

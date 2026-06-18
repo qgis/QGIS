@@ -94,7 +94,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     //! JSON profile
     enum class Profile
     {
-      None,    //!< No profile
+      Unset,   //!< No profile
       Rfc7946, //!< GeoJSON profile according to RFC7946
       // This not supported yet but I am leaving it here because
       // I am very optimistic that it will be supported soon!

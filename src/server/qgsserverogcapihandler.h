@@ -309,7 +309,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
       const QgsServerApiContext &context,
       const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
       const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
-      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::None,
+      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::Unset,
       const QString &title = ""
     ) const;
 

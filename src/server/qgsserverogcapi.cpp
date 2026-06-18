@@ -140,7 +140,7 @@ QString QgsServerOgcApi::profileToString( const Profile &profile )
     case Profile::JsonFgPlus:
       return u"jsonfg-plus"_s;
 #endif
-    case Profile::None:
+    case Profile::Unset:
       return QString();
     case Profile::RelAsKey:
       return u"rel-as-key"_s;
@@ -173,7 +173,7 @@ QString QgsServerOgcApi::profileToUri( const Profile &profile )
       return u"http://www.opengis.net/def/profile/ogc/0/rel-as-uri"_s;
     case Profile::RelAsLink:
       return u"http://www.opengis.net/def/profile/ogc/0/rel-as-link"_s;
-    case Profile::None:
+    case Profile::Unset:
       return QString();
   }
   Q_UNREACHABLE();

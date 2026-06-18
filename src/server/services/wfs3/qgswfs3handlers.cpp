@@ -1743,7 +1743,7 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
     std::remove_if( referencedInfo.begin(), referencedInfo.end(), [&requestedAttributes]( const auto &info ) { return !requestedAttributes.contains( info.referencingFieldIdx ); } ), referencedInfo.end()
   );
 
-  QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::None;
+  QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::Unset;
 
   bool hasReferencedObjects = !referencedInfo.isEmpty();
 
@@ -1823,7 +1823,7 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
     data["features"][i]["id"] = fidMap.value( data["features"][i]["id"] ).toStdString();
 
     // Add referenced objects
-    if ( hasReferencedObjects && relAs != QgsServerOgcApi::Profile::None )
+    if ( hasReferencedObjects && relAs != QgsServerOgcApi::Profile::Unset )
     {
       for ( const auto &[fieldIdx, referencedInfo] : referencedInfo.toStdMap() )
       {
@@ -2020,7 +2020,7 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
 
   // Add rel-as- links based on requested profile
   // Note: for NONE profile we don't add any rel-as- link
-  if ( relAs != QgsServerOgcApi::Profile::None )
+  if ( relAs != QgsServerOgcApi::Profile::Unset )
   {
     const std::string profileStr { QgsServerOgcApi::profileToString( relAs ).toStdString() };
     data["links"].push_back(
@@ -2173,7 +2173,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
   // Add alternate links
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::Rfc7946, u"This document as GEOJSON"_s ) );
-  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::None, u"This document as HTML"_s ) );
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::Unset, u"This document as HTML"_s ) );
 #if 0
     // This not supported yet but I am leaving it here because
     // I am very optimistic that it will be supported soon!
@@ -2706,7 +2706,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       std::remove_if( referencedInfo.begin(), referencedInfo.end(), [&requestedAttributes]( const auto &info ) { return !requestedAttributes.contains( info.referencingFieldIdx ); } ),
       referencedInfo.end()
     );
-    QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::None;
+    QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::Unset;
     bool hasReferencedObjects = !referencedInfo.isEmpty();
 
     json data = exporter.exportFeatureToJsonObject( feature );
@@ -2726,7 +2726,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsKey ) )
         relAs = QgsServerOgcApi::Profile::RelAsKey;
 
-      if ( relAs != QgsServerOgcApi::Profile::None )
+      if ( relAs != QgsServerOgcApi::Profile::Unset )
       {
         for ( const auto &[fieldIdx, referencedInfo] : referencedInfo.toStdMap() )
         {
