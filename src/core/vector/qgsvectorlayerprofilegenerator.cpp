@@ -1058,11 +1058,17 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
     if ( mFeedback->isCanceled() )
       return;
 
-
+    // Vertical line case
     // Intersection is empty : GEOS issue for vertical intersection : use feature geometry as intersection
     if ( intersection->isEmpty() )
     {
       intersection.reset( featGeomPart->clone() );
+      for ( auto it = intersection->const_parts_begin(); !mFeedback->isCanceled() && it != intersection->const_parts_end(); ++it )
+      {
+        if ( const QgsLineString *intersectionCurve = qgsgeometry_cast< const QgsLineString * >( *it ) )
+          processIntersectionCurve( intersectionCurve, feature );
+      }
+      return;
     }
 
     QgsGeos featGeomPartGeos( featGeomPart );
