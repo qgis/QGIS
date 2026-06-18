@@ -331,6 +331,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsstylealgorithms.cpp
 
   processing/qgsnativealgorithms.cpp
+  processing/qgsdistanceutils.cpp
   processing/qgsoverlayutils.cpp
   processing/qgsrasteranalysisutils.cpp
   processing/qgsreclassifyutils.cpp

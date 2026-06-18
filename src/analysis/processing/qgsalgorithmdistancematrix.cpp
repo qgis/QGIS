@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmdistancematrix.h"
 
+#include "qgsdistanceutils.h"
 #include "qgsspatialindex.h"
 
 #include <QString>
@@ -53,18 +54,25 @@ QString QgsDistanceMatrixAlgorithm::groupId() const
 QString QgsDistanceMatrixAlgorithm::shortHelpString() const
 {
   return QObject::tr(
-    "This algorithm creates a table containing a distance matrix, "
-    "with distances between all the points in a points layer.\n\n"
-    "This algorithm uses purely Cartesian calculations for distance, "
-    "and does not consider geodetic or ellipsoid properties when "
-    "determining feature proximity. The measurement and output coordinate "
-    "system is based on the coordinate system of the source layer."
+    "This algorithm creates a table containing a distance matrix, with "
+    "distances between all the points in a points layer.\n\n"
+    "The algorithm supports both Cartesian and ellipsoidal distance calculations.\n\n"
+    "Cartesian calculations are performed using a spatial index and offer "
+    "high performance, but can give inaccurate results when used with CRSs "
+    "with high distance distortion.\n\n"
+    "If ellipsoidal calculations are enabled, the algorithm bypasses the spatial "
+    "index and provides accurate geodetic measurements at a considerable performance cost."
   );
 }
 
 QString QgsDistanceMatrixAlgorithm::shortDescription() const
 {
   return QObject::tr( "Creates a table containing a matrix of distances between all the points in a points layer." );
+}
+
+Qgis::ProcessingAlgorithmDocumentationFlags QgsDistanceMatrixAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
 }
 
 QgsDistanceMatrixAlgorithm *QgsDistanceMatrixAlgorithm::createInstance() const
@@ -105,6 +113,11 @@ void QgsDistanceMatrixAlgorithm::initAlgorithm( const QVariantMap & )
     = std::make_unique<QgsProcessingParameterNumber>( u"NEAREST_POINTS"_s, QObject::tr( "Use only the nearest (k) target points" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0 );
   pointsParam->setHelp( QObject::tr( "Limit the calculation to a specific number of the closest target points. If set to 0, distances to all target points will be calculated." ) );
   addParameter( pointsParam.release() );
+  auto ellipsoidParam = std::make_unique<QgsProcessingParameterBoolean>( u"USE_ELLIPSOID"_s, QObject::tr( "Use ellipsoidal calculations" ), true );
+  ellipsoidParam->setHelp(
+    QObject::tr( "If checked, the algorithm will bypass the spatial index and calculate ellipsoidal distances for all point combinations. This will reduce performance but provide accurate results." )
+  );
+  addParameter( ellipsoidParam.release() );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Distance matrix" ), Qgis::ProcessingSourceType::VectorPoint, QVariant() ) );
 }
 
@@ -156,25 +169,42 @@ bool QgsDistanceMatrixAlgorithm::prepareAlgorithm( const QVariantMap &parameters
     mKPoints = static_cast<int>( mTarget->featureCount() );
   }
 
+  mUseEllipsoid = parameterAsBool( parameters, u"USE_ELLIPSOID"_s, context );
+
   return true;
 }
 
 QVariantMap QgsDistanceMatrixAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  switch ( mMatrixType )
+  if ( mUseEllipsoid )
   {
-    case Linear:
-    case Summary:
-      return linearMatrix( parameters, context, feedback );
+    switch ( mMatrixType )
+    {
+      case Linear:
+      case Summary:
+        return linearMatrixEllipsoid( parameters, context, feedback );
 
-    case Standard:
-      return regularMatrix( parameters, context, feedback );
+      case Standard:
+        return regularMatrixEllipsoid( parameters, context, feedback );
+    }
+  }
+  else
+  {
+    switch ( mMatrixType )
+    {
+      case Linear:
+      case Summary:
+        return linearMatrixCartesian( parameters, context, feedback );
+
+      case Standard:
+        return regularMatrixCartesian( parameters, context, feedback );
+    }
   }
 
   return {};
 }
 
-QVariantMap QgsDistanceMatrixAlgorithm::linearMatrix( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsDistanceMatrixAlgorithm::linearMatrixCartesian( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // when using the same layer we need to fetch an extra point from the index, since the closest match will always be the same as the input feature
   long long nPoints = mSameLayer ? mKPoints + 1 : mKPoints;
@@ -349,7 +379,7 @@ QVariantMap QgsDistanceMatrixAlgorithm::linearMatrix( const QVariantMap &paramet
   return outputs;
 }
 
-QVariantMap QgsDistanceMatrixAlgorithm::regularMatrix( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsDistanceMatrixAlgorithm::regularMatrixCartesian( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // when using the same layer we need to fetch an extra point from the index, since the closest match will always be the same as the input feature,
   // however if all features are requested we do not need to fetch more features
@@ -437,6 +467,285 @@ QVariantMap QgsDistanceMatrixAlgorithm::regularMatrix( const QVariantMap &parame
       QgsPointXY targetPoint = index.geometry( targetId ).asPoint();
       distance = da.measureLine( sourcePoint, targetPoint );
       attrs << targetIdCache.value( targetId ) << distance;
+    }
+
+    QgsFeature f;
+    f.setGeometry( sourceFeature.geometry() );
+    f.setAttributes( attrs );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+    {
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    }
+    feedback->featureAddedToSink( u"OUTPUT"_s );
+
+    feedback->setProgress( 50.0 + static_cast<double>( current ) * step );
+    current++;
+  }
+
+  sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
+
+  QVariantMap outputs;
+  outputs.insert( u"OUTPUT"_s, dest );
+  return outputs;
+}
+
+QVariantMap QgsDistanceMatrixAlgorithm::linearMatrixEllipsoid( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  // when using the same layer we need to fetch an extra point from the index, since the closest match will always be the same as the input feature
+  long long nPoints = mSameLayer ? mKPoints + 1 : mKPoints;
+
+  const int sourceIndex = mSource->fields().lookupField( mSourceField );
+  const int targetIndex = mTarget->fields().lookupField( mTargetField );
+
+  QgsFields fields;
+  QgsField inputIdField( mSource->fields().at( sourceIndex ) );
+  inputIdField.setName( u"InputID"_s );
+  fields.append( inputIdField );
+
+  if ( mMatrixType == Linear )
+  {
+    QgsField targetIdField( mTarget->fields().at( targetIndex ) );
+    targetIdField.setName( u"TargetID"_s );
+    fields.append( targetIdField );
+    fields.append( QgsField( u"Distance"_s, QMetaType::Type::Double ) );
+  }
+  else
+  {
+    fields.append( QgsField( u"MEAN"_s, QMetaType::Type::Double ) );
+    fields.append( QgsField( u"STDDEV"_s, QMetaType::Type::Double ) );
+    fields.append( QgsField( u"MIN"_s, QMetaType::Type::Double ) );
+    fields.append( QgsField( u"MAX"_s, QMetaType::Type::Double ) );
+  }
+
+  const Qgis::WkbType outputWkbType = ( mMatrixType == Linear ) ? QgsWkbTypes::multiType( mSource->wkbType() ) : mSource->wkbType();
+
+  QString dest;
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, outputWkbType, mSource->sourceCrs() ) );
+  if ( !sink )
+  {
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
+  }
+
+  QHash<QgsFeatureId, QVariant> targetIdCache;
+  std::vector<std::pair<QgsFeatureId, QgsPointXY>> targetPointsCache;
+  targetPointsCache.reserve( mTarget->featureCount() );
+  QgsFeatureIterator targetFeatuIterator = mTarget->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( { targetIndex } ).setDestinationCrs( mSource->sourceCrs(), context.transformContext() ) );
+  double step = mTarget->featureCount() > 0 ? 50.0 / static_cast<double>( mTarget->featureCount() ) : 1;
+  long long current = 0;
+  QgsFeature f;
+
+  while ( targetFeatuIterator.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+    targetIdCache.insert( f.id(), f.attribute( targetIndex ) );
+    targetPointsCache.emplace_back( f.id(), f.geometry().asPoint() );
+    feedback->setProgress( static_cast<double>( current ) * step );
+    current++;
+  }
+
+  QgsDistanceArea da;
+  da.setSourceCrs( mSource->sourceCrs(), context.transformContext() );
+  da.setEllipsoid( context.ellipsoid() );
+
+  QVector<double> distancesList;
+  distancesList.reserve( nPoints );
+
+  current = 0;
+  step = mSource->featureCount() > 0 ? 50.0 / static_cast<double>( mSource->featureCount() ) : 0;
+  QgsFeatureIterator features = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( { sourceIndex } ) );
+  QgsFeature sourceFeature;
+
+  while ( features.nextFeature( sourceFeature ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    distancesList.clear();
+    const QgsPointXY sourcePoint = sourceFeature.geometry().asPoint();
+    const QString sourceId = sourceFeature.attribute( sourceIndex ).toString();
+    const std::vector<QgsDistanceUtils::NeighborResult> nearestPoints = QgsDistanceUtils::nearestNeighbors( sourcePoint, targetPointsCache, da, nPoints, feedback );
+
+    if ( mMatrixType == Linear )
+    {
+      for ( const auto &targetPoint : nearestPoints )
+      {
+        if ( feedback->isCanceled() )
+        {
+          break;
+        }
+
+        if ( mSameLayer && sourceFeature.id() == targetPoint.featureId )
+        {
+          continue;
+        }
+
+        QgsFeature f;
+        f.setGeometry( QgsGeometry::unaryUnion( { sourceFeature.geometry(), QgsGeometry::fromPointXY( targetPoint.point ) } ) );
+        f.setAttributes( QgsAttributes() << sourceId << targetIdCache.value( targetPoint.featureId ) << targetPoint.distance );
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        {
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        }
+        feedback->featureAddedToSink( u"OUTPUT"_s );
+      }
+    }
+    else // Summary
+    {
+      for ( const auto &targetPoint : nearestPoints )
+      {
+        if ( feedback->isCanceled() )
+        {
+          break;
+        }
+
+        if ( mSameLayer && sourceFeature.id() == targetPoint.featureId )
+        {
+          continue;
+        }
+
+        distancesList << targetPoint.distance;
+      }
+
+      QgsFeature f;
+      f.setGeometry( sourceFeature.geometry() );
+      if ( distancesList.isEmpty() )
+      {
+        f.setAttributes( QgsAttributes() << sourceId << QVariant() << QVariant() << QVariant() << QVariant() );
+      }
+      else
+      {
+        double sum = 0;
+        double sumSquares = 0;
+        double minDistance = std::numeric_limits<double>::max();
+        double maxDistance = std::numeric_limits<double>::lowest();
+
+        for ( const double d : std::as_const( distancesList ) )
+        {
+          sum += d;
+          sumSquares += d * d;
+          minDistance = std::min( minDistance, d );
+          maxDistance = std::max( maxDistance, d );
+        }
+
+        const long long n = distancesList.size();
+        const double mean = sum / static_cast<double>( n );
+        const double variance = std::max( 0.0, ( sumSquares / static_cast<double>( n ) ) - ( mean * mean ) );
+        const double stdDev = std::sqrt( variance );
+
+        f.setAttributes( QgsAttributes() << sourceId << mean << stdDev << minDistance << maxDistance );
+      }
+
+      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      {
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      }
+      feedback->featureAddedToSink( u"OUTPUT"_s );
+    }
+
+    feedback->setProgress( 50.0 + static_cast<double>( current ) * step );
+    current++;
+  }
+
+  sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
+
+  QVariantMap outputs;
+  outputs.insert( u"OUTPUT"_s, dest );
+  return outputs;
+}
+
+QVariantMap QgsDistanceMatrixAlgorithm::regularMatrixEllipsoid( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  // when using the same layer we need to fetch an extra point from the index, since the closest match will always be the same as the input feature,
+  // however if all features are requested we do not need to fetch more features
+  long long nPoints = mSameLayer ? mKPoints == mTarget->featureCount() ? mKPoints : mKPoints + 1 : mKPoints;
+
+  const int sourceIndex = mSource->fields().lookupField( mSourceField );
+  const int targetIndex = mTarget->fields().lookupField( mTargetField );
+
+  QgsFields fields;
+  QgsField inputIdField( mSource->fields().at( sourceIndex ) );
+  inputIdField.setName( u"InputID"_s );
+  fields.append( inputIdField );
+
+  QMetaType::Type targetIdType = mTarget->fields().at( targetIndex ).type();
+  // creating nPoints - 1 fields, as we do not take into account the input feature
+  for ( long long i = 0; i < nPoints - 1; i++ )
+  {
+    fields.append( QgsField( u"TargetID_%1"_s.arg( i + 1 ), targetIdType ) );
+    fields.append( QgsField( u"Dist_%1"_s.arg( i + 1 ), QMetaType::Type::Double ) );
+  }
+
+  QString dest;
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, mSource->wkbType(), mSource->sourceCrs() ) );
+  if ( !sink )
+  {
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
+  }
+
+  QHash<QgsFeatureId, QVariant> targetIdCache;
+  std::vector<std::pair<QgsFeatureId, QgsPointXY>> targetPointsCache;
+  targetPointsCache.reserve( mTarget->featureCount() );
+  QgsFeatureIterator targetIterator = mTarget->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( { targetIndex } ).setDestinationCrs( mSource->sourceCrs(), context.transformContext() ) );
+  double step = mTarget->featureCount() > 0 ? 50.0 / static_cast<double>( mTarget->featureCount() ) : 1;
+  long long current = 0;
+
+  QgsFeature f;
+  while ( targetIterator.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+    targetIdCache.insert( f.id(), f.attribute( targetIndex ) );
+    targetPointsCache.emplace_back( f.id(), f.geometry().asPoint() );
+
+    feedback->setProgress( static_cast<double>( current ) * step );
+    current++;
+  }
+
+  QgsDistanceArea da;
+  da.setSourceCrs( mSource->sourceCrs(), context.transformContext() );
+  da.setEllipsoid( context.ellipsoid() );
+
+  current = 0;
+  step = mSource->featureCount() > 0 ? 50.0 / static_cast<double>( mSource->featureCount() ) : 0;
+  QgsFeatureIterator features = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( { sourceIndex } ) );
+  QgsFeature sourceFeature;
+
+  while ( features.nextFeature( sourceFeature ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    const QgsPointXY sourcePoint = sourceFeature.geometry().asPoint();
+    const QString sourceId = sourceFeature.attribute( sourceIndex ).toString();
+    std::vector<QgsDistanceUtils::NeighborResult> nearestPoints = QgsDistanceUtils::nearestNeighbors( sourcePoint, targetPointsCache, da, nPoints, feedback );
+
+    QgsAttributes attrs;
+    attrs.reserve( 1 + nPoints * 2 );
+    attrs << sourceId;
+    for ( const auto &targetPoint : nearestPoints )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      if ( mSameLayer && sourceFeature.id() == targetPoint.featureId )
+      {
+        continue;
+      }
+
+      attrs << targetIdCache.value( targetPoint.featureId ) << targetPoint.distance;
     }
 
     QgsFeature f;
