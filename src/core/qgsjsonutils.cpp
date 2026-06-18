@@ -253,14 +253,15 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       }
     };
 
-    auto addBbox = [&featureJson, &flatType]( const QgsGeometry &geometry ) {
+    auto addBbox = [&featureJson, &flatType, this]( const QgsGeometry &geometry ) {
       if ( flatType == Qgis::WkbType::Point )
       {
         // For points, the bbox is just the coordinates of the point (or the points)
         return;
       }
       auto bbox = geometry.boundingBox();
-      featureJson["bbox"] = { bbox.xMinimum(), bbox.yMinimum(), bbox.xMaximum(), bbox.yMaximum() };
+      featureJson["bbox"]
+        = { qgsRound( bbox.xMinimum(), this->mPrecision ), qgsRound( bbox.yMinimum(), this->mPrecision ), qgsRound( bbox.xMaximum(), this->mPrecision ), qgsRound( bbox.yMaximum(), this->mPrecision ) };
     };
 
     switch ( mGeoJsonProfile )
