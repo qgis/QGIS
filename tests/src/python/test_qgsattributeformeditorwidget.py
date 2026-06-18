@@ -197,11 +197,20 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         self.assertEqual(setup.type(), "JsonEdit")
         self.assertTrue(layer.rollBack())
 
-        # Add a string record which is neither a list nor a map (meaning no valid JSON at all). It's not really editable, so - to show it's a JSON field - should take JSON edit.
+        # Add string records that are a primitive types like a string, a number or a boolean or no valid JSON at all, so it should take JSON edit.
         self.assertTrue(layer.startEditing())
         self.assertTrue(layer.addAttribute(field))
         feature = QgsFeature(layer.fields())
-        feature.setAttribute("json", "not a valid json value")
+        feature.setAttribute("json", "1")
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", "true")
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", '"Hello"')
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", "not a valid {json: value]")
         self.assertTrue(layer.addFeature(feature))
         setup = registry.findBest(layer, "json")
         self.assertEqual(setup.type(), "JsonEdit")
