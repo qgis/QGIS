@@ -20,6 +20,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dterrainregistry.h"
+#include "qgsabstractmaterialsettings.h"
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscategorized3drenderer.h"
