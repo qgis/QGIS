@@ -2487,7 +2487,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           const QgsField fld = field( attrIdx );
           const QString fieldTypeName = fld.typeName();
-          // the conversion functions expects the list as a string, so convert it
+          // the conversion functions expects the list as a string, so convert it according to the field type
           if ( fieldTypeName == QLatin1String( "json" ) || fieldTypeName == QLatin1String( "jsonb" ) )
           {
             v = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump() );
