@@ -2047,7 +2047,7 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
   write( data, context, htmlMetadata );
 }
 
-void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &context, const ExportContext &exportContext ) const
+void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &apiContext, const ExportContext &exportContext ) const
 {
   const QString destination = VSIMemGenerateHiddenFilename( "data.fgb" );
   // RIIA deleter for generated file
@@ -2157,23 +2157,23 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
   writer.reset();
 
-  context.response()->setStatusCode( 200 );
+  apiContext.response()->setStatusCode( 200 );
 
 
   QDateTime time { QDateTime::currentDateTime() };
   time.setTimeSpec( Qt::TimeSpec::UTC );
-  context.response()->setHeader( u"Date"_s, time.toString( Qt::DateFormat::ISODate ) );
-  context.response()->setHeader( u"Content-Type"_s, u"application/flatgeobuf"_s );
-  context.response()->setHeader( u"Content-Disposition"_s, u"inline; filename=\"%1.fgb\""_s.arg( mapLayer->name() ) );
-  context.response()->setHeader( u"Content-Crs"_s, featureRequest.destinationCrs().toOgcUri() );
-  context.response()->setHeader( u"OGC-NumberReturned"_s, QString::number( featureList.count() ) );
+  apiContext.response()->setHeader( u"Date"_s, time.toString( Qt::DateFormat::ISODate ) );
+  apiContext.response()->setHeader( u"Content-Type"_s, u"application/flatgeobuf"_s );
+  apiContext.response()->setHeader( u"Content-Disposition"_s, u"inline; filename=\"%1.fgb\""_s.arg( mapLayer->name() ) );
+  apiContext.response()->setHeader( u"Content-Crs"_s, featureRequest.destinationCrs().toOgcUri() );
+  apiContext.response()->setHeader( u"OGC-NumberReturned"_s, QString::number( featureList.count() ) );
 
   // Add self link
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::self, QgsServerOgcApi::ContentType::FLATGEOBUF, QgsServerOgcApi::Profile::NONE, u"This document as FlatGeobuf"_s ) );
 
   // Add alternate links
-  context.response()->addHeader( u"Link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::Rfc7946, u"This document as GEOJSON"_s ) );
-  context.response()->addHeader( u"Link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::None, u"This document as HTML"_s ) );
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::Rfc7946, u"This document as GEOJSON"_s ) );
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::None, u"This document as HTML"_s ) );
 #if 0
     // This not supported yet but I am leaving it here because
     // I am very optimistic that it will be supported soon!
@@ -2186,7 +2186,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   if ( exportContext.limit + exportContext.offset < matchedFeaturesCount )
   {
     // Current url
-    const QUrl url { context.request()->url() };
+    const QUrl url { apiContext.request()->url() };
 
     // Url without offset and limit
     QUrl cleanedUrl { url };
@@ -2202,7 +2202,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
       cleanedUrlAsString += '&';
     }
     const QString nextHref = cleanedUrlAsString + u"offset=%1&limit=%2"_s.arg( std::min<long>( matchedFeaturesCount, exportContext.limit + exportContext.offset ) ).arg( exportContext.limit );
-    context.response()->addHeader( u"Link"_s, u"<%1>; rel=\"next\"; title=\"Next page\"; type=\"application/flatgeobuf\""_s.arg( nextHref ) );
+    apiContext.response()->addHeader( u"Link"_s, u"<%1>; rel=\"next\"; title=\"Next page\"; type=\"application/flatgeobuf\""_s.arg( nextHref ) );
   }
 
   // Retrieve data from the buffer and send it
@@ -2212,7 +2212,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   Q_ASSERT( nDataLength <= std::numeric_limits<qsizetype>::max() );
 
   const QByteArray data { QByteArray::fromRawData( dataPtr, static_cast<qsizetype>( nDataLength ) ) };
-  context.response()->write( data );
+  apiContext.response()->write( data );
 }
 
 void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context ) const
