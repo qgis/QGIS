@@ -297,11 +297,11 @@ QUrlQuery QgsWfs3AbstractItemsHandler::removeOffsetAndLimit( const QUrlQuery &ur
   const QList<std::pair<QString, QString>> items = query.queryItems();
   for ( const auto &pair : std::as_const( items ) )
   {
-    if ( pair.first.compare( "offset"_L1, Qt::CaseInsensitive ) == 0 )
+    if ( pair.first.compare( QLatin1String( "offset" ), Qt::CaseInsensitive ) == 0 )
     {
       query.removeAllQueryItems( pair.first );
     }
-    else if ( pair.first.compare( "limit"_L1, Qt::CaseInsensitive ) == 0 )
+    else if ( pair.first.compare( QLatin1String( "limit" ), Qt::CaseInsensitive ) == 0 )
     {
       query.removeAllQueryItems( pair.first );
     }
