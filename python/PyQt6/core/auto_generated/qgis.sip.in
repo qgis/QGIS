@@ -4209,6 +4209,7 @@ QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapab
 QFlags<Qgis::InstancedMaterialFlag> operator|(Qgis::InstancedMaterialFlag f1, QFlags<Qgis::InstancedMaterialFlag> f2);
 
 QFlags<Qgis::SaveStyleFormat> operator|(Qgis::SaveStyleFormat f1, QFlags<Qgis::SaveStyleFormat> f2);
+
 QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map3DDebugFlag> f2);
 
 QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QFlags<Qgis::SensorThingsExtension> f2);
