@@ -5038,6 +5038,13 @@ void TestQgsProcessingAlgsPt1::compareDatasets()
   QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 5LL );
   QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
   QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 2LL );
+
+  // check EMPTY geometry in output layer
+  QgsFeatureIterator featIt = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"UNCHANGED"_s ).toString() ) )->getFeatures( u"pk = 7"_s );
+  QgsFeature outputFeat;
+  QVERIFY( featIt.nextFeature( outputFeat ) );
+  QVERIFY( outputFeat.isValid() );
+  QVERIFY( outputFeat.geometry().isEmpty() && !outputFeat.geometry().isNull() );
 }
 
 void TestQgsProcessingAlgsPt1::shapefileEncoding()
