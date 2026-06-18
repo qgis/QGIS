@@ -836,9 +836,9 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         r3 = QgsRendererRange(2.0, 3.0, ms.clone(), "range 3")
 
         renderer = QgsGraduatedSymbolRenderer()
-        renderer.addClass(r1)
-        renderer.addClass(r2)
-        renderer.addClass(r3)
+        renderer.addClassRange(r1)
+        renderer.addClassRange(r2)
+        renderer.addClassRange(r3)
 
         # verify initial labels
         self.assertEqual(renderer.ranges()[0].label(), "range 1")
