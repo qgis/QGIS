@@ -23,6 +23,10 @@
 #include "qgscurve.h"
 #include "qgsvertexid.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsSimpleCurve
@@ -67,6 +71,7 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     }
 #endif
 
+#ifndef SIP_RUN
     /**
      * Appends the contents of another simple curve to the end of this simple curve.
      * \param curve curve to append. Ownership is not transferred.
@@ -80,6 +85,39 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
      * result will be undefined.
      */
     void append( const QgsSimpleCurve *curve );
+#else
+    // clang-format off
+    /**
+     * Appends the contents of another simple curve to the end of this simple curve.
+     * \param curve curve to append. Ownership is not transferred.
+     *
+     * \note The curve type to be appended must match the base curve type. That is,
+     * Only LinearStrings can be appended to LinearStrings and only CircularStrings
+     * can be appended to CircularStrings.
+     *
+     * \warning It is the caller's responsibility to ensure that the first point in
+     * the appended \a curve matches the last point in the existing curve, or the
+     * result will be undefined.
+     *
+     * \throws ValueError if a LineString is passed to be appended to a CircularString
+     * or viceversa.
+     */
+    void append( const QgsSimpleCurve *curve );
+    % MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
+    const Qgis::WkbType curveType = a0->wkbType();
+    if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::flatType( curveType ) )
+    {
+      PyErr_SetString( PyExc_ValueError, u"argument 1 has unexpected type '%1'."_s.arg( QgsWkbTypes::displayString( curveType ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->append( a0 );
+    }
+    % End
+// clang-format on
+#endif
 
     /**
      * Resets the simple curve to match the specified list of points. The simple curve will

@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsSimpleCurve : QgsCurve /Abstract/
 {
 %Docstring(signature="appended")
@@ -46,6 +48,22 @@ curve.
    It is the caller's responsibility to ensure that the first point in
    the appended ``curve`` matches the last point in the existing curve, or the
    result will be undefined.
+
+:raises ValueError: if a LineString is passed to be appended to a
+                    CircularString or viceversa.
+%End
+%MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
+    const Qgis::WkbType curveType = a0->wkbType();
+    if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::flatType( curveType ) )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "argument 1 has unexpected type '%1'." ).arg( QgsWkbTypes::displayString( curveType ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->append( a0 );
+    }
 %End
 
     void setPoints( const QgsPointSequence &points );
