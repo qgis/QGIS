@@ -83,7 +83,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       GEOJSON,
       OPENAPI3, //!< "application/openapi+json;version=3.0"
       JSON,
-      SCHEMA_JSON, //! "application/schema+json"
+      SCHEMA_JSON, //!< "application/schema+json"
       HTML,
       XML,
       FLATGEOBUF //!< "application/flatgeobuf"
