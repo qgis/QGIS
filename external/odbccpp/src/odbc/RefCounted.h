@@ -56,7 +56,7 @@ public:
     /**
      * Constructs a NULL reference.
      */
-    Reference() : ptr_(0) {}
+    Reference() : ptr_(nullptr) {}
 
     /**
      * Constructs a reference to a given reference-counted object.
@@ -133,7 +133,7 @@ public:
      * @return  Returns true if this reference manages an object, false
      *          otherwise.
      */
-    bool isNull() const { return ptr_ == 0; }
+    bool isNull() const { return ptr_ == nullptr; }
 
     /**
      * Returns a reference to the managed object.
@@ -183,7 +183,7 @@ public:
      * Decreases the reference-count of the managed object and does not
      * reference it anymore.
      */
-    void reset() { reset_(0); }
+    void reset() { reset_(nullptr); }
 
     /**
      * Releases the currently managed object and manages a new object.
