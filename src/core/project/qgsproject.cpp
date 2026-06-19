@@ -690,8 +690,13 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
             else
               fieldName = field.alias();
 
+
             translationContext->registerTranslation( u"project:layers:%1:fieldaliases"_s.arg( vlayer->id() ), fieldName );
 
+            if ( !field.customComment().isEmpty() )
+            {
+              translationContext->registerTranslation( u"project:layers:%1:fieldcustomcomments"_s.arg( vlayer->id() ), field.customComment() );
+            }
             //constraint description
             if ( !field.constraints().constraintDescription().isEmpty() )
               translationContext->registerTranslation( u"project:layers:%1:constraintdescriptions"_s.arg( vlayer->id() ), field.constraints().constraintDescription() );

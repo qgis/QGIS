@@ -2656,7 +2656,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QString field = customCommentEntryElem.attribute( u"field"_s );
 
         //empty values are important as well (to override provider comments with nothing)
-        const QString customComment = customCommentEntryElem.attribute( u"value"_s );
+        const QString customComment
+          = context.projectTranslator()->translate( u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), customCommentEntryElem.attribute( u"value"_s ) );
+        QgsDebugMsgLevel( "context" + u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + customCommentEntryElem.attribute( u"value"_s ), 3 );
 
         if ( fields().lookupField( field ) < 0 )
         {
