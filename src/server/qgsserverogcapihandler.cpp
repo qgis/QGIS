@@ -574,28 +574,32 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
 
 QgsServerOgcApi::Profile QgsServerOgcApiHandler::profileFromString( const QString &profile, bool &ok )
 {
-  QMetaEnum profiles = QMetaEnum::fromType<QgsServerOgcApi::Profile>();
-  for ( int i = 0; i < profiles.keyCount(); ++i )
+  if ( profile.compare( "RFC7946"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
   {
-    QString profileStr = profiles.key( i );
-    if ( profileStr.compare( profile, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
-    {
-      ok = true;
-      return static_cast<QgsServerOgcApi::Profile>( profiles.value( i ) );
-    }
-    else if ( profileStr.contains( '_' ) )
-    {
-      // Try with hyphen instead of underscore
-      QString profileHyphen { profileStr.replace( '_', '-' ) };
-      if ( profileHyphen.compare( profile, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
-      {
-        ok = true;
-        return static_cast<QgsServerOgcApi::Profile>( profiles.value( i ) );
-      }
-    }
+    ok = true;
+    return QgsServerOgcApi::Profile::Rfc7946;
   }
-  ok = false;
-  return QgsServerOgcApi::Profile::Unset;
+  else if ( profile.compare( "REL-AS-KEY"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsKey;
+  }
+  else if ( profile.compare( "REL-AS-URI"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsUri;
+  }
+  else if ( profile.compare( "REL-AS-LINK"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsLink;
+  }
+  else
+  {
+    ok = false;
+    return QgsServerOgcApi::Profile::Unset;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QList<QgsServerOgcApi::Profile> QgsServerOgcApiHandler::profilesFromRequest( const QgsServerRequest *request ) const
