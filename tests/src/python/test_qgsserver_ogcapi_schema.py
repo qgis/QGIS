@@ -93,12 +93,7 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        # Default url has changed in QGIS 4 stick to /wfs3 for the tests
-        os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
-        iface = self.server.serverInterface()
-        iface.reloadSettings()
-        iface.serviceRegistry().cleanUp()
-        iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
+
         # Register the provider
         r = QgsProviderRegistry.instance()
         metadata = QgsProviderMetadata(
@@ -107,6 +102,15 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             EnumProvider.createProvider,
         )
         assert r.registerProvider(metadata)
+
+    def setUp(self):
+        super().setUp()
+        # Default url has changed in QGIS 4 stick to /wfs3 for the tests
+        os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
+        iface = self.server.serverInterface()
+        iface.reloadSettings()
+        iface.serviceRegistry().cleanUp()
+        iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
 
     # Set to True in child classes to re-generate reference files for this class
     regenerate_api_reference = False
