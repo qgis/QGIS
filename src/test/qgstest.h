@@ -53,11 +53,43 @@
 
 using namespace Qt::StringLiterals;
 
+#if defined( __GLIBC__ ) || defined( Q_OS_MACOS )
+#include <csignal>
+#include <execinfo.h>
+#include <unistd.h>
+
+/**
+ * Async-signal-safe crash handler: prints a backtrace to stderr (captured by
+ * ctest in the failing-test output) so CI-only SegFaults/aborts can be diagnosed.
+ */
+inline void qgsTestPrintBacktrace( int signum )
+{
+  void *frames[64];
+  const int frameCount = backtrace( frames, 64 );
+  const char header[] = "\n=== QGIS test crashed - backtrace ===\n";
+  const ssize_t ignored = write( STDERR_FILENO, header, sizeof( header ) - 1 );
+  ( void ) ignored;
+  backtrace_symbols_fd( frames, frameCount, STDERR_FILENO );
+  signal( signum, SIG_DFL );
+  raise( signum );
+}
+
+inline void qgsTestInstallCrashHandler()
+{
+  signal( SIGSEGV, qgsTestPrintBacktrace );
+  signal( SIGABRT, qgsTestPrintBacktrace );
+}
+#else
+inline void qgsTestInstallCrashHandler()
+{}
+#endif
+
 #define QGSTEST_MAIN( TestObject )                                     \
   QT_BEGIN_NAMESPACE                                                   \
   QT_END_NAMESPACE                                                     \
   int main( int argc, char *argv[] )                                   \
   {                                                                    \
+    qgsTestInstallCrashHandler();                                      \
     QCoreApplication::setOrganizationName( u"QGIS"_s );                \
     QCoreApplication::setOrganizationDomain( u"qgis.org"_s );          \
     QCoreApplication::setApplicationName( u"QGIS-TEST"_s );            \
