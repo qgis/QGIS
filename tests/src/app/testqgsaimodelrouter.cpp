@@ -199,6 +199,7 @@ class TestQgsAiModelRouter : public QObject
     void claudeAuthorizationCodeParsing();
     void claudeAuthorizationStateParsing();
     void claudeTokenExchangeIncludesState();
+    void claudeTokenExchangePreservesHttpError();
     void sanitizeSecrets();
     void storeApiKeyPersistsInSettings();
     void storeOpenRouterApiKeyPersistsInSettings();
@@ -465,6 +466,31 @@ void TestQgsAiModelRouter::claudeTokenExchangeIncludesState()
     QVERIFY( QgsAiClaudeOAuthClient::hasRefreshToken() );
     QgsAiClaudeOAuthClient::clearRefreshToken();
   }
+}
+
+void TestQgsAiModelRouter::claudeTokenExchangePreservesHttpError()
+{
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::jsonResponse(
+    429,
+    "Too Many Requests",
+    QByteArrayLiteral( "{\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Rate limited. Please try again later.\"}}" )
+  );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  const QString loopbackUrl = u"http://127.0.0.1:%1/token"_s.arg( server.serverPort() );
+  QgsAiClaudeOAuthClient::setTokenUrlForTesting( loopbackUrl );
+  const auto clearTokenUrl = qScopeGuard( [] { QgsAiClaudeOAuthClient::clearTokenUrlForTesting(); } );
+
+  const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = QgsAiClaudeOAuthClient::buildAuthorizationRequest();
+  const QString callbackInput = u"https://platform.claude.com/oauth/code/callback?code=exchange-code&state=callback-state"_s;
+
+  QString error;
+  QVERIFY( !QgsAiClaudeOAuthClient::exchangeAuthorizationCode( callbackInput, authRequest.codeVerifier, authRequest.redirectUri, authRequest.state, &error ) );
+  QCOMPARE( server.requestCount, 1 );
+  QVERIFY2( error.contains( u"HTTP 429"_s ), qPrintable( error ) );
+  QVERIFY2( error.contains( u"Rate limited. Please try again later."_s ), qPrintable( error ) );
+  QVERIFY2( !error.contains( u"refresh token"_s, Qt::CaseInsensitive ), qPrintable( error ) );
 }
 
 void TestQgsAiModelRouter::sanitizeSecrets()
