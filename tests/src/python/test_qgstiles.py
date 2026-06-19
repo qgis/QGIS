@@ -119,8 +119,23 @@ class TestQgsTiles(QgisTestCase):
         self.assertEqual(min(t.row() for t in tiles), 4)
         self.assertEqual(max(t.row() for t in tiles), 7)
 
-        # should not apply any special logic here, and return scales unchanged
-        self.assertEqual(
+        # MapBox method: the incoming scale is normalised from the render DPI to the
+        # OGC WMTS reference of 0.28 mm/pixel (~90.7 dpi), so that the derived tile zoom
+        # is DPI-independent and matches MapLibre. At the reference DPI the scale is unchanged.
+        reference_dpi = 0.0254 / (2.8 / 10000.0)
+        self.assertAlmostEqual(
+            matrix_set.calculateTileScaleForMap(
+                1000,
+                QgsCoordinateReferenceSystem("EPSG:4326"),
+                QgsRectangle(0, 2, 20, 12),
+                QSize(20, 10),
+                reference_dpi,
+            ),
+            1000,
+            places=3,
+        )
+        # at 96 dpi the scale is normalised down by 90.7/96
+        self.assertAlmostEqual(
             matrix_set.calculateTileScaleForMap(
                 1000,
                 QgsCoordinateReferenceSystem("EPSG:4326"),
@@ -128,9 +143,10 @@ class TestQgsTiles(QgisTestCase):
                 QSize(20, 10),
                 96,
             ),
-            1000,
+            944.9404761904763,
+            places=5,
         )
-        self.assertEqual(
+        self.assertAlmostEqual(
             matrix_set.calculateTileScaleForMap(
                 1000,
                 QgsCoordinateReferenceSystem("EPSG:3857"),
@@ -138,7 +154,8 @@ class TestQgsTiles(QgisTestCase):
                 QSize(20, 10),
                 96,
             ),
-            1000,
+            944.9404761904763,
+            places=5,
         )
 
         self.assertEqual(matrix_set.tileMatrix(1).zoomLevel(), 1)
