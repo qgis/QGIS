@@ -2157,7 +2157,7 @@ void QgsAiModelRouter::onReplyFinished()
     QgsMessageLog::
       logMessage( u"Request id=%1 provider=%2 retrying in %3 ms (attempt %4 of %5)."_s.arg( requestId, providerName ).arg( backoffMs ).arg( context->attempt + 1 ).arg( context->maxRetries + 1 ), u"AI"_s, Qgis::MessageLevel::Info, false );
     QTimer::singleShot( backoffMs, this, [this, requestId, httpStatus]() {
-      // The request may have been cancelled while waiting for the backoff.
+      // The request may have been canceled while waiting for the backoff.
       if ( !mRequests.contains( requestId ) )
         return;
 

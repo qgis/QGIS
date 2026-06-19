@@ -28,6 +28,8 @@
 #include <QString>
 #include <QVBoxLayout>
 
+#include "moc_qgsqgisprofileimportdialog.cpp"
+
 using namespace Qt::StringLiterals;
 
 QgsQgisProfileImportDialog::QgsQgisProfileImportDialog( const QList<QgsQgisProfileImporter::Candidate> &candidates, const QString &targetRootProfileFolder, Mode mode, QWidget *parent )
