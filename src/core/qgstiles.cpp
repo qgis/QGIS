@@ -329,7 +329,8 @@ double QgsTileMatrixSet::calculateTileScaleForMap( double actualMapScale, const 
       // render the map.
       // we normalize the incoming scale to that reference DPI.
       constexpr double REFERENCE_DPI = 0.0254 / PIXELS_TO_M; // ~90.7 dpi
-      return actualMapScale * REFERENCE_DPI / mapDpi;
+      const double tileScale = actualMapScale * REFERENCE_DPI / mapDpi;
+      return tileScale;
     }
 
     case Qgis::ScaleToTileZoomLevelMethod::Esri:
