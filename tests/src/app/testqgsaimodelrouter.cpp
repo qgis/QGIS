@@ -471,11 +471,7 @@ void TestQgsAiModelRouter::claudeTokenExchangeIncludesState()
 void TestQgsAiModelRouter::claudeTokenExchangePreservesHttpError()
 {
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse(
-    429,
-    "Too Many Requests",
-    QByteArrayLiteral( "{\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Rate limited. Please try again later.\"}}" )
-  );
+  server.responses << QgsAiTestLoopbackServer::jsonResponse( 429, "Too Many Requests", QByteArrayLiteral( "{\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Rate limited. Please try again later.\"}}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   const QString loopbackUrl = u"http://127.0.0.1:%1/token"_s.arg( server.serverPort() );
