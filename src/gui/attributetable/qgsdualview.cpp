@@ -149,7 +149,11 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mLayer = layer;
 
   // Keep fields order in sync: force config reset
-  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this] { mFilterModel->setAttributeTableConfig( attributeTableConfig(), /* force */ true ); } );
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this] {
+    // Prevent crash if a field was deleted when the sort expression contained a reference to it.
+    mConfig.update( mLayer->fields() );
+    mFilterModel->setAttributeTableConfig( attributeTableConfig(), /* force */ true );
+  } );
 
   mEditorContext = context;
 
