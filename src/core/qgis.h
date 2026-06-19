@@ -4331,6 +4331,18 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( Map3DDebugFlags )
 
     /**
+     * 3D map projection type
+     *
+     * \since QGIS 4.2
+     */
+    enum class Map3DProjectionType : int
+    {
+      OrthographicProjection = 0, //!< Orthogonal projection
+      PerspectiveProjection = 1,  //!< Perspective projection
+    };
+    Q_ENUM( Map3DProjectionType )
+
+    /**
      * 3D point shape types.
      *
      * \note Prior to QGIS 3.36 this was available as QgsPoint3DSymbol::Shape

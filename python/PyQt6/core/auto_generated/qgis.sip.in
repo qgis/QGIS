@@ -2427,6 +2427,12 @@ The development version
     typedef QFlags<Qgis::Map3DDebugFlag> Map3DDebugFlags;
 
 
+    enum class Map3DProjectionType /BaseType=IntEnum/
+    {
+      OrthographicProjection,
+      PerspectiveProjection,
+    };
+
     enum class Point3DShape /BaseType=IntEnum/
     {
       Cylinder,
