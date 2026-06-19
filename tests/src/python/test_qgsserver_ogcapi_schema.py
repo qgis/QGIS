@@ -575,10 +575,10 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
 
     def test_extra_geometry_and_crs(self):
 
-        if "QGIS_PGTEST_DB" in os.environ:
-            dbconn = os.environ["QGIS_PGTEST_DB"]
-        else:
-            dbconn = "service=qgis_test dbname=qgis_test sslmode=disable "
+        if "QGIS_PGTEST_DB" not in os.environ:
+            raise unittest.SkipTest("QGIS_PGTEST_DB not defined")
+
+        dbconn = os.environ["QGIS_PGTEST_DB"]
 
         # Test layer
         uri = dbconn + " dbname=qgis_test sslmode=disable "
