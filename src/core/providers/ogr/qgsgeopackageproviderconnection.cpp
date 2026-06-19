@@ -330,7 +330,7 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   mCapabilities |= Capability::RetrieveRelationships;
 #endif
 
-  mCapabilities2 = Qgis::DatabaseProviderConnectionCapability2::StyleStorage;
+  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::StyleStorage;
 
   mGeometryColumnCapabilities
     = { GeometryColumnCapability::Z, GeometryColumnCapability::M, GeometryColumnCapability::SingleLineString, GeometryColumnCapability::SinglePoint, GeometryColumnCapability::SinglePolygon, GeometryColumnCapability::Curves, GeometryColumnCapability::PolyhedralSurfaces };
