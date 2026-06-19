@@ -1293,7 +1293,7 @@ void TestQgs3DCameraController::testOrthographic()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  mapSettings->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
+  mapSettings->setProjectionType( Qgis::Map3DProjectionType::OrthographicProjection );
 
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
