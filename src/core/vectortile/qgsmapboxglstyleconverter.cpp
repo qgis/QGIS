@@ -3931,6 +3931,28 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return u"0"_s;
   }
+  else if ( op == "slice"_L1 )
+  {
+    // ["slice", input, startIndex, endIndex?] returns a substring/sublist of input.
+    // MapBox indices are 0-based and endIndex is exclusive, while QGIS substr() is
+    // 1-based and takes a length
+    const QString inputExpression = parseValue( expression.value( 1 ), context );
+    if ( inputExpression.isEmpty() )
+    {
+      context.pushWarning( QObject::tr( "%1: Could not interpret slice list" ).arg( context.layerId() ) );
+      return QString();
+    }
+    const QString startExpression = parseValue( expression.value( 2 ), context );
+    if ( expression.size() > 3 )
+    {
+      const QString endExpression = parseValue( expression.value( 3 ), context );
+      return u"substr(%1, (%2) + 1, (%3) - (%2))"_s.arg( inputExpression, startExpression, endExpression );
+    }
+    else
+    {
+      return u"substr(%1, (%2) + 1)"_s.arg( inputExpression, startExpression );
+    }
+  }
   else
   {
     context.pushWarning( QObject::tr( "%1: Skipping unsupported expression \"%2\"" ).arg( context.layerId(), op ) );
