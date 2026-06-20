@@ -12973,7 +12973,9 @@ Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder.__doc__ = "Polygon with lon
 Qgis.CoverageCleanOverlapMergeStrategy.MaxArea.__doc__ = "Polygon with largest area is chosen to merge overlapping polygons into"
 Qgis.CoverageCleanOverlapMergeStrategy.MinArea.__doc__ = "Polygon with minimum area is chosen to merge overlapping polygons into"
 Qgis.CoverageCleanOverlapMergeStrategy.MinIndex.__doc__ = "Polygon with smallest input index is chosen to merge overlapping polygons into"
-Qgis.CoverageCleanOverlapMergeStrategy.__doc__ = """
+Qgis.CoverageCleanOverlapMergeStrategy.__doc__ = """Merge strategies for coverage cleaning operations.
+
+.. versionadded:: 4.2
 
 * ``LongestBorder``: Polygon with longest common border is chosen to merge overlapping polygons into
 * ``MaxArea``: Polygon with largest area is chosen to merge overlapping polygons into
