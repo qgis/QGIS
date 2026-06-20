@@ -6872,6 +6872,11 @@ int QgisEvent = QEvent::User + 1;
     };
     Q_ENUM( DockableWidgetInitialState )
 
+    /**
+     * Merge strategies for coverage cleaning operations.
+     *
+     * \since QGIS 4.2
+     */
     enum class CoverageCleanOverlapMergeStrategy : int
     {
       LongestBorder = 0, //!< Polygon with longest common border is chosen to merge overlapping polygons into
