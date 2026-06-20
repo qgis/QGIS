@@ -4337,8 +4337,8 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class Map3DProjectionType : int
     {
-      OrthographicProjection = 0, //!< Orthogonal projection
-      PerspectiveProjection = 1,  //!< Perspective projection
+      Orthographic = 0, //!< Orthogonal projection
+      Perspective = 1,  //!< Perspective projection
     };
     Q_ENUM( Map3DProjectionType )
 

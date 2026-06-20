@@ -403,7 +403,7 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
   QMatrix4x4 projMatrix;
   switch ( mMap.projectionType() )
   {
-    case Qgis::Map3DProjectionType::PerspectiveProjection:
+    case Qgis::Map3DProjectionType::Perspective:
     {
       float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
       float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
@@ -417,7 +417,7 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
       // clang-format on
       break;
     }
-    case Qgis::Map3DProjectionType::OrthographicProjection:
+    case Qgis::Map3DProjectionType::Orthographic:
     {
       Qt3DRender::QCameraLens *lens = camera->lens();
       // clang-format off
