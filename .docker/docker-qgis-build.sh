@@ -138,7 +138,25 @@ git config --global --add safe.directory ${CTEST_BUILD_DIR}
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
+if [[ "${WITH_ASAN:-OFF}" == "ON" ]]; then
+  cmake --build ${CTEST_BUILD_DIR} --target \
+    test_core_settings \
+    test_core_settingsentry \
+    test_gui_fileuploader \
+    test_app_qgisapp \
+    test_app_qgisappwidgetnames \
+    test_app_identify \
+    test_app_vertextool \
+    test_app_measuretool \
+    test_app_maptooladdfeatureline \
+    test_app_maptooladdfeaturelinez \
+    test_app_maptooladdfeaturelinem \
+    test_app_maptooladdfeaturelinezm \
+    test_app_maptooladdfeaturelinezm_crs \
+    -j "$(nproc)"
+else
+  ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
+fi
 echo "::endgroup::"
 
 ########################
