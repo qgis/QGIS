@@ -1974,7 +1974,7 @@ void TestQgsVertexTool::testVertexToolCompoundCurve()
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 3 );
   const QgsGeometry expectedCompoundCurve = QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 18 17, 13.75126265847083928 13.78427124746189492, 10 10, 17 10))" );
   const QgsGeometry actualCompoundCurve = mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry();
-  QVERIFY2( actualCompoundCurve.constGet()->fuzzyEqual( *expectedCompoundCurve.constGet(), 1e-12 ), qPrintable( QStringLiteral( "Actual: %1 Expected: %2" ).arg( actualCompoundCurve.asWkt(), expectedCompoundCurve.asWkt() ) ) );
+  QVERIFY2( actualCompoundCurve.constGet()->fuzzyEqual( *expectedCompoundCurve.constGet(), 1e-12 ), qPrintable( u"Actual: %1 Expected: %2"_s.arg( actualCompoundCurve.asWkt(), expectedCompoundCurve.asWkt() ) ) );
 
   mLayerCompoundCurve->undoStack()->undo();
 
