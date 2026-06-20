@@ -2076,6 +2076,18 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry unionCoverage() const;
 
     /**
+     * Operates on a coverage (represented as a list of polygonal geometry) and cleans the coverage,
+     * removing overlapping areas and closing small gaps.
+     *
+     * The input geometry is the polygonal coverage to clean, stored in a geometry collection.
+     * All members must be POLYGON or MULTIPOLYGON. The input does not have to be a valid coverage.
+     *
+     * \see validateCoverage()
+     * \since QGIS 4.2
+     */
+    QgsGeometry cleanCoverage( double gapWidth, double snappingDistance, Qgis::CoverageCleanOverlapMergeStrategy mergeStrategy ) const;
+
+    /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
      *
      * The noding preserves all of the input nodes, and introduces the least possible number of new nodes.

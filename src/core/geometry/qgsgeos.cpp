@@ -2407,6 +2407,53 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::unionCoverage( QString *errorMsg, 
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::cleanCoverage( double gapWidth, double snappingDistance, Qgis::CoverageCleanOverlapMergeStrategy mergeStrategy, QString *errorMsg, QgsFeedback *feedback ) const
+{
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 14
+  ( void ) gapWidth;
+  ( void ) snappingDistance;
+  ( void ) mergeStrategy;
+  ( void ) errorMsg;
+  throw QgsNotSupportedException( QObject::tr( "Validating coverages requires a QGIS build based on GEOS 3.12 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    if ( errorMsg )
+      *errorMsg = u"Input geometry was not set"_s;
+    return nullptr;
+  }
+
+
+  try
+  {
+    GEOSCoverageCleanParams *params = GEOSCoverageCleanParams_create_r( QgsGeosContext::get() );
+
+    if ( !params )
+    {
+      *errorMsg = u"Could not create parameter object"_s;
+      return nullptr;
+    }
+
+    if ( !GEOSCoverageCleanParams_setSnappingDistance_r( QgsGeosContext::get(), params, snappingDistance )
+         || !GEOSCoverageCleanParams_setGapMaximumWidth_r( QgsGeosContext::get(), params, gapWidth )
+         || !GEOSCoverageCleanParams_setOverlapMergeStrategy_r( QgsGeosContext::get(), params, static_cast<int>( mergeStrategy ) ) )
+    {
+      *errorMsg = u"Could not set parameter"_s;
+      return nullptr;
+    }
+
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+    geos::unique_ptr cleaned( GEOSCoverageCleanWithParams_r( QgsGeosContext::get(), mGeos.get(), params ) );
+    GEOSCoverageCleanParams_destroy_r( QgsGeosContext::get(), params );
+
+    std::unique_ptr< QgsAbstractGeometry> cleanedGeom = fromGeos( cleaned.get() );
+
+    return cleanedGeom;
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+#endif
+}
+
 bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
