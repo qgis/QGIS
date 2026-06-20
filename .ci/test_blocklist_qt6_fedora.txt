@@ -19,5 +19,34 @@ test_core_layerdefinition
 # Fails under the binary-only CI image used by this fork
 PyQgsAppStartup
 
+# Pre-existing Qt 6 Linux QgisApp() heap corruption in this fork CI.
+# Baseline master run 27549905874 / Fedora ALL_BUT_PROVIDERS job 81479115481
+# already failed app tests with malloc/SIGSEGV during QgisApp startup. PR run
+# 27878685863 / Fedora ALL_BUT_PROVIDERS job 82516766127 shows the same common
+# root cause. Keep this precise list blocked until the shared startup corruption
+# is fixed under ASAN.
+test_app_qgisapp
+test_app_qgisappwidgetnames
+test_app_advanceddigitizing
+test_app_attributetable
+test_app_customization
+test_app_identify
+test_app_layerpropertiesdialogs
+test_app_maptooldeletepart
+test_app_maptoolrotatefeature
+test_app_maptoolcircle
+test_app_measuretool
+test_app_vertexeditor
+test_app_vertextool
+test_app_maptoolreverseline
+test_app_gpsintegration
+test_app_mergeattributesdialog
+test_app_maptooladdfeaturepointz
+test_app_maptooladdfeaturepointzm
+test_app_maptooladdfeatureline
+test_app_maptooladdfeaturelinez
+test_app_maptooladdfeaturelinem
+test_app_maptooladdfeaturelinezm
+
 # Unstable 3D image comparison on the hosted CI renderer
 test_3d_3drendering
