@@ -54,7 +54,7 @@ TestQgisAppWidgetNames::TestQgisAppWidgetNames()
 //runs before all tests
 void TestQgisAppWidgetNames::initTestCase()
 {
-  mQgisApp = new QgisApp( new QSplashScreen() );
+  mQgisApp = new QgisApp( new QSplashScreen(), QgisApp::AppOption::NoOption );
 }
 
 //runs after all tests

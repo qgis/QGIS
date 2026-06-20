@@ -386,7 +386,7 @@ class CORE_EXPORT QgsSettings : public QObject
               // convert the property to the new form (string)
               // this code could be removed
               // then the method could be marked as const
-              setFlagValue( key, v );
+              setFlagValue( key, v, section );
             }
           }
           else
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
-        setValue( key, metaEnum.valueToKeys( static_cast< const int >( value ) ), section );
+        setValue( key, QString::fromLatin1( metaEnum.valueToKeys( static_cast< const int >( value ) ) ), section );
       }
       else
       {

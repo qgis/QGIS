@@ -1025,8 +1025,13 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
-  QRgb rgb = mSplash->pixmap().toImage().pixel( mSplash->pixmap().width() / 2, mSplash->pixmap().height() - 8 );
-  QColor splashTextColor( 0xff - qRed( rgb ), 0xff - qGreen( rgb ), 0xff - qBlue( rgb ) );
+  QColor splashTextColor( Qt::white );
+  const QPixmap splashPixmap = mSplash->pixmap();
+  if ( !splashPixmap.isNull() && splashPixmap.width() > 0 && splashPixmap.height() >= 8 )
+  {
+    QRgb rgb = splashPixmap.toImage().pixel( splashPixmap.width() / 2, splashPixmap.height() - 8 );
+    splashTextColor = QColor( 0xff - qRed( rgb ), 0xff - qGreen( rgb ), 0xff - qBlue( rgb ) );
+  }
 
   QQuickStyle::setStyle( u"Material"_s );
 
@@ -1692,6 +1697,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
+  mWindowAction->setObjectName( u"mActionWindowCurrent"_s );
   connect( mWindowAction, &QAction::triggered, this, &QgisApp::activate );
 
   // add this window to Window menu
@@ -3300,21 +3306,25 @@ void QgisApp::createActions()
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
+  mActionWindowMinimize->setObjectName( u"mActionWindowMinimize"_s );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
   connect( mActionWindowMinimize, &QAction::triggered, this, &QgisApp::showActiveWindowMinimized );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
+  mActionWindowZoom->setObjectName( u"mActionWindowZoom"_s );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
   connect( mActionWindowZoom, &QAction::triggered, this, &QgisApp::toggleActiveWindowMaximized );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
+  mActionWindowAllToFront->setObjectName( u"mActionWindowAllToFront"_s );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
   connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
   // Window Menu
 
   mWindowMenu = new QMenu( tr( "Window" ), this );
+  mWindowMenu->setObjectName( u"mWindowMenu"_s );
 
   mWindowMenu->addAction( mActionWindowMinimize );
   mWindowMenu->addAction( mActionWindowZoom );
@@ -3630,6 +3640,7 @@ void QgisApp::createMenus()
   // these duplicate actions will be moved to application menus by Qt
   mProjectMenu->addAction( mActionAbout );
   QAction *actionPrefs = new QAction( tr( "Preferences…" ), this );
+  actionPrefs->setObjectName( u"mActionPreferences"_s );
   actionPrefs->setMenuRole( QAction::PreferencesRole );
   actionPrefs->setIcon( mActionOptions->icon() );
   connect( actionPrefs, &QAction::triggered, this, &QgisApp::options );

@@ -77,9 +77,10 @@ void TestQgsSettingsEntry::settingsKey()
 void TestQgsSettingsEntry::enumValue()
 {
   const QString settingsKey( u"my_enum_value_for_units"_s );
+  const QString fullSettingsKey = u"%1/%2"_s.arg( mSettingsSection, settingsKey );
 
   // Make sure the setting is not existing
-  QgsSettings().remove( settingsKey );
+  QgsSettings().remove( fullSettingsKey );
 
   const QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, mSettingsSection, Qgis::LayoutUnit::Meters, u"Layout unit"_s );
 
@@ -135,12 +136,13 @@ void TestQgsSettingsEntry::enumValue()
 void TestQgsSettingsEntry::flagValue()
 {
   const QString settingsKey( u"my_flag_value_for_units"_s );
+  const QString fullSettingsKey = u"%1/%2"_s.arg( mSettingsSection, settingsKey );
   const Qgis::LayerFilters pointAndLine = Qgis::LayerFilters( Qgis::LayerFilter::PointLayer | Qgis::LayerFilter::LineLayer );
   const Qgis::LayerFilters pointAndPolygon = Qgis::LayerFilters( Qgis::LayerFilter::PointLayer | Qgis::LayerFilter::PolygonLayer );
   const Qgis::LayerFilters hasGeometry = Qgis::LayerFilters( Qgis::LayerFilter::HasGeometry );
 
   // Make sure the setting is not existing
-  QgsSettings().remove( settingsKey );
+  QgsSettings().remove( fullSettingsKey );
 
   const QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, mSettingsSection, Qgis::LayerFilters(), u"Filters"_s );
 
