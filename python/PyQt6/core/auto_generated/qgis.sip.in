@@ -3870,6 +3870,14 @@ The development version
       ForceDialog,
     };
 
+    enum class CoverageCleanOverlapMergeStrategy /BaseType=IntEnum/
+    {
+      LongestBorder,
+      MaxArea,
+      MinArea,
+      MinIndex,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

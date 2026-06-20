@@ -988,6 +988,20 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     std::unique_ptr< QgsAbstractGeometry > unionCoverage( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
+     * Operates on a coverage (represented as a list of polygonal geometry and cleans the coverage,
+     * removing overlapping areas and closing small gaps.
+     *
+     * The input geometry is the polygonal coverage to union, stored in a geometry collection.
+     * All members must be POLYGON or MULTIPOLYGON.
+     *
+     * \see validateCoverage()
+     * \since QGIS 4.2
+     */
+    std::unique_ptr< QgsAbstractGeometry > cleanCoverage(
+      double gapWidth, double snappingDistance, Qgis::CoverageCleanOverlapMergeStrategy mergeStrategy, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr
+    ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Create a geometry from a GEOSGeometry
      * \param geos GEOSGeometry. Ownership is NOT transferred.
      * \note Not available in Python bindings

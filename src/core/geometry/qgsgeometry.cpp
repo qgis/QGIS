@@ -3192,6 +3192,20 @@ QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoun
   return result;
 }
 
+QgsGeometry QgsGeometry::cleanCoverage( double gapWidth, double snappingDistance, Qgis::CoverageCleanOverlapMergeStrategy mergeStrategy ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.cleanCoverage( gapWidth, snappingDistance, mergeStrategy, &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::node() const
 {
   if ( !d->geometry )
