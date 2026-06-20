@@ -74,11 +74,6 @@ if [ -n "$LABELS_TO_EXCLUDE" ]; then
   CTEST_OPTIONS="$CTEST_OPTIONS -LE $LABELS_TO_EXCLUDE"
 fi
 
-if [ -n "$QGIS_TEST_FILTER" ]; then
-  echo "Only tests matching this regex will be run: $QGIS_TEST_FILTER"
-  CTEST_OPTIONS="$CTEST_OPTIONS -R $QGIS_TEST_FILTER"
-fi
-
 if [ ${RUN_HANA:-"NO"} == "YES" ]; then
 
   ##################################
