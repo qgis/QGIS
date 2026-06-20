@@ -231,6 +231,23 @@ tests:
         name: expected/simplify_coverage.gml
         type: vector
 
+  - algorithm: native:coverageclean
+    name: Clean coverage
+    condition:
+      geos:
+        at_least: 31400
+    params:
+      INPUT:
+        name: coverage_clean.gml
+        type: vector
+      GAP_WIDTH: 2
+      SNAPPING_DISTANCE: -1
+      OVERLAP_MERGE_STRATEGY: 0
+    results:
+      OUTPUT:
+        name: expected/coverage_clean.gml
+        type: vector
+
   - algorithm: native:creategrid
     name: Create rectangle grid with negative overlay
     params:

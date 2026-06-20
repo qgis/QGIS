@@ -75,6 +75,7 @@
 #include "qgsalgorithmconvertgeometrytype.h"
 #include "qgsalgorithmconverttocurves.h"
 #include "qgsalgorithmconvexhull.h"
+#include "qgsalgorithmcoverageclean.h"
 #include "qgsalgorithmcoveragesimplify.h"
 #include "qgsalgorithmcoverageunion.h"
 #include "qgsalgorithmcoveragevalidate.h"
@@ -436,6 +437,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCoverageSimplifyAlgorithm() );
   addAlgorithm( new QgsCoverageUnionAlgorithm() );
   addAlgorithm( new QgsCoverageValidateAlgorithm() );
+  addAlgorithm( new QgsCoverageCleanAlgorithm() );
   addAlgorithm( new QgsCreateDirectoryAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsDefineProjectionAlgorithm() );
