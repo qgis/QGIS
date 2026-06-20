@@ -356,7 +356,7 @@ class CORE_EXPORT QgsSettings : public QObject
           v = T( 0 );
           ok = true;
         }
-        else if ( keys == u"0"_s )
+        else if ( keys == "0"_L1 )
         {
           v = T( 0 );
           ok = true;
