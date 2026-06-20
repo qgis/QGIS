@@ -2116,7 +2116,14 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     }
     messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
   } );
-  QgsApplication::fontManager()->enableFontDownloadsForSession();
+  // Don't enable on-demand font downloads under CI/tests: a missing font (e.g.
+  // "Open Sans", referenced by several built-in UI forms) spawns a background
+  // QgsFontDownloadTask that does a blocking network request on a thread-pool
+  // thread. In headless test runs that task races QgisApp teardown and logs
+  // through a torn-down QgsApplication, corrupting the heap / crashing every
+  // app test that constructs QgisApp.
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) != QByteArrayLiteral( "true" ) )
+    QgsApplication::fontManager()->enableFontDownloadsForSession();
 
   mDevToolsWidget->setActiveTab( lastDevToolsTab );
 
