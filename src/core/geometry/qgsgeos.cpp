@@ -2414,7 +2414,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::cleanCoverage( double gapWidth, 
   ( void ) snappingDistance;
   ( void ) mergeStrategy;
   ( void ) errorMsg;
-  throw QgsNotSupportedException( QObject::tr( "Validating coverages requires a QGIS build based on GEOS 3.12 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Cleaning coverages requires a QGIS build based on GEOS 3.14 or later" ) );
 #else
   if ( !mGeos )
   {
