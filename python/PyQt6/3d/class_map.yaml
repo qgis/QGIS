@@ -127,6 +127,7 @@ Qgs3DMapSettings.origin: src/3d/qgs3dmapsettings.h#L119
 Qgs3DMapSettings.originChanged: src/3d/qgs3dmapsettings.h#L1241
 Qgs3DMapSettings.outputDpi: src/3d/qgs3dmapsettings.h#L689
 Qgs3DMapSettings.pointLightsChanged: src/3d/qgs3dmapsettings.h#L1109
+Qgs3DMapSettings.projectionType: src/3d/qgs3dmapsettings.h#L642
 Qgs3DMapSettings.projectionTypeChanged: src/3d/qgs3dmapsettings.h#L1133
 Qgs3DMapSettings.readXml: src/3d/qgs3dmapsettings.h#L69
 Qgs3DMapSettings.rendererUsage: src/3d/qgs3dmapsettings.h#L815
@@ -161,6 +162,7 @@ Qgs3DMapSettings.setMsaaEnabled: src/3d/qgs3dmapsettings.h#L930
 Qgs3DMapSettings.setOrigin: src/3d/qgs3dmapsettings.h#L112
 Qgs3DMapSettings.setOutputDpi: src/3d/qgs3dmapsettings.h#L682
 Qgs3DMapSettings.setPathResolver: src/3d/qgs3dmapsettings.h#L182
+Qgs3DMapSettings.setProjectionType: src/3d/qgs3dmapsettings.h#L648
 Qgs3DMapSettings.setRendererUsage: src/3d/qgs3dmapsettings.h#L823
 Qgs3DMapSettings.setSelectionColor: src/3d/qgs3dmapsettings.h#L222
 Qgs3DMapSettings.setShowCameraRotationCenter: src/3d/qgs3dmapsettings.h#L499
