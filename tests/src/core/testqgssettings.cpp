@@ -93,9 +93,11 @@ void TestQgsSettings::flagValue()
   settings.remove( u"qgis/testing/my_value_for_a_zero_flag"_s );
   QCOMPARE( settings.flagValue( u"qgis/testing/my_value_for_a_zero_flag"_s, noFilters ), noFilters );
   settings.setFlagValue( u"qgis/testing/my_value_for_a_zero_flag"_s, noFilters );
+  QCOMPARE( settings.value( u"qgis/testing/my_value_for_a_zero_flag"_s, u"myDummyString"_s ).toString(), u"0"_s );
   QCOMPARE( settings.flagValue( u"qgis/testing/my_value_for_a_zero_flag"_s, pointAndLine ), noFilters );
   settings.setValue( u"qgis/testing/my_value_for_a_zero_flag"_s, 0 );
   QCOMPARE( settings.flagValue( u"qgis/testing/my_value_for_a_zero_flag"_s, pointAndLine ), noFilters );
+  QCOMPARE( settings.value( u"qgis/testing/my_value_for_a_zero_flag"_s, u"myDummyString"_s ).toString(), u"0"_s );
 }
 
 
