@@ -62,13 +62,6 @@ if [[ "${WITH_COMPILE_COMMANDS}" == "ON" ]]; then
   )
 fi
 
-if [[ "${WITH_ASAN:-OFF}" == "ON" ]]; then
-  BUILD_TYPE=RelWithDebInfo
-  CMAKE_EXTRA_ARGS+=(
-    "-DWITH_ASAN=ON"
-  )
-fi
-
 if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
     "-DGRASS_PREFIX$( grass --config version | cut -b 1 )=$( grass --config path )"
