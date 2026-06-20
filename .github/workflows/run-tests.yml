@@ -67,6 +67,7 @@ jobs:
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
             unity-builds: ON
+            with-asan: OFF
 
           - distro: fedora
             distro-version: '42'
@@ -92,6 +93,7 @@ jobs:
             LD_PRELOAD: ''
             experimental: false
             unity-builds: ON
+            with-asan: ON
 
       fail-fast: false
 
@@ -195,6 +197,7 @@ jobs:
                      --env WITH_ORACLE_TEST=${{ matrix.with-oracle-test }} \
                      --env WITH_QSPATIALITE=${{ matrix.with-qspatialite-test }} \
                      --env WITH_SERVER_LANDINGPAGE_WEBAPP=${{ matrix.with-server-landingpage-webapp }} \
+                     --env WITH_ASAN=${{ matrix.with-asan }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
@@ -411,7 +414,10 @@ jobs:
           echo "TEST_BLOCKLIST_FILE=$TEST_BLOCKLIST_FILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
           mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
-          docker compose -f .docker/$DOCKERFILE run -e GITHUB_SHA=$GITHUB_SHA qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH $TEST_BLOCKLIST_FILE
+          docker compose -f .docker/$DOCKERFILE run \
+            -e GITHUB_SHA=$GITHUB_SHA \
+            -e ASAN_OPTIONS=detect_leaks=0:abort_on_error=1:symbolize=1:fast_unwind_on_malloc=0:malloc_context_size=30 \
+            qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH $TEST_BLOCKLIST_FILE
 
       - name: Fix permissions on test report
         if: ${{ failure() }}
