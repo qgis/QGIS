@@ -91,10 +91,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mMeshSymbolWidget = new QgsMesh3DSymbolWidget( nullptr, groupMeshTerrainShading );
   mMeshSymbolWidget->configureForTerrain();
 
-  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::PerspectiveProjection ) );
-  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::OrthographicProjection ) );
+  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Perspective ) );
+  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Orthographic ) );
   connect( cboCameraProjectionType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]() {
-    spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( QVariant::fromValue( Qgis::Map3DProjectionType::PerspectiveProjection ) ) );
+    spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( QVariant::fromValue( Qgis::Map3DProjectionType::Perspective ) ) );
   } );
 
   mCameraMovementSpeed->setClearValue( 4 );

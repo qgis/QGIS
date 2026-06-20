@@ -13578,7 +13578,7 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     map->setCameraNavigationMode( defaultNavMode );
 
     map->setCameraMovementSpeed( settings.value( u"map3d/defaultMovementSpeed"_s, 5, QgsSettings::App ).toDouble() );
-    const Qgis::Map3DProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qgis::Map3DProjectionType::PerspectiveProjection, QgsSettings::App );
+    const Qgis::Map3DProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qgis::Map3DProjectionType::Perspective, QgsSettings::App );
     map->setProjectionType( defaultProjection );
     map->setFieldOfView( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
     map->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );

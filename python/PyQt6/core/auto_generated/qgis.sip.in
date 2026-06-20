@@ -2429,8 +2429,8 @@ The development version
 
     enum class Map3DProjectionType /BaseType=IntEnum/
     {
-      OrthographicProjection,
-      PerspectiveProjection,
+      Orthographic,
+      Perspective,
     };
 
     enum class Point3DShape /BaseType=IntEnum/

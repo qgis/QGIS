@@ -461,7 +461,7 @@ void QgsCameraController::updateOrthographicProjectionPlane()
 {
   // When using orthographic projection, reuse the distance to center (which
   // ordinarily wouldn't do anything) to set the viewport size in the world.
-  if ( mScene->mapSettings()->projectionType() == Qgis::Map3DProjectionType::OrthographicProjection )
+  if ( mScene->mapSettings()->projectionType() == Qgis::Map3DProjectionType::Orthographic )
   {
     const QSize viewportRect = mScene->engine()->size();
     const float viewWidthFromCenter = distance();
@@ -641,10 +641,10 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     // Choose threshold angle based on projection type so it "feels right".
     switch ( mScene->mapSettings()->projectionType() )
     {
-      case Qgis::Map3DProjectionType::PerspectiveProjection:
+      case Qgis::Map3DProjectionType::Perspective:
         changeAltitude = angle < M_PI / 30;
         break;
-      case Qgis::Map3DProjectionType::OrthographicProjection:
+      case Qgis::Map3DProjectionType::Orthographic:
         changeAltitude = angle < M_PI / 3;
         break;
       default:
@@ -656,7 +656,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     else
       switch ( mScene->mapSettings()->projectionType() )
       {
-        case Qgis::Map3DProjectionType::OrthographicProjection:
+        case Qgis::Map3DProjectionType::Orthographic:
         {
           // Project change to XY plane.
           // This isn't quite accurate at higher angles, "desyncing" the mouse
@@ -664,7 +664,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
           shiftVector = { mDragPoint.x() - moveToPosition.x(), mDragPoint.y() - moveToPosition.y(), 0 };
           break;
         }
-        case Qgis::Map3DProjectionType::PerspectiveProjection:
+        case Qgis::Map3DProjectionType::Perspective:
         {
           QVector3D cameraBeforeToMoveToPos = ( moveToPosition - mCameraBefore->position() ).normalized();
           QVector3D cameraBeforeToDragPointPos = ( mDragPoint - mCameraBefore->position() ).normalized();
