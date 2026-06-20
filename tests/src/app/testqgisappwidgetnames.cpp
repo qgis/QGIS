@@ -54,6 +54,7 @@ TestQgisAppWidgetNames::TestQgisAppWidgetNames()
 //runs before all tests
 void TestQgisAppWidgetNames::initTestCase()
 {
+  QgsApplication::init();
   mQgisApp = new QgisApp( new QSplashScreen(), QgisApp::AppOption::NoOption );
 }
 
@@ -62,6 +63,7 @@ void TestQgisAppWidgetNames::cleanupTestCase()
 {
   // Hack to avoid an issue when deleting the application
   QgsApplication::processingRegistry()->blockSignals( true );
+  QgsApplication::exitQgis();
 }
 
 void TestQgisAppWidgetNames::init()
