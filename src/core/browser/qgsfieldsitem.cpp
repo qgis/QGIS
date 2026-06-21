@@ -186,7 +186,6 @@ void QgsFieldItem::setDomain( const QgsFieldDomain *domain )
 {
   delete mDomain;
   mDomain = domain;
-  setName( u"%1 (Domain: %2)"_s.arg( mField.name(), mDomain->name() ) );
   setToolTip( QgsFieldModel::fieldToolTip( mField ) );
 }
 
