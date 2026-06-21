@@ -105,6 +105,14 @@ Returns the default icon for the specified layer ``type``.
 
 .. versionadded:: 3.22
 %End
+
+    static QIcon addFieldDomainOverlay( const QIcon &icon );
+%Docstring
+Returns a copy of ``icon`` with a underlay icon in indicating that the
+field's values are governed by a field domain.
+
+.. versionadded:: 4.2
+%End
 };
 
 /************************************************************************

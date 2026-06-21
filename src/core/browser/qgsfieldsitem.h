@@ -174,6 +174,11 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
      */
     void setDomain( const QgsFieldDomain *domain );
 
+    /**
+     * Returns TRUE if the field is governed by a field domain.
+     *
+     * \since QGIS 3.44
+     */
   private:
     const QgsField mField;
     const QgsFieldDomain *mDomain = nullptr;
