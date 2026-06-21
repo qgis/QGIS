@@ -169,7 +169,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
      *
      * \since QGIS 4.2
      */
-    void setDomain( const QgsFieldDomain *domain ) SIP_TRANSFER;
+    void setDomain( QgsFieldDomain *domain SIP_TRANSFER );
 
     /**
      * Returns TRUE if the field is governed by a field domain.
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
      */
   private:
     const QgsField mField;
-    const std::unique_ptr<QgsFieldDomain> mDomain = nullptr;
+    std::unique_ptr<QgsFieldDomain> mDomain;
 };
 
 #endif // QGSFIELDSITEM_H
