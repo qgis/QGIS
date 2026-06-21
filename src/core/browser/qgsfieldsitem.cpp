@@ -82,9 +82,9 @@ QVector<QgsDataItem *> QgsFieldsItem::createChildren()
           const QString domainName = f.constraints().domainName();
           if ( !domainName.isEmpty() )
           {
-            QgsFieldDomain *domain = conn->fieldDomain( domainName );
+            std::unique_ptr< QgsFieldDomain > domain( conn->fieldDomain( domainName ) );
             if ( domain )
-              fieldItem->setDomain( domain );
+              fieldItem->setDomain( domain.release() );
           }
           fieldItem->setSortKey( i++ );
           children.push_back( fieldItem );
