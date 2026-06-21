@@ -35,7 +35,10 @@ test_app_applocatorfilters
 test_app_customization
 test_app_decorationscalebar
 test_app_dwgimportdialog
+test_app_elevationprofilewidget
 test_app_fieldcalculator
+test_app_identify
+test_app_labelpropertydialog
 test_app_layerpropertiesdialogs
 test_app_mapsavedialog
 test_app_maptooladdpart
@@ -60,6 +63,7 @@ test_app_maptooloffsetcurve
 test_app_maptoolchamferfillet
 test_app_measuretool
 test_app_measurebearingtool
+test_app_vertexeditor
 test_app_vertextool
 test_app_vectorlayersaveasdialog
 test_app_maptoolreverseline

@@ -34,9 +34,12 @@ test_app_attributetable
 test_app_customization
 test_app_decorationscalebar
 test_app_identify
+test_app_labelpropertydialog
 test_app_layerpropertiesdialogs
+test_app_mapsavedialog
 test_app_maptooladdpart
 test_app_maptooladdring
+test_app_maptooladdfeaturepoint
 test_app_maptooldeletepart
 test_app_maptooldeletering
 test_app_maptooleditmesh

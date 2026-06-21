@@ -3017,6 +3017,9 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList(
   const QVariantList &json, QgsMapBoxGlStyleConverter::PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier, int maxOpacity, QColor *defaultColor, double *defaultNumber
 )
 {
+  if ( defaultNumber )
+    *defaultNumber = 0;
+
   const QString attribute = parseExpression( json.value( 1 ).toList(), context );
   if ( attribute.isEmpty() )
   {
