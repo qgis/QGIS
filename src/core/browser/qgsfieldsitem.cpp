@@ -177,15 +177,10 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
   setToolTip( QgsFieldModel::fieldToolTip( field ) );
 }
 
-QgsFieldItem::~QgsFieldItem()
-{
-  delete mDomain;
-}
 
 void QgsFieldItem::setDomain( const QgsFieldDomain *domain )
 {
-  delete mDomain;
-  mDomain = domain;
+  mDomain.reset( domain );
   setToolTip( QgsFieldModel::fieldToolTip( mField ) );
 }
 
