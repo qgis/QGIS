@@ -364,6 +364,9 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
     mLabel->setText( tr( "Coordinate" ) );
+    mLineEdit->setMinimumWidth( mMinimumWidth );
+    mLineEdit->setMaximumWidth( QWIDGETSIZE_MAX );
+    updateCoordinateDisplay();
   }
 }
 
