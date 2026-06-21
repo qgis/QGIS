@@ -33,7 +33,7 @@ using namespace Qt::StringLiterals;
  * \brief Abstract base class for simple curved geometry type.
  *
  * This class is not part of the SQL/MM standard and only exists for implementation convenience.
- * \since QGIS 4.4
+ * \since QGIS 4.2
  */
 class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
 {

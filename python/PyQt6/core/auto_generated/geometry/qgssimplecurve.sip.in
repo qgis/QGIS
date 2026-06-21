@@ -19,7 +19,7 @@ Abstract base class for simple curved geometry type.
 This class is not part of the SQL/MM standard and only exists for
 implementation convenience.
 
-.. versionadded:: 4.4
+.. versionadded:: 4.2
 %End
 
 %TypeHeaderCode
