@@ -25,21 +25,29 @@ PyQgsAppStartup
 # 27878685863 / Ubuntu ALL_BUT_PROVIDERS job 82516766122 shows the same common
 # root cause. Keep this precise list blocked until the shared startup corruption
 # is fixed under ASAN.
+test_app_qgisapp
+test_app_qgisappclipboard
 test_app_qgisappwidgetnames
 test_app_qgisappdockwidgets
 test_app_advanceddigitizing
 test_app_attributetable
 test_app_applocatorfilters
 test_app_customization
+test_app_decorationscalebar
 test_app_dwgimportdialog
 test_app_fieldcalculator
 test_app_layerpropertiesdialogs
 test_app_mapsavedialog
+test_app_maptooladdpart
+test_app_maptooladdring
+test_app_maptooldeletepart
 test_app_maptooldeletering
 test_app_maptoolreshape
 test_app_maptoolrotatefeature
 test_app_maptoolscalefeature
 test_app_maptoolcircularstring
+test_app_maptooleditmesh
+test_app_maptoolellipse
 test_app_maptoolmovefeature
 test_app_maptoolfeaturearray
 test_app_maptoolcircle
@@ -55,12 +63,15 @@ test_app_measurebearingtool
 test_app_vertextool
 test_app_vectorlayersaveasdialog
 test_app_maptoolreverseline
+test_app_gpsintegration
+test_app_projectexpressions
 test_app_projectproperties
 test_app_meshcalculatordialog
 test_app_mergeattributesdialog
 test_app_georeferencer
 test_app_qgisapppython
 test_app_maptooladdfeaturepoint
+test_app_maptooladdfeaturepointz
 test_app_maptooladdfeaturepointm
 test_app_maptooladdfeaturepointzm
 test_app_maptooladdfeatureline

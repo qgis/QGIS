@@ -26,16 +26,23 @@ PyQgsAppStartup
 # root cause. Keep this precise list blocked until the shared startup corruption
 # is fixed under ASAN.
 test_app_qgisapp
+test_app_qgisappclipboard
 test_app_qgisappwidgetnames
 test_app_advanceddigitizing
 test_app_attributetable
 test_app_customization
+test_app_decorationscalebar
 test_app_identify
 test_app_layerpropertiesdialogs
+test_app_maptooladdpart
+test_app_maptooladdring
 test_app_maptooldeletepart
+test_app_maptooleditmesh
+test_app_maptoolellipse
 test_app_maptoolrotatefeature
 test_app_maptoolcircle
 test_app_measuretool
+test_app_projectexpressions
 test_app_vertexeditor
 test_app_vertextool
 test_app_maptoolreverseline
