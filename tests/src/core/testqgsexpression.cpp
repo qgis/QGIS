@@ -3575,7 +3575,7 @@ class TestQgsExpression : public QObject
       }
       QCOMPARE( actualBinaryOps, expectedBinaryOps );
 
-      exp.setExpression( R"(if(current_value('a') in (1, 2), 'yes', 'no'))"_L1 );
+      exp.setExpression( QLatin1String( R"(if(current_value('a') in (1, 2), 'yes', 'no'))" ) );
       functionNodes = exp.findNodes<QgsExpressionNodeFunction>();
       actualFunctions.clear();
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
@@ -3585,7 +3585,7 @@ class TestQgsExpression : public QObject
         actualFunctions << fd->name();
       }
       expectedFunctions.clear();
-      expectedFunctions << u"if"_s << u"current_value"_s;
+      expectedFunctions << QStringLiteral( "if" ) << QStringLiteral( "current_value" );
       QCOMPARE( actualFunctions, expectedFunctions );
     }
 
