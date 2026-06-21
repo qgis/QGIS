@@ -178,7 +178,7 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
 }
 
 
-void QgsFieldItem::setDomain( const QgsFieldDomain *domain )
+void QgsFieldItem::setDomain( QgsFieldDomain *domain )
 {
   mDomain.reset( domain );
   setToolTip( QgsFieldModel::fieldToolTip( mField ) );
