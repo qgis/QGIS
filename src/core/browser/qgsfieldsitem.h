@@ -22,10 +22,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdataitem.h"
 #include "qgsfield.h"
-
-#include <QString>
-
-class QgsFieldDomain;
+#include "qgsfielddomain.h"
 
 #include <QString>
 
