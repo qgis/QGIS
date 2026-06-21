@@ -181,7 +181,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
      */
   private:
     const QgsField mField;
-    const QgsFieldDomain *mDomain = nullptr;
+    const std::unique_ptr<QgsFieldDomain> mDomain = nullptr;
 };
 
 #endif // QGSFIELDSITEM_H
