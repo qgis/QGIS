@@ -58,6 +58,7 @@ test_app_measuretool
 test_app_measurebearingtool
 test_app_projectproperties
 test_app_projectexpressions
+test_app_vectorlayersaveasdialog
 test_app_vertexeditor
 test_app_vertextool
 test_app_maptoolreverseline
