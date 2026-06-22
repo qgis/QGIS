@@ -6901,14 +6901,14 @@ int QgisEvent = QEvent::User + 1;
     /**
      * Merge strategies for coverage cleaning operations.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     enum class CoverageCleanOverlapMergeStrategy : int
     {
-      LongestBorder = 0, //!< Polygon with longest common border is chosen to merge overlapping polygons into
-      MaxArea = 1,       //!< Polygon with largest area is chosen to merge overlapping polygons into
-      MinArea = 2,       //!< Polygon with minimum area is chosen to merge overlapping polygons into
-      MinIndex = 3,      //!< Polygon with smallest input index is chosen to merge overlapping polygons into
+      LongestBorder = 0, //!< Polygon with longest common border is selected to merge overlapping polygons into
+      MaximumArea = 1,       //!< Polygon with largest area is chosen to merge overlapping polygons into
+      MinimumArea = 2,       //!< Polygon with minimum area is chosen to merge overlapping polygons into
+      MinimumIndex = 3,      //!< Polygon with smallest input index is chosen to merge overlapping polygons into
     };
     Q_ENUM( CoverageCleanOverlapMergeStrategy )
 

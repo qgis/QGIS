@@ -2083,7 +2083,7 @@ class CORE_EXPORT QgsGeometry
      * All members must be POLYGON or MULTIPOLYGON. The input does not have to be a valid coverage.
      *
      * \see validateCoverage()
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     QgsGeometry cleanCoverage( double gapWidth, double snappingDistance, Qgis::CoverageCleanOverlapMergeStrategy mergeStrategy ) const;
 

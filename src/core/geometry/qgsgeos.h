@@ -988,14 +988,23 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     std::unique_ptr< QgsAbstractGeometry > unionCoverage( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
-     * Operates on a coverage (represented as a list of polygonal geometry and cleans the coverage,
-     * removing overlapping areas and closing small gaps.
+     * Operates on a coverage (represented as a list of polygonal geometry),
+     * to fix cases where the geometry does not in fact exactly match.
      *
-     * The input geometry is the polygonal coverage to union, stored in a geometry collection.
-     * All members must be POLYGON or MULTIPOLYGON.
+     * The input is a collection of polygons, and the output is a collection
+     * with the same number of cleaned polygons, in the same order as
+     * the input. Polygons that have collapsed during cleaning will be returned
+     * as empty polygons.
      *
+     * The optional \a feedback argument supports early cancellation of the operation.
+     *
+     * This method requires a QGIS build based on GEOS 3.14 or later.
+     *
+     * \note Not available in Python bindings
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.13 or earlier.
      * \see validateCoverage()
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     std::unique_ptr< QgsAbstractGeometry > cleanCoverage(
       double gapWidth, double snappingDistance, Qgis::CoverageCleanOverlapMergeStrategy mergeStrategy, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr

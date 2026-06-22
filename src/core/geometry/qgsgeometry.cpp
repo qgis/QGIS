@@ -3198,7 +3198,10 @@ QgsGeometry QgsGeometry::cleanCoverage( double gapWidth, double snappingDistance
   {
     return QgsGeometry();
   }
-
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result( geos.cleanCoverage( gapWidth, snappingDistance, mergeStrategy, &mLastError ) );

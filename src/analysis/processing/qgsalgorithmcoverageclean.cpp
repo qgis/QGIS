@@ -39,7 +39,7 @@ QString QgsCoverageCleanAlgorithm::displayName() const
 
 QStringList QgsCoverageCleanAlgorithm::tags() const
 {
-  return QObject::tr( "topological,boundary" ).split( ',' );
+  return QObject::tr( "topological,boundary,repair" ).split( ',' );
 }
 
 QString QgsCoverageCleanAlgorithm::group() const
@@ -77,14 +77,25 @@ void QgsCoverageCleanAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsCoverageCleanAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Cleans a coverage of polygon features which may have gaps and overlaps by removing both." );
+  return QObject::tr( "Cleans a coverage of polygon features to fix cases where the geometries do not exactly align." );
 }
 
 QString QgsCoverageCleanAlgorithm::shortHelpString() const
 {
-  return QObject::tr(
-    "This algorithm operates on a coverage (represented as a list of polygonal geometry) "
-    "and cleans the coverage by removing overlapping areas and closing small gaps."
+ return QObject::tr(
+    "This algorithm operates on a coverage (represented as a list of polygon features) "
+    "to fix cases where the geometry does not in fact exactly match, repairing small "
+    "overlaps and gaps to restore a valid topological coverage.\n\n"
+    "It uses a combination of snapping and gap/overlap merging. Snapping to nearby vertices "
+    "and line segments improves noding robustness and eliminates small errors. If the snapping "
+    "distance is not specified, an automatic distance based on the data extent is used. A distance "
+    "of 0 disables snapping.\n\n"
+    "Gaps and holes that are narrower than the Maximum Gap Width are merged with an adjacent polygon. "
+    "Gaps which are not fully enclosed ('inlets') are not removed.\n\n"
+    "When repairing overlaps and gaps, the Overlap Merge Strategy determines which adjacent "
+    "polygon the problematic area is merged into (e.g., merging with the polygon that shares "
+    "the longest border, or the one with the maximum/minimum area).\n\n"
+    "Polygons that have collapsed during cleaning will be returned as empty polygons."
   );
 }
 
@@ -126,7 +137,7 @@ QVariantMap QgsCoverageCleanAlgorithm::processAlgorithm( const QVariantMap &para
   feedback->pushInfo( QObject::tr( "Collecting features" ) );
 
   QgsFeature inFeature;
-  QgsFeatureIterator features = source->getFeatures();
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest(), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   while ( features.nextFeature( inFeature ) )
   {
     if ( feedback->isCanceled() )
