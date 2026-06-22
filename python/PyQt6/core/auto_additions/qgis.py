@@ -12969,18 +12969,18 @@ Qgis.DockableWidgetInitialState.__doc__ = """Dockable widget initial states.
 # --
 Qgis.DockableWidgetInitialState.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder.__doc__ = "Polygon with longest common border is chosen to merge overlapping polygons into"
-Qgis.CoverageCleanOverlapMergeStrategy.MaxArea.__doc__ = "Polygon with largest area is chosen to merge overlapping polygons into"
-Qgis.CoverageCleanOverlapMergeStrategy.MinArea.__doc__ = "Polygon with minimum area is chosen to merge overlapping polygons into"
-Qgis.CoverageCleanOverlapMergeStrategy.MinIndex.__doc__ = "Polygon with smallest input index is chosen to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder.__doc__ = "Polygon with longest common border is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MaximumArea.__doc__ = "Polygon with largest area is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MinimumArea.__doc__ = "Polygon with minimum area is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MinimumIndex.__doc__ = "Polygon with smallest input index is selected to merge overlapping polygons into"
 Qgis.CoverageCleanOverlapMergeStrategy.__doc__ = """Merge strategies for coverage cleaning operations.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 
-* ``LongestBorder``: Polygon with longest common border is chosen to merge overlapping polygons into
-* ``MaxArea``: Polygon with largest area is chosen to merge overlapping polygons into
-* ``MinArea``: Polygon with minimum area is chosen to merge overlapping polygons into
-* ``MinIndex``: Polygon with smallest input index is chosen to merge overlapping polygons into
+* ``LongestBorder``: Polygon with longest common border is selected to merge overlapping polygons into
+* ``MaximumArea``: Polygon with largest area is selected to merge overlapping polygons into
+* ``MinimumArea``: Polygon with minimum area is selected to merge overlapping polygons into
+* ``MinimumIndex``: Polygon with smallest input index is selected to merge overlapping polygons into
 
 """
 # --

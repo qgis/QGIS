@@ -1006,9 +1006,9 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      * \see validateCoverage()
      * \since QGIS 4.4
      */
-    std::unique_ptr< QgsAbstractGeometry > cleanCoverage(
-      double gapWidth, double snappingDistance, Qgis::CoverageCleanOverlapMergeStrategy mergeStrategy, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr
-    ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > cleanCoverage( const QgsCoverageCleanParameters &parameters, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
 
     /**
      * Create a geometry from a GEOSGeometry

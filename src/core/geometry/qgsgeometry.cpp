@@ -3192,19 +3192,21 @@ QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoun
   return result;
 }
 
-QgsGeometry QgsGeometry::cleanCoverage( double gapWidth, double snappingDistance, Qgis::CoverageCleanOverlapMergeStrategy mergeStrategy ) const
+QgsGeometry QgsGeometry::cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
     return QgsGeometry();
   }
+
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection
        && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
        && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
     return QgsGeometry();
+
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result( geos.cleanCoverage( gapWidth, snappingDistance, mergeStrategy, &mLastError ) );
+  const QgsGeometry result( geos.cleanCoverage( parameters, &mLastError, feedback ) );
   result.mLastError = mLastError;
   return result;
 }

@@ -3873,9 +3873,9 @@ The development version
     enum class CoverageCleanOverlapMergeStrategy /BaseType=IntEnum/
     {
       LongestBorder,
-      MaxArea,
-      MinArea,
-      MinIndex,
+      MaximumArea,
+      MinimumArea,
+      MinimumIndex,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
