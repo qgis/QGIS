@@ -33,7 +33,9 @@ test_app_advanceddigitizing
 test_app_attributetable
 test_app_customization
 test_app_decorationscalebar
+test_app_dwgimportdialog
 test_app_elevationprofilewidget
+test_app_fieldcalculator
 test_app_identify
 test_app_labelpropertydialog
 test_app_layerpropertiesdialogs
@@ -46,6 +48,7 @@ test_app_maptooldeletering
 test_app_maptoolreshape
 test_app_maptooleditmesh
 test_app_maptoolellipse
+test_app_maptoolmovefeature
 test_app_maptoolrotatefeature
 test_app_maptoolscalefeature
 test_app_maptoolfeaturearray
@@ -54,6 +57,7 @@ test_app_maptoolnurbs
 test_app_maptoolrectangle
 test_app_maptoolsplitparts
 test_app_maptoolsplitfeatures
+test_app_maptoolchamferfillet
 test_app_measuretool
 test_app_measurebearingtool
 test_app_projectproperties
