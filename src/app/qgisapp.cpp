@@ -201,6 +201,10 @@ using namespace Qt::StringLiterals;
 #include "qgsnative.h"
 #include "qgsdatasourceselectdialog.h"
 
+#ifdef HAVE_POSTGRESQL
+#include <libpq-fe.h>
+#endif
+
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
 #endif
@@ -5695,7 +5699,13 @@ QString QgisApp::getVersionString()
   // postgres
   versionString += u"<td>%1</td><td>"_s.arg( tr( "PostgreSQL client version" ) );
 #ifdef HAVE_POSTGRESQL
-  versionString += QStringLiteral( POSTGRESQL_VERSION );
+  const QString libpqVersionCompiled { POSTGRESQL_VERSION };
+  const QString libpqVersionRunning { u"%1.%2"_s.arg( PQlibVersion() / 10000 ).arg( PQlibVersion() / 10000 >= 10 ? PQlibVersion() % 10000 : PQlibVersion() / 100 % 100 ) };
+  versionString += libpqVersionCompiled;
+  if ( libpqVersionCompiled != libpqVersionRunning )
+  {
+    versionString += u" (%1)<br/>%2 (%3)"_s.arg( compLabel, libpqVersionRunning, runLabel );
+  }
 #else
   versionString += tr( "No support" );
 #endif
