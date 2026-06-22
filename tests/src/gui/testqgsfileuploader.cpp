@@ -146,12 +146,14 @@ void TestQgsFileUploader::testSslError_data()
   QTest::addColumn<QString>( "url" );
   QTest::addColumn<QString>( "result" );
 
-  QTest::newRow( "expired" )
-    << "https://expired.badssl.com/"
-    << "Upload failed: SSL handshake failed: The certificate has expired";
-  QTest::newRow( "self-signed" )
-    << "https://self-signed.badssl.com/"
-    << "Upload failed: SSL handshake failed: The certificate is self-signed, and untrusted";
+  const QString expiredUrl = qgetenv( "QGIS_BADSSL_URL_EXPIRED" );
+  const QString selfSignedUrl = qgetenv( "QGIS_BADSSL_URL_SELFSIGNED" );
+
+  QVERIFY( !expiredUrl.isEmpty() );
+  QVERIFY( !selfSignedUrl.isEmpty() );
+
+  QTest::newRow( "expired" ) << expiredUrl << "Upload failed: SSL handshake failed: The certificate has expired";
+  QTest::newRow( "self-signed" ) << selfSignedUrl << "Upload failed: SSL handshake failed: The certificate is self-signed, and untrusted";
 }
 
 void TestQgsFileUploader::testSslError()

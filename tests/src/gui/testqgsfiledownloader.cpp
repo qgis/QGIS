@@ -209,12 +209,14 @@ void TestQgsFileDownloader::testSslError_data()
   QTest::addColumn<QString>( "url" );
   QTest::addColumn<QString>( "result" );
 
-  QTest::newRow( "expired" )
-    << "https://expired.badssl.com/"
-    << "SSL Errors: ;The certificate has expired";
-  QTest::newRow( "self-signed" )
-    << "https://self-signed.badssl.com/"
-    << "SSL Errors: ;The certificate is self-signed, and untrusted";
+  const QString expiredUrl = qgetenv( "QGIS_BADSSL_URL_EXPIRED" );
+  const QString selfSignedUrl = qgetenv( "QGIS_BADSSL_URL_SELFSIGNED" );
+
+  QVERIFY( !expiredUrl.isEmpty() );
+  QVERIFY( !selfSignedUrl.isEmpty() );
+
+  QTest::newRow( "expired" ) << expiredUrl << "SSL Errors: ;The certificate has expired";
+  QTest::newRow( "self-signed" ) << selfSignedUrl << "SSL Errors: ;The certificate is self-signed, and untrusted";
 }
 
 void TestQgsFileDownloader::testSslError()
