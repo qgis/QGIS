@@ -1746,7 +1746,7 @@ void QgsCustomization::applyToToolBars() const
     }
   }
 
-  // delete user tool bar not existing anymore
+  // delete user defined tool bar not existing anymore
   for ( QToolBar *toolBar : userToolBars )
   {
     QgisApp::instance()->removeToolBar( toolBar );
