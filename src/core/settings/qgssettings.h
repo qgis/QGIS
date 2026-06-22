@@ -349,19 +349,20 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        const QByteArray defaultKeys = metaEnum.valueToKeys( static_cast< const int >( defaultValue ) );
-        const QByteArray ba = value( key, defaultKeys, section ).toString().toUtf8();
-        if ( ba.isEmpty() )
+        const QString defaultKeys = qgsFlagValueToKeys( defaultValue );
+        const QString keys = value( key, defaultKeys, section ).toString();
+        if ( keys.isEmpty() && contains( key, section ) )
         {
-          ok = defaultKeys.isEmpty() || contains( key, section );
-          if ( ok )
-            v = T( 0 );
+          v = T( 0 );
+          ok = true;
+        }
+        else if ( keys == "0"_L1 )
+        {
+          v = T( 0 );
+          ok = true;
         }
         else
-        {
-          const char *vs = ba.data();
-          v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
-        }
+          v = qgsFlagKeysToValue( keys, defaultValue, false, &ok );
       }
       if ( !ok )
       {
@@ -386,7 +387,7 @@ class CORE_EXPORT QgsSettings : public QObject
               // convert the property to the new form (string)
               // this code could be removed
               // then the method could be marked as const
-              setFlagValue( key, v );
+              setFlagValue( key, v, section );
             }
           }
           else
@@ -412,7 +413,9 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
-        setValue( key, metaEnum.valueToKeys( static_cast< const int >( value ) ), section );
+        const int intValue = static_cast<const int>( value );
+        const QByteArray keys = metaEnum.valueToKeys( intValue );
+        setValue( key, keys.isEmpty() && intValue == 0 ? u"0"_s : QString::fromLatin1( keys ), section );
       }
       else
       {

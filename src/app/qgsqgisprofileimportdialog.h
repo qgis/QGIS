@@ -30,6 +30,8 @@ class QPushButton;
 
 class APP_EXPORT QgsQgisProfileImportDialog : public QDialog
 {
+    Q_OBJECT
+
   public:
     enum class Mode
     {

@@ -152,6 +152,35 @@ namespace
     message.content = text;
     return message;
   }
+
+  // Neutralizes env API-key fallbacks, wipes per-provider settings and the active
+  // selection so a resolve/availability test starts from a known-empty state; the
+  // returned guard restores everything (incl. the active provider) when destroyed.
+  [[nodiscard]] auto isolateProviderState()
+  {
+    const QList<QByteArray> envNames = { "OPENAI_API_KEY", "CLAUDE_API_KEY", "ANTHROPIC_API_KEY", "OPENROUTER_API_KEY" };
+    QList<QPair<QByteArray, QByteArray>> savedEnv;
+    for ( const QByteArray &name : envNames )
+    {
+      if ( qEnvironmentVariableIsSet( name.constData() ) )
+        savedEnv.append( { name, qgetenv( name.constData() ) } );
+      qunsetenv( name.constData() );
+    }
+    QgsSettings settings;
+    const QStringList groups = { u"ai/provider/openai"_s, u"ai/provider/claude"_s, u"ai/provider/openrouter"_s, u"ai/provider/codex"_s, u"ai/provider/plan"_s };
+    for ( const QString &group : groups )
+      settings.remove( group );
+    settings.remove( u"ai/activeProvider"_s );
+    return qScopeGuard( [groups, savedEnv]() {
+      QgsSettings restoreSettings;
+      for ( const QString &group : groups )
+        restoreSettings.remove( group );
+      restoreSettings.remove( u"ai/activeProvider"_s );
+      restoreSettings.remove( u"ai/security/secretsMigrated_v1"_s );
+      for ( const QPair<QByteArray, QByteArray> &entry : savedEnv )
+        qputenv( entry.first.constData(), entry.second );
+    } );
+  }
 } //namespace
 
 class TestQgsAiModelRouter : public QObject
@@ -170,11 +199,16 @@ class TestQgsAiModelRouter : public QObject
     void claudeAuthorizationCodeParsing();
     void claudeAuthorizationStateParsing();
     void claudeTokenExchangeIncludesState();
+    void claudeTokenExchangePreservesHttpError();
     void sanitizeSecrets();
     void storeApiKeyPersistsInSettings();
     void storeOpenRouterApiKeyPersistsInSettings();
     void openRouterApiKeyFromEnvironment();
     void fallbackOrderContainsOnlyUsableProviders();
+    void isProviderAvailableIgnoresEnabledFlag();
+    void setActiveProviderPersistsAndResolves();
+    void resolveProviderFallsBackWhenActiveUnavailable();
+    void selectingProviderDoesNotDisableOthers();
     void toolUseDisabledOmitsToolsFromOpenAiPayload();
     void toolUseEnabledIncludesToolsForOpenAi();
     void toolUseDisabledOmitsToolsFromClaudePayload();
@@ -434,6 +468,27 @@ void TestQgsAiModelRouter::claudeTokenExchangeIncludesState()
   }
 }
 
+void TestQgsAiModelRouter::claudeTokenExchangePreservesHttpError()
+{
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::jsonResponse( 429, "Too Many Requests", QByteArrayLiteral( "{\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Rate limited. Please try again later.\"}}" ) );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  const QString loopbackUrl = u"http://127.0.0.1:%1/token"_s.arg( server.serverPort() );
+  QgsAiClaudeOAuthClient::setTokenUrlForTesting( loopbackUrl );
+  const auto clearTokenUrl = qScopeGuard( [] { QgsAiClaudeOAuthClient::clearTokenUrlForTesting(); } );
+
+  const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = QgsAiClaudeOAuthClient::buildAuthorizationRequest();
+  const QString callbackInput = u"https://platform.claude.com/oauth/code/callback?code=exchange-code&state=callback-state"_s;
+
+  QString error;
+  QVERIFY( !QgsAiClaudeOAuthClient::exchangeAuthorizationCode( callbackInput, authRequest.codeVerifier, authRequest.redirectUri, authRequest.state, &error ) );
+  QCOMPARE( server.requestCount, 1 );
+  QVERIFY2( error.contains( u"HTTP 429"_s ), qPrintable( error ) );
+  QVERIFY2( error.contains( u"Rate limited. Please try again later."_s ), qPrintable( error ) );
+  QVERIFY2( !error.contains( u"refresh token"_s, Qt::CaseInsensitive ), qPrintable( error ) );
+}
+
 void TestQgsAiModelRouter::sanitizeSecrets()
 {
   QgsAiModelRouter router;
@@ -526,9 +581,11 @@ void TestQgsAiModelRouter::fallbackOrderContainsOnlyUsableProviders()
   const QStringList groups = { u"ai/provider/openai"_s, u"ai/provider/claude"_s, u"ai/provider/openrouter"_s, u"ai/provider/codex"_s, u"ai/provider/plan"_s };
   for ( const QString &group : groups )
     settings.remove( group );
+  settings.remove( u"ai/activeProvider"_s );
   const auto restore = qScopeGuard( [&settings, groups, savedEnv]() {
     for ( const QString &group : groups )
       settings.remove( group );
+    settings.remove( u"ai/activeProvider"_s );
     settings.remove( u"ai/security/secretsMigrated_v1"_s );
     for ( const QPair<QByteArray, QByteArray> &entry : savedEnv )
       qputenv( entry.first.constData(), entry.second );
@@ -561,6 +618,79 @@ void TestQgsAiModelRouter::fallbackOrderContainsOnlyUsableProviders()
     QCOMPARE( order.at( 0 ), QgsAiModelRouter::Provider::OpenRouter );
     QCOMPARE( order.at( 1 ), QgsAiModelRouter::Provider::Claude );
   }
+}
+
+void TestQgsAiModelRouter::isProviderAvailableIgnoresEnabledFlag()
+{
+  const auto guard = isolateProviderState();
+
+  QgsAiModelRouter router;
+  QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::OpenAi, u"sk-available-test"_s ) );
+
+  // A synced provider can be explicitly disabled (i.e. not the active choice) yet
+  // must still count as "available" so the picker keeps offering its models.
+  QgsAiModelRouter::ProviderSettings s = router.providerSettings( QgsAiModelRouter::Provider::OpenAi );
+  s.enabled = false;
+  router.setProviderSettings( QgsAiModelRouter::Provider::OpenAi, s );
+
+  QVERIFY( router.isProviderAvailable( QgsAiModelRouter::Provider::OpenAi ) );
+  QVERIFY( !router.isProviderUsable( QgsAiModelRouter::Provider::OpenAi ) );
+  // OpenRouter has no credential at all: not available, not usable.
+  QVERIFY( !router.isProviderAvailable( QgsAiModelRouter::Provider::OpenRouter ) );
+}
+
+void TestQgsAiModelRouter::setActiveProviderPersistsAndResolves()
+{
+  const auto guard = isolateProviderState();
+
+  QgsAiModelRouter router;
+  QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::OpenRouter, u"sk-or-active-test"_s ) );
+  QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::Claude, u"sk-ant-active-test"_s ) );
+
+  // Claude is lower priority than OpenRouter in the fallback chain, but an explicit
+  // active selection must win.
+  router.setActiveProvider( QgsAiModelRouter::Provider::Claude );
+  QCOMPARE( router.resolveProvider(), QgsAiModelRouter::Provider::Claude );
+
+  // The choice survives a reload (a fresh router instance reads ai/activeProvider).
+  QgsAiModelRouter reloaded;
+  QCOMPARE( reloaded.resolveProvider(), QgsAiModelRouter::Provider::Claude );
+}
+
+void TestQgsAiModelRouter::resolveProviderFallsBackWhenActiveUnavailable()
+{
+  const auto guard = isolateProviderState();
+
+  QgsAiModelRouter router;
+  QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::OpenRouter, u"sk-or-fallback-active-test"_s ) );
+
+  // Codex has no OAuth token, so it is not usable; resolveProvider must fall back
+  // to the synced provider instead of stranding on the stale active choice.
+  router.setActiveProvider( QgsAiModelRouter::Provider::Codex );
+  QVERIFY( !router.isProviderUsable( QgsAiModelRouter::Provider::Codex ) );
+  QCOMPARE( router.resolveProvider(), QgsAiModelRouter::Provider::OpenRouter );
+}
+
+void TestQgsAiModelRouter::selectingProviderDoesNotDisableOthers()
+{
+  const auto guard = isolateProviderState();
+
+  QgsAiModelRouter router;
+  QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::OpenRouter, u"sk-or-switch-test"_s ) );
+  QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::Claude, u"sk-ant-switch-test"_s ) );
+
+  // Mimic the dock's onModelSelected: set the chosen model + mark it active, WITHOUT
+  // touching the other providers.
+  QgsAiModelRouter::ProviderSettings s = router.providerSettings( QgsAiModelRouter::Provider::OpenRouter );
+  s.model = u"openrouter/auto"_s;
+  s.enabled = true;
+  router.setProviderSettings( QgsAiModelRouter::Provider::OpenRouter, s );
+  router.setActiveProvider( QgsAiModelRouter::Provider::OpenRouter );
+
+  QCOMPARE( router.resolveProvider(), QgsAiModelRouter::Provider::OpenRouter );
+  // Claude was not disabled, so it remains synced and ready for an instant switch back.
+  QVERIFY( router.isProviderUsable( QgsAiModelRouter::Provider::Claude ) );
+  QVERIFY( router.isProviderAvailable( QgsAiModelRouter::Provider::Claude ) );
 }
 
 void TestQgsAiModelRouter::toolUseDisabledOmitsToolsFromOpenAiPayload()

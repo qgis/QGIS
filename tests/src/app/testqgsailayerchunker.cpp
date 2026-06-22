@@ -9,6 +9,7 @@
 
 #include "ai/index/qgsailayerchunker.h"
 #include "ai/index/qgsaiworkspaceindex.h"
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
@@ -30,6 +31,8 @@ class TestQgsAiLayerChunker : public QObject
     void chunkTextStaysWithinTargetSize();
     void wktBlobIsRecoverable();
     void rasterEmitsSingleMetadataChunk();
+    void vectorHeaderSkipsFeatureCountScan();
+    void rasterMetadataSkipsBandStatistics();
 };
 
 void TestQgsAiLayerChunker::initTestCase()
@@ -108,6 +111,28 @@ void TestQgsAiLayerChunker::rasterEmitsSingleMetadataChunk()
   // and that the chunker is wired correctly; deeper raster tests live downstream.
   QList<QgsAiWorkspaceIndex::Chunk> chunks = QgsAiLayerChunker::chunkRaster( nullptr );
   QCOMPARE( chunks.size(), 0 );
+}
+
+void TestQgsAiLayerChunker::vectorHeaderSkipsFeatureCountScan()
+{
+  const QString shpPath = QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s;
+  auto layer = std::make_unique<QgsVectorLayer>( shpPath, u"points"_s, u"ogr"_s );
+  QVERIFY( layer->isValid() );
+
+  const auto chunks = QgsAiLayerChunker::chunkVector( layer.get() );
+  QVERIFY( !chunks.isEmpty() );
+  QVERIFY( chunks.first().text.contains( u"feature_count=unknown"_s ) );
+}
+
+void TestQgsAiLayerChunker::rasterMetadataSkipsBandStatistics()
+{
+  auto layer = std::make_unique<QgsRasterLayer>( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, u"landsat"_s );
+  if ( !layer->isValid() )
+    QSKIP( "landsat raster fixture unavailable" );
+
+  const auto chunks = QgsAiLayerChunker::chunkRaster( layer.get() );
+  QVERIFY( !chunks.isEmpty() );
+  QVERIFY( chunks.first().text.contains( u"band statistics skipped during fast layer snapshot"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsAiLayerChunker )

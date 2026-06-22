@@ -307,7 +307,15 @@ bool QgsAiClaudeOAuthClient::exchangeAuthorizationCode( const QString &authoriza
 
   int httpStatus = 0;
   QByteArray rawBody;
-  const QJsonObject object = postJsonBlocking( payload, CLAUDE_TOKEN_EXCHANGE_TIMEOUT_MS, httpStatus, rawBody, errorMessage );
+  QString requestError;
+  const QJsonObject object = postJsonBlocking( payload, CLAUDE_TOKEN_EXCHANGE_TIMEOUT_MS, httpStatus, rawBody, &requestError );
+  if ( object.isEmpty() && !requestError.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = requestError;
+    return false;
+  }
+
   const QString refreshToken = object.value( u"refresh_token"_s ).toString();
   if ( refreshToken.isEmpty() )
   {

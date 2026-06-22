@@ -22,7 +22,10 @@ elif [[ -z "${PYTHONHOME:-}" ]]; then
     awk -F= '/^Python_EXECUTABLE:/ { print $2; exit }' "${BUILD}/CMakeCache.txt" 2>/dev/null || true
   )"
   if [[ -n "${PYTHON_EXECUTABLE}" && -x "${PYTHON_EXECUTABLE}" ]]; then
-    export PYTHONHOME="$("${PYTHON_EXECUTABLE}" -c 'import sys; print(sys.base_prefix)')"
+    # Declare and assign separately so the command substitution's exit status
+    # isn't masked by `export` (shellcheck SC2155).
+    PYTHONHOME="$("${PYTHON_EXECUTABLE}" -c 'import sys; print(sys.base_prefix)')"
+    export PYTHONHOME
   fi
 fi
 
@@ -32,5 +35,13 @@ export PYTHONPATH="${BUILD_OUTPUT}/python${PYTHONPATH:+:${PYTHONPATH}}"
 # (qgisbuildpath.txt lives under Contents/MacOS, not under output/).
 
 "${ROOT}/scripts/patch-macos-bundle.sh" >/dev/null
+
+
+# Performance tips (dev builds):
+# - Layer auto-indexing can add background work after add/open layer; disable in
+#   AI Assistant settings (strata/index/enable_layer_indexing) to compare load time.
+# - Run ./scripts/verify-layer-index-perf.sh for a structured on/off comparison.
+# - Remove stale SVG paths: ./scripts/clean-stale-svg-paths.sh
+# - Skip Python plugins when profiling startup: ./scripts/run-strata-dev.sh -- -P
 
 exec "${STRATA_BIN}" "$@"

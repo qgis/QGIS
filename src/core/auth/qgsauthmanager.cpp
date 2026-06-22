@@ -3885,6 +3885,16 @@ QString QgsAuthManager::passwordHelperRead( bool &ok )
   ok = false;
   ensureInitialized();
 
+  // The keychain helper blocks on a nested event loop waiting for the OS secret
+  // service, which never responds under headless CI (hangs on macOS, crashes on
+  // a Linux runner without a secret service) and would take down every test that
+  // constructs QgisApp. Behave as "nothing stored" during automated test runs.
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QByteArrayLiteral( "true" ) )
+  {
+    mPasswordHelperErrorCode = QKeychain::EntryNotFound;
+    return QString();
+  }
+
   // Retrieve it!
   QString password;
   passwordHelperLog( tr( "Opening %1 for READ…" ).arg( passwordHelperDisplayName() ) );
@@ -3934,6 +3944,10 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
 {
 #ifdef HAVE_AUTH
   ensureInitialized();
+
+  // See passwordHelperRead(): never block on the system keychain under CI.
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QByteArrayLiteral( "true" ) )
+    return false;
 
   Q_ASSERT( !password.isEmpty() );
   bool result;

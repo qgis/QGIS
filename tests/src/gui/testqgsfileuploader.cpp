@@ -156,6 +156,11 @@ void TestQgsFileUploader::testSslError_data()
 
 void TestQgsFileUploader::testSslError()
 {
+  if ( QgsTest::isCIRun() )
+  {
+    QSKIP( "badssl.com service is not reliable enough for use on CI" );
+  }
+
   QFETCH( QString, url );
   QFETCH( QString, result );
   QVERIFY( !mTempFile->fileName().isEmpty() );

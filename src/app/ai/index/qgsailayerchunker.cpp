@@ -22,7 +22,6 @@
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
@@ -84,11 +83,7 @@ namespace
     if ( !dp )
       return out + "(no data provider)\n"_L1;
 
-    for ( int b = 1; b <= layer->bandCount(); ++b )
-    {
-      const QgsRasterBandStats stats = dp->bandStatistics( b );
-      out += u"band %1: min=%2 max=%3 mean=%4 stddev=%5\n"_s.arg( b ).arg( stats.minimumValue ).arg( stats.maximumValue ).arg( stats.mean ).arg( stats.stdDev );
-    }
+    out += "(band statistics skipped during fast layer snapshot)\n"_L1;
     return out;
   }
 } // namespace
@@ -102,10 +97,8 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
   const QgsFields fields = layer->fields();
   const QString geometryType = QgsWkbTypes::geometryDisplayString( layer->geometryType() );
   const QgsRectangle extent = layer->extent();
-  const qint64 featureCount = layer->featureCount();
-  const QString header = u"Vector layer '%1' (id=%2, crs=%3, geometry=%4)\nfeature_count=%5; sampled_feature_limit=%6; chunk_limit=%7\nextent=(%8,%9,%10,%11)\nfields=%12\n"_s
+  const QString header = u"Vector layer '%1' (id=%2, crs=%3, geometry=%4)\nfeature_count=unknown; sampled_feature_limit=%5; chunk_limit=%6\nextent=(%7,%8,%9,%10)\nfields=%11\n"_s
                            .arg( layer->name(), layer->id(), layer->crs().authid(), geometryType )
-                           .arg( featureCount )
                            .arg( MAX_VECTOR_FEATURE_SAMPLE )
                            .arg( MAX_VECTOR_CHUNKS )
                            .arg( extent.xMinimum() )

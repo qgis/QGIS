@@ -649,12 +649,7 @@ static void setTitleBarText_( QWidget &qgisApp )
   if ( QgsProject::instance()->isDirty() )
     caption.prepend( '*' );
 
-  caption += QgisApp::tr( "QGIS" );
-
-  if ( Qgis::version().endsWith( "Master"_L1 ) )
-  {
-    caption += u" %1"_s.arg( Qgis::devVersion() );
-  }
+  caption += QgisApp::tr( "Strata" );
 
   // Add current profile (if it's not the default one)
   if ( QgisApp::instance()->userProfileManager()->allProfiles().count() > 1 )
@@ -1030,8 +1025,13 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
-  QRgb rgb = mSplash->pixmap().toImage().pixel( mSplash->pixmap().width() / 2, mSplash->pixmap().height() - 8 );
-  QColor splashTextColor( 0xff - qRed( rgb ), 0xff - qGreen( rgb ), 0xff - qBlue( rgb ) );
+  QColor splashTextColor( Qt::white );
+  const QPixmap splashPixmap = mSplash->pixmap();
+  if ( !splashPixmap.isNull() && splashPixmap.width() > 0 && splashPixmap.height() >= 8 )
+  {
+    QRgb rgb = splashPixmap.toImage().pixel( splashPixmap.width() / 2, splashPixmap.height() - 8 );
+    splashTextColor = QColor( 0xff - qRed( rgb ), 0xff - qGreen( rgb ), 0xff - qBlue( rgb ) );
+  }
 
   QQuickStyle::setStyle( u"Material"_s );
 
@@ -1697,6 +1697,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
+  mWindowAction->setObjectName( u"mActionWindowCurrent"_s );
   connect( mWindowAction, &QAction::triggered, this, &QgisApp::activate );
 
   // add this window to Window menu
@@ -1712,7 +1713,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgisApp::refreshActionFeatureAction );
 
   // set application's caption
-  QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::version(), Qgis::releaseName() );
+  QString caption = tr( "Strata" );
   setWindowTitle( caption );
 
   // QgsMessageLog::logMessage( tr( "QGIS starting…" ), QString(), Qgis::MessageLevel::Info );
@@ -2121,7 +2122,14 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     }
     messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
   } );
-  QgsApplication::fontManager()->enableFontDownloadsForSession();
+  // Don't enable on-demand font downloads under CI/tests: a missing font (e.g.
+  // "Open Sans", referenced by several built-in UI forms) spawns a background
+  // QgsFontDownloadTask that does a blocking network request on a thread-pool
+  // thread. In headless test runs that task races QgisApp teardown and logs
+  // through a torn-down QgsApplication, corrupting the heap / crashing every
+  // app test that constructs QgisApp.
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) != QByteArrayLiteral( "true" ) )
+    QgsApplication::fontManager()->enableFontDownloadsForSession();
 
   mDevToolsWidget->setActiveTab( lastDevToolsTab );
 
@@ -3298,21 +3306,25 @@ void QgisApp::createActions()
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
+  mActionWindowMinimize->setObjectName( u"mActionWindowMinimize"_s );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
   connect( mActionWindowMinimize, &QAction::triggered, this, &QgisApp::showActiveWindowMinimized );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
+  mActionWindowZoom->setObjectName( u"mActionWindowZoom"_s );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
   connect( mActionWindowZoom, &QAction::triggered, this, &QgisApp::toggleActiveWindowMaximized );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
+  mActionWindowAllToFront->setObjectName( u"mActionWindowAllToFront"_s );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
   connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
   // Window Menu
 
   mWindowMenu = new QMenu( tr( "Window" ), this );
+  mWindowMenu->setObjectName( u"mWindowMenu"_s );
 
   mWindowMenu->addAction( mActionWindowMinimize );
   mWindowMenu->addAction( mActionWindowZoom );
@@ -3628,6 +3640,7 @@ void QgisApp::createMenus()
   // these duplicate actions will be moved to application menus by Qt
   mProjectMenu->addAction( mActionAbout );
   QAction *actionPrefs = new QAction( tr( "Preferences…" ), this );
+  actionPrefs->setObjectName( u"mActionPreferences"_s );
   actionPrefs->setMenuRole( QAction::PreferencesRole );
   actionPrefs->setIcon( mActionOptions->icon() );
   connect( actionPrefs, &QAction::triggered, this, &QgisApp::options );
@@ -5695,23 +5708,18 @@ QString QgisApp::getVersionString()
   const QString compLabel = tr( "Compiled" );
   const QString runLabel = tr( "Running" );
 
-  versionString += u"<tr><td>%1</td><td>%2</td>"_s.arg( tr( "QGIS version" ), Qgis::version() );
+  versionString += u"<tr><td>%1</td><td>%2</td>"_s.arg( tr( "Strata version" ), QString::fromUtf8( STRATA_VERSION ) );
+  versionString += "</tr><tr>"_L1;
+  versionString += u"<td>%1</td><td>%2</td>"_s.arg( tr( "Based on QGIS" ), Qgis::version() );
   versionString += "</tr><tr>"_L1;
   if ( QString( Qgis::devVersion() ) == "exported"_L1 )
   {
-    versionString += u"<td>%1</td>"_s.arg( tr( "QGIS code branch" ) );
-    if ( Qgis::version().endsWith( "Master"_L1 ) )
-    {
-      versionString += "<td><a href=\"https://github.com/qgis/QGIS/tree/master\">master</a></td>"_L1;
-    }
-    else
-    {
-      versionString += u"<td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>"_s.arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 );
-    }
+    versionString += u"<td>%1</td>"_s.arg( tr( "Strata code branch" ) );
+    versionString += "<td><a href=\"https://github.com/francemazzi/strata/tree/master\">master</a></td>"_L1;
   }
   else
   {
-    versionString += u"<td>%1</td><td><a href=\"https://github.com/qgis/QGIS/commit/%2\">%2</a></td>"_s.arg( tr( "QGIS code revision" ), Qgis::devVersion() );
+    versionString += u"<td>%1</td><td><a href=\"https://github.com/francemazzi/strata/commit/%2\">%2</a></td>"_s.arg( tr( "Strata code revision" ), Qgis::devVersion() );
   }
   versionString += "</tr><tr>"_L1;
 

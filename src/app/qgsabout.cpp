@@ -265,7 +265,7 @@ void QgsAbout::btnQgisUser_clicked()
 
 void QgsAbout::btnQgisHome_clicked()
 {
-  openUrl( u"https://qgis.org"_s );
+  openUrl( u"https://github.com/francemazzi/strata"_s );
 }
 
 void QgsAbout::openUrl( const QUrl &url )

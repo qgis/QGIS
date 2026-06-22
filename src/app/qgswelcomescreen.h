@@ -49,6 +49,8 @@ class QgsWelcomeScreenController : public QObject
 
     Q_INVOKABLE void showPluginManager();
 
+    Q_INVOKABLE void openSettings();
+
     Q_INVOKABLE void importQgisProfile();
 
     Q_INVOKABLE void hideScene();
