@@ -47,6 +47,7 @@ test_app_maptooladdfeaturepoint
 test_app_maptooldeletepart
 test_app_maptooldeletering
 test_app_maptoolreshape
+test_app_maptoolcircularstring
 test_app_maptooleditmesh
 test_app_maptoolellipse
 test_app_maptoolmovefeature
