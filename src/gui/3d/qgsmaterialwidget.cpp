@@ -129,6 +129,15 @@ void QgsMaterialWidget::setType( const QString &type )
   materialTypeChanged();
 }
 
+void QgsMaterialWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
+  {
+    w->setDockMode( dockMode );
+  }
+}
+
 void QgsMaterialWidget::setPreviewVisible( bool visible )
 {
   mPreviewVisible = visible;
@@ -195,10 +204,12 @@ void QgsMaterialWidget::updateMaterialWidget()
       w->setSettings( mCurrentSettings.get(), mLayer );
       w->setTechnique( mTechnique );
       w->setPreviewVisible( mPreviewVisible );
+      w->setDockMode( dockMode() );
       mStackedWidget->addWidget( w );
       mStackedWidget->setCurrentWidget( w );
       // start receiving updates from widget
       connect( w, &QgsMaterialSettingsWidget::changed, this, &QgsMaterialWidget::materialWidgetChanged );
+      connect( w, &QgsMaterialSettingsWidget::showPanel, this, &QgsMaterialWidget::openPanel );
       return;
     }
   }
