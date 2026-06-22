@@ -26,6 +26,7 @@ from qgis.core import (
     QgsCompoundCurve,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
+    QgsCoverageCleanParameters,
     QgsCurvePolygon,
     QgsFeature,
     QgsGeometry,
@@ -14990,24 +14991,25 @@ class TestQgsGeometry(QgisTestCase):
         Test QgsGeometry.cleanCoverage
         """
         g1 = QgsGeometry()
-        res = g1.cleanCoverage(
-            0, 0, Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder
+        params = QgsCoverageCleanParameters()
+        params.setSnappingDistance(0)
+        params.setMaximumGapWidth(0)
+        params.setOverlapMergeStrategy(
+            Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder
         )
+
+        res = g1.cleanCoverage(params)
         self.assertTrue(res.isNull())
 
         g1 = QgsGeometry.fromWkt("Point(1 2)")
-        res = g1.cleanCoverage(
-            0, 0, Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder
-        )
+        res = g1.cleanCoverage(params)
         self.assertTrue(res.isNull())
 
         # overlap
         g1 = QgsGeometry.fromWkt(
             "GeometryCollection (Polygon ((0, 10, 10 10, 10 0, 0 0, 0 10)), Polygon ((9 10, 19 10, 19 0, 9 0, 9 10)))"
         )
-        res = g1.cleanCoverage(
-            0, 0, Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder
-        )
+        res = g1.cleanCoverage(params)
         res.normalize()
         self.assertEqual(
             res.asWkt(0),
@@ -15015,16 +15017,27 @@ class TestQgsGeometry(QgisTestCase):
         )
 
         # close gap
+        params.setMaximumGapWidth(1)
         g1 = QgsGeometry.fromWkt(
             "GeometryCollection (Polygon ((0 11, 10 11, 10 -1, 0 -1, 0 11)), Polygon ((10 10, 10 13, 20 13, 20 -2, 10 -2, 10 0, 10.5 1, 10.5 8.5, 10 10)))"
         )
-        res = g1.cleanCoverage(
-            1, 0, Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder
-        )
+        res = g1.cleanCoverage(params)
         res.normalize()
         self.assertEqual(
             res.asWkt(0),
             "GeometryCollection (Polygon ((10 -2, 10 -1, 10 0, 10 10, 10 11, 10 13, 20 13, 20 -2, 10 -2)),Polygon ((0 -1, 0 11, 10 11, 10 10, 10 0, 10 -1, 0 -1)))",
+        )
+
+        # GEOS test case
+        params.setMaximumGapWidth(2)
+        g1 = QgsGeometry.fromWkt(
+            "GEOMETRYCOLLECTION (POLYGON ((1 3, 9 3, 9 1, 1 1, 1 3)), POLYGON ((1 3, 1 9, 4 9, 4 3, 3 4, 1 3)), POLYGON ((4 9, 7 9, 7 3, 6 5, 5 5, 4 3, 4 9)), POLYGON ((7 9, 9 9, 9 3, 8 3.1, 7 3, 7 9)))"
+        )
+        res = g1.cleanCoverage(params)
+        res.normalize()
+        self.assertEqual(
+            res.asWkt(1),
+            "GeometryCollection (Polygon ((1 1, 1 3, 4 3, 7 3, 9 3, 9 1, 1 1)),Polygon ((7 3, 7 9, 9 9, 9 3, 7 3)),Polygon ((4 3, 4 9, 7 9, 7 3, 4 3)),Polygon ((1 3, 1 9, 4 9, 4 3, 1 3)))",
         )
 
     def testPolygonOrientation(self):
