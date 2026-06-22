@@ -40,6 +40,7 @@ test_app_identify
 test_app_labelpropertydialog
 test_app_layerpropertiesdialogs
 test_app_mapsavedialog
+test_app_meshcalculatordialog
 test_app_maptooladdpart
 test_app_maptooladdring
 test_app_maptooladdfeaturepoint
@@ -67,6 +68,7 @@ test_app_vertexeditor
 test_app_vertextool
 test_app_maptoolreverseline
 test_app_gpsintegration
+test_app_georeferencer
 test_app_mergeattributesdialog
 test_app_maptooladdfeaturepointz
 test_app_maptooladdfeaturepointm
