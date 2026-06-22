@@ -31,6 +31,7 @@ test_app_qgisappdockwidgets
 test_app_qgisappwidgetnames
 test_app_advanceddigitizing
 test_app_attributetable
+test_app_applocatorfilters
 test_app_customization
 test_app_decorationscalebar
 test_app_dwgimportdialog
@@ -57,8 +58,10 @@ test_app_maptoolfeaturearray
 test_app_maptoolcircle
 test_app_maptoolnurbs
 test_app_maptoolrectangle
+test_app_maptoolregularpolygon
 test_app_maptoolsplitparts
 test_app_maptoolsplitfeatures
+test_app_maptooloffsetcurve
 test_app_maptoolchamferfillet
 test_app_measuretool
 test_app_measurebearingtool
@@ -70,6 +73,7 @@ test_app_vertextool
 test_app_maptoolreverseline
 test_app_gpsintegration
 test_app_georeferencer
+test_app_qgisapppython
 test_app_mergeattributesdialog
 test_app_maptooladdfeaturepointz
 test_app_maptooladdfeaturepointm
