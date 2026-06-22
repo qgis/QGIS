@@ -1701,8 +1701,8 @@ void QgsCustomization::applyToToolBars() const
 
     if ( tb->property( USER_TOOLBAR_PROPERTY ).toBool() )
     {
-      // we don't delete toolbar (yet) in order to keep their actual position if they still exists
-      // after we finish to create user defined tool bars
+      // we don't delete user defined toolbar (yet) in order to keep their actual position if they
+      // still exists after we finish to create them
       userToolBars[tb->objectName()] = tb;
       tb->clear();
     }
