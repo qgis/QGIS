@@ -952,7 +952,7 @@ class APP_EXPORT QgsCustomization
     void apply() const;
 
     /**
-     * Update customization model with current application customization elements (actions, menus, dockWidgets...)
+     * Updates customization model with current application customization elements (actions, menus, dockWidgets...)
      */
     void load();
 
