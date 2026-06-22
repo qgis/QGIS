@@ -364,6 +364,17 @@
         "year": 2025
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "IN",
+        "name": "QGIS India User Group",
+        "logo_url": "https:\/\/in.qgis.org\/img\/qgis_in.png",
+        "website": "https:\/\/in.qgis.org",
+        "year": 2026
+      },
+      "geometry": null
     }
   ]
 }
