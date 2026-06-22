@@ -1133,7 +1133,7 @@ void TestQgsExpressionContext::uniqueHash()
   feature.setAttributes( QgsAttributes() << 5 << 11 );
   context.setFeature( feature );
 
-  QCOMPARE( context.uniqueHash( ok, vars ), u"11||~~||18646899||~~||var1=b string||~~||var2=5||~~||"_s );
+  QCOMPARE( context.uniqueHash( ok, vars ), u"11||~~||13209806757982668659||~~||var1=b string||~~||var2=5||~~||"_s );
   QVERIFY( ok );
 
   // a value which can't be converted to string
