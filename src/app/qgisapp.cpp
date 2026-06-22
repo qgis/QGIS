@@ -5750,7 +5750,9 @@ QString QgisApp::getVersionString()
 void QgisApp::setCustomization( std::unique_ptr<QgsCustomization> customization )
 {
   mCustomization = std::move( customization );
-  mCustomization->setQgisApp( this );
+
+  if ( mCustomization )
+    mCustomization->setQgisApp( this );
 }
 
 QgsCustomization *QgisApp::customization() const
