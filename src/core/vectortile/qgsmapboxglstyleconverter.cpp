@@ -3942,15 +3942,42 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       context.pushWarning( QObject::tr( "%1: Could not interpret slice list" ).arg( context.layerId() ) );
       return QString();
     }
+
+    // When the indices are constant integers
+    // we can fold the index arithmetic at conversion time
+    const auto constantInt = []( const QVariant &value, int &result ) -> bool {
+      switch ( value.userType() )
+      {
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
+        {
+          bool ok = false;
+          result = value.toInt( &ok );
+          return ok;
+        }
+        default:
+          return false;
+      }
+    };
+
+    int startValue = 0;
+    const bool startIsConstant = constantInt( expression.value( 2 ), startValue );
     const QString startExpression = parseValue( expression.value( 2 ), context );
+    const QString startOffset = startIsConstant ? QString::number( startValue + 1 ) : u"(%1) + 1"_s.arg( startExpression );
+
     if ( expression.size() > 3 )
     {
+      int endValue = 0;
+      const bool endIsConstant = constantInt( expression.value( 3 ), endValue );
       const QString endExpression = parseValue( expression.value( 3 ), context );
-      return u"substr(%1, (%2) + 1, (%3) - (%2))"_s.arg( inputExpression, startExpression, endExpression );
+      const QString length = ( startIsConstant && endIsConstant ) ? QString::number( endValue - startValue ) : u"(%1) - (%2)"_s.arg( endExpression, startExpression );
+      return u"substr(%1, %2, %3)"_s.arg( inputExpression, startOffset, length );
     }
     else
     {
-      return u"substr(%1, (%2) + 1)"_s.arg( inputExpression, startExpression );
+      return u"substr(%1, %2)"_s.arg( inputExpression, startOffset );
     }
   }
   else

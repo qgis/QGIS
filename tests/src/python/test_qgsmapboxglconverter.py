@@ -853,7 +853,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            """substr("ue_kz", (0) + 1, (1) - (0))""",
+            """substr("ue_kz", 1, 1)""",
         )
 
         # slice with start index only
@@ -863,7 +863,17 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            """substr("ue_kz", (2) + 1)""",
+            """substr("ue_kz", 3)""",
+        )
+
+        # slice with non-constant (expression) indices: arithmetic cannot be folded
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], ["get", "start"], ["get", "end"]],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", ("start") + 1, ("end") - ("start"))""",
         )
 
         # slice used within a filter expression
@@ -884,7 +894,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            """("art" IS 'T') AND (substr("ue_kz", (0) + 1, (1) - (0)) IN ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'U', 'V'))""",
+            """("art" IS 'T') AND (substr("ue_kz", 1, 1) IN ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'U', 'V'))""",
         )
 
         # slice compared with == within a filter expression
@@ -894,7 +904,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            """substr("ue_kz", (0) + 1, (1) - (0)) IS 'T'""",
+            """substr("ue_kz", 1, 1) IS 'T'""",
         )
 
         self.assertEqual(
