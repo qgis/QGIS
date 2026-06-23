@@ -1106,21 +1106,23 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void reloadConnections() = 0;
 
     /**
-     * Set the active layer (layer gets selected in the legend).
+     * Sets the active \a layer.
      *
-     * \returns TRUE if the layer exists, FALSE otherwise
+     * This layer will be selected in the QGIS layer tree.
+     *
+     * \returns TRUE if the layer exists in the project, FALSE otherwise
      */
-    virtual bool setActiveLayer( QgsMapLayer * ) = 0;
+    virtual bool setActiveLayer( QgsMapLayer *layer ) = 0;
 
     /**
-     * Copy selected features from the layer to clipboard
+     * Copy selected features from a \a layer to the clipboard.
      */
-    virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
+    virtual void copySelectionToClipboard( QgsMapLayer *layer ) = 0;
 
     /**
-     * Paste features from clipboard to the layer
+     * Paste features from the clipboard to a \a layer.
      */
-    virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
+    virtual void pasteFromClipboard( QgsMapLayer *layer ) = 0;
 
     //! Adds an action (icon only, no text) to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
@@ -1598,10 +1600,11 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Opens a new feature form.
      *
-     * \returns TRUE if dialog was accepted (if shown modal, TRUE otherwise).
+     * \returns The return value depends on the dialog's mode. When the dialog is shown in a non-editable mode, it will always return TRUE. If the dialog is
+     * opened in a modal, editable mode then it will return TRUE only if the dialog was accepted by the user.
      * \param l vector layer
      * \param f feature to show/modify
-     * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
+     * \param updateFeatureOnly only update the feature (don't change any attributes of the layer) [UNUSED]
      * \param showModal if TRUE, will wait for the dialog to be executed (only shown otherwise)
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;

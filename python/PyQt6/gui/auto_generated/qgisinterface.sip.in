@@ -1222,21 +1222,24 @@ signal that is forwarded to the GUI elements that needs to be updated
 (i.e. the source select dialogs and the browser widgets)
 %End
 
-    virtual bool setActiveLayer( QgsMapLayer * ) = 0;
+    virtual bool setActiveLayer( QgsMapLayer *layer ) = 0;
 %Docstring
-Set the active layer (layer gets selected in the legend).
+Sets the active ``layer``.
 
-:return: ``True`` if the layer exists, ``False`` otherwise
+This layer will be selected in the QGIS layer tree.
+
+:return: ``True`` if the layer exists in the project, ``False``
+         otherwise
 %End
 
-    virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
+    virtual void copySelectionToClipboard( QgsMapLayer *layer ) = 0;
 %Docstring
-Copy selected features from the layer to clipboard
+Copy selected features from a ``layer`` to the clipboard.
 %End
 
-    virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
+    virtual void pasteFromClipboard( QgsMapLayer *layer ) = 0;
 %Docstring
-Paste features from clipboard to the layer
+Paste features from the clipboard to a ``layer``.
 %End
 
     virtual int addToolBarIcon( QAction *qAction ) = 0;
@@ -1873,13 +1876,16 @@ useQgisDocDirectory to ``False``.
 %Docstring
 Opens a new feature form.
 
-:return: ``True`` if dialog was accepted (if shown modal, ``True``
-         otherwise).
+:return: The return value depends on the dialog's mode. When the dialog
+         is shown in a non-editable mode, it will always return
+         ``True``. If the dialog is opened in a modal, editable mode
+         then it will return ``True`` only if the dialog was accepted by
+         the user.
 
 :param l: vector layer
 :param f: feature to show/modify
-:param updateFeatureOnly: only update the feature update (don't change
-                          any attributes of the layer) [UNUSED]
+:param updateFeatureOnly: only update the feature (don't change any
+                          attributes of the layer) [UNUSED]
 :param showModal: if ``True``, will wait for the dialog to be executed
                   (only shown otherwise)
 %End
