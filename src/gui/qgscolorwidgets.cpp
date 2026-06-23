@@ -21,6 +21,7 @@
 #include "qgsdoublespinbox.h"
 #include "qgsguiutils.h"
 #include "qgslogger.h"
+#include "qgsscreenhelper.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
@@ -464,6 +465,9 @@ QgsColorWheel::QgsColorWheel( QWidget *parent )
     wheelGradient.setColorAt( relativePos, gradColor );
   }
   mWheelBrush = QBrush( wheelGradient );
+
+  auto screenHelper = new QgsScreenHelper( this );
+  connect( screenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsColorWheel::invalidateImages );
 }
 
 QgsColorWheel::~QgsColorWheel() = default;
@@ -586,7 +590,7 @@ void QgsColorWheel::createImages( const QSizeF size )
 void QgsColorWheel::resizeEvent( QResizeEvent * )
 {
   // force a recreation on next paint
-  mWidgetImage = QImage();
+  invalidateImages();
 }
 
 void QgsColorWheel::setColorFromPos( const QPointF pos )
@@ -718,6 +722,12 @@ void QgsColorWheel::mouseReleaseEvent( QMouseEvent *event )
   {
     QgsColorWidget::mouseReleaseEvent( event );
   }
+}
+
+void QgsColorWheel::invalidateImages()
+{
+  // force a recreation on next paint
+  mWidgetImage = QImage();
 }
 
 void QgsColorWheel::createWheel()
