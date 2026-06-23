@@ -312,7 +312,7 @@ double QgsTileMatrixSet::scaleForRenderContext( const QgsRenderContext &context 
   // Use the actual render DPI (the same DPI used to compute the renderer scale), so that
   // the DPI normalisation applied for the MapBox method below cancels out correctly for
   // both on-screen rendering and map exports/print layouts
-  // scaleFactor() is dots-per-millimetre, so multiplying by 25.4 mm/inch gives the output DPI.
+  // scaleFactor() is dots-per-millimeter, so multiplying by 25.4 mm/inch gives the output DPI.
   const double mapDpi = context.scaleFactor() * 25.4;
   return calculateTileScaleForMap( context.rendererScale(), context.coordinateTransform().destinationCrs(), context.mapExtent(), context.outputSize(), mapDpi );
 }

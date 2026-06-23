@@ -119,7 +119,7 @@ class TestQgsTiles(QgisTestCase):
         self.assertEqual(min(t.row() for t in tiles), 4)
         self.assertEqual(max(t.row() for t in tiles), 7)
 
-        # MapBox method: the incoming scale is normalised from the render DPI to the
+        # MapBox method: the incoming scale is normalized from the render DPI to the
         # OGC WMTS reference of 0.28 mm/pixel (~90.7 dpi), so that the derived tile zoom
         # is DPI-independent and matches MapLibre. At the reference DPI the scale is unchanged.
         reference_dpi = 0.0254 / (2.8 / 10000.0)
@@ -134,7 +134,7 @@ class TestQgsTiles(QgisTestCase):
             1000,
             places=3,
         )
-        # at 96 dpi the scale is normalised down by 90.7/96
+        # at 96 dpi the scale is normalized down by 90.7/96
         self.assertAlmostEqual(
             matrix_set.calculateTileScaleForMap(
                 1000,
