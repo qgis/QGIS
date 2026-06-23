@@ -614,7 +614,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     const double hueRadians = h * 2 * M_PI;
     double rad0 = std::fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
     double rad1 = std::fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
-    const double length = mWheelImage.width() / 2.0 / devicePixelRatioF();
+    const double length = mWheelImage.width() / 2.0 / mWheelImage.devicePixelRatioF();
     const double triangleLength = length - mWheelThickness - 1;
 
     const double a = 0.5 * triangleLength;
@@ -690,7 +690,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
     //create a line from the widget's center to the event
     const QLineF line = QLineF( width() / 2.0, height() / 2.0, event->pos().x(), event->pos().y() );
 
-    const double innerLength = mWheelImage.width() / 2.0 / devicePixelRatioF() - mWheelThickness;
+    const double innerLength = mWheelImage.width() / 2.0 / mWheelImage.devicePixelRatioF() - mWheelThickness * mWheelImage.devicePixelRatioF();
     if ( line.length() < innerLength )
     {
       mClickedPart = QgsColorWheel::Triangle;
