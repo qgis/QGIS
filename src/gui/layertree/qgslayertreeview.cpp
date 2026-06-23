@@ -24,6 +24,7 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagebar.h"
+#include "qgsscreenhelper.h"
 
 #include <QApplication>
 #include <QContextMenuEvent>
@@ -96,7 +97,9 @@ void QgsLayerTreeViewBase::setLayerTreeModel( QgsLayerTreeModel *model )
 
   mLayerTreeModel = model;
 
-  mLayerTreeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
+  mLayerTreeModel->setTargetScreenProperties( { QgsScreenProperties( screen() ) } );
+  auto screenHelper = new QgsScreenHelper( this );
+  connect( screenHelper, &QgsScreenHelper::screenDpiChanged, this, [this] { mLayerTreeModel->setTargetScreenProperties( { QgsScreenProperties( screen() ) } ); } );
 
   connect( mLayerTreeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeViewBase::onExpandedChanged );
 

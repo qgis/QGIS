@@ -801,6 +801,12 @@ void QgsLayerTreeModel::addTargetScreenProperties( const QgsScreenProperties &pr
   mTargetScreenProperties.insert( properties );
 }
 
+void QgsLayerTreeModel::setTargetScreenProperties( const QSet<QgsScreenProperties> &properties )
+{
+  mTargetScreenProperties = properties;
+  invalidateDisplayData();
+}
+
 QSet<QgsScreenProperties> QgsLayerTreeModel::targetScreenProperties() const
 {
   return mTargetScreenProperties;
