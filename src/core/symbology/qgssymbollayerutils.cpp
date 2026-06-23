@@ -1172,7 +1172,7 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize s
         const QPen pen( ramp->color( static_cast< double >( i ) / size.width() ) );
         painter.setPen( pen );
         const int x = flipDirection ? size.width() - i - 1 : i;
-        painter.drawLine( x, 0 + padding, x, size.height() - 1 - padding );
+        painter.drawLine( QLineF( x, 0 + padding, x, size.height() - 1 - padding ) );
       }
       break;
     }
@@ -1184,7 +1184,7 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize s
         const QPen pen( ramp->color( static_cast< double >( i ) / size.height() ) );
         painter.setPen( pen );
         const int y = flipDirection ? size.height() - i - 1 : i;
-        painter.drawLine( 0 + padding, y, size.width() - 1 - padding, y );
+        painter.drawLine( QLineF( 0 + padding, y, size.width() - 1 - padding, y ) );
       }
       break;
     }
