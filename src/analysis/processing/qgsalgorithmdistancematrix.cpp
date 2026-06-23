@@ -59,7 +59,8 @@ QString QgsDistanceMatrixAlgorithm::shortHelpString() const
     "The algorithm supports both Cartesian and ellipsoidal distance calculations.\n\n"
     "Cartesian calculations are performed using a spatial index and offer "
     "high performance, but can give inaccurate results when used with CRSs "
-    "with high distance distortion.\n\n"
+    "with high distance distortion or where shortest distances accounting for "
+    "great circles is required.\n\n"
     "If ellipsoidal calculations are enabled, the algorithm bypasses the spatial "
     "index and provides accurate geodetic measurements at a considerable performance cost."
   );
