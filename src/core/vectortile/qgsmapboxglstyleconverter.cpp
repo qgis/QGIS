@@ -718,62 +718,65 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       {
         const QVariantList dashSource = jsonLineDashArray.toList();
 
-        if ( dashSource.at( 0 ).userType() == QMetaType::Type::QString )
+        if ( !dashSource.empty() )
         {
-          QgsProperty property = parseValueList( dashSource, PropertyType::DashArray, context, 1, 255, nullptr, nullptr );
-          if ( !lineWidthProperty.asExpression().isEmpty() )
+          if ( dashSource.at( 0 ).userType() == QMetaType::Type::QString )
           {
-            property = QgsProperty::fromExpression(
-              u"array_to_string(array_foreach(%1,@element * (%2)), ';')"_s // skip-keyword-check
-                .arg( property.asExpression(), lineWidthProperty.asExpression() )
-            );
+            QgsProperty property = parseValueList( dashSource, PropertyType::DashArray, context, 1, 255, nullptr, nullptr );
+            if ( !lineWidthProperty.asExpression().isEmpty() )
+            {
+              property = QgsProperty::fromExpression(
+                u"array_to_string(array_foreach(%1,@element * (%2)), ';')"_s // skip-keyword-check
+                  .arg( property.asExpression(), lineWidthProperty.asExpression() )
+              );
+            }
+            else
+            {
+              property = QgsProperty::fromExpression( u"array_to_string(%1, ';')"_s.arg( property.asExpression() ) );
+            }
+            ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, property );
           }
           else
           {
-            property = QgsProperty::fromExpression( u"array_to_string(%1, ';')"_s.arg( property.asExpression() ) );
-          }
-          ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, property );
-        }
-        else
-        {
-          QVector< double > rawDashVectorSizes;
-          rawDashVectorSizes.reserve( dashSource.size() );
-          for ( const QVariant &v : dashSource )
-          {
-            rawDashVectorSizes << v.toDouble();
-          }
-
-          // handle non-compliant dash vector patterns
-          if ( rawDashVectorSizes.size() == 1 )
-          {
-            // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
-            rawDashVectorSizes.clear();
-          }
-          else if ( rawDashVectorSizes.size() % 2 == 1 )
-          {
-            // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
-            // MapBox seems to implicitly add a 0 length gap to the array if odd length.
-            rawDashVectorSizes.append( 0 );
-          }
-
-          if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
-          {
-            QStringList dashArrayStringParts;
-            dashArrayStringParts.reserve( rawDashVectorSizes.size() );
-            for ( double v : std::as_const( rawDashVectorSizes ) )
+            QVector< double > rawDashVectorSizes;
+            rawDashVectorSizes.reserve( dashSource.size() );
+            for ( const QVariant &v : dashSource )
             {
-              dashArrayStringParts << qgsDoubleToString( v );
+              rawDashVectorSizes << v.toDouble();
             }
 
-            QString arrayExpression = u"array_to_string(array_foreach(array(%1),@element * (%2)), ';')"_s // skip-keyword-check
-                                        .arg( dashArrayStringParts.join( ',' ), lineWidthProperty.asExpression() );
-            ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromExpression( arrayExpression ) );
-          }
+            // handle non-compliant dash vector patterns
+            if ( rawDashVectorSizes.size() == 1 )
+            {
+              // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
+              rawDashVectorSizes.clear();
+            }
+            else if ( rawDashVectorSizes.size() % 2 == 1 )
+            {
+              // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
+              // MapBox seems to implicitly add a 0 length gap to the array if odd length.
+              rawDashVectorSizes.append( 0 );
+            }
 
-          // dash vector sizes for QGIS symbols must be multiplied by the target line width
-          for ( double v : std::as_const( rawDashVectorSizes ) )
-          {
-            dashVector << v * lineWidth;
+            if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
+            {
+              QStringList dashArrayStringParts;
+              dashArrayStringParts.reserve( rawDashVectorSizes.size() );
+              for ( double v : std::as_const( rawDashVectorSizes ) )
+              {
+                dashArrayStringParts << qgsDoubleToString( v );
+              }
+
+              QString arrayExpression = u"array_to_string(array_foreach(array(%1),@element * (%2)), ';')"_s // skip-keyword-check
+                                          .arg( dashArrayStringParts.join( ',' ), lineWidthProperty.asExpression() );
+              ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromExpression( arrayExpression ) );
+            }
+
+            // dash vector sizes for QGIS symbols must be multiplied by the target line width
+            for ( double v : std::as_const( rawDashVectorSizes ) )
+            {
+              dashVector << v * lineWidth;
+            }
           }
         }
         break;
