@@ -50,6 +50,9 @@ namespace QgsDistanceUtils
    * \param k The maximum number of nearest neighbors to return. If k <= 0, all targets are evaluated.
    * \param feedback Optional feedback object for cancellation and progress reporting.
    * \returns A vector of NeighborResults sorted by distance in ascending order.
+   *
+   * \note For Cartesian calculations consider using approach based on spatial index as it
+   * will be more efficient.
    */
   ANALYSIS_EXPORT std::vector<QgsDistanceUtils::NeighborResult> nearestNeighbors(
     const QgsPointXY &sourcePoint, const std::vector<std::pair<QgsFeatureId, QgsPointXY>> &targetPoints, const QgsDistanceArea &da, long long k, QgsProcessingFeedback *feedback = nullptr
