@@ -235,13 +235,13 @@ jobs:
           .\scripts\ci\sign-windows-artifacts.ps1 -Mode package -PackageFiles $files -VerifyOnly
 
       - name: 📦 Create SDK
-        if: ${{ env.IS_STRATA_RELEASE != 'true' }}
+        if: ${{ env.USE_WINDOWS_SDK != 'true' }}
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
           vcpkg.exe export --zip --output-dir=./sdk --x-install-root=./build/vcpkg_installed --x-manifest-root=vcpkg
 
       - name: 📤 Upload sdk
-        if: ${{ env.IS_STRATA_RELEASE != 'true' }}
+        if: ${{ env.USE_WINDOWS_SDK != 'true' }}
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
 
