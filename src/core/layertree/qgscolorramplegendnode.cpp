@@ -538,3 +538,8 @@ QJsonObject QgsColorRampLegendNode::exportSymbolToJson( const QgsLegendSettings 
 
   return json;
 }
+
+void QgsColorRampLegendNode::invalidateDisplayData()
+{
+  mPixmap = QPixmap();
+}

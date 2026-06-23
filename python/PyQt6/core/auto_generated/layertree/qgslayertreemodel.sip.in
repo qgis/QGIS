@@ -397,6 +397,13 @@ progress.
 .. versionadded:: 3.32
 %End
 
+    void invalidateDisplayData();
+%Docstring
+Invalidates all cached display data throughout the model.
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
