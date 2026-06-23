@@ -1263,8 +1263,44 @@ void QgsSpatiaLiteProvider::loadFields()
       {
         QString name = QString::fromUtf8( sqlite3_column_name( stmt, i ) );
         QString type = QString::fromUtf8( sqlite3_column_decltype( stmt, i ) ).toLower();
+
+        // Try harder
         if ( type.isEmpty() )
-          type = u"text"_s;
+        {
+          switch ( sqlite3_column_type( stmt, i ) )
+          {
+            case SQLITE_INTEGER:
+            {
+              type = u"integer"_s;
+              break;
+            }
+            case SQLITE_FLOAT:
+            {
+              type = u"real"_s;
+              break;
+            }
+            case SQLITE_TEXT:
+            {
+              type = u"text"_s;
+              break;
+            }
+            case SQLITE_BLOB:
+            {
+              type = u"blob"_s;
+              break;
+            }
+            case SQLITE_NULL:
+            {
+              type = u"null"_s;
+              break;
+            }
+            default:
+            {
+              type = u"text"_s;
+              break;
+            }
+          }
+        }
 
         if ( name == mPrimaryKey )
         {
