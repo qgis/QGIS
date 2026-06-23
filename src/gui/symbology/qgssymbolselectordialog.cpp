@@ -382,6 +382,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
 
   auto screenHelper = new QgsScreenHelper( this );
   connect( screenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsSymbolSelectorWidget::updatePreview );
+  connect( screenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsSymbolSelectorWidget::updateListIcons );
 }
 
 QgsSymbolSelectorWidget *QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::unique_ptr<QgsSymbol> symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent )
@@ -845,6 +846,25 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
   // Important: This lets the layer have its own layer properties widget
   layerChanged();
 }
+
+void QgsSymbolSelectorWidget::updateListIcons()
+{
+  QScreen *currentScreen = screen();
+  std::function<void( SymbolLayerItem * item )> updateItem;
+  updateItem = [currentScreen, &updateItem]( SymbolLayerItem *item ) {
+    for ( int row = 0; row < item->rowCount(); ++row )
+    {
+      if ( auto child = dynamic_cast< SymbolLayerItem * >( item->child( row ) ) )
+      {
+        updateItem( child );
+        child->updatePreview( currentScreen );
+      }
+    }
+  };
+
+  updateItem( static_cast<SymbolLayerItem *>( mSymbolLayersModel->invisibleRootItem() ) );
+}
+
 
 QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent, bool embedded )
   : QDialog( parent )

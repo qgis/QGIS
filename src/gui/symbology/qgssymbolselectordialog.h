@@ -225,6 +225,8 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
 
     void emitSymbolModified();
 
+    void updateListIcons();
+
   private:
     /**
      * Reload the current symbol in the view.
