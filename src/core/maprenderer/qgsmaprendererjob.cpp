@@ -1181,13 +1181,12 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
     return job;
 
   // if we can use the cache, let's do it and avoid rendering!
-  bool hasCache = canUseLabelCache && mCache && mCache->hasCacheImage( LABEL_CACHE_ID );
+  bool hasCache = canUseLabelCache && mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) && mCache->cacheImage( LABEL_CACHE_ID ).devicePixelRatio() == mSettings.devicePixelRatio();
   if ( hasCache )
   {
     job.cached = true;
     job.complete = true;
     job.img = new QImage( mCache->cacheImage( LABEL_CACHE_ID ) );
-    Q_ASSERT( job.img->devicePixelRatio() == mSettings.devicePixelRatio() );
     job.context.setPainter( nullptr );
   }
   else
