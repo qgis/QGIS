@@ -223,6 +223,8 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
      */
     void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
 
+    void emitSymbolModified();
+
   private:
     /**
      * Reload the current symbol in the view.

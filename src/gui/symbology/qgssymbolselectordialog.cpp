@@ -511,9 +511,6 @@ void QgsSymbolSelectorWidget::updatePreview()
   std::unique_ptr<QgsSymbol> symbolClone( mSymbol->clone() );
   const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, QgsScreenProperties( screen() ) );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
-  // Hope this is a appropriate place
-  if ( !mBlockModified )
-    emit symbolModified();
 }
 
 void QgsSymbolSelectorWidget::updateLayerPreview()
@@ -570,6 +567,7 @@ void QgsSymbolSelectorWidget::layerChanged()
     setWidget( layerProp );
     connect( layerProp, &QgsLayerPropertiesWidget::changed, mDataDefineRestorer.get(), &DataDefinedRestorer::restore );
     connect( layerProp, &QgsLayerPropertiesWidget::changed, this, &QgsSymbolSelectorWidget::updateLayerPreview );
+    connect( layerProp, &QgsLayerPropertiesWidget::changed, this, &QgsSymbolSelectorWidget::emitSymbolModified );
     // This connection when layer type is changed
     connect( layerProp, &QgsLayerPropertiesWidget::changeLayer, this, &QgsSymbolSelectorWidget::changeLayer );
 
@@ -617,6 +615,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
     layersTree->setCurrentIndex( newIndex );
   }
   updatePreview();
+  emitSymbolModified();
   // connect it back once things are set
   connect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
 }
@@ -701,6 +700,7 @@ void QgsSymbolSelectorWidget::addLayer()
   layersTree->setCurrentIndex( mSymbolLayersModel->indexFromItem( newLayerItem ) );
   updateUi();
   updatePreview();
+  emitSymbolModified();
 }
 
 void QgsSymbolSelectorWidget::removeLayer()
@@ -721,6 +721,7 @@ void QgsSymbolSelectorWidget::removeLayer()
 
   updateUi();
   updatePreview();
+  emitSymbolModified();
   //finally delete the removed layer pointer
   delete tmpLayer;
 }
@@ -758,6 +759,7 @@ void QgsSymbolSelectorWidget::moveLayerByOffset( int offset )
   layersTree->setCurrentIndex( newIdx );
 
   updatePreview();
+  emitSymbolModified();
   updateUi();
 }
 
@@ -807,6 +809,7 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   layersTree->setCurrentIndex( mSymbolLayersModel->indexFromItem( newLayerItem ) );
   updateUi();
   updatePreview();
+  emitSymbolModified();
 }
 
 void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
@@ -834,6 +837,7 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
 
   item->updatePreview( screen() );
   updatePreview();
+  emitSymbolModified();
   // Important: This lets the layer have its own layer properties widget
   layerChanged();
 }
@@ -1023,5 +1027,13 @@ void QgsSymbolSelectorWidget::layersAboutToBeRemoved( const QList<QgsMapLayer *>
   if ( mVectorLayer && layers.contains( mVectorLayer ) )
   {
     disconnect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
+  }
+}
+
+void QgsSymbolSelectorWidget::emitSymbolModified()
+{
+  if ( !mBlockModified )
+  {
+    emit symbolModified();
   }
 }
