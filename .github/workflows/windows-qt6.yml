@@ -24,6 +24,7 @@ permissions:
 
 env:
   IS_STRATA_RELEASE: ${{ startsWith(github.ref, 'refs/tags/strata-v') || startsWith(github.event.release.tag_name, 'strata-v') }}
+  USE_WINDOWS_SDK: ${{ startsWith(github.ref, 'refs/tags/strata-v') || startsWith(github.event.release.tag_name, 'strata-v') || github.event_name == 'push' }}
   WINDOWS_CODESIGN_CONFIGURED: ${{ secrets.AZURE_CLIENT_ID != '' && secrets.AZURE_TENANT_ID != '' && secrets.AZURE_SUBSCRIPTION_ID != '' && vars.AZURE_ARTIFACT_SIGNING_ENDPOINT != '' && vars.AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME != '' && vars.AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME != '' }}
   WINDOWS_RELEASE_SDK_RUN_ID: '26423962164'
   WINDOWS_RELEASE_SDK_ARTIFACT_NAME: qgis-sdk-x64-windows
@@ -57,7 +58,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1
 
       - name: 📥 Download Windows SDK
-        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        if: ${{ env.USE_WINDOWS_SDK == 'true' }}
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v6.0.1
         with:
           name: ${{ env.WINDOWS_RELEASE_SDK_ARTIFACT_NAME }}
@@ -67,7 +68,7 @@ jobs:
           path: sdk-artifact
 
       - name: 📦 Extract Windows SDK
-        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        if: ${{ env.USE_WINDOWS_SDK == 'true' }}
         shell: bash
         run: |
           mkdir -p sdk-root
@@ -88,7 +89,7 @@ jobs:
           echo "WINDOWS_SDK_PATH=${SDK_DIR_ABS}" >> "${GITHUB_ENV}"
 
       - name: 🎡 Setup vcpkg
-        if: ${{ env.IS_STRATA_RELEASE != 'true' }}
+        if: ${{ env.USE_WINDOWS_SDK != 'true' }}
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
