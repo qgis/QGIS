@@ -401,6 +401,10 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
+  private slots:
+
+    void invalidateImages();
+
   private:
     enum ControlPart
     {
