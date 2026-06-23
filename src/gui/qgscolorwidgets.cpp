@@ -572,33 +572,21 @@ void QgsColorWheel::createImages( const QSizeF size )
   //recreate cache images at correct size
   const double pixelRatio = devicePixelRatioF();
   mWheelImage = QImage( wheelSize * pixelRatio, wheelSize * pixelRatio, QImage::Format_ARGB32 );
+  mWheelImage.setDevicePixelRatio( pixelRatio );
   mTriangleImage = QImage( wheelSize * pixelRatio, wheelSize * pixelRatio, QImage::Format_ARGB32 );
+  mTriangleImage.setDevicePixelRatio( pixelRatio );
   mWidgetImage = QImage( size.width() * pixelRatio, size.height() * pixelRatio, QImage::Format_ARGB32 );
+  mWidgetImage.setDevicePixelRatio( pixelRatio );
 
   //trigger a redraw for the images
   mWheelDirty = true;
   mTriangleDirty = true;
 }
 
-void QgsColorWheel::resizeEvent( QResizeEvent *event )
+void QgsColorWheel::resizeEvent( QResizeEvent * )
 {
-  QgsColorWidget::resizeEvent( event );
-#ifdef Q_OS_WIN
-  // For some reason the first reported size than that of the parent widget, leading to a cut-off color wheel
-  if ( event->size().width() > parentWidget()->size().width() )
-  {
-    QSize newSize( std::min( event->size().width(), parentWidget()->size().width() - 2 ), std::min( event->size().height(), parentWidget()->size().height() - 2 ) );
-    resize( newSize );
-    createImages( newSize );
-  }
-  else
-  {
-    createImages( event->size() );
-  }
-#else
-  //recreate images for new size
-  createImages( event->size() );
-#endif
+  // force a recreation on next paint
+  mWidgetImage = QImage();
 }
 
 void QgsColorWheel::setColorFromPos( const QPointF pos )
