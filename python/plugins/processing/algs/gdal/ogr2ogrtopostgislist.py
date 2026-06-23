@@ -454,7 +454,12 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         elif primary_key:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
-            table = input_details.layer_name.lower()
+            # layer_name may be in the form schema.table, so we need to extract the table name
+            # see issue GH #66228
+            if "." in input_details.layer_name:
+                table = input_details.layer_name.split(".")[-1]
+            else:
+                table = input_details.layer_name.lower()
         if schema:
             table = f"{schema}.{table}"
         arguments.append("-nln")
