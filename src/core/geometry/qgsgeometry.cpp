@@ -1335,6 +1335,33 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
 )
 {
   std::unique_ptr<QgsLineString> segmentizedLine( curve->curveToLine() );
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  Q_UNUSED( preserveCircular );
+  Q_UNUSED( splitFeature );
+
+  QgsGeos geos( this->constGet() );
+  mLastError.clear();
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *segmentizedLine, newGeometries, topological, topologyTestPoints, &mLastError );
+  switch ( result )
+  {
+    case QgsGeometryEngine::Success:
+      return Qgis::GeometryOperationResult::Success;
+    case QgsGeometryEngine::MethodNotImplemented:
+    case QgsGeometryEngine::EngineError:
+    case QgsGeometryEngine::NodedGeometryError:
+      return Qgis::GeometryOperationResult::GeometryEngineError;
+    case QgsGeometryEngine::InvalidBaseGeometry:
+      return Qgis::GeometryOperationResult::InvalidBaseGeometry;
+    case QgsGeometryEngine::InvalidInput:
+      return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+    case QgsGeometryEngine::SplitCannotSplitPoint:
+      return Qgis::GeometryOperationResult::SplitCannotSplitPoint;
+    case QgsGeometryEngine::NothingHappened:
+      return Qgis::GeometryOperationResult::NothingHappened;
+      //default: do not implement default to handle properly all cases
+  }
+#else
   QgsPointSequence points;
   segmentizedLine->points( points );
   Qgis::GeometryOperationResult result = splitGeometry( points, newGeometries, topological, topologyTestPoints, splitFeature );
@@ -1348,8 +1375,8 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
       *this = convertToCurves();
     }
   }
-
   return result;
+#endif
 }
 
 Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
