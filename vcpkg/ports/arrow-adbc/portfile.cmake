@@ -10,6 +10,9 @@ vcpkg_from_github(
         # "copy constructor of 'Status' is implicitly deleted". Make Status
         # copyable (deep-copying the error detail) while keeping moves cheap.
         fix-status-copy.patch
+        # fmt 11+ moved fmt::vformat() out of <fmt/core.h> into <fmt/format.h>;
+        # include the right header so the (de-vendored) vcpkg fmt builds.
+        fix-fmt-include.patch
 )
 file(REMOVE_RECURSE "${SOURCE_PATH}/c/vendor/fmt")
 file(REMOVE_RECURSE "${SOURCE_PATH}/c/vendor/nanoarrow")
