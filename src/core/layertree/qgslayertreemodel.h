@@ -342,6 +342,13 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     bool hitTestInProgress() const;
 
+    /**
+     * Invalidates all cached display data throughout the model.
+     *
+     * \since QGIS 4.2
+     */
+    void invalidateDisplayData();
+
   signals:
 
     /**
