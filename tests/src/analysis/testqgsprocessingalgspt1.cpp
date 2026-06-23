@@ -28,6 +28,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsfontutils.h"
 #include "qgsgdalutils.h"
+#include "qgsgeometryfactory.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutmanager.h"
@@ -4984,9 +4985,6 @@ void TestQgsProcessingAlgsPt1::compareDatasets()
   QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
   QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 0LL );
 
-  // Prepare an empty geometry for subsequent checks
-  std::unique_ptr< QgsAbstractGeometry > emptyGeom( f.geometry().constGet()->createEmptyWithSameType() );
-
   // null geometry comparisons
   f.setAttributes( QgsAttributes() << 5 << u"d1"_s << u"g1"_s );
   f.clearGeometry();
@@ -5014,6 +5012,7 @@ void TestQgsProcessingAlgsPt1::compareDatasets()
   QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 1LL );
 
   // empty geometry comparisons
+  auto emptyGeom = QgsGeometryFactory::geomFromWkbType( originalLayer->wkbType() );
   f.setAttributes( QgsAttributes() << 7 << u"g1"_s << u"a1"_s );
   f.setGeometry( std::move( emptyGeom ) );
   originalLayer->dataProvider()->addFeature( f );

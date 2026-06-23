@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmdetectdatasetchanges.h"
 
+#include "qgsgeometryfactory.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
 
@@ -201,7 +202,6 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   QHash<QgsFeatureId, QgsAttributes> originalAttributes;
   QHash<QgsAttributes, QgsFeatureId> originalNullGeometryAttributes;
   QHash<QgsAttributes, QgsFeatureId> originalEmptyGeometryAttributes;
-  QgsGeometry emptyGeometry = QgsGeometry(); // if an EMPTY geom is found, we'll store it here
   long current = 0;
 
   QgsAttributes attrs;
@@ -227,11 +227,6 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
     }
     else if ( f.hasGeometry() && f.geometry().isEmpty() )
     {
-      if ( emptyGeometry.isNull() )
-      {
-        emptyGeometry = f.geometry(); // save geometry to use it later
-      }
-
       if ( originalEmptyGeometryAttributes.contains( attrs ) )
       {
         feedback->reportError(
@@ -415,11 +410,11 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
     if ( feedback->isCanceled() )
       break;
 
-    // attempt to use already fetched geometry
+    // attempt to use already fetched geometry or use Null/Empty geometry
     g = originalGeometries.value( f.id(), QgsGeometry() );
     if ( g.isNull() && emptyGeometryIds.contains( f.id() ) )
     {
-      g = emptyGeometry;
+      g = QgsGeometry( QgsGeometryFactory::geomFromWkbType( mOriginal->wkbType() ) );
     }
     f.setGeometry( g );
 
