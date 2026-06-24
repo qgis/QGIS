@@ -100,12 +100,12 @@ void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
   if ( mMapCanvas )
   {
-    disconnect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
+    disconnect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::updateMouseCoordinates );
     disconnect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
   }
 
   mMapCanvas = mapCanvas;
-  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
+  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::updateMouseCoordinates );
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
 }
 
@@ -355,6 +355,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( u"extents.svg"_s ) );
     mLineEdit->setToolTip( tr( "Map coordinates for the current view extents" ) );
     mLineEdit->setReadOnly( true );
+    mLabel->setText( tr( "Extents" ) );
     showExtent();
   }
   else
@@ -364,6 +365,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
     mLabel->setText( tr( "Coordinate" ) );
+    showMouseCoordinates();
   }
 }
 
@@ -377,11 +379,27 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
   mMapCanvas->redrawAllLayers();
 }
 
-void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &mapPoint )
+void QgsStatusBarCoordinatesWidget::updateMouseCoordinates( const QgsPointXY &mapPoint )
 {
   mLastCoordinate = mapPoint;
   mLastCoordinateCrs = mMapCanvas->mapSettings().destinationCrs();
-  updateCoordinateDisplay();
+
+  showMouseCoordinates();
+}
+
+void QgsStatusBarCoordinatesWidget::showMouseCoordinates()
+{
+  if ( mToggleExtentsViewButton->isChecked() )
+  {
+    return;
+  }
+
+  if ( mLastCoordinate.isEmpty() || !QgsProject::instance()->crs().isSameCelestialBody( mLastCoordinateCrs ) )
+    mLineEdit->clear();
+  else
+    mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mLastCoordinateCrs, static_cast<int>( mMousePrecisionDecimalPlaces ) ) );
+
+  ensureCoordinatesVisible();
 }
 
 void QgsStatusBarCoordinatesWidget::showExtent()
@@ -391,7 +409,6 @@ void QgsStatusBarCoordinatesWidget::showExtent()
     return;
   }
 
-  mLabel->setText( tr( "Extents" ) );
   mLineEdit->setText( QgsCoordinateUtils::formatExtentForProject( QgsProject::instance(), mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), mMousePrecisionDecimalPlaces ) );
 
   ensureCoordinatesVisible();
@@ -428,21 +445,6 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
   }
 }
 
-void QgsStatusBarCoordinatesWidget::updateCoordinateDisplay()
-{
-  if ( mToggleExtentsViewButton->isChecked() )
-  {
-    return;
-  }
-
-  if ( mLastCoordinate.isEmpty() || !QgsProject::instance()->crs().isSameCelestialBody( mLastCoordinateCrs ) )
-    mLineEdit->clear();
-  else
-    mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mLastCoordinateCrs, static_cast<int>( mMousePrecisionDecimalPlaces ) ) );
-
-  ensureCoordinatesVisible();
-}
-
 void QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged()
 {
   const QgsCoordinateReferenceSystem coordinateCrs = QgsProject::instance()->displaySettings()->coordinateCrs();
@@ -468,5 +470,12 @@ void QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged()
       break;
   }
 
-  updateCoordinateDisplay();
+  if ( mToggleExtentsViewButton->isChecked() )
+  {
+    showExtent();
+  }
+  else
+  {
+    showMouseCoordinates();
+  }
 }
