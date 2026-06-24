@@ -22,6 +22,7 @@
 
 #include "qgis_analysis.h"
 #include "qgsogrutils.h"
+#include "qgsrasterlayerutils.h"
 
 #include <QColor>
 #include <QMap>
@@ -40,19 +41,6 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsRelief
 {
   public:
-    struct ReliefColor
-    {
-        ReliefColor( const QColor &c, double min, double max )
-          : color( c )
-          , minElevation( min )
-          , maxElevation( max )
-        {}
-
-        QColor color;
-        double minElevation;
-        double maxElevation;
-    };
-
     QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
     ~QgsRelief();
 
@@ -70,15 +58,15 @@ class ANALYSIS_EXPORT QgsRelief
     void setZFactor( double factor ) { mZFactor = factor; }
 
     void clearReliefColors();
-    void addReliefColorClass( const QgsRelief::ReliefColor &color );
-    QList<QgsRelief::ReliefColor> reliefColors() const { return mReliefColors; }
-    void setReliefColors( const QList<QgsRelief::ReliefColor> &c ) { mReliefColors = c; }
+    void addReliefColorClass( const QgsRasterReliefColor &color );
+    QList<QgsRasterReliefColor> reliefColors() const { return mReliefColors; }
+    void setReliefColors( const QList<QgsRasterReliefColor> &c ) { mReliefColors = c; }
 
     /**
      * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
      * \returns TRUE in case of success
     */
-    QList<QgsRelief::ReliefColor> calculateOptimizedReliefClasses();
+    QList<QgsRasterReliefColor> calculateOptimizedReliefClasses();
 
     //! Write frequency of elevation values to file for manual inspection
     bool exportFrequencyDistributionToCsv( const QString &file );
@@ -108,7 +96,7 @@ class ANALYSIS_EXPORT QgsRelief
     std::unique_ptr<QgsHillshadeFilter> mHillshadeFilter315;
 
     //relief colors and corresponding elevations
-    QList<ReliefColor> mReliefColors;
+    QList<QgsRasterReliefColor> mReliefColors;
 
     bool processNineCellWindow( float *x1, float *x2, float *x3, float *x4, float *x5, float *x6, float *x7, float *x8, float *x9, unsigned char *red, unsigned char *green, unsigned char *blue );
 
