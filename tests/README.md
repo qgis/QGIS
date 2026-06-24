@@ -70,6 +70,28 @@ to bring up such server would be to (tweak $srcdir appropriately):
     tests/testdata/provider/testdata_pg.sh
     echo "${PGHOST} postgres # for qgis_test, docker" | sudo tee -a /etc/hosts
 
+## Local badssl server
+
+badssl.com is used in some tests and is really unstable. If your test requires it, prefer setting up a local instance if you want to reproduce like it's done in CI. To do so, follow these instructions
+
+```shell
+docker build -t badssl .
+docker run -d -p 4442:4442 -p 4443:4443 -p 4444:4444 -p 4445:4445 --name badssl badssl
+curl -XGET http://badssl:4442/ca.crt -o ca.crt
+
+# On Debian/Ubuntu ...
+sudo cp ca.crt /usr/local/share/ca-certificates/badssl-ca.crt
+sudo update-ca-certificates
+
+# On fedora
+cp ca.crt /etc/pki/ca-trust/source/anchors/
+update-ca-trust
+
+export QGIS_BADSSL_URL_SELFSIGNED=https://badssl:4443
+export QGIS_BADSSL_URL_EXPIRED=https://badssl:4444
+export QGIS_BADSSL_URL_UNTRUSTED=https://badssl:4445
+```
+
 
 # Running the tests
 
@@ -186,5 +208,3 @@ WCS testing information can be found in:
 About benchmark tests you can read:
 
     ${TOP_SRCDIR}/tests/bench/README
-
-
