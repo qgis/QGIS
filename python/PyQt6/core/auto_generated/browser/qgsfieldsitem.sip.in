@@ -153,7 +153,7 @@ Returns the field definition.
     void setDomain( QgsFieldDomain *domain /Transfer/ );
 %Docstring
 Sets the domain for the field. The item will take ownership of the
-domain and update its display name to include the domain name.
+domain.
 
 .. versionadded:: 4.2
 %End
