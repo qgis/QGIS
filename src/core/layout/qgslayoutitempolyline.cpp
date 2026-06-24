@@ -138,16 +138,22 @@ void QgsLayoutItemPolyline::drawStartMarker( QPainter *painter )
     case MarkerMode::ArrowHead:
     {
       // calculate angle at start of line
-      const QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+      const QLineF startLine( mPolygon.at( 1 ), mPolygon.at( 0 ) );
       const double angle = startLine.angle();
-      drawArrow( painter, mPolygon.at( 0 ), angle );
+
+      // move start point depending on arrow width
+      const QVector2D dir = QVector2D( startLine.dx(), startLine.dy() ).normalized();
+      QPointF startPoint = startLine.p2();
+      startPoint += ( dir * 0.5 * mArrowHeadWidth ).toPointF();
+
+      drawArrow( painter, startPoint, angle );
       break;
     }
 
     case MarkerMode::SvgMarker:
     {
       // calculate angle at start of line
-      const QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+      const QLineF startLine( mPolygon.at( 1 ), mPolygon.at( 0 ) );
       const double angle = startLine.angle();
       drawSvgMarker( painter, mPolygon.at( 0 ), angle, mStartMarkerFile, mStartArrowHeadHeight );
       break;
@@ -171,7 +177,7 @@ void QgsLayoutItemPolyline::drawEndMarker( QPainter *painter )
       const QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
       const double angle = endLine.angle();
 
-      //move end point depending on arrow width
+      // move end point depending on arrow width
       const QVector2D dir = QVector2D( endLine.dx(), endLine.dy() ).normalized();
       QPointF endPoint = endLine.p2();
       endPoint += ( dir * 0.5 * mArrowHeadWidth ).toPointF();

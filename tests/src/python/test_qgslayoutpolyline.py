@@ -11,6 +11,7 @@ __date__ = "14/03/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import unittest
+from pathlib import Path
 
 from qgis.core import (
     Qgis,
@@ -148,6 +149,72 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
             self.render_layout_check("composerpolyline_endArrow", self.layout)
         )
         self.polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.NoMarker)
+
+    def testStartArrow(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        polygon = QPolygonF()
+        polygon.append(QPointF(100.0, 50.0))
+        polygon.append(QPointF(200.0, 100.0))
+        layout_polyline = QgsLayoutItemPolyline(polygon, layout)
+        layout.addLayoutItem(layout_polyline)
+
+        properties = {"color": "0,0,0,255", "width": "10.0", "capstyle": "square"}
+        style = QgsLineSymbol.createSimple(properties)
+        layout_polyline.setSymbol(style)
+
+        layout_polyline.setStartMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
+        layout_polyline.setArrowHeadWidth(30.0)
+
+        self.assertTrue(self.render_layout_check("composerpolyline_startArrow", layout))
+
+    def testBothArrows(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        polygon = QPolygonF()
+        polygon.append(QPointF(100.0, 50.0))
+        polygon.append(QPointF(200.0, 100.0))
+        layout_polyline = QgsLayoutItemPolyline(polygon, layout)
+        layout.addLayoutItem(layout_polyline)
+
+        properties = {"color": "0,0,0,255", "width": "10.0", "capstyle": "square"}
+        style = QgsLineSymbol.createSimple(properties)
+        layout_polyline.setSymbol(style)
+
+        layout_polyline.setStartMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
+        layout_polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
+        layout_polyline.setArrowHeadWidth(30.0)
+
+        self.assertTrue(self.render_layout_check("composerpolyline_bothArrows", layout))
+
+    def testBothSvgMarkers(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        polygon = QPolygonF()
+        polygon.append(QPointF(100.0, 50.0))
+        polygon.append(QPointF(200.0, 100.0))
+        layout_polyline = QgsLayoutItemPolyline(polygon, layout)
+        layout.addLayoutItem(layout_polyline)
+
+        properties = {"color": "0,0,0,255", "width": "0.5", "capstyle": "square"}
+        style = QgsLineSymbol.createSimple(properties)
+        layout_polyline.setSymbol(style)
+
+        svg_path = Path(TEST_DATA_DIR) / "test_symbol_svg.svg"
+        layout_polyline.setStartMarker(QgsLayoutItemPolyline.MarkerMode.SvgMarker)
+        layout_polyline.setStartSvgMarkerPath(svg_path.as_posix())
+        layout_polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.SvgMarker)
+        layout_polyline.setEndSvgMarkerPath(svg_path.as_posix())
+
+        self.assertTrue(
+            self.render_layout_check("composerpolyline_bothSvgMarkers", layout)
+        )
 
     def testRemoveNode(self):
         """Test removeNode method"""
