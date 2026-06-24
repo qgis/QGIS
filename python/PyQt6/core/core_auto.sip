@@ -618,6 +618,7 @@
 %Include auto_generated/processing/qgsprocessingparameteraggregate.sip
 %Include auto_generated/processing/qgsprocessingparameterdxflayers.sip
 %Include auto_generated/processing/qgsprocessingparameterfieldmap.sip
+%Include auto_generated/processing/qgsprocessingparameterheatmappixelsize.sip
 %Include auto_generated/processing/qgsprocessingparametermeshdataset.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip
 %Include auto_generated/processing/qgsprocessingparametertininputlayers.sip
