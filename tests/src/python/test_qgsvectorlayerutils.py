@@ -445,6 +445,23 @@ class TestQgsVectorLayerUtils(QgisTestCase):
             QgsVectorLayerUtils.createUniqueValue(layer, 0, "superpig"), "superpig_1"
         )
 
+    def testCreateFeatureDefaultValueOrdering(self):
+        """test creating a unique value"""
+        layer = QgsVectorLayer(
+            "Point?field=flda:string&field=fldb:integer&field=fldc:double",
+            "addfeat",
+            "memory",
+        )
+
+        layer.setDefaultValueDefinition(
+            0, QgsDefaultValue("if(fldb > 10, 'big', 'small')", True)
+        )
+
+        feature = QgsVectorLayerUtils.createFeature(layer, attributes={1: 20, 2: 1.0})
+        self.assertEqual(feature.attribute(0), "big")
+        self.assertEqual(feature.attribute(1), 20)
+        self.assertEqual(feature.attribute(2), 1.0)
+
     def testCreateFeature(self):
         """test creating a feature respecting defaults and constraints"""
         layer = QgsVectorLayer(
