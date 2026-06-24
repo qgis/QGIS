@@ -1000,8 +1000,6 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      *
      * This method requires a QGIS build based on GEOS 3.14 or later.
      *
-     * \note Not available in Python bindings
-     *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.13 or earlier.
      * \see validateCoverage()
      * \since QGIS 4.4
