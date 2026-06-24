@@ -164,8 +164,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
     bool equal( const QgsDataItem *other ) override;
 
     /**
-     * Sets the domain for the field. The item will take ownership of the domain
-     * and update its display name to include the domain name.
+     * Sets the domain for the field. The item will take ownership of the domain.
      *
      * \since QGIS 4.2
      */
