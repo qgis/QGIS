@@ -607,8 +607,13 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
     // initialize attributes
     newFeature.initAttributes( fields.count() );
-    for ( int idx = 0; idx < fields.count(); ++idx )
+    QList<int> deferredFieldIndexes;
+    QList<int> fieldIndexes( fields.count() );
+    std::iota( fieldIndexes.begin(), fieldIndexes.end(), 0 );
+    while ( !fieldIndexes.isEmpty() )
     {
+      const int idx = fieldIndexes.takeFirst();
+
       QVariant v;
       bool checkUnique = true;
       const bool hasUniqueConstraint { static_cast<bool>( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) };
@@ -625,10 +630,21 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       QgsDefaultValue defaultValueDefinition = layer->defaultValueDefinition( idx );
       if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint && checkUniqueValue( idx, v ) ) || defaultValueDefinition.applyOnUpdate() ) && defaultValueDefinition.isValid() )
       {
-        // client side default expression set - takes precedence over all. Why? Well, this is the only default
-        // which QGIS users have control over, so we assume that they're deliberately overriding any
-        // provider defaults for some good reason and we should respect that
-        v = layer->defaultValue( idx, newFeature, evalContext );
+        QgsExpression defaultValueExpression( defaultValueDefinition.expression() );
+        if ( defaultValueExpression.referencedColumns().isEmpty() || deferredFieldIndexes.contains( idx ) )
+        {
+          // client side default expression set - takes precedence over all. Why? Well, this is the only default
+          // which QGIS users have control over, so we assume that they're deliberately overriding any
+          // provider defaults for some good reason and we should respect that
+          v = layer->defaultValue( idx, newFeature, evalContext );
+        }
+        else
+        {
+          // the default value relies on order field(s) value, defer until the end
+          deferredFieldIndexes << idx;
+          fieldIndexes << idx;
+          continue;
+        }
       }
 
       // 3. provider side default value clause
