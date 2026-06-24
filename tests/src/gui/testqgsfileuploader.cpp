@@ -166,7 +166,6 @@ void TestQgsFileUploader::testSslError()
   QFETCH( QString, url );
   QFETCH( QString, result );
 
-  qDebug() << "url:" << url;
 
   QVERIFY( !mTempFile->fileName().isEmpty() );
   makeCall( QUrl( url ), mTempFile->fileName() );
