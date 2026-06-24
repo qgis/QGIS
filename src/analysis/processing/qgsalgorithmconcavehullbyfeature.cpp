@@ -115,8 +115,8 @@ QgsFeatureList QgsConcaveHullByFeatureAlgorithm::processFeature( const QgsFeatur
     const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( inputGeometry );
     if ( !collection || collection->numGeometries() == 1 )
     {
-      feedback->reportError( QObject::tr( "Cannot calculate convex hull for a single point feature (%1) (try 'Concave hull (by layer)' algorithm instead)." ).arg( f.id() ) );
-      f.clearGeometry();
+      feedback->reportError( QObject::tr( "Cannot calculate concave hull for a single point feature (%1) (try 'Concave hull (by layer)' algorithm instead)." ).arg( f.id() ) );
+      return QgsFeatureList();
     }
     else
     {
