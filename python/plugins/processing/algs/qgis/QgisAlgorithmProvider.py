@@ -29,7 +29,6 @@ from .BoxPlot import BoxPlot
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .FieldPyculator import FieldsPyculator
-from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .IdwInterpolation import IdwInterpolation
@@ -77,7 +76,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             EliminateSelection(),
             ExecuteSQL(),
             FieldsPyculator(),
-            Heatmap(),
             HubDistanceLines(),
             HubDistancePoints(),
             IdwInterpolation(),

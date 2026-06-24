@@ -1157,7 +1157,7 @@ tests:
         name: points.gml
         compare: false
 
-  - algorithm: qgis:heatmapkerneldensityestimation
+  - algorithm: native:heatmapkerneldensityestimation
     name: Heatmap (Kernel density estimation)
     params:
       DECAY: 0.0
