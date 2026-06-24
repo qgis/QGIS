@@ -26,6 +26,7 @@
 #include <QImageReader>
 #include <QMessageBox>
 #include <QMimeDatabase>
+#include <QString>
 #include <QUuid>
 
 using namespace Qt::StringLiterals;
@@ -109,20 +110,20 @@ QString QgsAiVisualContextUtils::mimeTypeForImagePath( const QString &path )
 {
   const QMimeDatabase mimeDb;
   const QMimeType mime = mimeDb.mimeTypeForFile( path, QMimeDatabase::MatchExtension );
-  if ( mime.isValid() && mime.name().startsWith( u"image/"_s ) )
+  if ( mime.isValid() && mime.name().startsWith( "image/"_L1 ) )
     return mime.name();
 
   const QFileInfo info( path );
   const QString suffix = info.suffix().toLower();
-  if ( suffix == u"jpg"_s || suffix == u"jpeg"_s )
+  if ( suffix == "jpg"_L1 || suffix == "jpeg"_L1 )
     return u"image/jpeg"_s;
-  if ( suffix == u"gif"_s )
+  if ( suffix == "gif"_L1 )
     return u"image/gif"_s;
-  if ( suffix == u"webp"_s )
+  if ( suffix == "webp"_L1 )
     return u"image/webp"_s;
-  if ( suffix == u"bmp"_s )
+  if ( suffix == "bmp"_L1 )
     return u"image/bmp"_s;
-  if ( suffix == u"tif"_s || suffix == u"tiff"_s )
+  if ( suffix == "tif"_L1 || suffix == "tiff"_L1 )
     return u"image/tiff"_s;
   return u"image/png"_s;
 }

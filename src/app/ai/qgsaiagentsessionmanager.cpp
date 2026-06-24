@@ -19,10 +19,10 @@
 #include <utility>
 
 #include "qgsaifilecontextprovider.h"
-#include "qgsaivisualcontextutils.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
+#include "qgsaivisualcontextutils.h"
 #include "qgsaiworkspacetrust.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
@@ -614,7 +614,7 @@ QString QgsAiAgentSessionManager::buildContextSummary( const QList<QgsAiChatCont
         }
         else
         {
-          summary += u"Image attachment not sent to provider (visual context consent not granted)."_s;
+          summary += "Image attachment not sent to provider (visual context consent not granted)."_L1;
         }
       }
       else

@@ -19,8 +19,8 @@
 #include <cmath>
 
 #include "qgsaifilecontextprovider.h"
-#include "qgsaivisualcontextutils.h"
 #include "qgsaitoolschemautil.h"
+#include "qgsaivisualcontextutils.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslayertree.h"

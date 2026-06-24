@@ -10,8 +10,8 @@
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaichatdockwidget.h"
-#include "ai/qgsaichatpromptedit.h"
 #include "ai/qgsaichathistorystore.h"
+#include "ai/qgsaichatpromptedit.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
@@ -29,11 +29,11 @@
 #include <QEvent>
 #include <QFile>
 #include <QFrame>
+#include <QImage>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLabel>
-#include <QImage>
 #include <QMenu>
 #include <QMetaObject>
 #include <QMimeData>

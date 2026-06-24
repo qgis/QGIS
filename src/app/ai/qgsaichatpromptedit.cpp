@@ -23,6 +23,7 @@
 #include <QFileInfo>
 #include <QImageReader>
 #include <QMimeData>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsaichatpromptedit.cpp"

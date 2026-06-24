@@ -179,8 +179,8 @@ namespace
 
   struct VisualContextImagePayload
   {
-    QString mimeType;
-    QString base64Data;
+      QString mimeType;
+      QString base64Data;
   };
 
   bool readImageFileBase64( const QString &imagePath, const QString &preferredMimeType, QString &mimeType, QString &base64Data )
