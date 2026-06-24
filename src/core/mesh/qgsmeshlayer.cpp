@@ -433,6 +433,7 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings,
     emit activeVectorDatasetGroupChanged( mRendererSettings.activeVectorDatasetGroup() );
 
   emit rendererChanged();
+  emitStyleChanged();
 
   if ( repaint )
   {
