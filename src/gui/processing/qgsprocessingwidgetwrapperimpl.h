@@ -19,6 +19,8 @@
 #ifndef QGSPROCESSINGWIDGETWRAPPERIMPL_H
 #define QGSPROCESSINGWIDGETWRAPPERIMPL_H
 
+#include "ui_qgsheatmappixelsizewidgetbase.h"
+
 #include "qgshighlightablelineedit.h"
 #include "qgsmaptool.h"
 #include "qgspointcloudattribute.h"
@@ -2271,6 +2273,80 @@ class GUI_EXPORT QgsProcessingVectorTileDestinationWidgetWrapper : public QgsPro
   protected:
     QString modelerExpressionFormatString() const override;
 };
+
+
+class GUI_EXPORT QgsHeatmapPixelSizeWidget : public QgsPanelWidget, private Ui::QgsHeatmapPixelSizeWidgetBase
+{
+    Q_OBJECT
+  public:
+    QgsHeatmapPixelSizeWidget( QWidget *parent = nullptr );
+
+    void setLayer( QgsVectorLayer *layer );
+    QgsVectorLayer *layer();
+    void setRadius( double radius );
+    void setRadiusField( const QString &radiusField );
+
+    double value() const;
+    void setValue( double value );
+
+  signals:
+    void valueChanged();
+
+  private slots:
+    void pixelSizeChanged();
+    void rowsChanged();
+    void columnsChanged();
+
+  private:
+    void recalculateBounds();
+
+    QPointer<QgsVectorLayer> mLayer;
+    QgsRectangle mLayerBounds;
+    QgsRectangle mRasterBounds;
+    double mRadius = 100.0;
+    QString mRadiusField;
+
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsProcessingHeatmapPixelSizeWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+  public:
+    QgsProcessingHeatmapPixelSizeWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override;
+    void postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers ) override;
+
+  public slots:
+    void setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+    const QgsVectorLayer *linkedVectorLayer() const override;
+
+  private slots:
+    void radiusChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+    void radiusFieldChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+
+  private:
+    QgsHeatmapPixelSizeWidget *mWidget = nullptr;
+    QgsDoubleSpinBox *mFallbackSpinBox = nullptr;
+
+    std::unique_ptr<QgsMapLayer> mParentLayer;
+
+    friend class TestProcessingGui;
+};
+
 
 ///@endcond PRIVATE
 
