@@ -60,6 +60,7 @@ jobs:
                 fs.writeFileSync(zipFilePath, Buffer.from(download.data));
                 console.log(`Downloaded and saved artifact: ${artifact.name} to ${zipFilePath}`);
               }
+              core.setOutput('artifact_id', matchArtifacts[0].id);
             }
             else
             {
