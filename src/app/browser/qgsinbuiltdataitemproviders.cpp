@@ -1624,14 +1624,16 @@ bool QgsFieldItemGuiProvider::rename( QgsDataItem *item, const QString &name, Qg
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::RenameField ) )
         {
+          const QString itemName { item->name() };
+
           try
           {
-            conn->renameField( fieldsItem->schema(), fieldsItem->tableName(), fieldItem->field().name(), name );
+            conn->renameField( fieldsItem->schema(), fieldsItem->tableName(), itemName, name );
             fieldsItem->refresh();
           }
           catch ( const QgsProviderConnectionException &ex )
           {
-            notify( tr( "Rename Field" ), tr( "Failed to rename field '%1': %2" ).arg( fieldItem->field().name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+            notify( tr( "Rename Field" ), tr( "Failed to rename field '%1': %2" ).arg( itemName, ex.what() ), context, Qgis::MessageLevel::Critical );
           }
         }
       }
