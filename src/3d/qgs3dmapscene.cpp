@@ -210,7 +210,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
-  connect( mEngine, &QgsAbstract3DEngine::depthBufferCaptured, this, &Qgs3DMapScene::onViewed2DExtentFrom3DChanged, Qt::QueuedConnection );
+  connect( mCameraController, &QgsCameraController::depthBufferReady, this, &Qgs3DMapScene::onViewed2DExtentFrom3DChanged );
 
   connect( &map, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapScene::onBackgroundSettingsChanged );
   onBackgroundSettingsChanged();
@@ -242,6 +242,11 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   onCameraMovementSpeedChanged();
 
   on3DAxisSettingsChanged();
+
+  mDepthBufferRefreshTimer = new QTimer( this );
+  mDepthBufferRefreshTimer->setSingleShot( true );
+  mDepthBufferRefreshTimer->setInterval( 100 );
+  connect( mDepthBufferRefreshTimer, &QTimer::timeout, mCameraController, &QgsCameraController::requestDepthBufferCapture );
 }
 
 void Qgs3DMapScene::viewZoomFull()
@@ -357,6 +362,9 @@ double Qgs3DMapScene::worldSpaceError( double epsilon, double distance ) const
 
 void Qgs3DMapScene::onCameraChanged()
 {
+  if ( mDepthBufferRefreshTimer )
+    mDepthBufferRefreshTimer->start();
+
   updateScene( true );
   updateCameraNearFarPlanes();
 

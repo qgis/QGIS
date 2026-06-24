@@ -425,6 +425,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void cameraRotationCenterChanged( QVector3D position );
 
+    /**
+     * Emitted after the depth buffer has been captured and is ready to sample.
+     * \since QGIS 4.2
+     */
+    void depthBufferReady();
+
   private slots:
     void onPositionChanged( Qt3DInput::QMouseEvent *mouse );
     void onWheel( Qt3DInput::QWheelEvent *wheel );
@@ -518,8 +524,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     //! Did camera change since last frame? Need to know if we should emit cameraChanged().
     bool mCameraChanged = false;
-
-    QTimer *mDepthBufferRefreshTimer = nullptr;
 
     // To test the cameracontroller
     friend class TestQgs3DRendering;

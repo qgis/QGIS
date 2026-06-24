@@ -437,6 +437,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     //! Last sampled depth at the screen center, used as fallback when there is no data at the center point
     double mLastCenterDepth = 0.5;
+    QTimer *mDepthBufferRefreshTimer = nullptr;
 
     friend class TestQgs3DRendering;
 };
