@@ -55,14 +55,14 @@ QString QgsCoverageCleanAlgorithm::groupId() const
 void QgsCoverageCleanAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  auto gapWidthParam = std::make_unique<QgsProcessingParameterDistance>( u"GAP_WIDTH"_s, QObject::tr( "Gap width" ), 0.0, u"INPUT"_s, false, 0, 10000000.0 );
+  auto gapWidthParam = std::make_unique<QgsProcessingParameterDistance>( u"GAP_WIDTH"_s, QObject::tr( "Maximum gap width" ), 0.0, u"INPUT"_s, false, 0, 10000000.0 );
   gapWidthParam->setHelp(
     QObject::tr(
       "Gaps which are narrower than this distance are merged with an adjacent polygon. Polygon width is determined as twice the radius of the maximum inscribed circle of the gap polygon. Empty holes "
       "in input polygons are treated as gaps, and may be filled in. Gaps which are not fully enclosed ('inlets') are not removed."
     )
   );
-  auto snappingDistanceParam = std::make_unique<QgsProcessingParameterDistance>( u"SNAPPING_DISTANCE"_s, QObject::tr( "Snapping distance" ), 0.0, u"INPUT"_s, true, 0.0, 10000000.0 );
+  auto snappingDistanceParam = std::make_unique<QgsProcessingParameterDistance>( u"SNAPPING_DISTANCE"_s, QObject::tr( "Snapping distance" ), QVariant(), u"INPUT"_s, true, 0.0, 10000000.0 );
   snappingDistanceParam->setHelp(
     QObject::tr(
       "Snapping to nearby vertices and line segment snapping is used to improve noding robustness and eliminate small errors in an efficient way. By default the snapping distance is not set, which "
@@ -198,11 +198,11 @@ QVariantMap QgsCoverageCleanAlgorithm::processAlgorithm( const QVariantMap &para
       break;
   }
 
-  feedback->pushInfo( QObject::tr( "Simplifying coverage" ) );
+  feedback->pushInfo( QObject::tr( "Cleaning coverage" ) );
   std::unique_ptr<QgsAbstractGeometry> cleaned;
   try
   {
-    cleaned = geos.cleanCoverage( cleanParameters, &error );
+    cleaned = geos.cleanCoverage( cleanParameters, &error, feedback );
   }
   catch ( QgsNotSupportedException &e )
   {
