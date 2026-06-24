@@ -113,10 +113,13 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   const QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
   const QStringList displayStringList = displayString.split( '\n' );
 
-  const QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
+  QgsTextFormat textFormat = mTextFormat;
+  textFormat.updateDataDefinedProperties( context );
+
+  const QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, textFormat );
   const double textDescent = textMetrics.descent();
-  const double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList );
-  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, Qgis::TextLayoutMode::Point );
+  const double textWidth = QgsTextRenderer::textWidth( context, textFormat, displayStringList );
+  const double textHeight = QgsTextRenderer::textHeight( context, textFormat, displayStringList, Qgis::TextLayoutMode::Point );
 
   QPaintDevice *device = context.painter()->device();
   const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();
@@ -215,5 +218,5 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   context.painter()->drawPolygon( backgroundBar );
 
   // Paint label to canvas
-  QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, mTextFormat );
+  QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, textFormat );
 }
