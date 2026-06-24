@@ -293,6 +293,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameterheatmappixelsize.cpp
   processing/qgsprocessingparametermeshdataset.cpp
   processing/qgsprocessingparameters.cpp
+  processing/qgsprocessingparameterreliefcolors.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
@@ -1913,6 +1914,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparameterfieldmap.h
   processing/qgsprocessingparameterheatmappixelsize.h
   processing/qgsprocessingparametermeshdataset.h
+  processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h

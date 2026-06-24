@@ -251,6 +251,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmreclassifybylayer.cpp
   processing/qgsalgorithmrectanglesovalsdiamonds.cpp
   processing/qgsalgorithmrefactorfields.cpp
+  processing/qgsalgorithmrelief.cpp
   processing/qgsalgorithmremoveduplicatesbyattribute.cpp
   processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremoveholes.cpp

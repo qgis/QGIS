@@ -46,6 +46,7 @@
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameterheatmappixelsize.h"
 #include "qgsprocessingparametermeshdataset.h"
+#include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingprovider.h"
@@ -801,6 +802,7 @@ class TestQgsProcessing : public QgsTest
     void parameterDxfLayers();
     void parameterAlignRasterLayers();
     void parameterHeatmapPixelSize();
+    void parameterReliefColors();
 #ifdef HAVE_EPT
     void parameterPointCloudLayer();
 #endif
@@ -12434,6 +12436,75 @@ void TestQgsProcessing::parameterHeatmapPixelSize()
   QCOMPARE( fromMap.dataType(), def->dataType() );
   def.reset( dynamic_cast<QgsProcessingParameterHeatmapPixelSize *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast<QgsProcessingParameterHeatmapPixelSize *>( def.get() ) );
+}
+
+void TestQgsProcessing::parameterReliefColors()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  auto def = std::make_unique<QgsProcessingParameterReliefColors>( "non_optional", QString(), QString( "parent" ), false );
+  QCOMPARE( def->parentLayerParameter(), u"parent"_s );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( "12.5,12.8,15,16,18" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5,12.8,15,16" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5,12.8,15,a,18" ) );
+  QVERIFY( def->checkValueIsAcceptable( "12.5,12.8,15,16,18;22.5,22.8,15,16,18" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5,12.8,15,16,18;13;22.5,22.8,15,16,18" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5,12.8,15,16,18;a;22.5,22.8,15,16,18" ) );
+  // string
+  QVariantMap params;
+  params.insert( "non_optional", QString( "abcdef" ) );
+  QList< QgsRasterReliefColor > colors = def->valueAsReliefColors( QString( "abcdef" ), context );
+  QCOMPARE( colors.size(), 0 );
+  colors = def->valueAsReliefColors( QString( "12.5,12.8,15,16,18;22.5,22.8,115,116,118" ), context );
+  QCOMPARE( colors.size(), 2 );
+  QCOMPARE( colors.at( 0 ).minElevation, 12.5 );
+  QCOMPARE( colors.at( 0 ).maxElevation, 12.8 );
+  QCOMPARE( colors.at( 0 ).color, QColor( 15, 16, 18 ) );
+  QCOMPARE( colors.at( 1 ).minElevation, 22.5 );
+  QCOMPARE( colors.at( 1 ).maxElevation, 22.8 );
+  QCOMPARE( colors.at( 1 ).color, QColor( 115, 116, 118 ) );
+
+  QCOMPARE( QgsProcessingParameterReliefColors::colorsAsVariant( colors ).toString(), u"12.5,12.80000000000000071,15,16,18;22.5,22.80000000000000071,115,116,118"_s );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), u"None"_s );
+  QCOMPARE( def->valueAsPythonString( QString( "12.5,12.8,15,16,18;22.5,22.8,115,116,118" ), context ), u"'12.5,12.8,15,16,18;22.5,22.8,115,116,118'"_s );
+
+  QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
+  QCOMPARE( def->valueAsJsonObject( u"12.5,12.8,15,16,18;22.5,22.8,115,116,118"_s, context ), QVariant( u"12.5,12.8,15,16,18;22.5,22.8,115,116,118"_s ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterReliefColors('non_optional', '', 'parent')"_s );
+
+  const QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterReliefColors fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  def.reset( dynamic_cast<QgsProcessingParameterReliefColors *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast<QgsProcessingParameterReliefColors *>( def.get() ) );
+
+  // optional
+  def = std::make_unique<QgsProcessingParameterReliefColors>( "optional", QString(), QString( "parent" ), true );
+  QCOMPARE( def->parentLayerParameter(), u"parent"_s );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( "12.5,12.8,15,16,18" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5,12.8,15,16" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5,12.8,15,a,18" ) );
+  QVERIFY( def->checkValueIsAcceptable( "12.5,12.8,15,16,18;22.5,22.8,15,16,18" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5,12.8,15,16,18;13;22.5,22.8,15,16,18" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5,12.8,15,16,18;a;22.5,22.8,15,16,18" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterReliefColors('optional', '', 'parent', optional=True)"_s );
 }
 
 void TestQgsProcessing::checkParamValues()
