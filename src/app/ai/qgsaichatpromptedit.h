@@ -39,6 +39,8 @@ class APP_EXPORT QgsAiChatPromptEdit : public QTextEdit
   private:
     QStringList extractLocalFilePaths( const QMimeData *source ) const;
     void handleFilePaths( const QStringList &paths );
+
+    friend class TestQgsAiChatDockWidget;
 };
 
 #endif // QGSAICHATPROMPTEDIT_H
