@@ -22,7 +22,8 @@
 #include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "qgisapp.h"
-#include "qgsaiagentsessionmanager.h"
+#include "qgsaichatpromptedit.h"
+#include "qgsaivisualcontextutils.h"
 #include "qgsaiclaudeoauthclient.h"
 #include "qgsaicodexoauthclient.h"
 #include "qgsaimodelrouter.h"
@@ -814,7 +815,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   mFileContextChipRow->setVisible( false );
   layout->addWidget( mFileContextChipRow );
 
-  mInputTextEdit = new QTextEdit( container );
+  mInputTextEdit = new QgsAiChatPromptEdit( container );
   mInputTextEdit->setObjectName( u"aiPromptInput"_s );
   mInputTextEdit->setPlaceholderText( tr( "Ask a question, tag project files with @, or send /patch…  (Shift+Enter for newline)" ) );
   mInputTextEdit->setAcceptRichText( false );
@@ -981,6 +982,13 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   connect( mHistoryButton, &QToolButton::clicked, this, &QgsAiChatDockWidget::rebuildHistoryMenu );
   connect( mHistoryButton->menu(), &QMenu::triggered, this, &QgsAiChatDockWidget::onHistoryEntryTriggered );
   connect( mAttachButton, &QToolButton::clicked, this, &QgsAiChatDockWidget::attachFile );
+  connect( mInputTextEdit, &QgsAiChatPromptEdit::filesDropped, this, [this]( const QStringList &paths ) {
+    bool added = false;
+    for ( const QString &path : paths )
+      added = addAttachedFile( path ) || added;
+    if ( added )
+      rebuildAttachmentChips();
+  } );
   connect( mInputTextEdit, &QTextEdit::textChanged, this, &QgsAiChatDockWidget::updateMentionPopup );
   connect( mMentionList, &QListWidget::itemActivated, this, [this]( QListWidgetItem *item ) {
     if ( item )
@@ -2142,6 +2150,12 @@ bool QgsAiChatDockWidget::addAttachedFile( const QString &path )
   if ( !info.exists() || !info.isFile() )
     return false;
 
+  if ( QgsAiVisualContextUtils::isSupportedImagePath( path ) )
+  {
+    if ( !QgsAiVisualContextUtils::ensureVisualContextConsent( this ) )
+      return false;
+  }
+
   const QString absolutePath = QDir::cleanPath( info.absoluteFilePath() );
   for ( const AttachedFile &file : std::as_const( mAttachedFiles ) )
   {
@@ -2179,7 +2193,8 @@ void QgsAiChatDockWidget::rebuildAttachmentChips()
     chipLayout->setContentsMargins( 6, 1, 2, 1 );
     chipLayout->setSpacing( 3 );
 
-    QLabel *label = new QLabel( u"📎 %1"_s.arg( QFileInfo( file.filePath ).fileName() ), chip );
+    const bool isImage = QgsAiVisualContextUtils::isSupportedImagePath( file.filePath );
+    QLabel *label = new QLabel( u"%1 %2"_s.arg( isImage ? u"🖼"_s : u"📎"_s, QFileInfo( file.filePath ).fileName() ), chip );
     label->setTextInteractionFlags( Qt::TextSelectableByMouse );
     label->setToolTip( file.filePath );
     chipLayout->addWidget( label );

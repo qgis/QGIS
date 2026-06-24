@@ -36,6 +36,7 @@ class QTextEdit;
 class QToolButton;
 class QVBoxLayout;
 
+class QgsAiChatPromptEdit;
 class QgsAiLayerIndexCoordinator;
 class QgsAiModelRouter;
 class QgsAiReviewPatchEngine;
@@ -147,7 +148,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QgsScrollArea *mTranscriptScrollArea = nullptr;
     QWidget *mTranscriptContainer = nullptr;
     QVBoxLayout *mTranscriptLayout = nullptr;
-    QTextEdit *mInputTextEdit = nullptr;
+    QgsAiChatPromptEdit *mInputTextEdit = nullptr;
 
     QToolButton *mNewChatButton = nullptr;
     QToolButton *mHistoryButton = nullptr;

@@ -19,6 +19,7 @@
 #include <utility>
 
 #include "qgsaifilecontextprovider.h"
+#include "qgsaivisualcontextutils.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
@@ -33,6 +34,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QImageReader>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -595,7 +597,30 @@ QString QgsAiAgentSessionManager::buildContextSummary( const QList<QgsAiChatCont
       summary += u"Selected text:\n%1\n"_s.arg( wrapUntrusted( u"selection:%1"_s.arg( displayPath ), context.selectedText.left( 8192 ) ) );
     if ( context.binary )
     {
-      summary += "Content omitted because the file appears to be binary."_L1;
+      if ( QgsAiVisualContextUtils::isSupportedImagePath( context.filePath ) )
+      {
+        if ( QgsAiVisualContextUtils::hasVisualConsent() )
+        {
+          QImageReader reader( context.filePath );
+          const QSize imageSize = reader.size();
+          if ( imageSize.isValid() )
+          {
+            summary += u"Image attachment sent to vision-capable provider: %1 (%2x%3, %4 bytes)."_s.arg( displayPath ).arg( imageSize.width() ).arg( imageSize.height() ).arg( context.fileSize );
+          }
+          else
+          {
+            summary += u"Image attachment sent to vision-capable provider: %1 (%2 bytes)."_s.arg( displayPath ).arg( context.fileSize );
+          }
+        }
+        else
+        {
+          summary += u"Image attachment not sent to provider (visual context consent not granted)."_s;
+        }
+      }
+      else
+      {
+        summary += "Content omitted because the file appears to be binary."_L1;
+      }
     }
     else if ( !context.fileSnippet.isEmpty() )
     {
@@ -743,6 +768,23 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
   {
     message.content = message.content + u"\n\nContext:\n"_s + contextSummary;
   }
+
+  QStringList attachedImagePaths;
+  QVariantList attachedImageMimeTypes;
+  for ( const QgsAiChatContextFile &contextFile : contextFiles )
+  {
+    if ( !QgsAiVisualContextUtils::isSupportedImagePath( contextFile.filePath ) )
+      continue;
+
+    attachedImagePaths << QDir::cleanPath( QFileInfo( contextFile.filePath ).absoluteFilePath() );
+    attachedImageMimeTypes << QgsAiVisualContextUtils::mimeTypeForImagePath( contextFile.filePath );
+  }
+  if ( !attachedImagePaths.isEmpty() && QgsAiVisualContextUtils::hasVisualConsent() )
+  {
+    message.metadata.insert( u"attached_image_paths"_s, attachedImagePaths );
+    message.metadata.insert( u"attached_image_mime_types"_s, attachedImageMimeTypes );
+  }
+
   recordHistoryMessage( message );
   mCurrentContextFiles = contextFiles;
   mToolIterations = 0;
