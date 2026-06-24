@@ -150,6 +150,7 @@
 #include "qgsalgorithmgenerateelevationprofile.h"
 #include "qgsalgorithmgeometrybyexpression.h"
 #include "qgsalgorithmgltftovector.h"
+#include "qgsalgorithmheatmap.h"
 #include "qgsruntimeprofiler.h"
 
 #include <QString>
@@ -515,6 +516,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsUploadGpsDataAlgorithm() );
 #endif
   addAlgorithm( new QgsGridAlgorithm() );
+  addAlgorithm( new QgsHeatmapAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsHubDistanceAlgorithm() );
   addAlgorithm( new QgsHypsometricCurvesAlgorithm() );

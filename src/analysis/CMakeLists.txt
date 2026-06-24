@@ -171,6 +171,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmgltftovector.cpp
   processing/qgsalgorithmgpsbabeltools.cpp
   processing/qgsalgorithmgrid.cpp
+  processing/qgsalgorithmheatmap.cpp
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmhubdistance.cpp
   processing/qgsalgorithmhypsometriccurves.cpp
