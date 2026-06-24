@@ -3,7 +3,3 @@ try:
     QgsRelief.__group__ = ['raster']
 except (NameError, AttributeError):
     pass
-try:
-    QgsRelief.ReliefColor.__group__ = ['raster']
-except (NameError, AttributeError):
-    pass

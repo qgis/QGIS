@@ -58,7 +58,7 @@ void QgsRelief::clearReliefColors()
   mReliefColors.clear();
 }
 
-void QgsRelief::addReliefColorClass( const ReliefColor &color )
+void QgsRelief::addReliefColorClass( const QgsRasterReliefColor &color )
 {
   mReliefColors.push_back( color );
 }
@@ -66,12 +66,12 @@ void QgsRelief::addReliefColorClass( const ReliefColor &color )
 void QgsRelief::setDefaultReliefColors()
 {
   clearReliefColors();
-  addReliefColorClass( ReliefColor( QColor( 9, 176, 76 ), 0, 200 ) );
-  addReliefColorClass( ReliefColor( QColor( 20, 228, 128 ), 200, 500 ) );
-  addReliefColorClass( ReliefColor( QColor( 167, 239, 153 ), 500, 1000 ) );
-  addReliefColorClass( ReliefColor( QColor( 218, 188, 143 ), 1000, 2000 ) );
-  addReliefColorClass( ReliefColor( QColor( 233, 158, 91 ), 2000, 4000 ) );
-  addReliefColorClass( ReliefColor( QColor( 255, 255, 255 ), 4000, 9000 ) );
+  addReliefColorClass( QgsRasterReliefColor( QColor( 9, 176, 76 ), 0, 200 ) );
+  addReliefColorClass( QgsRasterReliefColor( QColor( 20, 228, 128 ), 200, 500 ) );
+  addReliefColorClass( QgsRasterReliefColor( QColor( 167, 239, 153 ), 500, 1000 ) );
+  addReliefColorClass( QgsRasterReliefColor( QColor( 218, 188, 143 ), 1000, 2000 ) );
+  addReliefColorClass( QgsRasterReliefColor( QColor( 233, 158, 91 ), 2000, 4000 ) );
+  addReliefColorClass( QgsRasterReliefColor( QColor( 255, 255, 255 ), 4000, 9000 ) );
 }
 
 int QgsRelief::processRaster( QgsFeedback *feedback )
@@ -423,7 +423,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
 
 bool QgsRelief::getElevationColor( double elevation, int *red, int *green, int *blue ) const
 {
-  QList<ReliefColor>::const_iterator reliefColorIt = mReliefColors.constBegin();
+  QList<QgsRasterReliefColor>::const_iterator reliefColorIt = mReliefColors.constBegin();
   for ( ; reliefColorIt != mReliefColors.constEnd(); ++reliefColorIt )
   {
     if ( elevation >= reliefColorIt->minElevation && elevation <= reliefColorIt->maxElevation )
@@ -605,9 +605,9 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
   return true;
 }
 
-QList<QgsRelief::ReliefColor> QgsRelief::calculateOptimizedReliefClasses()
+QList<QgsRasterReliefColor> QgsRelief::calculateOptimizedReliefClasses()
 {
-  QList<QgsRelief::ReliefColor> resultList;
+  QList<QgsRasterReliefColor> resultList;
 
   int nCellsX, nCellsY;
   const gdal::dataset_unique_ptr inputDataset = openInputFile( nCellsX, nCellsY );
@@ -707,7 +707,7 @@ QList<QgsRelief::ReliefColor> QgsRelief::calculateOptimizedReliefClasses()
   {
     const double minElevation = minMax[0] + classBreaks[i - 1] * frequencyClassRange;
     const double maxElevation = minMax[0] + classBreaks[i] * frequencyClassRange;
-    resultList.push_back( QgsRelief::ReliefColor( colorList.at( i - 1 ), minElevation, maxElevation ) );
+    resultList.push_back( QgsRasterReliefColor( colorList.at( i - 1 ), minElevation, maxElevation ) );
   }
 
   return resultList;
