@@ -147,7 +147,6 @@ bool QgsBrowserGuiModel::dropMimeData( const QMimeData *data, Qt::DropAction act
   return false;
 }
 
-
 bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   QgsDataItem *item = dataItem( index );
