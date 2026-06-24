@@ -55,7 +55,7 @@ QString QgsCoverageCleanAlgorithm::groupId() const
 void QgsCoverageCleanAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  auto gapWidthParam = std::make_unique<QgsProcessingParameterDistance>( u"GAP_WIDTH"_s, QObject::tr( "Maximum gap width" ), 0.0, u"INPUT"_s, false, 0, 10000000.0 );
+  auto gapWidthParam = std::make_unique<QgsProcessingParameterDistance>( u"MAXIMUM_GAP_WIDTH"_s, QObject::tr( "Maximum gap width" ), 0.0, u"INPUT"_s, false, 0, 10000000.0 );
   gapWidthParam->setHelp(
     QObject::tr(
       "Gaps which are narrower than this distance are merged with an adjacent polygon. Polygon width is determined as twice the radius of the maximum inscribed circle of the gap polygon. Empty holes "
