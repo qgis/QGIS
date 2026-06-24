@@ -47,7 +47,7 @@ class CORE_EXPORT QgsProcessingParameterHeatmapPixelSize : public QgsProcessingP
     QgsProcessingParameterHeatmapPixelSize *clone() const override;
     QString type() const override;
     //! Returns the type name for the parameter class.
-    static QString typeName() { return u"heatmappixelsize"_s; }
+    static QString typeName() { return u"heatmappixelsize"_s; } // cppcheck-suppress duplInheritedMember
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
 
     /**
