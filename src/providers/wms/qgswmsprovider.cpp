@@ -134,6 +134,8 @@ QgsWmsProvider::QgsWmsProvider( const QString &uri, const ProviderOptions &optio
     return;
   }
 
+  // non for xyz sources, this tracks the actual resolved properties of the
+  // WMS provider (eg detected CRS when no crs was specified in the original source uri)
   QgsDataSourceUri sourceUri;
   sourceUri.setEncodedUri( uri );
 
