@@ -25,10 +25,6 @@
 #include <QCoreApplication>
 #include <QDialog>
 #include <QDir>
-#include <QDropEvent>
-#include <QEvent>
-#include <QFile>
-#include <QFrame>
 #include <QImage>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -670,8 +666,7 @@ void TestQgsAiChatDockWidget::dropLocalFileCreatesAttachmentChip()
 
   auto mime = std::make_unique<QMimeData>();
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( filePath ) );
-  auto dropEvent = std::make_unique<QDropEvent>( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
-  input->dropEvent( dropEvent.get() );
+  input->insertFromMimeData( mime.get() );
   QApplication::processEvents();
 
   QVERIFY( chipRow->isVisible() );
@@ -703,8 +698,7 @@ void TestQgsAiChatDockWidget::dropDoesNotInsertFileUriText()
 
   auto mime = std::make_unique<QMimeData>();
   mime->setText( QUrl::fromLocalFile( filePath ).toString() );
-  auto dropEvent = std::make_unique<QDropEvent>( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
-  input->dropEvent( dropEvent.get() );
+  input->insertFromMimeData( mime.get() );
   QApplication::processEvents();
 
   QVERIFY( !input->toPlainText().contains( u"file://"_s ) );
