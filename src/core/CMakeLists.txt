@@ -1079,6 +1079,14 @@ set_source_files_properties(
   PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
 )
 
+if (MSVC)
+  set_source_files_properties(
+    providers/ogr/qgsogrprovider.cpp
+    providers/ogr/qgsogrproviderutils.cpp
+    PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
+  )
+endif()
+
 if(WITH_QTPOSITIONING)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp)
