@@ -15,10 +15,11 @@
 
 #include "qgsphongmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
-#include "qgshighlightmaterial.h"
 #include "qgsphongmaterial.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgsunlitmaterial.h"
 
 #include <QMap>
 #include <QString>
@@ -50,7 +51,7 @@ QgsMaterial *QgsPhongMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial();
+        return Qgs3D::createHighlightMaterial();
       }
 
       const QgsPhongMaterialSettings *phongSettings = dynamic_cast< const QgsPhongMaterialSettings * >( settings );

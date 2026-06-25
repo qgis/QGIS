@@ -15,15 +15,16 @@
 
 #include "qgsphongtexturedmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
-#include "qgshighlightmaterial.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterial3dhandler.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgsphongtexturedmaterialsettings.h"
+#include "qgsunlitmaterial.h"
 
 #include <QMap>
 #include <QString>
@@ -53,7 +54,7 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial();
+        return Qgs3D::createHighlightMaterial();
       }
 
       bool fitsInCache = false;

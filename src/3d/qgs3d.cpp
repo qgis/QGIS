@@ -46,6 +46,7 @@
 #include "qgssimplelinematerial3dhandler.h"
 #include "qgsstyle.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsunlitmaterial.h"
 #include "qgsvectorlayer3drenderer.h"
 
 #include <QString>
@@ -157,6 +158,19 @@ QgsMaterial *Qgs3D::toMaterial( const QgsAbstractMaterialSettings *settings, Qgi
     return handler->toMaterial( settings, technique, context );
   }
   return nullptr;
+}
+
+QgsUnlitMaterial *Qgs3D::createHighlightMaterial()
+{
+  auto highlightMaterial = new QgsUnlitMaterial();
+
+  const QgsSettings settings;
+  const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
+  QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  color.setAlphaF( alpha );
+  highlightMaterial->setColor( color );
+
+  return highlightMaterial;
 }
 
 Qgs3D::Qgs3D()

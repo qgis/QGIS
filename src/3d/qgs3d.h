@@ -30,6 +30,7 @@ class QgsAbstractMaterial3DHandler;
 class QgsAbstractMaterialSettings;
 class QgsMaterial;
 class QgsMaterialContext;
+class QgsUnlitMaterial;
 class QgsExpressionContext;
 class QgsSettingsEntryBool;
 template<class T> class QgsSettingsEntryEnumFlag;
@@ -93,6 +94,14 @@ class _3D_EXPORT Qgs3D
      * \since QGIS 4.2
      */
     static QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context );
+
+    /**
+     * Creates a new highlight material, consisting of an unlit material respecting
+     * the user's map highlight color.
+     *
+     * \since QGIS 4.2
+     */
+    static QgsUnlitMaterial *createHighlightMaterial();
 
     /**
      * Returns the handler to use for a material \a settings.
