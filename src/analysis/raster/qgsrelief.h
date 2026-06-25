@@ -41,6 +41,9 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsRelief
 {
   public:
+    /**
+     * Constructor for QgsRelief.
+     */
     QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
     ~QgsRelief();
 
@@ -48,27 +51,74 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief &operator=( const QgsRelief &rh ) = delete;
 
     /**
-     * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
+     * Starts the calculation.
+     *
+     * Reads from the intput input file and stores the result in the output file.
+     *
      * \param feedback feedback object that receives update and that is checked for cancellation.
+     *
      * \returns 0 in case of success
     */
     int processRaster( QgsFeedback *feedback = nullptr );
 
+    /**
+     * Returns the z factor, which controls vertical elevation exaggeration.
+     *
+     * \see setZFactor()
+     */
     double zFactor() const { return mZFactor; }
+
+    /**
+     * Sets the z \a factor, which controls vertical elevation exaggeration.
+     *
+     * \see zFactor()
+     */
     void setZFactor( double factor ) { mZFactor = factor; }
 
+    /**
+     * Clears all existing relief colors.
+     *
+     * \see addReliefColorClass()
+     * \see reliefColors()
+     * \see setReliefColors()
+     */
     void clearReliefColors();
+
+    /**
+     * Adds a relief \a color.
+     *
+     * \see clearReliefColors()
+     * \see reliefColors()
+     * \see setReliefColors()
+     */
     void addReliefColorClass( const QgsRasterReliefColor &color );
+
+    /**
+     * Returns a list of all relief colors.
+     *
+     * \see clearReliefColors()
+     * \see addReliefColorClass()
+     * \see setReliefColors()
+     */
     QList<QgsRasterReliefColor> reliefColors() const { return mReliefColors; }
+
+    /**
+     * Sets the list of relief colors.
+     *
+     * \see clearReliefColors()
+     * \see addReliefColorClass()
+     * \see reliefColors()
+     */
     void setReliefColors( const QList<QgsRasterReliefColor> &c ) { mReliefColors = c; }
 
     /**
-     * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+     * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression.
+     *
      * \returns TRUE in case of success
     */
     QList<QgsRasterReliefColor> calculateOptimizedReliefClasses();
 
-    //! Write frequency of elevation values to file for manual inspection
+    //! Writes frequency of elevation values to a \a file for manual inspection
     bool exportFrequencyDistributionToCsv( const QString &file );
 
   private:
