@@ -16,7 +16,7 @@ import socketserver
 import threading
 import unittest
 
-from qgis.core import QgsNetworkContentFetcher
+from qgis.core import QgsApplication, QgsAuthMethodConfig, QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 from qgis.testing import QgisTestCase, start_app
@@ -25,13 +25,29 @@ from utilities import unitTestDataPath
 app = start_app()
 
 
+class SmartRedirectHandler(http.server.SimpleHTTPRequestHandler):
+    REDIRECTS = {
+        "/redir_same_host": ("http://localhost/qgis_local_server/index.html", 301),
+        "/redir_different_host": ("http://example.com/new_path", 302),
+    }
+
+    def do_GET(self):
+        if self.path in self.REDIRECTS:
+            target, code = self.REDIRECTS[self.path]
+            self.send_response(code)
+            self.send_header("Location", target)
+            self.end_headers()
+        else:
+            super().do_GET()
+
+
 class TestQgsNetworkContentFetcher(QgisTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + "")
-        handler = http.server.SimpleHTTPRequestHandler
+        handler = SmartRedirectHandler
 
         cls.httpd = socketserver.TCPServer(("localhost", 0), handler)
         cls.port = cls.httpd.server_address[1]
@@ -153,6 +169,90 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
 
         html = fetcher.contentAsString()
         assert chr(6040) in html
+
+    def testAuthConfig(self):
+        authm = QgsApplication.authManager()
+        auth_config = QgsAuthMethodConfig("APIHeader")
+        auth_config.setConfig("key", "value")
+        auth_config.setName("test_header_config")
+        self.assertTrue(authm.storeAuthenticationConfig(auth_config)[0])
+        self.assertTrue(auth_config.isValid())
+        authcfg = auth_config.id()
+
+        fetcher = QgsNetworkContentFetcher()
+        self.loaded = False
+        request = QNetworkRequest(
+            QUrl(
+                "http://localhost:"
+                + str(TestQgsNetworkContentFetcher.port)
+                + "/qgis_local_server/index.html"
+            )
+        )
+        fetcher.fetchContent(request, authcfg)
+        fetcher.finished.connect(self.contentLoaded)
+        while not self.loaded:
+            app.processEvents()
+
+        r = fetcher.reply()
+        rreq = r.request()
+        self.assertEqual(rreq.rawHeader("key"), "value")
+
+    def testAuthConfigRedirectSameHost(self):
+        authm = QgsApplication.authManager()
+        auth_config = QgsAuthMethodConfig("APIHeader")
+        auth_config.setConfig("key", "value")
+        auth_config.setName("test_header_config")
+        self.assertTrue(authm.storeAuthenticationConfig(auth_config)[0])
+        self.assertTrue(auth_config.isValid())
+        authcfg = auth_config.id()
+
+        fetcher = QgsNetworkContentFetcher()
+        self.loaded = False
+        request = QNetworkRequest(
+            QUrl(
+                "http://localhost:"
+                + str(TestQgsNetworkContentFetcher.port)
+                + "/redir_same_host"
+            )
+        )
+        fetcher.fetchContent(request, authcfg)
+        fetcher.finished.connect(self.contentLoaded)
+        while not self.loaded:
+            app.processEvents()
+
+        r = fetcher.reply()
+        rreq = r.request()
+        self.assertEqual(rreq.url().host(), request.url().host())
+        self.assertEqual(rreq.url().path(), "/qgis_local_server/index.html")
+        self.assertEqual(rreq.rawHeader("key"), "value")
+
+    def testAuthConfigRedirectDifferentHost(self):
+        authm = QgsApplication.authManager()
+        auth_config = QgsAuthMethodConfig("APIHeader")
+        auth_config.setConfig("key", "value")
+        auth_config.setName("test_header_config")
+        self.assertTrue(authm.storeAuthenticationConfig(auth_config)[0])
+        self.assertTrue(auth_config.isValid())
+        authcfg = auth_config.id()
+
+        fetcher = QgsNetworkContentFetcher()
+        self.loaded = False
+        request = QNetworkRequest(
+            QUrl(
+                "http://localhost:"
+                + str(TestQgsNetworkContentFetcher.port)
+                + "/redir_different_host"
+            )
+        )
+        fetcher.fetchContent(request, authcfg)
+        fetcher.finished.connect(self.contentLoaded)
+        while not self.loaded:
+            app.processEvents()
+
+        r = fetcher.reply()
+        rreq = r.request()
+        self.assertNotEqual(rreq.url().host(), request.url().host())
+        self.assertFalse(rreq.hasRawHeader("key"))
 
 
 if __name__ == "__main__":
