@@ -1083,8 +1083,11 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
-  //if ( !GEOSisValid_r( context, mGeos.get() ) ) // TODO: Uncomment when curve support is available in GEOS
-  //  return InvalidBaseGeometry;
+// TODO: Remove next #if when GEOSisValid_r has curve support!
+#if !( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  if ( !GEOSisValid_r( context, mGeos.get() ) )
+    return InvalidBaseGeometry;
+#endif
 
   //make sure splitLine is valid
   if ( ( mGeometry->dimension() == 1 && splitLine.numPoints() < 1 ) || ( mGeometry->dimension() == 2 && splitLine.numPoints() < 2 ) )
@@ -1717,10 +1720,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_COMPOUNDCURVE:
     {
       auto compoundCurve = std::make_unique< QgsCompoundCurve >();
-      const int nCurves = GEOSGetNumGeometries_r( context, geos );
+      const int nCurves = GEOSGetNumCurves_r( context, geos );
       for ( int i = 0; i < nCurves; i++ )
       {
-        std::unique_ptr< QgsSimpleCurve > curve = sequenceToSimpleCurve( GEOSGetGeometryN_r( context, geos, i ), hasZ, hasM );
+        std::unique_ptr< QgsSimpleCurve > curve = sequenceToSimpleCurve( GEOSGetCurveN_r( context, geos, i ), hasZ, hasM );
         compoundCurve->addCurve( curve.release(), true );
       }
       return std::move( compoundCurve );
@@ -1976,7 +1979,11 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
         return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision, flags );
 
       case Qgis::WkbType::LineString:
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+        return createGeosSimpleCurve( static_cast<const QgsLineString *>( geom ), precision, flags );
+#else
         return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision, flags );
+#endif
 
       case Qgis::WkbType::Polygon:
         return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision, flags );
@@ -2932,16 +2939,7 @@ geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve
   geos::unique_ptr geosGeom;
   try
   {
-    // TODO: leave untouched, we'll use createGeosSimpleCurve for curves instead
-    // geosGeom.reset( GEOSGeom_createLineString_r( QgsGeosContext::get(), coordSeq ) );
-    if ( !c->hasCurvedSegments() )
-    {
-      geosGeom.reset( GEOSGeom_createLineString_r( QgsGeosContext::get(), coordSeq ) );
-    }
-    else
-    {
-      geosGeom.reset( GEOSGeom_createCircularString_r( QgsGeosContext::get(), coordSeq ) );
-    }
+    geosGeom.reset( GEOSGeom_createLineString_r( QgsGeosContext::get(), coordSeq ) );
   }
   CATCH_GEOS( nullptr )
   return geosGeom;
