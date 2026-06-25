@@ -289,3 +289,204 @@ QgsRectangle QgsRasterLayerUtils::alignRasterExtent( const QgsRectangle &extent,
   const double maxY { origin.y() + std::ceil( ( extent.yMaximum() - origin.y() ) / absPixelSizeY ) * absPixelSizeY };
   return QgsRectangle( minX, minY, maxX, maxY );
 }
+
+QList<QgsRasterReliefColor> QgsRasterLayerUtils::calculateOptimizedReliefClasses( QgsRasterDataProvider *provider, int band )
+{
+  QList<QgsRasterReliefColor> resultList;
+
+  if ( !provider || !provider->isValid() || band < 1 || band > provider->bandCount() )
+  {
+    return resultList;
+  }
+
+  const QgsRasterBandStats stats = provider->bandStatistics( band, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max );
+
+  // store elevation frequency in 252 elevation classes
+  double frequency[252] = { 0 };
+  const double frequencyClassRange = ( stats.maximumValue - stats.minimumValue ) / 252.0;
+
+  // go through raster cells and get frequency of classes
+  QgsRasterIterator iter( provider );
+  iter.startRasterRead( band, provider->xSize(), provider->ySize(), provider->extent() );
+
+  int iterCols = 0;
+  int iterRows = 0;
+  int iterLeft = 0;
+  int iterTop = 0;
+  std::unique_ptr<QgsRasterBlock> block;
+
+  bool isNoData = false;
+  while ( iter.readNextRasterPart( band, iterCols, iterRows, block, iterLeft, iterTop ) )
+  {
+    for ( int row = 0; row < iterRows; ++row )
+    {
+      for ( int col = 0; col < iterCols; ++col )
+      {
+        const double elevation = block->valueAndNoData( row, col, isNoData );
+        if ( isNoData )
+          continue;
+
+        int elevationClass = frequencyClassForElevation( elevation, stats.minimumValue, frequencyClassRange );
+        elevationClass = std::max( std::min( elevationClass, 251 ), 0 );
+        frequency[elevationClass] += 1.0;
+      }
+    }
+  }
+
+  //log10 transformation for all frequency values
+  for ( int i = 0; i < 252; ++i )
+  {
+    frequency[i] = std::log10( frequency[i] );
+  }
+
+  //start with 9 uniformly distributed classes
+  QList<int> classBreaks;
+  classBreaks.append( 0 );
+  classBreaks.append( 28 );
+  classBreaks.append( 56 );
+  classBreaks.append( 84 );
+  classBreaks.append( 112 );
+  classBreaks.append( 140 );
+  classBreaks.append( 168 );
+  classBreaks.append( 196 );
+  classBreaks.append( 224 );
+  classBreaks.append( 252 );
+
+  for ( int i = 0; i < 10; ++i )
+  {
+    optimiseClassBreaks( classBreaks, frequency );
+  }
+
+#ifdef QGISDEBUG
+  //debug, print out all the classbreaks
+  for ( int breakValue : std::as_const( classBreaks ) )
+  {
+    QgsDebugMsgLevel( QString::number( breakValue ), 2 );
+  }
+#endif
+
+  //set colors according to optimised class breaks
+  QVector<QColor> colorList;
+  colorList.reserve( 9 );
+  colorList.push_back( QColor( 7, 165, 144 ) );
+  colorList.push_back( QColor( 12, 221, 162 ) );
+  colorList.push_back( QColor( 33, 252, 183 ) );
+  colorList.push_back( QColor( 247, 252, 152 ) );
+  colorList.push_back( QColor( 252, 196, 8 ) );
+  colorList.push_back( QColor( 252, 166, 15 ) );
+  colorList.push_back( QColor( 175, 101, 15 ) );
+  colorList.push_back( QColor( 255, 133, 92 ) );
+  colorList.push_back( QColor( 204, 204, 204 ) );
+
+  resultList.reserve( classBreaks.size() );
+  for ( int i = 1; i < classBreaks.size(); ++i )
+  {
+    const double minElevation = stats.minimumValue + classBreaks[i - 1] * frequencyClassRange;
+    const double maxElevation = stats.minimumValue + classBreaks[i] * frequencyClassRange;
+    resultList.push_back( QgsRasterReliefColor( colorList.at( i - 1 ), minElevation, maxElevation ) );
+  }
+
+  return resultList;
+}
+
+int QgsRasterLayerUtils::frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange )
+{
+  return ( elevation - minElevation ) / elevationClassRange;
+}
+
+void QgsRasterLayerUtils::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
+{
+  const int nClasses = breaks.size() - 1;
+  std::vector< double > a( nClasses ); //slopes
+  std::vector< double > b( nClasses ); //y-offsets
+
+  for ( int i = 0; i < nClasses; ++i )
+  {
+    //get all the values between the class breaks into input
+    QList<QPair<int, double>> regressionInput;
+    regressionInput.reserve( breaks.at( i + 1 ) - breaks.at( i ) );
+    for ( int j = breaks.at( i ); j < breaks.at( i + 1 ); ++j )
+    {
+      regressionInput.push_back( qMakePair( j, frequencies[j] ) );
+    }
+
+    double aParam, bParam;
+    if ( !regressionInput.isEmpty() && calculateRegression( regressionInput, aParam, bParam ) )
+    {
+      a[i] = aParam;
+      b[i] = bParam;
+    }
+    else
+    {
+      a[i] = 0;
+      b[i] = 0; //better default value
+    }
+  }
+
+  const QList<int> classesToRemove;
+
+  //shift class boundaries or eliminate classes which fall together
+  for ( int i = 1; i < nClasses; ++i )
+  {
+    if ( breaks[i] == breaks[i - 1] )
+    {
+      continue;
+    }
+
+    if ( qgsDoubleNear( a[i - 1], a[i] ) )
+    {
+      continue;
+    }
+    else
+    {
+      int newX = ( b[i - 1] - b[i] ) / ( a[i] - a[i - 1] );
+
+      if ( newX <= breaks[i - 1] )
+      {
+        newX = breaks[i - 1];
+        //  classesToRemove.push_back( i );//remove this class later as it falls together with the preceding one
+      }
+      else if ( i < nClasses - 1 && newX >= breaks[i + 1] )
+      {
+        newX = breaks[i + 1];
+        //  classesToRemove.push_back( i );//remove this class later as it falls together with the next one
+      }
+
+      breaks[i] = newX;
+    }
+  }
+
+  for ( int i = classesToRemove.size() - 1; i >= 0; --i )
+  {
+    breaks.removeAt( classesToRemove.at( i ) ); // cppcheck-suppress containerOutOfBounds
+  }
+}
+
+bool QgsRasterLayerUtils::calculateRegression( const QList<QPair<int, double> > &input, double &a, double &b )
+{
+  double xMean, yMean;
+  double xSum = 0;
+  double ySum = 0;
+  QList<QPair<int, double>>::const_iterator inputIt = input.constBegin();
+  for ( ; inputIt != input.constEnd(); ++inputIt )
+  {
+    xSum += inputIt->first;
+    ySum += inputIt->second;
+  }
+  xMean = xSum / input.size();
+  yMean = ySum / input.size();
+
+  double sumCounter = 0;
+  double sumDenominator = 0;
+  inputIt = input.constBegin();
+  for ( ; inputIt != input.constEnd(); ++inputIt )
+  {
+    sumCounter += ( ( inputIt->first - xMean ) * ( inputIt->second - yMean ) );
+    sumDenominator += ( ( inputIt->first - xMean ) * ( inputIt->first - xMean ) );
+  }
+
+  a = sumCounter / sumDenominator;
+  b = yMean - a * xMean;
+
+  return true;
+}

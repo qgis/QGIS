@@ -105,6 +105,15 @@ corners fall on pixel boundaries defined by the origin and pixel sizes.
 
 .. versionadded:: 4.0
 %End
+
+    static QList<QgsRasterReliefColor> calculateOptimizedReliefClasses( QgsRasterDataProvider *provider, int band );
+%Docstring
+Calculates optimized relief class breaks according with the method of
+Buenzli (2011) using an iterative algorithm for segmented regression.
+
+.. versionadded:: 4.2
+%End
+
 };
 
 /************************************************************************

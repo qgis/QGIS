@@ -128,6 +128,31 @@ class CORE_EXPORT QgsRasterLayerUtils
      * \since QGIS 4.0
      */
     static QgsRectangle alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY );
+
+    /**
+     * Calculates optimized relief class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression.
+     *
+     * \since QGIS 4.2
+    */
+    static QList<QgsRasterReliefColor> calculateOptimizedReliefClasses( QgsRasterDataProvider *provider, int band );
+
+  private:
+    /**
+     * Returns class (0-255) for an elevation value
+     * \returns elevation class or -1 in case of error
+     */
+    static int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
+
+    //! Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)
+    static void optimiseClassBreaks( QList<int> &breaks, double *frequencies );
+
+    /**
+     * Calculates coefficients a and b
+     * \param input data points ( elevation class / frequency )
+     * \param a slope
+     * \param b y value for x=0
+     */
+    static bool calculateRegression( const QList<QPair<int, double>> &input, double &a, double &b );
 };
 
 #endif //QGSRASTERLAYERUTILS_H
