@@ -683,34 +683,30 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
       case Qgis::CrsType::Other:
         break;
 
+      case Qgis::CrsType::Projected:
+      case Qgis::CrsType::DerivedProjected:
+        if ( mFilters.testFlag( Filter::FilterTopocentricCompatible ) || !mFilters.testFlag( Filter::FilterHorizontal ) )
+          return false;
+        break;
+
       case Qgis::CrsType::Geocentric:
-        if ( !mFilters.testFlag( Filter::FilterHorizontal ) && !mFilters.testFlag( Filter::FilterGeocentric ) )
-          return false;
-        break;
-
       case Qgis::CrsType::Geographic3d:
-        if ( !mFilters.testFlag( Filter::FilterHorizontal ) && !mFilters.testFlag( Filter::FilterGeographic3d ) )
-          return false;
-        break;
-
       case Qgis::CrsType::Geodetic:
       case Qgis::CrsType::Geographic2d:
-      case Qgis::CrsType::Projected:
       case Qgis::CrsType::Temporal:
       case Qgis::CrsType::Engineering:
       case Qgis::CrsType::Bound:
-      case Qgis::CrsType::DerivedProjected:
-        if ( !mFilters.testFlag( Filter::FilterHorizontal ) )
+        if ( !mFilters.testFlag( Filter::FilterHorizontal ) && !mFilters.testFlag( Filter::FilterTopocentricCompatible ) )
           return false;
         break;
 
       case Qgis::CrsType::Vertical:
-        if ( !mFilters.testFlag( Filter::FilterVertical ) )
+        if ( !mFilters.testFlag( Filter::FilterVertical ) && !mFilters.testFlag( Filter::FilterTopocentricCompatible ) )
           return false;
         break;
 
       case Qgis::CrsType::Compound:
-        if ( !mFilters.testFlag( Filter::FilterCompound ) )
+        if ( !mFilters.testFlag( Filter::FilterCompound ) && !mFilters.testFlag( Filter::FilterTopocentricCompatible ) )
           return false;
         break;
     }

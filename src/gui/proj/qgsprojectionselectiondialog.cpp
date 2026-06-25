@@ -55,7 +55,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
   mComboCrsType->addItem( tr( "Custom CRS" ), static_cast<int>( CrsType::Custom ) );
   mComboCrsType->addItem( tr( "Topocentric CRS" ), static_cast<int>( CrsType::Topocentric ) );
 
-  mTopocentricBaseSelector->setFilters( QgsCoordinateReferenceSystemProxyModel::FilterGeocentric | QgsCoordinateReferenceSystemProxyModel::FilterGeographic3d );
+  mTopocentricBaseSelector->setFilters( QgsCoordinateReferenceSystemProxyModel::FilterTopocentricCompatible );
   mTopocentricBaseSelector->setAllowTopocentricCrs( false );
 
   mStackedWidget->setCurrentWidget( mPageDatabase );
