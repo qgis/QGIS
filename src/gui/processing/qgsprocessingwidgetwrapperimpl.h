@@ -20,6 +20,7 @@
 #define QGSPROCESSINGWIDGETWRAPPERIMPL_H
 
 #include "ui_qgsheatmappixelsizewidgetbase.h"
+#include "ui_qgsprocessingreliefcolorswidgetbase.h"
 
 #include "qgshighlightablelineedit.h"
 #include "qgsmaptool.h"
@@ -29,6 +30,7 @@
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsrasterlayerutils.h"
 #include "qobjectuniqueptr.h"
 
 #include <QAbstractButton>
@@ -80,6 +82,8 @@ class QgsProcessingRasterCalculatorExpressionLineEdit;
 class QgsRubberBand;
 class QgsHighlightableLineEdit;
 class QgsGeometryWidget;
+class QTreeWidgetItem;
+class QTreeWidget;
 
 ///@cond PRIVATE
 
@@ -2343,6 +2347,75 @@ class GUI_EXPORT QgsProcessingHeatmapPixelSizeWidgetWrapper : public QgsAbstract
     QgsDoubleSpinBox *mFallbackSpinBox = nullptr;
 
     std::unique_ptr<QgsMapLayer> mParentLayer;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsReliefColorsWidget : public QgsPanelWidget, private Ui::QgsProcessingReliefColorsWidgetBase
+{
+    Q_OBJECT
+  public:
+    QgsReliefColorsWidget( QWidget *parent = nullptr );
+
+    void setLayer( QgsRasterLayer *layer );
+    QgsRasterLayer *layer();
+
+    QList< QgsRasterReliefColor > colors() const;
+
+    void setColors( const QList< QgsRasterReliefColor > &colors );
+
+  public slots:
+
+    void autoCalculate();
+
+  signals:
+    void valueChanged();
+
+  private slots:
+    void addClicked();
+    void removeClicked();
+    void upClicked();
+    void downClicked();
+    void loadClicked();
+    void saveClicked();
+    void itemDoubleClicked( QTreeWidgetItem *item, int column );
+
+  private:
+    QPointer<QgsRasterLayer> mLayer;
+};
+
+
+class GUI_EXPORT QgsProcessingReliefColorsWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+  public:
+    QgsProcessingReliefColorsWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override;
+    void postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers ) override;
+
+  public slots:
+    void setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+    QString modelerExpressionFormatString() const override;
+
+  private:
+    QgsReliefColorsWidget *mWidget = nullptr;
+    QLineEdit *mFallbackLineEdit = nullptr;
+
+    std::unique_ptr<QgsRasterLayer> mParentLayer;
 
     friend class TestProcessingGui;
 };

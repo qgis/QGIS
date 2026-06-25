@@ -80,6 +80,7 @@
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
@@ -327,6 +328,8 @@ class TestProcessingGui : public QgsTest
     void testAlignRasterLayersWrapper();
     void testHeatmapPixelSizeWidget();
     void testHeatmapPixelSizeWrapper();
+    void testReliefColorsWidget();
+    void testReliefColorsWrapper();
     void testRasterOptionsWrapper();
     void testMeshDatasetWrapperLayerInProject();
     void testMeshDatasetWrapperLayerOutsideProject();
@@ -10817,6 +10820,127 @@ void TestProcessingGui::testHeatmapPixelSizeWrapper()
 
     w = wrapperDefault.createWrappedWidget( context );
     QCOMPARE( wrapperDefault.parameterValue().toDouble(), 55.0 );
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( Qgis::ProcessingMode::Standard );
+
+  // batch wrapper
+  testWrapper( Qgis::ProcessingMode::Batch );
+
+  // modeler wrapper
+  testWrapper( Qgis::ProcessingMode::Modeler );
+}
+
+void TestProcessingGui::testReliefColorsWidget()
+{
+  QgsReliefColorsWidget widget;
+  QCOMPARE( widget.colors().size(), 0 );
+
+  QSignalSpy changedSpy( &widget, &QgsReliefColorsWidget::valueChanged );
+
+  widget.setColors( { QgsRasterReliefColor( QColor( 255, 0, 0 ), 10, 20 ), QgsRasterReliefColor( QColor( 255, 255, 0 ), 20, 30.5 ), QgsRasterReliefColor( QColor( 255, 0, 255 ), 30.5, 50 ) } );
+  QCOMPARE( changedSpy.count(), 1 );
+
+  QCOMPARE( widget.colors().size(), 3 );
+  QCOMPARE( widget.colors().at( 0 ), QgsRasterReliefColor( QColor( 255, 0, 0 ), 10, 20 ) );
+  QCOMPARE( widget.colors().at( 1 ), QgsRasterReliefColor( QColor( 255, 255, 0 ), 20, 30.5 ) );
+  QCOMPARE( widget.colors().at( 2 ), QgsRasterReliefColor( QColor( 255, 0, 255 ), 30.5, 50 ) );
+
+  // no crash when clicking auto with no layer
+  widget.autoCalculate();
+
+  // calculating automatic colors
+  auto raster = std::make_unique<QgsRasterLayer >( testDataPath( u"/raster/dem.tif"_s ), u"raster"_s );
+  widget.setLayer( raster.get() );
+
+  widget.autoCalculate();
+  QCOMPARE( widget.colors().size(), 9 );
+  QCOMPARE( changedSpy.count(), 3 );
+}
+
+void TestProcessingGui::testReliefColorsWrapper()
+{
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterReliefColors param( u"num"_s, u"num"_s, QString(), false );
+    QgsProcessingReliefColorsWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    if ( auto widget = qobject_cast< QgsReliefColorsWidget * >( w ) )
+    {
+      QVERIFY( !widget->layer() );
+      QCOMPARE( widget->colors().size(), 0 );
+    }
+    else
+    {
+      QVERIFY( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text().isEmpty() );
+    }
+
+    QSignalSpy spy( &wrapper, &QgsProcessingReliefColorsWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "12.5,12.8,15,16,18;22.5,22.8,115,116,118", context );
+    QCOMPARE( spy.count(), 1 );
+
+    if ( auto widget = qobject_cast< QgsReliefColorsWidget * >( w ) )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), "12.5,12.80000000000000071,15,16,18;22.5,22.80000000000000071,115,116,118" );
+      QCOMPARE( widget->colors().size(), 2 );
+      QCOMPARE( widget->colors().at( 0 ).minElevation, 12.5 );
+      QCOMPARE( widget->colors().at( 0 ).maxElevation, 12.8 );
+      QCOMPARE( widget->colors().at( 0 ).color, QColor( 15, 16, 18 ) );
+      QCOMPARE( widget->colors().at( 1 ).minElevation, 22.5 );
+      QCOMPARE( widget->colors().at( 1 ).maxElevation, 22.8 );
+      QCOMPARE( widget->colors().at( 1 ).color, QColor( 115, 116, 118 ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), "12.5,12.8,15,16,18;22.5,22.8,115,116,118" );
+      QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), "12.5,12.8,15,16,18;22.5,22.8,115,116,118" );
+    }
+
+    wrapper.setWidgetValue( u"12.5,12.8,15,16,18"_s, context );
+    QCOMPARE( spy.count(), 2 );
+    if ( auto widget = qobject_cast< QgsReliefColorsWidget * >( w ) )
+    {
+      QCOMPARE( widget->colors().size(), 1 );
+      QCOMPARE( widget->colors().at( 0 ).minElevation, 12.5 );
+      QCOMPARE( widget->colors().at( 0 ).maxElevation, 12.8 );
+      QCOMPARE( widget->colors().at( 0 ).color, QColor( 15, 16, 18 ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), u"12.5,12.8,15,16,18"_s );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), u"num"_s );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( auto widget = qobject_cast< QgsReliefColorsWidget * >( w ) )
+    {
+      widget->setColors( {
+        QgsRasterReliefColor( QColor( 1, 2, 3 ), 1, 2 ),
+        QgsRasterReliefColor( QColor( 11, 12, 13 ), 2, 3 ),
+      } );
+    }
+    else
+    {
+      static_cast<QLineEdit *>( wrapper.wrappedWidget() )->setText( "1,2,1,2,3;2,3,11,12,13" );
+    }
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toString(), "1,2,1,2,3;2,3,11,12,13" );
     delete w;
   };
 
