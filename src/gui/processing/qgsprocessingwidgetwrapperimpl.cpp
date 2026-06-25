@@ -38,6 +38,7 @@
 #include "qgsextentwidget.h"
 #include "qgsfieldcombobox.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsfileutils.h"
 #include "qgsfilewidget.h"
 #include "qgsfilterlineedit.h"
 #include "qgsgeometrywidget.h"
@@ -62,6 +63,7 @@
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
@@ -80,9 +82,11 @@
 #include <QComboBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QInputDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
+#include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QRadioButton>
 #include <QString>
@@ -8816,6 +8820,368 @@ void QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusFieldChanged( QgsAbstract
 {
   if ( mWidget )
     mWidget->setRadiusField( wrapper->parameterValue().toString() );
+}
+
+//
+// QgsReliefColorsWidget
+//
+
+QgsReliefColorsWidget::QgsReliefColorsWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
+{
+  setupUi( this );
+
+  connect( mButtonAdd, &QToolButton::clicked, this, &QgsReliefColorsWidget::addClicked );
+  connect( mButtonRemove, &QToolButton::clicked, this, &QgsReliefColorsWidget::removeClicked );
+  connect( mButtonUp, &QToolButton::clicked, this, &QgsReliefColorsWidget::upClicked );
+  connect( mButtonDown, &QToolButton::clicked, this, &QgsReliefColorsWidget::downClicked );
+  connect( mButtonLoad, &QToolButton::clicked, this, &QgsReliefColorsWidget::loadClicked );
+  connect( mButtonSave, &QToolButton::clicked, this, &QgsReliefColorsWidget::saveClicked );
+  connect( mButtonAuto, &QToolButton::clicked, this, &QgsReliefColorsWidget::autoCalculate );
+  connect( mReliefColorsWidget, &QTreeWidget::itemDoubleClicked, this, &QgsReliefColorsWidget::itemDoubleClicked );
+}
+
+void QgsReliefColorsWidget::setLayer( QgsRasterLayer *layer )
+{
+  mLayer = layer;
+}
+
+QgsRasterLayer *QgsReliefColorsWidget::layer()
+{
+  return mLayer.data();
+}
+
+void QgsReliefColorsWidget::addClicked()
+{
+  auto item = new QTreeWidgetItem();
+  item->setText( 0, u"0.00"_s );
+  item->setText( 1, u"0.00"_s );
+  item->setBackground( 2, QBrush( QColor( 127, 127, 127 ) ) );
+  mReliefColorsWidget->addTopLevelItem( item );
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::removeClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mReliefColorsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    delete item;
+  }
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::downClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mReliefColorsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    const int currentIndex = mReliefColorsWidget->indexOfTopLevelItem( item );
+    if ( currentIndex >= 0 && currentIndex < mReliefColorsWidget->topLevelItemCount() - 1 )
+    {
+      mReliefColorsWidget->takeTopLevelItem( currentIndex );
+      mReliefColorsWidget->insertTopLevelItem( currentIndex + 1, item );
+      mReliefColorsWidget->setCurrentItem( item );
+    }
+  }
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::upClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mReliefColorsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    const int currentIndex = mReliefColorsWidget->indexOfTopLevelItem( item );
+    if ( currentIndex > 0 )
+    {
+      mReliefColorsWidget->takeTopLevelItem( currentIndex );
+      mReliefColorsWidget->insertTopLevelItem( currentIndex - 1, item );
+      mReliefColorsWidget->setCurrentItem( item );
+    }
+  }
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::loadClicked()
+{
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Colors from XML" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+    return;
+
+  QFile file( fileName );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    return;
+
+  QDomDocument doc;
+  if ( !doc.setContent( &file ) )
+  {
+    QMessageBox::critical( this, tr( "Import Colors from XML" ), tr( "The XML file could not be loaded" ) );
+    return;
+  }
+
+  mReliefColorsWidget->clear();
+  const QDomNodeList reliefColorList = doc.elementsByTagName( u"ReliefColor"_s );
+  for ( int i = 0; i < reliefColorList.length(); ++i )
+  {
+    const QDomElement elem = reliefColorList.at( i ).toElement();
+    auto item = new QTreeWidgetItem();
+    item->setText( 0, elem.attribute( u"MinElevation"_s ) );
+    item->setText( 1, elem.attribute( u"MaxElevation"_s ) );
+    item->setBackground( 2, QBrush( QColor( elem.attribute( u"red"_s ).toInt(), elem.attribute( u"green"_s ).toInt(), elem.attribute( u"blue"_s ).toInt() ) ) );
+    mReliefColorsWidget->addTopLevelItem( item );
+  }
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::saveClicked()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Colors as XML" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+    return;
+
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { u"xml"_s } );
+
+  QDomDocument doc;
+  QDomElement colorsElem = doc.createElement( u"ReliefColors"_s );
+  doc.appendChild( colorsElem );
+
+  const QList<QgsRasterReliefColor> currentColors = colors();
+  for ( const QgsRasterReliefColor &c : currentColors )
+  {
+    QDomElement elem = doc.createElement( u"ReliefColor"_s );
+    elem.setAttribute( u"MinElevation"_s, qgsDoubleToString( c.minElevation ) );
+    elem.setAttribute( u"MaxElevation"_s, qgsDoubleToString( c.maxElevation ) );
+    elem.setAttribute( u"red"_s, QString::number( c.color.red() ) );
+    elem.setAttribute( u"green"_s, QString::number( c.color.green() ) );
+    elem.setAttribute( u"blue"_s, QString::number( c.color.blue() ) );
+    colorsElem.appendChild( elem );
+  }
+
+  QFile file( fileName );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    QTextStream out( &file );
+    out << doc.toString( 2 );
+  }
+}
+
+void QgsReliefColorsWidget::autoCalculate()
+{
+  if ( !mLayer || !mLayer->isValid() )
+    return;
+
+  const QList< QgsRasterReliefColor > autoColors = QgsRasterLayerUtils::calculateOptimizedReliefClasses( mLayer->dataProvider(), 1 );
+  setColors( autoColors );
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::itemDoubleClicked( QTreeWidgetItem *item, int column )
+{
+  if ( !item )
+    return;
+
+  bool ok = false;
+  if ( column == 0 )
+  {
+    const double d = QInputDialog::getDouble( this, tr( "Enter lower elevation class bound" ), tr( "Elevation" ), item->text( 0 ).toDouble(), -2147483647, 2147483647, 2, &ok );
+    if ( ok )
+    {
+      item->setText( 0, QString::number( d ) );
+      emit valueChanged();
+    }
+  }
+  else if ( column == 1 )
+  {
+    const double d = QInputDialog::getDouble( this, tr( "Enter upper elevation class bound" ), tr( "Elevation" ), item->text( 1 ).toDouble(), -2147483647, 2147483647, 2, &ok );
+    if ( ok )
+    {
+      item->setText( 1, QString::number( d ) );
+      emit valueChanged();
+    }
+  }
+  else if ( column == 2 )
+  {
+    const QColor c = QColorDialog::getColor( item->background( 2 ).color(), this, tr( "Select color for relief class" ) );
+    if ( c.isValid() )
+    {
+      item->setBackground( 2, QBrush( c ) );
+      emit valueChanged();
+    }
+  }
+}
+
+QList<QgsRasterReliefColor> QgsReliefColorsWidget::colors() const
+{
+  QList<QgsRasterReliefColor> colors;
+  for ( int i = 0; i < mReliefColorsWidget->topLevelItemCount(); ++i )
+  {
+    if ( QTreeWidgetItem *item = mReliefColorsWidget->topLevelItem( i ) )
+    {
+      colors.append( QgsRasterReliefColor( item->background( 2 ).color(), item->text( 0 ).toDouble(), item->text( 1 ).toDouble() ) );
+    }
+  }
+  return colors;
+}
+
+void QgsReliefColorsWidget::setColors( const QList<QgsRasterReliefColor> &colors )
+{
+  mReliefColorsWidget->clear();
+  for ( const QgsRasterReliefColor &c : colors )
+  {
+    auto item = new QTreeWidgetItem();
+    item->setText( 0, qgsDoubleToString( c.minElevation ) );
+    item->setText( 1, qgsDoubleToString( c.maxElevation ) );
+    item->setBackground( 2, QBrush( c.color ) );
+    mReliefColorsWidget->addTopLevelItem( item );
+  }
+  emit valueChanged();
+}
+
+//
+// QgsProcessingReliefColorsWidgetWrapper
+//
+
+QgsProcessingReliefColorsWidgetWrapper::QgsProcessingReliefColorsWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingReliefColorsWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterReliefColors::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingReliefColorsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingReliefColorsWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingReliefColorsWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingReliefColorsWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      mWidget = new QgsReliefColorsWidget();
+      connect( mWidget, &QgsReliefColorsWidget::valueChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackLineEdit = new QLineEdit();
+      mFallbackLineEdit->setPlaceholderText( tr( "Relief colors definition" ) );
+      connect( mFallbackLineEdit, &QLineEdit::textChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingReliefColorsWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterReliefColors *>( parameterDefinition() );
+      if ( !param || !mWidget )
+        return;
+
+      for ( QgsAbstractProcessingParameterWidgetWrapper *wrapper : std::as_const( wrappers ) )
+      {
+        if ( wrapper->parameterDefinition()->name() == param->parentLayerParameter() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { setParentLayerWrapperValue( wrapper ); } );
+        }
+      }
+      break;
+    }
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingReliefColorsWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  if ( !mWidget )
+    return;
+
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr<QgsProcessingContext> tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = std::make_unique<QgsProcessingContext>();
+    context = tmpContext.get();
+  }
+
+  QVariant value = parentWrapper->parameterValue();
+  QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( parentWrapper->parameterDefinition(), value, *context );
+  if ( layer && layer->isValid() )
+  {
+    // need to grab ownership of layer if required - otherwise layer may be deleted when context
+    // goes out of scope
+    std::unique_ptr<QgsMapLayer> ownedLayer( context->takeResultLayer( layer->id() ) );
+    if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Raster )
+    {
+      mParentLayer.reset( qobject_cast<QgsRasterLayer *>( ownedLayer.release() ) );
+      layer = mParentLayer.get();
+    }
+    else
+    {
+      // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+    }
+
+    if ( mWidget )
+      mWidget->setLayer( layer );
+  }
+  else
+  {
+    if ( mWidget )
+      mWidget->setLayer( nullptr );
+  }
+}
+
+void QgsProcessingReliefColorsWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  auto param = dynamic_cast<const QgsProcessingParameterReliefColors *>( parameterDefinition() );
+
+  if ( mWidget && param )
+  {
+    mWidget->setColors( param->valueAsReliefColors( value, context ) );
+  }
+  else if ( mFallbackLineEdit )
+    mFallbackLineEdit->setText( value.toString() );
+}
+
+QVariant QgsProcessingReliefColorsWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+    return QgsProcessingParameterReliefColors::colorsAsVariant( mWidget->colors() );
+  else if ( mFallbackLineEdit )
+    return mFallbackLineEdit->text();
+  return QVariant();
+}
+
+QString QgsProcessingReliefColorsWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string of the format 'min,max,red,green,blue' for each relief color, joined by a ; delimiter" );
 }
 
 
