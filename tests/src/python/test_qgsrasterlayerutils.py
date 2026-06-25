@@ -402,31 +402,45 @@ class TestQgsRasterLayerUtils(QgisTestCase):
             raster_layer.dataProvider(), 1
         )
         self.assertEqual(
-            res,
+            [round(r.minElevation, 5) for r in res],
             [
-                QgsRasterReliefColor(QColor("#07a590"), 85, 104.43650793650794),
-                QgsRasterReliefColor(
-                    QColor("#0cdda2"), 104.43650793650794, 104.43650793650794
-                ),
-                QgsRasterReliefColor(
-                    QColor("#21fcb7"), 104.43650793650794, 104.43650793650794
-                ),
-                QgsRasterReliefColor(
-                    QColor("#f7fc98"), 104.43650793650794, 104.43650793650794
-                ),
-                QgsRasterReliefColor(
-                    QColor("#fcc408"), 104.43650793650794, 104.43650793650794
-                ),
-                QgsRasterReliefColor(
-                    QColor("#fca60f"), 104.43650793650794, 191.58730158730156745
-                ),
-                QgsRasterReliefColor(
-                    QColor("#af650f"), 191.58730158730156745, 221.05555555555554292
-                ),
-                QgsRasterReliefColor(
-                    QColor("#ff855c"), 221.05555555555554292, 221.05555555555554292
-                ),
-                QgsRasterReliefColor(QColor("#cccccc"), 221.05555555555554292, 243),
+                85.0,
+                104.43651,
+                104.43651,
+                104.43651,
+                104.43651,
+                104.43651,
+                191.5873,
+                221.05556,
+                221.05556,
+            ],
+        )
+        self.assertEqual(
+            [round(r.maxElevation, 5) for r in res],
+            [
+                104.43651,
+                104.43651,
+                104.43651,
+                104.43651,
+                104.43651,
+                191.5873,
+                221.05556,
+                221.05556,
+                243.0,
+            ],
+        )
+        self.assertEqual(
+            [r.color.name() for r in res],
+            [
+                "#07a590",
+                "#0cdda2",
+                "#21fcb7",
+                "#f7fc98",
+                "#fcc408",
+                "#fca60f",
+                "#af650f",
+                "#ff855c",
+                "#cccccc",
             ],
         )
 
