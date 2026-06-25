@@ -25,9 +25,11 @@
 #include <QDebug>
 #include <QImage>
 #include <QImageReader>
+#include <QList>
 #include <QPainter>
 #include <QString>
 #include <QUuid>
+#include <QtConcurrentMap>
 
 #include "moc_qgsrenderchecker.cpp"
 
@@ -629,47 +631,77 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
 
   const int maskWidth = maskImage.width();
 
-  mMismatchCount = 0;
   const int colorTolerance = static_cast< int >( mColorTolerance );
-  for ( int y = 0; y < maxHeight; ++y )
+
+  struct RowBlock
   {
-    const QRgb *expectedScanline = reinterpret_cast< const QRgb * >( expectedImage.constScanLine( y ) );
-    const QRgb *resultScanline = reinterpret_cast< const QRgb * >( myResultImage.constScanLine( y ) );
-    const QRgb *maskScanline = ( hasMask && maskImage.height() > y ) ? reinterpret_cast< const QRgb * >( maskImage.constScanLine( y ) ) : nullptr;
-    QRgb *diffScanline = reinterpret_cast< QRgb * >( myDifferenceImage.scanLine( y ) );
+      int startY = 0;
+      // where this block ends (not inclusive!)
+      int endY = 0;
+  };
+  const int threadCount = std::min( QThread::idealThreadCount(), 32 );
+  QList<RowBlock> blocks;
+  blocks.reserve( threadCount );
+  const int rowsPerBlock = maxHeight / threadCount;
+  int startY = 0;
+  for ( int i = 0; i < threadCount; ++i )
+  {
+    const int endY = startY + rowsPerBlock;
+    blocks.append( { startY, std::min( endY, maxHeight ) } );
+    startY = endY;
+  }
+  // make sure last block goes right to end of image (may require additional rows due to integer division truncation)
+  blocks.last().endY = maxHeight;
 
-    for ( int x = 0; x < maxWidth; ++x )
+  auto processBlock = [&]( const RowBlock &block ) -> int {
+    int blockMismatches = 0;
+
+    for ( int y = block.startY; y < block.endY; ++y )
     {
-      const int pixelTolerance = maskScanline ? std::max( colorTolerance, ( maskWidth > x ) ? qRed( maskScanline[x] ) : 0 ) : colorTolerance;
-      if ( pixelTolerance == 255 )
-      {
-        //skip pixel
-        continue;
-      }
+      const QRgb *expectedScanline = reinterpret_cast< const QRgb * >( expectedImage.constScanLine( y ) );
+      const QRgb *resultScanline = reinterpret_cast< const QRgb * >( myResultImage.constScanLine( y ) );
+      const QRgb *maskScanline = ( hasMask && maskImage.height() > y ) ? reinterpret_cast< const QRgb * >( maskImage.constScanLine( y ) ) : nullptr;
+      QRgb *diffScanline = reinterpret_cast< QRgb * >( myDifferenceImage.scanLine( y ) );
 
-      const QRgb myExpectedPixel = expectedScanline[x];
-      const QRgb myActualPixel = resultScanline[x];
-      if ( pixelTolerance == 0 )
+      for ( int x = 0; x < maxWidth; ++x )
       {
-        if ( myExpectedPixel != myActualPixel )
+        const int pixelTolerance = maskScanline ? std::max( colorTolerance, ( maskWidth > x ) ? qRed( maskScanline[x] ) : 0 ) : colorTolerance;
+        if ( pixelTolerance == 255 )
         {
-          ++mMismatchCount;
+          //skip pixel
+          continue;
+        }
+
+        const QRgb myExpectedPixel = expectedScanline[x];
+        const QRgb myActualPixel = resultScanline[x];
+        if ( myExpectedPixel == myActualPixel )
+          continue;
+
+        if ( pixelTolerance == 0 )
+        {
+          ++blockMismatches;
           diffScanline[x] = qRgb( 255, 0, 0 );
         }
-      }
-      else
-      {
-        if ( std::abs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance
-             || std::abs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance
-             || std::abs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance
-             || std::abs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
+        else
         {
-          ++mMismatchCount;
-          diffScanline[x] = qRgb( 255, 0, 0 );
+          if ( std::abs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance
+               || std::abs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance
+               || std::abs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance
+               || std::abs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
+          {
+            ++blockMismatches;
+            diffScanline[x] = qRgb( 255, 0, 0 );
+          }
         }
       }
     }
-  }
+
+    return blockMismatches;
+  };
+
+  auto sumMismatches = []( int &totalResult, int blockResult ) { totalResult += blockResult; };
+
+  mMismatchCount = QtConcurrent::blockingMappedReduced( blocks, processBlock, sumMismatches );
 
   //
   // Send match result to debug

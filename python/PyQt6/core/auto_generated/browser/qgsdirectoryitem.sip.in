@@ -223,6 +223,7 @@ Browser parameter widget implementation for directory items.
 #include "qgsdirectoryitem.h"
 %End
   public:
+
     QgsDirectoryParamWidget( const QString &path, QWidget *parent /TransferThis/ = 0 );
 
   protected:

@@ -22,7 +22,7 @@ from qgis.core import (
     QgsNotSupportedException,
     QgsSettings,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
@@ -46,10 +46,6 @@ class AuthManagerStorageBaseTestCase(QgisTestCase):
         if cls.storage_uri is not None:
             os.environ["QGIS_AUTH_DB_URI"] = cls.storage_uri
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("%s.com" % __name__)
-        QCoreApplication.setApplicationName(__name__)
-        QgsSettings().clear()
         start_app()
 
         cls.certdata_path = os.path.join(

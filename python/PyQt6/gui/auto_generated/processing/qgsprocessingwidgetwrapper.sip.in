@@ -445,9 +445,9 @@ The default implementation returns 0.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
-    virtual void setDialog( QDialog *dialog );
+    virtual void setDialog( QWidget *dialog );
 %Docstring
-Sets the parent ``dialog`` in which the wrapper is shown.
+Sets the parent ``dialog`` (or widget) in which the wrapper is shown.
 
 .. versionadded:: 3.8
 %End

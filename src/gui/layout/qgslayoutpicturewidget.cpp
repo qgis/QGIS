@@ -49,7 +49,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
 
   mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastSVGMarkerDir"_s );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastComposerPictureDir"_s );
   mSvgSelectorWidget->initParametersModel( layoutObject(), coverageLayer() );
 
   mResizeModeComboBox->addItem( tr( "Zoom" ), QgsLayoutItemPicture::Zoom );
@@ -68,6 +68,9 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mAnchorPointComboBox->addItem( tr( "Bottom Center" ), QgsLayoutItem::LowerMiddle );
   mAnchorPointComboBox->addItem( tr( "Bottom Right" ), QgsLayoutItem::LowerRight );
 
+  mClipItemComboBox->setCurrentLayout( picture->layout() );
+  mClipItemComboBox->setItemFlags( QgsLayoutItem::FlagProvidesClipPath );
+
   connect( mPictureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mPictureRotationSpinBox_valueChanged );
   connect( mRotationFromComposerMapCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutPictureWidget::mRotationFromComposerMapCheckBox_stateChanged );
   connect( mResizeModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPictureWidget::mResizeModeComboBox_currentIndexChanged );
@@ -83,7 +86,17 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
 
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastComposerPictureDir"_s );
+  connect( mClipToItemCheckBox, &QGroupBox::toggled, this, [this]( bool active ) {
+    mPicture->beginCommand( tr( "Toggle Picture Clipping" ) );
+    mPicture->setClipToItem( active );
+    mPicture->endCommand();
+  } );
+
+  connect( mClipItemComboBox, &QgsLayoutItemComboBox::itemChanged, this, [this]( QgsLayoutItem *item ) {
+    mPicture->beginCommand( tr( "Change Picture Clipping Item" ) );
+    mPicture->setClippingItem( item );
+    mPicture->endCommand();
+  } );
 
   setPanelTitle( tr( "Picture Properties" ) );
 
@@ -282,6 +295,8 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mFillColorButton->blockSignals( true );
     mStrokeColorButton->blockSignals( true );
     mStrokeWidthSpinBox->blockSignals( true );
+    mClipToItemCheckBox->blockSignals( true );
+    mClipItemComboBox->blockSignals( true );
 
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
@@ -340,6 +355,9 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mStrokeColorButton->setColor( mPicture->svgStrokeColor() );
     mStrokeWidthSpinBox->setValue( mPicture->svgStrokeWidth() );
 
+    mClipToItemCheckBox->setChecked( mPicture->clipToItem() );
+    mClipItemComboBox->setItem( mPicture->clippingItem() );
+
     mRotationFromComposerMapCheckBox->blockSignals( false );
     mPictureRotationSpinBox->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
@@ -350,6 +368,8 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mFillColorButton->blockSignals( false );
     mStrokeColorButton->blockSignals( false );
     mStrokeWidthSpinBox->blockSignals( false );
+    mClipToItemCheckBox->blockSignals( false );
+    mClipItemComboBox->blockSignals( false );
 
     populateDataDefinedButtons();
   }

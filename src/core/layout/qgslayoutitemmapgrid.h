@@ -910,6 +910,12 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
   private:
     QgsLayoutItemMapGrid() = delete;
 
+    static constexpr int MAX_GRID_LINES = 1000;
+    static constexpr int MAX_GRID_ANNOTATIONS = 1000;
+    static constexpr int MAX_GRID_TICKS = 5000;
+    static constexpr int MAX_GRID_FRAME_OBJECTS = std::max( MAX_GRID_TICKS, MAX_GRID_ANNOTATIONS );
+    static constexpr int MAX_GRID_OBJECTS = std::max( MAX_GRID_LINES, MAX_GRID_FRAME_OBJECTS );
+
     struct GridExtension
     {
         GridExtension() = default;
@@ -951,6 +957,12 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
           bottom = std::max( bottom, value );
         }
     };
+
+    static constexpr double GRID_LINE_CLOSE_TO_EDGE_TOLERANCE_MAP_UNITS = 0.00001;
+
+    // we need a little bit of tolerance for showing annotations right at the extremities of their edges,
+    // as we don't want to omit annotations right at the map edges if rounding errors have occurred in the position math
+    static constexpr double ANNOTATION_CLOSE_TO_EDGE_TOLERANCE_MM = 0.01;
 
     struct GridLineAnnotation
     {
@@ -1098,6 +1110,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     Qgis::MapGridComponentVisibility mEvaluatedTopFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
     Qgis::MapGridComponentVisibility mEvaluatedBottomFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
 
+    mutable int mCurrentComponentDrawCount = 0;
+
     /**
      * Updates the grid lines annotation positions
      */
@@ -1127,16 +1141,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     QString gridAnnotationString( double value, Qgis::MapGridAnnotationType coord, QgsExpressionContext &expressionContext, bool isGeographic ) const;
 
     /**
-     * Computes the grid lines with associated coordinate value
-     * \returns 0 in case of success
+     * Computes the grid lines for the x-coordinates.
     */
-    int xGridLines() const;
+    void calculateXGridLines() const;
 
     /**
      * Computes the grid lines for the y-coordinates. Not vertical in case of rotation
-     * \returns 0 in case of success
     */
-    int yGridLines() const;
+    void calculateYGridLines() const;
 
     int xGridLinesCrsTransform( const QgsRectangle &bbox, const QgsCoordinateTransform &t ) const;
 

@@ -62,6 +62,7 @@ class QgsGpsToolBar : public QToolBar
     void updateLocationLabel();
     void destinationLayerChanged( QgsVectorLayer *lyr );
     void destinationMenuAboutToShow();
+    void onCanvasCrsChanged();
 
   private:
     void createLocationWidget();

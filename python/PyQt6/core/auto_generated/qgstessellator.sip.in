@@ -111,78 +111,111 @@ Returns which faces are generated during extrusion.
 .. versionadded:: 4.0
 %End
 
-    void setTextureRotation( float rotation );
+ void setTextureRotation( float rotation ) /Deprecated="Since 4.2. Handled in shaders now. No longer has any effect on the texture coordinates."/;
 %Docstring
 Sets the rotation of texture UV coordinates (in degrees).
 
-.. versionadded:: 4.0
+.. deprecated:: 4.2
+
+   Handled in shaders now. No longer has any effect on the texture coordinates.
 %End
 
-    float textureRotation() const;
+ float textureRotation() const /Deprecated="Since 4.2. Handled in shaders now. No longer has any effect on the texture coordinates."/;
 %Docstring
 Returns the rotation of texture UV coordinates (in degrees).
 
-.. versionadded:: 4.0
+.. deprecated:: 4.2
+
+   Handled in shaders now. No longer has any effect on the texture coordinates.
 %End
 
     void setAddTextureUVs( bool addTextureUVs );
 %Docstring
-Sets whether texture UV coordinates should be added to the output data
-(``True``) or not (``False``).
+Sets whether texture UV coordinates should be added to the output data.
+
+.. seealso:: :py:func:`hasTextureUVs`
 
 .. versionadded:: 4.0
 %End
 
     bool hasTextureUVs() const;
 %Docstring
-Returns whether texture UV coordinates are being added to the output
-data (``True``) or not (``False``).
+Returns ``True`` if texture UV coordinates are being added to the output
+data.
+
+.. seealso:: :py:func:`setAddTextureUVs`
 
 .. versionadded:: 4.0
 %End
 
     void setAddNormals( bool addNormals );
 %Docstring
-Sets whether normals should be added to the output data (``True``) or
-not (``False``).
+Sets whether normals should be added to the output data.
+
+.. seealso:: :py:func:`hasNormals`
 
 .. versionadded:: 4.0
 %End
 
     bool hasNormals() const;
 %Docstring
-Returns whether normals are being added to the output data (``True``) or
-not (``False``).
+Returns ``True`` if normals are being added to the output data.
+
+.. seealso:: :py:func:`setAddNormals`
 
 .. versionadded:: 4.0
 %End
 
+    void setAddTangents( bool addTangents );
+%Docstring
+Sets whether tangents should be added to the output data.
+
+.. seealso:: :py:func:`hasTangents`
+
+.. versionadded:: 4.2
+%End
+
+    bool hasTangents() const;
+%Docstring
+Returns ``True`` if tangents are being added to the output data.
+
+.. seealso:: :py:func:`setAddTangents`
+
+.. versionadded:: 4.2
+%End
+
     void setBackFacesEnabled( bool addBackFaces );
 %Docstring
-Sets whether back faces should be added to the output data (``True``) or
-not (``False``).
+Sets whether back faces should be added to the output data.
+
+.. seealso:: :py:func:`hasBackFacesEnabled`
 
 .. versionadded:: 4.0
 %End
 
     bool hasBackFacesEnabled() const;
 %Docstring
-Returns whether back faces are being added to the output data (``True``)
-or not (``False``).
+Returns ``True`` if back faces are being added to the output data.
+
+.. seealso:: :py:func:`setBackFacesEnabled`
 
 .. versionadded:: 4.0
 %End
 
     void setInvertNormals( bool invertNormals );
 %Docstring
-Sets whether normals should be inverted (``True``) or not (``False``).
+Sets whether normals should be inverted.
+
+.. seealso:: :py:func:`hasInvertedNormals`
 
 .. versionadded:: 4.0
 %End
 
     bool hasInvertedNormals() const;
 %Docstring
-Returns whether normals are inverted (``True``) or not (``False``).
+Returns ``True`` if normals are inverted.
+
+.. seealso:: :py:func:`setInvertNormals`
 
 .. versionadded:: 4.0
 %End
@@ -201,24 +234,28 @@ Returns the algorithm used for triangulation.
 .. versionadded:: 4.0
 %End
 
-    void setOutputZUp( bool zUp );
+ void setOutputZUp( bool zUp ) /Deprecated="Since 4.2. Has no effect no, outputs are always z-up."/;
 %Docstring
 Sets whether the "up" direction should be the Z axis on output
 (``True``), otherwise the "up" direction will be the Y axis (``False``).
 The default value is ``False`` (to keep compatibility for existing
 tessellator use cases).
 
-.. versionadded:: 3.42
+.. deprecated:: 4.2
+
+   Has no effect no, outputs are always z-up.
 %End
 
-    bool isOutputZUp() const;
+ bool isOutputZUp() const /Deprecated="Since 4.2. Has no effect no, outputs are always z-up."/;
 %Docstring
 Returns whether the "up" direction should be the Z axis on output
 (``True``), otherwise the "up" direction will be the Y axis (``False``).
 The default value is ``False`` (to keep compatibility for existing
 tessellator use cases).
 
-.. versionadded:: 3.42
+.. deprecated:: 4.2
+
+   Has no effect no, outputs are always z-up.
 %End
 
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );

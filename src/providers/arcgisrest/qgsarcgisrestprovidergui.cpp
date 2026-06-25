@@ -61,10 +61,11 @@ class QgsArcGisRestSourceWidgetProvider : public QgsProviderSourceWidgetProvider
     }
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override
     {
-      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != "arcgismapserver"_L1 )
-        return nullptr;
-
-      return new QgsArcGisRestSourceWidget( layer->providerType(), parent );
+      if ( layer->providerType() == QgsAfsProvider::AFS_PROVIDER_KEY || layer->providerType() == "arcgismapserver"_L1 )
+      {
+        return new QgsArcGisRestSourceWidget( layer->providerType(), parent );
+      }
+      return nullptr;
     }
 };
 

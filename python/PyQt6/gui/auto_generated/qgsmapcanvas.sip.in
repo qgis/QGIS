@@ -37,6 +37,7 @@ Map canvas is a class for displaying all GIS data types on a canvas.
       sipType = nullptr;
 %End
   public:
+
     QgsMapCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -977,6 +978,54 @@ Sets the associated status ``bar``.
 .. versionadded:: 4.0
 %End
 
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets a message ``bar`` to use alongside the map canvas.
+
+Setting this allows items to utilize the message bar to provide
+non-blocking feedback to users, e.g. success or failure of actions.
+
+.. seealso:: :py:func:`messageBar`
+
+.. versionadded:: 4.2
+%End
+
+    QgsMessageBar *messageBar();
+%Docstring
+Returns the message bar associated with the map canvas.
+
+May be ``None`` if not set.
+
+.. seealso:: :py:func:`setMessageBar`
+
+.. versionadded:: 4.2
+%End
+
+    void setUserInputWidget( QgsUserInputWidget *userInputWidget );
+%Docstring
+Sets a ``userInputWidget``, a floating widget that can be used to
+display additional widgets for user inputs.
+
+Setting this allows items associated with a map canvas to add widgets to
+it, e.g. in a :py:class:`QgsMapTool`.
+
+.. seealso:: :py:func:`userInputWidget`
+
+.. versionadded:: 4.2
+%End
+
+
+    QgsUserInputWidget *userInputWidget();
+%Docstring
+Returns the user input widget associated with the map canvas.
+
+May be ``None`` if not set.
+
+.. seealso:: :py:func:`setUserInputWidget`
+
+.. versionadded:: 4.2
+%End
+
 
   public slots:
 
@@ -1096,6 +1145,13 @@ Zoom to the combined extent of the selected features of all provided
 :param layers: A list of layers
 
 .. versionadded:: 3.18
+%End
+
+    void zoomToLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Zoom to the combined extent of a set of ``layers``.
+
+.. versionadded:: 4.2
 %End
 
     void setZoomResolutions( const QList<double> &resolutions );

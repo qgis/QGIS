@@ -38,7 +38,7 @@
 using namespace Qt::StringLiterals;
 
 QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mLayer( layer )
 {
   // If layer is null, the widget cannot be created.

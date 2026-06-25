@@ -63,6 +63,24 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
      */
     void disableClipping();
 
+    /**
+     * Returns TRUE if the material should cast shadows.
+     *
+     * By default QgsMaterials casts shadows.
+     *
+     * \see setCastsShadows()
+     * \since QGIS 4.2
+     */
+    bool castsShadows() const;
+
+    /**
+     * Sets whether the material should cast shadows.
+     *
+     * \see castsShadows()
+     * \since QGIS 4.2
+     */
+    void setCastsShadows( bool enabled );
+
   private:
     //! The name of the QParameter which contains the plane equations
     static const QString CLIP_PLANE_ARRAY_PARAMETER_NAME;
@@ -72,6 +90,7 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
     static const QString CLIP_PLANE_DEFINE;
 
     bool mClippingEnabled = false;
+    bool mCastsShadows = true;
 
     friend class TestQgs3DMaterial;
 };

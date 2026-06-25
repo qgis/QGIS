@@ -9,7 +9,7 @@ export LANG="C.UTF-8"
 
 export CCACHE_TEMPDIR=/tmp
 # Github workflow cache max size is 2.0, but ccache data get compressed (roughly 1/5?)
-ccache -M 2.0G
+ccache -M 500M
 
 # Temporarily uncomment to debug ccache issues
 # export CCACHE_LOGFILE=/tmp/cache.debug
@@ -31,7 +31,6 @@ cmake -GNinja \
  -DENABLE_TESTS=OFF \
  -DWITH_QSPATIALITE=OFF \
  -DWITH_APIDOC=OFF \
- -DWITH_ASTYLE=OFF \
  -DWITH_ANALYSIS=ON \
  -DWITH_GSL=OFF \
  -DWITH_DESKTOP=OFF \

@@ -20,7 +20,6 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsLayerTreeView, QgsProcessingGuiUtils
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -31,10 +30,6 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsProcessingGuiUtils.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsProcessingGuiUtils")
-        QgsSettings().clear()
         Processing.initialize()
 
     def test_configure_layer_tree_layer(self):

@@ -139,16 +139,18 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
 
     /**
      * Returns a HTML formatted tooltip string for a \a field, containing details
-     * like the field name, alias and type.
+     * like the field name, alias, type and comment.
+     * A predefined comment can be passed overriding the field comment (e.g. when it's data defined)
      */
-    static QString fieldToolTip( const QgsField &field );
+    static QString fieldToolTip( const QgsField &field, const QString &predefinedComment = QString() );
 
     /**
      * Returns a HTML formatted tooltip string for a \a field, containing details
-     * like the field name, alias, type and expression.
+     * like the field name, alias, type, comment and expression.
+     * A predefined comment can be passed overriding the field comment (e.g. when it's data defined)
      * \since QGIS 3.14
      */
-    static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );
+    static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer, const QString &predefinedComment = QString() );
 
     /**
      * Manually sets the \a fields to use for the model.

@@ -444,7 +444,14 @@ void TestQgsLayoutScaleBar::numeric()
   map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
   map->setFrameEnabled( true );
   l.addLayoutItem( map );
-  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+  // base extent that sets scale to roughly 49097
+  const QgsRectangle extent( 17.923, 30.160, 18.023, 30.260 );
+  map->setExtent( extent );
+  // adjust to the desired scale
+  map->setScale( 49100 );
+  // the extent was modified slightly to fit the scale, so we check that it was actually modified
+  QVERIFY( extent != map->extent() );
+
 
   QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );

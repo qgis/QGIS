@@ -261,6 +261,7 @@ void TestQgsMesh3DRendering::testMeshSimplified()
     symbolDataset->setVerticalScale( 1 );
     symbolDataset->setWireframeEnabled( true );
     symbolDataset->setWireframeLineWidth( 0.1 );
+    symbolDataset->setWireframeLineColor( QColor( 0, 0, 50 ) );
     symbolDataset->setArrowsEnabled( true );
     symbolDataset->setArrowsSpacing( 20 );
     symbolDataset->setSingleMeshColor( Qt::yellow );

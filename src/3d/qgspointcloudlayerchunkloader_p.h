@@ -68,6 +68,13 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     QgsChunkNode *createRootNode() const override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
     int primitivesCount( QgsChunkNode *node ) const override;
+
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    void prepareChildren( QgsChunkNode *node ) override;
+
+    //! Fetches hierarchy for node, children and grand children in a background thread
+    void fetchHierarchyForNode( const QgsPointCloudNodeId &nodeId, QgsChunkNode *origNode );
+
     Qgs3DRenderContext mRenderContext;
     QgsCoordinateTransform mCoordinateTransform;
     QgsPointCloudIndex mPointCloudIndex;
@@ -77,6 +84,8 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     int mPointBudget = 1000000;
     bool mTriangulate = false;
     QgsRectangle mExtent; //!< This should hold the map's extent in layer's crs
+    QSet<QgsPointCloudNodeId> mPendingHierarchyFetches;
+    QSet<QgsPointCloudNodeId> mFutureHierarchyFetches;
 };
 
 
@@ -149,6 +158,13 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     void updateIndex();
 
   private:
+    /**
+     * Get the point cloud index from a layer using the index position, according to the following scheme:
+     * Zero or positive \a indexPosition will return the nth zero-based sub index of a VPC layer.
+     * -1 will return the point cloud index of a standard non VPC layer.
+     * -2 will return the first VPC overview index.
+     * -3 will return the second VPC overview index, and so on.
+     */
     static QgsPointCloudIndex resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition );
 
     QgsPointCloudLayer *mLayer = nullptr;

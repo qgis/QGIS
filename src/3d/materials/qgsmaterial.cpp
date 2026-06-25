@@ -38,6 +38,16 @@ QgsMaterial::QgsMaterial( QNode *parent )
 
 QgsMaterial::~QgsMaterial() = default;
 
+bool QgsMaterial::castsShadows() const
+{
+  return mCastsShadows;
+}
+
+void QgsMaterial::setCastsShadows( bool enabled )
+{
+  mCastsShadows = enabled;
+}
+
 void QgsMaterial::enableClipping( const QList<QVector4D> &clipPlanesEquations )
 {
   Qt3DRender::QEffect *materialEffect = effect();

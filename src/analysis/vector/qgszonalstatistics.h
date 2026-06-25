@@ -20,6 +20,7 @@
 
 #include <cfloat>
 #include <limits>
+#include <map>
 
 #include "qgis_analysis.h"
 #include "qgscoordinatereferencesystem.h"
@@ -148,6 +149,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
   private:
     QgsZonalStatistics() = default;
 
+#ifndef SIP_RUN
     class FeatureStats
     {
       public:
@@ -168,28 +170,35 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 
         void addValue( double value, const QgsPointXY &point, double weight = 1.0 )
         {
-          if ( weight < 1.0 )
+          if ( !std::isnan( value ) )
           {
-            sum += value * weight;
-            count += weight;
+            if ( weight < 1.0 )
+            {
+              sum += value * weight;
+              count += weight;
+            }
+            else
+            {
+              sum += value;
+              ++count;
+            }
+            if ( value < min )
+            {
+              min = value;
+              minPoint = point;
+            }
+            if ( value > max )
+            {
+              max = value;
+              maxPoint = point;
+            }
           }
           else
           {
-            sum += value;
             ++count;
           }
-          if ( value < min )
-          {
-            min = value;
-            minPoint = point;
-          }
-          if ( value > max )
-          {
-            max = value;
-            maxPoint = point;
-          }
           if ( mStoreValueCounts )
-            valueCount.insert( value, valueCount.value( value, 0 ) + 1 );
+            ++valueCount[value];
           if ( mStoreValues )
             values.append( value );
         }
@@ -199,7 +208,11 @@ class ANALYSIS_EXPORT QgsZonalStatistics
         double min = std::numeric_limits<double>::max();
         QgsPointXY minPoint;
         QgsPointXY maxPoint;
-        QMap<double, int> valueCount;
+        struct CompareNaNAware
+        {
+            bool operator()( double lhs, double rhs ) const { return ( std::isnan( lhs ) && !std::isnan( rhs ) ) || lhs < rhs; }
+        };
+        std::map<double, int64_t, CompareNaNAware> valueCount;
         QList<double> values;
 
       private:
@@ -220,6 +233,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
     Qgis::ZonalStatistics mStatistics = Qgis::ZonalStatistic::All;
+#endif
 };
 
 // clazy:excludeall=qstring-allocations

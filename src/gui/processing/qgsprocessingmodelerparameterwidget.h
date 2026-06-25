@@ -181,11 +181,11 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     virtual QVariant value() const;
 
     /**
-     * Sets the parent \a dialog in which the widget is shown.
+     * Sets the parent \a dialog (or widget) in which the widget is shown.
      *
      * \since QGIS 3.8
      */
-    void setDialog( QDialog *dialog );
+    void setDialog( QWidget *dialog );
 
     QgsExpressionContext createExpressionContext() const override;
 

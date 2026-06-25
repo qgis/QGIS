@@ -58,7 +58,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QRectF, QSize, Qt, QUuid
+from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUuid
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.testing import QgisTestCase, start_app
 from utilities import getTempfilePath, getTestFont, unitTestDataPath
@@ -93,10 +93,6 @@ class TestSelectiveMasking(QgisTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("SelectiveMaskingTestBase.com")
-        QCoreApplication.setApplicationName("SelectiveMaskingTestBase")
-        QgsSettings().clear()
 
         start_app()
 

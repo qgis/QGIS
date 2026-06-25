@@ -134,9 +134,10 @@ class _3D_EXPORT QgsAbstractVectorLayer3DRenderer : public QgsAbstract3DRenderer
 
     void resolveReferences( const QgsProject &project ) override;
 
-  protected:
     //! Copies common properties of this object to another object
     void copyBaseProperties( QgsAbstractVectorLayer3DRenderer *r ) const;
+
+  protected:
     //! Writes common properties of this object to DOM element
     void writeXmlBaseProperties( QDomElement &elem, const QgsReadWriteContext &context ) const;
     //! Reads common properties of this object from DOM element

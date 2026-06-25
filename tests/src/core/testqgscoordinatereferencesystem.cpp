@@ -118,6 +118,7 @@ class TestQgsCoordinateReferenceSystem : public QObject
     void fromProj4EPSG20936();
     void projFactors();
     void toOgcUri();
+    void toOgcUrn();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -538,6 +539,14 @@ void TestQgsCoordinateReferenceSystem::fromOgcWmsCrs()
 
   myCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"not a crs"_s );
   QVERIFY( !myCrs.isValid() );
+
+  myCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"urn:ogc:def:crs:EPSG::3857"_s );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.authid(), u"EPSG:3857"_s );
+
+  myCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"urn:ogc:def:crs:IAU:2015:30100"_s );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.authid(), u"IAU_2015:30100"_s );
 }
 
 void TestQgsCoordinateReferenceSystem::ogcWmsCrsCache()
@@ -2310,6 +2319,22 @@ void TestQgsCoordinateReferenceSystem::toOgcUri()
   crs = QgsCoordinateReferenceSystem( u"OGC:CRS84"_s );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
+}
+
+void TestQgsCoordinateReferenceSystem::toOgcUrn()
+{
+  QgsCoordinateReferenceSystem crs( u"EPSG:4326"_s );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toOgcUrn(), u"urn:ogc:def:crs:EPSG::4326"_s );
+
+  crs = QgsCoordinateReferenceSystem( u"OGC:CRS84"_s );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toOgcUrn(), u"urn:ogc:def:crs:OGC:1.3:CRS84"_s );
+
+  // IAU CRS (non-Earth): should use urn:ogc:def:crs:IAU_2015::<code> format
+  crs = QgsCoordinateReferenceSystem( u"IAU_2015:30100"_s );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toOgcUrn(), u"urn:ogc:def:crs:IAU:2015:30100"_s );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )

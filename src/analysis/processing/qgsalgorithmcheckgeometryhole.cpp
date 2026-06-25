@@ -64,7 +64,8 @@ QString QgsGeometryCheckHoleAlgorithm::shortHelpString() const
 {
   return QObject::tr(
     "This algorithm checks the holes of polygon geometries.\n"
-    "Holes are errors."
+    "If the area threshold is provided, only holes smaller than the threshold are errors, "
+    "otherwise all holes are errors.\n"
   );
 }
 
@@ -84,6 +85,7 @@ void QgsGeometryCheckHoleAlgorithm::initAlgorithm( const QVariantMap &configurat
 
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterArea( u"AREA_THRESHOLD"_s, QObject::tr( "Area threshold" ), QVariant(), u"INPUT"_s, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"ERRORS"_s, QObject::tr( "Holes errors" ), Qgis::ProcessingSourceType::VectorPoint ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Polygons with holes" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false ) );
@@ -152,7 +154,11 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  const QgsGeometryHoleCheck check( &checkContext, QVariantMap() );
+  const double areaThreshold = parameterAsDouble( parameters, u"AREA_THRESHOLD"_s, context );
+
+  QVariantMap configurationCheck;
+  configurationCheck.insert( "areaThreshold", areaThreshold );
+  const QgsGeometryHoleCheck check( &checkContext, configurationCheck );
 
   multiStepFeedback.setCurrentStep( 1 );
   feedback->setProgressText( QObject::tr( "Preparing features…" ) );
@@ -195,7 +201,7 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
 
     attrs
       << error->layerId()
-      << error->featureId()
+      << inputLayer->name()
       << error->vidx().part
       << error->vidx().ring
       << error->vidx().vertex
@@ -208,10 +214,14 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
     f.setGeometry( error->geometry() );
     if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+    else if ( sink_output )
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
+    else
+      feedback->featureAddedToSink( u"ERRORS"_s );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -225,7 +235,14 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
 
   QVariantMap outputs;
   if ( sink_output )
+  {
+    sink_output->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, dest_output );
+  }
+  sink_errors->finalize();
+  feedback->featureSinkFinalized( u"ERRORS"_s );
+
   outputs.insert( u"ERRORS"_s, dest_errors );
 
   return outputs;

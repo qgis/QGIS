@@ -119,6 +119,10 @@ typedef SInt32 SRefCon;
 #include "qgsopenclutils.h"
 #endif
 
+#ifdef HAVE_TRACY
+#include "tracy/Tracy.hpp"
+#endif
+
 /**
  * Print QGIS version
  */
@@ -427,15 +431,22 @@ void qgisCrash( int signal )
  * somehow (especially when zoomed in)
  * and it would be useful for the user to know why their picture turned up blank
  *
+ * Also sends messages to Tracy, if that's compiled in.
+ *
  * Based on qInstallMsgHandler example code in the Qt documentation.
  *
  */
 void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString &msg )
 {
+  const QByteArray encodedMsg = msg.toLocal8Bit();
   switch ( type )
   {
     case QtDebugMsg:
-      myPrint( "%s\n", msg.toLocal8Bit().constData() );
+
+      myPrint( "%s\n", encodedMsg.constData() );
+#ifdef HAVE_TRACY
+      TracyMessageC( encodedMsg.constData(), encodedMsg.size(), 0xEEEEEE );
+#endif
       if ( msg.startsWith( "Backtrace"_L1 ) )
       {
         const QString trace = msg.mid( 9 );
@@ -443,7 +454,10 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
       }
       break;
     case QtCriticalMsg:
-      myPrint( "Critical: %s\n", msg.toLocal8Bit().constData() );
+      myPrint( "Critical: %s\n", encodedMsg.constData() );
+#ifdef HAVE_TRACY
+      TracyMessageC( encodedMsg.constData(), encodedMsg.size(), 0xFF0000 );
+#endif
 
 #ifdef QGISDEBUG
       dumpBacktrace( 20 );
@@ -512,6 +526,9 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
       {
         myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
       }
+#ifdef HAVE_TRACY
+      TracyMessageC( encodedMsg.constData(), encodedMsg.size(), 0xEEEE00 );
+#endif
 
 #ifdef QGISDEBUG
       // Print all warnings except setNamedColor.
@@ -549,6 +566,9 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
     case QtFatalMsg:
     {
       myPrint( "Fatal: %s\n", msg.toLocal8Bit().constData() );
+#ifdef HAVE_TRACY
+      TracyMessageC( encodedMsg.constData(), encodedMsg.size(), 0xEE0000 );
+#endif
 #ifdef QGIS_CRASH
       qgisCrash( -1 );
 #else
@@ -560,6 +580,9 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
 
     case QtInfoMsg:
       myPrint( "Info: %s\n", msg.toLocal8Bit().constData() );
+#ifdef HAVE_TRACY
+      TracyMessageC( encodedMsg.constData(), encodedMsg.size(), 0xFFFFFF );
+#endif
       break;
   }
 }
@@ -1096,7 +1119,9 @@ int main( int argc, char *argv[] )
 
   if ( !globalsettingsfile.isEmpty() )
   {
-    if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
+    bool ok = QgsSettings::setGlobalSettingsPath( globalsettingsfile );
+
+    if ( !ok )
     {
       preApplicationWarningMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), u"QGIS"_s;
     }
@@ -1643,7 +1668,7 @@ int main( int argc, char *argv[] )
     mypSplash->move( currentDesktopsCenter - mypSplash->rect().center() );
   }
 
-  if ( !takeScreenShots && !myHideSplash && !settings.value( u"qgis/hideSplash"_s ).toBool() )
+  if ( !takeScreenShots && !myHideSplash && !QgisApp::settingsHideSplash->value() )
   {
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( pixmap.mask() );
@@ -1652,12 +1677,12 @@ int main( int argc, char *argv[] )
 
   // optionally restore default window state
   // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
-  if ( myRestoreDefaultWindowState || settings.value( u"qgis/restoreDefaultWindowState"_s, false ).toBool() )
+  if ( myRestoreDefaultWindowState || QgisApp::settingsRestoreDefaultWindowState->value() )
   {
     QgsDebugMsgLevel( u"Resetting /UI/state and /UI/geometry settings!"_s, 2 );
     settings.remove( u"/UI/state"_s );
     settings.remove( u"/UI/geometry"_s );
-    settings.remove( u"/qgis/restoreDefaultWindowState"_s );
+    QgisApp::settingsRestoreDefaultWindowState->remove();
     settings.sync();
   }
 

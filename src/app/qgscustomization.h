@@ -239,14 +239,14 @@ class APP_EXPORT QgsCustomization
          */
         enum class ItemCapability : int
         {
-          None = 0,                                //! No capability
-          AddUserMenuChild = 1 << 0,               //! Support adding QgsUserMenuItem item as child
-          AddActionRefChild = 1 << 1,              //! Support adding QgsActionRefItem as child
-          AddUserToolBarChild = 1 << 2,            //! Support adding QgsUserToolBarItem as child
-          AddProcessingAlgorithmRefChild = 1 << 3, //! Support adding QgsProcessingAlgorithmRefItem as child. \since QGIS 4.2
-          Rename = 1 << 4,                         //! Support renaming
-          Delete = 1 << 5,                         //! Support delete
-          Drag = 1 << 6                            //! Support dragging for later droping
+          None = 0,                                //!< No capability
+          AddUserMenuChild = 1 << 0,               //!< Support adding QgsUserMenuItem item as child
+          AddActionRefChild = 1 << 1,              //!< Support adding QgsActionRefItem as child
+          AddUserToolBarChild = 1 << 2,            //!< Support adding QgsUserToolBarItem as child
+          AddProcessingAlgorithmRefChild = 1 << 3, //!< Support adding QgsProcessingAlgorithmRefItem as child. \since QGIS 4.2
+          Rename = 1 << 4,                         //!< Support renaming
+          Delete = 1 << 5,                         //!< Support delete
+          Drag = 1 << 6                            //!< Support dragging for later droping
         };
 
         /**

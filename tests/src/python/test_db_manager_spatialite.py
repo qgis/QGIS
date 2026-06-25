@@ -19,7 +19,6 @@ from osgeo import ogr
 from plugins.db_manager.db_plugins import createDbPlugin, supportedDbTypes
 from plugins.db_manager.db_plugins.plugin import TableField
 from qgis.core import QgsDataSourceUri, QgsSettings
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 
 
@@ -33,10 +32,6 @@ class TestPyQgsDBManagerSpatialite(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsDBManagerSpatialite.com")
-        QCoreApplication.setApplicationName("TestPyQgsDBManagerSpatialite")
-        QgsSettings().clear()
         start_app()
 
         cls.basetestpath = tempfile.mkdtemp()

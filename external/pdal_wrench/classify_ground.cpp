@@ -61,7 +61,7 @@ bool ClassifyGround::checkArgs()
         }
     }
     
-    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    if ( isVpcFilename(outputFile) && outputFormatVpc == "copc" )
     {
         isStreaming = false;
     }
@@ -120,7 +120,7 @@ void ClassifyGround::preparePipelines(std::vector<std::unique_ptr<PipelineManage
     filterOptions.add(pdal::Option("window", windowSize));
     
 
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
         fs::path outputParentDir = fs::path(outputFile).parent_path();

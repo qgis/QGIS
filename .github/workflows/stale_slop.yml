@@ -13,7 +13,7 @@ jobs:
     if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f  # v10.2.0
+    - uses: actions/stale@eb5cf3af3ac0a1aa4c9c45633dd1ae542a27a899  # v10.3.0
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-pr-message: >
@@ -53,9 +53,9 @@ jobs:
 
         stale-pr-label: 'stale'
         exempt-pr-labels: 'Merge After Thaw,Frozen'
-        only-pr-labels: 'Slop!⚠️⚠️'
-        days-before-pr-stale: 5
-        days-before-pr-close: 10
+        only-pr-labels: 'AI assisted⚠️'
+        days-before-pr-stale: 3
+        days-before-pr-close: 6
 
         days-before-issue-stale: -1
         days-before-issue-close: -1

@@ -62,17 +62,17 @@
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
       <ogr:floatval>0</ogr:floatval>
-      <ogr:fid_count xsi:nil="true"/>
-      <ogr:fid_unique xsi:nil="true"/>
-      <ogr:fid_empty xsi:nil="true"/>
-      <ogr:fid_filled xsi:nil="true"/>
+      <ogr:fid_count>0</ogr:fid_count>
+      <ogr:fid_unique>0</ogr:fid_unique>
+      <ogr:fid_empty>0</ogr:fid_empty>
+      <ogr:fid_filled>0</ogr:fid_filled>
       <ogr:fid_min xsi:nil="true"/>
       <ogr:fid_max xsi:nil="true"/>
       <ogr:fid_min_length xsi:nil="true"/>
       <ogr:fid_max_length xsi:nil="true"/>
       <ogr:fid_mean_length xsi:nil="true"/>
-      <ogr:id_count xsi:nil="true"/>
-      <ogr:id_unique xsi:nil="true"/>
+      <ogr:id_count>0</ogr:id_count>
+      <ogr:id_unique>0</ogr:id_unique>
       <ogr:id_min xsi:nil="true"/>
       <ogr:id_max xsi:nil="true"/>
       <ogr:id_range xsi:nil="true"/>
@@ -85,8 +85,8 @@
       <ogr:id_q1 xsi:nil="true"/>
       <ogr:id_q3 xsi:nil="true"/>
       <ogr:id_iqr xsi:nil="true"/>
-      <ogr:id2_count xsi:nil="true"/>
-      <ogr:id2_unique xsi:nil="true"/>
+      <ogr:id2_count>0</ogr:id2_count>
+      <ogr:id2_unique>0</ogr:id2_unique>
       <ogr:id2_min xsi:nil="true"/>
       <ogr:id2_max xsi:nil="true"/>
       <ogr:id2_range xsi:nil="true"/>
@@ -107,17 +107,17 @@
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
       <ogr:floatval>0.123</ogr:floatval>
-      <ogr:fid_count xsi:nil="true"/>
-      <ogr:fid_unique xsi:nil="true"/>
-      <ogr:fid_empty xsi:nil="true"/>
-      <ogr:fid_filled xsi:nil="true"/>
+      <ogr:fid_count>0</ogr:fid_count>
+      <ogr:fid_unique>0</ogr:fid_unique>
+      <ogr:fid_empty>0</ogr:fid_empty>
+      <ogr:fid_filled>0</ogr:fid_filled>
       <ogr:fid_min xsi:nil="true"/>
       <ogr:fid_max xsi:nil="true"/>
       <ogr:fid_min_length xsi:nil="true"/>
       <ogr:fid_max_length xsi:nil="true"/>
       <ogr:fid_mean_length xsi:nil="true"/>
-      <ogr:id_count xsi:nil="true"/>
-      <ogr:id_unique xsi:nil="true"/>
+      <ogr:id_count>0</ogr:id_count>
+      <ogr:id_unique>0</ogr:id_unique>
       <ogr:id_min xsi:nil="true"/>
       <ogr:id_max xsi:nil="true"/>
       <ogr:id_range xsi:nil="true"/>
@@ -130,8 +130,8 @@
       <ogr:id_q1 xsi:nil="true"/>
       <ogr:id_q3 xsi:nil="true"/>
       <ogr:id_iqr xsi:nil="true"/>
-      <ogr:id2_count xsi:nil="true"/>
-      <ogr:id2_unique xsi:nil="true"/>
+      <ogr:id2_count>0</ogr:id2_count>
+      <ogr:id2_unique>0</ogr:id2_unique>
       <ogr:id2_min xsi:nil="true"/>
       <ogr:id2_max xsi:nil="true"/>
       <ogr:id2_range xsi:nil="true"/>
@@ -196,17 +196,17 @@
       <ogr:name xsi:nil="true"/>
       <ogr:intval>120</ogr:intval>
       <ogr:floatval>-100291.43213</ogr:floatval>
-      <ogr:fid_count xsi:nil="true"/>
-      <ogr:fid_unique xsi:nil="true"/>
-      <ogr:fid_empty xsi:nil="true"/>
-      <ogr:fid_filled xsi:nil="true"/>
+      <ogr:fid_count>0</ogr:fid_count>
+      <ogr:fid_unique>0</ogr:fid_unique>
+      <ogr:fid_empty>0</ogr:fid_empty>
+      <ogr:fid_filled>0</ogr:fid_filled>
       <ogr:fid_min xsi:nil="true"/>
       <ogr:fid_max xsi:nil="true"/>
       <ogr:fid_min_length xsi:nil="true"/>
       <ogr:fid_max_length xsi:nil="true"/>
       <ogr:fid_mean_length xsi:nil="true"/>
-      <ogr:id_count xsi:nil="true"/>
-      <ogr:id_unique xsi:nil="true"/>
+      <ogr:id_count>0</ogr:id_count>
+      <ogr:id_unique>0</ogr:id_unique>
       <ogr:id_min xsi:nil="true"/>
       <ogr:id_max xsi:nil="true"/>
       <ogr:id_range xsi:nil="true"/>
@@ -219,8 +219,8 @@
       <ogr:id_q1 xsi:nil="true"/>
       <ogr:id_q3 xsi:nil="true"/>
       <ogr:id_iqr xsi:nil="true"/>
-      <ogr:id2_count xsi:nil="true"/>
-      <ogr:id2_unique xsi:nil="true"/>
+      <ogr:id2_count>0</ogr:id2_count>
+      <ogr:id2_unique>0</ogr:id2_unique>
       <ogr:id2_min xsi:nil="true"/>
       <ogr:id2_max xsi:nil="true"/>
       <ogr:id2_range xsi:nil="true"/>

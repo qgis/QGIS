@@ -705,87 +705,12 @@ bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::Property::DataD
 
 QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer, PropertyStatus &status ) const
 {
-  status = PropertyStatus::DoesNotExist;
-  if ( !labelSettings.dataDefinedProperties().isActive( p ) )
-    return QString();
-
-  const QgsProperty property = labelSettings.dataDefinedProperties().property( p );
-
-  switch ( property.propertyType() )
-  {
-    case Qgis::PropertyType::Invalid:
-      break;
-
-    case Qgis::PropertyType::Static:
-      status = PropertyStatus::Valid;
-      break;
-
-    case Qgis::PropertyType::Field:
-      status = PropertyStatus::Valid;
-      return property.field();
-
-    case Qgis::PropertyType::Expression:
-    {
-      status = PropertyStatus::Valid;
-
-      // an expression based property may still be a effectively a single field reference in the map canvas context.
-      // e.g. if it is a expression like '"some_field"', or 'case when @some_project_var = 'a' then "field_a" else "field_b" end'
-
-      QgsExpressionContext context = mCanvas->createExpressionContext();
-      context.appendScope( layer->createExpressionContextScope() );
-
-      QgsExpression expression( property.expressionString() );
-      if ( expression.prepare( &context ) )
-      {
-        // maybe the expression is effectively a single node in this context...
-        const QgsExpressionNode *node = expression.rootNode()->effectiveNode();
-        if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
-        {
-          const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
-          return columnRef->name();
-        }
-
-        // ok, it's not. But let's be super smart and helpful for users!
-        // maybe it's a COALESCE("some field", 'some' || 'fallback' || 'expression') type expression, where the user wants to override
-        // some labels with a value stored in a field but all others use some expression
-        if ( node->nodeType() == QgsExpressionNode::ntFunction )
-        {
-          const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
-          if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
-          {
-            if ( function->name() == "coalesce"_L1 )
-            {
-              if ( const QgsExpressionNode *firstArg = functionNode->args()->list().value( 0 ) )
-              {
-                const QgsExpressionNode *firstArgNode = firstArg->effectiveNode();
-                if ( firstArgNode->nodeType() == QgsExpressionNode::ntColumnRef )
-                {
-                  const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( firstArgNode );
-                  return columnRef->name();
-                }
-              }
-            }
-          }
-        }
-      }
-      else
-      {
-        status = PropertyStatus::CurrentExpressionInvalid;
-      }
-      break;
-    }
-  }
-
-  return QString();
+  return QgsMapTool::dataDefinedColumnName( static_cast<int>( p ), labelSettings.dataDefinedProperties(), layer, status );
 }
 
 int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *vlayer ) const
 {
-  PropertyStatus status = PropertyStatus::DoesNotExist;
-  QString fieldname = dataDefinedColumnName( p, labelSettings, vlayer, status );
-  if ( !fieldname.isEmpty() )
-    return vlayer->fields().lookupField( fieldname );
-  return -1;
+  return QgsMapTool::dataDefinedColumnIndex( static_cast<int>( p ), labelSettings.dataDefinedProperties(), vlayer );
 }
 
 QVariant QgsMapToolLabel::evaluateDataDefinedProperty( QgsPalLayerSettings::Property property, const QgsPalLayerSettings &labelSettings, const QgsFeature &feature, const QVariant &defaultValue ) const

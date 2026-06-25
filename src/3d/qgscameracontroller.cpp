@@ -102,7 +102,7 @@ void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
   emit cameraMovementSpeedChanged( mCameraMovementSpeed );
 }
 
-void QgsCameraController::setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion )
+void QgsCameraController::setVerticalAxisInversion( Qgis::VerticalAxisInversionFlags inversion )
 {
   mVerticalAxisInversion = inversion;
 }
@@ -461,7 +461,7 @@ void QgsCameraController::updateOrthographicProjectionPlane()
 {
   // When using orthographic projection, reuse the distance to center (which
   // ordinarily wouldn't do anything) to set the viewport size in the world.
-  if ( mScene->mapSettings()->projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
+  if ( mScene->mapSettings()->projectionType() == Qgis::Map3DProjectionType::Orthographic )
   {
     const QSize viewportRect = mScene->engine()->size();
     const float viewWidthFromCenter = distance();
@@ -513,7 +513,7 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
   if ( !mInputHandlersEnabled )
     return;
 
-  QgsEventTracing::ScopedEvent traceEvent( u"3D"_s, u"QgsCameraController::onPositionChanged"_s );
+  QgsScopedEvent traceEvent( u"3D"_s, u"QgsCameraController::onPositionChanged"_s );
 
   switch ( mCameraNavigationMode )
   {
@@ -576,8 +576,11 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     setMouseParameters( MouseOperation::RotationCenter, mMousePos );
 
     float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
-    float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
+    float pitchDiff = -180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
     float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
+
+    if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenPivoting )
+      pitchDiff *= -1;
 
     if ( !mDepthBufferIsReady )
       return;
@@ -601,8 +604,10 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     setMouseParameters( MouseOperation::RotationCamera );
     // rotate/tilt using mouse (camera stays at one position as it rotates)
-    const float diffPitch = 0.2f * dy;
+    float diffPitch = -0.2f * static_cast<float>( dy );
     const float diffYaw = -0.2f * dx;
+    if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging )
+      diffPitch *= -1.0f;
     rotateCamera( diffPitch, diffYaw );
   }
   else if ( hasLeftButton && !hasShift && !hasCtrl )
@@ -636,10 +641,10 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     // Choose threshold angle based on projection type so it "feels right".
     switch ( mScene->mapSettings()->projectionType() )
     {
-      case Qt3DRender::QCameraLens::PerspectiveProjection:
+      case Qgis::Map3DProjectionType::Perspective:
         changeAltitude = angle < M_PI / 30;
         break;
-      case Qt3DRender::QCameraLens::OrthographicProjection:
+      case Qgis::Map3DProjectionType::Orthographic:
         changeAltitude = angle < M_PI / 3;
         break;
       default:
@@ -651,7 +656,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     else
       switch ( mScene->mapSettings()->projectionType() )
       {
-        case Qt3DRender::QCameraLens::OrthographicProjection:
+        case Qgis::Map3DProjectionType::Orthographic:
         {
           // Project change to XY plane.
           // This isn't quite accurate at higher angles, "desyncing" the mouse
@@ -659,7 +664,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
           shiftVector = { mDragPoint.x() - moveToPosition.x(), mDragPoint.y() - moveToPosition.y(), 0 };
           break;
         }
-        case Qt3DRender::QCameraLens::PerspectiveProjection:
+        case Qgis::Map3DProjectionType::Perspective:
         {
           QVector3D cameraBeforeToMoveToPos = ( moveToPosition - mCameraBefore->position() ).normalized();
           QVector3D cameraBeforeToDragPointPos = ( mDragPoint - mCameraBefore->position() ).normalized();
@@ -766,8 +771,11 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
     setMouseParameters( MouseOperation::RotationCenter, mMousePos );
 
     const float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
-    const float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
+    float pitchDiff = -180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
     const float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
+
+    if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenPivoting )
+      pitchDiff *= -1;
 
     mCameraPose.setPitchAngle( mRotationPitch + pitchDiff );
     mCameraPose.setHeadingAngle( mRotationYaw + yawDiff );
@@ -907,7 +915,7 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       const double scaling = ( 1.0 / 120.0 ) * ( ( wheel->modifiers() & Qt3DInput::QWheelEvent::Modifiers::ControlModifier ) != 0 ? 0.1 : 1.0 );
 
       // Apparently angleDelta needs to be accumulated
-      // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
+      // see: https://doc.qt.io/qt-6/qwheelevent.html#angleDelta
       mCumulatedWheelY += scaling * wheel->angleDelta().y();
 
       if ( mCurrentOperation != MouseOperation::ZoomWheel )
@@ -1274,16 +1282,8 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     if ( mCaptureFpsMouseMovements )
     {
       float diffPitch = -0.2f * dy;
-      switch ( mVerticalAxisInversion )
-      {
-        case Qgis::VerticalAxisInversion::Always:
-          diffPitch *= -1;
-          break;
-
-        case Qgis::VerticalAxisInversion::WhenDragging:
-        case Qgis::VerticalAxisInversion::Never:
-          break;
-      }
+      if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingCaptured )
+        diffPitch *= -1;
 
       const float diffYaw = -0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
@@ -1291,16 +1291,9 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     else if ( mouse->buttons() & Qt::LeftButton )
     {
       float diffPitch = -0.2f * dy;
-      switch ( mVerticalAxisInversion )
-      {
-        case Qgis::VerticalAxisInversion::Always:
-        case Qgis::VerticalAxisInversion::WhenDragging:
-          diffPitch *= -1;
-          break;
+      if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging )
+        diffPitch *= -1;
 
-        case Qgis::VerticalAxisInversion::Never:
-          break;
-      }
       const float diffYaw = -0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
     }

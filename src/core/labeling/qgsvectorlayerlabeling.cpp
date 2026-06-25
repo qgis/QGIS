@@ -15,8 +15,10 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include "qgis.h"
+#include "qgsexpression.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsogcutils.h"
 #include "qgspallabeling.h"
 #include "qgsrulebasedlabeling.h"
 #include "qgssldexportcontext.h"
@@ -320,11 +322,24 @@ bool QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   const QFont font = format.font();
   QDomElement labelElement = doc.createElement( u"se:Label"_s );
   textSymbolizerElement.appendChild( labelElement );
+
   if ( settings.isExpression )
   {
-    context.pushError( QObject::tr( "Labels containing expressions cannot be exported to SLD. Skipping label '%1'" ).arg( settings.getLabelExpression()->dump() ) );
-    labelElement.appendChild( doc.createTextNode( "Placeholder" ) );
+    QString errorMsg;
+    // try to convert the expression to an SLD expression, if it fails we will log the error and add a placeholder text
+    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( *settings.getLabelExpression(), doc, &errorMsg );
+
+    if ( !expressionElem.isNull() )
+    {
+      labelElement.appendChild( expressionElem );
+    }
+    else
+    {
+      context.pushError( QObject::tr( "Complex expressions in labels cannot be exported to SLD: %1. Skipping label '%2'" ).arg( errorMsg, settings.getLabelExpression()->dump() ) );
+      labelElement.appendChild( doc.createTextNode( u"Placeholder"_s ) );
+    }
   }
+
   else
   {
     Qgis::Capitalization capitalization = format.capitalization();

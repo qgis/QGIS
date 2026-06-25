@@ -19,9 +19,11 @@
 #include "qgs3drendercontext.h"
 #include "qgs3dterrainregistry.h"
 #include "qgs3dutils.h"
+#include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgscolorutils.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsflatterrainsettings.h"
 #include "qgslightsource.h"
 #include "qgsmaplayerlistutils_p.h"
@@ -29,6 +31,7 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsrasterlayer.h"
+#include "qgssunlightsettings.h"
 #include "qgsterrainprovider.h"
 #include "qgsthreadingutils.h"
 
@@ -58,14 +61,9 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mTerrainShadingEnabled( other.mTerrainShadingEnabled )
   , mTerrainShadingMaterial( other.mTerrainShadingMaterial )
   , mTerrainMapTheme( other.mTerrainMapTheme )
-  , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
-  , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
-  , mShowCameraViewCenter( other.mShowCameraViewCenter )
-  , mShowCameraRotationCenter( other.mShowCameraRotationCenter )
-  , mShowLightSources( other.mShowLightSources )
+  , mDebugFlags( other.mDebugFlags )
   , mShowLabels( other.mShowLabels )
   , mStopUpdates( other.mStopUpdates )
-  , mShowDebugPanel( other.mShowDebugPanel )
   , mFieldOfView( other.mFieldOfView )
   , mProjectionType( other.mProjectionType )
   , mCameraNavigationMode( other.mCameraNavigationMode )
@@ -75,22 +73,17 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mPathResolver( other.mPathResolver )
   , mMapThemes( other.mMapThemes )
   , mDpi( other.mDpi )
-  , mIsFpsCounterEnabled( other.mIsFpsCounterEnabled )
-  , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
-  , mSkyboxSettings( other.mSkyboxSettings )
   , mShadowSettings( other.mShadowSettings )
   , mAmbientOcclusionSettings( other.mAmbientOcclusionSettings )
+  , mBloomSettings( other.mBloomSettings )
+  , mColorGradingSettings( other.mColorGradingSettings )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
+  , mMsaaEnabled( other.mMsaaEnabled )
+  , mTextureFilterQuality( other.mTextureFilterQuality )
   , mViewSyncMode( other.mViewSyncMode )
   , mVisualizeViewFrustum( other.mVisualizeViewFrustum )
-  , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
-  , mDebugShadowMapCorner( other.mDebugShadowMapCorner )
-  , mDebugShadowMapSize( other.mDebugShadowMapSize )
-  , mDebugDepthMapEnabled( other.mDebugDepthMapEnabled )
-  , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
-  , mDebugDepthMapSize( other.mDebugDepthMapSize )
   , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
   , mRendererUsage( other.mRendererUsage )
   , m3dAxisSettings( other.m3dAxisSettings )
@@ -100,6 +93,9 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShow2DMapOverlay( other.mShow2DMapOverlay )
 {
   setTerrainSettings( other.mTerrainSettings ? other.mTerrainSettings->clone() : new QgsFlatTerrainSettings() );
+
+  if ( other.mBackgroundSettings )
+    mBackgroundSettings.reset( other.mBackgroundSettings->clone() );
 
   for ( QgsLightSource *source : std::as_const( other.mLightSources ) )
   {
@@ -152,8 +148,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemCamera = elem.firstChildElement( u"camera"_s );
   if ( !elemCamera.isNull() )
   {
-    mFieldOfView = elemCamera.attribute( u"field-of-view"_s, u"45"_s ).toFloat();
-    mProjectionType = static_cast<Qt3DRender::QCameraLens::ProjectionType>( elemCamera.attribute( u"projection-type"_s, u"1"_s ).toInt() );
+    mFieldOfView = elemCamera.attribute( u"field-of-view"_s, u"45"_s ).toDouble();
+    mProjectionType = static_cast<Qgis::Map3DProjectionType>( elemCamera.attribute( u"projection-type"_s, u"1"_s ).toInt() );
     QString cameraNavigationMode = elemCamera.attribute( u"camera-navigation-mode"_s, u"basic-navigation"_s );
     if ( cameraNavigationMode == "terrain-based-navigation"_L1 )
       mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
@@ -253,15 +249,46 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     setTerrainSettings( terrainSettings.release() );
   }
 
-  QDomElement elemSkybox = elem.firstChildElement( u"skybox"_s );
-  mIsSkyboxEnabled = elemSkybox.attribute( u"skybox-enabled"_s ).toInt();
-  mSkyboxSettings.readXml( elemSkybox, context );
+  mBackgroundSettings.reset();
+  QDomElement elemBackground = elem.firstChildElement( u"background"_s );
+  if ( !elemBackground.isNull() )
+  {
+    switch ( qgsEnumKeyToValue( elemBackground.attribute( u"type"_s ), Qgis::Map3DBackgroundType::NoBackground ) )
+    {
+      case Qgis::Map3DBackgroundType::DistinctTextureSkybox:
+      {
+        auto skybox = std::make_unique<QgsSkyboxSettings>();
+        skybox->readXml( elemBackground, context );
+        mBackgroundSettings = std::move( skybox );
+        break;
+      }
+      case Qgis::Map3DBackgroundType::FixedGradientBackground:
+      {
+        auto gradient = std::make_unique<QgsFixedGradientBackgroundSettings>();
+        gradient->readXml( elemBackground, context );
+        mBackgroundSettings = std::move( gradient );
+        break;
+      }
+      case Qgis::Map3DBackgroundType::NoBackground:
+        break;
+    }
+  }
 
   QDomElement elemShadows = elem.firstChildElement( u"shadow-rendering"_s );
   mShadowSettings.readXml( elemShadows, context );
 
   QDomElement elemAmbientOcclusion = elem.firstChildElement( u"screen-space-ambient-occlusion"_s );
   mAmbientOcclusionSettings.readXml( elemAmbientOcclusion, context );
+
+  {
+    QDomElement elemBloom = elem.firstChildElement( u"bloom"_s );
+    mBloomSettings.readXml( elemBloom, context );
+  }
+
+  {
+    QDomElement elemColorGrading = elem.firstChildElement( u"color-grading"_s );
+    mColorGradingSettings.readXml( elemColorGrading, context );
+  }
 
   QDomElement elemEyeDomeLighting = elem.firstChildElement( u"eye-dome-lighting"_s );
   mEyeDomeLightingEnabled = elemEyeDomeLighting.attribute( "enabled", u"0"_s ).toInt();
@@ -273,23 +300,14 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mVisualizeViewFrustum = elemNavigationSync.attribute( u"view-frustum-visualization-enabled"_s, u"0"_s ).toInt();
 
   QDomElement elemDebugSettings = elem.firstChildElement( u"debug-settings"_s );
-  mDebugShadowMapEnabled = elemDebugSettings.attribute( u"shadowmap-enabled"_s, u"0"_s ).toInt();
-  mDebugShadowMapCorner = static_cast<Qt::Corner>( elemDebugSettings.attribute( u"shadowmap-corner"_s, "0" ).toInt() );
-  mDebugShadowMapSize = elemDebugSettings.attribute( u"shadowmap-size"_s, u"0.2"_s ).toDouble();
 
   mDebugDepthMapEnabled = elemDebugSettings.attribute( u"depthmap-enabled"_s, u"0"_s ).toInt();
   mDebugDepthMapCorner = static_cast<Qt::Corner>( elemDebugSettings.attribute( u"depthmap-corner"_s, u"1"_s ).toInt() );
   mDebugDepthMapSize = elemDebugSettings.attribute( u"depthmap-size"_s, u"0.2"_s ).toDouble();
 
   QDomElement elemDebug = elem.firstChildElement( u"debug"_s );
-  mShowTerrainBoundingBoxes = elemDebug.attribute( u"bounding-boxes"_s, u"0"_s ).toInt();
-  mShowTerrainTileInfo = elemDebug.attribute( u"terrain-tile-info"_s, u"0"_s ).toInt();
-  mShowCameraViewCenter = elemDebug.attribute( u"camera-view-center"_s, u"0"_s ).toInt();
-  mShowCameraRotationCenter = elemDebug.attribute( u"camera-rotation-center"_s, u"0"_s ).toInt();
-  mShowLightSources = elemDebug.attribute( u"show-light-sources"_s, u"0"_s ).toInt();
-  mIsFpsCounterEnabled = elemDebug.attribute( u"show-fps-counter"_s, u"0"_s ).toInt();
+  mDebugFlags = qgsFlagKeysToValue( elemDebug.attribute( u"flags"_s ), Qgis::Map3DDebugFlags() );
   mStopUpdates = elemDebug.attribute( u"stop-updates"_s, u"0"_s ).toInt();
-  mShowDebugPanel = elemDebug.attribute( u"debug-panel"_s, u"0"_s ).toInt();
 
   QDomElement elemTemporalRange = elem.firstChildElement( u"temporal-range"_s );
   QDateTime start = QDateTime::fromString( elemTemporalRange.attribute( u"start"_s ), Qt::ISODate );
@@ -392,10 +410,13 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
-  QDomElement elemSkybox = doc.createElement( u"skybox"_s );
-  elemSkybox.setAttribute( u"skybox-enabled"_s, mIsSkyboxEnabled );
-  mSkyboxSettings.writeXml( elemSkybox, context );
-  elem.appendChild( elemSkybox );
+  if ( mBackgroundSettings )
+  {
+    QDomElement elemBackground = doc.createElement( u"background"_s );
+    elemBackground.setAttribute( u"type"_s, qgsEnumValueToKey( mBackgroundSettings->type() ) );
+    mBackgroundSettings->writeXml( elemBackground, context );
+    elem.appendChild( elemBackground );
+  }
 
   QDomElement elemShadows = doc.createElement( u"shadow-rendering"_s );
   mShadowSettings.writeXml( elemShadows, context );
@@ -405,15 +426,21 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   mAmbientOcclusionSettings.writeXml( elemAmbientOcclusion, context );
   elem.appendChild( elemAmbientOcclusion );
 
+  {
+    QDomElement elemBloom = doc.createElement( u"bloom"_s );
+    mBloomSettings.writeXml( elemBloom, context );
+    elem.appendChild( elemBloom );
+  }
+
+  {
+    QDomElement elemColorGrading = doc.createElement( u"color-grading"_s );
+    mColorGradingSettings.writeXml( elemColorGrading, context );
+    elem.appendChild( elemColorGrading );
+  }
+
   QDomElement elemDebug = doc.createElement( u"debug"_s );
-  elemDebug.setAttribute( u"bounding-boxes"_s, mShowTerrainBoundingBoxes ? 1 : 0 );
-  elemDebug.setAttribute( u"terrain-tile-info"_s, mShowTerrainTileInfo ? 1 : 0 );
-  elemDebug.setAttribute( u"camera-view-center"_s, mShowCameraViewCenter ? 1 : 0 );
-  elemDebug.setAttribute( u"camera-rotation-center"_s, mShowCameraRotationCenter ? 1 : 0 );
-  elemDebug.setAttribute( u"show-light-sources"_s, mShowLightSources ? 1 : 0 );
-  elemDebug.setAttribute( u"show-fps-counter"_s, mIsFpsCounterEnabled ? 1 : 0 );
+  elemDebug.setAttribute( u"flags"_s, qgsFlagValueToKeys( mDebugFlags ) );
   elemDebug.setAttribute( u"stop-updates"_s, mStopUpdates ? 1 : 0 );
-  elemDebug.setAttribute( u"debug-panel"_s, mShowDebugPanel ? 1 : 0 );
   elem.appendChild( elemDebug );
 
   QDomElement elemEyeDomeLighting = doc.createElement( u"eye-dome-lighting"_s );
@@ -428,9 +455,6 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemNavigationSync );
 
   QDomElement elemDebugSettings = doc.createElement( u"debug-settings"_s );
-  elemDebugSettings.setAttribute( u"shadowmap-enabled"_s, mDebugShadowMapEnabled );
-  elemDebugSettings.setAttribute( u"shadowmap-corner"_s, mDebugShadowMapCorner );
-  elemDebugSettings.setAttribute( u"shadowmap-size"_s, mDebugShadowMapSize );
   elemDebugSettings.setAttribute( u"depthmap-enabled"_s, mDebugDepthMapEnabled );
   elemDebugSettings.setAttribute( u"depthmap-corner"_s, mDebugDepthMapCorner );
   elemDebugSettings.setAttribute( u"depthmap-size"_s, mDebugDepthMapSize );
@@ -633,6 +657,21 @@ QColor Qgs3DMapSettings::backgroundColor() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mBackgroundColor;
+}
+
+const QgsAbstract3DMapBackgroundSettings *Qgs3DMapSettings::backgroundSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mBackgroundSettings.get();
+}
+
+void Qgs3DMapSettings::setBackgroundSettings( QgsAbstract3DMapBackgroundSettings *settings )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mBackgroundSettings.reset( settings );
+  emit backgroundSettingsChanged();
 }
 
 void Qgs3DMapSettings::setSelectionColor( const QColor &color )
@@ -924,95 +963,132 @@ QString Qgs3DMapSettings::terrainMapTheme() const
   return mTerrainMapTheme;
 }
 
-void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )
+void Qgs3DMapSettings::setDebugFlags( Qgis::Map3DDebugFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mShowTerrainBoundingBoxes == enabled )
+  if ( mDebugFlags == flags )
     return;
 
-  mShowTerrainBoundingBoxes = enabled;
-  emit showTerrainBoundingBoxesChanged();
+  const bool hasShowTerrainBoundingBoxesChanged = mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes ) != flags.testFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes );
+  const bool hasShowTerrainTileInfoChanged = mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowTerrainTileInfo ) != flags.testFlag( Qgis::Map3DDebugFlag::ShowTerrainTileInfo );
+  const bool hasShowCameraViewCenterChanged = mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter ) != flags.testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter );
+  const bool hasShowCameraRotationCenterChanged = mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowCameraRotationCenter ) != flags.testFlag( Qgis::Map3DDebugFlag::ShowCameraRotationCenter );
+  const bool hasShowLightSourcesChanged = mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowLightSourceOrigins ) != flags.testFlag( Qgis::Map3DDebugFlag::ShowLightSourceOrigins );
+  const bool hasShowFpsChanged = mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowFPS ) != flags.testFlag( Qgis::Map3DDebugFlag::ShowFPS );
+  const bool hasShowDebugPanelChanged = mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) != flags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel );
+
+  mDebugFlags = flags;
+  if ( hasShowTerrainBoundingBoxesChanged )
+  {
+    emit showTerrainBoundingBoxesChanged();
+  }
+  if ( hasShowTerrainTileInfoChanged )
+  {
+    emit showTerrainTilesInfoChanged();
+  }
+  if ( hasShowCameraViewCenterChanged )
+  {
+    emit showCameraViewCenterChanged();
+  }
+  if ( hasShowCameraRotationCenterChanged )
+  {
+    emit showCameraRotationCenterChanged();
+  }
+  if ( hasShowLightSourcesChanged )
+  {
+    emit showLightSourceOriginsChanged();
+  }
+  if ( hasShowFpsChanged )
+  {
+    emit fpsCounterEnabledChanged( mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowFPS ) );
+  }
+  if ( hasShowDebugPanelChanged )
+  {
+    emit showDebugPanelChanged( mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
+  }
+}
+
+Qgis::Map3DDebugFlags Qgs3DMapSettings::debugFlags() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDebugFlags;
+}
+
+void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  Qgis::Map3DDebugFlags flags = mDebugFlags;
+  flags.setFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes, enabled );
+  setDebugFlags( flags );
 }
 
 bool Qgs3DMapSettings::showTerrainBoundingBoxes() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mShowTerrainBoundingBoxes;
+  return mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes );
 }
-
 
 void Qgs3DMapSettings::setShowTerrainTilesInfo( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( mShowTerrainTileInfo == enabled )
-    return;
-
-  mShowTerrainTileInfo = enabled;
-  emit showTerrainTilesInfoChanged();
+  Qgis::Map3DDebugFlags flags = mDebugFlags;
+  flags.setFlag( Qgis::Map3DDebugFlag::ShowTerrainTileInfo, enabled );
+  setDebugFlags( flags );
 }
 
 bool Qgs3DMapSettings::showTerrainTilesInfo() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mShowTerrainTileInfo;
+  return mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowTerrainTileInfo );
 }
 
 void Qgs3DMapSettings::setShowCameraViewCenter( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( mShowCameraViewCenter == enabled )
-    return;
-
-  mShowCameraViewCenter = enabled;
-  emit showCameraViewCenterChanged();
+  Qgis::Map3DDebugFlags flags = mDebugFlags;
+  flags.setFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter, enabled );
+  setDebugFlags( flags );
 }
 
 bool Qgs3DMapSettings::showCameraViewCenter() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mShowCameraViewCenter;
+  return mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter );
 }
 
 void Qgs3DMapSettings::setShowCameraRotationCenter( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( mShowCameraRotationCenter == enabled )
-    return;
-
-  mShowCameraRotationCenter = enabled;
-  emit showCameraRotationCenterChanged();
+  Qgis::Map3DDebugFlags flags = mDebugFlags;
+  flags.setFlag( Qgis::Map3DDebugFlag::ShowCameraRotationCenter, enabled );
+  setDebugFlags( flags );
 }
 
 bool Qgs3DMapSettings::showCameraRotationCenter() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mShowCameraRotationCenter;
+  return mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowCameraRotationCenter );
 }
 
 void Qgs3DMapSettings::setShowLightSourceOrigins( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( mShowLightSources == enabled )
-    return;
-
-  mShowLightSources = enabled;
-  emit showLightSourceOriginsChanged();
+  Qgis::Map3DDebugFlags flags = mDebugFlags;
+  flags.setFlag( Qgis::Map3DDebugFlag::ShowLightSourceOrigins, enabled );
+  setDebugFlags( flags );
 }
 
 bool Qgs3DMapSettings::showLightSourceOrigins() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mShowLightSources;
+  return mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowLightSourceOrigins );
 }
 
 void Qgs3DMapSettings::setShowLabels( bool enabled )
@@ -1102,6 +1178,24 @@ int Qgs3DMapSettings::eyeDomeLightingDistance() const
   return mEyeDomeLightingDistance;
 }
 
+void Qgs3DMapSettings::setMsaaEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mMsaaEnabled == enabled )
+    return;
+
+  mMsaaEnabled = enabled;
+  emit msaaEnabledChanged();
+}
+
+bool Qgs3DMapSettings::isMsaaEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMsaaEnabled;
+}
+
 QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1131,6 +1225,10 @@ void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
             if ( *static_cast<QgsDirectionalLightSettings *>( mLightSources[i] ) == *static_cast<QgsDirectionalLightSettings *>( lights[i] ) )
               continue;
             break;
+          case Qgis::LightSourceType::Sun:
+            if ( *static_cast<QgsSunLightSettings *>( mLightSources[i] ) == *static_cast<QgsSunLightSettings *>( lights[i] ) )
+              continue;
+            break;
         }
       }
       same = false;
@@ -1151,14 +1249,14 @@ void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
   emit lightSourcesChanged();
 }
 
-float Qgs3DMapSettings::fieldOfView() const
+double Qgs3DMapSettings::fieldOfView() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mFieldOfView;
 }
 
-void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
+void Qgs3DMapSettings::setFieldOfView( const double fieldOfView )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1169,14 +1267,14 @@ void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
   emit fieldOfViewChanged();
 }
 
-Qt3DRender::QCameraLens::ProjectionType Qgs3DMapSettings::projectionType() const
+Qgis::Map3DProjectionType Qgs3DMapSettings::projectionType() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mProjectionType;
 }
 
-void Qgs3DMapSettings::setProjectionType( const Qt3DRender::QCameraLens::ProjectionType projectionType )
+void Qgs3DMapSettings::setProjectionType( const Qgis::Map3DProjectionType projectionType )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1241,7 +1339,9 @@ QgsSkyboxSettings Qgs3DMapSettings::skyboxSettings() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mSkyboxSettings;
+  if ( mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox )
+    return *dynamic_cast<const QgsSkyboxSettings *>( mBackgroundSettings.get() );
+  return QgsSkyboxSettings();
 }
 
 QgsShadowSettings Qgs3DMapSettings::shadowSettings() const
@@ -1258,12 +1358,25 @@ QgsAmbientOcclusionSettings Qgs3DMapSettings::ambientOcclusionSettings() const
   return mAmbientOcclusionSettings;
 }
 
+QgsBloomSettings Qgs3DMapSettings::bloomSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mBloomSettings;
+}
+
+QgsColorGradingSettings Qgs3DMapSettings::colorGradingSettings() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mColorGradingSettings;
+}
+
 void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mSkyboxSettings = skyboxSettings;
-  emit skyboxSettingsChanged();
+  setBackgroundSettings( skyboxSettings.clone() );
 }
 
 void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSettings )
@@ -1282,74 +1395,77 @@ void Qgs3DMapSettings::setAmbientOcclusionSettings( const QgsAmbientOcclusionSet
   emit ambientOcclusionSettingsChanged();
 }
 
+void Qgs3DMapSettings::setBloomSettings( const QgsBloomSettings &settings )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mBloomSettings = settings;
+  emit bloomSettingsChanged();
+}
+
+void Qgs3DMapSettings::setColorGradingSettings( const QgsColorGradingSettings &settings )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mColorGradingSettings = settings;
+  emit colorGradingSettingsChanged();
+}
+
 bool Qgs3DMapSettings::isSkyboxEnabled() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIsSkyboxEnabled;
+  return mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox;
 }
 
 void Qgs3DMapSettings::setIsSkyboxEnabled( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mIsSkyboxEnabled = enabled;
+  if ( enabled )
+    setBackgroundSettings( ( mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox ) ? mBackgroundSettings->clone() : new QgsSkyboxSettings() );
+  else
+    setBackgroundSettings( nullptr );
 }
 
 bool Qgs3DMapSettings::isFpsCounterEnabled() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIsFpsCounterEnabled;
+  return mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowFPS );
 }
 
 void Qgs3DMapSettings::setShowDebugPanel( const bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( mShowDebugPanel == enabled )
-    return;
-
-  mShowDebugPanel = enabled;
-  emit showDebugPanelChanged( enabled );
+  Qgis::Map3DDebugFlags flags = mDebugFlags;
+  flags.setFlag( Qgis::Map3DDebugFlag::ShowDebugPanel, enabled );
+  setDebugFlags( flags );
 }
 
 bool Qgs3DMapSettings::showDebugPanel() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mShowDebugPanel;
+  return mDebugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel );
 }
 
-void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  mDebugShadowMapEnabled = enabled;
-  mDebugShadowMapCorner = corner;
-  mDebugShadowMapSize = size;
-  emit debugShadowMapSettingsChanged();
-}
+void Qgs3DMapSettings::setDebugShadowMapSettings( bool, Qt::Corner, double )
+{}
 
 bool Qgs3DMapSettings::debugShadowMapEnabled() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mDebugShadowMapEnabled;
+  return false;
 }
 
 Qt::Corner Qgs3DMapSettings::debugShadowMapCorner() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mDebugShadowMapCorner;
+  return Qt::Corner::TopLeftCorner;
 }
 
 double Qgs3DMapSettings::debugShadowMapSize() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mDebugShadowMapSize;
+  return 0;
 }
 
 void Qgs3DMapSettings::setDebugDepthMapSettings( bool enabled, Qt::Corner corner, double size )
@@ -1386,11 +1502,9 @@ double Qgs3DMapSettings::debugDepthMapSize() const
 void Qgs3DMapSettings::setIsFpsCounterEnabled( bool fpsCounterEnabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( fpsCounterEnabled == mIsFpsCounterEnabled )
-    return;
-  mIsFpsCounterEnabled = fpsCounterEnabled;
-  emit fpsCounterEnabledChanged( mIsFpsCounterEnabled );
+  Qgis::Map3DDebugFlags flags = mDebugFlags;
+  flags.setFlag( Qgis::Map3DDebugFlag::ShowFPS, fpsCounterEnabled );
+  setDebugFlags( flags );
 }
 
 bool Qgs3DMapSettings::terrainRenderingEnabled() const
@@ -1500,14 +1614,13 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );

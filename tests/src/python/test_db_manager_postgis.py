@@ -28,7 +28,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsSettings,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QFile
+from qgis.PyQt.QtCore import QFile
 from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
@@ -267,10 +267,6 @@ class TestPyQgsDBManagerPostgis(QgisTestCase):
         cls.setUpServer()
 
         # start a standalone qgis application
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsDBManagerPostgis.com")
-        QCoreApplication.setApplicationName("TestPyQgsDBManagerPostgis")
-        QgsSettings().clear()
         start_app()
 
     @classmethod

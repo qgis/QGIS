@@ -43,7 +43,7 @@ int main( int argc, char *argv[] )
   QApplication app( argc, argv );
   QApplication::setQuitOnLastWindowClosed( true );
   QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setApplicationName( "QGIS3" );
+  QCoreApplication::setApplicationName( "QGIS4" );
 
   QString extraInfoFile = QString( argv[1] );
   std::cout << "Extra Info File: " << extraInfoFile.toUtf8().constData() << std::endl;

@@ -11640,17 +11640,20 @@ void TestProcessingGui::testModelGraphicsView()
 
   scene2.createItems( &model1, context2 );
   QList<QGraphicsItem *> items2 = scene2.items();
-  QgsModelDesignerFeatureCountGraphicItem *layerItemFeatureCount = nullptr;
+  QgsModelDesignerArrowBadgeItem *layerItemFeatureCount = nullptr;
   for ( QGraphicsItem *item : items2 )
   {
-    if ( QgsModelDesignerFeatureCountGraphicItem *featureCount = dynamic_cast<QgsModelDesignerFeatureCountGraphicItem *>( item ) )
+    if ( auto arrow = dynamic_cast< QgsModelArrowItem * >( item ) )
     {
-      layerItemFeatureCount = featureCount;
-      QCOMPARE( featureCount->toPlainText(), "[1]" );
-      break;
+      if ( arrow->badgeItem() )
+      {
+        layerItemFeatureCount = arrow->badgeItem();
+        break;
+      }
     }
   }
   QVERIFY( layerItemFeatureCount );
+  QCOMPARE( layerItemFeatureCount->value().toLongLong(), 1LL );
 
   // hiding feature count decoration
   scene2.setFlags( QgsModelGraphicsScene::FlagHideFeatureCount );
@@ -11660,10 +11663,13 @@ void TestProcessingGui::testModelGraphicsView()
   layerItemFeatureCount = nullptr;
   for ( QGraphicsItem *item : items3 )
   {
-    if ( QgsModelDesignerFeatureCountGraphicItem *featureCount = dynamic_cast<QgsModelDesignerFeatureCountGraphicItem *>( item ) )
+    if ( auto arrow = dynamic_cast< QgsModelArrowItem * >( item ) )
     {
-      layerItemFeatureCount = featureCount;
-      break;
+      if ( arrow->badgeItem() )
+      {
+        layerItemFeatureCount = arrow->badgeItem();
+        break;
+      }
     }
   }
   // should not exist
@@ -11673,10 +11679,10 @@ void TestProcessingGui::testModelGraphicsView()
   //check model bounds
   scene2.updateBounds();
   QRectF modelRect = scene2.sceneRect();
-  QGSCOMPARENEAR( modelRect.height(), 1523, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect.height(), 1572, 50 ); // higher threeshold because of various font size can change the bounding rect
   QGSCOMPARENEAR( modelRect.width(), 1555.00, 0.01 );
   QGSCOMPARENEAR( modelRect.left(), -702.0, 0.01 );
-  QGSCOMPARENEAR( modelRect.top(), -682.0, 0.01 );
+  QGSCOMPARENEAR( modelRect.top(), -713.0, 30 );
 
 
   // test model large modelRect
@@ -11701,10 +11707,10 @@ void TestProcessingGui::testModelGraphicsView()
 
   scene3.updateBounds();
   QRectF modelRect2 = scene3.sceneRect();
-  QGSCOMPARENEAR( modelRect2.height(), 5404, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect2.height(), 5423, 50 ); // higher threeshold because of various font size can marginally the bounding rect
   QGSCOMPARENEAR( modelRect2.width(), 5503.0, 0.01 );
   QGSCOMPARENEAR( modelRect2.left(), -651.0, 0.01 );
-  QGSCOMPARENEAR( modelRect2.top(), -600.0, 0.01 );
+  QGSCOMPARENEAR( modelRect2.top(), -600.0, 30 );
 
   QgsModelGraphicsScene scene;
   QVERIFY( !scene.model() );

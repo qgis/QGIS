@@ -32,7 +32,6 @@ from .FieldPyculator import FieldsPyculator
 from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
-from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
@@ -82,7 +81,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             Heatmap(),
             HubDistanceLines(),
             HubDistancePoints(),
-            HypsometricCurves(),
             IdwInterpolation(),
             KNearestConcaveHull(),
             LinesToPolygons(),

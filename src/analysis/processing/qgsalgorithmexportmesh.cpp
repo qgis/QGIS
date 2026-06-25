@@ -371,6 +371,8 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
 
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     if ( feedback )
     {
@@ -381,6 +383,7 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap ret;
   ret[u"OUTPUT"_s] = identifier;
@@ -689,11 +692,16 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
         {
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
         }
+        else
+        {
+          feedback->featureAddedToSink( u"OUTPUT"_s );
+        }
       }
     }
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap ret;
   ret[u"OUTPUT"_s] = identifier;
@@ -1144,6 +1152,8 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
 
       if ( !sinkLines->addFeature( lineFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sinkLines.get(), parameters, u"OUTPUT_LINES"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT_LINES"_s );
     }
 
     for ( int l = 0; l < mLevels.count() - 1; ++l )
@@ -1161,7 +1171,14 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
       QgsFeature polygonFeature;
       polygonFeature.setGeometry( polygon );
       polygonFeature.setAttributes( polygonAttributes );
-      sinkPolygons->addFeature( polygonFeature );
+      if ( !sinkPolygons->addFeature( polygonFeature ) )
+      {
+        throw QgsProcessingException( writeFeatureError( sinkPolygons.get(), parameters, QString() ) );
+      }
+      else
+      {
+        feedback->featureAddedToSink( u"OUTPUT_POLYGONS"_s );
+      }
     }
 
     if ( feedback )
@@ -1171,9 +1188,15 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   if ( sinkPolygons )
+  {
     sinkPolygons->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT_POLYGONS"_s );
+  }
   if ( sinkLines )
+  {
     sinkLines->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT_LINES"_s );
+  }
 
   QVariantMap ret;
   ret[u"OUTPUT_LINES"_s] = lineIdentifier;

@@ -239,7 +239,20 @@ struct VTable
       QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
       if ( pkAttributeIndexes.size() == 1 )
       {
-        mPkColumn = pkAttributeIndexes.at( 0 );
+        // Only use integer columns as primary key cloumn
+        // since sqlite3_value_int() is used
+        const int pkIdx = pkAttributeIndexes.at( 0 );
+        switch ( mFields.at( pkIdx ).type() )
+        {
+          case QMetaType::Type::Int:
+          case QMetaType::Type::UInt:
+          case QMetaType::Type::LongLong:
+          case QMetaType::Type::ULongLong:
+            mPkColumn = pkIdx;
+            break;
+          default:
+            break;
+        }
       }
 
       mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( ','_L1 ) + ")";

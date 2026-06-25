@@ -17,7 +17,7 @@
     {
       "arg": "overlapping",
       "optional": true,
-      "default": false,
+      "default": "false",
       "description": "Optional flag to control whether overlapping occurrences should be counted. Defaults to FALSE (non-overlapping counting). Set to TRUE to count overlapping occurrences."
     }
   ],

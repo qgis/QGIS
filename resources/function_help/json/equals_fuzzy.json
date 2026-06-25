@@ -1,0 +1,82 @@
+{
+  "name": "equals_fuzzy",
+  "type": "function",
+  "groups": [
+    "GeometryGroup"
+  ],
+  "description": "Tests whether two geometries are point-by-point equal in respect of a tolerance. Note that the order of their vertices matters. Returns TRUE if geometry1 is fuzzy equal to geometry2.",
+  "arguments": [
+    {
+      "arg": "geometry1",
+      "description": "a geometry"
+    },
+    {
+      "arg": "geometry2",
+      "description": "a geometry"
+    },
+    {
+      "arg": "backend",
+      "optional": true,
+      "default": "'QGIS'",
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'.<ul><li>'QGIS' works on 2D, 3D and 4D geometries and applies component per component comparison</li><li>'GEOS' works only on 2D components (Z or M components are ignored) and compares coordinates by using 2D Euclidean distance.</li></ul>"
+    },
+    {
+      "arg": "epsilon",
+      "optional": true,
+      "default": "1e-8",
+      "description": "maximum difference for coordinates between the vertices"
+    }
+  ],
+  "examples": [
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0 0 )' ) )",
+      "returns": "TRUE"
+    },
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0.5 0.5 )' ), epsilon:=1 )",
+      "returns": "TRUE"
+    },
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0.5 0.5 )' ), epsilon:=0.1 )",
+      "returns": "FALSE",
+      "note": "Tolerance (epsilon) is too low, so it fails"
+    },
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ), 'QGIS' )",
+      "returns": "FALSE",
+      "note": "Not the same type, so it fails"
+    },
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ), 'GEOS' )",
+      "returns": "FALSE",
+      "note": "Not the same type, so it fails"
+    },
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'LINESTRING( 0.5 0.5, 1.5 1.5 )' ), 'GEOS', 0.71 )",
+      "returns": "TRUE",
+      "note": "2D Euclidean distance is 0.7071 < tolerance (epsilon), so it passes"
+    },
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'LINESTRING( 0.5 0.5, 1.5 1.5 )' ), 'QGIS', 0.50 )",
+      "returns": "TRUE",
+      "note": "Component per component diff <= tolerance (epsilon), so it passes (for example, p1.x-p2.x <= 0.50)"
+    },
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'LINESTRINGZ( 0 0 0, 1 1 1 )' ), geom_from_wkt( 'LINESTRINGZ( 0.5 0.5 0.5, 1.5 1.5 555)' ), 'GEOS', 0.71 )",
+      "returns": "TRUE",
+      "note": "2D Euclidean distance is 0.7071 < tolerance (epsilon) and Z coordinates are ignored, so it passes"
+    },
+    {
+      "expression": "equals_fuzzy( geom_from_wkt( 'LINESTRINGZ( 0 0 0, 1 1 1 )' ), geom_from_wkt( 'LINESTRINGZ( 0.5 0.5 0.5, 1.5 1.5 555)' ), 'QGIS', 0.50 )",
+      "returns": "FALSE",
+      "note": "Component per component diff <= tolerance (epsilon) except for Z, so it fails"
+    }
+  ],
+  "tags": [
+    "tests",
+    "equal",
+    "equals",
+    "fuzzy",
+    "equals_fuzzy"
+  ]
+}

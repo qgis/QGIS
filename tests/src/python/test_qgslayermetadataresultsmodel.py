@@ -34,7 +34,7 @@ from qgis.gui import (
     QgsLayerMetadataResultsModel,
     QgsLayerMetadataResultsProxyModel,
 )
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant
 from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.testing import TestCase, start_app
 
@@ -44,15 +44,6 @@ NUM_LAYERS = 20
 
 class TestQgsLayerMetadataResultModels(TestCase):
     """Base test for layer metadata provider models"""
-
-    @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        super().setUpClass()
-
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
 
     def setUp(self):
         super().setUp()

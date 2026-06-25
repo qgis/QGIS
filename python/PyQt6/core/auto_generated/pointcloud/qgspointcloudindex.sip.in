@@ -51,6 +51,13 @@ Returns the parent of the node
 .. versionadded:: 3.20
 %End
 
+    QVector<QgsPointCloudNodeId> childrenNodes() const;
+%Docstring
+Returns the node's 8 direct child nodes
+
+.. versionadded:: 4.2
+%End
+
     static QgsPointCloudNodeId fromString( const QString &str );
 %Docstring
 Creates node from string
@@ -81,6 +88,12 @@ Returns y
 Returns z
 %End
 
+    //! hash operator
+    Py_hash_t __hash__() const;
+%MethodCode
+    sipRes = qHash( *sipCpp );
+%End
+
 };
 
 
@@ -88,6 +101,7 @@ size_t qHash( QgsPointCloudNodeId id, size_t seed = 0 );
 %Docstring
 Hash function for indexed nodes
 %End
+
 
 
 class QgsPointCloudNode
@@ -383,6 +397,16 @@ Returns a list of node IDs that have been modified
     QString uri() const;
 %Docstring
 Returns the uri used to load the index
+%End
+
+    bool needsHierarchyFetching( const QgsPointCloudNodeId &node ) const;
+%Docstring
+Returns whether calling :py:func:`~QgsPointCloudIndex.getNode` for
+``node`` will trigger a hierarchy page fetch. If any of the node's
+ancestors, children and grand-children info exist in a hierarchy page
+that has not yet been loaded, it will return ``True``.
+
+.. versionadded:: 4.2
 %End
 
 };

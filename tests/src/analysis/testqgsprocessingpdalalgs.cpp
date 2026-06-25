@@ -919,11 +919,17 @@ void TestQgsProcessingPdalAlgs::buildVpc()
   updateFileListArg( args, u"inputFiles.txt"_s );
   QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--boundary"_s << u"--stats"_s << u"--overview"_s << u"--input-file-list=inputFiles.txt"_s );
 
+  // build tiled overviews
+  parameters.insert( u"OVERVIEW_LENGTH"_s, 42 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--boundary"_s << u"--stats"_s << u"--overview"_s << u"--overview-length=42"_s << u"--input-file-list=inputFiles.txt"_s );
+
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   updateFileListArg( args, u"inputFiles.txt"_s );
-  QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--boundary"_s << u"--stats"_s << u"--overview"_s << u"--threads=2"_s << u"--input-file-list=inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--boundary"_s << u"--stats"_s << u"--overview"_s << u"--overview-length=42"_s << u"--threads=2"_s << u"--input-file-list=inputFiles.txt"_s );
 }
 
 void TestQgsProcessingPdalAlgs::clip()

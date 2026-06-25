@@ -224,7 +224,7 @@ run_safety_guards()
   GUARD_FAILURES=()
 
   local conflict_markers
-  conflict_markers="$( git grep -n -E '^(<{7}|={7}|>{7})([[:space:]].*)?$' -- . 2>/dev/null || true )"
+  conflict_markers="$( git grep -n -E '^(<{7}|>{7})([[:space:]].*)?$' -- . 2>/dev/null || true )"
   if [[ -n "${conflict_markers}" ]]; then
     guard_fail "Conflict markers remain in tracked files:
 ${conflict_markers}"

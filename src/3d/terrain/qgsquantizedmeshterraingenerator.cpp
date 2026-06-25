@@ -24,6 +24,7 @@
 #include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgslogger.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmetalroughmaterial.h"
@@ -98,7 +99,8 @@ void QgsQuantizedMeshTerrainChunkLoader::start()
   bool shadingEnabled = map->isTerrainShadingEnabled();
   QgsVector3D chunkOrigin = node->box3D().center();
 
-  QThreadPool::globalInstance()->start( [this, node, vertScale, chunkOrigin, shadingEnabled]() {
+  Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( map );
+  QThreadPool::globalInstance()->start( [this, node, vertScale, chunkOrigin, shadingEnabled, context]() {
     if ( mTileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
     {
       // Nothing to load for imaginary root tile
@@ -139,7 +141,7 @@ void QgsQuantizedMeshTerrainChunkLoader::start()
       tinygltf::Model model = qmTile.toGltf( true, 100, true );
 
       QStringList errors;
-      Qt3DCore::QEntity *gltfEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
+      Qt3DCore::QEntity *gltfEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, context, &errors );
       if ( !errors.isEmpty() )
       {
         QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
@@ -180,11 +182,14 @@ Qt3DCore::QEntity *QgsQuantizedMeshTerrainChunkLoader::createEntity( Qt3DCore::Q
   if ( mEntity )
   {
     mEntity->setParent( parent );
-    Qt3DRender::QTexture2D *texture = createTexture( mEntity );
+    Qgs3DMapSettings *map = terrain()->mapSettings();
+
+    Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( map );
+
+    Qt3DRender::QTexture2D *texture = createTexture( mEntity, QgsMaterialContext::fromRenderContext( context ) );
 
     // Copied from part of QgsTerrainTileLoader::createTextureComponent, since we can't use that directly on the GLTF entity.
     Qt3DRender::QMaterial *material = nullptr;
-    Qgs3DMapSettings *map = terrain()->mapSettings();
     if ( map->isTerrainShadingEnabled() )
     {
       const QgsPhongMaterialSettings &shadingMaterial = map->terrainShadingMaterial();

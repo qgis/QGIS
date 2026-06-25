@@ -26,6 +26,8 @@
 #define SIP_NO_FILE
 
 class QFont;
+class QMainWindow;
+class QDockWidget;
 
 /**
  * \ingroup gui
@@ -230,6 +232,34 @@ namespace QgsGuiUtils
    * \since QGIS 4.0
    */
   bool GUI_EXPORT warnAboutNonStandardGeoPackageGeometryType( Qgis::WkbType wkbType, QWidget *parent, const QString &dialogTitle, bool showDialog = true, bool *isNonStandard = nullptr );
+
+  /**
+   * Add a dock widget to a main \a window.
+   *
+   * After adding the dock widget to the UI (by delegating to the QMainWindow
+   * parent class, it will also add it to the View menu list of docks, if the window has one.
+   *
+   * \since QGIS 4.2
+   */
+  GUI_EXPORT void addDockWidget( QMainWindow *window, Qt::DockWidgetArea area, QDockWidget *dockwidget );
+
+  /**
+   * Add a dock widget to the given \a area and tabify it (if other dock widgets
+   * exist in the same \a area).
+   *
+   * The new tab will be below other tabs unless \a raiseTab is passed as TRUE.
+   *
+   * \a tabifyWith is a list of dock widget object names, ordered by
+   * priority, with which the new dock widget should be tabified. Only the
+   * first matching object name will be picked. If none of the given object
+   * names is found in that \a area (or if \a tabifyWith is not given at
+   * all), the new dock widget will be created anyways, but its location
+   * within that \a area will be unpredictable.
+   *
+   * \since QGIS 4.2
+   */
+  GUI_EXPORT void addTabifiedDockWidget( QMainWindow *window, Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false );
+
 
 } // namespace QgsGuiUtils
 

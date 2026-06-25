@@ -21,6 +21,8 @@
 #include "qgsapplication.h"
 #include "qgspluginmanager.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QAbstractButton>
 #include <QMessageBox>
@@ -127,6 +129,9 @@ void QgsWelcomeScreenController::forwardDrop( const QString &text, const QString
 }
 
 
+const QgsSettingsEntryBool *QgsWelcomeScreen::settingsCheckVersion
+  = new QgsSettingsEntryBool( u"check-version"_s, QgsSettingsTree::sTreeApp, true, u"Whether the welcome screen should check for a newer QGIS version online"_s );
+
 QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   : QQuickWidget( parent )
 {
@@ -162,7 +167,7 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
 
   QgsSettings settings;
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool() && settings.value( u"qgis/checkVersion"_s, true ).toBool() && !skipVersionCheck )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool() && settingsCheckVersion->value() && !skipVersionCheck )
   {
     connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomeScreen::versionInfoReceived );
     mVersionInfo->checkVersion();
@@ -188,8 +193,8 @@ void QgsWelcomeScreen::refreshGeometry()
 {
   if ( QWidget *parentWidget = qobject_cast<QWidget *>( parent() ) )
   {
-    const int adjustedWidth = std::min( mOriginalWidth, parentWidget->width() - 80 );
-    const int adjustedHeight = std::min( mOriginalHeight, parentWidget->height() - 80 );
+    const int adjustedWidth = std::min( mOriginalWidth, parentWidget->width() - 10 );
+    const int adjustedHeight = std::min( mOriginalHeight, parentWidget->height() - 60 );
     const int adjustedX = ( parentWidget->width() - adjustedWidth ) / 2;
     const int adjustedY = ( parentWidget->height() - adjustedHeight ) / 2;
     setGeometry( adjustedX, adjustedY, adjustedWidth, adjustedHeight );

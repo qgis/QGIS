@@ -3,10 +3,18 @@
  <class>QgsGroupWMSDataDialogBase</class>
  <widget class="QDialog" name="QgsGroupWMSDataDialogBase">
   <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
+   <enum>Qt::WindowModality::WindowModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>566</width>
+    <height>212</height>
+   </rect>
   </property>
   <property name="windowTitle">
-   <string>Set Group WMS Data</string>
+   <string>Set Group WMS Properties</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -16,7 +24,7 @@
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -26,8 +34,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>272</width>
-        <height>83</height>
+        <width>548</width>
+        <height>162</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -47,6 +55,24 @@
         <widget class="QgsMapLayerServerPropertiesWidget" name="mMapLayerServerPropertiesWidget" native="true"/>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="group_request_layout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Group request mode</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mGroupRequestModeCombo">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;An &lt;span style=&quot; font-weight:700;&quot;&gt;opaque&lt;/span&gt; layer group behaves like a single layer. It can be requested, but its children cannot. Still the children are rendered in GetMap, GetFeatureInfo, etc. when requesting the opaque layer group.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QCheckBox" name="mComputeTimeDimension">
          <property name="toolTip">
           <string>When a GetCapabilities request is sent, QGIS server will return a TIME dimension computed as an union of all time dimension of its children recursively</string>
@@ -59,7 +85,7 @@
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -76,7 +102,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Save</set>
      </property>
     </widget>
    </item>

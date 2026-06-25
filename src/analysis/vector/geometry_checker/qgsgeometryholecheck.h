@@ -35,6 +35,7 @@ class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
   public:
     explicit QgsGeometryHoleCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )
+      , mAreaThreshold( configurationValue<double>( "areaThreshold", 0 ) )
     {}
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
@@ -56,6 +57,9 @@ class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
       RemoveHoles,
       NoChange
     };
+
+  private:
+    const double mAreaThreshold = 0;
 };
 
 #endif // QGS_GEOMETRY_HOLE_CHECK_H

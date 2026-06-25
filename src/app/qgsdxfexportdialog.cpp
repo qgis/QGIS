@@ -766,7 +766,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mFileName->setStorageMode( QgsFileWidget::SaveFile );
   mFileName->setFilter( tr( "DXF files" ) + " (*.dxf *.DXF)" );
   mFileName->setDialogTitle( tr( "Export as DXF" ) );
-  mFileName->setDefaultRoot( settings.value( u"qgis/lastDxfDir"_s, QDir::homePath() ).toString() );
+  mFileName->setDefaultRoot( QgsDxfExportDialog::settingsLastDxfDir->value() );
 
   connect( this, &QDialog::accepted, this, &QgsDxfExportDialog::saveSettings );
   connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::selectAll );
@@ -778,7 +778,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( mFileName, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
-    settings.setValue( u"qgis/lastDxfDir"_s, tmplFileInfo.absolutePath() );
+    QgsDxfExportDialog::settingsLastDxfDir->setValue( tmplFileInfo.absolutePath() );
 
     setOkEnabled();
   } );
@@ -1264,7 +1264,7 @@ void QgsDxfExportDialog::saveSettings()
 {
   QgsSettings settings;
   QFileInfo dxfFileInfo( mFileName->filePath() );
-  settings.setValue( u"qgis/lastDxfDir"_s, dxfFileInfo.absolutePath() );
+  QgsDxfExportDialog::settingsLastDxfDir->setValue( dxfFileInfo.absolutePath() );
   settings.setValue( u"qgis/lastDxfSymbologyMode"_s, mSymbologyModeComboBox->currentIndex() );
   settings.setValue( u"qgis/lastSymbologyExportScale"_s, mScaleWidget->scale() != 0 ? 1.0 / mScaleWidget->scale() : 0 );
   settings.setValue( u"qgis/lastDxfMapRectangle"_s, mMapExtentCheckBox->isChecked() );

@@ -17,7 +17,7 @@ import unittest
 
 from qgis.core import QgsProject, QgsSettings, QgsWkbTypes
 from qgis.gui import QgsFileWidget, QgsNewGeoPackageLayerDialog
-from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import (
     QComboBox,
@@ -38,12 +38,6 @@ class TestPyQgsNewGeoPackageLayerDialog(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(
-            "QGIS_TestPyQgsNewGeoPackageLayerDialog.com"
-        )
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsNewGeoPackageLayerDialog")
-        QgsSettings().clear()
         start_app()
         cls.basetestpath = tempfile.mkdtemp()
 

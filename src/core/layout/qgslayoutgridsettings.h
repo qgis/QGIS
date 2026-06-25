@@ -29,6 +29,9 @@ using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsReadWriteContext;
+class QgsSettingsEntryColor;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryString;
 
 /**
  * \ingroup core
@@ -140,6 +143,15 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
     QPen mGridPen;
     Style mGridStyle = StyleLines;
     QgsLayout *mLayout = nullptr;
+
+  public:
+#ifndef SIP_RUN
+    static const QgsSettingsEntryString *settingsGridStyle SIP_SKIP;
+    static const QgsSettingsEntryColor *settingsGridColor SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsGridResolution SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsGridOffsetX SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsGridOffsetY SIP_SKIP;
+#endif
 };
 
 #endif //QGSLAYOUTGRIDSETTINGS_H

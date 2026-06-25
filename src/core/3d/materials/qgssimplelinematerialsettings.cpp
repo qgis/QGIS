@@ -65,6 +65,11 @@ bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *o
   return *this == *otherLine;
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsSimpleLineMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::Ambient };
+}
+
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );
@@ -77,4 +82,14 @@ void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
   elem.setAttribute( u"ambient"_s, QgsColorUtils::colorToString( mAmbient ) );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
+}
+
+QColor QgsSimpleLineMaterialSettings::averageColor() const
+{
+  return ambient();
+}
+
+void QgsSimpleLineMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setAmbient( baseColor );
 }

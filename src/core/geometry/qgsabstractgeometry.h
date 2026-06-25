@@ -25,6 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 #include "qgswkbtypes.h"
 
+#include <QSet>
 #include <QString>
 
 #ifndef SIP_RUN
@@ -167,6 +168,8 @@ class CORE_EXPORT QgsAbstractGeometry
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
     QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );
 
+    // === WARNING ===
+    // implementation of `QgsAbstractGeometry::operator==` are mainly delegated to `fuzzyEquals` functions if the default tolerance/epsilon value is changed, documentation must be updaded accordingly and also changed in expression helper files (resources/function_help/json)
     virtual bool operator==( const QgsAbstractGeometry &other ) const = 0;
     virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
 
@@ -534,6 +537,23 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see moveVertex
      */
     virtual bool deleteVertex( QgsVertexId position ) = 0;
+
+    /**
+     * Deletes vertices within the geometry.
+     * If \a positions contains vertices not belonging to the geometry, FALSE is returned and the geometry is not modified.
+     * If a vertex cannot be deleted, the method returns FALSE and the geometry may be left in a partially modified and invalid state.
+     * \param positions set of vertex ids to delete
+     * \returns TRUE if all requested vertices were deleted, FALSE if at least one vertex could not be deleted
+     * \see deleteVertex
+     * \since QGIS 4.2
+     */
+    virtual bool deleteVertices( const QSet<QgsVertexId> &positions ) = 0;
+
+    /**
+     * Returns TRUE if the geometry contains a vertex matching the given \a position.
+     * \since QGIS 4.2
+     */
+    virtual bool hasVertex( QgsVertexId position ) const = 0;
 
     /**
      * Returns the planar, 2-dimensional length of the geometry.

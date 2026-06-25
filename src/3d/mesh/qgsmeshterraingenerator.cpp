@@ -19,6 +19,7 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
@@ -41,9 +42,10 @@ void QgsMeshTerrainTileLoader::start()
 
 Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( Qgs3DRenderContext::fromMapSettings( terrain()->mapSettings() ), mTriangularMesh, mSymbol.get(), mNode->tileId(), parent );
+  Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( terrain()->mapSettings() );
+  QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( context, mTriangularMesh, mSymbol.get(), mNode->tileId(), parent );
   entity->build();
-  createTexture( entity );
+  createTexture( entity, QgsMaterialContext::fromRenderContext( context ) );
 
   return entity;
 }

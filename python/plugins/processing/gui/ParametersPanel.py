@@ -44,7 +44,7 @@ from qgis.gui import (
 from qgis.PyQt.QtWidgets import QLabel, QSizePolicy, QVBoxLayout, QWidget
 from qgis.utils import iface
 
-from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
+from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
 from processing.gui.wrappers import WidgetWrapper, WidgetWrapperFactory
 from processing.tools.dataobjects import createContext
 
@@ -275,7 +275,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     parameters[param.name()] = value
 
                 if validate and not param.checkValueIsAcceptable(value):
-                    raise AlgorithmDialogBase.InvalidParameterValue(param, widget)
+                    raise InvalidParameterValue(param, widget)
             else:
                 if self.in_place and param.name() == "OUTPUT":
                     parameters[param.name()] = "memory:"
@@ -302,9 +302,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     if validate:
                         ok, error = param.isSupportedOutputValue(value, context)
                         if not ok:
-                            raise AlgorithmDialogBase.InvalidOutputExtension(
-                                widget, error
-                            )
+                            raise InvalidOutputExtension(widget, error)
 
         return self.algorithm().preprocessParameters(parameters)
 

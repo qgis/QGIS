@@ -816,6 +816,20 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             normalizeJson=True,
         )
 
+        # test on requesting the group_name (expected requestedWmsName as foreign member)
+        self.wms_request_compare(
+            "GetFeatureInfo",
+            "&layers=group_name&styles=&"
+            + "info_format=application%2Fjson&transparent=true&"
+            + "width=600&height=400&srs=OGC:CRS84&"
+            + "bbox=8.2034387,44.9014173,8.2036094,44.9015094&"
+            + "query_layers=group_name&X=203&Y=116&"
+            + "with_geometry=true",
+            "wms_getfeatureinfo_group_name_json",
+            "test_project.qgs",
+            normalizeJson=True,
+        )
+
     def testGetFeatureInfoGroupedLayers(self):
         """Test that we can get feature info from the top and group layers"""
 
@@ -859,7 +873,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             + "&INFO_FORMAT=application/json"
             + "&I=0&J=1"
             + "&FEATURE_COUNT=10",
-            "wms_getfeatureinfo_group_name_areas_nested",
+            "wms_getfeatureinfo_group_name_areas_nested_direct",
             "test_project_wms_grouped_nested_layers.qgs",
             normalizeJson=True,
         )
@@ -934,7 +948,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             + "&INFO_FORMAT=application/json"
             + "&I=0&J=1"
             + "&FEATURE_COUNT=10",
-            "wms_getfeatureinfo_group_query_child",
+            "wms_getfeatureinfo_group_query_child_ok",
             "test_project_wms_grouped_nested_layers.qgs",
             normalizeJson=True,
         )
@@ -949,7 +963,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             + "&INFO_FORMAT=application/json"
             + "&I=0&J=1"
             + "&FEATURE_COUNT=10",
-            "wms_getfeatureinfo_group_query_child",
+            "wms_getfeatureinfo_group_query_child_direct",
             "test_project_wms_grouped_nested_layers.qgs",
             normalizeJson=True,
         )

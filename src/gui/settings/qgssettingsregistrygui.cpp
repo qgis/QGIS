@@ -39,7 +39,7 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( u"respect-screen-dpi"_s, QgsSettingsTree::sTreeGui, false );
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( u"canvas-inherits-screen-dpi"_s, QgsSettingsTree::sTreeGui, true );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsCadFloaterActive
   = new QgsSettingsEntryBool( u"floater-active"_s, QgsSettingsTree::sTreeCad, false, u"Whether the CAD floater widget is active"_s );
@@ -114,6 +114,10 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   settingsCadFloaterActive->copyValueFromKey( u"/Cad/Floater"_s, true );
   QgsAdvancedDigitizingDockWidget::settingsCadCommonAngle->copyValueFromKey( u"/Cad/CommonAngle"_s, true );
   QgsMapCanvas::settingsCustomCoordinateCrs->copyValueFromKey( u"qgis/custom_coordinate_crs"_s, true );
+  QgsMapCanvas::settingsMainCanvasPreviewJobs->copyValueFromKey( u"qgis/main_canvas_preview_jobs"_s, true );
+  QgsMapCanvas::settingsEnableRenderCaching->copyValueFromKey( u"qgis/enable_render_caching"_s, true );
+  QgsDualView::settingsAttributeTableRowCache->copyValueFromKey( u"qgis/attributeTableRowCache"_s, true );
+  QgsDualView::settingsAttributeTableRowCache->copyValueFromKey( u"/qgis/attributeTableRowCache"_s, true );
   QgsGradientColorRampDialog::settingsPlotHue->copyValueFromKey( u"GradientEditor/plotHue"_s, true );
   QgsGradientColorRampDialog::settingsPlotLightness->copyValueFromKey( u"GradientEditor/plotLightness"_s, true );
   QgsGradientColorRampDialog::settingsPlotSaturation->copyValueFromKey( u"GradientEditor/plotSaturation"_s, true );

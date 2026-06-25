@@ -24,6 +24,8 @@
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
 
 #include <QApplication>
@@ -40,6 +42,11 @@
 #include "moc_qgscptcityarchive.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityBaseDir
+  = new QgsSettingsEntryString( u"cptcity-base-dir"_s, QgsSettingsTree::sTreeColors, QString(), u"Base directory where CPT-City color ramp archives are stored. If empty, the built-in location is used."_s );
+const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityArchiveName
+  = new QgsSettingsEntryString( u"cptcity-archive-name"_s, QgsSettingsTree::sTreeColors, QStringLiteral( DEFAULT_CPTCITY_ARCHIVE ), u"Name of the CPT-City archive subdirectory used as the default source of color ramps."_s );
 
 typedef QMap< QString, QgsCptCityArchive * > ArchiveRegistry;
 typedef QMap< QString, QMap< QString, QString > > CopyingInfoMap;
@@ -133,13 +140,12 @@ QString QgsCptCityArchive::baseDir( QString archiveName )
 
 QString QgsCptCityArchive::defaultBaseDir()
 {
-  QString baseDir, archiveName;
-  const QgsSettings settings;
-
   // use CptCity/baseDir setting if set, default is user dir
-  baseDir = settings.value( u"CptCity/baseDir"_s, QString( QgsApplication::pkgDataPath() + "/resources" ) ).toString();
+  QString baseDir = settingsCptCityBaseDir->value();
+  if ( baseDir.isEmpty() )
+    baseDir = QgsApplication::pkgDataPath() + "/resources";
   // sub-dir defaults to cpt-city
-  archiveName = settings.value( u"CptCity/archiveName"_s, DEFAULT_CPTCITY_ARCHIVE ).toString();
+  const QString archiveName = settingsCptCityArchiveName->value();
 
   return baseDir + '/' + archiveName;
 }
@@ -431,8 +437,7 @@ bool QgsCptCityArchive::isEmpty() const
 
 QgsCptCityArchive *QgsCptCityArchive::defaultArchive()
 {
-  const QgsSettings settings;
-  *sDefaultArchiveName() = settings.value( u"CptCity/archiveName"_s, DEFAULT_CPTCITY_ARCHIVE ).toString();
+  *sDefaultArchiveName() = settingsCptCityArchiveName->value();
   if ( sArchiveRegistry()->contains( *sDefaultArchiveName() ) )
     return sArchiveRegistry()->value( *sDefaultArchiveName() );
   else
@@ -450,11 +455,12 @@ void QgsCptCityArchive::initArchive( const QString &archiveName, const QString &
 
 void QgsCptCityArchive::initDefaultArchive()
 {
-  const QgsSettings settings;
   // use CptCity/baseDir setting if set, default is user dir
-  const QString baseDir = settings.value( u"CptCity/baseDir"_s, QString( QgsApplication::pkgDataPath() + "/resources" ) ).toString();
+  QString baseDir = settingsCptCityBaseDir->value();
+  if ( baseDir.isEmpty() )
+    baseDir = QgsApplication::pkgDataPath() + "/resources";
   // sub-dir defaults to
-  const QString defArchiveName = settings.value( u"CptCity/archiveName"_s, DEFAULT_CPTCITY_ARCHIVE ).toString();
+  const QString defArchiveName = settingsCptCityArchiveName->value();
 
   if ( !sArchiveRegistry()->contains( defArchiveName ) )
     initArchive( defArchiveName, baseDir + '/' + defArchiveName );
@@ -464,12 +470,13 @@ void QgsCptCityArchive::initArchives( bool loadAll )
 {
   QgsStringMap archivesMap;
   QString baseDir, defArchiveName;
-  const QgsSettings settings;
 
   // use CptCity/baseDir setting if set, default is user dir
-  baseDir = settings.value( u"CptCity/baseDir"_s, QString( QgsApplication::pkgDataPath() + "/resources" ) ).toString();
+  baseDir = settingsCptCityBaseDir->value();
+  if ( baseDir.isEmpty() )
+    baseDir = QgsApplication::pkgDataPath() + "/resources";
   // sub-dir defaults to
-  defArchiveName = settings.value( u"CptCity/archiveName"_s, DEFAULT_CPTCITY_ARCHIVE ).toString();
+  defArchiveName = settingsCptCityArchiveName->value();
 
   QgsDebugMsgLevel( "baseDir= " + baseDir + " defArchiveName= " + defArchiveName, 2 );
   if ( loadAll )

@@ -155,6 +155,8 @@ struct QgsPostgresLayerProperty
 
       return u"%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8"_s.arg( schemaName, tableName, geometryColName, typeString, sridString, pkCols.join( '|'_L1 ), sql ).arg( nSpCols );
     }
+#else
+    inline QString toString() const { return QString(); }
 #endif
 };
 

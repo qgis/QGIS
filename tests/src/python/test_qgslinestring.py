@@ -13,7 +13,7 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 import math
 import unittest
 
-from qgis.core import Qgis, QgsLineString, QgsPoint, QgsVertexId
+from qgis.core import Qgis, QgsCircularString, QgsLineString, QgsPoint, QgsVertexId
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -689,6 +689,24 @@ class TestQgsLineString(QgisTestCase):
             expected_total,
             places=6,
         )
+
+    def testAppendExceptions(self):
+        ls = QgsLineString()
+        ls.fromWkt("LineString (-10 -10, 0 0)")
+
+        cs = QgsCircularString()
+        cs.fromWkt("CircularString (0 0, 1 1, 0 2)")
+
+        with self.assertRaises(ValueError):
+            ls.append(cs)
+
+        self.assertEqual(ls.numPoints(), 2)
+
+        # working append
+        ls2 = QgsLineString()
+        ls2.fromWkt("LineString (0 0, 10 12)")
+        ls.append(ls2)
+        self.assertEqual(ls.numPoints(), 3)
 
 
 if __name__ == "__main__":

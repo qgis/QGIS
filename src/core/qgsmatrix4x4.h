@@ -53,19 +53,18 @@ class CORE_EXPORT QgsMatrix4x4
     );
     // clang-format on
 
-    bool operator==( const QgsMatrix4x4 &other ) const
-    {
-      const double *data = *m;
-      const double *otherData = *( other.m );
-      for ( int i = 0; i < 16; ++i, data++, otherData++ )
-      {
-        if ( !qgsDoubleNear( *data, *otherData ) )
-          return false;
-      }
-      return true;
-    }
+    bool operator==( const QgsMatrix4x4 &other ) const { return fuzzyEqual( other, 4 * std::numeric_limits<double>::epsilon() ); }
 
     bool operator!=( const QgsMatrix4x4 &other ) const { return !( *this == other ); }
+
+
+    /**
+     * Performs fuzzy comparison between this matrix and \a other using an \a epsilon.
+     *
+     * \since QGIS 4.2
+     */
+    bool fuzzyEqual( const QgsMatrix4x4 &other, double epsilon = 1e-8 ) const
+    SIP_HOLDGIL;
 
     //! Returns pointer to the matrix data (stored in column-major order)
     const double *constData() const SIP_SKIP { return *m; }
@@ -81,11 +80,32 @@ class CORE_EXPORT QgsMatrix4x4
      */
     void translate( const QgsVector3D &vector );
 
-    //! Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
+    /**
+     * Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
+     *
+     * \see mapVector()
+     *
+     * \note This function is not the same as mapVector().
+*             For points, always use map(). mapVector() is suitable for vectors (directions) only.
+     */
     QgsVector3D map( const QgsVector3D &vector ) const SIP_HOLDGIL
     {
       return *this * vector;
     }
+
+    /**
+     * Maps vector by multiplying the top 3x3 portion of this matrix by \a vector.
+     * The translation and projection components of this matrix are ignored.
+     * The matrix is applied pre-vector.
+     *
+     * \param vector input vector to transform
+     *
+     * \see map()
+     *
+     * \since QGIS 4.2
+     */
+    QgsVector3D mapVector( const QgsVector3D &vector ) const SIP_HOLDGIL;
+
 
     //! Returns whether this matrix is an identity matrix
     bool isIdentity() const SIP_HOLDGIL;
@@ -114,6 +134,13 @@ class CORE_EXPORT QgsMatrix4x4
      * \since QGIS 4.2
      */
     void rotate( double angle, const QgsVector3D &vector );
+
+    /**
+     * Returns the determinant of this matrix.
+     *
+     * \since QGIS 4.2
+     */
+    double determinant() const;
 
 #ifdef SIP_RUN
 // clang-format off

@@ -469,8 +469,8 @@ class CORE_EXPORT QgsGeometry
      *
      * Implementations:
      *
-     * - GEOS
-     * - QGIS
+     * - GEOS: internal implementation uses fuzzy comparison with very low (1e-8) tolerance
+     * - QGIS: internal implementation uses fuzzy comparison with very low (1e-8) tolerance
      *
      * The QGIS internal implementation is chosen by default.
      *
@@ -518,7 +518,7 @@ class CORE_EXPORT QgsGeometry
      * \throws QgsNotSupportedException when backend is not supported
      * \since QGIS 4.2
      */
-    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const SIP_THROW( QgsNotSupportedException );
+    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon = 1e-4, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Checks validity of the geometry using GEOS.
@@ -951,6 +951,21 @@ class CORE_EXPORT QgsGeometry
      * TRUE if the vertex was successfully deleted or the geometry was cleared.
      */
     bool deleteVertex( int atVertex );
+
+    /**
+     * Deletes vertices at the given positions (first number is index 0)
+     *
+     * For Point geometries, this clears the geometry.
+     * For MultiPoint geometries, this removes point geometries at the specified indices.
+     * For other geometry types, this removes the vertices at the specified indices.
+     * If after removal of the vertices the geometry would become invalid (e.g. a LineString with less than 2 vertices),
+     * the geometry is cleared instead.
+     * \returns FALSE if any of the given atVertices does not correspond to a valid vertex
+     * on this geometry or if any vertices fail to be deleted
+     * \see deleteVertex()
+     * \since QGIS 4.2
+     */
+    bool deleteVertices( const QSet<int> &atVertices );
 
     /**
      * Converts the vertex at the given position from/to circular
@@ -1523,7 +1538,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \see boundingBoxIntersects()
      */
-    bool intersects( const QgsRectangle &rectangle ) const;
+    Q_INVOKABLE bool intersects( const QgsRectangle &rectangle ) const;
 
     /**
      * Returns TRUE if this geometry exactly intersects with another \a geometry. This test is exact
@@ -1539,7 +1554,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \see boundingBoxIntersects()
      */
-    bool intersects( const QgsGeometry &geometry ) const;
+    Q_INVOKABLE bool intersects( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the bounding box of this geometry intersects with a \a rectangle. Since this
@@ -1549,7 +1564,7 @@ class CORE_EXPORT QgsGeometry
      * \see intersects()
      *
      */
-    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const;
+    Q_INVOKABLE bool boundingBoxIntersects( const QgsRectangle &rectangle ) const;
 
     /**
      * Returns TRUE if the bounding box of this geometry intersects with the bounding box of another \a geometry. Since this
@@ -1559,7 +1574,7 @@ class CORE_EXPORT QgsGeometry
      * \see intersects()
      *
      */
-    bool boundingBoxIntersects( const QgsGeometry &geometry ) const;
+    Q_INVOKABLE bool boundingBoxIntersects( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry contains the point \a p.
@@ -1571,7 +1586,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.38
      */
-    bool contains( double x, double y ) const;
+    Q_INVOKABLE bool contains( double x, double y ) const;
 
     /**
      * Returns TRUE if the geometry completely contains another \a geometry.
@@ -1582,7 +1597,7 @@ class CORE_EXPORT QgsGeometry
      * QgsGeometryEngine class.
      *
      */
-    bool contains( const QgsGeometry &geometry ) const;
+    Q_INVOKABLE bool contains( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry is disjoint of another \a geometry.
@@ -1593,7 +1608,7 @@ class CORE_EXPORT QgsGeometry
      * QgsGeometryEngine class.
      *
      */
-    bool disjoint( const QgsGeometry &geometry ) const;
+    Q_INVOKABLE bool disjoint( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry touches another \a geometry.
@@ -1604,7 +1619,7 @@ class CORE_EXPORT QgsGeometry
      * QgsGeometryEngine class.
      *
      */
-    bool touches( const QgsGeometry &geometry ) const;
+    Q_INVOKABLE bool touches( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry overlaps another \a geometry.
@@ -1615,7 +1630,7 @@ class CORE_EXPORT QgsGeometry
      * QgsGeometryEngine class.
      *
      */
-    bool overlaps( const QgsGeometry &geometry ) const;
+    Q_INVOKABLE bool overlaps( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry is completely within another \a geometry.
@@ -1626,7 +1641,7 @@ class CORE_EXPORT QgsGeometry
      * QgsGeometryEngine class.
      *
      */
-    bool within( const QgsGeometry &geometry ) const;
+    Q_INVOKABLE bool within( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry crosses another \a geometry.
@@ -1637,7 +1652,7 @@ class CORE_EXPORT QgsGeometry
      * QgsGeometryEngine class.
      *
      */
-    bool crosses( const QgsGeometry &geometry ) const;
+    Q_INVOKABLE bool crosses( const QgsGeometry &geometry ) const;
 
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number

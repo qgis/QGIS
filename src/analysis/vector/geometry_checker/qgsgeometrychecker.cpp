@@ -31,9 +31,9 @@
 
 #include "moc_qgsgeometrychecker.cpp"
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context, const QMap<QString, QgsFeaturePool *> &featurePools )
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, std::unique_ptr<QgsGeometryCheckContext> context, const QMap<QString, QgsFeaturePool *> &featurePools )
   : mChecks( checks )
-  , mContext( context )
+  , mContext( std::move( context ) )
   , mFeaturePools( featurePools )
 {
   for ( auto it = featurePools.constBegin(); it != mFeaturePools.constEnd(); ++it )
@@ -60,7 +60,6 @@ QgsGeometryChecker::~QgsGeometryChecker()
     }
     delete it.value();
   }
-  delete mContext;
 }
 
 QFuture<void> QgsGeometryChecker::execute( int *totalSteps )

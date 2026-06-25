@@ -357,15 +357,8 @@ void QgsServerSettings::initSettings()
   }
 
   {
-    const Setting sApplicationName = {
-      QgsServerSettingsEnv::QGIS_SERVER_APPLICATION_NAME,
-      QgsServerSettingsEnv::DEFAULT_VALUE,
-      u"The QGIS Server application name"_s,
-      u"/qgis/application_full_name"_s,
-      QMetaType::Type::QString,
-      QVariant( QgsApplication::applicationFullName() ),
-      QVariant()
-    };
+    const Setting sApplicationName
+      = { QgsServerSettingsEnv::QGIS_SERVER_APPLICATION_NAME, QgsServerSettingsEnv::DEFAULT_VALUE, u"The QGIS Server application name"_s, u"app/full-name"_s, QMetaType::Type::QString, QVariant( QgsApplication::applicationFullName() ), QVariant() };
     mSettings[sApplicationName.envVar] = sApplicationName;
   }
 

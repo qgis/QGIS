@@ -19,6 +19,7 @@
 #include "qgsmaterial3dhandler.h"
 
 #include <QWidget>
+#include <QWindow>
 
 class QgsAbstractMaterial3DHandler;
 class QgsAbstractMaterialSettings;
@@ -26,17 +27,71 @@ class QgsAbstractMaterialSettings;
 namespace Qt3DRender
 {
   class QCamera;
-}
+  class QRenderAspect;
+  class QRenderSettings;
+  class QRenderSurfaceSelector;
+  class QTexture2D;
+  class QLayer;
+} //namespace Qt3DRender
 
 namespace Qt3DExtras
 {
-  class Qt3DWindow;
+  class QForwardRenderer;
 }
 
 namespace Qt3DCore
 {
   class QEntity;
 }
+
+namespace Qt3DInput
+{
+  class QInputAspect;
+  class QInputSettings;
+} //namespace Qt3DInput
+
+namespace Qt3DLogic
+{
+  class QLogicAspect;
+}
+
+/**
+ * Reimplementation of Qt3DWindow for material previews, which does not set the default surface when initialized.
+ */
+class QgsMaterialPreview3DWindow : public QWindow
+{
+    Q_OBJECT
+  public:
+    QgsMaterialPreview3DWindow();
+    ~QgsMaterialPreview3DWindow() override;
+    void setRootEntity( Qt3DCore::QEntity *root );
+    Qt3DRender::QCamera *camera() const;
+    Qt3DRender::QLayer *sceneLayer();
+
+  protected:
+    void showEvent( QShowEvent *e ) override;
+    void resizeEvent( QResizeEvent * ) override;
+
+  private:
+    void setupFrameGraph();
+    void setupPostProcessQuad();
+
+    Qt3DCore::QAspectEngine *m_aspectEngine = nullptr;
+    Qt3DRender::QRenderAspect *m_renderAspect = nullptr;
+    Qt3DRender::QRenderSettings *m_renderSettings = nullptr;
+    Qt3DRender::QCamera *m_defaultCamera = nullptr;
+    Qt3DCore::QEntity *m_root = nullptr;
+    Qt3DCore::QEntity *m_userRoot = nullptr;
+
+    Qt3DRender::QRenderSurfaceSelector *m_surfaceSelector = nullptr;
+    Qt3DRender::QTexture2D *m_colorTexture = nullptr;
+    Qt3DRender::QTexture2D *m_depthTexture = nullptr;
+    Qt3DRender::QLayer *m_sceneLayer = nullptr;
+    Qt3DRender::QLayer *m_quadLayer = nullptr;
+    Qt3DCore::QEntity *m_quadEntity = nullptr;
+
+    bool m_initialized = false;
+};
 
 //! Widget for previewing 3D materials
 class QgsMaterialPreviewWidget : public QWidget
@@ -51,11 +106,12 @@ class QgsMaterialPreviewWidget : public QWidget
 
   protected:
     bool eventFilter( QObject *watched, QEvent *event ) override;
+    void showEvent( QShowEvent *e ) override;
 
   private:
     void setupCamera( Qt3DRender::QCamera *camera );
 
-    Qt3DExtras::Qt3DWindow *mView = nullptr;
+    QgsMaterialPreview3DWindow *mView = nullptr;
     Qt3DCore::QEntity *mSceneRoot = nullptr;
     QString mPreviewSceneType;
     Qt3DCore::QEntity *mPreviewScene = nullptr;

@@ -30,7 +30,7 @@ TODO:
 
 extern int runTile(std::vector<std::string> arglist);  // tile/tile.cpp
 
-std::string WRENCH_VERSION = "1.4.0";
+std::string WRENCH_VERSION = "1.5.0";
 
 void printUsage()
 {

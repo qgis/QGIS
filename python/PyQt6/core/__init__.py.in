@@ -145,6 +145,77 @@ QgsProcessingFeatureSourceDefinition.__repr__ = _processing_source_repr
 QgsProcessingOutputLayerDefinition.__repr__ = _processing_output_layer_repr
 
 
+# Wrap QgsArrowIterator.setSchema to accept objects with __arrow_c_schema__
+_original_setSchema = QgsArrowIterator.setSchema
+
+
+def _arrow_iterator_set_schema(self, schema):
+    """
+    Set the ArrowSchema for the output of all future batches.
+
+    Accepts either a QgsArrowSchema or any object implementing __arrow_c_schema__()
+    (e.g., pyarrow.Schema).
+    """
+    if not isinstance(schema, QgsArrowSchema):
+        schema = QgsArrowSchema.fromArrow(schema)
+
+    return _original_setSchema(self, schema)
+
+
+QgsArrowIterator.setSchema = _arrow_iterator_set_schema
+
+
+def _arrow_iterator_stream_export(self, requested_schema=None):
+    """
+    Export this iterator as an Arrow PyCapsule stream.
+
+    This implements the Arrow PyCapsule interface (__arrow_c_stream__),
+    allowing QgsArrowIterator to be consumed directly by pyarrow,
+    geopandas, and other Arrow-compatible libraries.
+
+    :param requested_schema: Optional schema to request. If provided, a copy of
+                             this iterator will have its schema set to avoid
+                             mutating the original.
+    :returns: A PyCapsule containing the ArrowArrayStream pointer.
+    """
+    if requested_schema is not None:
+        # Use SIP copy constructor to avoid mutating the original iterator's schema
+        iterator_copy = QgsArrowIterator(self)
+        iterator_copy.setSchema(requested_schema)
+        return iterator_copy.toArrayStream().__arrow_c_stream__()
+
+    return self.toArrayStream().__arrow_c_stream__()
+
+
+QgsArrowIterator.__arrow_c_stream__ = _arrow_iterator_stream_export
+
+
+def _vector_layer_stream_export(self, requested_schema=None):
+    """
+    Export this layer as an Arrow PyCapsule stream.
+
+    This implements the Arrow PyCapsule interface (__arrow_c_stream__),
+    allowing QgsVectorLayer to be consumed directly by pyarrow,
+    geopandas, and other Arrow-compatible libraries.
+
+    :param requested_schema: Optional schema to request. If not provided,
+                             the schema will be inferred from the layer.
+    :returns: A PyCapsule containing the ArrowArrayStream pointer.
+    """
+    iterator = QgsArrowIterator(self.getFeatures())
+
+    if requested_schema is not None:
+        iterator.setSchema(requested_schema)
+    else:
+        inferred = QgsArrowIterator.inferSchema(self)
+        iterator.setSchema(inferred)
+
+    return iterator.toArrayStream().__arrow_c_stream__()
+
+
+QgsVectorLayer.__arrow_c_stream__ = _vector_layer_stream_export
+
+
 # Classes patched
 QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
 
@@ -826,15 +897,15 @@ try:
    def _vector_layer_as_geopandas(self) -> _gpd.GeoDataFrame:
        """
        Returns the vector layer as a GeoPandas GeoDataFrame.
-       
+
        :raises QgsNotSupportedException: if geopandas is not available on the system
-       
+
        .. versionadded:: 4.0
        """
        features = list(self.getFeatures())
-       
+
        geometries = [feat.geometry().as_shapely() if not feat.geometry().isEmpty() else None for feat in features]
-       
+
        field_names = [field.name() for field in self.fields()]
        data = {field_name: [feat[field_index] for feat in features] for field_index, field_name in enumerate(field_names)}
 
@@ -897,8 +968,8 @@ Creates a new geometry from a shapely object.
 QgsVectorLayer.as_geopandas.__doc__ = """
 Returns the vector layer as a GeoPandas GeoDataFrame.
 
-All features from the layer are converted to a GeoDataFrame, including their geometries 
-(converted to shapely objects) and all attribute values. The CRS is preserved from the 
+All features from the layer are converted to a GeoDataFrame, including their geometries
+(converted to shapely objects) and all attribute values. The CRS is preserved from the
 original layer.
 
 :raises QgsNotSupportedException: if geopandas is not available on the system

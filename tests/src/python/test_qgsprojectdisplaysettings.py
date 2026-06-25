@@ -22,7 +22,6 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSettings,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
@@ -38,10 +37,6 @@ class TestQgsProjectDisplaySettings(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
-        QgsSettings().clear()
         start_app()
 
     def testBearingFormat(self):

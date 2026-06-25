@@ -71,6 +71,9 @@ QVariant QgsNewsFeedModel::data( const QModelIndex &index, int role ) const
     case static_cast< int >( CustomRole::Sticky ):
       return entry.sticky;
 
+    case static_cast< int >( CustomRole::Published ):
+      return entry.published;
+
     case Qt::DecorationRole:
       if ( entry.image.isNull() )
         return QVariant();
@@ -88,6 +91,7 @@ QHash<int, QByteArray> QgsNewsFeedModel::roleNames() const
   roles[static_cast< int >( CustomRole::ImageUrl )] = "ImageUrl";
   roles[static_cast< int >( CustomRole::Link )] = "Link";
   roles[static_cast< int >( CustomRole::Sticky )] = "Sticky";
+  roles[static_cast< int >( CustomRole::Published )] = "Published";
   return roles;
 }
 
@@ -201,8 +205,8 @@ bool QgsNewsFeedProxyModel::lessThan( const QModelIndex &left, const QModelIndex
   if ( rightSticky && !leftSticky )
     return false;
 
-  // else sort by descending key
-  const int leftKey = sourceModel()->data( left, static_cast< int >( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
-  const int rightKey = sourceModel()->data( right, static_cast< int >( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
-  return rightKey < leftKey;
+  // else sort by descending publication date
+  const QDateTime leftPublished = sourceModel()->data( left, static_cast< int >( QgsNewsFeedModel::CustomRole::Published ) ).toDateTime();
+  const QDateTime rightPublished = sourceModel()->data( right, static_cast< int >( QgsNewsFeedModel::CustomRole::Published ) ).toDateTime();
+  return rightPublished < leftPublished;
 }

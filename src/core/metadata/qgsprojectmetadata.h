@@ -52,6 +52,10 @@
  */
 class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
 {
+    Q_GADGET
+
+    Q_PROPERTY( QString author READ author )
+
   public:
     QgsProjectMetadata() = default;
 

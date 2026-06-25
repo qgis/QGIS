@@ -988,6 +988,7 @@ class GUI_EXPORT QgsProcessingPointPanel : public QWidget
 
   public:
     QgsProcessingPointPanel( QWidget *parent );
+    ~QgsProcessingPointPanel() override;
     void setMapCanvas( QgsMapCanvas *canvas );
     void setAllowNull( bool allowNull );
     void setShowPointOnCanvas( bool show );
@@ -1062,7 +1063,7 @@ class GUI_EXPORT QgsProcessingPointWidgetWrapper : public QgsAbstractProcessingP
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
-    void setDialog( QDialog *dialog ) override;
+    void setDialog( QWidget *dialog ) override;
 
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
@@ -1073,7 +1074,7 @@ class GUI_EXPORT QgsProcessingPointWidgetWrapper : public QgsAbstractProcessingP
   private:
     QgsProcessingPointPanel *mPanel = nullptr;
     QLineEdit *mLineEdit = nullptr;
-    QDialog *mDialog = nullptr;
+    QWidget *mDialog = nullptr;
 
     friend class TestProcessingGui;
 };
@@ -1158,7 +1159,7 @@ class GUI_EXPORT QgsProcessingExtentWidgetWrapper : public QgsAbstractProcessing
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
-    void setDialog( QDialog *dialog ) override;
+    void setDialog( QWidget *dialog ) override;
 
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
@@ -1168,7 +1169,7 @@ class GUI_EXPORT QgsProcessingExtentWidgetWrapper : public QgsAbstractProcessing
 
   private:
     QgsExtentWidget *mExtentWidget = nullptr;
-    QDialog *mDialog = nullptr;
+    QWidget *mDialog = nullptr;
 
     friend class TestProcessingGui;
 };

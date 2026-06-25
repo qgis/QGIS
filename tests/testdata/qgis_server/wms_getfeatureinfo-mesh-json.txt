@@ -1,2 +1,2 @@
 *****
-Content-Type: application/json; charset=utf-8{"features": [{"id": "landsat", "properties": {"GDAL Band Number 1": "125.729"}, "type": "Feature"}], "type": "FeatureCollection"}
+Content-Type: application/json; charset=utf-8{"features": [{"featureType": "landsat", "id": "landsat", "properties": {"GDAL Band Number 1": "125.729"}, "type": "Feature"}], "type": "FeatureCollection"}
