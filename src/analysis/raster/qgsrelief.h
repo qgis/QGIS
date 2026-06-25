@@ -76,6 +76,9 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief( const QgsRelief &rh );
 #endif
 
+    static constexpr int RET_OUTPUT_CREATION_FAILED = 3;
+    static constexpr int RET_CANCELED = 7;
+
     QString mInputFile;
     QString mOutputFile;
     QString mOutputFormat;
@@ -100,21 +103,6 @@ class ANALYSIS_EXPORT QgsRelief
 
     bool processNineCellWindow( float *x1, float *x2, float *x3, float *x4, float *x5, float *x6, float *x7, float *x8, float *x9, unsigned char *red, unsigned char *green, unsigned char *blue );
 
-    //! Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction
-    gdal::dataset_unique_ptr openInputFile( int &nCellsX, int &nCellsY );
-
-    /**
-     * Opens the output driver and tests if it supports the creation of a new dataset
-     * \returns nullptr on error and the driver handle on success
-    */
-    GDALDriverH openOutputDriver();
-
-    /**
-     * Opens the output file and sets the same geotransform and CRS as the input data
-     * \returns the output dataset or nullptr in case of error
-    */
-    gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
-
     /**
      * Retrieves the color corresponding to the specified \a elevation.
      */
@@ -127,17 +115,7 @@ class ANALYSIS_EXPORT QgsRelief
      * Returns class (0-255) for an elevation value
      * \returns elevation class or -1 in case of error
     */
-    int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
-    //! Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)
-    void optimiseClassBreaks( QList<int> &breaks, double *frequencies );
-
-    /**
-     * Calculates coefficients a and b
-     * \param input data points ( elevation class / frequency )
-     * \param a slope
-     * \param b y value for x=0
-     */
-    bool calculateRegression( const QList<QPair<int, double>> &input, double &a, double &b );
+    static int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
 };
 
 #endif // QGSRELIEF_H
