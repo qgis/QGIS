@@ -2400,7 +2400,7 @@ Qgis::RasterInterfaceCapabilities QgsWmsProvider::capabilities() const
       if ( mActiveSubLayerVisibility.find( *it ).value() )
       {
         // Is sublayer queryable?
-        if ( mCaps.mQueryableForLayer.find( *it ).value() )
+        if ( mCaps.isValid() && mCaps.mQueryableForLayer.find( *it ).value() )
         {
           QgsDebugMsgLevel( '\'' + ( *it ) + "' is queryable.", 2 );
           canIdentify = true;
@@ -3531,7 +3531,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
 
 
       // Is sublayer queryable?
-      if ( !mCaps.mQueryableForLayer.find( *layers ).value() )
+      if ( !mCaps.isValid() || !mCaps.mQueryableForLayer.find( *layers ).value() )
       {
         results.insert( urls.size(), false );
         continue;
