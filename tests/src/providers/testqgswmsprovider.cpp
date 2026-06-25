@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <QFile>
 #include <QObject>
 #include <QUrlQuery>
@@ -92,6 +93,8 @@ class TestQgsWmsProvider : public QgsTest
     void testParseWmstUriWithoutTemporalExtent();
 
     void testMaxTileSize();
+
+    void testWmsUnreachableCapabilitiesWithVisibleSubLayer();
 
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
@@ -623,6 +626,25 @@ void TestQgsWmsProvider::testMaxTileSize()
   const QSize maxTileSize6 = provider6.maximumTileSize();
   QCOMPARE( maxTileSize6.width(), 4000 );
   QCOMPARE( maxTileSize6.height(), 4000 );
+}
+
+void TestQgsWmsProvider::testWmsUnreachableCapabilitiesWithVisibleSubLayer()
+{
+  // test for https://github.com/qgis/QGIS/issues/62372
+  QString failingAddress( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" );
+  auto capabilities = std::make_unique<QgsWmsCapabilities>();
+  QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), capabilities.get() );
+
+  // Simulating a saved layer with unreachable capabilities. Sublayer is visible
+  provider.mActiveSubLayerVisibility.insert( u"agri_zones"_s, true );
+
+  // capabilities should not crash
+  ( void ) provider.capabilities();
+
+  // identify should not crash
+  provider.mLayerExtent = QgsRectangle( 0, 0, 2, 2 );
+  provider.mCaps.mIdentifyFormats.insert( Qgis::RasterIdentifyFormat::Text, u"text"_s );
+  ( void ) provider.identify( QgsPointXY( 1., 1. ), Qgis::RasterIdentifyFormat::Text, QgsRectangle( 0, 0, 2, 2 ), 10, 10, 42 );
 }
 
 QGSTEST_MAIN( TestQgsWmsProvider )
