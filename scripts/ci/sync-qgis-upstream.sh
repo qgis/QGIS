@@ -170,9 +170,8 @@ assert_path_exists()
 assert_glob_has_matches()
 {
   local pattern="$1"
-  shopt -s nullglob
-  local matches=( ${pattern} )
-  shopt -u nullglob
+  local -a matches=()
+  mapfile -t matches < <( compgen -G "${pattern}" || true )
 
   if [[ ${#matches[@]} -eq 0 ]]; then
     guard_fail "Required Strata file pattern has no matches: ${pattern}"
