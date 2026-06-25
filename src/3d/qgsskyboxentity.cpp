@@ -347,6 +347,12 @@ void QgsCubeFacesSkyboxEntity::updateEnvironmentLight( QgsEnvironmentLight *envL
       finalImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
     }
 
+    if ( finalImage.width() != finalImage.height() )
+    {
+      const int maxDimension = std::max( finalImage.width(), finalImage.height() );
+      finalImage = finalImage.scaled( maxDimension, maxDimension, Qt::AspectRatioMode::IgnoreAspectRatio, Qt::SmoothTransformation );
+    }
+
     auto textureImage = new QgsImageTexture( finalImage, lightCubeMap );
     textureImage->setFace( face );
     lightCubeMap->addTextureImage( textureImage );
@@ -433,6 +439,12 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
     if ( requiresConversionToRgb )
     {
       finalImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
+    }
+
+    if ( finalImage.width() != finalImage.height() )
+    {
+      const int maxDimension = std::max( finalImage.width(), finalImage.height() );
+      finalImage = finalImage.scaled( maxDimension, maxDimension, Qt::AspectRatioMode::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
 
     auto textureImage = new QgsImageTexture( finalImage, newCubeMap );
