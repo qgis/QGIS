@@ -9,6 +9,7 @@ try:
     QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange = staticmethod(QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange)
     QgsRasterLayerUtils.computeMinMax = staticmethod(QgsRasterLayerUtils.computeMinMax)
     QgsRasterLayerUtils.alignRasterExtent = staticmethod(QgsRasterLayerUtils.alignRasterExtent)
+    QgsRasterLayerUtils.calculateOptimizedReliefClasses = staticmethod(QgsRasterLayerUtils.calculateOptimizedReliefClasses)
     QgsRasterLayerUtils.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

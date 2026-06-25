@@ -16,9 +16,11 @@ from qgis.core import (
     QgsPointXY,
     QgsRasterLayer,
     QgsRasterLayerUtils,
+    QgsRasterReliefColor,
     QgsRectangle,
 )
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtGui import QColor
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -380,6 +382,53 @@ class TestQgsRasterLayerUtils(QgisTestCase):
         extent = QgsRectangle()
         aligned = QgsRasterLayerUtils.alignRasterExtent(extent, grid_origin, xres, yres)
         self.assertEqual(aligned, QgsRectangle())
+
+    def test_optimized_relief_classes(self):
+        # invalid provider
+        res = QgsRasterLayerUtils.calculateOptimizedReliefClasses(None, 6)
+        self.assertFalse(res)
+
+        raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, "raster", "dem.tif"))
+        self.assertTrue(raster_layer.isValid())
+
+        # invalid band
+        res = QgsRasterLayerUtils.calculateOptimizedReliefClasses(
+            raster_layer.dataProvider(), 6
+        )
+        self.assertFalse(res)
+
+        # valid band
+        res = QgsRasterLayerUtils.calculateOptimizedReliefClasses(
+            raster_layer.dataProvider(), 1
+        )
+        self.assertEqual(
+            res,
+            [
+                QgsRasterReliefColor(QColor("#07a590"), 85, 104.43650793650794),
+                QgsRasterReliefColor(
+                    QColor("#0cdda2"), 104.43650793650794, 104.43650793650794
+                ),
+                QgsRasterReliefColor(
+                    QColor("#21fcb7"), 104.43650793650794, 104.43650793650794
+                ),
+                QgsRasterReliefColor(
+                    QColor("#f7fc98"), 104.43650793650794, 104.43650793650794
+                ),
+                QgsRasterReliefColor(
+                    QColor("#fcc408"), 104.43650793650794, 104.43650793650794
+                ),
+                QgsRasterReliefColor(
+                    QColor("#fca60f"), 104.43650793650794, 191.58730158730156745
+                ),
+                QgsRasterReliefColor(
+                    QColor("#af650f"), 191.58730158730156745, 221.05555555555554292
+                ),
+                QgsRasterReliefColor(
+                    QColor("#ff855c"), 221.05555555555554292, 221.05555555555554292
+                ),
+                QgsRasterReliefColor(QColor("#cccccc"), 221.05555555555554292, 243),
+            ],
+        )
 
 
 if __name__ == "__main__":
