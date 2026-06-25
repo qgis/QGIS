@@ -46,6 +46,9 @@ class QgsTopocentricWidget : public QWidget
     //! Sets the longitude of the topocentric origin in degrees.
     void setLongitude( double longitude );
 
+    //! Sets the default origin coordinates and resets the spinboxes to those defaults.
+    void setDefaultOrigin( double lat, double lon );
+
   signals:
     //! Emitted when the origin coordinates change.
     void originChanged( double latitude, double longitude );

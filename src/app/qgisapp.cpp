@@ -14770,6 +14770,7 @@ void QgisApp::updateCrsStatusBar()
         } );
       }
 
+      mTopocentricWidget->setDefaultOrigin( lat, lon );
       mOnTheFlyProjectionStatusButton->setMenu( mTopocentricMenu );
       mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::MenuButtonPopup );
     }

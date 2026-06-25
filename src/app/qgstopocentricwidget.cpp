@@ -104,3 +104,11 @@ void QgsTopocentricWidget::setLongitude( double longitude )
 {
   mDoubleSpinBoxY->setValue( longitude );
 }
+
+void QgsTopocentricWidget::setDefaultOrigin( double lat, double lon )
+{
+  mDoubleSpinBoxX->setClearValue( lat );
+  mDoubleSpinBoxY->setClearValue( lon );
+  mDoubleSpinBoxX->setValue( lat );
+  mDoubleSpinBoxY->setValue( lon );
+}

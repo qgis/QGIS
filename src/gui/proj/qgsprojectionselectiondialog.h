@@ -23,12 +23,12 @@
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsguiutils.h"
-#include "qgsrectangle.h"
 
 #include <QDialog>
 #include <QSet>
 
 class QDialogButtonBox;
+class QgsRectangle;
 
 /**
  * \class QgsCrsSelectionWidget

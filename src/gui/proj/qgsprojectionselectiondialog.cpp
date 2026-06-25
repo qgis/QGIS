@@ -19,9 +19,11 @@
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystemmodel.h"
+#include "qgsdoublespinbox.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsprojectionselectionwidget.h"
+#include "qgsrectangle.h"
 #include "qgssettings.h"
 
 #include <QApplication>
@@ -74,6 +76,17 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
           break;
         case QgsCrsSelectionWidget::CrsType::Topocentric:
           mStackedWidget->setCurrentWidget( mPageTopocentric );
+          if ( !mBlockSignals )
+          {
+            const QgsRectangle b = mTopocentricBaseSelector->crs().bounds();
+            if ( !b.isNull() )
+            {
+              mSpinBoxTopoLat->setClearValue( ( b.yMinimum() + b.yMaximum() ) / 2.0 );
+              mSpinBoxTopoLon->setClearValue( ( b.xMinimum() + b.xMaximum() ) / 2.0 );
+              mSpinBoxTopoLat->clear();
+              mSpinBoxTopoLon->clear();
+            }
+          }
           break;
       }
     }
@@ -112,9 +125,19 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
     }
   } );
 
-  connect( mTopocentricBaseSelector, &QgsProjectionSelectionWidget::crsChanged, this, [this]( const QgsCoordinateReferenceSystem & ) {
+  connect( mTopocentricBaseSelector, &QgsProjectionSelectionWidget::crsChanged, this, [this]( const QgsCoordinateReferenceSystem &newBase ) {
+    const QgsRectangle b = newBase.bounds();
+    if ( !b.isNull() )
+    {
+      mSpinBoxTopoLat->setClearValue( ( b.yMinimum() + b.yMaximum() ) / 2.0 );
+      mSpinBoxTopoLon->setClearValue( ( b.xMinimum() + b.xMaximum() ) / 2.0 );
+    }
     if ( !mBlockSignals )
     {
+      mBlockSignals++;
+      mSpinBoxTopoLat->clear();
+      mSpinBoxTopoLon->clear();
+      mBlockSignals--;
       emit crsChanged();
       emit hasValidSelectionChanged( hasValidSelection() );
     }
@@ -283,9 +306,17 @@ void QgsCrsSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
     double topoLat = 0.0, topoLon = 0.0;
     if ( crs.topocentricOrigin( topoLat, topoLon ) )
     {
-      mSpinBoxTopoLat->setValue( topoLat );
-      mSpinBoxTopoLon->setValue( topoLon );
-      mTopocentricBaseSelector->setCrs( crs.topocentricBaseCrs() );
+      const QgsCoordinateReferenceSystem baseCrs = crs.topocentricBaseCrs();
+      mTopocentricBaseSelector->setCrs( baseCrs );
+
+      const QgsRectangle b = baseCrs.bounds();
+      if ( !b.isNull() )
+      {
+        mSpinBoxTopoLat->setClearValue( ( b.yMinimum() + b.yMaximum() ) / 2.0 );
+        mSpinBoxTopoLon->setClearValue( ( b.xMinimum() + b.xMaximum() ) / 2.0 );
+      }
+      mSpinBoxTopoLat->clear();
+      mSpinBoxTopoLon->clear();
       mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Topocentric ) ) );
       mStackedWidget->setCurrentWidget( mPageTopocentric );
     }
