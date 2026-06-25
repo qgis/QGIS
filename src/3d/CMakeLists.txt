@@ -86,7 +86,6 @@ set(QGIS_3D_SRCS
   materials/qgsglobematerial.cpp
   materials/qgsgoochmaterial.cpp
   materials/qgsgoochmaterial3dhandler.cpp
-  materials/qgshighlightmaterial.cpp
   materials/qgsmaterial.cpp
   materials/qgsmaterial3dhandler.cpp
   materials/qgsmetalroughmaterial.cpp
@@ -237,7 +236,6 @@ set(QGIS_3D_HDRS
   materials/qgsglobematerial.h
   materials/qgsgoochmaterial.h
   materials/qgsgoochmaterial3dhandler.h
-  materials/qgshighlightmaterial.h
   materials/qgsmaterial.h
   materials/qgsmaterial3dhandler.cpp
   materials/qgsmetalroughmaterial.h
