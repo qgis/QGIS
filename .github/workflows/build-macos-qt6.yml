@@ -174,6 +174,8 @@ jobs:
 
                 fdupes -q -r -1 build/vcpkg_installed/${{ matrix.triplet }}/lib | grep -E '\.(so|dylib)' | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
 
+                export DYLD_LIBRARY_PATH="${PWD}/build/vcpkg_installed/${{ matrix.triplet }}/lib:${DYLD_LIBRARY_PATH:-}"
+                export DYLD_FALLBACK_LIBRARY_PATH="${PWD}/build/vcpkg_installed/${{ matrix.triplet }}/lib:${DYLD_FALLBACK_LIBRARY_PATH:-}"
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
       - name: 📑 Upload vcpkg build logs

@@ -50,7 +50,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingsFeatureListHighlightFeature SIP_SKIP;
 
     static const QgsSettingsEntryInteger *settingsAttributeTableRowCache SIP_SKIP;

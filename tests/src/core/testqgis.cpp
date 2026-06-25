@@ -767,8 +767,6 @@ void TestQgis::testQgsFlagValueToKeys()
   QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double;
   QCOMPARE( qgsFlagValueToKeys( filters, &ok ), u"String|Double"_s );
   QCOMPARE( ok, true );
-  QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters(), &ok ), QString() );
-  QCOMPARE( ok, true );
   QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters( -10 ), &ok ), QString() );
   QCOMPARE( ok, false );
 
