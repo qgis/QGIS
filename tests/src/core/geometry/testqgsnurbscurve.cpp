@@ -761,6 +761,8 @@ void TestQgsNurbsCurve::cast()
   QgsNurbsCurve curve( controlPoints, 1, QVector<double> { 0, 0, 1, 1 }, QVector<double> { 1, 1 } );
 
   QVERIFY( QgsNurbsCurve::cast( &curve ) );
+  QVERIFY( !QgsSimpleCurve::cast( &curve ) );
+  QVERIFY( QgsCurve::cast( &curve ) );
 
   QgsLineString line;
   QVERIFY( !QgsNurbsCurve::cast( &line ) );

@@ -35,6 +35,7 @@ class QgsPolygon3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Polygon3D
     QgsAbstract3DSymbol *symbol() override;
     QString symbolType() const override;
     Qgis::MaterialRenderingTechnique renderingTechnique() const override;
+    void setDockMode( bool dockMode ) override;
 
   private slots:
     void updateGuiState();

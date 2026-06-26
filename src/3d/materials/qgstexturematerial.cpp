@@ -39,6 +39,7 @@ QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
   , mGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"meshMatrix"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
 {
   init();
 }
@@ -68,6 +69,7 @@ void QgsTextureMaterial::init()
   mGL3RenderPass->setShaderProgram( mGL3Shader );
   mGL3Technique->addRenderPass( mGL3RenderPass );
   effect->addTechnique( mGL3Technique );
+  effect->addParameter( mTransformParameter );
 
   setEffect( effect );
 }
@@ -101,6 +103,11 @@ void QgsTextureMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMate
   {
     mGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/texture.vert"_s ) ) );
   }
+}
+
+void QgsTextureMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
+{
+  mTransformParameter->setValue( QVariant::fromValue( transform ) );
 }
 
 ///@endcond PRIVATE

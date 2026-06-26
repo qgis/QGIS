@@ -24,6 +24,9 @@
 
 #define SIP_NO_FILE
 
+class QMatrix4x4;
+
+
 // adapted from Qt's qmetalroughmaterial.h
 namespace Qt3DRender
 {
@@ -127,6 +130,12 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
      */
     void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
 
+    /**
+     * Sets the transform from mesh space to object space
+     * \note Only applies when instancing is enabled
+     */
+    void setInstancingMeshTransform( const QMatrix4x4 &transform );
+
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
     void setTextureOffset( float textureOffsetX, float textureOffsetY );
@@ -197,6 +206,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mFlatShading = false;
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
+    Qt3DRender::QParameter *mTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
 
     bool mDataDefinedEnabled = false;
     bool mDataDefinedTextureTransformEnabled = false;

@@ -61,6 +61,8 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"meshMatrix"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"meshNormalMatrix"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   init();
 }
@@ -408,6 +410,8 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughEffect->addParameter( mTextureRotationParameter );
   mMetalRoughEffect->addParameter( mTextureOffsetParameter );
   mMetalRoughEffect->addParameter( mOpacityParameter );
+  mMetalRoughEffect->addParameter( mTransformParameter );
+  mMetalRoughEffect->addParameter( mNormalTransformParameter );
 
   setEffect( mMetalRoughEffect );
 
@@ -519,6 +523,13 @@ void QgsMetalRoughMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedM
   mInstanced = enabled;
   mInstanceFlags = flags;
   updateShaders();
+}
+
+void QgsMetalRoughMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
+{
+  const QMatrix3x3 normalTransform = transform.normalMatrix();
+  mTransformParameter->setValue( QVariant::fromValue( transform ) );
+  mNormalTransformParameter->setValue( QVariant::fromValue( normalTransform ) );
 }
 
 ///@endcond PRIVATE

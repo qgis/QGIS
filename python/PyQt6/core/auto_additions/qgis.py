@@ -1033,6 +1033,9 @@ QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embe
 QgsVectorDataProvider.CacheData = Qgis.VectorProviderCapability.CacheData
 QgsVectorDataProvider.CacheData.is_monkey_patched = True
 QgsVectorDataProvider.CacheData.__doc__ = "Provider caches source data and should force provider data reloads when dependent layers are committed \n.. versionadded:: 4.2"
+QgsVectorDataProvider.ReadFieldDomains = Qgis.VectorProviderCapability.ReadFieldDomains
+QgsVectorDataProvider.ReadFieldDomains.is_monkey_patched = True
+QgsVectorDataProvider.ReadFieldDomains.__doc__ = "Provider can read field domains and their properties \n.. versionadded:: 4.2"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -1082,6 +1085,10 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
   .. versionadded:: 3.20
 
 * ``CacheData``: Provider caches source data and should force provider data reloads when dependent layers are committed
+
+  .. versionadded:: 4.2
+
+* ``ReadFieldDomains``: Provider can read field domains and their properties
 
   .. versionadded:: 4.2
 
@@ -7765,6 +7772,19 @@ Qgis.Map3DDebugFlags = lambda flags=0: Qgis.Map3DDebugFlag(flags)
 Qgis.Map3DDebugFlags.baseClass = Qgis
 Map3DDebugFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Map3DProjectionType.Orthographic.__doc__ = "Orthogonal projection"
+Qgis.Map3DProjectionType.Perspective.__doc__ = "Perspective projection"
+Qgis.Map3DProjectionType.__doc__ = """3D map projection type
+
+.. versionadded:: 4.2
+
+* ``Orthographic``: Orthogonal projection
+* ``Perspective``: Perspective projection
+
+"""
+# --
+Qgis.Map3DProjectionType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
 Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
 Qgis.Point3DShape.Cone.__doc__ = "Cone"
@@ -7963,20 +7983,47 @@ Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
 # --
 Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
-Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
-Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements"
+Qgis.VerticalAxisInversion.WhenRotatingDragging.__doc__ = "When rotating camera around self with mouse captured \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenRotatingCaptured.__doc__ = "When rotating camera around self with mouse button pressed \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenPivoting.__doc__ = "When pivoting camera around point in terrain \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements \n.. deprecated:: 4.2"
 Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D views.
 
 .. versionadded:: 3.30
 
+* ``WhenRotatingDragging``: When rotating camera around self with mouse captured
+
+  .. versionadded:: 4.2
+
+* ``WhenRotatingCaptured``: When rotating camera around self with mouse button pressed
+
+  .. versionadded:: 4.2
+
+* ``WhenPivoting``: When pivoting camera around point in terrain
+
+  .. versionadded:: 4.2
+
 * ``Never``: Never invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 * ``WhenDragging``: Invert vertical axis movements when dragging in first person modes
+
+  .. deprecated:: 4.2
+
 * ``Always``: Always invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 
 """
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
+Qgis.VerticalAxisInversionFlags = lambda flags=0: Qgis.VerticalAxisInversion(flags)
+Qgis.VerticalAxisInversionFlags.baseClass = Qgis
+VerticalAxisInversionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ToneMappingMethod.Clamp.__doc__ = "Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail."
 Qgis.ToneMappingMethod.Aces.__doc__ = "Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness."

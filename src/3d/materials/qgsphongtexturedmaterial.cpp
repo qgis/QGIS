@@ -22,6 +22,7 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
+#include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgsphongtexturedmaterial.cpp"
@@ -42,8 +43,10 @@ QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )
   , mEffect( new Qt3DRender::QEffect( this ) )
   , mGL3Technique( new Qt3DRender::QTechnique( this ) )
   , mGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
-  , mGL3Shader( new Qt3DRender::QShaderProgram( this ) )
+  , mShaderProgram( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"meshMatrix"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
+  , mNormalTransformParameter( new Qt3DRender::QParameter( u"meshNormalMatrix"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
 {
   setAmbient( QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
   setSpecular( QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
@@ -55,7 +58,7 @@ QgsPhongTexturedMaterial::~QgsPhongTexturedMaterial() = default;
 
 void QgsPhongTexturedMaterial::init()
 {
-  updateVertexShader();
+  updateShaders();
 
   mGL3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   mGL3Technique->graphicsApiFilter()->setMajorVersion( 3 );
@@ -67,11 +70,11 @@ void QgsPhongTexturedMaterial::init()
   mFilterKey->setValue( u"forward"_s );
 
   mGL3Technique->addFilterKey( mFilterKey );
-  mGL3RenderPass->setShaderProgram( mGL3Shader );
+  mGL3RenderPass->setShaderProgram( mShaderProgram );
   mGL3Technique->addRenderPass( mGL3RenderPass );
   mEffect->addTechnique( mGL3Technique );
 
-  mGL3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/diffuseSpecular.frag"_s ) ) );
+  mShaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/diffuseSpecular.frag"_s ) ) );
 
   mEffect->addParameter( mAmbientParameter );
   mEffect->addParameter( mDiffuseTextureParameter );
@@ -81,19 +84,52 @@ void QgsPhongTexturedMaterial::init()
   mEffect->addParameter( mSpecularParameter );
   mEffect->addParameter( mShininessParameter );
   mEffect->addParameter( mOpacityParameter );
+  mEffect->addParameter( mTransformParameter );
+  mEffect->addParameter( mNormalTransformParameter );
 
   setEffect( mEffect );
 }
 
-void QgsPhongTexturedMaterial::updateVertexShader()
+void QgsPhongTexturedMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
 {
-  QByteArray vertexCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
-  QStringList defines { u"TEXTURE_ROTATION"_s, u"TEXTURE_OFFSET"_s };
-  if ( mDataDefinedTextureTransformEnabled )
-    defines << u"DATA_DEFINED_TEXTURE_TRANSFORMS"_s;
+  mInstanced = enabled;
+  mInstanceFlags = flags;
 
-  vertexCode = Qgs3DUtils::addDefinesToShaderCode( vertexCode, defines );
-  mGL3Shader->setVertexShaderCode( vertexCode );
+  updateShaders();
+}
+
+void QgsPhongTexturedMaterial::updateShaders()
+{
+  const QByteArray fragCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/diffuseSpecular.frag"_s ) );
+
+  if ( mInstanced )
+  {
+    QStringList defines = { u"HAS_TEXTURE"_s };
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    mShaderProgram->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
+  }
+  else
+  {
+    QByteArray vertexCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
+    QStringList defines { u"TEXTURE_ROTATION"_s, u"TEXTURE_OFFSET"_s };
+    if ( mDataDefinedTextureTransformEnabled )
+      defines << u"DATA_DEFINED_TEXTURE_TRANSFORMS"_s;
+
+    vertexCode = Qgs3DUtils::addDefinesToShaderCode( vertexCode, defines );
+    mShaderProgram->setVertexShaderCode( vertexCode );
+  }
+  mShaderProgram->setFragmentShaderCode( fragCode );
+}
+
+void QgsPhongTexturedMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
+{
+  const QMatrix3x3 normalTransform = transform.normalMatrix();
+  mTransformParameter->setValue( QVariant::fromValue( transform ) );
+  mNormalTransformParameter->setValue( QVariant::fromValue( normalTransform ) );
 }
 
 void QgsPhongTexturedMaterial::setAmbient( const QColor &ambient )
@@ -142,7 +178,7 @@ void QgsPhongTexturedMaterial::setDataDefinedTextureTransformEnabled( bool enabl
     return;
 
   mDataDefinedTextureTransformEnabled = enabled;
-  updateVertexShader();
+  updateShaders();
 }
 
 ///@endcond PRIVATE

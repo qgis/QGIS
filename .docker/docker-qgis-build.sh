@@ -46,7 +46,6 @@ CMAKE_CXX_COMPILER=/usr/bin/clang++
 if [[ "${WITH_CLAZY}" = "ON" ]]; then
   # In release mode, all variables in QgsDebugMsg would be considered unused
   BUILD_TYPE=Debug
-  CMAKE_CXX_COMPILER=clazy
 
   # ignore sip and external libraries
   export CLAZY_IGNORE_DIRS="(.*/external/.*)|(.*sip_.*part.*)"

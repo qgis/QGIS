@@ -165,6 +165,34 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.layout.removeLayoutItem(overviewMap)
         self.assertTrue(result)
 
+    def testOverviewMapCenterReprojected(self):
+        overviewMap = QgsLayoutItemMap(self.layout)
+        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
+        overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.vector_layer])
+        overviewMap.setCrs(QgsCoordinateReferenceSystem("EPSG:3875"))
+        self.layout.addLayoutItem(overviewMap)
+
+        extent_away = QgsRectangle(-2266093, 1925065, 5773564, 6365242)
+        overviewMap.setExtent(extent_away)
+
+        # zoom onto the vector layer
+        self.map.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        self.map.setLayers([self.vector_layer])
+        self.map.setExtent(self.vector_layer.extent())
+        overviewMap.overview().setLinkedMap(self.map)
+        overviewMap.overview().setInverted(False)
+        overviewMap.overview().setCentered(True)
+
+        result = self.render_layout_check(
+            "composermap_overview_center_reprojected", self.layout
+        )
+
+        self.layout.removeLayoutItem(overviewMap)
+        self.assertTrue(result)
+        self.map.setCrs(QgsCoordinateReferenceSystem())
+        self.map.setLayers([self.raster_layer])
+
     def testAsMapLayer(self):
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()

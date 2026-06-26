@@ -169,9 +169,9 @@ The symbol layer's id
 
 };
 
-uint qHash( const QgsSymbolLayerId &id );
+size_t qHash( const QgsSymbolLayerId &id );
 
-uint qHash( const QgsSymbolLayerReference &r );
+size_t qHash( const QgsSymbolLayerReference &r );
 
 typedef QList<QgsSymbolLayerReference> QgsSymbolLayerReferenceList;
 

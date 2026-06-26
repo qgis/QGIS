@@ -36,12 +36,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opMUL,
       opDIV,
       opPOW,
-      opEQ, // =
-      opNE, // != resp. <>
-      opGT, // >
-      opLT, // <
-      opGE, // >=
-      opLE, // <=
+      opEQ, //!< =
+      opNE, //!< != resp. <>
+      opGT, //!< >
+      opLT, //!< <
+      opGE, //!< >=
+      opLE, //!< <=
       opAND,
       opOR,
       opMIN,

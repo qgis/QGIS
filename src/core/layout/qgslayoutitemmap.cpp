@@ -1637,8 +1637,9 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   {
     return;
   }
-  if ( qgsDoubleNear( size.width(), 0.0 ) || qgsDoubleNear( size.height(), 0.0 ) )
+  if ( std::isnan( size.width() ) || std::isnan( size.height() ) || qgsDoubleNear( size.width(), 0.0 ) || qgsDoubleNear( size.height(), 0.0 ) )
   {
+    QgsDebugError( u"Trying to draw a map with invalid size (%1, %2)"_s.arg( size.width() ).arg( size.height() ) );
     //don't attempt to draw if size is invalid
     return;
   }

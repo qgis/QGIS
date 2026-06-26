@@ -1457,6 +1457,7 @@ namespace QgsWms
     mapSettings.setDestinationCrs( outputCRS );
 
     mapSettings.setTransformContext( mProject->transformContext() );
+    mapSettings.setEllipsoid( mProject->ellipsoid() );
 
     // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
     if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) && outputCRS.hasAxisInverted() )
@@ -3656,6 +3657,18 @@ namespace QgsWms
         {
           bufferSettings.setEnabled( true );
           bufferSettings.setSize( static_cast<double>( param.mBufferSize ) );
+        }
+
+        if ( param.mFrameSize > 0 )
+        {
+          QgsTextBackgroundSettings background;
+          background.setEnabled( true );
+          background.setSize( QSize( param.mFrameSize, param.mFrameSize ) );
+          background.setType( QgsTextBackgroundSettings::ShapeRectangle );
+          background.setStrokeColor( param.mFrameOutlineColor );
+          background.setStrokeWidth( param.mFrameOutlineWidth );
+          background.setFillColor( param.mFrameBackgroundColor );
+          textFormat.setBackground( background );
         }
 
         textFormat.setBuffer( bufferSettings );

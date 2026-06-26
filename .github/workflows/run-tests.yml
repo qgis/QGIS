@@ -43,7 +43,7 @@ jobs:
       matrix:
         include:
           - distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             qt-version: 6
             run-tests: true
             with-3d: ON
@@ -272,7 +272,7 @@ jobs:
         include:
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             docker-target: binary-only
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             test-batch: ALL_BUT_PROVIDERS
@@ -286,28 +286,28 @@ jobs:
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             test-batch: POSTGRES
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             test-batch: HANA
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             test-batch: SQLSERVER
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             test-batch: ORACLE
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-for-oracle
@@ -444,7 +444,7 @@ jobs:
       matrix:
         include:
           - distro: ubuntu
-            distro-version: '25.10'
+            distro-version: '26.04'
             qt-version: 6
 
     steps:
@@ -500,9 +500,22 @@ jobs:
 
       - name: Run Clang-Tidy
         run: |
+
+          # Compute modified diff range and modified files
+          git fetch origin ${{ github.base_ref }}
+          DIFF_RANGE=origin/${{ github.base_ref }}...HEAD
+          MODIFIED_FILES=($(git diff --name-only $DIFF_RANGE))
+
+          echo "Diff range: ${DIFF_RANGE}"
+          echo "Modified files (${#MODIFIED_FILES[@]}):"
+          for modified_file in $MODIFIED_FILES; do
+            echo " - ${modified_file}"
+          done
+
           docker run -t --name qgis_container \
           -v $(pwd):/root/QGIS \
           -v /home/runner/QGIS/.ccache:/root/.ccache \
           --env-file .docker/docker-variables.env \
+          --env DIFF_RANGE=${DIFF_RANGE} \
           qgis3-build-deps-binary-image \
           /root/QGIS/.docker/docker-qgis-clangtidy.sh

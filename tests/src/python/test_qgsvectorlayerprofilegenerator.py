@@ -898,6 +898,40 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertAlmostEqual(results.zRange().lower(), 15.0, 2)
         self.assertAlmostEqual(results.zRange().upper(), 22.5000, 2)
 
+    def testPolygonGenerationFollowingLinestringZExactly(self):
+        """
+        Test that a purely vertical line from a polygon is correctly
+        handled by the generator
+        """
+        vl = QgsVectorLayer("PolygonZ?crs=EPSG:3857", "polygon", "memory")
+        self.assertTrue(vl.isValid())
+
+        polygon_wkt = "Polygon Z ((547405.88 6150237.19 0, 547405.88 6150237.19 5, 547413.39 6150203.24 5, 547413.39 6150203.24 0, 547405.88 6150237.19 0))"
+        feature = QgsFeature()
+        feature.setGeometry(QgsGeometry.fromWkt(polygon_wkt))
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            "LineString (547394.297515 6150220.613784, 547416.10922 6150225.219982)"
+        )
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+        results = generator.takeResults()
+
+        self.assertEqual(
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
+            {14.9: 5.0},
+        )
+
+        self.assertAlmostEqual(results.zRange().lower(), 0.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 5.0, 2)
+
     def testPolygonGenerationTerrain(self):
         vl = QgsVectorLayer("PolygonZ?crs=EPSG:27700", "lines", "memory")
         self.assertTrue(vl.isValid())
@@ -3432,6 +3466,34 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertAlmostEqual(res.constGet().y(), -23.445567853, 6)
         # comparing against results from https://geodesyapps.ga.gov.au/ausgeoid2020
         self.assertAlmostEqual(res.constGet().z(), 5543.325, 3)
+
+    def testRenderProfileReplaceSourceRenderingOrder(self):
+        # For issue #62677
+        def create_layer(name):
+            l = QgsVectorLayer("LineStringZ?crs=EPSG:27700", name, "memory")
+            l.setCrs(QgsCoordinateReferenceSystem())
+            self.assertTrue(l.isValid())
+            return l
+
+        vl = create_layer("above")
+        vl2 = create_layer("below")
+
+        curve = QgsLineString()
+        req = QgsProfileRequest(curve)
+
+        plot_renderer = QgsProfilePlotRenderer([vl2, vl], req)
+        sources = plot_renderer.sourceIds()
+        self.assertEqual(sources, [vl2.id(), vl.id()])
+
+        plot_renderer.replaceSource(
+            vl2
+        )  # E.g., after a change in the elevation profile settings
+        sources = plot_renderer.sourceIds()
+        self.assertEqual(
+            sources,
+            [vl2.id(), vl.id()],
+            "The order of the generators does not correspond to the order of the sources! (i.e., issue #62677)",
+        )
 
 
 if __name__ == "__main__":

@@ -167,7 +167,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     {
       FlagNoMText = 1 << 1,              //!< Export text as TEXT elements. If not set, text will be exported as MTEXT elements.
       FlagOnlySelectedFeatures = 1 << 2, //!< Use only selected features for the export.
-      FlagHairlineWidthExport = 1 << 3   //!Export all lines with minimum width and don't fill polygons. Since QGIS 3.38
+      FlagHairlineWidthExport = 1 << 3   //!< Export all lines with minimum width and don't fill polygons \since QGIS 3.38
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     {
       Closed = 1,              //!< This is a closed polyline (or a polygon mesh closed in the M direction)
       Curve = 2,               //!< Curve-fit vertices have been added
-      Spline = 4,              //! < Spline-fit vertices have been added
+      Spline = 4,              //!< Spline-fit vertices have been added
       Is3DPolyline = 8,        //!< This is a 3D polyline
       Is3DPolygonMesh = 16,    //!< This is a 3D polygon mesh
       PolygonMesh = 32,        //!< The polygon mesh is closed in the N direction

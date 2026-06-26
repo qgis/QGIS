@@ -68,6 +68,7 @@
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsunlitmaterial.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgswindow3dengine.h"
@@ -80,7 +81,6 @@
 #include <QUrl>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QCamera>
@@ -403,7 +403,7 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
   QMatrix4x4 projMatrix;
   switch ( mMap.projectionType() )
   {
-    case Qt3DRender::QCameraLens::PerspectiveProjection:
+    case Qgis::Map3DProjectionType::Perspective:
     {
       float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
       float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
@@ -417,7 +417,7 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
       // clang-format on
       break;
     }
-    case Qt3DRender::QCameraLens::OrthographicProjection:
+    case Qgis::Map3DProjectionType::Orthographic:
     {
       Qt3DRender::QCameraLens *lens = camera->lens();
       // clang-format off
@@ -729,7 +729,7 @@ void Qgs3DMapScene::updateLights()
 void Qgs3DMapScene::updateCameraLens()
 {
   mEngine->camera()->lens()->setFieldOfView( static_cast< float >( mMap.fieldOfView() ) );
-  mEngine->camera()->lens()->setProjectionType( mMap.projectionType() );
+  mEngine->camera()->lens()->setProjectionType( static_cast<Qt3DRender::QCameraLens::ProjectionType>( mMap.projectionType() ) );
   onCameraChanged();
 }
 
@@ -1152,8 +1152,9 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   mEntityCameraViewCenter->addComponent( trCameraViewCenter );
   connect( camera, &Qt3DRender::QCamera::viewCenterChanged, this, [trCameraViewCenter, camera] { trCameraViewCenter->setTranslation( camera->viewCenter() ); } );
 
-  Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
-  materialCameraViewCenter->setAmbient( Qt::red );
+  auto materialCameraViewCenter = new QgsUnlitMaterial();
+  materialCameraViewCenter->setColor( Qt::red );
+  materialCameraViewCenter->setCastsShadows( false );
   mEntityCameraViewCenter->addComponent( materialCameraViewCenter );
 
   Qt3DExtras::QSphereMesh *rendererCameraViewCenter = new Qt3DExtras::QSphereMesh;
@@ -1162,6 +1163,9 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
 
   mEntityCameraViewCenter->setEnabled( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter ) );
   mEntityCameraViewCenter->setParent( this );
+
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  mEntityCameraViewCenter->addComponent( frameGraph->forwardRenderView().renderLayer() );
 
   connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this] { mEntityCameraViewCenter->setEnabled( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowCameraViewCenter ) ); } );
 }
@@ -1442,14 +1446,20 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
 
   Qt3DCore::QTransform *trRotationCenter = new Qt3DCore::QTransform;
   mEntityRotationCenter->addComponent( trRotationCenter );
-  Qt3DExtras::QPhongMaterial *materialRotationCenter = new Qt3DExtras::QPhongMaterial;
-  materialRotationCenter->setAmbient( Qt::blue );
+
+  auto materialRotationCenter = new QgsUnlitMaterial();
+  materialRotationCenter->setColor( Qt::blue );
+  materialRotationCenter->setCastsShadows( false );
+
   mEntityRotationCenter->addComponent( materialRotationCenter );
   Qt3DExtras::QSphereMesh *rendererRotationCenter = new Qt3DExtras::QSphereMesh;
   rendererRotationCenter->setRadius( 10 );
   mEntityRotationCenter->addComponent( rendererRotationCenter );
   mEntityRotationCenter->setEnabled( false );
   mEntityRotationCenter->setParent( this );
+
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  mEntityRotationCenter->addComponent( frameGraph->forwardRenderView().renderLayer() );
 
   connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center ) { trRotationCenter->setTranslation( center ); } );
 
