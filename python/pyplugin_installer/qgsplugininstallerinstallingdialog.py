@@ -222,7 +222,7 @@ class QgsPluginInstallerInstallingDialog(
             return
 
         # Copy extracted plugin to plugins folder
-        # we copy instead of move, so that the target files inherit parent folder persmissions on windows
+        # we copy instead of move, so that the target files inherit parent folder permissions on windows
         try:
             shutil.copytree(
                 extractDir.filePath(self.plugin["id"]),
