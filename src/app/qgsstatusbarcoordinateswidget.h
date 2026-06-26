@@ -66,10 +66,9 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     void contributors();
     void hackfests();
     void userGroups();
-    void showExtent();
-    void showMouseCoordinates();
+    void updateCoordinates();
     void ensureCoordinatesVisible();
-    void coordinateDisplaySettingsChanged();
+    void applyCoordinateDisplaySettings();
 
   private:
     void refreshMapCanvas();
