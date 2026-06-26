@@ -198,6 +198,7 @@ class _3D_EXPORT Qgs3DUtils
     /**
      * Given a QImage \a format, returns the most appropriate corresponding texture format.
      *
+     * \param format QImage format to convert
      * \param isSrgb determines whether RGB formats should be interpreted as SRGB color spaces.
      * \param requiresConversionToRgb will be set to TRUE if the image format is not appropriate for a 3D texture and the image requires conversion to RGB by the caller.
      *
