@@ -1682,9 +1682,8 @@ int main( int argc, char *argv[] )
     QApplication::setFont( defaultFont );
   }
 
-  QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName, nullptr, Qt::Window, std::move( customization ) ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( u"QgisApp"_s );
-  qgis->setCustomization( std::move( customization ) );
 
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified

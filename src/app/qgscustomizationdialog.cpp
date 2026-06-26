@@ -223,6 +223,7 @@ int QgsCustomizationDialog::QgsCustomizationModel::columnCount( const QModelInde
 void QgsCustomizationDialog::QgsCustomizationModel::init()
 {
   mCustomization = std::make_unique<QgsCustomization>( *mQgisApp->customization() );
+  mCustomization->load();
   mRootItems.clear();
   switch ( mMode )
   {
