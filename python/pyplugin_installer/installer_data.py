@@ -1019,7 +1019,7 @@ class Plugins(QObject):
                     if key not in self.mPlugins:
                         self.mPlugins[key] = plugin  # just add a new plugin
                     else:
-                        # Update local plugin with remote metadata.
+                        # Update local plugin with remote metadata
                         # description, about, icon: only use remote data if local one not available. Prefer local version because of i18n.
                         # NOTE: don't prefer local name to not desynchronize names if repository doesn't support i18n.
                         # Also prefer local icon to avoid downloading.

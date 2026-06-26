@@ -17,9 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
-Here is Python function for comparing version numbers. It's case insensitive
-and recognizes all major notations, prefixes (ver. and version), delimiters
-(. - and _) and suffixes (alpha, beta, rc, preview and trunk).
+Here is Python function for comparing version numbers.
 
 Usage: compareVersions(version1, version2)
 
@@ -30,8 +28,19 @@ and returns integer value:
 2 - version 2 is higher
 
 -----------------------------------------------------------------------------
-HOW DOES IT WORK...
-It relies on packaging.version and PEP440 for version comparisons
+
+It relies on packaging.version and PEP440 for version comparisons,
+in a nutshell, this relies on the following scheme (PEP440):
+        `[N!]N(.N)*[{a|b|rc}N][.postN][.devN]`
+
+we also tweaked a more permissive regexp for backward compatibility:
+    - case insensitive
+    - allow `alpha`, `beta` in full wording
+    - works with `[+local]` segment version instead of `[-local]`
+
+see :
+    https://packaging.pypa.io/en/stable/version.html
+    https://peps.python.org/pep-0440/
 """
 
 import re
