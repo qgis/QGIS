@@ -1928,6 +1928,8 @@ QgsBlockingProcess.processError: src/core/qgsrunprocess.h#L196
 QgsBlockingProcess.run: src/core/qgsrunprocess.h#L184
 QgsBlockingProcess.setStdErrHandler: src/core/qgsrunprocess.h#L161
 QgsBlockingProcess.setStdOutHandler: src/core/qgsrunprocess.h#L133
+QgsBlockingProcess.setWorkingDirectory: src/core/qgsrunprocess.h#L212
+QgsBlockingProcess.workingDirectory: src/core/qgsrunprocess.h#L204
 QgsBlockingProcess: src/core/qgsrunprocess.h#L109
 QgsBlurEffect.blendMode: src/core/effects/qgsblureffect.h#L172
 QgsBlurEffect.blurLevel: src/core/effects/qgsblureffect.h#L86
