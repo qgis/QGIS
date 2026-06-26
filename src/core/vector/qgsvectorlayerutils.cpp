@@ -548,6 +548,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
     // initialize attributes
     newFeature.initAttributes( fields.count() );
+
+    // Avoid endless looping for recursive expression dependencies by keeping track of fields already deferred
     QList<int> deferredFieldIndexes;
     QList<int> fieldIndexes( fields.count() );
     std::iota( fieldIndexes.begin(), fieldIndexes.end(), 0 );
