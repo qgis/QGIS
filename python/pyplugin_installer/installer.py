@@ -860,7 +860,7 @@ class QgsPluginInstaller(QObject):
                 success = False
 
             try:
-                # we copy instead of move, so that the target files inherit parent folder persmissions on windows
+                # we copy instead of move, so that the target files inherit parent folder permissions on windows
                 shutil.copytree(
                     extractDir.filePath(pluginName),
                     pluginDirectory,
