@@ -105,7 +105,18 @@ template<typename T> class QgsConnectionPoolGroup
       QgsDebugMsgLevel( u"Trying to acquire connection"_s, 2 );
       const int requiredFreeConnectionCount = requestMayBeNested ? 1 : 3;
       // we are going to acquire a resource - if no resource is available, we will block here
-      if ( !sem.tryAcquire( requiredFreeConnectionCount, QDeadlineTimer( timeout ) ) )
+      bool acquired = false;
+      if ( timeout < 0 )
+      {
+        sem.acquire( requiredFreeConnectionCount );
+        acquired = true;
+      }
+      else
+      {
+        acquired = sem.tryAcquire( requiredFreeConnectionCount, timeout );
+      }
+
+      if ( !acquired )
       {
         QgsDebugMsgLevel( u"Failed to acquire semaphore"_s, 2 );
         return nullptr;
