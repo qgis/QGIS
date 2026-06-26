@@ -16,6 +16,11 @@ vcpkg_replace_string(
     "    assert(code != ADBC_STATUS_OK);\n  }\n  Status(Status&&) noexcept = default;\n  Status& operator=(Status&&) noexcept = default;\n  Status(const Status&) = delete;\n  Status& operator=(const Status&) = delete;\n\n  /// \\brief Check if this is an error or not."
 )
 vcpkg_replace_string(
+    "${SOURCE_PATH}/c/driver/framework/status.h"
+    "#include <fmt/core.h>\n#endif"
+    "#include <fmt/core.h>\n#include <fmt/format.h>\n#endif"
+)
+vcpkg_replace_string(
     "${SOURCE_PATH}/c/driver/postgresql/error.h"
     "#include <vector>\n\n#include <arrow-adbc/adbc.h>"
     "#include <vector>\n#include <utility>\n\n#include <arrow-adbc/adbc.h>"
@@ -25,12 +30,6 @@ vcpkg_replace_string(
     "#include <fmt/core.h>\n\n#include \"driver/framework/status.h\""
     "#include <fmt/core.h>\n#include <fmt/format.h>\n\n#include \"driver/framework/status.h\""
 )
-vcpkg_replace_string(
-    "${SOURCE_PATH}/c/driver/postgresql/error.h"
-    "  return status;\n}"
-    "  return std::move(status);\n}"
-)
-
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
         "sqlite" "ADBC_DRIVER_SQLITE"
