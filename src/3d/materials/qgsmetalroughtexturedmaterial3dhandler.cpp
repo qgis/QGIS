@@ -115,14 +115,13 @@ Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( con
 
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
 
-  if ( isSrgb )
+  bool requiresConversionToRgb = false;
+  Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( image.format(), isSrgb, requiresConversionToRgb );
+  if ( requiresConversionToRgb )
   {
-    texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+    image.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
   }
-  else
-  {
-    texture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
-  }
+  texture->setFormat( textureFormat );
 
   texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
   texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
