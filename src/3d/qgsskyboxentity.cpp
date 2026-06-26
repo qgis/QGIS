@@ -287,7 +287,6 @@ void QgsCubeFacesSkyboxEntity::updateEnvironmentLight( QgsEnvironmentLight *envL
   lightCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::LinearMipMapLinear );
   lightCubeMap->setGenerateMipMaps( true );
   lightCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
-  lightCubeMap->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
   int maxSize = 0;
   for ( const QString &texturePath : { mSourcePosX, mSourcePosY, mSourcePosZ, mSourceNegX, mSourceNegY, mSourceNegZ } )
@@ -318,6 +317,14 @@ void QgsCubeFacesSkyboxEntity::updateEnvironmentLight( QgsEnvironmentLight *envL
     else if ( config.mirrorHorizontal || config.mirrorVertical )
     {
       finalImage = finalImage.mirrored( config.mirrorHorizontal, config.mirrorVertical );
+    }
+
+    bool requiresConversionToRgb = false;
+    Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( finalImage.format(), true, requiresConversionToRgb );
+    lightCubeMap->setFormat( textureFormat );
+    if ( requiresConversionToRgb )
+    {
+      finalImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
     }
 
     auto textureImage = new QgsImageTexture( finalImage, lightCubeMap );
@@ -359,7 +366,6 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
   newCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::Linear );
   newCubeMap->setGenerateMipMaps( false );
   newCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
-  newCubeMap->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
   // all faces must have the SAME size, so take the maximum size from the input images
   int maxSize = 0;
@@ -399,6 +405,14 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
     else if ( config.mirrorHorizontal || config.mirrorVertical )
     {
       finalImage = finalImage.mirrored( config.mirrorHorizontal, config.mirrorVertical );
+    }
+
+    bool requiresConversionToRgb = false;
+    Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( finalImage.format(), true, requiresConversionToRgb );
+    newCubeMap->setFormat( textureFormat );
+    if ( requiresConversionToRgb )
+    {
+      finalImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
     }
 
     auto textureImage = new QgsImageTexture( finalImage, newCubeMap );
