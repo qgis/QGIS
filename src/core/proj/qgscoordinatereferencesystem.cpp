@@ -3367,7 +3367,8 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( dou
     return QgsCoordinateReferenceSystem();
 
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProjObject( topocentric.get() );
-  crs.d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem( *this ) );
+  if ( d->mTopocentricBaseCrs )
+    crs.d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem( *d->mTopocentricBaseCrs ) );
   return crs;
 }
 

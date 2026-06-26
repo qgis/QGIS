@@ -29,21 +29,21 @@
 QgsTopocentricWidget::QgsTopocentricWidget( QWidget *parent )
   : QWidget( parent )
 {
-  mDoubleSpinBoxX = new QgsDoubleSpinBox();
-  mHorizontalSliderX = new QSlider( Qt::Horizontal );
-  mDoubleSpinBoxY = new QgsDoubleSpinBox();
-  mHorizontalSliderY = new QSlider( Qt::Horizontal );
+  mDoubleSpinBoxLat = new QgsDoubleSpinBox();
+  mHorizontalSliderLat = new QSlider( Qt::Horizontal );
+  mDoubleSpinBoxLon = new QgsDoubleSpinBox();
+  mHorizontalSliderLon = new QSlider( Qt::Horizontal );
 
   QLabel *titleLabel = new QLabel( tr( "Topocentric origin:" ) );
   titleLabel->setAlignment( Qt::AlignCenter );
 
   QGridLayout *grid = new QGridLayout();
   grid->addWidget( new QLabel( tr( "Latitude" ) ), 0, 0 );
-  grid->addWidget( mHorizontalSliderX, 0, 1 );
-  grid->addWidget( mDoubleSpinBoxX, 0, 2 );
+  grid->addWidget( mHorizontalSliderLat, 0, 1 );
+  grid->addWidget( mDoubleSpinBoxLat, 0, 2 );
   grid->addWidget( new QLabel( tr( "Longitude" ) ), 1, 0 );
-  grid->addWidget( mHorizontalSliderY, 1, 1 );
-  grid->addWidget( mDoubleSpinBoxY, 1, 2 );
+  grid->addWidget( mHorizontalSliderLon, 1, 1 );
+  grid->addWidget( mDoubleSpinBoxLon, 1, 2 );
   grid->setColumnStretch( 1, 1 );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
@@ -51,64 +51,62 @@ QgsTopocentricWidget::QgsTopocentricWidget( QWidget *parent )
   layout->addWidget( titleLabel );
   layout->addLayout( grid );
 
-  mDoubleSpinBoxX->setRange( -90.0, 90.0 );
-  mDoubleSpinBoxX->setDecimals( 1 );
-  mHorizontalSliderX->setRange( -90, 90 );
+  mDoubleSpinBoxLat->setRange( -90.0, 90.0 );
+  mDoubleSpinBoxLat->setDecimals( 1 );
+  mHorizontalSliderLat->setRange( -90, 90 );
 
-  mDoubleSpinBoxY->setRange( -180.0, 180.0 );
-  mDoubleSpinBoxY->setDecimals( 1 );
-  mHorizontalSliderY->setRange( -180, 180 );
+  mDoubleSpinBoxLon->setRange( -180.0, 180.0 );
+  mDoubleSpinBoxLon->setDecimals( 1 );
+  mHorizontalSliderLon->setRange( -180, 180 );
 
   mEditTimer = new QTimer( this );
   mEditTimer->setSingleShot( true );
   mEditTimer->setInterval( 250 );
   connect( mEditTimer, &QTimer::timeout, this, [this]() { emit originChanged( latitude(), longitude() ); } );
 
-  connect( mHorizontalSliderX, &QSlider::valueChanged, this, [this]( int v ) {
-    whileBlocking( mDoubleSpinBoxX )->setValue( static_cast<double>( v ) );
+  connect( mHorizontalSliderLat, &QSlider::valueChanged, this, [this]( int v ) {
+    whileBlocking( mDoubleSpinBoxLat )->setValue( static_cast<double>( v ) );
     mEditTimer->start();
   } );
 
-  connect( mDoubleSpinBoxX, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double v ) {
-    whileBlocking( mHorizontalSliderX )->setValue( static_cast<int>( v ) );
+  connect( mDoubleSpinBoxLat, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double v ) {
+    whileBlocking( mHorizontalSliderLat )->setValue( static_cast<int>( v ) );
     emit originChanged( latitude(), longitude() );
   } );
 
-  connect( mHorizontalSliderY, &QSlider::valueChanged, this, [this]( int v ) {
-    whileBlocking( mDoubleSpinBoxY )->setValue( static_cast<double>( v ) );
+  connect( mHorizontalSliderLon, &QSlider::valueChanged, this, [this]( int v ) {
+    whileBlocking( mDoubleSpinBoxLon )->setValue( static_cast<double>( v ) );
     mEditTimer->start();
   } );
 
-  connect( mDoubleSpinBoxY, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double v ) {
-    whileBlocking( mHorizontalSliderY )->setValue( static_cast<int>( v ) );
+  connect( mDoubleSpinBoxLon, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double v ) {
+    whileBlocking( mHorizontalSliderLon )->setValue( static_cast<int>( v ) );
     emit originChanged( latitude(), longitude() );
   } );
 }
 
 double QgsTopocentricWidget::latitude() const
 {
-  return mDoubleSpinBoxX->value();
+  return mDoubleSpinBoxLat->value();
 }
 
 double QgsTopocentricWidget::longitude() const
 {
-  return mDoubleSpinBoxY->value();
+  return mDoubleSpinBoxLon->value();
 }
 
 void QgsTopocentricWidget::setLatitude( double latitude )
 {
-  mDoubleSpinBoxX->setValue( latitude );
+  mDoubleSpinBoxLat->setValue( latitude );
 }
 
 void QgsTopocentricWidget::setLongitude( double longitude )
 {
-  mDoubleSpinBoxY->setValue( longitude );
+  mDoubleSpinBoxLon->setValue( longitude );
 }
 
 void QgsTopocentricWidget::setDefaultOrigin( double lat, double lon )
 {
-  mDoubleSpinBoxX->setClearValue( lat );
-  mDoubleSpinBoxY->setClearValue( lon );
-  mDoubleSpinBoxX->setValue( lat );
-  mDoubleSpinBoxY->setValue( lon );
+  mDoubleSpinBoxLat->setClearValue( lat );
+  mDoubleSpinBoxLon->setClearValue( lon );
 }

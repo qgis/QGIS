@@ -46,7 +46,7 @@ class QgsTopocentricWidget : public QWidget
     //! Sets the longitude of the topocentric origin in degrees.
     void setLongitude( double longitude );
 
-    //! Sets the default origin coordinates and resets the spinboxes to those defaults.
+    //! Sets the default origin coordinates used by the clear button to reset the spinboxes.
     void setDefaultOrigin( double lat, double lon );
 
   signals:
@@ -54,10 +54,10 @@ class QgsTopocentricWidget : public QWidget
     void originChanged( double latitude, double longitude );
 
   private:
-    QgsDoubleSpinBox *mDoubleSpinBoxX = nullptr;
-    QSlider *mHorizontalSliderX = nullptr;
-    QgsDoubleSpinBox *mDoubleSpinBoxY = nullptr;
-    QSlider *mHorizontalSliderY = nullptr;
+    QgsDoubleSpinBox *mDoubleSpinBoxLat = nullptr;
+    QSlider *mHorizontalSliderLat = nullptr;
+    QgsDoubleSpinBox *mDoubleSpinBoxLon = nullptr;
+    QSlider *mHorizontalSliderLon = nullptr;
     QTimer *mEditTimer = nullptr;
 };
 

@@ -14770,7 +14770,12 @@ void QgisApp::updateCrsStatusBar()
         } );
       }
 
-      mTopocentricWidget->setDefaultOrigin( lat, lon );
+      const QgsRectangle topoBaseCrsBounds = projectCrs.topocentricBaseCrs().bounds();
+      const double defaultLat = ( topoBaseCrsBounds.yMinimum() + topoBaseCrsBounds.yMaximum() ) / 2.0;
+      const double defaultLon = ( topoBaseCrsBounds.xMinimum() + topoBaseCrsBounds.xMaximum() ) / 2.0;
+      mTopocentricWidget->setDefaultOrigin( defaultLat, defaultLon );
+      mTopocentricWidget->setLatitude( lat );
+      mTopocentricWidget->setLongitude( lon );
       mOnTheFlyProjectionStatusButton->setMenu( mTopocentricMenu );
       mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::MenuButtonPopup );
     }
