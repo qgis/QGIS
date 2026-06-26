@@ -191,6 +191,23 @@ class CORE_EXPORT QgsLayoutItemPolyline : public QgsLayoutNodesItem
      */
     double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
 
+    /**
+     * Sets the \a version of the layout item.
+     * \see version()
+     *
+     * \ since QGIS 4.2
+     */
+    void setVersion( int version );
+
+    /**
+     * Returns the version of the layout item.
+     * \see setVersion()
+     *
+     * \since QGIS 4.2
+     */
+    int version() const { return mVersion; }
+
+
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   protected:
@@ -235,6 +252,8 @@ class CORE_EXPORT QgsLayoutItemPolyline : public QgsLayoutNodesItem
 
     QColor mArrowHeadStrokeColor = Qt::black;
     QColor mArrowHeadFillColor = Qt::black;
+
+    int mVersion = 2;
 
     //! Create a default symbol.
     void createDefaultPolylineStyleSymbol();
