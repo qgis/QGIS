@@ -710,6 +710,7 @@ if(WITH_CORE)
   if(ENABLE_AI_ASSISTANT)
     find_package(onnxruntime CONFIG QUIET)
     find_package(sentencepiece CONFIG QUIET)
+    find_package(absl CONFIG QUIET)
   endif()
 
   # Master password hash and authentication encryption

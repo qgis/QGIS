@@ -686,6 +686,10 @@ if (ENABLE_AI_ASSISTANT)
     endif()
   endif()
 
+  if (TARGET absl::flags)
+    list(APPEND QGIS_AI_E5_EMBEDDING_LIBRARIES absl::flags)
+  endif()
+
   if (QGIS_AI_E5_EMBEDDINGS_AVAILABLE)
     target_compile_definitions(qgis_app PRIVATE HAVE_AI_E5_EMBEDDINGS)
     target_link_libraries(qgis_app PRIVATE ${QGIS_AI_E5_EMBEDDING_LIBRARIES})
