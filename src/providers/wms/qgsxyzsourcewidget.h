@@ -20,6 +20,7 @@
 #include "ui_qgsxyzsourcewidgetbase.h"
 
 #include "qgsprovidersourcewidget.h"
+#include "qgshttpheaders.h"
 
 #include <QVariantMap>
 
@@ -52,8 +53,8 @@ class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSou
     QString password() const;
     QString authcfg() const;
 
-    void setReferer( const QString &referer );
-    QString referer() const;
+    void setHttpHeaders( const QgsHttpHeaders &headers );
+    QgsHttpHeaders httpHeaders() const;
 
     void setTilePixelRatio( int ratio );
     int tilePixelRatio() const;

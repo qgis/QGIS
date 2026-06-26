@@ -40,6 +40,9 @@ QgsHttpHeaderWidget::QgsHttpHeaderWidget( QWidget *parent )
   // Action and interaction connections
   connect( btnAddQueryPair, &QToolButton::clicked, this, &QgsHttpHeaderWidget::addQueryPair );
   connect( btnRemoveQueryPair, &QToolButton::clicked, this, &QgsHttpHeaderWidget::removeQueryPair );
+
+  connect( mRefererLineEdit, &QLineEdit::textChanged, this, &QgsHttpHeaderWidget::changed );
+  connect( tblwdgQueryPairs, &QTableWidget::cellChanged, this, &QgsHttpHeaderWidget::changed );
 }
 
 QgsHttpHeaderWidget::~QgsHttpHeaderWidget() = default;
@@ -98,7 +101,9 @@ void QgsHttpHeaderWidget::addQueryPair()
 
 void QgsHttpHeaderWidget::removeQueryPair()
 {
+  // removing a row does not fire QTableWidget::cellChanged
   tblwdgQueryPairs->removeRow( tblwdgQueryPairs->currentRow() );
+  emit changed();
 }
 
 
