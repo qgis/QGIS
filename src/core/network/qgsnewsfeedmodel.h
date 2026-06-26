@@ -52,6 +52,7 @@ class CORE_EXPORT QgsNewsFeedModel : public QAbstractItemModel
       Image,                  //!< Optional entry image
       Link,                   //!< Optional entry URL link
       Sticky,                 //!< Whether entry is sticky
+      Published,              //!< Entry publication date
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

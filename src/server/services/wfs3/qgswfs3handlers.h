@@ -94,6 +94,12 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
      */
     bool canUpdateFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Removes the 'offset' and 'limit' query parameters from the given \a urlQuery ignoring case,
+     * and returns the modified query.
+     */
+    static QUrlQuery removeOffsetAndLimit( const QUrlQuery &urlQuery );
 };
 
 /**
@@ -134,7 +140,7 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     QRegularExpression path() const override { return QRegularExpression( R"re((.html|.json)?$)re" ); }
     std::string operationId() const override { return "getLandingPage"; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
-    std::string summary() const override { return "WFS 3.0 Landing Page"; }
+    std::string summary() const override { return "OGC API Landing Page"; }
     std::string description() const override
     {
       return "The landing page provides links to the API definition, the Conformance "
@@ -227,8 +233,8 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
 {
   public:
     QgsWfs3CollectionsItemsHandler();
-    void handleRequest( const QgsServerApiContext &context ) const override;
-    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html|/)?$)re" ); }
+    void handleRequest( const QgsServerApiContext &apiContext ) const override;
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html|\.fgb|/)?$)re" ); }
     std::string operationId() const override { return "getFeatures"; }
     std::string summary() const override { return "Retrieve features of feature collection {collectionId}."; }
     std::string description() const override
@@ -237,7 +243,7 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
              "consist of multiple feature collections. A feature collection is often a "
              "collection of features of a similar type, based on a common schema. "
              "Use content negotiation or specify a file extension to request HTML (.html) "
-             "or GeoJSON (.json).";
+             "GeoJSON (.json) or FlatGeobuf (.fgb).";
     }
     std::string linkTitle() const override { return "Retrieve the features of the collection"; }
     QStringList tags() const override { return { u"Features"_s }; }
@@ -246,8 +252,23 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
     json schema( const QgsServerApiContext &context ) const override;
 
   private:
+    struct ExportContext
+    {
+        qlonglong limit = -1;
+        qlonglong offset = 0;
+        QgsStringMap attrFilters;
+        QString filterExpression;
+        QgsRectangle filterRect;
+    };
+
     // Retrieve the fields filter parameters
     const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    // Json output
+    void writeJsonOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &apiContext, const ExportContext &exportContext ) const;
+
+    // FlatGeobuf output
+    void writeFlatGeobufOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &apiContext, const ExportContext &exportContext ) const;
 };
 
 
@@ -256,11 +277,12 @@ class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
   public:
     QgsWfs3CollectionsFeatureHandler();
     void handleRequest( const QgsServerApiContext &context ) const override;
-    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html|/)?$)re" ); }
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html|\.fgb|/)?$)re" ); }
     std::string operationId() const override { return "getFeature"; }
     std::string description() const override
     {
-      return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).";
+      return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html), GeoJSON (.json) or "
+             "FlatGeobuf (.fgb).";
     }
     std::string summary() const override { return "Retrieve a single feature with ID {featureId} from the collection with ID {collectionId}."; }
     std::string linkTitle() const override { return "Retrieve a feature"; }

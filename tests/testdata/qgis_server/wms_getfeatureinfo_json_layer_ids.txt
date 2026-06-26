@@ -4,6 +4,7 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
+      "featureType": "testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774",
       "geometry": null,
       "id": "testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774.1",
       "properties": {

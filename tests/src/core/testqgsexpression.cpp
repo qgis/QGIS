@@ -1188,6 +1188,24 @@ class TestQgsExpression : public QObject
       QTest::newRow( "scale_exponential(5,0,10,0,100,2)" ) << "scale_exponential(5,0,10,0,100,2)" << false << QVariant( 3.0303030303030303 );
       QTest::newRow( "scale_exponential(3,0,10,0,100,0.5)" ) << "scale_exponential(3,0,10,0,100,0.5)" << false << QVariant( 87.58553274682306 );
 
+      QTest::newRow( "scale_cubic_bezier(5, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(5, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 50.0 );
+      QTest::newRow( "scale_cubic_bezier(0, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(0, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 0.0 );
+      QTest::newRow( "scale_cubic_bezier(10, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(10, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 100.0 );
+      QTest::newRow( "scale_cubic_bezier(-1, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(-1, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 0.0 );
+      QTest::newRow( "scale_cubic_bezier(11, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(11, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 100.0 );
+      QTest::newRow( "scale_cubic_bezier(15, 10, 20, 100, 200, 0, 0, 1, 1)" ) << "scale_cubic_bezier(15, 10, 20, 100, 200, 0, 0, 1, 1)" << false << QVariant( 150.0 );
+      QTest::newRow( "scale_cubic_bezier(5, 0, 10, 0, 100, 0.25, 0.1, 0.25, 1.0)" ) << "round(scale_cubic_bezier(5, 0, 10, 0, 100, 0.25, 0.1, 0.25, 1.0),5)" << false << QVariant( 80.24034 );
+      QTest::newRow( "scale_cubic_bezier(5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "round(scale_cubic_bezier(5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0),5)" << false << QVariant( 50.0 );
+      QTest::newRow( "scale_cubic_bezier(5, 0, 10, 0, 100, 1.0, 0.0, 0.0, 1.0)" ) << "round(scale_cubic_bezier(5, 0, 10, 0, 100, 1.0, 0.0, 0.0, 1.0),5)" << false << QVariant( 50.0 );
+      QTest::newRow( "scale_cubic_bezier(-5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "scale_cubic_bezier(-5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" << false << QVariant( 0.0 );
+      QTest::newRow( "scale_cubic_bezier(0, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "scale_cubic_bezier(0, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" << false << QVariant( 0.0 );
+      QTest::newRow( "scale_cubic_bezier(10, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "scale_cubic_bezier(10, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" << false << QVariant( 100.0 );
+      QTest::newRow( "scale_cubic_bezier(15, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "scale_cubic_bezier(15, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" << false << QVariant( 100.0 );
+      QTest::newRow( "invalid scale_cubic_bezier(5, 10, 0, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(5, 10, 0, 0, 100, 0, 0, 1, 1)" << true << QVariant();
+      QTest::newRow( "invalid scale_cubic_bezier(5, 0, 10, 0, 100, 1.5, 0, 1, 1)" ) << "scale_cubic_bezier(5, 0, 10, 0, 100, 1.5, 0, 1, 1)" << true << QVariant();
+      QTest::newRow( "invalid scale_cubic_bezier(5, 0, 10, 0, 100, -0.5, 0, 1, 1)" ) << "scale_cubic_bezier(5, 0, 10, 0, 100, -0.5, 0, 1, 1)" << true << QVariant();
+      QTest::newRow( "invalid scale_cubic_bezier(5, 0, 10, 0, 100, 0, 0, 1, 2.0)" ) << "scale_cubic_bezier(5, 0, 10, 0, 100, 0, 0, 1, 2.0)" << true << QVariant();
+
       // cast functions
       QTest::newRow( "double to int" ) << "toint(3.2)" << false << QVariant( 3 );
       QTest::newRow( "text to int" ) << "toint('53')" << false << QVariant( 53 );
@@ -1724,6 +1742,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "relate pattern true" ) << "relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ), '**1F001**' )" << false << QVariant( true );
       QTest::newRow( "relate pattern false" ) << "relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ), '**1F002**' )" << false << QVariant( false );
       QTest::newRow( "azimuth" ) << "toint(degrees(azimuth( point_a := make_point(25, 45), point_b := make_point(75, 100)))*1000000)" << false << QVariant( 42273689 );
+      QTest::newRow( "azimuth" ) << "toint(degrees(azimuth( point1 := make_point(25, 45), point2 := make_point(75, 100)))*1000000)" << false << QVariant( 42273689 );
       QTest::newRow( "azimuth" ) << "toint(degrees( azimuth( make_point(75, 100), make_point(25,45) ) )*1000000)" << false << QVariant( 222273689 );
       QTest::newRow( "bearing 1" ) << "to_int(bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030')*1000000)" << false << QVariant( 872317 );
       QTest::newRow( "bearing 1 with CRS" ) << "to_int(bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), crs_from_text('EPSG:3857'), 'EPSG:7030')*1000000)" << false << QVariant( 872317 );
@@ -3164,6 +3183,51 @@ class TestQgsExpression : public QObject
       run_evaluation_test( exp4, evalError, result );
     }
 
+    void layer_property_type_i18n_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<QLocale::Language>( "language" );
+      QTest::addColumn<QVariant>( "expected" );
+
+      QTest::newRow( "layer_property type English" ) << u"layer_property('%1','type')"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type French" ) << u"layer_property('%1','type')"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vecteur" );
+      QTest::newRow( "layer_property type explicit translation English" ) << u"layer_property('%1','type', true)"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type explicit translation French" ) << u"layer_property('%1','type', true)"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vecteur" );
+      QTest::newRow( "layer_property type no translation English" ) << u"layer_property('%1','type', false)"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type no translation French" ) << u"layer_property('%1','type', false)"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vector" );
+    }
+
+    void layer_property_type_i18n()
+    {
+      QFETCH( QString, string );
+      QFETCH( QLocale::Language, language );
+      QFETCH( QVariant, expected );
+
+      QgsExpression exp( string );
+
+      QLocale::setDefault( language );
+      QTranslator translator;
+      const bool ok = translator.load( "qgis_" + QLocale().name(), QgsApplication::i18nPath() );
+      QVERIFY( ok );
+      QCoreApplication::installTranslator( &translator );
+
+      if ( exp.hasParserError() )
+      {
+        qDebug() << exp.parserErrorString();
+      }
+      QCOMPARE( exp.hasParserError(), false );
+
+      QVariant result = exp.evaluate();
+      if ( exp.hasEvalError() )
+      {
+        qDebug() << exp.evalErrorString();
+      }
+
+      QCOMPARE( result, expected );
+
+      QLocale::setDefault( QLocale::English );
+    }
+
     void eval_columns()
     {
       QgsFields fields;
@@ -4089,7 +4153,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( functionNodes.size(), 5 );
       QgsExpressionFunction *fd;
       QSet<QString> actualFunctions;
-      for ( const auto &f : functionNodes )
+      for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
         fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
@@ -4103,12 +4167,25 @@ class TestQgsExpression : public QObject
       QList<const QgsExpressionNodeBinaryOperator *> binaryOpsNodes( exp.findNodes<QgsExpressionNodeBinaryOperator>() );
       QCOMPARE( binaryOpsNodes.size(), 2 );
       QSet<QgsExpressionNodeBinaryOperator::BinaryOperator> actualBinaryOps;
-      for ( const auto &f : binaryOpsNodes )
+      for ( const QgsExpressionNodeBinaryOperator *f : std::as_const( binaryOpsNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntBinaryOperator );
         actualBinaryOps << f->op();
       }
       QCOMPARE( actualBinaryOps, expectedBinaryOps );
+
+      exp.setExpression( R"(if(current_value('a') in (1, 2), 'yes', 'no'))"_L1 );
+      functionNodes = exp.findNodes<QgsExpressionNodeFunction>();
+      actualFunctions.clear();
+      for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
+      {
+        QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
+        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        actualFunctions << fd->name();
+      }
+      expectedFunctions.clear();
+      expectedFunctions << u"if"_s << u"current_value"_s;
+      QCOMPARE( actualFunctions, expectedFunctions );
     }
 
     void referenced_columns_all_attributes()
@@ -4840,22 +4917,22 @@ class TestQgsExpression : public QObject
       QTest::newRow( "No Equals line" ) << "equals( $geometry, geomFromWKT('LINESTRING( 10 10, 0 0 )') )" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 0 );
       QTest::newRow( "Equals line" ) << "equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10 10 )') )" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 1 );
       QTest::newRow( "Topological equals line bad backend" )
-        << "topologically_equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10 10 )'), backend:='QGIS' )"
+        << "equals_topological( $geometry, geomFromWKT('LINESTRING( 0 0, 10 10 )'), backend:='QGIS' )"
         << QgsGeometry::fromPolylineXY( line )
         << true
-        << QVariant( 0 );
+        << QVariant();
       QTest::newRow( "Topological equals line" )
-        << "topologically_equals( $geometry, geomFromWKT('MULTILINESTRING(( 0 0, 10 10 ))'), backend:='GEOS' )"
+        << "equals_topological( $geometry, geomFromWKT('MULTILINESTRING(( 0 0, 10 10 ))'), backend:='GEOS' )"
         << QgsGeometry::fromPolylineXY( line )
         << false
         << QVariant( 1 );
       QTest::newRow( "Fuzzy equals line QGIS backend" )
-        << "fuzzy_equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10.5 10.5 )'), epsilon:=1, backend:='QGIS' )"
+        << "equals_fuzzy( $geometry, geomFromWKT('LINESTRING( 0 0, 10.5 10.5 )'), epsilon:=1, backend:='QGIS' )"
         << QgsGeometry::fromPolylineXY( line )
         << false
         << QVariant( 1 );
       QTest::newRow( "Fuzzy equals line GEOS backend" )
-        << "fuzzy_equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10.5 10.5 )'), epsilon:=1, backend:='GEOS' )"
+        << "equals_fuzzy( $geometry, geomFromWKT('LINESTRING( 0 0, 10.5 10.5 )'), epsilon:=1, backend:='GEOS' )"
         << QgsGeometry::fromPolylineXY( line )
         << false
         << QVariant( 1 );

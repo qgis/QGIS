@@ -16,11 +16,15 @@
 #include "qgs3dmapconfigwidget.h"
 
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgsambientocclusionsettingswidget.h"
+#include "qgsbloomsettings.h"
+#include "qgscolorbutton.h"
 #include "qgsdemterrainsettings.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
@@ -34,6 +38,8 @@
 #include "qgssettings.h"
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgsskyboxrenderingsettingswidget.h"
+#include "qgsskyboxsettings.h"
+#include "qgsstackedwidget.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 
@@ -61,16 +67,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( mMap->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased ) );
   mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
 
+  mComboToneMapping->addItem( tr( "Clamp HDR to SDR" ), QVariant::fromValue( Qgis::ToneMappingMethod::Clamp ) );
+  mComboToneMapping->addItem( tr( "ACES (Film Look)" ), QVariant::fromValue( Qgis::ToneMappingMethod::Aces ) );
+  mSpinExposure->setClearValue( 0 );
+
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
   int tabIndex = settings.value( u"Windows/3DMapConfig/Tab"_s, 0 ).toInt();
-  if ( map->sceneMode() == Qgis::SceneMode::Globe )
-  {
-    // Disable General tab in the dialog when in the Globe mode as in this case
-    // this tab is empty, see https://github.com/qgis/QGIS/issues/63651
-    m3DOptionsListWidget->item( 0 )->setFlags( m3DOptionsListWidget->item( 0 )->flags() & ~Qt::ItemIsEnabled );
-    tabIndex = tabIndex == 0 ? 1 : tabIndex;
-  }
 
   m3DOptionsListWidget->setCurrentRow( tabIndex );
   connect( m3DOptionsListWidget, &QListWidget::currentRowChanged, this, [this]( int index ) { m3DOptionsStackedWidget->setCurrentIndex( index ); } );
@@ -88,10 +91,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mMeshSymbolWidget = new QgsMesh3DSymbolWidget( nullptr, groupMeshTerrainShading );
   mMeshSymbolWidget->configureForTerrain();
 
-  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
-  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
+  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Perspective ) );
+  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Orthographic ) );
   connect( cboCameraProjectionType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]() {
-    spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( Qt3DRender::QCameraLens::PerspectiveProjection ) );
+    spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( QVariant::fromValue( Qgis::Map3DProjectionType::Perspective ) ) );
   } );
 
   mCameraMovementSpeed->setClearValue( 4 );
@@ -106,6 +109,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   terrainElevationOffsetSpinBox->setEnabled( map->sceneMode() == Qgis::SceneMode::Local );
   edlStrengthSpinBox->setClearValue( 1000 );
   edlDistanceSpinBox->setClearValue( 1 );
+  mSpinBloomIntensity->setClearValue( 0.05 );
+  mSpinBloomRadius->setClearValue( 5 );
 
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
@@ -174,13 +179,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   }
 
   spinCameraFieldOfView->setValue( mMap->fieldOfView() );
-  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( mMap->projectionType() ) );
+  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( QVariant::fromValue( mMap->projectionType() ) ) );
   mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( QVariant::fromValue( mMap->cameraNavigationMode() ) ) );
   mCameraMovementSpeed->setValue( mMap->cameraMovementSpeed() );
 
   chkShowLabels->setChecked( mMap->showLabels() );
-  mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
-  chkShowDebugPanel->setChecked( mMap->showDebugPanel() );
+  mFpsCounterCheckBox->setChecked( mMap->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowFPS ) );
+  chkShowDebugPanel->setChecked( mMap->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture );
@@ -189,6 +194,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   widgetLights->setLights( mMap->lightSources() );
   widgetLights->setPointLightCrs( mMap->crs() );
+  widgetLights->setMapExtent( mMap->extent() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
@@ -198,22 +204,36 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
   // ==================
-  // Page: Skybox
+  // Background (gradient / skybox)
+  comboBox->addItem( tr( "Gradient" ) );
+  comboBox->addItem( tr( "Skybox" ) );
+  connect( comboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stackedWidget, &QStackedWidget::setCurrentIndex );
+  stackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
+  const QgsAbstract3DMapBackgroundSettings *bgSettings = mMap->backgroundSettings();
+  const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( bgSettings );
+  const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( bgSettings );
+
+  mBtnGradientTopColor->setColor( gradientSettings ? gradientSettings->topColor() : QColor( 0, 128, 255 ) );
+  mBtnGradientBottomColor->setColor( gradientSettings ? gradientSettings->bottomColor() : Qt::black );
+
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
-  mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
-  groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
-  groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
+  mSkyboxSettingsWidget->setSkyboxSettings( skyboxSettings ? *skyboxSettings : QgsSkyboxSettings() );
+  pageSkybox->layout()->addWidget( mSkyboxSettingsWidget );
+
+  groupBoxBackground->setChecked( bgSettings ? true : false );
+  comboBox->setCurrentIndex( skyboxSettings ? 1 : 0 );
 
   // ==================
   // Page: Shadows
   mShadowSettingsWidget = new QgsShadowRenderingSettingsWidget( this );
-  mShadowSettingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLightCount() );
+  mShadowSettingsWidget->setLightSourceModel( widgetLights->lightSourceModel() );
   mShadowSettingsWidget->setShadowSettings( map->shadowSettings() );
   groupShadowRendering->layout()->addWidget( mShadowSettingsWidget );
-  connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSettingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
 
   connect( widgetLights, &QgsLightsWidget::lightsAdded, this, &Qgs3DMapConfigWidget::validate );
   connect( widgetLights, &QgsLightsWidget::lightsRemoved, this, &Qgs3DMapConfigWidget::validate );
+  widgetLights->setSceneMode( mMap->sceneMode() );
 
   groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 
@@ -253,6 +273,14 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // Ambient occlusion
   mAmbientOcclusionSettingsWidget->setAmbientOcclusionSettings( map->ambientOcclusionSettings() );
+
+  mBloomGroupBox->setChecked( map->bloomSettings().isEnabled() );
+  mSpinBloomIntensity->setValue( map->bloomSettings().intensity() );
+  // we arbitrarily scale the radius by 1000 to make the sizes look more reasonable in the UI
+  mSpinBloomRadius->setValue( map->bloomSettings().radius() * 1000 );
+
+  mComboToneMapping->setCurrentIndex( mComboToneMapping->findData( QVariant::fromValue( map->colorGradingSettings().toneMapping() ) ) );
+  mSpinExposure->setValue( map->colorGradingSettings().exposureAdjustment() );
 
   // ==================
   // Page: General
@@ -356,12 +384,14 @@ void Qgs3DMapConfigWidget::apply()
   }
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
-  mMap->setProjectionType( cboCameraProjectionType->currentData().value<Qt3DRender::QCameraLens::ProjectionType>() );
+  mMap->setProjectionType( cboCameraProjectionType->currentData().value<Qgis::Map3DProjectionType>() );
   mMap->setCameraNavigationMode( mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>() );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
   mMap->setShowLabels( chkShowLabels->isChecked() );
-  mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
-  mMap->setShowDebugPanel( chkShowDebugPanel->isChecked() );
+  Qgis::Map3DDebugFlags debugFlags = mMap->debugFlags();
+  debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowFPS, mFpsCounterCheckBox->isChecked() );
+  debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowDebugPanel, chkShowDebugPanel->isChecked() );
+  mMap->setDebugFlags( debugFlags );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
 
   const std::unique_ptr<QgsAbstractMaterialSettings> terrainMaterial( widgetTerrainMaterial->settings() );
@@ -369,8 +399,23 @@ void Qgs3DMapConfigWidget::apply()
     mMap->setTerrainShadingMaterial( *phongMaterial );
 
   mMap->setLightSources( widgetLights->lightSources() );
-  mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
-  mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
+
+  if ( !groupBoxBackground->isChecked() )
+  {
+    mMap->setBackgroundSettings( nullptr ); // null disables background
+  }
+  else if ( comboBox->currentIndex() == 1 )
+  {
+    mMap->setBackgroundSettings( mSkyboxSettingsWidget->toSkyboxSettings().clone() );
+  }
+  else
+  {
+    auto gradient = std::make_unique<QgsFixedGradientBackgroundSettings>();
+    gradient->setTopColor( mBtnGradientTopColor->color() );
+    gradient->setBottomColor( mBtnGradientBottomColor->color() );
+    mMap->setBackgroundSettings( gradient.release() );
+  }
+
   QgsShadowSettings shadowSettings = mShadowSettingsWidget->toShadowSettings();
   shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
   mMap->setShadowSettings( shadowSettings );
@@ -380,6 +425,18 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
 
   mMap->setAmbientOcclusionSettings( mAmbientOcclusionSettingsWidget->toAmbientOcclusionSettings() );
+
+  QgsColorGradingSettings colorSettings = mMap->colorGradingSettings();
+  colorSettings.setExposureAdjustment( mSpinExposure->value() );
+  colorSettings.setToneMapping( mComboToneMapping->currentData().value< Qgis::ToneMappingMethod >() );
+  mMap->setColorGradingSettings( colorSettings );
+
+  QgsBloomSettings bloomSettings = mMap->bloomSettings();
+  bloomSettings.setEnabled( mBloomGroupBox->isChecked() );
+  bloomSettings.setIntensity( mSpinBloomIntensity->value() );
+  // we arbitrarily scale the radius by 1000 to make the sizes look more reasonable in the UI
+  bloomSettings.setRadius( mSpinBloomRadius->value() / 1000.0 );
+  mMap->setBloomSettings( bloomSettings );
 
   Qgis::ViewSyncModeFlags viewSyncMode;
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D, mSync2DTo3DCheckbox->isChecked() );

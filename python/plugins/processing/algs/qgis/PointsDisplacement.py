@@ -210,6 +210,7 @@ class PointsDisplacement(QgisAlgorithm):
             count = len(group)
             if count == 1:
                 sink.addFeature(group[0], QgsFeatureSink.Flag.FastInsert)
+                feedback.featureAddedToSink(self.OUTPUT)
             else:
                 angleStep = fullPerimeter / count
                 if count == 2 and horizontal:
@@ -235,10 +236,12 @@ class PointsDisplacement(QgisAlgorithm):
                     f.setGeometry(QgsGeometry(point))
 
                     sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
+                    feedback.featureAddedToSink(self.OUTPUT)
                     currentAngle += angleStep
 
             current += 1
             feedback.setProgress(int(current * total))
 
         sink.finalize()
+        feedback.featureSinkFinalized(self.OUTPUT)
         return {self.OUTPUT: dest_id}

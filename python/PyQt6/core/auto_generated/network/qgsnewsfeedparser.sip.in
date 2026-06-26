@@ -49,6 +49,8 @@ Represents a single entry from a news feed.
 
         bool sticky;
 
+        QDateTime published;
+
         QDateTime expiry;
     };
 

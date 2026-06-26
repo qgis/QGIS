@@ -38,6 +38,7 @@ using namespace Qt::StringLiterals;
 QgsMapSettings::QgsMapSettings()
   : mDpi( QgsPainting::qtDefaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
+  , mEllipsoid( Qgis::geoNone() )
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
   , mFlags( Qgis::MapSettingsFlag::Antialiasing | Qgis::MapSettingsFlag::UseAdvancedEffects | Qgis::MapSettingsFlag::DrawLabeling | Qgis::MapSettingsFlag::DrawSelection )
@@ -352,6 +353,9 @@ void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString> &overr
 
 void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  if ( crs == mDestCRS )
+    return;
+
   mDestCRS = crs;
   mScaleCalculator.setMapUnits( crs.mapUnits() );
   // Since the map units have changed, force a recalculation of the scale.
@@ -365,6 +369,9 @@ QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
 
 bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
 {
+  if ( ellipsoid == mEllipsoid )
+    return true;
+
   const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
   if ( !params.valid )
   {
@@ -373,6 +380,9 @@ bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
   else
   {
     mEllipsoid = ellipsoid;
+    mScaleCalculator.setEllipsoid( ellipsoid );
+    // Since mScaleCalculator ellipsoid have changed, force a recalculation of the scale.
+    updateDerived();
     return true;
   }
 }

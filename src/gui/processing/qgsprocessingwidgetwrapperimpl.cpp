@@ -52,6 +52,7 @@
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
 #include "qgsprintlayout.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingenummodelerwidget.h"
 #include "qgsprocessingmaplayercombobox.h"
@@ -3850,6 +3851,14 @@ QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
   mButton->setVisible( false );
 }
 
+QgsProcessingPointPanel::~QgsProcessingPointPanel()
+{
+  if ( mCanvas && mPrevTool && mCanvas->mapTool() == mTool.get() )
+  {
+    mCanvas->setMapTool( mPrevTool.get() );
+  }
+}
+
 void QgsProcessingPointPanel::setMapCanvas( QgsMapCanvas *canvas )
 {
   mCanvas = canvas;
@@ -4002,7 +4011,7 @@ void QgsProcessingPointPanel::updateRubberBand()
 
   if ( !mMapPointRubberBand )
   {
-    mMapPointRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Point ) );
+    mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Point );
     mMapPointRubberBand->setZValue( 1000 );
     mMapPointRubberBand->setIcon( QgsRubberBand::ICON_X );
 
@@ -4107,7 +4116,7 @@ void QgsProcessingPointWidgetWrapper::setWidgetContext( const QgsProcessingParam
     mPanel->setMapCanvas( context.mapCanvas() );
 }
 
-void QgsProcessingPointWidgetWrapper::setDialog( QDialog *dialog )
+void QgsProcessingPointWidgetWrapper::setDialog( QWidget *dialog )
 {
   mDialog = dialog;
   if ( mPanel )
@@ -6372,7 +6381,7 @@ void QgsProcessingExtentWidgetWrapper::setWidgetContext( const QgsProcessingPara
     mExtentWidget->setMapCanvas( context.mapCanvas() );
 }
 
-void QgsProcessingExtentWidgetWrapper::setDialog( QDialog *dialog )
+void QgsProcessingExtentWidgetWrapper::setDialog( QWidget *dialog )
 {
   mDialog = dialog;
   if ( mExtentWidget && mDialog && type() != Qgis::ProcessingMode::Modeler )

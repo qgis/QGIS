@@ -18,7 +18,6 @@ from qgis.core import (
     QgsLocalDefaultSettings,
     QgsSettings,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -31,10 +30,6 @@ class TestQgsLocalDefaultSettings(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
-        QgsSettings().clear()
         start_app()
 
     def testBearingFormat(self):

@@ -11,6 +11,7 @@ Rectangle {
   
   implicitHeight: compactLayout ? 88 : 60
   color: "transparent"
+  clip: true
 
   GridLayout {
     anchors.fill: parent

@@ -31,6 +31,7 @@
 #include <QStringList>
 
 class QgsSettingsRegistryCore;
+class QgsSettingsTreeNamedListNode;
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsAnnotationItemRegistry;
@@ -178,6 +179,13 @@ class CORE_EXPORT QgsApplication : public QApplication
   static const char *QGIS_ORGANIZATION_DOMAIN;
   static const char *QGIS_APPLICATION_NAME;
 #ifndef SIP_RUN
+
+  static const QgsSettingsEntryString *settingsApplicationFullName SIP_SKIP;
+
+  static const QgsSettingsEntryStringList *settingsSkippedGdalDrivers SIP_SKIP;
+
+  static QgsSettingsTreeNamedListNode *sTreeCustomVariables SIP_SKIP;
+  static const QgsSettingsEntryVariant *settingsCustomVariable SIP_SKIP;
 
   /**
    * Constructor for QgsApplication.
@@ -510,7 +518,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * Returns the QGIS application full name.
    *
    * It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME or
-   * the /qgis/application_full_name in the QGIS config file.
+   * the app/full-name setting in the QGIS config file.
    *
    * By default it is equal to applicationName()+' '+platform()
    *
@@ -596,8 +604,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   //! Constants for endian-ness
   enum endian_t
   {
-    XDR = 0, // network, or big-endian, byte order
-    NDR = 1 // little-endian byte order
+    XDR = 0, //!< Network, or big-endian, byte order
+    NDR = 1 //!< Little-endian byte order
   };
   // clang-format on
 

@@ -26,6 +26,7 @@
 
 class QgsCelestialBody;
 class QgsProjOperation;
+class QgsSettingsEntryStringList;
 
 
 #ifndef SIP_RUN
@@ -66,6 +67,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
 {
     Q_OBJECT
   public:
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsAuthId SIP_SKIP;
+
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsWkt SIP_SKIP;
+
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsProj4 SIP_SKIP;
+
     /**
      * Constructor for QgsCoordinateReferenceSystemRegistry, with the specified \a parent object.
      */

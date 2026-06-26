@@ -18,6 +18,7 @@
 #ifndef QGSGEOPACKAGEITEMGUIPROVIDER_H
 #define QGSGEOPACKAGEITEMGUIPROVIDER_H
 
+#include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 

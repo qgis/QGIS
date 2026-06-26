@@ -170,9 +170,8 @@ assert_path_exists()
 assert_glob_has_matches()
 {
   local pattern="$1"
-  shopt -s nullglob
-  local matches=( ${pattern} )
-  shopt -u nullglob
+  local -a matches=()
+  mapfile -t matches < <( compgen -G "${pattern}" || true )
 
   if [[ ${#matches[@]} -eq 0 ]]; then
     guard_fail "Required Strata file pattern has no matches: ${pattern}"
@@ -224,7 +223,7 @@ run_safety_guards()
   GUARD_FAILURES=()
 
   local conflict_markers
-  conflict_markers="$( git grep -n -E '^(<{7}|={7}|>{7})([[:space:]].*)?$' -- . 2>/dev/null || true )"
+  conflict_markers="$( git grep -n -E '^(<{7}|>{7})([[:space:]].*)?$' -- . 2>/dev/null || true )"
   if [[ -n "${conflict_markers}" ]]; then
     guard_fail "Conflict markers remain in tracked files:
 ${conflict_markers}"

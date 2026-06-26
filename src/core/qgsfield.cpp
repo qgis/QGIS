@@ -295,6 +295,16 @@ void QgsField::setAlias( const QString &alias )
   d->alias = alias;
 }
 
+QString QgsField::customComment() const
+{
+  return d->customComment;
+}
+
+void QgsField::setCustomComment( const QString &customComment )
+{
+  d->customComment = customComment;
+}
+
 Qgis::FieldConfigurationFlags QgsField::configurationFlags() const
 {
   return d->flags;

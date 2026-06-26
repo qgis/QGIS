@@ -16,7 +16,6 @@ import tempfile
 
 from qgis.core import QgsProviderRegistry, QgsVectorLayer
 from qgis.gui import QgsProviderConnectionComboBox
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import unittest
 from utilities import start_app, unitTestDataPath
@@ -31,9 +30,6 @@ class TestQgsProviderConnectionComboBox(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
         gpkg_original_path = (

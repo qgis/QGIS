@@ -17,6 +17,8 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgselevationshadingrenderer.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfieldexpressionwidget.h"
 #include "qgsfontbutton.h"
 #include "qgslogger.h"
 #include "qgspointcloudattributebyramprendererwidget.h"
@@ -30,6 +32,7 @@
 #include "qgspointcloudrgbrendererwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+#include "qgsproperty.h"
 #include "qgsstyle.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgstextformatwidget.h"
@@ -152,6 +155,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mHorizontalTriangleThresholdSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
+  connect( mColorExpressionWidget, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPointCloudRendererPropertiesWidget::updateDataDefinedProperty );
   // show virtual point cloud options only when vpc layer is selected
   if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
   {
@@ -163,7 +167,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
     if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() ) )
     {
-      if ( vpcProvider->overview() )
+      if ( !vpcProvider->overviews().isEmpty() )
       {
         mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
         mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
@@ -208,6 +212,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
 void QgsPointCloudRendererPropertiesWidget::setContext( const QgsSymbolWidgetContext &context )
 {
+  mContext = context;
   mMapCanvas = context.mapCanvas();
   mMessageBar = context.messageBar();
   if ( mActiveWidget )
@@ -295,6 +300,13 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
   }
 
+  mColorExpressionWidget->setLayer( layer );
+  mColorExpressionWidget->registerExpressionContextGenerator( this );
+
+  mDataDefinedProperties = mLayer->renderer()->dataDefinedProperties();
+  const QgsProperty colorProperty = mDataDefinedProperties.property( QgsPointCloudRenderer::Property::Color );
+  mColorExpressionWidget->setExpression( colorProperty.expressionString() );
+
   mBlockChangedSignal = false;
 }
 
@@ -357,6 +369,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   shadingRenderer.setLightAzimuth( mDirectionalLightWidget->azimuth() );
 
   mLayer->renderer()->setElevationShadingRenderer( shadingRenderer );
+  mLayer->renderer()->setDataDefinedProperties( mDataDefinedProperties );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
@@ -411,7 +424,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
       QgsSymbolWidgetContext context;
       context.setMapCanvas( mMapCanvas );
       context.setMessageBar( mMessageBar );
-      mActiveWidget->setContext( context );
+      mActiveWidget->setContext( mContext );
     }
 
     connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::widgetChanged );
@@ -432,6 +445,17 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
     emit widgetChanged();
 }
 
+void QgsPointCloudRendererPropertiesWidget::updateDataDefinedProperty()
+{
+  const QString expression = mColorExpressionWidget->expression();
+  if ( !expression.isEmpty() )
+    mDataDefinedProperties.setProperty( QgsPointCloudRenderer::Property::Color, QgsProperty::fromExpression( expression ) );
+  else
+    mDataDefinedProperties.setProperty( QgsPointCloudRenderer::Property::Color, QgsProperty() );
+  emitWidgetChanged();
+}
+
+
 void QgsPointCloudRendererPropertiesWidget::setOverviewSwitchingScale( double scale )
 {
   mOverviewSwitchingScale->setCurrentIndex( mOverviewSwitchingScale->findData( scale ) );
@@ -440,4 +464,22 @@ void QgsPointCloudRendererPropertiesWidget::setOverviewSwitchingScale( double sc
 double QgsPointCloudRendererPropertiesWidget::overviewSwitchingScale() const
 {
   return mOverviewSwitchingScaleMap.key( mOverviewSwitchingScale->currentText() );
+}
+
+QgsExpressionContext QgsPointCloudRendererPropertiesWidget::createExpressionContext() const
+{
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
+
+  QgsExpressionContext context( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
+
+  auto pointCloudScope = std::make_unique<QgsExpressionContextScope>( tr( "Point Cloud" ) );
+  context.appendScope( pointCloudScope.release() );
+
+  for ( const QgsExpressionContextScope &scope : mContext.additionalExpressionContextScopes() )
+    context.appendScope( new QgsExpressionContextScope( scope ) );
+
+  context.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE );
+
+  return context;
 }

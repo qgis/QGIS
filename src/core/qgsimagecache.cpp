@@ -26,7 +26,8 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QApplication>
 #include <QBuffer>
@@ -95,12 +96,15 @@ void QgsImageCacheEntry::dump() const
 
 ///@endcond
 
+const QgsSettingsEntryInteger *QgsImageCache::settingsMaxImageCacheSize
+  = new QgsSettingsEntryInteger( u"max-image-size"_s, QgsSettingsTree::sTreeNetworkCache, 0, u"Maximum size (in bytes) of the image cache. If 0, a default value is calculated based on the system memory."_s, Qgis::SettingsOptions(), 0 /* minimum */ );
+
 QgsImageCache::QgsImageCache( QObject *parent )
   : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
 {
   mTemporaryDir = std::make_unique<QTemporaryDir>();
 
-  const int bytes = QgsSettings().value( u"/qgis/maxImageCacheSize"_s, 0 ).toInt();
+  const int bytes = settingsMaxImageCacheSize->value();
   if ( bytes > 0 )
   {
     mMaxCacheSize = bytes;

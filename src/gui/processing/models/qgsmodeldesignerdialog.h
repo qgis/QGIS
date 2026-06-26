@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsmodelundocommand.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessingmodelchilddependency.h"
 #include "qgsprocessingtoolboxmodel.h"
 #include "qobjectuniqueptr.h"
@@ -32,7 +33,7 @@ class QUndoView;
 class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 class QgsScreenHelper;
-class QgsProcessingAlgorithmDialogBase;
+class QgsProcessingAlgorithmWidgetBase;
 class QgsModelDesignerConfigDockWidget;
 class QgsProcessingParameterWidgetContext;
 class QgsProcessingContextGenerator;
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
  * \warning Not stable API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsModelDesignerDialogBase
+class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessingFeedbackGenerator, public Ui::QgsModelDesignerDialogBase
 {
     Q_OBJECT
   public:
@@ -115,6 +116,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     QgsModelGraphicsScene *modelScene();
 
+    QgsProcessingFeedback *createFeedback() override SIP_FACTORY;
+
     /**
      * Save action.
      *
@@ -146,7 +149,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     // cppcheck-suppress pureVirtualCall
     virtual bool saveModel( bool saveAs = false ) = 0;
     // cppcheck-suppress pureVirtualCall
-    virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 SIP_TRANSFERBACK;
+    virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 SIP_TRANSFERBACK;
 
     /**
      * Creates a new widget context appropriate for the dialog.
@@ -221,6 +224,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void showChildAlgorithmLog( const QString &childId );
     void onItemFocused( QgsModelComponentGraphicItem *item );
 
+    void cancelRunningModel();
+
   private:
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 
@@ -228,6 +233,10 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
+
+    QPointer<QgsProcessingAlgorithmWidgetBase> mAlgorithmWidget;
+
+    QVector<QPointer<QgsProcessingAlgorithmWidgetBase>> mAlgorithmWidgetsToCleanUp;
 
     QActionGroup *mToolsActionGroup = nullptr;
 
@@ -262,6 +271,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     int mBlockRepaints = 0;
 
     QgsProcessingModelResult mLastResult;
+    QSet< QString > mOutdatedChildResults;
 
     bool isDirty() const;
 

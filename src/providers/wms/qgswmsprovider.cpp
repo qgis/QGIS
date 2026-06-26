@@ -38,6 +38,7 @@
 #include "qgsgml.h"
 #include "qgsgmlschema.h"
 #include "qgslogger.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmapsettings.h"
 #include "qgsmbtiles.h"
 #include "qgsmessagelog.h"
@@ -784,9 +785,9 @@ void QgsWmsProvider::fetchOtherResTiles(
   );
 }
 
-uint qHash( QgsWmsProvider::TilePosition tp )
+size_t qHash( QgsWmsProvider::TilePosition tp )
 {
-  return ( uint ) tp.col + ( ( uint ) tp.row << 16 );
+  return ( size_t ) tp.col + ( ( size_t ) tp.row << 16 );
 }
 
 static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color )
@@ -857,7 +858,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     const QgsWmtsTileMatrix *tm = nullptr;
     std::unique_ptr<QgsWmtsTileMatrix> tempTm;
     enum QgsTileMode tileMode;
-    const bool drawCacheOnly = feedback && feedback->renderContext().testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) && dataSourceUri().contains( u"openstreetmap.org"_s );
+    const bool drawCacheOnly = feedback && feedback->renderContext().testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) && QgsMapLayerUtils::isOpenStreetMapUri( dataSourceUri(), u"wms"_s );
 
     if ( mSettings.mTiled )
     {
@@ -1812,7 +1813,7 @@ bool QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
   // metadata
   if ( mSettings.mXyz )
   {
-    if ( parsedUri.param( u"url"_s ).contains( "openstreetmap"_L1, Qt::CaseInsensitive ) )
+    if ( QgsMapLayerUtils::isOpenStreetMapUri( uri, u"wms"_s ) )
     {
       mLayerMetadata.setTitle( tr( "OpenStreetMap tiles" ) );
       mLayerMetadata.setIdentifier( tr( "OpenStreetMap tiles" ) );
@@ -1857,7 +1858,7 @@ bool QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
   if ( parsedUri.hasParam( u"tilePixelRatio"_s ) )
     tilePixelRatio = parsedUri.param( u"tilePixelRatio"_s ).toDouble();
 
-  if ( tilePixelRatio == 0 && parsedUri.param( u"url"_s ).contains( "openstreetmap"_L1, Qt::CaseInsensitive ) )
+  if ( tilePixelRatio == 0 && QgsMapLayerUtils::isOpenStreetMapUri( uri, u"wms"_s ) )
   {
     // pixel ratio of XYZ tiles served on openstreetmap.org known, set accordingly to insure
     // tile downloads are not skyrocketing on high screen/output DPI.
@@ -4956,10 +4957,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
+  QUrl tileUrl = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileUrl ) ).value<QUrl>();
 #ifdef QGISDEBUG
   int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
-#endif
-  QUrl tileUrl = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileUrl ) ).value<QUrl>();
 
   QgsDebugMsgLevel(
     u"tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 %10 url:%11"_s.arg( tileReqNo )
@@ -4974,6 +4974,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       .arg( reply->error() == QNetworkReply::NoError ? QString() : u"error: "_s + reply->errorString(), reply->url().toString() ),
     4
   );
+#endif
 
   if ( reply->error() == QNetworkReply::NoError )
   {

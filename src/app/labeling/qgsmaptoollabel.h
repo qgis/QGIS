@@ -64,13 +64,6 @@ class APP_EXPORT QgsMapToolLabel : public QgsMapToolAdvancedDigitizing
     */
     bool labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const;
 
-    enum class PropertyStatus
-    {
-      Valid,
-      DoesNotExist,
-      CurrentExpressionInvalid
-    };
-
     /**
      * Checks if labels in a layer can be rotated
      * \param rotationCol out: attribute column for data defined label rotation

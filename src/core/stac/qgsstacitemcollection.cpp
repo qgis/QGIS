@@ -15,6 +15,8 @@
 
 #include "qgsstacitemcollection.h"
 
+#include "qgsstacitem.h"
+
 #include <QString>
 
 using namespace Qt::StringLiterals;

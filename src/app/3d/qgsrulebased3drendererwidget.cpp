@@ -75,13 +75,20 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
     QgsRuleBased3DRenderer *ruleRenderer = static_cast<QgsRuleBased3DRenderer *>( r );
     mRootRule.reset( ruleRenderer->rootRule()->clone() );
   }
-  else
+  else if ( QgsAbstractVectorLayer3DRenderer *vectorRenderer = dynamic_cast< QgsAbstractVectorLayer3DRenderer * >( r ) )
   {
-    // TODO: handle the special case when switching from single symbol renderer
+    std::unique_ptr< QgsRuleBased3DRenderer > newRenderer = QgsRuleBased3DRenderer::convertFromRenderer( vectorRenderer );
+    if ( newRenderer )
+    {
+      mRootRule.reset( newRenderer->rootRule()->clone() );
+    }
+  }
+  if ( !mRootRule )
+  {
     mRootRule = std::make_unique<QgsRuleBased3DRenderer::Rule>( nullptr );
   }
 
-  mModel.reset( new QgsRuleBased3DRendererModel( mRootRule.get() ) );
+  mModel = make_qobject_unique<QgsRuleBased3DRendererModel>( mRootRule.get() );
   viewRules->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::widgetChanged );

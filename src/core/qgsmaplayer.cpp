@@ -2299,11 +2299,11 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   if ( myFile.open( QFile::ReadOnly ) )
   {
     // read file
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
     QXmlStreamReader xmlReader( &myFile );
     xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"sld"_s, u"http://www.opengis.net/sld"_s ) );
     xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"fes"_s, u"http://www.opengis.net/fes/2.0"_s ) );
     xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"ogc"_s, u"http://www.opengis.net/ogc"_s ) );
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
     const QDomDocument::ParseResult result = myDocument.setContent( &xmlReader, QDomDocument::ParseOption::UseNamespaceProcessing );
     if ( result )
     {
@@ -2316,10 +2316,7 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
       column = result.errorColumn;
     }
 #else
-    if ( myDocument.setContent( &xmlReader, true, &myErrorMessage, &line, &column ) )
-    {
-      resultFlag = true;
-    }
+    resultFlag = myDocument.setContent( &myFile, true, &myErrorMessage, &line, &column );
 #endif
     if ( !resultFlag )
       myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
@@ -2845,7 +2842,6 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   m3DRenderer.reset( renderer );
 
   emit renderer3DChanged();
-  emit repaintRequested();
   trigger3DUpdate();
 }
 

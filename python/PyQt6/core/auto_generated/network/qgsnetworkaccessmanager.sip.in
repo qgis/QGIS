@@ -30,6 +30,7 @@ Encapsulates parameters and properties of a network request.
       AttributeInitiatorClass,
       AttributeInitiatorRequestId,
       AttributeOriginalHeaders,
+      AttributeUserAgentSuffix,
     };
 
     QgsNetworkRequestParameters();

@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsabstract3dmapbackgroundsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstract3DMapBackgroundSettings
+{
+%Docstring(signature="appended")
+Base class for all background settings classes used in a 3D map view.
+
+:py:class:`QgsAbstract3DMapBackgroundSettings` subclasses are
+responsible for storing the configuration of different background types
+(skybox, gradient).
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsabstract3dmapbackgroundsettings.h"
+%End
+  public:
+    virtual ~QgsAbstract3DMapBackgroundSettings();
+
+    virtual Qgis::Map3DBackgroundType type() const = 0;
+%Docstring
+Returns the unique type for this background settings class.
+%End
+
+    virtual QgsAbstract3DMapBackgroundSettings *clone() const = 0 /Factory/;
+%Docstring
+Returns a deep copy of this background settings object.
+%End
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads settings from a DOM ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Writes settings to a DOM ``element``.
+
+.. seealso:: :py:func:`readXml`
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsabstract3dmapbackgroundsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

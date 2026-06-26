@@ -104,9 +104,6 @@ set(QGIS_APP_SRCS
   qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolscalefeature.cpp
-  qgsmaptoolselect.cpp
-  qgsmaptoolselectionhandler.cpp
-  qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsplitparts.cpp
@@ -397,6 +394,7 @@ if (WITH_3D)
     3d/qgs3dapputils.cpp
     3d/qgs3dicongenerator.cpp
     3d/qgs3dmapconfigwidget.cpp
+    3d/qgs3dmapexportwidget.cpp
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
     3d/qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp
@@ -407,25 +405,27 @@ if (WITH_3D)
     3d/qgs3dnavigationwidget.cpp
     3d/qgs3doptions.cpp
     3d/qgsannotationlayer3drendererwidget.cpp
+    3d/qgscategorized3drendererwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
     3d/qgsmaterialpreviewwidget.cpp
     3d/qgsmesh3dsymbolwidget.cpp
     3d/qgsmetalroughmaterialwidget.cpp
+    3d/qgsmetalroughtexturedmaterialwidget.cpp
     3d/qgsnullmaterialwidget.cpp
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
     3d/qgsphongmaterialwidget.cpp
     3d/qgsphongtexturedmaterialwidget.cpp
     3d/qgsrulebased3drendererwidget.cpp
+    3d/qgs3dsymbolbutton.cpp
     3d/qgssimplelinematerialwidget.cpp
     3d/qgssymbol3dwidget.cpp
     3d/qgstiledscenelayer3drendererwidget.cpp
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
-    3d/qgsmap3dexportwidget.cpp
     layout/qgslayout3dmapwidget.cpp
     3d/qgsskyboxrenderingsettingswidget.cpp
     3d/qgsshadowrenderingsettingswidget.cpp
@@ -549,7 +549,7 @@ if(QGISPOSTFIX)
 endif()
 
 set(_strata_qml_module_extra_args "")
-if(Qt6_VERSION VERSION_GREATER_EQUAL 6.5)
+if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9.0)
     list(APPEND _strata_qml_module_extra_args NO_GENERATE_EXTRA_QMLDIRS)
 endif()
 
@@ -582,6 +582,7 @@ if (ENABLE_AI_ASSISTANT)
 endif()
 if (POSTGRES_FOUND)
   target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
+  target_link_libraries(qgis_app PRIVATE PostgreSQL::PostgreSQL)
 endif()
 
 target_include_directories(qgis_app PUBLIC
@@ -683,6 +684,10 @@ if (ENABLE_AI_ASSISTANT)
     else()
       set(QGIS_AI_E5_EMBEDDINGS_AVAILABLE FALSE)
     endif()
+  endif()
+
+  if (TARGET absl::flags)
+    list(APPEND QGIS_AI_E5_EMBEDDING_LIBRARIES absl::flags)
   endif()
 
   if (QGIS_AI_E5_EMBEDDINGS_AVAILABLE)

@@ -114,7 +114,9 @@ void QgsStacDownloadAssetsDialog::accept()
         else
         {
           if ( bar )
-            bar->pushMessage( tr( "STAC asset downloaded" ), file.fileName(), Qgis::MessageLevel::Success );
+          {
+            bar->pushMessage( QString(), tr( "STAC asset downloaded to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file.fileName() ).toString(), QDir::toNativeSeparators( file.fileName() ) ), Qgis::MessageLevel::Success );
+          }
         }
       }
     } );

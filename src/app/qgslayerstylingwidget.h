@@ -55,6 +55,7 @@ class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileBasicLabelingWidget;
 class QgsAnnotationLayer;
 class QgsLayerTreeGroup;
+class QgsSettingsEntryInteger;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -68,6 +69,8 @@ class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWid
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
   public:
+    static const QgsSettingsEntryInteger *settingsStyleUndoMergeTimeout SIP_SKIP;
+
     QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last, bool triggerRepaint = true );
 
     /**
@@ -182,7 +185,6 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsDiagramWidget *mDiagramWidget = nullptr;
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
     QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
-    QgsPanelWidget *mRasterAttributeTableDisabledWidget = nullptr;
     QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
     QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;

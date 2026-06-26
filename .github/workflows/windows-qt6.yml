@@ -50,7 +50,7 @@ jobs:
           choco uninstall cmake.install
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@ea83089aa35e08e459464341fe24ad024ee2466f
+        uses: lukka/get-cmake@591817e96fcad43505fb4eae36172462abb3a42e
         with:
           cmakeVersion: 3.31.6
 
@@ -93,7 +93,7 @@ jobs:
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
-        uses: robinraju/release-downloader@daf26c55d821e836577a15f77d86ddc078948b05 #v1.12
+        uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f #v1.13
         with:
           repository: 'lexxmark/winflexbison'
           fileName: '*.zip'
@@ -101,7 +101,7 @@ jobs:
           extract: true
 
       - name: 🛍️ Setup ccache
-        uses: hendrikmuhs/ccache-action@33522472633dbd32578e909b315f5ee43ba878ce #v1.2
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 #v1.2
         with:
           max-size: 1G
           key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -142,6 +142,7 @@ jobs:
           echo "::warning::Windows code signing is disabled because Azure signing secrets/variables are not configured. Release assets will be uploaded unsigned."
 
       - name: 🌱 Install dependencies and generate project files
+        id: cmake-configure
         shell: bash
         env:
           X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
@@ -243,7 +244,7 @@ jobs:
       - name: 📤 Upload sdk
         if: ${{ env.USE_WINDOWS_SDK != 'true' }}
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
 
         with:
           name: strata-sdk-x64-windows
@@ -251,7 +252,8 @@ jobs:
             sdk/vcpkg-export-*.zip
 
       - name: 📑 Upload dep build logs
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        id: upload-build-logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
 
         if: failure()
         with:
@@ -259,12 +261,25 @@ jobs:
           path: |
             C:/src/**/*.log
 
+      - name: 🧮 Report vcpkg build failures
+        if: failure() && github.event_name == 'pull_request'
+        uses: ./.github/actions/vcpkg_build_failures_report
+        with:
+          buildtrees-dir: C:/src
+          triplet: x64-windows
+          pr: ${{ github.event.number }}
+          artifact-url: ${{ steps.upload-build-logs.outputs.artifact-url }}
+          build-status: ${{ job.status }}
+          manifest-install-log: ${{ github.workspace }}/build/vcpkg-manifest-install.log
+          commit-sha: ${{ github.event.pull_request.head.sha || github.sha }}
+
       - name: 📤 Upload bundle
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
 
         id: artifact-win64-qt6
         with:
           name: strata-windows-qt6
+          archive: false
           path: |
             build/*-win64.zip
             build/*.exe
@@ -286,5 +301,7 @@ jobs:
           body: |
             ### 🪟 Windows Qt6 builds
             Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
+            To execute locally, unzip the downloaded zip file and run `bin\qgis-bin.exe` in the extracted directory.
+            You might be prompted by Windows Defender click "Run anyway"
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}

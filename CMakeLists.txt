@@ -27,6 +27,7 @@ set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built"
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning support should be included")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+set (WITH_TRACY FALSE CACHE BOOL "Determines whether Tracy profiler support should be included")
 
 set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
 set (QGISPOSTFIX "" CACHE STRING "Optional postfix to apply to public shared objects and executables")
@@ -96,6 +97,7 @@ message(STATUS "Strata version: ${STRATA_VERSION} (${STRATA_VERSION_INT})")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
@@ -588,14 +590,19 @@ if(WITH_CORE)
   if (WITH_DRACO)
     find_package(Draco REQUIRED)
     message(STATUS "Found Draco: ${DRACO_LIBRARY} (${DRACO_VERSION})")
-    set(HAVE_DRACO TRUE)  # used in qgisconfig.h
+    set(HAVE_DRACO TRUE)  # used in qgsconfig.h
+  endif()
+
+  if (WITH_TRACY)
+    find_package(Tracy REQUIRED)
+    set(HAVE_TRACY TRUE)
   endif()
 
   #############################################################
   # search for Qt
 
   set(QT_VERSION_MAJOR 6)
-  set(QT_MIN_VERSION 6.6.0)
+  set(QT_MIN_VERSION 6.4.0)
   set(QT_VERSION_BASE "Qt6")
   set(QT_VERSION_BASE_LOWER "qt6")
 
@@ -703,6 +710,7 @@ if(WITH_CORE)
   if(ENABLE_AI_ASSISTANT)
     find_package(onnxruntime CONFIG QUIET)
     find_package(sentencepiece CONFIG QUIET)
+    find_package(absl CONFIG QUIET)
   endif()
 
   # Master password hash and authentication encryption

@@ -463,7 +463,7 @@ indicate whether the run was successful. The algorithm's
 be called when ``runResult`` is ``True``.
 %End
 
-    virtual QWidget *createCustomParametersWidget( QWidget *parent = 0 ) const /Factory/;
+    virtual QWidget *createCustomParametersWidget( QMainWindow *parent = 0 ) const /Factory/;
 %Docstring
 If an algorithm subclass implements a custom parameters widget, a copy
 of this widget should be constructed and returned by this method. The

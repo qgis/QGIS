@@ -44,7 +44,7 @@ uniform sampler2D arrowTexture;
 // Sets the arrows color
 uniform vec4 arrowsColor;
 
-#pragma include ../light.inc.frag
+#pragma include ../phong.inc.frag
 
 // modified copy from Qt source : examples/qt3d/wireframe/robustwireframe.frag
 vec4 wireframeShadeLine( const in vec4 color )
@@ -249,6 +249,10 @@ void main()
       case 1:
       case 2:
       color=colorRamp();
+      // the colors interpolated from the ramp are always SRGB colors, otherwise
+      // we get non-visually linear ramp scaling. So now we need to convert
+      // to linear for output color and light handling
+      color = vec4(pow(color.rgb, vec3(2.2)), color.a);
       break;
     };
 

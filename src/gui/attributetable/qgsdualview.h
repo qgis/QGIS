@@ -32,6 +32,7 @@ class QgsMapLayerAction;
 class QgsScrollArea;
 class QgsFieldConditionalFormatWidget;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
 class QgsSettingsEntryVariant;
 
 /**
@@ -49,6 +50,10 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryBool *settingsFeatureListHighlightFeature SIP_SKIP;
+
+    static const QgsSettingsEntryInteger *settingsAttributeTableRowCache SIP_SKIP;
+
     /**
      * The view modes, in which this widget can present information.
      * Relates to the QStackedWidget stacks.
@@ -80,16 +85,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
       ZoomToFeature, //!< The map is zoomed to contained the feature bounding-box
     };
     Q_ENUM( FeatureListBrowsingAction )
-
-#ifndef SIP_RUN
-
-    /**
-     * Settings entry for whether features are highlighted/flashed in the feature list.
-     * \since QGIS 4.0.1
-     */
-    static const QgsSettingsEntryBool *settingsFeatureListHighlightFeature;
-
-#endif
 
     /**
      * \brief Constructor

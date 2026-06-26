@@ -24,7 +24,7 @@ from qgis.gui import (
     QgsRecentCoordinateReferenceSystemsModel,
     QgsRecentCoordinateReferenceSystemsProxyModel,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -36,10 +36,6 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
-        QgsSettings().clear()
         start_app()
 
     def test_model(self):

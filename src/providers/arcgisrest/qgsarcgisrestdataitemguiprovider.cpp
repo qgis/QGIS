@@ -121,6 +121,12 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     connect( viewInfo, &QAction::triggered, this, [serviceItem] { QDesktopServices::openUrl( QUrl( serviceItem->path() ) ); } );
     menu->addAction( viewInfo );
   }
+  else if ( QgsArcGisImageServiceItem *serviceItem = qobject_cast<QgsArcGisImageServiceItem *>( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [serviceItem] { QDesktopServices::openUrl( QUrl( serviceItem->path() ) ); } );
+    menu->addAction( viewInfo );
+  }
   else if ( QgsArcGisRestParentLayerItem *layerItem = qobject_cast<QgsArcGisRestParentLayerItem *>( item ) )
   {
     if ( layerItem->allLayersMapServerUri().isValid() )
@@ -161,6 +167,13 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     menu->addSeparator();
   }
   else if ( QgsArcGisSceneServiceLayerItem *layerItem = qobject_cast<QgsArcGisSceneServiceLayerItem *>( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [layerItem] { QDesktopServices::openUrl( QUrl( layerItem->path() ) ); } );
+    menu->addAction( viewInfo );
+    menu->addSeparator();
+  }
+  else if ( QgsArcGisImageServiceLayerItem *layerItem = qobject_cast<QgsArcGisImageServiceLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
     connect( viewInfo, &QAction::triggered, this, [layerItem] { QDesktopServices::openUrl( QUrl( layerItem->path() ) ); } );

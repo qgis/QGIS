@@ -117,6 +117,9 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   setSciWidget();
   setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
+  SendScintilla( SCI_STYLESETBACK, STYLE_DEFAULT, lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ) );
+  SendScintilla( SCI_STYLESETFORE, STYLE_DEFAULT, lexerColor( QgsCodeEditorColorScheme::ColorRole::Default ) );
+
   SendScintilla( SCI_SETADDITIONALSELECTIONTYPING, 1 );
   SendScintilla( SCI_SETMULTIPASTE, 1 );
   SendScintilla( SCI_SETVIRTUALSPACEOPTIONS, SCVS_RECTANGULARSELECTION );
@@ -124,6 +127,7 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   SendScintilla( SCI_SETMARGINTYPEN, static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), SC_MARGIN_SYMBOL );
   SendScintilla( SCI_SETMARGINMASKN, static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), 1 << MARKER_NUMBER );
   setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
+
   setAnnotationDisplay( QsciScintilla::AnnotationBoxed );
 
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [this] {
@@ -165,6 +169,8 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   mLastEditTimer->setInterval( 1000 );
   connect( mLastEditTimer, &QTimer::timeout, this, &QgsCodeEditor::onLastEditTimeout );
   connect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
+
+  SendScintilla( SCI_STYLECLEARALL );
 }
 
 // Workaround a bug in QScintilla 2.8.X

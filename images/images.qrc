@@ -1066,6 +1066,7 @@
         <file>themes/default/mIconRenderOnTerrain.svg</file>
         <file>themes/default/mIconFloaterCartesian.svg</file>
         <file>themes/default/mIconFloaterEllipsoid.svg</file>
+        <file>themes/default/mIndicatorFieldComment.svg</file>
         <file>themes/default/interpolation/OutSine.svg</file>
         <file>themes/default/interpolation/OutQuint.svg</file>
         <file>themes/default/interpolation/OutQuart.svg</file>
@@ -1096,6 +1097,8 @@
         <file>themes/default/interpolation/InCubic.svg</file>
         <file>themes/default/interpolation/InCirc.svg</file>
         <file>themes/default/mIconRasterVector.svg</file>
+        <file>themes/default/mIconEsriRest.svg</file>
+        <file>themes/default/mIconImageServer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

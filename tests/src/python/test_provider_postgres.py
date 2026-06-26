@@ -57,6 +57,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
+    QgsVirtualLayerDefinition,
     QgsWkbTypes,
 )
 from qgis.gui import QgsAttributeForm, QgsGui
@@ -460,6 +461,53 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         values = {feat["pk"]: feat["txt"] for feat in vl.getFeatures()}
         expected = {1: "teeeext", 2: "teeeeeeeeeeeeeeeeeeeeeeext"}
         self.assertEqual(values, expected)
+
+    def testBufferedTransactionJsonbBytea(self):
+        # Test issue GH #65323: Buffered transaction with jsonb column fails to commit
+
+        self.execSQLCommand('DROP TABLE IF EXISTS "qgis_test"."gh_65323_jsonb_test"')
+        self.execSQLCommand(
+            'CREATE TABLE "qgis_test"."gh_65323_jsonb_test" (id serial PRIMARY KEY, data jsonb, dataj json, dataa bytea)'
+        )
+
+        p = QgsProject()
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'id\' table="qgis_test"."gh_65323_jsonb_test" sql=',
+            "gh_65323_jsonb_test",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+
+        # Setup buffered transaction
+        p.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+        p.addMapLayer(vl)
+        f1 = QgsVectorLayerUtils.createFeature(vl)
+        f1["id"] = 1
+        f1["data"] = {"key": "value"}
+        f1["dataj"] = {"key": "value"}
+        f1["dataa"] = QByteArray(b"some binary data")
+
+        f2 = QgsVectorLayerUtils.createFeature(vl)
+        f2["id"] = 2
+        f2["data"] = {"key2": "value2"}
+        f2["dataj"] = {"key2": "value2"}
+        f2["dataa"] = QByteArray(b"some other binary data")
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeature(f1))
+        self.assertTrue(vl.addFeature(f2))
+        self.assertTrue(vl.commitChanges())
+
+        # Check that the features were added
+        f1 = vl.getFeature(1)
+        self.assertEqual(f1["data"], {"key": "value"})
+        self.assertEqual(f1["dataj"], {"key": "value"})
+        self.assertEqual(f1["dataa"], QByteArray(b"some binary data"))
+        f2 = vl.getFeature(2)
+        self.assertEqual(f2["data"], {"key2": "value2"})
+        self.assertEqual(f2["dataj"], {"key2": "value2"})
+        self.assertEqual(f2["dataa"], QByteArray(b"some other binary data"))
 
     def testQueryLayers(self):
         def test_query(dbconn, query, key):
@@ -4180,6 +4228,78 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             test_for_pk_combinations(
                 ["view", "mat_view"], ["id_all_null_uuid", col_name], 7
+            )
+
+    def testVirtualLayerJoinOnUuidPk(self):
+        """joining a virtual layer on a uuid PK used to
+        return no rows because the VL provider pushed `=` constraints
+        down as setFilterFid(sqlite3_value_int(uuid_text)) == 0.
+        See QgsVirtualLayerSqliteModule::VTable::init_().
+        """
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test."uuid_join_child" CASCADE')
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test."uuid_join_parent" CASCADE')
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."uuid_join_parent" (id uuid PRIMARY KEY)'
+        )
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."uuid_join_child" '
+            "(id uuid PRIMARY KEY, fk_parent uuid)"
+        )
+        self.execSQLCommand(
+            'INSERT INTO qgis_test."uuid_join_parent" VALUES '
+            "('00000000-0000-0000-0000-000000000001'), "
+            "('00000000-0000-0000-0000-000000000002')"
+        )
+        self.execSQLCommand(
+            'INSERT INTO qgis_test."uuid_join_child" VALUES '
+            "('11111111-0000-0000-0000-000000000001', "
+            "'00000000-0000-0000-0000-000000000001'), "
+            "('11111111-0000-0000-0000-000000000002', "
+            "'00000000-0000-0000-0000-000000000002')"
+        )
+
+        def pg_layer(table):
+            vl = QgsVectorLayer(
+                self.dbconn
+                + f' sslmode=disable key=\'id\' table="qgis_test"."{table}" sql=',
+                table,
+                "postgres",
+            )
+            self.assertTrue(vl.isValid())
+            return vl
+
+        parent = pg_layer("uuid_join_parent")
+        child = pg_layer("uuid_join_child")
+        # Sanity check: the uuid `id` column must be reported as the PK,
+        # otherwise the regression scenario isn't reproduced.
+        self.assertEqual(parent.dataProvider().pkAttributeIndexes(), [0])
+
+        QgsProject.instance().addMapLayers([parent, child])
+        try:
+            d = QgsVirtualLayerDefinition()
+            d.setQuery(
+                f'SELECT p.id AS pid FROM "{child.id()}" c '
+                f'LEFT JOIN "{parent.id()}" p ON p.id = c.fk_parent'
+            )
+            d.setGeometryField("")
+            vl = QgsVectorLayer(d.toString(), "vl_join", "virtual")
+            self.assertTrue(vl.isValid(), vl.dataProvider().error().message())
+            pids = sorted(f["pid"] for f in vl.getFeatures())
+            self.assertEqual(
+                pids,
+                [
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                ],
+            )
+        finally:
+            QgsProject.instance().removeMapLayer(parent)
+            QgsProject.instance().removeMapLayer(child)
+            self.execSQLCommand(
+                'DROP TABLE IF EXISTS qgis_test."uuid_join_child" CASCADE'
+            )
+            self.execSQLCommand(
+                'DROP TABLE IF EXISTS qgis_test."uuid_join_parent" CASCADE'
             )
 
     def testChangeAttributeWithDefaultValue(self):

@@ -1,28 +1,44 @@
 #version 150
 
-uniform bool triangulate;
-
+#ifdef STYLE_COLOR_RAMP
 in float parameter;
+#endif
+#ifdef STYLE_CLASSIFICATION
 flat in int classParameter;
-
+#endif
+#ifdef STYLE_RGB
 in vec3 pointColor;
-in vec3 worldPosition; //used when points are triangulated
-in vec3 vertNorm; //used when points are triangulated
+#endif
+#ifdef TRIANGULATE
+in vec3 worldPosition;
+in vec3 vertNorm;
+#endif
 out vec4 color;
 
-// Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering, 3 : RGB, 4 : Classification
-uniform int u_renderingStyle;
+#ifdef STYLE_SINGLE_COLOR
 // Sets the unique mesh color
 uniform vec3 u_singleColor;
+#endif
+
+#if defined(STYLE_COLOR_RAMP) || defined(STYLE_CLASSIFICATION)
+// Sets the texture that stores the color ramp or classification color ramp
+uniform sampler1D u_colorRampTexture;
+#endif
+
+#ifdef STYLE_COLOR_RAMP
 // Sets the color ramp type, 0: linear, 1: discrete, 2: exact
 uniform int u_colorRampType;
-// Sets the texture that stores the color ramp
-uniform sampler1D u_colorRampTexture; //
 // Sets the color ramp value count, used to check the if not void
 uniform int u_colorRampCount;
+#endif
 
+#ifdef TRIANGULATE
+#pragma include phong.inc.frag
+#else
 #pragma include light.inc.frag
+#endif
 
+#ifdef STYLE_COLOR_RAMP
 vec4 linearColorRamp()
 {
   int colorRampSize=textureSize(u_colorRampTexture,0);
@@ -32,7 +48,6 @@ vec4 linearColorRamp()
     vec4 colorRampLine=texelFetch(u_colorRampTexture,0,0);
     return vec4( colorRampLine.yzw, 1.0f );
   }
-
 
   for (int i=0;i<(colorRampSize-1);++i)
   {
@@ -93,12 +108,6 @@ vec4 exactColorRamp()
   return vec4(0.0, 0.0, 0.0, 1.0f);
 }
 
-vec4 classification()
-{
-  vec4 colorRampLine = texelFetch( u_colorRampTexture, classParameter - 1, 0 );
-  return vec4(colorRampLine.yzw,1.0);
-}
-
 vec4 colorRamp()
 {
   if (u_colorRampCount<=0)
@@ -120,35 +129,44 @@ vec4 colorRamp()
 
   return colorRampResult;
 }
+#endif
+
+#ifdef STYLE_CLASSIFICATION
+vec4 classification()
+{
+  vec4 colorRampLine = texelFetch( u_colorRampTexture, classParameter - 1, 0 );
+  return vec4(colorRampLine.yzw,1.0);
+}
+#endif
 
 void main(void)
 {
-  switch (u_renderingStyle)
-  {
-  case 0: //  no rendering
-    color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    break;
-  case 1: // single color
+#ifdef STYLE_SINGLE_COLOR
     color = vec4(u_singleColor, 1.0f);
-    break;
-  case 2: // color ramp
+#endif
+#ifdef STYLE_COLOR_RAMP
     color = colorRamp();
-    break;
-  case 3: // RGB
+    // the colors interpolated from the ramp are always SRGB colors, otherwise
+    // we get non-visually linear ramp scaling. So now we need to convert
+    // to linear for output color and light handling
+    color = vec4(pow(color.rgb, vec3(2.2)), color.a);
+#endif
+#ifdef STYLE_RGB
+    // RGB (linear color, color has been linearised in the point data buffer)
     color = vec4(pointColor, 1.0f);
-    break;
-  case 4: // classification
+#endif
+#ifdef STYLE_CLASSIFICATION
     color = classification();
-    break;
-  }
+    // the colors retrieved from the ramp are always SRGB colors. So now we need to convert
+    // to linear for output color and light handling
+    color = vec4(pow(color.rgb, vec3(2.2)), color.a);
+#endif
 
   //Apply light
-  if (triangulate)
-  {
-      float ambianceFactor=0.15; //value defined empircally by visual check to avoid too dark scene
-      vec3 diffuseColor;
-      adModel(worldPosition, vertNorm, diffuseColor);
-      color =vec4( color.xyz * (diffuseColor+ambianceFactor), 1 );
-  }
-
+#ifdef TRIANGULATE
+  float ambianceFactor=0.15; //value defined empirically by visual check to avoid too dark scene
+  vec3 diffuseColor;
+  adModel(worldPosition, vertNorm, diffuseColor);
+  color =vec4( color.xyz * (diffuseColor+ambianceFactor), 1 );
+#endif
 }

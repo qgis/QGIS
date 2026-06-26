@@ -329,7 +329,7 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
   return context;
 }
 
-void QgsAbstractProcessingParameterWidgetWrapper::setDialog( QDialog * )
+void QgsAbstractProcessingParameterWidgetWrapper::setDialog( QWidget * )
 {}
 
 void QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )

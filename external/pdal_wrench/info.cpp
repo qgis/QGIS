@@ -103,7 +103,7 @@ static void formatCrsInfo(const std::string &crsWkt, std::string &crs, std::stri
 
 void Info::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>&)
 {
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         VirtualPointCloud vpc;
         if (!vpc.read(inputFile))

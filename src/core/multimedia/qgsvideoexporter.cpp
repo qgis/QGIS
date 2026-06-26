@@ -15,6 +15,7 @@
 
 #include "qgsvideoexporter.h"
 
+#include "qgsexception.h"
 #include "qgsfeedback.h"
 
 #include <QDirIterator>

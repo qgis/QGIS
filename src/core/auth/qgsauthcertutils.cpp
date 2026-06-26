@@ -190,7 +190,16 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath, const QString &ke
 
   const QSsl::EncodingFormat keyEncoding( sniffEncoding( keydata ) );
 
-  const std::vector<QSsl::KeyAlgorithm> algs { QSsl::KeyAlgorithm::Rsa, QSsl::KeyAlgorithm::Dsa, QSsl::KeyAlgorithm::Ec, QSsl::KeyAlgorithm::Opaque };
+  const std::vector<QSsl::KeyAlgorithm> algs {
+    QSsl::KeyAlgorithm::Rsa,
+    QSsl::KeyAlgorithm::Dsa,
+    QSsl::KeyAlgorithm::Ec,
+    QSsl::KeyAlgorithm::Opaque,
+    QSsl::KeyAlgorithm::Dh,
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 11, 0 )
+    QSsl::KeyAlgorithm::MlDsa,
+#endif
+  };
 
   for ( const auto &alg : algs )
   {
@@ -216,6 +225,11 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath, const QString &ke
           case QSsl::KeyAlgorithm::Dh:
             *algtype = u"dh"_s;
             break;
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 11, 0 )
+          case QSsl::KeyAlgorithm::MlDsa:
+            *algtype = u"mldsa"_s;
+            break;
+#endif
         }
       }
       return clientkey;

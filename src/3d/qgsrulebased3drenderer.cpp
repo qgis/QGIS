@@ -24,6 +24,7 @@
 #include "qgsfeature3dhandler_p.h"
 #include "qgsrulebasedchunkloader_p.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayer3drenderer.h"
 #include "qgsxmlutils.h"
 
 #include <QString>
@@ -409,4 +410,32 @@ void QgsRuleBased3DRenderer::readXml( const QDomElement &elem, const QgsReadWrit
   readXmlBaseProperties( elem, context );
 
   // root rule is read before class constructed
+}
+
+std::unique_ptr<QgsRuleBased3DRenderer> QgsRuleBased3DRenderer::convertFromRenderer( const QgsAbstractVectorLayer3DRenderer *renderer, QgsVectorLayer * )
+{
+  std::unique_ptr< QgsRuleBased3DRenderer > r;
+  if ( renderer->type() == "rulebased"_L1 )
+  {
+    r.reset( dynamic_cast<const QgsRuleBased3DRenderer *>( renderer )->clone() );
+  }
+  else if ( renderer->type() == "vector"_L1 )
+  {
+    const QgsVectorLayer3DRenderer *singleSymbolRenderer = dynamic_cast<const QgsVectorLayer3DRenderer *>( renderer );
+    if ( !singleSymbolRenderer )
+      return nullptr;
+
+    std::unique_ptr< QgsAbstract3DSymbol > origSymbol( singleSymbolRenderer->symbol()->clone() );
+    auto rootRule = std::make_unique< Rule >( nullptr );
+    rootRule->appendChild( new Rule( origSymbol.release() ) );
+
+    r = std::make_unique< QgsRuleBased3DRenderer >( rootRule.release() );
+  }
+
+  if ( r )
+  {
+    renderer->copyBaseProperties( r.get() );
+  }
+
+  return r;
 }

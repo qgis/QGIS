@@ -164,6 +164,7 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
                 algName=child_id,
                 configuration=component.configuration(),
             )
+            fake_dialog.hide()
 
             widget = ModelerParametersWidget(
                 algorithm,

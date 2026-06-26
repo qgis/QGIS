@@ -450,23 +450,30 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
 {
   if ( !node )
     return false;
-  if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
+
+  switch ( node->nodeType() )
   {
-    const auto constChildren = node->children();
-    for ( QgsLayerTreeNode *child : constChildren )
+    case QgsLayerTreeNode::NodeGroup:
     {
-      if ( nodeShown( child ) )
+      const auto constChildren = node->children();
+      for ( QgsLayerTreeNode *child : constChildren )
       {
-        return true;
+        if ( nodeShown( child ) )
+        {
+          return true;
+        }
       }
+      return false;
     }
-    return false;
+    case QgsLayerTreeNode::NodeLayer:
+    {
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
+      return layer && layer->isSpatial() && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
+    }
+    case QgsLayerTreeNode::NodeCustom:
+      return false;
   }
-  else
-  {
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-    return layer && layer->isSpatial() && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
-  }
+  return false;
 }
 
 QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation orientation, int role ) const

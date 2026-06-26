@@ -310,12 +310,24 @@ not.
 .. versionadded:: 4.0
 %End
 
-    QgsPointCloudIndex overview() const;
+ QgsPointCloudIndex overview() const /Deprecated="Since 4.2. Use overviews() instead."/;
 %Docstring
 Returns the overview point cloud index associated with the layer (only
 if the layer has a virtual point cloud data provider).
 
 .. versionadded:: 4.0
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~QgsPointCloudLayer.overviews` instead.
+%End
+
+    QVector<QgsPointCloudIndex> overviews() const;
+%Docstring
+Returns a list of all overview point cloud indexes associated with the
+layer (only if the layer has a virtual point cloud data provider).
+
+.. versionadded:: 4.2
 %End
 
   signals:

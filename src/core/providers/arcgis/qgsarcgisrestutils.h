@@ -53,6 +53,7 @@ class QgsCurvePolygon;
 class QgsFeature;
 class QgsLineString;
 class QgsCurve;
+class QgsSymbolConverterContext;
 
 /**
  * \ingroup core
@@ -148,16 +149,40 @@ class CORE_EXPORT QgsArcGisRestUtils
     /**
      * Converts a symbol JSON \a definition to a QgsSymbol.
      *
-     * Caller takes ownership of the returned symbol.
+     * \param definition symbol JSON definition
+     * \param context conversion context, used to collect warnings and errors encountered during conversion.
+     * \returns the converted symbol, or nullptr on failure. Caller takes ownership of the returned symbol.
+     * \note The \a context parameter was added in QGIS 4.2
      */
-    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition );
+    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition, QgsSymbolConverterContext &context );
+
+    /**
+     * Converts a symbol JSON \a definition to a QgsSymbol.
+     *
+     * \param definition symbol JSON definition
+     * \returns the converted symbol, or nullptr on failure. Caller takes ownership of the returned symbol.
+     * \deprecated QGIS 4.2. Use the overload with a QgsSymbolConverterContext argument instead.
+     */
+    Q_DECL_DEPRECATED static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition ) SIP_DEPRECATED;
 
     /**
      * Converts renderer JSON \a data to an equivalent QgsFeatureRenderer.
      *
-     * Caller takes ownership of the returned renderer.
+     * \param rendererData renderer JSON data
+     * \param context conversion context, used to collect warnings and errors encountered during conversion.
+     * \returns the converted renderer, or nullptr on failure. Caller takes ownership of the returned renderer.
+     * \note The \a context parameter was added in QGIS 4.2
      */
-    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData );
+    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context );
+
+    /**
+     * Converts renderer JSON \a data to an equivalent QgsFeatureRenderer.
+     *
+     * \param rendererData renderer JSON data
+     * \returns the converted renderer, or nullptr on failure. Caller takes ownership of the returned renderer.
+     * \deprecated QGIS 4.2. Use the overload with a QgsSymbolConverterContext argument instead.
+     */
+    Q_DECL_DEPRECATED static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData ) SIP_DEPRECATED;
 
     /**
      * Converts labeling JSON \a data to an equivalent QGIS vector labeling.
@@ -281,7 +306,85 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static Qgis::ArcGisRestServiceCapabilities serviceCapabilitiesFromString( const QString &capabilities );
 
+    /**
+     * Returns the raster data type corresponding to an ESRI \a pixelType string.
+     *
+     * \since QGIS 4.2
+     */
+    static Qgis::DataType dataTypeFromString( const QString &pixelType );
+
+#ifndef SIP_RUN
+    /**
+     * Struct representing whether the theoretical limits of a pixel type are
+     * useful for describing actual data boundaries.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    struct PixelTypeLimitUsefulness
+    {
+        //! TRUE if the theoretical minimum value is a useful data boundary (e.g., 0 for unsigned types)
+        bool minIsUseful = false;
+        //! TRUE if the theoretical maximum value is a useful data boundary (e.g., 255 for U8)
+        bool maxIsUseful = false;
+    };
+#endif
+
+    /**
+     * Returns whether the theoretical minimum and maximum values for a given ESRI
+     * \a pixelType are practically useful for representing expected data ranges.
+     *
+     * For instance, an unsigned 8-bit integer ('U8') has a useful minimum (0)
+     * and maximum (255). Conversely, floating-point types ('F32'/'F64') return FALSE
+     * because their maximum theoretical limits are too large to represent a useful
+     * indication of the actual data present in a layer.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    SIP_SKIP static PixelTypeLimitUsefulness pixelTypeLimitUsefulness( const QString &pixelType );
+
+    /**
+     * Returns the valid data range given an ESRI \a pixelType string.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    SIP_SKIP static std::optional< std::pair< double, double > > rangeForPixelType( const QString &pixelType );
+
+    /**
+     * Attempts to match arbitrary band name strings to a QGIS raster color interpretation.
+     *
+     * Since band names are free-form strings, this is a best-effort translation only.
+     *
+     * \since QGIS 4.2
+     */
+    static Qgis::RasterColorInterpretation colorInterpretationFromBandName( const QString &bandName );
+
+    /**
+     * Returns a sensible no-data value to use for the specified data \a type.
+     *
+     * \param type data type
+     * \param ok will be set to TRUE if there IS a sensible nodata value for the specified type
+     *
+     * \returns suggested nodata value, if one exists
+     *
+     * \since QGIS 4.2
+     */
+    static double defaultNoDataForDataType( Qgis::DataType type, bool &ok SIP_OUT );
+
   private:
+    /**
+     * Applies visual variables from renderer JSON \a data to a \a symbol.
+     *
+     * Currently only rotation visual variables (\c rotationInfo) are supported.
+     * Warnings and errors encountered during conversion are pushed to \a context.
+     */
+    static void applyVisualVariables( const QVariantMap &rendererData, QgsSymbol *symbol, QgsSymbolConverterContext &context );
+
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.
      */

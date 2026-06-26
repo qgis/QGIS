@@ -29,6 +29,9 @@ class QgsCoordinateReferenceSystem;
 class QgsReadWriteContext;
 class QgsCoordinateTransformContextPrivate;
 class QDomElement;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+class QgsSettingsTreeNamedListNode;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -57,6 +60,13 @@ class QDomElement;
 class CORE_EXPORT QgsCoordinateTransformContext
 {
   public:
+#ifndef SIP_RUN
+    static QgsSettingsTreeNamedListNode *sTreeCoordinateOperationsSource;
+    static QgsSettingsTreeNamedListNode *sTreeCoordinateOperationsDestination;
+    static const QgsSettingsEntryString *settingsCoordinateOperation SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsAllowFallback SIP_SKIP;
+#endif
+
     /**
      * Constructor for QgsCoordinateTransformContext.
      */

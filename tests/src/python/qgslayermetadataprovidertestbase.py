@@ -23,7 +23,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app
 from utilities import compareWkt, unitTestDataPath
 
@@ -42,9 +41,6 @@ class LayerMetadataProviderTestBase:
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
 
     def testMetadataWriteRead(self):
 

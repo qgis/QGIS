@@ -2,7 +2,7 @@
   "name": "uuid",
   "type": "function",
   "groups": ["Record and Attributes"],
-  "description": "Generates a Universally Unique Identifier (UUID) for each row using the Qt <a href='https://doc.qt.io/qt-5/quuid.html#createUuid'>QUuid::createUuid</a> method.",
+  "description": "Generates a Universally Unique Identifier (UUID) for each row using the Qt <a href='https://doc.qt.io/qt-6/quuid.html#createUuid'>QUuid::createUuid</a> method.",
   "arguments": [{
     "arg": "format",
     "optional": true,

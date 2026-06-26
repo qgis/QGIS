@@ -33,7 +33,13 @@ from qgis.core import (
     QgsProcessingFeatureBasedAlgorithm,
     QgsSettings,
 )
-from qgis.gui import QgsCodeEditorWidget, QgsErrorDialog, QgsGui, QgsShortcutsManager
+from qgis.gui import (
+    QgsCodeEditorWidget,
+    QgsErrorDialog,
+    QgsGui,
+    QgsProcessingAlgorithmWidgetBase,
+    QgsShortcutsManager,
+)
 from qgis.processing import alg as algfactory
 from qgis.PyQt import sip, uic
 from qgis.PyQt.QtCore import Qt
@@ -41,7 +47,7 @@ from qgis.PyQt.QtGui import QPalette
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout
 from qgis.utils import OverrideCursor, iface
 
-from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.script import ScriptUtils
 
 from .ScriptEdit import ScriptEdit
@@ -147,7 +153,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionToggleComment.triggered.connect(self.editor.toggleComment)
         self.editor.modificationChanged.connect(self._on_text_modified)
 
-        self.run_dialog = None
+        self.run_widget = None
 
         if filePath is not None:
             self._loadFile(filePath)
@@ -257,9 +263,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.update_dialog_title()
 
     def runAlgorithm(self):
-        if self.run_dialog and not sip.isdeleted(self.run_dialog):
-            self.run_dialog.close()
-            self.run_dialog = None
+        if self.run_widget and not sip.isdeleted(self.run_widget):
+            self.run_widget.close()
+            self.run_widget = None
 
         _locals = {}
         try:
@@ -300,21 +306,15 @@ class ScriptEditorDialog(BASE, WIDGET):
         alg.setProvider(QgsApplication.processingRegistry().providerById("script"))
         alg.initAlgorithm()
 
-        self.run_dialog = alg.createCustomParametersWidget(self)
-        if not self.run_dialog:
-            self.run_dialog = AlgorithmDialog(alg, parent=self)
+        self.run_widget = alg.createCustomParametersWidget(self)
+        if not self.run_widget:
+            self.run_widget = AlgorithmWidget(
+                alg,
+                parent=self,
+                flags=QgsProcessingAlgorithmWidgetBase.WidgetFlag.NoDocking,
+            )
 
-        canvas = iface.mapCanvas()
-        prevMapTool = canvas.mapTool()
-
-        self.run_dialog.show()
-
-        if canvas.mapTool() != prevMapTool:
-            try:
-                canvas.mapTool().reset()
-            except:
-                pass
-            canvas.setMapTool(prevMapTool)
+        self.run_widget.show()
 
     def _loadFile(self, filePath):
 

@@ -47,7 +47,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
     Q_OBJECT
   public:
     //! Constructor
-    QgsTessellatedPolygonGeometry( bool _withNormals = true, bool invertNormals = false, bool addBackFaces = false, bool addTextureCoords = false, QNode *parent = nullptr );
+    QgsTessellatedPolygonGeometry( bool _withNormals = true, bool invertNormals = false, bool addBackFaces = false, bool addTextureCoords = false, bool withTangents = false, QNode *parent = nullptr );
 
     //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
     bool invertNormals() const { return mInvertNormals; }
@@ -102,6 +102,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
   private:
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mNormalAttribute = nullptr;
+    Qt3DCore::QAttribute *mTangentAttribute = nullptr;
     Qt3DCore::QAttribute *mTextureCoordsAttribute = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
     Qt3DCore::QBuffer *mIndexBuffer = nullptr;
@@ -114,6 +115,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
     bool mAddTextureCoords = false;
+    bool mWithTangents = false;
 };
 
 #endif // QGSTESSELLATEDPOLYGONGEOMETRY_H

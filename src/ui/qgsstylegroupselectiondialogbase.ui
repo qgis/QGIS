@@ -68,21 +68,5 @@
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>SymbolsGroupSelectionDialogBase</sender>
-   <signal>destroyed()</signal>
-   <receiver>SymbolsGroupSelectionDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>226</x>
-     <y>173</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>226</x>
-     <y>173</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
 </ui>

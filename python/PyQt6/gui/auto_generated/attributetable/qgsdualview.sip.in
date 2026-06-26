@@ -29,6 +29,8 @@ the currently selected feature are shown in a form.
 #include "qgsdualview.h"
 %End
   public:
+
+
     enum ViewMode /BaseType=IntEnum/
     {
 
@@ -44,7 +46,6 @@ the currently selected feature are shown in a form.
       PanToFeature,
       ZoomToFeature,
     };
-
 
     explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
 %Docstring

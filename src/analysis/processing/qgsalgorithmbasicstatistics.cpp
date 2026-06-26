@@ -197,7 +197,10 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
     outputs = calculateStringStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback );
   }
   if ( sink )
+  {
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
+  }
 
   if ( !outputHtml.isEmpty() )
   {
@@ -314,6 +317,10 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics(
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
     }
+    else
+    {
+      feedback->featureAddedToSink( u"OUTPUT"_s );
+    }
   }
 
   return outputs;
@@ -376,6 +383,10 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics(
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
+    }
+    else
+    {
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     }
   }
 
@@ -451,6 +462,10 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics(
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
+    }
+    else
+    {
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     }
   }
 

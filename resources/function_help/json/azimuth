@@ -2,12 +2,12 @@
   "name": "azimuth",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the north-based azimuth as the angle in radians measured clockwise from the vertical on point_a to point_b.",
+  "description": "Returns the north-based azimuth as the angle in radians measured clockwise from the vertical on point1 to point2.",
   "arguments": [{
-    "arg": "point_a",
+    "arg": "point1",
     "description": "point geometry"
   }, {
-    "arg": "point_b",
+    "arg": "point2",
     "description": "point geometry"
   }],
   "examples": [{

@@ -58,16 +58,22 @@ class QgsExtrudeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 #endif
 
   private:
+#ifdef WITH_SFCGAL
     double mExtrudeX = 0.0;
     bool mDynamicExtrudeX = false;
+#endif
     QgsProperty mExtrudeXProperty;
 
+#ifdef WITH_SFCGAL
     double mExtrudeY = 0.0;
     bool mDynamicExtrudeY = false;
+#endif
     QgsProperty mExtrudeYProperty;
 
+#ifdef WITH_SFCGAL
     double mExtrudeZ = 0.0;
     bool mDynamicExtrudeZ = false;
+#endif
     QgsProperty mExtrudeZProperty;
 };
 

@@ -14,10 +14,8 @@ __copyright__ = "Copyright 2018, GISCE-TI S.L."
 import json
 import os
 import unittest
-import uuid
 
 from pyplugin_installer.plugindependencies import find_dependencies
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -32,9 +30,6 @@ class PluginDependenciesTest(QgisTestCase):
         """Runs at start."""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS")
-        QCoreApplication.setOrganizationDomain("qgis.org")
-        QCoreApplication.setApplicationName(f"QGIS-TEST-{uuid.uuid1()}")
         qgis_app = start_app()
 
         # Installed plugins

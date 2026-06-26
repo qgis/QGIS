@@ -43,9 +43,10 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, publ
      * \param layer the vector layer associated to the series
      * \param index the series index
      * \param seriesDetails the series details
+     * \param yAxisOnly when TRUE, the X axis widget will be hidden (since QGIS 4.2)
      * \param parent the parent widget
      */
-    QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent = nullptr );
+    QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, bool yAxisOnly = false, QWidget *parent = nullptr );
 
     //! Returns the series index
     int index() const;
@@ -73,6 +74,7 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, publ
   private:
     QPointer<QgsVectorLayer> mVectorLayer;
     int mIndex = 0;
+    bool mYAxisOnly = false;
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };

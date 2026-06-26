@@ -557,11 +557,11 @@ Writes a layer out to a vector file.
 
 :return: - Error message code, or QgsVectorFileWriter.NoError if the
            write operation was successful
+         - errorMessage: the error message text, if an error occurs
+           while writing the layer
          - newFilename: potentially modified file name (output
            parameter)
          - newLayer: potentially modified layer name (output parameter)
-         - errorMessage: the error message text, if an error occurs
-           while writing the layer
 
 .. versionadded:: 3.20
 %End

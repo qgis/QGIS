@@ -123,11 +123,20 @@ std::unique_ptr<QgsFillSymbol> QgsSymbolConverterEsriRest::parseEsriFillSymbolJs
   const QColor fillColor = convertColor( symbolData.value( u"color"_s ) );
   const Qt::BrushStyle brushStyle = convertFillStyle( symbolData.value( u"style"_s ).toString() );
 
-  const QVariantMap outlineData = symbolData.value( u"outline"_s ).toMap();
-  const QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
-  const Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
-  bool ok = false;
-  const double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
+  QColor lineColor;
+  Qt::PenStyle penStyle = Qt::NoPen;
+  double penWidthInPoints = 0;
+
+  // Check if outline is null - ArcGIS services may return "outline": null
+  const QVariant outlineVariant = symbolData.value( u"outline"_s );
+  if ( !QgsVariantUtils::isNull( outlineVariant ) )
+  {
+    const QVariantMap outlineData = outlineVariant.toMap();
+    lineColor = convertColor( outlineData.value( u"color"_s ) );
+    penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
+    bool ok = false;
+    penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
+  }
 
   QgsSymbolLayerList layers;
   auto fillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
@@ -170,14 +179,19 @@ std::unique_ptr<QgsFillSymbol> QgsSymbolConverterEsriRest::parseEsriPictureFillS
   fillLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( fillLayer.release() );
 
-  const QVariantMap outlineData = symbolData.value( u"outline"_s ).toMap();
-  const QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
-  const Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
-  const double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
+  // Check if outline is null - ArcGIS services may return "outline": null
+  const QVariant outlineVariant = symbolData.value( u"outline"_s );
+  if ( !QgsVariantUtils::isNull( outlineVariant ) )
+  {
+    const QVariantMap outlineData = outlineVariant.toMap();
+    const QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
+    const Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
+    const double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
 
-  auto lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
-  lineLayer->setWidthUnit( Qgis::RenderUnit::Points );
-  layers.append( lineLayer.release() );
+    auto lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
+    lineLayer->setWidthUnit( Qgis::RenderUnit::Points );
+    layers.append( lineLayer.release() );
+  }
 
   auto symbol = std::make_unique< QgsFillSymbol >( layers );
   return symbol;
@@ -218,10 +232,19 @@ std::unique_ptr<QgsMarkerSymbol> QgsSymbolConverterEsriRest::parseEsriMarkerSymb
   const double xOffset = symbolData.value( u"xoffset"_s ).toDouble();
   const double yOffset = symbolData.value( u"yoffset"_s ).toDouble();
 
-  const QVariantMap outlineData = symbolData.value( u"outline"_s ).toMap();
-  const QColor lineColor = convertColor( outlineData.value( u"color"_s ) );
-  const Qt::PenStyle penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
-  double penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
+  QColor lineColor;
+  Qt::PenStyle penStyle = Qt::NoPen;
+  double penWidthInPoints = 0;
+
+  // Check if outline is null - ArcGIS services may return "outline": null
+  const QVariant outlineVariant = symbolData.value( u"outline"_s );
+  if ( !QgsVariantUtils::isNull( outlineVariant ) )
+  {
+    const QVariantMap outlineData = outlineVariant.toMap();
+    lineColor = convertColor( outlineData.value( u"color"_s ) );
+    penStyle = convertLineStyle( outlineData.value( u"style"_s ).toString() );
+    penWidthInPoints = outlineData.value( u"width"_s ).toDouble( &ok );
+  }
 
   QgsSymbolLayerList layers;
   auto markerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, sizeInPoints, angleCW, Qgis::ScaleMethod::ScaleArea, fillColor, lineColor );

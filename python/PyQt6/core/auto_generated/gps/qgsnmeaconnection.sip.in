@@ -70,6 +70,7 @@ process HDT sentence
 %Docstring
 process HCHDG sentence
 %End
+
 };
 
 /************************************************************************

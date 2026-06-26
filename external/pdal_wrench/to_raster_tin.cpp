@@ -194,7 +194,7 @@ std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double resoluti
 
 void ToRasterTin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // using spatial processing
 

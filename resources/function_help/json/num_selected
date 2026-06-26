@@ -6,8 +6,7 @@
   "arguments": [{
     "arg": "layer",
     "optional": true,
-    "default": "current layer",
-    "description": "The layer (or its id or name) on which the selection will be checked."
+    "description": "The layer (or its id or name) on which the selection will be checked. If not specified, the current layer is used."
   }],
   "examples": [{
     "expression": "num_selected()",

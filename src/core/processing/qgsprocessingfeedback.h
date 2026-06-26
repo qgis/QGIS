@@ -21,6 +21,8 @@
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 
+#include <QMap>
+
 class QgsProcessingProvider;
 class QgsProcessingAlgorithm;
 class QgsProcessingContext;
@@ -52,6 +54,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * setProgress() to provide detailed progress reports, such as "Transformed
      * 4 of 5 layers".
      * \see setProgress()
+     * \see progressTextChanged()
      */
     virtual void setProgressText( const QString &text );
 
@@ -59,6 +62,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * Reports that the algorithm encountered an \a error while executing.
      *
      * If \a fatalError is TRUE then the error prevented the algorithm from executing.
+     *
+     * \see errorReported()
      */
     virtual void reportError( const QString &error, bool fatalError = false );
 
@@ -66,6 +71,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * Pushes a warning informational message from the algorithm. This
      * should only be used sparsely as to maintain the importance of visual
      * queues associated to this type of message.
+     *
+     * \see warningPushed()
      * \see pushInfo()
      * \see pushCommandInfo()
      * \see pushDebugInfo()
@@ -79,6 +86,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * be used to report feedback which is neither a status report or an
      * error, such as "Found 47 matching features".
      *
+     * \see infoPushed()
      * \see pushFormattedMessage()
      * \see pushWarning()
      * \see pushCommandInfo()
@@ -93,6 +101,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * This can be used to push formatted HTML messages to the feedback object.
      * A plain \a text version of the message must also be specified.
      *
+     * \see formattedMessagePushed()
      * \see pushInfo()
      * \see pushWarning()
      * \see pushCommandInfo()
@@ -107,6 +116,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * Pushes an informational message containing a command from the algorithm.
      * This is usually used to report commands which are executed in an external
      * application or as subprocesses.
+     *
+     * \see commandInfoPushed()
      * \see pushWarning()
      * \see pushInfo()
      * \see pushDebugInfo()
@@ -117,6 +128,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     /**
      * Pushes an informational message containing debugging helpers from
      * the algorithm.
+     *
+     * \see debugInfoPushed()
      * \see pushWarning()
      * \see pushInfo()
      * \see pushCommandInfo()
@@ -127,6 +140,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     /**
      * Pushes a console feedback message from the algorithm. This is used to
      * report the output from executing an external command or subprocess.
+     *
+     * \see consoleInfoPushed()
      * \see pushWarning()
      * \see pushInfo()
      * \see pushDebugInfo()
@@ -163,6 +178,132 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      */
     virtual QString textLog() const;
 
+    /**
+     * Reports that a feature source was retrieved for the specified algorithm input parameter.
+     *
+     * \see sourceLoaded()
+     * \since QGIS 4.2
+     */
+    void reportSourceLoaded( const QString &parameterName, long long featureCount );
+
+    /**
+     * Reports that a feature was added to the the sink associated with the specified algorithm \a output.
+     *
+     * \see sinkFeatureCountChanged()
+     * \see featureSinkFinalized()
+     * \since QGIS 4.2
+     */
+    void featureAddedToSink( const QString &output );
+
+    /**
+     * Reports that a feature sink has been finalized.
+     *
+     * The \a output argument specifies the associated algorithm output name.
+     *
+     * This will cause an immediate emission of sinkFeatureCountChanged() signal with the final sink size,
+     * even if it is zero.
+     *
+     * \see featureAddedToSink()
+     * \see sinkFeatureCountChanged()
+     * \since QGIS 4.2
+     */
+    void featureSinkFinalized( const QString &output );
+
+    /**
+     * Resets all stored feature sink counts.
+     *
+     * \since QGIS 4.2
+     */
+    void resetFeatureSinkCounts();
+
+  signals:
+
+    /**
+     * Emitted when the progress \a text is changed.
+     *
+     * \see setProgressText()
+     * \since QGIS 4.2
+     */
+    void progressTextChanged( const QString &text );
+
+    /**
+     * Emitted when an error is reported.
+     *
+     * \see reportError()
+     * \since QGIS 4.2
+     */
+    void errorReported( const QString &text, bool fatalError );
+
+    /**
+     * Emitted when an warning is pushed.
+     *
+     * \see pushWarning()
+     * \since QGIS 4.2
+     */
+    void warningPushed( const QString &text );
+
+    /**
+     * Emitted when information \a text is pushed.
+     *
+     * \see pushInfo()
+     * \since QGIS 4.2
+     */
+    void infoPushed( const QString &text );
+
+    /**
+     * Emitted when command information \a text is pushed.
+     *
+     * \see pushCommandInfo()
+     * \since QGIS 4.2
+     */
+    void commandInfoPushed( const QString &text );
+
+    /**
+     * Emitted when debug information \a text is pushed.
+     *
+     * \see pushDebugInfo()
+     * \since QGIS 4.2
+     */
+    void debugInfoPushed( const QString &text );
+
+    /**
+     * Emitted when console information \a text is pushed.
+     *
+     * \see pushConsoleInfo()
+     * \since QGIS 4.2
+     */
+    void consoleInfoPushed( const QString &text );
+
+    /**
+     * Emitted when a formatted \a html message is pushed.
+     *
+     * \see pushFormattedMessage()
+     * \since QGIS 4.2
+     */
+    void formattedMessagePushed( const QString &html );
+
+    /**
+     * Emitted when the count of features pushed to a sink has changed.
+     *
+     * The \a output argument specifies the associated algorithm output name.
+     *
+     * \note For performance, this signal is not emitted for every individual feature
+     * added to the sink. It is instead emitted only once for every 100 features added.
+     *
+     * \see featureAddedToSink()
+     * \see featureSinkFinalized()
+     * \since QGIS 4.2
+     */
+    void sinkFeatureCountChanged( const QString &output, long long featureCount );
+
+    /**
+     * Emitted when a feature source was retrieved for the specified algorithm input parameter.
+     *
+     * \see reportSourceLoaded()
+     * \since QGIS 4.2
+     */
+    void sourceLoaded( const QString &parameterName, long long featureCount );
+
   private:
     void log( const QString &htmlMessage, const QString &textMessage );
 
@@ -170,6 +311,14 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     QString mHtmlLog;
     QString mTextLog;
     int mMessageLoggedCount = 0;
+
+    struct SinkStats
+    {
+        long long featureCount = 0;
+        long long countAtLastSignal = 0;
+    };
+
+    QMap< QString, SinkStats > mSinkFeatureCounts;
 };
 
 
@@ -228,6 +377,7 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
 
     QString htmlLog() const override;
     QString textLog() const override;
+
   private slots:
 
     void updateOverallProgress( double progress );

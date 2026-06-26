@@ -18,6 +18,7 @@
 #include <limits>
 
 #include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
 #include "qgsdemterraingenerator.h"
@@ -107,6 +108,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   }
 
   Qgs3DMapSettings *map = terrain()->mapSettings();
+  Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( map );
   QgsChunkNodeId nodeId = mNode->tileId();
   QgsRectangle extent = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
   double side = extent.width();
@@ -121,7 +123,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
 
   // create material
 
-  createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
+  createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty(), context );
 
   // create transform
   QgsGeoTransform *transform = new QgsGeoTransform;
@@ -179,7 +181,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
 {
   provider->moveToThread( QThread::currentThread() );
 
-  QgsEventTracing::ScopedEvent e( u"3D"_s, u"DEM"_s );
+  QgsScopedEvent e( u"3D"_s, u"DEM"_s );
 
   // TODO: use feedback object? (but GDAL currently does not support cancellation anyway)
   QgsRasterInterface *input = provider;

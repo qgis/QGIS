@@ -297,6 +297,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %{_libdir}/libqgispython.so.*
 %{_datadir}/%{name}/python/
 %{python3_sitearch}/%{name}/
+%{python3_sitearch}/%{name}-%{_version}.dist-info/
 %{python3_sitearch}/PyQt6/uic/widget-plugins/
 %exclude %{python3_sitearch}/%{name}/server/
 %exclude %{python3_sitearch}/%{name}/_server.so

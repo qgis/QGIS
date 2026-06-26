@@ -20,7 +20,8 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsreadwritecontext.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgsunittypes.h"
 
 #include <QString>
@@ -55,20 +56,22 @@ void QgsLayoutGridSettings::setOffset( const QgsLayoutPoint &offset )
   mLayout->undoStack()->endCommand();
 }
 
+const QgsSettingsEntryString *QgsLayoutGridSettings::settingsGridStyle
+  = new QgsSettingsEntryString( u"grid-style"_s, QgsSettingsTree::sTreeLayout, u"Dots"_s, u"Default rendering style for the layout designer grid. Accepted values are \"Solid\", \"Dots\" or \"Crosses\"."_s );
+const QgsSettingsEntryColor *QgsLayoutGridSettings::settingsGridColor
+  = new QgsSettingsEntryColor( u"grid-color"_s, QgsSettingsTree::sTreeLayout, QColor( 190, 190, 190, 100 ), u"Default color used to draw the layout designer grid."_s );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridResolution
+  = new QgsSettingsEntryDouble( u"resolution"_s, QgsSettingsTree::sTreeLayoutGrid, 10.0, u"Default grid resolution (in millimeters) for newly created layouts."_s );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetX
+  = new QgsSettingsEntryDouble( u"offset-x"_s, QgsSettingsTree::sTreeLayoutGrid, 0, u"Default grid horizontal offset (in millimeters) for newly created layouts."_s );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetY
+  = new QgsSettingsEntryDouble( u"offset-y"_s, QgsSettingsTree::sTreeLayoutGrid, 0, u"Default grid vertical offset (in millimeters) for newly created layouts."_s );
+
 void QgsLayoutGridSettings::loadFromSettings()
 {
   //read grid style, grid color and pen width from settings
-  const QgsSettings s;
-
-  QString gridStyleString;
-  gridStyleString = s.value( u"LayoutDesigner/gridStyle"_s, "Dots", QgsSettings::Gui ).toString();
-
-  int gridRed, gridGreen, gridBlue, gridAlpha;
-  gridRed = s.value( u"LayoutDesigner/gridRed"_s, 190, QgsSettings::Gui ).toInt();
-  gridGreen = s.value( u"LayoutDesigner/gridGreen"_s, 190, QgsSettings::Gui ).toInt();
-  gridBlue = s.value( u"LayoutDesigner/gridBlue"_s, 190, QgsSettings::Gui ).toInt();
-  gridAlpha = s.value( u"LayoutDesigner/gridAlpha"_s, 100, QgsSettings::Gui ).toInt();
-  const QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
+  const QString gridStyleString = settingsGridStyle->value();
+  const QColor gridColor = settingsGridColor->value();
 
   mGridPen.setColor( gridColor );
   mGridPen.setWidthF( 0 );
@@ -87,10 +90,8 @@ void QgsLayoutGridSettings::loadFromSettings()
     mGridStyle = StyleLines;
   }
 
-  mGridResolution = QgsLayoutMeasurement( s.value( u"LayoutDesigner/defaultSnapGridResolution"_s, 10.0, QgsSettings::Gui ).toDouble(), Qgis::LayoutUnit::Millimeters );
-  //  mSnapToleranceSpinBox->setValue( mSettings->value( u"LayoutDesigner/defaultSnapTolerancePixels"_s, 5, QgsSettings::Gui ).toInt() );
-  mGridOffset
-    = QgsLayoutPoint( s.value( u"LayoutDesigner/defaultSnapGridOffsetX"_s, 0, QgsSettings::Gui ).toDouble(), s.value( u"LayoutDesigner/defaultSnapGridOffsetY"_s, 0, QgsSettings::Gui ).toDouble(), Qgis::LayoutUnit::Millimeters );
+  mGridResolution = QgsLayoutMeasurement( settingsGridResolution->value(), Qgis::LayoutUnit::Millimeters );
+  mGridOffset = QgsLayoutPoint( settingsGridOffsetX->value(), settingsGridOffsetY->value(), Qgis::LayoutUnit::Millimeters );
 }
 
 bool QgsLayoutGridSettings::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const

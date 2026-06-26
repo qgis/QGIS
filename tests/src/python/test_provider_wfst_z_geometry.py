@@ -70,10 +70,6 @@ class TestPyQgsWfsZGeometries(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsWfsZGeometries.com")
-        QCoreApplication.setApplicationName("TestPyQgsWfsZGeometries")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is

@@ -21,6 +21,10 @@
 
 #define SIP_NO_FILE
 
+class QgsMetalRoughMaterialSettings;
+class QgsMetalRoughMaterial;
+
+
 /**
  * \ingroup qgis_3d
  * \brief 3D handler for the PBR metal rough material.
@@ -35,9 +39,17 @@ class _3D_EXPORT QgsMetalRoughMaterial3DHandler : public QgsAbstractMaterial3DHa
     QgsMetalRoughMaterial3DHandler() = default;
 
     QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const override;
-    QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
-    void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
+    QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override;
+    QgsMaterial *toInstancedMaterial(
+      const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform = QMatrix4x4()
+    ) const override;
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
+
+    QByteArray dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const override;
+    void applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
+
+  private:
+    static void applySettingsToMaterial( const QgsMetalRoughMaterialSettings *metalRoughSettings, QgsMetalRoughMaterial *material, const QgsMaterialContext &context );
 };
 
 

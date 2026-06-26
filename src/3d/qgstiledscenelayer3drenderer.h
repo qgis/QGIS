@@ -53,19 +53,6 @@ class _3D_EXPORT QgsTiledSceneLayer3DRendererMetadata : public Qgs3DRendererAbst
  */
 class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
 {
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == "tiledscene"_L1 )
-    {
-      sipType = sipType_QgsTiledSceneLayer3DRenderer;
-    }
-    else
-    {
-      sipType = 0;
-    }
-  SIP_END
-#endif
-
   public:
     QgsTiledSceneLayer3DRenderer();
 

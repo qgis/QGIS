@@ -197,19 +197,34 @@ QString QgsMapLayerUtils::launderLayerName( const QString &name )
 
 bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
 {
-  if ( layer->providerType() == "wms"_L1 )
+  if ( !layer )
   {
-    if ( const QgsProviderMetadata *metadata = layer->providerMetadata() )
+    return false;
+  }
+
+  return QgsMapLayerUtils::isOpenStreetMapUri( layer->source(), layer->providerType() );
+}
+
+bool QgsMapLayerUtils::isOpenStreetMapUri( const QString &uri, const QString &providerType )
+{
+  QUrl url;
+  if ( providerType == "wms"_L1 )
+  {
+    if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType ) )
     {
-      QVariantMap details = metadata->decodeUri( layer->source() );
-      QUrl url( details.value( u"url"_s ).toString() );
-      if ( url.host().endsWith( ".openstreetmap.org"_L1 ) || url.host().endsWith( ".osm.org"_L1 ) )
-      {
-        return true;
-      }
+      QVariantMap details = metadata->decodeUri( uri );
+      url = QUrl( details.value( u"url"_s ).toString() );
     }
   }
-  return false;
+  else if ( providerType == "xyzvectortiles"_L1 )
+  {
+    if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType ) )
+    {
+      QVariantMap details = metadata->decodeUri( uri );
+      url = QUrl( details.value( u"url"_s ).toString() );
+    }
+  }
+  return !url.isEmpty() && ( url.host().endsWith( ".openstreetmap.org"_L1 ) || url.host().endsWith( ".osm.org"_L1 ) );
 }
 
 QString QgsMapLayerUtils::layerTypeToString( Qgis::LayerType type )

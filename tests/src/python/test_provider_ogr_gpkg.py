@@ -331,10 +331,6 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsOGRProviderGpkg.com")
-        QCoreApplication.setApplicationName("TestPyQgsOGRProviderGpkg")
-        QgsSettings().clear()
         start_app()
 
         # Create test layer
@@ -3929,6 +3925,18 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
                 dp.lastError(),
                 "wrong data type for attribute int_field of feature 2: Got QString, expected int",
             )
+
+    def testListFieldDomainsCapability(self):
+        """GeoPackage provider should report ListFieldDomains capability"""
+        srcpath = os.path.join(TEST_DATA_DIR, "provider")
+        srcfile = os.path.join(srcpath, "geopackage.gpkg")
+
+        vl = QgsVectorLayer(f"{srcfile}|layername=geopackage", "test", "ogr")
+        self.assertTrue(vl.isValid())
+        self.assertTrue(
+            vl.dataProvider().capabilities()
+            & Qgis.VectorProviderCapability.ReadFieldDomains
+        )
 
 
 if __name__ == "__main__":

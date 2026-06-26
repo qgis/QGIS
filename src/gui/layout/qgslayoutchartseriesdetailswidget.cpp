@@ -26,12 +26,19 @@
 
 using namespace Qt::StringLiterals;
 
-QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent )
+QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, bool yAxisOnly, QWidget *parent )
   : QgsPanelWidget( parent )
   , mVectorLayer( layer )
   , mIndex( index )
+  , mYAxisOnly( yAxisOnly )
 {
   setupUi( this );
+
+  if ( mYAxisOnly )
+  {
+    mXExpressionWidget->setVisible( false );
+    xExpressionLabel->setVisible( false );
+  }
 
   if ( mVectorLayer )
   {

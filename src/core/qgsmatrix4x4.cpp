@@ -45,6 +45,21 @@ QgsMatrix4x4::QgsMatrix4x4(
   m[3][3] = m44;
 }
 
+bool QgsMatrix4x4::fuzzyEqual( const QgsMatrix4x4 &other, double epsilon ) const
+{
+  const double *data = *m;
+  const double *otherData = *( other.m );
+  for ( int i = 0; i < 16; ++i, data++, otherData++ )
+  {
+    if ( !qgsDoubleNear( *data, *otherData, epsilon ) )
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void QgsMatrix4x4::translate( const QgsVector3D &vector )
 {
   m[3][0] += m[0][0] * vector.x() + m[1][0] * vector.y() + m[2][0] * vector.z();
@@ -76,6 +91,19 @@ QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector )
     return QgsVector3D( x, y, z );
   else
     return QgsVector3D( x / w, y / w, z / w );
+}
+
+// Simplified from Qt's QMatrix4x4::mapVector implementation.
+// Copyright (C) The Qt Company Ltd.
+QgsVector3D QgsMatrix4x4::mapVector( const QgsVector3D &vector ) const
+{
+  return QgsVector3D(
+    vector.x() * m[0][0] + vector.y() * m[1][0] + vector.z() * m[2][0],
+
+    vector.x() * m[0][1] + vector.y() * m[1][1] + vector.z() * m[2][1],
+
+    vector.x() * m[0][2] + vector.y() * m[1][2] + vector.z() * m[2][2]
+  );
 }
 
 bool QgsMatrix4x4::isIdentity() const
@@ -206,4 +234,40 @@ void QgsMatrix4x4::rotate( double angle, double x, double y, double z )
 void QgsMatrix4x4::rotate( double angle, const QgsVector3D &vector )
 {
   rotate( angle, vector.x(), vector.y(), vector.z() );
+}
+
+static inline double matrixDet2( const double m[4][4], int col0, int col1, int row0, int row1 )
+{
+  return m[col0][row0] * m[col1][row1] - m[col0][row1] * m[col1][row0];
+}
+
+// The 4x4 matrix inverse algorithm is based on that described at:
+// http://www.j3d.org/matrix_faq/matrfaq_latest.html#Q24
+// Some optimization has been done to avoid making copies of 3x3
+// sub-matrices and to unroll the loops.
+// Calculate the determinant of a 3x3 sub-matrix.
+//     | A B C |
+// M = | D E F |   det(M) = A * (EI - HF) - B * (DI - GF) + C * (DH - GE)
+//     | G H I |
+static inline double matrixDet3( const double m[4][4], int col0, int col1, int col2, int row0, int row1, int row2 )
+{
+  return m[col0][row0] * matrixDet2( m, col1, col2, row1, row2 ) - m[col1][row0] * matrixDet2( m, col0, col2, row1, row2 ) + m[col2][row0] * matrixDet2( m, col0, col1, row1, row2 );
+}
+
+// Calculate the determinant of a 4x4 matrix.
+static inline double matrixDet4( const double m[4][4] )
+{
+  double det;
+  det = m[0][0] * matrixDet3( m, 1, 2, 3, 1, 2, 3 );
+  det -= m[1][0] * matrixDet3( m, 0, 2, 3, 1, 2, 3 );
+  det += m[2][0] * matrixDet3( m, 0, 1, 3, 1, 2, 3 );
+  det -= m[3][0] * matrixDet3( m, 0, 1, 2, 1, 2, 3 );
+  return det;
+}
+
+// Simplified from Qt's QMatrix4x4::determinant implementation.
+// Copyright (C) The Qt Company Ltd.
+double QgsMatrix4x4::determinant() const
+{
+  return matrixDet4( m );
 }

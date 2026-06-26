@@ -77,9 +77,7 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
   addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ), QString(), u"ERRORS"_s ) );
-  addParameter(
-    new QgsProcessingParameterField( u"OVERLAP_FEATURE_UNIQUE_IDX"_s, QObject::tr( "Field of overlap feature unique identifier" ), QString(), u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric )
-  );
+  addParameter( new QgsProcessingParameterField( u"OVERLAP_FEATURE_UNIQUE_IDX"_s, QObject::tr( "Field of overlap feature unique identifier" ), QString(), u"ERRORS"_s ) );
   addParameter( new QgsProcessingParameterField( u"ERROR_VALUE_ID"_s, QObject::tr( "Field of error value" ), u"gc_error"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "No-overlap layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
@@ -226,6 +224,8 @@ QVariantMap QgsFixGeometryOverlapAlgorithm::processAlgorithm( const QVariantMap 
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
+    else
+      feedback->featureAddedToSink( u"REPORT"_s );
   }
   multiStepFeedback.setProgress( 100 );
 
@@ -244,8 +244,15 @@ QVariantMap QgsFixGeometryOverlapAlgorithm::processAlgorithm( const QVariantMap 
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
   multiStepFeedback.setProgress( 100 );
+
+  sink_report->finalize();
+  feedback->featureSinkFinalized( u"REPORT"_s );
+  sink_output->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest_output );

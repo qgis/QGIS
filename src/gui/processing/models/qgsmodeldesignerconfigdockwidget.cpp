@@ -21,6 +21,8 @@
 #include "qgsmodeldesignerconfigwidget.h"
 #include "qgsprocessingguiregistry.h"
 
+#include <QPushButton>
+
 #include "moc_qgsmodeldesignerconfigdockwidget.cpp"
 
 QgsModelDesignerConfigDockWidget::QgsModelDesignerConfigDockWidget( QWidget *parent )

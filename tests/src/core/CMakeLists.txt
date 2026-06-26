@@ -204,6 +204,7 @@ set(TESTS
  testqgsstac.cpp
  testqgsstackeddiagram.cpp
  testqgsrelation.cpp
+ testqgsscopedconnection.cpp
  testqgsstatisticalsummary.cpp
  testqgsstoredexpressionmanager.cpp
  testqgsstringutils.cpp

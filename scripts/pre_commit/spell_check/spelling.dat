@@ -1,6 +1,5 @@
 # append :* to avoid in word check_spelling
 # append :% to exclude script files
-#...:…:%
 abailable:available
 abandonded:abandoned
 abandonned:abandoned
@@ -186,7 +185,7 @@ acquring:acquiring
 actaul:actual
 actaully:actually
 actived:activated:*
-activete:activate
+activete:activate:*
 activites:activities
 activly:actively
 actualy:actually
@@ -6678,7 +6677,7 @@ staion:station
 standardss:standards
 standars:standards
 standart:standard
-stange:strange
+stange:strange:*
 startegic:strategic
 startegies:strategies
 startegy:strategy
@@ -7804,7 +7803,7 @@ wresters:wrestlers
 wriet:write
 writeable:writable
 writeing:writing
-writen:written
+writen:written:*
 writting:writing
 wroet:wrote
 wrok:work

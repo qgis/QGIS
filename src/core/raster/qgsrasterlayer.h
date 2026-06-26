@@ -87,6 +87,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     static const QgsSettingsEntryDouble *settingsRasterDefaultOversampling SIP_SKIP;
     static const QgsSettingsEntryString *settingsRasterDefaultZoomedInResampling SIP_SKIP;
     static const QgsSettingsEntryString *settingsRasterDefaultZoomedOutResampling SIP_SKIP;
+    static const QgsSettingsEntryString *settingsRasterDefaultContrastEnhancementAlgorithm SIP_SKIP;
+    static const QgsSettingsEntryString *settingsRasterDefaultContrastEnhancementLimits SIP_SKIP;
 
     //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation
     static const double SAMPLE_SIZE;

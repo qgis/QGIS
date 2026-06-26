@@ -20,7 +20,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.testing import unittest
 from utilities import start_app, unitTestDataPath
 
@@ -32,9 +32,6 @@ class TestPyQgsProviderConnectionModel(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
         gpkg_original_path = (

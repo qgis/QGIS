@@ -12,7 +12,7 @@
 
 
 
-class QgsModelDesignerDialog : QMainWindow
+class QgsModelDesignerDialog : QMainWindow, QgsProcessingFeedbackGenerator
 {
 %Docstring(signature="appended")
 Model designer dialog base class.
@@ -87,6 +87,9 @@ Returns the related model scene.
 .. versionadded:: 4.0
 %End
 
+    virtual QgsProcessingFeedback *createFeedback() /Factory/;
+
+
     enum class SaveAction
     {
       SaveAsFile,
@@ -113,7 +116,7 @@ Raise, unminimize and activate this window.
 
     virtual bool saveModel( bool saveAs = false ) = 0;
 
-    virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 /TransferBack/;
+    virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 /TransferBack/;
 
     virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0;
 %Docstring

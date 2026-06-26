@@ -597,7 +597,7 @@ QgsLayoutGuideProxyModel::QgsLayoutGuideProxyModel( QObject *parent, Qt::Orienta
   , mOrientation( orientation )
   , mPage( page )
 {
-  setDynamicSortFilter( true );
+  setDynamicSortFilter( false );
   sort( 0 );
 }
 

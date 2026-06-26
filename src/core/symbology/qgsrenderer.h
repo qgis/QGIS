@@ -124,6 +124,8 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_QgsRuleBasedRenderer;
     else if ( type == "heatmapRenderer"_L1 )
       sipType = sipType_QgsHeatmapRenderer;
+    else if ( type == "mergedFeatureRenderer"_L1 )
+      sipType = sipType_QgsMergedFeatureRenderer;
     else if ( type == "invertedPolygonRenderer"_L1 )
       sipType = sipType_QgsInvertedPolygonRenderer;
     else if ( type == "pointCluster"_L1 )
@@ -422,6 +424,17 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Sets the label for a legend symbol item.
+     * \param key rule key for legend symbol
+     * \param label new label for the legend item
+     *
+     * \see legendKeys()
+     *
+     * \since QGIS 4.2
+     */
+    virtual void setLegendSymbolItemLabel( const QString &key, const QString &label );
 
     /**
      * Attempts to convert the specified legend rule \a key to a QGIS expression matching

@@ -123,6 +123,8 @@ void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipe
 {
     ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
     std::vector<std::string> inputFilesToProcess;
+    // move any input files to inputFilesToProcess, so they go through processInputFile()
+    std::swap(inputFilesToProcess, inputFiles);
     if (!inputFileList.empty())
     {
         std::ifstream inputFile(inputFileList);
@@ -143,7 +145,7 @@ void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipe
 
     std::function<void(const std::string& inputFile)> processInputFile;
     processInputFile = [&processInputFile,this](const std::string& inputFile) {
-        if (ends_with(inputFile, ".vpc"))
+        if (isVpcFilename(inputFile))
         {
             VirtualPointCloud vpc;
             if (!vpc.read(inputFile))

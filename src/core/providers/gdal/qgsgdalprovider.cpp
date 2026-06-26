@@ -2524,7 +2524,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
 QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int> &list )
 {
-  if ( mInClosing )
+  if ( mInClosing || !mGdalDataset )
     return QList<QgsRasterPyramid>();
 
   QList< int > overviewList = list;

@@ -369,22 +369,6 @@ bool QgsPointCloudLayerProfileGeneratorBase::collectData( QgsGeos &curve, const 
 {
   maxErrorInLayerCoordinates = 0;
 
-  QVector<QgsPointCloudIndex> indexes;
-  if ( mIndex && mIndex.isValid() )
-    indexes.append( mIndex );
-
-  // Gather all relevant sub-indexes
-  const QgsRectangle profileCurveBbox = mProfileCurve->boundingBox();
-  for ( const QgsPointCloudSubIndex &subidx : mSubIndexes )
-  {
-    QgsPointCloudIndex index = subidx.index();
-    if ( index && index.isValid() && subidx.polygonBounds().intersects( profileCurveBbox ) )
-      indexes.append( subidx.index() );
-  }
-
-  if ( indexes.empty() )
-    return false;
-
   std::unique_ptr< QgsAbstractGeometry > searchGeometryInLayerCrs;
   searchGeometryInLayerCrs.reset( curve.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2, nullptr, mFeedback.get() ) );
   mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
@@ -399,12 +383,27 @@ bool QgsPointCloudLayerProfileGeneratorBase::collectData( QgsGeos &curve, const 
     return false;
   }
 
-  if ( mFeedback->isCanceled() )
-    return false;
-
   mSearchGeometryInLayerCrsGeometryEngine = std::make_unique< QgsGeos >( searchGeometryInLayerCrs.get() );
   mSearchGeometryInLayerCrsGeometryEngine->prepareGeometry();
   const QgsRectangle maxSearchExtentInLayerCrs = searchGeometryInLayerCrs->boundingBox();
+
+  QVector<QgsPointCloudIndex> indexes;
+  if ( mIndex && mIndex.isValid() )
+    indexes.append( mIndex );
+
+  // Gather all relevant sub-indexes
+  for ( const QgsPointCloudSubIndex &subidx : mSubIndexes )
+  {
+    QgsPointCloudIndex index = subidx.index();
+    if ( index && index.isValid() && mSearchGeometryInLayerCrsGeometryEngine->intersects( subidx.polygonBounds().constGet() ) )
+      indexes.append( subidx.index() );
+  }
+
+  if ( indexes.empty() )
+    return false;
+
+  if ( mFeedback->isCanceled() )
+    return false;
 
   QgsPointCloudRequest request;
   QgsPointCloudAttributeCollection attributes;

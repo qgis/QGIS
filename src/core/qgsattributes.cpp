@@ -30,10 +30,10 @@ QgsAttributeMap QgsAttributes::toMap() const
   return map;
 }
 
-uint qHash( const QgsAttributes &attributes )
+size_t qHash( const QgsAttributes &attributes )
 {
   if ( attributes.isEmpty() )
-    return std::numeric_limits<uint>::max();
+    return std::numeric_limits<size_t>::max();
   else
     return qHash( attributes.at( 0 ) );
 }

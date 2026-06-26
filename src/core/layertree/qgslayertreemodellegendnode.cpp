@@ -35,7 +35,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrenderer.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
 #include "qgstextdocument.h"
 #include "qgstextdocumentmetrics.h"
@@ -339,6 +340,10 @@ void QgsLayerTreeModelLegendNode::toggleAllItems()
 
 double QgsSymbolLegendNode::MINIMUM_SIZE = -1.0;
 double QgsSymbolLegendNode::MAXIMUM_SIZE = -1.0;
+const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMinimumSize
+  = new QgsSettingsEntryDouble( u"symbol-minimum-size"_s, QgsSettingsTree::sTreeLayerTree, 0.5, u"Minimum size (in millimeters) at which symbols are rendered in the layer tree legend. Symbols smaller than this size are scaled up for readability."_s );
+const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMaximumSize
+  = new QgsSettingsEntryDouble( u"symbol-maximum-size"_s, QgsSettingsTree::sTreeLayerTree, 20.0, u"Maximum size (in millimeters) at which symbols are rendered in the layer tree legend. Symbols larger than this size are scaled down to fit."_s );
 
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
@@ -351,9 +356,8 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   {
     // it's FAR too expensive to construct a QgsSettings object for every symbol node, especially for complex
     // projects. So only read the valid size ranges once, and store them for subsequent use
-    const QgsSettings settings;
-    MINIMUM_SIZE = settings.value( "/qgis/legendsymbolMinimumSize", 0.5 ).toDouble();
-    MAXIMUM_SIZE = settings.value( "/qgis/legendsymbolMaximumSize", 20.0 ).toDouble();
+    MINIMUM_SIZE = settingsLegendSymbolMinimumSize->value();
+    MAXIMUM_SIZE = settingsLegendSymbolMaximumSize->value();
   }
 
   updateLabel();
@@ -373,9 +377,9 @@ QgsSymbolLegendNode::~QgsSymbolLegendNode() = default;
 Qt::ItemFlags QgsSymbolLegendNode::flags() const
 {
   if ( mItem.isCheckable() )
-    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable;
   else
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 
@@ -641,17 +645,26 @@ QVariant QgsSymbolLegendNode::data( int role ) const
 
 bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
 {
-  if ( role != Qt::CheckStateRole )
-    return false;
-
-  if ( !mItem.isCheckable() )
+  if ( role != Qt::EditRole && role != Qt::CheckStateRole )
     return false;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-  if ( !vlayer || !vlayer->renderer() )
+  if ( !( vlayer && vlayer->renderer() ) )
     return false;
 
-  vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
+  if ( role == Qt::EditRole )
+  {
+    const QString newLabel = value.toString();
+    setUserLabel( newLabel );
+    vlayer->renderer()->setLegendSymbolItemLabel( mItem.ruleKey(), newLabel );
+  }
+  else if ( role == Qt::CheckStateRole )
+  {
+    if ( !mItem.isCheckable() )
+      return false;
+
+    vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
+  }
 
   if ( QgsProject *project = vlayer->project() )
     project->setDirty( true );

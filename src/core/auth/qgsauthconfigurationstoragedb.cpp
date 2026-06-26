@@ -22,6 +22,7 @@
 #include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QString>
 #include <QThread>
 #include <QUrlQuery>
@@ -179,11 +180,16 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
     QString str = query->lastQuery();
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 6, 0 )
     const QStringList keys = query->boundValueNames();
+#endif
     const QVariantList values = query->boundValues();
     QMap<QString, QVariant> boundValues;
-    for ( int i = 0; i < keys.count(); i++ )
+    for ( int i = 0; i < values.count(); i++ )
     {
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 6, 0 )
       boundValues.insert( keys.at( i ), values.at( i ).toString() );
+#else
+      boundValues.insert( query->record().fieldName( i ), values.at( i ).toString() );
+#endif
     }
     QMapIterator<QString, QVariant> it = QMapIterator<QString, QVariant>( boundValues );
     while ( it.hasNext() )
@@ -191,7 +197,6 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
       it.next();
       str.replace( it.key(), it.value().toString() );
     }
-#endif
     return str;
   };
 

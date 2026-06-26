@@ -50,6 +50,10 @@ Abstract base class for material settings.
     {
       sipType = sipType_QgsMetalRoughMaterialSettings;
     }
+    else if ( sipCpp->type() == "metalroughtextured" )
+    {
+      sipType = sipType_QgsMetalRoughTexturedMaterialSettings;
+    }
     else
     {
       sipType = 0;
@@ -87,14 +91,42 @@ Returns ``True`` if this settings exactly matches an ``other`` settings.
 .. versionadded:: 3.42
 %End
 
+    virtual bool requiresTextureCoordinates() const;
+%Docstring
+Returns ``True`` if the material requires texture coordinates to be
+generated during triangulation.
+
+.. versionadded:: 4.2
+%End
+
+    virtual bool requiresTangents() const;
+%Docstring
+Returns ``True`` if the material requires tangents generated during
+triangulation.
+
+.. versionadded:: 4.2
+%End
+
     enum class Property /BaseType=IntEnum/
     {
       Diffuse,
       Ambient,
       Warm,
       Cool,
-      Specular
+      Specular,
+      BaseColor,
+      EmissionColor,
+      TextureScale,
+      TextureRotation,
+      TextureOffset,
     };
+
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+%Docstring
+Returns the set of data-defined properties supported by this material.
+
+.. versionadded:: 4.2
+%End
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
@@ -115,6 +147,23 @@ overrides.
 %Docstring
 Returns a reference to the material properties definition, used for data
 defined overrides.
+
+.. versionadded:: 4.2
+%End
+
+    virtual QColor averageColor() const = 0;
+%Docstring
+Returns an approximate color representing the blended material color.
+
+.. versionadded:: 4.2
+%End
+
+    virtual void setColorsFromBase( const QColor &baseColor ) = 0;
+%Docstring
+Decomposes a base color into the material's color components, and sets
+the material's colors accordingly.
+
+:param baseColor: The color to decompose
 
 .. versionadded:: 4.2
 %End

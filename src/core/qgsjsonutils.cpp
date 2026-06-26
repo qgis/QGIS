@@ -86,11 +86,11 @@ QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
   return mCrs;
 }
 
-QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, int indent ) const
+QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, int indent, const QVariantMap &extraMembers ) const
 {
   try
   {
-    return QString::fromStdString( exportFeatureToJsonObject( feature, extraProperties, id ).dump( indent ) );
+    return QString::fromStdString( exportFeatureToJsonObject( feature, extraProperties, id, extraMembers ).dump( indent ) );
   }
   catch ( json::type_error &ex )
   {
@@ -104,11 +104,22 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
   }
 }
 
-json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
+json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id, const QVariantMap &extraMembers ) const
 {
   json featureJson {
     { "type", "Feature" },
   };
+
+  //foreign members
+  if ( !extraMembers.isEmpty() )
+  {
+    QVariantMap::const_iterator it = extraMembers.constBegin();
+    for ( ; it != extraMembers.constEnd(); ++it )
+    {
+      featureJson[it.key().toStdString()] = QgsJsonUtils::jsonFromVariant( it.value() );
+    }
+  }
+
   if ( id.isValid() )
   {
     bool ok = false;

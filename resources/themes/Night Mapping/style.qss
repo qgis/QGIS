@@ -1435,6 +1435,11 @@ QgsLayoutRuler {
     color: @textlight;
 }
 
+QgsLayoutView QToolTip
+{
+    color: @itembackground;
+}
+
 QgsAttributeFormWidget QComboBox:disabled {
     border: none;
     background-color: @itembackground;
@@ -1451,6 +1456,20 @@ QWidget#mCadWidget QLineEdit {
 
 QWidget#mCadWidget QLineEdit:disabled {
     color: @text;
+}
+
+QgsAdvancedDigitizingFloater QLabel,
+QgsAdvancedDigitizingFloater QLineEdit {
+    color: #000000;
+}
+
+QgsAdvancedDigitizingFloater QLabel {
+    background-color: rgba(255,255,255,64);
+}
+
+QgsAdvancedDigitizingFloater QLineEdit {
+    border: none;
+    border-radius: 0;
 }
 
 QgsLocatorResultsView::item:disabled {

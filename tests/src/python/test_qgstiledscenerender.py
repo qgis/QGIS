@@ -103,6 +103,32 @@ class TestQgsTiledSceneRender(QgisTestCase):
             )
         )
 
+    def test_render_instanced(self):
+        layer = QgsTiledSceneLayer(
+            unitTestDataPath() + "/3dtiles/instanced_rtc/tileset.json",
+            "instanced layer",
+            "cesiumtiles",
+        )
+        self.assertTrue(layer.dataProvider().isValid())
+
+        renderer = QgsTiledSceneTextureRenderer()
+        layer.setRenderer(renderer)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        mapsettings.setExtent(
+            QgsRectangle(-8417257.0, 4871967.0, -8416943.0, 4872283.0)
+        )
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "instanced_render", "instanced_render", mapsettings
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

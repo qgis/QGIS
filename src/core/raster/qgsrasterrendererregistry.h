@@ -28,6 +28,9 @@ class QDomElement;
 class QgsRasterInterface;
 class QgsRasterLayer;
 class QgsRasterRenderer;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryInteger;
 class QgsRasterRendererWidget;
 class QgsRasterDataProvider;
 class QgsRectangle;
@@ -149,6 +152,15 @@ class CORE_EXPORT QgsRasterRendererRegistry
 
     //read min/max values from
     bool minMaxValuesForBand( int band, QgsRasterDataProvider *provider, double &minValue, double &maxValue ) const;
+
+  public:
+#ifndef SIP_RUN
+    static const QgsSettingsEntryInteger *settingsDefaultRedBand SIP_SKIP;
+    static const QgsSettingsEntryInteger *settingsDefaultGreenBand SIP_SKIP;
+    static const QgsSettingsEntryInteger *settingsDefaultBlueBand SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsUseStandardDeviation SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsDefaultStandardDeviation SIP_SKIP;
+#endif
 };
 
 #endif // QGSRASTERRENDERERREGISTRY_H

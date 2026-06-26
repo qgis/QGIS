@@ -19,7 +19,9 @@
 
 #include <cmath>
 
-#include "qgssettings.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -27,15 +29,33 @@
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryDouble *QgsRasterMinMaxOrigin::settingsCumulativeCutLower = new QgsSettingsEntryDouble(
+  u"cumulative-cut-lower"_s,
+  QgsSettingsTree::sTreeRaster,
+  CUMULATIVE_CUT_LOWER,
+  u"Default lower cumulative cut value (a fraction between 0 and 1) used when computing raster min/max values via the cumulative count cut method."_s,
+  Qgis::SettingsOptions(),
+  0.0,
+  1.0
+);
+const QgsSettingsEntryDouble *QgsRasterMinMaxOrigin::settingsCumulativeCutUpper = new QgsSettingsEntryDouble(
+  u"cumulative-cut-upper"_s,
+  QgsSettingsTree::sTreeRaster,
+  CUMULATIVE_CUT_UPPER,
+  u"Default upper cumulative cut value (a fraction between 0 and 1) used when computing raster min/max values via the cumulative count cut method."_s,
+  Qgis::SettingsOptions(),
+  0.0,
+  1.0
+);
+
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   : mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
   , mCumulativeCutUpper( CUMULATIVE_CUT_UPPER )
   , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
 {
-  const QgsSettings mySettings;
-  mCumulativeCutLower = mySettings.value( u"Raster/cumulativeCutLower"_s, CUMULATIVE_CUT_LOWER ).toDouble();
-  mCumulativeCutUpper = mySettings.value( u"Raster/cumulativeCutUpper"_s, CUMULATIVE_CUT_UPPER ).toDouble();
-  mStdDevFactor = mySettings.value( u"Raster/defaultStandardDeviation"_s, DEFAULT_STDDEV_FACTOR ).toDouble();
+  mCumulativeCutLower = settingsCumulativeCutLower->value();
+  mCumulativeCutUpper = settingsCumulativeCutUpper->value();
+  mStdDevFactor = QgsRasterRendererRegistry::settingsDefaultStandardDeviation->value();
 }
 
 bool QgsRasterMinMaxOrigin::operator==( const QgsRasterMinMaxOrigin &other ) const

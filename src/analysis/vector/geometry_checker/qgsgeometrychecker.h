@@ -49,14 +49,20 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
 {
     Q_OBJECT
   public:
-    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context SIP_TRANSFER, const QMap<QString, QgsFeaturePool *> &featurePools );
+    /**
+     * Constructor
+     * \param checks list of geometry checks
+     * \param context geometry check context
+     * \param featurePools map of feature pools
+     */
+    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, std::unique_ptr<QgsGeometryCheckContext> context, const QMap<QString, QgsFeaturePool *> &featurePools );
     ~QgsGeometryChecker() override;
     QFuture<void> execute( int *totalSteps = nullptr );
     bool fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint = false );
     const QList<QgsGeometryCheck *> getChecks() const { return mChecks; }
     QStringList getMessages() const { return mMessages; }
     void setMergeAttributeIndices( const QMap<QString, int> &mergeAttributeIndices ) { mMergeAttributeIndices = mergeAttributeIndices; }
-    QgsGeometryCheckContext *getContext() const { return mContext; }
+    QgsGeometryCheckContext *getContext() const { return mContext.get(); }
     const QMap<QString, QgsFeaturePool *> &featurePools() const { return mFeaturePools; }
 
   signals:
@@ -76,7 +82,7 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     };
 
     QList<QgsGeometryCheck *> mChecks;
-    QgsGeometryCheckContext *mContext = nullptr;
+    std::unique_ptr<QgsGeometryCheckContext> mContext;
     QList<QgsGeometryCheckError *> mCheckErrors;
     QStringList mMessages;
     QMutex mErrorListMutex;

@@ -50,6 +50,12 @@ Content-Type: application/json
       "type": "text/html"
     },
     {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.fgb",
+      "rel": "items",
+      "title": "A test wfs vector layer èé items as FLATGEOBUF",
+      "type": "application/flatgeobuf"
+    },
+    {
       "href": "http://server.qgis.org/?request=DescribeFeatureType&typename=testlayer_èé&service=WFS&version=2.0",
       "rel": "describedBy",
       "title": "Schema for A test wfs vector layer èé",
