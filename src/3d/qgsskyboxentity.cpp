@@ -194,21 +194,37 @@ namespace
     constexpr int WIDTH = 32;
     constexpr int HEIGHT = 32;
 
-    const QImage img = data.image;
+    QImage img = data.image;
     if ( img.isNull() )
       return result;
 
-    QImage scaledImage = img.scaled( WIDTH, HEIGHT, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
-    if ( scaledImage.format() != QImage::Format_RGB32 )
+    bool isSrgb = true;
+    switch ( img.format() )
     {
-      // do we need to consider transparency here? probably not, if someone specifies a skybox texture
-      // with semi-transparent pixels then they get what they deserve...
-      scaledImage = scaledImage.convertToFormat( QImage::Format_RGB32 );
+      case QImage::Format_RGBA32FPx4:
+      case QImage::Format_RGBA32FPx4_Premultiplied:
+      case QImage::Format_RGBX32FPx4:
+      case QImage::Format_RGBA16FPx4:
+      case QImage::Format_RGBA16FPx4_Premultiplied:
+      case QImage::Format_RGBX16FPx4:
+        // float based image formats won't be in sRGB color space
+        isSrgb = false;
+        break;
+      default:
+        break;
     }
+
+    if ( img.format() != QImage::Format_RGBA32FPx4 )
+    {
+      // convert image to float
+      img = img.convertToFormat( QImage::Format_RGBA32FPx4 );
+    }
+
+    QImage scaledImage = img.scaled( WIDTH, HEIGHT, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     for ( int y = 0; y < HEIGHT; ++y )
     {
       const float v = ( ( static_cast< float >( y ) + 0.5f ) / static_cast< float >( HEIGHT ) ) * 2.0f - 1.0f;
-      const QRgb *line = reinterpret_cast<const QRgb *>( scaledImage.constScanLine( y ) );
+      const float *line = reinterpret_cast<const float *>( scaledImage.constScanLine( y ) );
       for ( int x = 0; x < WIDTH; ++x )
       {
         // map pixel coordinate to [-1, 1] range
@@ -220,7 +236,11 @@ namespace
         float weight = 1.0f / std::pow( 1.0f + u * u + v * v, 1.5f );
         result.totalWeight += weight;
 
-        const QColor color = Qgs3DUtils::srgbToLinear( line[x] );
+        QColor color = QColor::fromRgbF( line[x * 4 + 0], line[x * 4 + 1], line[x * 4 + 2], 1 );
+        if ( isSrgb )
+        {
+          color = Qgs3DUtils::srgbToLinear( color );
+        }
         const QVector3D weightedColor( color.redF() * weight, color.greenF() * weight, color.blueF() * weight );
 
         constexpr float Y00 = 0.282095f;
