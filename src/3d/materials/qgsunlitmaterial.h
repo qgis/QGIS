@@ -71,12 +71,18 @@ class _3D_EXPORT QgsUnlitMaterial : public QgsMaterial
      */
     void setInstancingMeshTransform( const QMatrix4x4 &transform );
 
+    /**
+     * Switches between data-defined (per-vertex attribute) and uniform color mode.
+     */
+    void setDataDefinedEnabled( bool enabled );
+
   private:
     void init();
     void updateShaders();
 
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     Qgis::MaterialRenderingTechnique mRenderingTechnique;
+    bool mDataDefinedEnabled = false;
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
     Qt3DRender::QParameter *mTransformParameter = nullptr;

@@ -45,5 +45,6 @@
         <file>shaders/bloom_downsample.frag</file>
         <file>shaders/bloom_upsample.frag</file>
         <file>shaders/metalroughDataDefined.vert</file>
+        <file>shaders/singlecolorDataDefined.vert</file>
     </qresource>
 </RCC>
