@@ -137,10 +137,14 @@ void Qgs3DMeasureDialog::addPoint()
     if ( !QgsGeometryUtils::isGeometryCoplanar( &polygon, 1e-3 ) )
     {
       mNotesLabel->setText( u"The selected points are not coplanar. The computed 3D area result may be significantly inaccurate."_s );
+      // Disable fill when geometry is not coplanar
+      // it may produce rendering artifacts
+      mTool->setFillEnabled( false );
     }
     else
     {
       mNotesLabel->setText( QString() );
+      mTool->setFillEnabled( true );
     }
   }
 }

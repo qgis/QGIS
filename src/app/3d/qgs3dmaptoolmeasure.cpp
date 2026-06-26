@@ -77,6 +77,14 @@ QCursor Qgs3DMapToolMeasure::cursor() const
   return Qt::CrossCursor;
 }
 
+void Qgs3DMapToolMeasure::setFillEnabled( bool enable )
+{
+  if ( enable != mRubberBand->hasFillEnabled() )
+  {
+    mRubberBand->setFillEnabled( enable );
+  }
+}
+
 void Qgs3DMapToolMeasure::handleClick( const QPoint &screenPos )
 {
   if ( mDone )

@@ -61,6 +61,14 @@ class Qgs3DMapToolMeasure : public Qgs3DMapTool
 
     QCursor cursor() const override;
 
+    /**
+     * Sets whether the polygon fill is shown on the rubber band.
+     * This has no effect when measuring distance.
+     *
+     * \since QGIS 4.2
+     */
+    void setFillEnabled( bool enable );
+
   private slots:
     void handleClick( const QPoint &screenPos );
     void mousePressEvent( QMouseEvent *event ) override;
