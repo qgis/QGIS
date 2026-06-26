@@ -2656,10 +2656,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QString field = customCommentEntryElem.attribute( u"field"_s );
 
         //empty values are important as well (to override provider comments with nothing)
-        const QString customComment
-          = context.projectTranslator()->translate( u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), customCommentEntryElem.attribute( u"value"_s ) );
-        QgsDebugMsgLevel( "context" + u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + customCommentEntryElem.attribute( u"value"_s ), 3 );
-
+        const QString customCommentEntryValue = customCommentEntryElem.attribute( u"value"_s );
+        QString customComment = customCommentEntryValue;
+        if ( !customCommentEntryValue.isEmpty() )
+        {
+          //translate comment if it's not empty
+          customComment = context.projectTranslator()->translate( u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), customCommentEntryValue );
+          QgsDebugMsgLevel( "context" + u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + customCommentEntryValue, 3 );
+        }
         if ( fields().lookupField( field ) < 0 )
         {
           QgsDebugMsgLevel( u"Warning: Field %1 not found in layer %2 to load custom comment from setting "_s.arg( field, name() ), 2 );
