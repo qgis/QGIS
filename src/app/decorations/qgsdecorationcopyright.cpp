@@ -31,6 +31,8 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
 #include "qgstextrenderer.h"
 
 #include <QDate>
@@ -124,18 +126,22 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   const QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
   const QStringList displayStringList = displayString.split( '\n' );
 
-  const QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
-  const double textDescent = textMetrics.descent();
-  const double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList );
-  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, Qgis::TextLayoutMode::Point );
+  QgsTextFormat textFormat = mTextFormat;
+  textFormat.updateDataDefinedProperties( context );
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( displayStringList, textFormat );
+  const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( context, textFormat );
+  const QgsTextDocumentMetrics documentMetrics = QgsTextDocumentMetrics::calculateMetrics( doc, textFormat, context, textScaleFactor );
+  const QSizeF documentSize = documentMetrics.documentSize( Qgis::TextLayoutMode::Rectangle, Qgis::TextOrientation::Horizontal );
+  const double textWidth = documentSize.width();
+  const double textHeight = documentSize.height();
 
   QPaintDevice *device = context.painter()->device();
   const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();
   const float deviceWidth = static_cast<float>( device->width() ) / context.devicePixelRatio();
 
-  float xOffset( 0 ), yOffset( 0 );
-
   // Set  margin according to selected units
+  float xOffset = 0.0;
+  float yOffset = 0.0;
   switch ( mMarginUnit )
   {
     case Qgis::RenderUnit::Millimeters:
@@ -168,32 +174,29 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
 
   // Determine placement of label from form combo box
   Qgis::TextHorizontalAlignment horizontalAlignment = Qgis::TextHorizontalAlignment::Left;
+  QRectF textRect;
   switch ( mPlacement )
   {
-    case BottomLeft: // Bottom Left, xOffset is set above
-      yOffset = deviceHeight - yOffset - textDescent;
+    case BottomLeft: // Bottom Left
+      textRect = QRectF( xOffset, deviceHeight - textHeight - yOffset, deviceWidth - xOffset * 2, textHeight );
       break;
-    case TopLeft: // Top left, xOffset is set above
-      yOffset = yOffset + textHeight - textDescent;
+    case TopLeft: // Top left
+      textRect = QRectF( xOffset, yOffset, deviceWidth - xOffset * 2, textHeight );
       break;
     case TopRight: // Top Right
-      yOffset = yOffset + textHeight - textDescent;
-      xOffset = deviceWidth - xOffset;
+      textRect = QRectF( xOffset, yOffset, deviceWidth - xOffset * 2, textHeight );
       horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
       break;
     case BottomRight: // Bottom Right
-      yOffset = deviceHeight - yOffset - textDescent;
-      xOffset = deviceWidth - xOffset;
+      textRect = QRectF( xOffset, deviceHeight - textHeight - yOffset * 2, deviceWidth - xOffset * 2, textHeight );
       horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
       break;
     case TopCenter: // Top Center
-      yOffset = yOffset + textHeight - textDescent;
-      xOffset = deviceWidth / 2 + xOffset;
+      textRect = QRectF( xOffset, yOffset, deviceWidth - xOffset, textHeight );
       horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     case BottomCenter: // Bottom Center
-      yOffset = deviceHeight - yOffset - textDescent;
-      xOffset = deviceWidth / 2 + xOffset;
+      textRect = QRectF( xOffset, deviceHeight - textHeight - yOffset, deviceWidth - xOffset * 2, textHeight );
       horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     default:
@@ -201,5 +204,5 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   }
 
   //Paint label to canvas
-  QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, mTextFormat );
+  QgsTextRenderer::drawDocument( textRect, textFormat, doc, documentMetrics, context, horizontalAlignment, Qgis::TextVerticalAlignment::Top, 0, Qgis::TextLayoutMode::Rectangle );
 }
