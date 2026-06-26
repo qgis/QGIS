@@ -195,6 +195,16 @@ class _3D_EXPORT Qgs3DUtils
      */
     static QColor srgbToLinear( const QColor &color );
 
+    /**
+     * Given a QImage \a format, returns the most appropriate corresponding texture format.
+     *
+     * \param isSrgb determines whether RGB formats should be interpreted as SRGB color spaces.
+     * \param requiresConversionToRgb will be set to TRUE if the image format is not appropriate for a 3D texture and the image requires conversion to RGB by the caller.
+     *
+     * \since QGIS 4.2
+     */
+    static Qt3DRender::QAbstractTexture::TextureFormat determineTextureFormat( QImage::Format format, bool isSrgb, bool &requiresConversionToRgb );
+
     //! Calculates (x,y,z) positions of (multi)point from the given feature
     static void extractPointPositions(
       const QgsFeature &f,
