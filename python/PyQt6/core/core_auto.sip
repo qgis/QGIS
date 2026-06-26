@@ -240,6 +240,7 @@
 %Include auto_generated/./3d/materials/qgsphongmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsphongtexturedmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgssimplelinematerialsettings.sip
+%Include auto_generated/./3d/materials/qgsunlitmaterialsettings.sip
 %Include auto_generated/actions/qgsaction.sip
 %Include auto_generated/actions/qgsactionmanager.sip
 %Include auto_generated/actions/qgsactionscope.sip

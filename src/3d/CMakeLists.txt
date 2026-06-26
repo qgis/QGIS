@@ -99,6 +99,7 @@ set(QGIS_3D_SRCS
   materials/qgssimplelinematerial3dhandler.cpp
   materials/qgstexturematerial.cpp
   materials/qgsunlitmaterial.cpp
+  materials/qgsunlitmaterial3dhandler.cpp
 
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
@@ -249,6 +250,7 @@ set(QGIS_3D_HDRS
   materials/qgssimplelinematerial3dhandler.h
   materials/qgstexturematerial.h
   materials/qgsunlitmaterial.h
+  materials/qgsunlitmaterial3dhandler.h
 
   framegraph/qgsabstractrenderview.h
   framegraph/qgs3daxisrenderview.h

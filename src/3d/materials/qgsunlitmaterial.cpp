@@ -64,8 +64,6 @@ void QgsUnlitMaterial::init()
   mShaderProgram = new Qt3DRender::QShaderProgram();
   pass->setShaderProgram( mShaderProgram );
 
-  mShaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) ) );
-
   mColorParameter = new Qt3DRender::QParameter( u"color"_s, Qgs3DUtils::srgbToLinear( QColor( 255, 255, 255 ) ) );
   pass->addParameter( mColorParameter );
 
@@ -92,6 +90,15 @@ void QgsUnlitMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
   mNormalTransformParameter->setValue( QVariant::fromValue( normalTransform ) );
 }
 
+void QgsUnlitMaterial::setDataDefinedEnabled( bool enabled )
+{
+  if ( enabled != mDataDefinedEnabled )
+  {
+    mDataDefinedEnabled = enabled;
+    updateShaders();
+  }
+}
+
 void QgsUnlitMaterial::updateShaders()
 {
   if ( mInstanced )
@@ -103,10 +110,18 @@ void QgsUnlitMaterial::updateShaders()
       defines << u"USE_INSTANCE_ROTATION"_s;
     const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
     mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
+    mShaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) ) );
+  }
+  else if ( mDataDefinedEnabled )
+  {
+    mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolorDataDefined.vert"_s ) ) );
+    const QByteArray fragCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) );
+    mShaderProgram->setFragmentShaderCode( Qgs3DUtils::addDefinesToShaderCode( fragCode, QStringList( { u"DATA_DEFINED"_s } ) ) );
   }
   else
   {
     mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
+    mShaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) ) );
   }
 }
 
