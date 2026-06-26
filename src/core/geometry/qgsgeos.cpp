@@ -1644,6 +1644,23 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       return sequenceToLinestring( geos, hasZ, hasM );
     }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    case GEOS_CIRCULARSTRING:
+    {
+      return sequenceToCircularString( geos, hasZ, hasM );
+    }
+    case GEOS_COMPOUNDCURVE:
+    {
+      auto compoundCurve = std::make_unique< QgsCompoundCurve >();
+      const int nCurves = GEOSGetNumCurves_r( context, geos );
+      for ( int i = 0; i < nCurves; i++ )
+      {
+        std::unique_ptr< QgsSimpleCurve > curve = sequenceToSimpleCurve( GEOSGetCurveN_r( context, geos, i ), hasZ, hasM );
+        compoundCurve->addCurve( curve.release(), true );
+      }
+      return std::move( compoundCurve );
+    }
+#endif
     case GEOS_POLYGON:
     {
       return fromGeosPolygon( geos );
@@ -1681,6 +1698,20 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       }
       return std::move( multiLineString );
     }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    case GEOS_MULTICURVE:
+    {
+      auto multiCurve = std::make_unique<QgsMultiCurve>();
+      int nParts = GEOSGetNumGeometries_r( context, geos );
+      multiCurve->reserve( nParts );
+      for ( int i = 0; i < nParts; ++i )
+      {
+        std::unique_ptr< QgsAbstractGeometry > curve( fromGeos( GEOSGetGeometryN_r( context, geos, i ) ) );
+        multiCurve->addGeometry( curve.release() );
+      }
+      return std::move( multiCurve );
+    }
+#endif
     case GEOS_MULTIPOLYGON:
     {
       auto multiPolygon = std::make_unique<QgsMultiPolygon>();
@@ -1712,23 +1743,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       }
       return std::move( geomCollection );
     }
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-    case GEOS_CIRCULARSTRING:
-    {
-      return sequenceToCircularString( geos, hasZ, hasM );
-    }
-    case GEOS_COMPOUNDCURVE:
-    {
-      auto compoundCurve = std::make_unique< QgsCompoundCurve >();
-      const int nCurves = GEOSGetNumCurves_r( context, geos );
-      for ( int i = 0; i < nCurves; i++ )
-      {
-        std::unique_ptr< QgsSimpleCurve > curve = sequenceToSimpleCurve( GEOSGetCurveN_r( context, geos, i ), hasZ, hasM );
-        compoundCurve->addCurve( curve.release(), true );
-      }
-      return std::move( compoundCurve );
-    }
-#endif
   }
   return nullptr;
 }
@@ -1909,24 +1923,30 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 
     if ( QgsWkbTypes::flatType( geom->wkbType() ) != Qgis::WkbType::GeometryCollection )
     {
-      switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
+      switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
       {
-        case Qgis::GeometryType::Point:
+        case Qgis::WkbType::Point:
           geosType = GEOS_MULTIPOINT;
           break;
 
-        case Qgis::GeometryType::Line:
+        case Qgis::WkbType::LineString:
           geosType = GEOS_MULTILINESTRING;
           break;
 
-        case Qgis::GeometryType::Polygon:
+        case Qgis::WkbType::Polygon:
           geosType = GEOS_MULTIPOLYGON;
           break;
 
-          // TODO: Add support for MultiCurve and MultiSurface
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+        case Qgis::WkbType::MultiCurve:
+          geosType = GEOS_MULTICURVE;
+          break;
+          // TODO: Add support for MultiSurface
+#endif
 
-        case Qgis::GeometryType::Unknown:
-        case Qgis::GeometryType::Null:
+        case Qgis::WkbType::Unknown:
+        case Qgis::WkbType::NoGeometry:
+        default:
           return nullptr;
       }
     }
@@ -1948,28 +1968,6 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
       geomVector.emplace_back( std::move( geosGeom ) );
     }
     return createGeosCollection( geosType, geomVector );
-  }
-  else if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::PolyhedralSurface || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::TIN )
-  {
-    // PolyhedralSurface and TIN support
-    // convert it to a geos MultiPolygon
-    const QgsPolyhedralSurface *polyhedralSurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( geom );
-    if ( !polyhedralSurface )
-      return nullptr;
-
-    std::vector<geos::unique_ptr> geomVector;
-    geomVector.reserve( polyhedralSurface->numPatches() );
-    for ( int i = 0; i < polyhedralSurface->numPatches(); ++i )
-    {
-      geos::unique_ptr geosPolygon = createGeosPolygon( polyhedralSurface->patchN( i ), precision );
-      if ( flags & Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry && !geosPolygon )
-      {
-        return nullptr;
-      }
-      geomVector.emplace_back( std::move( geosPolygon ) );
-    }
-
-    return createGeosCollection( GEOS_MULTIPOLYGON, geomVector );
   }
   else
   {
@@ -1995,6 +1993,30 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
       case Qgis::WkbType::CompoundCurve:
         return createGeosCompoundCurve( static_cast<const QgsCompoundCurve *>( geom ), precision, flags );
 #endif
+
+      case Qgis::WkbType::TIN:
+      case Qgis::WkbType::PolyhedralSurface:
+      {
+        // PolyhedralSurface and TIN support
+        // convert it to a geos MultiPolygon
+        const QgsPolyhedralSurface *polyhedralSurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( geom );
+        if ( !polyhedralSurface )
+          return nullptr;
+
+        std::vector<geos::unique_ptr> geomVector;
+        geomVector.reserve( polyhedralSurface->numPatches() );
+        for ( int i = 0; i < polyhedralSurface->numPatches(); ++i )
+        {
+          geos::unique_ptr geosPolygon = createGeosPolygon( polyhedralSurface->patchN( i ), precision );
+          if ( flags & Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry && !geosPolygon )
+          {
+            return nullptr;
+          }
+          geomVector.emplace_back( std::move( geosPolygon ) );
+        }
+
+        return createGeosCollection( GEOS_MULTIPOLYGON, geomVector );
+      }
 
       case Qgis::WkbType::Unknown:
       case Qgis::WkbType::NoGeometry:
