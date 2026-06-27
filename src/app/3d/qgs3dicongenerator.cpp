@@ -84,7 +84,7 @@ void Qgs3DIconGenerator::generateIcon( QgsStyle *style, QgsStyle::StyleEntity ty
       // capturing 3d thumbnails involves event looping -- we don't want to trigger an event loop immediately here,
       // as this method may have been called while painting a widget (eg a list widget showing the style model), and
       // processing the event loop while drawing a widget is a VERY BAD THING
-      QMetaObject::invokeMethod( this, &Qgs3DIconGenerator::generateThumbnailForMaterial, Qt::QueuedConnection, style, name );
+      QMetaObject::invokeMethod( this, "generateThumbnailForMaterial", Qt::QueuedConnection, Q_ARG( QgsStyle *, style ), Q_ARG( QString, name ) );
       break;
     }
   }
