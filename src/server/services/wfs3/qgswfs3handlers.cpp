@@ -447,7 +447,8 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       {
         fInfo.format = "date-time";
         fInfo.type = "string";
-        fInfo.role = "primary-instant";
+        // TODO: connect with temporal properties
+        // fInfo.role = "primary-instant";
         break;
       }
       case QMetaType::Type::QTime:

@@ -293,7 +293,7 @@ Profile.None if the string was not recognized.
 :return: - ok: output parameter set to true if the profile string was
            recognized, false otherwise
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
     QList<QgsServerOgcApi::Profile> profilesFromRequest( const QgsServerRequest *request ) const;
@@ -301,7 +301,7 @@ Profile.None if the string was not recognized.
 Return a list of the profiles in the request, extracted from the
 "profile" query parameter.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
     static QString parentLink( const QUrl &url, int levels = 1 );
