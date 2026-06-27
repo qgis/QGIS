@@ -372,6 +372,24 @@ jobs:
             echo "Frameworks/lib not present or already a symlink, skipping."
           fi
 
+      - name: 🧹 Remove broken symlinks from app bundle
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        run: |
+          # The merged universal bundle can contain optional dependency symlinks
+          # from one architecture that are absent in the other. Broken symlinks
+          # make `codesign --verify --strict` fail with a generic
+          # "No such file or directory" against the top-level .app.
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          REMOVED=0
+          while IFS= read -r -d '' link; do
+            if [ ! -e "$link" ]; then
+              echo "Removing broken symlink $link -> $(readlink "$link")"
+              rm -f "$link"
+              REMOVED=$((REMOVED + 1))
+            fi
+          done < <(find "${APP_PATH}" -type l -print0)
+          echo "Removed ${REMOVED} broken symlink(s)."
+
       - name: 🔏 Sign app
         if: ${{ env.IS_STRATA_RELEASE == 'true' }}
         run: |
