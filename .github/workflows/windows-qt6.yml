@@ -279,7 +279,6 @@ jobs:
         id: artifact-win64-qt6
         with:
           name: strata-windows-qt6
-          archive: false
           path: |
             build/*-win64.zip
             build/*.exe
