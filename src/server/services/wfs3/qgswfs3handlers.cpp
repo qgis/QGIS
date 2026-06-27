@@ -969,7 +969,7 @@ QMap<int, QgsWfs3AbstractItemsHandler::ReferencedLayerInfo> QgsWfs3AbstractItems
       const QgsRelation relation { context.project()->relationManager()->relation( widgetConfig.value( u"Relation"_s ).toString() ) };
       if ( !relation.isValid() )
       {
-        QgsMessageLog::logMessage( u"RelationReference with relation id '%1' is not valid"_s, u"Server"_s.arg( relation.id() ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( u"RelationReference with relation id '%1' is not valid"_s.arg( relation.id() ), u"Server"_s, Qgis::MessageLevel::Warning );
         continue;
       }
       // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,

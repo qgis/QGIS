@@ -1772,7 +1772,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
                 }
               }
             },
-            "description": "List all requirements classes specified in a standard (e.g., OGCAPI 1.0 Part 1: Core) that the server conforms to."
+            "description": "List all requirements classes specified in a standard (e.g., OGCAPI Features 1.0 Part 1: Core) that the server conforms to."
           },
           "default": {
             "content": {
