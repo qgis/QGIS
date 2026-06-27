@@ -115,7 +115,7 @@ QString QgsHeatmapAlgorithm::shortHelpString() const
 {
   return QObject::tr(
     "This algorithm creates a density (heatmap) raster of an input point vector layer using kernel density estimation. "
-    "Heatmaps allow easy identification of hotspots and clustering of points.\n"
+    "Heatmaps allow easy identification of hotspots and clustering of points.\n\n"
     "The density is calculated based on the number of points in a location, "
     "with larger numbers of clustered points resulting in larger values."
   );
