@@ -2026,7 +2026,7 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
     data["links"].push_back(
       { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
         { "href", "http://www.opengis.net/def/profile/ogc/0/" + profileStr },
-        { "title", "Profile 'rel-as-link' is used in the response" + profileStr } }
+        { "title", "Profile '" + profileStr + "' is used in the response" } }
     );
   }
 
