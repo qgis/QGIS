@@ -51,15 +51,29 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief &operator=( const QgsRelief &rh ) = delete;
 
     /**
+     * Calculation results.
+     *
+     * \since QGIS 4.2
+     */
+    enum class Result : int
+    {
+      Success = 0,              //!< Calculation succeeded
+      InvalidInput = 1,         //!< Invalid input layer
+      OutputCreationFailed = 3, //!< Creation of output layer failed
+      InvalidInputSize = 6,     //!< Input raster was too small (at least 3 rows are required)
+      Canceled = 7,             //!< Operation was canceled
+    };
+
+    /**
      * Starts the calculation.
      *
      * Reads from the intput input file and stores the result in the output file.
      *
      * \param feedback feedback object that receives update and that is checked for cancellation.
      *
-     * \returns 0 in case of success
+     * \returns result code. Prior to QGIS 4.2 the results were returned as a raw integer value.
     */
-    int processRaster( QgsFeedback *feedback = nullptr );
+    QgsRelief::Result processRaster( QgsFeedback *feedback = nullptr );
 
     /**
      * Returns the z factor, which controls vertical elevation exaggeration.
@@ -125,9 +139,6 @@ class ANALYSIS_EXPORT QgsRelief
 #ifdef SIP_RUN
     QgsRelief( const QgsRelief &rh );
 #endif
-
-    static constexpr int RET_OUTPUT_CREATION_FAILED = 3;
-    static constexpr int RET_CANCELED = 7;
 
     QString mInputFile;
     QString mOutputFile;
