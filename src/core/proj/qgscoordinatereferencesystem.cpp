@@ -3305,7 +3305,8 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( dou
 
   QgsProjUtils::proj_pj_unique_ptr baseCrs;
   double lat = 0.0, lon = 0.0;
-  if ( topocentricOrigin( lat, lon ) )
+  const bool isTopocentric = topocentricOrigin( lat, lon );
+  if ( isTopocentric )
   {
     baseCrs.reset( proj_get_source_crs( ctx, pj ) );
     if ( baseCrs )
@@ -3367,8 +3368,11 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( dou
     return QgsCoordinateReferenceSystem();
 
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProjObject( topocentric.get() );
-  if ( d->mTopocentricBaseCrs )
+  if ( isTopocentric )
     crs.d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem( *d->mTopocentricBaseCrs ) );
+  else
+    crs.d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem( *this ) );
+
   return crs;
 }
 
