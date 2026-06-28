@@ -29,7 +29,16 @@ Constructor for QgsRelief.
     ~QgsRelief();
 
 
-    int processRaster( QgsFeedback *feedback = 0 );
+    enum class Result /BaseType=IntEnum/
+    {
+      Success,
+      InvalidInput,
+      OutputCreationFailed,
+      InvalidInputSize,
+      Canceled,
+    };
+
+    QgsRelief::Result processRaster( QgsFeedback *feedback = 0 );
 %Docstring
 Starts the calculation.
 
@@ -39,7 +48,8 @@ file.
 :param feedback: feedback object that receives update and that is
                  checked for cancellation.
 
-:return: 0 in case of success
+:return: result code. Prior to QGIS 4.2 the results were returned as a
+         raw integer value.
 %End
 
     double zFactor() const;

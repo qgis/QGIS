@@ -75,17 +75,17 @@ void QgsRelief::setDefaultReliefColors()
   addReliefColorClass( QgsRasterReliefColor( QColor( 255, 255, 255 ), 4000, 9000 ) );
 }
 
-int QgsRelief::processRaster( QgsFeedback *feedback )
+QgsRelief::Result QgsRelief::processRaster( QgsFeedback *feedback )
 {
   auto inputLayer = std::make_unique< QgsRasterLayer >( mInputFile, u"relief"_s, u"gdal"_s );
   if ( !inputLayer->isValid() )
   {
-    return 1;
+    return Result::InvalidInput;
   }
   QgsRasterDataProvider *inputProvider = inputLayer->dataProvider();
   if ( !inputProvider )
   {
-    return 1;
+    return Result::InvalidInput;
   }
 
   const int xSize = inputProvider->xSize();
@@ -99,7 +99,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
   std::unique_ptr<QgsRasterDataProvider> outputProvider( writer.createMultiBandRaster( Qgis::DataType::Byte, xSize, ySize, inputProvider->extent(), inputProvider->crs(), 3 ) );
   if ( !outputProvider )
   {
-    return RET_OUTPUT_CREATION_FAILED; //create operation on output file failed
+    return Result::OutputCreationFailed;
   }
 
   //initialize dependency filters with cell sizes
@@ -146,7 +146,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
-    return 6;
+    return Result::InvalidInput;
   }
 
   // iterate row-by-row over the raster
@@ -202,7 +202,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
 
     if ( feedback && feedback->isCanceled() )
     {
-      return RET_CANCELED;
+      return Result::Canceled;
     }
 
     if ( i == 0 )
@@ -320,8 +320,8 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
     if ( !outputProvider->closeWithProgress( scaledFeedback.get() ) )
     {
       if ( feedback->isCanceled() )
-        return RET_CANCELED;
-      return RET_OUTPUT_CREATION_FAILED;
+        return Result::Canceled;
+      return Result::OutputCreationFailed;
     }
   }
 
@@ -332,10 +332,10 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
 
   if ( feedback && feedback->isCanceled() )
   {
-    return RET_CANCELED;
+    return Result::Canceled;
   }
 
-  return 0;
+  return Result::Success;
 }
 
 bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x4, float *x5, float *x6, float *x7, float *x8, float *x9, unsigned char *red, unsigned char *green, unsigned char *blue )
