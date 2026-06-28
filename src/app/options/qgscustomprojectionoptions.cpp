@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QString>
+#include <QTimer>
 
 #include "moc_qgscustomprojectionoptions.cpp"
 
@@ -220,11 +221,29 @@ void QgsCustomProjectionOptionsWidget::pbnRemove_clicked()
 
 void QgsCustomProjectionOptionsWidget::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
+  if ( mBlockUpdates )
+  {
+    return;
+  }
+
   //Store the modifications made to the current element before moving on
   int currentIndex, previousIndex;
   if ( previous )
   {
     previousIndex = leNameList->indexOfTopLevelItem( previous );
+
+    if ( !mCrsDefinitionWidget->crs().isValid() )
+    {
+      QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ), tr( "Current definition of '%1' is not valid." ).arg( leName->text() ) );
+
+      mBlockUpdates++;
+      QTimer::singleShot( 0, this, [this, previous]() {
+        leNameList->setCurrentItem( previous );
+        leNameList->selectionModel()->select( leNameList->indexFromItem( previous ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+        mBlockUpdates--;
+      } );
+      return;
+    }
 
     mDefinitions[previousIndex].name = leName->text();
     switch ( mCrsDefinitionWidget->format() )
