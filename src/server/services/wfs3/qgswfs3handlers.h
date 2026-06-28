@@ -231,7 +231,7 @@ class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
     std::string summary() const override { return "Information about standards that this API conforms to."; }
     std::string description() const override
     {
-      return "List all requirements classes specified in a standard (e.g., OGCAPI 1.0 "
+      return "List all requirements classes specified in a standard (e.g., OGCAPI Features 1.0 "
              "Part 1: Core) that the server conforms to.";
     }
     QStringList tags() const override { return { u"Capabilities"_s }; }
