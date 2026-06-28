@@ -97,7 +97,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     QAction *mSaveAsPdf = nullptr;
 
     bool mGettingShortcut = false;
-    int mModifiers = 0, mKey = 0;
+    Qt::KeyboardModifiers mModifiers = Qt::KeyboardModifiers();
+    int mKey = 0;
 };
 
 #endif //QGSCONFIGURESHORTCUTSDIALOG_H
