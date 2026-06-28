@@ -396,7 +396,10 @@ int QgsRasterLayerUtils::frequencyClassForElevation( double elevation, double mi
 
 void QgsRasterLayerUtils::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
 {
-  const int nClasses = breaks.size() - 1;
+  if ( breaks.empty() )
+    return;
+
+  const qsizetype nClasses = breaks.size() - 1;
   std::vector< double > a( nClasses ); //slopes
   std::vector< double > b( nClasses ); //y-offsets
 
@@ -423,8 +426,6 @@ void QgsRasterLayerUtils::optimiseClassBreaks( QList<int> &breaks, double *frequ
     }
   }
 
-  const QList<int> classesToRemove;
-
   //shift class boundaries or eliminate classes which fall together
   for ( int i = 1; i < nClasses; ++i )
   {
@@ -439,26 +440,19 @@ void QgsRasterLayerUtils::optimiseClassBreaks( QList<int> &breaks, double *frequ
     }
     else
     {
-      int newX = ( b[i - 1] - b[i] ) / ( a[i] - a[i - 1] );
+      int newX = static_cast< int >( ( b[i - 1] - b[i] ) / ( a[i] - a[i - 1] ) );
 
       if ( newX <= breaks[i - 1] )
       {
         newX = breaks[i - 1];
-        //  classesToRemove.push_back( i );//remove this class later as it falls together with the preceding one
       }
       else if ( i < nClasses - 1 && newX >= breaks[i + 1] )
       {
         newX = breaks[i + 1];
-        //  classesToRemove.push_back( i );//remove this class later as it falls together with the next one
       }
 
       breaks[i] = newX;
     }
-  }
-
-  for ( int i = classesToRemove.size() - 1; i >= 0; --i )
-  {
-    breaks.removeAt( classesToRemove.at( i ) ); // cppcheck-suppress containerOutOfBounds
   }
 }
 
