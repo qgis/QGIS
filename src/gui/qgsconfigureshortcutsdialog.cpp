@@ -82,6 +82,11 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   populateActions();
 }
 
+void QgsConfigureShortcutsDialog::setFilter( const QString &filterText )
+{
+  mLeFilter->setText( filterText );
+}
+
 void QgsConfigureShortcutsDialog::populateActions()
 {
   const QList<QObject *> objects = mManager->listAll();

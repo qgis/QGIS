@@ -46,6 +46,17 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
      */
     QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsShortcutsManager *manager = nullptr );
 
+  public slots:
+
+    /**
+     * Sets the text for the filter line edit.
+     *
+     * This will immediately filter the shortcuts list to only matching items.
+     *
+     * \since QGIS 4.2
+     */
+    void setFilter( const QString &filterText );
+
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
     void keyReleaseEvent( QKeyEvent *event ) override;
