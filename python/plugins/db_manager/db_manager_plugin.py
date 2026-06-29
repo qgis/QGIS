@@ -18,10 +18,17 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.core import QgsApplication, QgsDataSourceUri, QgsMapLayerType, QgsProject
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsDataSourceUri,
+    QgsMapLayerType,
+    QgsMessageOutput,
+    QgsProject,
+)
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QApplication
+from qgis.PyQt.QtWidgets import QAction, QApplication, QPushButton
 
 
 class DBManagerPlugin:
@@ -50,6 +57,26 @@ class DBManagerPlugin:
         else:
             self.iface.addPluginToMenu(
                 QApplication.translate("DBManagerPlugin", "DB Manager"), self.action
+            )
+
+        def install_community(_):
+            self.iface.showPluginManager(
+                tabIndex=0, searchTerm=r"DB Manager \(community\)"
+            )
+
+        if self.iface.messageBar() is not None:
+            message_widget = self.iface.messageBar().createMessage(
+                QApplication.translate("DBManagerPlugin", "DB Manager"),
+                QApplication.translate(
+                    "DBManagerPlugin",
+                    'The DB Manager plugin will be removed in a future QGIS release. Please install the "DB Manager (community)" replacement plugin instead.',
+                ),
+            )
+            install_button = QPushButton("Install Now")
+            install_button.clicked.connect(install_community)
+            message_widget.layout().addWidget(install_button)
+            self.iface.messageBar().pushWidget(
+                message_widget, Qgis.MessageLevel.Warning, 0
             )
 
     def unload(self):
