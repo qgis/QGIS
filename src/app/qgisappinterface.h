@@ -52,6 +52,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgisAppInterface &operator=( QgisAppInterface const & ) = delete;
 
     QgsPluginManagerInterface *pluginManagerInterface() override;
+    void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() ) override;
 
     QgsLayerTreeView *layerTreeView() override;
 
