@@ -2249,7 +2249,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     const QDomNode topoBaseCrsNode = srsNode.namedItem( u"topocentricBaseCrs"_s );
     if ( !topoBaseCrsNode.isNull() )
     {
-      d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem() );
+      d->mTopocentricBaseCrs = std::make_unique<QgsCoordinateReferenceSystem>();
       d->mTopocentricBaseCrs->readXml( topoBaseCrsNode );
     }
   }
@@ -3369,9 +3369,9 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( dou
 
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromProjObject( topocentric.get() );
   if ( isTopocentric )
-    crs.d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem( *d->mTopocentricBaseCrs ) );
+    crs.d->mTopocentricBaseCrs = std::make_unique<QgsCoordinateReferenceSystem>( *d->mTopocentricBaseCrs );
   else
-    crs.d->mTopocentricBaseCrs.reset( new QgsCoordinateReferenceSystem( *this ) );
+    crs.d->mTopocentricBaseCrs = std::make_unique<QgsCoordinateReferenceSystem>( *this );
 
   return crs;
 }
