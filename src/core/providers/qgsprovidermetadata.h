@@ -162,10 +162,12 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )
 class CORE_EXPORT QgsEmptyLayerCreationResult
 {
   public:
+    QgsEmptyLayerCreationResult() = default;
+
 #ifndef SIP_RUN
     /**
-   * Constructor for QgsEmptyLayerCreationResult.
-   */
+     * Constructor for QgsEmptyLayerCreationResult.
+     */
     QgsEmptyLayerCreationResult( Qgis::VectorExportResult result, const QString &createdLayerUri, const QString &errorMessage, const QMap<int, int> &createdAttributeIndexMap )
       : mResult( result )
       , mCreatedLayerUri( createdLayerUri )
@@ -175,40 +177,37 @@ class CORE_EXPORT QgsEmptyLayerCreationResult
 #endif
 
     /**
- * Returns the result code of the layer creation.
- */
+     * Returns the result code of the layer creation.
+     */
     Qgis::VectorExportResult result() const { return mResult; }
 
     /**
- * Returns the created layer URI.
- *
- * This will be set to the actual URI of the layer created.
- *
- * In some circumstances this may differ from the original requested uri, eg when the provider has had to
- * automatically launder a layer name.
- */
+     * Returns the created layer URI.
+     *
+     * This will be set to the actual URI of the layer created.
+     *
+     * In some circumstances this may differ from the original requested uri, eg when the provider has had to
+     * automatically launder a layer name.
+     */
     QString createdLayerUri() const { return mCreatedLayerUri; }
 
     /**
- * Returns any user-friendly error messages obtained if the creation fails.
- */
+     * Returns any user-friendly error messages obtained if the creation fails.
+     */
     QString errorMessage() const { return mErrorMessage; }
 
     /**
- * Returns a map of the original requested field index to the actual created field index.
- *
- * In some cases the provider may re-arrange fields from their original requested order.
- * It's not always possible to directly determine this mapping from the output layer alone,
- * as the provider may have changed requested fields as part of the layer creation process (eg
- * when the provider has had to automatically launder them).
- */
+     * Returns a map of the original requested field index to the actual created field index.
+     *
+     * In some cases the provider may re-arrange fields from their original requested order.
+     * It's not always possible to directly determine this mapping from the output layer alone,
+     * as the provider may have changed requested fields as part of the layer creation process (eg
+     * when the provider has had to automatically launder them).
+     */
     QMap<int, int> createdAttributeIndexMap() const { return mCreatedAttributeIndexMap; }
 
-  protected:
-    QgsEmptyLayerCreationResult() = default;
-
   private:
-    Qgis::VectorExportResult mResult = Qgis::VectorExportResult::Success;
+    Qgis::VectorExportResult mResult = Qgis::VectorExportResult::UserCanceled;
     QString mCreatedLayerUri;
     QString mErrorMessage;
     QMap<int, int> mCreatedAttributeIndexMap;

@@ -129,6 +129,8 @@ Encapsulates the details of a newly created empty layer.
 #include "qgsprovidermetadata.h"
 %End
   public:
+    QgsEmptyLayerCreationResult();
+
 
     Qgis::VectorExportResult result() const;
 %Docstring
@@ -161,9 +163,6 @@ mapping from the output layer alone, as the provider may have changed
 requested fields as part of the layer creation process (eg when the
 provider has had to automatically launder them).
 %End
-
-  protected:
-    QgsEmptyLayerCreationResult();
 
 };
 
