@@ -41,6 +41,7 @@ class QgsTransaction;
 class QgsFields;
 class QgsProviderSublayerDetails;
 class QgsFeedback;
+class QgsEmptyLayerCreationResult;
 
 /**
  * \ingroup core
@@ -154,6 +155,29 @@ class CORE_EXPORT QgsProviderRegistry
      * \deprecated QGIS 3.10. Use instead capabilities() method of individual data item provider.
      */
     Q_DECL_DEPRECATED Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const SIP_DEPRECATED;
+
+    /**
+     * Creates new empty vector layer.
+     *
+     * \param providerKey Destination provider key
+     * \param uri Destination for new layer
+     * \param fields New layer fields
+     * \param wkbType New layer geometry WKB type
+     * \param crs New layer coordinate reference system
+     * \param overwrite Set to TRUE to automatically overwrite any existing layer in the same location
+     *
+     * \returns An object encapsulating the properties of the newly created layer.
+     *
+     * \since QGIS 4.2
+     */
+    QgsEmptyLayerCreationResult createEmptyLayer(
+      const QString &providerKey,
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      bool overwrite = false
+    );
 
     /**
      * Creates new empty vector layer
