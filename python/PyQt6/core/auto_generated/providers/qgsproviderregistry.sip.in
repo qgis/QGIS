@@ -110,6 +110,31 @@ Returns the provider capabilities
    Use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider.
 %End
 
+    QgsEmptyLayerCreationResult createEmptyLayer(
+      const QString &providerKey,
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      bool overwrite = false
+    );
+%Docstring
+Creates new empty vector layer.
+
+:param providerKey: Destination provider key
+:param uri: Destination for new layer
+:param fields: New layer fields
+:param wkbType: New layer geometry WKB type
+:param crs: New layer coordinate reference system
+:param overwrite: Set to ``True`` to automatically overwrite any
+                  existing layer in the same location
+
+:return: An object encapsulating the properties of the newly created
+         layer.
+
+.. versionadded:: 4.2
+%End
+
 
 
     QgsRasterDataProvider *createRasterDataProvider(

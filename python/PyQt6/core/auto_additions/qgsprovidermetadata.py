@@ -46,3 +46,7 @@ try:
     QgsMeshDriverMetadata.__group__ = ['providers']
 except (NameError, AttributeError):
     pass
+try:
+    QgsEmptyLayerCreationResult.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
