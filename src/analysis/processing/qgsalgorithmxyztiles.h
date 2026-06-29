@@ -75,7 +75,7 @@ struct MetaTile
     int rows = 0;
     int cols = 0;
 };
-QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, const int tileSize = 4 );
+QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize = 4 );
 
 
 /**
