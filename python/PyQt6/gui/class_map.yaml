@@ -1807,8 +1807,9 @@ QgsCompoundColorWidget.setColorModelEditable: src/gui/qgscompoundcolorwidget.h#L
 QgsCompoundColorWidget.setDiscarded: src/gui/qgscompoundcolorwidget.h#L83
 QgsCompoundColorWidget.setPreviousColor: src/gui/qgscompoundcolorwidget.h#L141
 QgsCompoundColorWidget: src/gui/qgscompoundcolorwidget.h#L35
-QgsConfigureShortcutsDialog.keyPressEvent: src/gui/qgsconfigureshortcutsdialog.h#L50
-QgsConfigureShortcutsDialog.keyReleaseEvent: src/gui/qgsconfigureshortcutsdialog.h#L51
+QgsConfigureShortcutsDialog.keyPressEvent: src/gui/qgsconfigureshortcutsdialog.h#L61
+QgsConfigureShortcutsDialog.keyReleaseEvent: src/gui/qgsconfigureshortcutsdialog.h#L62
+QgsConfigureShortcutsDialog.setFilter: src/gui/qgsconfigureshortcutsdialog.h#L58
 QgsConfigureShortcutsDialog: src/gui/qgsconfigureshortcutsdialog.h#L36
 QgsCoordinateBoundsPreviewMapWidget.canvasRect: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L52
 QgsCoordinateBoundsPreviewMapWidget.setCanvasRect: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L46
