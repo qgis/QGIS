@@ -33,7 +33,6 @@ int lon2tileX( const double lon, const int z );
 int lat2tileY( const double lat, const int z );
 double tileX2lon( const int x, const int z );
 double tileY2lat( const int y, const int z );
-void extent2TileXY( const QgsRectangle extent, const int zoom, int &xMin, int &yMin, int &xMax, int &yMax );
 
 struct Tile
 {
