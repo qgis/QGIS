@@ -152,6 +152,68 @@ class CORE_EXPORT QgsMeshDriverMetadata
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )
 
+
+/**
+ * \ingroup core
+ * \brief Encapsulates the details of a newly created empty layer.
+ *
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsEmptyLayerCreationResult
+{
+  public:
+#ifndef SIP_RUN
+    /**
+   * Constructor for QgsEmptyLayerCreationResult.
+   */
+    QgsEmptyLayerCreationResult( Qgis::VectorExportResult result, const QString &createdLayerUri, const QString &errorMessage, const QMap<int, int> &createdAttributeIndexMap )
+      : mResult( result )
+      , mCreatedLayerUri( createdLayerUri )
+      , mErrorMessage( errorMessage )
+      , mCreatedAttributeIndexMap( createdAttributeIndexMap )
+    {}
+#endif
+
+    /**
+ * Returns the result code of the layer creation.
+ */
+    Qgis::VectorExportResult result() const { return mResult; }
+
+    /**
+ * Returns the created layer URI.
+ *
+ * This will be set to the actual URI of the layer created.
+ *
+ * In some circumstances this may differ from the original requested uri, eg when the provider has had to
+ * automatically launder a layer name.
+ */
+    QString createdLayerUri() const { return mCreatedLayerUri; }
+
+    /**
+ * Returns any user-friendly error messages obtained if the creation fails.
+ */
+    QString errorMessage() const { return mErrorMessage; }
+
+    /**
+ * Returns a map of the original requested field index to the actual created field index.
+ *
+ * In some cases the provider may re-arrange fields from their original requested order.
+ * It's not always possible to directly determine this mapping from the output layer alone,
+ * as the provider may have changed requested fields as part of the layer creation process (eg
+ * when the provider has had to automatically launder them).
+ */
+    QMap<int, int> createdAttributeIndexMap() const { return mCreatedAttributeIndexMap; }
+
+  protected:
+    QgsEmptyLayerCreationResult() = default;
+
+  private:
+    Qgis::VectorExportResult mResult = Qgis::VectorExportResult::Success;
+    QString mCreatedLayerUri;
+    QString mErrorMessage;
+    QMap<int, int> mCreatedAttributeIndexMap;
+};
+
 /**
  * \ingroup core
  * \brief Holds data provider key, description, and associated shared library file or function pointer information.
@@ -474,6 +536,22 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
 
+    /**
+     * Creates new empty vector layer.
+     *
+     * \param uri Destination for new layer
+     * \param fields New layer fields
+     * \param wkbType New layer geometry WKB type
+     * \param crs New layer coordinate reference system
+     * \param overwrite Set to TRUE to automatically overwrite any existing layer in the same location
+     *
+     * \returns An object encapsulating the properties of the newly created layer.
+     *
+     * \since QGIS 4.2
+     */
+    QgsEmptyLayerCreationResult createEmptyLayer(
+      const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), bool overwrite = false
+    );
 
 #ifndef SIP_RUN
 

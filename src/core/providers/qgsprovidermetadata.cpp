@@ -174,6 +174,15 @@ bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &
   return defaultValue;
 }
 
+QgsEmptyLayerCreationResult QgsProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &crs, bool overwrite )
+{
+  QMap<int, int> oldToNewAttrIdxMap;
+  QString errorMessage;
+  QString createdLayerUri;
+  const Qgis::VectorExportResult result = createEmptyLayer( uri, fields, wkbType, crs, overwrite, oldToNewAttrIdxMap, errorMessage, nullptr, createdLayerUri );
+  return QgsEmptyLayerCreationResult( result, createdLayerUri, errorMessage, oldToNewAttrIdxMap );
+}
+
 QVariantMap QgsProviderMetadata::decodeUri( const QString & ) const
 {
   return QVariantMap();

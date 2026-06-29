@@ -689,6 +689,17 @@ QString QgsProviderRegistry::relativeToAbsoluteUri( const QString &providerKey, 
     return uri;
 }
 
+QgsEmptyLayerCreationResult QgsProviderRegistry::createEmptyLayer(
+  const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &crs, bool overwrite
+)
+{
+  QMap<int, int> oldToNewAttrIdxMap;
+  QString errorMessage;
+  QString createdLayerUri;
+  const Qgis::VectorExportResult result = createEmptyLayer( providerKey, uri, fields, wkbType, crs, overwrite, oldToNewAttrIdxMap, errorMessage, nullptr, createdLayerUri );
+  return QgsEmptyLayerCreationResult( result, createdLayerUri, errorMessage, oldToNewAttrIdxMap );
+}
+
 Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer(
   const QString &providerKey,
   const QString &uri,
