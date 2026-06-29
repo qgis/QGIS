@@ -97,7 +97,25 @@ Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer(
   QString &createdLayerUri
 )
 {
-  return QgsOgrProvider::createEmptyLayer( uri, fields, wkbType, srs, overwrite, &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options );
+  QString passedUri = uri;
+  QMap< QString, QVariant > passedOptions;
+  if ( options )
+  {
+    passedOptions = *options;
+  }
+  if ( passedOptions.value( u"layerName"_s ).toString().isEmpty() )
+  {
+    // no layer name specified in options, but maybe it was in the passed URI.
+    QVariantMap parts = decodeUri( uri );
+    if ( !parts.value( u"layerName"_s ).toString().isEmpty() )
+    {
+      passedOptions[u"layerName"_s] = parts.value( u"layerName"_s );
+      parts.remove( u"layerName"_s );
+      passedUri = encodeUri( parts );
+    }
+  }
+
+  return QgsOgrProvider::createEmptyLayer( passedUri, fields, wkbType, srs, overwrite, &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, &passedOptions );
 }
 
 bool QgsOgrProviderMetadata::createDatabase( const QString &uri, QString &errorMessage )
