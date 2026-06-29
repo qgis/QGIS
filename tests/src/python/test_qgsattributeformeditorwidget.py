@@ -278,8 +278,6 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         layer = QgsVectorLayer("Point?", "test", "memory")
         field_typename = "JSON"
         self.verifyJSONTypeFindBest(QVariant.Map, layer, field_typename)
-        # TODO: self.verifyJSONTypeFindBest(QVariant.List, layer, field_typename)
-        # TODO: self.verifyJSONTypeFindBest(QVariant.String, layer, field_typename)
 
     def testJSONPostgresLikeLayer(self):
         # we make a memory layer but pass the type json and jsonb
@@ -292,8 +290,6 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         jsonb_layer = QgsVectorLayer("Point?", "test", "memory")
         field_typename = "jsonb"
         self.verifyJSONTypeFindBest(QVariant.Map, jsonb_layer, field_typename)
-        # TODO: self.verifyJSONTypeFindBest(QVariant.List, layer, field_typename)
-        # TODO: self.verifyJSONTypeFindBest(QVariant.String, layer, field_typename)
 
     def testJSONGeoPackageLayer(self):
         temp_dir = QTemporaryDir()
@@ -309,8 +305,6 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         layer = QgsVectorLayer(uri, "test", "ogr")
         field_typename = "JSON"
         self.verifyJSONTypeFindBest(QVariant.Map, layer, field_typename)
-        # TODO: self.verifyJSONTypeFindBest(QVariant.List, layer, field_typename)
-        # TODO: self.verifyJSONTypeFindBest(QVariant.String, layer, field_typename)
 
 
 if __name__ == "__main__":
