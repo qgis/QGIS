@@ -15662,10 +15662,10 @@ QgsRasterLayerTemporalProperties.setTemporalRepresentationScale: src/core/raster
 QgsRasterLayerTemporalProperties.temporalRepresentationOffset: src/core/raster/qgsrasterlayertemporalproperties.h#L173
 QgsRasterLayerTemporalProperties.writeXml: src/core/raster/qgsrasterlayertemporalproperties.h#L229
 QgsRasterLayerTemporalProperties: src/core/raster/qgsrasterlayertemporalproperties.h#L38
-QgsRasterLayerUtils.alignRasterExtent: src/core/raster/qgsrasterlayerutils.h#L75
-QgsRasterLayerUtils.computeMinMax: src/core/raster/qgsrasterlayerutils.h#L61
-QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange: src/core/raster/qgsrasterlayerutils.h#L53
-QgsRasterLayerUtils: src/core/raster/qgsrasterlayerutils.h#L38
+QgsRasterLayerUtils.alignRasterExtent: src/core/raster/qgsrasterlayerutils.h#L130
+QgsRasterLayerUtils.computeMinMax: src/core/raster/qgsrasterlayerutils.h#L116
+QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange: src/core/raster/qgsrasterlayerutils.h#L108
+QgsRasterLayerUtils: src/core/raster/qgsrasterlayerutils.h#L93
 QgsRasterLineSymbolLayer.clone: src/core/symbology/qgslinesymbollayer.h#L1431
 QgsRasterLineSymbolLayer.color: src/core/symbology/qgslinesymbollayer.h#L1438
 QgsRasterLineSymbolLayer.create: src/core/symbology/qgslinesymbollayer.h#L1391
@@ -15806,6 +15806,8 @@ QgsRasterRange.setBounds: src/core/raster/qgsrasterrange.h#L101
 QgsRasterRange.setMax: src/core/raster/qgsrasterrange.h#L92
 QgsRasterRange.setMin: src/core/raster/qgsrasterrange.h#L86
 QgsRasterRange: src/core/raster/qgsrasterrange.h#L36
+QgsRasterReliefColor.__repr__: src/core/raster/qgsrasterlayerutils.h#L77
+QgsRasterReliefColor: src/core/raster/qgsrasterlayerutils.h#L46
 QgsRasterRenderer._writeXml: src/core/raster/qgsrasterrenderer.h#L246
 QgsRasterRenderer.accept: src/core/raster/qgsrasterrenderer.h#L224
 QgsRasterRenderer.alphaBand: src/core/raster/qgsrasterrenderer.h#L160
