@@ -327,9 +327,7 @@ class TcpServerWorker : public QObject
                 clientConnection->write( "\r\n" );
                 clientConnection->write( ex.message().toUtf8() );
 
-                std::cout
-                  << u"\033[1;31m%1 [%2] \"%3\" - - 500\033[0m"_s.arg( clientConnection->peerAddress().toString() ).arg( QDateTime::currentDateTime().toString() ).arg( ex.message() ).toStdString()
-                  << std::endl;
+                std::cout << u"\033[1;31m%1 [%2] \"%3\" - - 500\033[0m"_s.arg( clientConnection->peerAddress().toString(), QDateTime::currentDateTime().toString(), ex.message() ).toStdString() << std::endl;
 
                 clientConnection->disconnectFromHost();
               }

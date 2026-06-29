@@ -32,11 +32,29 @@ class QgsFeature;
 class QgsMapLayer;
 
 /**
+ * The QgsWfs3AbstractHandler class provides some
+ * functionality which is common to the wfs3 handlers
+ */
+class QgsWfs3AbstractHandler : public QgsServerOgcApiHandler
+{
+  public:
+    /**
+     * Returns the HTML template path for the handler in the given \a context
+     *
+     * The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
+     * apiResourcesDirectory() + "/ogc/templates/wfs3/" + operationId + ".html"
+     * e.g. for an handler with operationId "collectionItems", the path
+     * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
+     */
+    const QString templatePath( const QgsServerApiContext &context ) const override;
+};
+
+/**
  * The QgsWfs3AbstractItemsHandler class provides some
  * functionality which is common to the handlers that
  * return or process items.
  */
-class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
+class QgsWfs3AbstractItemsHandler : public QgsWfs3AbstractHandler
 {
   public:
     /**
@@ -73,16 +91,6 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * \param context the server api context
      */
     void gatherLayerFieldsInfo( json &data, const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
-
-    /**
-     * Returns the HTML template path for the handler in the given \a context
-     *
-     * The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
-     * apiResourcesDirectory() + "/ogc/templates/wfs3/" + operationId + ".html"
-     * e.g. for an handler with operationId "collectionItems", the path
-     * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
-     */
-    const QString templatePath( const QgsServerApiContext &context ) const override;
 
     /**
      * Returns TRUE if features can be added to the the \a mapLayer in the given \a context, FALSE otherwise.
@@ -206,7 +214,7 @@ class QgsWfs3APIHandler : public QgsWfs3AbstractItemsHandler
 /**
  * The QgsWfs3LandingPageHandler is the landing page handler.
  */
-class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
+class QgsWfs3LandingPageHandler : public QgsWfs3AbstractHandler
 {
   public:
     QgsWfs3LandingPageHandler();
@@ -226,13 +234,12 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     std::string linkTitle() const override { return "Landing page"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
     json schema( const QgsServerApiContext &context ) const override;
-    QString const templatePath( const QgsServerApiContext &context ) const override;
 };
 
 /**
  * The QgsWfs3ConformanceHandler class shows the conformance links.
  */
-class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
+class QgsWfs3ConformanceHandler : public QgsWfs3AbstractHandler
 {
   public:
     QgsWfs3ConformanceHandler();
@@ -252,7 +259,6 @@ class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
     std::string linkTitle() const override { return "Conformance classes"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::conformance; }
     json schema( const QgsServerApiContext &context ) const override;
-    const QString templatePath( const QgsServerApiContext &context ) const override;
 };
 
 
@@ -298,6 +304,26 @@ class QgsWfs3DescribeCollectionHandler : public QgsWfs3AbstractItemsHandler
     std::string description() const override { return "Metadata about a feature collection."; }
     std::string linkTitle() const override { return "Feature collection"; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
+    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
+    json schema( const QgsServerApiContext &context ) const override;
+};
+
+/**
+ * The DescribeCollectionQueryablesHandler describes the queryables of a collection
+ * Path: /collections/{collectionId}/queryables
+ */
+class QgsWfs3DescribeCollectionQueryablesHandler : public QgsWfs3AbstractItemsHandler
+{
+  public:
+    QgsWfs3DescribeCollectionQueryablesHandler();
+    void handleRequest( const QgsServerApiContext &context ) const override;
+
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+?)/queryables(\.json|\.html|/)?$)re" ); }
+    std::string operationId() const override { return "describeCollectionQueryables"; }
+    std::string summary() const override { return "Describe the queryables of a feature collection with ID {collectionId}."; }
+    std::string description() const override { return "Metadata about a feature collection's queryables."; }
+    std::string linkTitle() const override { return "Feature collection's queryables"; }
+    QStringList tags() const override { return { u"Capabilities"_s, u"Attributes"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     json schema( const QgsServerApiContext &context ) const override;
 };
@@ -389,5 +415,26 @@ class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
     QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &apiContext ) const override;
 };
 
+/**
+ * The QgsWfs3FunctionsHandler class shows the custom functions.
+ * Path: /functions
+ */
+class QgsWfs3FunctionsHandler : public QgsWfs3AbstractHandler
+{
+  public:
+    QgsWfs3FunctionsHandler();
+
+    void handleRequest( const QgsServerApiContext &context ) const override;
+
+    // QgsServerOgcApiHandler interface
+    QRegularExpression path() const override { return QRegularExpression( R"re(/functions(\.json|\.html|/)?$)re" ); }
+    std::string operationId() const override { return "getFunctions"; }
+    std::string summary() const override { return "Information about custom function this server implements."; }
+    std::string description() const override { return "List all custom functions."; }
+    QStringList tags() const override { return { u"Capabilities"_s, u"Functions"_s }; }
+    std::string linkTitle() const override { return "Custom functions"; }
+    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::functions; }
+    json schema( const QgsServerApiContext &context ) const override;
+};
 
 #endif // QGS_WFS3_HANDLERS_H

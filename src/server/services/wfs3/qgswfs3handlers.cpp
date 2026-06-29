@@ -23,8 +23,10 @@
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorrelation.h"
 #include "qgsbufferserverrequest.h"
+#include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
 #include "qgsjsonutils.h"
@@ -136,6 +138,7 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   }
   schema["components"]["parameters"]["bbox-crs"]["schema"]["enum"] = crss;
   schema["components"]["parameters"]["crs"]["schema"]["enum"] = crss;
+  schema["components"]["parameters"]["filter-crs"]["schema"]["enum"] = crss;
   data["components"] = schema["components"];
 
   // Add schema refs
@@ -162,6 +165,16 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
             { "default", defaultResponse() } } } } }
   };
   return data;
+}
+
+const QString QgsWfs3AbstractHandler::templatePath( const QgsServerApiContext &context ) const
+{
+  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
+  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
+  path += "/ogc/templates/wfs3/"_L1;
+  path += QString::fromStdString( operationId() );
+  path += ".html"_L1;
+  return path;
 }
 
 QString QgsWfs3AbstractItemsHandler::referencedLayerIdentifier( const QgsVectorLayer *mapLayer, int fieldIdx, const QgsServerApiContext &context, QString *referencedLayerTitle ) const
@@ -819,7 +832,6 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
     data["required"] = requiredFields;
   }
 
-
   for ( const auto &fInfo : availableFieldInformation )
   {
     const std::string fieldName = fInfo.identifier;
@@ -875,16 +887,6 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
     }
   }
   data["properties"] = fieldsInfo;
-}
-
-const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiContext &context ) const
-{
-  // resources/server/api + /ogc/templates/wfs3 + operationId + .html
-  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += "/ogc/templates/wfs3/"_L1;
-  path += QString::fromStdString( operationId() );
-  path += ".html"_L1;
-  return path;
 }
 
 bool QgsWfs3AbstractItemsHandler::canInsertFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
@@ -1095,6 +1097,12 @@ void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &contex
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
     { "title", "API description" },
   } );
+  data["links"].push_back( {
+    { "href", href( context, "/functions" ) },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::functions ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
+    { "title", "Custom functions" },
+  } );
   write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
 }
 
@@ -1117,17 +1125,6 @@ json QgsWfs3LandingPageHandler::schema( const QgsServerApiContext &context ) con
   };
   return data;
 }
-
-const QString QgsWfs3LandingPageHandler::templatePath( const QgsServerApiContext &context ) const
-{
-  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
-  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += "/ogc/templates/wfs3/"_L1;
-  path += QString::fromStdString( operationId() );
-  path += ".html"_L1;
-  return path;
-}
-
 
 QgsWfs3ConformanceHandler::QgsWfs3ConformanceHandler()
 {}
@@ -1162,19 +1159,33 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
 
-        // From: https://docs.ogc.org/is/19-079r2/19-079r2.html
-        // TODO: queryables and sortables are not supported yet, but we may want to add them in the future:
-        // requirement http://www.opengis.net/spec/ogcapi-features-3/1.0/req/queryables-query-parameters
-        // filtering has limited supported but we cannot advertise it yet because of the dependency on
-        // queryables-query-parameters:
-        // http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter
-        // http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter
-
         // Draft? Now approved as part 3 https://docs.ogc.org/is/23-058r2/23-058r2.html
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-codelists",
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-parameter",
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/feature-references",
+
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables",
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables-query-parameters",
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
+
+        "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+        "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators",
+        "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions",
+        "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions-plus",
+        "http://www.opengis.net/spec/cql2/1.0/conf/spatial-functions",
+        "http://www.opengis.net/spec/cql2/1.0/conf/property-property",
+        "http://www.opengis.net/spec/cql2/1.0/conf/functions",
+        "http://www.opengis.net/spec/cql2/1.0/conf/arithmetic",
+        "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+
+        // NYI
+        // "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/accent-insensitive-comparison",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/temporal-functions",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/array-functions",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/cql2-json",
       } }
   };
   json navigation = json::array();
@@ -1277,7 +1288,15 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
               { { "href", href( context, u"/%1/items"_s.arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::FLATGEOBUF ) ) },
                 { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
                 { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::FLATGEOBUF ) },
-                { "title", title + " as FlatGeobuf" } }
+                { "title", title + " as FlatGeobuf" } },
+              { { "href", href( context, u"/%1/queryables"_s.arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::queryables ) },
+                { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
+                { "title", "Queryables of " + title + " as HTML" } },
+              { { "href", href( context, u"/%1/queryables"_s.arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) ) },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::queryables ) },
+                { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::JSON ) },
+                { "title", "Queryables of " + title + " as JSON" } },
               /* TODO: not sure what these "concepts" are about, neither if they are mandatory
             {
               { "href", href( api, context.request(), u"/%1/concepts"_s.arg( shortName ) )  },
@@ -1341,7 +1360,6 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   QgsVectorLayer *mapLayer { layerFromCollectionId( context, collectionId ) };
   Q_ASSERT( mapLayer );
 
-
   const QgsProject *project = context.project();
   const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
   if ( !wfsLayerIds.contains( mapLayer->id() ) )
@@ -1354,6 +1372,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
 
   const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
   const std::string itemsTitle { title + " items" };
+  const std::string queryablesTitle { title + " queryables" };
   const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
   json linksList = links( context );
 
@@ -1378,6 +1397,15 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     );
   }
 
+  for ( const auto ct : { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML } )
+  {
+    linksList.push_back(
+      { { "href", href( context, u"/queryables"_s, QgsServerOgcApi::contentTypeToExtension( ct ) ) },
+        { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::queryables ) },
+        { "type", QgsServerOgcApi::mimeType( ct ) },
+        { "title", queryablesTitle + " as " + QgsServerOgcApi::contentTypeToStdString( ct ) } }
+    );
+  }
 
 #if 0
   const QString typeName { mapLayer->serverProperties()->wfsTypeName() };
@@ -1392,7 +1420,6 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
 #endif
 
   // TODO: add JSONFG and JSONFG-PLUS
-
 
   json crss = json::array();
   for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
@@ -1459,6 +1486,273 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
               { "default", defaultResponse() } } } } }
     };
   } // end for loop
+  return data;
+}
+
+QgsWfs3DescribeCollectionQueryablesHandler::QgsWfs3DescribeCollectionQueryablesHandler()
+{}
+
+void QgsWfs3DescribeCollectionQueryablesHandler::handleRequest( const QgsServerApiContext &context ) const
+{
+  if ( !context.project() )
+  {
+    throw QgsServerApiImproperlyConfiguredException( u"Project is invalid or undefined"_s );
+  }
+  // Check collectionId
+  const QRegularExpressionMatch match { path().match( context.request()->url().path() ) };
+  if ( !match.hasMatch() )
+  {
+    throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+  }
+  const QString collectionId { match.captured( u"collectionId"_s ) };
+  // May throw if not found
+  QgsVectorLayer *mapLayer { layerFromCollectionId( context, collectionId ) };
+  Q_ASSERT( mapLayer );
+
+  const QgsProject *project = context.project();
+  const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+  if ( !wfsLayerIds.contains( mapLayer->id() ) )
+  {
+    throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+  }
+
+  // Check if the layer is published, raise not found if it is not
+  checkLayerIsAccessible( mapLayer, context );
+
+  const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
+  const std::string queryablesTitle { title + " queryables" };
+  const std::string description { mapLayer->serverProperties()->abstract().toStdString() };
+
+  const QgsFields constFields { publishedFields( mapLayer, context ) };
+
+  json properties;
+
+  if ( mapLayer->wkbType() != Qgis::WkbType::NoGeometry )
+  {
+    std::string geometryFormat { "geometry-" };
+    QString geometryName { mapLayer->dataProvider()->geometryColumnName() };
+
+    if ( geometryName.isEmpty() )
+    {
+      geometryName = u"geom"_s;
+      while ( constFields.indexOf( geometryName ) > -1 )
+      {
+        geometryName += "_";
+      }
+    }
+
+    switch ( QgsWkbTypes::linearType( QgsWkbTypes::flatType( mapLayer->wkbType() ) ) )
+    {
+      case Qgis::WkbType::Point:
+        geometryFormat += "point";
+        break;
+
+      case Qgis::WkbType::MultiPoint:
+        geometryFormat += "multipoint";
+        break;
+
+      case Qgis::WkbType::LineString:
+        geometryFormat += "linestring";
+        break;
+
+      case Qgis::WkbType::MultiLineString:
+        geometryFormat += "multilinestring";
+        break;
+
+      case Qgis::WkbType::Polygon:
+        geometryFormat += "polygon";
+        break;
+
+      case Qgis::WkbType::MultiPolygon:
+        geometryFormat += "multipolygon";
+        break;
+
+      case Qgis::WkbType::GeometryCollection:
+        geometryFormat += "geometrycollection";
+        break;
+
+      default:
+        geometryFormat += "any";
+        break;
+    }
+
+    properties[geometryName.toStdString()] = { { "x-ogc-role", "primary-geometry" }, { "format", geometryFormat } };
+  }
+
+  for ( const auto &f : constFields )
+  {
+    json property;
+
+    // TODO: strip down to what is actually used
+    switch ( f.type() )
+    {
+      case QMetaType::Type::QString:
+      case QMetaType::Type::QVariant:
+        property["type"] = "string";
+        if ( f.length() > 0 )
+          property["maxLength"] = f.length();
+        break;
+
+      case QMetaType::Type::QDate:
+        property["type"] = "string";
+        property["format"] = "date";
+        break;
+
+      case QMetaType::Type::QTime:
+        property["type"] = "string";
+        property["format"] = "time";
+        break;
+
+      case QMetaType::Type::QDateTime:
+        property["type"] = "string";
+        property["format"] = "date-time";
+        break;
+
+      case QMetaType::Type::QUrl:
+        property["type"] = "string";
+        property["format"] = "uri";
+        break;
+
+      case QMetaType::Type::QUuid:
+        property["type"] = "string";
+        property["format"] = "uuid";
+        break;
+
+      case QMetaType::Type::QChar:
+      case QMetaType::Type::Char:
+      case QMetaType::Type::SChar:
+      case QMetaType::Type::UChar:
+      case QMetaType::Type::Char16:
+      case QMetaType::Type::Char32:
+        property["type"] = "string";
+        property["maxLength"] = 1;
+        break;
+
+      case QMetaType::Type::Bool:
+        property["type"] = "boolean";
+        break;
+
+      case QMetaType::Type::Short:
+      case QMetaType::Type::UShort:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::UInt:
+      case QMetaType::Type::Long:
+      case QMetaType::Type::ULong:
+      case QMetaType::Type::LongLong:
+      case QMetaType::Type::ULongLong:
+        property["type"] = "integer";
+        break;
+
+      case QMetaType::Type::Float:
+      case QMetaType::Type::Float16:
+      case QMetaType::Type::Double:
+        property["type"] = "number";
+        break;
+
+      case QMetaType::Type::QStringList:
+      case QMetaType::Type::QVariantList:
+      case QMetaType::Type::QJsonArray:
+        property["type"] = "array";
+        break;
+
+      case QMetaType::Type::QJsonValue:
+      case QMetaType::Type::QJsonObject:
+      case QMetaType::Type::QJsonDocument:
+      case QMetaType::Type::QVariantHash:
+      case QMetaType::Type::QVariantPair:
+      case QMetaType::Type::QByteArrayList:
+      case QMetaType::Type::QVariantMap:
+        // TODO property["type"] = "object";
+        break;
+
+      case QMetaType::Type::QByteArray:
+      case QMetaType::Type::QBitArray:
+      case QMetaType::Type::QLocale:
+      case QMetaType::Type::QRect:
+      case QMetaType::Type::QSize:
+      case QMetaType::Type::QPoint:
+      case QMetaType::Type::QLine:
+      case QMetaType::Type::QRectF:
+      case QMetaType::Type::QSizeF:
+      case QMetaType::Type::QPointF:
+      case QMetaType::Type::QLineF:
+      case QMetaType::Type::QEasingCurve:
+      case QMetaType::Type::Nullptr:
+      case QMetaType::Type::Void:
+      case QMetaType::Type::VoidStar:
+      case QMetaType::Type::QCborValue:
+      case QMetaType::Type::UnknownType:
+      case QMetaType::Type::QCborSimpleType:
+      case QMetaType::Type::QRegularExpression:
+      case QMetaType::Type::QCborArray:
+      case QMetaType::Type::QCborMap:
+      case QMetaType::Type::QModelIndex:
+      case QMetaType::Type::QPersistentModelIndex:
+      case QMetaType::Type::QObjectStar:
+      case QMetaType::Type::QFont:
+      case QMetaType::Type::QPixmap:
+      case QMetaType::Type::QBrush:
+      case QMetaType::Type::QColor:
+      case QMetaType::Type::QPalette:
+      case QMetaType::Type::QIcon:
+      case QMetaType::Type::QImage:
+      case QMetaType::Type::QPolygon:
+      case QMetaType::Type::QRegion:
+      case QMetaType::Type::QBitmap:
+      case QMetaType::Type::QCursor:
+      case QMetaType::Type::QKeySequence:
+      case QMetaType::Type::QPen:
+      case QMetaType::Type::QTextLength:
+      case QMetaType::Type::QTextFormat:
+      case QMetaType::Type::QTransform:
+      case QMetaType::Type::QMatrix4x4:
+      case QMetaType::Type::QVector2D:
+      case QMetaType::Type::QVector3D:
+      case QMetaType::Type::QVector4D:
+      case QMetaType::Type::QQuaternion:
+      case QMetaType::Type::QPolygonF:
+      case QMetaType::Type::QColorSpace:
+      case QMetaType::Type::QSizePolicy:
+      case QMetaType::Type::User:
+        break;
+    }
+
+    if ( !property.contains( "type" ) )
+      continue;
+
+    if ( !f.comment().isEmpty() )
+      property["title"] = f.comment().toStdString();
+
+    properties[f.name().toStdString()] = property;
+  }
+
+  json data { { "type", "object" }, { "title", title }, { "description", description }, { "properties", properties }, { "additionalProperties", false }, { "links", links( context ) } };
+
+  json navigation = json::array();
+  const QUrl url { context.request()->url() };
+  navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 3 ).toStdString() } } );
+  navigation.push_back( { { "title", "Collections" }, { "href", parentLink( url, 2 ).toStdString() } } );
+  navigation.push_back( { { "title", title }, { "href", parentLink( url, 1 ).toStdString() } } );
+  write( data, context, { { "pageTitle", queryablesTitle }, { "navigation", navigation } } );
+}
+
+json QgsWfs3DescribeCollectionQueryablesHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath(), context.request()->url() ).toStdString() };
+
+  data[path] = {
+    { "get",
+      { { "tags", jsonTags() },
+        { "summary", summary() },
+        { "description", description() },
+        { "operationId", operationId() },
+        { "responses",
+          { { "200",
+              { { "description", description() },
+                { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } },
+            { "default", defaultResponse() } } } } }
+  };
   return data;
 }
 
@@ -1628,6 +1922,20 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
     sortDesc { u"sortdesc"_s, false, QgsServerQueryStringParameter::Type::Boolean, u"Sort results in descending order, field name must be specified with 'sortby' parameter"_s, false };
   params.push_back( sortDesc );
 
+  // filter
+  const QgsServerQueryStringParameter filter { u"filter"_s, false, QgsServerQueryStringParameter::Type::String, u"The filter expression"_s, u""_s };
+  params.push_back( filter );
+
+  // filter-lang
+  const QgsServerQueryStringParameter filterLang { u"filter-lang"_s, false, QgsServerQueryStringParameter::Type::String, u"The language of the filter expression"_s, u"qgis"_s };
+  params.push_back( filterLang );
+
+  // filter-crs
+  QgsServerQueryStringParameter
+    filterCrs { u"filter-crs"_s, false, QgsServerQueryStringParameter::Type::String, u"The coordinate references system of the geometry values in the filter expression"_s, u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s };
+  filterCrs.setCustomValidator( crsValidator );
+  params.push_back( filterCrs );
+
   return params;
 }
 
@@ -1656,6 +1964,9 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
       u"datetime"_s,
       u"sortby"_s,
       u"sortdesc"_s,
+      u"filter"_s,
+      u"filter-lang"_s,
+      u"filter-crs"_s,
     };
 
     json componentParameters = json::array();
@@ -2476,8 +2787,44 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
       const qlonglong limit { params.value( u"limit"_s ).toLongLong( &ok ) };
 
-      QString filterExpression;
       QStringList expressions;
+
+      // filter-lang / filter-crs / filter
+      const QString filter { params.value( u"filter"_s ).toString() };
+      const QString filterLang { params.value( u"filter-lang"_s ).toString() };
+      if ( !filter.isEmpty() )
+      {
+        if ( filterLang == "qgis"_L1 )
+        {
+          expressions += filter;
+        }
+        else if ( filterLang == "cql2-text"_L1 )
+        {
+          QString layerCrs;
+          QString filterCrs = params[u"filter-crs"_s].toString();
+          if ( !filterCrs.isEmpty() )
+          {
+            const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( filterCrs ) };
+            filterCrs = crs.authid();
+            layerCrs = mapLayer->crs().authid();
+          }
+
+          QString parserErrorMsg;
+          QList<QgsExpression::ParserError> parserErrors;
+
+          extern QgsExpressionNode *parseCql2Expression( const QString &str, QString &filterCrs, QString &layerCrs, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
+          std::unique_ptr<QgsExpressionNode> node( parseCql2Expression( filter, filterCrs, layerCrs, parserErrorMsg, parserErrors ) );
+          if ( !node )
+          {
+            throw QgsServerApiBadRequestException( u"Invalid filter: %1: %2"_s.arg( filter, parserErrorMsg ) );
+          }
+          expressions.push_back( node->dump() );
+        }
+        else
+        {
+          throw QgsServerApiBadRequestException( u"Invalid filter language: %1"_s.arg( filterLang ) );
+        }
+      }
 
       //  datetime
       const QString datetime { params.value( u"datetime"_s ).toString() };
@@ -2570,6 +2917,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
 
       // Join all expression filters
+      QString filterExpression;
       if ( !expressions.isEmpty() )
       {
         filterExpression = expressions.join( " AND "_L1 );
@@ -3583,16 +3931,6 @@ QString QgsWfs3AbstractItemsHandler::uri( const QString &collectionId, const QMa
   return QgsServerOgcApi::sanitizeUrl( cleanedUrl ).toString( QUrl::FullyEncoded );
 }
 
-const QString QgsWfs3ConformanceHandler::templatePath( const QgsServerApiContext &context ) const
-{
-  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
-  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += "/ogc/templates/wfs3/"_L1;
-  path += QString::fromStdString( operationId() );
-  path += ".html"_L1;
-  return path;
-}
-
 QgsWfs3CollectionsSchemaHandler::QgsWfs3CollectionsSchemaHandler()
 {
   setContentTypes( { QgsServerOgcApi::ContentType::SCHEMA_JSON, QgsServerOgcApi::ContentType::HTML } );
@@ -3714,4 +4052,127 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsFeatureHandler::parameter
   requestedCrs.setCustomValidator( crsValidator );
   params.push_back( requestedCrs );
   return params;
+}
+
+QgsWfs3FunctionsHandler::QgsWfs3FunctionsHandler()
+{}
+
+// CQL2 standard function names (from all declared conformance classes).
+// These are NOT reported in /functions — that endpoint only reports
+// custom functions beyond the CQL2 spec.
+static const QSet<QString> cql2StandardFunctions {
+  u"s_contains"_s,
+  u"s_crosses"_s,
+  u"s_disjoint"_s,
+  u"s_equals"_s,
+  u"s_intersects"_s,
+  u"s_overlaps"_s,
+  u"s_touches"_s,
+  u"s_within"_s,
+};
+
+// Map QGIS expression parameter default value type to CQL2 value types.
+// The CQL2 spec uses: string, number, boolean, date, datetime, time, geometry.
+// QGIS parameters don't carry explicit type info, so we infer from defaultValue.
+static QString cql2TypeFromParameter( const QgsExpressionFunction::Parameter &param )
+{
+  switch ( param.defaultValue().userType() )
+  {
+    case QMetaType::Type::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Float:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::ULongLong:
+      return u"number"_s;
+
+    case QMetaType::Type::Bool:
+      return u"boolean"_s;
+
+    case QMetaType::Type::QDate:
+      return u"date"_s;
+
+    case QMetaType::Type::QDateTime:
+      return u"datetime"_s;
+
+    case QMetaType::Type::QTime:
+      return u"time"_s;
+
+    default:
+      return u"string"_s;
+  }
+}
+
+void QgsWfs3FunctionsHandler::handleRequest( const QgsServerApiContext &context ) const
+{
+  // Collect all QGIS expression functions that are NOT CQL2 standard functions.
+  // The /functions endpoint reports "custom" functions — i.e., functions beyond
+  // the CQL2 standard set (as per OGC CQL2 §7.7 conf/functions).
+  json functionsArray = json::array();
+
+  const QList<QgsExpressionFunction *> &functions = QgsExpression::Functions();
+  for ( QgsExpressionFunction *func : functions )
+  {
+    const QString name = func->name();
+    if ( cql2StandardFunctions.contains( name ) )
+      continue;
+
+    json funcObj;
+    funcObj["name"] = name.toStdString();
+
+    // Arguments
+    json argsArray = json::array();
+    const QgsExpressionFunction::ParameterList &params = func->parameters();
+    for ( const QgsExpressionFunction::Parameter &param : params )
+    {
+      json argObj;
+      argObj["name"] = param.name().toStdString();
+      argObj["type"] = json::array();
+      argObj["type"].push_back( cql2TypeFromParameter( param ).toStdString() );
+      argsArray.push_back( argObj );
+    }
+    funcObj["arguments"] = argsArray;
+
+    // Return type (best-effort from group/category hints)
+    funcObj["returns"] = json::array();
+    funcObj["returns"].push_back( u"string"_s.toStdString() ); // conservative default
+
+    // Description
+    if ( !func->helpText().isEmpty() )
+    {
+      // Use helpText as description, truncating if excessively long
+      QString desc = func->helpText();
+      if ( desc.length() > 2000 )
+        desc = desc.left( 2000 );
+      funcObj["description"] = desc.toStdString();
+    }
+
+    functionsArray.push_back( funcObj );
+  }
+
+  json data { { "links", links( context ) }, { "functions", functionsArray } };
+
+  json navigation = json::array();
+  const QUrl url { context.request()->url() };
+  navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 1 ).toStdString() } } );
+  write( data, context, { { "pageTitle", linkTitle() }, { "navigation", navigation } } );
+}
+
+json QgsWfs3FunctionsHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + u"/functions"_s, context.request()->url() ).toStdString() };
+  data[path] = {
+    { "get",
+      { { "tags", jsonTags() },
+        { "summary", summary() },
+        { "description", description() },
+        { "operationId", operationId() },
+        { "responses",
+          { { "200",
+              { { "description", description() },
+                { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } },
+            { "default", defaultResponse() } } } } }
+  };
+  return data;
 }
