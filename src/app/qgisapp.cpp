@@ -12422,13 +12422,15 @@ void QgisApp::zoomToLayerExtent()
   mLayerTreeView->defaultActions()->zoomToLayers( mMapCanvas );
 }
 
-void QgisApp::showPluginManager( int tabIndex )
+void QgisApp::showPluginManager( int tabIndex, const QString &searchTerm )
 {
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
+    QString escapedSearchTerm = searchTerm;
+    escapedSearchTerm = escapedSearchTerm.replace( '\'', "\\'" );
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
-    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1)"_s.arg( tabIndex ) );
+    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1%2)"_s.arg( tabIndex ).arg( escapedSearchTerm.isEmpty() ? QString() : u", '%1'"_s.arg( escapedSearchTerm ) ) );
   }
   else
 #endif

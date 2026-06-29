@@ -1554,7 +1554,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openURL( QString url, bool useQgisDocDirectory = true );
 
     //! Opens the plugin manager (since QGIS 4.0)
-    void showPluginManager( int tabIndex = -1 );
+    void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() );
 
   protected:
     void showEvent( QShowEvent *event ) override;
