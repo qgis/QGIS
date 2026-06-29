@@ -1606,11 +1606,13 @@ static QVariant fcnLower( const QVariantList &values, const QgsExpressionContext
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.toLower() );
 }
+
 static QVariant fcnUpper( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.toUpper() );
 }
+
 static QVariant fcnTitle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -2904,6 +2906,17 @@ static QVariant fcnUnaccent( const QVariantList &values, const QgsExpressionCont
   return QgsStringUtils::unaccent( values[0].toString() );
 }
 
+static QVariant fcnCasei( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QVariant( str.toLower() );
+}
+
+static QVariant fcnAccenti( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  return QVariant( QgsStringUtils::unaccent( str ).toLower() );
+}
 
 static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -9589,6 +9602,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"title"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnTitle, u"String"_s )
       << new QgsStaticExpressionFunction( u"trim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnTrim, u"String"_s )
       << new QgsStaticExpressionFunction( u"unaccent"_s, { QgsExpressionFunction::Parameter( u"string"_s ) }, fcnUnaccent, u"String"_s )
+      << new QgsStaticExpressionFunction( u"casei"_s, { QgsExpressionFunction::Parameter( u"string"_s ) }, fcnCasei, u"String"_s )
+      << new QgsStaticExpressionFunction( u"accenti"_s, { QgsExpressionFunction::Parameter( u"string"_s ) }, fcnAccenti, u"String"_s )
       << new QgsStaticExpressionFunction( u"ltrim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"characters"_s, true, u" "_s ), fcnLTrim, u"String"_s )
       << new QgsStaticExpressionFunction( u"rtrim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"characters"_s, true, u" "_s ), fcnRTrim, u"String"_s )
       << new QgsStaticExpressionFunction( u"levenshtein"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string1"_s ) << QgsExpressionFunction::Parameter( u"string2"_s ), fcnLevenshtein, u"Fuzzy Matching"_s )

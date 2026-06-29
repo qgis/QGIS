@@ -226,7 +226,6 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     std::string linkTitle() const override { return "Landing page"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
     json schema( const QgsServerApiContext &context ) const override;
-    QString const templatePath( const QgsServerApiContext &context ) const override;
 };
 
 /**
@@ -252,7 +251,6 @@ class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
     std::string linkTitle() const override { return "Conformance classes"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::conformance; }
     json schema( const QgsServerApiContext &context ) const override;
-    const QString templatePath( const QgsServerApiContext &context ) const override;
 };
 
 
@@ -298,6 +296,26 @@ class QgsWfs3DescribeCollectionHandler : public QgsWfs3AbstractItemsHandler
     std::string description() const override { return "Metadata about a feature collection."; }
     std::string linkTitle() const override { return "Feature collection"; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
+    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
+    json schema( const QgsServerApiContext &context ) const override;
+};
+
+/**
+ * The DescribeCollectionQueryablesHandler describes the queryables of a collection
+ * Path: /collections/{collectionId}/queryables
+ */
+class QgsWfs3DescribeCollectionQueryablesHandler : public QgsWfs3AbstractItemsHandler
+{
+  public:
+    QgsWfs3DescribeCollectionQueryablesHandler();
+    void handleRequest( const QgsServerApiContext &context ) const override;
+
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+?)/queryables(\.json|\.html|/)?$)re" ); }
+    std::string operationId() const override { return "describeCollectionQueryables"; }
+    std::string summary() const override { return "Describe the queryables of a feature collection with ID {collectionId}."; }
+    std::string description() const override { return "Metadata about a feature collection's queryables."; }
+    std::string linkTitle() const override { return "Feature collection's queryables"; }
+    QStringList tags() const override { return { u"Capabilities"_s, u"Attributes"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     json schema( const QgsServerApiContext &context ) const override;
 };
@@ -389,5 +407,26 @@ class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
     QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &apiContext ) const override;
 };
 
+/**
+ * The QgsWfs3FunctionsHandler class shows the custom functions.
+ * Path: /functions
+ */
+class QgsWfs3FunctionsHandler : public QgsServerOgcApiHandler
+{
+  public:
+    QgsWfs3FunctionsHandler();
+
+    void handleRequest( const QgsServerApiContext &context ) const override;
+
+    // QgsServerOgcApiHandler interface
+    QRegularExpression path() const override { return QRegularExpression( R"re(/functions)re" ); }
+    std::string operationId() const override { return "getFunctions"; }
+    std::string summary() const override { return "Information about custom function this server implements."; }
+    std::string description() const override { return "List all custom functions."; }
+    QStringList tags() const override { return { u"Capabilities"_s, u"Functions"_s }; }
+    std::string linkTitle() const override { return "Custom functions"; }
+    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::functions; }
+    json schema( const QgsServerApiContext &context ) const override;
+};
 
 #endif // QGS_WFS3_HANDLERS_H

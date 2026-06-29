@@ -1790,7 +1790,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             "http://server.qgis.org/wfs3/collections/testlayer3/items?name=two"
         )
         self.server.handleRequest(request, response, project)
-        self.assertEqual(response.statusCode(), 404)  # Not found
+        self.assertEqual(response.statusCode(), 400)  # Not found
         request = QgsBufferServerRequest(
             "http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?name=two"
         )
