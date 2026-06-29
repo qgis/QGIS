@@ -1101,6 +1101,21 @@ Qgis.VectorProviderCapabilities = lambda flags=0: Qgis.VectorProviderCapability(
 QgsVectorDataProvider.Capabilities = Qgis.VectorProviderCapabilities
 Qgis.VectorProviderCapabilities.baseClass = Qgis
 VectorProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.CreateLayerActionOnExisting.Abort.__doc__ = "Abort the creation on detecting an existing layer."
+Qgis.CreateLayerActionOnExisting.CreateOrOverwriteFile.__doc__ = "Create or overwrite whole file. For existing file-based datasources the entire datasource will be deleted, including all other layers in it. For non file-based datasources this is treated the same as CreateOrOverwriteLayer."
+Qgis.CreateLayerActionOnExisting.CreateOrOverwriteLayer.__doc__ = "Create or overwrite existing layer only. For existing file-based datasources other layers in the datasource will be untouched."
+Qgis.CreateLayerActionOnExisting.__doc__ = """Actions to take when attempting to create a layer on an existing datasource
+
+.. versionadded:: 4.2
+
+* ``Abort``: Abort the creation on detecting an existing layer.
+* ``CreateOrOverwriteFile``: Create or overwrite whole file. For existing file-based datasources the entire datasource will be deleted, including all other layers in it. For non file-based datasources this is treated the same as CreateOrOverwriteLayer.
+* ``CreateOrOverwriteLayer``: Create or overwrite existing layer only. For existing file-based datasources other layers in the datasource will be untouched.
+
+"""
+# --
+Qgis.CreateLayerActionOnExisting.baseClass = Qgis
 QgsVectorDataProvider.FeatureCountState = Qgis.FeatureCountState
 # monkey patching scoped based enum
 QgsVectorDataProvider.Uncounted = Qgis.FeatureCountState.Uncounted

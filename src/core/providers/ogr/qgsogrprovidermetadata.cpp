@@ -59,6 +59,32 @@ QgsDataProvider *QgsOgrProviderMetadata::createProvider( const QString &uri, con
   return new QgsOgrProvider( uri, options, flags );
 }
 
+QgsEmptyLayerCreationResult QgsOgrProviderMetadata::createEmptyLayer(
+  const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &crs, Qgis::CreateLayerActionOnExisting actionOnExisting
+)
+{
+  QMap< QString, QVariant > options;
+  bool overwrite = false;
+  switch ( actionOnExisting )
+  {
+    case Qgis::CreateLayerActionOnExisting::Abort:
+      break;
+    case Qgis::CreateLayerActionOnExisting::CreateOrOverwriteFile:
+      overwrite = true;
+      break;
+    case Qgis::CreateLayerActionOnExisting::CreateOrOverwriteLayer:
+      overwrite = true;
+      options["update"] = true;
+      break;
+  }
+
+  QMap<int, int> oldToNewAttrIdxMap;
+  QString errorMessage;
+  QString createdLayerUri;
+  const Qgis::VectorExportResult result = createEmptyLayer( uri, fields, wkbType, crs, overwrite, oldToNewAttrIdxMap, errorMessage, &options, createdLayerUri );
+  return QgsEmptyLayerCreationResult( result, createdLayerUri, errorMessage, oldToNewAttrIdxMap );
+}
+
 Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,

@@ -690,14 +690,16 @@ QString QgsProviderRegistry::relativeToAbsoluteUri( const QString &providerKey, 
 }
 
 QgsEmptyLayerCreationResult QgsProviderRegistry::createEmptyLayer(
-  const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &crs, bool overwrite
+  const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &crs, Qgis::CreateLayerActionOnExisting actionOnExisting
 )
 {
-  QMap<int, int> oldToNewAttrIdxMap;
-  QString errorMessage;
-  QString createdLayerUri;
-  const Qgis::VectorExportResult result = createEmptyLayer( providerKey, uri, fields, wkbType, crs, overwrite, oldToNewAttrIdxMap, errorMessage, nullptr, createdLayerUri );
-  return QgsEmptyLayerCreationResult( result, createdLayerUri, errorMessage, oldToNewAttrIdxMap );
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->createEmptyLayer( uri, fields, wkbType, crs, actionOnExisting );
+  else
+  {
+    return QgsEmptyLayerCreationResult( Qgis::VectorExportResult::ErrorInvalidProvider, QString(), QObject::tr( "Unable to load %1 provider" ).arg( providerKey ), {} );
+  }
 }
 
 Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer(
