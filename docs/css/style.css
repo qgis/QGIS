@@ -26,6 +26,7 @@
   --max-width: 1100px;
   --nav-height: 64px;
   --font: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --transition: 0.2s ease;
 }
 
@@ -266,13 +267,31 @@ img {
 .hero::before {
   content: "";
   position: absolute;
-  inset: auto 0 0;
-  height: 42%;
-  background:
-    linear-gradient(172deg, transparent 0 22%, rgba(226, 168, 106, 0.18) 22.5% 35%, transparent 35.5%),
-    linear-gradient(168deg, transparent 0 35%, rgba(194, 133, 79, 0.16) 35.5% 49%, transparent 49.5%),
-    linear-gradient(164deg, transparent 0 50%, rgba(154, 106, 71, 0.18) 50.5% 65%, transparent 65.5%);
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(rgba(247, 241, 232, 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
   pointer-events: none;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, transparent 85%);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  z-index: 0;
+  transform: translateX(-50%);
+  width: min(720px, 90vw);
+  height: 360px;
+  background: radial-gradient(ellipse at center, rgba(34, 211, 238, 0.14) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-grid {
@@ -288,11 +307,12 @@ img {
   gap: 8px;
   font-size: 0.8125rem;
   color: var(--text-muted);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  background: rgba(19, 34, 56, 0.72);
+  border: 1px solid rgba(45, 212, 191, 0.22);
   border-radius: 999px;
   padding: 6px 14px;
   margin-bottom: 24px;
+  box-shadow: inset 0 1px 0 rgba(247, 241, 232, 0.04);
 }
 
 .hero-badge::before {
@@ -301,34 +321,144 @@ img {
   height: 6px;
   border-radius: 50%;
   background: var(--success);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.85); }
 }
 
 .hero h1 {
-  font-size: clamp(2.25rem, 5vw, 3.25rem);
-  font-weight: 600;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin-bottom: 8px;
+  line-height: 1.05;
+  margin-bottom: 12px;
 }
 
-.hero-accent {
+.hero-title-line {
   display: block;
-  color: var(--text-muted);
-  margin-bottom: 24px;
+}
+
+.hero-title-line:empty {
+  display: none;
+}
+
+.hero-highlight {
+  display: block;
+  background: linear-gradient(135deg, var(--accent), var(--accent-cyan), var(--earth-4));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-wordmark {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text), var(--accent-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: fit-content;
 }
 
 .hero-subtitle {
   font-size: 1.0625rem;
   color: var(--text-muted);
   line-height: 1.7;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   max-width: 520px;
+}
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.hero-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: rgba(19, 34, 56, 0.72);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
 }
 
 .hero-cta {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+/* Vibe gissing section */
+.vibe-section {
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(45, 212, 191, 0.08), transparent 42%),
+    rgba(19, 34, 56, 0.42);
+}
+
+.vibe-section-title {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.vibe-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.vibe-step {
+  text-align: center;
+  padding: 24px 20px;
+  background: rgba(23, 42, 66, 0.55);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.vibe-step:hover {
+  border-color: rgba(45, 212, 191, 0.28);
+  background: rgba(23, 42, 66, 0.78);
+}
+
+.vibe-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 14px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(45, 212, 191, 0.1);
+  border: 1px solid rgba(45, 212, 191, 0.24);
+  border-radius: 50%;
+}
+
+.vibe-step h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.vibe-step p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.65;
 }
 
 /* Demo carousel */
@@ -516,10 +646,18 @@ img {
 /* Mockup */
 .mockup {
   background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(45, 212, 191, 0.2);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 24px 80px rgba(4, 10, 18, 0.58);
+  box-shadow:
+    0 24px 80px rgba(4, 10, 18, 0.58),
+    0 0 48px rgba(34, 211, 238, 0.08);
+  animation: mockup-float 6s ease-in-out infinite;
+}
+
+@keyframes mockup-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 .mockup-toolbar {
@@ -653,6 +791,7 @@ img {
   align-self: flex-end;
   background: rgba(45, 212, 191, 0.14);
   color: var(--text);
+  font-family: var(--font-mono);
 }
 
 .mockup-bubble.ai {
@@ -666,10 +805,24 @@ img {
   margin: 0 10px 10px;
   padding: 8px 10px;
   font-size: 0.625rem;
+  font-family: var(--font-mono);
   color: var(--text-subtle);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 6px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.mockup-cursor {
+  color: var(--accent-cyan);
+  animation: blink-cursor 1s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 /* Problems */
@@ -1124,6 +1277,7 @@ img {
 /* Responsive */
 @media (max-width: 960px) {
   .hero-grid,
+  .vibe-steps,
   .solution-grid,
   .speed-compare,
   .setup-grid,
@@ -1258,5 +1412,13 @@ img {
 
   .nav-brand {
     gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge::before,
+  .mockup,
+  .mockup-cursor {
+    animation: none;
   }
 }

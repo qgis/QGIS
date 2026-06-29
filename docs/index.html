@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Strata — il GIS con l'AI nativa. Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace."> <!--#spellok-->
-  <title data-i18n="meta.title">Strata — il GIS con l'AI nativa</title>
+  <meta name="description" content="Strata — inizia a fare vibe gissing. GIS agent-native: descrivi cosa vuoi sulla mappa, l'agente ispeziona i layer ed esegue PyQGIS. Fork di QGIS."> <!--#spellok-->
+  <title data-i18n="meta.title">Strata — vibe gissing per le tue mappe</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
   <link rel="icon" href="./assets/app-icon.png" type="image/png">
 </head>
@@ -50,17 +50,24 @@
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-content">
-        <span class="hero-badge" data-i18n="hero.badge">Fork di QGIS · AI nativa</span>
+        <span class="hero-badge" data-i18n="hero.badge">Agent-native GIS · Fork di QGIS</span>
         <h1>
-          <span data-i18n="hero.title">Strata</span>
-          <span class="hero-accent" data-i18n="hero.titleAccent">il GIS con l'AI nativa.</span>
+          <span class="hero-title-line" data-i18n="hero.titleLine">Inizia anche tu a fare</span>
+          <span class="hero-highlight" data-i18n="hero.titleHighlight">vibe gissing.</span>
         </h1>
+        <p class="hero-wordmark">Strata</p>
         <p class="hero-subtitle" data-i18n="hero.subtitle">
-          Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace. <!--#spellok-->
+          Descrivi cosa vuoi sulla mappa. L'agente ispeziona i layer, esegue PyQGIS e propone — tu approvi.
         </p>
+        <div class="hero-pills" aria-hidden="true">
+          <span class="hero-pill" data-i18n="hero.pillPlan">Plan</span>
+          <span class="hero-pill" data-i18n="hero.pillAgent">Agent</span>
+          <span class="hero-pill" data-i18n="hero.pillAsk">Ask</span>
+          <span class="hero-pill" data-i18n="hero.pillTools">19 tool GIS</span>
+        </div>
         <div class="hero-cta">
-          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-primary btn-lg" data-release-link data-i18n="hero.ctaPrimary">Scarica Strata</a>
-          <a href="#setup" class="btn btn-secondary btn-lg" data-i18n="hero.ctaSecondary">Come configurarlo</a>
+          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-primary btn-lg" data-release-link data-i18n="hero.ctaPrimary">Scarica e inizia</a>
+          <a href="#demo" class="btn btn-secondary btn-lg" data-i18n="hero.ctaSecondary">Guarda la demo</a>
         </div>
       </div>
 
@@ -86,9 +93,33 @@
               <div class="mockup-bubble user" data-i18n="mockup.userMsg">Fai buffer 500m sui comuni e esporta GeoJSON</div>
               <div class="mockup-bubble ai" data-i18n="mockup.aiMsg">Ho ispezionato il layer comuni, eseguito il buffer e salvato output/buffer_500m.geojson. Vuoi rivedere la proposta?</div>
             </div>
-            <div class="mockup-input" data-i18n="mockup.input">Chiedi, tagga file con @, o invia /patch…</div>
+            <div class="mockup-input"><span data-mockup-typing></span><span class="mockup-cursor" aria-hidden="true">|</span></div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vibe gissing -->
+  <section class="vibe-section" id="vibe">
+    <div class="container">
+      <h2 class="vibe-section-title" data-i18n="vibe.title">Cos'è il vibe gissing?</h2>
+      <div class="vibe-steps">
+        <article class="vibe-step">
+          <span class="vibe-step-num" aria-hidden="true">1</span>
+          <h3 data-i18n="vibe.step1.title">Parla alla mappa</h3>
+          <p data-i18n="vibe.step1.desc">Descrivi l'intento in linguaggio naturale — buffer, download dati, analisi layer. Niente script da scrivere a mano.</p>
+        </article>
+        <article class="vibe-step">
+          <span class="vibe-step-num" aria-hidden="true">2</span>
+          <h3 data-i18n="vibe.step2.title">L'agente agisce</h3>
+          <p data-i18n="vibe.step2.desc">Plan, Agent o Ask: ispeziona il progetto, esegue PyQGIS e usa 19 tool GIS integrati nel workspace.</p>
+        </article>
+        <article class="vibe-step">
+          <span class="vibe-step-num" aria-hidden="true">3</span>
+          <h3 data-i18n="vibe.step3.title">Tu approvi</h3>
+          <p data-i18n="vibe.step3.desc">Review diff side-by-side prima di salvare. Nessuna modifica al progetto senza il tuo ok.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -163,7 +194,7 @@
       <span class="section-label" data-i18n="solution.label">Soluzione</span>
       <h2 class="section-title" data-i18n="solution.title">Chat laterale + Agente integrato</h2>
       <p class="section-subtitle" data-i18n="solution.subtitle">
-        Tutto ciò che serve per lavorare nel tuo progetto QGIS, senza uscire dall'app.
+        Il modo agent-native di lavorare in QGIS: descrivi, l'agente propone, tu approvi — senza uscire dall'app.
       </p>
 
       <div class="solution-grid">
@@ -265,7 +296,7 @@
   <!-- Speed -->
   <section class="section speed-section" id="speed">
     <div class="container">
-      <span class="section-label" data-i18n="speed.label">10× più veloce</span>
+      <span class="section-label" data-i18n="speed.label">Vibe gissing in pratica</span>
       <h2 class="section-title" data-i18n="speed.title">Da ore a minuti</h2>
       <p class="section-subtitle" data-i18n="speed.subtitle">Esempio reale: ispeziona 5 layer, buffer, export GeoJSON.</p>
 
@@ -450,7 +481,7 @@
     <div class="container footer-grid">
       <div class="footer-brand">
         <strong>Strata</strong>
-        <span data-i18n="footer.tagline">Il GIS con l'AI nativa.</span> <!--#spellok-->
+        <span data-i18n="footer.tagline">Vibe gissing, nativamente in QGIS.</span> <!--#spellok-->
         <p class="footer-disclaimer" data-i18n="footer.disclaimer">Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
       </div>
       <div class="footer-links">

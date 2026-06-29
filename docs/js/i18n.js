@@ -9,11 +9,24 @@
     linux: /\.AppImage$/i,
   };
 
+  const mockupPhrases = {
+    it: [
+      "vibe giss buffer 500m sui comuni…",
+      "scarica OSM per Brescia centro…",
+      "conta gli alberi nel verde urbano…",
+    ],
+    en: [
+      "vibe giss a 500m buffer on municipalities…",
+      "download OSM for downtown Brescia…",
+      "count trees in urban green areas…",
+    ],
+  };
+
   const translations = {
     it: {
-      "meta.title": "Strata — il GIS con l'AI nativa",
+      "meta.title": "Strata — vibe gissing per le tue mappe",
       "meta.description":
-        "Strata — il GIS con l'AI nativa. Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace.", // #spellok
+        "Strata — inizia a fare vibe gissing. GIS agent-native: descrivi cosa vuoi sulla mappa, l'agente ispeziona i layer ed esegue PyQGIS. Fork di QGIS.", // #spellok
 
       "nav.problems": "Problemi",
       "nav.features": "Feature",
@@ -22,13 +35,28 @@
       "nav.download": "Download",
       "nav.downloadBtn": "Scarica",
 
-      "hero.badge": "Fork di QGIS · AI nativa",
-      "hero.title": "Strata",
-      "hero.titleAccent": "il GIS con l'AI nativa.",
+      "hero.badge": "Agent-native GIS · Fork di QGIS",
+      "hero.titleLine": "Inizia anche tu a fare",
+      "hero.titleHighlight": "vibe gissing.",
       "hero.subtitle":
-        "Fork di QGIS con assistente integrato: parla con le tue mappe, lancia agenti geospaziali multi-step e interroga tutto il workspace.", // #spellok
-      "hero.ctaPrimary": "Scarica Strata",
-      "hero.ctaSecondary": "Come configurarlo",
+        "Descrivi cosa vuoi sulla mappa. L'agente ispeziona i layer, esegue PyQGIS e propone — tu approvi.",
+      "hero.pillPlan": "Plan",
+      "hero.pillAgent": "Agent",
+      "hero.pillAsk": "Ask",
+      "hero.pillTools": "19 tool GIS",
+      "hero.ctaPrimary": "Scarica e inizia",
+      "hero.ctaSecondary": "Guarda la demo",
+
+      "vibe.title": "Cos'è il vibe gissing?",
+      "vibe.step1.title": "Parla alla mappa",
+      "vibe.step1.desc":
+        "Descrivi l'intento in linguaggio naturale — buffer, download dati, analisi layer. Niente script da scrivere a mano.",
+      "vibe.step2.title": "L'agente agisce",
+      "vibe.step2.desc":
+        "Plan, Agent o Ask: ispeziona il progetto, esegue PyQGIS e usa 19 tool GIS integrati nel workspace.",
+      "vibe.step3.title": "Tu approvi",
+      "vibe.step3.desc":
+        "Review diff side-by-side prima di salvare. Nessuna modifica al progetto senza il tuo ok.",
 
       "mockup.mapLabel": "Mappa GIS",
       "mockup.chatTitle": "AI Assistant",
@@ -38,7 +66,7 @@
       "mockup.userMsg": "Fai buffer 500m sui comuni e esporta GeoJSON",
       "mockup.aiMsg":
         "Ho ispezionato il layer comuni, eseguito il buffer e salvato output/buffer_500m.geojson. Vuoi rivedere la proposta?",
-      "mockup.input": "Chiedi, tagga file con @, o invia /patch…",
+      "mockup.input": "vibe giss buffer 500m sui comuni…",
 
       "problems.label": "Problemi comuni",
       "problems.title": "Conosci questi ostacoli in QGIS?",
@@ -83,7 +111,7 @@
       "solution.label": "Soluzione",
       "solution.title": "Chat laterale + Agente integrato",
       "solution.subtitle":
-        "Tutto ciò che serve per lavorare nel tuo progetto QGIS, senza uscire dall'app.",
+        "Il modo agent-native di lavorare in QGIS: descrivi, l'agente propone, tu approvi — senza uscire dall'app.",
 
       "solution.chat.title": "Pannello AI Assistant",
       "solution.chat.desc":
@@ -126,7 +154,7 @@
         "L'assistente legge i layer del progetto, unisce geometrie sovrapposte, calcola superfici, conta gli alberi e restituisce una risposta verificabile direttamente accanto alla mappa.",
       "demo.maps.alt": "Analisi Strata su mappa di Brescia con risposta AI su verde urbano e alberi",
 
-      "speed.label": "10× più veloce",
+      "speed.label": "Vibe gissing in pratica",
       "speed.title": "Da ore a minuti",
       "speed.subtitle": "Esempio reale: ispeziona 5 layer, buffer, export GeoJSON.",
       "speed.before": "Prima",
@@ -223,7 +251,7 @@
       "download.linux.note":
         "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "Il GIS con l'AI nativa.", // #spellok
+      "footer.tagline": "Vibe gissing, nativamente in QGIS.", // #spellok
       "footer.disclaimer":
         "Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
@@ -232,9 +260,9 @@
       "footer.contact": "Contatto",
     },
     en: {
-      "meta.title": "Strata — The AI-native GIS",
+      "meta.title": "Strata — vibe gissing for your maps",
       "meta.description":
-        "An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.",
+        "Strata — start vibe gissing. Agent-native GIS: describe what you want on the map, the agent inspects layers and runs PyQGIS. A QGIS fork.",
 
       "nav.problems": "Problems",
       "nav.features": "Features",
@@ -243,13 +271,28 @@
       "nav.download": "Download",
       "nav.downloadBtn": "Download",
 
-      "hero.badge": "QGIS fork · Native AI",
-      "hero.title": "Strata",
-      "hero.titleAccent": "The AI-native GIS.",
+      "hero.badge": "Agent-native GIS · QGIS fork",
+      "hero.titleLine": "",
+      "hero.titleHighlight": "Start vibe gissing your maps.",
       "hero.subtitle":
-        "An AI-native fork of QGIS. Chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.",
-      "hero.ctaPrimary": "Download Strata",
-      "hero.ctaSecondary": "How to set up",
+        "Describe what you want on the map. The agent inspects layers, runs PyQGIS, and proposes — you approve.",
+      "hero.pillPlan": "Plan",
+      "hero.pillAgent": "Agent",
+      "hero.pillAsk": "Ask",
+      "hero.pillTools": "19 GIS tools",
+      "hero.ctaPrimary": "Download and start",
+      "hero.ctaSecondary": "See it in action",
+
+      "vibe.title": "What is vibe gissing?",
+      "vibe.step1.title": "Talk to your map",
+      "vibe.step1.desc":
+        "Describe your intent in plain language — buffer, fetch data, layer analysis. No scripts to write by hand.",
+      "vibe.step2.title": "The agent acts",
+      "vibe.step2.desc":
+        "Plan, Agent, or Ask: inspects your project, runs PyQGIS, and uses 19 built-in GIS tools in the workspace.",
+      "vibe.step3.title": "You approve",
+      "vibe.step3.desc":
+        "Side-by-side diff review before saving. No project changes without your OK.",
 
       "mockup.mapLabel": "GIS map",
       "mockup.chatTitle": "AI Assistant",
@@ -259,7 +302,7 @@
       "mockup.userMsg": "Buffer municipalities by 500m and export GeoJSON",
       "mockup.aiMsg":
         "I inspected the municipalities layer, ran the buffer, and saved output/buffer_500m.geojson. Review the proposal?",
-      "mockup.input": "Ask, tag files with @, or send /patch…",
+      "mockup.input": "vibe giss a 500m buffer on municipalities…",
 
       "problems.label": "Common problems",
       "problems.title": "Sound familiar in QGIS?",
@@ -304,7 +347,7 @@
       "solution.label": "Solution",
       "solution.title": "Side chat + integrated agent",
       "solution.subtitle":
-        "Everything you need to work in your QGIS project without leaving the app.",
+        "The agent-native way to work in QGIS: describe, the agent proposes, you approve — without leaving the app.",
 
       "solution.chat.title": "AI Assistant panel",
       "solution.chat.desc":
@@ -347,7 +390,7 @@
         "The assistant reads project layers, dissolves overlapping geometries, calculates surfaces, counts trees, and returns a verifiable answer right beside the map.",
       "demo.maps.alt": "Strata analysis over a Brescia map with an AI answer about urban green and trees",
 
-      "speed.label": "10× faster",
+      "speed.label": "Vibe gissing in practice",
       "speed.title": "From hours to minutes",
       "speed.subtitle": "Real example: inspect 5 layers, buffer, export GeoJSON.",
       "speed.before": "Before",
@@ -444,7 +487,7 @@
       "download.linux.note":
         "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "The AI-native GIS.",
+      "footer.tagline": "Vibe gissing, natively in QGIS.",
       "footer.disclaimer":
         "Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
@@ -463,6 +506,8 @@
 
   let currentLang = detectLanguage();
   let latestCompleteRelease = null;
+  let mockupTypingTimer = null;
+  let mockupTypingState = null;
 
   function translate(key, replacements = {}) {
     let text = translations[currentLang]?.[key] || translations.it[key] || "";
@@ -624,6 +669,84 @@
     });
 
     updateDownloadReleaseUi();
+    restartMockupTyping();
+  }
+
+  function stopMockupTyping() {
+    if (mockupTypingTimer) {
+      clearTimeout(mockupTypingTimer);
+      mockupTypingTimer = null;
+    }
+    mockupTypingState = null;
+  }
+
+  function restartMockupTyping() {
+    stopMockupTyping();
+
+    const target = document.querySelector("[data-mockup-typing]");
+    if (!target) return;
+
+    const phrases = mockupPhrases[currentLang] || mockupPhrases.it;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reducedMotion) {
+      target.textContent = translate("mockup.input");
+      return;
+    }
+
+    mockupTypingState = {
+      phraseIndex: 0,
+      charIndex: 0,
+      deleting: false,
+    };
+
+    function tick() {
+      if (!mockupTypingState) return;
+
+      const phrase = phrases[mockupTypingState.phraseIndex];
+      const { deleting } = mockupTypingState;
+
+      if (!deleting) {
+        mockupTypingState.charIndex += 1;
+        target.textContent = phrase.slice(0, mockupTypingState.charIndex);
+
+        if (mockupTypingState.charIndex >= phrase.length) {
+          mockupTypingTimer = setTimeout(() => {
+            mockupTypingState.deleting = true;
+            tick();
+          }, 1800);
+          return;
+        }
+
+        mockupTypingTimer = setTimeout(tick, 42 + Math.random() * 28);
+        return;
+      }
+
+      mockupTypingState.charIndex -= 1;
+      target.textContent = phrase.slice(0, mockupTypingState.charIndex);
+
+      if (mockupTypingState.charIndex <= 0) {
+        mockupTypingState.deleting = false;
+        mockupTypingState.phraseIndex = (mockupTypingState.phraseIndex + 1) % phrases.length;
+        mockupTypingTimer = setTimeout(tick, 320);
+        return;
+      }
+
+      mockupTypingTimer = setTimeout(tick, 22);
+    }
+
+    tick();
+  }
+
+  function initMockupTyping() {
+    restartMockupTyping();
+
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (typeof reducedMotionQuery.addEventListener === "function") {
+      reducedMotionQuery.addEventListener("change", restartMockupTyping);
+    } else if (typeof reducedMotionQuery.addListener === "function") {
+      reducedMotionQuery.addListener(restartMockupTyping);
+    }
   }
 
   function setLanguage(lang) {
@@ -700,6 +823,7 @@
     applyTranslations(currentLang);
     initDownloadReleaseLinks();
     initDemoCarousel();
+    initMockupTyping();
 
     document.querySelectorAll("[data-lang]").forEach((btn) => {
       btn.addEventListener("click", () => setLanguage(btn.getAttribute("data-lang")));
