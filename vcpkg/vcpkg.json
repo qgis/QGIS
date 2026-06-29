@@ -283,6 +283,12 @@
         "qwt"
       ]
     },
+    "hana": {
+      "description": "Build with SAP HANA Spatial support",
+      "dependencies": [
+        "odbccpp"
+      ]
+    },
     "opencl": {
       "description": "Should OpenCL support be added",
       "dependencies": [
