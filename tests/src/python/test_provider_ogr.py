@@ -5276,7 +5276,7 @@ class PyQgsOGRProvider(QgisTestCase):
             & Qgis.VectorProviderCapability.ReadFieldDomains
         )
 
-    def testCreateEmptLayer(self):
+    def testCreateEmptyLayer(self):
         """Test creating empty layers using the provider"""
         metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
         fields = QgsFields()
