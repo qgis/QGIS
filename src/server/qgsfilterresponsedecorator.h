@@ -19,7 +19,7 @@
 #ifndef QGSFILTERRESPONSEDECORATOR_H
 #define QGSFILTERRESPONSEDECORATOR_H
 
-
+#include "qgis.h"
 #include "qgsserverexception.h"
 #include "qgsserverfilter.h"
 #include "qgsserverresponse.h"

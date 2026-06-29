@@ -257,7 +257,10 @@ Returns the path to the master qgis.db file.
 
   static QString qgisSettingsDirPath();
 %Docstring
-Returns the path to the settings directory in user's home dir
+Returns the path to the settings directory in user's home dir.
+
+This is the path to the root directory of the user's current active QGIS
+profile.
 %End
 
   static QString qgisUserDatabaseFilePath();

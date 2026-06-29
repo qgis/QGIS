@@ -467,10 +467,6 @@ Will be set to ``True`` if the current expression text reported a parser
 error with the context.
 %End
 
-  protected:
-    virtual void showEvent( QShowEvent *e );
-
-
       public:
 };
 

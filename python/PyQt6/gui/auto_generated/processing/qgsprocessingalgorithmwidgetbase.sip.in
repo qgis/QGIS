@@ -365,14 +365,14 @@ Hides the short help panel.
 Returns the widget's message bar.
 %End
 
-  protected:
-    virtual void closeEvent( QCloseEvent *e );
-
-
     QPushButton *runButton();
 %Docstring
 Returns the widget's run button.
 %End
+
+  protected:
+    virtual void closeEvent( QCloseEvent *e );
+
 
     QPushButton *cancelButton();
 %Docstring

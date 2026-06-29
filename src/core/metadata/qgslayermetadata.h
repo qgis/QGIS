@@ -54,6 +54,11 @@ class QgsMapLayer;
  */
 class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
 {
+    Q_GADGET
+
+    Q_PROPERTY( QStringList rights READ rights )
+    Q_PROPERTY( QStringList licenses READ licenses )
+
   public:
     /**
      * Metadata spatial extent structure.

@@ -44,6 +44,7 @@
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparameterheatmappixelsize.h"
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametertype.h"
@@ -209,6 +210,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( rasterParam->defaultFileExtension(), u"tif"_s ); // before alg is accessible
       QVERIFY( addParameter( rasterParam ) );
       QCOMPARE( rasterParam->defaultFileExtension(), u"tif"_s );
+      QVERIFY( rasterParam->createFileFilter().contains( u"GTIFF - tif files (*.tif)"_s ) );
 
       // should allow parameters with same name but different case (required for grass provider)
       QgsProcessingParameterBoolean *p1C = new QgsProcessingParameterBoolean( "P1" );
@@ -798,6 +800,7 @@ class TestQgsProcessing : public QgsTest
     void parameterMeshDatasetTime();
     void parameterDxfLayers();
     void parameterAlignRasterLayers();
+    void parameterHeatmapPixelSize();
 #ifdef HAVE_EPT
     void parameterPointCloudLayer();
 #endif
@@ -1909,6 +1912,9 @@ void TestQgsProcessing::features()
   context.setProject( &p );
   // disable check for geometry validity
   context.setFlags( QgsProcessingContext::Flags() );
+  QgsProcessingFeedback feedback;
+  QSignalSpy sourceLoadedSpy( &feedback, &QgsProcessingFeedback::sourceLoaded );
+  context.setFeedback( &feedback );
 
   const std::function<QgsFeatureIds( QgsFeatureIterator it )> getIds = []( QgsFeatureIterator it ) {
     QgsFeature f;
@@ -1925,6 +1931,9 @@ void TestQgsProcessing::features()
   params.insert( u"layer"_s, layer->id() );
 
   std::unique_ptr<QgsFeatureSource> source( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
+  QCOMPARE( sourceLoadedSpy.count(), 1 );
+  QCOMPARE( sourceLoadedSpy.at( 0 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 0 ).at( 1 ), 5LL );
 
   // test with all features
   QgsFeatureIds ids = getIds( source->getFeatures() );
@@ -1939,6 +1948,10 @@ void TestQgsProcessing::features()
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
   QCOMPARE( source->featureCount(), 2L );
 
+  QCOMPARE( sourceLoadedSpy.count(), 2 );
+  QCOMPARE( sourceLoadedSpy.at( 1 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 1 ).at( 1 ), 2LL );
+
   // selection, but not using selected features
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
@@ -1946,6 +1959,10 @@ void TestQgsProcessing::features()
   ids = getIds( source->getFeatures() );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
   QCOMPARE( source->featureCount(), 5L );
+
+  QCOMPARE( sourceLoadedSpy.count(), 3 );
+  QCOMPARE( sourceLoadedSpy.at( 2 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 2 ).at( 1 ), 5LL );
 
   // using selected features, but no selection
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
@@ -1955,6 +1972,10 @@ void TestQgsProcessing::features()
   QVERIFY( ids.isEmpty() );
   QCOMPARE( source->featureCount(), 0L );
 
+  QCOMPARE( sourceLoadedSpy.count(), 4 );
+  QCOMPARE( sourceLoadedSpy.at( 3 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 3 ).at( 1 ), 0LL );
+
   // feature limit
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false, 3 ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
@@ -1962,12 +1983,20 @@ void TestQgsProcessing::features()
   QCOMPARE( ids.size(), 3 );
   QCOMPARE( source->featureCount(), 3L );
 
+  QCOMPARE( sourceLoadedSpy.count(), 5 );
+  QCOMPARE( sourceLoadedSpy.at( 4 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 4 ).at( 1 ), 3LL );
+
   // filter expression
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false, -1, Qgis::ProcessingFeatureSourceDefinitionFlags(), Qgis::InvalidGeometryCheck::AbortOnInvalid, u"$id<3"_s ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures() );
   QCOMPARE( ids.size(), 2 );
   QCOMPARE( source->featureCount(), -1L );
+
+  QCOMPARE( sourceLoadedSpy.count(), 6 );
+  QCOMPARE( sourceLoadedSpy.at( 5 ).at( 0 ), u"layer"_s );
+  QCOMPARE( sourceLoadedSpy.at( 5 ).at( 1 ), -1LL );
 
   // test that feature request is honored
   params.insert( u"layer"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
@@ -12335,6 +12364,76 @@ void TestQgsProcessing::parameterAlignRasterLayers()
   itemList = def->parameterAsItems( layerList, context );
   QCOMPARE( itemList.at( 0 ).inputFilename, item.inputFilename );
   QCOMPARE( itemList.at( 0 ).outputFilename, item.outputFilename );
+}
+
+void TestQgsProcessing::parameterHeatmapPixelSize()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  auto def = std::make_unique<QgsProcessingParameterHeatmapPixelSize>( "non_optional", QString(), u"parent"_s, u"radius"_s, u"radius_field"_s, 5 );
+  QCOMPARE( def->radiusFieldParameter(), u"radius_field"_s );
+  QCOMPARE( def->parentLayerParameter(), u"parent"_s );
+  QCOMPARE( def->radiusParameter(), u"radius"_s );
+  QCOMPARE( def->minimum(), 0 );
+  QCOMPARE( def->dataType(), Qgis::ProcessingNumberParameterType::Double );
+  QVERIFY( def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1.1,2" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be acceptable, falls back to default value
+
+  // string representing a number
+  QVariantMap params;
+  params.insert( "non_optional", QString( "1.1" ) );
+  double number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QGSCOMPARENEAR( number, 1.1, 0.001 );
+
+  // double
+  params.insert( "non_optional", 1.1 );
+  number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QGSCOMPARENEAR( number, 1.1, 0.001 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a number, and nothing you can do will make me one" ) );
+  number = QgsProcessingParameters::parameterAsDouble( def.get(), params, context );
+  QCOMPARE( number, 5.0 );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), u"None"_s );
+  QCOMPARE( def->valueAsPythonString( 5, context ), u"5"_s );
+  QCOMPARE( def->valueAsPythonString( u"1.1"_s, context ), u"1.1"_s );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), u"QgsProperty.fromExpression('\"a\"=1')"_s );
+
+  QCOMPARE( def->userFriendlyString( QVariant( 5 ) ), u"5"_s );
+
+  QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
+  QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( "5" ) );
+  QCOMPARE( def->valueAsJsonObject( u"1.1"_s, context ), QVariant( u"1.1"_s ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), u"5"_s );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( u"1.1"_s, context, ok ), u"1.1"_s );
+  QVERIFY( ok );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterHeatmapPixelSize('non_optional', '', 'parent', 'radius', 'radius_field', defaultValue=5)"_s );
+
+  const QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterHeatmapPixelSize fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.minimum(), def->minimum() );
+  QCOMPARE( fromMap.maximum(), def->maximum() );
+  QCOMPARE( fromMap.dataType(), def->dataType() );
+  def.reset( dynamic_cast<QgsProcessingParameterHeatmapPixelSize *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast<QgsProcessingParameterHeatmapPixelSize *>( def.get() ) );
 }
 
 void TestQgsProcessing::checkParamValues()

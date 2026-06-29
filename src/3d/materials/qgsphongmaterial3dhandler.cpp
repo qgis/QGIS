@@ -15,10 +15,11 @@
 
 #include "qgsphongmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
-#include "qgshighlightmaterial.h"
 #include "qgsphongmaterial.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgsunlitmaterial.h"
 
 #include <QMap>
 #include <QString>
@@ -50,7 +51,7 @@ QgsMaterial *QgsPhongMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return Qgs3D::createHighlightMaterial();
       }
 
       const QgsPhongMaterialSettings *phongSettings = dynamic_cast< const QgsPhongMaterialSettings * >( settings );
@@ -59,7 +60,10 @@ QgsMaterial *QgsPhongMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
       QgsPhongMaterial *material = new QgsPhongMaterial();
       material->setObjectName( u"phongMaterial"_s );
 
-      const bool dataDefined = phongSettings->dataDefinedProperties().hasActiveProperties();
+      const QgsPropertyCollection &dataDefinedProperties = phongSettings->dataDefinedProperties();
+      const bool dataDefined = dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Ambient )
+                               || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Diffuse )
+                               || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Specular );
       if ( !dataDefined )
       {
         const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
@@ -213,12 +217,15 @@ bool QgsPhongMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsPhongMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+QgsMaterial *QgsPhongMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
 {
   const QgsPhongMaterialSettings *phongSettings = qgis::down_cast< const QgsPhongMaterialSettings * >( settings );
 
   QgsPhongMaterial *material = new QgsPhongMaterial();
   material->setInstancingEnabled( true, flags );
+  material->setInstancingMeshTransform( transform );
   material->setObjectName( u"phongMaterial"_s );
 
   const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();

@@ -596,6 +596,7 @@ if (WITH_DESKTOP)
 endif()
 
 if (WITH_3D)
+  ADD_PYTHON_TEST(PyQgs3DLights test_qgs3dlights.py)
   ADD_PYTHON_TEST(PyQgs3DMaterials test_qgs3dmaterials.py)
   ADD_PYTHON_TEST(PyQgs3DTerrain test_qgs3dterrain.py)
   ADD_PYTHON_TEST(PyQgsFontTextureAtlasGenerator test_qgsfonttextureatlasgenerator.py)

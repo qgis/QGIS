@@ -66,7 +66,7 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   map->terrainGenerator()->setTerrain( this );
   mIsValid = map->terrainGenerator()->isValid();
 
-  mLayerWatcher.reset( new QgsLayerStyleWatcher( map ) );
+  mLayerWatcher = make_qobject_unique<QgsLayerStyleWatcher>( map );
   connect( mLayerWatcher.get(), &QgsLayerStyleWatcher::styleChanged, this, &QgsTerrainEntity::invalidateMapImages );
 
   connect( map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
@@ -109,7 +109,7 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
         break; // the ray is parallel to the flat terrain
 
       const float dist = static_cast<float>( mMapSettings->terrainSettings()->elevationOffset() - ray.origin().z() - mMapSettings->origin().z() ) / ray.direction().z();
-      const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
+      const QVector3D terrainPlanePoint = ray.point( dist );
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMapSettings->origin() );
       if ( mMapSettings->extent().contains( mapCoords.x(), mapCoords.y() ) )
       {
@@ -166,9 +166,8 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
 
 void QgsTerrainEntity::onShowBoundingBoxesChanged()
 {
-  setShowBoundingBoxes( mMapSettings->showTerrainBoundingBoxes() );
+  setShowBoundingBoxes( mMapSettings->debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowTerrainBoundingBoxes ) );
 }
-
 
 void QgsTerrainEntity::invalidateMapImages()
 {

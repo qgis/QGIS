@@ -21,10 +21,9 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsprocessingmodelresult.h"
 
 #define SIP_NO_FILE
-
-class QgsProcessingModelChildAlgorithmResult;
 
 /**
  * \ingroup core
@@ -91,6 +90,13 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
      * \see childProgressChanged()
      */
     void reportChildProgress( const QString &childId, double progress );
+
+    /**
+     * Reports that a feature source was retrieved for the specified child algorithm input parameter.
+     *
+     * \see childSourceLoaded()
+     */
+    void reportChildSourceLoaded( const QString &childId, const QString &parameterName, long long featureCount );
 
     /**
      * Reports that the count of features pushed to a child algorithm's sink has changed.
@@ -178,6 +184,13 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
      * \see reportChildProgress()
      */
     void childProgressChanged( const QString &childId, double progress );
+
+    /**
+     * Emitted when a feature source was retrieved for the specified child algorithm input parameter.
+     *
+     * \see reportChildSourceLoaded()
+     */
+    void childSourceLoaded( const QString &childId, const QString &parameterName, long long featureCount );
 
     /**
      * Emitted when the count of features pushed to a child's sink has changed.

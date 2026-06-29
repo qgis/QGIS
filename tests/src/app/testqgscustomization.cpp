@@ -53,6 +53,7 @@ class TestQgsCustomization : public QgsTest
     void testClone();
     void testModel();
     void testModelProcessing();
+    void testToolBarPosition();
 
   private:
     template<class T> T *getItem( QgsCustomization *customization, const QString &path ) const { return dynamic_cast<T *>( getItem( customization, path ) ); }
@@ -159,6 +160,7 @@ void TestQgsCustomization::init()
   mQgisApp->show();
 
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
 
   mCustomizationFile = std::make_unique<QTemporaryFile>();
   QVERIFY( mCustomizationFile->open() ); // fileName is not available until open
@@ -653,6 +655,11 @@ void TestQgsCustomization::testModel()
 {
   mQgisApp->customization()->setEnabled( true );
 
+  // We change visibility of help toolbar, it has to stay invisible all the time we use the model
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
+  findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->setVisible( false );
+
   QgsCustomizationDialog::QgsCustomizationModel model( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ItemVisibility );
   QAbstractItemModelTester modelTester( &model, QAbstractItemModelTester::FailureReportingMode::Fatal );
 
@@ -677,12 +684,16 @@ void TestQgsCustomization::testModel()
 
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
 
   // revert values
   model.reset();
 
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
 
   {
     QModelIndex toolBarsIndex = model.index( 4, 0 );
@@ -718,8 +729,10 @@ void TestQgsCustomization::testModel()
 
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
   QVERIFY( findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
 
-  // revert values
+  // apply values
   model.apply();
 
   {
@@ -740,6 +753,9 @@ void TestQgsCustomization::testModel()
 
   // the action is no longer visible
   QVERIFY( !findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
+  QVERIFY( !findQWidget<QToolBar>( "ToolBars/mHelpToolBar" )->isVisible() );
 
   // test add/setVisible/setHidden/delete for user menu
   {
@@ -928,6 +944,39 @@ void TestQgsCustomization::testModelProcessing()
     QVERIFY( !getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" ) );
     QVERIFY( !findQAction( u"ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1"_s ) );
   }
+}
+
+void TestQgsCustomization::testToolBarPosition()
+{
+  // check that we keep toolbar position when we call apply()
+
+  mQgisApp->customization()->setEnabled( true );
+
+  const QString name = "my_super_toolbar";
+  mQgisApp->customization()->toolBarsItem()->addChild( std::make_unique<QgsCustomization::QgsUserToolBarItem>( name, name, mQgisApp->customization()->toolBarsItem() ) );
+
+  QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/my_super_toolbar" ) );
+
+  mQgisApp->customization()->apply();
+
+  QWidget *mySuperToolBar = findQWidget( "ToolBars/my_super_toolbar" );
+  QVERIFY( mySuperToolBar );
+
+  QToolBar *newToolBar = new QToolBar( "another_toolbar", QgisApp::instance() );
+  newToolBar->addAction( new QAction( "new_action" ) );
+  QgisApp::instance()->addToolBar( newToolBar );
+
+  QApplication::processEvents();
+  QPoint mySuperToolBarPos = mySuperToolBar->mapToGlobal( QPoint( 0, 0 ) );
+
+  mQgisApp->customization()->apply();
+
+  QApplication::processEvents();
+
+  mySuperToolBar = findQWidget( "ToolBars/my_super_toolbar" );
+  QVERIFY( mySuperToolBar );
+
+  QCOMPARE( mySuperToolBarPos, mySuperToolBar->mapToGlobal( QPoint( 0, 0 ) ) );
 }
 
 

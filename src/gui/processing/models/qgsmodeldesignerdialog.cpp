@@ -57,6 +57,7 @@
 #include <QString>
 #include <QSvgGenerator>
 #include <QTextStream>
+#include <QTimer>
 #include <QToolButton>
 #include <QUndoView>
 #include <QUrl>
@@ -335,7 +336,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   // We use a QObjectUniquePtr here because we want to delete QgsModelViewToolSelect
   // mouse handles before everything else and don't want to wait for QObject destructor to destroy it
-  mSelectTool.reset( new QgsModelViewToolSelect( mView ) );
+  mSelectTool = make_qobject_unique<QgsModelViewToolSelect>( mView );
   mSelectTool->setAction( mActionSelectMoveItem );
 
   mToolsActionGroup->addAction( mActionSelectMoveItem );
@@ -491,7 +492,7 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
   // Delay zoom to the full model to ensure the scene has been properly set
   // and that the itemsBoundingRect returns the correct value.
-  QMetaObject::invokeMethod( this, &QgsModelDesignerDialog::zoomFull, Qt::QueuedConnection );
+  QTimer::singleShot( 100, this, [this] { zoomFull(); } );
 }
 
 void QgsModelDesignerDialog::loadModel( const QString &path )
@@ -542,6 +543,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
       return;
 
     repaintModel();
+    mScene->flagChildrenAsOutdated( mOutdatedChildResults );
   } );
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [this]( const QString &description, const QString &id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [this] { endUndoCommand(); } );
@@ -563,6 +565,9 @@ QgsProcessingFeedback *QgsModelDesignerDialog::createFeedback()
 {
   auto result = std::make_unique< QgsProcessingModelFeedback >();
   mScene->setupFeedbackConnections( result.get() );
+  connect( result.get(), &QgsProcessingModelFeedback::childResultReported, this, [this]( const QString &childId, const QgsProcessingModelChildAlgorithmResult & ) {
+    mOutdatedChildResults.remove( childId );
+  } );
   return result.release();
 }
 
@@ -1252,6 +1257,12 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     mAlgorithmWidget->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmWidget->setParameters( mModel->designerParameterValues() );
 
+    if ( !childAlgorithmSubset.isEmpty() )
+    {
+      mAlgorithmWidget->runButton()->setText( tr( "Run Subset" ) );
+      mAlgorithmWidget->runButton()->setToolTip( tr( "Runs a subset of the child algorithms from this model" ) );
+    }
+
     connect( mAlgorithmWidget.get(), &QgsProcessingAlgorithmWidgetBase::algorithmAboutToRun, this, [this, childAlgorithmSubset]( QgsProcessingContext *context ) {
       if ( !childAlgorithmSubset.empty() )
       {
@@ -1277,6 +1288,14 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
         context->setModelInitialRunConfig( std::move( modelConfig ) );
 
         mScene->resetChildAlgorithmItems( childAlgorithmSubset );
+
+        // for all algorithms downstream of the subset which won't be re-run, flag their old results as outdated.
+        for ( const QString &child : childAlgorithmSubset )
+        {
+          const QSet< QString > outdated = mModel->dependentChildAlgorithms( child );
+          mScene->flagChildrenAsOutdated( outdated );
+          mOutdatedChildResults.unite( outdated );
+        }
       }
       else
       {
@@ -1299,6 +1318,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
 
 void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )
 {
+  const bool isOutdated = mOutdatedChildResults.contains( childId );
   const QString childDescription = mModel->childAlgorithm( childId ).description();
 
   const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
@@ -1371,6 +1391,11 @@ void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )
   if ( !foundResults )
   {
     mMessageBar->pushWarning( QString(), tr( "No results are available for %1" ).arg( childDescription ) );
+    return;
+  }
+  else if ( isOutdated )
+  {
+    mMessageBar->pushWarning( QString(), tr( "These results are outdated, and may not reflect the most recent model execution" ) );
     return;
   }
 }

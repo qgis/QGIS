@@ -348,7 +348,12 @@ class CORE_EXPORT QgsApplication : public QApplication
   //! Returns the path to the master qgis.db file.
   static QString qgisMasterDatabaseFilePath();
 
-  //! Returns the path to the settings directory in user's home dir
+  /**
+   * Returns the path to the settings directory in user's home dir.
+   *
+   * This is the path to the root directory of the user's current active QGIS
+   * profile.
+   */
   static QString qgisSettingsDirPath();
 
   //! Returns the path to the user qgis.db file.
@@ -604,8 +609,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   //! Constants for endian-ness
   enum endian_t
   {
-    XDR = 0, // network, or big-endian, byte order
-    NDR = 1 // little-endian byte order
+    XDR = 0, //!< Network, or big-endian, byte order
+    NDR = 1 //!< Little-endian byte order
   };
   // clang-format on
 

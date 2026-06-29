@@ -30,7 +30,7 @@
 using namespace Qt::StringLiterals;
 
 Qgs3DSymbolWidget::Qgs3DSymbolWidget( QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
 {}
 
 Qgs3DSymbolDialog::Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget *parent )

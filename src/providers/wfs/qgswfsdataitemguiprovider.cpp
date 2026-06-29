@@ -96,8 +96,7 @@ void QgsWfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 
   if ( nc.exec() )
   {
-    // the parent should be updated
-    item->parent()->refreshConnections();
+    refreshConnection( item );
   }
 }
 

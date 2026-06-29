@@ -317,7 +317,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QList<Q
     QgsFeature feature;
     if ( i >= requestedFeatureIds.size() )
     {
-      QgsDebugError( u"Server responded with more features than expected -- results will be unpredictable!" );
+      QgsDebugError( u"Server responded with more features than expected -- results will be unpredictable!"_s );
       break;
     }
     QgsFeatureId featureId = requestedFeatureIds[i];

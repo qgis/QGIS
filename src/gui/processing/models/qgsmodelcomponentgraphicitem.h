@@ -37,6 +37,7 @@ class QgsModelDesignerSocketGraphicItem;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
 class QgsProcessingModelGroupBox;
+class QgsModelArrowItem;
 
 ///@cond NOT_STABLE
 
@@ -270,6 +271,22 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * The default implementation does nothing.
      */
     virtual void deleteComponent() {}
+
+    /**
+     * Returns the list of incoming arrow items terminating at this item.
+     *
+     * \see outgoingArrows()
+     * \since QGIS 4.2
+     */
+    QList< QgsModelArrowItem * > incomingArrows();
+
+    /**
+     * Returns the list of outgoing arrow items originating at this item.
+     *
+     * \see incomingArrows()
+     * \since QGIS 4.2
+     */
+    QList< QgsModelArrowItem * > outgoingArrows();
 
   signals:
 
@@ -511,6 +528,24 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void setResults( const QgsProcessingModelChildAlgorithmResult &results );
 
     /**
+     * Sets the feature count for the source attached to the specified input.
+     *
+     * This can be used to dynamically update the feature count badge for the matching arrow item.
+     *
+     * \since QGIS 4.2
+     */
+    void setSourceFeatureCount( const QString &parameterName, long long featureCount );
+
+    /**
+     * Sets the feature count for the sink attached to the specified output.
+     *
+     * This can be used to dynamically update the feature count badge for the matching arrow item.
+     *
+     * \since QGIS 4.2
+     */
+    void setSinkFeatureCount( const QString &outputName, long long featureCount );
+
+    /**
      * Returns the \a results for this child algorithm for the last model execution through the dialog.
      *
      * \since QGIS 4.0
@@ -528,6 +563,29 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      * \since QGIS 4.2
      */
     void setStarted();
+
+    /**
+     * Flags the algorithm as possibly being outdated (i.e. previous results are invalid due to changes elsewhere in the model).
+     *
+     * \since QGIS 4.2
+     */
+    void setOutdated();
+
+    /**
+     * Returns the index for the input with the specified parameter name, or -1 if the parameter could not be matched.
+     *
+     * \see indexForOutput()
+     * \since QGIS 4.2
+     */
+    int indexForInput( const QString &parameterName ) const;
+
+    /**
+     * Returns the index for the output with the specified name, or -1 if the output could not be matched.
+     *
+     * \see indexForInput()
+     * \since QGIS 4.2
+     */
+    int indexForOutput( const QString &output ) const;
 
   signals:
 
@@ -593,6 +651,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     QPicture mPicture;
     QPixmap mPixmap;
     bool mStarted = false;
+    bool mOutdated = false;
     QgsProcessingModelChildAlgorithmResult mResults;
     double mProgress = -1;
     bool mIsValid = true;

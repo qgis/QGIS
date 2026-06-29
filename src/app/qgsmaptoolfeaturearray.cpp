@@ -45,7 +45,7 @@ void QgsMapToolFeatureArray::activate()
 {
   QgsMapToolAdvancedDigitizing::activate();
 
-  mUserInputWidget.reset( new QgsFeatureArrayUserWidget() );
+  mUserInputWidget = make_qobject_unique< QgsFeatureArrayUserWidget>();
   connect( mUserInputWidget.get(), &QgsFeatureArrayUserWidget::modeChanged, this, [this]( QgsMapToolFeatureArray::ArrayMode mode ) { mMode = mode; } );
   connect( mUserInputWidget.get(), &QgsFeatureArrayUserWidget::featureCountChanged, this, [this]( int value ) {
     mFeatureCount = value;

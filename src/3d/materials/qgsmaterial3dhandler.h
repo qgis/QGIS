@@ -22,6 +22,8 @@
 #include "qgspropertycollection.h"
 
 #include <QColor>
+#include <QMatrix3x3>
+#include <QMatrix4x4>
 #include <QString>
 
 #define SIP_NO_FILE
@@ -120,9 +122,26 @@ class _3D_EXPORT QgsMaterialContext
      */
     void setTextureFilterQuality( Qgis::TextureFilterQuality quality ) { mTextureFilterQuality = quality; }
 
+    /**
+     * Returns TRUE if the material is being shown in a preview widget.
+     *
+     * \see setIsPreview()
+     * \since QGIS 4.2
+     */
+    bool isPreview() const;
+
+    /**
+     * Sets whether the material is being shown in a preview widget.
+     *
+     * \see isPreview()
+     * \since QGIS 4.2
+     */
+    void setIsPreview( bool isPreview );
+
   private:
     bool mIsSelected = false;
     bool mIsHighlighted = false;
+    bool mIsPreview = false;
 
     QColor mSelectedColor;
     Qgis::TextureFilterQuality mTextureFilterQuality = Qgis::TextureFilterQuality::Trilinear;
@@ -160,7 +179,9 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      * Subclasses that support instancing must override this method to construct the material with the
      * correct shader from the start.
      */
-    virtual QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const;
+    virtual QgsMaterial *toInstancedMaterial(
+      const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform = QMatrix4x4()
+    ) const;
 
     /**
      * Returns the parameters to be exported to .mtl file

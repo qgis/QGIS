@@ -595,19 +595,52 @@ the same key will be overwritten.
 write as DXF
 %End
 
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+ virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const /Deprecated="Since 4.2. Use the overload without the ``e`` parameter instead."/;
 %Docstring
-Gets line width
+Gets line width.
+
+.. deprecated:: 4.2
+
+   Use the overload without the ``e`` parameter instead.
 %End
 
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 %Docstring
-Gets marker size
+Gets line width.
+
+.. versionadded:: 4.2
 %End
 
-    virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+ virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const /Deprecated="Since 4.2. Use the overload without the ``e`` parameter instead."/;
 %Docstring
-Gets offset
+Gets marker size.
+
+.. deprecated:: 4.2
+
+   Use the overload without the ``e`` parameter instead.
+%End
+
+    virtual double dxfSize( QgsSymbolRenderContext &context ) const;
+%Docstring
+Gets marker size.
+
+.. versionadded:: 4.2
+%End
+
+ virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const /Deprecated="Since 4.2. Use the overload without the ``e`` parameter instead."/;
+%Docstring
+Gets offset.
+
+.. deprecated:: 4.2
+
+   Use the overload without the ``e`` parameter instead.
+%End
+
+    virtual double dxfOffset( QgsSymbolRenderContext &context ) const;
+%Docstring
+Gets offset.
+
+.. versionadded:: 4.2
 %End
 
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
@@ -1170,7 +1203,7 @@ Writes the symbol layer definition as a SLD XML element.
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfSize( QgsSymbolRenderContext &context ) const;
 
     virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 
@@ -1292,7 +1325,7 @@ Abstract base class for line symbol layers.
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;

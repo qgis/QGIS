@@ -133,7 +133,7 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
     geometryParameters.setGridSize( parameterAsDouble( parameters, u"GRID_SIZE"_s, context ) );
   }
 
-  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB, geometryParameters );
+  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, u"OUTPUT"_s, context, feedback, count, total, fieldIndicesA, fieldIndicesB, geometryParameters );
 
   sink->finalize();
   feedback->featureSinkFinalized( u"OUTPUT"_s );

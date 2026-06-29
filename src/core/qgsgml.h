@@ -160,9 +160,9 @@ class CORE_EXPORT QgsGmlStreamingParser
       Envelope,
       LowerCorner,
       UpperCorner,
-      Feature, // feature element containing attrs and geo (inside gml:featureMember)
+      Feature, //!< Feature element containing attrs and geo (inside gml:featureMember)
       Attribute,
-      Tuple, // wfs:Tuple of a join layer
+      Tuple, //!< Wfs:Tuple of a join layer
       FeatureTuple,
       AttributeTuple,
       Geometry,

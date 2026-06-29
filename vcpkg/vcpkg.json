@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "0b88aacde46a853151730fbe7d0b7ee45f4b6864",
+      "baseline": "a7eda31dc16994fcaa8587982eb833a8695f1b6f",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "8302019ad51ba3495da18c5c35e66aeae94e80e6",
+        "baseline": "a7ac5f410048f81094355eb9db2055d5c35d29ea",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -89,7 +89,10 @@
     {
       "name": "qtbase",
       "default-features": false,
-      "host": true
+      "host": true,
+      "features": [
+        "thread"
+      ]
     },
     {
       "name": "qtmultimedia",
@@ -320,6 +323,18 @@
       "description": "Build with SFCGAL support",
       "dependencies": [
         "sfcgal"
+      ]
+    },
+    "tracy": {
+      "description": "Add Tracy profiler client support",
+      "dependencies": [
+        {
+          "name": "tracy",
+          "features": [
+            "fibers",
+            "on-demand"
+          ]
+        }
       ]
     }
   }

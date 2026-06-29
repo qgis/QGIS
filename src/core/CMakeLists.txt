@@ -290,6 +290,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameteraggregate.cpp
   processing/qgsprocessingparameterdxflayers.cpp
   processing/qgsprocessingparameterfieldmap.cpp
+  processing/qgsprocessingparameterheatmappixelsize.cpp
   processing/qgsprocessingparametermeshdataset.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingparametertininputlayers.cpp
@@ -971,6 +972,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsrectangle.cpp
   geometry/qgsreferencedgeometry.cpp
   geometry/qgsregularpolygon.cpp
+  geometry/qgssimplecurve.cpp
   geometry/qgssphere.cpp
   geometry/qgssurface.cpp
   geometry/qgstriangle.cpp
@@ -1604,6 +1606,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsrectangle.h
   geometry/qgsreferencedgeometry.h
   geometry/qgsregularpolygon.h
+  geometry/qgssimplecurve.h
   geometry/qgssphere.h
   geometry/qgssurface.h
   geometry/qgstriangle.h
@@ -1908,6 +1911,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparameteraggregate.h
   processing/qgsprocessingparameterdxflayers.h
   processing/qgsprocessingparameterfieldmap.h
+  processing/qgsprocessingparameterheatmappixelsize.h
   processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameters.h
   processing/qgsprocessingparametertininputlayers.h
@@ -2340,7 +2344,9 @@ if(MSVC)
       expression/qgsexpressionfunction.cpp
       proj/qgscoordinatereferencesystem.cpp
       textrenderer/qgsfontmanager.cpp
+      vector/qgsvectorlayer.cpp
       qgsapplication.cpp
+      qgis.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 elseif(EMSCRIPTEN)
@@ -2358,8 +2364,15 @@ elseif(EMSCRIPTEN)
     SKIP_PRECOMPILE_HEADERS ON
   )
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES
+    COMPILE_FLAGS "-O1"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
   set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
+  set_source_files_properties(textrenderer/qgsfontmanager.cpp PROPERTIES
+    COMPILE_FLAGS "-O0"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
 endif()
 
 # Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
@@ -2872,6 +2885,10 @@ endif()
 
 if (WITH_DRACO)
   target_link_libraries(qgis_core ${DRACO_LIBRARY})
+endif()
+
+if (WITH_TRACY)
+  target_link_libraries(qgis_core Tracy::TracyClient)
 endif()
 
 if (WITH_SPATIALITE)

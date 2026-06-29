@@ -55,7 +55,7 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
      * Gets the helper over all the registered access control filters
      * \returns the access control helper
      */
-    QgsAccessControl *accessControls() const override { return mAccessControls; }
+    QgsAccessControl *accessControls() const override { return mAccessControls.get(); }
 
 
     /**
@@ -88,8 +88,8 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
   private:
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
-    QgsAccessControl *mAccessControls = nullptr;
-    QgsServerCacheManager *mCacheManager = nullptr;
+    std::unique_ptr<QgsAccessControl> mAccessControls;
+    std::unique_ptr<QgsServerCacheManager> mCacheManager;
     QgsCapabilitiesCache *mCapabilitiesCache = nullptr;
     QgsRequestHandler *mRequestHandler = nullptr;
     QgsServiceRegistry *mServiceRegistry = nullptr;

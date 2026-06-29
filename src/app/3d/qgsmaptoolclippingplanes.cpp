@@ -39,9 +39,9 @@ QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DM
   : QgsMapTool( canvas )
   , m3DCanvasWidget( mapCanvas )
 {
-  mRubberBandPolygon.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
-  mRubberBandLines.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Line ) );
-  mRubberBandPoints.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Point ) );
+  mRubberBandPolygon = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Polygon );
+  mRubberBandLines = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Line );
+  mRubberBandPoints = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Point );
   mRubberBandPoints->setColor( QColorConstants::Red );
   mRubberBandPoints->setIconSize( 10 );
   mRubberBandLines->setColor( QColorConstants::Red );

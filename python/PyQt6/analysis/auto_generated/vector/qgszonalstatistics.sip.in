@@ -124,7 +124,6 @@ Returns a map of statistic to result value.
 .. versionadded:: 3.16
 %End
 
-      public:
 };
 
 

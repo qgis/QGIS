@@ -1194,7 +1194,13 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
   const auto attributes { featureRequest.subsetOfAttributes() };
   QgsFields exportedFields;
-  exportedFields.append( QgsField( u"qgs_fid"_s, QMetaType::Type::QString ) );
+  // Server FID is required if the layer has a compound primary key and doesn't already have a field named "qgs_fid"
+  const bool addQgsFid { mapLayer->dataProvider()->pkAttributeIndexes().count() > 1 && mapLayer->fields().lookupField( u"qgs_fid"_s ) == -1 };
+  if ( addQgsFid )
+  {
+    exportedFields.append( QgsField( u"qgs_fid"_s, QMetaType::Type::QString ) );
+  }
+
   for ( int i = 0; i < mapLayer->fields().count(); i++ )
   {
     if ( !attributes.isEmpty() && !attributes.contains( i ) )
@@ -1228,7 +1234,6 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
   QgsFeature feat;
   qlonglong i { 0 };
-  QMap<QgsFeatureId, QString> fidMap;
 
   while ( features.nextFeature( feat ) )
   {
@@ -1236,13 +1241,14 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
     if ( i >= exportContext.offset )
     {
       // Patch feature to add the server feature id
-      const QgsFeatureId originalFid { feat.id() };
-      const QString newFid { QgsServerFeatureId::getServerFid( feat, mapLayer->dataProvider()->pkAttributeIndexes() ) };
-      fidMap.insert( originalFid, newFid );
-      QgsAttributes attributes = feat.attributes();
-      attributes.insert( 0, newFid );
-      feat.setFields( exportedFields );
-      feat.setAttributes( attributes );
+      if ( addQgsFid )
+      {
+        const QString newFid { QgsServerFeatureId::getServerFid( feat, mapLayer->dataProvider()->pkAttributeIndexes() ) };
+        QgsAttributes attributes = feat.attributes();
+        attributes.insert( 0, newFid );
+        feat.setAttributes( attributes );
+        feat.setFields( exportedFields );
+      }
       featureList << feat;
     }
     i++;
@@ -1271,6 +1277,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
     }
   }
 
+  // cannot be const:
   for ( QgsFeature &f : featureList )
   {
     if ( !writer->addFeature( f ) )
@@ -1298,6 +1305,9 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   apiContext.response()->setHeader( u"Content-Disposition"_s, u"inline; filename=\"%1.fgb\""_s.arg( mapLayer->name() ) );
   apiContext.response()->setHeader( u"Content-Crs"_s, featureRequest.destinationCrs().toOgcUri() );
   apiContext.response()->setHeader( u"OGC-NumberReturned"_s, QString::number( featureList.count() ) );
+
+  // Add self link
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::self, QgsServerOgcApi::ContentType::FLATGEOBUF, QgsServerOgcApi::Profile::NONE, u"This document as FlatGeobuf"_s ) );
 
   // Add alternate links
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::RFC7946, u"This document as GEOJSON"_s ) );

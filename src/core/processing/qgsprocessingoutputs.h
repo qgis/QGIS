@@ -174,6 +174,13 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      */
     virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
 
+    /**
+     * Returns TRUE if the output is a map layer type.
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool isMapLayer() const;
+
   protected:
     //! Output name
     QString mName;
@@ -212,6 +219,7 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
     static QString typeName() { return u"outputLayer"_s; }
 
     QString type() const override;
+    bool isMapLayer() const override;
 };
 
 /**
@@ -234,6 +242,7 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
      */
     static QString typeName() { return u"outputVector"_s; }
     QString type() const override { return typeName(); }
+    bool isMapLayer() const override;
 
     /**
      * Returns the layer type for the output layer.
@@ -271,6 +280,7 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
 
     QColor modelColor() const override;
     QString type() const override { return typeName(); }
+    bool isMapLayer() const override;
 };
 
 /**
@@ -292,6 +302,7 @@ class CORE_EXPORT QgsProcessingOutputPointCloudLayer : public QgsProcessingOutpu
      */
     static QString typeName() { return u"outputPointCloud"_s; }
     QString type() const override { return typeName(); }
+    bool isMapLayer() const override;
 };
 
 /**
@@ -322,6 +333,7 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
 
     QColor modelColor() const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    bool isMapLayer() const override;
 };
 
 /**
@@ -530,6 +542,7 @@ class CORE_EXPORT QgsProcessingOutputVectorTileLayer : public QgsProcessingOutpu
 
     QColor modelColor() const override;
     QString type() const override { return typeName(); }
+    bool isMapLayer() const override;
 };
 
 #endif // QGSPROCESSINGOUTPUTS_H

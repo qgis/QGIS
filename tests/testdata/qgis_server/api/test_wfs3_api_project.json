@@ -568,7 +568,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
             "description": "An error occurred."
           }
         },
-        "summary": "WFS 3.0 Landing Page",
+        "summary": "OGC API Landing Page",
         "tags": [
           "Capabilities"
         ]

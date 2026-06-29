@@ -371,13 +371,13 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsPr
      */
     QgsMessageBar *messageBar();
 
-  protected:
-    void closeEvent( QCloseEvent *e ) override;
-
     /**
      * Returns the widget's run button.
      */
     QPushButton *runButton();
+
+  protected:
+    void closeEvent( QCloseEvent *e ) override;
 
     /**
      * Returns the widget's cancel button.

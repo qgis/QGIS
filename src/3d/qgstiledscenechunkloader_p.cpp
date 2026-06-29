@@ -525,7 +525,9 @@ QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Qgs
     result.append( hit );
   }
 
+#ifdef QGISDEBUG
   QgsDebugMsgLevel( u"Active Nodes: %1, checked nodes: %2, hits found: %3"_s.arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
+#endif
   return result;
 }
 

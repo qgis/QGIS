@@ -179,6 +179,14 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     virtual QString textLog() const;
 
     /**
+     * Reports that a feature source was retrieved for the specified algorithm input parameter.
+     *
+     * \see sourceLoaded()
+     * \since QGIS 4.2
+     */
+    void reportSourceLoaded( const QString &parameterName, long long featureCount );
+
+    /**
      * Reports that a feature was added to the the sink associated with the specified algorithm \a output.
      *
      * \see sinkFeatureCountChanged()
@@ -200,6 +208,13 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \since QGIS 4.2
      */
     void featureSinkFinalized( const QString &output );
+
+    /**
+     * Resets all stored feature sink counts.
+     *
+     * \since QGIS 4.2
+     */
+    void resetFeatureSinkCounts();
 
   signals:
 
@@ -280,6 +295,14 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \since QGIS 4.2
      */
     void sinkFeatureCountChanged( const QString &output, long long featureCount );
+
+    /**
+     * Emitted when a feature source was retrieved for the specified algorithm input parameter.
+     *
+     * \see reportSourceLoaded()
+     * \since QGIS 4.2
+     */
+    void sourceLoaded( const QString &parameterName, long long featureCount );
 
   private:
     void log( const QString &htmlMessage, const QString &textMessage );

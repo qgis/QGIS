@@ -436,6 +436,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
           break;
       }
 
+      childAlgorithmFeedback.resetFeatureSinkCounts();
+
       if ( feedback && !skipGenericLogging )
       {
         feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
@@ -542,6 +544,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       try
       {
         QgsScopedConnection childProgressConnection;
+        QgsScopedConnection childSourceLoadedConnection;
         QgsScopedConnection childSinkCountChangedConnection;
         if ( modelFeedback )
         {
@@ -554,6 +557,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
             = QObject::connect( &childAlgorithmFeedback, &QgsProcessingFeedback::sinkFeatureCountChanged, &childAlgorithmFeedback, [&modelFeedback, &childId]( const QString &sinkId, long long featureCount ) {
                 modelFeedback->reportChildSinkFeatureCountChanged( childId, sinkId, featureCount );
               } );
+          // note -- this is INTENTIONALLY connected to feedback, not childAlgorithmFeedback!
+          childSourceLoadedConnection = QObject::connect( feedback, &QgsProcessingFeedback::sourceLoaded, feedback, [&modelFeedback, &childId]( const QString &parameterName, long long featureCount ) {
+            modelFeedback->reportChildSourceLoaded( childId, parameterName, featureCount );
+          } );
         }
 
         if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )

@@ -61,6 +61,7 @@
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameterheatmappixelsize.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
@@ -4011,7 +4012,7 @@ void QgsProcessingPointPanel::updateRubberBand()
 
   if ( !mMapPointRubberBand )
   {
-    mMapPointRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Point ) );
+    mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Point );
     mMapPointRubberBand->setZValue( 1000 );
     mMapPointRubberBand->setIcon( QgsRubberBand::ICON_X );
 
@@ -8497,5 +8498,325 @@ QString QgsProcessingVectorTileDestinationWidgetWrapper::modelerExpressionFormat
 {
   return tr( "path to layer destination" );
 }
+
+
+//
+// QgsHeatmapPixelSizeWidget
+//
+
+QgsHeatmapPixelSizeWidget::QgsHeatmapPixelSizeWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
+{
+  setupUi( this );
+
+  mCellXSpinBox->setShowClearButton( false );
+  mCellYSpinBox->setShowClearButton( false );
+  mRowsSpinBox->setShowClearButton( false );
+  mColumnsSpinBox->setShowClearButton( false );
+
+  connect( mCellYSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), mCellXSpinBox, &QgsDoubleSpinBox::setValue );
+  connect( mCellXSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsHeatmapPixelSizeWidget::pixelSizeChanged );
+  connect( mRowsSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsHeatmapPixelSizeWidget::rowsChanged );
+  connect( mColumnsSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsHeatmapPixelSizeWidget::columnsChanged );
+}
+
+void QgsHeatmapPixelSizeWidget::setLayer( QgsVectorLayer *layer )
+{
+  mLayer = layer;
+  if ( mLayer )
+    mLayerBounds = mLayer->extent();
+  else
+    mLayerBounds = QgsRectangle();
+
+  recalculateBounds();
+}
+
+QgsVectorLayer *QgsHeatmapPixelSizeWidget::layer()
+{
+  return mLayer;
+}
+
+void QgsHeatmapPixelSizeWidget::setRadius( double radius )
+{
+  mRadius = radius;
+  recalculateBounds();
+}
+
+void QgsHeatmapPixelSizeWidget::setRadiusField( const QString &radiusField )
+{
+  mRadiusField = radiusField;
+  recalculateBounds();
+}
+
+void QgsHeatmapPixelSizeWidget::recalculateBounds()
+{
+  mRasterBounds = mLayerBounds;
+  if ( !mLayer )
+    return;
+
+  double maxRadius = mRadius;
+  if ( !mRadiusField.isEmpty() )
+  {
+    const int idx = mLayer->fields().lookupField( mRadiusField );
+    if ( idx >= 0 )
+      maxRadius = mLayer->maximumValue( idx ).toDouble();
+  }
+
+  mRasterBounds.setXMinimum( mRasterBounds.xMinimum() - maxRadius );
+  mRasterBounds.setYMinimum( mRasterBounds.yMinimum() - maxRadius );
+  mRasterBounds.setXMaximum( mRasterBounds.xMaximum() + maxRadius );
+  mRasterBounds.setYMaximum( mRasterBounds.yMaximum() + maxRadius );
+
+  pixelSizeChanged();
+}
+
+void QgsHeatmapPixelSizeWidget::pixelSizeChanged()
+{
+  const double prevValue = value();
+  const double cellSize = mCellXSpinBox->value();
+  if ( cellSize <= 0 || mRasterBounds.isNull() )
+  {
+    emit valueChanged();
+    return;
+  }
+
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  const int rows = std::max( static_cast<int>( std::round( mRasterBounds.height() / cellSize ) ) + 1, 1 );
+  const int cols = std::max( static_cast<int>( std::round( mRasterBounds.width() / cellSize ) ) + 1, 1 );
+
+  whileBlocking( mRowsSpinBox )->setValue( rows );
+  whileBlocking( mColumnsSpinBox )->setValue( cols );
+
+  if ( !qgsDoubleNear( prevValue, value() ) )
+  {
+    emit valueChanged();
+  }
+}
+
+void QgsHeatmapPixelSizeWidget::rowsChanged()
+{
+  const int rows = mRowsSpinBox->value();
+  if ( rows <= 0 || mRasterBounds.isNull() )
+    return;
+
+  const double cellSize = mRasterBounds.height() / rows;
+  if ( cellSize == 0 )
+    return;
+
+  const int cols = std::max( static_cast<int>( std::round( mRasterBounds.width() / cellSize ) ) + 1, 1 );
+
+  whileBlocking( mColumnsSpinBox )->setValue( cols );
+  whileBlocking( mCellXSpinBox )->setValue( cellSize );
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  emit valueChanged();
+}
+
+void QgsHeatmapPixelSizeWidget::columnsChanged()
+{
+  const int cols = mColumnsSpinBox->value();
+  if ( cols < 2 || mRasterBounds.isNull() )
+    return;
+
+  const double cellSize = mRasterBounds.width() / ( cols - 1 );
+  if ( cellSize == 0 )
+    return;
+
+  const int rows = std::max( static_cast<int>( std::round( mRasterBounds.height() / cellSize ) ), 1 );
+
+  whileBlocking( mRowsSpinBox )->setValue( rows );
+  whileBlocking( mCellXSpinBox )->setValue( cellSize );
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  emit valueChanged();
+}
+
+double QgsHeatmapPixelSizeWidget::value() const
+{
+  return mCellXSpinBox->value();
+}
+
+void QgsHeatmapPixelSizeWidget::setValue( double value )
+{
+  mCellXSpinBox->setValue( value );
+  mCellYSpinBox->setValue( value );
+}
+
+//
+// QgsProcessingHeatmapPixelSizeWidgetWrapper
+//
+
+QgsProcessingHeatmapPixelSizeWidgetWrapper::QgsProcessingHeatmapPixelSizeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingHeatmapPixelSizeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterHeatmapPixelSize::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingHeatmapPixelSizeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingHeatmapPixelSizeWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingHeatmapPixelSizeWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingHeatmapPixelSizeWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      mWidget = new QgsHeatmapPixelSizeWidget();
+      connect( mWidget, &QgsHeatmapPixelSizeWidget::valueChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackSpinBox = new QgsDoubleSpinBox();
+      mFallbackSpinBox->setShowClearButton( false );
+      mFallbackSpinBox->setMinimum( 0.0 );
+      mFallbackSpinBox->setMaximum( 99999999999.0 );
+      mFallbackSpinBox->setDecimals( 6 );
+      mFallbackSpinBox->setToolTip( tr( "Resolution of each pixel in output raster, in layer units" ) );
+      connect( mFallbackSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackSpinBox;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterHeatmapPixelSize *>( parameterDefinition() );
+      if ( !param || !mWidget )
+        return;
+
+      for ( QgsAbstractProcessingParameterWidgetWrapper *wrapper : std::as_const( wrappers ) )
+      {
+        if ( wrapper->parameterDefinition()->name() == param->parentLayerParameter() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { setParentLayerWrapperValue( wrapper ); } );
+        }
+        else if ( wrapper->parameterDefinition()->name() == param->radiusParameter() )
+        {
+          mWidget->setRadius( wrapper->parameterValue().toDouble() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusChanged );
+        }
+        else if ( wrapper->parameterDefinition()->name() == param->radiusFieldParameter() )
+        {
+          mWidget->setRadiusField( wrapper->parameterValue().toString() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusFieldChanged );
+        }
+      }
+      break;
+    }
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  if ( !mWidget )
+    return;
+
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr<QgsProcessingContext> tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = std::make_unique<QgsProcessingContext>();
+    context = tmpContext.get();
+  }
+
+  QVariant value = parentWrapper->parameterValue();
+  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    value = fromVar.source;
+  }
+
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), value, *context );
+  if ( !layer )
+  {
+    mWidget->setLayer( nullptr );
+    return;
+  }
+
+  // need to grab ownership of layer if required - otherwise layer may be deleted when context
+  // goes out of scope
+  std::unique_ptr<QgsMapLayer> ownedLayer( context->takeResultLayer( layer->id() ) );
+  if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
+  {
+    mParentLayer = std::move( ownedLayer );
+    layer = static_cast<QgsVectorLayer *>( mParentLayer.get() );
+  }
+  else
+  {
+    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+  }
+
+  mWidget->setLayer( layer );
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+{
+  if ( mWidget )
+    mWidget->setValue( value.toDouble() );
+  else if ( mFallbackSpinBox )
+    mFallbackSpinBox->setValue( value.toDouble() );
+}
+
+QVariant QgsProcessingHeatmapPixelSizeWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+    return mWidget->value();
+  else if ( mFallbackSpinBox )
+    return mFallbackSpinBox->value();
+  return QVariant();
+}
+
+const QgsVectorLayer *QgsProcessingHeatmapPixelSizeWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mWidget && mWidget->layer() )
+    return mWidget->layer();
+
+  return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
+{
+  if ( mWidget )
+    mWidget->setRadius( wrapper->parameterValue().toDouble() );
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusFieldChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
+{
+  if ( mWidget )
+    mWidget->setRadiusField( wrapper->parameterValue().toString() );
+}
+
 
 ///@endcond PRIVATE

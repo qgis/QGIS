@@ -15,10 +15,11 @@
 
 #include "qgsgoochmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 #include "qgsgoochmaterial.h"
 #include "qgsgoochmaterialsettings.h"
-#include "qgshighlightmaterial.h"
+#include "qgsunlitmaterial.h"
 
 #include <QString>
 #include <Qt3DCore/QAttribute>
@@ -51,7 +52,7 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return Qgs3D::createHighlightMaterial();
       }
 
       const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
@@ -63,7 +64,12 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
       applySettingsToMaterial( goochSettings, material );
       if ( context.isSelected() )
         material->setDiffuse( context.selectionColor() );
-      material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
+      material->setDataDefinedEnabled(
+        dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Warm )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Cool )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Diffuse )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Specular )
+      );
 
       return material;
     }
@@ -172,12 +178,15 @@ bool QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
 {
   const QgsGoochMaterialSettings *goochSettings = qgis::down_cast< const QgsGoochMaterialSettings * >( settings );
 
   QgsGoochMaterial *material = new QgsGoochMaterial();
   material->setInstancingEnabled( true, flags );
+  material->setInstancingMeshTransform( transform );
 
   material->setObjectName( u"goochMaterial"_s );
   applySettingsToMaterial( goochSettings, material );

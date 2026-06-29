@@ -338,6 +338,13 @@ bool QgsMssqlProvider::execPreparedLogged( QSqlQuery &qry, const QString &queryO
   return res;
 }
 
+void QgsMssqlProvider::reloadProviderData()
+{
+  mRefreshFeatureCount = true;
+  mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
+  mExtent.setNull();
+}
+
 void QgsMssqlProvider::setLastError( const QString &error )
 {
   appendError( error );
@@ -951,42 +958,59 @@ Qgis::WkbType QgsMssqlProvider::wkbType() const
  */
 long long QgsMssqlProvider::featureCount() const
 {
-  // Return the count that we get from the subset.
-  if ( !mSqlWhereClause.isEmpty() )
-    return mNumberFeatures;
+  if ( mRefreshFeatureCount )
+  {
+    mRefreshFeatureCount = false;
 
-  // If there is no subset set we can get the count from the system tables.
-  // Which is faster then doing select count(*)
-  QSqlQuery query = createQuery();
-  query.setForwardOnly( true );
+    QSqlQuery query = createQuery();
+    query.setForwardOnly( true );
 
-  QString statement;
-  if ( !mIsQuery )
-  {
-    statement = QStringLiteral(
-                  "SELECT rows"
-                  " FROM sys.tables t"
-                  " JOIN sys.partitions p ON t.object_id = p.object_id AND p.index_id IN (0,1)"
-                  " WHERE SCHEMA_NAME(t.schema_id) = %1 AND OBJECT_NAME(t.OBJECT_ID) = %2"
-    )
-                  .arg( QgsMssqlUtils::quotedValue( mSchemaName ), QgsMssqlUtils::quotedValue( mTableName ) );
-  }
-  else
-  {
-    statement = { QStringLiteral( R"raw(SELECT COUNT(*) FROM (%1) q)raw" ).arg( mQuery ) };
-  }
+    QString sql;
+    if ( !mSqlWhereClause.isEmpty() )
+    {
+      // Return the count that we get from the subset.
+      if ( mIsQuery )
+      {
+        sql = u"SELECT count(*) FROM %1 q WHERE (%2)"_s.arg( mQuery, mSqlWhereClause );
+      }
+      else
+      {
+        sql = u"SELECT count(*) FROM %1.%2 WHERE (%3)"_s.arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ), mSqlWhereClause );
+      }
+    }
+    else
+    {
+      // If there is no subset set we can get the count from the system tables.
+      // Which is faster then doing select count(*)
+      if ( !mIsQuery )
+      {
+        sql = QStringLiteral(
+                "SELECT rows"
+                " FROM sys.tables t"
+                " JOIN sys.partitions p ON t.object_id = p.object_id AND p.index_id IN (0,1)"
+                " WHERE SCHEMA_NAME(t.schema_id) = %1 AND OBJECT_NAME(t.OBJECT_ID) = %2"
+        )
+                .arg( QgsMssqlUtils::quotedValue( mSchemaName ), QgsMssqlUtils::quotedValue( mTableName ) );
+      }
+      else
+      {
+        sql = { QStringLiteral( R"raw(SELECT COUNT(*) FROM (%1) q)raw" ).arg( mQuery ) };
+      }
+    }
 
-  if ( LoggedExec( query, statement ) && query.next() )
-  {
-    return query.value( 0 ).toLongLong();
+    if ( LoggedExec( query, sql ) && query.next() )
+    {
+      mFeaturesCounted = query.value( 0 ).toLongLong();
+    }
+    else
+    {
+      // We couldn't get the rows from the sys tables. Can that ever happen?
+      // Should just do a select count(*) here.
+      QgsDebugError( u"Could not retrieve feature count using %1: %2 "_s.arg( sql, query.lastError().text() ) );
+      mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
+    }
   }
-  else
-  {
-    // We couldn't get the rows from the sys tables. Can that ever happen?
-    // Should just do a select count(*) here.
-    QgsDebugError( u"Could not retrieve feature count using %1: %2 "_s.arg( statement, query.lastError().text() ) );
-    return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
-  }
+  return mFeaturesCounted;
 }
 
 QgsFields QgsMssqlProvider::fields() const
@@ -1706,6 +1730,8 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
   if ( ids.empty() )
     return true; // for consistency providers return true to an empty list
 
+  mRefreshFeatureCount = true;
+
   if ( mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::Int )
   {
     QString featureIds, delim;
@@ -1944,15 +1970,16 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
   const QString prevWhere = mSqlWhereClause;
 
   mSqlWhereClause = theSQL.trimmed();
+  mRefreshFeatureCount = true;
 
   QString sql;
   if ( mIsQuery )
   {
-    sql = u"SELECT count(*) FROM %1 q %2"_s.arg( mQuery, !mSqlWhereClause.isEmpty() ? u" WHERE (%1)"_s.arg( mSqlWhereClause ) : QString() );
+    sql = u"SELECT TOP 1 1 FROM %1 q %2"_s.arg( mQuery, !mSqlWhereClause.isEmpty() ? u" WHERE (%1)"_s.arg( mSqlWhereClause ) : QString() );
   }
   else
   {
-    sql = u"SELECT count(*) FROM %1.%2 %3"_s
+    sql = u"SELECT TOP 1 1 FROM %1.%2 %3"_s
             .arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ), !mSqlWhereClause.isEmpty() ? u" WHERE (%1)"_s.arg( mSqlWhereClause ) : QString() );
   }
 
@@ -1964,9 +1991,6 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
     mSqlWhereClause = prevWhere;
     return false;
   }
-
-  if ( query.isActive() && query.next() )
-    mNumberFeatures = query.value( 0 ).toLongLong();
 
   QgsDataSourceUri anUri = QgsDataSourceUri( dataSourceUri() );
   anUri.setSql( mSqlWhereClause );
@@ -2758,19 +2782,22 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
 
   const QString fTableCatalogClause = buildfTableCatalogClause( dsUri );
 
+  const QString geometryColumnClause = dsUri.geometryColumn().isEmpty() ? u"(f_geometry_column IS NULL OR f_geometry_column = %1)"_s.arg( QgsMssqlUtils::quotedValue( ""_L1 ) )
+                                                                        : u"f_geometry_column=%1"_s.arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) );
+
   const QString selectRelatedQuery = QString(
                                        "SELECT id,styleName,description"
                                        " FROM layer_styles "
                                        " WHERE %1"
                                        " AND f_table_schema=%2"
                                        " AND f_table_name=%3"
-                                       " AND f_geometry_column=%4"
+                                       " AND %4"
                                        " ORDER BY useasdefault DESC, update_time DESC"
   )
                                        .arg( fTableCatalogClause )
                                        .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
                                        .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
-                                       .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) );
+                                       .arg( geometryColumnClause );
 
 
   bool queryOk = LoggedExecMetadata( query, selectRelatedQuery, uri );

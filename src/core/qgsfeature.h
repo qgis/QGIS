@@ -58,11 +58,6 @@ class QgsSymbol;
  */
 class CORE_EXPORT QgsFeature
 {
-#ifdef SIP_RUN
-#if ( SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01 )
-#define sipType_QVariant ( ( sipWrapperType * ) sipTypeAsPyTypeObject( sipType_QVariant ) )
-#endif
-#endif
     Q_GADGET
 
     Q_PROPERTY( QgsFeatureId id READ id WRITE setId )
@@ -1293,7 +1288,7 @@ typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
 
-CORE_EXPORT uint qHash( const QgsFeature &key, uint seed = 0 )  SIP_SKIP;
+CORE_EXPORT size_t qHash( const QgsFeature &key, size_t seed = 0 )  SIP_SKIP;
 
 Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )

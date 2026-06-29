@@ -208,6 +208,14 @@ the model, with an additional margin arounds items.
 %End
 
 
+    void flagChildrenAsOutdated( const QSet< QString > &children );
+%Docstring
+Flags a set of children as possibly being outdated (i.e. previous
+results are invalid due to changes elsewhere in the model).
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void rebuildRequired();

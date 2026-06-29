@@ -4,6 +4,13 @@
 #version 330
 
 // defines are added here as a pre-processing step
+#ifdef ENABLE_IBL
+uniform samplerCube globalSpecularMap;
+uniform int globalSpecularMipLevels;
+uniform vec3 envLightSh[9];
+uniform int envLightMode; // 1 = Skybox IBL, 0 = Solid Background
+uniform float envLightStrength;
+#endif
 
 in vec3 worldPosition;
 
@@ -35,6 +42,8 @@ uniform sampler2D roughnessMap;
 uniform float roughness;
 #endif
 
+uniform float reflectance;
+
 #ifdef AMBIENT_OCCLUSION_MAP
 uniform sampler2D ambientOcclusionMap;
 #endif
@@ -43,13 +52,23 @@ uniform sampler2D ambientOcclusionMap;
 uniform sampler2D normalMap;
 #endif
 
-#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP) || defined(ANISOTROPY)
 in vec4 worldTangent;
 #endif
 
 #ifdef HEIGHT_MAP
 uniform sampler2D heightMap;
 uniform float parallaxScale = 0.1;
+#endif
+
+#ifdef ANISOTROPY
+uniform float anisotropy;
+uniform float anisotropyRotation;
+#endif
+
+#ifdef CLEAR_COAT
+uniform float clearCoatFactor;
+uniform float clearCoatRoughness;
 #endif
 
 #ifdef DATA_DEFINED
@@ -71,7 +90,7 @@ const float PI = 3.14159265359;
 
 #pragma include light.inc.frag
 
-#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP) || defined(ANISOTROPY)
 mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
     vec3 N = normalize(wNormal);
@@ -190,41 +209,12 @@ float remapRoughness(const in float roughness)
     return max(roughness * roughness, minRoughness);
 }
 
-float alphaToMipLevel(float alpha)
-{
-    float specPower = 2.0 / (alpha * alpha) - 2.0;
-
-    // We use the mip level calculation from Lys' default power drop, which in
-    // turn is a slight modification of that used in Marmoset Toolbag. See
-    // https://docs.knaldtech.com/doku.php?id=specular_lys for details.
-    // For now we assume a max specular power of 999999 which gives
-    // maxGlossiness = 1.
-    const float k0 = 0.00098;
-    const float k1 = 0.9921;
-    float glossiness = (pow(2.0, -10.0 / sqrt(specPower)) - k0) / k1;
-
-    // Lookup the number of mips in the specular envmap
-    int mipLevels = envLight.specularMipLevels;
-
-    // Offset of smallest miplevel we should use (corresponds to specular
-    // power of 1). I.e. in the 32x32 sized mip.
-    const float mipOffset = 5.0;
-
-    // The final factor is really 1 - g / g_max but as mentioned above g_max
-    // is 1 by definition here so we can avoid the division. If we make the
-    // max specular power for the spec map configurable, this will need to
-    // be handled properly.
-    float mipLevel = (mipLevels - 1.0 - mipOffset) * (1.0 - glossiness);
-    return mipLevel;
-}
-
-float normalDistribution(const in vec3 n, const in vec3 h, const in float alpha)
+float normalDistribution(const in float nDotH, const in float alpha)
 {
     // Trowbridge-Reitz GGX
     // see https://google.github.io/filament/Filament.md.html, "Normal distribution function (specular D)"
     // https://learnopengl.com/PBR/Theory, "Normal distribution function"
     float alpha2 = alpha * alpha;
-    float nDotH = max(dot(n, h), 0.0);
     float nDotH2 = nDotH * nDotH;
 
     float denom = (nDotH2 * (alpha2 - 1.0) + 1.0);
@@ -257,6 +247,47 @@ float geometrySchlickGGX(const in float nDotV, const in float k)
     float denom = nDotV * (1.0 - k) + k;
     return nom / denom;
 }
+
+// analytical approximation of the split-sum for environment bidirectional reflectance distribution function
+// as per https://www.unrealengine.com/blog/physically-based-shading-on-mobile?lang=en-US
+vec2 environmentBrdfApproximation(const in float roughness, const in float viewDotNormal)
+{
+    vec4 c0 = vec4(-1.0, -0.0275, -0.572, 0.022);
+    vec4 c1 = vec4(1.0, 0.0425, 1.04, -0.04);
+    vec4 r = roughness * c0 + c1;
+    float a004 = min(r.x * r.x, exp2(-9.28 * viewDotNormal)) * r.x + r.y;
+    vec2 ab = vec2(-1.04, 1.04) * a004 + r.zw;
+    return ab;
+}
+
+#ifdef ANISOTROPY
+// anisotropic normal distribution function
+float normalDistributionAnisotropic(const in float tDotH, const in float bDotH, const in float nDotH, const in float alphaT, const in float alphaB)
+{
+    float d = tDotH * tDotH / (alphaT * alphaT) + bDotH * bDotH / (alphaB * alphaB) + nDotH * nDotH;
+    return 1.0 / max(PI * alphaT * alphaB * d * d, 0.0001);
+}
+
+// anisotropic visibility function (replaces geometric and denominator terms)
+// as https://google.github.io/filament/Filament.md.html, 4.10.15 Anisotropic specular BRDF, Listing 16
+float visibilityAnisotropic(const in float nDotL, const in float nDotV, const in float tDotV, const in float bDotV, const in float tDotL, const in float bDotL, const in float alphaT, const in float alphaB)
+{
+    float lambdaV = nDotL * length(vec3(alphaT * tDotV, alphaB * bDotV, nDotV));
+    float lambdaL = nDotV * length(vec3(alphaT * tDotL, alphaB * bDotL, nDotL));
+    return max(0.5 / max(lambdaV + lambdaL, 0.0001), 0.0);
+}
+
+// bend reflection vector for anisotropic image based lighting
+// as https://google.github.io/filament/Filament.md.html, 5.3.13 Anisotropy, Listing 33
+vec3 bentAnisotropicReflection(const in vec3 v, const in vec3 n, const in vec3 t, const in vec3 b, const in float anisotropy)
+{
+    vec3 anisotropicDirection = anisotropy >= 0.0 ? b : t;
+    vec3 anisotropicTangent = cross(anisotropicDirection, v);
+    vec3 anisotropicNormal = cross(anisotropicTangent, anisotropicDirection);
+    vec3 bentNormal = normalize(mix(n, anisotropicNormal, anisotropy));
+    return reflect(-v, bentNormal);
+}
+#endif
 
 float geometricModel(const in float lDotN,
                      const in float vDotN,
@@ -311,86 +342,134 @@ vec3 specularModel(const in vec3 F0,
     return clamp(cSpec, vec3(0.0), vec3(1.0));
 }
 
+#ifdef CLEAR_COAT
+float visibilityKelemen(const in float lDotH)
+{
+  // as per https://google.github.io/filament/Filament.md.html#materialsystem/clearcoatmodel, listing 13
+  return 0.25 / max(lDotH * lDotH, 0.00001);
+}
+
+float pow5(float x)
+{
+  float x2 = x * x;
+  return x2 * x2 * x;
+}
+
+// https://github.com/google/filament/blob/3427685f2fa40de3a5fcaae6d7ffa157780e53a8/shaders/src/surface_brdf.fs#L155
+float fresnelSchlick(float f0, float f90, float VoH)
+{
+  return f0 + (f90 - f0) * pow5(1.0 - VoH);
+}
+
+vec3 adjustF0ForClearCoatInterface(vec3 F0)
+{
+  // adjust F0 based on clear coat-material interface (IOR 1.5) instead of air-material
+  // see https://google.github.io/filament/Filament.md.html#materialsystem/clearcoatmodel/clearcoatparameterization section 4.9.14
+  vec3 f0Sqrt = sqrt(clamp(F0, vec3(0.0), vec3(1.0)));
+  vec3 f0Num = vec3(1.0) - 5.0 * f0Sqrt;
+  vec3 f0Den = vec3(5.0) - f0Sqrt;
+  vec3 f0Base = (f0Num * f0Num) / (f0Den * f0Den);
+  return mix(F0, f0Base, clearCoatFactor);
+}
+
+#endif
+
 vec3 pbrModel(const in int lightIndex,
               const in vec3 wPosition,
-              const in vec3 wNormal,
+              const in vec3 n, // NORMALIZED world normal
               const in vec3 wView,
+              const in vec3 t,
+              const in vec3 b,
               const in vec3 baseColor,
               const in float metalness,
               const in float roughness,
+              const in float reflectance,
               const in float alpha,
-              const in float ambientOcclusion)
+              const in float ambientOcclusion,
+              const in float anisotropy)
 {
     // Calculate some useful quantities
-    vec3 n = wNormal;
-    vec3 s = vec3(0.0);
     vec3 v = wView;
-    vec3 h = vec3(0.0);
 
     float vDotN = dot(v, n);
-    float sDotN = 0.0;
-    float sDotH = 0.0;
-    float att = 1.0;
-    float visibilityFactor = 1.0;
 
-    if (lights[lightIndex].type != TYPE_DIRECTIONAL) {
-        // Point and Spot lights
-        vec3 sUnnormalized = vec3(lights[lightIndex].position) - wPosition;
-        s = normalize(sUnnormalized);
-
-        // Calculate the attenuation factor
-        sDotN = dot(s, n);
-        if (sDotN > 0.0) {
-            if (lights[lightIndex].constantAttenuation != 0.0
-             || lights[lightIndex].linearAttenuation != 0.0
-             || lights[lightIndex].quadraticAttenuation != 0.0) {
-                float dist = length(sUnnormalized);
-                att = 1.0 / (lights[lightIndex].constantAttenuation +
-                             lights[lightIndex].linearAttenuation * dist +
-                             lights[lightIndex].quadraticAttenuation * dist * dist);
-            }
-
-            // The light direction is in world space already
-            if (lights[lightIndex].type == TYPE_SPOT) {
-                // Check if fragment is inside or outside of the spot light cone
-                if (degrees(acos(dot(-s, lights[lightIndex].direction))) > lights[lightIndex].cutOffAngle)
-                    sDotN = 0.0;
-            }
-        }
-    } else {
-        // Directional lights
-        // The light direction is in world space already
-        s = normalize(-lights[lightIndex].direction);
-        sDotN = dot(s, n);
-
-        if (renderShadows == 1 && lightIndex == shadowLightIndex)
-        {
-            visibilityFactor = calcVisibilityAfterShadowing(wPosition);
-        }
-    }
-
-    h = normalize(s + v);
-    sDotH = dot(s, h);
+    LightParams light = calculateLightParams(lightIndex, wPosition, n, wView);
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor * lights[lightIndex].color;
-    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / PI;
+    vec3 diffuse = diffuseColor * light.sDotN / PI;
 
     // Calculate specular component
-    vec3 dielectricColor = vec3(0.04);
+    vec3 dielectricColor = vec3(0.16 * reflectance * reflectance);
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
+
+#ifdef CLEAR_COAT
+    F0 = adjustF0ForClearCoatInterface(F0);
+#endif
+
     vec3 specularFactor = vec3(0.0);
-    if (sDotN > 0.0) {
-        specularFactor = specularModel(F0, sDotH, sDotN, vDotN, n, h, roughness, false);
-        specularFactor *= normalDistribution(n, h, alpha);
+    if (light.sDotN > 0.0) {
+#ifdef ANISOTROPY
+        float alphaT = max(alpha * (1.0 + anisotropy), 0.0001);
+        float alphaB = max(alpha * (1.0 - anisotropy), 0.0001);
+
+        float tDotH = dot(t, light.h);
+        float bDotH = dot(b, light.h);
+        float nDotH = dot(n, light.h);
+        float tDotV = dot(t, v);
+        float bDotV = dot(b, v);
+        float tDotL = dot(t, light.s);
+        float bDotL = dot(b, light.s);
+
+        float D = normalDistributionAnisotropic(tDotH, bDotH, nDotH, alphaT, alphaB);
+        float V = visibilityAnisotropic(light.sDotN, vDotN, tDotV, bDotV, tDotL, bDotL, alphaT, alphaB);
+        vec3 F = fresnelFactor(F0, light.sDotH);
+
+        specularFactor = D * V * F;
+#else
+        specularFactor = specularModel(F0, light.sDotH, light.sDotN, vDotN, n, light.h, roughness, false);
+        specularFactor *= normalDistribution(light.nDotH, alpha);
+#endif
+
+        // calculate multi-scatter energy compensation factor for direct light
+        // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.2
+        vec2 environmentBrdf = environmentBrdfApproximation(roughness, vDotN);
+        float directionalAlbedo = environmentBrdf.x + environmentBrdf.y;
+        vec3 energyCompensation = vec3(1.0) + F0 * (1.0 / max(directionalAlbedo, 0.001) - 1.0);
+        specularFactor *= energyCompensation;
     }
     vec3 specularColor = lights[lightIndex].color;
-    vec3 specular = specularColor * specularFactor * max(sDotN, 0.0);
+    vec3 specular = specularColor * specularFactor * light.sDotN;
 
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
-    vec3 kS = fresnelFactor(F0, sDotH);
-    vec3 color = visibilityFactor * att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
+    vec3 kS = fresnelFactor(F0, light.sDotH);
+    vec3 Fd = diffuse * (vec3(1.0) - kS);
+    vec3 Fr = specular;
+
+#ifdef CLEAR_COAT
+    // as per https://google.github.io/filament/Filament.md.html#materialsystem/clearcoatmodel/clearcoatparameterization, Listing 14
+    float ccPerceptualRoughness = clamp(clearCoatRoughness, 0.089, 1.0);
+    float ccAlpha = ccPerceptualRoughness * ccPerceptualRoughness;
+
+    // clear coat BRDF
+    // we don't currently expose control over clear-coat normals, so standard material
+    // normal is used
+    float Dc = normalDistribution(light.nDotH, ccAlpha); // we use GGX for normalDistribution
+    float Vc = visibilityKelemen(light.sDotH);
+    // fixed IOR to 1.5 => reflectance = 0.04
+    float Fc = fresnelSchlick(0.04, 1.0, light.sDotH) * clearCoatFactor;
+
+    // clear coat specific specular reflection
+    vec3 Frc = vec3(Dc * Vc * Fc) * light.sDotN * lights[lightIndex].color;
+
+    // Account for energy loss in the base layer
+    vec3 layeredColor = (Fd + Fr * (1.0 - Fc)) * (1.0 - Fc) + Frc;
+#else
+    vec3 layeredColor = Fd + Fr;
+#endif
+
+    vec3 color = light.visibilityFactor * light.att * lights[lightIndex].intensity * layeredColor;
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
@@ -398,13 +477,25 @@ vec3 pbrModel(const in int lightIndex,
     return color;
 }
 
-vec3 pbrIblModel(const in vec3 wNormal,
+#ifdef ENABLE_IBL
+float roughnessToMipLevel(float roughness)
+{
+  // as per https://google.github.io/filament/Filament.md.html, section 5.3.11.11
+  float lod = float(globalSpecularMipLevels - 1) * roughness;
+  return max(lod, 0.0);
+}
+
+vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
                  const in vec3 wView,
+                 const in vec3 t,
+                 const in vec3 b,
                  const in vec3 baseColor,
                  const in float metalness,
                  const in float roughness,
+                 const in float reflectance,
                  const in float alpha,
-                 const in float ambientOcclusion)
+                 const in float ambientOcclusion,
+                 const in float anisotropy)
 {
     // Calculate reflection direction of view vector about surface normal
     // vector in world space. This is used in the fragment shader to sample
@@ -412,90 +503,137 @@ vec3 pbrIblModel(const in vec3 wNormal,
     // to the l vector for punctual light sources. Armed with this, calculate
     // the usual factors needed
     vec3 n = wNormal;
-    vec3 l = reflect(-wView, n);
+#ifdef ANISOTROPY
+    // apply bent reflection for anisotropic ibl
+    vec3 l = bentAnisotropicReflection(wView, n, t, b, anisotropy);
+#else
+    vec3 l = reflect(-wView, n); // r (filament)
+#endif
     vec3 v = wView;
     vec3 h = normalize(l + v);
-    float vDotN = dot(v, n);
+    float vDotN = max(dot(v, n), 0.0); // NoV (filament)
     float lDotN = dot(l, n);
     float lDotH = dot(l, h);
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor;
-    vec3 diffuse = diffuseColor * texture(envLight.irradiance, n).rgb;
+
+    // Calculate environmental irradiance from spherical harmonics
+    const float c1 = 0.429043;
+    const float c2 = 0.511664;
+    const float c3 = 0.743125;
+    const float c4 = 0.886227;
+    const float c5 = 0.247708;
+    vec3 envIrradiance =
+        c1 * envLightSh[8] * (wNormal.x * wNormal.x - wNormal.y * wNormal.y) +
+        c3 * envLightSh[6] * wNormal.z * wNormal.z +
+        c4 * envLightSh[0] -
+        c5 * envLightSh[6] +
+        2.0 * c1 * (envLightSh[4] * wNormal.x * wNormal.y + envLightSh[7] * wNormal.x * wNormal.z + envLightSh[5] * wNormal.y * wNormal.z) +
+        2.0 * c2 * (envLightSh[3] * wNormal.x + envLightSh[1] * wNormal.y + envLightSh[2] * wNormal.z);
+    envIrradiance = max(envIrradiance, vec3(0.0));
+
+    vec3 diffuse = diffuseColor * envIrradiance;
 
     // Calculate specular component
-    vec3 dielectricColor = vec3(0.04);
+    vec3 dielectricColor = vec3(0.16 * reflectance * reflectance);
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
-    vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h, roughness, true);
 
-    float lod = alphaToMipLevel(alpha);
-//#define DEBUG_SPECULAR_LODS
-#ifdef DEBUG_SPECULAR_LODS
-    if (lod > 7.0)
-        return vec3(1.0, 0.0, 0.0);
-    else if (lod > 6.0)
-        return vec3(1.0, 0.333, 0.0);
-    else if (lod > 5.0)
-        return vec3(1.0, 1.0, 0.0);
-    else if (lod > 4.0)
-        return vec3(0.666, 1.0, 0.0);
-    else if (lod > 3.0)
-        return vec3(0.0, 1.0, 0.666);
-    else if (lod > 2.0)
-        return vec3(0.0, 0.666, 1.0);
-    else if (lod > 1.0)
-        return vec3(0.0, 0.0, 1.0);
-    else if (lod > 0.0)
-        return vec3(1.0, 0.0, 1.0);
+    float lod = roughnessToMipLevel(roughness);
+
+#ifdef CLEAR_COAT
+    F0 = adjustF0ForClearCoatInterface(F0);
 #endif
-    vec3 specularSkyColor = textureLod(envLight.specular, l, lod).rgb;
-    vec3 specular = specularSkyColor * specularFactor;
+
+    // convert Z-up reflection to Y-up for OpenGL cubemap lookup
+    vec3 yUpReflect = vec3(l.x, l.z, -l.y);
+    vec3 indirectSpecular = textureLod(globalSpecularMap, yUpReflect, lod).rgb;
+
+    // apply split-sum approximation for image based lighting specular
+    vec2 environmentBrdf = environmentBrdfApproximation(roughness, vDotN);
+    vec3 specular = indirectSpecular * (F0 * environmentBrdf.x + environmentBrdf.y);
+
+    // multi-scatter energy compensation factor for indirect light
+    // see https://google.github.io/filament/Filament.md.html#materialsystem/energyconservation, section 4.7.2
+    float directionalAlbedo = environmentBrdf.x + environmentBrdf.y;
+    vec3 energyCompensation = vec3(1.0) + F0 * (1.0 / max(directionalAlbedo, 0.001) - 1.0);
+    specular *= energyCompensation;
 
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
-    vec3 kS = fresnelSchlickRoughness(F0, max(vDotN, 0.0), roughness);
-    vec3 color = specular + diffuse * (vec3(1.0) - kS);
+    vec3 kS = fresnelSchlickRoughness(F0, vDotN, roughness);
+    vec3 Fd = diffuse * (vec3(1.0) - kS);
+    vec3 Fr = specular;
+
+#ifdef CLEAR_COAT
+    // as per https://google.github.io/filament/Filament.md.html#materialsystem/clearcoatmodel/clearcoatparameterization, Listing 14
+    float ccPerceptualRoughness = clamp(clearCoatRoughness, 0.089, 1.0);
+    float ccLod = roughnessToMipLevel(ccPerceptualRoughness);
+
+    vec3 ccIndirectSpecular = textureLod(globalSpecularMap, yUpReflect, ccLod).rgb;
+    // fixed IOR to 1.5 => reflectance = 0.04
+    float Fc = fresnelSchlick(0.04, 1.0, vDotN) * clearCoatFactor;
+    vec2 ccEnvBrdf = environmentBrdfApproximation(ccPerceptualRoughness, vDotN);
+    vec3 Frc = ccIndirectSpecular * (0.04 * ccEnvBrdf.x + ccEnvBrdf.y) * clearCoatFactor;
+    // Account for energy loss in the base layer
+    vec3 layeredColor = (Fd + Fr * (1.0 - Fc)) * (1.0 - Fc) + Frc;
+#else
+    vec3 layeredColor = Fd + Fr;
+#endif
 
     // Reduce by ambient occlusion amount
-    color *= ambientOcclusion;
+    vec3 color = layeredColor * ambientOcclusion;
 
     return color;
 }
+#endif
 
 vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float metalness,
                         const in float roughness,
+                        const in float reflectance,
                         const in float ambientOcclusion,
+                        const in float anisotropy,
                         const in vec3 worldPosition,
                         const in vec3 worldView,
                         const in vec3 worldNormal,
+                        const in vec3 t,
+                        const in vec3 b,
                         const in vec2 activeTexCoord)
 {
     vec3 cLinear = vec3(0.0);
 
     // Remap roughness for a perceptually more linear correspondence
     float alpha = remapRoughness(roughness);
-
-    for (int i = 0; i < envLightCount; ++i) {
-        cLinear += pbrIblModel(worldNormal,
+#ifdef ENABLE_IBL
+    if ( envLightMode == 1 && envLightStrength > 0 )
+    {
+        cLinear += pbrIblModelSphericalHarmonics(worldNormal,
                                worldView,
+                               t, b,
                                baseColor.rgb,
                                metalness,
                                roughness,
+                               reflectance,
                                alpha,
-                               ambientOcclusion);
+                               ambientOcclusion,
+                               anisotropy) * envLightStrength;
     }
+#endif
 
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,
                             worldPosition,
                             worldNormal,
                             worldView,
+                            t, b,
                             baseColor.rgb,
                             metalness,
                             roughness,
+                            reflectance,
                             alpha,
-                            ambientOcclusion);
+                            ambientOcclusion,
+                            anisotropy);
     }
 
 #ifdef DATA_DEFINED
@@ -523,7 +661,7 @@ void main()
 
     vec3 worldView = normalize(eyePosition - worldPosition);
 
-#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP) || defined(ANISOTROPY)
     mat3 tangentToWorld;
     if (length(worldTangent.xyz) > 0.001)
     {
@@ -584,8 +722,20 @@ void main()
 #endif
 #endif
 
-    fragColor = vec4(metalRoughFunction(c, m, r, ao,
+#ifdef ANISOTROPY
+    vec3 anisotropyDirection = vec3(cos(anisotropyRotation), sin(anisotropyRotation), 0.0);
+    vec3 t = normalize(tangentToWorld * anisotropyDirection);
+    t = normalize(t - dot(t, n) * n);
+    vec3 b = normalize(cross(n, t));
+    float aniso = anisotropy;
+#else
+    vec3 t = vec3(0.0);
+    vec3 b = vec3(0.0);
+    float aniso = 0;
+#endif
+
+    fragColor = vec4(metalRoughFunction(c, m, r, reflectance, ao, aniso,
                                    worldPosition,
                                    worldView,
-                                   n, activeTexCoord).rgb, opacity);
+                                   n, t, b, activeTexCoord).rgb, opacity);
 }

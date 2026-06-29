@@ -297,15 +297,18 @@ class GdalUtils:
         return allexts
 
     @staticmethod
-    def getSupportedOutputRasterExtensions():
-        allexts = []
-        for exts in list(GdalUtils.getSupportedOutputRasters().values()):
+    def getSupportedOutputRasterFormatAndExtensions():
+        res = []
+        for format, exts in GdalUtils.getSupportedOutputRasters().items():
             for ext in exts:
-                if ext not in allexts and ext not in ["", "tif", "tiff"]:
-                    allexts.append(ext)
-        allexts.sort()
-        allexts[0:0] = ["tif", "tiff"]
-        return allexts
+                if ext != "" and format != "GTiff":
+                    res.append((format, ext))
+        res.sort()
+        res[0:0] = [
+            ("GTiff", "tif"),
+            ("GTiff", "tiff"),
+        ]
+        return res
 
     @staticmethod
     def getVectorDriverFromFileName(filename):

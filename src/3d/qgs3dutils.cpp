@@ -1007,6 +1007,49 @@ QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, con
   return newShaderCode;
 }
 
+QVector3D Qgs3DUtils::axisStringToVector( const QString &axis )
+{
+  if ( axis == "x"_L1 )
+    return QVector3D( 1.0f, 0.0f, 0.0f );
+  if ( axis == "-x"_L1 )
+    return QVector3D( -1.0f, 0.0f, 0.0f );
+  if ( axis == "y"_L1 )
+    return QVector3D( 0.0f, 1.0f, 0.0f );
+  if ( axis == "-y"_L1 )
+    return QVector3D( 0.0f, -1.0f, 0.0f );
+  if ( axis == "z"_L1 )
+    return QVector3D( 0.0f, 0.0f, 1.0f );
+  if ( axis == "-z"_L1 )
+    return QVector3D( 0.0f, 0.0f, -1.0f );
+  return QVector3D();
+}
+
+QMatrix4x4 Qgs3DUtils::axisTransformMatrix( const QString &upAxis, const QString &forwardAxis )
+{
+  const QVector3D up = axisStringToVector( upAxis );
+  const QVector3D forward = axisStringToVector( forwardAxis );
+
+  if ( up.isNull() || forward.isNull() )
+    return QMatrix4x4();
+
+  const QVector3D right = QVector3D::crossProduct( forward, up );
+  if ( right.isNull() )
+    return QMatrix4x4();
+
+  const float data[9] = {
+    right.x(),
+    right.y(),
+    right.z(),
+    forward.x(),
+    forward.y(),
+    forward.z(),
+    up.x(),
+    up.y(),
+    up.z(),
+  };
+  return QMatrix4x4( QMatrix3x3( data ) );
+}
+
 QByteArray Qgs3DUtils::removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines )
 {
   QByteArray newShaderCode = shaderCode;
@@ -1080,7 +1123,7 @@ QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, con
 
   // pick an arbitrary point mid-way between near and far plane
   const float pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
-  const QVector3D worldPoint = ray.origin() + pointDistance * ray.direction().normalized();
+  const QVector3D worldPoint = ray.point( pointDistance );
   const QgsVector3D mapTransform = worldToMapCoordinates( worldPoint, mapSettings->origin() );
   const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
   return mapPoint;
@@ -1274,4 +1317,71 @@ void Qgs3DUtils::setTextureFiltering( Qt3DRender::QAbstractTexture *texture, con
       texture->setMaximumAnisotropy( 16 );
       break;
   }
+}
+
+Qt3DRender::QAbstractTexture::TextureFormat Qgs3DUtils::determineTextureFormat( QImage::Format imageFormat, bool isSrgb, bool &requiresConversionToRgb )
+{
+  requiresConversionToRgb = false;
+  switch ( imageFormat )
+  {
+    case QImage::Format_RGBA32FPx4:
+    case QImage::Format_RGBA32FPx4_Premultiplied:
+      return Qt3DRender::QAbstractTexture::RGBA32F;
+
+    case QImage::Format_RGBX32FPx4:
+      return Qt3DRender::QAbstractTexture::RGB32F;
+
+    case QImage::Format_RGBA16FPx4:
+    case QImage::Format_RGBA16FPx4_Premultiplied:
+      return Qt3DRender::QAbstractTexture::RGBA16F;
+
+    case QImage::Format_RGBX16FPx4:
+      return Qt3DRender::QAbstractTexture::RGB16F;
+
+    case QImage::Format_RGBA8888:
+    case QImage::Format_RGBA8888_Premultiplied:
+    case QImage::Format_ARGB32:
+    case QImage::Format_ARGB32_Premultiplied:
+      return isSrgb ? Qt3DRender::QAbstractTexture::SRGB8_Alpha8 : Qt3DRender::QAbstractTexture::RGBA8_UNorm;
+
+    case QImage::Format_RGB32:
+    case QImage::Format_RGB888:
+      return isSrgb ? Qt3DRender::QAbstractTexture::SRGB8 : Qt3DRender::QAbstractTexture::RGB8_UNorm;
+
+    case QImage::Format_Grayscale8:
+    case QImage::Format_Alpha8:
+      return Qt3DRender::QAbstractTexture::R8_UNorm;
+    case QImage::Format_Grayscale16:
+      return Qt3DRender::QAbstractTexture::R16_UNorm;
+
+    case QImage::Format_Invalid:
+    case QImage::Format_Mono:
+    case QImage::Format_MonoLSB:
+    case QImage::Format_Indexed8:
+    case QImage::Format_RGB16:
+    case QImage::Format_ARGB8565_Premultiplied:
+    case QImage::Format_RGB666:
+    case QImage::Format_ARGB6666_Premultiplied:
+    case QImage::Format_RGB555:
+    case QImage::Format_ARGB8555_Premultiplied:
+    case QImage::Format_RGB444:
+    case QImage::Format_ARGB4444_Premultiplied:
+    case QImage::Format_RGBX8888:
+    case QImage::Format_BGR30:
+    case QImage::Format_A2BGR30_Premultiplied:
+    case QImage::Format_RGB30:
+    case QImage::Format_A2RGB30_Premultiplied:
+    case QImage::Format_RGBX64:
+    case QImage::Format_RGBA64:
+    case QImage::Format_RGBA64_Premultiplied:
+    case QImage::Format_BGR888:
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+    case QImage::Format_CMYK8888:
+#endif
+    case QImage::NImageFormats:
+      // image format isn't compatible, it needs converting by caller
+      requiresConversionToRgb = true;
+      break;
+  }
+  return isSrgb ? Qt3DRender::QAbstractTexture::SRGB8_Alpha8 : Qt3DRender::QAbstractTexture::RGBA8_UNorm;
 }

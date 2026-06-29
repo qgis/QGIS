@@ -432,8 +432,21 @@ class CORE_EXPORT QgsProcessingUtils
     static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
 
     /**
-     * Returns the index of the output matching \a name for a specified \a algorithm.
+     * Returns the index of the parameter with matching \a name for a specified \a algorithm.
+     *
      * Matching is done in a case-insensitive manner.
+     *
+     * \see outputDefinitionIndex()
+     * \since QGIS 4.2
+     */
+    static int parameterDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) SIP_HOLDGIL;
+
+    /**
+     * Returns the index of the output matching \a name for a specified \a algorithm.
+     *
+     * Matching is done in a case-insensitive manner.
+     *
+     * \see parameterDefinitionIndex()
      * \since QGIS 3.44
      */
     static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) SIP_HOLDGIL;
@@ -632,6 +645,26 @@ class CORE_EXPORT QgsProcessingUtils
      * \since QGIS 3.32
      */
     static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
+
+     /**
+     * Returns a list of image format extensions supported by QImageWriter.
+     *
+     * The returned list excludes SVG as it is typically handled via other exporters, and has the PNG format
+     * listed first as the recommended default. Remaining formats are sorted alphabetically.
+     *
+     * \since QGIS 4.2
+     */
+    static QStringList supportedImageFormats();
+
+    /**
+     * Returns a file filter string of all supported image formats, suitable for use in file picker dialogs.
+     *
+     * The returned string excludes SVG formats and prioritizes the PNG format as the recommended default.
+     * Remaining filters are sorted alphabetically.
+     *
+     * \since QGIS 4.2
+     */
+    static QString supportedImageFileFilters();
 
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );

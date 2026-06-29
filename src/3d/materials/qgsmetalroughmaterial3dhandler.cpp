@@ -15,10 +15,11 @@
 
 #include "qgsmetalroughmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
-#include "qgshighlightmaterial.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgsmetalroughmaterialsettings.h"
+#include "qgsunlitmaterial.h"
 
 #include <QString>
 #include <Qt3DCore/QAttribute>
@@ -43,10 +44,11 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return Qgs3D::createHighlightMaterial();
       }
 
-      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
+      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial( nullptr );
+      material->setEnvironmentalLightingEnabled( !context.isPreview() );
       material->setObjectName( u"metalRoughMaterial"_s );
       applySettingsToMaterial( metalRoughSettings, material, context );
       material->setDataDefinedEnabled(
@@ -63,6 +65,23 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
       return nullptr;
   }
   return nullptr;
+}
+
+QgsMaterial *QgsMetalRoughMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
+{
+  const QgsMetalRoughMaterialSettings *metalRoughSettings = qgis::down_cast< const QgsMetalRoughMaterialSettings * >( settings );
+
+  QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial();
+  material->setEnvironmentalLightingEnabled( true );
+  material->setInstancingEnabled( true, flags );
+  material->setInstancingMeshTransform( transform );
+
+  material->setObjectName( u"metalRoughMaterial"_s );
+  applySettingsToMaterial( metalRoughSettings, material, context );
+
+  return material;
 }
 
 QMap<QString, QString> QgsMetalRoughMaterial3DHandler::toExportParameters( const QgsAbstractMaterialSettings * ) const
@@ -149,7 +168,12 @@ void QgsMetalRoughMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoug
   material->setBaseColor( context.isSelected() ? context.selectionColor() : metalRoughSettings->baseColor() );
   material->setEmissionColor( metalRoughSettings->emissionColor().isValid() ? metalRoughSettings->emissionColor() : QColor( 0, 0, 0 ) );
   material->setEmissionFactor( static_cast< float>( metalRoughSettings->emissionFactor() ) );
+  material->setClearCoatFactor( static_cast< float >( metalRoughSettings->clearCoatFactor() ) );
+  material->setClearCoatRoughness( static_cast< float >( metalRoughSettings->clearCoatRoughness() ) );
   material->setMetalness( static_cast< float >( metalRoughSettings->metalness() ) );
   material->setRoughness( static_cast< float >( metalRoughSettings->roughness() ) );
+  material->setReflectance( static_cast< float >( metalRoughSettings->reflectance() ) );
+  material->setAnisotropy( static_cast< float >( metalRoughSettings->anisotropy() ) );
+  material->setAnisotropyRotation( static_cast< float >( metalRoughSettings->anisotropyRotation() ) );
   material->setOpacity( static_cast< float >( metalRoughSettings->opacity() ) );
 }

@@ -15,15 +15,16 @@
 
 #include "qgsphongtexturedmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
-#include "qgshighlightmaterial.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterial3dhandler.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgsphongtexturedmaterialsettings.h"
+#include "qgsunlitmaterial.h"
 
 #include <QMap>
 #include <QString>
@@ -53,11 +54,11 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return Qgs3D::createHighlightMaterial();
       }
 
       bool fitsInCache = false;
-      const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache );
+      QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache );
       ( void ) fitsInCache;
 
       // No texture image was provided.
@@ -77,20 +78,27 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
       QgsPhongTexturedMaterial *material = new QgsPhongTexturedMaterial();
       material->setObjectName( u"phongTexturedMaterial"_s );
 
-      int opacity = static_cast<int>( phongSettings->opacity() * 255.0 );
+      const float opacity = static_cast<float>( phongSettings->opacity() );
       QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
-      material->setAmbient( QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) );
+      material->setAmbient( QColor::fromRgbF( ambient.redF(), ambient.greenF(), ambient.blueF(), opacity ) );
       const QColor specular = phongSettings->specular();
-      material->setSpecular( QColor( specular.red(), specular.green(), specular.blue(), opacity ) );
+      material->setSpecular( QColor::fromRgbF( specular.redF(), specular.greenF(), specular.blueF(), opacity ) );
       material->setShininess( static_cast<float>( phongSettings->shininess() ) );
       material->setOpacity( static_cast<float>( phongSettings->opacity() ) );
 
       // TODO : if ( context.isSelected() ) dampen the color of diffuse texture
       // with context.map().selectionColor()
       Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
+
+      bool requiresConversionToRgb = false;
+      Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( textureSourceImage.format(), true, requiresConversionToRgb );
+      if ( requiresConversionToRgb )
+      {
+        textureSourceImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
+      }
+      texture->setFormat( textureFormat );
       texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
       texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-      texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
       Qgs3DUtils::setTextureFiltering( texture, context );
 
       texture->addTextureImage( new QgsImageTexture( textureSourceImage ) );
@@ -98,6 +106,13 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
       material->setDiffuseTexture( texture );
       material->setDiffuseTextureScale( static_cast<float>( phongSettings->textureScale() ) );
       material->setDiffuseTextureRotation( static_cast<float>( phongSettings->textureRotation() ) );
+      material->setDiffuseTextureOffset( static_cast<float>( phongSettings->textureOffset().x() ), static_cast<float>( phongSettings->textureOffset().y() ) );
+
+      const QgsPropertyCollection ddProps = phongSettings->dataDefinedProperties();
+      const bool hasDDTextureTransform = ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureOffset )
+                                         || ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureScale )
+                                         || ddProps.isActive( QgsAbstractMaterialSettings::Property::TextureRotation );
+      material->setDataDefinedTextureTransformEnabled( hasDDTextureTransform );
 
       return material;
     }
@@ -107,6 +122,54 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
       return nullptr;
   }
   return nullptr;
+}
+
+QgsMaterial *QgsPhongTexturedMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
+{
+  const QgsPhongTexturedMaterialSettings *phongSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( settings );
+  Q_ASSERT( phongSettings );
+
+  QgsPhongTexturedMaterial *material = new QgsPhongTexturedMaterial();
+  material->setObjectName( u"phongTexturedMaterial"_s );
+  material->setInstancingEnabled( true, flags );
+  material->setInstancingMeshTransform( transform );
+
+  const float opacity = static_cast<float>( phongSettings->opacity() );
+  QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
+  material->setAmbient( QColor::fromRgbF( ambient.redF(), ambient.greenF(), ambient.blueF(), opacity ) );
+  const QColor specular = phongSettings->specular();
+  material->setSpecular( QColor::fromRgbF( specular.redF(), specular.greenF(), specular.blueF(), opacity ) );
+  material->setShininess( static_cast<float>( phongSettings->shininess() ) );
+  material->setOpacity( static_cast<float>( phongSettings->opacity() ) );
+
+  bool fitsInCache = false;
+  QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache );
+  ( void ) fitsInCache;
+
+  if ( !textureSourceImage.isNull() )
+  {
+    Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
+    texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
+    texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
+
+    bool requiresConversionToRgb = false;
+    Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( textureSourceImage.format(), true, requiresConversionToRgb );
+    if ( requiresConversionToRgb )
+    {
+      textureSourceImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
+    }
+    texture->setFormat( textureFormat );
+
+    Qgs3DUtils::setTextureFiltering( texture, context );
+    texture->addTextureImage( new QgsImageTexture( textureSourceImage ) );
+    material->setDiffuseTexture( texture );
+    material->setDiffuseTextureScale( static_cast<float>( phongSettings->textureScale() ) );
+    material->setDiffuseTextureRotation( static_cast<float>( phongSettings->textureRotation() ) );
+  }
+
+  return material;
 }
 
 QMap<QString, QString> QgsPhongTexturedMaterial3DHandler::toExportParameters( const QgsAbstractMaterialSettings *settings ) const
@@ -143,6 +206,8 @@ bool QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *s
     p->setValue( phongSettings->textureScale() );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordRotation"_s ) )
     p->setValue( phongSettings->textureRotation() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordOffset"_s ) )
+    p->setValue( QVariant::fromValue( QVector2D( static_cast< float>( phongSettings->textureOffset().x() ), static_cast< float >( phongSettings->textureOffset().y() ) ) ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"specularColor"_s ) )
     p->setValue( Qgs3DUtils::srgbToLinear( phongSettings->specular() ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"shininess"_s ) )

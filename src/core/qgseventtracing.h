@@ -36,7 +36,6 @@
 // version without notice, or even be removed.
 //
 
-
 /**
  * A utility class that provides event tracing functionality. When tracing
  * is enabled, events from different threads can be recorded and stored
@@ -113,31 +112,55 @@ class CORE_EXPORT QgsEventTracing
     static bool writeTrace( const QString &fileName );
 
     /**
-     * Adds an event to the trace. Does nothing if tracing is not started.
-     * The "id" parameter is only needed for Async events to group them into a single event tree.
+     * Adds an event to the trace and also to Tracy. If tracing is not started,
+     * it only sends the event to Tracy. The "id" parameter is only needed for
+     * Async events to group them into a single event tree.
      * \note This method is thread-safe: it can be run from any thread.
      */
     static void addEvent( EventType type, const QString &category, const QString &name, const QString &id = QString() );
 
     /**
-     * ScopedEvent can be used to trace a single function duration - the constructor adds a "begin" event
-     * and the destructor adds "end" event of the same name and category.
+     * Adds an event to the trace without adding it to Tracy. Does nothing if
+     * tracing is not started. The "id" parameter is only needed for Async
+     * events to group them into a single event tree.
+     * \note This method is thread-safe: it can be run from any thread.
      */
-    class ScopedEvent
-    {
-      public:
-        ScopedEvent( const QString &category, const QString &name )
-          : mCat( category )
-          , mName( name )
-        {
-          addEvent( Begin, mCat, mName );
-        }
-        ~ScopedEvent() { addEvent( End, mCat, mName ); }
+    static void addEventToQgisTrace( EventType type, const QString &category, const QString &name, const QString &id = QString() );
 
-      private:
-        QString mCat, mName;
-    };
+    /**
+     * Set value of numerical variable which will be plotted by Tracy.
+     * \note This method is thread-safe: it can be run from any thread.
+     */
+    static void setFloatVariable( const char *name, double value, bool continuous = false );
+
+    /**
+     * Set value of numerical variable which will be plotted by Tracy.
+     * \note This method is thread-safe: it can be run from any thread.
+     */
+    static void setIntVariable( const char *name, int64_t value, bool continuous = false );
 };
+
+/**
+ * ScopedEvent can be used to trace a single function duration - the constructor adds a "begin" event
+ * and the destructor adds "end" event of the same name and category.
+ */
+class CORE_EXPORT QgsScopedEvent
+{
+  public:
+    QgsScopedEvent( const QString &category, const QString &name )
+      : mCat( category )
+      , mName( name )
+      , mId( QString::number( sNextId++ ) )
+    {
+      QgsEventTracing::addEvent( QgsEventTracing::Begin, mCat, mName, mId );
+    }
+    ~QgsScopedEvent() { QgsEventTracing::addEvent( QgsEventTracing::End, mCat, mName, mId ); }
+
+  private:
+    QString mCat, mName, mId;
+    static size_t sNextId;
+};
+
 
 /// @endcond
 

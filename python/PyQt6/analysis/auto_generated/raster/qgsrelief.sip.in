@@ -22,49 +22,105 @@ Produces colored relief rasters from DEM.
 #include "qgsrelief.h"
 %End
   public:
-    struct ReliefColor
-    {
-        ReliefColor( const QColor &c, double min, double max );
-
-        QColor color;
-        double minElevation;
-        double maxElevation;
-    };
-
     QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
+%Docstring
+Constructor for QgsRelief.
+%End
     ~QgsRelief();
 
 
-    int processRaster( QgsFeedback *feedback = 0 );
+    enum class Result /BaseType=IntEnum/
+    {
+      Success,
+      InvalidInput,
+      OutputCreationFailed,
+      InvalidInputSize,
+      Canceled,
+    };
+
+    QgsRelief::Result processRaster( QgsFeedback *feedback = 0 );
 %Docstring
-Starts the calculation, reads from mInputFile and stores the result in
-mOutputFile
+Starts the calculation.
+
+Reads from the intput input file and stores the result in the output
+file.
 
 :param feedback: feedback object that receives update and that is
                  checked for cancellation.
 
-:return: 0 in case of success
+:return: result code. Prior to QGIS 4.2 the results were returned as a
+         raw integer value.
 %End
 
     double zFactor() const;
+%Docstring
+Returns the z factor, which controls vertical elevation exaggeration.
+
+.. seealso:: :py:func:`setZFactor`
+%End
+
     void setZFactor( double factor );
+%Docstring
+Sets the z ``factor``, which controls vertical elevation exaggeration.
+
+.. seealso:: :py:func:`zFactor`
+%End
 
     void clearReliefColors();
-    void addReliefColorClass( const QgsRelief::ReliefColor &color );
-    QList<QgsRelief::ReliefColor> reliefColors() const;
-    void setReliefColors( const QList<QgsRelief::ReliefColor> &c );
+%Docstring
+Clears all existing relief colors.
 
-    QList<QgsRelief::ReliefColor> calculateOptimizedReliefClasses();
+.. seealso:: :py:func:`addReliefColorClass`
+
+.. seealso:: :py:func:`reliefColors`
+
+.. seealso:: :py:func:`setReliefColors`
+%End
+
+    void addReliefColorClass( const QgsRasterReliefColor &color );
+%Docstring
+Adds a relief ``color``.
+
+.. seealso:: :py:func:`clearReliefColors`
+
+.. seealso:: :py:func:`reliefColors`
+
+.. seealso:: :py:func:`setReliefColors`
+%End
+
+    QList<QgsRasterReliefColor> reliefColors() const;
+%Docstring
+Returns a list of all relief colors.
+
+.. seealso:: :py:func:`clearReliefColors`
+
+.. seealso:: :py:func:`addReliefColorClass`
+
+.. seealso:: :py:func:`setReliefColors`
+%End
+
+    void setReliefColors( const QList<QgsRasterReliefColor> &c );
+%Docstring
+Sets the list of relief colors.
+
+.. seealso:: :py:func:`clearReliefColors`
+
+.. seealso:: :py:func:`addReliefColorClass`
+
+.. seealso:: :py:func:`reliefColors`
+%End
+
+    QList<QgsRasterReliefColor> calculateOptimizedReliefClasses();
 %Docstring
 Calculates class breaks according with the method of Buenzli (2011)
-using an iterative algorithm for segmented regression
+using an iterative algorithm for segmented regression.
 
 :return: ``True`` in case of success
 %End
 
     bool exportFrequencyDistributionToCsv( const QString &file );
 %Docstring
-Write frequency of elevation values to file for manual inspection
+Writes frequency of elevation values to a ``file`` for manual inspection
 %End
 
   private:

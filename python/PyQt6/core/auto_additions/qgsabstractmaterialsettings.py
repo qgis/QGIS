@@ -21,6 +21,15 @@ QgsAbstractMaterialSettings.BaseColor.__doc__ = "Base color (metal-rough materia
 QgsAbstractMaterialSettings.EmissionColor = QgsAbstractMaterialSettings.Property.EmissionColor
 QgsAbstractMaterialSettings.EmissionColor.is_monkey_patched = True
 QgsAbstractMaterialSettings.EmissionColor.__doc__ = "Emission color (metal-rough material) \n.. versionadded:: 4.2"
+QgsAbstractMaterialSettings.TextureScale = QgsAbstractMaterialSettings.Property.TextureScale
+QgsAbstractMaterialSettings.TextureScale.is_monkey_patched = True
+QgsAbstractMaterialSettings.TextureScale.__doc__ = "Texture scale \n.. versionadded:: 4.2"
+QgsAbstractMaterialSettings.TextureRotation = QgsAbstractMaterialSettings.Property.TextureRotation
+QgsAbstractMaterialSettings.TextureRotation.is_monkey_patched = True
+QgsAbstractMaterialSettings.TextureRotation.__doc__ = "Texture rotation \n.. versionadded:: 4.2"
+QgsAbstractMaterialSettings.TextureOffset = QgsAbstractMaterialSettings.Property.TextureOffset
+QgsAbstractMaterialSettings.TextureOffset.is_monkey_patched = True
+QgsAbstractMaterialSettings.TextureOffset.__doc__ = "Texture offset \n.. versionadded:: 4.2"
 QgsAbstractMaterialSettings.Property.__doc__ = """Data definable properties.
 
 * ``Diffuse``: Diffuse color (phong material)
@@ -36,11 +45,23 @@ QgsAbstractMaterialSettings.Property.__doc__ = """Data definable properties.
 
   .. versionadded:: 4.2
 
+* ``TextureScale``: Texture scale
+
+  .. versionadded:: 4.2
+
+* ``TextureRotation``: Texture rotation
+
+  .. versionadded:: 4.2
+
+* ``TextureOffset``: Texture offset
+
+  .. versionadded:: 4.2
+
 
 """
 # --
 try:
-    QgsAbstractMaterialSettings.__virtual_methods__ = ['readXml', 'writeXml', 'requiresTextureCoordinates', 'requiresTangents']
+    QgsAbstractMaterialSettings.__virtual_methods__ = ['readXml', 'writeXml', 'requiresTextureCoordinates', 'requiresTangents', 'supportedProperties']
     QgsAbstractMaterialSettings.__abstract_methods__ = ['type', 'clone', 'equals', 'averageColor', 'setColorsFromBase']
     QgsAbstractMaterialSettings.__group__ = ['3d', 'materials']
 except (NameError, AttributeError):

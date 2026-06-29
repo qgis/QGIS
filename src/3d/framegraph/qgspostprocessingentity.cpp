@@ -50,6 +50,7 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mColorTextureParameter = new Qt3DRender::QParameter( u"colorTexture"_s, forwardRenderView.colorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( u"depthTexture"_s, forwardRenderView.depthTexture() );
   mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( u"ssaoTexture"_s, aoRenderView.blurredFactorMapTexture() );
+
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
   mMaterial->addParameter( mAmbientOcclusionTextureParameter );
@@ -119,6 +120,11 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mBloomFactorParameter = new Qt3DRender::QParameter( u"bloomFactor"_s, 0.05 );
   mMaterial->addParameter( mBloomFactorParameter );
 
+  mExposureParameter = new Qt3DRender::QParameter( u"exposureAdjustment"_s, 0.0f );
+  mMaterial->addParameter( mExposureParameter );
+  mToneMappingParameter = new Qt3DRender::QParameter( u"toneMapping"_s, 1 );
+  mMaterial->addParameter( mToneMappingParameter );
+
   const QString vertexShaderPath = u"qrc:/shaders/postprocess.vert"_s;
   const QString fragmentShaderPath = u"qrc:/shaders/postprocess.frag"_s;
 
@@ -129,7 +135,12 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mShader->setFragmentShaderCode( finalFragmentShaderCode );
 }
 
-void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
+void QgsPostprocessingEntity::updateBloomSettings( const QgsBloomSettings &settings )
+{
+  setBloomFactor( static_cast< float >( settings.intensity() ) );
+}
+
+void QgsPostprocessingEntity::updateShadowSettings( const QgsShadowSettings &shadowSettings, const QgsVector3D &lightDir, int size, int globalLightIndex )
 {
   // We are using "Cascading Shadow Maps" technique.
   // Reading/watching which was useful during development:
@@ -139,7 +150,12 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   // https://www.youtube.com/watch?v=qbDrqARX07o
   // https://web.archive.org/web/20170710150304/https://cesiumjs.org/presentations/ShadowsAndCesiumImplementation.pdf
 
-  const QVector3D lightDirection = light.direction().toVector3D().normalized();
+  mShadowMapResolution = size;
+  setShadowLightIndex( globalLightIndex );
+  setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
+  float maximumShadowRenderingDistance = static_cast<float>( shadowSettings.maximumShadowRenderingDistance() );
+
+  const QVector3D lightDirection = lightDir.toVector3D().normalized();
   const QVector3D up = Qgs3DUtils::calculateDirectionalLightUpVector( lightDirection );
 
   const float mainCameraNearPlane = mMainCamera->nearPlane();
@@ -244,6 +260,8 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   mCsmMatricesParameter->setValue( csmMatrices );
   mCsmBoundsMatricesParameter->setValue( csmBoundsMatrices );
   mMaxShadowDistanceParameter->setValue( mainCameraFarPlane );
+
+  setShowCascadingShadowSplits( shadowSettings.showCascadeSplits() );
 }
 
 void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )
@@ -276,9 +294,10 @@ void QgsPostprocessingEntity::setShadowBias( float shadowBias )
   mShadowBiasParameter->setValue( QVariant::fromValue( shadowBias ) );
 }
 
-void QgsPostprocessingEntity::setShadowMapResolution( int resolution )
+void QgsPostprocessingEntity::updateEyeDomeSettings( const Qgs3DMapSettings &settings )
 {
-  mShadowMapResolution = resolution;
+  setEyeDomeLightingStrength( settings.eyeDomeLightingStrength() );
+  setEyeDomeLightingDistance( settings.eyeDomeLightingDistance() );
 }
 
 void QgsPostprocessingEntity::setEyeDomeLightingEnabled( bool enabled )
@@ -309,4 +328,10 @@ void QgsPostprocessingEntity::setBloomEnabled( bool enabled )
 void QgsPostprocessingEntity::setBloomFactor( float factor )
 {
   mBloomFactorParameter->setValue( factor );
+}
+
+void QgsPostprocessingEntity::updateColorGradingSettings( const QgsColorGradingSettings &settings )
+{
+  mExposureParameter->setValue( static_cast< float >( settings.exposureAdjustment() ) );
+  mToneMappingParameter->setValue( static_cast< int >( settings.toneMapping() ) );
 }

@@ -397,6 +397,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
   mapSettings.setLabelingEngineSettings( mLabelSettings );
   mapSettings.setScaleMethod( mScaleMethod );
+  mapSettings.setEllipsoid( context.ellipsoid() );
 
   //build the expression context
   QgsExpressionContext expressionContext;

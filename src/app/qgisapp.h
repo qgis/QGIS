@@ -167,7 +167,6 @@ class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
 class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
-class QgsCustomization;
 class QgsCustomizationDialog;
 
 #include "qgsconfig.h"
@@ -175,13 +174,20 @@ class QgsCustomizationDialog;
 
 #include "qgis.h"
 #include "qgis_app.h"
+#include "qgsannotation.h"
+#include "qgsappdbutils.h"
 #include "qgsappdevtoolutils.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsauthmanager.h"
+#include "qgsbrowserdockwidget.h"
+#include "qgscustomization.h"
 #include "qgslayertreeregistrybridge.h"
+#include "qgslayoutdesignerinterface.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagelogviewer.h"
 #include "qgsmimedatautils.h"
 #include "qgsoptionsutils.h"
 #include "qgsoptionswidgetfactory.h"
@@ -232,11 +238,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     enum class AppOption : int
     {
-      NoOption = 0,              //! No Option
-      RestorePlugins = 1 << 0,   //! Automatically restore and load previously enabled plugins.
-      SkipBadLayers = 1 << 1,    //! Skip loading layers that are detected as problematic.
-      SkipVersionCheck = 1 << 2, //! Bypass the version compatibility check during startup.
-      EnablePython = 1 << 3      //! Enable the Python interface for scripting and plugins.
+      NoOption = 0,              //!< No Option
+      RestorePlugins = 1 << 0,   //!< Automatically restore and load previously enabled plugins.
+      SkipBadLayers = 1 << 1,    //!< Skip loading layers that are detected as problematic.
+      SkipVersionCheck = 1 << 2, //!< Bypass the version compatibility check during startup.
+      EnablePython = 1 << 3      //!< Enable the Python interface for scripting and plugins.
     };
     Q_DECLARE_FLAGS( AppOptions, AppOption )
     static const AppOptions DEFAULT_OPTIONS;
@@ -264,7 +270,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       const QString &rootProfileLocation = QString(),
       const QString &activeProfile = QString(),
       QWidget *parent = nullptr,
-      Qt::WindowFlags fl = Qt::Window
+      Qt::WindowFlags fl = Qt::Window,
+      std::unique_ptr<QgsCustomization> customization = nullptr
     );
     //! Constructor for unit tests
     QgisApp();

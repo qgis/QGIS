@@ -223,6 +223,24 @@ Called when the component should be deleted.
 The default implementation does nothing.
 %End
 
+    QList< QgsModelArrowItem * > incomingArrows();
+%Docstring
+Returns the list of incoming arrow items terminating at this item.
+
+.. seealso:: :py:func:`outgoingArrows`
+
+.. versionadded:: 4.2
+%End
+
+    QList< QgsModelArrowItem * > outgoingArrows();
+%Docstring
+Returns the list of outgoing arrow items originating at this item.
+
+.. seealso:: :py:func:`incomingArrows`
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
 
@@ -448,6 +466,26 @@ Sets the ``results`` obtained for this child algorithm for the last
 model execution through the dialog.
 %End
 
+    void setSourceFeatureCount( const QString &parameterName, long long featureCount );
+%Docstring
+Sets the feature count for the source attached to the specified input.
+
+This can be used to dynamically update the feature count badge for the
+matching arrow item.
+
+.. versionadded:: 4.2
+%End
+
+    void setSinkFeatureCount( const QString &outputName, long long featureCount );
+%Docstring
+Sets the feature count for the sink attached to the specified output.
+
+This can be used to dynamically update the feature count badge for the
+matching arrow item.
+
+.. versionadded:: 4.2
+%End
+
     QgsProcessingModelChildAlgorithmResult results();
 %Docstring
 Returns the ``results`` for this child algorithm for the last model
@@ -463,6 +501,34 @@ Sets the child's ``progress``.
     void setStarted();
 %Docstring
 Flags the algorithm as having started.
+
+.. versionadded:: 4.2
+%End
+
+    void setOutdated();
+%Docstring
+Flags the algorithm as possibly being outdated (i.e. previous results
+are invalid due to changes elsewhere in the model).
+
+.. versionadded:: 4.2
+%End
+
+    int indexForInput( const QString &parameterName ) const;
+%Docstring
+Returns the index for the input with the specified parameter name, or -1
+if the parameter could not be matched.
+
+.. seealso:: :py:func:`indexForOutput`
+
+.. versionadded:: 4.2
+%End
+
+    int indexForOutput( const QString &output ) const;
+%Docstring
+Returns the index for the output with the specified name, or -1 if the
+output could not be matched.
+
+.. seealso:: :py:func:`indexForInput`
 
 .. versionadded:: 4.2
 %End

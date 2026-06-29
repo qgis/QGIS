@@ -193,8 +193,14 @@ void TestQgsWmsProvider::noCrsSpecified()
 {
   QgsWmsProvider provider( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   QCOMPARE( provider.crs().authid(), u"EPSG:2056"_s );
+  // assert that deduced crs has been embedded into the provider's source, so that it can't change even if the provider's capabilities response is changed.
+  // NOTE: this isn't ideal -- it would be preferable if the provider always updated its CRS to match the service. But the CRS is ALSO stored at a map layer
+  // level, and we MUST ensure that the CRS stored at the layer level is always reflected by the provider. Otherwise if the provider capabilities changes,
+  // then the two can get out-of-sync resulting in a broken layer
+  QCOMPARE( provider.dataSourceUri(), u"crs=EPSG%3A2056&format=image%2Fjpg&http://localhost:8380/mapserv?xxx&layers=agri_zones&styles="_s );
   QgsWmsProvider provider2( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   QCOMPARE( provider2.crs().authid(), u"EPSG:4326"_s );
+  QCOMPARE( provider2.dataSourceUri(), u"crs=EPSG%3A4326&format=image%2Fjpg&http://localhost:8380/mapserv?xxx&layers=agri_zones&styles="_s );
 
   QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities2.xml" );
   QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );

@@ -54,7 +54,7 @@ from qgis.server import (
 )
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
-from utilities import unitTestDataPath
+from utilities import compareWkt, unitTestDataPath
 
 
 class QgsServerAPIUtilsTest(QgsServerTestBase):
@@ -1003,7 +1003,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             os.path.join(self.temporary_path, "qgis_server", "test_project_api.qgs")
         )
         request = QgsBufferServerRequest(
-            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?limit=1"
+            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?limit=1&foo=bar"
         )
         server = QgsServer()
         response = QgsBufferServerResponse()
@@ -1019,12 +1019,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
         )
         self.assertEqual(headers["OGC-NumberReturned"][0], "1")
         self.assertEqual(
-            headers["Link"],
-            [
-                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json"',
-                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1>; rel="alternate"; title="This document as HTML"; type="text/html"',
-                '<http://server.qgis.org/wfs3/collections/testlayer èé/items.fgb?offset=1&limit=1>; rel="next"; title="Next page"; type="application/flatgeobuf"',
-            ],
+            set(headers["Link"]),
+            set(
+                [
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.fgb?limit=1&foo=bar>; rel="self"; title="This document as FlatGeobuf"; type="application/flatgeobuf"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1&foo=bar>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1&foo=bar>; rel="alternate"; title="This document as HTML"; type="text/html"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer èé/items.fgb?foo=bar&offset=1&limit=1>; rel="next"; title="Next page"; type="application/flatgeobuf"',
+                ]
+            ),
         )
 
         def _get_layer():
@@ -1040,7 +1043,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             return layer
 
         layer = _get_layer()
-        self.assertEqual(layer.getFeature(0).attributes(), ["0", 1, "one", "one èé"])
+        self.assertEqual(layer.getFeature(0).attributes(), [1, "one", "one èé"])
         geom = layer.getFeature(0).geometry()
         self.assertAlmostEqual(geom.asPoint().x(), 8.20349, 4)
         self.assertAlmostEqual(geom.asPoint().y(), 44.90148, 4)
@@ -1056,17 +1059,49 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(headers["OGC-NumberReturned"][0], "2")
 
         layer = _get_layer()
-        self.assertEqual(layer.getFeature(0).attributes(), ["1", 2, "two", "two àò"])
+        self.assertEqual(layer.getFeature(0).attributes(), [2, "two", "two àò"])
         geom = layer.getFeature(0).geometry()
         self.assertAlmostEqual(geom.asPoint().x(), 8.20354, 4)
         self.assertAlmostEqual(geom.asPoint().y(), 44.90148, 4)
 
-        self.assertEqual(
-            layer.getFeature(1).attributes(), ["2", 3, "three", "three èé↓"]
-        )
+        self.assertEqual(layer.getFeature(1).attributes(), [3, "three", "three èé↓"])
         geom = layer.getFeature(1).geometry()
         self.assertAlmostEqual(geom.asPoint().x(), 8.20345, 4)
         self.assertAlmostEqual(geom.asPoint().y(), 44.90139, 4)
+
+    def test_wfs3_collection_items_geobuf_qgsfid(self):
+
+        mem_layer = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=id:integer&field=qgs_fid:integer",
+            "mem_layer",
+            "memory",
+        )
+        self.assertTrue(mem_layer.isValid())
+        f = QgsFeature(mem_layer.fields())
+        f.setAttributes([1, 123])
+        f.setGeometry(QgsGeometry.fromWkt("POINT(4 5)"))
+        self.assertTrue(mem_layer.dataProvider().addFeatures([f]))
+        project = QgsProject()
+        project.addMapLayer(mem_layer)
+        # Expose to WFS3 API
+        project.writeEntry("WFSLayers", "/", [mem_layer.id()])
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/mem_layer/items.fgb?limit=1"
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        # Open response body as FGB and check attributes
+        temp_dir = QtCore.QTemporaryDir()
+        temp_path = temp_dir.path()
+        path = os.path.join(temp_path, "mem_layer.fgb")
+        with open(path.encode("utf8"), "wb") as f:
+            f.write(response.body())
+        layer = QgsVectorLayer(path, "mem_layer", "ogr")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.getFeature(0).attributes(), [1, 123])
+        # Check geometry
+        geom = layer.getFeature(0).geometry()
+        self.assertTrue(compareWkt(geom.asWkt(), "POINT (4 5)"))
 
     def test_wfs3_collection_items_aspatial_flatgeobuf(self):
         """Test flatgeobuf output for non spatial layer"""

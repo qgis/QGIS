@@ -22,14 +22,19 @@ uniform int bloomEnabled;
 uniform float bloomFactor;
 #endif
 
+#ifdef ENABLE_EFFECTS
+uniform float exposureAdjustment;
+uniform int toneMapping;
+#else
+uniform float exposureAdjustment = 0;
+uniform int toneMapping = 0;
+#endif
+
 in vec2 texCoord;
 
 out vec4 fragColor;
 
 uniform mat4 invertedCameraView;
-
-// Exposure correction
-uniform float exposure = 0.0;
 
 #ifdef ENABLE_EFFECTS
 
@@ -125,8 +130,8 @@ void main()
   }
 #endif
 
-  // Apply exposure correction -- currently a no-op, because exposure is hardcoded to 0
-  // finalColor *= exp2(exposure);
+  // Apply exposure correction
+  finalColor *= exp2(exposureAdjustment);
 
 #ifdef ENABLE_EFFECTS
   // bloom comes AFTER exposure, but must be BEFORE tone mapping (we require HDR ranges for
@@ -140,11 +145,18 @@ void main()
 
   // Apply tonemap transform to get into LDR range [0, 1]
   // (aces looks great with exposure ~0.5, but maybe not wanted for GIS applications? could be an option...)
-  // finalColor = aces_approx(finalColor)
-  // let's just hard clamp instead. we lose detail in bright areas, but retain exact match for colors in the 0-1 range,
-  // which is more appropriate for mapping anyway.
-  finalColor = min(finalColor, 1);
+  if ( toneMapping == 1 )
+  {
+    finalColor = aces_approx(finalColor);
+  }
+  else
+  {
+    // just hard clamp instead. we lose detail in bright areas, but retain exact match for colors in the 0-1 range,
+    // which is more appropriate for mapping anyway.
+    finalColor = min(finalColor, 1);
+  }
 
+  // gamma correction is hardcoded to 2.2
   vec3 sRgbColor = pow(finalColor, vec3(1.0 / 2.2));
 
   fragColor = vec4(sRgbColor, 1.0f);

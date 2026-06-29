@@ -60,7 +60,7 @@ void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent *e )
   if ( !mDragging )
   {
     mDragging = true;
-    mRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon ) );
+    mRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Polygon );
 
     QColor color( Qt::blue );
     color.setAlpha( 63 );

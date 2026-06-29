@@ -113,7 +113,7 @@ struct LessThanTileRequest
 };
 
 
-QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &options, const QgsWmsCapabilities *capabilities )
+QgsWmsProvider::QgsWmsProvider( const QString &uri, const ProviderOptions &options, const QgsWmsCapabilities *capabilities )
   : QgsRasterDataProvider( uri, options )
   , mHttpGetLegendGraphicResponse( nullptr )
   , mImageCrs( DEFAULT_LATLON_CRS )
@@ -133,6 +133,11 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     appendError( ERR( tr( "Cannot parse URI" ) ) );
     return;
   }
+
+  // non for xyz sources, this tracks the actual resolved properties of the
+  // WMS provider (eg detected CRS when no crs was specified in the original source uri)
+  QgsDataSourceUri sourceUri;
+  sourceUri.setEncodedUri( uri );
 
   if ( !addLayers() )
     return;
@@ -207,6 +212,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
         if ( property.name == mSettings.mActiveSubLayers[0] )
         {
           mSettings.mCrsId = property.preferredAvailableCrs();
+          sourceUri.setParam( u"crs"_s, mSettings.mCrsId );
           break;
         }
       }
@@ -276,6 +282,22 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   }
 
   mValid = true;
+
+  // this is very messy, but XYZ/mbtile providers don't use encoded URIs. So we'll only update the
+  // stored data source URI for non-xyz/mbtile sources. For now this is safe, as we've only got logic
+  // in place above to change the URI params for non-xyz/mbtile sources, but this will possibly need
+  // to be revised in future if that assumption changes...
+  if ( !mSettings.mXyz )
+  {
+    // update stored source URI string for provider, as we may have guessed parameters in the logic
+    // above (such as picking a CRS if it wasn't explicitly specified), and we need to ensure that
+    // the provider's URI string is a full representation of the state of the provider at the time
+    // these parameters were deduced (eg, to protect against the order of get capabilities CRSes changing,
+    // which would mean we pick a different default CRS, which would differ from the CRS stored at the
+    // MAP LAYER level, leading to a broken layer...)
+    setDataSourceUri( sourceUri.encodedUri() );
+  }
+
   QgsDebugMsgLevel( u"exiting constructor."_s, 4 );
 }
 
@@ -785,9 +807,9 @@ void QgsWmsProvider::fetchOtherResTiles(
   );
 }
 
-uint qHash( QgsWmsProvider::TilePosition tp )
+size_t qHash( QgsWmsProvider::TilePosition tp )
 {
-  return ( uint ) tp.col + ( ( uint ) tp.row << 16 );
+  return ( size_t ) tp.col + ( ( size_t ) tp.row << 16 );
 }
 
 static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color )
@@ -4957,10 +4979,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
+  QUrl tileUrl = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileUrl ) ).value<QUrl>();
 #ifdef QGISDEBUG
   int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
-#endif
-  QUrl tileUrl = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileUrl ) ).value<QUrl>();
 
   QgsDebugMsgLevel(
     u"tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 %10 url:%11"_s.arg( tileReqNo )
@@ -4975,6 +4996,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       .arg( reply->error() == QNetworkReply::NoError ? QString() : u"error: "_s + reply->errorString(), reply->url().toString() ),
     4
   );
+#endif
 
   if ( reply->error() == QNetworkReply::NoError )
   {
