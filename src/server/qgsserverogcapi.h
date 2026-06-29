@@ -66,11 +66,13 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       next,         //!< Indicates that the link’s context is a part of a series, and that the next in the series is the link target.
       license,      //!< Refers to a license associated with this context.
       // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
-      items,       //!< Refers to a resource that is comprised of members of the collection represented by the link’s context.
+      items, //!< Refers to a resource that is comprised of members of the collection represented by the link’s context.
+      queryables,
       conformance, //!< The target IRI points to a resource which represents the collection resource for the context IRI.
       data,        //!< The target IRI points to resource data
       schema,      //!< "http://www.opengis.net/def/rel/ogc/0.0/schema"
-      profile      //!< "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references"
+      profile,     //!< "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references"
+      functions,   //!< "http://www.opengis.net/spec/cql2/1.0/conf/functions"
     };
     Q_ENUM( Rel )
     // NOLINTEND(readability-identifier-naming)
