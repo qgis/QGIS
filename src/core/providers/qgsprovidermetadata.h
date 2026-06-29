@@ -543,14 +543,18 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \param fields New layer fields
      * \param wkbType New layer geometry WKB type
      * \param crs New layer coordinate reference system
-     * \param overwrite Set to TRUE to automatically overwrite any existing layer in the same location
+     * \param actionOnExisting Action to take when attempting to overwrite any existing layer in the same location
      *
      * \returns An object encapsulating the properties of the newly created layer.
      *
      * \since QGIS 4.2
      */
-    QgsEmptyLayerCreationResult createEmptyLayer(
-      const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), bool overwrite = false
+    virtual QgsEmptyLayerCreationResult createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      Qgis::CreateLayerActionOnExisting actionOnExisting = Qgis::CreateLayerActionOnExisting::Abort
     );
 
 #ifndef SIP_RUN
