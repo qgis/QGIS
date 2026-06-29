@@ -847,16 +847,11 @@ void QgsRasterLayerProperties::apply()
     }
   }
 
-  // Do nothing on "bad" layers
-  if ( !mRasterLayer->isValid() )
-    return;
-
   // apply all plugin dialogs
   for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->apply();
   }
-
 
   /*
    * Legend Tab
