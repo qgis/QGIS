@@ -193,7 +193,8 @@ void QgsStacSearchParametersDialog::appendCollections( const QVector<QgsStacColl
   {
     descr.setMarkdown( c->description() );
 
-    QStandardItem *i = new QStandardItem( c->title() );
+    // While title() is more human readable, it is not required by the stac spec, so if missing we fall back to using id()
+    QStandardItem *i = new QStandardItem( c->title().isEmpty() ? c->id() : c->title() );
     i->setData( c->id(), Qt::UserRole );
     i->setData( descr.toHtml(), Qt::ToolTipRole );
     i->setCheckable( true );
