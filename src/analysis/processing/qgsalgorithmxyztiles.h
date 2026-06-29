@@ -121,8 +121,8 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QgsCoordinateTransform mWgs2Mercator;
     QgsRectangle mWgs84Extent;
     QgsProcessingFeedback *mFeedback = nullptr;
-    long long mTotalTiles = 0;
-    long long mProcessedTiles = 0;
+    long long mTotalMetaTiles = 0;
+    long long mProcessedMetaTiles = 0;
     QgsCoordinateTransformContext mTransformContext;
     QString mEllipsoid;
     QPointer<QEventLoop> mEventLoop;
