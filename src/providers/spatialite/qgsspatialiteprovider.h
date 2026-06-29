@@ -411,6 +411,7 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
     QList<Qgis::LayerType> supportedLayerTypes() const override;
     bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
 
+    using QgsProviderMetadata::createEmptyLayer;
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,

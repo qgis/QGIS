@@ -376,8 +376,15 @@ The development version
     typedef QFlags<Qgis::VectorProviderCapability> VectorProviderCapabilities;
 
 
+   enum class CreateLayerActionOnExisting /BaseType=IntEnum/
+   {
+     Abort,
+     CreateOrOverwriteFile,
+     CreateOrOverwriteLayer,
+   };
+
     enum class FeatureCountState /BaseType=IntEnum/
-      {
+    {
       Uncounted,
       UnknownCount,
     };

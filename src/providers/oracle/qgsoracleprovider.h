@@ -447,6 +447,8 @@ class QgsOracleProviderMetadata final : public QgsProviderMetadata
     ) override;
     void cleanupProvider() override;
     void initProvider() override;
+
+    using QgsProviderMetadata::createEmptyLayer;
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
