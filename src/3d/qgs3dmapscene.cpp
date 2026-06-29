@@ -322,7 +322,7 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
       // If the projected point is on the front of the camera we choose the closest between it and farthest point in the front
       t = std::min<float>( t, camera->farPlane() );
     }
-    QVector3D planePoint = ray.origin() + t * dir;
+    QVector3D planePoint = ray.point( t );
     QgsVector3D pMap = mMap.worldToMapCoordinates( planePoint );
     extent.push_back( QgsPointXY( pMap.x(), pMap.y() ) );
   }
