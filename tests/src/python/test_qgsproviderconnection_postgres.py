@@ -1123,8 +1123,8 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
             "postgres",
         )
         self.assertTrue(vl.isValid())
-        err = vl.saveStyleToDatabase("test_style", "", False, "")
-        self.assertFalse(err)
+        result, msg = vl.saveStyleToDatabaseV2("test_style", "", False, "")
+        self.assertTrue(result == QgsMapLayer.SaveStyleResult.Success)
 
         # Verify style was saved under the original name
         rows = conn.executeSql(
