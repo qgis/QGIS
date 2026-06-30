@@ -163,13 +163,7 @@ QgsRelief::Result QgsRelief::processRaster( QgsFeedback *feedback )
   std::vector<unsigned char> resultGreenLine( xSize );
   std::vector<unsigned char> resultBlueLine( xSize );
 
-  bool hasReportsDuringClose = false;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
-  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
-#else
-  constexpr double maxProgressDuringBlockWriting = 100.0;
-#endif
+  const double maxProgressDuringBlockWriting = outputProvider->hasReportsDuringClose() ? 50.0 : 100.0;
 
   auto readRow = [&iter, this]( std::vector<float> &scanLine ) {
     int iterCols = 0;
@@ -314,7 +308,7 @@ QgsRelief::Result QgsRelief::processRaster( QgsFeedback *feedback )
     }
   }
 
-  if ( feedback && hasReportsDuringClose )
+  if ( feedback && outputProvider->hasReportsDuringClose() )
   {
     std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
     if ( !outputProvider->closeWithProgress( scaledFeedback.get() ) )
