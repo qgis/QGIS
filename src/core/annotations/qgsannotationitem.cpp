@@ -24,7 +24,9 @@
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
+#include <QPainter>
 #include <QString>
+#include <QTransform>
 
 using namespace Qt::StringLiterals;
 
@@ -183,9 +185,36 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
   }
   anchor.transform( context.mapToPixel().transform() );
 
+  // Rotate the painter with the item, but counter-rotate the anchor so the
+  // callout still points to its anchor on screen.
+  QPainter *painter = context.painter();
+  const bool rotated = !qgsDoubleNear( angle, 0 );
+  if ( rotated )
+  {
+    const QPointF center = rect.center();
+    QTransform anchorTransform;
+    anchorTransform.translate( center.x(), center.y() );
+    anchorTransform.rotate( -angle );
+    anchorTransform.translate( -center.x(), -center.y() );
+    anchor.transform( anchorTransform );
+
+    painter->save();
+    rotatePainterAroundPoint( painter, center, angle );
+  }
+
   mCallout->startRender( context );
-  mCallout->render( context, rect, angle, anchor, calloutContext );
+  mCallout->render( context, rect, 0, anchor, calloutContext );
   mCallout->stopRender( context );
+
+  if ( rotated )
+    painter->restore();
+}
+
+void QgsAnnotationItem::rotatePainterAroundPoint( QPainter *painter, const QPointF &point, double angle )
+{
+  painter->translate( point.x(), point.y() );
+  painter->rotate( angle );
+  painter->translate( -point.x(), -point.y() );
 }
 
 Qgis::RenderUnit QgsAnnotationItem::offsetFromCalloutUnit() const
