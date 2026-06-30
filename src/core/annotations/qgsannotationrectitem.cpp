@@ -422,6 +422,12 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+    {
+      mBounds = qgis::down_cast< QgsAnnotationItemEditOperationSetItemBounds * >( operation )->bounds();
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
@@ -564,6 +570,12 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
         }
       }
       break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+    {
+      const QgsRectangle newBounds = qgis::down_cast< QgsAnnotationItemEditOperationSetItemBounds * >( operation )->bounds();
+      return new QgsAnnotationItemEditOperationTransientResults( rotatedBoundsGeometry( newBounds, context.renderContext() ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:

@@ -169,6 +169,9 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineTextItem::applyEditV2( 
       mCurve->transform( transform );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+      break;
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -210,6 +213,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::trans
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
