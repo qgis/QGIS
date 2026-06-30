@@ -1,4 +1,4 @@
-# GRASS GIS Processing provider
+# GRASS Processing provider
 
 In order for a GRASS command to be executed within QGIS, a plain text description file is required to define the command's inputs, outputs, and parameters. Each GRASS command is described in a separate text file. However, some commands can be split into several algorithms using more than one description file, resulting in multiple entries in the algorithms list.
 
