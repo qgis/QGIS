@@ -167,7 +167,6 @@ class GUI_EXPORT QgsCreateRectangleTextItemMapTool : public QgsMapToolAdvancedDi
   private:
     QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
 
-    QRectF mRect;
     QgsPointXY mFirstPoint;
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
 };
@@ -202,7 +201,6 @@ class GUI_EXPORT QgsCreatePictureItemMapTool : public QgsMapToolAdvancedDigitizi
     //! Constructor
     QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
 
-    QRectF mRect;
     QgsPointXY mFirstPoint;
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
 };
