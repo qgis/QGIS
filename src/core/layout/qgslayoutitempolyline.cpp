@@ -441,13 +441,6 @@ void QgsLayoutItemPolyline::setArrowHeadStrokeWidth( double width )
   update();
 }
 
-void QgsLayoutItemPolyline::setVersion( int version )
-{
-  mVersion = version;
-  update();
-}
-
-
 bool QgsLayoutItemPolyline::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   if ( mPolylineStyleSymbol )
