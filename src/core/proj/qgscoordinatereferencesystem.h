@@ -1113,6 +1113,35 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
 
+    /**
+     * Returns the topocentric origin of a topocentric compatible CRS.
+     *
+     * \param latitude Latitude of topocentric origin in decimal degrees
+     * \param longitude Longitude of topocentric origin in decimal degrees
+     * \returns TRUE if this CRS is a topocentric compatible CRS and the origin was successfully retrieved
+     * \since QGIS 4.2
+     */
+    bool topocentricOrigin( double &latitude SIP_OUT, double &longitude SIP_OUT ) const;
+
+
+    /**
+     * Constructs a topocentric CRS derived from this CRS with origin
+     * at \a latitude, \a longitude in decimal degrees.
+     *
+     * If the CRS is not topocentric compatible, returns invalid CRS.
+     *
+     * \since QGIS 4.2
+     */
+    QgsCoordinateReferenceSystem toTopocentricCrs( double latitude, double longitude ) const;
+
+    /**
+     * Returns the base CRS for this topocentric CRS, or an invalid CRS if this
+     * is not a topocentric CRS or no base CRS has been set.
+     *
+     * \since QGIS 4.2
+     */
+    QgsCoordinateReferenceSystem topocentricBaseCrs() const;
+
 #ifdef SIP_RUN
     // clang-format off
     SIP_PYOBJECT __repr__();

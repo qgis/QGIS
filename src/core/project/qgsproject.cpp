@@ -1039,6 +1039,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
     const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
+
     mCrs = crs;
     writeEntry( u"SpatialRefSys"_s, u"/ProjectionsEnabled"_s, crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
@@ -3408,7 +3409,6 @@ bool QgsProject::writeProjectFile( const QString &filename )
     mVerticalCrs.writeXml( verticalSrsNode, *doc );
     qgisNode.appendChild( verticalSrsNode );
   }
-
   QDomElement elevationShadingNode = doc->createElement( u"elevation-shading-renderer"_s );
   mElevationShadingRenderer.writeXml( elevationShadingNode, context );
   qgisNode.appendChild( elevationShadingNode );
