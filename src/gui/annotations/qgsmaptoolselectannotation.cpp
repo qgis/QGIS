@@ -16,14 +16,22 @@
 
 #include "qgsmaptoolselectannotation.h"
 
+#include <algorithm>
+#include <limits>
+
 #include "qgsannotationitem.h"
 #include "qgsannotationitemeditoperation.h"
 #include "qgsannotationitemnode.h"
 #include "qgsannotationlayer.h"
+#include "qgsannotationrectitem.h"
 #include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
+#include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolselectannotationmousehandles.h"
+#include "qgsmaptopixel.h"
 #include "qgsproject.h"
+#include "qgsrendercontext.h"
 #include "qgsrenderedannotationitemdetails.h"
 #include "qgsrendereditemdetails.h"
 #include "qgsrendereditemresults.h"
@@ -75,11 +83,83 @@ void QgsAnnotationItemRubberBand::updateBoundingBox( const QgsRectangle &boundin
   mNeedsUpdatedBoundingBox = annotationItem && ( annotationItem->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox );
 
   reset( Qgis::GeometryType::Line );
-  addPoint( QgsPointXY( boundingBox.xMinimum(), boundingBox.yMinimum() ) );
-  addPoint( QgsPointXY( boundingBox.xMaximum(), boundingBox.yMinimum() ) );
-  addPoint( QgsPointXY( boundingBox.xMaximum(), boundingBox.yMaximum() ) );
-  addPoint( QgsPointXY( boundingBox.xMinimum(), boundingBox.yMaximum() ) );
-  addPoint( QgsPointXY( boundingBox.xMinimum(), boundingBox.yMinimum() ) );
+
+  const QgsMapToPixel *transform = mMapCanvas->getCoordinateTransform();
+
+  const QgsAnnotationRectItem *rectItem = dynamic_cast< const QgsAnnotationRectItem * >( annotationItem );
+  const double mapRotation = mMapCanvas->mapSettings().rotation();
+  const double frameRotation = rectItem ? rectItem->appliedRotation( mapRotation ) - mapRotation : 0;
+
+  if ( rectItem && !qgsDoubleNear( frameRotation, 0 ) )
+  {
+    double minX = std::numeric_limits<double>::max();
+    double minY = std::numeric_limits<double>::max();
+    double maxX = std::numeric_limits<double>::lowest();
+    double maxY = std::numeric_limits<double>::lowest();
+    auto includePixel = [&]( const QPointF &p ) {
+      minX = std::min( minX, p.x() );
+      minY = std::min( minY, p.y() );
+      maxX = std::max( maxX, p.x() );
+      maxY = std::max( maxY, p.y() );
+    };
+
+    // rotated item corners, as drawn on screen
+    if ( QgsAnnotationLayer *lyr = layer() )
+    {
+      const QgsCoordinateTransform layerToMap( lyr->crs(), mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
+      const QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() );
+      const QPolygonF corners = rectItem->rotatedBoundsGeometry( rectItem->bounds(), renderContext ).asQPolygonF();
+      for ( const QPointF &corner : corners )
+      {
+        QgsPointXY mapPoint( corner.x(), corner.y() );
+        try
+        {
+          mapPoint = layerToMap.transform( mapPoint );
+        }
+        catch ( QgsCsException & )
+        {}
+        includePixel( toCanvasCoordinates( mapPoint ) );
+      }
+    }
+
+    // callout anchor and everything else reported by the incoming bounding box
+    const QgsPointXY bboxCorners[4] = {
+      QgsPointXY( boundingBox.xMinimum(), boundingBox.yMinimum() ),
+      QgsPointXY( boundingBox.xMaximum(), boundingBox.yMinimum() ),
+      QgsPointXY( boundingBox.xMaximum(), boundingBox.yMaximum() ),
+      QgsPointXY( boundingBox.xMinimum(), boundingBox.yMaximum() ),
+    };
+    for ( const QgsPointXY &corner : bboxCorners )
+      includePixel( toCanvasCoordinates( corner ) );
+
+    const QgsPointXY topLeft = transform->toMapCoordinates( minX, minY );
+    const QgsPointXY topRight = transform->toMapCoordinates( maxX, minY );
+    const QgsPointXY bottomRight = transform->toMapCoordinates( maxX, maxY );
+    const QgsPointXY bottomLeft = transform->toMapCoordinates( minX, maxY );
+    addPoint( topLeft );
+    addPoint( topRight );
+    addPoint( bottomRight );
+    addPoint( bottomLeft );
+    addPoint( topLeft );
+  }
+  else
+  {
+    // Build the rubber band as a screen-aligned rectangle matching the item's
+    // on-screen size.
+    const QPointF centerCanvas = toCanvasCoordinates( boundingBox.center() );
+    const double mupp = mMapCanvas->mapSettings().mapUnitsPerPixel();
+    const double halfWidth = 0.5 * boundingBox.width() / mupp;
+    const double halfHeight = 0.5 * boundingBox.height() / mupp;
+    const QgsPointXY topLeft = transform->toMapCoordinates( centerCanvas.x() - halfWidth, centerCanvas.y() - halfHeight );
+    const QgsPointXY topRight = transform->toMapCoordinates( centerCanvas.x() + halfWidth, centerCanvas.y() - halfHeight );
+    const QgsPointXY bottomRight = transform->toMapCoordinates( centerCanvas.x() + halfWidth, centerCanvas.y() + halfHeight );
+    const QgsPointXY bottomLeft = transform->toMapCoordinates( centerCanvas.x() - halfWidth, centerCanvas.y() + halfHeight );
+    addPoint( topLeft );
+    addPoint( topRight );
+    addPoint( bottomRight );
+    addPoint( bottomLeft );
+    addPoint( topLeft );
+  }
 
   show();
   setSelected( true );
@@ -95,6 +175,11 @@ QgsMapToolSelectAnnotation::QgsMapToolSelectAnnotation( QgsMapCanvas *canvas, Qg
   : QgsAnnotationMapTool( canvas, cadDockWidget )
 {
   connect( QgsMapToolSelectAnnotation::canvas(), &QgsMapCanvas::mapCanvasRefreshed, this, &QgsMapToolSelectAnnotation::onCanvasRefreshed );
+
+  connect( QgsMapToolSelectAnnotation::canvas(), &QgsMapCanvas::rotationChanged, this, [this] {
+    for ( std::unique_ptr<QgsAnnotationItemRubberBand> &selectedItem : mSelectedItems )
+      selectedItem->updateBoundingBox( selectedItem->boundingBox() );
+  } );
 
   setAdvancedDigitizingAllowed( false );
 }
@@ -415,29 +500,30 @@ void QgsMapToolSelectAnnotation::onCanvasRefreshed()
     return;
   }
 
+  const bool interactiveOperation = mMouseHandles && ( mMouseHandles->isDragging() || mMouseHandles->isResizing() || mMouseHandles->isRotating() );
+
   const QList<QgsRenderedItemDetails *> items = renderedItemResults->renderedItems();
   bool needsSelectedItemsUpdate = false;
   for ( std::unique_ptr<QgsAnnotationItemRubberBand> &selectedItem : mSelectedItems )
   {
-    if ( selectedItem->needsUpdatedBoundingBox() )
+    if ( interactiveOperation && !selectedItem->needsUpdatedBoundingBox() )
+      continue;
+
+    auto it = std::find_if( items.begin(), items.end(), [&selectedItem]( const QgsRenderedItemDetails *item ) {
+      if ( const QgsRenderedAnnotationItemDetails *annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
+      {
+        if ( annotationItem->itemId() == selectedItem->itemId() && annotationItem->layerId() == selectedItem->layerId() )
+        {
+          return true;
+        }
+      }
+      return false;
+    } );
+
+    if ( it != items.end() )
     {
       needsSelectedItemsUpdate = true;
-
-      auto it = std::find_if( items.begin(), items.end(), [&selectedItem]( const QgsRenderedItemDetails *item ) {
-        if ( const QgsRenderedAnnotationItemDetails *annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
-        {
-          if ( annotationItem->itemId() == selectedItem->itemId() && annotationItem->layerId() == selectedItem->layerId() )
-          {
-            return true;
-          }
-        }
-        return false;
-      } );
-
-      if ( it != items.end() )
-      {
-        selectedItem->updateBoundingBox( ( *it )->boundingBox() );
-      }
+      selectedItem->updateBoundingBox( ( *it )->boundingBox() );
     }
   }
 
@@ -594,8 +680,11 @@ void QgsMapToolSelectAnnotation::attemptMoveBy( QgsAnnotationItemRubberBand *ann
   if ( QgsAnnotationItem *annotationItem = annotationItemRubberBand->item() )
   {
     QgsRectangle boundingBox = annotationItemRubberBand->boundingBox();
-    const double mupp = mCanvas->mapSettings().mapUnitsPerPixel();
-    QgsVector translation( deltaX * mupp, -deltaY * mupp );
+    // take map rotation into account in translation
+    const QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
+    const QgsPointXY mapOrigin = transform->toMapCoordinates( 0.0, 0.0 );
+    const QgsPointXY mapMoved = transform->toMapCoordinates( deltaX, deltaY );
+    const QgsVector translation( mapMoved.x() - mapOrigin.x(), mapMoved.y() - mapOrigin.y() );
     QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
 
     QgsAnnotationItemEditContext context;
@@ -653,41 +742,66 @@ void QgsMapToolSelectAnnotation::attemptRotateBy( QgsAnnotationItemRubberBand *a
 
 void QgsMapToolSelectAnnotation::attemptSetSceneRect( QgsAnnotationItemRubberBand *annotationItemRubberBand, const QRectF &rect )
 {
-  if ( QgsAnnotationItem *annotationItem = annotationItemRubberBand->item() )
+  QgsAnnotationItem *annotationItem = annotationItemRubberBand->item();
+  if ( !annotationItem )
+    return;
+
+  QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
+  if ( !annotationLayer )
+    return;
+
+  // on-screen rotation = the item's own rotation plus the map rotation when
+  // the item follows it.
+  double rotation = 0;
+  if ( const QgsAnnotationRectItem *rectItem = dynamic_cast<const QgsAnnotationRectItem *>( annotationItem ) )
   {
-    const double widthRatio = rect.width() / annotationItemRubberBand->boundingRect().width();
-    const double heightRatio = rect.height() / annotationItemRubberBand->boundingRect().height();
-    const double deltaX = rect.x() - annotationItemRubberBand->x() + 1;
-    const double deltaY = rect.y() - annotationItemRubberBand->y() + 1;
-    attemptMoveBy( annotationItemRubberBand, deltaX, deltaY );
+    rotation = rectItem->appliedRotation( mCanvas->mapSettings().rotation() );
+  }
 
-    QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
-    const QgsRectangle boundingBox = mCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, annotationItemRubberBand->boundingBox() );
-    const QgsRectangle
-      modifiedBoundingBox( boundingBox.xMinimum(), boundingBox.yMaximum() - boundingBox.height() * heightRatio, boundingBox.xMinimum() + boundingBox.width() * widthRatio, boundingBox.yMaximum() );
+  // Rebuild the unrotated (screen-aligned) rectangle so that, after rotating
+  // around its center, the dragged corner stays where the user placed it.
+  const double w = rect.width();
+  const double h = rect.height();
+  const QPointF halfDiagonal( w / 2.0, h / 2.0 );
+  QTransform itemRotation;
+  itemRotation.rotate( rotation );
+  const QPointF unrotatedTopLeftScene = rect.topLeft() + itemRotation.map( halfDiagonal ) - halfDiagonal;
+  const QRectF newSceneRect( unrotatedTopLeftScene, QSizeF( w, h ) );
 
-    QgsAnnotationItemEditContext context;
-    context.setCurrentItemBounds( boundingBox );
-    context.setRenderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+  // Derive the bounds from the center and pixel size, which stays correct
+  // when the map is rotated.
+  const QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
+  const QgsRectangle newMapBounds = QgsAnnotationRectItem::boundsFromPixelRect( transform, newSceneRect.center(), w, h );
 
-    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
-    for ( const QgsAnnotationItemNode &node : itemNodes )
+  const QgsRectangle oldBounds = mCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, annotationItemRubberBand->boundingBox() );
+  const QgsRectangle newBounds = mCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, newMapBounds );
+
+  if ( oldBounds.width() == 0 || oldBounds.height() == 0 )
+    return;
+
+  QgsAnnotationItemEditContext context;
+  context.setCurrentItemBounds( oldBounds );
+  context.setRenderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+
+  const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
+  for ( const QgsAnnotationItemNode &node : itemNodes )
+  {
+    const double modifiedX = newBounds.xMinimum() + newBounds.width() * ( ( node.point().x() - oldBounds.xMinimum() ) / oldBounds.width() );
+    const double modifiedY = newBounds.yMaximum() - newBounds.height() * ( ( oldBounds.yMaximum() - node.point().y() ) / oldBounds.height() );
+    QgsPointXY modifiedPoint( modifiedX, modifiedY );
+    QgsAnnotationItemEditOperationMoveNode operation( annotationItemRubberBand->itemId(), node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
+    switch ( annotationLayer->applyEditV2( &operation, context ) )
     {
-      const double modifiedX = modifiedBoundingBox.xMinimum() + modifiedBoundingBox.width() * ( ( node.point().x() - boundingBox.xMinimum() ) / boundingBox.width() );
-      const double modifiedY = modifiedBoundingBox.yMaximum() - modifiedBoundingBox.height() * ( ( boundingBox.yMaximum() - node.point().y() ) / boundingBox.height() );
-      QgsPointXY modifiedPoint( modifiedX, modifiedY );
-      QgsAnnotationItemEditOperationMoveNode operation( annotationItemRubberBand->itemId(), node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
-      switch ( annotationLayer->applyEditV2( &operation, context ) )
-      {
-        case Qgis::AnnotationItemEditOperationResult::Success:
-          QgsProject::instance()->setDirty( true );
-          annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
-          break;
+      case Qgis::AnnotationItemEditOperationResult::Success:
+        QgsProject::instance()->setDirty( true );
+        annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
+        break;
 
-        case Qgis::AnnotationItemEditOperationResult::Invalid:
-        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
-          break;
-      }
+      case Qgis::AnnotationItemEditOperationResult::Invalid:
+      case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+        break;
     }
   }
+
+  annotationItemRubberBand->updateBoundingBox( newMapBounds );
 }
