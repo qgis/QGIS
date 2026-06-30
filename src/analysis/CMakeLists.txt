@@ -107,6 +107,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcoveragesimplify.cpp
   processing/qgsalgorithmcoverageunion.cpp
   processing/qgsalgorithmcoveragevalidate.cpp
+  processing/qgsalgorithmcoverageclean.cpp
   processing/qgsalgorithmcreatedirectory.cpp
   processing/qgsalgorithmdbscanclustering.cpp
   processing/qgsalgorithmdefineprojection.cpp

@@ -154,6 +154,95 @@ class CORE_EXPORT QgsGeometryParameters
     double mGridSize = -1;
 };
 
+
+/**
+ * \ingroup core
+ * \brief Encapsulates parameters for a coverage cleaning operation.
+ *
+ * \since QGIS 4.4
+ */
+class CORE_EXPORT QgsCoverageCleanParameters
+{
+  public:
+    /**
+     * Returns the snapping distance.
+     *
+     * Snapping to nearby vertices and line segment snapping is used to improve noding robustness
+     * and eliminate small errors in an efficient way.
+     *
+     * By default the snapping distance is -1, which means that the clean operation
+     * uses a very small snapping distance based on the extent of the input data.
+     *
+     * The snapping distance may be specified explicitly.
+     *
+     * This can reduce the number of overlaps and gaps that need to be merged,
+     * and reduce the risk of spikes formed by merging gaps.
+     * However, a large snapping distance may introduce undesirable
+     * data alteration.
+     *
+     * A distance of zero prevents snapping from being used.
+     *
+     * \see setSnappingDistance()
+     */
+    double snappingDistance() const { return mSnappingDistance; }
+
+    /**
+     * Sets the snapping \a distance.
+     *
+     * \see snappingDistance()
+    */
+    void setSnappingDistance( double distance ) { mSnappingDistance = distance; }
+
+    /**
+     * Returns the maximum gap width.
+     *
+     * Gaps which are smaller than this distance are merged with an adjacent polygon.
+     *
+     * Polygon width is determined as twice the radius of the maximum inscribed circle
+     * of the gap polygon.
+     *
+     * Gaps are merged with the adjacent polygon depending on overlapMergeStrategy().
+     *
+     * Empty holes in input polygons are treated as gaps, and may be filled in.
+     *
+     * Gaps which are not fully enclosed ("inlets") are not removed.
+     *
+     * The width of a gap is twice the radius of the Maximum Inscribed Circle in the gap polygon,
+     *
+     * A width of zero prevents gaps from being merged.
+     *
+     * \see setMaximumGapWidth()
+     */
+    double maximumGapWidth() const { return mMaximumGapWidth; }
+
+    /**
+     * Sets the maximum gap \a width.
+     *
+     * \see maximumGapWidth()
+     */
+    void setMaximumGapWidth( double width ) { mMaximumGapWidth = width; }
+
+    /**
+     * Returns the overlap merge strategy to use during cleaning.
+     *
+     * \see setOverlapMergeStrategy()
+     */
+    Qgis::CoverageCleanOverlapMergeStrategy overlapMergeStrategy() const { return mOverlapMergeStrategy; } //#spellok
+
+    /**
+     * Sets the overlap merge \a strategy to use during cleaning.
+     *
+     * \see overlapMergeStrategy()
+     */
+    void setOverlapMergeStrategy( Qgis::CoverageCleanOverlapMergeStrategy strategy ) { mOverlapMergeStrategy = strategy; } //#spellok
+
+  private:
+    double mSnappingDistance = -1;
+    double mMaximumGapWidth = 0;
+    Qgis::CoverageCleanOverlapMergeStrategy mOverlapMergeStrategy = Qgis::CoverageCleanOverlapMergeStrategy::LongestBorder; //#spellok
+};
+
+
 /**
  * \ingroup core
  * \brief A geometry is the spatial representation of a feature.
@@ -2074,6 +2163,25 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.36
      */
     QgsGeometry unionCoverage() const;
+
+    /**
+     * Operates on a coverage (represented as a list of polygonal geometry),
+     * to fix cases where the geometry does not in fact exactly match.
+     *
+     * The input is a collection of polygons, and the output is a collection
+     * with the same number of cleaned polygons, in the same order as
+     * the input. Polygons that have collapsed during cleaning will be returned
+     * as empty polygons.
+     *
+     * The optional \a feedback argument supports early cancellation of the operation.
+     *
+     * This method requires a QGIS build based on GEOS 3.14 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.13 or earlier.
+     * \see validateCoverage()
+     * \since QGIS 4.4
+     */
+    QgsGeometry cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.

@@ -909,6 +909,29 @@ geometry collection. All members must be POLYGON or MULTIPOLYGON.
 .. versionadded:: 3.36
 %End
 
+    std::unique_ptr< QgsAbstractGeometry > cleanCoverage( const QgsCoverageCleanParameters &parameters, QString *errorMsg /Out/ = 0, QgsFeedback *feedback = 0 ) const;
+%Docstring
+Operates on a coverage (represented as a list of polygonal geometry), to
+fix cases where the geometry does not in fact exactly match.
+
+The input is a collection of polygons, and the output is a collection
+with the same number of cleaned polygons, in the same order as the
+input. Polygons that have collapsed during cleaning will be returned as
+empty polygons.
+
+The optional ``feedback`` argument supports early cancellation of the
+operation.
+
+This method requires a QGIS build based on GEOS 3.14 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.13 or
+                                  earlier.
+
+.. seealso:: :py:func:`validateCoverage`
+
+.. versionadded:: 4.4
+%End
+
 
 
 
