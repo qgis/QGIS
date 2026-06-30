@@ -163,7 +163,7 @@ QgsRelief::Result QgsRelief::processRaster( QgsFeedback *feedback )
   std::vector<unsigned char> resultGreenLine( xSize );
   std::vector<unsigned char> resultBlueLine( xSize );
 
-  constexpr double maxProgressDuringBlockWriting = 100.0;
+  const double maxProgressDuringBlockWriting = outputProvider->hasReportsDuringClose() ? 50.0 : 100.0;
 
   auto readRow = [&iter, this]( std::vector<float> &scanLine ) {
     int iterCols = 0;
@@ -308,7 +308,7 @@ QgsRelief::Result QgsRelief::processRaster( QgsFeedback *feedback )
     }
   }
 
-  if ( feedback )
+  if ( feedback && outputProvider->hasReportsDuringClose() )
   {
     std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
     if ( !outputProvider->closeWithProgress( scaledFeedback.get() ) )
