@@ -20,6 +20,7 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsField,
     QgsFields,
+    QgsMapLayer,
     QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsRasterLayer,
@@ -1175,8 +1176,8 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
             "postgres",
         )
         self.assertTrue(vl.isValid())
-        err = vl.saveStyleToDatabaseV2("test_style_move", "", False, "")
-        self.assertFalse(err)
+        result, msg = vl.saveStyleToDatabaseV2("test_style_move", "", False, "")
+        self.assertTrue(result == QgsMapLayer.SaveStyleResult.Success)
 
         # Verify style initially points to the source schema
         rows = conn.executeSql(
