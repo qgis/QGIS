@@ -220,6 +220,9 @@ QVariant QgsFeaturePickerModelBase::data( const QModelIndex &index, int role ) c
     case Qt::DecorationRole:
     case Qt::FontRole:
     {
+      // this code is completely broken -- identifierIsNull will always return true for QgsFeatureFilterModel,
+      // and the fix is not trivial. Just disable the broken formatting for now.
+#if 0
       const bool isNull = identifierIsNull( entryIdentifier( mEntries.value( index.row() ) ) );
       if ( isNull )
       {
@@ -239,6 +242,7 @@ QVariant QgsFeaturePickerModelBase::data( const QModelIndex &index, int role ) c
         }
       }
       else
+#endif
       {
         // Respect conditional style
         const QgsConditionalStyle style = featureStyle( mEntries.value( index.row() ).feature );
