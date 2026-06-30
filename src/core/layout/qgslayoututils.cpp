@@ -512,7 +512,7 @@ bool QgsLayoutUtils::itemIsAClippingSource( const QgsLayoutItem *item )
   return false;
 }
 
-constexpr double pointToMM = 25.4 / 72;
+constexpr double pointToMM = 25.4 / 72.0;
 
 double QgsLayoutUtils::pointsToMM( const double pointSize )
 {
@@ -523,7 +523,7 @@ double QgsLayoutUtils::pointsToMM( const double pointSize )
 double QgsLayoutUtils::mmToPoints( const double mmSize )
 {
   //conversion to points based on 1 point = 1/72 inch
-  return ( mmSize * ( 1 / pointToMM ) );
+  return ( mmSize * ( 1.0 / pointToMM ) );
 }
 
 QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
