@@ -119,7 +119,6 @@ let
     numpy
     owslib
     psycopg2
-    pygments
     pyqt6
     pyqt-builder
     python-dateutil

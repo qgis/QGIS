@@ -74,9 +74,6 @@ ADD_PYTHON_TEST(PyQgsDataItem test_qgsdataitem.py)
 ADD_PYTHON_TEST(PyQgsDataItemProviderRegistry test_qgsdataitemproviderregistry.py)
 ADD_PYTHON_TEST(PyQgsDateTimeStatisticalSummary test_qgsdatetimestatisticalsummary.py)
 ADD_PYTHON_TEST(PyQgsDatumTransform test_qgsdatumtransforms.py)
-ADD_PYTHON_TEST(PyQgsDBManagerGpkg test_db_manager_gpkg.py)
-ADD_PYTHON_TEST(PyQgsDBManagerSpatialite test_db_manager_spatialite.py)
-ADD_PYTHON_TEST(PyQgsDBManagerSQLWindow test_db_manager_sql_window.py)
 ADD_PYTHON_TEST(PyQgsDefaultValue test_qgsdefaultvalue.py)
 ADD_PYTHON_TEST(PyQgsDelimitedTextProvider test_qgsdelimitedtextprovider.py)
 ADD_PYTHON_TEST(PyQgsDistanceArea test_qgsdistancearea.py)
@@ -620,7 +617,6 @@ if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsAuthManagerStoragePsql test_authmanager_storage_psql.py)
   ADD_PYTHON_TEST(PyQgsDatabaseSchemaModel test_qgsdatabaseschemamodel.py)
   ADD_PYTHON_TEST(PyQgsDatabaseTableModel test_qgsdatabasetablemodel.py)
-  ADD_PYTHON_TEST(PyQgsDbManagerPostgis test_db_manager_postgis.py)
   ADD_PYTHON_TEST(PyQgsImportIntoPostGIS test_processing_importintopostgis.py)
   ADD_PYTHON_TEST(PyQgsLayerMetadataProviderPostgres test_qgslayermetadataprovider_postgres.py)
   ADD_PYTHON_TEST(PyQgsPostgresDomain test_qgspostgresdomain.py)
@@ -652,7 +648,7 @@ if (ENABLE_PGTEST)
     PyQgsVectorLayerUtilsPostgres PyQgsPostgresRasterProvider PyQgsPostgresDomain PyQgsPostgresTransaction
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest
-    PyQgsDbManagerPostgis PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox
+    PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox
     PyQgsProviderConnectionPostgres PyQgsPostgresProviderLatency PyQgsLayerMetadataProviderPostgres PyQgsStyleStoragePostgres
     PROPERTIES LABELS "POSTGRES")
 endif()
