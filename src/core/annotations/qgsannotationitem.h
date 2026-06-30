@@ -37,6 +37,7 @@ class QgsAbstractAnnotationItemEditOperation;
 class QgsAnnotationItemEditOperationTransientResults;
 class QgsRenderContext;
 class QgsReadWriteContext;
+class QPainter;
 
 /**
  * \ingroup core
@@ -420,6 +421,11 @@ class CORE_EXPORT QgsAnnotationItem
      * \since QGIS 3.40
      */
     void renderCallout( QgsRenderContext &context, const QRectF &rect, double angle, QgsCallout::QgsCalloutContext &calloutContext, QgsFeedback *feedback );
+
+    /**
+     * Rotates \a painter by \a angle degrees around \a point.
+     */
+    static void rotatePainterAroundPoint( QPainter *painter, const QPointF &point, double angle ) SIP_SKIP;
 
   private:
     int mZIndex = 0;
