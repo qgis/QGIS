@@ -16,6 +16,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationpolygonitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 #include "qgslinestring.h"
@@ -51,6 +52,9 @@ class TestQgsMapToolSelectAnnotation : public QObject
     void testSelectItem();
     void testDeleteItem();
     void testMoveItem();
+    void testMoveItemRotatedCanvas();
+    void testRotateItem();
+    void testResizeRotatedItem();
 };
 
 void TestQgsMapToolSelectAnnotation::initTestCase()
@@ -325,6 +329,197 @@ void TestQgsMapToolSelectAnnotation::testMoveItem()
 
   // check that item was moved
   QCOMPARE( qgis::down_cast<QgsAnnotationPolygonItem *>( layer->item( i1id ) )->geometry()->asWkt( 1 ), u"Polygon ((0.9 1, 4.9 1, 4.9 5, 0.9 5, 0.9 1))"_s );
+}
+
+
+void TestQgsMapToolSelectAnnotation::testMoveItemRotatedCanvas()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  // rotate the map canvas: a screen-space drag must still translate the item
+  // correctly, taking the canvas rotation into account.
+  canvas.setRotation( 90 );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) )
+  );
+  item1->setZIndex( 1 );
+  const QString i1id = layer->addItem( item1 );
+  QCOMPARE( qgis::down_cast<QgsAnnotationPolygonItem *>( layer->item( i1id ) )->geometry()->asWkt(), u"Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))"_s );
+
+  layer->setCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+
+  canvas.setLayers( { layer } );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolSelectAnnotation tool( &canvas, &cadDock );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolSelectAnnotation::singleItemSelected );
+  TestQgsMapToolUtils utils( &tool );
+
+  // click on item to select it
+  utils.mouseMove( 1.5, 1.5 );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
+
+  // a mouse press on the item will start moving the item
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  // drag from map (1.5, 1.5) to map (4.5, 4.5): despite the 90 degree canvas
+  // rotation, the item should follow the cursor and move by (3, 3) in map units.
+  utils.mouseMove( 4.5, 4.5, Qt::LeftButton );
+  utils.mouseMove( 4.5, 4.5, Qt::LeftButton );
+  utils.mouseClick( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  // check that the item was moved by (3, 3) in map units
+  QCOMPARE( qgis::down_cast<QgsAnnotationPolygonItem *>( layer->item( i1id ) )->geometry()->asWkt( 0 ), u"Polygon ((4 4, 8 4, 8 8, 4 8, 4 4))"_s );
+}
+
+
+void TestQgsMapToolSelectAnnotation::testRotateItem()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  QgsAnnotationRectangleTextItem *item1 = new QgsAnnotationRectangleTextItem( u"test"_s, QgsRectangle( 2, 2, 6, 6 ) );
+  item1->setZIndex( 1 );
+  const QString i1id = layer->addItem( item1 );
+  QCOMPARE( qgis::down_cast<QgsAnnotationRectangleTextItem *>( layer->item( i1id ) )->rotation(), 0.0 );
+
+  layer->setCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+
+  canvas.setLayers( { layer } );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolSelectAnnotation tool( &canvas, &cadDock );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolSelectAnnotation::singleItemSelected );
+  TestQgsMapToolUtils utils( &tool );
+
+  // click on the item to select it
+  utils.mouseMove( 4, 4 );
+  utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
+
+  QList<QgsAnnotationItemRubberBand *> selected = tool.selectedItems();
+  QCOMPARE( selected.size(), 1 );
+
+  // rotating the rubber band via its handles rotates the underlying item
+  tool.attemptRotateBy( selected.first(), 30 );
+  QCOMPARE( qgis::down_cast<QgsAnnotationRectangleTextItem *>( layer->item( i1id ) )->rotation(), 30.0 );
+
+  // a further rotation accumulates
+  tool.attemptRotateBy( selected.first(), 20 );
+  QCOMPARE( qgis::down_cast<QgsAnnotationRectangleTextItem *>( layer->item( i1id ) )->rotation(), 50.0 );
+
+  // the item bounds (center and size) are unchanged by rotation
+  const QgsRectangle bounds = qgis::down_cast<QgsAnnotationRectangleTextItem *>( layer->item( i1id ) )->bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), 2.0, 0.001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), 2.0, 0.001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 6.0, 0.001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), 6.0, 0.001 );
+}
+
+
+void TestQgsMapToolSelectAnnotation::testResizeRotatedItem()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  QgsAnnotationRectangleTextItem *item1 = new QgsAnnotationRectangleTextItem( u"test"_s, QgsRectangle( 2, 2, 6, 6 ) );
+  item1->setZIndex( 1 );
+  // rotate the item: resizing must keep the dragged corner anchored, so the
+  // reconstructed (unrotated) bounds are shifted accordingly.
+  item1->setRotation( 90 );
+  const QString i1id = layer->addItem( item1 );
+
+  layer->setCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+
+  canvas.setLayers( { layer } );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolSelectAnnotation tool( &canvas, &cadDock );
+  canvas.setMapTool( &tool );
+
+  TestQgsMapToolUtils utils( &tool );
+
+  // click on the item to select it
+  utils.mouseMove( 4, 4 );
+  utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QList<QgsAnnotationItemRubberBand *> selected = tool.selectedItems();
+  QCOMPARE( selected.size(), 1 );
+
+  // map (2,2)-(6,6) maps to the scene rectangle (120,240)-(360,480) with the
+  // 600x600 canvas covering the 10x10 extent. The new scene rectangle is 300x240
+  // pixels (5x4 map units). Because the item is rotated 90 degrees, the dragged
+  // corner is kept anchored: the resulting unrotated bounds are recentred.
+  tool.attemptSetSceneRect( selected.first(), QRectF( 120, 240, 300, 240 ) );
+
+  const QgsRectangle bounds = qgis::down_cast<QgsAnnotationRectangleTextItem *>( layer->item( i1id ) )->bounds();
+  // the resized bounds keep the new pixel size (5 x 4 map units) ...
+  QGSCOMPARENEAR( bounds.width(), 5.0, 0.01 );
+  QGSCOMPARENEAR( bounds.height(), 4.0, 0.01 );
+  // ... recentred to anchor the rotated corner
+  QGSCOMPARENEAR( bounds.xMinimum(), -2.5, 0.01 );
+  QGSCOMPARENEAR( bounds.yMinimum(), 1.5, 0.01 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 2.5, 0.01 );
+  QGSCOMPARENEAR( bounds.yMaximum(), 5.5, 0.01 );
 }
 
 
