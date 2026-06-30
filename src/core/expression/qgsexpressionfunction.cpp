@@ -2834,7 +2834,7 @@ static QVariant fcnCrsFromText( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString concat;
+  QString concat( "" );
   for ( const QVariant &value : values )
   {
     if ( !QgsVariantUtils::isNull( value ) )
