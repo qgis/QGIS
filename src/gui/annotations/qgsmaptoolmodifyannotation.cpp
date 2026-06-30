@@ -16,12 +16,16 @@
 
 #include "qgsmaptoolmodifyannotation.h"
 
+#include <cmath>
+
 #include "RTree.h"
 #include "qgsannotationitem.h"
 #include "qgsannotationitemeditoperation.h"
 #include "qgsannotationitemnode.h"
 #include "qgsannotationlayer.h"
+#include "qgsannotationrectitem.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsrenderedannotationitemdetails.h"
 #include "qgsrendereditemdetails.h"
@@ -82,6 +86,58 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
     }
 };
 ///@endcond
+
+
+QgsRectangle QgsMapToolModifyAnnotation::reconstructRotatedResizeBounds( const QgsMapToPixel *mapToPixel, double angle, const QgsPointXY &fixedMapPoint, const QgsPointXY &cursorMapPoint )
+{
+  const QgsPointXY fixedPixel = mapToPixel->transform( fixedMapPoint );
+  const QgsPointXY cursorPixel = mapToPixel->transform( cursorMapPoint );
+
+  // Un-rotating the diagonal between the fixed and dragged corners
+  QTransform unrotate;
+  unrotate.rotate( -angle );
+  const QPointF diagonal = unrotate.map( QPointF( cursorPixel.x() - fixedPixel.x(), cursorPixel.y() - fixedPixel.y() ) );
+  const double widthPixels = std::fabs( diagonal.x() );
+  const double heightPixels = std::fabs( diagonal.y() );
+  const QPointF centerPixel( ( fixedPixel.x() + cursorPixel.x() ) / 2.0, ( fixedPixel.y() + cursorPixel.y() ) / 2.0 );
+
+  return QgsAnnotationRectItem::boundsFromPixelRect( mapToPixel, centerPixel, widthPixels, heightPixels );
+}
+
+QgsPointXY QgsMapToolModifyAnnotation::oppositeVertexMapPoint( const QList<QgsAnnotationItemNode> &nodes, int draggedVertex, bool &found )
+{
+  found = false;
+  const int fixedVertex = ( draggedVertex + 2 ) % 4;
+  for ( const QgsAnnotationItemNode &node : nodes )
+  {
+    if ( node.id().part == 0 && node.id().vertex == fixedVertex )
+    {
+      found = true;
+      return node.point();
+    }
+  }
+  return QgsPointXY();
+}
+
+std::optional<QgsRectangle> QgsMapToolModifyAnnotation::rotatedResizeLayerBounds( const QgsAnnotationRectItem *rectItem, QgsAnnotationLayer *layer, const QgsPointXY &cursorMapPoint )
+{
+  const int draggedVertex = mTargetNode.id().vertex;
+  const double angle = rectItem->appliedRotation( canvas()->mapSettings().rotation() );
+  if ( rectItem->placementMode() != Qgis::AnnotationPlacementMode::SpatialBounds || mTargetNode.id().part != 0 || draggedVertex < 0 || draggedVertex >= 4 || qgsDoubleNear( angle, 0 ) )
+    return std::nullopt;
+
+  bool foundFixed = false;
+  const QgsPointXY fixedMapPoint = oppositeVertexMapPoint( mHoveredItemNodes, draggedVertex, foundFixed );
+  if ( !foundFixed )
+    return std::nullopt;
+
+  const QgsRectangle newMapBounds = reconstructRotatedResizeBounds( canvas()->getCoordinateTransform(), angle, fixedMapPoint, cursorMapPoint );
+  const QgsRectangle newLayerBounds = toLayerCoordinates( layer, newMapBounds );
+  if ( qgsDoubleNear( newLayerBounds.width(), 0 ) || qgsDoubleNear( newLayerBounds.height(), 0 ) )
+    return std::nullopt;
+
+  return newLayerBounds;
+}
 
 
 QgsMapToolModifyAnnotation::QgsMapToolModifyAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
@@ -151,26 +207,44 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
     {
       if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
       {
-        const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
-        QgsAnnotationItemEditOperationMoveNode operation(
-          mSelectedItemId,
-          mTargetNode.id(),
-          QgsPoint( mTargetNode.point() ),
-          QgsPoint( endPointLayer ),
-          event->pixelPoint().x() - mMoveStartPointPixels.x(),
-          event->pixelPoint().y() - mMoveStartPointPixels.y()
-        );
-        std::unique_ptr<QgsAnnotationItemEditOperationTransientResults> operationResults( item->transientEditResultsV2( &operation, context ) );
-        if ( operationResults )
+        bool previewDone = false;
+
+        if ( const QgsAnnotationRectItem *rectItem = dynamic_cast<const QgsAnnotationRectItem *>( item ) )
         {
-          mTemporaryRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, operationResults->representativeGeometry().type() );
-          const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
-          mTemporaryRubberBand->setWidth( scaleFactor );
-          mTemporaryRubberBand->setToGeometry( operationResults->representativeGeometry(), layer->crs() );
+          if ( const std::optional<QgsRectangle> newLayerBounds = rotatedResizeLayerBounds( rectItem, layer, event->mapPoint() ) )
+          {
+            const QgsGeometry preview = rectItem->rotatedBoundsGeometry( *newLayerBounds, context.renderContext() );
+            mTemporaryRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, preview.type() );
+            const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
+            mTemporaryRubberBand->setWidth( scaleFactor );
+            mTemporaryRubberBand->setToGeometry( preview, layer->crs() );
+            previewDone = true;
+          }
         }
-        else
+
+        if ( !previewDone )
         {
-          mTemporaryRubberBand.reset();
+          const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
+          QgsAnnotationItemEditOperationMoveNode operation(
+            mSelectedItemId,
+            mTargetNode.id(),
+            QgsPoint( mTargetNode.point() ),
+            QgsPoint( endPointLayer ),
+            event->pixelPoint().x() - mMoveStartPointPixels.x(),
+            event->pixelPoint().y() - mMoveStartPointPixels.y()
+          );
+          std::unique_ptr<QgsAnnotationItemEditOperationTransientResults> operationResults( item->transientEditResultsV2( &operation, context ) );
+          if ( operationResults )
+          {
+            mTemporaryRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, operationResults->representativeGeometry().type() );
+            const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
+            mTemporaryRubberBand->setWidth( scaleFactor );
+            mTemporaryRubberBand->setToGeometry( operationResults->representativeGeometry(), layer->crs() );
+          }
+          else
+          {
+            mTemporaryRubberBand.reset();
+          }
         }
       }
       break;
@@ -314,25 +388,45 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
       {
         if ( layer )
         {
-          const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
-          QgsAnnotationItemEditOperationMoveNode operation(
-            mSelectedItemId,
-            mTargetNode.id(),
-            QgsPoint( mTargetNode.point() ),
-            QgsPoint( endPointLayer ),
-            event->pixelPoint().x() - mMoveStartPointPixels.x(),
-            event->pixelPoint().y() - mMoveStartPointPixels.y()
-          );
-          switch ( layer->applyEditV2( &operation, context ) )
-          {
-            case Qgis::AnnotationItemEditOperationResult::Success:
-              QgsProject::instance()->setDirty( true );
-              mRefreshSelectedItemAfterRedraw = true;
-              break;
+          bool handled = false;
 
-            case Qgis::AnnotationItemEditOperationResult::Invalid:
-            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
-              break;
+          const QgsAnnotationItem *resizedItem = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId );
+          if ( const QgsAnnotationRectItem *rectItem = dynamic_cast<const QgsAnnotationRectItem *>( resizedItem ) )
+          {
+            if ( const std::optional<QgsRectangle> newLayerBounds = rotatedResizeLayerBounds( rectItem, layer, event->mapPoint() ) )
+            {
+              QgsAnnotationItemEditOperationSetItemBounds operation( mSelectedItemId, *newLayerBounds );
+              if ( layer->applyEditV2( &operation, context ) == Qgis::AnnotationItemEditOperationResult::Success )
+              {
+                handled = true;
+                QgsProject::instance()->setDirty( true );
+                mRefreshSelectedItemAfterRedraw = true;
+              }
+            }
+          }
+
+          if ( !handled )
+          {
+            const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
+            QgsAnnotationItemEditOperationMoveNode operation(
+              mSelectedItemId,
+              mTargetNode.id(),
+              QgsPoint( mTargetNode.point() ),
+              QgsPoint( endPointLayer ),
+              event->pixelPoint().x() - mMoveStartPointPixels.x(),
+              event->pixelPoint().y() - mMoveStartPointPixels.y()
+            );
+            switch ( layer->applyEditV2( &operation, context ) )
+            {
+              case Qgis::AnnotationItemEditOperationResult::Success:
+                QgsProject::instance()->setDirty( true );
+                mRefreshSelectedItemAfterRedraw = true;
+                break;
+
+              case Qgis::AnnotationItemEditOperationResult::Invalid:
+              case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+                break;
+            }
           }
         }
 
@@ -569,19 +663,54 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
 
   mHoverRubberBand->show();
 
-  mHoverRubberBand->reset( Qgis::GeometryType::Line );
-  mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMinimum() ) );
-  mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMaximum(), itemMapBounds.yMinimum() ) );
-  mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMaximum(), itemMapBounds.yMaximum() ) );
-  mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMaximum() ) );
-  mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMinimum() ) );
-
-  QgsAnnotationLayer *layer = annotationLayerFromId( item->layerId() );
   const QgsAnnotationItem *annotationItem = annotationItemFromId( item->layerId(), item->itemId() );
-  if ( !annotationItem )
+  QgsAnnotationLayer *layer = annotationLayerFromId( item->layerId() );
+  if ( !annotationItem || !layer )
+  {
+    // fall back to a plain axis-aligned hover rectangle
+    mHoverRubberBand->reset( Qgis::GeometryType::Line );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMinimum() ) );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMaximum(), itemMapBounds.yMinimum() ) );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMaximum(), itemMapBounds.yMaximum() ) );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMaximum() ) );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMinimum() ) );
     return;
+  }
 
-  QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransform( layer->crs(), canvas()->mapSettings().destinationCrs(), canvas()->mapSettings().transformContext() );
+  const QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransform( layer->crs(), canvas()->mapSettings().destinationCrs(), canvas()->mapSettings().transformContext() );
+
+  // Rotate corners around the center in pixel space. Node points already went
+  // through mapToPixel (which includes map rotation), so only the item's own
+  // rotation is added here. The callout anchor is fixed and never rotated.
+  const QgsAnnotationRectItem *rectItem = dynamic_cast<const QgsAnnotationRectItem *>( annotationItem );
+  const double mapRotation = canvas()->mapSettings().rotation();
+  const double frameRotation = rectItem ? rectItem->appliedRotation( mapRotation ) - mapRotation : 0;
+  const QgsMapToPixel *mapToPixel = canvas()->getCoordinateTransform();
+  const bool rotated = rectItem && !qgsDoubleNear( frameRotation, 0 );
+
+  QTransform rotationTransform;
+  if ( rotated )
+  {
+    QgsPointXY centerMap = itemMapBounds.center();
+    try
+    {
+      centerMap = layerToMapTransform.transform( rectItem->bounds().center() );
+    }
+    catch ( QgsCsException & )
+    {}
+    const QgsPointXY centerPixel = mapToPixel->transform( centerMap );
+    rotationTransform.translate( centerPixel.x(), centerPixel.y() );
+    rotationTransform.rotate( frameRotation );
+    rotationTransform.translate( -centerPixel.x(), -centerPixel.y() );
+  }
+
+  auto rotateMapPoint = [&]( const QgsPointXY &p ) -> QgsPointXY {
+    if ( !rotated )
+      return p;
+    const QgsPointXY pPixel = mapToPixel->transform( p );
+    const QPointF r = rotationTransform.map( QPointF( pPixel.x(), pPixel.y() ) );
+    return mapToPixel->toMapCoordinates( r.x(), r.y() );
+  };
 
   const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
 
@@ -609,6 +738,7 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   int index = 0;
   mHoveredItemNodes.clear();
   mHoveredItemNodes.reserve( itemNodes.size() );
+  QVector<QgsPointXY> vertexFramePoints;
   for ( const QgsAnnotationItemNode &node : itemNodes )
   {
     QgsPointXY nodeMapPoint;
@@ -624,7 +754,10 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
     switch ( node.type() )
     {
       case Qgis::AnnotationItemNodeType::VertexHandle:
+        // vertex handles rotate together with the item body
+        nodeMapPoint = rotateMapPoint( nodeMapPoint );
         vertexNodeBand->addPoint( nodeMapPoint );
+        vertexFramePoints.append( nodeMapPoint );
         break;
 
       case Qgis::AnnotationItemNodeType::CalloutHandle:
@@ -643,6 +776,24 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
 
   mHoveredItemNodeRubberBands.emplace_back( vertexNodeBand );
   mHoveredItemNodeRubberBands.emplace_back( calloutNodeBand );
+
+  // Draw the hover frame. For spatial-bounds rectangles it follows the four
+  // (rotated) corner handles; other modes use the axis-aligned bounds.
+  mHoverRubberBand->reset( Qgis::GeometryType::Line );
+  if ( rectItem && rectItem->placementMode() == Qgis::AnnotationPlacementMode::SpatialBounds && vertexFramePoints.size() == 4 )
+  {
+    for ( const QgsPointXY &framePoint : vertexFramePoints )
+      mHoverRubberBand->addPoint( framePoint );
+    mHoverRubberBand->addPoint( vertexFramePoints.constFirst() );
+  }
+  else
+  {
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMinimum() ) );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMaximum(), itemMapBounds.yMinimum() ) );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMaximum(), itemMapBounds.yMaximum() ) );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMaximum() ) );
+    mHoverRubberBand->addPoint( QgsPointXY( itemMapBounds.xMinimum(), itemMapBounds.yMinimum() ) );
+  }
 }
 
 QSizeF QgsMapToolModifyAnnotation::deltaForKeyEvent( QgsAnnotationLayer *layer, const QgsPointXY &originalCanvasPoint, QKeyEvent *event )
