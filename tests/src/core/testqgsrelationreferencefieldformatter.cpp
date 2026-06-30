@@ -37,6 +37,7 @@ class TestQgsRelationReferenceFieldFormatter : public QObject
     void init();            // will be called before each testfunction is executed.
     void cleanup();         // will be called after every testfunction.
     void testDependencies();
+    void testRegression66339();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -143,6 +144,29 @@ void TestQgsRelationReferenceFieldFormatter::testDependencies()
   QCOMPARE( dependency.name, mLayer2->name() );
   QCOMPARE( dependency.provider, mLayer2->providerType() );
   QCOMPARE( dependency.source, mLayer2->publicSource() );
+}
+
+
+void TestQgsRelationReferenceFieldFormatter::testRegression66339()
+{
+  const QgsEditorWidgetSetup setup {
+    "RelationReference",
+    { { "ReferencedLayerDataSource", mLayer2->publicSource() },
+      { "ReferencedLayerProviderKey", mLayer2->providerType() },
+      { "ReferencedLayerId", mLayer2->id() },
+      { "ReferencedLayerName", mLayer2->name() },
+      { "Relation", "vl1.vl2" } }
+  };
+
+  QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+
+  mLayer2->setDisplayExpression( R"("material" || '/' || "raccord" || '/' || "diameter")" );
+  const int fieldIndex = mLayer1->fields().indexOf( "fk" );
+  QVariant cache = fieldFormatter->createCache( mLayer1.get(), fieldIndex, setup.config() );
+  // This triggered the issue #66339: value is long long but cache key is int
+  const QVariant value = 11LL;
+  const QVariant reprValue = fieldFormatter->representValue( mLayer1.get(), fieldIndex, setup.config(), cache, value );
+  QCOMPARE( reprValue.toString(), "iron/sleeve/120" );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceFieldFormatter )
