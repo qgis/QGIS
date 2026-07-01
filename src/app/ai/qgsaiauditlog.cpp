@@ -24,6 +24,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QString>
 #include <QStringList>
 #include <QUrl>
@@ -60,6 +62,30 @@ namespace
 
     return u"detail_chars=%1"_s.arg( detail.size() );
   }
+
+  bool appendLine( const QString &line )
+  {
+    QFile file( QgsAiAuditLog::filePath() );
+    if ( !file.open( QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text ) )
+    {
+      // Best-effort: never block tool execution on an unwritable audit log.
+      if ( !sWriteFailureWarned )
+      {
+        sWriteFailureWarned = true;
+        QgsMessageLog::logMessage( u"Cannot write AI audit log at %1."_s.arg( QgsAiAuditLog::filePath() ), u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
+      }
+      return false;
+    }
+    file.write( line.toUtf8() );
+    return true;
+  }
+
+  QStringList metadataKeys( const QJsonObject &metadata )
+  {
+    QStringList keys = metadata.keys();
+    keys.sort( Qt::CaseInsensitive );
+    return keys;
+  }
 } //namespace
 
 QString QgsAiAuditLog::filePath()
@@ -86,16 +112,31 @@ void QgsAiAuditLog::append( const QString &tool, const QString &detail )
   const QString line
     = u"%1 | %2 | workspace=%3 | sha256=%4 | bytes=%5 | %6\n"_s.arg( QDateTime::currentDateTimeUtc().toString( Qt::ISODate ), tool, workspaceHash, digest, QString::number( detail.toUtf8().size() ), summary );
 
-  QFile file( filePath() );
-  if ( !file.open( QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text ) )
-  {
-    // Best-effort: never block tool execution on an unwritable audit log.
-    if ( !sWriteFailureWarned )
-    {
-      sWriteFailureWarned = true;
-      QgsMessageLog::logMessage( u"Cannot write AI audit log at %1."_s.arg( filePath() ), u"AI/Security"_s, Qgis::MessageLevel::Warning, false );
-    }
-    return;
-  }
-  file.write( line.toUtf8() );
+  appendLine( line );
+}
+
+void QgsAiAuditLog::appendToolEvent( const QString &event, const QString &tool, const QString &risk, bool success, const QJsonObject &metadata )
+{
+  QJsonObject normalized = metadata;
+  normalized.insert( u"event"_s, event );
+  normalized.insert( u"tool"_s, tool );
+  normalized.insert( u"risk"_s, risk );
+  normalized.insert( u"success"_s, success );
+  const QByteArray compact = QJsonDocument( normalized ).toJson( QJsonDocument::Compact );
+  const QString digest = QString::fromLatin1( QCryptographicHash::hash( compact, QCryptographicHash::Sha256 ).toHex() );
+  const QString workspaceRoot = QgsAiWorkspaceTrust::currentWorkspaceRoot();
+  const QString workspaceHash = workspaceRoot.isEmpty() ? u"none"_s : QgsAiWorkspaceTrust::workspaceHash( workspaceRoot );
+  const QString keys = metadataKeys( metadata ).join( ',' );
+
+  const QString line = u"%1 | tool_event | event=%2 | tool=%3 | risk=%4 | success=%5 | workspace=%6 | sha256=%7 | bytes=%8 | keys=%9\n"_s
+                         .arg( QDateTime::currentDateTimeUtc().toString( Qt::ISODate ),
+                               event,
+                               tool,
+                               risk,
+                               success ? u"true"_s : u"false"_s,
+                               workspaceHash,
+                               digest,
+                               QString::number( compact.size() ),
+                               keys );
+  appendLine( line );
 }

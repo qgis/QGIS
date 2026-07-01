@@ -18,6 +18,7 @@
 
 #include "qgis_app.h"
 
+#include <QJsonObject>
 #include <QString>
 
 /**
@@ -35,6 +36,9 @@ class APP_EXPORT QgsAiAuditLog
   public:
     //! Appends an audit entry for \a tool with free-form \a detail (code, package list, URL…).
     static void append( const QString &tool, const QString &detail );
+
+    //! Appends a metadata-only structured tool event. Raw args/results are hashed, not written.
+    static void appendToolEvent( const QString &event, const QString &tool, const QString &risk, bool success, const QJsonObject &metadata = QJsonObject() );
 
     //! Resolved audit log file path. Honors setFilePathOverride() (tests).
     static QString filePath();

@@ -8,6 +8,7 @@
 #include <cmath>
 #include <memory>
 
+#include "ai/qgsaiauditlog.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaiworkspacetrust.h"
 #include "ai/tools/qgsaidownloadfiletool.h"
@@ -33,6 +34,7 @@
 #include <QImage>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QScopeGuard>
 #include <QSignalSpy>
 #include <QSize>
 #include <QString>
@@ -45,14 +47,16 @@ namespace
   class FakeEchoTool : public QgsAiTool
   {
     public:
-      explicit FakeEchoTool( const QString &name, bool requiresApproval = false )
+      explicit FakeEchoTool( const QString &name, bool requiresApproval = false, QgsAiToolRiskLevel riskLevel = QgsAiToolRiskLevel::Low )
         : mName( name )
         , mRequiresApproval( requiresApproval )
+        , mRiskLevel( riskLevel )
       {}
-      FakeEchoTool( const QString &name, bool requiresApproval, bool available )
+      FakeEchoTool( const QString &name, bool requiresApproval, bool available, QgsAiToolRiskLevel riskLevel = QgsAiToolRiskLevel::Low )
         : mName( name )
         , mRequiresApproval( requiresApproval )
         , mAvailable( available )
+        , mRiskLevel( riskLevel )
       {}
 
       QString name() const override { return mName; }
@@ -83,6 +87,7 @@ namespace
       }
 
       bool requiresApproval() const override { return mRequiresApproval; }
+      QgsAiToolRiskLevel riskLevel() const override { return mRiskLevel; }
       bool isAvailable() const override { return mAvailable; }
       QString availabilityReason() const override { return u"tool unavailable"_s; }
 
@@ -90,6 +95,7 @@ namespace
       QString mName;
       bool mRequiresApproval;
       bool mAvailable = true;
+      QgsAiToolRiskLevel mRiskLevel = QgsAiToolRiskLevel::Low;
   };
 } //namespace
 
@@ -107,6 +113,7 @@ class TestQgsAiToolRegistry : public QObject
     void schemasJsonFilter();
     void unavailableToolsAreHiddenAndNotExecuted();
     void executeRoundTrip();
+    void registryAuditsRiskyToolMetadataOnly();
     void captureMapCanvasRequiresConsent();
     void captureMapCanvasCreatesCappedPng();
     void styleLayerAppliesNativeChanges();
@@ -226,6 +233,34 @@ void TestQgsAiToolRegistry::executeRoundTrip()
   QVERIFY( !missing.errorMessage.isEmpty() );
 }
 
+void TestQgsAiToolRegistry::registryAuditsRiskyToolMetadataOnly()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString auditPath = tempDir.filePath( u"audit.log"_s );
+  QgsAiAuditLog::setFilePathOverride( auditPath );
+  const auto cleanup = qScopeGuard( []() { QgsAiAuditLog::setFilePathOverride( QString() ); } );
+
+  QgsAiToolRegistry registry;
+  QVERIFY( registry.registerTool( std::make_unique<FakeEchoTool>( u"mutating_tool"_s, true, QgsAiToolRiskLevel::Medium ) ) );
+
+  QJsonObject args;
+  args.insert( u"text"_s, u"secret payload that must not be logged"_s );
+  const QgsAiToolResult result = registry.execute( u"mutating_tool"_s, args );
+  QVERIFY( result.success );
+
+  QFile file( auditPath );
+  QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+  const QString line = QString::fromUtf8( file.readAll() );
+  QVERIFY2( line.contains( u"| tool_event |"_s ), qPrintable( line ) );
+  QVERIFY( line.contains( u"event=execute"_s ) );
+  QVERIFY( line.contains( u"tool=mutating_tool"_s ) );
+  QVERIFY( line.contains( u"risk=medium"_s ) );
+  QVERIFY( line.contains( u"success=true"_s ) );
+  QVERIFY( line.contains( u"args_sha256"_s ) );
+  QVERIFY( !line.contains( u"secret payload"_s ) );
+}
+
 void TestQgsAiToolRegistry::captureMapCanvasRequiresConsent()
 {
   QgsSettings settings;
@@ -290,6 +325,9 @@ void TestQgsAiToolRegistry::styleLayerAppliesNativeChanges()
 
   const QgsAiToolResult result = tool.execute( args );
   QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  const QString rollbackToken = result.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !rollbackToken.isEmpty() );
+  QVERIFY( result.output.toObject().contains( u"diff"_s ) );
   QVERIFY( std::abs( layer->opacity() - 0.35 ) < 0.001 );
 
   QgsLayerTreeLayer *node = project.layerTreeRoot()->findLayer( layer->id() );
@@ -299,6 +337,13 @@ void TestQgsAiToolRegistry::styleLayerAppliesNativeChanges()
   QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
   QVERIFY( renderer );
   QCOMPARE( renderer->symbol()->color(), QColor( u"#ff0000"_s ) );
+
+  QJsonObject rollbackArgs;
+  rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
+  const QgsAiToolResult rollback = tool.execute( rollbackArgs );
+  QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+  QVERIFY( std::abs( layer->opacity() - 1.0 ) < 0.001 );
+  QVERIFY( node->itemVisibilityChecked() );
 }
 
 void TestQgsAiToolRegistry::createPrintLayoutAndExportMap()
@@ -326,6 +371,9 @@ void TestQgsAiToolRegistry::createPrintLayoutAndExportMap()
   createArgs.insert( u"title"_s, u"Project map"_s );
   const QgsAiToolResult createResult = createTool.execute( createArgs );
   QVERIFY2( createResult.success, qPrintable( createResult.errorMessage ) );
+  const QString layoutRollbackToken = createResult.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !layoutRollbackToken.isEmpty() );
+  QVERIFY( createResult.output.toObject().contains( u"diff"_s ) );
   QVERIFY( project.layoutManager()->layoutByName( u"AI Layout"_s ) );
 
   QgsAiExportMapTool exportTool( &contextProvider, &project, &canvas );
@@ -339,6 +387,9 @@ void TestQgsAiToolRegistry::createPrintLayoutAndExportMap()
   const QgsAiToolResult canvasExport = exportTool.execute( canvasExportArgs );
   QVERIFY2( canvasExport.success, qPrintable( canvasExport.errorMessage ) );
   const QString canvasPath = canvasExport.output.toObject().value( u"absolute_path"_s ).toString();
+  const QString canvasRollbackToken = canvasExport.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !canvasRollbackToken.isEmpty() );
+  QVERIFY( canvasExport.output.toObject().contains( u"diff"_s ) );
   QVERIFY( QFileInfo::exists( canvasPath ) );
   const QImage canvasImage( canvasPath );
   QVERIFY( !canvasImage.isNull() );
@@ -351,8 +402,28 @@ void TestQgsAiToolRegistry::createPrintLayoutAndExportMap()
   const QgsAiToolResult layoutExport = exportTool.execute( layoutExportArgs );
   QVERIFY2( layoutExport.success, qPrintable( layoutExport.errorMessage ) );
   const QString layoutPath = layoutExport.output.toObject().value( u"absolute_path"_s ).toString();
+  const QString layoutExportRollbackToken = layoutExport.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !layoutExportRollbackToken.isEmpty() );
   QVERIFY( QFileInfo::exists( layoutPath ) );
   QVERIFY( QFileInfo( layoutPath ).size() > 0 );
+
+  QJsonObject canvasRollbackArgs;
+  canvasRollbackArgs.insert( u"rollback_token"_s, canvasRollbackToken );
+  const QgsAiToolResult canvasRollback = exportTool.execute( canvasRollbackArgs );
+  QVERIFY2( canvasRollback.success, qPrintable( canvasRollback.errorMessage ) );
+  QVERIFY( !QFileInfo::exists( canvasPath ) );
+
+  QJsonObject layoutExportRollbackArgs;
+  layoutExportRollbackArgs.insert( u"rollback_token"_s, layoutExportRollbackToken );
+  const QgsAiToolResult layoutExportRollback = exportTool.execute( layoutExportRollbackArgs );
+  QVERIFY2( layoutExportRollback.success, qPrintable( layoutExportRollback.errorMessage ) );
+  QVERIFY( !QFileInfo::exists( layoutPath ) );
+
+  QJsonObject layoutRollbackArgs;
+  layoutRollbackArgs.insert( u"rollback_token"_s, layoutRollbackToken );
+  const QgsAiToolResult layoutRollback = createTool.execute( layoutRollbackArgs );
+  QVERIFY2( layoutRollback.success, qPrintable( layoutRollback.errorMessage ) );
+  QVERIFY( !project.layoutManager()->layoutByName( u"AI Layout"_s ) );
 }
 
 void TestQgsAiToolRegistry::processingToolReportsMissingAlgorithm()

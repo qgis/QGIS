@@ -15,6 +15,10 @@
 
 #include "qgsaitoolregistry.h"
 
+#include "qgsaiauditlog.h"
+
+#include <QCryptographicHash>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <QSet>
 #include <QString>
@@ -22,6 +26,61 @@
 #include "moc_qgsaitoolregistry.cpp"
 
 using namespace Qt::StringLiterals;
+
+namespace
+{
+  QString sha256Hex( const QByteArray &data )
+  {
+    return QString::fromLatin1( QCryptographicHash::hash( data, QCryptographicHash::Sha256 ).toHex() );
+  }
+
+  QStringList sortedKeys( const QJsonObject &object )
+  {
+    QStringList keys = object.keys();
+    keys.sort( Qt::CaseInsensitive );
+    return keys;
+  }
+
+  void auditToolExecution( const QgsAiTool *tool, const QJsonObject &args, const QgsAiToolResult &result )
+  {
+    if ( !tool )
+      return;
+    if ( !tool->requiresApproval() && tool->riskLevel() == QgsAiToolRiskLevel::Low )
+      return;
+
+    const QByteArray argsBytes = QJsonDocument( args ).toJson( QJsonDocument::Compact );
+    QJsonObject metadata;
+    metadata.insert( u"args_sha256"_s, sha256Hex( argsBytes ) );
+    metadata.insert( u"args_bytes"_s, argsBytes.size() );
+    metadata.insert( u"args_keys"_s, sortedKeys( args ).join( ',' ) );
+
+    if ( result.success )
+    {
+      if ( result.output.isObject() )
+      {
+        const QJsonObject outputObject = result.output.toObject();
+        const QByteArray outputBytes = QJsonDocument( outputObject ).toJson( QJsonDocument::Compact );
+        metadata.insert( u"output_sha256"_s, sha256Hex( outputBytes ) );
+        metadata.insert( u"output_bytes"_s, outputBytes.size() );
+        metadata.insert( u"output_keys"_s, sortedKeys( outputObject ).join( ',' ) );
+      }
+      else
+      {
+        const QByteArray outputBytes = result.output.toVariant().toString().toUtf8();
+        metadata.insert( u"output_sha256"_s, sha256Hex( outputBytes ) );
+        metadata.insert( u"output_bytes"_s, outputBytes.size() );
+        metadata.insert( u"output_kind"_s, result.output.isString() ? u"string"_s : u"value"_s );
+      }
+    }
+    else
+    {
+      metadata.insert( u"error_sha256"_s, sha256Hex( result.errorMessage.toUtf8() ) );
+      metadata.insert( u"error_bytes"_s, result.errorMessage.toUtf8().size() );
+    }
+
+    QgsAiAuditLog::appendToolEvent( u"execute"_s, tool->name(), QgsAiToolRiskLevelName( tool->riskLevel() ), result.success, metadata );
+  }
+} // namespace
 
 QgsAiToolRegistry::QgsAiToolRegistry( QObject *parent )
   : QObject( parent )
@@ -131,7 +190,9 @@ QgsAiToolResult QgsAiToolRegistry::execute( const QString &name, const QJsonObje
     const QString reason = tool->availabilityReason();
     return QgsAiToolResult::error( reason.isEmpty() ? u"Tool is not available: %1"_s.arg( name ) : reason );
   }
-  return tool->execute( args );
+  const QgsAiToolResult result = tool->execute( args );
+  auditToolExecution( tool, args, result );
+  return result;
 }
 
 void QgsAiToolRegistry::clear()

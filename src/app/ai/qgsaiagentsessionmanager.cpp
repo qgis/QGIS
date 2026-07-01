@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <utility>
 
+#include "qgsaiauditlog.h"
 #include "qgsaifilecontextprovider.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsaitool.h"
@@ -1452,6 +1453,14 @@ QgsAiChatMessage QgsAiAgentSessionManager::buildToolResultMessage( const QgsAiTo
   toolMessage.metadata.insert( u"tool_call_id"_s, call.id );
   toolMessage.metadata.insert( u"tool_name"_s, call.name );
   toolMessage.metadata.insert( u"tool_args"_s, call.args.toVariantMap() );
+  if ( mToolRegistry )
+  {
+    if ( const QgsAiTool *tool = mToolRegistry->find( call.name ) )
+    {
+      toolMessage.metadata.insert( u"risk_level"_s, QgsAiToolRiskLevelName( tool->riskLevel() ) );
+      toolMessage.metadata.insert( u"requires_approval"_s, tool->requiresApproval() );
+    }
+  }
   if ( call.name == "run_python"_L1 )
   {
     toolMessage.metadata.insert( u"tool_description"_s, call.args.value( u"description"_s ).toString() );
@@ -1499,6 +1508,14 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
   {
     if ( !isToolAllowedForActiveAgent( call.name ) )
     {
+      QJsonObject metadata;
+      metadata.insert( u"agent_mode"_s, mActiveAgent );
+      metadata.insert( u"tool_call_id"_s, call.id );
+      metadata.insert( u"args_keys"_s, call.args.keys().join( ',' ) );
+      QString risk = u"unknown"_s;
+      if ( const QgsAiTool *tool = mToolRegistry->find( call.name ) )
+        risk = QgsAiToolRiskLevelName( tool->riskLevel() );
+      QgsAiAuditLog::appendToolEvent( u"blocked_by_policy"_s, call.name, risk, false, metadata );
       QgsMessageLog::logMessage( u"Blocked disallowed tool call in %1 mode: %2"_s.arg( mActiveAgent, call.name ), u"AI"_s, Qgis::MessageLevel::Warning, false );
       const QString message = mActiveAgent == "planner"_L1 ? u"Plan mode does not execute tools or change workspace state. No tool was run."_s
                                                            : u"This mode does not allow the requested tool '%1'. No tool was run."_s.arg( call.name );

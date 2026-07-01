@@ -33,8 +33,8 @@ class QgsProject;
  * absolute path to an existing file on disk. The kind is auto-detected from the
  * file extension unless explicitly forced via the `kind` argument.
  *
- * No approval gate: adding a layer is a reversible action (the user can remove
- * it from the layer panel). The tool returns the created layer's id, feature
+ * Adding a layer mutates project state, so it is risk-classified and returns a
+ * rollback token that removes the layer. The tool returns the created layer's id, feature
  * count, CRS and extent so the model can chain follow-up calls.
  */
 class APP_EXPORT QgsAiAddLayerFromFileTool : public QgsAiTool
@@ -46,6 +46,8 @@ class APP_EXPORT QgsAiAddLayerFromFileTool : public QgsAiTool
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
 
   private:
     QgsAiFileContextProvider *mContextProvider = nullptr;
@@ -87,6 +89,7 @@ class APP_EXPORT QgsAiRunProcessingAlgorithmTool : public QgsAiTool
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
     bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::High; }
     bool isAvailable() const override;
     QString availabilityReason() const override;
 
@@ -107,6 +110,7 @@ class APP_EXPORT QgsAiStyleLayerTool : public QgsAiTool
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
     bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
 
   private:
     QgsProject *mProject = nullptr;
@@ -126,6 +130,7 @@ class APP_EXPORT QgsAiCreatePrintLayoutTool : public QgsAiTool
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
     bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
 
   private:
     QgsProject *mProject = nullptr;
@@ -146,6 +151,7 @@ class APP_EXPORT QgsAiExportMapTool : public QgsAiTool
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
     bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
 
   private:
     QgsAiFileContextProvider *mContextProvider = nullptr;

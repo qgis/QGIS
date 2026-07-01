@@ -37,6 +37,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerstyle.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmapsettings.h"
 #include "qgsmasterlayoutinterface.h"
@@ -61,6 +62,8 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFileInfo>
+#include <QFile>
+#include <QHash>
 #include <QImage>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -68,12 +71,55 @@
 #include <QSize>
 #include <QString>
 #include <QStringList>
+#include <QUuid>
 #include <QVariant>
 
 using namespace Qt::StringLiterals;
 
 namespace
 {
+  enum class RollbackType
+  {
+    RemoveLayer,
+    RestoreLayerStyle,
+    RemoveLayout,
+    DeleteFile
+  };
+
+  struct RollbackEntry
+  {
+      RollbackType type = RollbackType::DeleteFile;
+      QString layerId;
+      QString styleXml;
+      bool hasVisibility = false;
+      bool visible = true;
+      QString layoutName;
+      QString filePath;
+      QString description;
+  };
+
+  QHash<QString, RollbackEntry> &rollbackStore()
+  {
+    static QHash<QString, RollbackEntry> store;
+    return store;
+  }
+
+  QString storeRollback( const RollbackEntry &entry )
+  {
+    const QString token = QUuid::createUuid().toString( QUuid::WithoutBraces );
+    rollbackStore().insert( token, entry );
+    return token;
+  }
+
+  QJsonObject rollbackJson( const QString &token, const QString &action )
+  {
+    QJsonObject rollback;
+    rollback.insert( u"token"_s, token );
+    rollback.insert( u"action"_s, action );
+    rollback.insert( u"volatile"_s, true );
+    return rollback;
+  }
+
   // Vector and raster file extensions we auto-detect. Lowercase, no leading dot.
   const QSet<QString> &vectorExts()
   {
@@ -291,6 +337,125 @@ namespace
       size = QSize( 1280, 720 );
     return QSize( std::clamp( size.width(), 1, 4096 ), std::clamp( size.height(), 1, 4096 ) );
   }
+
+  QgsAiToolResult rollbackLayerAddition( QgsProject *project, const QString &token )
+  {
+    if ( !rollbackStore().contains( token ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+    RollbackEntry entry = rollbackStore().take( token );
+    if ( entry.type != RollbackType::RemoveLayer )
+      return QgsAiToolResult::error( u"Rollback token does not belong to a layer-add operation."_s );
+    if ( !project )
+      return QgsAiToolResult::error( u"No active QgsProject available."_s );
+    if ( !project->mapLayer( entry.layerId ) )
+    {
+      QJsonObject output;
+      output.insert( u"status"_s, u"already_removed"_s );
+      output.insert( u"rollback_token"_s, token );
+      return QgsAiToolResult::ok( output );
+    }
+
+    project->removeMapLayer( entry.layerId );
+    QJsonObject diff;
+    diff.insert( u"summary"_s, u"Removed layer added by AI tool."_s );
+    diff.insert( u"layer_id"_s, entry.layerId );
+
+    QJsonObject output;
+    output.insert( u"status"_s, u"rolled_back"_s );
+    output.insert( u"rollback_token"_s, token );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
+
+  QgsAiToolResult rollbackLayerStyle( QgsProject *project, const QString &token )
+  {
+    if ( !rollbackStore().contains( token ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+    RollbackEntry entry = rollbackStore().take( token );
+    if ( entry.type != RollbackType::RestoreLayerStyle )
+      return QgsAiToolResult::error( u"Rollback token does not belong to a layer-style operation."_s );
+    if ( !project )
+      return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+    QgsMapLayer *layer = project->mapLayer( entry.layerId );
+    if ( !layer )
+      return QgsAiToolResult::error( u"Cannot rollback style: layer no longer exists: %1"_s.arg( entry.layerId ) );
+
+    QgsLayerTreeLayer *treeNode = project->layerTreeRoot() ? project->layerTreeRoot()->findLayer( entry.layerId ) : nullptr;
+    const QJsonObject before = layerVisualSummary( layer, treeNode );
+
+    QgsMapLayerStyle style( entry.styleXml );
+    style.writeToLayer( layer );
+    if ( treeNode && entry.hasVisibility )
+      treeNode->setItemVisibilityChecked( entry.visible );
+    layer->triggerRepaint();
+    if ( QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer ) )
+      vector->emitStyleChanged();
+
+    const QJsonObject after = layerVisualSummary( layer, treeNode );
+    QJsonObject diff;
+    diff.insert( u"summary"_s, u"Restored previous layer style."_s );
+    diff.insert( u"before"_s, before );
+    diff.insert( u"after"_s, after );
+
+    QJsonObject output;
+    output.insert( u"status"_s, u"rolled_back"_s );
+    output.insert( u"rollback_token"_s, token );
+    output.insert( u"layer_id"_s, entry.layerId );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
+
+  QgsAiToolResult rollbackLayoutCreation( QgsProject *project, const QString &token )
+  {
+    if ( !rollbackStore().contains( token ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+    RollbackEntry entry = rollbackStore().take( token );
+    if ( entry.type != RollbackType::RemoveLayout )
+      return QgsAiToolResult::error( u"Rollback token does not belong to a layout operation."_s );
+    if ( !project || !project->layoutManager() )
+      return QgsAiToolResult::error( u"No layout manager available."_s );
+
+    QgsMasterLayoutInterface *layout = project->layoutManager()->layoutByName( entry.layoutName );
+    if ( layout )
+      project->layoutManager()->removeLayout( layout );
+
+    QJsonObject diff;
+    diff.insert( u"summary"_s, u"Removed print layout created by AI tool."_s );
+    diff.insert( u"layout_name"_s, entry.layoutName );
+
+    QJsonObject output;
+    output.insert( u"status"_s, layout ? u"rolled_back"_s : u"already_removed"_s );
+    output.insert( u"rollback_token"_s, token );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
+
+  QgsAiToolResult rollbackFileExport( const QString &token )
+  {
+    if ( !rollbackStore().contains( token ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+    RollbackEntry entry = rollbackStore().take( token );
+    if ( entry.type != RollbackType::DeleteFile )
+      return QgsAiToolResult::error( u"Rollback token does not belong to an export-file operation."_s );
+
+    const bool existed = QFileInfo::exists( entry.filePath );
+    bool removed = true;
+    if ( existed )
+      removed = QFile::remove( entry.filePath );
+    if ( !removed )
+      return QgsAiToolResult::error( u"Could not remove exported file: %1"_s.arg( entry.filePath ) );
+
+    QJsonObject diff;
+    diff.insert( u"summary"_s, u"Removed exported file created by AI tool."_s );
+    diff.insert( u"path"_s, entry.filePath );
+
+    QJsonObject output;
+    output.insert( u"status"_s, existed ? u"rolled_back"_s : u"already_removed"_s );
+    output.insert( u"rollback_token"_s, token );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
 } //namespace
 
 // ---------------------------------------------------------------------------
@@ -320,11 +485,20 @@ QJsonObject QgsAiAddLayerFromFileTool::schema() const
   properties.insert( u"path"_s, prop( u"string"_s, u"Workspace-relative or absolute path to the source file."_s ) );
   properties.insert( u"name"_s, prop( u"string"_s, u"Optional display name. Defaults to the file stem."_s ) );
   properties.insert( u"kind"_s, prop( u"string"_s, u"Optional. One of: 'vector', 'raster', 'auto'. Default 'auto' (detect by extension)."_s ) );
-  return schemaObject( properties, QJsonArray { u"path"_s } );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous add_layer_from_file call. If set, removes that added layer."_s ) );
+  return schemaObject( properties );
 }
 
 QgsAiToolResult QgsAiAddLayerFromFileTool::execute( const QJsonObject &args )
 {
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayerAddition( project, rollbackToken );
+
   const QString rawPath = args.value( u"path"_s ).toString().trimmed();
   if ( rawPath.isEmpty() )
     return QgsAiToolResult::error( u"Argument 'path' is required."_s );
@@ -333,9 +507,7 @@ QgsAiToolResult QgsAiAddLayerFromFileTool::execute( const QJsonObject &args )
   if ( path.isEmpty() )
     return QgsAiToolResult::error( u"Cannot resolve path to an existing file: %1"_s.arg( rawPath ) );
 
-  QgsProject *project = mProject ? mProject : QgsProject::instance();
-  if ( !project )
-    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+  const int beforeLayerCount = project->mapLayers().size();
 
   QString kind = args.value( u"kind"_s ).toString().toLower().trimmed();
   if ( kind.isEmpty() || kind == "auto"_L1 )
@@ -377,11 +549,26 @@ QgsAiToolResult QgsAiAddLayerFromFileTool::execute( const QJsonObject &args )
 
   project->addMapLayer( added );
 
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RemoveLayer;
+  rollback.layerId = added->id();
+  rollback.description = u"Remove layer added from file."_s;
+  const QString token = storeRollback( rollback );
+
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Added a map layer to the project."_s );
+  diff.insert( u"before_layer_count"_s, beforeLayerCount );
+  diff.insert( u"after_layer_count"_s, project->mapLayers().size() );
+  diff.insert( u"layer_id"_s, added->id() );
+
   output.insert( u"layer_id"_s, added->id() );
   output.insert( u"name"_s, added->name() );
   output.insert( u"crs"_s, added->crs().authid() );
   output.insert( u"source"_s, added->publicSource() );
   output.insert( u"extent"_s, extentJson( added->extent() ) );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"remove_added_layer"_s ) );
   return QgsAiToolResult::ok( output );
 }
 
@@ -573,9 +760,14 @@ QgsAiToolResult QgsAiRunProcessingAlgorithmTool::execute( const QJsonObject &arg
     return QgsAiToolResult::error( u"Processing algorithm failed: %1"_s.arg( feedback.textLog().trimmed() ) );
 
   QJsonObject output = processingAlgorithmMetadataJson( algorithm );
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Executed a QGIS Processing algorithm."_s );
+  diff.insert( u"algorithm_id"_s, algorithm->id() );
+  diff.insert( u"rollback_supported"_s, false );
   output.insert( u"dry_run"_s, false );
   output.insert( u"result"_s, QJsonObject::fromVariantMap( result ) );
   output.insert( u"log"_s, feedback.textLog() );
+  output.insert( u"diff"_s, diff );
   return QgsAiToolResult::ok( output );
 }
 
@@ -602,32 +794,53 @@ QJsonObject QgsAiStyleLayerTool::schema() const
   properties.insert( u"opacity"_s, prop( u"number"_s, u"Optional opacity between 0 and 1."_s ) );
   properties.insert( u"visible"_s, prop( u"boolean"_s, u"Optional layer tree visibility."_s ) );
   properties.insert( u"color"_s, prop( u"string"_s, u"Optional vector single-symbol color, e.g. '#2F80ED'."_s ) );
-  return schemaObject( properties, QJsonArray { u"layer_id"_s } );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous style_layer call. If set, restores the previous style."_s ) );
+  return schemaObject( properties );
 }
 
 QgsAiToolResult QgsAiStyleLayerTool::execute( const QJsonObject &args )
 {
-  const QString layerId = args.value( u"layer_id"_s ).toString().trimmed();
-  if ( layerId.isEmpty() )
-    return QgsAiToolResult::error( u"Argument 'layer_id' is required."_s );
-
   QgsProject *project = mProject ? mProject : QgsProject::instance();
   if ( !project )
     return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayerStyle( project, rollbackToken );
+
+  const QString layerId = args.value( u"layer_id"_s ).toString().trimmed();
+  if ( layerId.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'layer_id' is required."_s );
 
   QgsMapLayer *layer = project->mapLayer( layerId );
   if ( !layer )
     return QgsAiToolResult::error( u"No layer with id: %1"_s.arg( layerId ) );
 
+  QgsLayerTreeLayer *treeNode = project->layerTreeRoot() ? project->layerTreeRoot()->findLayer( layerId ) : nullptr;
+  const QJsonObject beforeVisual = layerVisualSummary( layer, treeNode );
+  QgsMapLayerStyle beforeStyle;
+  beforeStyle.readFromLayer( layer );
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RestoreLayerStyle;
+  rollback.layerId = layerId;
+  rollback.styleXml = beforeStyle.xmlData();
+  rollback.hasVisibility = treeNode != nullptr;
+  rollback.visible = treeNode ? treeNode->itemVisibilityChecked() : true;
+  rollback.description = u"Restore layer style before AI styling."_s;
+
+  QJsonArray changes;
   if ( args.contains( u"opacity"_s ) )
   {
     const double opacity = std::clamp( args.value( u"opacity"_s ).toDouble( layer->opacity() ), 0.0, 1.0 );
     layer->setOpacity( opacity );
+    changes.append( u"opacity"_s );
   }
 
-  QgsLayerTreeLayer *treeNode = project->layerTreeRoot() ? project->layerTreeRoot()->findLayer( layerId ) : nullptr;
   if ( treeNode && args.contains( u"visible"_s ) )
+  {
     treeNode->setItemVisibilityChecked( args.value( u"visible"_s ).toBool() );
+    changes.append( u"visibility"_s );
+  }
 
   if ( args.contains( u"color"_s ) )
   {
@@ -645,6 +858,7 @@ QgsAiToolResult QgsAiStyleLayerTool::execute( const QJsonObject &args )
 
     symbol->setColor( color );
     vector->setRenderer( new QgsSingleSymbolRenderer( symbol.release() ) );
+    changes.append( u"color"_s );
   }
 
   layer->triggerRepaint();
@@ -652,9 +866,19 @@ QgsAiToolResult QgsAiStyleLayerTool::execute( const QJsonObject &args )
     vector->emitStyleChanged();
 
   QJsonObject output;
+  const QString token = storeRollback( rollback );
+  QJsonObject diff;
+  diff.insert( u"summary"_s, changes.isEmpty() ? u"No style changes requested."_s : u"Applied native layer styling changes."_s );
+  diff.insert( u"changes"_s, changes );
+  diff.insert( u"before"_s, beforeVisual );
+  diff.insert( u"after"_s, layerVisualSummary( layer, treeNode ) );
+
   output.insert( u"layer_id"_s, layer->id() );
   output.insert( u"name"_s, layer->name() );
   output.insert( u"visual"_s, layerVisualSummary( layer, treeNode ) );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"restore_layer_style"_s ) );
   return QgsAiToolResult::ok( output );
 }
 
@@ -681,6 +905,7 @@ QJsonObject QgsAiCreatePrintLayoutTool::schema() const
   QJsonObject properties;
   properties.insert( u"name"_s, prop( u"string"_s, u"Optional layout name. Defaults to 'Strata Layout' and is made unique."_s ) );
   properties.insert( u"title"_s, prop( u"string"_s, u"Optional title label to place above the map."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous create_print_layout call. If set, removes that layout."_s ) );
   return schemaObject( properties );
 }
 
@@ -692,6 +917,11 @@ QgsAiToolResult QgsAiCreatePrintLayoutTool::execute( const QJsonObject &args )
   if ( !project->layoutManager() )
     return QgsAiToolResult::error( u"No layout manager available."_s );
 
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayoutCreation( project, rollbackToken );
+
+  const int beforeLayoutCount = project->layoutManager()->layouts().size();
   const QString layoutName = uniqueLayoutName( project, args.value( u"name"_s ).toString() );
   const QString title = args.value( u"title"_s ).toString().trimmed();
 
@@ -730,11 +960,26 @@ QgsAiToolResult QgsAiCreatePrintLayoutTool::execute( const QJsonObject &args )
   if ( !project->layoutManager()->addLayout( layout.release() ) )
     return QgsAiToolResult::error( u"Could not add print layout to the project."_s );
 
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RemoveLayout;
+  rollback.layoutName = layoutName;
+  rollback.description = u"Remove print layout created by AI tool."_s;
+  const QString token = storeRollback( rollback );
+
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Created a print layout."_s );
+  diff.insert( u"before_layout_count"_s, beforeLayoutCount );
+  diff.insert( u"after_layout_count"_s, project->layoutManager()->layouts().size() );
+  diff.insert( u"layout_name"_s, layoutName );
+
   QJsonObject output;
   output.insert( u"layout_name"_s, layoutName );
   output.insert( u"title"_s, title );
   output.insert( u"has_map"_s, true );
   output.insert( u"uses_canvas_extent"_s, mCanvas != nullptr );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"remove_created_layout"_s ) );
   return QgsAiToolResult::ok( output );
 }
 
@@ -765,11 +1010,16 @@ QJsonObject QgsAiExportMapTool::schema() const
   properties.insert( u"width"_s, prop( u"integer"_s, u"Optional canvas export width in pixels, max 4096."_s ) );
   properties.insert( u"height"_s, prop( u"integer"_s, u"Optional canvas export height in pixels, max 4096."_s ) );
   properties.insert( u"dpi"_s, prop( u"integer"_s, u"Optional layout export DPI. Default 300."_s ) );
-  return schemaObject( properties, QJsonArray { u"path"_s } );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous export_map call. If set, deletes that exported file."_s ) );
+  return schemaObject( properties );
 }
 
 QgsAiToolResult QgsAiExportMapTool::execute( const QJsonObject &args )
 {
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackFileExport( rollbackToken );
+
   if ( !mContextProvider )
     return QgsAiToolResult::error( u"File context provider not available."_s );
 
@@ -788,6 +1038,8 @@ QgsAiToolResult QgsAiExportMapTool::execute( const QJsonObject &args )
     format = u"png"_s;
   if ( format != "png"_L1 && format != "pdf"_L1 )
     return QgsAiToolResult::error( u"Unsupported export format '%1'. Use 'png' or 'pdf'."_s.arg( format ) );
+  if ( QFileInfo::exists( outputPath ) )
+    return QgsAiToolResult::error( u"Output file already exists: %1. Choose a new path so rollback can safely delete only files created by this tool."_s.arg( outputPath ) );
 
   if ( !QDir().mkpath( QFileInfo( outputPath ).absolutePath() ) )
     return QgsAiToolResult::error( u"Could not create output directory: %1"_s.arg( QFileInfo( outputPath ).absolutePath() ) );
@@ -843,10 +1095,26 @@ QgsAiToolResult QgsAiExportMapTool::execute( const QJsonObject &args )
   }
 
   QJsonObject output;
+  RollbackEntry rollback;
+  rollback.type = RollbackType::DeleteFile;
+  rollback.filePath = outputPath;
+  rollback.description = u"Delete file exported by AI tool."_s;
+  const QString token = storeRollback( rollback );
+
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Created exported map file."_s );
+  diff.insert( u"path"_s, outputPath );
+  diff.insert( u"existed_before"_s, false );
+  diff.insert( u"before_size_bytes"_s, 0 );
+  diff.insert( u"after_size_bytes"_s, static_cast<qint64>( QFileInfo( outputPath ).size() ) );
+
   output.insert( u"path"_s, mContextProvider->workspaceRoot().isEmpty() ? outputPath : QDir( mContextProvider->workspaceRoot() ).relativeFilePath( outputPath ) );
   output.insert( u"absolute_path"_s, outputPath );
   output.insert( u"format"_s, format );
   output.insert( u"layout_name"_s, layoutName );
   output.insert( u"size_bytes"_s, static_cast<qint64>( QFileInfo( outputPath ).size() ) );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"delete_exported_file"_s ) );
   return QgsAiToolResult::ok( output );
 }

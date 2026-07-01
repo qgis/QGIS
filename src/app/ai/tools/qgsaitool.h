@@ -22,6 +22,30 @@
 #include <QJsonValue>
 #include <QString>
 
+enum class QgsAiToolRiskLevel
+{
+  Low,
+  Medium,
+  High,
+  Critical
+};
+
+inline QString QgsAiToolRiskLevelName( QgsAiToolRiskLevel level )
+{
+  switch ( level )
+  {
+    case QgsAiToolRiskLevel::Low:
+      return QStringLiteral( "low" );
+    case QgsAiToolRiskLevel::Medium:
+      return QStringLiteral( "medium" );
+    case QgsAiToolRiskLevel::High:
+      return QStringLiteral( "high" );
+    case QgsAiToolRiskLevel::Critical:
+      return QStringLiteral( "critical" );
+  }
+  return QStringLiteral( "low" );
+}
+
 struct APP_EXPORT QgsAiToolResult
 {
     bool success = false;
@@ -55,6 +79,7 @@ class APP_EXPORT QgsAiTool
     virtual QJsonObject schema() const = 0;
     virtual QgsAiToolResult execute( const QJsonObject &args ) = 0;
     virtual bool requiresApproval() const { return false; }
+    virtual QgsAiToolRiskLevel riskLevel() const { return QgsAiToolRiskLevel::Low; }
     virtual bool isAvailable() const { return true; }
     virtual QString availabilityReason() const { return QString(); }
 };
