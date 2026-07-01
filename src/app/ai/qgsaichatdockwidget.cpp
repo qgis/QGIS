@@ -100,10 +100,10 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegularExpression>
+#include <QSaveFile>
 #include <QScreen>
 #include <QScrollBar>
 #include <QSet>
-#include <QSaveFile>
 #include <QSize>
 #include <QSizePolicy>
 #include <QStandardItemModel>
@@ -1860,7 +1860,9 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   for ( QPushButton *button : { saveWorkflowButton, dryRunWorkflowButton, runWorkflowButton, exportWorkflowReportButton } )
   {
     button->setEnabled( hasPlan );
-    button->setStyleSheet( u"QPushButton { background: palette(button); color: palette(window-text); border: 0; border-radius: 6px; padding: 4px 8px; } QPushButton:hover:enabled { background: palette(alternate-base); }"_s );
+    button->setStyleSheet(
+      u"QPushButton { background: palette(button); color: palette(window-text); border: 0; border-radius: 6px; padding: 4px 8px; } QPushButton:hover:enabled { background: palette(alternate-base); }"_s
+    );
     workflowButtons->addWidget( button );
   }
   workflowButtons->addStretch( 1 );

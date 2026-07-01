@@ -449,7 +449,7 @@ void TestQgsAiChatDockWidget::workflowComposerExportsReportAndDryRun()
   QVERIFY( reportFile.open( QIODevice::ReadOnly ) );
   const QJsonObject report = QJsonDocument::fromJson( reportFile.readAll() ).object();
   QCOMPARE( report.value( u"kind"_s ).toString(), u"strataflow_report"_s );
-  QVERIFY( report.value( u"workflowPath"_s ).toString().endsWith( u".strataflow"_s ) );
+  QVERIFY( report.value( u"workflowPath"_s ).toString().endsWith( ".strataflow"_L1 ) );
   QVERIFY( report.value( u"provenance"_s ).toObject().value( u"metadataOnly"_s ).toBool() );
 
   dryRun->click();
