@@ -100,6 +100,9 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     bool renderInternal( QgsFeatureRenderer *renderer, int rendererIndex );
 
+    //! builds the geometry to clip by visible part of the globe when using a topocentric crs
+    static QgsGeometry buildTopocentricHorizonGeometry( const QgsCoordinateTransform &coordinateTransform );
+
   private:
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
