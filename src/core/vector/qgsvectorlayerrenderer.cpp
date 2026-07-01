@@ -514,6 +514,44 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   return true;
 }
 
+QgsGeometry QgsVectorLayerRenderer::buildTopocentricHorizonGeometry( const QgsCoordinateTransform &coordinateTransform )
+{
+  const QgsCoordinateReferenceSystem crs = coordinateTransform.destinationCrs();
+  double topoLat = 0.0, topoLon = 0.0;
+  if ( !crs.topocentricOrigin( topoLat, topoLon ) )
+  {
+    return QgsGeometry();
+  }
+
+  // prevent division by zero
+  if ( std::abs( topoLat ) < 1e-6 )
+    topoLat = topoLat >= 0 ? 1e-6 : -1e-6;
+
+  const double topoLonRad = qDegreesToRadians( topoLon );
+  const double topoLatRad = qDegreesToRadians( topoLat );
+
+  // add the horizon points, 1 for each degree, to build up the clipping geometry
+  QVector<QgsPointXY> points;
+  for ( double lon = -180.0; lon <= 180.0; lon += 1 )
+  {
+    const double lonRad = qDegreesToRadians( lon );
+    const double latRad = std::atan( -std::cos( lonRad - topoLonRad ) / std::tan( topoLatRad ) );
+    points.append( QgsPointXY( lon, qRadiansToDegrees( latRad ) ) );
+  }
+
+  // unless we explicitly add the pole points, we are clipping too much of the world above/below 45/-45 latitude
+  const double pole = topoLat > 0 ? 90.0 : -90.0;
+  points.append( QgsPointXY( 180.0, pole ) );
+  points.append( QgsPointXY( -180.0, pole ) );
+
+  QgsGeometry horizonGeom = QgsGeometry::fromPolygonXY( QVector<QVector<QgsPointXY>> { points } );
+
+  const QgsCoordinateReferenceSystem geoCrs = crs.toGeographicCrs();
+  QgsCoordinateTransform geoToSource( geoCrs, coordinateTransform.sourceCrs(), coordinateTransform.context() );
+  horizonGeom.transform( geoToSource );
+
+  return horizonGeom;
+}
 
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeatureIterator &fit )
 {
@@ -537,6 +575,13 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
   if ( mSelectionSymbol && isMainRenderer )
     mSelectionSymbol->startRender( context, mFields );
 
+  QgsGeometry horizonGeom;
+  double lat, lon;
+  if ( context.coordinateTransform().destinationCrs().topocentricOrigin( lat, lon ) )
+  {
+    horizonGeom = buildTopocentricHorizonGeometry( context.coordinateTransform() );
+  }
+
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
@@ -549,7 +594,17 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       }
 
       if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
-        continue; // skip features without geometry
+        continue;
+
+      // topocentric horizon clipping
+      if ( !horizonGeom.isEmpty() )
+      {
+        QgsGeometry clippedGeom = fet.geometry().intersection( horizonGeom );
+        if ( clippedGeom.isEmpty() )
+          continue;
+
+        fet.setGeometry( clippedGeom );
+      }
 
       if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
         continue; // skip features outside of clipping region
@@ -719,6 +774,13 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   timer.start();
   quint64 totalLabelTime = 0;
 
+  QgsGeometry horizonGeom;
+  double lat, lon;
+  if ( context.coordinateTransform().destinationCrs().topocentricOrigin( lat, lon ) )
+  {
+    horizonGeom = buildTopocentricHorizonGeometry( context.coordinateTransform() );
+  }
+
   // 1. fetch features
   QgsFeature fet;
   QVector<QVariant> prevValues; // previous values of ORDER BY attributes
@@ -732,7 +794,17 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     }
 
     if ( !fet.hasGeometry() )
-      continue; // skip features without geometry
+      continue;
+
+    // topocentric horizon clipping
+    if ( !horizonGeom.isEmpty() )
+    {
+      QgsGeometry clippedGeom = fet.geometry().intersection( horizonGeom );
+      if ( clippedGeom.isEmpty() )
+        continue;
+
+      fet.setGeometry( clippedGeom );
+    }
 
     if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
       continue; // skip features outside of clipping region
