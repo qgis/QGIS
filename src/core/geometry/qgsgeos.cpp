@@ -1862,7 +1862,7 @@ std::unique_ptr<QgsSimpleCurve> QgsGeos::sequenceToSimpleCurve( const GEOSGeomet
   GEOSContextHandle_t context = QgsGeosContext::get();
 
   const int geometryType = GEOSGeomTypeId_r( context, geos );
-  if ( !( geometryType == GEOS_LINESTRING || geometryType == GEOS_CIRCULARSTRING ) )
+  if ( !( geometryType == GEOS_LINESTRING || geometryType == GEOS_LINEARRING || geometryType == GEOS_CIRCULARSTRING ) )
     return nullptr;
 
   const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( context, geos );
@@ -1901,11 +1901,11 @@ std::unique_ptr<QgsSimpleCurve> QgsGeos::sequenceToSimpleCurve( const GEOSGeomet
 #endif
 
   std::unique_ptr< QgsSimpleCurve > simpleCurve;
-  if ( geometryType == GEOS_LINESTRING )
+  if ( geometryType == GEOS_LINESTRING || geometryType == GEOS_LINEARRING )
   {
     simpleCurve = std::make_unique<QgsLineString>( xOut, yOut, zOut, mOut );
   }
-  else
+  else if ( geometryType == GEOS_CIRCULARSTRING )
   {
     simpleCurve = std::make_unique<QgsCircularString>( xOut, yOut, zOut, mOut );
   }
