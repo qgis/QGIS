@@ -316,6 +316,12 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     }
   }
 
+  const QStringList propertyNames( mShared->mURI.propertyName() );
+  if ( !propertyNames.isEmpty() && !forHits )
+  {
+    query.addQueryItem( u"PROPERTYNAME"_s, propertyNames.join( ',' ) );
+  }
+
   getFeatureUrl.setQuery( query );
   QgsDebugMsgLevel( u"WFS GetFeature URL: %1"_s.arg( getFeatureUrl.toDisplayString() ), 2 );
   return getFeatureUrl;
@@ -488,6 +494,24 @@ std::pair<QUrl, QByteArray> QgsWFSFeatureDownloaderImpl::buildPostRequest( qint6
       }
 
       queryElement.appendChild( sortByElement );
+    }
+
+    if ( !forHits )
+    {
+      const QStringList propertyNames( mShared->mURI.propertyName() );
+      if ( !propertyNames.isEmpty() && useVersion2 )
+      {
+        queryElement.setAttribute( u"propertyName"_s, propertyNames.join( ',' ) );
+      }
+      else if ( !propertyNames.isEmpty() )
+      {
+        for ( const QString &prop : propertyNames )
+        {
+          QDomElement propNameElem = postDocument.createElement( u"wfs:PropertyName"_s );
+          propNameElem.appendChild( postDocument.createTextNode( prop ) );
+          queryElement.appendChild( propNameElem );
+        }
+      }
     }
 
     return queryElement;
