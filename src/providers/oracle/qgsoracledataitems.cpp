@@ -221,10 +221,35 @@ void QgsOracleConnectionItem::taskFinished()
 {
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 3 );
 
-  if ( mColumnTypeTask->status() == QgsTask::Complete )
-    setAllAsPopulated();
-  else
-    setState( Qgis::BrowserItemState::NotPopulated );
+  switch ( mColumnTypeTask->status() )
+  {
+    case QgsTask::Terminated:
+    {
+      if ( mColumnTypeTask->error().isEmpty() )
+      {
+        // task canceled
+        setState( Qgis::BrowserItemState::NotPopulated );
+      }
+      else
+      {
+        // an error occurred
+        addChildItem( new QgsErrorItem( this, mColumnTypeTask->error(), mPath + "/error" ), true );
+        setAllAsPopulated();
+      }
+      break;
+    }
+
+    case QgsTask::Complete:
+      setIcon( QIcon() );
+      setAllAsPopulated();
+      break;
+
+    case QgsTask::Queued:
+    case QgsTask::OnHold:
+    case QgsTask::Running:
+      QgsDebugError( "Invalid task state" );
+      break;
+  }
 
   mColumnTypeTask = nullptr;
 }
