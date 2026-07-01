@@ -76,6 +76,35 @@ namespace
     }
     return out;
   }
+
+  QgsAiManagedAgentPreset parseAgentPresetObject( const QJsonObject &item )
+  {
+    QgsAiManagedAgentPreset preset;
+    preset.mode = item.value( u"mode"_s ).toString();
+    preset.label = item.value( u"label"_s ).toString( preset.mode );
+    preset.allowedTools = stringArray( item.value( u"allowedTools"_s ) );
+    preset.allowedModels = stringArray( item.value( u"allowedModels"_s ) );
+    return preset;
+  }
+
+  QJsonObject agentPresetJson( const QgsAiManagedAgentPreset &preset )
+  {
+    QJsonObject item;
+    item.insert( u"mode"_s, preset.mode );
+    item.insert( u"label"_s, preset.label );
+    item.insert( u"allowedTools"_s, QJsonArray::fromStringList( preset.allowedTools ) );
+    item.insert( u"allowedModels"_s, QJsonArray::fromStringList( preset.allowedModels ) );
+    return item;
+  }
+
+  void applyCachedPolicyFallback( QObject *receiver, const QgsAiManagedAgentPolicy &policy )
+  {
+    if ( !policy.isEmpty() )
+      QMetaObject::invokeMethod( receiver, [receiver, policy]() {
+        if ( QgsAiPlanClient *client = qobject_cast<QgsAiPlanClient *>( receiver ) )
+          emit client->agentPolicyReady( policy, true );
+      }, Qt::QueuedConnection );
+  }
 } //namespace
 
 QString QgsAiPlanClient::ModelInfo::displayLabel() const
@@ -112,6 +141,9 @@ QgsAiPlanClient::QgsAiPlanClient( QObject *parent )
   qRegisterMetaType<QgsAiPlanClient::AccountInfo>();
   qRegisterMetaType<QgsAiPlanClient::ModelInfo>();
   qRegisterMetaType<QList<QgsAiPlanClient::ModelInfo>>();
+  qRegisterMetaType<QgsAiManagedAgentPreset>();
+  qRegisterMetaType<QgsAiManagedAgentPolicy>();
+  qRegisterMetaType<QList<QgsAiManagedAgentPreset>>();
 }
 
 QString QgsAiPlanClient::apiBaseForChatEndpoint( const QString &chatEndpoint )
@@ -155,6 +187,40 @@ QList<QgsAiPlanClient::ModelInfo> QgsAiPlanClient::parseModelsJson( const QByteA
   return models;
 }
 
+QList<QgsAiManagedAgentPreset> QgsAiPlanClient::parseAgentsJson( const QByteArray &body )
+{
+  QList<QgsAiManagedAgentPreset> agents;
+  const QJsonObject root = QJsonDocument::fromJson( body ).object();
+  const QJsonArray items = root.value( u"items"_s ).toArray();
+  agents.reserve( items.size() );
+  for ( const QJsonValue &value : items )
+  {
+    QgsAiManagedAgentPreset preset = parseAgentPresetObject( value.toObject() );
+    if ( !preset.mode.isEmpty() )
+      agents << preset;
+  }
+  return agents;
+}
+
+QgsAiManagedAgentPolicy QgsAiPlanClient::parseAgentPolicyJson( const QByteArray &body )
+{
+  QgsAiManagedAgentPolicy policy;
+  const QJsonObject root = QJsonDocument::fromJson( body ).object();
+  policy.tier = root.value( u"tier"_s ).toString();
+  policy.modes = stringArray( root.value( u"modes"_s ) );
+  policy.allowedTools = stringArray( root.value( u"allowedTools"_s ) );
+  policy.allowedModels = stringArray( root.value( u"allowedModels"_s ) );
+  const QJsonArray presets = root.value( u"presets"_s ).toArray();
+  policy.presets.reserve( presets.size() );
+  for ( const QJsonValue &value : presets )
+  {
+    QgsAiManagedAgentPreset preset = parseAgentPresetObject( value.toObject() );
+    if ( !preset.mode.isEmpty() )
+      policy.presets << preset;
+  }
+  return policy;
+}
+
 QgsAiPlanClient::AccountInfo QgsAiPlanClient::parseMeJson( const QByteArray &body )
 {
   const QJsonObject root = QJsonDocument::fromJson( body ).object();
@@ -170,12 +236,38 @@ QString QgsAiPlanClient::cacheFilePath()
   return QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"strata_plan_models_cache.json"_s );
 }
 
+QString QgsAiPlanClient::agentsCacheFilePath()
+{
+  return QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"strata_plan_agents_cache.json"_s );
+}
+
+QString QgsAiPlanClient::agentPolicyCacheFilePath()
+{
+  return QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"strata_plan_agent_policy_cache.json"_s );
+}
+
 QList<QgsAiPlanClient::ModelInfo> QgsAiPlanClient::cachedModels()
 {
   QFile file( cacheFilePath() );
   if ( !file.open( QIODevice::ReadOnly ) )
     return {};
   return parseModelsJson( file.readAll() );
+}
+
+QList<QgsAiManagedAgentPreset> QgsAiPlanClient::cachedAgents()
+{
+  QFile file( agentsCacheFilePath() );
+  if ( !file.open( QIODevice::ReadOnly ) )
+    return {};
+  return parseAgentsJson( file.readAll() );
+}
+
+QgsAiManagedAgentPolicy QgsAiPlanClient::cachedAgentPolicy()
+{
+  QFile file( agentPolicyCacheFilePath() );
+  if ( !file.open( QIODevice::ReadOnly ) )
+    return {};
+  return parseAgentPolicyJson( file.readAll() );
 }
 
 void QgsAiPlanClient::writeCachedModels( const QList<ModelInfo> &models )
@@ -200,6 +292,37 @@ void QgsAiPlanClient::writeCachedModels( const QList<ModelInfo> &models )
   root.insert( u"items"_s, items );
 
   QFile file( cacheFilePath() );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    file.write( QJsonDocument( root ).toJson( QJsonDocument::Compact ) );
+}
+
+void QgsAiPlanClient::writeCachedAgents( const QList<QgsAiManagedAgentPreset> &agents )
+{
+  QJsonArray items;
+  for ( const QgsAiManagedAgentPreset &preset : agents )
+    items << agentPresetJson( preset );
+  QJsonObject root;
+  root.insert( u"items"_s, items );
+
+  QFile file( agentsCacheFilePath() );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    file.write( QJsonDocument( root ).toJson( QJsonDocument::Compact ) );
+}
+
+void QgsAiPlanClient::writeCachedAgentPolicy( const QgsAiManagedAgentPolicy &policy )
+{
+  QJsonArray presets;
+  for ( const QgsAiManagedAgentPreset &preset : policy.presets )
+    presets << agentPresetJson( preset );
+
+  QJsonObject root;
+  root.insert( u"tier"_s, policy.tier );
+  root.insert( u"modes"_s, QJsonArray::fromStringList( policy.modes ) );
+  root.insert( u"allowedTools"_s, QJsonArray::fromStringList( policy.allowedTools ) );
+  root.insert( u"allowedModels"_s, QJsonArray::fromStringList( policy.allowedModels ) );
+  root.insert( u"presets"_s, presets );
+
+  QFile file( agentPolicyCacheFilePath() );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     file.write( QJsonDocument( root ).toJson( QJsonDocument::Compact ) );
 }
@@ -400,6 +523,101 @@ void QgsAiPlanClient::refreshModels( const QString &chatEndpoint )
     const QList<ModelInfo> cached = cachedModels();
     if ( !cached.isEmpty() )
       emit modelsReady( cached, true );
+    emit requestFailed( responseErrorMessage( reply, body ) );
+  } );
+}
+
+void QgsAiPlanClient::refreshAgents( const QString &chatEndpoint, const QString &sessionToken )
+{
+  refreshAuthenticatedJson( chatEndpoint, sessionToken, u"/v1/agents"_s );
+}
+
+void QgsAiPlanClient::refreshAgentPolicy( const QString &chatEndpoint, const QString &sessionToken )
+{
+  refreshAuthenticatedJson( chatEndpoint, sessionToken, u"/v1/agents/policy"_s );
+}
+
+void QgsAiPlanClient::refreshAuthenticatedJson( const QString &chatEndpoint, const QString &sessionToken, const QString &path )
+{
+  const QString apiBase = apiBaseForChatEndpoint( chatEndpoint );
+  const bool wantsAgents = path.endsWith( u"/agents"_s );
+  if ( apiBase.isEmpty() || sessionToken.trimmed().isEmpty() )
+  {
+    if ( wantsAgents )
+    {
+      const QList<QgsAiManagedAgentPreset> cached = cachedAgents();
+      if ( !cached.isEmpty() )
+        emit agentsReady( cached, true );
+    }
+    else
+      applyCachedPolicyFallback( this, cachedAgentPolicy() );
+    if ( apiBase.isEmpty() )
+      emit requestFailed( tr( "Plan backend endpoint is not configured." ) );
+    return;
+  }
+
+  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
+  if ( !networkManager )
+  {
+    if ( wantsAgents )
+    {
+      const QList<QgsAiManagedAgentPreset> cached = cachedAgents();
+      if ( !cached.isEmpty() )
+        emit agentsReady( cached, true );
+    }
+    else
+      applyCachedPolicyFallback( this, cachedAgentPolicy() );
+    emit requestFailed( tr( "Network manager is not available." ) );
+    return;
+  }
+
+  QNetworkRequest request( apiUrl( apiBase, path ) );
+  request.setRawHeader( "Accept", "application/json" );
+  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
+  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  QNetworkReply *reply = networkManager->get( request );
+  if ( !reply )
+  {
+    emit requestFailed( wantsAgents ? tr( "Unable to start the Plan agents request." ) : tr( "Unable to start the Plan agent policy request." ) );
+    return;
+  }
+
+  connect( reply, &QNetworkReply::finished, reply, &QObject::deleteLater );
+  connect( reply, &QNetworkReply::finished, this, [this, reply, wantsAgents]() {
+    const int httpStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
+    const QByteArray body = reply->readAll();
+    if ( reply->error() == QNetworkReply::NoError && httpStatus >= 200 && httpStatus < 300 )
+    {
+      if ( wantsAgents )
+      {
+        const QList<QgsAiManagedAgentPreset> agents = parseAgentsJson( body );
+        if ( !agents.isEmpty() )
+        {
+          writeCachedAgents( agents );
+          emit agentsReady( agents, false );
+          return;
+        }
+      }
+      else
+      {
+        const QgsAiManagedAgentPolicy policy = parseAgentPolicyJson( body );
+        if ( !policy.isEmpty() )
+        {
+          writeCachedAgentPolicy( policy );
+          emit agentPolicyReady( policy, false );
+          return;
+        }
+      }
+    }
+
+    if ( wantsAgents )
+    {
+      const QList<QgsAiManagedAgentPreset> cached = cachedAgents();
+      if ( !cached.isEmpty() )
+        emit agentsReady( cached, true );
+    }
+    else
+      applyCachedPolicyFallback( this, cachedAgentPolicy() );
     emit requestFailed( responseErrorMessage( reply, body ) );
   } );
 }

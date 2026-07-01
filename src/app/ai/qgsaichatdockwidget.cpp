@@ -144,10 +144,13 @@ namespace
   {
     QVector<ModelEntry> entries;
     const QList<QgsAiPlanClient::ModelInfo> models = QgsAiPlanClient::cachedModels();
+    const QgsAiManagedAgentPolicy policy = QgsAiPlanClient::cachedAgentPolicy();
     entries.reserve( models.size() );
     for ( const QgsAiPlanClient::ModelInfo &model : models )
     {
       if ( model.id.isEmpty() )
+        continue;
+      if ( !policy.allowedModels.isEmpty() && !policy.allowedModels.contains( model.id ) )
         continue;
       entries.append( ModelEntry { model.displayLabel(), model.id, QgsAiModelRouter::Provider::Plan, model.tooltip() } );
     }
@@ -497,6 +500,8 @@ namespace
       return u"planner"_s;
     if ( label == "Agent"_L1 )
       return u"editor"_s;
+    if ( label == "Ask before edits"_L1 )
+      return u"ask_before_edits"_s;
     if ( label == "Ask"_L1 )
       return u"reviewer"_s;
     return u"planner"_s;
@@ -508,6 +513,8 @@ namespace
       return u"Plan"_s;
     if ( agent == "editor"_L1 )
       return u"Agent"_s;
+    if ( agent == "ask_before_edits"_L1 )
+      return u"Ask before edits"_s;
     if ( agent == "reviewer"_L1 )
       return u"Ask"_s;
     return u"Plan"_s;
@@ -947,10 +954,17 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
 
   mPlanClient = new QgsAiPlanClient( this );
   connect( mPlanClient, &QgsAiPlanClient::modelsReady, this, [this]( const QList<QgsAiPlanClient::ModelInfo> &, bool ) { rebuildModelMenu(); } );
+  connect( mPlanClient, &QgsAiPlanClient::agentPolicyReady, this, [this]( const QgsAiManagedAgentPolicy &policy, bool ) {
+    if ( mSessionManager )
+      mSessionManager->setManagedAgentPolicy( policy );
+    rebuildModelMenu();
+  } );
+  connect( mPlanClient, &QgsAiPlanClient::agentsReady, this, []( const QList<QgsAiManagedAgentPreset> &, bool ) {} );
 
   initModeMenu();
   initModelMenu();
   refreshPlanModels();
+  refreshPlanAgentPolicy();
   applyPillStyling();
 
   if ( mSessionManager )
@@ -1058,7 +1072,7 @@ void QgsAiChatDockWidget::initModeMenu()
   QMenu *menu = new QMenu( mModePill );
   QActionGroup *group = new QActionGroup( menu );
   group->setExclusive( true );
-  const QStringList labels = { u"Plan"_s, u"Agent"_s, u"Ask"_s };
+  const QStringList labels = { u"Plan"_s, u"Agent"_s, u"Ask before edits"_s, u"Ask"_s };
   for ( const QString &label : labels )
   {
     QAction *action = menu->addAction( label );
@@ -1088,6 +1102,28 @@ void QgsAiChatDockWidget::refreshPlanModels()
     return;
 
   mPlanClient->refreshModels( endpoint );
+}
+
+void QgsAiChatDockWidget::refreshPlanAgentPolicy()
+{
+  if ( !mPlanClient || !mModelRouter )
+    return;
+
+  const QString endpoint = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan ).endpoint;
+  if ( !QgsAiModelRouter::isUsablePlanEndpoint( endpoint ) )
+    return;
+
+  const QString sessionToken = mModelRouter->planSessionToken();
+  if ( sessionToken.trimmed().isEmpty() )
+  {
+    const QgsAiManagedAgentPolicy cached = QgsAiPlanClient::cachedAgentPolicy();
+    if ( mSessionManager && !cached.isEmpty() )
+      mSessionManager->setManagedAgentPolicy( cached );
+    return;
+  }
+
+  mPlanClient->refreshAgents( endpoint, sessionToken );
+  mPlanClient->refreshAgentPolicy( endpoint, sessionToken );
 }
 
 QString QgsAiChatDockWidget::modelPillLabel( QgsAiModelRouter::Provider provider, const QString &displayName ) const
@@ -1689,7 +1725,7 @@ void QgsAiChatDockWidget::acceptPlan( const QString &messageId, const QString &p
     return;
 
   markMessageStatus( messageId, metadata, u"plan_status"_s, u"accepted"_s );
-  setModeLabel( u"Agent"_s );
+  setModeLabel( u"Ask before edits"_s );
   mSessionManager->sendUserMessage(
     tr( "Execute the accepted plan exactly. Use the existing approval/review dialogs for any operation that requires confirmation.\n\nAccepted plan:\n%1" ).arg( planMarkdown.trimmed() )
   );
@@ -3131,6 +3167,8 @@ void QgsAiChatDockWidget::openProviderSettings()
     planStatus->setText( tr( "Plan Account signed in. Loading account and model catalog..." ) );
     dialogPlanClient->fetchMe( currentPlanEndpoint(), token );
     dialogPlanClient->refreshModels( currentPlanEndpoint() );
+    dialogPlanClient->refreshAgents( currentPlanEndpoint(), token );
+    dialogPlanClient->refreshAgentPolicy( currentPlanEndpoint(), token );
     rebuildModelMenu();
   } );
   connect( dialogPlanClient, &QgsAiPlanClient::accountReady, &dialog, [planStatus, setPlanBusy]( const QgsAiPlanClient::AccountInfo &account ) {
@@ -3139,6 +3177,13 @@ void QgsAiChatDockWidget::openProviderSettings()
   } );
   connect( dialogPlanClient, &QgsAiPlanClient::modelsReady, &dialog, [this, planStatus, setPlanBusy]( const QList<QgsAiPlanClient::ModelInfo> &models, bool fromCache ) {
     planStatus->setText( tr( "Managed model catalog: %n model(s)%1.", nullptr, models.size() ).arg( fromCache ? tr( " from cache" ) : QString() ) );
+    setPlanBusy( false );
+    rebuildModelMenu();
+  } );
+  connect( dialogPlanClient, &QgsAiPlanClient::agentPolicyReady, &dialog, [this, planStatus, setPlanBusy]( const QgsAiManagedAgentPolicy &policy, bool fromCache ) {
+    if ( mSessionManager )
+      mSessionManager->setManagedAgentPolicy( policy );
+    planStatus->setText( tr( "Agent policy loaded for %1%2." ).arg( policy.tier.isEmpty() ? tr( "current tier" ) : policy.tier, fromCache ? tr( " from cache" ) : QString() ) );
     setPlanBusy( false );
     rebuildModelMenu();
   } );
@@ -3164,12 +3209,19 @@ void QgsAiChatDockWidget::openProviderSettings()
       return;
     }
     planStatus->setText( tr( "Plan Account logged out." ) );
+    if ( mSessionManager )
+      mSessionManager->setManagedAgentPolicy( QgsAiManagedAgentPolicy() );
     rebuildModelMenu();
   } );
-  connect( planRefreshModelsButton, &QPushButton::clicked, &dialog, [dialogPlanClient, currentPlanEndpoint, planStatus, setPlanBusy]() {
+  connect( planRefreshModelsButton, &QPushButton::clicked, &dialog, [this, dialogPlanClient, currentPlanEndpoint, planStatus, setPlanBusy]() {
     setPlanBusy( true );
     planStatus->setText( QObject::tr( "Refreshing managed model catalog..." ) );
     dialogPlanClient->refreshModels( currentPlanEndpoint() );
+    if ( mModelRouter && !mModelRouter->planSessionToken().trimmed().isEmpty() )
+    {
+      dialogPlanClient->refreshAgents( currentPlanEndpoint(), mModelRouter->planSessionToken() );
+      dialogPlanClient->refreshAgentPolicy( currentPlanEndpoint(), mModelRouter->planSessionToken() );
+    }
   } );
 
   connect( codexRequestCodeButton, &QPushButton::clicked, &dialog, [&dialog, &codexDeviceCode, codexStatus]() {
@@ -3451,6 +3503,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   // Credentials/sync state may have changed (API keys, Codex/Claude OAuth
   // login/logout); refresh the picker so it lists exactly the synced providers.
   refreshPlanModels();
+  refreshPlanAgentPolicy();
   rebuildModelMenu();
 }
 

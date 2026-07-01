@@ -602,6 +602,8 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
   const QString model = normalizedModelForProvider( provider, settings.model );
   payload.insert( u"model"_s, model );
   payload.insert( u"stream"_s, stream );
+  if ( provider == Provider::Plan && !mAgentMode.isEmpty() )
+    payload.insert( u"agent_mode"_s, mAgentMode );
 
   const ApiWireFormat wireFormat = wireFormatForProvider( provider );
 
@@ -1225,6 +1227,14 @@ bool QgsAiModelRouter::clearPlanSessionToken( QString *errorMessage )
     settings.enabled = false;
   setProviderSettings( Provider::Plan, settings );
   return true;
+}
+
+QString QgsAiModelRouter::planSessionToken() const
+{
+  QgsAuthManager *authManager = QgsApplication::authManager();
+  if ( !authManager )
+    return QString();
+  return authManager->authSetting( planSessionTokenSettingKey(), QVariant(), true ).toString();
 }
 
 void QgsAiModelRouter::setPlanAuthConfigId( const QString &authConfigId )

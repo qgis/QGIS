@@ -17,6 +17,7 @@
 #define QGSAIAGENTSESSIONMANAGER_H
 
 #include "ai/index/qgsaiworkspaceindex.h"
+#include "qgsaiagentpolicy.h"
 #include "qgis_app.h"
 #include "qgsaichathistorystore.h"
 #include "qgsaimodelrouter.h"
@@ -174,6 +175,10 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
      */
     void setAgentBehaviorSettings( const QgsAiAgentBehaviorSettings &settings );
 
+    //! Applies the managed Strata Cloud policy fetched from `/v1/agents/policy`.
+    void setManagedAgentPolicy( const QgsAiManagedAgentPolicy &policy );
+    QgsAiManagedAgentPolicy managedAgentPolicy() const { return mManagedAgentPolicy; }
+
     //! Returns the rules text combined from inline settings and workspace files.
     QString collectRulesContent() const;
     //! Returns the skills text combined from inline settings and workspace files.
@@ -276,6 +281,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString mStreamedText;
     int mToolIterations = 0;
     QgsAiAgentBehaviorSettings mBehaviorSettings;
+    QgsAiManagedAgentPolicy mManagedAgentPolicy;
     QgsAiWorkspaceIndex *mWorkspaceIndex = nullptr;
     QgsAiChatHistoryStore *mHistoryStore = nullptr;
     QString mActiveSessionId;

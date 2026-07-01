@@ -327,7 +327,7 @@ void TestQgsAiChatDockWidget::acceptingPlanSwitchesToAgentAndSendsPlan()
   QVERIFY( accept );
   accept->click();
 
-  QCOMPARE( manager.activeAgent(), u"editor"_s );
+  QCOMPARE( manager.activeAgent(), u"ask_before_edits"_s );
   QVERIFY( !manager.history().isEmpty() );
   QVERIFY( manager.history().first().content.contains( u"Accepted plan"_s ) );
   QVERIFY( manager.history().first().content.contains( u"Patch UI"_s ) );

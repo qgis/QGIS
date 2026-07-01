@@ -122,6 +122,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     //! (Re)builds the model picker menu, filtered to currently synced providers. Safe to call repeatedly.
     void rebuildModelMenu();
     void refreshPlanModels();
+    void refreshPlanAgentPolicy();
     //! Pill caption for the active model, e.g. "Codex · GPT-5.4 ▾".
     QString modelPillLabel( QgsAiModelRouter::Provider provider, const QString &displayName ) const;
     void updateFileContextChip();

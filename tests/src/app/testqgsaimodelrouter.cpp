@@ -220,6 +220,7 @@ class TestQgsAiModelRouter : public QObject
     void toolUseDisabledOmitsToolsFromClaudePayload();
     void toolUseEnabledIncludesToolsForClaude();
     void allowedToolFilterCanAdvertiseNoTools();
+    void planPayloadIncludesAgentMode();
     void unavailableToolsAreOmittedFromPayload();
     void visualContextImageIsAddedToOpenAiPayload();
     void visualContextImageIsAddedToClaudePayload();
@@ -830,6 +831,22 @@ void TestQgsAiModelRouter::allowedToolFilterCanAdvertiseNoTools()
   const QJsonObject codexObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, { message }, false ) ).object();
   QVERIFY( !codexObject.contains( u"tools"_s ) );
   QVERIFY( !codexObject.contains( u"tool_choice"_s ) );
+}
+
+void TestQgsAiModelRouter::planPayloadIncludesAgentMode()
+{
+  QgsAiModelRouter router;
+  router.setAgentMode( u"ask_before_edits"_s );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject planObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Plan, { message }, true ) ).object();
+  QCOMPARE( planObject.value( u"agent_mode"_s ).toString(), u"ask_before_edits"_s );
+
+  const QJsonObject openAiObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, true ) ).object();
+  QVERIFY( !openAiObject.contains( u"agent_mode"_s ) );
 }
 
 void TestQgsAiModelRouter::unavailableToolsAreOmittedFromPayload()

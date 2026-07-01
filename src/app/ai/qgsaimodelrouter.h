@@ -83,6 +83,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     bool setCredentialMode( Provider provider, CredentialMode mode, QString *errorMessage = nullptr );
     bool setPlanSessionToken( const QString &token, QString *errorMessage = nullptr );
     bool clearPlanSessionToken( QString *errorMessage = nullptr );
+    QString planSessionToken() const;
     void setPlanAuthConfigId( const QString &authConfigId );
 
     bool applyAuthentication( Provider provider, QNetworkRequest &request, QString *errorMessage = nullptr ) const;
@@ -152,6 +153,9 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     void clearAllowedToolsFilter();
     QStringList allowedTools() const { return mAllowedTools; }
     bool hasAllowedToolsFilter() const { return mAllowedToolsFilterEnabled; }
+
+    void setAgentMode( const QString &mode ) { mAgentMode = mode.trimmed(); }
+    QString agentMode() const { return mAgentMode; }
 
   signals:
     void requestProgress( const QString &requestId, const QString &chunk );
@@ -267,6 +271,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     bool mToolUseEnabled = false;
     bool mAllowedToolsFilterEnabled = false;
     QStringList mAllowedTools;
+    QString mAgentMode;
     mutable QString mCodexPromptCacheKey;
     OpenRouterRoutingProfile mOpenRouterRoutingProfile = OpenRouterRoutingProfile::CostOptimized;
 };

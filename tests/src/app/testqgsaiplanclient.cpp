@@ -39,6 +39,20 @@ namespace
       R"({"items":[{"id":"managed-plan","label":"Managed Plan","provider":"openrouter","contextWindow":200000,"priceInCredits":{"input":1,"output":3},"capabilities":["tools","vision"],"tierAvailability":["FREE","PRO"]},{"id":"gpt-4o","label":"GPT-4o","provider":"openai","contextWindow":128000,"priceInCredits":{"input":5,"output":15},"capabilities":["tools","vision"],"tierAvailability":["PRO"]}]})"
     );
   }
+
+  QByteArray agentsBody()
+  {
+    return QByteArrayLiteral(
+      R"({"items":[{"mode":"reviewer","label":"Reviewer","allowedTools":["read_file","web_search"],"allowedModels":["managed-plan"]},{"mode":"editor","label":"Editor","allowedTools":["read_file","run_python"],"allowedModels":["managed-plan","gpt-4o"]}]})"
+    );
+  }
+
+  QByteArray policyBody()
+  {
+    return QByteArrayLiteral(
+      R"({"tier":"PRO","modes":["ask","plan","ask_before_edits","auto_edit"],"allowedTools":["read_file","web_search","run_python"],"allowedModels":["managed-plan","gpt-4o"],"presets":[{"mode":"reviewer","label":"Reviewer","allowedTools":["read_file","web_search"],"allowedModels":["managed-plan"]},{"mode":"editor","label":"Editor","allowedTools":["read_file","run_python"],"allowedModels":["managed-plan","gpt-4o"]}]})"
+    );
+  }
 } //namespace
 
 class TestQgsAiPlanClient : public QObject
@@ -47,8 +61,10 @@ class TestQgsAiPlanClient : public QObject
 
   private slots:
     void parsesManagedModelCatalog();
+    void parsesAgentPolicy();
     void loginMintsDesktopToken();
     void refreshModelsFetchesAndCaches();
+    void refreshAgentsAndPolicyUseBearerToken();
 };
 
 void TestQgsAiPlanClient::parsesManagedModelCatalog()
@@ -66,6 +82,21 @@ void TestQgsAiPlanClient::parsesManagedModelCatalog()
   QVERIFY( models.at( 0 ).tooltip().contains( u"Capabilities"_s ) );
 
   QCOMPARE( QgsAiPlanClient::apiBaseForChatEndpoint( u"http://127.0.0.1:1234/ai/messages"_s ), u"http://127.0.0.1:1234"_s );
+}
+
+void TestQgsAiPlanClient::parsesAgentPolicy()
+{
+  const QList<QgsAiManagedAgentPreset> agents = QgsAiPlanClient::parseAgentsJson( agentsBody() );
+  QCOMPARE( agents.size(), 2 );
+  QCOMPARE( agents.first().mode, u"reviewer"_s );
+  QVERIFY( agents.first().allowedTools.contains( u"web_search"_s ) );
+
+  const QgsAiManagedAgentPolicy policy = QgsAiPlanClient::parseAgentPolicyJson( policyBody() );
+  QCOMPARE( policy.tier, u"PRO"_s );
+  QVERIFY( policy.modes.contains( u"ask_before_edits"_s ) );
+  QVERIFY( policy.allowedModels.contains( u"gpt-4o"_s ) );
+  QCOMPARE( policy.allowedToolsForPreset( u"reviewer"_s ), QStringList( { u"read_file"_s, u"web_search"_s } ) );
+  QCOMPARE( policy.allowedModelsForPreset( u"editor"_s ), QStringList( { u"managed-plan"_s, u"gpt-4o"_s } ) );
 }
 
 void TestQgsAiPlanClient::loginMintsDesktopToken()
@@ -122,6 +153,42 @@ void TestQgsAiPlanClient::refreshModelsFetchesAndCaches()
   QCOMPARE( cached.size(), 2 );
   QCOMPARE( cached.first().id, u"managed-plan"_s );
   QFile::remove( QgsAiPlanClient::cacheFilePath() );
+}
+
+void TestQgsAiPlanClient::refreshAgentsAndPolicyUseBearerToken()
+{
+  QFile::remove( QgsAiPlanClient::agentsCacheFilePath() );
+  QFile::remove( QgsAiPlanClient::agentPolicyCacheFilePath() );
+
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", agentsBody() )
+                   << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", policyBody() );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  QgsAiPlanClient client;
+  QSignalSpy agentsSpy( &client, &QgsAiPlanClient::agentsReady );
+  QSignalSpy policySpy( &client, &QgsAiPlanClient::agentPolicyReady );
+  QSignalSpy failedSpy( &client, &QgsAiPlanClient::requestFailed );
+
+  const QString endpoint = u"http://127.0.0.1:%1/ai/messages"_s.arg( server.serverPort() );
+  client.refreshAgents( endpoint, u"strata_dt_123"_s );
+  QVERIFY( waitForSignal( &client, SIGNAL( agentsReady( QList<QgsAiManagedAgentPreset>, bool ) ) ) );
+  client.refreshAgentPolicy( endpoint, u"strata_dt_123"_s );
+  QVERIFY( waitForSignal( &client, SIGNAL( agentPolicyReady( QgsAiManagedAgentPolicy, bool ) ) ) );
+
+  QCOMPARE( failedSpy.count(), 0 );
+  QCOMPARE( agentsSpy.count(), 1 );
+  QCOMPARE( policySpy.count(), 1 );
+  QCOMPARE( server.requestCount, 2 );
+  QVERIFY( server.rawRequests.at( 0 ).startsWith( "GET /v1/agents " ) );
+  QVERIFY( server.rawRequests.at( 1 ).startsWith( "GET /v1/agents/policy " ) );
+  QVERIFY( server.rawRequests.at( 0 ).toLower().contains( "authorization: bearer strata_dt_123" ) );
+  QVERIFY( server.rawRequests.at( 1 ).toLower().contains( "authorization: bearer strata_dt_123" ) );
+
+  QCOMPARE( QgsAiPlanClient::cachedAgents().size(), 2 );
+  QCOMPARE( QgsAiPlanClient::cachedAgentPolicy().tier, u"PRO"_s );
+  QFile::remove( QgsAiPlanClient::agentsCacheFilePath() );
+  QFile::remove( QgsAiPlanClient::agentPolicyCacheFilePath() );
 }
 
 QGSTEST_MAIN( TestQgsAiPlanClient )

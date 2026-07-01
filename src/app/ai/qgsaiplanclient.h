@@ -16,6 +16,7 @@
 #ifndef QGSAIPLANCLIENT_H
 #define QGSAIPLANCLIENT_H
 
+#include "qgsaiagentpolicy.h"
 #include "qgis_app.h"
 
 #include <QList>
@@ -60,25 +61,38 @@ class APP_EXPORT QgsAiPlanClient : public QObject
 
     static QString apiBaseForChatEndpoint( const QString &chatEndpoint );
     static QList<ModelInfo> parseModelsJson( const QByteArray &body );
+    static QList<QgsAiManagedAgentPreset> parseAgentsJson( const QByteArray &body );
+    static QgsAiManagedAgentPolicy parseAgentPolicyJson( const QByteArray &body );
     static AccountInfo parseMeJson( const QByteArray &body );
     static QString cacheFilePath();
+    static QString agentsCacheFilePath();
+    static QString agentPolicyCacheFilePath();
     static QList<ModelInfo> cachedModels();
+    static QList<QgsAiManagedAgentPreset> cachedAgents();
+    static QgsAiManagedAgentPolicy cachedAgentPolicy();
     static void writeCachedModels( const QList<ModelInfo> &models );
+    static void writeCachedAgents( const QList<QgsAiManagedAgentPreset> &agents );
+    static void writeCachedAgentPolicy( const QgsAiManagedAgentPolicy &policy );
 
     void login( const QString &chatEndpoint, const QString &email, const QString &password );
     void registerAccount( const QString &chatEndpoint, const QString &email, const QString &password );
     void fetchMe( const QString &chatEndpoint, const QString &sessionToken );
     void refreshModels( const QString &chatEndpoint );
+    void refreshAgents( const QString &chatEndpoint, const QString &sessionToken );
+    void refreshAgentPolicy( const QString &chatEndpoint, const QString &sessionToken );
 
   signals:
     void desktopTokenReady( const QString &token );
     void accountReady( const QgsAiPlanClient::AccountInfo &account );
     void modelsReady( const QList<QgsAiPlanClient::ModelInfo> &models, bool fromCache );
+    void agentsReady( const QList<QgsAiManagedAgentPreset> &agents, bool fromCache );
+    void agentPolicyReady( const QgsAiManagedAgentPolicy &policy, bool fromCache );
     void requestFailed( const QString &message );
 
   private:
     void authenticate( const QString &chatEndpoint, const QString &email, const QString &password, bool createAccount );
     void requestDesktopToken( const QString &apiBase, const QString &accessToken );
+    void refreshAuthenticatedJson( const QString &chatEndpoint, const QString &sessionToken, const QString &path );
 };
 
 Q_DECLARE_METATYPE( QgsAiPlanClient::AccountInfo )

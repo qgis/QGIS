@@ -97,6 +97,20 @@ namespace
     };
   }
 
+  QStringList intersectTools( const QStringList &candidateTools, const QStringList &managedAllowedTools )
+  {
+    if ( managedAllowedTools.isEmpty() )
+      return candidateTools;
+
+    QStringList filtered;
+    for ( const QString &toolName : candidateTools )
+    {
+      if ( managedAllowedTools.contains( toolName ) )
+        filtered << toolName;
+    }
+    return filtered;
+  }
+
   QString extractProposedPlanMarkdown( const QString &text )
   {
     static const QRegularExpression planRe( u"<proposed_plan>\\s*([\\s\\S]*?)\\s*</proposed_plan>"_s, QRegularExpression::CaseInsensitiveOption );
@@ -211,7 +225,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
 
 QStringList QgsAiAgentSessionManager::availableAgents() const
 {
-  return QStringList() << u"planner"_s << u"reviewer"_s << u"editor"_s;
+  return QStringList() << u"planner"_s << u"reviewer"_s << u"ask_before_edits"_s << u"editor"_s;
 }
 
 void QgsAiAgentSessionManager::setActiveAgent( const QString &agentName )
@@ -785,31 +799,55 @@ void QgsAiAgentSessionManager::setAgentBehaviorSettings( const QgsAiAgentBehavio
   refreshRouterToolPolicy();
 }
 
+void QgsAiAgentSessionManager::setManagedAgentPolicy( const QgsAiManagedAgentPolicy &policy )
+{
+  mManagedAgentPolicy = policy;
+  refreshRouterToolPolicy();
+}
+
 QStringList QgsAiAgentSessionManager::allowedToolsForActiveAgent() const
 {
   if ( !mToolRegistry || !mBehaviorSettings.allowCustomActions )
     return QStringList();
 
   const QStringList available = mToolRegistry->availableToolNames();
+  QStringList localAllowed;
   if ( mActiveAgent == "planner"_L1 )
     return QStringList();
 
   if ( mActiveAgent == "reviewer"_L1 )
   {
-    QStringList allowed;
     const QStringList readOnly = reviewerReadOnlyTools();
     for ( const QString &toolName : available )
     {
       if ( readOnly.contains( toolName ) )
-        allowed << toolName;
+        localAllowed << toolName;
     }
-    return allowed;
   }
+  else if ( mActiveAgent == "ask_before_edits"_L1 )
+  {
+    const QStringList readOnly = reviewerReadOnlyTools();
+    for ( const QString &toolName : available )
+    {
+      const QgsAiTool *tool = mToolRegistry->find( toolName );
+      if ( readOnly.contains( toolName ) || ( tool && tool->requiresApproval() ) )
+        localAllowed << toolName;
+    }
+  }
+  else if ( mActiveAgent == "editor"_L1 )
+    localAllowed = available;
 
-  if ( mActiveAgent == "editor"_L1 )
-    return available;
+  if ( localAllowed.isEmpty() )
+    return QStringList();
 
-  return QStringList();
+  QStringList managedAllowed;
+  if ( !mManagedAgentPolicy.isEmpty() )
+  {
+    managedAllowed = mActiveAgent == "ask_before_edits"_L1
+                       ? mManagedAgentPolicy.allowedTools
+                       : mManagedAgentPolicy.allowedToolsForPreset( QgsAiPresetModeForAgent( mActiveAgent ) );
+  }
+  return intersectTools( localAllowed, managedAllowed );
 }
 
 bool QgsAiAgentSessionManager::isToolAllowedForActiveAgent( const QString &toolName ) const
@@ -825,8 +863,10 @@ void QgsAiAgentSessionManager::refreshRouterToolPolicy()
   const QStringList allowedTools = allowedToolsForActiveAgent();
   mRouter->setAllowedTools( allowedTools );
   mRouter->setToolUseEnabled( !allowedTools.isEmpty() );
+  mRouter->setAgentMode( QgsAiRuntimeModeForAgent( mActiveAgent ) );
   mRouter->setOpenRouterRoutingProfile(
-    mActiveAgent == "editor"_L1 || !allowedTools.isEmpty() ? QgsAiModelRouter::OpenRouterRoutingProfile::ToolUseOptimized : QgsAiModelRouter::OpenRouterRoutingProfile::CostOptimized
+    mActiveAgent == "editor"_L1 || mActiveAgent == "ask_before_edits"_L1 || !allowedTools.isEmpty() ? QgsAiModelRouter::OpenRouterRoutingProfile::ToolUseOptimized
+                                                                                                      : QgsAiModelRouter::OpenRouterRoutingProfile::CostOptimized
   );
 }
 
@@ -1070,6 +1110,21 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
       prompt += "- For visual map questions, use capture_map_canvas only when the user asks you to inspect what is visible/rendered. OpenAI, OpenRouter, Codex, and Claude requests can receive the screenshot after consent.\n"_L1;
       prompt += "- To diagnose QGIS runtime errors/warnings (layer load, Processing, plugins): call read_message_log with levels [\"warning\",\"critical\"] and an optional tag filter.\n"_L1;
     }
+    if ( !extraContext.isEmpty() )
+    {
+      prompt += '\n';
+      prompt += extraContext;
+    }
+    return prompt;
+  }
+
+  if ( mActiveAgent == "ask_before_edits"_L1 )
+  {
+    prompt += "- You are in Ask-before-edits mode. You may inspect project state and propose work.\n"_L1;
+    prompt += "- Mutating tools are allowed only when the specific tool has an approval dialog or review step. Never bypass approval by asking the user to paste code manually.\n"_L1;
+    prompt += "- If a requested mutation has no approved tool available, explain the blocked operation and ask the user to switch to Agent/Auto edit only if they want fully automatic execution.\n"_L1;
+    if ( allowedTools.isEmpty() )
+      prompt += "- No approved tools are available for this turn. Answer in plain text only.\n"_L1;
     if ( !extraContext.isEmpty() )
     {
       prompt += '\n';
