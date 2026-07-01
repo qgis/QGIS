@@ -40,6 +40,13 @@ using namespace pdal;
 void VirtualPointCloud::clear()
 {
     files.clear();
+
+    // remove the temporary local copy of a remote VPC, if one was downloaded
+    if (!downloadedFilename.empty()) {
+      std::error_code ec;
+      fs::remove(downloadedFilename, ec);
+      downloadedFilename.clear();
+    }
 }
 
 void VirtualPointCloud::dump()
@@ -57,8 +64,21 @@ bool VirtualPointCloud::read(std::string filename)
 {
     clear();
 
-    fs::path filenameParent = fs::path(filename).parent_path();
+    // this variable is necessary to resolve individual files relative to the VPC original location
+    std::string remoteBase;
+    if (pdal::Utils::isRemote(filename))
+    {
+        downloadedFilename = pdal::Utils::fetchRemote(filename);
+        size_t lastSlash = filename.rfind('/');
+        remoteBase = (lastSlash != std::string::npos)
+                         ? filename.substr(0, lastSlash + 1)
+                         : "";
+    }
+    // if downloaded file is not empty, use it as the filename to read, otherwise use the original filename
+    filename = downloadedFilename.empty() ? filename : downloadedFilename;
 
+    fs::path filenameParent = fs::path(filename).parent_path();
+    
     json data;
 
     if (ends_with(filename, ".vpz"))
@@ -195,8 +215,14 @@ bool VirtualPointCloud::read(std::string filename)
 
             if (vpcf.filename.substr(0, 2) == "./")
             {
-                // resolve relative path
-                vpcf.filename = fs::weakly_canonical(filenameParent / vpcf.filename).string();
+                if (downloadedFilename.empty())
+                {
+                    vpcf.filename = fs::weakly_canonical(filenameParent / vpcf.filename).string();
+                }
+                else
+                {
+                    vpcf.filename = remoteBase + vpcf.filename.substr(2); 
+                }
             }
 
             for (auto &schemaItem : f["properties"]["pc:schemas"])
@@ -230,7 +256,16 @@ bool VirtualPointCloud::read(std::string filename)
 
                 std::string ovFilename = asset["href"];
                 if (ovFilename.substr(0, 2) == "./")
-                    ovFilename = fs::weakly_canonical(filenameParent / ovFilename).string();
+                {
+                    if (downloadedFilename.empty())
+                    {
+                        ovFilename = fs::weakly_canonical(filenameParent / ovFilename).string();
+                    }
+                    else
+                    {
+                        ovFilename = remoteBase + ovFilename.substr(2);
+                    }
+                }
                 vpcf.overviewFilenames.push_back(ovFilename);
             }
 
@@ -284,19 +319,60 @@ bool VirtualPointCloud::write(std::string filename)
 
     fs::path outputPath = fs::path(filenameAbsolute).parent_path();
 
+    bool forceAbsolutePaths = false;
+    for (const File &f : files) 
+    {
+      fs::path fRelative = fs::relative(f.filename, outputPath);
+      if (fRelative.empty()) {
+        forceAbsolutePaths = true;
+        std::cerr << "Warning: failed to make filename relative to output path: "
+                  << f.filename 
+                  << " ; using absolute paths in the output VPC file"
+                  << std::endl;
+        break;
+      }
+
+      for (size_t i = 0; i < f.overviewFilenames.size(); ++i)
+      {
+        std::string ovFilename(f.overviewFilenames[i]);
+        if (!pdal::Utils::isRemote(ovFilename)) 
+        {
+            const fs::path fRelative = fs::relative(ovFilename, outputPath);
+            if (fRelative.empty()) 
+            {
+                forceAbsolutePaths = true;
+                std::cerr << "Warning: failed to make overview filename relative to output path: "
+                        << ovFilename
+                        << " ; using absolute paths in the output VPC file"
+                        << std::endl;
+                break;
+            }
+        }
+      }
+    }
+
     std::vector<nlohmann::ordered_json> jFiles;
     for ( const File &f : files )
     {
         std::string assetFilename;
-        if (pdal::Utils::isRemote(f.filename))
+        if (pdal::Utils::isRemote(f.filename) || forceAbsolutePaths)
         {
-            // keep remote URLs as they are
+            // keep remote URLs or absolute paths as they are
             assetFilename = f.filename;
         }
         else
         {
             // turn local paths to relative
             fs::path fRelative = fs::relative(f.filename, outputPath);
+
+            if (fRelative.empty()) {
+              std::cerr << "failed to make filename relative to output path: "
+                        << f.filename 
+                        << " consider using --use-absolute-paths"
+                        << std::endl;
+              return false;
+            }
+
             assetFilename = "./" + fRelative.string();
         }
         std::string fileId = fs::path(f.filename).stem().string();  // TODO: we should make sure the ID is unique
@@ -379,9 +455,19 @@ bool VirtualPointCloud::write(std::string filename)
         for (size_t i = 0; i < f.overviewFilenames.size(); ++i)
         {
             std::string ovFilename(f.overviewFilenames[i]);
-            if (!pdal::Utils::isRemote(ovFilename))
+            if (!pdal::Utils::isRemote(ovFilename) && !forceAbsolutePaths)
             {
                 const fs::path fRelative = fs::relative(ovFilename, outputPath);
+                
+                if (fRelative.empty())
+                {
+                  std::cerr << "failed to make overview filename relative to output path: "
+                            << ovFilename
+                            << " consider using --use-absolute-paths"
+                            << std::endl;
+                  return false;
+                }
+
                 ovFilename = "./" + fRelative.string();
             }
             const std::string key = f.overviewFilenames.size() > 1 ? ("overview-" + std::to_string(i + 1)) : "overview";
@@ -964,3 +1050,5 @@ std::vector<VirtualPointCloud::File> VirtualPointCloud::overlappingBox2D(const B
     }
     return overlaps;
 }
+
+VirtualPointCloud::~VirtualPointCloud() { clear(); }
