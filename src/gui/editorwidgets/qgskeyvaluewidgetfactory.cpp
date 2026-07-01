@@ -102,7 +102,7 @@ unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
               break;
             }
             count++;
-            QJsonValue childValue = it.value();
+            const QJsonValue childValue = it.value();
             if ( childValue.isObject() || childValue.isArray() || childValue.isUndefined() )
             {
               // Stop when we find the first nested object
