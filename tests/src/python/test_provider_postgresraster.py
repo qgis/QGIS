@@ -1239,6 +1239,81 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertAlmostEqual(stats.minimumValue, expected_min, 6)
         self.assertAlmostEqual(stats.maximumValue, expected_max, 6)
 
+    def test_TileGapFilledWithNoData(self):
+        """Test issue GH #47490: pixels in a merged block that are not
+        covered by any returned tile must be filled with nodata and not
+        left as 0"""
+
+        postgres_conn = self.dbconn + " sslmode=disable "
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(postgres_conn, {})
+
+        # create tiled raster from raster_sparse_3035 but explicitly drop
+        # 3 tiles to create a hole in the raster that should be consider NoData
+        sql = """
+            DROP TABLE IF EXISTS "public"."raster_sparse_3035_gap";
+            CREATE TABLE "public"."raster_sparse_3035_gap" (
+                "rid" SERIAL PRIMARY KEY,
+                "rast" raster
+            );
+
+            INSERT INTO "public"."raster_sparse_3035_gap" ("rast")
+            SELECT tile FROM (
+                SELECT ST_Tile(rast, 1, 1) AS tile
+                FROM "public"."raster_sparse_3035"
+            ) t
+            WHERE NOT (
+                (ST_UpperLeftX(tile) = 4080100 AND ST_UpperLeftY(tile) = 2430700) OR  -- row 2, col 2
+                (ST_UpperLeftX(tile) = 4080125 AND ST_UpperLeftY(tile) = 2430700) OR  -- row 2, col 3
+                (ST_UpperLeftX(tile) = 4080100 AND ST_UpperLeftY(tile) = 2430675)     -- row 3, col 2
+            );
+
+            CREATE INDEX ON "public"."raster_sparse_3035_gap" USING gist (ST_ConvexHull("rast"));
+            ANALYZE "public"."raster_sparse_3035_gap";
+            SELECT AddRasterConstraints('public', 'raster_sparse_3035_gap', 'rast',
+                TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE);
+        """
+        conn.executeSql(sql)
+        # check that table exists
+        assert "raster_sparse_3035_gap" in [
+            n.tableName() for n in conn.tables("public")
+        ], "raster_sparse_3035_gap not found!"
+
+        # create raster layer from the new table
+        rl = QgsRasterLayer(
+            self.dbconn
+            + " key='rid' srid=3035 sslmode=disable table={table} schema={schema}".format(
+                table="raster_sparse_3035_gap", schema="public"
+            ),
+            "pg_layer",
+            "postgresraster",
+        )
+
+        self.assertTrue(rl.isValid())
+
+        dp = rl.dataProvider()
+        # check NoData value
+        self.assertEqual(dp.sourceNoDataValue(1), -9999.0)
+
+        # get block of data
+        block = dp.block(1, rl.extent(), 6, 5)
+        self.assertTrue(block.isValid())
+
+        # list of gap cells
+        gap_cells = [(2, 2), (2, 3), (3, 2)]
+
+        # if value is not in gap_cells it should have value, if it is in gap_cells it should be NoData
+        # no 0 values should exist in the block
+        for row in range(5):
+            for col in range(6):
+                if (row, col) in gap_cells:
+                    self.assertTrue(block.isNoData(row, col))
+                    self.assertEqual(block.value(row, col), dp.sourceNoDataValue(1))
+                else:
+                    self.assertFalse(block.isNoData(row, col))
+                # no cells with value 0 should exist
+                self.assertNotEqual(block.value(row, col), 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
