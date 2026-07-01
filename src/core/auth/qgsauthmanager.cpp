@@ -4106,6 +4106,28 @@ bool QgsAuthManager::masterPasswordInput()
 
   if ( !ok )
   {
+    // Dead-end guard: when the master password was auto-generated (the user
+    // never chose one) and the keychain could not provide it, prompting for
+    // the "CURRENT" password is pointless — nobody knows it. Skip the dialog
+    // and point the user to the reset flow instead.
+    if ( settingsUsingGeneratedRandomPassword->value() && masterPasswordHashInDatabase() )
+    {
+      static bool sGeneratedPasswordWarned = false;
+      if ( !sGeneratedPasswordWarned )
+      {
+        sGeneratedPasswordWarned = true;
+        emit passwordHelperMessageLog(
+          tr( "The master password was generated automatically but could not be retrieved from the %1. "
+              "Encrypted credentials are unavailable for this session. "
+              "To fix this, erase the authentication database from Settings ▸ Options ▸ Authentication ▸ Utilities: "
+              "a fresh master password will be generated automatically." )
+            .arg( passwordHelperDisplayName() ),
+          authManTag(), Qgis::MessageLevel::Warning
+        );
+      }
+      return false;
+    }
+
     pass.clear();
     ok = QgsCredentials::instance()->getMasterPassword( pass, masterPasswordHashInDatabase() );
   }

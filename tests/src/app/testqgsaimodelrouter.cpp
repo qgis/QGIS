@@ -713,24 +713,25 @@ void TestQgsAiModelRouter::clearPlanSessionTokenDisablesPlanWithoutAuthcfg()
   planSettings.endpoint = u"http://127.0.0.1:1234/ai/messages"_s;
   router.setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
 
+  const QByteArray savedEnvToken = qgetenv( "STRATA_PLAN_TOKEN" );
+  qunsetenv( "STRATA_PLAN_TOKEN" );
+  const auto restoreEnvToken = qScopeGuard( [savedEnvToken]() {
+    if ( !savedEnvToken.isEmpty() )
+      qputenv( "STRATA_PLAN_TOKEN", savedEnvToken );
+  } );
+
   QString error;
-  const bool storedToken = router.setPlanSessionToken( u"strata-plan-token"_s, &error );
-  if ( storedToken )
-  {
-    QVERIFY( router.isProviderAvailable( QgsAiModelRouter::Provider::Plan ) );
-    QVERIFY( router.providerSettings( QgsAiModelRouter::Provider::Plan ).enabled );
-  }
-  else
-  {
-    QVERIFY2( authManager->isDisabled(), qPrintable( error ) );
-    planSettings = router.providerSettings( QgsAiModelRouter::Provider::Plan );
-    planSettings.enabled = true;
-    router.setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
-  }
+  // Never-prompt storage: succeeds regardless of the vault state (the secret
+  // store falls back to cleartext settings when the vault is locked).
+  QVERIFY2( router.setPlanSessionToken( u"strata-plan-token"_s, &error ), qPrintable( error ) );
+  QVERIFY( router.isProviderAvailable( QgsAiModelRouter::Provider::Plan ) );
+  QVERIFY( router.providerSettings( QgsAiModelRouter::Provider::Plan ).enabled );
+  QCOMPARE( router.planSessionToken(), u"strata-plan-token"_s );
 
   QVERIFY2( router.clearPlanSessionToken( &error ), qPrintable( error ) );
-  if ( storedToken )
-    QVERIFY( authManager->authSetting( u"ai/provider/plan/token"_s, QVariant(), true ).toString().isEmpty() );
+  QVERIFY( router.planSessionToken().isEmpty() );
+  if ( !authManager->isDisabled() )
+    QVERIFY( !authManager->existsAuthSetting( u"ai/provider/plan/token"_s ) );
   QVERIFY( !router.isProviderAvailable( QgsAiModelRouter::Provider::Plan ) );
   QVERIFY( !router.providerSettings( QgsAiModelRouter::Provider::Plan ).enabled );
 }

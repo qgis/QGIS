@@ -108,6 +108,23 @@ QString QgsAiSecretStore::readSecret( const QString &key, const QStringList &env
     if ( !value.isEmpty() )
       return value;
   }
+  else if ( vaultUsable() )
+  {
+    // Legacy vault entries written by older builds without the presence flag
+    // (e.g. Plan session token, Claude OAuth refresh token). Only read when
+    // the vault is ALREADY unlocked; existsAuthSetting() never decrypts, so
+    // this branch can never trigger the master password prompt.
+    QgsAuthManager *authManager = QgsApplication::authManager();
+    if ( authManager->existsAuthSetting( key ) )
+    {
+      const QString value = authManager->authSetting( key, QVariant(), true ).toString().trimmed();
+      if ( !value.isEmpty() )
+      {
+        settings.setValue( flagKey( key ), true );
+        return value;
+      }
+    }
+  }
 
   // Legacy cleartext value (also the storage fallback when the vault is unavailable).
   const QString legacy = settings.value( key ).toString().trimmed();

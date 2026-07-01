@@ -48,6 +48,7 @@ class TestQgsAiSecretStore : public QObject
     void plaintextPassthroughWithoutVault();
     void migrationDeferredWhenVaultLocked();
     void vaultRoundTrip();
+    void legacyVaultEntryWithoutFlag();
     void migrationMovesCleartextSecrets();
     void dataKeyBootstrapAndRoundTrip();
 };
@@ -124,6 +125,32 @@ void TestQgsAiSecretStore::vaultRoundTrip()
   QgsAiSecretStore::removeSecret( key );
   QVERIFY( !QgsAiSecretStore::hasSecret( key ) );
   QVERIFY( QgsAiSecretStore::readSecret( key ).isEmpty() );
+}
+
+void TestQgsAiSecretStore::legacyVaultEntryWithoutFlag()
+{
+  // Older builds (Plan session token, Claude OAuth refresh token) stored
+  // secrets straight in the auth vault without the _inVault presence flag.
+  // With an unlocked vault, readSecret must still find them and adopt the flag.
+  if ( !unlockTestVault() )
+    QSKIP( "Authentication vault unavailable in this environment." );
+
+  const QString key = u"ai/test/secretstore/legacyvault"_s;
+  const auto cleanup = qScopeGuard( [key]() { wipeSecret( key ); } );
+
+  QgsAuthManager *authManager = QgsApplication::authManager();
+  QVERIFY( authManager->storeAuthSetting( key, u"legacy-vault-secret"_s, true ) );
+  QgsSettings settings;
+  settings.remove( QgsAiSecretStore::flagKey( key ) );
+
+  QCOMPARE( QgsAiSecretStore::readSecret( key ), u"legacy-vault-secret"_s );
+  // The presence flag has been adopted, so future existence checks stay cheap.
+  QVERIFY( settings.value( QgsAiSecretStore::flagKey( key ), false ).toBool() );
+  QVERIFY( QgsAiSecretStore::hasSecret( key ) );
+
+  QgsAiSecretStore::removeSecret( key );
+  QVERIFY( !QgsAiSecretStore::hasSecret( key ) );
+  QVERIFY( !authManager->existsAuthSetting( key ) );
 }
 
 void TestQgsAiSecretStore::migrationMovesCleartextSecrets()

@@ -15,6 +15,7 @@
 
 #include "qgsaiclaudeoauthclient.h"
 
+#include "qgsaisecretstore.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsnetworkaccessmanager.h"
@@ -175,17 +176,13 @@ namespace
 
   bool storeRefreshToken( const QString &refreshToken, QString *errorMessage )
   {
-    QgsAuthManager *authManager = QgsApplication::authManager();
-    if ( !authManager )
+    // Never-prompt policy: the secret store uses the vault only when it is
+    // already unlocked, otherwise it falls back to cleartext settings instead
+    // of triggering the master password dialog.
+    if ( !QgsAiSecretStore::writeSecret( QgsAiClaudeOAuthClient::refreshTokenSettingKey(), refreshToken.trimmed() ) )
     {
       if ( errorMessage )
-        *errorMessage = u"Authentication manager is unavailable."_s;
-      return false;
-    }
-    if ( !authManager->storeAuthSetting( QgsAiClaudeOAuthClient::refreshTokenSettingKey(), refreshToken.trimmed(), true ) )
-    {
-      if ( errorMessage )
-        *errorMessage = u"Unable to store Claude refresh token securely."_s;
+        *errorMessage = u"Unable to store Claude refresh token."_s;
       return false;
     }
     QgsSettings().setValue( refreshTokenPresenceFlagKey(), true );
@@ -194,10 +191,9 @@ namespace
 
   QString storedRefreshToken()
   {
-    QgsAuthManager *authManager = QgsApplication::authManager();
-    if ( !authManager )
-      return QString();
-    return authManager->authSetting( QgsAiClaudeOAuthClient::refreshTokenSettingKey(), QVariant(), true ).toString().trimmed();
+    // Never-prompt read: a locked vault reads as "no token" instead of
+    // popping the master password dialog when refreshing the access token.
+    return QgsAiSecretStore::readSecret( QgsAiClaudeOAuthClient::refreshTokenSettingKey() );
   }
 } //namespace
 
@@ -371,17 +367,17 @@ bool QgsAiClaudeOAuthClient::hasRefreshToken()
 
 bool QgsAiClaudeOAuthClient::clearRefreshToken( QString *errorMessage )
 {
+  Q_UNUSED( errorMessage )
+
+  QgsAiSecretStore::removeSecret( refreshTokenSettingKey() );
+
+  // Legacy: tokens stored straight in the auth vault (no _inVault flag) by
+  // older builds. removeAuthSetting() never decrypts, so it cannot trigger
+  // the master password prompt.
   QgsAuthManager *authManager = QgsApplication::authManager();
-  if ( !authManager )
-  {
-    if ( errorMessage )
-      *errorMessage = u"Authentication manager is unavailable."_s;
-    return false;
-  }
-  if ( !hasRefreshToken() )
-    return true;
-  if ( !authManager->removeAuthSetting( refreshTokenSettingKey() ) )
-    return false;
+  if ( authManager && !authManager->isDisabled() && authManager->existsAuthSetting( refreshTokenSettingKey() ) )
+    authManager->removeAuthSetting( refreshTokenSettingKey() );
+
   QgsSettings().remove( refreshTokenPresenceFlagKey() );
   return true;
 }

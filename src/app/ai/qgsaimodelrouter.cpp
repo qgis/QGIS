@@ -1056,11 +1056,14 @@ bool QgsAiModelRouter::hasConfiguredCredential( Provider provider ) const
     if ( !settings.authConfigId.trimmed().isEmpty() )
       return true;
 
-    QgsAuthManager *authManager = QgsApplication::authManager();
-    if ( !authManager )
-      return false;
+    if ( QgsAiSecretStore::hasSecret( planSessionTokenSettingKey() ) )
+      return true;
 
-    return !authManager->authSetting( planSessionTokenSettingKey(), QVariant(), true ).toString().trimmed().isEmpty();
+    // Legacy: tokens stored straight in the auth vault (no presence flag) by
+    // older builds. existsAuthSetting() never decrypts, so it cannot trigger
+    // the master password prompt.
+    QgsAuthManager *authManager = QgsApplication::authManager();
+    return authManager && !authManager->isDisabled() && authManager->existsAuthSetting( planSessionTokenSettingKey() );
   }
 
   const ProviderSettings settings = mProviderSettings.value( provider );
@@ -1276,18 +1279,13 @@ bool QgsAiModelRouter::setPlanSessionToken( const QString &token, QString *error
     return false;
   }
 
-  QgsAuthManager *authManager = QgsApplication::authManager();
-  if ( !authManager )
+  // Never-prompt policy: the secret store uses the vault only when it is
+  // already unlocked, otherwise it falls back to cleartext settings instead of
+  // triggering the master password dialog.
+  if ( !QgsAiSecretStore::writeSecret( planSessionTokenSettingKey(), token.trimmed() ) )
   {
     if ( errorMessage )
-      *errorMessage = u"Authentication manager is unavailable."_s;
-    return false;
-  }
-
-  if ( !authManager->storeAuthSetting( planSessionTokenSettingKey(), token.trimmed(), true ) )
-  {
-    if ( errorMessage )
-      *errorMessage = u"Unable to store plan session token securely."_s;
+      *errorMessage = u"Unable to store plan session token."_s;
     return false;
   }
 
@@ -1299,23 +1297,16 @@ bool QgsAiModelRouter::setPlanSessionToken( const QString &token, QString *error
 
 bool QgsAiModelRouter::clearPlanSessionToken( QString *errorMessage )
 {
-  QgsAuthManager *authManager = QgsApplication::authManager();
-  if ( !authManager )
-  {
-    if ( errorMessage )
-      *errorMessage = u"Authentication manager is unavailable."_s;
-    return false;
-  }
+  Q_UNUSED( errorMessage )
 
-  const bool tokenCleared = authManager->isDisabled()
-                            || authManager->removeAuthSetting( planSessionTokenSettingKey() )
-                            || authManager->authSetting( planSessionTokenSettingKey(), QVariant(), true ).toString().trimmed().isEmpty();
-  if ( !tokenCleared )
-  {
-    if ( errorMessage )
-      *errorMessage = u"Unable to remove plan session token."_s;
-    return false;
-  }
+  QgsAiSecretStore::removeSecret( planSessionTokenSettingKey() );
+
+  // Legacy: tokens stored straight in the auth vault (no presence flag) by
+  // older builds. removeAuthSetting() never decrypts, so it cannot trigger
+  // the master password prompt.
+  QgsAuthManager *authManager = QgsApplication::authManager();
+  if ( authManager && !authManager->isDisabled() && authManager->existsAuthSetting( planSessionTokenSettingKey() ) )
+    authManager->removeAuthSetting( planSessionTokenSettingKey() );
 
   ProviderSettings settings = mProviderSettings.value( Provider::Plan );
   if ( settings.authConfigId.isEmpty() )
@@ -1326,10 +1317,10 @@ bool QgsAiModelRouter::clearPlanSessionToken( QString *errorMessage )
 
 QString QgsAiModelRouter::planSessionToken() const
 {
-  QgsAuthManager *authManager = QgsApplication::authManager();
-  if ( !authManager )
-    return QString();
-  return authManager->authSetting( planSessionTokenSettingKey(), QVariant(), true ).toString();
+  // Never-prompt read: vault only when already unlocked, cleartext fallback
+  // otherwise. A locked vault therefore reads as "no token" instead of
+  // popping the master password dialog from UI refresh paths.
+  return QgsAiSecretStore::readSecret( planSessionTokenSettingKey(), { u"STRATA_PLAN_TOKEN"_s } );
 }
 
 void QgsAiModelRouter::setPlanAuthConfigId( const QString &authConfigId )
@@ -1364,9 +1355,10 @@ bool QgsAiModelRouter::applyAuthentication( Provider provider, QNetworkRequest &
       return true;
     }
 
-    const QVariant token = authManager->authSetting( planSessionTokenSettingKey(), QVariant(), true );
-    const QString tokenString = token.toString();
-    if ( tokenString.isEmpty() )
+    // Never-prompt read: a locked vault reads as "no token" instead of
+    // triggering the master password dialog mid-request.
+    const QString tokenString = planSessionToken();
+    if ( tokenString.trimmed().isEmpty() )
     {
       if ( errorMessage )
         *errorMessage = u"Missing plan session token. Please login first."_s;
