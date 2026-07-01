@@ -355,24 +355,35 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram, int bandN
       // There is no best default value, to display something reasonable in histogram chart,
       // binCount should be small, OTOH, to get precise data for cumulative cut, the number should be big.
       // Because it is easier to define fixed lower value for the chart, we calc optimum binCount
-      // for higher resolution (to avoid calculating that where histogram() is used. In any case,
-      // it does not make sense to use more than width*height;
+      // for higher resolution (to avoid calculating that where histogram() is used.
 
       // for Int16/Int32 make sure bin count <= actual range, because there is no sense in having
       // bins at fractional values
       if ( !mInput && ( mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 || mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
       {
-        myBinCount = std::min( static_cast<qint64>( histogram.width ) * histogram.height, static_cast<qint64>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
+        myBinCount = static_cast<qint64>( std::ceil( histogram.maximum - histogram.minimum + 1 ) );
       }
       else
       {
         // This is for not integer types
-        myBinCount = static_cast<qint64>( histogram.width ) * static_cast<qint64>( histogram.height );
+        const QgsRasterBandStats stats = bandStatistics( bandNo, Qgis::RasterBandStatistic::StdDev | Qgis::RasterBandStatistic::Range, boundingBox, sampleSize );
+        // If stats are not available or stdDev is 0, use width*height as binCount
+        // but this could lead to binCount being too large
+        if ( stats.statsGathered.testFlags( Qgis::RasterBandStatistic::StdDev | Qgis::RasterBandStatistic::Range ) )
+        {
+          // Use Scott's Rule to determine bin count: binCount = 3.49 * stdDev / n^(1/3)
+          myBinCount = static_cast<qint64>( stats.range / ( 3.49 * stats.stdDev / std::pow( sampleSize > 0 ? sampleSize : static_cast<double>( histogram.width ) * histogram.height, 1.0 / 3.0 ) ) );
+        }
+        else
+        {
+          // Fallback using the whole histogram size
+          myBinCount = static_cast<qint64>( histogram.width ) * static_cast<qint64>( histogram.height );
+        }
       }
     }
   }
-  // Hard limit 10'000'000
-  histogram.binCount = static_cast<int>( std::min( 10000000LL, myBinCount ) );
+  // Hard limit 10'000'000 and in any case it does not make sense to use more than width*height
+  histogram.binCount = static_cast<int>( std::min( std::min( 10000000LL, static_cast<qint64>( histogram.width ) * histogram.height ), myBinCount ) );
   QgsDebugMsgLevel( u"theHistogram.binCount = %1"_s.arg( histogram.binCount ), 4 );
 }
 
