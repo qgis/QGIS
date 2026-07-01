@@ -1350,10 +1350,45 @@ bool QgsCurvePolygon::deleteVertices( const QSet<QgsVertexId> &positions )
       continue;
     }
 
+    // we cannot make assumptions what happens in deleteVertices() of curves
+    // circularstring can be at the end or start of the compoundcurve, and when its point is deleted, whole arc is deleted, not just that point
+    // let deleteVertices() handle that and then we check if the points are not the same and just sync them
+    if ( QgsWkbTypes::flatType( ring->wkbType() ) == Qgis::WkbType::CompoundCurve )
+    {
+      if ( firstVertexId.vertex == 0 && !vertices.contains( QgsVertexId( 0, 0, n - 1 ) ) )
+      {
+        vertices.emplace_back( 0, 0, n - 1 );
+      }
+      else if ( lastVertexId.vertex == n - 1 && !vertices.contains( QgsVertexId( 0, 0, 0 ) ) )
+      {
+        vertices.emplace_back( 0, 0, 0 );
+      }
+    }
+
     if ( !ring->deleteVertices( QSet<QgsVertexId>( vertices.begin(), vertices.end() ) ) )
     {
       Q_ASSERT( false );
       return false;
+    }
+
+    // safety check
+    // consider a compoundcurve with 2 circularstrings and we are deleting first/last point
+    // in such case, we are removing the whole geometry in that operation
+    if ( ring->numPoints() == 0 )
+    {
+      if ( ringId == 0 )
+      {
+        mExteriorRing.reset();
+        if ( !mInteriorRings.isEmpty() )
+        {
+          mExteriorRing.reset( mInteriorRings.takeFirst() );
+        }
+      }
+      else
+      {
+        removeInteriorRing( ringId - 1 );
+      }
+      continue;
     }
 
     // in case of a compound curve, first/last vertex may have been deleted even if not specified
