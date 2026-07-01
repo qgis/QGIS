@@ -260,7 +260,8 @@ void TestQgsAiAgentSessionManager::validatesAgentPlanJson()
 
 void TestQgsAiAgentSessionManager::extractsAgentPlanJson()
 {
-  const QString text = u"Here is the plan:\n```strata_agent_plan\n{\"version\":1,\"objective\":\"Export\",\"mode\":\"ask_before_edits\",\"steps\":[{\"id\":\"s1\",\"title\":\"Create layout\",\"risk\":\"medium\",\"requires_approval\":true}]}\n```\nDone."_s;
+  const QString text
+    = u"Here is the plan:\n```strata_agent_plan\n{\"version\":1,\"objective\":\"Export\",\"mode\":\"ask_before_edits\",\"steps\":[{\"id\":\"s1\",\"title\":\"Create layout\",\"risk\":\"medium\",\"requires_approval\":true}]}\n```\nDone."_s;
   const QJsonObject plan = QgsAiAgentSessionManager::extractAgentPlanJson( text );
   QCOMPARE( plan.value( u"objective"_s ).toString(), u"Export"_s );
   QString error;

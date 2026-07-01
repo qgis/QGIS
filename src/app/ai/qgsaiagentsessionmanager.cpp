@@ -1205,7 +1205,9 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   }
 
   prompt += "\n== How to act ==\n"_L1;
-  prompt += u"- Runtime mode is %1. Respect it exactly: ask=inspect/answer, plan=plan only, ask_before_edits=approval-gated mutations, auto_edit=execute allowed tools.\n"_s.arg( QgsAiRuntimeModeForAgent( mActiveAgent ) );
+  prompt += u"- Runtime mode is %1. Respect it exactly: ask=inspect/answer, plan=plan only, ask_before_edits=approval-gated mutations, auto_edit=execute allowed tools.\n"_s.arg(
+    QgsAiRuntimeModeForAgent( mActiveAgent )
+  );
   prompt += "- After every tool result, read the embedded verification object before the next action. If success=false, if expected diff is missing, or if rollback is unavailable for a mutation, stop and explain.\n"_L1;
   if ( mActiveAgent == "planner"_L1 )
   {
