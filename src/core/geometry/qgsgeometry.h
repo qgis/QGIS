@@ -2378,16 +2378,24 @@ class CORE_EXPORT QgsGeometry
 #endif
 
     /**
-    * Exports the geometry to a GeoJSON string.
+    * Exports the geometry to a GeoJSON RFC7946 string.
+    * \see asGeoJson() for exporting using other GeoJSON profiles
     */
     QString asJson( int precision = 17 ) const;
 
     /**
-     * Exports the geometry to a json object.
+     * Export the geometry to a GeoJSON string, with the given \a precision and following the specified GeoJSON \a profile.
+     * Note: this is identical to asJson() when using the Legacy and Rfc7946 profile, but differs when using other profiles with "CircularString," "CompoundCurve," "CurvePolygon," "MultiCurve," or "MultiSurface" geometries.
+     * \since QGIS 4.4
+     */
+    QString asGeoJson( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const;
+
+    /**
+     * Exports the geometry to a json object with the give \a precision and following the specified GeoJSON \a profile.
      * \note not available in Python bindings
      * \since QGIS 3.8
      */
-    virtual json asJsonObject( int precision = 17 ) const SIP_SKIP;
+    virtual json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const SIP_SKIP;
 
     /**
      * Attempts to coerce this geometry into the specified destination \a type.

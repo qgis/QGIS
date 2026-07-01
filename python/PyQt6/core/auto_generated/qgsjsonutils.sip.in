@@ -277,7 +277,6 @@ Returns a GeoJSON string representation of a feature.
 %End
 
 
-
     QString exportFeatures( const QgsFeatureList &features, int indent = -1 ) const;
 %Docstring
 Returns a GeoJSON string representation of a list of features (feature
@@ -304,6 +303,20 @@ when the automatic geometry transformation is active (it is by default).
 .. seealso:: :py:func:`setSourceCrs`
 
 .. versionadded:: 3.30
+%End
+
+    Qgis::GeoJsonProfile geoJsonProfile() const;
+%Docstring
+Returns the GeoJSON profile to use for export.
+
+.. versionadded:: 4.4
+%End
+
+    void setGeoJsonProfile( Qgis::GeoJsonProfile profile );
+%Docstring
+Sets the GeoJSON profile to use for export. Default profile is RFC7946.
+
+.. versionadded:: 4.4
 %End
 
 };
