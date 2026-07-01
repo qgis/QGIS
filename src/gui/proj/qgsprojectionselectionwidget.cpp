@@ -346,6 +346,9 @@ bool CombinedCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceR
           return crs.isValid();
 
         case QgsProjectionSelectionWidget::CurrentCrs:
+          // prevent adding "no projection"/invalid entry in the base crs widget of topocentric crs
+          if ( mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::FilterTopocentricCompatible ) )
+            return crs.isValid();
           // hide invalid current CRS value option only if "not set" option is shown
           return crs.isValid() || !mVisibleOptions.testFlag( QgsProjectionSelectionWidget::CrsNotSet );
 
