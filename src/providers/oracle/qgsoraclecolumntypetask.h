@@ -46,6 +46,11 @@ class QgsOracleColumnTypeTask : public QgsTask
     bool useEstimatedMetadata() const { return mUseEstimatedMetadata; }
     bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
 
+    /**
+     * Returns error occurring when the task run
+     */
+    const QString &error() const { return mError; }
+
   signals:
     void setLayerType( const QgsOracleLayerProperty &layerProperty );
     void progressMessage( const QString &message );
@@ -55,6 +60,7 @@ class QgsOracleColumnTypeTask : public QgsTask
 
     QString mName;
     QString mSchema;
+    QString mError;
     bool mUseEstimatedMetadata = false;
     bool mAllowGeometrylessTables = false;
     QVector<QgsOracleLayerProperty> mLayerProperties;
