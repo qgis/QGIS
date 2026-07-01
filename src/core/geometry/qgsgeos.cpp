@@ -1665,6 +1665,12 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       return fromGeosPolygon( geos );
     }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    case GEOS_CURVEPOLYGON:
+    {
+      return fromGeosCurvePolygon( geos );
+    }
+#endif
     case GEOS_MULTIPOINT:
     {
       auto multiPoint = std::make_unique<QgsMultiPoint>();
@@ -1746,6 +1752,59 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   }
   return nullptr;
 }
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+std::unique_ptr<QgsCurvePolygon> QgsGeos::fromGeosCurvePolygon( const GEOSGeometry *geos )
+{
+  GEOSContextHandle_t context = QgsGeosContext::get();
+  if ( GEOSGeomTypeId_r( context, geos ) != GEOS_CURVEPOLYGON )
+  {
+    return nullptr;
+  }
+
+  int nCoordDims = GEOSGeom_getCoordinateDimension_r( context, geos );
+  int nDims = GEOSGeom_getDimensions_r( context, geos );
+  bool hasZ = ( nCoordDims == 3 );
+  bool hasM = ( ( nDims - nCoordDims ) == 1 );
+
+  auto curvePolygon = std::make_unique<QgsCurvePolygon>();
+
+  const GEOSGeometry *ring = GEOSGetExteriorRing_r( context, geos );
+  if ( ring )
+  {
+    if ( GEOSGeomTypeId_r( context, ring ) == GEOS_COMPOUNDCURVE )
+    {
+      curvePolygon->setExteriorRing( qgis::down_cast< QgsCompoundCurve *>( fromGeos( ring ).release() ) );
+    }
+    else
+    {
+      curvePolygon->setExteriorRing( sequenceToSimpleCurve( ring, hasZ, hasM ).release() );
+    }
+  }
+
+  QVector<QgsCurve *> interiorRings;
+  const int ringCount = GEOSGetNumInteriorRings_r( context, geos );
+  interiorRings.reserve( ringCount );
+  for ( int i = 0; i < ringCount; ++i )
+  {
+    ring = GEOSGetInteriorRingN_r( context, geos, i );
+    if ( ring )
+    {
+      if ( GEOSGeomTypeId_r( context, ring ) == GEOS_COMPOUNDCURVE )
+      {
+        interiorRings.push_back( qgis::down_cast< QgsCompoundCurve *>( fromGeos( ring ).release() ) );
+      }
+      else
+      {
+        interiorRings.push_back( sequenceToSimpleCurve( ring, hasZ, hasM ).release() );
+      }
+    }
+  }
+  curvePolygon->setInteriorRings( interiorRings );
+
+  return curvePolygon;
+}
+#endif
 
 std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 {
@@ -1925,15 +1984,15 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     {
       switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
       {
-        case Qgis::WkbType::Point:
+        case Qgis::WkbType::MultiPoint:
           geosType = GEOS_MULTIPOINT;
           break;
 
-        case Qgis::WkbType::LineString:
+        case Qgis::WkbType::MultiLineString:
           geosType = GEOS_MULTILINESTRING;
           break;
 
-        case Qgis::WkbType::Polygon:
+        case Qgis::WkbType::MultiPolygon:
           geosType = GEOS_MULTIPOLYGON;
           break;
 
@@ -1984,7 +2043,11 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 #endif
 
       case Qgis::WkbType::Polygon:
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+        return createGeosCurvePolygon( static_cast<const QgsPolygon *>( geom ), precision, flags );
+#else
         return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision, flags );
+#endif
 
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
       case Qgis::WkbType::CircularString:
@@ -1992,6 +2055,9 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 
       case Qgis::WkbType::CompoundCurve:
         return createGeosCompoundCurve( static_cast<const QgsCompoundCurve *>( geom ), precision, flags );
+
+      case Qgis::WkbType::CurvePolygon:
+        return createGeosCurvePolygon( static_cast<const QgsCurvePolygon *>( geom ), precision, flags );
 #endif
 
       case Qgis::WkbType::TIN:
@@ -3020,6 +3086,71 @@ geos::unique_ptr QgsGeos::createGeosCompoundCurve( const QgsAbstractGeometry *cu
   geos::unique_ptr geosCurve( GEOSGeom_createCompoundCurve_r( context, curves, nCurves ) );
   delete[] curves;
   return geosCurve;
+}
+
+geos::unique_ptr QgsGeos::createGeosCurvePolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags )
+{
+  const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( poly );
+  if ( !polygon )
+    return nullptr;
+
+  const QgsCurve *exteriorRing = polygon->exteriorRing();
+  if ( !exteriorRing )
+  {
+    return nullptr;
+  }
+
+  GEOSContextHandle_t context = QgsGeosContext::get();
+  geos::unique_ptr geosCurvePolygon;
+  try
+  {
+    geos::unique_ptr exteriorRingGeos;
+    // TODO: implement QgsCurve::isSimpleCurve() ?
+    if ( QgsWkbTypes::flatType( exteriorRing->wkbType() ) == Qgis::WkbType::CircularString || QgsWkbTypes::flatType( exteriorRing->wkbType() ) == Qgis::WkbType::LineString )
+    {
+      exteriorRingGeos.reset( createGeosSimpleCurve( exteriorRing, precision, flags ).release() );
+    }
+    else
+    {
+      exteriorRingGeos.reset( createGeosCompoundCurve( exteriorRing, precision, flags ).release() );
+    }
+
+    const int nInteriorRings = polygon->numInteriorRings();
+    QList< const QgsCurve * > holesToExport;
+    holesToExport.reserve( nInteriorRings );
+    for ( int i = 0; i < nInteriorRings; ++i )
+    {
+      const QgsCurve *interiorRing = polygon->interiorRing( i );
+      if ( !( flags & Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) || !interiorRing->isEmpty() )
+      {
+        holesToExport << interiorRing;
+      }
+    }
+
+    GEOSGeometry **holes = nullptr;
+    if ( !holesToExport.empty() )
+    {
+      holes = new GEOSGeometry *[holesToExport.size()];
+      for ( int i = 0; i < holesToExport.size(); ++i )
+      {
+        // TODO: implement QgsCurve::isSimpleCurve() ?
+        if ( QgsWkbTypes::flatType( holesToExport[i]->wkbType() ) == Qgis::WkbType::CircularString || QgsWkbTypes::flatType( holesToExport[i]->wkbType() ) == Qgis::WkbType::LineString )
+        {
+          holes[i] = createGeosSimpleCurve( holesToExport[i], precision, flags ).release();
+        }
+        else
+        {
+          holes[i] = createGeosCompoundCurve( holesToExport[i], precision, flags ).release();
+        }
+      }
+    }
+
+    geosCurvePolygon.reset( GEOSGeom_createCurvePolygon_r( context, exteriorRingGeos.release(), holes, holesToExport.size() ) );
+    delete[] holes;
+  }
+  CATCH_GEOS( nullptr )
+
+  return geosCurvePolygon;
 }
 #endif
 

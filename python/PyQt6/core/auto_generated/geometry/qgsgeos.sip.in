@@ -937,6 +937,7 @@ This method requires a QGIS build based on GEOS 3.14 or later.
 
 
 
+
   private:
     QgsGeos( const QgsGeos & );
 };
