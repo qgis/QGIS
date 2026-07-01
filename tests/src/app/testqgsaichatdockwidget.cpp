@@ -42,8 +42,8 @@
 #include <QRegularExpression>
 #include <QSettings>
 #include <QString>
-#include <QTemporaryDir>
 #include <QTabWidget>
+#include <QTemporaryDir>
 #include <QTextEdit>
 #include <QTimer>
 #include <QToolButton>
