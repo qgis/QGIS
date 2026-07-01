@@ -26,6 +26,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryengine.h"
 
 class QgsCircularString;
+class QgsCurvePolygon;
 class QgsLineString;
 class QgsPolygon;
 class QgsGeometry;
@@ -1016,6 +1017,13 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      */
     SIP_SKIP static std::unique_ptr< QgsAbstractGeometry > fromGeos( const GEOSGeometry *geos );
 
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    /**
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP static std::unique_ptr< QgsCurvePolygon > fromGeosCurvePolygon( const GEOSGeometry *geos );
+#endif
+
     /**
      * \note Not available in Python bindings
      */
@@ -1111,6 +1119,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
     static geos::unique_ptr createGeosSimpleCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
     static geos::unique_ptr createGeosCompoundCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+    static geos::unique_ptr createGeosCurvePolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
 #endif
 
     //utils for geometry split
