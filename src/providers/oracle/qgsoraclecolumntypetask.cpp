@@ -34,11 +34,12 @@ QgsOracleColumnTypeTask::QgsOracleColumnTypeTask( const QString &name, const QSt
 
 bool QgsOracleColumnTypeTask::run()
 {
-  QString conninfo = QgsOracleConn::toPoolName( QgsOracleConn::connUri( mName ) );
+  const QString conninfo = QgsOracleConn::toPoolName( QgsOracleConn::connUri( mName ) );
   QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( conninfo );
   if ( !conn )
   {
-    QgsDebugError( "Connection failed - " + conninfo );
+    mError = tr( "Connection failed" );
+    QgsDebugError( mError );
     return false;
   }
 
@@ -46,6 +47,7 @@ bool QgsOracleColumnTypeTask::run()
   QVector<QgsOracleLayerProperty> layerProperties;
   if ( !conn->supportedLayers( layerProperties, mSchema, QgsOracleConn::geometryColumnsOnly( mName ), QgsOracleConn::userTablesOnly( mName ), mAllowGeometrylessTables ) || layerProperties.isEmpty() )
   {
+    mError = tr( "Failed to retrieve supported layers" );
     return false;
   }
 
