@@ -24,6 +24,7 @@
 using namespace Qt::StringLiterals;
 
 class QgsAiFileContextProvider;
+class QgsMapCanvas;
 class QgsProject;
 
 /**
@@ -69,6 +70,87 @@ class APP_EXPORT QgsAiDescribeLayerTool : public QgsAiTool
 
   private:
     QgsProject *mProject = nullptr;
+};
+
+/**
+ * run_processing_algorithm: executes a QGIS Processing algorithm with JSON
+ * parameters. This gives the agent a typed native path for common GIS
+ * transformations without falling back to run_python.
+ */
+class APP_EXPORT QgsAiRunProcessingAlgorithmTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiRunProcessingAlgorithmTool( QgsProject *project );
+
+    QString name() const override { return u"run_processing_algorithm"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    bool isAvailable() const override;
+    QString availabilityReason() const override;
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
+ * style_layer: applies common map styling changes directly through QGIS APIs.
+ */
+class APP_EXPORT QgsAiStyleLayerTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiStyleLayerTool( QgsProject *project );
+
+    QString name() const override { return u"style_layer"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
+ * create_print_layout: creates a simple print layout with a map frame and
+ * optional title, using the current canvas extent where available.
+ */
+class APP_EXPORT QgsAiCreatePrintLayoutTool : public QgsAiTool
+{
+  public:
+    QgsAiCreatePrintLayoutTool( QgsProject *project, QgsMapCanvas *canvas );
+
+    QString name() const override { return u"create_print_layout"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+
+  private:
+    QgsProject *mProject = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+};
+
+/**
+ * export_map: exports an existing print layout to PDF/PNG, or the current map
+ * canvas to PNG, into the trusted workspace.
+ */
+class APP_EXPORT QgsAiExportMapTool : public QgsAiTool
+{
+  public:
+    QgsAiExportMapTool( QgsAiFileContextProvider *contextProvider, QgsProject *project, QgsMapCanvas *canvas );
+
+    QString name() const override { return u"export_map"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+
+  private:
+    QgsAiFileContextProvider *mContextProvider = nullptr;
+    QgsProject *mProject = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 };
 
 #endif // QGSAILAYERTOOLS_H
