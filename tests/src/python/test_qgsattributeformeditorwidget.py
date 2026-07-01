@@ -284,8 +284,6 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         json_layer = QgsVectorLayer("Point?", "test", "memory")
         field_typename = "json"
         self.verifyJSONTypeFindBest(QVariant.Map, json_layer, field_typename)
-        # TODO: self.verifyJSONTypeFindBest(QVariant.List, layer, field_typename)
-        # TODO: self.verifyJSONTypeFindBest(QVariant.String, layer, field_typename)
 
         jsonb_layer = QgsVectorLayer("Point?", "test", "memory")
         field_typename = "jsonb"
