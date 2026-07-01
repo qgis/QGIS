@@ -38,6 +38,7 @@ class QVBoxLayout;
 
 class QgsAiLayerIndexCoordinator;
 class QgsAiModelRouter;
+class QgsAiPlanClient;
 class QgsAiReviewPatchEngine;
 class QgsScrollArea;
 
@@ -120,6 +121,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void initModelMenu();
     //! (Re)builds the model picker menu, filtered to currently synced providers. Safe to call repeatedly.
     void rebuildModelMenu();
+    void refreshPlanModels();
     //! Pill caption for the active model, e.g. "Codex · GPT-5.4 ▾".
     QString modelPillLabel( QgsAiModelRouter::Provider provider, const QString &displayName ) const;
     void updateFileContextChip();
@@ -141,6 +143,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
 
     QPointer<QgsAiAgentSessionManager> mSessionManager;
     QPointer<QgsAiModelRouter> mModelRouter;
+    QPointer<QgsAiPlanClient> mPlanClient;
     QPointer<QgsAiReviewPatchEngine> mReviewEngine;
     QPointer<QgsAiLayerIndexCoordinator> mLayerIndexCoordinator;
 

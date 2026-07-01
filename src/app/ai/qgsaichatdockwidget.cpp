@@ -27,6 +27,7 @@
 #include "qgsaicodexoauthclient.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaiopenroutermodelcatalog.h"
+#include "qgsaiplanclient.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsaisecretstore.h"
 #include "qgsaiworkspacetrust.h"
@@ -116,6 +117,7 @@ namespace
       QString displayName;
       QString model;
       QgsAiModelRouter::Provider provider;
+      QString tooltip = QString();
   };
 
   QVector<ModelEntry> predefinedModels()
@@ -136,6 +138,20 @@ namespace
       { u"Claude Opus 4.1"_s, u"claude-opus-4-1-20250805"_s, QgsAiModelRouter::Provider::Claude },
       { u"Plan backend"_s, u"managed-plan"_s, QgsAiModelRouter::Provider::Plan },
     };
+  }
+
+  QVector<ModelEntry> cachedPlanModelEntries()
+  {
+    QVector<ModelEntry> entries;
+    const QList<QgsAiPlanClient::ModelInfo> models = QgsAiPlanClient::cachedModels();
+    entries.reserve( models.size() );
+    for ( const QgsAiPlanClient::ModelInfo &model : models )
+    {
+      if ( model.id.isEmpty() )
+        continue;
+      entries.append( ModelEntry { model.displayLabel(), model.id, QgsAiModelRouter::Provider::Plan, model.tooltip() } );
+    }
+    return entries;
   }
 
   QString humanBytes( qint64 bytes )
@@ -929,8 +945,12 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
 
   setWidget( container );
 
+  mPlanClient = new QgsAiPlanClient( this );
+  connect( mPlanClient, &QgsAiPlanClient::modelsReady, this, [this]( const QList<QgsAiPlanClient::ModelInfo> &, bool ) { rebuildModelMenu(); } );
+
   initModeMenu();
   initModelMenu();
+  refreshPlanModels();
   applyPillStyling();
 
   if ( mSessionManager )
@@ -1058,6 +1078,18 @@ void QgsAiChatDockWidget::initModelMenu()
   rebuildModelMenu();
 }
 
+void QgsAiChatDockWidget::refreshPlanModels()
+{
+  if ( !mPlanClient || !mModelRouter )
+    return;
+
+  const QString endpoint = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan ).endpoint;
+  if ( !QgsAiModelRouter::isUsablePlanEndpoint( endpoint ) )
+    return;
+
+  mPlanClient->refreshModels( endpoint );
+}
+
 QString QgsAiChatDockWidget::modelPillLabel( QgsAiModelRouter::Provider provider, const QString &displayName ) const
 {
   const QString providerName = mModelRouter ? mModelRouter->providerDisplayName( provider ) : QString();
@@ -1087,8 +1119,15 @@ void QgsAiChatDockWidget::rebuildModelMenu()
   {
     for ( const ModelEntry &entry : predefinedModels() )
     {
-      if ( mModelRouter->isProviderAvailable( entry.provider ) )
+      if ( entry.provider != QgsAiModelRouter::Provider::Plan && mModelRouter->isProviderAvailable( entry.provider ) )
         models.append( entry );
+    }
+    if ( mModelRouter->isProviderAvailable( QgsAiModelRouter::Provider::Plan ) )
+    {
+      QVector<ModelEntry> planEntries = cachedPlanModelEntries();
+      if ( planEntries.isEmpty() )
+        planEntries.append( ModelEntry { tr( "Plan backend" ), u"managed-plan"_s, QgsAiModelRouter::Provider::Plan, tr( "Managed Strata Cloud default model" ) } );
+      models += planEntries;
     }
   }
 
@@ -1167,6 +1206,8 @@ void QgsAiChatDockWidget::rebuildModelMenu()
     }
     QAction *action = menu->addAction( entry.displayName );
     action->setCheckable( true );
+    if ( !entry.tooltip.isEmpty() )
+      action->setToolTip( entry.tooltip );
     action->setData( QVariant::fromValue( entry ) );
     group->addAction( action );
     if ( entry.provider == currentProvider && entry.model == currentModel )
@@ -2547,6 +2588,31 @@ void QgsAiChatDockWidget::openProviderSettings()
   QLineEdit *planToken = new QLineEdit( &dialog );
   planToken->setEchoMode( QLineEdit::Password );
   planToken->setPlaceholderText( tr( "Session token from your plan login..." ) );
+  QLineEdit *planEmail = new QLineEdit( &dialog );
+  planEmail->setObjectName( u"aiPlanEmailLineEdit"_s );
+  planEmail->setPlaceholderText( tr( "you@example.com" ) );
+  QLineEdit *planPassword = new QLineEdit( &dialog );
+  planPassword->setObjectName( u"aiPlanPasswordLineEdit"_s );
+  planPassword->setEchoMode( QLineEdit::Password );
+  QPushButton *planLoginButton = new QPushButton( tr( "Login" ), &dialog );
+  planLoginButton->setObjectName( u"aiPlanLoginButton"_s );
+  QPushButton *planRegisterButton = new QPushButton( tr( "Register" ), &dialog );
+  planRegisterButton->setObjectName( u"aiPlanRegisterButton"_s );
+  QPushButton *planLogoutButton = new QPushButton( tr( "Logout" ), &dialog );
+  planLogoutButton->setObjectName( u"aiPlanLogoutButton"_s );
+  QPushButton *planRefreshModelsButton = new QPushButton( tr( "Refresh managed models" ), &dialog );
+  planRefreshModelsButton->setObjectName( u"aiPlanRefreshModelsButton"_s );
+  QLabel *planStatus = new QLabel( &dialog );
+  planStatus->setObjectName( u"aiPlanStatusLabel"_s );
+  planStatus->setWordWrap( true );
+  planStatus->setText( mModelRouter->isProviderAvailable( QgsAiModelRouter::Provider::Plan ) ? tr( "Plan Account is configured." ) : tr( "Plan Account is not signed in." ) );
+  QWidget *planAuthButtons = new QWidget( &dialog );
+  QHBoxLayout *planAuthButtonsLayout = new QHBoxLayout( planAuthButtons );
+  planAuthButtonsLayout->setContentsMargins( 0, 0, 0, 0 );
+  planAuthButtonsLayout->addWidget( planLoginButton );
+  planAuthButtonsLayout->addWidget( planRegisterButton );
+  planAuthButtonsLayout->addWidget( planLogoutButton );
+  planAuthButtonsLayout->addWidget( planRefreshModelsButton );
 
   QgsSettings workspaceSettings;
   QLineEdit *aiWorkspaceRoot
@@ -2615,6 +2681,10 @@ void QgsAiChatDockWidget::openProviderSettings()
   form->addRow( tr( "Plan backend endpoint" ), planEndpoint );
   form->addRow( tr( "Plan OAuth authcfg ID" ), planAuthCfg );
   form->addRow( tr( "Plan session token" ), planToken );
+  form->addRow( tr( "Plan email" ), planEmail );
+  form->addRow( tr( "Plan password" ), planPassword );
+  form->addRow( tr( "Plan account" ), planAuthButtons );
+  form->addRow( QString(), planStatus );
   form->addRow( tr( "AI workspace root" ), workspaceRootWidget );
   form->addRow( QString(), trustWorkspace );
   form->addRow( QString(), encryptionStatus );
@@ -3042,6 +3112,66 @@ void QgsAiChatDockWidget::openProviderSettings()
   helpLabel->setWordWrap( true );
   layout->addWidget( helpLabel );
 
+  QgsAiPlanClient *dialogPlanClient = new QgsAiPlanClient( &dialog );
+  auto currentPlanEndpoint = [planEndpoint]() { return planEndpoint->text().trimmed(); };
+  auto setPlanBusy = [planLoginButton, planRegisterButton, planRefreshModelsButton]( bool busy ) {
+    planLoginButton->setEnabled( !busy );
+    planRegisterButton->setEnabled( !busy );
+    planRefreshModelsButton->setEnabled( !busy );
+  };
+  connect( dialogPlanClient, &QgsAiPlanClient::desktopTokenReady, &dialog, [this, dialogPlanClient, currentPlanEndpoint, planStatus, planToken, setPlanBusy]( const QString &token ) {
+    QString error;
+    if ( !mModelRouter || !mModelRouter->setPlanSessionToken( token, &error ) )
+    {
+      planStatus->setText( error.isEmpty() ? tr( "Unable to store Plan token." ) : error );
+      setPlanBusy( false );
+      return;
+    }
+    planToken->clear();
+    planStatus->setText( tr( "Plan Account signed in. Loading account and model catalog..." ) );
+    dialogPlanClient->fetchMe( currentPlanEndpoint(), token );
+    dialogPlanClient->refreshModels( currentPlanEndpoint() );
+    rebuildModelMenu();
+  } );
+  connect( dialogPlanClient, &QgsAiPlanClient::accountReady, &dialog, [planStatus, setPlanBusy]( const QgsAiPlanClient::AccountInfo &account ) {
+    planStatus->setText( QObject::tr( "Signed in as %1 (%2)." ).arg( account.email, account.tier ) );
+    setPlanBusy( false );
+  } );
+  connect( dialogPlanClient, &QgsAiPlanClient::modelsReady, &dialog, [this, planStatus, setPlanBusy]( const QList<QgsAiPlanClient::ModelInfo> &models, bool fromCache ) {
+    planStatus->setText( tr( "Managed model catalog: %n model(s)%1.", nullptr, models.size() ).arg( fromCache ? tr( " from cache" ) : QString() ) );
+    setPlanBusy( false );
+    rebuildModelMenu();
+  } );
+  connect( dialogPlanClient, &QgsAiPlanClient::requestFailed, &dialog, [planStatus, setPlanBusy]( const QString &message ) {
+    planStatus->setText( message );
+    setPlanBusy( false );
+  } );
+  connect( planLoginButton, &QPushButton::clicked, &dialog, [dialogPlanClient, currentPlanEndpoint, planEmail, planPassword, planStatus, setPlanBusy]() {
+    setPlanBusy( true );
+    planStatus->setText( QObject::tr( "Logging in to Plan Account..." ) );
+    dialogPlanClient->login( currentPlanEndpoint(), planEmail->text(), planPassword->text() );
+  } );
+  connect( planRegisterButton, &QPushButton::clicked, &dialog, [dialogPlanClient, currentPlanEndpoint, planEmail, planPassword, planStatus, setPlanBusy]() {
+    setPlanBusy( true );
+    planStatus->setText( QObject::tr( "Creating Plan Account..." ) );
+    dialogPlanClient->registerAccount( currentPlanEndpoint(), planEmail->text(), planPassword->text() );
+  } );
+  connect( planLogoutButton, &QPushButton::clicked, &dialog, [this, planStatus]() {
+    QString error;
+    if ( !mModelRouter || !mModelRouter->clearPlanSessionToken( &error ) )
+    {
+      planStatus->setText( error.isEmpty() ? tr( "Unable to logout Plan Account." ) : error );
+      return;
+    }
+    planStatus->setText( tr( "Plan Account logged out." ) );
+    rebuildModelMenu();
+  } );
+  connect( planRefreshModelsButton, &QPushButton::clicked, &dialog, [dialogPlanClient, currentPlanEndpoint, planStatus, setPlanBusy]() {
+    setPlanBusy( true );
+    planStatus->setText( QObject::tr( "Refreshing managed model catalog..." ) );
+    dialogPlanClient->refreshModels( currentPlanEndpoint() );
+  } );
+
   connect( codexRequestCodeButton, &QPushButton::clicked, &dialog, [&dialog, &codexDeviceCode, codexStatus]() {
     QString error;
     if ( !QgsAiCodexOAuthClient::requestDeviceCode( codexDeviceCode, &error ) )
@@ -3320,6 +3450,7 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   // Credentials/sync state may have changed (API keys, Codex/Claude OAuth
   // login/logout); refresh the picker so it lists exactly the synced providers.
+  refreshPlanModels();
   rebuildModelMenu();
 }
 
@@ -3345,7 +3476,7 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
        || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Codex )
        || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude )
        || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude )
-       || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Plan ) )
+       || mModelRouter->isProviderAvailable( QgsAiModelRouter::Provider::Plan ) )
   {
     settings.setValue( u"strata/welcome_seen"_s, true );
     settings.remove( u"geoai/welcome_seen"_s );

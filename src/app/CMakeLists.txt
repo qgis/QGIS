@@ -324,6 +324,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaimodelrouter.cpp
     ai/qgsaimodels.cpp
     ai/qgsaiopenroutermodelcatalog.cpp
+    ai/qgsaiplanclient.cpp
     ai/qgsaipipinstallapprovaldialog.cpp
     ai/qgsaipythonapprovaldialog.cpp
     ai/qgsaimessagelogbuffer.cpp

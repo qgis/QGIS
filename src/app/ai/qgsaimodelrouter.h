@@ -82,6 +82,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     bool storeApiKey( Provider provider, const QString &apiKey, QString *errorMessage = nullptr );
     bool setCredentialMode( Provider provider, CredentialMode mode, QString *errorMessage = nullptr );
     bool setPlanSessionToken( const QString &token, QString *errorMessage = nullptr );
+    bool clearPlanSessionToken( QString *errorMessage = nullptr );
     void setPlanAuthConfigId( const QString &authConfigId );
 
     bool applyAuthentication( Provider provider, QNetworkRequest &request, QString *errorMessage = nullptr ) const;

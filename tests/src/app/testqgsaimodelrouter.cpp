@@ -153,6 +153,11 @@ namespace
     return message;
   }
 
+  bool liveAiSmokeTestsEnabled()
+  {
+    return qEnvironmentVariable( "STRATA_RUN_LIVE_AI_TESTS" ).trimmed() == QLatin1String( "1" );
+  }
+
   // Neutralizes env API-key fallbacks, wipes per-provider settings and the active
   // selection so a resolve/availability test starts from a known-empty state; the
   // returned guard restores everything (incl. the active provider) when destroyed.
@@ -209,6 +214,7 @@ class TestQgsAiModelRouter : public QObject
     void setActiveProviderPersistsAndResolves();
     void resolveProviderFallsBackWhenActiveUnavailable();
     void selectingProviderDoesNotDisableOthers();
+    void clearPlanSessionTokenDisablesPlanWithoutAuthcfg();
     void toolUseDisabledOmitsToolsFromOpenAiPayload();
     void toolUseEnabledIncludesToolsForOpenAi();
     void toolUseDisabledOmitsToolsFromClaudePayload();
@@ -691,6 +697,40 @@ void TestQgsAiModelRouter::selectingProviderDoesNotDisableOthers()
   // Claude was not disabled, so it remains synced and ready for an instant switch back.
   QVERIFY( router.isProviderUsable( QgsAiModelRouter::Provider::Claude ) );
   QVERIFY( router.isProviderAvailable( QgsAiModelRouter::Provider::Claude ) );
+}
+
+void TestQgsAiModelRouter::clearPlanSessionTokenDisablesPlanWithoutAuthcfg()
+{
+  const auto guard = isolateProviderState();
+
+  QgsAuthManager *authManager = QgsApplication::authManager();
+  QVERIFY( authManager );
+
+  QgsAiModelRouter router;
+  QgsAiModelRouter::ProviderSettings planSettings = router.providerSettings( QgsAiModelRouter::Provider::Plan );
+  planSettings.endpoint = u"http://127.0.0.1:1234/ai/messages"_s;
+  router.setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
+
+  QString error;
+  const bool storedToken = router.setPlanSessionToken( u"strata-plan-token"_s, &error );
+  if ( storedToken )
+  {
+    QVERIFY( router.isProviderAvailable( QgsAiModelRouter::Provider::Plan ) );
+    QVERIFY( router.providerSettings( QgsAiModelRouter::Provider::Plan ).enabled );
+  }
+  else
+  {
+    QVERIFY2( authManager->isDisabled(), qPrintable( error ) );
+    planSettings = router.providerSettings( QgsAiModelRouter::Provider::Plan );
+    planSettings.enabled = true;
+    router.setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
+  }
+
+  QVERIFY2( router.clearPlanSessionToken( &error ), qPrintable( error ) );
+  if ( storedToken )
+    QVERIFY( authManager->authSetting( u"ai/provider/plan/token"_s, QVariant(), true ).toString().isEmpty() );
+  QVERIFY( !router.isProviderAvailable( QgsAiModelRouter::Provider::Plan ) );
+  QVERIFY( !router.providerSettings( QgsAiModelRouter::Provider::Plan ).enabled );
 }
 
 void TestQgsAiModelRouter::toolUseDisabledOmitsToolsFromOpenAiPayload()
@@ -1847,6 +1887,9 @@ void TestQgsAiModelRouter::openRouterUsageParsedFromNonStreamingBody()
 
 void TestQgsAiModelRouter::liveOpenAiRequest()
 {
+  if ( !liveAiSmokeTestsEnabled() )
+    QSKIP( "Set STRATA_RUN_LIVE_AI_TESTS=1 to run live provider smoke tests." );
+
   const QString apiKey = qEnvironmentVariable( "OPENAI_API_KEY" );
   if ( apiKey.trimmed().isEmpty() )
     QSKIP( "OPENAI_API_KEY non disponibile: test live OpenAI skippato." );
@@ -1872,6 +1915,9 @@ void TestQgsAiModelRouter::liveOpenAiRequest()
 
 void TestQgsAiModelRouter::liveClaudeRequest()
 {
+  if ( !liveAiSmokeTestsEnabled() )
+    QSKIP( "Set STRATA_RUN_LIVE_AI_TESTS=1 to run live provider smoke tests." );
+
   const QString apiKey = !qEnvironmentVariable( "CLAUDE_API_KEY" ).trimmed().isEmpty() ? qEnvironmentVariable( "CLAUDE_API_KEY" ) : qEnvironmentVariable( "ANTHROPIC_API_KEY" );
   if ( apiKey.trimmed().isEmpty() )
     QSKIP( "CLAUDE_API_KEY non disponibile: test live Claude skippato." );
@@ -1901,6 +1947,9 @@ void TestQgsAiModelRouter::liveClaudeRequest()
 
 void TestQgsAiModelRouter::liveOpenRouterRequest()
 {
+  if ( !liveAiSmokeTestsEnabled() )
+    QSKIP( "Set STRATA_RUN_LIVE_AI_TESTS=1 to run live provider smoke tests." );
+
   const QString apiKey = qEnvironmentVariable( "OPENROUTER_API_KEY" );
   if ( apiKey.trimmed().isEmpty() )
     QSKIP( "OPENROUTER_API_KEY non disponibile: test live OpenRouter skippato." );

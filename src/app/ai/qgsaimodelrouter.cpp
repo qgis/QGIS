@@ -1200,6 +1200,32 @@ bool QgsAiModelRouter::setPlanSessionToken( const QString &token, QString *error
   return true;
 }
 
+bool QgsAiModelRouter::clearPlanSessionToken( QString *errorMessage )
+{
+  QgsAuthManager *authManager = QgsApplication::authManager();
+  if ( !authManager )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Authentication manager is unavailable."_s;
+    return false;
+  }
+
+  const bool tokenCleared = authManager->isDisabled() || authManager->removeAuthSetting( planSessionTokenSettingKey() )
+                            || authManager->authSetting( planSessionTokenSettingKey(), QVariant(), true ).toString().trimmed().isEmpty();
+  if ( !tokenCleared )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Unable to remove plan session token."_s;
+    return false;
+  }
+
+  ProviderSettings settings = mProviderSettings.value( Provider::Plan );
+  if ( settings.authConfigId.isEmpty() )
+    settings.enabled = false;
+  setProviderSettings( Provider::Plan, settings );
+  return true;
+}
+
 void QgsAiModelRouter::setPlanAuthConfigId( const QString &authConfigId )
 {
   ProviderSettings settings = mProviderSettings.value( Provider::Plan );
