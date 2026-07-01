@@ -5,6 +5,7 @@
   copyright            : (C) 2026
 ***************************************************************************/
 
+#include <cmath>
 #include <memory>
 
 #include "ai/qgsaifilecontextprovider.h"
@@ -15,19 +16,18 @@
 #include "ai/tools/qgsaitoolregistry.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgslayoutmanager.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
+#include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgssettings.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
 
-#include <cmath>
 #include <QColor>
 #include <QFileInfo>
 #include <QImage>

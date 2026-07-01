@@ -15,6 +15,9 @@
 
 #include "qgsailayertools.h"
 
+#include <algorithm>
+#include <memory>
+
 #include "qgsaifilecontextprovider.h"
 #include "qgsaitoolschemautil.h"
 #include "qgsapplication.h"
@@ -23,14 +26,14 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
+#include "qgslayertree.h"
+#include "qgslayertreelayer.h"
 #include "qgslayoutexporter.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutsize.h"
-#include "qgslayertree.h"
-#include "qgslayertreelayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerfactory.h"
@@ -54,9 +57,6 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
-#include <algorithm>
-#include <memory>
-
 #include <QColor>
 #include <QDateTime>
 #include <QDir>
@@ -64,8 +64,8 @@
 #include <QImage>
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QSize>
 #include <QSet>
+#include <QSize>
 #include <QString>
 #include <QStringList>
 #include <QVariant>
