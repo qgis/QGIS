@@ -57,7 +57,7 @@ def incorporatePoints(
         else:
             raise QgsProcessingException(
                 QCoreApplication.translate(
-                    "GrassAlgorithmExt", "GRASS GIS v.net requires a lines layer!"
+                    "GrassAlgorithmExt", "GRASS v.net requires a lines layer!"
                 )
             )
 
