@@ -657,6 +657,9 @@ void TestQgsAiChatDockWidget::dropLocalFileCreatesAttachmentChip()
   QgsAiReviewPatchEngine reviewEngine;
   QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
   QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  dock.resize( 400, 520 );
+  dock.show();
+  QApplication::processEvents();
 
   QgsAiChatPromptEdit *input = dock.findChild<QgsAiChatPromptEdit *>( u"aiPromptInput"_s );
   QWidget *chipRow = dock.findChild<QWidget *>( u"aiAttachmentChipRow"_s );
@@ -692,6 +695,9 @@ void TestQgsAiChatDockWidget::dropDoesNotInsertFileUriText()
   QgsAiReviewPatchEngine reviewEngine;
   QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
   QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  dock.resize( 400, 520 );
+  dock.show();
+  QApplication::processEvents();
 
   QgsAiChatPromptEdit *input = dock.findChild<QgsAiChatPromptEdit *>( u"aiPromptInput"_s );
   QVERIFY( input );
@@ -702,7 +708,10 @@ void TestQgsAiChatDockWidget::dropDoesNotInsertFileUriText()
   QApplication::processEvents();
 
   QVERIFY( !input->toPlainText().contains( u"file://"_s ) );
-  QVERIFY( dock.findChild<QWidget *>( u"aiAttachmentChipRow"_s )->isVisible() );
+  QWidget *chipRow = dock.findChild<QWidget *>( u"aiAttachmentChipRow"_s );
+  QVERIFY( chipRow );
+  QVERIFY( chipRow->isVisible() );
+  QVERIFY( !dock.findChildren<QWidget *>( u"aiAttachmentChip"_s ).isEmpty() );
 
   settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
