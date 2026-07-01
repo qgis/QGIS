@@ -96,6 +96,7 @@ class TestQgsAiChatDockWidget : public QObject
     void collapsesTechnicalCodeBlocks();
     void transcriptMessagesFitNarrowDockWithoutHorizontalScroll();
     void acceptingPlanSwitchesToAgentAndSendsPlan();
+    void workflowComposerExportsReportAndDryRun();
     void questionCardSendsStructuredAnswers();
     void layerIndexingConsentPolicy();
     void settingsDialogContainsManualIndexingControls();
@@ -383,13 +384,79 @@ void TestQgsAiChatDockWidget::acceptingPlanSwitchesToAgentAndSendsPlan()
 
   manager.messageAdded( planMessage );
   QPushButton *accept = dock.findChild<QPushButton *>( u"aiAcceptPlanButton"_s );
+  QPushButton *saveWorkflow = dock.findChild<QPushButton *>( u"aiSaveWorkflowButton"_s );
+  QPushButton *dryRunWorkflow = dock.findChild<QPushButton *>( u"aiDryRunWorkflowButton"_s );
+  QPushButton *runWorkflow = dock.findChild<QPushButton *>( u"aiRunWorkflowButton"_s );
+  QPushButton *exportReport = dock.findChild<QPushButton *>( u"aiExportWorkflowReportButton"_s );
   QVERIFY( accept );
+  QVERIFY( saveWorkflow );
+  QVERIFY( dryRunWorkflow );
+  QVERIFY( runWorkflow );
+  QVERIFY( exportReport );
   accept->click();
 
   QCOMPARE( manager.activeAgent(), u"ask_before_edits"_s );
   QVERIFY( !manager.history().isEmpty() );
   QVERIFY( manager.history().first().content.contains( u"Accepted plan"_s ) );
   QVERIFY( manager.history().first().content.contains( u"Patch UI"_s ) );
+  QVERIFY( manager.history().first().content.contains( u"Saved reusable workflow"_s ) );
+
+  QDir workflowDir( QDir( tempDir.path() ).filePath( u".strata/workflows"_s ) );
+  const QFileInfoList workflows = workflowDir.entryInfoList( QStringList { u"*.strataflow"_s }, QDir::Files );
+  QCOMPARE( workflows.size(), 1 );
+  QFile workflowFile( workflows.first().absoluteFilePath() );
+  QVERIFY( workflowFile.open( QIODevice::ReadOnly ) );
+  const QJsonObject workflow = QJsonDocument::fromJson( workflowFile.readAll() ).object();
+  QCOMPARE( workflow.value( u"kind"_s ).toString(), u"strataflow"_s );
+  QCOMPARE( workflow.value( u"version"_s ).toInt(), 1 );
+  QVERIFY( workflow.value( u"planMarkdown"_s ).toString().contains( u"Patch UI"_s ) );
+  QVERIFY( workflow.value( u"runner"_s ).toObject().value( u"dryRunSupported"_s ).toBool() );
+  QVERIFY( workflow.value( u"runner"_s ).toObject().value( u"requiresApproval"_s ).toBool() );
+  QVERIFY( workflow.value( u"provenance"_s ).toObject().value( u"metadataOnly"_s ).toBool() );
+  QCOMPARE( workflow.value( u"steps"_s ).toArray().size(), 2 );
+}
+
+void TestQgsAiChatDockWidget::workflowComposerExportsReportAndDryRun()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+  QgsAiChatMessage planMessage;
+  planMessage.id = u"workflow-plan-1"_s;
+  planMessage.role = QgsAiChatRole::Assistant;
+  planMessage.content = u"<proposed_plan>\n1. Inspect layer\n2. Export map\n</proposed_plan>"_s;
+  planMessage.metadata.insert( u"ui_kind"_s, u"plan"_s );
+  planMessage.metadata.insert( u"plan_markdown"_s, u"1. Inspect layer\n2. Export map"_s );
+  planMessage.metadata.insert( u"plan_status"_s, u"pending"_s );
+
+  manager.messageAdded( planMessage );
+  QPushButton *dryRun = dock.findChild<QPushButton *>( u"aiDryRunWorkflowButton"_s );
+  QPushButton *exportReport = dock.findChild<QPushButton *>( u"aiExportWorkflowReportButton"_s );
+  QVERIFY( dryRun );
+  QVERIFY( exportReport );
+
+  exportReport->click();
+  QDir workflowDir( QDir( tempDir.path() ).filePath( u".strata/workflows"_s ) );
+  const QFileInfoList reports = workflowDir.entryInfoList( QStringList { u"*.report.json"_s }, QDir::Files );
+  QCOMPARE( reports.size(), 1 );
+  QFile reportFile( reports.first().absoluteFilePath() );
+  QVERIFY( reportFile.open( QIODevice::ReadOnly ) );
+  const QJsonObject report = QJsonDocument::fromJson( reportFile.readAll() ).object();
+  QCOMPARE( report.value( u"kind"_s ).toString(), u"strataflow_report"_s );
+  QVERIFY( report.value( u"workflowPath"_s ).toString().endsWith( u".strataflow"_s ) );
+  QVERIFY( report.value( u"provenance"_s ).toObject().value( u"metadataOnly"_s ).toBool() );
+
+  dryRun->click();
+  QCOMPARE( manager.activeAgent(), u"planner"_s );
+  QVERIFY( !manager.history().isEmpty() );
+  QVERIFY( manager.history().first().content.contains( u"Dry-run this .strataflow workflow"_s ) );
+  QVERIFY( manager.history().first().content.contains( u"Do not call mutating tools"_s ) );
 }
 
 void TestQgsAiChatDockWidget::questionCardSendsStructuredAnswers()

@@ -62,6 +62,7 @@
 #include <QComboBox>
 #include <QCompleter>
 #include <QCryptographicHash>
+#include <QDateTime>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -102,6 +103,7 @@
 #include <QScreen>
 #include <QScrollBar>
 #include <QSet>
+#include <QSaveFile>
 #include <QSize>
 #include <QSizePolicy>
 #include <QStandardItemModel>
@@ -962,6 +964,51 @@ namespace
 
     return suggestions;
   }
+
+  QString workflowSlug( const QString &planMarkdown )
+  {
+    QString slug = planMarkdown.simplified().left( 48 ).toLower();
+    slug.replace( QRegularExpression( u"[^a-z0-9]+"_s ), u"-"_s );
+    slug = slug.trimmed();
+    while ( slug.startsWith( '-' ) )
+      slug.remove( 0, 1 );
+    while ( slug.endsWith( '-' ) )
+      slug.chop( 1 );
+    if ( slug.isEmpty() )
+      slug = u"workflow"_s;
+    const QString hash = QString::fromLatin1( QCryptographicHash::hash( planMarkdown.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 8 ) );
+    return u"%1-%2"_s.arg( slug.left( 40 ), hash );
+  }
+
+  QJsonArray workflowStepsFromMarkdown( const QString &planMarkdown )
+  {
+    QJsonArray steps;
+    const QStringList lines = planMarkdown.split( '\n' );
+    int index = 1;
+    for ( QString line : lines )
+    {
+      line = line.trimmed();
+      line.remove( QRegularExpression( u"^[-*]\\s+"_s ) );
+      line.remove( QRegularExpression( u"^\\d+[.)]\\s+"_s ) );
+      if ( line.isEmpty() )
+        continue;
+      QJsonObject step;
+      step.insert( u"id"_s, u"step_%1"_s.arg( index++ ) );
+      step.insert( u"text"_s, line );
+      step.insert( u"status"_s, u"planned"_s );
+      steps << step;
+    }
+    return steps;
+  }
+
+  QJsonObject workflowProvenance( const QString &workspaceRoot )
+  {
+    QJsonObject provenance;
+    provenance.insert( u"savedBy"_s, u"strata-desktop"_s );
+    provenance.insert( u"metadataOnly"_s, true );
+    provenance.insert( u"workspaceRootHash"_s, QString::fromLatin1( QCryptographicHash::hash( QDir::cleanPath( workspaceRoot ).toUtf8(), QCryptographicHash::Sha1 ).toHex() ) );
+    return provenance;
+  }
 } //namespace
 
 Q_DECLARE_METATYPE( ModelEntry )
@@ -1798,6 +1845,27 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   buttons->addStretch( 1 );
   layout->addLayout( buttons );
 
+  QHBoxLayout *workflowButtons = new QHBoxLayout();
+  workflowButtons->setContentsMargins( 0, 0, 0, 0 );
+  workflowButtons->setSpacing( 4 );
+  QPushButton *saveWorkflowButton = new QPushButton( tr( "Save .strataflow" ), planCard );
+  saveWorkflowButton->setObjectName( u"aiSaveWorkflowButton"_s );
+  QPushButton *dryRunWorkflowButton = new QPushButton( tr( "Dry run" ), planCard );
+  dryRunWorkflowButton->setObjectName( u"aiDryRunWorkflowButton"_s );
+  QPushButton *runWorkflowButton = new QPushButton( tr( "Run workflow" ), planCard );
+  runWorkflowButton->setObjectName( u"aiRunWorkflowButton"_s );
+  QPushButton *exportWorkflowReportButton = new QPushButton( tr( "Export report" ), planCard );
+  exportWorkflowReportButton->setObjectName( u"aiExportWorkflowReportButton"_s );
+  const bool hasPlan = !planMarkdown.trimmed().isEmpty();
+  for ( QPushButton *button : { saveWorkflowButton, dryRunWorkflowButton, runWorkflowButton, exportWorkflowReportButton } )
+  {
+    button->setEnabled( hasPlan );
+    button->setStyleSheet( u"QPushButton { background: palette(button); color: palette(window-text); border: 0; border-radius: 6px; padding: 4px 8px; } QPushButton:hover:enabled { background: palette(alternate-base); }"_s );
+    workflowButtons->addWidget( button );
+  }
+  workflowButtons->addStretch( 1 );
+  layout->addLayout( workflowButtons );
+
   QTextEdit *revisionEdit = new QTextEdit( planCard );
   revisionEdit->setObjectName( u"aiPlanRevisionEdit"_s );
   revisionEdit->setAcceptRichText( false );
@@ -1821,6 +1889,18 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
   layout->addWidget( sendRevisionButton );
 
   connect( acceptButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata]() { acceptPlan( messageId, planMarkdown, metadata ); } );
+  connect( saveWorkflowButton, &QPushButton::clicked, this, [this, messageId, planMarkdown]() {
+    QString error;
+    const QString path = saveWorkflowPlan( planMarkdown, messageId, &error );
+    updateRuntimeState( u"workflow"_s, path.isEmpty() ? error : tr( "Saved %1" ).arg( path ) );
+  } );
+  connect( dryRunWorkflowButton, &QPushButton::clicked, this, [this, messageId, planMarkdown]() { dryRunWorkflowPlan( messageId, planMarkdown ); } );
+  connect( runWorkflowButton, &QPushButton::clicked, this, [this, messageId, planMarkdown]() { runWorkflowPlan( messageId, planMarkdown ); } );
+  connect( exportWorkflowReportButton, &QPushButton::clicked, this, [this, messageId, planMarkdown]() {
+    QString error;
+    const QString path = exportWorkflowReport( planMarkdown, messageId, &error );
+    updateRuntimeState( u"workflow"_s, path.isEmpty() ? error : tr( "Exported %1" ).arg( path ) );
+  } );
   connect( reviseButton, &QPushButton::clicked, planCard, [revisionEdit, sendRevisionButton]() {
     revisionEdit->setVisible( true );
     sendRevisionButton->setVisible( true );
@@ -1979,9 +2059,137 @@ void QgsAiChatDockWidget::acceptPlan( const QString &messageId, const QString &p
     return;
 
   markMessageStatus( messageId, metadata, u"plan_status"_s, u"accepted"_s );
+  QString workflowError;
+  const QString workflowPath = saveWorkflowPlan( planMarkdown, messageId, &workflowError );
+  setModeLabel( u"Ask before edits"_s );
+  QString prompt = tr( "Execute the accepted plan exactly. Use the existing approval/review dialogs for any operation that requires confirmation." );
+  if ( !workflowPath.isEmpty() )
+    prompt += u"\n\n"_s + tr( "Saved reusable workflow: %1" ).arg( workflowPath );
+  else if ( !workflowError.isEmpty() )
+    prompt += u"\n\n"_s + tr( "Workflow save failed: %1" ).arg( workflowError );
+  prompt += u"\n\n"_s + tr( "Accepted plan:\n%1" ).arg( planMarkdown.trimmed() );
+  mSessionManager->sendUserMessage( prompt );
+  reloadTranscriptFromHistory();
+}
+
+QString QgsAiChatDockWidget::saveWorkflowPlan( const QString &planMarkdown, const QString &messageId, QString *errorMessage ) const
+{
+  const QString trimmedPlan = planMarkdown.trimmed();
+  if ( trimmedPlan.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Workflow plan is empty." );
+    return QString();
+  }
+
+  const QString workspaceRoot = mSessionManager ? mSessionManager->workspaceRoot() : QString();
+  const QString baseDir = workspaceRoot.trimmed().isEmpty() ? QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"strata_workflows"_s ) : QDir( workspaceRoot ).filePath( u".strata/workflows"_s );
+  QDir dir( baseDir );
+  if ( !dir.exists() && !dir.mkpath( u"."_s ) )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Cannot create workflow directory: %1" ).arg( baseDir );
+    return QString();
+  }
+
+  QJsonObject manifest;
+  manifest.insert( u"kind"_s, u"strataflow"_s );
+  manifest.insert( u"version"_s, 1 );
+  manifest.insert( u"createdAt"_s, QDateTime::currentDateTimeUtc().toString( Qt::ISODateWithMs ) );
+  manifest.insert( u"sourceMessageId"_s, messageId );
+  manifest.insert( u"mode"_s, u"ask_before_edits"_s );
+  manifest.insert( u"planMarkdown"_s, trimmedPlan );
+  manifest.insert( u"steps"_s, workflowStepsFromMarkdown( trimmedPlan ) );
+  QJsonObject runner;
+  runner.insert( u"type"_s, u"strata-agent"_s );
+  runner.insert( u"dryRunSupported"_s, true );
+  runner.insert( u"requiresApproval"_s, true );
+  manifest.insert( u"runner"_s, runner );
+  manifest.insert( u"provenance"_s, workflowProvenance( workspaceRoot ) );
+
+  const QString path = dir.filePath( workflowSlug( trimmedPlan ) + u".strataflow"_s );
+  QSaveFile file( path );
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Cannot write workflow file: %1" ).arg( path );
+    return QString();
+  }
+  file.write( QJsonDocument( manifest ).toJson( QJsonDocument::Indented ) );
+  if ( !file.commit() )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Cannot commit workflow file: %1" ).arg( path );
+    return QString();
+  }
+  return path;
+}
+
+QString QgsAiChatDockWidget::exportWorkflowReport( const QString &planMarkdown, const QString &messageId, QString *errorMessage ) const
+{
+  QString workflowError;
+  const QString workflowPath = saveWorkflowPlan( planMarkdown, messageId, &workflowError );
+  if ( workflowPath.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = workflowError;
+    return QString();
+  }
+
+  QJsonObject report;
+  report.insert( u"kind"_s, u"strataflow_report"_s );
+  report.insert( u"version"_s, 1 );
+  report.insert( u"workflowPath"_s, workflowPath );
+  report.insert( u"exportedAt"_s, QDateTime::currentDateTimeUtc().toString( Qt::ISODateWithMs ) );
+  report.insert( u"status"_s, u"ready_for_dry_run"_s );
+  report.insert( u"planMarkdown"_s, planMarkdown.trimmed() );
+  report.insert( u"steps"_s, workflowStepsFromMarkdown( planMarkdown ) );
+  report.insert( u"provenance"_s, workflowProvenance( mSessionManager ? mSessionManager->workspaceRoot() : QString() ) );
+
+  const QString reportPath = workflowPath + u".report.json"_s;
+  QSaveFile file( reportPath );
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Cannot write workflow report: %1" ).arg( reportPath );
+    return QString();
+  }
+  file.write( QJsonDocument( report ).toJson( QJsonDocument::Indented ) );
+  if ( !file.commit() )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Cannot commit workflow report: %1" ).arg( reportPath );
+    return QString();
+  }
+  return reportPath;
+}
+
+void QgsAiChatDockWidget::dryRunWorkflowPlan( const QString &messageId, const QString &planMarkdown )
+{
+  if ( !mSessionManager || planMarkdown.trimmed().isEmpty() || mRequestRunning )
+    return;
+
+  QString error;
+  const QString workflowPath = saveWorkflowPlan( planMarkdown, messageId, &error );
+  setModeLabel( u"Plan"_s );
+  mSessionManager->sendUserMessage(
+    tr( "Dry-run this .strataflow workflow. Do not call mutating tools. Validate required inputs, risks, approvals, expected GIS side effects and rollback points.\n\nWorkflow path: %1\n\nPlan:\n%2" )
+      .arg( workflowPath.isEmpty() ? error : workflowPath, planMarkdown.trimmed() )
+  );
+  reloadTranscriptFromHistory();
+}
+
+void QgsAiChatDockWidget::runWorkflowPlan( const QString &messageId, const QString &planMarkdown )
+{
+  if ( !mSessionManager || planMarkdown.trimmed().isEmpty() || mRequestRunning )
+    return;
+
+  QString error;
+  const QString workflowPath = saveWorkflowPlan( planMarkdown, messageId, &error );
   setModeLabel( u"Ask before edits"_s );
   mSessionManager->sendUserMessage(
-    tr( "Execute the accepted plan exactly. Use the existing approval/review dialogs for any operation that requires confirmation.\n\nAccepted plan:\n%1" ).arg( planMarkdown.trimmed() )
+    tr( "Run this .strataflow workflow through the Strata agent. Use native GIS tools where available, keep provenance for each step, and request approval before any mutating action.\n\nWorkflow path: %1\n\nPlan:\n%2" )
+      .arg( workflowPath.isEmpty() ? error : workflowPath, planMarkdown.trimmed() )
   );
   reloadTranscriptFromHistory();
 }
