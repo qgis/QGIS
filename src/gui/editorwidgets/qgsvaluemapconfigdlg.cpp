@@ -71,6 +71,9 @@ QVariantMap QgsValueMapConfigDlg::config()
     if ( ( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
       ks = QgsValueMapFieldFormatter::NULL_VALUE;
 
+    if ( ks.isEmpty() && ( !vi || vi->text().isEmpty() ) )
+      continue;
+
     QVariantMap value;
 
     if ( !vi || vi->text().isNull() )
