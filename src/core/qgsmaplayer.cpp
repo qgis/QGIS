@@ -35,6 +35,7 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmessagelog.h"
 #include "qgsobjectvisitor.h"
 #include "qgspathresolver.h"
@@ -2655,37 +2656,19 @@ QgsMapLayer::SaveStyleResults QgsMapLayer::saveStyleToDatabaseV2(
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsMapLayer::SaveStyleResults results;
+  QgsSaveStyleResult result = QgsMapLayerUtils::
+    saveLayerStyleToDatabase( this, mProviderKey, mDataSource, name, description, useAsDefault, uiFileContent, Qgis::SaveStyleFormats( Qgis::SaveStyleFormat::QML | Qgis::SaveStyleFormat::SLD ), categories );
+  msgError = result.providerSaveStyleError.isEmpty() ? result.qmlError : result.providerSaveStyleError;
+  return result.saveResult;
+}
 
-  QString sldStyle, qmlStyle;
-  QDomDocument qmlDocument;
-  QgsReadWriteContext context;
-  exportNamedStyle( qmlDocument, msgError, context, categories );
-  if ( !msgError.isEmpty() )
-  {
-    results.setFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed );
-  }
-  else
-  {
-    qmlStyle = qmlDocument.toString();
-  }
+QgsSaveStyleResult QgsMapLayer::saveStyleToDatabaseV3(
+  const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, const Qgis::SaveStyleFormats formats, QgsMapLayer::StyleCategories categories
+)
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsSldExportContext sldContext;
-  QDomDocument sldDocument = this->exportSldStyleV3( sldContext );
-  if ( !sldContext.errors().empty() )
-  {
-    results.setFlag( QgsMapLayer::SaveStyleResult::SldGenerationFailed );
-  }
-  else
-  {
-    sldStyle = sldDocument.toString();
-  }
-
-  if ( !QgsProviderRegistry::instance()->saveStyle( mProviderKey, mDataSource, qmlStyle, sldStyle, name, description, uiFileContent, useAsDefault, msgError ) )
-  {
-    results.setFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed );
-  }
-  return results;
+  return QgsMapLayerUtils::saveLayerStyleToDatabase( this, mProviderKey, mDataSource, name, description, useAsDefault, uiFileContent, formats, categories );
 }
 
 QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories, Qgis::LoadStyleFlags flags )

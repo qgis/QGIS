@@ -6016,6 +6016,7 @@ int QgisEvent = QEvent::User + 1;
       SetTableComment = 1 << 2,   //!< Can set comments for tables via setTableComment() \since QGIS 3.44
       EditFieldDomain = 1 << 3,   //!< Can edit existing field domain \since QGIS 4.0
       DeleteFieldDomain = 1 << 4, //!< Can delete existing field domain \since QGIS 4.0
+      StyleStorage = 1 << 5,      //!< Can save/load styles to/from the database \since QGIS 4.2
     };
     Q_ENUM( DatabaseProviderConnectionCapability2 )
     Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )
@@ -6885,6 +6886,20 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( DockableWidgetInitialState )
 
     /**
+     * Style save format
+     *
+     * \since QGIS 4.2
+     */
+    enum class SaveStyleFormat : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      QML = 1 << 0, //!< QML style format
+      SLD = 1 << 1, //!< SLD style format
+    };
+    Q_ENUM( SaveStyleFormat )
+    Q_DECLARE_FLAGS( SaveStyleFormats, SaveStyleFormat )
+    Q_FLAG( SaveStyleFormats )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -7176,6 +7191,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ArcGisRestServiceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::InstancedMaterialFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SaveStyleFormats )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Map3DDebugFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SensorThingsExtensions )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )

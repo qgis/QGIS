@@ -3363,6 +3363,7 @@ The development version
       SetTableComment,
       EditFieldDomain,
       DeleteFieldDomain,
+      StyleStorage,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
@@ -3862,6 +3863,14 @@ The development version
       ForceDialog,
     };
 
+    enum class SaveStyleFormat /BaseType=IntFlag/
+    {
+      QML,
+      SLD,
+    };
+    typedef QFlags<Qgis::SaveStyleFormat> SaveStyleFormats;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -4204,6 +4213,8 @@ QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapabilit
 QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapability f1, QFlags<Qgis::ArcGisRestServiceCapability> f2);
 
 QFlags<Qgis::InstancedMaterialFlag> operator|(Qgis::InstancedMaterialFlag f1, QFlags<Qgis::InstancedMaterialFlag> f2);
+
+QFlags<Qgis::SaveStyleFormat> operator|(Qgis::SaveStyleFormat f1, QFlags<Qgis::SaveStyleFormat> f2);
 
 QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map3DDebugFlag> f2);
 
