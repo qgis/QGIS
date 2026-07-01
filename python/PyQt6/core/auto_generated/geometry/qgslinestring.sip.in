@@ -546,9 +546,9 @@ point in the line.
 %MethodCode
     const int count = sipCpp->numPoints();
     if ( a0 >= 0 && a0 < count )
-      sipCpp->deleteVertex( QgsVertexId( -1, -1, a0 ) );
+      sipCpp->deleteVertex( QgsVertexId( 0, 0, a0 ) );
     else if ( a0 < 0 && a0 >= -count )
-      sipCpp->deleteVertex( QgsVertexId( -1, -1, count + a0 ) );
+      sipCpp->deleteVertex( QgsVertexId( 0, 0, count + a0 ) );
     else
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
