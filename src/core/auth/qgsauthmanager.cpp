@@ -4117,12 +4117,15 @@ bool QgsAuthManager::masterPasswordInput()
       {
         sGeneratedPasswordWarned = true;
         emit passwordHelperMessageLog(
-          tr( "The master password was generated automatically but could not be retrieved from the %1. "
-              "Encrypted credentials are unavailable for this session. "
-              "To fix this, erase the authentication database from Settings ▸ Options ▸ Authentication ▸ Utilities: "
-              "a fresh master password will be generated automatically." )
+          tr(
+            "The master password was generated automatically but could not be retrieved from the %1. "
+            "Encrypted credentials are unavailable for this session. "
+            "To fix this, erase the authentication database from Settings ▸ Options ▸ Authentication ▸ Utilities: "
+            "a fresh master password will be generated automatically."
+          )
             .arg( passwordHelperDisplayName() ),
-          authManTag(), Qgis::MessageLevel::Warning
+          authManTag(),
+          Qgis::MessageLevel::Warning
         );
       }
       return false;
