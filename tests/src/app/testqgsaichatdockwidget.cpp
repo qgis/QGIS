@@ -498,6 +498,11 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   const QString embeddingProviderKey = u"strata/index/embedding_provider"_s;
   const QString automaticIndexingKey = u"strata/index/automatic"_s;
   const QString layerIndexingKey = u"strata/index/enable_layer_indexing"_s;
+  const QString privacyMetadataOnlyKey = u"strata/privacy/metadata_only_ack"_s;
+  const QString telemetryOptInKey = u"strata/telemetry/opt_in"_s;
+  const QString crashOptInKey = u"strata/crash_reporting/metadata_only_opt_in"_s;
+  const QString releaseDryRunChecksumKey = u"strata/release/dry_run_checksum"_s;
+  const QString releaseDryRunManifestKey = u"strata/release/dry_run_manifest"_s;
   const bool hadE5ModelDirEnv = qEnvironmentVariableIsSet( "STRATA_AI_EMBEDDING_MODEL_DIR" );
   const QByteArray savedE5ModelDirEnv = qgetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
   const bool hadOpenAiKey = settings.contains( openAiKey );
@@ -510,11 +515,24 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   const QVariant savedAutomaticIndexing = settings.value( automaticIndexingKey );
   const bool hadLayerIndexing = settings.contains( layerIndexingKey );
   const QVariant savedLayerIndexing = settings.value( layerIndexingKey );
+  const bool hadPrivacyMetadataOnly = settings.contains( privacyMetadataOnlyKey );
+  const QVariant savedPrivacyMetadataOnly = settings.value( privacyMetadataOnlyKey );
+  const bool hadTelemetryOptIn = settings.contains( telemetryOptInKey );
+  const QVariant savedTelemetryOptIn = settings.value( telemetryOptInKey );
+  const bool hadCrashOptIn = settings.contains( crashOptInKey );
+  const QVariant savedCrashOptIn = settings.value( crashOptInKey );
+  const bool hadReleaseDryRunChecksum = settings.contains( releaseDryRunChecksumKey );
+  const QVariant savedReleaseDryRunChecksum = settings.value( releaseDryRunChecksumKey );
+  const bool hadReleaseDryRunManifest = settings.contains( releaseDryRunManifestKey );
+  const QVariant savedReleaseDryRunManifest = settings.value( releaseDryRunManifestKey );
   settings.setValue( openAiKey, u"sk-old-test-key"_s );
   settings.setValue( legacyEmbeddingProviderKey, u"openai"_s );
   settings.remove( embeddingProviderKey );
   settings.setValue( automaticIndexingKey, true );
   settings.setValue( layerIndexingKey, true );
+  settings.setValue( privacyMetadataOnlyKey, true );
+  settings.remove( releaseDryRunChecksumKey );
+  settings.remove( releaseDryRunManifestKey );
   qputenv( "STRATA_AI_EMBEDDING_MODEL_DIR", QFile::encodeName( QDir( tempDir.path() ).filePath( u"missing-e5"_s ) ) );
 
   QgsAiModelRouter router;
@@ -535,7 +553,9 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool downloadButtonFound = false;
   bool defaultProviderSelected = false;
   bool e5UiStateFound = false;
-  QTimer::singleShot( 0, &dock, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, e5ProviderListed]() {
+  bool onboardingControlsFound = false;
+  bool releaseDryRunOk = false;
+  QTimer::singleShot( 0, &dock, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, &onboardingControlsFound, &releaseDryRunOk, e5ProviderListed]() {
     QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
     if ( settingsDialog )
     {
@@ -563,6 +583,22 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
       localStatusFound = e5ProviderListed ? statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive )
                                           : statusLabel && statusLabel->text().contains( u"MinHash"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"available"_s, Qt::CaseInsensitive );
       downloadButtonFound = downloadButton && downloadButton->isVisible() == e5ProviderListed;
+      QLabel *onboardingStatus = settingsDialog->findChild<QLabel *>( u"aiOnboardingStatusLabel"_s );
+      QPushButton *releaseDryRunButton = settingsDialog->findChild<QPushButton *>( u"aiReleaseDryRunButton"_s );
+      QLabel *releaseDryRunStatus = settingsDialog->findChild<QLabel *>( u"aiReleaseDryRunStatusLabel"_s );
+      onboardingControlsFound = onboardingStatus
+                                && onboardingStatus->text().contains( u"Plan login"_s )
+                                && settingsDialog->findChild<QCheckBox *>( u"aiPrivacyMetadataOnlyCheckBox"_s )
+                                && settingsDialog->findChild<QCheckBox *>( u"aiTelemetryOptInCheckBox"_s )
+                                && settingsDialog->findChild<QCheckBox *>( u"aiCrashReportOptInCheckBox"_s )
+                                && settingsDialog->findChild<QPushButton *>( u"aiCreateDemoProjectButton"_s )
+                                && releaseDryRunButton
+                                && releaseDryRunStatus;
+      if ( releaseDryRunButton && releaseDryRunStatus )
+      {
+        releaseDryRunButton->click();
+        releaseDryRunOk = releaseDryRunStatus->text().contains( u"checksum"_s, Qt::CaseInsensitive ) && !releaseDryRunStatus->property( "checksum" ).toString().isEmpty();
+      }
       settingsDialog->reject();
     }
     inspected = true;
@@ -590,6 +626,26 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
     settings.setValue( layerIndexingKey, savedLayerIndexing );
   else
     settings.remove( layerIndexingKey );
+  if ( hadPrivacyMetadataOnly )
+    settings.setValue( privacyMetadataOnlyKey, savedPrivacyMetadataOnly );
+  else
+    settings.remove( privacyMetadataOnlyKey );
+  if ( hadTelemetryOptIn )
+    settings.setValue( telemetryOptInKey, savedTelemetryOptIn );
+  else
+    settings.remove( telemetryOptInKey );
+  if ( hadCrashOptIn )
+    settings.setValue( crashOptInKey, savedCrashOptIn );
+  else
+    settings.remove( crashOptInKey );
+  if ( hadReleaseDryRunChecksum )
+    settings.setValue( releaseDryRunChecksumKey, savedReleaseDryRunChecksum );
+  else
+    settings.remove( releaseDryRunChecksumKey );
+  if ( hadReleaseDryRunManifest )
+    settings.setValue( releaseDryRunManifestKey, savedReleaseDryRunManifest );
+  else
+    settings.remove( releaseDryRunManifestKey );
   qunsetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
   if ( hadE5ModelDirEnv )
     qputenv( "STRATA_AI_EMBEDDING_MODEL_DIR", savedE5ModelDirEnv );
@@ -601,6 +657,8 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   QVERIFY( downloadButtonFound );
   QVERIFY( defaultProviderSelected );
   QVERIFY( e5UiStateFound );
+  QVERIFY( onboardingControlsFound );
+  QVERIFY( releaseDryRunOk );
   QCOMPARE( layerIndexingChecked, !e5ProviderListed );
   QCOMPARE( layerIndexingEnabled, !e5ProviderListed );
 }

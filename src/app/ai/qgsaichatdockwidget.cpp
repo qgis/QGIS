@@ -48,6 +48,7 @@
 #include "qgssettings.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"
 
 #include <QAbstractButton>
@@ -3586,6 +3587,160 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   layout->addLayout( indexingForm );
 
+  // ----------------------------------------------------------------------
+  // Product onboarding: one first-run checklist for managed Plan, BYOK,
+  // privacy, indexing and release readiness. Telemetry/crash reporting stay
+  // opt-in and persist metadata-only intent, never payloads.
+  // ----------------------------------------------------------------------
+  QFrame *productSeparator = new QFrame( &dialog );
+  productSeparator->setFrameShape( QFrame::HLine );
+  productSeparator->setFrameShadow( QFrame::Sunken );
+  layout->addWidget( productSeparator );
+
+  QLabel *productTitle = new QLabel( tr( "Product onboarding" ), &dialog );
+  QFont productTitleFont = productTitle->font();
+  productTitleFont.setBold( true );
+  productTitle->setFont( productTitleFont );
+  layout->addWidget( productTitle );
+
+  QFormLayout *productForm = new QFormLayout();
+  QLabel *onboardingStatusLabel = new QLabel( &dialog );
+  onboardingStatusLabel->setObjectName( u"aiOnboardingStatusLabel"_s );
+  onboardingStatusLabel->setWordWrap( true );
+
+  QgsSettings productSettings;
+  QCheckBox *privacyMetadataOnly = new QCheckBox( tr( "Acknowledge metadata-only managed cloud privacy boundary" ), &dialog );
+  privacyMetadataOnly->setObjectName( u"aiPrivacyMetadataOnlyCheckBox"_s );
+  privacyMetadataOnly->setChecked( productSettings.value( u"strata/privacy/metadata_only_ack"_s, false ).toBool() );
+
+  QCheckBox *telemetryOptIn = new QCheckBox( tr( "Share metadata-only product telemetry" ), &dialog );
+  telemetryOptIn->setObjectName( u"aiTelemetryOptInCheckBox"_s );
+  telemetryOptIn->setChecked( productSettings.value( u"strata/telemetry/opt_in"_s, false ).toBool() );
+
+  QCheckBox *crashReportOptIn = new QCheckBox( tr( "Share metadata-only crash reports" ), &dialog );
+  crashReportOptIn->setObjectName( u"aiCrashReportOptInCheckBox"_s );
+  crashReportOptIn->setChecked( productSettings.value( u"strata/crash_reporting/metadata_only_opt_in"_s, false ).toBool() );
+
+  QLabel *releaseDryRunStatus = new QLabel( &dialog );
+  releaseDryRunStatus->setObjectName( u"aiReleaseDryRunStatusLabel"_s );
+  releaseDryRunStatus->setWordWrap( true );
+  const QString savedReleaseChecksum = productSettings.value( u"strata/release/dry_run_checksum"_s ).toString();
+  releaseDryRunStatus->setText( savedReleaseChecksum.isEmpty() ? tr( "Release dry-run: not run." ) : tr( "Release dry-run checksum: %1." ).arg( savedReleaseChecksum ) );
+
+  QPushButton *releaseDryRunButton = new QPushButton( tr( "Run release dry-run" ), &dialog );
+  releaseDryRunButton->setObjectName( u"aiReleaseDryRunButton"_s );
+  QPushButton *createDemoProjectButton = new QPushButton( tr( "Create demo project" ), &dialog );
+  createDemoProjectButton->setObjectName( u"aiCreateDemoProjectButton"_s );
+
+  auto hasByokProvider = [this]() {
+    if ( !mModelRouter )
+      return false;
+    return mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi )
+           || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenRouter )
+           || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude )
+           || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Codex )
+           || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude )
+           || !qEnvironmentVariable( "OPENAI_API_KEY" ).trimmed().isEmpty()
+           || !qEnvironmentVariable( "OPENROUTER_API_KEY" ).trimmed().isEmpty()
+           || !qEnvironmentVariable( "ANTHROPIC_API_KEY" ).trimmed().isEmpty();
+  };
+  auto demoProjectReady = []() {
+    QgsSettings settings;
+    return settings.value( u"strata/onboarding/demo_project_seen"_s, false ).toBool() || ( QgsProject::instance() && !QgsProject::instance()->mapLayers().isEmpty() );
+  };
+  auto onboardingStatusText = [this, hasByokProvider, demoProjectReady, privacyMetadataOnly, automaticIndexing, enableLayerIndexing, cloudContextOptIn]() {
+    const bool planReady = mModelRouter && mModelRouter->isProviderAvailable( QgsAiModelRouter::Provider::Plan );
+    const bool byokReady = hasByokProvider();
+    const bool modelReady = mModelRouter && mModelRouter->isProviderUsable( mModelRouter->resolveProvider() );
+    const bool indexingReady = ( automaticIndexing && automaticIndexing->isChecked() ) || ( enableLayerIndexing && enableLayerIndexing->isChecked() ) || ( cloudContextOptIn && cloudContextOptIn->isChecked() );
+    QStringList lines;
+    lines << QObject::tr( "Plan login: %1" ).arg( planReady ? QObject::tr( "ready" ) : QObject::tr( "not configured" ) );
+    lines << QObject::tr( "BYOK fallback: %1" ).arg( byokReady ? QObject::tr( "ready" ) : QObject::tr( "optional" ) );
+    lines << QObject::tr( "Privacy boundary: %1" ).arg( privacyMetadataOnly && privacyMetadataOnly->isChecked() ? QObject::tr( "acknowledged" ) : QObject::tr( "needs review" ) );
+    lines << QObject::tr( "Model route: %1" ).arg( modelReady ? QObject::tr( "ready" ) : QObject::tr( "choose Plan or BYOK model" ) );
+    lines << QObject::tr( "Indexing: %1" ).arg( indexingReady ? QObject::tr( "enabled" ) : QObject::tr( "off" ) );
+    lines << QObject::tr( "Demo project: %1" ).arg( demoProjectReady() ? QObject::tr( "ready" ) : QObject::tr( "not created" ) );
+    return lines.join( '\n' );
+  };
+  auto refreshOnboardingStatus = [onboardingStatusLabel, onboardingStatusText]() {
+    if ( onboardingStatusLabel )
+      onboardingStatusLabel->setText( onboardingStatusText() );
+  };
+  refreshOnboardingStatus();
+
+  connect( privacyMetadataOnly, &QCheckBox::toggled, &dialog, [refreshOnboardingStatus]( bool ) { refreshOnboardingStatus(); } );
+  connect( automaticIndexing, &QCheckBox::toggled, &dialog, [refreshOnboardingStatus]( bool ) { refreshOnboardingStatus(); } );
+  connect( enableLayerIndexing, &QCheckBox::toggled, &dialog, [refreshOnboardingStatus]( bool ) { refreshOnboardingStatus(); } );
+  connect( cloudContextOptIn, &QCheckBox::toggled, &dialog, [refreshOnboardingStatus]( bool ) { refreshOnboardingStatus(); } );
+
+  connect( createDemoProjectButton, &QPushButton::clicked, &dialog, [this, refreshOnboardingStatus]() {
+    QgsProject *project = QgsProject::instance();
+    if ( !project )
+      return;
+
+    project->clear();
+    QgsVectorLayer *demoLayer = new QgsVectorLayer( u"Point?field=name:string&field=kind:string&crs=EPSG:4326"_s, tr( "Strata demo points" ), u"memory"_s );
+    if ( demoLayer->isValid() && demoLayer->dataProvider() )
+    {
+      QList<QgsFeature> features;
+      QgsFeature rome( demoLayer->fields() );
+      rome.setAttributes( QVariantList { tr( "Rome sample" ), tr( "point of interest" ) } );
+      rome.setGeometry( QgsGeometry::fromWkt( u"POINT(12.4924 41.8902)"_s ) );
+      features << rome;
+      QgsFeature milan( demoLayer->fields() );
+      milan.setAttributes( QVariantList { tr( "Milan sample" ), tr( "point of interest" ) } );
+      milan.setGeometry( QgsGeometry::fromWkt( u"POINT(9.1900 45.4642)"_s ) );
+      features << milan;
+      demoLayer->dataProvider()->addFeatures( features );
+      demoLayer->updateExtents();
+      project->addMapLayer( demoLayer );
+    }
+    else
+    {
+      delete demoLayer;
+    }
+    project->setTitle( tr( "Strata demo project" ) );
+
+    QgsSettings settings;
+    settings.setValue( u"strata/onboarding/demo_project_seen"_s, true );
+    refreshOnboardingStatus();
+    refreshGisSuggestions();
+  } );
+
+  connect( releaseDryRunButton, &QPushButton::clicked, &dialog, [this, hasByokProvider, demoProjectReady, privacyMetadataOnly, telemetryOptIn, crashReportOptIn, automaticIndexing, enableLayerIndexing, cloudContextOptIn, releaseDryRunStatus]() {
+    QJsonObject manifest;
+    manifest.insert( u"app"_s, u"Strata"_s );
+    manifest.insert( u"plan_ready"_s, mModelRouter && mModelRouter->isProviderAvailable( QgsAiModelRouter::Provider::Plan ) );
+    manifest.insert( u"byok_ready"_s, hasByokProvider() );
+    manifest.insert( u"privacy_metadata_only_ack"_s, privacyMetadataOnly && privacyMetadataOnly->isChecked() );
+    manifest.insert( u"telemetry_opt_in"_s, telemetryOptIn && telemetryOptIn->isChecked() );
+    manifest.insert( u"crash_metadata_only_opt_in"_s, crashReportOptIn && crashReportOptIn->isChecked() );
+    manifest.insert( u"automatic_indexing"_s, automaticIndexing && automaticIndexing->isChecked() );
+    manifest.insert( u"layer_indexing"_s, enableLayerIndexing && enableLayerIndexing->isChecked() );
+    manifest.insert( u"cloud_context_opt_in"_s, cloudContextOptIn && cloudContextOptIn->isChecked() );
+    manifest.insert( u"demo_project_ready"_s, demoProjectReady() );
+    manifest.insert( u"active_provider"_s, mModelRouter ? mModelRouter->providerDisplayName( mModelRouter->resolveProvider() ) : QString() );
+    manifest.insert( u"workspace_root_configured"_s, mSessionManager && !mSessionManager->workspaceRoot().trimmed().isEmpty() );
+
+    const QByteArray payload = QJsonDocument( manifest ).toJson( QJsonDocument::Compact );
+    const QString checksum = QString::fromLatin1( QCryptographicHash::hash( payload, QCryptographicHash::Sha256 ).toHex().left( 16 ) );
+    releaseDryRunStatus->setProperty( "checksum", checksum );
+    releaseDryRunStatus->setText( tr( "Release dry-run OK. Metadata checksum: %1." ).arg( checksum ) );
+
+    QgsSettings settings;
+    settings.setValue( u"strata/release/dry_run_checksum"_s, checksum );
+    settings.setValue( u"strata/release/dry_run_manifest"_s, QString::fromUtf8( payload ) );
+  } );
+
+  productForm->addRow( tr( "First-run checklist" ), onboardingStatusLabel );
+  productForm->addRow( QString(), privacyMetadataOnly );
+  productForm->addRow( QString(), telemetryOptIn );
+  productForm->addRow( QString(), crashReportOptIn );
+  productForm->addRow( QString(), createDemoProjectButton );
+  productForm->addRow( QString(), releaseDryRunButton );
+  productForm->addRow( QString(), releaseDryRunStatus );
+  layout->addLayout( productForm );
+
   QLabel *helpLabel = new QLabel(
     tr(
       "OpenAI, OpenRouter and Claude API keys are stored locally in application settings. The Codex OAuth refresh token is stored locally in application settings; the Claude OAuth refresh token is "
@@ -3594,7 +3749,8 @@ void QgsAiChatDockWidget::openProviderSettings()
       "QGIS authentication store. Leave API key fields empty to keep "
       "the current saved value.\n\nAgent rules and skills are stored locally in application settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended "
       "to the "
-      "prompt. The AI workspace root is used only when the current QGIS project has no home path. Custom actions remain subject to the existing review/approval dialogs."
+      "prompt. The AI workspace root is used only when the current QGIS project has no home path. Custom actions remain subject to the existing review/approval dialogs.\n\nTelemetry and crash "
+      "reporting are opt-in and metadata-only. Release dry-run stores only a local readiness manifest checksum."
     ),
     &dialog
   );
@@ -3866,6 +4022,9 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
     settings.setValue( u"strata/index/automatic"_s, automaticIndexing->isChecked() );
     settings.setValue( u"strata/index/cloud_context_opt_in"_s, cloudContextOptIn->isChecked() );
+    settings.setValue( u"strata/privacy/metadata_only_ack"_s, privacyMetadataOnly->isChecked() );
+    settings.setValue( u"strata/telemetry/opt_in"_s, telemetryOptIn->isChecked() );
+    settings.setValue( u"strata/crash_reporting/metadata_only_opt_in"_s, crashReportOptIn->isChecked() );
   }
 
   emit embeddingProviderSettingsChanged();
@@ -3995,9 +4154,9 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
   if ( !messageBar )
     return;
 
-  QPushButton *settingsButton = new QPushButton( tr( "Open AI settings" ) );
+  QPushButton *settingsButton = new QPushButton( tr( "Open AI onboarding" ) );
   QgsMessageBarItem *item
-    = new QgsMessageBarItem( tr( "AI Assistant" ), tr( "Configure an API key or login with Codex/Claude to start using the AI assistant." ), settingsButton, Qgis::MessageLevel::Info, 0, messageBar );
+    = new QgsMessageBarItem( tr( "AI Assistant" ), tr( "Complete Plan login or BYOK, privacy, model, indexing and demo setup before using the cloud agent." ), settingsButton, Qgis::MessageLevel::Info, 0, messageBar );
 
   connect( settingsButton, &QPushButton::clicked, this, [this, messageBar, item]() {
     openProviderSettings();
