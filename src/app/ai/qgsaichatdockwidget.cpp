@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <utility>
 
+#include "ai/index/qgsaicloudindexclient.h"
 #include "ai/index/qgsaiembeddingprovider.h"
 #include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
@@ -2991,6 +2992,125 @@ void QgsAiChatDockWidget::openProviderSettings()
     }
   };
 
+  auto buildCloudContextItems = [this]() {
+    QList<QgsAiCloudIndexClient::ContextItem> items;
+    if ( mSessionManager && mSessionManager->workspaceIndex() )
+    {
+      mSessionManager->workspaceIndex()->ensureLoaded();
+      items += QgsAiCloudIndexClient::contextItemsFromChunks( mSessionManager->workspaceIndex()->chunks() );
+    }
+    if ( mSessionManager )
+    {
+      const QgsAiAgentBehaviorSettings behavior = mSessionManager->agentBehaviorSettings();
+      items += QgsAiCloudIndexClient::contextItemsFromWorkspaceFolders(
+        mSessionManager->workspaceRoot(),
+        behavior.loadWorkspaceRules ? behavior.rulesPath : QString(),
+        behavior.loadWorkspaceSkills ? behavior.skillsPath : QString()
+      );
+    }
+    return QgsAiCloudIndexClient::deduplicateContextItems( items );
+  };
+
+  QCheckBox *cloudContextOptIn = new QCheckBox( tr( "Sync safe RAG context to Strata Cloud" ), &dialog );
+  cloudContextOptIn->setObjectName( u"aiCloudContextOptInCheckBox"_s );
+  cloudContextOptIn->setChecked( indexSettings.value( u"strata/index/cloud_context_opt_in"_s, false ).toBool() );
+  cloudContextOptIn->setToolTip( tr( "Only metadata-safe layer summaries and opted-in rules/skills/PDF/image text are sent. Geometry, coordinates, WKT and datasource URIs are blocked before upload." ) );
+  indexingForm->addRow( QString(), cloudContextOptIn );
+
+  QLabel *cloudIndexStatusLabel = new QLabel( &dialog );
+  cloudIndexStatusLabel->setObjectName( u"aiCloudIndexStatusLabel"_s );
+  cloudIndexStatusLabel->setWordWrap( true );
+  auto refreshCloudIndexStatusLabel = [buildCloudContextItems, cloudIndexStatusLabel]() {
+    const QList<QgsAiCloudIndexClient::ContextItem> items = buildCloudContextItems();
+    if ( items.isEmpty() )
+    {
+      cloudIndexStatusLabel->setText( QObject::tr( "Cloud sync preview: no safe context items yet." ) );
+      return;
+    }
+    QString validationError;
+    if ( !QgsAiCloudIndexClient::validateContextItems( items, &validationError ) )
+    {
+      cloudIndexStatusLabel->setText( QObject::tr( "Cloud sync preview blocked: %1" ).arg( validationError ) );
+      return;
+    }
+    int layerItems = 0;
+    int ruleItems = 0;
+    int skillItems = 0;
+    int documentItems = 0;
+    for ( const QgsAiCloudIndexClient::ContextItem &item : items )
+    {
+      if ( item.sourceType == "layer"_L1 )
+        ++layerItems;
+      else if ( item.sourceType == "rule"_L1 )
+        ++ruleItems;
+      else if ( item.sourceType == "skill"_L1 )
+        ++skillItems;
+      else if ( item.sourceType == "pdf"_L1 || item.sourceType == "image"_L1 )
+        ++documentItems;
+    }
+    cloudIndexStatusLabel->setText( QObject::tr( "Cloud sync preview: %1 items (%2 layer, %3 rule, %4 skill, %5 document)." ).arg( items.size() ).arg( layerItems ).arg( ruleItems ).arg( skillItems ).arg( documentItems ) );
+  };
+  refreshCloudIndexStatusLabel();
+  indexingForm->addRow( QString(), cloudIndexStatusLabel );
+
+  QPushButton *syncCloudContextButton = new QPushButton( tr( "Sync safe context to Strata Cloud now" ), &dialog );
+  syncCloudContextButton->setObjectName( u"aiSyncCloudContextButton"_s );
+  syncCloudContextButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() && mModelRouter && !mModelRouter->planSessionToken().trimmed().isEmpty() );
+  indexingForm->addRow( QString(), syncCloudContextButton );
+
+  connect( cloudContextOptIn, &QCheckBox::toggled, &dialog, [refreshCloudIndexStatusLabel]( bool ) { refreshCloudIndexStatusLabel(); } );
+
+  connect( syncCloudContextButton, &QPushButton::clicked, &dialog, [this, &dialog, planEndpoint, cloudContextOptIn, syncCloudContextButton, cloudIndexStatusLabel, buildCloudContextItems, refreshCloudIndexStatusLabel]() {
+    if ( !mSessionManager || !mSessionManager->workspaceIndex() || !mModelRouter )
+      return;
+
+    if ( !cloudContextOptIn->isChecked() )
+    {
+      QMessageBox::information( &dialog, tr( "Cloud context sync" ), tr( "Enable the Strata Cloud context sync opt-in before uploading context." ) );
+      return;
+    }
+
+    const QString token = mModelRouter->planSessionToken().trimmed();
+    if ( token.isEmpty() )
+    {
+      QMessageBox::information( &dialog, tr( "Cloud context sync" ), tr( "Sign in to Plan Account before syncing cloud context." ) );
+      return;
+    }
+
+    const QList<QgsAiCloudIndexClient::ContextItem> items = buildCloudContextItems();
+    QString validationError;
+    if ( !QgsAiCloudIndexClient::validateContextItems( items, &validationError ) )
+    {
+      QMessageBox::warning( &dialog, tr( "Cloud context sync blocked" ), validationError );
+      refreshCloudIndexStatusLabel();
+      return;
+    }
+
+    const QString workspaceRoot = mSessionManager->workspaceRoot();
+    if ( workspaceRoot.trimmed().isEmpty() )
+    {
+      QMessageBox::warning( &dialog, tr( "Cloud context sync" ), tr( "Workspace root is unset." ) );
+      return;
+    }
+
+    syncCloudContextButton->setEnabled( false );
+    cloudIndexStatusLabel->setText( tr( "Cloud sync running..." ) );
+    QgsAiCloudIndexClient *client = new QgsAiCloudIndexClient( &dialog );
+    connect( client, &QgsAiCloudIndexClient::contextSynced, &dialog, [syncCloudContextButton, cloudIndexStatusLabel, client, refreshCloudIndexStatusLabel]( const QgsAiCloudIndexClient::SyncResult &result ) {
+      syncCloudContextButton->setEnabled( true );
+      cloudIndexStatusLabel->setText( QObject::tr( "Cloud sync queued %1 context items for workspace %2." ).arg( result.queued ).arg( result.workspaceId ) );
+      refreshCloudIndexStatusLabel();
+      client->deleteLater();
+    } );
+    connect( client, &QgsAiCloudIndexClient::requestFailed, &dialog, [&dialog, syncCloudContextButton, cloudIndexStatusLabel, client]( const QString &message ) {
+      syncCloudContextButton->setEnabled( true );
+      cloudIndexStatusLabel->setText( QObject::tr( "Cloud sync failed." ) );
+      QMessageBox::warning( &dialog, QObject::tr( "Cloud context sync failed" ), message );
+      client->deleteLater();
+    } );
+    client->syncWorkspaceContext( planEndpoint->text().trimmed(), token, workspaceRoot, QFileInfo( workspaceRoot ).fileName(), items, true );
+  } );
+
   auto ensureEmbeddingProvider = [this, &dialog]() {
     if ( mSessionManager && mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->embeddingProviderAvailable() )
       return true;
@@ -3410,9 +3530,10 @@ void QgsAiChatDockWidget::openProviderSettings()
         settings.remove( embeddingModelKey );
       else
         settings.setValue( embeddingModelKey, embeddingModelValue );
-    }
-    settings.setValue( u"strata/index/automatic"_s, automaticIndexing->isChecked() );
-  }
+	    }
+	    settings.setValue( u"strata/index/automatic"_s, automaticIndexing->isChecked() );
+	    settings.setValue( u"strata/index/cloud_context_opt_in"_s, cloudContextOptIn->isChecked() );
+	  }
 
   emit embeddingProviderSettingsChanged();
 

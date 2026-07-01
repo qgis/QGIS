@@ -310,6 +310,7 @@ if (ENABLE_AI_ASSISTANT)
     ${QGIS_APP_SRCS}
     ai/index/qgsaiembeddingclient.cpp
     ai/index/qgsaiembeddingprovider.cpp
+    ai/index/qgsaicloudindexclient.cpp
     ai/index/qgsaiindexingscheduler.cpp
     ai/index/qgsailayerchunker.cpp
     ai/index/qgsailayerindexcoordinator.cpp

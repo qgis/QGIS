@@ -7,7 +7,6 @@
 #include "ai/index/qgsaiembeddingclient.h"
 #include "qgsaitestloopbackserver.h"
 #include "qgsapplication.h"
-#include "qgsauthmanager.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgstest.h"
@@ -292,16 +291,14 @@ void TestQgsAiEmbeddingClient::strataCloudEmbedUsesPlanTokenAndRolePayload()
   server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"model\":\"strata-embedding-384\",\"dimension\":384,\"embeddings\":[[0.5,0.6]]}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
-  QgsAuthManager *authManager = QgsApplication::authManager();
-  QVERIFY( authManager );
-  const QString tokenKey = u"ai/provider/plan/token"_s;
-  const QString savedToken = authManager->authSetting( tokenKey, QVariant(), true ).toString();
-  QVERIFY( authManager->storeAuthSetting( tokenKey, u"strata-plan-loopback-token"_s, true ) );
-  const auto restore = qScopeGuard( [authManager, tokenKey, savedToken]() {
-    if ( savedToken.isEmpty() )
-      authManager->removeAuthSetting( tokenKey );
+  const bool hadEnvToken = qEnvironmentVariableIsSet( "STRATA_PLAN_TOKEN" );
+  const QByteArray savedEnvToken = qgetenv( "STRATA_PLAN_TOKEN" );
+  qputenv( "STRATA_PLAN_TOKEN", "strata-plan-loopback-token" );
+  const auto restore = qScopeGuard( [hadEnvToken, savedEnvToken]() {
+    if ( hadEnvToken )
+      qputenv( "STRATA_PLAN_TOKEN", savedEnvToken );
     else
-      authManager->storeAuthSetting( tokenKey, savedToken, true );
+      qunsetenv( "STRATA_PLAN_TOKEN" );
   } );
 
   QgsAiEmbeddingClient client;

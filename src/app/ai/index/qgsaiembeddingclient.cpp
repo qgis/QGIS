@@ -123,9 +123,12 @@ QString QgsAiEmbeddingClient::apiKey() const
 {
   if ( provider() == Provider::StrataCloud )
   {
+    const QString envToken = QString::fromUtf8( qgetenv( "STRATA_PLAN_TOKEN" ) ).trimmed();
+    if ( !envToken.isEmpty() )
+      return envToken;
     QgsAuthManager *authManager = QgsApplication::authManager();
     const QString stored = authManager ? authManager->authSetting( QString::fromLatin1( PLAN_TOKEN_SETTING ), QVariant(), true ).toString().trimmed() : QString();
-    return stored.isEmpty() ? QString::fromUtf8( qgetenv( "STRATA_PLAN_TOKEN" ) ).trimmed() : stored;
+    return stored;
   }
   const bool useOpenRouter = provider() == Provider::OpenRouter;
   return QgsAiSecretStore::readSecret( QString::fromLatin1( useOpenRouter ? OPENROUTER_KEY_SETTING : OPENAI_KEY_SETTING ), { useOpenRouter ? u"OPENROUTER_API_KEY"_s : u"OPENAI_API_KEY"_s } );
