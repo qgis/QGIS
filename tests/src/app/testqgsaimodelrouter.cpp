@@ -226,6 +226,7 @@ class TestQgsAiModelRouter : public QObject
     void visualContextImageIsAddedToClaudePayload();
     void visualContextImageRequiresConsent();
     void visualContextImageIsAddedToCodexPayload();
+    void attachedImageIncludedInUserPayload();
     void preDispatchFailureIsQueued();
     void dispatchLogDoesNotExposeEndpointQuery();
 
@@ -1020,6 +1021,72 @@ void TestQgsAiModelRouter::visualContextImageIsAddedToCodexPayload()
     }
   }
   QVERIFY( hasImage );
+
+  settings.remove( u"strata/visual_context/image_send_consent"_s );
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
+}
+
+void TestQgsAiModelRouter::attachedImageIncludedInUserPayload()
+{
+  QgsSettings settings;
+  settings.setValue( u"strata/visual_context/image_send_consent"_s, true );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString imagePath = tempDir.filePath( u"attachment.png"_s );
+  QImage image( 2, 2, QImage::Format_ARGB32 );
+  image.fill( Qt::magenta );
+  QVERIFY( image.save( imagePath, "PNG" ) );
+
+  QgsAiChatMessage userMessage;
+  userMessage.role = QgsAiChatRole::User;
+  userMessage.content = u"What is in this screenshot?"_s;
+  userMessage.metadata.insert( u"attached_image_paths"_s, QStringList { imagePath } );
+  userMessage.metadata.insert( u"attached_image_mime_types"_s, QVariantList { u"image/png"_s } );
+
+  QgsAiModelRouter router;
+  const QJsonObject openAiObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { userMessage }, false ) ).object();
+  const QJsonArray openAiInput = openAiObject.value( u"input"_s ).toArray();
+  QCOMPARE( openAiInput.size(), 1 );
+  const QJsonArray openAiContent = openAiInput.at( 0 ).toObject().value( u"content"_s ).toArray();
+  bool hasOpenAiImage = false;
+  for ( const QJsonValue &value : openAiContent )
+  {
+    const QJsonObject block = value.toObject();
+    if ( block.value( u"type"_s ).toString() == "input_image"_L1 )
+    {
+      hasOpenAiImage = true;
+      QVERIFY( block.value( u"image_url"_s ).toString().startsWith( "data:image/png;base64,"_L1 ) );
+    }
+  }
+  QVERIFY( hasOpenAiImage );
+
+  const QJsonObject claudeObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Claude, { userMessage }, false ) ).object();
+  const QJsonArray claudeMessages = claudeObject.value( u"messages"_s ).toArray();
+  QCOMPARE( claudeMessages.size(), 1 );
+  const QJsonArray claudeContent = claudeMessages.at( 0 ).toObject().value( u"content"_s ).toArray();
+  bool hasClaudeImage = false;
+  for ( const QJsonValue &value : claudeContent )
+  {
+    const QJsonObject block = value.toObject();
+    if ( block.value( u"type"_s ).toString() == "image"_L1 )
+      hasClaudeImage = true;
+  }
+  QVERIFY( hasClaudeImage );
+
+  const QJsonObject openRouterObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenRouter, { userMessage }, false ) ).object();
+  const QJsonArray openRouterMessages = openRouterObject.value( u"messages"_s ).toArray();
+  QCOMPARE( openRouterMessages.size(), 1 );
+  const QJsonValue openRouterContentValue = openRouterMessages.at( 0 ).toObject().value( u"content"_s );
+  QVERIFY( openRouterContentValue.isArray() );
+  bool hasChatCompletionImage = false;
+  for ( const QJsonValue &value : openRouterContentValue.toArray() )
+  {
+    const QJsonObject block = value.toObject();
+    if ( block.value( u"type"_s ).toString() == "image_url"_L1 )
+      hasChatCompletionImage = true;
+  }
+  QVERIFY( hasChatCompletionImage );
 
   settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );

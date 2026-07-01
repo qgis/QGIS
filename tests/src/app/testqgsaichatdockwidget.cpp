@@ -11,6 +11,7 @@
 #include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaichatdockwidget.h"
 #include "ai/qgsaichathistorystore.h"
+#include "ai/qgsaichatpromptedit.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
@@ -27,9 +28,7 @@
 #include <QCryptographicHash>
 #include <QDialog>
 #include <QDir>
-#include <QEvent>
-#include <QFile>
-#include <QFrame>
+#include <QImage>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -37,6 +36,7 @@
 #include <QListWidget>
 #include <QMenu>
 #include <QMetaObject>
+#include <QMimeData>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegularExpression>
@@ -47,6 +47,7 @@
 #include <QTextEdit>
 #include <QTimer>
 #include <QToolButton>
+#include <QUrl>
 #include <QVariantMap>
 
 using namespace Qt::StringLiterals;
@@ -103,6 +104,8 @@ class TestQgsAiChatDockWidget : public QObject
     void historyMenuPromptsForSavedProjectWhenUnsaved();
     void historyMenuDoesNotShowWorkspaceHistoryForUnsavedProject();
     void historyMenuShowsOnlyCurrentProjectSessions();
+    void dropLocalFileCreatesAttachmentChip();
+    void dropDoesNotInsertFileUriText();
 };
 
 void TestQgsAiChatDockWidget::hasRuntimeWidgets()
@@ -821,6 +824,82 @@ void TestQgsAiChatDockWidget::historyMenuShowsOnlyCurrentProjectSessions()
   const QString projectOneMenu = projectOneLabels.join( '\n' );
   QVERIFY( projectOneMenu.contains( u"project alpha"_s ) );
   QVERIFY( !projectOneMenu.contains( u"project beta"_s ) );
+}
+
+void TestQgsAiChatDockWidget::dropLocalFileCreatesAttachmentChip()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  const QString filePath = tempDir.filePath( u"notes.txt"_s );
+  QFile file( filePath );
+  QVERIFY( file.open( QIODevice::WriteOnly ) );
+  file.write( "sample attachment" );
+  file.close();
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  dock.resize( 400, 520 );
+  dock.show();
+  QApplication::processEvents();
+
+  QgsAiChatPromptEdit *input = dock.findChild<QgsAiChatPromptEdit *>( u"aiPromptInput"_s );
+  QWidget *chipRow = dock.findChild<QWidget *>( u"aiAttachmentChipRow"_s );
+  QVERIFY( input );
+  QVERIFY( chipRow );
+  QVERIFY( !chipRow->isVisible() );
+
+  auto mime = std::make_unique<QMimeData>();
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( filePath ) );
+  input->insertFromMimeData( mime.get() );
+  QApplication::processEvents();
+
+  QVERIFY( chipRow->isVisible() );
+  QVERIFY( input->toPlainText().isEmpty() );
+  QVERIFY( !dock.findChildren<QWidget *>( u"aiAttachmentChip"_s ).isEmpty() );
+}
+
+void TestQgsAiChatDockWidget::dropDoesNotInsertFileUriText()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  const QString filePath = tempDir.filePath( u"screenshot.png"_s );
+  QImage image( 4, 4, QImage::Format_ARGB32 );
+  image.fill( Qt::red );
+  QVERIFY( image.save( filePath, "PNG" ) );
+
+  QgsSettings settings;
+  settings.setValue( u"strata/visual_context/image_send_consent"_s, true );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  dock.resize( 400, 520 );
+  dock.show();
+  QApplication::processEvents();
+
+  QgsAiChatPromptEdit *input = dock.findChild<QgsAiChatPromptEdit *>( u"aiPromptInput"_s );
+  QVERIFY( input );
+
+  auto mime = std::make_unique<QMimeData>();
+  mime->setText( QUrl::fromLocalFile( filePath ).toString() );
+  input->insertFromMimeData( mime.get() );
+  QApplication::processEvents();
+
+  QVERIFY( !input->toPlainText().contains( u"file://"_s ) );
+  QWidget *chipRow = dock.findChild<QWidget *>( u"aiAttachmentChipRow"_s );
+  QVERIFY( chipRow );
+  QVERIFY( chipRow->isVisible() );
+  QVERIFY( !dock.findChildren<QWidget *>( u"aiAttachmentChip"_s ).isEmpty() );
+
+  settings.remove( u"strata/visual_context/image_send_consent"_s );
+  settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }
 
 QGSTEST_MAIN( TestQgsAiChatDockWidget )

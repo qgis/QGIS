@@ -21,6 +21,7 @@
 #include "qgsaicodexoauthclient.h"
 #include "qgsaisecretstore.h"
 #include "qgsaitoolregistry.h"
+#include "qgsaivisualcontextutils.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsmessagelog.h"
@@ -176,18 +177,14 @@ namespace
     return u"(custom endpoint)"_s;
   }
 
-  bool readVisualContextImage( const QgsAiChatMessage &message, QString &mimeType, QString &base64Data )
+  struct VisualContextImagePayload
   {
-    QgsSettings settings;
-    const bool hasConsent = settings.contains( u"strata/visual_context/image_send_consent"_s ) ? settings.value( u"strata/visual_context/image_send_consent"_s, false ).toBool()
-                                                                                               : settings.value( u"geoai/visual_context/image_send_consent"_s, false ).toBool();
-    if ( !hasConsent )
-      return false;
+      QString mimeType;
+      QString base64Data;
+  };
 
-    const QString imagePath = message.metadata.value( u"visual_context_image_path"_s ).toString();
-    if ( imagePath.isEmpty() )
-      return false;
-
+  bool readImageFileBase64( const QString &imagePath, const QString &preferredMimeType, QString &mimeType, QString &base64Data )
+  {
     QFile file( imagePath );
     if ( !file.open( QIODevice::ReadOnly ) )
       return false;
@@ -196,10 +193,57 @@ namespace
     if ( bytes.isEmpty() )
       return false;
 
-    mimeType = message.metadata.value( u"visual_context_mime_type"_s, u"image/png"_s ).toString();
-    if ( mimeType.isEmpty() )
-      mimeType = u"image/png"_s;
+    mimeType = preferredMimeType.trimmed().isEmpty() ? u"image/png"_s : preferredMimeType;
     base64Data = QString::fromLatin1( bytes.toBase64() );
+    return true;
+  }
+
+  QList<VisualContextImagePayload> readVisualContextImages( const QgsAiChatMessage &message )
+  {
+    QList<VisualContextImagePayload> images;
+    if ( !QgsAiVisualContextUtils::hasVisualConsent() )
+      return images;
+
+    QStringList imagePaths;
+    QStringList mimeTypes;
+
+    if ( message.role == QgsAiChatRole::Tool )
+    {
+      const QString imagePath = message.metadata.value( u"visual_context_image_path"_s ).toString();
+      if ( !imagePath.isEmpty() )
+      {
+        imagePaths << imagePath;
+        mimeTypes << message.metadata.value( u"visual_context_mime_type"_s, u"image/png"_s ).toString();
+      }
+    }
+    else if ( message.role == QgsAiChatRole::User )
+    {
+      imagePaths = message.metadata.value( u"attached_image_paths"_s ).toStringList();
+      const QVariantList storedMimes = message.metadata.value( u"attached_image_mime_types"_s ).toList();
+      mimeTypes.reserve( storedMimes.size() );
+      for ( const QVariant &mime : storedMimes )
+        mimeTypes << mime.toString();
+    }
+
+    for ( int i = 0; i < imagePaths.size(); ++i )
+    {
+      VisualContextImagePayload payload;
+      const QString preferredMime = i < mimeTypes.size() ? mimeTypes.at( i ) : u"image/png"_s;
+      if ( readImageFileBase64( imagePaths.at( i ), preferredMime, payload.mimeType, payload.base64Data ) )
+        images << payload;
+    }
+
+    return images;
+  }
+
+  bool readVisualContextImage( const QgsAiChatMessage &message, QString &mimeType, QString &base64Data )
+  {
+    const QList<VisualContextImagePayload> images = readVisualContextImages( message );
+    if ( images.isEmpty() )
+      return false;
+
+    mimeType = images.first().mimeType;
+    base64Data = images.first().base64Data;
     return true;
   }
 } //namespace
@@ -399,6 +443,20 @@ QJsonArray QgsAiModelRouter::buildAnthropicUserContent( const QgsAiChatMessage &
   textBlock.insert( u"type"_s, u"text"_s );
   textBlock.insert( u"text"_s, message.content );
   content.push_back( textBlock );
+
+  const QList<VisualContextImagePayload> images = readVisualContextImages( message );
+  for ( const VisualContextImagePayload &image : images )
+  {
+    QJsonObject source;
+    source.insert( u"type"_s, u"base64"_s );
+    source.insert( u"media_type"_s, image.mimeType );
+    source.insert( u"data"_s, image.base64Data );
+
+    QJsonObject imageBlock;
+    imageBlock.insert( u"type"_s, u"image"_s );
+    imageBlock.insert( u"source"_s, source );
+    content.push_back( imageBlock );
+  }
   return content;
 }
 
@@ -484,6 +542,19 @@ void QgsAiModelRouter::appendOpenAiInputItems( Provider provider, const QgsAiCha
   textBlock.insert( u"type"_s, u"input_text"_s );
   textBlock.insert( u"text"_s, message.content );
   content.push_back( textBlock );
+
+  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::OpenRouter )
+  {
+    const QList<VisualContextImagePayload> images = readVisualContextImages( message );
+    for ( const VisualContextImagePayload &image : images )
+    {
+      QJsonObject imageBlock;
+      imageBlock.insert( u"type"_s, u"input_image"_s );
+      imageBlock.insert( u"image_url"_s, u"data:%1;base64,%2"_s.arg( image.mimeType, image.base64Data ) );
+      content.push_back( imageBlock );
+    }
+  }
+
   item.insert( u"content"_s, content );
   input.push_back( item );
 }
@@ -566,10 +637,34 @@ void QgsAiModelRouter::appendOpenAiChatMessages( const QgsAiChatMessage &message
     return;
   }
 
-  // user / system: plain {role, content} message.
+  // user / system: plain {role, content} message, or multipart when images are attached.
+  const QList<VisualContextImagePayload> images = readVisualContextImages( message );
   QJsonObject item;
   item.insert( u"role"_s, roleForProvider( Provider::OpenRouter, message.role ) );
-  item.insert( u"content"_s, message.content );
+  if ( images.isEmpty() )
+  {
+    item.insert( u"content"_s, message.content );
+    messages.push_back( item );
+    return;
+  }
+
+  QJsonArray content;
+  QJsonObject textBlock;
+  textBlock.insert( u"type"_s, u"text"_s );
+  textBlock.insert( u"text"_s, message.content );
+  content.push_back( textBlock );
+
+  for ( const VisualContextImagePayload &image : images )
+  {
+    QJsonObject imageUrl;
+    imageUrl.insert( u"url"_s, u"data:%1;base64,%2"_s.arg( image.mimeType, image.base64Data ) );
+    QJsonObject imageBlock;
+    imageBlock.insert( u"type"_s, u"image_url"_s );
+    imageBlock.insert( u"image_url"_s, imageUrl );
+    content.push_back( imageBlock );
+  }
+
+  item.insert( u"content"_s, content );
   messages.push_back( item );
 }
 

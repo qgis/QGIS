@@ -38,6 +38,7 @@ class QToolButton;
 class QTabWidget;
 class QVBoxLayout;
 
+class QgsAiChatPromptEdit;
 class QgsAiLayerIndexCoordinator;
 class QgsAiModelRouter;
 class QgsAiPlanClient;
@@ -166,7 +167,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QPushButton *mGisReviewSuggestionButton = nullptr;
     QWidget *mTranscriptContainer = nullptr;
     QVBoxLayout *mTranscriptLayout = nullptr;
-    QTextEdit *mInputTextEdit = nullptr;
+    QgsAiChatPromptEdit *mInputTextEdit = nullptr;
 
     QToolButton *mNewChatButton = nullptr;
     QToolButton *mHistoryButton = nullptr;

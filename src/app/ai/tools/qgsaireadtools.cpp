@@ -20,6 +20,7 @@
 
 #include "qgsaifilecontextprovider.h"
 #include "qgsaitoolschemautil.h"
+#include "qgsaivisualcontextutils.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslayertree.h"
@@ -58,18 +59,6 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
-  QString visualConsentSettingKey()
-  {
-    return u"strata/visual_context/image_send_consent"_s;
-  }
-
-  bool hasVisualConsent( QgsSettings &settings )
-  {
-    if ( settings.contains( visualConsentSettingKey() ) )
-      return settings.value( visualConsentSettingKey(), false ).toBool();
-    return settings.value( u"geoai/visual_context/image_send_consent"_s, false ).toBool();
-  }
-
   QJsonObject readToolsExtentJson( const QgsRectangle &extent )
   {
     QJsonObject e;
@@ -159,53 +148,6 @@ namespace
       array.push_back( entry );
     }
     return array;
-  }
-
-  QString visualContextDirectory()
-  {
-    const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_visual_context"_s;
-    QDir().mkpath( dir );
-    return dir;
-  }
-
-  void cleanupOldVisualContextFiles( const QString &dirPath )
-  {
-    QDir dir( dirPath );
-    const QFileInfoList files = dir.entryInfoList( QStringList() << u"*.png"_s, QDir::Files, QDir::Time );
-    const QDateTime now = QDateTime::currentDateTime();
-    for ( const QFileInfo &info : files )
-    {
-      if ( info.lastModified().secsTo( now ) > 24 * 60 * 60 )
-        QFile::remove( info.absoluteFilePath() );
-    }
-  }
-
-  bool ensureVisualContextConsent( QWidget *parent )
-  {
-    QgsSettings settings;
-    if ( hasVisualConsent( settings ) )
-      return true;
-
-    if ( !parent )
-      return false;
-
-    const QMessageBox::StandardButton answer = QMessageBox::question(
-      parent,
-      QObject::tr( "Share map screenshot with AI" ),
-      QObject::tr(
-        "Strata can capture the current map canvas as an image and send it to vision-capable AI providers for this and future visual-context requests. The image may include visible map data, labels, "
-        "and styles. Do you want to allow this?"
-      ),
-      QMessageBox::Yes | QMessageBox::No,
-      QMessageBox::No
-    );
-
-    if ( answer != QMessageBox::Yes )
-      return false;
-
-    settings.setValue( visualConsentSettingKey(), true );
-    settings.remove( u"geoai/visual_context/image_send_consent"_s );
-    return true;
   }
 
   QSize cappedRenderSize( QSize original, int requestedLongestSide )
@@ -579,7 +521,7 @@ QgsAiToolResult QgsAiCaptureMapCanvasTool::execute( const QJsonObject &args )
   if ( !mCanvas )
     return QgsAiToolResult::error( u"No map canvas available."_s );
 
-  if ( !ensureVisualContextConsent( mConsentParent ) )
+  if ( !QgsAiVisualContextUtils::ensureVisualContextConsent( mConsentParent ) )
     return QgsAiToolResult::error( u"Visual context screenshot was not sent because the user has not consented to sharing map images with AI providers."_s );
 
   QgsMapSettings settings = mCanvas->mapSettings();
@@ -595,8 +537,8 @@ QgsAiToolResult QgsAiCaptureMapCanvasTool::execute( const QJsonObject &args )
   if ( image.isNull() )
     return QgsAiToolResult::error( u"Map canvas render produced an empty image."_s );
 
-  const QString dir = visualContextDirectory();
-  cleanupOldVisualContextFiles( dir );
+  const QString dir = QgsAiVisualContextUtils::visualContextDirectory();
+  QgsAiVisualContextUtils::cleanupOldVisualContextFiles( dir );
   const QString path = QDir( dir ).filePath( u"canvas_%1.png"_s.arg( QUuid::createUuid().toString( QUuid::WithoutBraces ) ) );
   if ( !image.save( path, "PNG" ) )
     return QgsAiToolResult::error( u"Failed to save visual context image: %1"_s.arg( path ) );
