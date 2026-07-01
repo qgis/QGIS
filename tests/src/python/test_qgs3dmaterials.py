@@ -18,6 +18,7 @@ from qgis.core import (
     QgsPhongTexturedMaterialSettings,
     QgsReadWriteContext,
     QgsSimpleLineMaterialSettings,
+    QgsUnlitMaterialSettings,
 )
 from qgis.PyQt.QtCore import QPointF
 from qgis.PyQt.QtGui import QColor
@@ -91,6 +92,70 @@ class TestQgsSimpleLineMaterialSettings(QgisTestCase):
         # Verify round trip
         self.assertEqual(settings, settings2)
         self.assertEqual(settings2.ambient(), QColor(255, 0, 0))
+
+
+class TestQgsUnlitMaterialSettings(QgisTestCase):
+    def test_getters_setters(self):
+        # Create fresh instance
+        settings = QgsUnlitMaterialSettings()
+
+        # Test default value
+        self.assertTrue(settings.color().isValid())
+
+        # Test setter/getter
+        settings.setColor(QColor(255, 0, 0))
+        self.assertEqual(settings.color(), QColor(255, 0, 0))
+
+    def test_clone(self):
+        settings = QgsUnlitMaterialSettings()
+        settings.setColor(QColor(255, 0, 0))
+
+        cloned = settings.clone()
+        self.assertIsInstance(cloned, QgsUnlitMaterialSettings)
+        self.assertEqual(cloned.color(), QColor(255, 0, 0))
+
+    def test_equality(self):
+        settings1 = QgsUnlitMaterialSettings()
+        settings2 = QgsUnlitMaterialSettings()
+
+        # Should be equal with default values
+        self.assertEqual(settings1, settings2)
+
+        # Change one property at a time
+        settings2.setColor(QColor(255, 0, 0))
+        self.assertNotEqual(settings1, settings2)
+
+        settings1.setColor(QColor(255, 0, 0))
+        self.assertEqual(settings1, settings2)
+
+    def test_equals_method(self):
+        settings1 = QgsUnlitMaterialSettings()
+        settings2 = QgsUnlitMaterialSettings()
+
+        self.assertTrue(settings1.equals(settings2))
+
+        settings2.setColor(QColor(255, 0, 0))
+        self.assertFalse(settings1.equals(settings2))
+
+        settings1.setColor(QColor(255, 0, 0))
+        self.assertTrue(settings1.equals(settings2))
+
+    def test_xml_roundtrip(self):
+        settings = QgsUnlitMaterialSettings()
+        settings.setColor(QColor(255, 0, 0))
+
+        # Write to XML
+        doc = QDomDocument("settings")
+        element = doc.createElement("settings")
+        settings.writeXml(element, QgsReadWriteContext())
+
+        # Read from XML
+        settings2 = QgsUnlitMaterialSettings()
+        settings2.readXml(element, QgsReadWriteContext())
+
+        # Verify round trip
+        self.assertEqual(settings, settings2)
+        self.assertEqual(settings2.color(), QColor(255, 0, 0))
 
 
 class TestQgsPhongMaterialSettings(QgisTestCase):

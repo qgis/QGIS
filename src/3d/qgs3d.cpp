@@ -47,6 +47,7 @@
 #include "qgsstyle.h"
 #include "qgstiledscenelayer3drenderer.h"
 #include "qgsunlitmaterial.h"
+#include "qgsunlitmaterial3dhandler.h"
 #include "qgsvectorlayer3drenderer.h"
 
 #include <QString>
@@ -74,6 +75,7 @@ Qgs3D::~Qgs3D()
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"simpleline"_s ) )->setHandler( nullptr );
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"gooch"_s ) )->setHandler( nullptr );
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalrough"_s ) )->setHandler( nullptr );
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"unlit"_s ) )->setHandler( nullptr );
 }
 
 void Qgs3D::initialize()
@@ -105,6 +107,9 @@ void Qgs3D::initialize()
 
   instance()->mMetalRoughTexturedMaterialHandler = std::make_unique< QgsMetalRoughTexturedMaterial3DHandler >();
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalroughtextured"_s ) )->setHandler( instance()->mMetalRoughTexturedMaterialHandler.get() );
+
+  instance()->mUnlitMaterialHandler = std::make_unique< QgsUnlitMaterial3DHandler >();
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"unlit"_s ) )->setHandler( instance()->mUnlitMaterialHandler.get() );
 
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );

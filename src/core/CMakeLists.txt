@@ -995,6 +995,7 @@ set(QGIS_CORE_SRCS
   3d/materials/qgsphongmaterialsettings.cpp
   3d/materials/qgsphongtexturedmaterialsettings.cpp
   3d/materials/qgssimplelinematerialsettings.cpp
+  3d/materials/qgsunlitmaterialsettings.cpp
 
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
@@ -1435,6 +1436,7 @@ set(QGIS_CORE_HDRS
   3d/materials/qgsphongmaterialsettings.h
   3d/materials/qgsphongtexturedmaterialsettings.h
   3d/materials/qgssimplelinematerialsettings.h
+  3d/materials/qgsunlitmaterialsettings.h
 
   actions/qgsaction.h
   actions/qgsactionmanager.h
