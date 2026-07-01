@@ -1992,39 +1992,45 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 
   if ( QgsWkbTypes::isMultiType( geom->wkbType() ) || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::GeometryCollection )
   {
-    int geosType = GEOS_GEOMETRYCOLLECTION;
-
-    if ( QgsWkbTypes::flatType( geom->wkbType() ) != Qgis::WkbType::GeometryCollection )
+    int geosType;
+    switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
     {
-      switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
-      {
-        case Qgis::WkbType::MultiPoint:
-          geosType = GEOS_MULTIPOINT;
-          break;
+      case Qgis::WkbType::MultiPoint:
+        geosType = GEOS_MULTIPOINT;
+        break;
 
-        case Qgis::WkbType::MultiLineString:
-          geosType = GEOS_MULTILINESTRING;
-          break;
+      case Qgis::WkbType::MultiLineString:
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+      case Qgis::WkbType::MultiCurve:
+#endif
+        geosType = GEOS_MULTILINESTRING;
+        break;
 
-        case Qgis::WkbType::MultiPolygon:
-          geosType = GEOS_MULTIPOLYGON;
-          break;
+      case Qgis::WkbType::MultiPolygon:
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+      case Qgis::WkbType::MultiSurface:
+#endif
+        geosType = GEOS_MULTIPOLYGON;
+        break;
 
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-        case Qgis::WkbType::MultiCurve:
-          geosType = GEOS_MULTICURVE;
-          break;
+      case Qgis::WkbType::MultiCurve:
+        geosType = GEOS_MULTICURVE;
+        break;
 
-        case Qgis::WkbType::MultiSurface:
-          geosType = GEOS_MULTISURFACE;
-          break;
+      case Qgis::WkbType::MultiSurface:
+        geosType = GEOS_MULTISURFACE;
+        break;
 #endif
 
-        case Qgis::WkbType::Unknown:
-        case Qgis::WkbType::NoGeometry:
-        default:
-          return nullptr;
-      }
+      case Qgis::WkbType::GeometryCollection:
+        geosType = GEOS_GEOMETRYCOLLECTION;
+        break;
+
+      case Qgis::WkbType::Unknown:
+      case Qgis::WkbType::NoGeometry:
+      default:
+        return nullptr;
     }
 
     const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( geom );
@@ -2050,31 +2056,26 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
     {
       case Qgis::WkbType::Point:
-        return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision, flags );
+        return createGeosPoint( geom, coordDims, precision, flags );
 
       case Qgis::WkbType::LineString:
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-        return createGeosSimpleCurve( static_cast<const QgsLineString *>( geom ), precision, flags );
-#else
-        return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision, flags );
+      case Qgis::WkbType::CircularString:
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+      case Qgis::WkbType::CompoundCurve:
+        return createGeosLinestring( geom, precision, flags );
+#else // GEOS >= 3.15
+        return createGeosSimpleCurve( geom, precision, flags );
+
+      case Qgis::WkbType::CompoundCurve:
+        return createGeosCompoundCurve( geom, precision, flags );
 #endif
 
       case Qgis::WkbType::Polygon:
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-        return createGeosCurvePolygon( static_cast<const QgsPolygon *>( geom ), precision, flags );
-#else
-        return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision, flags );
-#endif
-
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-      case Qgis::WkbType::CircularString:
-        return createGeosSimpleCurve( static_cast<const QgsCircularString *>( geom ), precision, flags );
-
-      case Qgis::WkbType::CompoundCurve:
-        return createGeosCompoundCurve( static_cast<const QgsCompoundCurve *>( geom ), precision, flags );
-
       case Qgis::WkbType::CurvePolygon:
-        return createGeosCurvePolygon( static_cast<const QgsCurvePolygon *>( geom ), precision, flags );
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+        return createGeosPolygon( geom, precision, flags );
+#else // GEOS >= 3.15
+        return createGeosCurvePolygon( geom, precision, flags );
 #endif
 
       case Qgis::WkbType::TIN:
