@@ -41,10 +41,7 @@ struct APP_EXPORT QgsAiManagedAgentPolicy
     QStringList allowedModels;
     QList<QgsAiManagedAgentPreset> presets;
 
-    bool isEmpty() const
-    {
-      return tier.isEmpty() && modes.isEmpty() && allowedTools.isEmpty() && allowedModels.isEmpty() && presets.isEmpty();
-    }
+    bool isEmpty() const { return tier.isEmpty() && modes.isEmpty() && allowedTools.isEmpty() && allowedModels.isEmpty() && presets.isEmpty(); }
 
     QStringList allowedToolsForPreset( const QString &presetMode ) const
     {

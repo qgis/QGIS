@@ -17,8 +17,8 @@
 #define QGSAIAGENTSESSIONMANAGER_H
 
 #include "ai/index/qgsaiworkspaceindex.h"
-#include "qgsaiagentpolicy.h"
 #include "qgis_app.h"
+#include "qgsaiagentpolicy.h"
 #include "qgsaichathistorystore.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaimodels.h"

@@ -16,8 +16,8 @@
 #ifndef QGSAIPLANCLIENT_H
 #define QGSAIPLANCLIENT_H
 
-#include "qgsaiagentpolicy.h"
 #include "qgis_app.h"
+#include "qgsaiagentpolicy.h"
 
 #include <QList>
 #include <QObject>

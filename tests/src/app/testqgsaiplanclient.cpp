@@ -161,8 +161,7 @@ void TestQgsAiPlanClient::refreshAgentsAndPolicyUseBearerToken()
   QFile::remove( QgsAiPlanClient::agentPolicyCacheFilePath() );
 
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", agentsBody() )
-                   << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", policyBody() );
+  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", agentsBody() ) << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", policyBody() );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsAiPlanClient client;

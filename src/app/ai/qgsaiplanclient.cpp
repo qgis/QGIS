@@ -100,10 +100,14 @@ namespace
   void applyCachedPolicyFallback( QObject *receiver, const QgsAiManagedAgentPolicy &policy )
   {
     if ( !policy.isEmpty() )
-      QMetaObject::invokeMethod( receiver, [receiver, policy]() {
-        if ( QgsAiPlanClient *client = qobject_cast<QgsAiPlanClient *>( receiver ) )
-          emit client->agentPolicyReady( policy, true );
-      }, Qt::QueuedConnection );
+      QMetaObject::invokeMethod(
+        receiver,
+        [receiver, policy]() {
+          if ( QgsAiPlanClient *client = qobject_cast<QgsAiPlanClient *>( receiver ) )
+            emit client->agentPolicyReady( policy, true );
+        },
+        Qt::QueuedConnection
+      );
   }
 } //namespace
 
@@ -540,7 +544,7 @@ void QgsAiPlanClient::refreshAgentPolicy( const QString &chatEndpoint, const QSt
 void QgsAiPlanClient::refreshAuthenticatedJson( const QString &chatEndpoint, const QString &sessionToken, const QString &path )
 {
   const QString apiBase = apiBaseForChatEndpoint( chatEndpoint );
-  const bool wantsAgents = path.endsWith( u"/agents"_s );
+  const bool wantsAgents = path.endsWith( "/agents"_L1 );
   if ( apiBase.isEmpty() || sessionToken.trimmed().isEmpty() )
   {
     if ( wantsAgents )

@@ -843,9 +843,7 @@ QStringList QgsAiAgentSessionManager::allowedToolsForActiveAgent() const
   QStringList managedAllowed;
   if ( !mManagedAgentPolicy.isEmpty() )
   {
-    managedAllowed = mActiveAgent == "ask_before_edits"_L1
-                       ? mManagedAgentPolicy.allowedTools
-                       : mManagedAgentPolicy.allowedToolsForPreset( QgsAiPresetModeForAgent( mActiveAgent ) );
+    managedAllowed = mActiveAgent == "ask_before_edits"_L1 ? mManagedAgentPolicy.allowedTools : mManagedAgentPolicy.allowedToolsForPreset( QgsAiPresetModeForAgent( mActiveAgent ) );
   }
   return intersectTools( localAllowed, managedAllowed );
 }
@@ -866,7 +864,7 @@ void QgsAiAgentSessionManager::refreshRouterToolPolicy()
   mRouter->setAgentMode( QgsAiRuntimeModeForAgent( mActiveAgent ) );
   mRouter->setOpenRouterRoutingProfile(
     mActiveAgent == "editor"_L1 || mActiveAgent == "ask_before_edits"_L1 || !allowedTools.isEmpty() ? QgsAiModelRouter::OpenRouterRoutingProfile::ToolUseOptimized
-                                                                                                      : QgsAiModelRouter::OpenRouterRoutingProfile::CostOptimized
+                                                                                                    : QgsAiModelRouter::OpenRouterRoutingProfile::CostOptimized
   );
 }
 
