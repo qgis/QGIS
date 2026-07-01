@@ -71,9 +71,14 @@ void QgsAnnotationItemPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( layer == mLayer )
     return;
 
+  if ( mLayer )
+    disconnect( mLayer, &QgsAnnotationLayer::itemsChanged, this, &QgsAnnotationItemPropertiesWidget::onLayerItemsChanged );
+
   mLayer = qobject_cast<QgsAnnotationLayer *>( layer );
   if ( !mLayer )
     return;
+
+  connect( mLayer, &QgsAnnotationLayer::itemsChanged, this, &QgsAnnotationItemPropertiesWidget::onLayerItemsChanged );
 
   // opacity and blend modes
   mBlockLayerUpdates = true;
@@ -146,10 +151,23 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
     std::unique_ptr<QgsAnnotationItem> newItem( existingItem->clone() );
     mItemWidget->updateItem( newItem.get() );
 
+    mBlockItemUpdates = true;
     mLayer->replaceItem( mMapLayerConfigWidgetContext.annotationId(), newItem.release() );
+    mBlockItemUpdates = false;
   }
 
   emit widgetChanged();
+}
+
+void QgsAnnotationItemPropertiesWidget::onLayerItemsChanged()
+{
+  if ( mBlockItemUpdates || !mLayer || !mItemWidget )
+    return;
+
+  if ( QgsAnnotationItem *item = mLayer->item( mMapLayerConfigWidgetContext.annotationId() ) )
+  {
+    mItemWidget->setItem( item );
+  }
 }
 
 void QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged()

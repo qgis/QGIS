@@ -354,14 +354,19 @@ void QgsCreatePictureItemMapTool::cadCanvasMoveEvent( QgsMapMouseEvent *event )
   if ( !mRubberBand )
     return;
 
-  const QgsPointXY mapPoint = event->snapPoint();
-  mRect.setBottomRight( mapPoint.toQPointF() );
+  // Keep the preview rectangle aligned to the screen, matching the placed item
+  // which ignores map rotation by default.
+  const QgsPointXY firstCanvasPoint = toCanvasCoordinates( mFirstPoint );
+  const QgsPointXY currentCanvasPoint = toCanvasCoordinates( event->snapPoint() );
+
+  const QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
+  const QgsPointXY topLeft = transform->toMapCoordinates( firstCanvasPoint.x(), firstCanvasPoint.y() );
+  const QgsPointXY topRight = transform->toMapCoordinates( currentCanvasPoint.x(), firstCanvasPoint.y() );
+  const QgsPointXY bottomRight = transform->toMapCoordinates( currentCanvasPoint.x(), currentCanvasPoint.y() );
+  const QgsPointXY bottomLeft = transform->toMapCoordinates( firstCanvasPoint.x(), currentCanvasPoint.y() );
 
   mRubberBand->reset( Qgis::GeometryType::Polygon );
-  mRubberBand->addPoint( mRect.bottomLeft(), false );
-  mRubberBand->addPoint( mRect.bottomRight(), false );
-  mRubberBand->addPoint( mRect.topRight(), false );
-  mRubberBand->addPoint( mRect.topLeft(), true );
+  mRubberBand->setToGeometry( QgsGeometry::fromPolygonXY( { { bottomLeft, bottomRight, topRight, topLeft } } ) );
 }
 
 void QgsCreatePictureItemMapTool::keyPressEvent( QKeyEvent *event )
@@ -456,14 +461,19 @@ void QgsCreateRectangleTextItemMapTool::cadCanvasMoveEvent( QgsMapMouseEvent *ev
   if ( !mRubberBand )
     return;
 
-  const QgsPointXY mapPoint = event->snapPoint();
-  mRect.setBottomRight( mapPoint.toQPointF() );
+  // Keep the preview rectangle aligned to the screen, matching the placed item
+  // which ignores map rotation by default.
+  const QgsPointXY firstCanvasPoint = toCanvasCoordinates( mFirstPoint );
+  const QgsPointXY currentCanvasPoint = toCanvasCoordinates( event->snapPoint() );
+
+  const QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
+  const QgsPointXY topLeft = transform->toMapCoordinates( firstCanvasPoint.x(), firstCanvasPoint.y() );
+  const QgsPointXY topRight = transform->toMapCoordinates( currentCanvasPoint.x(), firstCanvasPoint.y() );
+  const QgsPointXY bottomRight = transform->toMapCoordinates( currentCanvasPoint.x(), currentCanvasPoint.y() );
+  const QgsPointXY bottomLeft = transform->toMapCoordinates( firstCanvasPoint.x(), currentCanvasPoint.y() );
 
   mRubberBand->reset( Qgis::GeometryType::Polygon );
-  mRubberBand->addPoint( mRect.bottomLeft(), false );
-  mRubberBand->addPoint( mRect.bottomRight(), false );
-  mRubberBand->addPoint( mRect.topRight(), false );
-  mRubberBand->addPoint( mRect.topLeft(), true );
+  mRubberBand->setToGeometry( QgsGeometry::fromPolygonXY( { { bottomLeft, bottomRight, topRight, topLeft } } ) );
 }
 
 void QgsCreateRectangleTextItemMapTool::keyPressEvent( QKeyEvent *event )

@@ -64,6 +64,69 @@ Qgis::AnnotationItemFlags QgsAnnotationRectItem::flags() const
   BUILTIN_UNREACHABLE
 }
 
+double QgsAnnotationRectItem::appliedRotation( double mapRotation ) const
+{
+  double angle = mRotation;
+  if ( mRotationMode == Qgis::SymbolRotationMode::RespectMapRotation && mPlacementMode != Qgis::AnnotationPlacementMode::RelativeToMapFrame )
+    angle += mapRotation;
+  return angle;
+}
+
+QgsGeometry QgsAnnotationRectItem::rotatedBoundsGeometry( const QgsRectangle &layerBounds, const QgsRenderContext &renderContext ) const
+{
+  const double angle = appliedRotation( renderContext.mapToPixel().mapRotation() );
+  if ( qgsDoubleNear( angle, 0 ) )
+    return QgsGeometry::fromRect( layerBounds );
+
+  // Rotate in painter coordinates, then convert back to layer coordinates so
+  // the preview matches the rendered item.
+  QgsRectangle mapBounds = layerBounds;
+  if ( renderContext.coordinateTransform().isValid() )
+  {
+    try
+    {
+      mapBounds = renderContext.coordinateTransform().transformBoundingBox( layerBounds );
+    }
+    catch ( QgsCsException & )
+    {
+      return QgsGeometry::fromRect( layerBounds );
+    }
+  }
+
+  QPointF center = mapBounds.center().toQPointF();
+  renderContext.mapToPixel().transformInPlace( center.rx(), center.ry() );
+  const double mupp = renderContext.mapToPixel().mapUnitsPerPixel();
+  const double widthPixels = mapBounds.width() / mupp;
+  const double heightPixels = mapBounds.height() / mupp;
+  const QRectF painterBounds( center.x() - widthPixels * 0.5, center.y() - heightPixels * 0.5, widthPixels, heightPixels );
+
+  QTransform transform;
+  transform.translate( center.x(), center.y() );
+  transform.rotate( angle );
+  transform.translate( -center.x(), -center.y() );
+
+  QVector< QgsPointXY > points;
+  points.reserve( 5 );
+  for ( const QPointF &corner : { painterBounds.topLeft(), painterBounds.topRight(), painterBounds.bottomRight(), painterBounds.bottomLeft() } )
+    points.append( QgsPointXY( transform.map( corner ) ) );
+  points.append( points.constFirst() );
+
+  QgsGeometry geometry( new QgsPolygon( new QgsLineString( points ) ) );
+  geometry.transform( renderContext.mapToPixel().transform().inverted() );
+  if ( renderContext.coordinateTransform().isValid() )
+    geometry.transform( renderContext.coordinateTransform(), Qgis::TransformDirection::Reverse );
+  return geometry;
+}
+
+QgsRectangle QgsAnnotationRectItem::boundsFromPixelRect( const QgsMapToPixel *mapToPixel, const QPointF &centerPixel, double widthPixels, double heightPixels )
+{
+  const QgsPointXY centerMap = mapToPixel->toMapCoordinates( centerPixel.x(), centerPixel.y() );
+  const double mupp = mapToPixel->mapUnitsPerPixel();
+  const double halfWidthMap = 0.5 * widthPixels * mupp;
+  const double halfHeightMap = 0.5 * heightPixels * mupp;
+  return QgsRectangle( centerMap.x() - halfWidthMap, centerMap.y() - halfHeightMap, centerMap.x() + halfWidthMap, centerMap.y() + halfHeightMap );
+}
+
 void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feedback )
 {
   QgsRectangle bounds = mBounds;
@@ -84,8 +147,17 @@ void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feed
   switch ( mPlacementMode )
   {
     case Qgis::AnnotationPlacementMode::SpatialBounds:
-      painterBounds = context.mapToPixel().transformBounds( bounds.toRectF() );
+    {
+      // Use the unrotated pixel size around the transformed center, not the
+      // axis-aligned bbox, so the size stays correct when the map is rotated.
+      QPointF center = bounds.center().toQPointF();
+      context.mapToPixel().transformInPlace( center.rx(), center.ry() );
+      const double mupp = context.mapToPixel().mapUnitsPerPixel();
+      const double widthPixels = bounds.width() / mupp;
+      const double heightPixels = bounds.height() / mupp;
+      painterBounds = QRectF( center.x() - widthPixels * 0.5, center.y() - heightPixels * 0.5, widthPixels, heightPixels );
       break;
+    }
 
     case Qgis::AnnotationPlacementMode::FixedSize:
     {
@@ -140,17 +212,35 @@ void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feed
   if ( painterBounds.width() < 1 || painterBounds.height() < 1 )
     return;
 
+  QPainter *painter = context.painter();
+  double angle = appliedRotation( context.mapToPixel().mapRotation() );
+  const bool rotated = !qgsDoubleNear( angle, 0 );
+  const QPointF rotationCenter = painterBounds.center();
+
   if ( mDrawBackground && mBackgroundSymbol )
   {
+    if ( rotated )
+    {
+      painter->save();
+      rotatePainterAroundPoint( painter, rotationCenter, angle );
+    }
     mBackgroundSymbol->startRender( context );
     mBackgroundSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
     mBackgroundSymbol->stopRender( context );
+    if ( rotated )
+      painter->restore();
   }
 
   if ( mPlacementMode != Qgis::AnnotationPlacementMode::RelativeToMapFrame && callout() )
   {
     QgsCallout::QgsCalloutContext calloutContext;
-    renderCallout( context, painterBounds, 0, calloutContext, feedback );
+    renderCallout( context, painterBounds, angle, calloutContext, feedback );
+  }
+
+  if ( rotated )
+  {
+    painter->save();
+    rotatePainterAroundPoint( painter, rotationCenter, angle );
   }
 
   renderInBounds( context, painterBounds, feedback );
@@ -161,6 +251,9 @@ void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feed
     mFrameSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
     mFrameSymbol->stopRender( context );
   }
+
+  if ( rotated )
+    painter->restore();
 }
 
 QList<QgsAnnotationItemNode> QgsAnnotationRectItem::nodesV2( const QgsAnnotationItemEditContext &context ) const
@@ -322,9 +415,21 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      mRotation = std::fmod( mRotation + rotateOperation->angle(), 360.0 );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+    {
+      mBounds = qgis::down_cast< QgsAnnotationItemEditOperationSetItemBounds * >( operation )->bounds();
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
-    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
       break;
   }
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -365,13 +470,13 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
               default:
                 break;
             }
-            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
+            return new QgsAnnotationItemEditOperationTransientResults( rotatedBoundsGeometry( modifiedBounds, context.renderContext() ) );
           }
           case Qgis::AnnotationPlacementMode::FixedSize:
           {
             const QgsRectangle currentBounds = context.currentItemBounds();
             const QgsRectangle newBounds = QgsRectangle::fromCenterAndSize( moveOperation->after(), currentBounds.width(), currentBounds.height() );
-            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+            return new QgsAnnotationItemEditOperationTransientResults( rotatedBoundsGeometry( newBounds, context.renderContext() ) );
           }
           case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
           {
@@ -402,7 +507,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
             mBounds.xMaximum() + moveOperation->translationX(),
             mBounds.yMaximum() + moveOperation->translationY()
           );
-          return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( modifiedBounds ) );
+          return new QgsAnnotationItemEditOperationTransientResults( rotatedBoundsGeometry( modifiedBounds, context.renderContext() ) );
         }
 
         case Qgis::AnnotationPlacementMode::FixedSize:
@@ -452,7 +557,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
             const QgsRectangle currentBounds = context.currentItemBounds();
             const QgsRectangle newBounds
               = QgsRectangle::fromCenterAndSize( mBounds.center() + QgsVector( moveOperation->translationX(), moveOperation->translationY() ), currentBounds.width(), currentBounds.height() );
-            return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromRect( newBounds ) );
+            return new QgsAnnotationItemEditOperationTransientResults( rotatedBoundsGeometry( newBounds, context.renderContext() ) );
           }
         }
 
@@ -465,6 +570,12 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
         }
       }
       break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+    {
+      const QgsRectangle newBounds = qgis::down_cast< QgsAnnotationItemEditOperationSetItemBounds * >( operation )->bounds();
+      return new QgsAnnotationItemEditOperationTransientResults( rotatedBoundsGeometry( newBounds, context.renderContext() ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
@@ -641,6 +752,8 @@ void QgsAnnotationRectItem::copyCommonProperties( const QgsAnnotationItem *other
     setPlacementMode( otherRect->mPlacementMode );
     setFixedSize( otherRect->mFixedSize );
     setFixedSizeUnit( otherRect->mFixedSizeUnit );
+    setRotation( otherRect->mRotation );
+    setRotationMode( otherRect->mRotationMode );
 
     setBackgroundEnabled( otherRect->mDrawBackground );
     if ( otherRect->mBackgroundSymbol )
@@ -664,6 +777,8 @@ bool QgsAnnotationRectItem::writeCommonProperties( QDomElement &element, QDomDoc
   element.setAttribute( u"fixedWidth"_s, qgsDoubleToString( mFixedSize.width() ) );
   element.setAttribute( u"fixedHeight"_s, qgsDoubleToString( mFixedSize.height() ) );
   element.setAttribute( u"fixedSizeUnit"_s, QgsUnitTypes::encodeUnit( mFixedSizeUnit ) );
+  element.setAttribute( u"rotation"_s, qgsDoubleToString( mRotation ) );
+  element.setAttribute( u"rotationMode"_s, qgsEnumValueToKey( mRotationMode ) );
 
   element.setAttribute( u"backgroundEnabled"_s, mDrawBackground ? u"1"_s : u"0"_s );
   if ( mBackgroundSymbol )
@@ -695,6 +810,8 @@ bool QgsAnnotationRectItem::readCommonProperties( const QDomElement &element, co
 
   mFixedSize = QSizeF( element.attribute( u"fixedWidth"_s ).toDouble(), element.attribute( u"fixedHeight"_s ).toDouble() );
   mFixedSizeUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( u"fixedSizeUnit"_s ) );
+  mRotation = element.attribute( u"rotation"_s ).toDouble();
+  mRotationMode = qgsEnumKeyToValue( element.attribute( u"rotationMode"_s ), Qgis::SymbolRotationMode::IgnoreMapRotation );
 
   mDrawBackground = element.attribute( u"backgroundEnabled"_s, u"0"_s ).toInt();
   const QDomElement backgroundSymbolElem = element.firstChildElement( u"backgroundSymbol"_s ).firstChildElement();

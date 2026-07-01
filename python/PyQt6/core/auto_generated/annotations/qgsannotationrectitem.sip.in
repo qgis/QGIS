@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAnnotationRectItem : QgsAnnotationItem
 {
 %Docstring(signature="appended")
@@ -136,6 +137,65 @@ Sets the ``unit`` to use for fixed item sizes, when the
 
 .. seealso:: :py:func:`setFixedSize`
 %End
+
+    double rotation() const;
+%Docstring
+Returns the rotation of the item, in degrees clockwise.
+
+.. seealso:: :py:func:`setRotation`
+
+.. versionadded:: 4.4
+%End
+
+    void setRotation( double rotation );
+%Docstring
+Sets the ``rotation`` of the item, in degrees clockwise.
+
+.. seealso:: :py:func:`rotation`
+
+.. versionadded:: 4.4
+%End
+
+    Qgis::SymbolRotationMode rotationMode() const;
+%Docstring
+Returns the method used to render the item with respect to the rotation
+of the map.
+
+.. seealso:: :py:func:`setRotationMode`
+
+.. versionadded:: 4.4
+%End
+
+    void setRotationMode( Qgis::SymbolRotationMode mode );
+%Docstring
+Sets the ``mode`` used to render the item with respect to the rotation
+of the map.
+
+.. seealso:: :py:func:`rotationMode`
+
+.. versionadded:: 4.4
+%End
+
+    double appliedRotation( double mapRotation ) const;
+%Docstring
+Returns the effective on-screen rotation of the item, in degrees
+clockwise.
+
+This is the item's own :py:func:`~QgsAnnotationRectItem.rotation`, to
+which ``mapRotation`` (the current map rotation, in degrees clockwise)
+is added when the item's :py:func:`~QgsAnnotationRectItem.rotationMode`
+is :py:class:`Qgis`.SymbolRotationMode.RespectMapRotation and its
+placement mode is not
+:py:class:`Qgis`.AnnotationPlacementMode.RelativeToMapFrame.
+
+.. seealso:: :py:func:`rotation`
+
+.. seealso:: :py:func:`rotationMode`
+
+.. versionadded:: 4.4
+%End
+
+
 
     bool backgroundEnabled() const;
 %Docstring

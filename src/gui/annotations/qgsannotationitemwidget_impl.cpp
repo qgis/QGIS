@@ -325,8 +325,7 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
 
   mSpinTextAngle->setClearValue( 0 );
 
-  mRotationModeCombo->addItem( tr( "Ignore Map Rotation" ), QVariant::fromValue( Qgis::SymbolRotationMode::IgnoreMapRotation ) );
-  mRotationModeCombo->addItem( tr( "Rotate With Map" ), QVariant::fromValue( Qgis::SymbolRotationMode::RespectMapRotation ) );
+  populateRotationModeComboBox( mRotationModeCombo );
 
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
@@ -595,6 +594,8 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
   mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
 
+  populateRotationModeComboBox( mRotationModeCombo );
+
   mSizeUnitWidget->setUnits(
     QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage
   );
@@ -647,6 +648,9 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   connect( mHeightSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::setHeight );
 
   connect( mSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationRectangleTextItemWidget::sizeModeChanged );
+  connect( mRotationModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  mSpinAngle->setClearValue( 0 );
+  connect( mSpinAngle, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
   mWidgetFixedSize->hide();
   sizeModeChanged();
 }
@@ -671,6 +675,9 @@ void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
 
     rectTextItem->setFixedSize( QSizeF( mWidthSpinBox->value(), mHeightSpinBox->value() ) );
     rectTextItem->setFixedSizeUnit( mSizeUnitWidget->unit() );
+
+    rectTextItem->setRotation( mSpinAngle->value() );
+    rectTextItem->setRotationMode( mRotationModeCombo->currentData().value<Qgis::SymbolRotationMode>() );
 
     rectTextItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
     rectTextItem->setFrameEnabled( mFrameCheckbox->isChecked() );
@@ -759,6 +766,8 @@ bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mHeightSpinBox->setValue( textItem->fixedSize().height() );
   mSizeUnitWidget->setUnit( textItem->fixedSizeUnit() );
   mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( textItem->placementMode() ) ) );
+  mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( textItem->rotationMode() ) ) );
+  mSpinAngle->setValue( textItem->rotation() );
 
   mBlockChangedSignal = false;
 
@@ -874,6 +883,8 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
   mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
 
+  populateRotationModeComboBox( mRotationModeCombo );
+
   mSizeUnitWidget->setUnits(
     QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage
   );
@@ -891,6 +902,11 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   } );
 
   connect( mSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::sizeModeChanged );
+
+  connect( mRotationModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+
+  mSpinAngle->setClearValue( 0 );
+  connect( mSpinAngle, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
 
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
@@ -947,6 +963,9 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
 
     pictureItem->setFixedSize( QSizeF( mWidthSpinBox->value(), mHeightSpinBox->value() ) );
     pictureItem->setFixedSizeUnit( mSizeUnitWidget->unit() );
+
+    pictureItem->setRotation( mSpinAngle->value() );
+    pictureItem->setRotationMode( mRotationModeCombo->currentData().value<Qgis::SymbolRotationMode>() );
 
     pictureItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
     pictureItem->setFrameEnabled( mFrameCheckbox->isChecked() );
@@ -1031,6 +1050,8 @@ bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
   mWidthSpinBox->setValue( pictureItem->fixedSize().width() );
   mHeightSpinBox->setValue( pictureItem->fixedSize().height() );
   mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( pictureItem->placementMode() ) ) );
+  mSpinAngle->setValue( pictureItem->rotation() );
+  mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( pictureItem->rotationMode() ) ) );
   sizeModeChanged();
 
   mBlockChangedSignal = false;
