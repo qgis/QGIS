@@ -47,8 +47,8 @@
 #include "qgsscrollarea.h"
 #include "qgssettings.h"
 #include "qgstaskmanager.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
 #include <QAbstractButton>
@@ -3652,7 +3652,9 @@ void QgsAiChatDockWidget::openProviderSettings()
     const bool planReady = mModelRouter && mModelRouter->isProviderAvailable( QgsAiModelRouter::Provider::Plan );
     const bool byokReady = hasByokProvider();
     const bool modelReady = mModelRouter && mModelRouter->isProviderUsable( mModelRouter->resolveProvider() );
-    const bool indexingReady = ( automaticIndexing && automaticIndexing->isChecked() ) || ( enableLayerIndexing && enableLayerIndexing->isChecked() ) || ( cloudContextOptIn && cloudContextOptIn->isChecked() );
+    const bool indexingReady = ( automaticIndexing && automaticIndexing->isChecked() )
+                               || ( enableLayerIndexing && enableLayerIndexing->isChecked() )
+                               || ( cloudContextOptIn && cloudContextOptIn->isChecked() );
     QStringList lines;
     lines << QObject::tr( "Plan login: %1" ).arg( planReady ? QObject::tr( "ready" ) : QObject::tr( "not configured" ) );
     lines << QObject::tr( "BYOK fallback: %1" ).arg( byokReady ? QObject::tr( "ready" ) : QObject::tr( "optional" ) );

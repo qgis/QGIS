@@ -555,54 +555,55 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool e5UiStateFound = false;
   bool onboardingControlsFound = false;
   bool releaseDryRunOk = false;
-  QTimer::singleShot( 0, &dock, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, &onboardingControlsFound, &releaseDryRunOk, e5ProviderListed]() {
-    QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
-    if ( settingsDialog )
-    {
-      QCheckBox *layerIndexing = settingsDialog->findChild<QCheckBox *>( u"aiEnableLayerIndexingCheckBox"_s );
-      QComboBox *providerCombo = settingsDialog->findChild<QComboBox *>( u"aiEmbeddingProviderComboBox"_s );
-      QLabel *statusLabel = settingsDialog->findChild<QLabel *>( u"aiEmbeddingProviderStatusLabel"_s );
-      QPushButton *downloadButton = settingsDialog->findChild<QPushButton *>( u"aiDownloadEmbeddingModelButton"_s );
-      controlsFound = layerIndexing
-                      && providerCombo
-                      && settingsDialog->findChild<QCheckBox *>( u"aiAutomaticIndexingCheckBox"_s )
-                      && settingsDialog->findChild<QPushButton *>( u"aiRebuildWorkspaceIndexButton"_s )
-                      && settingsDialog->findChild<QPushButton *>( u"aiRebuildLayerIndexButton"_s );
-      if ( layerIndexing )
+  QTimer::
+    singleShot( 0, &dock, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, &onboardingControlsFound, &releaseDryRunOk, e5ProviderListed]() {
+      QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
+      if ( settingsDialog )
       {
-        layerIndexingChecked = layerIndexing->isChecked();
-        layerIndexingEnabled = layerIndexing->isEnabled();
+        QCheckBox *layerIndexing = settingsDialog->findChild<QCheckBox *>( u"aiEnableLayerIndexingCheckBox"_s );
+        QComboBox *providerCombo = settingsDialog->findChild<QComboBox *>( u"aiEmbeddingProviderComboBox"_s );
+        QLabel *statusLabel = settingsDialog->findChild<QLabel *>( u"aiEmbeddingProviderStatusLabel"_s );
+        QPushButton *downloadButton = settingsDialog->findChild<QPushButton *>( u"aiDownloadEmbeddingModelButton"_s );
+        controlsFound = layerIndexing
+                        && providerCombo
+                        && settingsDialog->findChild<QCheckBox *>( u"aiAutomaticIndexingCheckBox"_s )
+                        && settingsDialog->findChild<QPushButton *>( u"aiRebuildWorkspaceIndexButton"_s )
+                        && settingsDialog->findChild<QPushButton *>( u"aiRebuildLayerIndexButton"_s );
+        if ( layerIndexing )
+        {
+          layerIndexingChecked = layerIndexing->isChecked();
+          layerIndexingEnabled = layerIndexing->isEnabled();
+        }
+        defaultProviderSelected = providerCombo && providerCombo->currentData().toString() == QgsAiEmbeddingProviderRegistry::defaultProviderId();
+        if ( providerCombo )
+        {
+          const int e5Row = providerCombo->findData( QgsAiE5EmbeddingProvider::staticProviderId() );
+          const QModelIndex e5Index = providerCombo->model()->index( e5Row, 0 );
+          e5UiStateFound = e5Row >= 0 && e5Index.isValid() && static_cast<bool>( providerCombo->model()->flags( e5Index ) & Qt::ItemIsEnabled ) == e5ProviderListed;
+        }
+        localStatusFound = e5ProviderListed ? statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive )
+                                            : statusLabel && statusLabel->text().contains( u"MinHash"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"available"_s, Qt::CaseInsensitive );
+        downloadButtonFound = downloadButton && downloadButton->isVisible() == e5ProviderListed;
+        QLabel *onboardingStatus = settingsDialog->findChild<QLabel *>( u"aiOnboardingStatusLabel"_s );
+        QPushButton *releaseDryRunButton = settingsDialog->findChild<QPushButton *>( u"aiReleaseDryRunButton"_s );
+        QLabel *releaseDryRunStatus = settingsDialog->findChild<QLabel *>( u"aiReleaseDryRunStatusLabel"_s );
+        onboardingControlsFound = onboardingStatus
+                                  && onboardingStatus->text().contains( u"Plan login"_s )
+                                  && settingsDialog->findChild<QCheckBox *>( u"aiPrivacyMetadataOnlyCheckBox"_s )
+                                  && settingsDialog->findChild<QCheckBox *>( u"aiTelemetryOptInCheckBox"_s )
+                                  && settingsDialog->findChild<QCheckBox *>( u"aiCrashReportOptInCheckBox"_s )
+                                  && settingsDialog->findChild<QPushButton *>( u"aiCreateDemoProjectButton"_s )
+                                  && releaseDryRunButton
+                                  && releaseDryRunStatus;
+        if ( releaseDryRunButton && releaseDryRunStatus )
+        {
+          releaseDryRunButton->click();
+          releaseDryRunOk = releaseDryRunStatus->text().contains( u"checksum"_s, Qt::CaseInsensitive ) && !releaseDryRunStatus->property( "checksum" ).toString().isEmpty();
+        }
+        settingsDialog->reject();
       }
-      defaultProviderSelected = providerCombo && providerCombo->currentData().toString() == QgsAiEmbeddingProviderRegistry::defaultProviderId();
-      if ( providerCombo )
-      {
-        const int e5Row = providerCombo->findData( QgsAiE5EmbeddingProvider::staticProviderId() );
-        const QModelIndex e5Index = providerCombo->model()->index( e5Row, 0 );
-        e5UiStateFound = e5Row >= 0 && e5Index.isValid() && static_cast<bool>( providerCombo->model()->flags( e5Index ) & Qt::ItemIsEnabled ) == e5ProviderListed;
-      }
-      localStatusFound = e5ProviderListed ? statusLabel && statusLabel->text().contains( u"E5"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"not installed"_s, Qt::CaseInsensitive )
-                                          : statusLabel && statusLabel->text().contains( u"MinHash"_s, Qt::CaseInsensitive ) && statusLabel->text().contains( u"available"_s, Qt::CaseInsensitive );
-      downloadButtonFound = downloadButton && downloadButton->isVisible() == e5ProviderListed;
-      QLabel *onboardingStatus = settingsDialog->findChild<QLabel *>( u"aiOnboardingStatusLabel"_s );
-      QPushButton *releaseDryRunButton = settingsDialog->findChild<QPushButton *>( u"aiReleaseDryRunButton"_s );
-      QLabel *releaseDryRunStatus = settingsDialog->findChild<QLabel *>( u"aiReleaseDryRunStatusLabel"_s );
-      onboardingControlsFound = onboardingStatus
-                                && onboardingStatus->text().contains( u"Plan login"_s )
-                                && settingsDialog->findChild<QCheckBox *>( u"aiPrivacyMetadataOnlyCheckBox"_s )
-                                && settingsDialog->findChild<QCheckBox *>( u"aiTelemetryOptInCheckBox"_s )
-                                && settingsDialog->findChild<QCheckBox *>( u"aiCrashReportOptInCheckBox"_s )
-                                && settingsDialog->findChild<QPushButton *>( u"aiCreateDemoProjectButton"_s )
-                                && releaseDryRunButton
-                                && releaseDryRunStatus;
-      if ( releaseDryRunButton && releaseDryRunStatus )
-      {
-        releaseDryRunButton->click();
-        releaseDryRunOk = releaseDryRunStatus->text().contains( u"checksum"_s, Qt::CaseInsensitive ) && !releaseDryRunStatus->property( "checksum" ).toString().isEmpty();
-      }
-      settingsDialog->reject();
-    }
-    inspected = true;
-  } );
+      inspected = true;
+    } );
 
   const bool invoked = QMetaObject::invokeMethod( &dock, "openProviderSettings", Qt::DirectConnection );
 
