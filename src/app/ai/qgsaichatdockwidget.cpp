@@ -2732,9 +2732,13 @@ void QgsAiChatDockWidget::openProviderSettings()
   remoteEmbeddingModel->setObjectName( u"aiRemoteEmbeddingModelLineEdit"_s );
   QLabel *remoteEmbeddingModelLabel = new QLabel( tr( "Remote embedding model" ), &dialog );
   auto remoteEmbeddingModelSettingKey = []( const QString &providerId ) {
+    if ( providerId.compare( u"strata-cloud"_s, Qt::CaseInsensitive ) == 0 )
+      return u"ai/embeddings/strata-cloud/model"_s;
     return providerId.compare( u"openrouter"_s, Qt::CaseInsensitive ) == 0 ? u"ai/embeddings/openrouter/model"_s : u"ai/embeddings/openai/model"_s;
   };
   auto remoteEmbeddingModelDefault = []( const QString &providerId ) {
+    if ( providerId.compare( u"strata-cloud"_s, Qt::CaseInsensitive ) == 0 )
+      return u"strata-embedding-384"_s;
     return providerId.compare( u"openrouter"_s, Qt::CaseInsensitive ) == 0 ? u"openai/text-embedding-3-small"_s : u"text-embedding-3-small"_s;
   };
   auto refreshRemoteEmbeddingModelField = [embeddingProvider, remoteEmbeddingModel, remoteEmbeddingModelLabel, remoteEmbeddingModelSettingKey, remoteEmbeddingModelDefault]() {
@@ -2755,7 +2759,7 @@ void QgsAiChatDockWidget::openProviderSettings()
     const bool e5Compiled = QgsAiEmbeddingProviderRegistry::providerIds().contains( QgsAiE5EmbeddingProvider::staticProviderId() );
     if ( QgsAiEmbeddingProviderRegistry::isRemoteProviderId( providerId ) )
     {
-      embeddingStatusLabel->setText( tr( "Remote workspace indexing will use %1 only because it is explicitly selected here. Saved OpenAI/OpenRouter keys do not switch indexing by themselves." )
+      embeddingStatusLabel->setText( tr( "Remote workspace indexing will use %1 only because it is explicitly selected here. Saved provider keys do not switch indexing by themselves." )
                                        .arg( QgsAiEmbeddingProviderRegistry::displayNameForProviderId( providerId ) ) );
       downloadEmbeddingModelButton->setVisible( false );
     }

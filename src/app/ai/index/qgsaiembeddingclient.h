@@ -48,7 +48,8 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
     enum class Provider
     {
       OpenAi,
-      OpenRouter
+      OpenRouter,
+      StrataCloud
     };
 
     explicit QgsAiEmbeddingClient( QObject *parent = nullptr );
@@ -96,10 +97,11 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
      * keep payloads under 1 MB. Default batch size is 64.
      */
     bool embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage = nullptr, int maxBatch = 64 );
+    bool embedWithRole( const QStringList &texts, const QString &role, QList<QVector<float>> &out, QString *errorMessage = nullptr, int maxBatch = 64 );
 
   private:
     QString apiKey() const;
-    bool embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage );
+    bool embedBatch( const QStringList &batch, const QString &role, QList<QVector<float>> &out, QString *errorMessage );
     //! One blocking HTTP round trip. Outputs status/body/network error and the parsed Retry-After seconds (-1 when absent).
     bool performRequest( const QByteArray &payload, const QString &key, int &httpStatus, QByteArray &body, int &networkError, int &retryAfterSeconds, QString *errorMessage );
 

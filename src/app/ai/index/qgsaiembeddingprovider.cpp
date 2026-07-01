@@ -152,9 +152,19 @@ namespace
         mClient.setProvider( provider );
       }
 
-      QString providerId() const override { return mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"openrouter"_s : u"openai"_s; }
+      QString providerId() const override
+      {
+        if ( mProvider == QgsAiEmbeddingClient::Provider::StrataCloud )
+          return u"strata-cloud"_s;
+        return mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"openrouter"_s : u"openai"_s;
+      }
 
-      QString displayName() const override { return mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s; }
+      QString displayName() const override
+      {
+        if ( mProvider == QgsAiEmbeddingClient::Provider::StrataCloud )
+          return u"Strata Cloud"_s;
+        return mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s;
+      }
 
       QString modelId() const override { return mClient.model(); }
       QString modelRevision() const override { return u"remote"_s; }
@@ -167,8 +177,11 @@ namespace
 
         if ( errorMessage )
         {
-          *errorMessage = mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"OpenRouter embedding provider is selected, but no OpenRouter API key is configured."_s
-                                                                                  : u"OpenAI embedding provider is selected, but no OpenAI API key is configured."_s;
+          if ( mProvider == QgsAiEmbeddingClient::Provider::StrataCloud )
+            *errorMessage = u"Strata Cloud embedding provider is selected, but no Plan session token is configured."_s;
+          else
+            *errorMessage = mProvider == QgsAiEmbeddingClient::Provider::OpenRouter ? u"OpenRouter embedding provider is selected, but no OpenRouter API key is configured."_s
+                                                                                    : u"OpenAI embedding provider is selected, but no OpenAI API key is configured."_s;
         }
         return false;
       }
@@ -177,7 +190,8 @@ namespace
 
       bool embed( const QStringList &texts, QgsAiEmbeddingRole role, QList<QVector<float>> &out, QString *errorMessage = nullptr, const QgsAiEmbeddingOptions &options = QgsAiEmbeddingOptions() ) override
       {
-        Q_UNUSED( role )
+        if ( mProvider == QgsAiEmbeddingClient::Provider::StrataCloud )
+          return mClient.embedWithRole( texts, role == QgsAiEmbeddingRole::Query ? u"query"_s : u"passage"_s, out, errorMessage, options.maxBatch );
         return embed( texts, out, errorMessage, options.maxBatch );
       }
 
@@ -799,7 +813,7 @@ QStringList QgsAiEmbeddingProviderRegistry::providerIds()
 #ifdef HAVE_AI_E5_EMBEDDINGS
   ids << QgsAiE5EmbeddingProvider::staticProviderId();
 #endif
-  ids << u"local:minihash-384"_s << u"openai"_s << u"openrouter"_s;
+  ids << u"local:minihash-384"_s << u"openai"_s << u"openrouter"_s << u"strata-cloud"_s;
   return ids;
 }
 
@@ -821,6 +835,7 @@ QList<QgsAiEmbeddingProviderUiEntry> QgsAiEmbeddingProviderRegistry::providerUiE
   entries.append( { u"local:minihash-384"_s, u"Local MinHash fallback"_s, true, QString() } );
   entries.append( { u"openai"_s, u"OpenAI"_s, true, QString() } );
   entries.append( { u"openrouter"_s, u"OpenRouter"_s, true, QString() } );
+  entries.append( { u"strata-cloud"_s, u"Strata Cloud"_s, true, QString() } );
   return entries;
 }
 
@@ -841,13 +856,15 @@ QString QgsAiEmbeddingProviderRegistry::displayNameForProviderId( const QString 
     return u"OpenAI"_s;
   if ( normalized == "openrouter"_L1 )
     return u"OpenRouter"_s;
+  if ( normalized == "strata-cloud"_L1 )
+    return u"Strata Cloud"_s;
   return u"Local multilingual E5 small (recommended)"_s;
 }
 
 bool QgsAiEmbeddingProviderRegistry::isRemoteProviderId( const QString &providerId )
 {
   const QString normalized = providerId.trimmed().toLower();
-  return normalized == "openai"_L1 || normalized == "openrouter"_L1;
+  return normalized == "openai"_L1 || normalized == "openrouter"_L1 || normalized == "strata-cloud"_L1;
 }
 
 std::unique_ptr<QgsAiEmbeddingProvider> QgsAiEmbeddingProviderRegistry::createProviderFromSettings( QObject *parent )
@@ -862,6 +879,8 @@ std::unique_ptr<QgsAiEmbeddingProvider> QgsAiEmbeddingProviderRegistry::createPr
     return std::make_unique<RemoteEmbeddingProvider>( QgsAiEmbeddingClient::Provider::OpenAi, parent );
   if ( normalized == "openrouter"_L1 )
     return std::make_unique<RemoteEmbeddingProvider>( QgsAiEmbeddingClient::Provider::OpenRouter, parent );
+  if ( normalized == "strata-cloud"_L1 )
+    return std::make_unique<RemoteEmbeddingProvider>( QgsAiEmbeddingClient::Provider::StrataCloud, parent );
   if ( normalized == QgsAiE5EmbeddingProvider::staticProviderId() )
   {
 #ifdef HAVE_AI_E5_EMBEDDINGS

@@ -7,12 +7,14 @@
 #include "ai/index/qgsaiembeddingclient.h"
 #include "qgsaitestloopbackserver.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 
 #include <QElapsedTimer>
 #include <QHostAddress>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QList>
@@ -94,6 +96,7 @@ class TestQgsAiEmbeddingClient : public QObject
     void http402TripsBreakerWithCreditsMessage();
     void successfulEmbedParsesVectorsInIndexOrder();
     void openRouterEmbedPayloadCarriesModelAndProviderPrefs();
+    void strataCloudEmbedUsesPlanTokenAndRolePayload();
 };
 
 void TestQgsAiEmbeddingClient::initTestCase()
@@ -281,6 +284,42 @@ void TestQgsAiEmbeddingClient::openRouterEmbedPayloadCarriesModelAndProviderPref
   // normalizes raw header casing, e.g. Http-Referer).
   QVERIFY( server.lastRawRequest().toLower().contains( "x-title: strata" ) );
   QVERIFY( server.lastRawRequest().toLower().contains( "http-referer:" ) );
+}
+
+void TestQgsAiEmbeddingClient::strataCloudEmbedUsesPlanTokenAndRolePayload()
+{
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"model\":\"strata-embedding-384\",\"dimension\":384,\"embeddings\":[[0.5,0.6]]}" ) );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  QgsAuthManager *authManager = QgsApplication::authManager();
+  QVERIFY( authManager );
+  const QString tokenKey = u"ai/provider/plan/token"_s;
+  const QString savedToken = authManager->authSetting( tokenKey, QVariant(), true ).toString();
+  QVERIFY( authManager->storeAuthSetting( tokenKey, u"strata-plan-loopback-token"_s, true ) );
+  const auto restore = qScopeGuard( [authManager, tokenKey, savedToken]() {
+    if ( savedToken.isEmpty() )
+      authManager->removeAuthSetting( tokenKey );
+    else
+      authManager->storeAuthSetting( tokenKey, savedToken, true );
+  } );
+
+  QgsAiEmbeddingClient client;
+  client.setProvider( QgsAiEmbeddingClient::Provider::StrataCloud );
+  client.setEndpointOverride( u"http://127.0.0.1:%1/v1/embeddings"_s.arg( server.serverPort() ) );
+
+  QList<QVector<float>> out;
+  QString err;
+  QVERIFY2( client.embedWithRole( { u"roads"_s }, u"query"_s, out, &err ), qPrintable( err ) );
+  QCOMPARE( out.size(), 1 );
+  QCOMPARE( out.at( 0 ).size(), 2 );
+  QCOMPARE( out.at( 0 ).at( 0 ), 0.5f );
+
+  const QJsonObject payload = QJsonDocument::fromJson( server.lastRequestBody() ).object();
+  QCOMPARE( payload.value( u"role"_s ).toString(), u"query"_s );
+  QCOMPARE( payload.value( u"texts"_s ).toArray().at( 0 ).toString(), u"roads"_s );
+  QVERIFY( !payload.contains( u"input"_s ) );
+  QVERIFY( server.lastRawRequest().toLower().contains( "authorization: bearer strata-plan-loopback-token" ) );
 }
 
 QGSTEST_MAIN( TestQgsAiEmbeddingClient )

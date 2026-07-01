@@ -18,6 +18,8 @@
 #include <algorithm>
 
 #include "ai/qgsaisecretstore.h"
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
@@ -31,6 +33,7 @@
 #include <QString>
 #include <QTimer>
 #include <QUrl>
+#include <QVariant>
 
 #include "moc_qgsaiembeddingclient.cpp"
 
@@ -40,11 +43,15 @@ namespace
 {
   constexpr const char *OPENAI_EMBEDDINGS_ENDPOINT = "https://api.openai.com/v1/embeddings";
   constexpr const char *OPENROUTER_EMBEDDINGS_ENDPOINT = "https://openrouter.ai/api/v1/embeddings";
+  constexpr const char *STRATA_CLOUD_EMBEDDINGS_ENDPOINT_SETTING = "ai/embeddings/strata-cloud/endpoint";
+  constexpr const char *PLAN_ENDPOINT_SETTING = "ai/provider/plan/endpoint";
+  constexpr const char *PLAN_TOKEN_SETTING = "ai/provider/plan/token";
   constexpr const char *OPENAI_KEY_SETTING = "ai/provider/openai/apiKey";
   constexpr const char *OPENROUTER_KEY_SETTING = "ai/provider/openrouter/apiKey";
   constexpr const char *EMBEDDINGS_PROVIDER_SETTING = "ai/embeddings/provider";
   constexpr const char *OPENAI_EMBEDDING_MODEL_SETTING = "ai/embeddings/openai/model";
   constexpr const char *OPENROUTER_EMBEDDING_MODEL_SETTING = "ai/embeddings/openrouter/model";
+  constexpr const char *STRATA_CLOUD_EMBEDDING_MODEL_SETTING = "ai/embeddings/strata-cloud/model";
 } //namespace
 
 QgsAiEmbeddingClient::QgsAiEmbeddingClient( QObject *parent )
@@ -58,6 +65,8 @@ QgsAiEmbeddingClient::Provider QgsAiEmbeddingClient::provider() const
 
   const QgsSettings settings;
   const QString configured = settings.value( QString::fromLatin1( EMBEDDINGS_PROVIDER_SETTING ), u"openai"_s ).toString().trimmed();
+  if ( configured.compare( u"strata-cloud"_s, Qt::CaseInsensitive ) == 0 )
+    return Provider::StrataCloud;
   return configured.compare( u"openrouter"_s, Qt::CaseInsensitive ) == 0 ? Provider::OpenRouter : Provider::OpenAi;
 }
 
@@ -65,6 +74,17 @@ QString QgsAiEmbeddingClient::endpoint() const
 {
   if ( !mEndpointOverride.isEmpty() )
     return mEndpointOverride;
+  if ( provider() == Provider::StrataCloud )
+  {
+    const QgsSettings settings;
+    const QString configured = settings.value( QString::fromLatin1( STRATA_CLOUD_EMBEDDINGS_ENDPOINT_SETTING ) ).toString().trimmed();
+    if ( !configured.isEmpty() )
+      return configured;
+    QUrl planEndpoint( settings.value( QString::fromLatin1( PLAN_ENDPOINT_SETTING ), u"https://example.invalid/ai/messages"_s ).toString().trimmed() );
+    planEndpoint.setPath( u"/v1/embeddings"_s );
+    planEndpoint.setQuery( QString() );
+    return planEndpoint.toString();
+  }
   return provider() == Provider::OpenRouter ? QString::fromLatin1( OPENROUTER_EMBEDDINGS_ENDPOINT ) : QString::fromLatin1( OPENAI_EMBEDDINGS_ENDPOINT );
 }
 
@@ -74,6 +94,12 @@ QString QgsAiEmbeddingClient::model() const
     return mModelOverride;
 
   const QgsSettings settings;
+  if ( provider() == Provider::StrataCloud )
+  {
+    const QString configured = settings.value( QString::fromLatin1( STRATA_CLOUD_EMBEDDING_MODEL_SETTING ), u"strata-embedding-384"_s ).toString().trimmed();
+    return configured.isEmpty() ? u"strata-embedding-384"_s : configured;
+  }
+
   if ( provider() == Provider::OpenRouter )
   {
     const QString configured = settings.value( QString::fromLatin1( OPENROUTER_EMBEDDING_MODEL_SETTING ), u"openai/text-embedding-3-small"_s ).toString().trimmed();
@@ -95,6 +121,12 @@ QJsonObject QgsAiEmbeddingClient::openRouterProviderPreferences() const
 
 QString QgsAiEmbeddingClient::apiKey() const
 {
+  if ( provider() == Provider::StrataCloud )
+  {
+    QgsAuthManager *authManager = QgsApplication::authManager();
+    const QString stored = authManager ? authManager->authSetting( QString::fromLatin1( PLAN_TOKEN_SETTING ), QVariant(), true ).toString().trimmed() : QString();
+    return stored.isEmpty() ? QString::fromUtf8( qgetenv( "STRATA_PLAN_TOKEN" ) ).trimmed() : stored;
+  }
   const bool useOpenRouter = provider() == Provider::OpenRouter;
   return QgsAiSecretStore::readSecret( QString::fromLatin1( useOpenRouter ? OPENROUTER_KEY_SETTING : OPENAI_KEY_SETTING ), { useOpenRouter ? u"OPENROUTER_API_KEY"_s : u"OPENAI_API_KEY"_s } );
 }
@@ -106,6 +138,11 @@ bool QgsAiEmbeddingClient::hasApiKey() const
 
 bool QgsAiEmbeddingClient::embed( const QStringList &texts, QList<QVector<float>> &out, QString *errorMessage, int maxBatch )
 {
+  return embedWithRole( texts, u"passage"_s, out, errorMessage, maxBatch );
+}
+
+bool QgsAiEmbeddingClient::embedWithRole( const QStringList &texts, const QString &role, QList<QVector<float>> &out, QString *errorMessage, int maxBatch )
+{
   out.clear();
   if ( texts.isEmpty() )
     return true;
@@ -115,7 +152,7 @@ bool QgsAiEmbeddingClient::embed( const QStringList &texts, QList<QVector<float>
   {
     const QStringList batch = texts.mid( i, batchSize );
     QList<QVector<float>> batchOut;
-    if ( !embedBatch( batch, batchOut, errorMessage ) )
+    if ( !embedBatch( batch, role, batchOut, errorMessage ) )
       return false;
     if ( batchOut.size() != batch.size() )
     {
@@ -177,9 +214,9 @@ bool QgsAiEmbeddingClient::performRequest( const QByteArray &payload, const QStr
   return true;
 }
 
-bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage )
+bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, const QString &role, QList<QVector<float>> &out, QString *errorMessage )
 {
-  const QString providerName = provider() == Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s;
+  const QString providerName = provider() == Provider::StrataCloud ? u"Strata Cloud"_s : provider() == Provider::OpenRouter ? u"OpenRouter"_s : u"OpenAI"_s;
 
   if ( mAuthenticationFailed )
   {
@@ -196,18 +233,29 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
   {
     if ( errorMessage )
     {
-      *errorMessage = provider() == Provider::OpenRouter ? u"OpenRouter API key is not configured (ai/provider/openrouter/apiKey or OPENROUTER_API_KEY)."_s
-                                                         : u"OpenAI API key is not configured (ai/provider/openai/apiKey or OPENAI_API_KEY)."_s;
+      if ( provider() == Provider::StrataCloud )
+        *errorMessage = u"Strata Cloud plan session token is not configured. Sign in to Plan Account first."_s;
+      else
+        *errorMessage = provider() == Provider::OpenRouter ? u"OpenRouter API key is not configured (ai/provider/openrouter/apiKey or OPENROUTER_API_KEY)."_s
+                                                           : u"OpenAI API key is not configured (ai/provider/openai/apiKey or OPENAI_API_KEY)."_s;
     }
     return false;
   }
 
   QJsonObject payload;
-  payload.insert( u"model"_s, model() );
   QJsonArray input;
   for ( const QString &t : batch )
     input.append( t );
-  payload.insert( u"input"_s, input );
+  if ( provider() == Provider::StrataCloud )
+  {
+    payload.insert( u"texts"_s, input );
+    payload.insert( u"role"_s, role.compare( u"query"_s, Qt::CaseInsensitive ) == 0 ? u"query"_s : u"passage"_s );
+  }
+  else
+  {
+    payload.insert( u"model"_s, model() );
+    payload.insert( u"input"_s, input );
+  }
   if ( provider() == Provider::OpenRouter )
     payload.insert( u"provider"_s, openRouterProviderPreferences() );
   const QByteArray payloadBytes = QJsonDocument( payload ).toJson( QJsonDocument::Compact );
@@ -283,6 +331,28 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
     if ( errorMessage )
       *errorMessage = u"Embeddings response is not a JSON object."_s;
     return false;
+  }
+
+  if ( provider() == Provider::StrataCloud )
+  {
+    const QJsonArray embeddings = doc.object().value( u"embeddings"_s ).toArray();
+    if ( embeddings.size() != batch.size() )
+    {
+      if ( errorMessage )
+        *errorMessage = u"Strata Cloud embeddings response shape mismatch: expected %1 vectors, got %2."_s.arg( batch.size() ).arg( embeddings.size() );
+      return false;
+    }
+    out.resize( batch.size() );
+    for ( int i = 0; i < embeddings.size(); ++i )
+    {
+      const QJsonArray emb = embeddings.at( i ).toArray();
+      QVector<float> vec;
+      vec.reserve( emb.size() );
+      for ( const QJsonValue &v : emb )
+        vec.append( static_cast<float>( v.toDouble() ) );
+      out[i] = vec;
+    }
+    return true;
   }
 
   // Response: { "data": [{ "embedding": [...], "index": N }, ...], "model": "...", "usage": {...} }
