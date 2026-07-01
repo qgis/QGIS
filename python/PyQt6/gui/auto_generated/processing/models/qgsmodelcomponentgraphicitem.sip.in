@@ -265,6 +265,11 @@ Emitted when the definition of the associated component is changed by
 the item.
 %End
 
+    void childAlgorithmDeleted();
+%Docstring
+Emitted when a child algorithm is deleted from the model.
+%End
+
     void repaintArrows();
 %Docstring
 Emitted when item requests that all connected arrows are repainted.
