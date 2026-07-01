@@ -22,6 +22,8 @@
 #include <QJsonValue>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 enum class QgsAiToolRiskLevel
 {
   Low,
@@ -35,15 +37,15 @@ inline QString QgsAiToolRiskLevelName( QgsAiToolRiskLevel level )
   switch ( level )
   {
     case QgsAiToolRiskLevel::Low:
-      return QStringLiteral( "low" );
+      return u"low"_s;
     case QgsAiToolRiskLevel::Medium:
-      return QStringLiteral( "medium" );
+      return u"medium"_s;
     case QgsAiToolRiskLevel::High:
-      return QStringLiteral( "high" );
+      return u"high"_s;
     case QgsAiToolRiskLevel::Critical:
-      return QStringLiteral( "critical" );
+      return u"critical"_s;
   }
-  return QStringLiteral( "low" );
+  return u"low"_s;
 }
 
 struct APP_EXPORT QgsAiToolResult

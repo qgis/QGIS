@@ -129,14 +129,6 @@ void QgsAiAuditLog::appendToolEvent( const QString &event, const QString &tool, 
   const QString keys = metadataKeys( metadata ).join( ',' );
 
   const QString line = u"%1 | tool_event | event=%2 | tool=%3 | risk=%4 | success=%5 | workspace=%6 | sha256=%7 | bytes=%8 | keys=%9\n"_s
-                         .arg( QDateTime::currentDateTimeUtc().toString( Qt::ISODate ),
-                               event,
-                               tool,
-                               risk,
-                               success ? u"true"_s : u"false"_s,
-                               workspaceHash,
-                               digest,
-                               QString::number( compact.size() ),
-                               keys );
+                         .arg( QDateTime::currentDateTimeUtc().toString( Qt::ISODate ), event, tool, risk, success ? u"true"_s : u"false"_s, workspaceHash, digest, QString::number( compact.size() ), keys );
   appendLine( line );
 }

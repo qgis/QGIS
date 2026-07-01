@@ -61,8 +61,8 @@
 #include <QColor>
 #include <QDateTime>
 #include <QDir>
-#include <QFileInfo>
 #include <QFile>
+#include <QFileInfo>
 #include <QHash>
 #include <QImage>
 #include <QJsonArray>
