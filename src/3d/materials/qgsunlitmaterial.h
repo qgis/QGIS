@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgshighlightmaterial.h
+    qgsunlitmaterial.h
     ---------------------
-    begin                : December 2025
-    copyright            : (C) 2025 by Stefanos Natsis
-    email                : uclaros at gmail dot com
+    begin                : June 2026
+    copyright            : (C) 2026 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSHIGHLIGHTMATERIAL_H
-#define QGSHIGHLIGHTMATERIAL_H
+#ifndef QGSUNLITMATERIAL_H
+#define QGSUNLITMATERIAL_H
 
 #include "qgis.h"
 #include "qgis_3d.h"
@@ -36,25 +36,37 @@ namespace Qt3DRender
 
 /**
  * \ingroup qgis_3d
- * \brief A single color material for highlighting features.
- * Uses the highlight color and opacity defined in qgis settings Map/highlight
- * \since QGIS 4.0
+ * \brief A single color, unlit material.
+ *
+ * Unlit materials are not affected by scene lighting.
+ * \since QGIS 4.2
  */
-class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
+class _3D_EXPORT QgsUnlitMaterial : public QgsMaterial
 {
     Q_OBJECT
 
   public:
     /**
-     * Constructor for QgsHighlightMaterial, using the specified \a technique and \a parent node.
+     * Constructor for QgsUnlitMaterial, with the specified \a parent node.
      */
-    explicit QgsHighlightMaterial( Qt3DCore::QNode *parent = nullptr );
-    ~QgsHighlightMaterial() override;
+    explicit QgsUnlitMaterial( Qt3DCore::QNode *parent = nullptr );
+    ~QgsUnlitMaterial() override;
 
+    /**
+     * Sets the material color.
+     *
+     * The \a color parameter must specify an sRGB color value. Alpha is supported.
+     */
+    void setColor( const QColor &color );
+
+    /**
+     * Sets whether instancing support is \a enabled for the material.
+     */
     void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
 
     /**
-     * Sets the transform from mesh space to object space
+     * Sets the transform from mesh space to object space.
+     *
      * \note Only applies when instancing is enabled
      */
     void setInstancingMeshTransform( const QMatrix4x4 &transform );
@@ -69,8 +81,9 @@ class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
     Qgis::InstancedMaterialFlags mInstanceFlags;
     Qt3DRender::QParameter *mTransformParameter = nullptr;
     Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
+    Qt3DRender::QParameter *mColorParameter = nullptr;
 };
 
 ///@endcond PRIVATE
 
-#endif // QGSHIGHLIGHTMATERIAL_H
+#endif // QGSUNLITMATERIAL_H

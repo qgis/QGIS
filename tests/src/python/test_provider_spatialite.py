@@ -43,7 +43,7 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QByteArray, QVariant
+from qgis.PyQt.QtCore import QByteArray, QMetaType, QVariant
 from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
 from utilities import compareWkt, unitTestDataPath
@@ -2532,6 +2532,56 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(
             metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
         )
+
+    def test_queryLayer_cast(self):
+        """Test issue #66329"""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, "test_queryLayer_cast.db")
+
+            ds = ogr.GetDriverByName("SQLite").CreateDataSource(
+                tmpfile, options=["SPATIALITE=YES"]
+            )
+
+            ds.ExecuteSQL(
+                """CREATE TABLE test_cast (
+                    id INTEGER PRIMARY KEY,
+                    geometry POINT,
+                    f_int INTEGER,
+                    f_real REAL,
+                    f_text TEXT,
+                    f_blob BLOB
+                );"""
+            )
+
+            # Insert a row
+            ds.ExecuteSQL(
+                """INSERT INTO test_cast (id, geometry, f_int, f_real, f_text, f_blob) VALUES
+                (1, GeomFromText('POINT(1 0)', 4326), 1, 1.0, 'text', '1234');"""
+            )
+
+            def _test_cast(type, casted, expected_type, expected_value):
+                uri = QgsDataSourceUri()
+                uri.setDatabase(tmpfile)
+                uri.setWkbType(Qgis.WkbType.Point)
+                uri.setDataSource(
+                    "",
+                    f"(SELECT id, geometry, CAST (f_{type} AS {casted}) AS casted_{casted} FROM test_cast)",
+                    "geometry",
+                    "",
+                    "id",
+                )
+                layer = QgsVectorLayer(uri.uri(), f"test_cast_{casted}", "spatialite")
+                self.assertTrue(layer.isValid())
+                self.assertEqual(layer.fields()[1].type(), expected_type)
+                f = next(layer.getFeatures())
+                self.assertEqual(f[f"casted_{casted}"], expected_value)
+
+            _test_cast("int", "TEXT", QMetaType.Type.QString, "1")
+            _test_cast("int", "REAL", QMetaType.Type.Double, 1.0)
+            _test_cast("real", "TEXT", QMetaType.Type.QString, "1.0")
+            _test_cast("real", "INTEGER", QMetaType.Type.LongLong, 1)
+            _test_cast("blob", "TEXT", QMetaType.Type.QString, "1234")
 
 
 if __name__ == "__main__":

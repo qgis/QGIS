@@ -48,7 +48,7 @@ int QgisEvent = QEvent::User + 1;
 // qHash implementation for scoped enum type
 // https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
 #define QHASH_FOR_CLASS_ENUM( T )                                                     \
-  inline uint qHash( const T &t, uint seed )                                          \
+  inline size_t qHash( const T &t, size_t seed )                                      \
   {                                                                                   \
     return ::qHash( static_cast<typename std::underlying_type<T>::type>( t ), seed ); \
   }
@@ -4331,6 +4331,18 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( Map3DDebugFlags )
 
     /**
+     * 3D map projection type
+     *
+     * \since QGIS 4.2
+     */
+    enum class Map3DProjectionType : int
+    {
+      Orthographic = 0, //!< Orthogonal projection
+      Perspective = 1,  //!< Perspective projection
+    };
+    Q_ENUM( Map3DProjectionType )
+
+    /**
      * 3D point shape types.
      *
      * \note Prior to QGIS 3.36 this was available as QgsPoint3DSymbol::Shape
@@ -7239,7 +7251,7 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *ob
 }
 
 //! Hash for QVariant
-CORE_EXPORT uint qHash( const QVariant &variant );
+CORE_EXPORT size_t qHash( const QVariant &variant );
 
 /**
  * Returns a string representation of a double

@@ -7772,6 +7772,19 @@ Qgis.Map3DDebugFlags = lambda flags=0: Qgis.Map3DDebugFlag(flags)
 Qgis.Map3DDebugFlags.baseClass = Qgis
 Map3DDebugFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Map3DProjectionType.Orthographic.__doc__ = "Orthogonal projection"
+Qgis.Map3DProjectionType.Perspective.__doc__ = "Perspective projection"
+Qgis.Map3DProjectionType.__doc__ = """3D map projection type
+
+.. versionadded:: 4.2
+
+* ``Orthographic``: Orthogonal projection
+* ``Perspective``: Perspective projection
+
+"""
+# --
+Qgis.Map3DProjectionType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
 Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
 Qgis.Point3DShape.Cone.__doc__ = "Cone"

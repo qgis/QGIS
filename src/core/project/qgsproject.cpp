@@ -690,8 +690,13 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
             else
               fieldName = field.alias();
 
+
             translationContext->registerTranslation( u"project:layers:%1:fieldaliases"_s.arg( vlayer->id() ), fieldName );
 
+            if ( !field.customComment().isEmpty() )
+            {
+              translationContext->registerTranslation( u"project:layers:%1:fieldcustomcomments"_s.arg( vlayer->id() ), field.customComment() );
+            }
             //constraint description
             if ( !field.constraints().constraintDescription().isEmpty() )
               translationContext->registerTranslation( u"project:layers:%1:constraintdescriptions"_s.arg( vlayer->id() ), field.constraints().constraintDescription() );
@@ -1039,6 +1044,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
     const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
+
     mCrs = crs;
     writeEntry( u"SpatialRefSys"_s, u"/ProjectionsEnabled"_s, crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
@@ -3408,7 +3414,6 @@ bool QgsProject::writeProjectFile( const QString &filename )
     mVerticalCrs.writeXml( verticalSrsNode, *doc );
     qgisNode.appendChild( verticalSrsNode );
   }
-
   QDomElement elevationShadingNode = doc->createElement( u"elevation-shading-renderer"_s );
   mElevationShadingRenderer.writeXml( elevationShadingNode, context );
   qgisNode.appendChild( elevationShadingNode );

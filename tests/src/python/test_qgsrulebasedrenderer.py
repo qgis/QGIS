@@ -136,6 +136,41 @@ class TestQgsRuleBasedSymbolRenderer(QgisTestCase):
 """
         self.assertEqual(dom.toString(), expected)
 
+    def testSetLegendSymbolItemLabel(self):
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        symbol = QgsMarkerSymbol.createSimple({})
+        rule1 = QgsRuleBasedRenderer.Rule(symbol.clone(), label="rule 1")
+        rule2 = QgsRuleBasedRenderer.Rule(symbol.clone(), label="rule 2")
+        rule3 = QgsRuleBasedRenderer.Rule(symbol.clone(), label="rule 3")
+        root_rule.appendChild(rule1)
+        root_rule.appendChild(rule2)
+        root_rule.appendChild(rule3)
+        renderer = QgsRuleBasedRenderer(root_rule)
+
+        # verify initial labels
+        self.assertEqual(rule1.label(), "rule 1")
+        self.assertEqual(rule2.label(), "rule 2")
+        self.assertEqual(rule3.label(), "rule 3")
+
+        # change label for second rule using its key
+        renderer.setLegendSymbolItemLabel(rule2.ruleKey(), "updated rule 2")
+
+        self.assertEqual(rule1.label(), "rule 1")
+        self.assertEqual(rule2.label(), "updated rule 2")
+        self.assertEqual(rule3.label(), "rule 3")
+
+        # change label via legendSymbolItems key
+        items = renderer.legendSymbolItems()
+        self.assertEqual(len(items), 3)
+        renderer.setLegendSymbolItemLabel(items[0].ruleKey(), "new rule 1")
+        self.assertEqual(rule1.label(), "new rule 1")
+
+        # non-existent key should not change anything
+        renderer.setLegendSymbolItemLabel("nonexistent", "nonexistent_label")
+        self.assertEqual(rule1.label(), "new rule 1")
+        self.assertEqual(rule2.label(), "updated rule 2")
+        self.assertEqual(rule3.label(), "rule 3")
+
 
 if __name__ == "__main__":
     unittest.main()

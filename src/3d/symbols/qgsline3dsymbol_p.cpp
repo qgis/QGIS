@@ -39,7 +39,6 @@
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QTransform>
-#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QGeometryRenderer>
 
 using namespace Qt::StringLiterals;
@@ -268,7 +267,6 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
 
   private:
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsLineVertexData &lineVertexData, bool selected );
-    Qt3DExtras::QPhongMaterial *material( const QgsLine3DSymbol &symbol ) const;
     void processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsLineVertexData &lineVertexData );
 
     // input specific for this class

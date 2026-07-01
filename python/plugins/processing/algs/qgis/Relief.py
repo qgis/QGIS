@@ -195,16 +195,8 @@ class Relief(QgisAlgorithm):
         res = relief.processRaster(feedback)
         if res == 1:
             raise QgsProcessingException(self.tr("Can not open input file."))
-        elif res == 2:
-            raise QgsProcessingException(
-                self.tr("Can not get GDAL driver for output file.")
-            )
         elif res == 3:
             raise QgsProcessingException(self.tr("Can not create output file."))
-        elif res == 4:
-            raise QgsProcessingException(self.tr("Can not get input band."))
-        elif res == 5:
-            raise QgsProcessingException(self.tr("Can not create output bands."))
         elif res == 6:
             raise QgsProcessingException(
                 self.tr("Output raster size is too small (at least 3 rows needed).")

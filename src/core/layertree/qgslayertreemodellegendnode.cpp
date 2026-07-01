@@ -377,9 +377,9 @@ QgsSymbolLegendNode::~QgsSymbolLegendNode() = default;
 Qt::ItemFlags QgsSymbolLegendNode::flags() const
 {
   if ( mItem.isCheckable() )
-    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable;
   else
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 
@@ -645,17 +645,26 @@ QVariant QgsSymbolLegendNode::data( int role ) const
 
 bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
 {
-  if ( role != Qt::CheckStateRole )
-    return false;
-
-  if ( !mItem.isCheckable() )
+  if ( role != Qt::EditRole && role != Qt::CheckStateRole )
     return false;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-  if ( !vlayer || !vlayer->renderer() )
+  if ( !( vlayer && vlayer->renderer() ) )
     return false;
 
-  vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
+  if ( role == Qt::EditRole )
+  {
+    const QString newLabel = value.toString();
+    setUserLabel( newLabel );
+    vlayer->renderer()->setLegendSymbolItemLabel( mItem.ruleKey(), newLabel );
+  }
+  else if ( role == Qt::CheckStateRole )
+  {
+    if ( !mItem.isCheckable() )
+      return false;
+
+    vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
+  }
 
   if ( QgsProject *project = vlayer->project() )
     project->setDirty( true );
@@ -666,6 +675,11 @@ bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
   vlayer->triggerRepaint();
 
   return true;
+}
+
+void QgsSymbolLegendNode::invalidateDisplayData()
+{
+  mPixmap = QPixmap();
 }
 
 QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
@@ -1511,6 +1525,11 @@ QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
     return QgsLayerTreeModelLegendNode::DataDefinedSizeLegend;
   }
   return QVariant();
+}
+
+void QgsDataDefinedSizeLegendNode::invalidateDisplayData()
+{
+  mImage = QImage();
 }
 
 QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( const QgsLegendSettings &settings, QgsLayerTreeModelLegendNode::ItemContext &ctx )

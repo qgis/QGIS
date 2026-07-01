@@ -29,14 +29,12 @@ from .BoxPlot import BoxPlot
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .FieldPyculator import FieldsPyculator
-from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .IdwInterpolation import IdwInterpolation
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
-from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PolarPlot import PolarPlot
@@ -78,14 +76,12 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             EliminateSelection(),
             ExecuteSQL(),
             FieldsPyculator(),
-            Heatmap(),
             HubDistanceLines(),
             HubDistancePoints(),
             IdwInterpolation(),
             KNearestConcaveHull(),
             LinesToPolygons(),
             MeanAndStdDevPlot(),
-            PointDistance(),
             PointsDisplacement(),
             PointsFromLines(),
             PolarPlot(),

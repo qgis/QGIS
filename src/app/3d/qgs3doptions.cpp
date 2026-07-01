@@ -45,8 +45,8 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( Qgis::NavigationMode::TerrainBased ) );
   mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
 
-  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
-  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
+  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Perspective ) );
+  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Orthographic ) );
 
   mVerticalAxisInversionComboBox->setDefaultText( tr( "Do not invert" ) );
   mVerticalAxisInversionComboBox->addItem( tr( "When rotating (mouse captured)" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenRotatingCaptured ) );
@@ -77,8 +77,8 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mVerticalAxisInversionComboBox->setItemCheckState( 1, ( axisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
   mVerticalAxisInversionComboBox->setItemCheckState( 2, ( axisInversion & Qgis::VerticalAxisInversion::WhenPivoting ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
 
-  const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
-  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( static_cast<int>( defaultProjection ) ) );
+  const Qgis::Map3DProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qgis::Map3DProjectionType::Perspective, QgsSettings::App );
+  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( QVariant::fromValue( defaultProjection ) ) );
 
   mCameraMovementSpeed->setValue( settings.value( u"map3d/defaultMovementSpeed"_s, 5, QgsSettings::App ).toDouble() );
   spinCameraFieldOfView->setValue( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
@@ -102,7 +102,7 @@ void Qgs3DOptionsWidget::apply()
 {
   QgsSettings settings;
   settings.setEnumValue( u"map3d/defaultNavigation"_s, mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>(), QgsSettings::App );
-  settings.setValue( u"map3d/defaultProjection"_s, static_cast<Qt3DRender::QCameraLens::ProjectionType>( cboCameraProjectionType->currentData().toInt() ), QgsSettings::App );
+  settings.setEnumValue( u"map3d/defaultProjection"_s, cboCameraProjectionType->currentData().value<Qgis::Map3DProjectionType>(), QgsSettings::App );
   settings.setValue( u"map3d/defaultMovementSpeed"_s, mCameraMovementSpeed->value(), QgsSettings::App );
   settings.setValue( u"map3d/defaultFieldOfView"_s, spinCameraFieldOfView->value(), QgsSettings::App );
 

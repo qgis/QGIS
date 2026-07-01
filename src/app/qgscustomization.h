@@ -468,13 +468,13 @@ class APP_EXPORT QgsCustomization
         QgsToolBarItem( const QString &name, const QString &title, QgsItem *parent );
 
         /**
-         * Sets original dock widget visible state
+         * Sets original toolbar visible state
          * \see wasVisible()
          */
         void setWasVisible( const bool &wasVisible );
 
         /**
-         * Returns original dock widget visible state
+         * Returns original toolbar visible state
          * \see setWasVisible()
          */
         bool wasVisible() const;
@@ -952,6 +952,11 @@ class APP_EXPORT QgsCustomization
     void apply() const;
 
     /**
+     * Updates customization model with current application customization elements (actions, menus, dockWidgets...)
+     */
+    void load();
+
+    /**
      * Reads customization file (given at construction time) to update customization content
      */
     void read();
@@ -1015,11 +1020,6 @@ class APP_EXPORT QgsCustomization
      * Add action items as children of \a item for each \a widget actions
      */
     void addActions( QgsItem *item, QWidget *widget ) const;
-
-    /**
-     * Update customization model with current application customization elements (actins, menus, dockWidgets...)
-     */
-    void load();
 
     /**
      * Update customization model with current application QgsBrowserDockWidget elements
@@ -1158,6 +1158,11 @@ class APP_EXPORT QgsCustomization
      * items name representing the targeted item in its widget hierarchy
      */
     static QAction *findQAction( const QString &path );
+
+    /**
+     * Returns true if \a widget is a user defined menu or toolbar
+     */
+    static bool isUserDefined( QWidget *widget );
 
     QString uniqueItemName( const QString &baseName ) const;
     QAction *findAction( const QString &path ) const;

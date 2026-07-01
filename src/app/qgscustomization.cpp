@@ -1151,12 +1151,17 @@ QgsCustomization::QgsProcessingProvidersItem *QgsCustomization::processingProvid
 
 void QgsCustomization::addActions( QgsItem *item, QWidget *widget ) const
 {
-  if ( !item || !widget )
+  if ( !item
+       || !widget
+       // don't load user defined widget, we already hold any valuable information in QgsCustomization
+       || isUserDefined( widget ) )
     return;
 
   for ( QgsQActionsIterator::Info it : QgsQActionsIterator( widget ) )
   {
-    if ( it.name.isEmpty() )
+    if ( it.name.isEmpty() ||
+         // don't load user defined widget, we already hold any valuable information in QgsCustomization
+         isUserDefined( it.widget ) )
       continue;
 
     // submenu
@@ -1175,6 +1180,12 @@ void QgsCustomization::addActions( QgsItem *item, QWidget *widget ) const
       }
 
       childItem = item->lastChild<QgsActionItem>();
+    }
+
+    if ( !childItem )
+    {
+      QgsDebugError( "Null customization child action item" );
+      continue;
     }
 
     childItem->setIcon( it.icon );
@@ -1223,7 +1234,14 @@ void QgsCustomization::loadProcessingProviders()
 
   for ( QgsProcessingProvider *provider : QgsApplication::processingRegistry()->providers() )
   {
-    auto providerItem = std::make_unique<QgsProcessingProviderItem>( provider->id(), provider->name(), mProcessingProviders.get() );
+    QgsProcessingProviderItem *providerItem = mProcessingProviders->getChild<QgsProcessingProviderItem>( provider->id() );
+    if ( !providerItem )
+    {
+      auto p = std::make_unique<QgsProcessingProviderItem>( provider->id(), provider->name(), mProcessingProviders.get() );
+      mProcessingProviders->addChild( std::move( p ) );
+      providerItem = mProcessingProviders->lastChild<QgsProcessingProviderItem>();
+    }
+
     providerItem->setIcon( provider->icon() );
     for ( const QgsProcessingAlgorithm *algorithm : provider->algorithms() )
     {
@@ -1231,17 +1249,18 @@ void QgsCustomization::loadProcessingProviders()
       QgsProcessingGroupItem *group = providerItem->getChild<QgsProcessingGroupItem>( groupId );
       if ( !group )
       {
-        auto g = std::make_unique<QgsProcessingGroupItem>( groupId, algorithm->group(), providerItem.get() );
+        auto g = std::make_unique<QgsProcessingGroupItem>( groupId, algorithm->group(), providerItem );
         providerItem->addChild( std::move( g ) );
         group = providerItem->lastChild<QgsProcessingGroupItem>();
       }
 
-      auto processingItem = std::make_unique<QgsProcessingAlgorithmItem>( algorithm->id(), algorithm->displayName(), group );
-      processingItem->setIcon( algorithm->icon() );
-      group->addChild( std::move( processingItem ) );
+      if ( !group->getChild<QgsProcessingAlgorithmItem>( algorithm->id() ) )
+      {
+        auto processingItem = std::make_unique<QgsProcessingAlgorithmItem>( algorithm->id(), algorithm->displayName(), group );
+        processingItem->setIcon( algorithm->icon() );
+        group->addChild( std::move( processingItem ) );
+      }
     }
-
-    mProcessingProviders->addChild( std::move( providerItem ) );
   }
 }
 
@@ -1529,6 +1548,12 @@ QAction *QgsCustomization::findQAction( const QString &path )
   return actionIt != actions.cend() ? *actionIt : nullptr;
 }
 
+bool QgsCustomization::isUserDefined( QWidget *widget )
+{
+  return widget && ( widget->property( USER_MENU_PROPERTY ).toBool() || widget->property( USER_TOOLBAR_PROPERTY ).toBool() );
+}
+
+
 template<class WidgetType> void QgsCustomization::updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget ) const
 {
   // clear all user menu
@@ -1668,6 +1693,7 @@ void QgsCustomization::applyToToolBars() const
     return;
 
   const auto toolBarWidgets = mQgisApp->findChildren<QToolBar *>( QString(), Qt::FindDirectChildrenOnly );
+  QMap<QString, QToolBar *> userToolBars;
   for ( QToolBar *tb : toolBarWidgets )
   {
     if ( !tb )
@@ -1675,9 +1701,10 @@ void QgsCustomization::applyToToolBars() const
 
     if ( tb->property( USER_TOOLBAR_PROPERTY ).toBool() )
     {
-      // delete old toolbar, will recreate it later
-      QgisApp::instance()->removeToolBar( tb );
-      delete tb;
+      // we don't delete user defined toolbar (yet) in order to keep their actual position if they
+      // still exists after we finish to create them
+      userToolBars[tb->objectName()] = tb;
+      tb->clear();
     }
     else if ( QgsToolBarItem *t = mToolBars->getChild<QgsToolBarItem>( tb->objectName() ) )
     {
@@ -1691,10 +1718,18 @@ void QgsCustomization::applyToToolBars() const
   {
     if ( QgsCustomization::QgsUserToolBarItem *userToolBar = dynamic_cast<QgsCustomization::QgsUserToolBarItem *>( childItem.get() ); userToolBar && userToolBar->isVisible() )
     {
-      QToolBar *toolBar = new QToolBar( userToolBar->title(), QgisApp::instance() );
-      toolBar->setProperty( USER_TOOLBAR_PROPERTY, true );
-      toolBar->setObjectName( userToolBar->name() );
-      QgisApp::instance()->addToolBar( toolBar );
+      QToolBar *toolBar = nullptr;
+      if ( userToolBars.contains( userToolBar->name() ) )
+      {
+        toolBar = userToolBars.take( userToolBar->name() );
+      }
+      else
+      {
+        toolBar = new QToolBar( userToolBar->title(), QgisApp::instance() );
+        toolBar->setProperty( USER_TOOLBAR_PROPERTY, true );
+        toolBar->setObjectName( userToolBar->name() );
+        QgisApp::instance()->addToolBar( toolBar );
+      }
 
       for ( const std::unique_ptr<QgsCustomization::QgsItem> &actionRefItem : userToolBar->childItemList() )
       {
@@ -1709,6 +1744,13 @@ void QgsCustomization::applyToToolBars() const
 
       updateActionVisibility( userToolBar, toolBar );
     }
+  }
+
+  // delete user defined tool bar not existing anymore
+  for ( QToolBar *toolBar : userToolBars )
+  {
+    QgisApp::instance()->removeToolBar( toolBar );
+    delete toolBar;
   }
 }
 

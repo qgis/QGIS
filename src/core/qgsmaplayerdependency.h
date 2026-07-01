@@ -93,7 +93,7 @@ class CORE_EXPORT QgsMapLayerDependency
 /**
  * global qHash function for QgsMapLayerDependency, so that it can be used in a QSet
  */
-inline uint qHash( const QgsMapLayerDependency &dep )
+inline size_t qHash( const QgsMapLayerDependency &dep )
 {
   return qHash( dep.layerId() ) + dep.origin() + dep.type();
 }

@@ -2782,19 +2782,22 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
 
   const QString fTableCatalogClause = buildfTableCatalogClause( dsUri );
 
+  const QString geometryColumnClause = dsUri.geometryColumn().isEmpty() ? u"(f_geometry_column IS NULL OR f_geometry_column = %1)"_s.arg( QgsMssqlUtils::quotedValue( ""_L1 ) )
+                                                                        : u"f_geometry_column=%1"_s.arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) );
+
   const QString selectRelatedQuery = QString(
                                        "SELECT id,styleName,description"
                                        " FROM layer_styles "
                                        " WHERE %1"
                                        " AND f_table_schema=%2"
                                        " AND f_table_name=%3"
-                                       " AND f_geometry_column=%4"
+                                       " AND %4"
                                        " ORDER BY useasdefault DESC, update_time DESC"
   )
                                        .arg( fTableCatalogClause )
                                        .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
                                        .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
-                                       .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) );
+                                       .arg( geometryColumnClause );
 
 
   bool queryOk = LoggedExecMetadata( query, selectRelatedQuery, uri );

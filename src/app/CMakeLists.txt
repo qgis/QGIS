@@ -66,6 +66,7 @@ set(QGIS_APP_SRCS
   qgsrasterattributetableapputils.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
+  qgstopocentricwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
@@ -554,6 +555,7 @@ target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
 if (POSTGRES_FOUND)
   target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
+  target_link_libraries(qgis_app PRIVATE PostgreSQL::PostgreSQL)
 endif()
 
 target_include_directories(qgis_app PUBLIC

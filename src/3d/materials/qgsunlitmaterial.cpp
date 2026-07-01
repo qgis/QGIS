@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgshighlightmaterial.cpp
+    qgsunlitmaterial.cpp
     ---------------------
-    begin                : December 2025
-    copyright            : (C) 2025 by Stefanos Natsis
-    email                : uclaros at gmail dot com
+    begin                : June 2026
+    copyright            : (C) 2026 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshighlightmaterial.h"
+#include "qgsunlitmaterial.h"
 
 #include "qgs3dutils.h"
 #include "qgssettings.h"
@@ -28,13 +28,13 @@
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTechnique>
 
-#include "moc_qgshighlightmaterial.cpp"
+#include "moc_qgsunlitmaterial.cpp"
 
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-QgsHighlightMaterial::QgsHighlightMaterial( QNode *parent )
+QgsUnlitMaterial::QgsUnlitMaterial( QNode *parent )
   : QgsMaterial( parent )
   , mTransformParameter( new Qt3DRender::QParameter( u"meshMatrix"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
   , mNormalTransformParameter( new Qt3DRender::QParameter( u"meshNormalMatrix"_s, QVariant::fromValue( QMatrix3x3() ), this ) )
@@ -42,15 +42,21 @@ QgsHighlightMaterial::QgsHighlightMaterial( QNode *parent )
   init();
 }
 
-QgsHighlightMaterial::~QgsHighlightMaterial() = default;
+QgsUnlitMaterial::~QgsUnlitMaterial() = default;
 
-void QgsHighlightMaterial::init()
+void QgsUnlitMaterial::setColor( const QColor &color )
+{
+  const QColor linearColor = Qgs3DUtils::srgbToLinear( color );
+  mColorParameter->setValue( linearColor );
+}
+
+void QgsUnlitMaterial::init()
 {
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
   technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
-  technique->graphicsApiFilter()->setMajorVersion( 3 );
+  technique->graphicsApiFilter()->setMajorVersion( 4 );
   technique->graphicsApiFilter()->setMinorVersion( 3 );
 
   Qt3DRender::QRenderPass *pass = new Qt3DRender::QRenderPass;
@@ -60,12 +66,8 @@ void QgsHighlightMaterial::init()
 
   mShaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) ) );
 
-  const QgsSettings settings;
-  const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
-  QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  color.setAlphaF( alpha );
-  Qt3DRender::QParameter *colorParam = new Qt3DRender::QParameter( u"color"_s, Qgs3DUtils::srgbToLinear( color ) );
-  pass->addParameter( colorParam );
+  mColorParameter = new Qt3DRender::QParameter( u"color"_s, Qgs3DUtils::srgbToLinear( QColor( 255, 255, 255 ) ) );
+  pass->addParameter( mColorParameter );
 
   technique->addRenderPass( pass );
   effect->addTechnique( technique );
@@ -73,25 +75,24 @@ void QgsHighlightMaterial::init()
   effect->addParameter( mNormalTransformParameter );
   setEffect( effect );
 
-
   updateShaders();
 }
 
-void QgsHighlightMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
+void QgsUnlitMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
 {
   mInstanced = enabled;
   mInstanceFlags = flags;
   updateShaders();
 }
 
-void QgsHighlightMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
+void QgsUnlitMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
 {
   const QMatrix3x3 normalTransform = transform.normalMatrix();
   mTransformParameter->setValue( QVariant::fromValue( transform ) );
   mNormalTransformParameter->setValue( QVariant::fromValue( normalTransform ) );
 }
 
-void QgsHighlightMaterial::updateShaders()
+void QgsUnlitMaterial::updateShaders()
 {
   if ( mInstanced )
   {

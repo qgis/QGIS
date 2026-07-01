@@ -201,6 +201,10 @@ using namespace Qt::StringLiterals;
 #include "qgsnative.h"
 #include "qgsdatasourceselectdialog.h"
 
+#ifdef HAVE_POSTGRESQL
+#include <libpq-fe.h>
+#endif
+
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
 #endif
@@ -423,6 +427,7 @@ using namespace Qt::StringLiterals;
 #include "qgselevationshadingrenderersettingswidget.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssnappingwidget.h"
+#include "qgstopocentricwidget.h"
 #include "qgsstackeddiagramproperties.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
@@ -1015,7 +1020,9 @@ const QgsSettingsEntryBool *QgisApp::settingsDisplayWaylandWarning
 const QgsSettingsEntryBool *QgisApp::settingsRestoreDefaultWindowState
   = new QgsSettingsEntryBool( u"restore-default-window-state"_s, QgsSettingsTree::sTreeApp, false, u"Whether to restore the default window state on next QGIS startup"_s );
 
-QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp(
+  QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl, std::unique_ptr<QgsCustomization> customization
+)
   : QMainWindow( parent, fl )
   , mSplash( splash )
 {
@@ -1781,6 +1788,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   // setup drag drop
   setAcceptDrops( true );
+
+  // must be done before show() to properly restore state
+  setCustomization( std::move( customization ) );
 
   mFullScreenMode = false;
   mPrevScreenModeMaximized = false;
@@ -2789,8 +2799,12 @@ void QgisApp::dataSourceManager( const QString &pageName, const QString &layerUr
           break;
 
         case Qgis::LayerType::VectorTile:
-          QgsAppLayerHandling::addLayer<QgsVectorTileLayer>( uri, baseName, providerKey );
+        {
+          QString vectorTileUri = uri;
+          QgsVectorTileUtils::updateUriSources( vectorTileUri );
+          QgsAppLayerHandling::addLayer<QgsVectorTileLayer>( vectorTileUri, baseName, providerKey );
           break;
+        }
 
         case Qgis::LayerType::PointCloud:
           QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, baseName, providerKey );
@@ -5691,7 +5705,13 @@ QString QgisApp::getVersionString()
   // postgres
   versionString += u"<td>%1</td><td>"_s.arg( tr( "PostgreSQL client version" ) );
 #ifdef HAVE_POSTGRESQL
-  versionString += QStringLiteral( POSTGRESQL_VERSION );
+  const QString libpqVersionCompiled { POSTGRESQL_VERSION };
+  const QString libpqVersionRunning { u"%1.%2"_s.arg( PQlibVersion() / 10000 ).arg( PQlibVersion() / 10000 >= 10 ? PQlibVersion() % 10000 : PQlibVersion() / 100 % 100 ) };
+  versionString += libpqVersionCompiled;
+  if ( libpqVersionCompiled != libpqVersionRunning )
+  {
+    versionString += u" (%1)<br/>%2 (%3)"_s.arg( compLabel, libpqVersionRunning, runLabel );
+  }
 #else
   versionString += tr( "No support" );
 #endif
@@ -5745,7 +5765,9 @@ QString QgisApp::getVersionString()
 void QgisApp::setCustomization( std::unique_ptr<QgsCustomization> customization )
 {
   mCustomization = std::move( customization );
-  mCustomization->setQgisApp( this );
+
+  if ( mCustomization )
+    mCustomization->setQgisApp( this );
 }
 
 QgsCustomization *QgisApp::customization() const
@@ -12400,13 +12422,15 @@ void QgisApp::zoomToLayerExtent()
   mLayerTreeView->defaultActions()->zoomToLayers( mMapCanvas );
 }
 
-void QgisApp::showPluginManager( int tabIndex )
+void QgisApp::showPluginManager( int tabIndex, const QString &searchTerm )
 {
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
+    QString escapedSearchTerm = searchTerm;
+    escapedSearchTerm = escapedSearchTerm.replace( '\'', "\\'" );
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
-    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1)"_s.arg( tabIndex ) );
+    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1%2)"_s.arg( tabIndex ).arg( escapedSearchTerm.isEmpty() ? QString() : u", '%1'"_s.arg( escapedSearchTerm ) ) );
   }
   else
 #endif
@@ -13578,7 +13602,7 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     map->setCameraNavigationMode( defaultNavMode );
 
     map->setCameraMovementSpeed( settings.value( u"map3d/defaultMovementSpeed"_s, 5, QgsSettings::App ).toDouble() );
-    const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
+    const Qgis::Map3DProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qgis::Map3DProjectionType::Perspective, QgsSettings::App );
     map->setProjectionType( defaultProjection );
     map->setFieldOfView( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
     map->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
@@ -14734,16 +14758,65 @@ void QgisApp::updateCrsStatusBar()
   const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
   if ( projectCrs.isValid() )
   {
+    mOnTheFlyProjectionStatusButton->setMenu( nullptr );
+
+    double lat = 0.0, lon = 0.0;
+    const bool isTopocentric = projectCrs.topocentricOrigin( lat, lon );
+
     if ( !projectCrs.authid().isEmpty() )
       mOnTheFlyProjectionStatusButton->setText( projectCrs.authid() );
+    else if ( isTopocentric )
+      mOnTheFlyProjectionStatusButton->setText( tr( "Topocentric" ) );
     else
       mOnTheFlyProjectionStatusButton->setText( tr( "Unknown CRS" ) );
 
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "Current CRS: %1" ).arg( projectCrs.userFriendlyIdentifier() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( u"mIconProjectionEnabled.svg"_s ) );
+
+    if ( isTopocentric )
+    {
+      if ( !mTopocentricMenu )
+      {
+        mTopocentricMenu = new QMenu( mOnTheFlyProjectionStatusButton );
+        mTopocentricWidget = new QgsTopocentricWidget( mTopocentricMenu );
+        QWidgetAction *wa = new QWidgetAction( mTopocentricMenu );
+        wa->setDefaultWidget( mTopocentricWidget );
+        mTopocentricMenu->addAction( wa );
+
+        connect( mTopocentricWidget, &QgsTopocentricWidget::originChanged, this, [this]( double latitude, double longitude ) {
+          const QgsCoordinateReferenceSystem newCrs = QgsProject::instance()->crs().toTopocentricCrs( latitude, longitude );
+
+          if ( !newCrs.isValid() )
+            return;
+
+          const QgsRectangle savedExtent = mMapCanvas->extent();
+          mMapCanvas->freeze( true );
+          QgsProject::instance()->setCrs( newCrs );
+          mMapCanvas->setExtent( savedExtent );
+          mMapCanvas->freeze( false );
+          mMapCanvas->redrawAllLayers(); // this is necessary because the map doesn't always refresh automatically on topocentric crs change
+        } );
+      }
+
+      const QgsRectangle topoBaseCrsBounds = projectCrs.topocentricBaseCrs().bounds();
+      const double defaultLat = ( topoBaseCrsBounds.yMinimum() + topoBaseCrsBounds.yMaximum() ) / 2.0;
+      const double defaultLon = ( topoBaseCrsBounds.xMinimum() + topoBaseCrsBounds.xMaximum() ) / 2.0;
+      mTopocentricWidget->setDefaultOrigin( defaultLat, defaultLon );
+      mTopocentricWidget->setLatitude( lat );
+      mTopocentricWidget->setLongitude( lon );
+      mOnTheFlyProjectionStatusButton->setMenu( mTopocentricMenu );
+      mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::MenuButtonPopup );
+    }
+    else
+    {
+      mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::InstantPopup );
+    }
   }
   else
   {
+    mOnTheFlyProjectionStatusButton->setMenu( nullptr );
+    mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::InstantPopup );
+
     mOnTheFlyProjectionStatusButton->setText( QString() );
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "No projection" ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( u"mIconProjectionDisabled.svg"_s ) );

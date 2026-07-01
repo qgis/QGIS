@@ -15,15 +15,16 @@
 
 #include "qgsphongtexturedmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
-#include "qgshighlightmaterial.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterial3dhandler.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgsphongtexturedmaterialsettings.h"
+#include "qgsunlitmaterial.h"
 
 #include <QMap>
 #include <QString>
@@ -53,11 +54,11 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial();
+        return Qgs3D::createHighlightMaterial();
       }
 
       bool fitsInCache = false;
-      const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache );
+      QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache );
       ( void ) fitsInCache;
 
       // No texture image was provided.
@@ -88,9 +89,16 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
       // TODO : if ( context.isSelected() ) dampen the color of diffuse texture
       // with context.map().selectionColor()
       Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
+
+      bool requiresConversionToRgb = false;
+      Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( textureSourceImage.format(), true, requiresConversionToRgb );
+      if ( requiresConversionToRgb )
+      {
+        textureSourceImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
+      }
+      texture->setFormat( textureFormat );
       texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
       texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-      texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
       Qgs3DUtils::setTextureFiltering( texture, context );
 
       texture->addTextureImage( new QgsImageTexture( textureSourceImage ) );
@@ -137,7 +145,7 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toInstancedMaterial(
   material->setOpacity( static_cast<float>( phongSettings->opacity() ) );
 
   bool fitsInCache = false;
-  const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache );
+  QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache );
   ( void ) fitsInCache;
 
   if ( !textureSourceImage.isNull() )
@@ -145,7 +153,15 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toInstancedMaterial(
     Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
     texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
     texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-    texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+
+    bool requiresConversionToRgb = false;
+    Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( textureSourceImage.format(), true, requiresConversionToRgb );
+    if ( requiresConversionToRgb )
+    {
+      textureSourceImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
+    }
+    texture->setFormat( textureFormat );
+
     Qgs3DUtils::setTextureFiltering( texture, context );
     texture->addTextureImage( new QgsImageTexture( textureSourceImage ) );
     material->setDiffuseTexture( texture );

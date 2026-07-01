@@ -109,7 +109,7 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
         break; // the ray is parallel to the flat terrain
 
       const float dist = static_cast<float>( mMapSettings->terrainSettings()->elevationOffset() - ray.origin().z() - mMapSettings->origin().z() ) / ray.direction().z();
-      const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
+      const QVector3D terrainPlanePoint = ray.point( dist );
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMapSettings->origin() );
       if ( mMapSettings->extent().contains( mapCoords.x(), mapCoords.y() ) )
       {

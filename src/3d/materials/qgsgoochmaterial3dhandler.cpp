@@ -15,10 +15,11 @@
 
 #include "qgsgoochmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 #include "qgsgoochmaterial.h"
 #include "qgsgoochmaterialsettings.h"
-#include "qgshighlightmaterial.h"
+#include "qgsunlitmaterial.h"
 
 #include <QString>
 #include <Qt3DCore/QAttribute>
@@ -51,7 +52,7 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial();
+        return Qgs3D::createHighlightMaterial();
       }
 
       const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );

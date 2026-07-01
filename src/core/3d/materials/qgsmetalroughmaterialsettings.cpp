@@ -15,7 +15,7 @@
 
 #include "qgsmetalroughmaterialsettings.h"
 
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 
 #include <QString>
 
@@ -76,9 +76,9 @@ bool QgsMetalRoughMaterialSettings::requiresTangents() const
 
 void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mBaseColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( u"base"_s, u"125,125,125"_s ) );
+  mBaseColor = QgsColorUtils::colorFromString( elem.attribute( u"base"_s, u"125,125,125"_s ) );
   if ( elem.hasAttribute( u"emission_color"_s ) )
-    mEmissiveColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( u"emission_color"_s ) );
+    mEmissiveColor = QgsColorUtils::colorFromString( elem.attribute( u"emission_color"_s ) );
   else
     mEmissiveColor = QColor();
   mEmissionFactor = elem.attribute( u"emission_factor"_s, u"1.0"_s ).toDouble();
@@ -98,7 +98,7 @@ void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsR
 
 void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( u"base"_s, QgsSymbolLayerUtils::encodeColor( mBaseColor ) );
+  elem.setAttribute( u"base"_s, QgsColorUtils::colorToString( mBaseColor ) );
   elem.setAttribute( u"metalness"_s, mMetalness );
   elem.setAttribute( u"roughness"_s, mRoughness );
   if ( !qgsDoubleNear( mReflectance, 0.5 ) )
@@ -114,7 +114,7 @@ void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
     elem.setAttribute( u"anisotropy_rotation"_s, mAnisotropyRotation );
   }
   if ( mEmissiveColor.isValid() )
-    elem.setAttribute( u"emission_color"_s, QgsSymbolLayerUtils::encodeColor( mEmissiveColor ) );
+    elem.setAttribute( u"emission_color"_s, QgsColorUtils::colorToString( mEmissiveColor ) );
   if ( !qgsDoubleNear( mEmissionFactor, 1.0 ) )
   {
     elem.setAttribute( u"emission_factor"_s, mEmissionFactor );

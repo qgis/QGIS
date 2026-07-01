@@ -2427,6 +2427,12 @@ The development version
     typedef QFlags<Qgis::Map3DDebugFlag> Map3DDebugFlags;
 
 
+    enum class Map3DProjectionType /BaseType=IntEnum/
+    {
+      Orthographic,
+      Perspective,
+    };
+
     enum class Point3DShape /BaseType=IntEnum/
     {
       Cylinder,
@@ -4216,7 +4222,7 @@ QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QF
 
 
 
-uint qHash( const QVariant &variant );
+size_t qHash( const QVariant &variant );
 %Docstring
 Hash for QVariant
 %End
