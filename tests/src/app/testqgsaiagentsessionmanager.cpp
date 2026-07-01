@@ -24,6 +24,7 @@
 #include <QDir>
 #include <QFile>
 #include <QHostAddress>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QScopeGuard>
@@ -136,6 +137,8 @@ class TestQgsAiAgentSessionManager : public QObject
     void fallbackPreDispatchFailuresAreDrained();
     void sendWithoutConfiguredProvidersFailsActionably();
     void sessionUsageSignalAccumulatesAndResets();
+    void validatesAgentPlanJson();
+    void extractsAgentPlanJson();
 
     // Prompt-injection mitigations + workspace trust
     void wrapUntrustedEscapesSentinel();
@@ -225,6 +228,43 @@ void TestQgsAiAgentSessionManager::allowsExplicitExternalAttachmentContext()
   QCOMPARE( stateSpy.first().at( 0 ).toString(), u"failed"_s );
   QVERIFY( messageSpy.count() >= 2 );
   QVERIFY( manager.history().last().content.contains( u"No AI provider"_s, Qt::CaseInsensitive ) );
+}
+
+void TestQgsAiAgentSessionManager::validatesAgentPlanJson()
+{
+  QJsonObject step;
+  step.insert( u"id"_s, u"s1"_s );
+  step.insert( u"title"_s, u"Inspect layers"_s );
+  step.insert( u"risk"_s, u"low"_s );
+  step.insert( u"tool"_s, u"list_project_layers"_s );
+  step.insert( u"requires_approval"_s, false );
+  step.insert( u"depends_on"_s, QJsonArray() );
+
+  QJsonObject plan;
+  plan.insert( u"version"_s, 1 );
+  plan.insert( u"objective"_s, u"Prepare map export"_s );
+  plan.insert( u"mode"_s, u"plan"_s );
+  plan.insert( u"steps"_s, QJsonArray { step } );
+
+  QString error;
+  QVERIFY2( QgsAiAgentSessionManager::validateAgentPlanJson( plan, &error ), qPrintable( error ) );
+  QVERIFY( error.isEmpty() );
+
+  QJsonObject invalid = plan;
+  QJsonObject badStep = step;
+  badStep.insert( u"risk"_s, u"dangerous"_s );
+  invalid.insert( u"steps"_s, QJsonArray { badStep } );
+  QVERIFY( !QgsAiAgentSessionManager::validateAgentPlanJson( invalid, &error ) );
+  QVERIFY( error.contains( u"invalid risk"_s ) );
+}
+
+void TestQgsAiAgentSessionManager::extractsAgentPlanJson()
+{
+  const QString text = u"Here is the plan:\n```strata_agent_plan\n{\"version\":1,\"objective\":\"Export\",\"mode\":\"ask_before_edits\",\"steps\":[{\"id\":\"s1\",\"title\":\"Create layout\",\"risk\":\"medium\",\"requires_approval\":true}]}\n```\nDone."_s;
+  const QJsonObject plan = QgsAiAgentSessionManager::extractAgentPlanJson( text );
+  QCOMPARE( plan.value( u"objective"_s ).toString(), u"Export"_s );
+  QString error;
+  QVERIFY2( QgsAiAgentSessionManager::validateAgentPlanJson( plan, &error ), qPrintable( error ) );
 }
 
 void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()

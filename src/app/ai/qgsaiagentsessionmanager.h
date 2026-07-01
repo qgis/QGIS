@@ -27,6 +27,7 @@
 #include <QList>
 #include <QObject>
 #include <QString>
+#include <QVariantList>
 
 using namespace Qt::StringLiterals;
 
@@ -121,6 +122,15 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
 
     //! Returns the current explicit chat history scope key, or an empty string for unsaved/legacy scopes.
     QString chatHistoryScopeKey() const;
+
+    //! Extracts a fenced ```strata_agent_plan JSON block from assistant text, if present.
+    static QJsonObject extractAgentPlanJson( const QString &text );
+
+    //! Validates the agent V2 plan JSON contract used by Plan mode and executable runs.
+    static bool validateAgentPlanJson( const QJsonObject &plan, QString *errorMessage = nullptr );
+
+    //! Runtime metadata-only memory for recent agent decisions/tool events.
+    QVariantList agentMemoryEvents() const { return mAgentMemory; }
 
     void sendUserMessage( const QString &text, const QString &filePath = QString(), const QString &selectedText = QString() );
     void sendUserMessage( const QString &text, const QList<QgsAiChatContextFile> &contextFiles );
@@ -237,6 +247,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString buildContextSummary( const QList<QgsAiChatContextFile> &contextFiles, bool &contextBlocked ) const;
     bool tryBuildPatchProposal( const QString &text, QgsAiPatchProposal &proposal ) const;
     QString buildSystemPrompt( const QString &extraContext = QString() ) const;
+    QString formatAgentMemoryForPrompt() const;
     QString retrieveContextForLastUserMessage() const;
     QStringList allowedToolsForActiveAgent() const;
     bool isToolAllowedForActiveAgent( const QString &toolName ) const;
@@ -246,6 +257,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QList<QgsAiChatMessage> trimHistoryByTokenBudget( int budgetTokens ) const;
     QList<QgsAiChatMessage> buildOutgoingMessages() const;
     void onToolCallsRequested( const QString &requestId, const QString &providerName, const QString &assistantText, const QList<QgsAiToolCall> &calls );
+    void rememberAgentEvent( const QString &event, const QVariantMap &metadata );
 
     void loadPersistedBehaviorSettings();
     void persistBehaviorSettings() const;
@@ -287,6 +299,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString mActiveSessionId;
     int mNextMessageOrdering = 0;
     QgsAiUsage mSessionUsage;
+    QVariantList mAgentMemory;
 };
 
 #endif // QGSAIAGENTSESSIONMANAGER_H
