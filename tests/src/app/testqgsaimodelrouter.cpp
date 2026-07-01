@@ -155,7 +155,7 @@ namespace
 
   bool liveAiSmokeTestsEnabled()
   {
-    return qEnvironmentVariable( "STRATA_RUN_LIVE_AI_TESTS" ).trimmed() == QLatin1String( "1" );
+    return qEnvironmentVariable( "STRATA_RUN_LIVE_AI_TESTS" ).trimmed() == "1"_L1;
   }
 
   // Neutralizes env API-key fallbacks, wipes per-provider settings and the active

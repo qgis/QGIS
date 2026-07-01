@@ -14,6 +14,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSignalSpy>
+#include <QString>
 #include <QTimer>
 
 using namespace Qt::StringLiterals;
@@ -70,8 +71,9 @@ void TestQgsAiPlanClient::parsesManagedModelCatalog()
 void TestQgsAiPlanClient::loginMintsDesktopToken()
 {
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"accessToken\":\"access-123\",\"refreshToken\":\"refresh-123\",\"tokenType\":\"Bearer\",\"expiresIn\":900}" ) )
-                   << QgsAiTestLoopbackServer::jsonResponse( 201, "Created", QByteArrayLiteral( "{\"id\":\"tok_1\",\"token\":\"strata_dt_123\",\"tokenPrefix\":\"strata\",\"name\":\"Strata Desktop\"}" ) );
+  server.responses
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"accessToken\":\"access-123\",\"refreshToken\":\"refresh-123\",\"tokenType\":\"Bearer\",\"expiresIn\":900}" ) )
+    << QgsAiTestLoopbackServer::jsonResponse( 201, "Created", QByteArrayLiteral( "{\"id\":\"tok_1\",\"token\":\"strata_dt_123\",\"tokenPrefix\":\"strata\",\"name\":\"Strata Desktop\"}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsAiPlanClient client;

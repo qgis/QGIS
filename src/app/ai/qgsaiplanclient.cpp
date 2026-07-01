@@ -25,6 +25,7 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsaiplanclient.cpp"
@@ -99,9 +100,9 @@ QString QgsAiPlanClient::ModelInfo::tooltip() const
   if ( inputCredits > 0 || outputCredits > 0 )
     parts << QObject::tr( "Credits: %1 input / %2 output" ).arg( inputCredits ).arg( outputCredits );
   if ( !capabilities.isEmpty() )
-    parts << QObject::tr( "Capabilities: %1" ).arg( capabilities.join( u", "_s ) );
+    parts << QObject::tr( "Capabilities: %1" ).arg( capabilities.join( ", "_L1 ) );
   if ( !tierAvailability.isEmpty() )
-    parts << QObject::tr( "Tiers: %1" ).arg( tierAvailability.join( u", "_s ) );
+    parts << QObject::tr( "Tiers: %1" ).arg( tierAvailability.join( ", "_L1 ) );
   return parts.join( '\n' );
 }
 

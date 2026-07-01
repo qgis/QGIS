@@ -1210,7 +1210,8 @@ bool QgsAiModelRouter::clearPlanSessionToken( QString *errorMessage )
     return false;
   }
 
-  const bool tokenCleared = authManager->isDisabled() || authManager->removeAuthSetting( planSessionTokenSettingKey() )
+  const bool tokenCleared = authManager->isDisabled()
+                            || authManager->removeAuthSetting( planSessionTokenSettingKey() )
                             || authManager->authSetting( planSessionTokenSettingKey(), QVariant(), true ).toString().trimmed().isEmpty();
   if ( !tokenCleared )
   {
