@@ -1,7 +1,7 @@
 [general]
-name=GRASS GIS Processing Provider
-description=GRASS GIS Processing provider
-about=Exposes selected GRASS GIS algorithms and tools for use within the QGIS Processing framework.
+name=GRASS Processing Provider
+description=GRASS Processing provider
+about=Exposes selected GRASS algorithms and tools for use within the QGIS Processing framework.
 category=Analysis
 version=2.12.99
 qgisMinimumVersion=4.0
