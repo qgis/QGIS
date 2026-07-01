@@ -33,13 +33,22 @@
 #include "qgsaisecretstore.h"
 #include "qgsaiworkspacetrust.h"
 #include "qgsapplication.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfields.h"
+#include "qgsgeometry.h"
+#include "qgslayoutmanager.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
+#include "qgsrasterlayer.h"
 #include "qgsscrollarea.h"
 #include "qgssettings.h"
 #include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
 #include <QAbstractButton>
 #include <QAbstractScrollArea>
@@ -101,6 +110,7 @@
 #include <QTextDocument>
 #include <QTextEdit>
 #include <QTextOption>
+#include <QTabWidget>
 #include <QTimer>
 #include <QToolButton>
 #include <QUrl>
@@ -771,6 +781,139 @@ namespace
     }
     return fallback;
   }
+
+  struct GisSuggestion
+  {
+      QString id;
+      QString title;
+      QString detail;
+      QString actionPrompt;
+      QString risk = u"low"_s;
+  };
+
+  QString projectHashForSettings( const QString &projectFile )
+  {
+    const QString source = projectFile.trimmed().isEmpty() ? u"unsaved"_s : QDir::cleanPath( projectFile );
+    return QString::fromLatin1( QCryptographicHash::hash( source.toUtf8(), QCryptographicHash::Sha1 ).toHex() );
+  }
+
+  GisSuggestion makeGisSuggestion( const QString &id, const QString &title, const QString &detail, const QString &actionPrompt, const QString &risk = u"low"_s )
+  {
+    GisSuggestion suggestion;
+    suggestion.id = id;
+    suggestion.title = title;
+    suggestion.detail = detail;
+    suggestion.actionPrompt = actionPrompt;
+    suggestion.risk = risk;
+    return suggestion;
+  }
+
+  bool vectorHasInvalidGeometrySample( QgsVectorLayer *layer, int *checkedCount = nullptr )
+  {
+    if ( checkedCount )
+      *checkedCount = 0;
+    if ( !layer || layer->geometryType() == Qgis::GeometryType::Null || layer->geometryType() == Qgis::GeometryType::Unknown )
+      return false;
+
+    QgsFeatureRequest request;
+    request.setLimit( 200 );
+    QgsFeatureIterator it = layer->getFeatures( request );
+    QgsFeature feature;
+    while ( it.nextFeature( feature ) )
+    {
+      if ( checkedCount )
+        ++( *checkedCount );
+      if ( feature.hasGeometry() && !feature.geometry().isGeosValid() )
+        return true;
+    }
+    return false;
+  }
+
+  QList<GisSuggestion> collectGisSuggestionsForProject( QgsProject *project )
+  {
+    QList<GisSuggestion> suggestions;
+    if ( !project )
+      return suggestions;
+
+    const QMap<QString, QgsMapLayer *> layers = project->mapLayers();
+    if ( layers.isEmpty() )
+    {
+      suggestions << makeGisSuggestion( u"project-empty"_s, QObject::tr( "No layers loaded" ), QObject::tr( "The project has no map layers. Start by adding data or opening a demo project." ), QObject::tr( "Inspect this empty QGIS project and propose the next data-loading step. Do not modify anything without approval." ) );
+      return suggestions;
+    }
+
+    bool hasVisibleLayer = false;
+    const bool hasLayout = project->layoutManager() && !project->layoutManager()->layouts().isEmpty();
+
+    for ( QgsMapLayer *layer : layers )
+    {
+      if ( !layer )
+        continue;
+      const QString layerName = layer->name();
+      if ( layer->isValid() && layer->opacity() > 0 )
+        hasVisibleLayer = true;
+      if ( !layer->crs().isValid() )
+      {
+        suggestions << makeGisSuggestion( u"missing-crs:%1"_s.arg( layer->id() ), QObject::tr( "Layer CRS is undefined: %1" ).arg( layerName ), QObject::tr( "Analyses and exports may be wrong until the CRS is set explicitly." ), QObject::tr( "Review layer '%1' and propose a safe CRS-fix plan. Ask before editing project metadata." ).arg( layerName ), u"medium"_s );
+      }
+
+      if ( QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer ) )
+      {
+        const long long featureCount = vector->featureCount();
+        if ( featureCount == 0 )
+        {
+          suggestions << makeGisSuggestion( u"empty-vector:%1"_s.arg( layer->id() ), QObject::tr( "Vector layer has no features: %1" ).arg( layerName ), QObject::tr( "Empty layers often indicate a bad filter, failed import or wrong data source." ), QObject::tr( "Inspect vector layer '%1' and suggest why it has no features. Do not delete data automatically." ).arg( layerName ) );
+        }
+        else if ( featureCount > 1000 )
+        {
+          suggestions << makeGisSuggestion( u"spatial-index:%1"_s.arg( layer->id() ), QObject::tr( "Consider a spatial index: %1" ).arg( layerName ), QObject::tr( "Large vector layers are faster to select, filter and process when indexed." ), QObject::tr( "Plan a safe spatial-index creation for layer '%1' using native QGIS tools, with approval before mutation." ).arg( layerName ), u"medium"_s );
+        }
+
+        int checked = 0;
+        if ( vectorHasInvalidGeometrySample( vector, &checked ) )
+        {
+          suggestions << makeGisSuggestion( u"invalid-geometry:%1"_s.arg( layer->id() ), QObject::tr( "Invalid geometry detected: %1" ).arg( layerName ), QObject::tr( "A sample of %1 features contains invalid geometry. Run a full validity check before overlay/area operations." ).arg( checked ), QObject::tr( "Check geometry validity for layer '%1' and propose a repair workflow. Ask before applying fixes." ).arg( layerName ), u"high"_s );
+        }
+
+        const QgsFields fields = vector->fields();
+        QSet<QString> seenFieldNames;
+        QStringList duplicateFields;
+        QStringList unnamedFields;
+        for ( const QgsField &field : fields )
+        {
+          const QString normalized = field.name().trimmed().toLower();
+          if ( normalized.isEmpty() )
+            unnamedFields << field.name();
+          else if ( seenFieldNames.contains( normalized ) )
+            duplicateFields << field.name();
+          seenFieldNames.insert( normalized );
+        }
+        if ( !duplicateFields.isEmpty() || !unnamedFields.isEmpty() )
+        {
+          suggestions << makeGisSuggestion( u"fields:%1"_s.arg( layer->id() ), QObject::tr( "Problematic fields: %1" ).arg( layerName ), QObject::tr( "Duplicate or unnamed fields can break joins, expressions and exports." ), QObject::tr( "Inspect the schema of layer '%1' and propose field cleanup. Ask before editing fields." ).arg( layerName ), u"medium"_s );
+        }
+      }
+      else if ( QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer ) )
+      {
+        if ( raster->bandCount() <= 0 || raster->width() <= 0 || raster->height() <= 0 )
+        {
+          suggestions << makeGisSuggestion( u"raster-empty:%1"_s.arg( layer->id() ), QObject::tr( "Raster has no readable pixels: %1" ).arg( layerName ), QObject::tr( "The raster provider reports no bands or zero dimensions." ), QObject::tr( "Inspect raster layer '%1' and propose a safe reload or data-source check." ).arg( layerName ) );
+        }
+      }
+    }
+
+    if ( !hasVisibleLayer )
+    {
+      suggestions << makeGisSuggestion( u"styling-visibility"_s, QObject::tr( "No visible layer content" ), QObject::tr( "All loaded layers appear hidden or fully transparent." ), QObject::tr( "Inspect project layer visibility and propose styling changes. Ask before changing layer styles." ), u"medium"_s );
+    }
+
+    if ( !hasLayout )
+    {
+      suggestions << makeGisSuggestion( u"layout-missing"_s, QObject::tr( "No print layout configured" ), QObject::tr( "The project can be viewed, but there is no layout/export target ready for maps or reports." ), QObject::tr( "Create a plan for a print layout and map export for this project. Use approval before creating layout items." ), u"medium"_s );
+    }
+
+    return suggestions;
+  }
 } //namespace
 
 Q_DECLARE_METATYPE( ModelEntry )
@@ -827,7 +970,52 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   mTranscriptLayout->setSpacing( 8 );
   mTranscriptLayout->addStretch( 1 );
   mTranscriptScrollArea->setWidget( mTranscriptContainer );
-  layout->addWidget( mTranscriptScrollArea, 1 );
+
+  mMainTabs = new QTabWidget( container );
+  mMainTabs->setObjectName( u"aiMainTabs"_s );
+  mMainTabs->addTab( mTranscriptScrollArea, tr( "Chat" ) );
+
+  mGisTab = new QWidget( mMainTabs );
+  mGisTab->setObjectName( u"aiGisSuggestionsTab"_s );
+  QVBoxLayout *gisLayout = new QVBoxLayout( mGisTab );
+  gisLayout->setContentsMargins( 6, 6, 6, 6 );
+  gisLayout->setSpacing( 6 );
+
+  QHBoxLayout *gisToggleRow = new QHBoxLayout();
+  gisToggleRow->setContentsMargins( 0, 0, 0, 0 );
+  gisToggleRow->setSpacing( 6 );
+
+  QSettings settings;
+  mGisGlobalEnableCheckBox = new QCheckBox( tr( "Enable GIS suggestions" ), mGisTab );
+  mGisGlobalEnableCheckBox->setObjectName( u"aiGisGlobalEnableCheckBox"_s );
+  mGisGlobalEnableCheckBox->setChecked( settings.value( u"strata/gis_tab/enabled"_s, true ).toBool() );
+  gisToggleRow->addWidget( mGisGlobalEnableCheckBox );
+
+  mGisProjectEnableCheckBox = new QCheckBox( tr( "Enable for this project" ), mGisTab );
+  mGisProjectEnableCheckBox->setObjectName( u"aiGisProjectEnableCheckBox"_s );
+  mGisProjectEnableCheckBox->setChecked( settings.value( gisProjectSettingsKey(), true ).toBool() );
+  gisToggleRow->addWidget( mGisProjectEnableCheckBox );
+  gisToggleRow->addStretch( 1 );
+
+  QPushButton *gisRefreshButton = new QPushButton( tr( "Refresh" ), mGisTab );
+  gisRefreshButton->setObjectName( u"aiGisRefreshSuggestionsButton"_s );
+  gisToggleRow->addWidget( gisRefreshButton );
+  gisLayout->addLayout( gisToggleRow );
+
+  mGisSuggestionList = new QListWidget( mGisTab );
+  mGisSuggestionList->setObjectName( u"aiGisSuggestionList"_s );
+  mGisSuggestionList->setFrameShape( QFrame::NoFrame );
+  mGisSuggestionList->setWordWrap( true );
+  mGisSuggestionList->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  gisLayout->addWidget( mGisSuggestionList, 1 );
+
+  mGisReviewSuggestionButton = new QPushButton( tr( "Review selected" ), mGisTab );
+  mGisReviewSuggestionButton->setObjectName( u"aiGisReviewSuggestionButton"_s );
+  mGisReviewSuggestionButton->setEnabled( false );
+  gisLayout->addWidget( mGisReviewSuggestionButton );
+
+  mMainTabs->addTab( mGisTab, tr( "GIS" ) );
+  layout->addWidget( mMainTabs, 1 );
 
   mFileContextChipRow = new QWidget( container );
   mFileContextChipRow->setObjectName( u"aiAttachmentChipRow"_s );
@@ -1028,9 +1216,26 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   connect( acceptButton, &QPushButton::clicked, this, &QgsAiChatDockWidget::acceptProposal );
   connect( acceptPartialButton, &QPushButton::clicked, this, &QgsAiChatDockWidget::acceptPartialProposal );
   connect( rejectButton, &QPushButton::clicked, this, &QgsAiChatDockWidget::rejectProposal );
+  connect( gisRefreshButton, &QPushButton::clicked, this, &QgsAiChatDockWidget::refreshGisSuggestions );
+  connect( mGisGlobalEnableCheckBox, &QCheckBox::toggled, this, [this]( bool enabled ) {
+    QSettings settings;
+    settings.setValue( u"strata/gis_tab/enabled"_s, enabled );
+    refreshGisSuggestions();
+  } );
+  connect( mGisProjectEnableCheckBox, &QCheckBox::toggled, this, [this]( bool enabled ) {
+    QSettings settings;
+    settings.setValue( gisProjectSettingsKey(), enabled );
+    refreshGisSuggestions();
+  } );
+  connect( mGisSuggestionList, &QListWidget::itemSelectionChanged, this, [this]() {
+    if ( mGisReviewSuggestionButton && mGisSuggestionList )
+      mGisReviewSuggestionButton->setEnabled( mGisSuggestionList->currentItem() && !mGisSuggestionList->currentItem()->data( Qt::UserRole ).toString().isEmpty() );
+  } );
+  connect( mGisReviewSuggestionButton, &QPushButton::clicked, this, &QgsAiChatDockWidget::reviewSelectedGisSuggestion );
 
   setRequestRunning( false );
   refreshProposalList();
+  refreshGisSuggestions();
 }
 
 bool QgsAiChatDockWidget::eventFilter( QObject *watched, QEvent *event )
@@ -2409,6 +2614,88 @@ QList<QgsAiChatContextFile> QgsAiChatDockWidget::contextFilesForCurrentMessage( 
   }
 
   return contextFiles;
+}
+
+QString QgsAiChatDockWidget::gisProjectSettingsKey() const
+{
+  const QgsProject *project = QgsProject::instance();
+  const QString projectFile = project ? project->fileName() : QString();
+  return u"strata/gis_tab/project_enabled/%1"_s.arg( projectHashForSettings( projectFile ) );
+}
+
+void QgsAiChatDockWidget::refreshGisSuggestions()
+{
+  if ( !mGisSuggestionList )
+    return;
+
+  mGisSuggestionList->clear();
+  if ( mGisReviewSuggestionButton )
+    mGisReviewSuggestionButton->setEnabled( false );
+
+  const bool globallyEnabled = !mGisGlobalEnableCheckBox || mGisGlobalEnableCheckBox->isChecked();
+  const bool projectEnabled = !mGisProjectEnableCheckBox || mGisProjectEnableCheckBox->isChecked();
+  if ( !globallyEnabled || !projectEnabled )
+  {
+    QListWidgetItem *item = new QListWidgetItem( globallyEnabled ? tr( "GIS suggestions disabled for this project" ) : tr( "GIS suggestions disabled" ), mGisSuggestionList );
+    item->setData( Qt::UserRole, QString() );
+    item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+    return;
+  }
+
+  const QList<GisSuggestion> suggestions = collectGisSuggestionsForProject( QgsProject::instance() );
+  if ( suggestions.isEmpty() )
+  {
+    QListWidgetItem *item = new QListWidgetItem( tr( "No GIS suggestions right now" ), mGisSuggestionList );
+    item->setData( Qt::UserRole, QString() );
+    item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+    return;
+  }
+
+  for ( const GisSuggestion &suggestion : suggestions )
+  {
+    QListWidgetItem *item = new QListWidgetItem( tr( "%1\n%2\nRisk: %3" ).arg( suggestion.title, suggestion.detail, suggestion.risk ), mGisSuggestionList );
+    item->setData( Qt::UserRole, suggestion.actionPrompt );
+    item->setData( Qt::UserRole + 1, suggestion.risk );
+    item->setData( Qt::UserRole + 2, suggestion.id );
+    item->setToolTip( suggestion.detail );
+  }
+
+  mGisSuggestionList->setCurrentRow( 0 );
+  if ( mGisReviewSuggestionButton )
+    mGisReviewSuggestionButton->setEnabled( true );
+}
+
+void QgsAiChatDockWidget::reviewSelectedGisSuggestion()
+{
+  if ( !mSessionManager || !mGisSuggestionList )
+    return;
+
+  const QListWidgetItem *item = mGisSuggestionList->currentItem();
+  if ( !item )
+    return;
+
+  const QString actionPrompt = item->data( Qt::UserRole ).toString();
+  if ( actionPrompt.trimmed().isEmpty() )
+    return;
+
+  const QString risk = item->data( Qt::UserRole + 1 ).toString();
+  const QString suggestionId = item->data( Qt::UserRole + 2 ).toString();
+  const QString title = item->text().section( '\n', 0, 0 );
+
+  setModeLabel( u"Ask before edits"_s );
+  mSessionManager->sendUserMessage(
+    tr( "GIS suggestion selected:\n\n"
+        "Suggestion: %1\n"
+        "ID: %2\n"
+        "Risk: %3\n\n"
+        "%4\n\n"
+        "Use ask-before-edits mode. Inspect first, then request approval before any mutating GIS action." )
+      .arg( title, suggestionId, risk.isEmpty() ? u"low"_s : risk, actionPrompt.trimmed() )
+  );
+
+  if ( mMainTabs )
+    mMainTabs->setCurrentIndex( 0 );
+  reloadTranscriptFromHistory();
 }
 
 QString QgsAiChatDockWidget::selectedProposalId() const

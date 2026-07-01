@@ -14,14 +14,17 @@
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QAbstractScrollArea>
 #include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QCryptographicHash>
 #include <QDialog>
 #include <QDir>
 #include <QEvent>
@@ -31,6 +34,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLabel>
+#include <QListWidget>
 #include <QMenu>
 #include <QMetaObject>
 #include <QPushButton>
@@ -39,6 +43,7 @@
 #include <QSettings>
 #include <QString>
 #include <QTemporaryDir>
+#include <QTabWidget>
 #include <QTextEdit>
 #include <QTimer>
 #include <QToolButton>
@@ -84,6 +89,7 @@ class TestQgsAiChatDockWidget : public QObject
 
   private slots:
     void hasRuntimeWidgets();
+    void gisTabShowsSuggestionsAndSendsReview();
     void usesPaletteBasedCursorStyling();
     void doesNotDuplicateStreamedAssistantResponse();
     void rendersToolResultWithoutRawJson();
@@ -115,6 +121,59 @@ void TestQgsAiChatDockWidget::hasRuntimeWidgets()
   QVERIFY( cancelButton );
   QVERIFY( !cancelButton->isEnabled() );
   QVERIFY( runtimeLabel->text().contains( u"idle"_s, Qt::CaseInsensitive ) );
+}
+
+void TestQgsAiChatDockWidget::gisTabShowsSuggestionsAndSendsReview()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QSettings settings;
+  const QString globalKey = u"strata/gis_tab/enabled"_s;
+  const QString unsavedProjectKey = u"strata/gis_tab/project_enabled/%1"_s.arg( QString::fromLatin1( QCryptographicHash::hash( QByteArrayLiteral( "unsaved" ), QCryptographicHash::Sha1 ).toHex() ) );
+  const QVariant savedGlobal = settings.value( globalKey );
+  const QVariant savedProject = settings.value( unsavedProjectKey );
+  settings.setValue( globalKey, true );
+  settings.setValue( unsavedProjectKey, true );
+
+  QgsProject::instance()->clear();
+  QgsVectorLayer *emptyLayer = new QgsVectorLayer( u"Point?field=name:string&crs=EPSG:4326"_s, u"Empty points"_s, u"memory"_s );
+  QVERIFY( emptyLayer->isValid() );
+  QgsProject::instance()->addMapLayer( emptyLayer );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+  QTabWidget *tabs = dock.findChild<QTabWidget *>( u"aiMainTabs"_s );
+  QListWidget *suggestions = dock.findChild<QListWidget *>( u"aiGisSuggestionList"_s );
+  QPushButton *review = dock.findChild<QPushButton *>( u"aiGisReviewSuggestionButton"_s );
+  QVERIFY( tabs );
+  QVERIFY( tabs->count() >= 2 );
+  QVERIFY( suggestions );
+  QVERIFY( review );
+  QVERIFY( suggestions->count() > 0 );
+
+  suggestions->setCurrentRow( 0 );
+  QVERIFY( review->isEnabled() );
+  review->click();
+
+  QCOMPARE( manager.activeAgent(), u"ask_before_edits"_s );
+  QVERIFY( !manager.history().isEmpty() );
+  QVERIFY( manager.history().first().content.contains( u"GIS suggestion selected"_s ) );
+  QVERIFY( manager.history().first().content.contains( u"ask-before-edits"_s ) );
+
+  QgsProject::instance()->clear();
+  if ( savedGlobal.isValid() )
+    settings.setValue( globalKey, savedGlobal );
+  else
+    settings.remove( globalKey );
+  if ( savedProject.isValid() )
+    settings.setValue( unsavedProjectKey, savedProject );
+  else
+    settings.remove( unsavedProjectKey );
 }
 
 void TestQgsAiChatDockWidget::usesPaletteBasedCursorStyling()

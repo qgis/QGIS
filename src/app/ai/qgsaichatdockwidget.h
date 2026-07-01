@@ -24,6 +24,7 @@
 #include <QPointer>
 
 class QAction;
+class QCheckBox;
 class QEvent;
 class QFrame;
 class QHBoxLayout;
@@ -34,6 +35,7 @@ class QPushButton;
 class QShowEvent;
 class QTextEdit;
 class QToolButton;
+class QTabWidget;
 class QVBoxLayout;
 
 class QgsAiLayerIndexCoordinator;
@@ -89,6 +91,8 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void onNewChatClicked();
     void onHistoryEntryTriggered( QAction *action );
     void reloadTranscriptFromHistory();
+    void refreshGisSuggestions();
+    void reviewSelectedGisSuggestion();
 
   private:
     QString selectedProposalId() const;
@@ -135,6 +139,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     bool addAttachedFile( const QString &path );
     void setRequestRunning( bool running );
     void maybeShowWelcomeBanner();
+    QString gisProjectSettingsKey() const;
 
     struct AttachedFile
     {
@@ -149,6 +154,12 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QPointer<QgsAiLayerIndexCoordinator> mLayerIndexCoordinator;
 
     QgsScrollArea *mTranscriptScrollArea = nullptr;
+    QTabWidget *mMainTabs = nullptr;
+    QWidget *mGisTab = nullptr;
+    QCheckBox *mGisGlobalEnableCheckBox = nullptr;
+    QCheckBox *mGisProjectEnableCheckBox = nullptr;
+    QListWidget *mGisSuggestionList = nullptr;
+    QPushButton *mGisReviewSuggestionButton = nullptr;
     QWidget *mTranscriptContainer = nullptr;
     QVBoxLayout *mTranscriptLayout = nullptr;
     QTextEdit *mInputTextEdit = nullptr;
