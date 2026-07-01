@@ -113,6 +113,14 @@ class CORE_EXPORT QgsIconUtils
      * \since QGIS 3.22
      */
     static QIcon iconForLayerType( Qgis::LayerType type );
+
+    /**
+     * Returns a copy of \a icon with a underlay icon in
+     * indicating that the field's values are governed by a field domain.
+     *
+     * \since QGIS 4.2
+     */
+    static QIcon addFieldDomainOverlay( const QIcon &icon );
 };
 
 #endif // QGSICONUTILS_H
