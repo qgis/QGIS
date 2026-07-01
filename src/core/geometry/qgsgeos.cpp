@@ -1734,6 +1734,20 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       }
       return std::move( multiPolygon );
     }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    case GEOS_MULTISURFACE:
+    {
+      auto multiSurface = std::make_unique<QgsMultiSurface>();
+      int nParts = GEOSGetNumGeometries_r( context, geos );
+      multiSurface->reserve( nParts );
+      for ( int i = 0; i < nParts; ++i )
+      {
+        std::unique_ptr< QgsAbstractGeometry > polygon( fromGeos( GEOSGetGeometryN_r( context, geos, i ) ) );
+        multiSurface->addGeometry( polygon.release() );
+      }
+      return std::move( multiSurface );
+    }
+#endif
     case GEOS_GEOMETRYCOLLECTION:
     {
       auto geomCollection = std::make_unique<QgsGeometryCollection>();
@@ -2000,7 +2014,10 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
         case Qgis::WkbType::MultiCurve:
           geosType = GEOS_MULTICURVE;
           break;
-          // TODO: Add support for MultiSurface
+
+        case Qgis::WkbType::MultiSurface:
+          geosType = GEOS_MULTISURFACE;
+          break;
 #endif
 
         case Qgis::WkbType::Unknown:
