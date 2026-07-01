@@ -15,9 +15,9 @@
 
 #include "qgsaicloudindexclient.h"
 
-#include "qgsnetworkaccessmanager.h"
-
 #include <algorithm>
+
+#include "qgsnetworkaccessmanager.h"
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -30,6 +30,7 @@
 #include <QNetworkRequest>
 #include <QRegularExpression>
 #include <QSet>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsaicloudindexclient.cpp"
@@ -372,12 +373,7 @@ bool QgsAiCloudIndexClient::validateContextItems( const QList<ContextItem> &item
 }
 
 void QgsAiCloudIndexClient::syncWorkspaceContext(
-  const QString &chatEndpoint,
-  const QString &sessionToken,
-  const QString &workspaceRoot,
-  const QString &workspaceName,
-  const QList<ContextItem> &items,
-  bool contentOptIn
+  const QString &chatEndpoint, const QString &sessionToken, const QString &workspaceRoot, const QString &workspaceName, const QList<ContextItem> &items, bool contentOptIn
 )
 {
   const QString apiBase = apiBaseForChatEndpoint( chatEndpoint );
@@ -466,14 +462,7 @@ void QgsAiCloudIndexClient::syncWorkspaceContext(
 }
 
 void QgsAiCloudIndexClient::postContextBatch(
-  const QString &apiBase,
-  const QString &sessionToken,
-  const QString &workspaceId,
-  const QList<ContextItem> &items,
-  int offset,
-  int accumulatedUpserted,
-  int accumulatedQueued,
-  bool contentOptIn
+  const QString &apiBase, const QString &sessionToken, const QString &workspaceId, const QList<ContextItem> &items, int offset, int accumulatedUpserted, int accumulatedQueued, bool contentOptIn
 )
 {
   if ( offset >= items.size() )

@@ -17,6 +17,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSignalSpy>
+#include <QString>
 #include <QTemporaryDir>
 #include <QTimer>
 
@@ -108,8 +109,7 @@ void TestQgsAiCloudIndexClient::workspaceFoldersReadRulesAndSkills()
   skill.write( "Inspect layer metadata before edits." );
   skill.close();
 
-  const QList<QgsAiCloudIndexClient::ContextItem> items
-    = QgsAiCloudIndexClient::contextItemsFromWorkspaceFolders( dir.path(), u".strata/rules"_s, u".strata/skills"_s );
+  const QList<QgsAiCloudIndexClient::ContextItem> items = QgsAiCloudIndexClient::contextItemsFromWorkspaceFolders( dir.path(), u".strata/rules"_s, u".strata/skills"_s );
   QCOMPARE( items.size(), 2 );
   QCOMPARE( items.at( 0 ).sourceType, u"rule"_s );
   QCOMPARE( items.at( 0 ).path, u".strata/rules/base.md"_s );
@@ -145,8 +145,9 @@ void TestQgsAiCloudIndexClient::syncContextUpsertsWorkspaceAndPostsBearerContext
   QVERIFY( dir.isValid() );
 
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"id":"ws_123","fingerprint":"fp","name":"Demo","role":"owner","createdAt":"2026-01-01T00:00:00Z","updatedAt":"2026-01-01T00:00:00Z"})" ) )
-                   << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"upserted":0,"queued":1})" ) );
+  server.responses
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"id":"ws_123","fingerprint":"fp","name":"Demo","role":"owner","createdAt":"2026-01-01T00:00:00Z","updatedAt":"2026-01-01T00:00:00Z"})" ) )
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"upserted":0,"queued":1})" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QgsAiCloudIndexClient::ContextItem item;
@@ -191,9 +192,11 @@ void TestQgsAiCloudIndexClient::syncContextBatchesLargePayloads()
   QVERIFY( dir.isValid() );
 
   QgsAiTestLoopbackServer server;
-  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"id":"ws_batch","fingerprint":"fp","name":"Batch","role":"owner","createdAt":"2026-01-01T00:00:00Z","updatedAt":"2026-01-01T00:00:00Z"})" ) )
-                   << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"upserted":0,"queued":128})" ) )
-                   << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"upserted":0,"queued":1})" ) );
+  server.responses
+    << QgsAiTestLoopbackServer::
+         jsonResponse( 200, "OK", QByteArrayLiteral( R"({"id":"ws_batch","fingerprint":"fp","name":"Batch","role":"owner","createdAt":"2026-01-01T00:00:00Z","updatedAt":"2026-01-01T00:00:00Z"})" ) )
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"upserted":0,"queued":128})" ) )
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( R"({"upserted":0,"queued":1})" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 
   QList<QgsAiCloudIndexClient::ContextItem> items;

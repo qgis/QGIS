@@ -17,7 +17,6 @@
 #define QGSAICLOUDINDEXCLIENT_H
 
 #include "qgis_app.h"
-
 #include "qgsaiworkspaceindex.h"
 
 #include <QList>
@@ -65,14 +64,7 @@ class APP_EXPORT QgsAiCloudIndexClient : public QObject
     static bool containsForbiddenPayload( const ContextItem &item );
     static bool validateContextItems( const QList<ContextItem> &items, QString *errorMessage = nullptr );
 
-    void syncWorkspaceContext(
-      const QString &chatEndpoint,
-      const QString &sessionToken,
-      const QString &workspaceRoot,
-      const QString &workspaceName,
-      const QList<ContextItem> &items,
-      bool contentOptIn
-    );
+    void syncWorkspaceContext( const QString &chatEndpoint, const QString &sessionToken, const QString &workspaceRoot, const QString &workspaceName, const QList<ContextItem> &items, bool contentOptIn );
 
   signals:
     void contextSynced( const QgsAiCloudIndexClient::SyncResult &result );
@@ -80,14 +72,7 @@ class APP_EXPORT QgsAiCloudIndexClient : public QObject
 
   private:
     void postContextBatch(
-      const QString &apiBase,
-      const QString &sessionToken,
-      const QString &workspaceId,
-      const QList<ContextItem> &items,
-      int offset,
-      int accumulatedUpserted,
-      int accumulatedQueued,
-      bool contentOptIn
+      const QString &apiBase, const QString &sessionToken, const QString &workspaceId, const QList<ContextItem> &items, int offset, int accumulatedUpserted, int accumulatedQueued, bool contentOptIn
     );
 };
 

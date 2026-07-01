@@ -3002,11 +3002,8 @@ void QgsAiChatDockWidget::openProviderSettings()
     if ( mSessionManager )
     {
       const QgsAiAgentBehaviorSettings behavior = mSessionManager->agentBehaviorSettings();
-      items += QgsAiCloudIndexClient::contextItemsFromWorkspaceFolders(
-        mSessionManager->workspaceRoot(),
-        behavior.loadWorkspaceRules ? behavior.rulesPath : QString(),
-        behavior.loadWorkspaceSkills ? behavior.skillsPath : QString()
-      );
+      items += QgsAiCloudIndexClient::
+        contextItemsFromWorkspaceFolders( mSessionManager->workspaceRoot(), behavior.loadWorkspaceRules ? behavior.rulesPath : QString(), behavior.loadWorkspaceSkills ? behavior.skillsPath : QString() );
     }
     return QgsAiCloudIndexClient::deduplicateContextItems( items );
   };
@@ -3048,7 +3045,9 @@ void QgsAiChatDockWidget::openProviderSettings()
       else if ( item.sourceType == "pdf"_L1 || item.sourceType == "image"_L1 )
         ++documentItems;
     }
-    cloudIndexStatusLabel->setText( QObject::tr( "Cloud sync preview: %1 items (%2 layer, %3 rule, %4 skill, %5 document)." ).arg( items.size() ).arg( layerItems ).arg( ruleItems ).arg( skillItems ).arg( documentItems ) );
+    cloudIndexStatusLabel->setText(
+      QObject::tr( "Cloud sync preview: %1 items (%2 layer, %3 rule, %4 skill, %5 document)." ).arg( items.size() ).arg( layerItems ).arg( ruleItems ).arg( skillItems ).arg( documentItems )
+    );
   };
   refreshCloudIndexStatusLabel();
   indexingForm->addRow( QString(), cloudIndexStatusLabel );
@@ -3530,10 +3529,10 @@ void QgsAiChatDockWidget::openProviderSettings()
         settings.remove( embeddingModelKey );
       else
         settings.setValue( embeddingModelKey, embeddingModelValue );
-	    }
-	    settings.setValue( u"strata/index/automatic"_s, automaticIndexing->isChecked() );
-	    settings.setValue( u"strata/index/cloud_context_opt_in"_s, cloudContextOptIn->isChecked() );
-	  }
+    }
+    settings.setValue( u"strata/index/automatic"_s, automaticIndexing->isChecked() );
+    settings.setValue( u"strata/index/cloud_context_opt_in"_s, cloudContextOptIn->isChecked() );
+  }
 
   emit embeddingProviderSettingsChanged();
 
