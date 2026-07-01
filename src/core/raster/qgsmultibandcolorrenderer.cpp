@@ -343,8 +343,8 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle const
 
     //apply default color if red, green or blue not in displayable range
     if ( ( mRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( redVal ) )
-         || ( mGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( redVal ) )
-         || ( mBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( redVal ) ) )
+         || ( mGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( greenVal ) )
+         || ( mBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( blueVal ) ) )
     {
       outputBlock->setColor( i, myDefaultColor );
       continue;
