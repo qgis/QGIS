@@ -38,7 +38,9 @@ namespace
 {
   constexpr const char *CLAUDE_CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e";
   constexpr const char *CLAUDE_AUTHORIZE_URL = "https://platform.claude.com/oauth/authorize";
-  constexpr const char *CLAUDE_TOKEN_URL = "https://platform.claude.com/v1/oauth/token";
+  // Token exchange via api.anthropic.com: platform/console.anthropic.com is behind a
+  // Cloudflare challenge that blocks non-browser clients (HTTP 403/429).
+  constexpr const char *CLAUDE_TOKEN_URL = "https://api.anthropic.com/v1/oauth/token";
   constexpr const char *CLAUDE_REDIRECT_URI = "https://platform.claude.com/oauth/code/callback";
   constexpr const char *CLAUDE_SCOPE = "user:inference user:profile user:sessions:claude_code user:mcp_servers user:file_upload";
   constexpr int CLAUDE_TOKEN_EXCHANGE_TIMEOUT_MS = 120000;
