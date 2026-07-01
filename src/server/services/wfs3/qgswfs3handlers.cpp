@@ -289,6 +289,26 @@ json QgsWfs3ConformanceHandler::schema( const QgsServerApiContext &context ) con
   return data;
 }
 
+QUrlQuery QgsWfs3AbstractItemsHandler::removeOffsetAndLimit( const QUrlQuery &urlQuery )
+{
+  // Since headers are stored in a case sensitive map,
+  // make sure we are clearing the correct case if any
+  QUrlQuery query( urlQuery );
+  const QList<QPair<QString, QString>> items = query.queryItems();
+  for ( const auto &pair : std::as_const( items ) )
+  {
+    if ( pair.first.compare( QLatin1String( "offset" ), Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeAllQueryItems( pair.first );
+    }
+    else if ( pair.first.compare( QLatin1String( "limit" ), Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeAllQueryItems( pair.first );
+    }
+  }
+  return query;
+}
+
 QgsWfs3CollectionsHandler::QgsWfs3CollectionsHandler()
 {
 }
@@ -1043,10 +1063,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
       // Url without offset and limit
       QUrl cleanedUrl { url };
-      QUrlQuery query( cleanedUrl );
-      query.removeQueryItem( QStringLiteral( "limit" ) );
-      query.removeQueryItem( QStringLiteral( "offset" ) );
-      cleanedUrl.setQuery( query );
+      cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( url.query() ) ) );
 
       QString cleanedUrlAsString { cleanedUrl.toString() };
 
