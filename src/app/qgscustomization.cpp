@@ -1731,17 +1731,6 @@ void QgsCustomization::applyToToolBars() const
         QgisApp::instance()->addToolBar( toolBar );
       }
 
-      for ( const std::unique_ptr<QgsCustomization::QgsItem> &actionRefItem : userToolBar->childItemList() )
-      {
-        if ( QgsCustomization::QgsActionRefItem *actionRef = dynamic_cast<QgsCustomization::QgsActionRefItem *>( actionRefItem.get() ) )
-        {
-          if ( QAction *action = findQAction( actionRef->actionRefPath() ) )
-          {
-            toolBar->addAction( action );
-          }
-        }
-      }
-
       updateActionVisibility( userToolBar, toolBar );
     }
   }
