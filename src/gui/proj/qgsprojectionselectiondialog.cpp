@@ -234,8 +234,7 @@ bool QgsCrsSelectionWidget::hasValidSelection() const
       case QgsCrsSelectionWidget::CrsType::Topocentric:
       {
         const QgsCoordinateReferenceSystem baseCrs = mTopocentricBaseSelector->crs();
-        double tmpLat = 0.0, tmpLon = 0.0;
-        return baseCrs.isValid() && ( baseCrs.horizontalCrs().type() == Qgis::CrsType::Geocentric || baseCrs.type() == Qgis::CrsType::Geographic3d || baseCrs.topocentricOrigin( tmpLat, tmpLon ) );
+        return baseCrs.isValid();
       }
     }
     BUILTIN_UNREACHABLE
@@ -280,10 +279,6 @@ QgsCoordinateReferenceSystem QgsCrsSelectionWidget::crs() const
       case QgsCrsSelectionWidget::CrsType::Topocentric:
       {
         const QgsCoordinateReferenceSystem base = mTopocentricBaseSelector->crs();
-        double tmpLat = 0.0, tmpLon = 0.0;
-        const bool canConvert = base.horizontalCrs().type() == Qgis::CrsType::Geocentric || base.type() == Qgis::CrsType::Geographic3d || base.topocentricOrigin( tmpLat, tmpLon );
-        if ( !base.isValid() || !canConvert )
-          return QgsCoordinateReferenceSystem(); // we shouldn't be reaching this through the GUI
         return base.toTopocentricCrs( mSpinBoxTopoLat->value(), mSpinBoxTopoLon->value() );
       }
     }
