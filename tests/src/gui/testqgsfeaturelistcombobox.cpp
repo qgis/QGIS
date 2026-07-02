@@ -24,6 +24,7 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QBrush>
 #include <QLineEdit>
 #include <QSignalSpy>
 #include <QString>
@@ -328,23 +329,32 @@ void TestQgsFeatureListComboBox::testNullFormatting()
 
   layer->commitChanges();
 
-  QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
+  QgsApplication::setNullRepresentation( u"nope"_s );
+
+  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
+  QSignalSpy spy( model, &QgsFeatureFilterModel::filterJobCompleted );
 
   cb->setAllowNull( true );
   cb->setSourceLayer( layer.get() );
+  cb->setIdentifierFields( { u"pk"_s } );
   cb->setDisplayExpression( u"\"material\""_s );
 
   //check if everything is fine:
   spy.wait();
 
-  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
-  QCOMPARE( model->data( model->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"nope"_s );
+  QCOMPARE( model->rowCount( QModelIndex() ), 3 );
 
-  // should not be italic formatted, these aren't null entries
+  // the null entry should be formatted as null (gray)
+  QCOMPARE( model->data( model->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"nope"_s );
+  QCOMPARE( model->data( model->index( 0, 0, QModelIndex() ), Qt::ForegroundRole ).value<QBrush>().color(), QColor( Qt::gray ) );
+
+  // real features must not be formatted as null, even if their display value is NULL
   QCOMPARE( model->data( model->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QVERIFY( !model->data( model->index( 1, 0, QModelIndex() ), Qt::FontRole ).value< QFont >().italic() );
+  QVERIFY( !model->data( model->index( 1, 0, QModelIndex() ), Qt::FontRole ).value<QFont>().italic() );
+  QVERIFY( !model->data( model->index( 1, 0, QModelIndex() ), Qt::ForegroundRole ).isValid() );
   QCOMPARE( model->data( model->index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"iron"_s );
-  QVERIFY( !model->data( model->index( 2, 0, QModelIndex() ), Qt::FontRole ).value< QFont >().italic() );
+  QVERIFY( !model->data( model->index( 2, 0, QModelIndex() ), Qt::FontRole ).value<QFont>().italic() );
+  QVERIFY( !model->data( model->index( 2, 0, QModelIndex() ), Qt::ForegroundRole ).isValid() );
 }
 
 QGSTEST_MAIN( TestQgsFeatureListComboBox )
