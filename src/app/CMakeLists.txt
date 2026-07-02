@@ -315,6 +315,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/index/qgsailayerchunker.cpp
     ai/index/qgsailayerindexcoordinator.cpp
     ai/index/qgsaiworkspaceindex.cpp
+    ai/qgsaiaccountwidget.cpp
     ai/qgsaiagentsessionmanager.cpp
     ai/qgsaiauditlog.cpp
     ai/qgsaichatdockwidget.cpp
@@ -334,6 +335,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaireviewdialog.cpp
     ai/qgsaireviewpatchengine.cpp
     ai/qgsaisecretstore.cpp
+    ai/qgsaisettingsdialog.cpp
     ai/qgsaivisualcontextutils.cpp
     ai/qgsaiworkspacetrust.cpp
     ai/tools/qgsaidownloadfiletool.cpp

@@ -115,6 +115,9 @@ class APP_EXPORT QgsAiModelRouter : public QObject
 
     static bool isUsablePlanEndpoint( const QString &endpoint );
 
+    //! Default Plan chat endpoint used when nothing is configured yet.
+    static QString defaultPlanEndpoint();
+
     QString providerDisplayName( Provider provider ) const;
     QByteArray buildRequestPayload( Provider provider, const QList<QgsAiChatMessage> &messages, bool stream ) const;
     QString sanitizeErrorText( const QString &errorText ) const;

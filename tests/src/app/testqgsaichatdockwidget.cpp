@@ -693,6 +693,10 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
       QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
       if ( settingsDialog )
       {
+        // The dialog opens on the Account section; the visibility checks below
+        // need the Indexing page to be the current stacked page.
+        QMetaObject::invokeMethod( settingsDialog, "showSection", Qt::DirectConnection, Q_ARG( QString, u"indexing"_s ) );
+
         QCheckBox *layerIndexing = settingsDialog->findChild<QCheckBox *>( u"aiEnableLayerIndexingCheckBox"_s );
         QComboBox *providerCombo = settingsDialog->findChild<QComboBox *>( u"aiEmbeddingProviderComboBox"_s );
         QLabel *statusLabel = settingsDialog->findChild<QLabel *>( u"aiEmbeddingProviderStatusLabel"_s );

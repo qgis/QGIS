@@ -277,7 +277,7 @@ QgsAiModelRouter::QgsAiModelRouter( QObject *parent )
   mProviderSettings.insert( Provider::OpenRouter, openRouter );
 
   ProviderSettings plan;
-  plan.endpoint = u"https://example.invalid/ai/messages"_s;
+  plan.endpoint = defaultPlanEndpoint();
   plan.model = u"managed-plan"_s;
   mProviderSettings.insert( Provider::Plan, plan );
 
@@ -1085,6 +1085,12 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
     const QString endpoint = settings.value( endpointSettingKey( provider ), providerSettings.endpoint ).toString().trimmed();
     if ( !endpoint.isEmpty() )
       providerSettings.endpoint = endpoint;
+
+    // Migrate away from the historical example.invalid placeholder so fresh
+    // and previously-unconfigured profiles can log in without touching the
+    // Advanced endpoint field.
+    if ( provider == Provider::Plan && providerSettings.endpoint.contains( "example.invalid"_L1, Qt::CaseInsensitive ) )
+      providerSettings.endpoint = defaultPlanEndpoint();
 
     const QString model = settings.value( modelSettingKey( provider ), providerSettings.model ).toString().trimmed();
     if ( !model.isEmpty() )
@@ -2305,6 +2311,13 @@ void QgsAiModelRouter::onReplyFinished()
   errorMessage = sanitizeErrorText( errorMessage );
 
   finishRequest( requestId, false, QString(), errorMessage, httpStatus, context->attempt - 1, false, latencyMs );
+}
+
+QString QgsAiModelRouter::defaultPlanEndpoint()
+{
+  // Development default pointing at a local strata-be; swap to the production
+  // URL before release.
+  return u"http://localhost:3001/ai/messages"_s;
 }
 
 bool QgsAiModelRouter::isUsablePlanEndpoint( const QString &endpoint )

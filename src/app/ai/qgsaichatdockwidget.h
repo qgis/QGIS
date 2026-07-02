@@ -145,7 +145,6 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     bool addAttachedFile( const QString &path );
     void setRequestRunning( bool running );
     void maybeShowWelcomeBanner();
-    QString gisProjectSettingsKey() const;
     void sendGisSuggestionToChat( const QgsAiGisSuggestion &suggestion );
     void dismissGisSuggestion( const QString &suggestionId );
 
