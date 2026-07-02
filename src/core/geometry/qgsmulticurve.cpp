@@ -148,6 +148,13 @@ bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )
     return false;
   }
 
+  const Qgis::WkbType flatType = QgsWkbTypes::flatType( g->wkbType() );
+  if ( !( flatType == Qgis::WkbType::LineString || flatType == Qgis::WkbType::CircularString || flatType == Qgis::WkbType::CompoundCurve ) )
+  {
+    delete g;
+    return false;
+  }
+
   if ( mGeometries.empty() )
   {
     setZMTypeFromSubGeometry( g, Qgis::WkbType::MultiCurve );
@@ -169,6 +176,13 @@ bool QgsMultiCurve::addGeometries( const QVector<QgsAbstractGeometry *> &geometr
   for ( QgsAbstractGeometry *g : geometries )
   {
     if ( !qgsgeometry_cast<QgsCurve *>( g ) )
+    {
+      qDeleteAll( geometries );
+      return false;
+    }
+
+    const Qgis::WkbType flatType = QgsWkbTypes::flatType( g->wkbType() );
+    if ( !( flatType == Qgis::WkbType::LineString || flatType == Qgis::WkbType::CircularString || flatType == Qgis::WkbType::CompoundCurve ) )
     {
       qDeleteAll( geometries );
       return false;
@@ -200,6 +214,13 @@ bool QgsMultiCurve::addGeometries( const QVector<QgsAbstractGeometry *> &geometr
 bool QgsMultiCurve::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g || !qgsgeometry_cast<QgsCurve *>( g ) )
+  {
+    delete g;
+    return false;
+  }
+
+  const Qgis::WkbType flatType = QgsWkbTypes::flatType( g->wkbType() );
+  if ( !( flatType == Qgis::WkbType::LineString || flatType == Qgis::WkbType::CircularString || flatType == Qgis::WkbType::CompoundCurve ) )
   {
     delete g;
     return false;
