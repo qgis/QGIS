@@ -47,7 +47,7 @@ class QgsOracleColumnTypeTask : public QgsTask
     bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
 
     /**
-     * Returns error occurring when the task run
+     * If the task fails, returns the error which occurred.
      */
     const QString &error() const { return mError; }
 
