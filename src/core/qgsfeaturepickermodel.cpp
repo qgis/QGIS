@@ -42,7 +42,7 @@ void QgsFeaturePickerModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
 
 QVariant QgsFeaturePickerModel::entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const
 {
-  return entry.identifierFields;
+  return entry.featureId;
 }
 
 QgsFeatureExpressionValuesGatherer::Entry QgsFeaturePickerModel::createEntry( const QVariant &identifier ) const
