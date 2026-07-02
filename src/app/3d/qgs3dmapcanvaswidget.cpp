@@ -849,7 +849,6 @@ void Qgs3DMapCanvasWidget::configureCamera()
   mCameraControlsDialog->setAttribute( Qt::WA_DeleteOnClose );
   mCameraControlsDialog->setWindowTitle( tr( "Camera Controls" ) );
   mCameraControlsDialog->setObjectName( u"3DCameraControlsDialog"_s );
-  mCameraControlsDialog->setMinimumSize( 300, 200 );
   QgsGui::enableAutoGeometryRestore( mCameraControlsDialog );
 
   Qgs3DCameraControlsWidget *w = new Qgs3DCameraControlsWidget( mCanvas, mCameraControlsDialog );
@@ -857,6 +856,8 @@ void Qgs3DMapCanvasWidget::configureCamera()
 
   QVBoxLayout *layout = new QVBoxLayout( mCameraControlsDialog );
   layout->addWidget( w );
+  layout->setSizeConstraint( QLayout::SetFixedSize );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   mCameraControlsDialog->show();
 }
