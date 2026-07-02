@@ -16,6 +16,7 @@
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
+#include "qgsnurbscurve.h"
 #include "qgspoint.h"
 #include "qgstest.h"
 #include "testgeometryutils.h"
@@ -32,6 +33,7 @@ class TestQgsMultiCurve : public QObject
     void constructor();
     void addGeometry();
     void addGeometryZM();
+    void addGeometries();
     void addGeometryDimensionPreservation();
     void addGeometryDimensionPreservationZ();
     void addGeometryDimensionPreservationM();
@@ -131,6 +133,100 @@ void TestQgsMultiCurve::addGeometry()
   QVERIFY( !mc.geometryN( -1 ) );
   QCOMPARE( mc.vertexCount( 0, 0 ), 3 );
   QCOMPARE( mc.vertexCount( 1, 0 ), 0 );
+
+  //LinearString
+  QgsLineString linePart;
+  linePart.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 2 ) << QgsPoint( 1, 10 ) );
+  mc.addGeometry( linePart.clone() );
+
+  QVERIFY( !mc.isEmpty() );
+  QCOMPARE( mc.numGeometries(), 2 );
+  QCOMPARE( mc.nCoordinates(), 6 );
+  QCOMPARE( mc.ringCount(), 1 );
+  QCOMPARE( mc.partCount(), 2 );
+  QVERIFY( !mc.is3D() );
+  QVERIFY( !mc.isMeasure() );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
+  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve" ) );
+  QCOMPARE( mc.geometryType(), QString( "MultiCurve" ) );
+  QCOMPARE( mc.dimension(), 1 );
+  QVERIFY( mc.hasCurvedSegments() );
+  QCOMPARE( mc.area(), 0.0 );
+  QCOMPARE( mc.perimeter(), 0.0 );
+  QVERIFY( mc.geometryN( 0 ) );
+  QCOMPARE( *static_cast<const QgsCircularString *>( mc.geometryN( 0 ) ), part );
+  QVERIFY( mc.geometryN( 1 ) );
+  QCOMPARE( *static_cast<const QgsLineString *>( mc.geometryN( 1 ) ), linePart );
+  QVERIFY( !mc.geometryN( 100 ) );
+  QVERIFY( !mc.geometryN( -1 ) );
+  QCOMPARE( mc.vertexCount( 0, 0 ), 3 );
+  QCOMPARE( mc.vertexCount( 1, 0 ), 3 );
+
+  //CompoundCurve
+  QgsCompoundCurve ccPart;
+  ccPart.addCurve( linePart.clone() );
+  ccPart.addCurve( part.clone() );
+  mc.addGeometry( ccPart.clone() );
+
+  QVERIFY( !mc.isEmpty() );
+  QCOMPARE( mc.numGeometries(), 3 );
+  QCOMPARE( mc.nCoordinates(), 11 );
+  QCOMPARE( mc.ringCount(), 1 );
+  QCOMPARE( mc.partCount(), 3 );
+  QVERIFY( !mc.is3D() );
+  QVERIFY( !mc.isMeasure() );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
+  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve" ) );
+  QCOMPARE( mc.geometryType(), QString( "MultiCurve" ) );
+  QCOMPARE( mc.dimension(), 1 );
+  QVERIFY( mc.hasCurvedSegments() );
+  QCOMPARE( mc.area(), 0.0 );
+  QCOMPARE( mc.perimeter(), 0.0 );
+  QVERIFY( mc.geometryN( 0 ) );
+  QCOMPARE( *static_cast<const QgsCircularString *>( mc.geometryN( 0 ) ), part );
+  QVERIFY( mc.geometryN( 1 ) );
+  QCOMPARE( *static_cast<const QgsLineString *>( mc.geometryN( 1 ) ), linePart );
+  QVERIFY( mc.geometryN( 1 ) );
+  QCOMPARE( *static_cast<const QgsCompoundCurve *>( mc.geometryN( 2 ) ), ccPart );
+  QVERIFY( !mc.geometryN( 100 ) );
+  QVERIFY( !mc.geometryN( -1 ) );
+  QCOMPARE( mc.vertexCount( 0, 0 ), 3 );
+  QCOMPARE( mc.vertexCount( 1, 0 ), 3 );
+  QCOMPARE( mc.vertexCount( 2, 0 ), 5 );
+
+  //Only LinearString, CircularString and CompoundCurves are allowed
+  QVector<QgsPoint> controlPoints { QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) };
+  int degree = 1;
+  QVector<double> knots { 0, 0, 1, 1 };
+  QVector<double> weights { 1, 1 };
+  QgsNurbsCurve ncPart( controlPoints, degree, knots, weights );
+  QVERIFY( !mc.addGeometry( ncPart.clone() ) );
+
+  QVERIFY( !mc.isEmpty() );
+  QCOMPARE( mc.numGeometries(), 3 );
+  QCOMPARE( mc.nCoordinates(), 11 );
+  QCOMPARE( mc.ringCount(), 1 );
+  QCOMPARE( mc.partCount(), 3 );
+  QVERIFY( !mc.is3D() );
+  QVERIFY( !mc.isMeasure() );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
+  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve" ) );
+  QCOMPARE( mc.geometryType(), QString( "MultiCurve" ) );
+  QCOMPARE( mc.dimension(), 1 );
+  QVERIFY( mc.hasCurvedSegments() );
+  QCOMPARE( mc.area(), 0.0 );
+  QCOMPARE( mc.perimeter(), 0.0 );
+  QVERIFY( mc.geometryN( 0 ) );
+  QCOMPARE( *static_cast<const QgsCircularString *>( mc.geometryN( 0 ) ), part );
+  QVERIFY( mc.geometryN( 1 ) );
+  QCOMPARE( *static_cast<const QgsLineString *>( mc.geometryN( 1 ) ), linePart );
+  QVERIFY( mc.geometryN( 1 ) );
+  QCOMPARE( *static_cast<const QgsCompoundCurve *>( mc.geometryN( 2 ) ), ccPart );
+  QVERIFY( !mc.geometryN( 100 ) );
+  QVERIFY( !mc.geometryN( -1 ) );
+  QCOMPARE( mc.vertexCount( 0, 0 ), 3 );
+  QCOMPARE( mc.vertexCount( 1, 0 ), 3 );
+  QCOMPARE( mc.vertexCount( 2, 0 ), 5 );
 }
 
 void TestQgsMultiCurve::addGeometryZM()
@@ -182,6 +278,106 @@ void TestQgsMultiCurve::addGeometryZM()
   QCOMPARE( mc.numGeometries(), 2 );
   QVERIFY( mc.geometryN( 0 ) );
   QCOMPARE( *static_cast<const QgsCircularString *>( mc.geometryN( 1 ) ), part );
+}
+
+void TestQgsMultiCurve::addGeometries()
+{
+  QgsMultiCurve mc;
+
+  QVector<QgsAbstractGeometry *> geoms;
+
+  // not a curve
+  geoms << new QgsPoint();
+  QVERIFY( !mc.addGeometries( geoms ) );
+  geoms.clear();
+
+  QVERIFY( mc.isEmpty() );
+  QCOMPARE( mc.nCoordinates(), 0 );
+  QCOMPARE( mc.ringCount(), 0 );
+  QCOMPARE( mc.partCount(), 0 );
+  QCOMPARE( mc.numGeometries(), 0 );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
+  QVERIFY( !mc.geometryN( 0 ) );
+  QVERIFY( !mc.geometryN( -1 ) );
+
+  //valid geometry and not a curve
+  QgsCircularString part;
+  part.setPoints( QgsPointSequence() << QgsPoint( 1, 10 ) << QgsPoint( 2, 11 ) << QgsPoint( 1, 12 ) );
+  geoms << new QgsPoint();
+  geoms << part.clone();
+
+  QVERIFY( !mc.addGeometries( geoms ) );
+  geoms.clear();
+
+  QVERIFY( mc.isEmpty() );
+  QCOMPARE( mc.nCoordinates(), 0 );
+  QCOMPARE( mc.ringCount(), 0 );
+  QCOMPARE( mc.partCount(), 0 );
+  QCOMPARE( mc.numGeometries(), 0 );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
+  QVERIFY( !mc.geometryN( 0 ) );
+  QVERIFY( !mc.geometryN( -1 ) );
+
+  //LinearString
+  QgsLineString linePart;
+  linePart.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 2 ) << QgsPoint( 1, 10 ) );
+
+  //CompoundCurve
+  QgsCompoundCurve ccPart;
+  ccPart.addCurve( linePart.clone() );
+  ccPart.addCurve( part.clone() );
+
+  //Only LinearString, CircularString and CompoundCurves are allowed
+  QVector<QgsPoint> controlPoints { QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) };
+  int degree = 1;
+  QVector<double> knots { 0, 0, 1, 1 };
+  QVector<double> weights { 1, 1 };
+  QgsNurbsCurve ncPart( controlPoints, degree, knots, weights );
+
+  //NurbsCurve not allowed in MultiCurves
+  geoms << part.clone() << linePart.clone() << ccPart.clone() << ncPart.clone();
+  QVERIFY( !mc.addGeometries( geoms ) );
+  geoms.clear();
+
+  QVERIFY( mc.isEmpty() );
+  QCOMPARE( mc.nCoordinates(), 0 );
+  QCOMPARE( mc.ringCount(), 0 );
+  QCOMPARE( mc.partCount(), 0 );
+  QCOMPARE( mc.numGeometries(), 0 );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
+  QVERIFY( !mc.geometryN( 0 ) );
+  QVERIFY( !mc.geometryN( -1 ) );
+
+  //LineString/CircularString/CompoundCurve
+  geoms << part.clone() << linePart.clone() << ccPart.clone();
+  QVERIFY( mc.addGeometries( geoms ) );
+  geoms.clear();
+
+  QVERIFY( !mc.isEmpty() );
+  QCOMPARE( mc.numGeometries(), 3 );
+  QCOMPARE( mc.nCoordinates(), 11 );
+  QCOMPARE( mc.ringCount(), 1 );
+  QCOMPARE( mc.partCount(), 3 );
+  QVERIFY( !mc.is3D() );
+  QVERIFY( !mc.isMeasure() );
+  QCOMPARE( mc.wkbType(), Qgis::WkbType::MultiCurve );
+  QCOMPARE( mc.wktTypeStr(), QString( "MultiCurve" ) );
+  QCOMPARE( mc.geometryType(), QString( "MultiCurve" ) );
+  QCOMPARE( mc.dimension(), 1 );
+  QVERIFY( mc.hasCurvedSegments() );
+  QCOMPARE( mc.area(), 0.0 );
+  QCOMPARE( mc.perimeter(), 0.0 );
+  QVERIFY( mc.geometryN( 0 ) );
+  QCOMPARE( *static_cast<const QgsCircularString *>( mc.geometryN( 0 ) ), part );
+  QVERIFY( mc.geometryN( 1 ) );
+  QCOMPARE( *static_cast<const QgsLineString *>( mc.geometryN( 1 ) ), linePart );
+  QVERIFY( mc.geometryN( 1 ) );
+  QCOMPARE( *static_cast<const QgsCompoundCurve *>( mc.geometryN( 2 ) ), ccPart );
+  QVERIFY( !mc.geometryN( 100 ) );
+  QVERIFY( !mc.geometryN( -1 ) );
+  QCOMPARE( mc.vertexCount( 0, 0 ), 3 );
+  QCOMPARE( mc.vertexCount( 1, 0 ), 3 );
+  QCOMPARE( mc.vertexCount( 2, 0 ), 5 );
 }
 
 void TestQgsMultiCurve::addGeometryDimensionPreservation()
@@ -405,6 +601,28 @@ void TestQgsMultiCurve::insertGeometry()
 
   QVERIFY( !mc.isEmpty() );
   QCOMPARE( mc.numGeometries(), 1 );
+
+  QgsLineString linePart;
+  linePart.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 10, 0 ) << QgsPoint( 20, 20, 15, 1 ) << QgsPoint( 27, 37, 6, 2 ) );
+  mc.insertGeometry( linePart.clone(), 0 );
+
+  QCOMPARE( mc.numGeometries(), 2 );
+
+  QgsCompoundCurve ccPart;
+  ccPart.addCurve( linePart.clone() );
+  ccPart.addCurve( part.clone() );
+  mc.insertGeometry( ccPart.clone(), 0 );
+
+  QCOMPARE( mc.numGeometries(), 3 );
+
+  QVector<QgsPoint> controlPoints { QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) };
+  int degree = 1;
+  QVector<double> knots { 0, 0, 1, 1 };
+  QVector<double> weights { 1, 1 };
+  QgsNurbsCurve ncPart( controlPoints, degree, knots, weights );
+  QVERIFY( !mc.insertGeometry( ncPart.clone(), 0 ) );
+
+  QCOMPARE( mc.numGeometries(), 3 );
 }
 
 void TestQgsMultiCurve::curveN()

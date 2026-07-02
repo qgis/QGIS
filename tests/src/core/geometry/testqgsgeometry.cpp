@@ -3516,6 +3516,8 @@ void TestQgsGeometry::wktParser()
   QCOMPARE( mc.asWkt(), u"MultiCurve (CircularString (0 0, 1 1, 2 2))"_s );
   QVERIFY( mc.fromWkt( "MultiCurve(CIRCULARSTRING( 0 0, 1 1, 2 2), LINESTRING((2 2, 3 3)))" ) );
   QCOMPARE( mc.asWkt(), u"MultiCurve (CircularString (0 0, 1 1, 2 2),LineString (2 2, 3 3))"_s );
+  QVERIFY( mc.fromWkt( "MultiCurve(CIRCULARSTRING( 0 0, 1 1, 2 2), LINESTRING((2 2, 3 3)), COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 2 0)))" ) );
+  QCOMPARE( mc.asWkt(), u"MultiCurve (CircularString (0 0, 1 1, 2 2),LineString (2 2, 3 3),CompoundCurve (CircularString (0 0, 1 1, 2 0)))"_s );
   QVERIFY( mc.fromWkt( "MultiCurve ( )" ) );
   QCOMPARE( mc.asWkt(), u"MultiCurve EMPTY"_s );
   QVERIFY( mc.fromWkt( "MultiCurve EMPTY" ) );
