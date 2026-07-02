@@ -361,7 +361,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram, int bandN
       // bins at fractional values
       if ( !mInput && ( mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 || mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
       {
-        myBinCount = static_cast<qint64>( std::ceil( histogram.maximum - histogram.minimum + 1 ) );
+        myBinCount = std::min( static_cast<qint64>( histogram.width ) * histogram.height, static_cast<qint64>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
       }
       else
       {
@@ -385,8 +385,8 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram, int bandN
       }
     }
   }
-  // Hard limit 10'000'000 and in any case it does not make sense to use more than width*height
-  histogram.binCount = static_cast<int>( std::min( std::min( 10000000LL, static_cast<qint64>( histogram.width ) * histogram.height ), myBinCount ) );
+  // Hard limit 10'000'000
+  histogram.binCount = static_cast<int>( std::min( 10000000LL, myBinCount ) );
   QgsDebugMsgLevel( u"theHistogram.binCount = %1"_s.arg( histogram.binCount ), 4 );
 }
 

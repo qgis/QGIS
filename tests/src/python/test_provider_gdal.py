@@ -647,10 +647,11 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
                 self.assertEqual(provider.dataType(1), Qgis.DataType.Float32)
 
             # Create histogram
-            hist = provider.histogram(1, 10000)
+            hist = provider.histogram(1, 5)
             self.assertIsNotNone(hist)
-            # Do not exceed the raster size!
-            self.assertEqual(hist.binCount, 4)
+            # Test requested bin count is respected, even
+            # if it's bigger than the number of pixels
+            self.assertEqual(hist.binCount, 5)
 
         _test_scale(1.0)
         _test_scale(0.1)
