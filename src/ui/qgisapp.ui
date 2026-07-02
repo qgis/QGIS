@@ -227,7 +227,6 @@
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddXyzLayer"/>
-     <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
@@ -2099,20 +2098,6 @@ Acts on all layers.</string>
    </property>
    <property name="toolTip">
     <string>Stretch Histogram to Full Dataset</string>
-   </property>
-  </action>
-  <action name="mActionAddLayerSeparator">
-   <property name="text">
-    <string notr="true">More Add Layer actions here</string>
-   </property>
-   <property name="iconText">
-    <string notr="true">More Add Layer actions here</string>
-   </property>
-   <property name="toolTip">
-    <string notr="true">More Add Layer Actions here</string>
-   </property>
-   <property name="visible">
-    <bool>false</bool>
    </property>
   </action>
   <action name="mActionCustomization">
