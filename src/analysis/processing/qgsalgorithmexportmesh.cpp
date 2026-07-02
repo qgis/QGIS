@@ -832,8 +832,11 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   for ( DataGroup &dataGroup : mDataPerGroup )
   {
     if ( dataGroup.dataset3dStakedValue.isValid() )
-      dataGroup.datasetValues = avgMethod->calculate( dataGroup.dataset3dStakedValue );
+      dataGroup.datasetValues = avgMethod->calculate( dataGroup.dataset3dStakedValue, feedback );
   }
+
+  if ( feedback && feedback->isCanceled() )
+    return {};
 
   // create raster
   const double pixelSize = parameterAsDouble( parameters, u"PIXEL_SIZE"_s, context );
@@ -879,13 +882,16 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
     const DataGroup &dataGroup = mDataPerGroup.at( i );
     QgsRasterBlockFeedback rasterBlockFeedBack;
     if ( feedback )
-      QObject::connect( &rasterBlockFeedBack, &QgsFeedback::canceled, feedback, &QgsFeedback::cancel );
+      QObject::connect( feedback, &QgsFeedback::canceled, &rasterBlockFeedBack, &QgsRasterBlockFeedback::cancel, Qt::DirectConnection );
 
     if ( dataGroup.datasetValues.isValid() )
     {
       std::unique_ptr<QgsRasterBlock> block(
         QgsMeshUtils::exportRasterBlock( mTriangularMesh, dataGroup.datasetValues, dataGroup.activeFaces, dataGroup.metadata.dataType(), mTransform, pixelSize, extent, &rasterBlockFeedBack )
       );
+
+      if ( feedback && feedback->isCanceled() )
+        return {};
 
       if ( !rasterDataProvider->writeBlock( block.get(), i + 1 ) )
       {
