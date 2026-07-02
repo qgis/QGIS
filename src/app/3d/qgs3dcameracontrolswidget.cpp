@@ -58,8 +58,6 @@ Qgs3DCameraControlsWidget::Qgs3DCameraControlsWidget( Qgs3DMapCanvas *canvas, QW
   mCameraX->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mCameraY->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mCameraZ->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
-  mCameraPitch->setRange( 0.0, 180.0 );
-  mCameraHeading->setRange( 0.0, 360.0 );
   // currently in the camera controller, the minimum distance from center point is 10
   mCameraDistanceFromCenterPoint->setRange( 10., std::numeric_limits<float>::max() );
 
