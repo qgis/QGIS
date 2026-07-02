@@ -643,7 +643,7 @@ void TestQgsWmsProvider::testWmsUnreachableCapabilitiesWithVisibleSubLayer()
 
   // identify should not crash
   provider.mLayerExtent = QgsRectangle( 0, 0, 2, 2 );
-  provider.mCaps.mIdentifyFormats.insert( Qgis::RasterIdentifyFormat::Text, u"text"_s );
+  provider.mCaps.mIdentifyFormats.insert( Qgis::RasterIdentifyFormat::Text, "text" );
   ( void ) provider.identify( QgsPointXY( 1., 1. ), Qgis::RasterIdentifyFormat::Text, QgsRectangle( 0, 0, 2, 2 ), 10, 10, 42 );
 }
 
