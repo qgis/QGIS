@@ -458,7 +458,6 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataActions( const Q
   {
     QgsCustomization::QgsActionItem *action = actionAndPath.first;
     auto actionRef = std::make_unique<QgsCustomization::QgsActionRefItem>( mCustomization->uniqueActionName( action->name() ), action->title(), actionAndPath.second, item );
-    actionRef->setIcon( action->icon() );
     actionRef->setVisible( action->isVisible() );
     item->insertChild( row, std::move( actionRef ) );
   }

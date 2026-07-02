@@ -835,7 +835,6 @@ void TestQgsCustomization::testModel()
     QModelIndex actionIndex = model.index( 0, 0, newItemIndex );
     QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::DisplayRole ), u"ActionRef_mActionAddPart_1"_s );
     QCOMPARE( model.data( model.index( 0, 1, newItemIndex ), Qt::ItemDataRole::DisplayRole ), u"Add Part"_s );
-    QVERIFY( !model.data( actionIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
 
     QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
     QCOMPARE( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" )->childrenCount(), 0 );
