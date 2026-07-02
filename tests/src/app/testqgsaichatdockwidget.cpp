@@ -15,6 +15,8 @@
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "ai/qgsaiworkspacetrust.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgstest.h"
@@ -42,7 +44,6 @@
 #include <QRegularExpression>
 #include <QSettings>
 #include <QString>
-#include <QTabWidget>
 #include <QTemporaryDir>
 #include <QTextEdit>
 #include <QTimer>
@@ -90,7 +91,8 @@ class TestQgsAiChatDockWidget : public QObject
 
   private slots:
     void hasRuntimeWidgets();
-    void gisTabShowsSuggestionsAndSendsReview();
+    void gisCardShowsSuggestionAndSendsReview();
+    void gisMentionAttachesHealthBlock();
     void usesPaletteBasedCursorStyling();
     void doesNotDuplicateStreamedAssistantResponse();
     void rendersToolResultWithoutRawJson();
@@ -127,47 +129,69 @@ void TestQgsAiChatDockWidget::hasRuntimeWidgets()
   QVERIFY( runtimeLabel->text().contains( u"idle"_s, Qt::CaseInsensitive ) );
 }
 
-void TestQgsAiChatDockWidget::gisTabShowsSuggestionsAndSendsReview()
+void TestQgsAiChatDockWidget::gisCardShowsSuggestionAndSendsReview()
 {
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
 
   QSettings settings;
+  const QString unsavedHash = QString::fromLatin1( QCryptographicHash::hash( QByteArrayLiteral( "unsaved" ), QCryptographicHash::Sha1 ).toHex() );
   const QString globalKey = u"strata/gis_tab/enabled"_s;
-  const QString unsavedProjectKey = u"strata/gis_tab/project_enabled/%1"_s.arg( QString::fromLatin1( QCryptographicHash::hash( QByteArrayLiteral( "unsaved" ), QCryptographicHash::Sha1 ).toHex() ) );
+  const QString unsavedProjectKey = u"strata/gis_tab/project_enabled/%1"_s.arg( unsavedHash );
+  const QString dismissedKey = u"strata/gis_tab/dismissed/%1"_s.arg( unsavedHash );
   const QVariant savedGlobal = settings.value( globalKey );
   const QVariant savedProject = settings.value( unsavedProjectKey );
+  const QVariant savedDismissed = settings.value( dismissedKey );
   settings.setValue( globalKey, true );
   settings.setValue( unsavedProjectKey, true );
+  settings.remove( dismissedKey );
 
   QgsProject::instance()->clear();
-  QgsVectorLayer *emptyLayer = new QgsVectorLayer( u"Point?field=name:string&crs=EPSG:4326"_s, u"Empty points"_s, u"memory"_s );
-  QVERIFY( emptyLayer->isValid() );
-  QgsProject::instance()->addMapLayer( emptyLayer );
+  QgsVectorLayer *noCrsLayer = new QgsVectorLayer( u"Point?field=name:string&crs=EPSG:4326"_s, u"No CRS points"_s, u"memory"_s );
+  QVERIFY( noCrsLayer->isValid() );
+  noCrsLayer->setCrs( QgsCoordinateReferenceSystem() );
+  QgsProject::instance()->addMapLayer( noCrsLayer );
 
   QgsAiModelRouter router;
   QgsAiFileContextProvider contextProvider( tempDir.path() );
   QgsAiReviewPatchEngine reviewEngine;
   QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
   QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  dock.resize( 400, 520 );
+  dock.show();
+  QApplication::processEvents();
 
-  QTabWidget *tabs = dock.findChild<QTabWidget *>( u"aiMainTabs"_s );
-  QListWidget *suggestions = dock.findChild<QListWidget *>( u"aiGisSuggestionList"_s );
-  QPushButton *review = dock.findChild<QPushButton *>( u"aiGisReviewSuggestionButton"_s );
-  QVERIFY( tabs );
-  QVERIFY( tabs->count() >= 2 );
-  QVERIFY( suggestions );
+  // The dedicated GIS tab is gone: suggestions live in the chat now.
+  QVERIFY( !dock.findChild<QWidget *>( u"aiGisSuggestionsTab"_s ) );
+  QVERIFY( !dock.findChild<QListWidget *>( u"aiGisSuggestionList"_s ) );
+
+  QFrame *card = dock.findChild<QFrame *>( u"aiGisSuggestionCard"_s );
+  QVERIFY( card );
+  QVERIFY( card->isVisible() );
+
+  QPushButton *review = dock.findChild<QPushButton *>( u"aiGisCardReviewButton"_s );
   QVERIFY( review );
-  QVERIFY( suggestions->count() > 0 );
-
-  suggestions->setCurrentRow( 0 );
-  QVERIFY( review->isEnabled() );
   review->click();
 
   QCOMPARE( manager.activeAgent(), u"ask_before_edits"_s );
   QVERIFY( !manager.history().isEmpty() );
   QVERIFY( manager.history().first().content.contains( u"GIS suggestion selected"_s ) );
   QVERIFY( manager.history().first().content.contains( u"ask-before-edits"_s ) );
+
+  // Dismissing every visible suggestion hides the card, and the dismissals
+  // are persisted per project so a refresh does not resurface them.
+  for ( int guard = 0; guard < 10 && card->isVisible(); ++guard )
+  {
+    QToolButton *dismiss = dock.findChild<QToolButton *>( u"aiGisCardDismissButton"_s );
+    QVERIFY( dismiss );
+    dismiss->click();
+    QCoreApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+    QApplication::processEvents();
+  }
+  QVERIFY( !card->isVisible() );
+  QVERIFY( QMetaObject::invokeMethod( &dock, "refreshGisSuggestionCard", Qt::DirectConnection ) );
+  QApplication::processEvents();
+  QVERIFY( !card->isVisible() );
 
   QgsProject::instance()->clear();
   if ( savedGlobal.isValid() )
@@ -178,6 +202,45 @@ void TestQgsAiChatDockWidget::gisTabShowsSuggestionsAndSendsReview()
     settings.setValue( unsavedProjectKey, savedProject );
   else
     settings.remove( unsavedProjectKey );
+  if ( savedDismissed.isValid() )
+    settings.setValue( dismissedKey, savedDismissed );
+  else
+    settings.remove( dismissedKey );
+}
+
+void TestQgsAiChatDockWidget::gisMentionAttachesHealthBlock()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsProject::instance()->clear();
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+  // Pre-trust the workspace so sendMessage() does not block on the modal trust prompt.
+  const QString trustRoot = QgsAiWorkspaceTrust::currentWorkspaceRoot();
+  const QgsAiWorkspaceTrust::State savedTrust = trustRoot.isEmpty() ? QgsAiWorkspaceTrust::State::Unknown : QgsAiWorkspaceTrust::state( trustRoot );
+  if ( !trustRoot.isEmpty() )
+    QgsAiWorkspaceTrust::setState( trustRoot, QgsAiWorkspaceTrust::State::Trusted );
+
+  QgsAiChatPromptEdit *input = dock.findChild<QgsAiChatPromptEdit *>( u"aiPromptInput"_s );
+  QVERIFY( input );
+  input->setPlainText( u"@gis check the project"_s );
+  QVERIFY( QMetaObject::invokeMethod( &dock, "sendMessage", Qt::DirectConnection ) );
+
+  QVERIFY( !manager.history().isEmpty() );
+  const QString sent = manager.history().first().content;
+  QVERIFY( sent.contains( u"@gis check the project"_s ) );
+  QVERIFY( sent.contains( u"Current project GIS health"_s ) );
+  QVERIFY( sent.contains( u"No layers loaded"_s ) );
+
+  if ( !trustRoot.isEmpty() )
+    QgsAiWorkspaceTrust::setState( trustRoot, savedTrust );
+  QgsProject::instance()->clear();
 }
 
 void TestQgsAiChatDockWidget::usesPaletteBasedCursorStyling()

@@ -34,9 +34,11 @@ class QListWidget;
 class QPushButton;
 class QShowEvent;
 class QTextEdit;
+class QTimer;
 class QToolButton;
-class QTabWidget;
 class QVBoxLayout;
+
+struct QgsAiGisSuggestion;
 
 class QgsAiChatPromptEdit;
 class QgsAiLayerIndexCoordinator;
@@ -92,8 +94,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void onNewChatClicked();
     void onHistoryEntryTriggered( QAction *action );
     void reloadTranscriptFromHistory();
-    void refreshGisSuggestions();
-    void reviewSelectedGisSuggestion();
+    void refreshGisSuggestionCard();
 
   private:
     QString selectedProposalId() const;
@@ -145,6 +146,8 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void setRequestRunning( bool running );
     void maybeShowWelcomeBanner();
     QString gisProjectSettingsKey() const;
+    void sendGisSuggestionToChat( const QgsAiGisSuggestion &suggestion );
+    void dismissGisSuggestion( const QString &suggestionId );
 
     struct AttachedFile
     {
@@ -159,12 +162,6 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QPointer<QgsAiLayerIndexCoordinator> mLayerIndexCoordinator;
 
     QgsScrollArea *mTranscriptScrollArea = nullptr;
-    QTabWidget *mMainTabs = nullptr;
-    QWidget *mGisTab = nullptr;
-    QCheckBox *mGisGlobalEnableCheckBox = nullptr;
-    QCheckBox *mGisProjectEnableCheckBox = nullptr;
-    QListWidget *mGisSuggestionList = nullptr;
-    QPushButton *mGisReviewSuggestionButton = nullptr;
     QWidget *mTranscriptContainer = nullptr;
     QVBoxLayout *mTranscriptLayout = nullptr;
     QgsAiChatPromptEdit *mInputTextEdit = nullptr;
@@ -181,6 +178,12 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QWidget *mFileContextChipRow = nullptr;
     QHBoxLayout *mFileContextChipLayout = nullptr;
     QList<AttachedFile> mAttachedFiles;
+
+    QFrame *mGisCardContainer = nullptr;
+    QToolButton *mGisCardToggle = nullptr;
+    QWidget *mGisCardBody = nullptr;
+    QVBoxLayout *mGisCardBodyLayout = nullptr;
+    QTimer *mGisCardRefreshTimer = nullptr;
 
     QFrame *mMentionPopup = nullptr;
     QListWidget *mMentionList = nullptr;

@@ -20,6 +20,7 @@
 
 #include "qgsaiauditlog.h"
 #include "qgsaifilecontextprovider.h"
+#include "qgsaigissuggestionengine.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
@@ -1599,7 +1600,11 @@ QList<QgsAiChatMessage> QgsAiAgentSessionManager::buildOutgoingMessages() const
   QgsAiChatMessage systemMessage;
   systemMessage.id = QUuid::createUuid().toString( QUuid::WithoutBraces );
   systemMessage.role = QgsAiChatRole::System;
-  systemMessage.content = buildSystemPrompt( retrieveContextForLastUserMessage() );
+  QString extraContext = retrieveContextForLastUserMessage();
+  const QString gisHealth = QgsAiGisSuggestionEngine::promptHealthBlockForProject( QgsProject::instance() );
+  if ( !gisHealth.isEmpty() )
+    extraContext = extraContext.isEmpty() ? gisHealth : gisHealth + u"\n"_s + extraContext;
+  systemMessage.content = buildSystemPrompt( extraContext );
   systemMessage.timestamp = QDateTime::currentDateTimeUtc();
   result.append( systemMessage );
 

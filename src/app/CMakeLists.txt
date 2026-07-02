@@ -323,6 +323,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaiclaudeoauthclient.cpp
     ai/qgsaicodexoauthclient.cpp
     ai/qgsaifilecontextprovider.cpp
+    ai/qgsaigissuggestionengine.cpp
     ai/qgsaimodelrouter.cpp
     ai/qgsaimodels.cpp
     ai/qgsaiopenroutermodelcatalog.cpp
