@@ -30,6 +30,7 @@
 #include <QDir>
 #include <QObject>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 
 using namespace Qt::StringLiterals;
@@ -84,8 +85,7 @@ QList<QgsAiGisSuggestion> QgsAiGisSuggestionEngine::suggestionsForProject( QgsPr
   const QMap<QString, QgsMapLayer *> layers = project->mapLayers();
   if ( layers.isEmpty() )
   {
-    suggestions
-      << makeGisSuggestion( u"project-empty"_s, QObject::tr( "No layers loaded" ), QObject::tr( "The project has no map layers. Start by adding data or opening a demo project." ), QObject::tr( "Inspect this empty QGIS project and propose the next data-loading step. Do not modify anything without approval." ) );
+    suggestions << makeGisSuggestion( u"project-empty"_s, QObject::tr( "No layers loaded" ), QObject::tr( "The project has no map layers. Start by adding data or opening a demo project." ), QObject::tr( "Inspect this empty QGIS project and propose the next data-loading step. Do not modify anything without approval." ) );
     return suggestions;
   }
 
@@ -214,7 +214,7 @@ QString QgsAiGisSuggestionEngine::formatHealthBlock( const QList<QgsAiGisSuggest
     return QString();
 
   QString block = u"## Current project GIS health\n"_s;
-  block += u"Automatic rule-based observations about the current QGIS project. Use them only when relevant to the user's request.\n"_s;
+  block += "Automatic rule-based observations about the current QGIS project. Use them only when relevant to the user's request.\n"_L1;
 
   int shown = 0;
   for ( const QgsAiGisSuggestion &suggestion : suggestions )

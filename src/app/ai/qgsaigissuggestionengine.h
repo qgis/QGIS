@@ -21,6 +21,8 @@
 #include <QList>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsProject;
 
 struct APP_EXPORT QgsAiGisSuggestion
@@ -29,7 +31,7 @@ struct APP_EXPORT QgsAiGisSuggestion
     QString title;
     QString detail;
     QString actionPrompt;
-    QString risk = QStringLiteral( "low" ); //!< low | medium | high
+    QString risk = u"low"_s; //!< Low | medium | high
 };
 
 /**

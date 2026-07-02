@@ -131,7 +131,7 @@ void TestQgsAiGisSuggestionEngine::formatHealthBlockCapsAndFullVariant()
   const QList<QgsAiGisSuggestion> suggestions = idsToSuggestions( 15 );
 
   const QString compact = QgsAiGisSuggestionEngine::formatHealthBlock( suggestions, false );
-  QVERIFY( compact.startsWith( u"## Current project GIS health"_s ) );
+  QVERIFY( compact.startsWith( "## Current project GIS health"_L1 ) );
   QCOMPARE( compact.count( u"- [medium]"_s ), 10 );
   QVERIFY( compact.contains( u"…5 more."_s ) );
   QVERIFY( !compact.contains( u"Suggested action:"_s ) );

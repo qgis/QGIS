@@ -2813,9 +2813,7 @@ void QgsAiChatDockWidget::refreshGisSuggestionCard()
 
     QPushButton *analyzeButton = new QPushButton( tr( "Analyze" ), row );
     analyzeButton->setObjectName( u"aiGisCardReviewButton"_s );
-    connect( analyzeButton, &QPushButton::clicked, this, [this, suggestion]() {
-      sendGisSuggestionToChat( suggestion );
-    } );
+    connect( analyzeButton, &QPushButton::clicked, this, [this, suggestion]() { sendGisSuggestionToChat( suggestion ); } );
     rowLayout->addWidget( analyzeButton );
 
     QToolButton *dismissButton = new QToolButton( row );
@@ -2823,9 +2821,7 @@ void QgsAiChatDockWidget::refreshGisSuggestionCard()
     dismissButton->setText( u"×"_s );
     dismissButton->setAutoRaise( true );
     dismissButton->setToolTip( tr( "Dismiss this suggestion for this project" ) );
-    connect( dismissButton, &QToolButton::clicked, this, [this, suggestion]() {
-      dismissGisSuggestion( suggestion.id );
-    } );
+    connect( dismissButton, &QToolButton::clicked, this, [this, suggestion]() { dismissGisSuggestion( suggestion.id ); } );
     rowLayout->addWidget( dismissButton );
 
     mGisCardBodyLayout->addWidget( row );
