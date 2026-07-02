@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmdetectdatasetchanges.h"
 
+#include "qgsgeometryfactory.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
 
@@ -200,6 +201,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   QHash<QgsFeatureId, QgsGeometry> originalGeometries;
   QHash<QgsFeatureId, QgsAttributes> originalAttributes;
   QHash<QgsAttributes, QgsFeatureId> originalNullGeometryAttributes;
+  QHash<QgsAttributes, QgsFeatureId> originalEmptyGeometryAttributes;
   long current = 0;
 
   QgsAttributes attrs;
@@ -208,11 +210,6 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   const QgsSpatialIndex index( it, [&]( const QgsFeature &f ) -> bool {
     if ( feedback->isCanceled() )
       return false;
-
-    if ( f.hasGeometry() )
-    {
-      originalGeometries.insert( f.id(), f.geometry() );
-    }
 
     if ( !mFieldsToCompare.empty() )
     {
@@ -224,7 +221,29 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       originalAttributes.insert( f.id(), attrs );
     }
 
-    if ( !f.hasGeometry() )
+    if ( f.hasGeometry() && !f.geometry().isEmpty() )
+    {
+      originalGeometries.insert( f.id(), f.geometry() );
+    }
+    else if ( f.hasGeometry() && f.geometry().isEmpty() )
+    {
+      if ( originalEmptyGeometryAttributes.contains( attrs ) )
+      {
+        feedback->reportError(
+          QObject::tr(
+            "A non-unique set of comparison attributes was found for "
+            "one or more features with EMPTY geometries - results may be misleading (features %1 and %2)"
+          )
+            .arg( f.id() )
+            .arg( originalEmptyGeometryAttributes.value( attrs ) )
+        );
+      }
+      else
+      {
+        originalEmptyGeometryAttributes.insert( attrs, f.id() );
+      }
+    }
+    else // no geometry
     {
       if ( originalNullGeometryAttributes.contains( attrs ) )
       {
@@ -282,7 +301,16 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
         matched = true;
       }
     }
-    else
+    else if ( revisedFeature.hasGeometry() && revisedFeature.geometry().isEmpty() )
+    {
+      if ( originalEmptyGeometryAttributes.contains( attrs ) )
+      {
+        // found a match for feature
+        unchangedOriginalIds.insert( originalEmptyGeometryAttributes.value( attrs ) );
+        matched = true;
+      }
+    }
+    else // revised feature has non-empty geometry
     {
       // can we match this feature?
       const QList<QgsFeatureId> candidates = index.intersects( revisedFeature.geometry().boundingBox() );
@@ -374,13 +402,21 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   current = 0;
   long deleted = 0;
   QgsFeature f;
+  QgsGeometry g;
+  QList<QgsFeatureId> emptyGeometryIds = originalEmptyGeometryAttributes.values();
+
   while ( it.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       break;
 
-    // use already fetched geometry
-    f.setGeometry( originalGeometries.value( f.id(), QgsGeometry() ) );
+    // attempt to use already fetched geometry or use Null/Empty geometry
+    g = originalGeometries.value( f.id(), QgsGeometry() );
+    if ( g.isNull() && emptyGeometryIds.contains( f.id() ) )
+    {
+      g = QgsGeometry( QgsGeometryFactory::geomFromWkbType( mOriginal->wkbType() ) );
+    }
+    f.setGeometry( g );
 
     if ( unchangedOriginalIds.contains( f.id() ) )
     {
