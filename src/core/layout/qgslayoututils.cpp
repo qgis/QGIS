@@ -523,7 +523,7 @@ double QgsLayoutUtils::pointsToMM( const double pointSize )
 double QgsLayoutUtils::mmToPoints( const double mmSize )
 {
   //conversion to points based on 1 point = 1/72 inch
-  return ( mmSize * ( 1.0 / pointToMM ) );
+  return ( mmSize / pointToMM );
 }
 
 QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
