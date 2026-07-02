@@ -16,6 +16,7 @@
 #include "qgsvectorlayerrenderer.h"
 
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturefilterprovider.h"
@@ -514,44 +515,6 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   return true;
 }
 
-QgsGeometry QgsVectorLayerRenderer::buildTopocentricHorizonGeometry( const QgsCoordinateTransform &coordinateTransform )
-{
-  const QgsCoordinateReferenceSystem crs = coordinateTransform.destinationCrs();
-  double topoLat = 0.0, topoLon = 0.0;
-  if ( !crs.topocentricOrigin( topoLat, topoLon ) )
-  {
-    return QgsGeometry();
-  }
-
-  // prevent division by zero
-  if ( std::abs( topoLat ) < 1e-6 )
-    topoLat = topoLat >= 0 ? 1e-6 : -1e-6;
-
-  const double topoLonRad = qDegreesToRadians( topoLon );
-  const double topoLatRad = qDegreesToRadians( topoLat );
-
-  // add the horizon points, 1 for each degree, to build up the clipping geometry
-  QVector<QgsPointXY> points;
-  for ( double lon = -180.0; lon <= 180.0; lon += 1 )
-  {
-    const double lonRad = qDegreesToRadians( lon );
-    const double latRad = std::atan( -std::cos( lonRad - topoLonRad ) / std::tan( topoLatRad ) );
-    points.append( QgsPointXY( lon, qRadiansToDegrees( latRad ) ) );
-  }
-
-  // unless we explicitly add the pole points, we are clipping too much of the world above/below 45/-45 latitude
-  const double pole = topoLat > 0 ? 90.0 : -90.0;
-  points.append( QgsPointXY( 180.0, pole ) );
-  points.append( QgsPointXY( -180.0, pole ) );
-
-  QgsGeometry horizonGeom = QgsGeometry::fromPolygonXY( QVector<QVector<QgsPointXY>> { points } );
-
-  const QgsCoordinateReferenceSystem geoCrs = crs.toGeographicCrs();
-  QgsCoordinateTransform geoToSource( geoCrs, coordinateTransform.sourceCrs(), coordinateTransform.context() );
-  horizonGeom.transform( geoToSource );
-
-  return horizonGeom;
-}
 
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeatureIterator &fit )
 {
@@ -579,7 +542,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
   double lat, lon;
   if ( context.coordinateTransform().destinationCrs().topocentricOrigin( lat, lon ) )
   {
-    horizonGeom = buildTopocentricHorizonGeometry( context.coordinateTransform() );
+    horizonGeom = QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry( context.coordinateTransform().destinationCrs(), context.coordinateTransform().sourceCrs(), context.transformContext() );
   }
 
   QgsFeature fet;
@@ -778,7 +741,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   double lat, lon;
   if ( context.coordinateTransform().destinationCrs().topocentricOrigin( lat, lon ) )
   {
-    horizonGeom = buildTopocentricHorizonGeometry( context.coordinateTransform() );
+    horizonGeom = QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry( context.coordinateTransform().destinationCrs(), context.coordinateTransform().sourceCrs(), context.transformContext() );
   }
 
   // 1. fetch features
