@@ -241,7 +241,6 @@ void QgsOracleConnectionItem::taskFinished()
     }
 
     case QgsTask::Complete:
-      setIcon( QIcon() );
       setAllAsPopulated();
       break;
 
