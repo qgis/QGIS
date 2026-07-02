@@ -22,6 +22,8 @@
 #include "qgis_sip.h"
 
 class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
+class QgsGeometry;
 
 /**
  * \class QgsCoordinateReferenceSystemUtils
@@ -59,6 +61,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystemUtils
      * \since QGIS 3.34
      */
     static QString translateProjection( const QString &projection );
+
+    /**
+     * Builds the geometry of the visible horizon (in \a outputCrs) when \a topocentricCrs is a topocentric CRS.
+     *
+     * The horizon is built up from points spaced at \a degreeStep degree intervals around the horizon.
+     *
+     * Returns null geometry if \a topocentricCrs is not a topocentric CRS or if the transform fails.
+     *
+     * \since QGIS 4.2
+     */
+    static QgsGeometry topocentricHorizonGeometry(
+      const QgsCoordinateReferenceSystem &topocentricCrs, const QgsCoordinateReferenceSystem &outputCrs, const QgsCoordinateTransformContext &transformContext, double degreeStep = 1.0
+    );
 };
 
 #endif // QGSCOORDINATEREFERENCESYSTEMUTILS_H
