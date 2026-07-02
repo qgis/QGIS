@@ -378,21 +378,25 @@ void QgsAdvancedDigitizingFloater::hideIfDisabled()
 void QgsAdvancedDigitizingFloater::changeX( const QString &text )
 {
   mXLineEdit->setText( text );
+  mXLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeY( const QString &text )
 {
   mYLineEdit->setText( text );
+  mYLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeZ( const QString &text )
 {
   mZLineEdit->setText( text );
+  mZLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeM( const QString &text )
 {
   mMLineEdit->setText( text );
+  mMLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeCommonAngleSnapping( double angle )
@@ -403,26 +407,31 @@ void QgsAdvancedDigitizingFloater::changeCommonAngleSnapping( double angle )
 void QgsAdvancedDigitizingFloater::changeDistance( const QString &text )
 {
   mDistanceLineEdit->setText( text );
+  mDistanceLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeAngle( const QString &text )
 {
   mAngleLineEdit->setText( text );
+  mAngleLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeBearing( const QString &text )
 {
   mBearingLineEdit->setText( text );
+  mBearingLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeArea( const QString &text )
 {
   mTotalAreaLineEdit->setText( text );
+  mTotalAreaLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeTotalLength( const QString &text )
 {
   mTotalLengthLineEdit->setText( text );
+  mTotalLengthLineEdit->setCursorPosition( 0 );
 }
 
 void QgsAdvancedDigitizingFloater::changeLockX( bool locked )
