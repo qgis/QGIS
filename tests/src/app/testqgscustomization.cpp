@@ -846,7 +846,7 @@ void TestQgsCustomization::testModel()
     QVERIFY( getItem<QgsCustomization::QgsActionRefItem>( "ToolBars/UserToolBar_1/ActionRef_mActionAddPart_1" )->isVisible() );
     QVERIFY( findQAction( u"ToolBars/UserToolBar_1/mActionAddPart"_s ) );
 
-    // hide new added action ref TODO
+    // hide new added action ref
     model.setData( actionIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
     QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
     model.apply();
