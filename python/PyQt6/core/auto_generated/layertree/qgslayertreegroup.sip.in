@@ -412,6 +412,34 @@ returned.
 .. versionadded:: 3.44
 %End
 
+    Qgis::WmsGroupRequestMode wmsGroupRequestMode() const;
+%Docstring
+Returns the request mode of the group. When it's opaque, WMS treats it
+as a single opaque layer instead of a collection of individual layers.
+Its child layers are hidden from GetCapabilities requests. Any direct
+requests (like GetMap or GetFeatureInfo etc.) for a child layer will
+result in an error. Child layers are rendered whenever a request is made
+for the group itself.
+
+.. seealso:: :py:func:`setWmsGroupRequestMode`
+
+.. versionadded:: 4.2
+%End
+
+    void setWmsGroupRequestMode( Qgis::WmsGroupRequestMode groupRequestMode );
+%Docstring
+Sets the request mode of the group.
+
+:param groupRequestMode: On Opaque, WMS treats it as a single opaque
+                         layer instead of a collection of individual
+                         layers. On Normal it behaves as a standard
+                         group.
+
+.. seealso:: :py:func:`wmsGroupRequestMode`
+
+.. versionadded:: 4.2
+%End
+
   protected slots:
 
     void nodeVisibilityChanged( QgsLayerTreeNode *node );

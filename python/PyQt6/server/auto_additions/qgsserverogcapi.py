@@ -18,7 +18,19 @@ QgsServerOgcApi.OPENAPI3 = QgsServerOgcApi.ContentType.OPENAPI3
 QgsServerOgcApi.JSON = QgsServerOgcApi.ContentType.JSON
 QgsServerOgcApi.HTML = QgsServerOgcApi.ContentType.HTML
 QgsServerOgcApi.XML = QgsServerOgcApi.ContentType.XML
+QgsServerOgcApi.FLATGEOBUF = QgsServerOgcApi.ContentType.FLATGEOBUF
 QgsServerOgcApi.ContentType.baseClass = QgsServerOgcApi
+# monkey patching scoped based enum
+QgsServerOgcApi.Profile.NONE.__doc__ = "No profile"
+QgsServerOgcApi.Profile.RFC7946.__doc__ = "GeoJSON profile according to RFC7946"
+QgsServerOgcApi.Profile.__doc__ = """JSON profile
+
+* ``NONE``: No profile
+* ``RFC7946``: GeoJSON profile according to RFC7946
+
+"""
+# --
+QgsServerOgcApi.Profile.baseClass = QgsServerOgcApi
 try:
     QgsServerOgcApi.sanitizeUrl = staticmethod(QgsServerOgcApi.sanitizeUrl)
     QgsServerOgcApi.relToString = staticmethod(QgsServerOgcApi.relToString)

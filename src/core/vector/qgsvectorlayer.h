@@ -33,6 +33,7 @@
 #include "qgsfeaturesource.h"
 #include "qgsfields.h"
 #include "qgsmaplayer.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayertoolscontext.h"
 #include "qgsvectorsimplifymethod.h"
@@ -81,7 +82,6 @@ class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
-class QgsStyleEntityVisitorInterface;
 class QgsVectorLayerSelectionProperties;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
@@ -1277,6 +1277,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * changes can be discarded by calling rollBack().
      */
     Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
+
+    /**
+     * Deletes a set of vertices from a feature.
+     * \param featureId ID of feature to remove vertices from
+     * \param vertices set of vertex indices to delete
+     * \note Calls to deleteVertices() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     *
+     * \since QGIS 4.2
+     */
+    Qgis::VectorEditResult deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices );
 
     /**
      * Deletes the selected features

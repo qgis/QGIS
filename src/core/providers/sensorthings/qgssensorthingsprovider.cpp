@@ -21,6 +21,7 @@
 
 #include "qgsapplication.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsreadwritelocker.h"
 #include "qgssensorthingsconnection.h"
@@ -70,6 +71,28 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
   try
   {
     auto rootContent = json::parse( content.content().toStdString() );
+
+    // try to determine sensorthings version
+    if ( rootContent.contains( "serverSettings" ) && rootContent["serverSettings"].contains( "conformance" ) )
+    {
+      for ( const auto &valueJson : rootContent["serverSettings"]["conformance"] )
+      {
+        const QString conformance = QString::fromStdString( valueJson.get<std::string>() );
+        const thread_local QRegularExpression sDataModelRx( u".*/datamodel\\b"_s );
+        if ( sDataModelRx.match( conformance ).hasMatch() )
+        {
+          // extract version from datamodel value
+          const thread_local QRegularExpression sVersionRx( u"\\d+\\.\\d+"_s );
+          const QRegularExpressionMatch versionMatch = sVersionRx.match( conformance );
+          if ( versionMatch.hasMatch() )
+          {
+            const QString versionString = versionMatch.captured( 0 );
+            mSharedData->mVersion = QVersionNumber::fromString( versionString );
+          }
+        }
+      }
+    }
+
     if ( !rootContent.contains( "value" ) )
     {
       appendError( QgsErrorMessage( tr( "No 'value' array in response" ), u"SensorThings"_s ) );
@@ -115,7 +138,7 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
         case Qgis::SensorThingsEntity::Sensor:
         case Qgis::SensorThingsEntity::ObservedProperty:
         case Qgis::SensorThingsEntity::Observation:
-        case Qgis::SensorThingsEntity::FeatureOfInterest:
+        case Qgis::SensorThingsEntity::Feature:
           appendError( QgsErrorMessage( tr( "Could not find url for %1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ), u"SensorThings"_s ) );
           QgsMessageLog::logMessage( tr( "Could not find url for %1" ).arg( qgsEnumValueToKey( mSharedData->mEntityType ) ), tr( "SensorThings" ) );
           break;
@@ -123,6 +146,76 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
         case Qgis::SensorThingsEntity::MultiDatastream:
           appendError( QgsErrorMessage( tr( "MultiDatastreams are not supported by this connection" ), u"SensorThings"_s ) );
           QgsMessageLog::logMessage( tr( "MultiDatastreams are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::FeatureOfInterest:
+          appendError( QgsErrorMessage( tr( "FeaturesOfInterest are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "FeaturesOfInterest are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::FeatureType:
+          appendError( QgsErrorMessage( tr( "FeatureTypes are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "FeatureTypes are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::Deployment:
+          appendError( QgsErrorMessage( tr( "Deployments are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "Deployments are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::ObservingProcedure:
+          appendError( QgsErrorMessage( tr( "ObservingProcedures are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "ObservingProcedures are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::Sampling:
+          appendError( QgsErrorMessage( tr( "Samplings are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "Samplings are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::SamplingProcedure:
+          appendError( QgsErrorMessage( tr( "SamplingProcedures are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "SamplingProcedures are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::Sampler:
+          appendError( QgsErrorMessage( tr( "Samplers are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "Samplers are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::PreparationStep:
+          appendError( QgsErrorMessage( tr( "PreparationSteps are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "PreparationSteps are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::PreparationProcedure:
+          appendError( QgsErrorMessage( tr( "PreparationProcedures are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "PreparationProcedures are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::ThingRelation:
+          appendError( QgsErrorMessage( tr( "ThingRelations are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "ThingRelations are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::RelationRole:
+          appendError( QgsErrorMessage( tr( "RelationRoles are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "RelationRoles are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::FeatureRelation:
+          appendError( QgsErrorMessage( tr( "FeatureRelations are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "FeatureRelations are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::DatastreamRelation:
+          appendError( QgsErrorMessage( tr( "DatastreamRelations are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "DatastreamRelations are not supported by this connection" ), tr( "SensorThings" ) );
+          break;
+
+        case Qgis::SensorThingsEntity::ObservationRelation:
+          appendError( QgsErrorMessage( tr( "ObservationRelations are not supported by this connection" ), u"SensorThings"_s ) );
+          QgsMessageLog::logMessage( tr( "ObservationRelations are not supported by this connection" ), tr( "SensorThings" ) );
           break;
       }
 
@@ -203,10 +296,21 @@ QString QgsSensorThingsProvider::htmlMetadata() const
   QString metadata;
 
   QgsReadWriteLocker locker( mSharedData->mReadWriteLock, QgsReadWriteLocker::Read );
-
+  metadata += u"<tr><td class=\"highlight\">"_s % tr( "SensorThings Version" ) % u"</td><td>%1"_s.arg( mSharedData->mVersion.toString() ) % u"</td></tr>\n"_s;
   metadata += u"<tr><td class=\"highlight\">"_s % tr( "Entity Type" ) % u"</td><td>%1"_s.arg( qgsEnumValueToKey( mSharedData->mEntityType ) ) % u"</td></tr>\n"_s;
   metadata += u"<tr><td class=\"highlight\">"_s % tr( "Endpoint" ) % u"</td><td><a href=\"%1\">%1</a>"_s.arg( mSharedData->mEntityBaseUri ) % u"</td></tr>\n"_s;
 
+  return metadata;
+}
+
+QVariantMap QgsSensorThingsProvider::metadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QVariantMap metadata;
+
+  QgsReadWriteLocker locker( mSharedData->mReadWriteLock, QgsReadWriteLocker::Read );
+  metadata.insert( u"SensorThingsVersion"_s, mSharedData->mVersion.toString() );
   return metadata;
 }
 

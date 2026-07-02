@@ -2383,7 +2383,9 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       }
     }
 
+#ifdef QGISDEBUG
     QgsDebugMsgLevel( u"add layer %1"_s.arg( id ), 2 );
+#endif
     mTileLayersSupported << tileLayer;
   }
 

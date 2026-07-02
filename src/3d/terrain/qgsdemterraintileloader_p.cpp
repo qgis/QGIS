@@ -181,7 +181,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
 {
   provider->moveToThread( QThread::currentThread() );
 
-  QgsEventTracing::ScopedEvent e( u"3D"_s, u"DEM"_s );
+  QgsScopedEvent e( u"3D"_s, u"DEM"_s );
 
   // TODO: use feedback object? (but GDAL currently does not support cancellation anyway)
   QgsRasterInterface *input = provider;

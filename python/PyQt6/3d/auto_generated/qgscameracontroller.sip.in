@@ -46,14 +46,14 @@ Sets the camera movement speed
 .. versionadded:: 3.18
 %End
 
-    Qgis::VerticalAxisInversion verticalAxisInversion() const;
+    Qgis::VerticalAxisInversionFlags verticalAxisInversion() const;
 %Docstring
 Returns the vertical axis inversion behavior.
 
 .. versionadded:: 3.18
 %End
 
-    void setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
+    void setVerticalAxisInversion( Qgis::VerticalAxisInversionFlags inversion );
 %Docstring
 Sets the vertical axis ``inversion`` behavior.
 

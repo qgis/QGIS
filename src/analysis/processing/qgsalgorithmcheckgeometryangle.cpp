@@ -211,10 +211,15 @@ QVariantMap QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
+    else
+      feedback->featureAddedToSink( u"ERRORS"_s );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
   }
+
+  sink_errors->finalize();
+  feedback->featureSinkFinalized( u"ERRORS"_s );
 
   // cleanup memory of the pointed data
   for ( const QgsGeometryCheckError *error : checkErrors )

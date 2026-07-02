@@ -198,6 +198,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
     QAction *mActionEnableAmbientOcclusion = nullptr;
+    QAction *mActionEnableBloom = nullptr;
     QAction *mActionSync2DNavTo3D = nullptr;
     QAction *mActionSync3DNavTo2D = nullptr;
     QAction *mShowFrustumPolygon = nullptr;

@@ -267,14 +267,36 @@ void TestQgsJsonUtils::testExportFeatureJson()
     ",\"type\":\"Feature\"}"
   ) };
   QString layerName( u"theForestLayer"_s );
+  QVariantMap extraMembers;
+  extraMembers["featureType"] = layerName;
+
   QString genericFeatureId( u"theForestLayer-1337"_s );
   QVariantMap extraProperties;
   extraProperties.insert( u"andAnExtraProperty"_s, 1337 );
 
-  const auto jFeatureType( exporter.exportFeatureToJsonObject( feature, extraProperties, genericFeatureId, layerName ) );
+  const auto jFeatureType( exporterFeatureTypeAndIdAndExtraProperties.exportFeatureToJsonObject( feature, extraProperties, genericFeatureId, extraMembers ) );
   QCOMPARE( QString::fromStdString( jFeatureType.dump() ), expectedJsonFeatureTypeAndIdAndExtraProperties );
-  const auto jsonFeatureType = exporter.exportFeature( feature, extraProperties, genericFeatureId, -1, layerName );
+  const auto jsonFeatureType = exporterFeatureTypeAndIdAndExtraProperties.exportFeature( feature, extraProperties, genericFeatureId, -1, extraMembers );
   QCOMPARE( jsonFeatureType, expectedJsonFeatureTypeAndIdAndExtraProperties );
+
+  const QgsJsonExporter exporterForeignMembers { &vl };
+  const auto expectedJsonForeignMembers { QStringLiteral(
+    "{\"bbox\":[1.12,1.12,5.45,5.33],\"featureType\":\"anotherForestLayer\",\"geometry\":{\"coordinates\":" //#spellok
+    "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
+    "[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],\"type\":\"Polygon\"}"
+    ",\"id\":123,\"justAnotherDummy\":\"dum di da di dum di da\",\"properties\":{\"flddbl\":2.0,\"fldint\":1,\"fldtxt\":\"a value\"}" //#spellok
+    ",\"qgis:requestedWmsName\":\"theForestGroup\",\"type\":\"Feature\"}"                                                             //#spellok
+  ) };
+
+  QVariantMap moreExtraMembers;
+  moreExtraMembers["featureType"] = u"anotherForestLayer"_s;          //#spellok
+  moreExtraMembers["qgis:requestedWmsName"] = u"theForestGroup"_s;    //#spellok
+  moreExtraMembers["justAnotherDummy"] = u"dum di da di dum di da"_s; //#spellok
+
+  const auto jForeignMembers( exporterForeignMembers.exportFeatureToJsonObject( feature, QVariantMap(), QVariant(), moreExtraMembers ) );
+  QCOMPARE( QString::fromStdString( jForeignMembers.dump() ), expectedJsonForeignMembers );
+  const auto jsonForeignMembers = exporterForeignMembers.exportFeature( feature, QVariantMap(), QVariant(), -1, moreExtraMembers );
+  QCOMPARE( jsonForeignMembers, expectedJsonForeignMembers );
 }
 
 void TestQgsJsonUtils::testExportFeatureJsonCrs()

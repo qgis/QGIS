@@ -31,6 +31,12 @@ Content-Type: application/geo+json
       "rel": "alternate",
       "title": "Retrieve the features of the collection as HTML",
       "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/items.fgb?name=two",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as FLATGEOBUF",
+      "type": "application/flatgeobuf"
     }
   ],
   "numberMatched": 1,

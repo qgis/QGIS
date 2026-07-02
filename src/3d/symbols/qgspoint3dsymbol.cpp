@@ -21,6 +21,7 @@
 #include "qgs3dutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmaterialregistry.h"
+#include "qgsmetalroughmaterialsettings.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
@@ -42,7 +43,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::create()
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol()
-  : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
+  : mMaterialSettings( std::make_unique<QgsMetalRoughMaterialSettings>() )
 {
   setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
 }
@@ -104,10 +105,10 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( u"alt-clamping"_s ) );
 
   const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
-  const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );
+  const QString materialType = elem.attribute( u"material_type"_s, u"metalrough"_s );
   mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( materialType );
   if ( !mMaterialSettings )
-    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s );
+    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"metalrough"_s );
   mMaterialSettings->readXml( elemMaterial, context );
 
   mShape = shapeFromString( elem.attribute( u"shape"_s ) );
@@ -222,6 +223,22 @@ QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
         if ( radius == 0 )
           return 10;
         return radius;
+      }
+      else if ( property == "rings"_L1 )
+      {
+        constexpr int DEFAULT_RINGS = 16;
+        const int rings = mShapeProperties.value( property, DEFAULT_RINGS ).toInt();
+        if ( rings == 0 )
+          return DEFAULT_RINGS;
+        return rings;
+      }
+      else if ( property == "slices"_L1 )
+      {
+        constexpr int DEFAULT_SLICES = 16;
+        const int slices = mShapeProperties.value( property, DEFAULT_SLICES ).toInt();
+        if ( slices == 0 )
+          return DEFAULT_SLICES;
+        return slices;
       }
       break;
     }

@@ -206,6 +206,10 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
       {
         return;
       }
+      if ( std::isnan( value ) )
+      {
+        return;
+      }
       elevations.append( value );
     };
 
@@ -265,6 +269,10 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
         {
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         }
+        else
+        {
+          feedback->featureAddedToSink( u"OUTPUT"_s );
+        }
       }
     }
 
@@ -278,6 +286,8 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
   }
   if ( sink )
   {
+    sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     results.insert( u"OUTPUT"_s, destId );
   }
   return results;

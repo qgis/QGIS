@@ -1,5 +1,4 @@
-
-ARG DISTRO_VERSION=25.10
+ARG DISTRO_VERSION=26.04
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -28,7 +27,7 @@ RUN  apt-get update \
     gpsbabel \
     graphviz \
     'libaio1|libaio1t64' \
-    'libdraco4|libdraco8' \
+    'libdraco4|libdraco8|libdraco9' \
     libexiv2-28 \
     'libfcgi0ldbl|libfcgi0t64' \
     libgeographiclib26 \
@@ -105,11 +104,13 @@ RUN  apt-get update \
     xfonts-scalable \
     xvfb \
     ocl-icd-libopencl1
+
 RUN  pip3 install --break-system-packages \
     future \
     capturer \
     hdbcli \
     pyarrow
+
 RUN  apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
@@ -184,7 +185,7 @@ RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     bison \
     ccache \
-    clang \
+    clang-22 \
     cmake \
     flex \
     mold \
@@ -233,6 +234,9 @@ RUN  apt-get update \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean
+
+RUN update-alternatives --install /usr/bin/clang   clang   /usr/bin/clang-22  220 \
+    --slave /usr/bin/clang++ clang++ /usr/bin/clang++-22
 
 ENV PATH="/usr/local/bin:${PATH}"
 

@@ -40,6 +40,7 @@ class TestQgsRelationReferenceFieldFormatter : public QObject
     void init();            // will be called before each testfunction is executed.
     void cleanup();         // will be called after every testfunction.
     void testDependencies();
+    void testRegression66339();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -149,6 +150,29 @@ void TestQgsRelationReferenceFieldFormatter::testDependencies()
   QCOMPARE( dependency.name, mLayer2->name() );
   QCOMPARE( dependency.provider, mLayer2->providerType() );
   QCOMPARE( dependency.source, mLayer2->publicSource() );
+}
+
+
+void TestQgsRelationReferenceFieldFormatter::testRegression66339()
+{
+  const QgsEditorWidgetSetup setup {
+    u"RelationReference"_s,
+    { { u"ReferencedLayerDataSource"_s, mLayer2->publicSource() },
+      { u"ReferencedLayerProviderKey"_s, mLayer2->providerType() },
+      { u"ReferencedLayerId"_s, mLayer2->id() },
+      { u"ReferencedLayerName"_s, mLayer2->name() },
+      { u"Relation"_s, u"vl1.vl2"_s } }
+  };
+
+  QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+
+  mLayer2->setDisplayExpression( uR"("material" || '/' || "raccord" || '/' || "diameter")"_s );
+  const int fieldIndex = mLayer1->fields().indexOf( "fk"_L1 );
+  QVariant cache = fieldFormatter->createCache( mLayer1.get(), fieldIndex, setup.config() );
+  // This triggered the issue #66339: value is long long but cache key is int
+  const QVariant value = 11LL;
+  const QVariant reprValue = fieldFormatter->representValue( mLayer1.get(), fieldIndex, setup.config(), cache, value );
+  QCOMPARE( reprValue.toString(), u"iron/sleeve/120"_s );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceFieldFormatter )

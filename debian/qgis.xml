@@ -93,7 +93,6 @@
   <mime-type type="image/tiff">
     <comment>TIFF raster data</comment>
     <comment xml:lang="de">TIFF-Rasterdaten</comment>
-    <icon name="qgis-mime"/>
     <magic priority="50">
       <match type="string" offset="0" value="MM">
         <match type="little16" offset="2" value="42"/>
@@ -109,7 +108,6 @@
   <mime-type type="image/jpeg">
     <comment>JPEG raster data</comment>
     <comment xml:lang="de">JPEG-Rasterdaten</comment>
-    <icon name="qgis-mime"/>
     <magic priority="50">
        <match type="big16" offset="0" value="65496"/>
     </magic>

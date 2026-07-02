@@ -52,11 +52,15 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   mMinimumScaleIconLabel = new QLabel( this );
   mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemeIcon( u"/mActionZoomOut.svg"_s ).pixmap( QSize( iconSize, iconSize ) ) );
+  mMinimumScaleIconLabel->setToolTip( minLbl->toolTip() );
   mMaximumScaleIconLabel = new QLabel( this );
   mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemeIcon( u"/mActionZoomIn.svg"_s ).pixmap( QSize( iconSize, iconSize ) ) );
+  mMaximumScaleIconLabel->setToolTip( maxLbl->toolTip() );
 
   mMinimumScaleWidget = new QgsScaleWidget( this );
+  mMinimumScaleWidget->setToolTip( minLbl->toolTip() );
   mMaximumScaleWidget = new QgsScaleWidget( this );
+  mMaximumScaleWidget->setToolTip( maxLbl->toolTip() );
   connect( mMinimumScaleWidget, &QgsScaleWidget::scaleChanged, mMaximumScaleWidget, &QgsScaleWidget::setMinScale );
   mMinimumScaleWidget->setShowCurrentScaleButton( true );
   mMaximumScaleWidget->setShowCurrentScaleButton( true );

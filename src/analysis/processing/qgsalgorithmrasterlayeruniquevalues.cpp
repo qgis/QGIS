@@ -221,8 +221,11 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
       f.setAttributes( QgsAttributes() << it.key() << it.value() << area );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT_TABLE"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT_TABLE"_s );
     }
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT_TABLE"_s );
     outputs.insert( u"OUTPUT_TABLE"_s, tableDest );
   }
 

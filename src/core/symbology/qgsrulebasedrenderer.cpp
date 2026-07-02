@@ -1279,6 +1279,13 @@ void QgsRuleBasedRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *s
     delete symbol;
 }
 
+void QgsRuleBasedRenderer::setLegendSymbolItemLabel( const QString &key, const QString &label )
+{
+  Rule *rule = mRootRule->findRuleByKey( key );
+  if ( rule )
+    rule->setLabel( label );
+}
+
 QgsLegendSymbolList QgsRuleBasedRenderer::legendSymbolItems() const
 {
   return mRootRule->legendSymbolItems();

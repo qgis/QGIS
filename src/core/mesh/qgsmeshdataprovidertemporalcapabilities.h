@@ -40,8 +40,8 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities : public QgsDataProvid
      */
     enum MatchingTemporalDatasetMethod
     {
-      FindClosestDatasetBeforeStartRangeTime, //! Finds the closest dataset which have its time before the requested start range time
-      FindClosestDatasetFromStartRangeTime    //! Finds the closest dataset before or after the requested start range time
+      FindClosestDatasetBeforeStartRangeTime, //!< Finds the closest dataset which have its time before the requested start range time
+      FindClosestDatasetFromStartRangeTime    //!< Finds the closest dataset before or after the requested start range time
     };
 
     /**

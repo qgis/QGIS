@@ -51,7 +51,7 @@ class QgsMultiUnionAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    bool makeUnion( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    bool makeUnion( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, const QString &sinkName, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 };
 
 ///@endcond PRIVATE

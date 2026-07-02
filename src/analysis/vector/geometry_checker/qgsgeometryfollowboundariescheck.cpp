@@ -29,14 +29,12 @@ QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryC
   mCheckLayer = checkLayer;
   if ( mCheckLayer )
   {
-    mIndex = new QgsSpatialIndex( *mCheckLayer->dataProvider() );
+    mIndex = std::make_unique<QgsSpatialIndex>( *mCheckLayer->dataProvider() );
   }
 }
 
 QgsGeometryFollowBoundariesCheck::~QgsGeometryFollowBoundariesCheck()
-{
-  delete mIndex;
-}
+{}
 
 QgsGeometryCheck::Result QgsGeometryFollowBoundariesCheck::collectErrors(
   const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids

@@ -19,7 +19,6 @@
 #include "qgsxmlschemaanalyzer.h"
 
 #include <cpl_string.h>
-#include <gdal.h>
 #include <ogr_api.h>
 
 #include "qgsbackgroundcachedshareddata.h"
@@ -248,6 +247,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
 
     QgsSettings settings;
     QString cacheDirectory = settings.value( u"cache/directory"_s ).toString();
+    qDebug() << "------------------ " << cacheDirectory << " -------------------------------";
     if ( cacheDirectory.isEmpty() )
       cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
     if ( !cacheDirectory.endsWith( QDir::separator() ) )
@@ -256,6 +256,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
     }
     // Must be kept in sync with QgsOptions::clearCache()
     cacheDirectory += "gmlas_xsd_cache"_L1;
+    qDebug() << "------------------ " << cacheDirectory << " -------------------------------";
     QgsDebugMsgLevel( u"cacheDirectory = %1"_s.arg( cacheDirectory ), 4 );
     char *pszEscaped = CPLEscapeString( cacheDirectory.toStdString().c_str(), -1, CPLES_XML );
     QString config = QStringLiteral(
@@ -296,6 +297,7 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
     )
                        .arg( pszEscaped );
     CPLFree( pszEscaped );
+    qDebug() << "konfig:::::: " << config << " war die konfig";
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "CONFIG_FILE", config.toStdString().c_str() );
 
     QgsXmlSchemaAnalyzerGMLASErrorHandlerUserData userData;
@@ -648,7 +650,19 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
       sharedData->mFieldNameToXPathAndIsNestedContentMap[fieldName] = QPair<QString, bool>( fieldXPath, true );
     }
   }
+  if ( geometryAttribute.isEmpty() )
+  {
+    // When we have not found any geometry field in this layer, we check for geometries in referencing layers.
+    QList<QPair<QString, Qgis::WkbType>> geomInfoList = geometryInfoFromReferencingLayers( hDS, layerName );
 
+    if ( !geomInfoList.isEmpty() )
+    {
+      // We pick the first geometry found, even if multiple related features contain geometries and even if they contain multiple geometries.
+      // This supports MappedFeatures of GeoSciML now and could be extended in the future.
+      geometryAttribute = geomInfoList.first().first;
+      geomType = geomInfoList.first().second;
+    }
+  }
   return true;
 }
 
@@ -924,4 +938,41 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithoutGMLAS(
   }
 
   return true;
+}
+
+QList<QPair<QString, Qgis::WkbType>> QgsXmlSchemaAnalyzer::geometryInfoFromReferencingLayers( GDALDatasetH dataset, const QString &layerName )
+{
+  // We go one level deep by checking all layers in the dataset for foreign keys to the current layer.
+  QList<QPair<QString, Qgis::WkbType>> geometryInfoFromReferencingLayers;
+  // We create the pattern for the PKs. An alternate approach would be to get the layers by
+  // reading features of https://gdal.org/en/stable/drivers/vector/gmlas_metadata_layers.html#ogr-layer-relationships-layer
+  const QString fkNamePartToCurrentLayer = u"_%1_pkid"_s.arg( layerName.toLower() );
+  int nLayerCount = GDALDatasetGetLayerCount( dataset );
+  for ( int i = 0; i < nLayerCount; i++ )
+  {
+    OGRLayerH hLayer = GDALDatasetGetLayer( dataset, i );
+    if ( !hLayer )
+      continue;
+
+    OGRFeatureDefnH hDefn = OGR_L_GetLayerDefn( hLayer );
+    int nFieldCount = OGR_FD_GetFieldCount( hDefn );
+    for ( int j = 0; j < nFieldCount; j++ )
+    {
+      OGRFieldDefnH hFieldDefn = OGR_FD_GetFieldDefn( hDefn, j );
+      if ( QString::fromUtf8( OGR_Fld_GetNameRef( hFieldDefn ) ).endsWith( fkNamePartToCurrentLayer ) )
+      {
+        QString geometryAttribute = OGR_L_GetGeometryColumn( hLayer );
+        // Check if we found a geometry and it's not an abstract geometry
+        if ( !geometryAttribute.isEmpty() && geometryAttribute != "abstractgeometry"_L1 )
+        {
+          Qgis::WkbType geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_L_GetGeomType( hLayer ) );
+          // Always create a multitype because multiple referencing features might be possible
+          geomType = QgsWkbTypes::multiType( geomType );
+          geometryInfoFromReferencingLayers.append( { geometryAttribute, geomType } );
+        }
+        break;
+      }
+    }
+  }
+  return geometryInfoFromReferencingLayers;
 }

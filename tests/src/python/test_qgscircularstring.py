@@ -12,7 +12,7 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 
 import qgis  # NOQA
 
-from qgis.core import QgsCircularString, QgsPoint, QgsVertexId
+from qgis.core import QgsCircularString, QgsLineString, QgsPoint, QgsVertexId
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -229,6 +229,24 @@ class TestQgsCircularString(QgisTestCase):
 
         # Arc distance should be longer than straight line
         self.assertGreater(arc_distance, straight_distance)
+
+    def testAppendExceptions(self):
+        cs = QgsCircularString()
+        cs.fromWkt("CircularString (0 0, 1 1, 0 2)")
+
+        ls = QgsLineString()
+        ls.fromWkt("LineString (0 2, 10 12)")
+
+        with self.assertRaises(ValueError):
+            cs.append(ls)
+
+        self.assertEqual(cs.numPoints(), 3)
+
+        # working append
+        cs2 = QgsCircularString()
+        cs2.fromWkt("CircularString (0 2, 1 3, 0 4)")
+        cs.append(cs2)
+        self.assertEqual(cs.numPoints(), 5)
 
 
 if __name__ == "__main__":

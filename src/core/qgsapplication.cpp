@@ -353,6 +353,7 @@ void registerMetaTypes()
   qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
   qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  qRegisterMetaType<QgsProcessingModelChildAlgorithmResult>( "QgsProcessingModelChildAlgorithmResult" );
   qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
   qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
   qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );

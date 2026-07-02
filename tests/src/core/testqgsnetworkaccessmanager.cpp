@@ -634,10 +634,8 @@ void TestQgsNetworkAccessManager::fetchPostMultiPart_data()
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
 {
-  if ( QgsTest::isCIRun() )
-  {
-    QSKIP( "badssl.com service is not reliable enough for use on CI" );
-  }
+  // badssl.com is really unstable, so prefer setting up a local instance if you want to reproduce
+  // like it's done in CI. To do so, see tests folder README.md, section "Local badssl server"
 
   const QObject context;
   //test fetching from a blank url
@@ -646,7 +644,13 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   bool gotSslError = false;
   bool gotRequestEncounteredSslError = false;
   int requestId = -1;
-  QUrl u = QUrl( u"https://expired.badssl.com"_s );
+
+  QString expiredUrl = qgetenv( "QGIS_BADSSL_URL_EXPIRED" );
+  if ( expiredUrl.isEmpty() )
+    expiredUrl = u"https://expired.badssl.com/"_s;
+
+
+  QUrl u = QUrl( expiredUrl );
   connect( QgsNetworkAccessManager::instance(), qOverload<QgsNetworkRequestParameters>( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters &params ) {
     gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
@@ -733,8 +737,11 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
 {
   if ( QgsTest::isCIRun() )
   {
-    QSKIP( "badssl.com service is not reliable enough for use on CI" );
+    QSKIP( "This tests block most of the time, better disable it for now" );
   }
+
+  // badssl.com is really unstable, so prefer setting up a local instance if you want to reproduce
+  // like it's done in CI. To do so, see tests folder README.md, section "Local badssl server"
 
   QgsNetworkAccessManager::instance()->setSslErrorHandler( std::make_unique<TestSslErrorHandler>() );
 
@@ -745,7 +752,12 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   bool gotSslError = false;
   int requestId = -1;
   bool gotRequestEncounteredSslError = false;
-  QUrl u = QUrl( u"https://self-signed.badssl.com/"_s );
+
+  QString selfSignedUrl = qgetenv( "QGIS_BADSSL_URL_SELFSIGNED" );
+  if ( selfSignedUrl.isEmpty() )
+    selfSignedUrl = u"https://self-signed.badssl.com/"_s;
+
+  QUrl u = QUrl( selfSignedUrl );
   connect( QgsNetworkAccessManager::instance(), qOverload<QgsNetworkRequestParameters>( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters &params ) {
     gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
@@ -786,7 +798,7 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   QNetworkRequest req { u };
   const QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
   QCOMPARE( rep.error(), QNetworkReply::NoError );
-  QVERIFY( rep.content().contains( "<!DOCTYPE html>" ) );
+  QVERIFY( rep.content().contains( "self-signed" ) );
   while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
   {
     qApp->processEvents();

@@ -163,6 +163,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     addGeomItem( Qgis::WkbType::CurvePolygon );
     addGeomItem( Qgis::WkbType::MultiCurve );
     addGeomItem( Qgis::WkbType::MultiSurface );
+    addGeomItem( Qgis::WkbType::NurbsCurve );
   }
 
   if ( conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::PolyhedralSurfaces ) )

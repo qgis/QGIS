@@ -77,6 +77,7 @@ class TestQgsAttributeTable : public QObject
     void testSortByDisplayExpression();
     void testOrderColumn();
     void testEmptyModelCrash();
+    void testDeleteFieldCrash();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -937,6 +938,28 @@ void TestQgsAttributeTable::testEmptyModelCrash()
   const QgsField field { u"int"_s, QMetaType::Int };
   dlg->addAttribute( field );
   dlg->removeAttributes( QList<int>() << 0 );
+}
+
+void TestQgsAttributeTable::testDeleteFieldCrash()
+{
+  auto tempLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=id:int&field=name:string"_s, u"vl"_s, u"memory"_s );
+  QVERIFY( tempLayer->isValid() );
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 0, 0 ) ) );
+  f1.setAttribute( u"id"_s, u"1"_s );
+  f1.setAttribute( u"name"_s, u"test"_s );
+  QVERIFY( tempLayer->dataProvider()->addFeature( f1 ) );
+  QVERIFY( tempLayer->startEditing() );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get() );
+  QgsAttributeTableModel *model = dlg->mMainView->masterModel();
+  const QModelIndex cellIndex = model->index( 0, 1 );
+  QVERIFY( cellIndex.isValid() );
+  dlg->setView( QgsDualView::ViewMode::AttributeTable );
+  dlg->mMainView->tableView()->setCurrentIndex( cellIndex );
+  dlg->mMainView->tableView()->edit( cellIndex );
+  // this triggered the crash in QgsAttributeTableModel::getWidgetData
+  // since the widgetData list was already cleared but the attributes were not.
+  dlg->removeAttributes( QList<int>() << 1 );
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )

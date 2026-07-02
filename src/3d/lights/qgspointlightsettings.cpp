@@ -37,7 +37,9 @@ Qgis::LightSourceType QgsPointLightSettings::type() const
 
 QgsPointLightSettings *QgsPointLightSettings::clone() const
 {
-  return new QgsPointLightSettings( *this );
+  auto res = std::make_unique< QgsPointLightSettings >( *this );
+  res->mId = mId;
+  return res.release();
 }
 
 Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const
@@ -49,16 +51,16 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
 
   Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
   light->setColor( Qgs3DUtils::srgbToLinear( color() ) );
-  light->setIntensity( intensity() );
+  light->setIntensity( static_cast< float >( intensity() ) );
 
-  light->setConstantAttenuation( constantAttenuation() );
-  light->setLinearAttenuation( linearAttenuation() );
-  light->setQuadraticAttenuation( quadraticAttenuation() );
+  light->setConstantAttenuation( static_cast< float >( constantAttenuation() ) );
+  light->setLinearAttenuation( static_cast< float >( linearAttenuation() ) );
+  light->setQuadraticAttenuation( static_cast< float >( quadraticAttenuation() ) );
 
   lightEntity->addComponent( light );
   lightEntity->addComponent( lightTransform );
 
-  if ( !map.showLightSourceOrigins() )
+  if ( !map.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowLightSourceOrigins ) )
   {
     lightEntity->setParent( parent );
     return lightEntity;
@@ -93,6 +95,7 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
 QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elemLight = doc.createElement( u"point-light"_s );
+  elemLight.setAttribute( u"id"_s, mId );
   elemLight.setAttribute( u"x"_s, mPosition.x() );
   elemLight.setAttribute( u"y"_s, mPosition.y() );
   elemLight.setAttribute( u"z"_s, mPosition.z() );
@@ -106,9 +109,12 @@ QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWri
 
 void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
+  if ( elem.hasAttribute( u"id"_s ) )
+    mId = elem.attribute( u"id"_s );
+
   mPosition.set( elem.attribute( u"x"_s ).toDouble(), elem.attribute( u"y"_s ).toDouble(), elem.attribute( u"z"_s ).toDouble() );
   mColor = QgsColorUtils::colorFromString( elem.attribute( u"color"_s ) );
-  mIntensity = elem.attribute( u"intensity"_s ).toFloat();
+  mIntensity = elem.attribute( u"intensity"_s ).toDouble();
   mConstantAttenuation = elem.attribute( u"attenuation-0"_s ).toDouble();
   mLinearAttenuation = elem.attribute( u"attenuation-1"_s ).toDouble();
   mQuadraticAttenuation = elem.attribute( u"attenuation-2"_s ).toDouble();
@@ -116,10 +122,11 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
 
 bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other ) const
 {
-  return mPosition == other.mPosition
+  return mId == other.mId
+         && mPosition == other.mPosition
          && mColor == other.mColor
-         && mIntensity == other.mIntensity
-         && mConstantAttenuation == other.mConstantAttenuation
-         && mLinearAttenuation == other.mLinearAttenuation
-         && mQuadraticAttenuation == other.mQuadraticAttenuation;
+         && qgsDoubleNear( mIntensity, other.mIntensity )
+         && qgsDoubleNear( mConstantAttenuation, other.mConstantAttenuation )
+         && qgsDoubleNear( mLinearAttenuation, other.mLinearAttenuation )
+         && qgsDoubleNear( mQuadraticAttenuation, other.mQuadraticAttenuation );
 }

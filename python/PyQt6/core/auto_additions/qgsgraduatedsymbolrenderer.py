@@ -11,7 +11,7 @@ try:
     QgsGraduatedSymbolRenderer.createRenderer = staticmethod(QgsGraduatedSymbolRenderer.createRenderer)
     QgsGraduatedSymbolRenderer.create = staticmethod(QgsGraduatedSymbolRenderer.create)
     QgsGraduatedSymbolRenderer.convertFromRenderer = staticmethod(QgsGraduatedSymbolRenderer.convertFromRenderer)
-    QgsGraduatedSymbolRenderer.__overridden_methods__ = ['flags', 'symbolForFeature', 'originalSymbolForFeature', 'startRender', 'stopRender', 'usedAttributes', 'filterNeedsGeometry', 'dump', 'clone', 'toSld', 'capabilities', 'symbols', 'accept', 'save', 'legendSymbolItems', 'legendKeysForFeature', 'legendKeyToExpression', 'legendSymbolItemsCheckable', 'legendSymbolItemChecked', 'checkLegendSymbolItem', 'setLegendSymbolItem', 'legendClassificationAttribute']
+    QgsGraduatedSymbolRenderer.__overridden_methods__ = ['flags', 'symbolForFeature', 'originalSymbolForFeature', 'startRender', 'stopRender', 'usedAttributes', 'filterNeedsGeometry', 'dump', 'clone', 'toSld', 'capabilities', 'symbols', 'accept', 'save', 'legendSymbolItems', 'legendKeysForFeature', 'legendKeyToExpression', 'legendSymbolItemsCheckable', 'legendSymbolItemChecked', 'checkLegendSymbolItem', 'setLegendSymbolItem', 'setLegendSymbolItemLabel', 'legendClassificationAttribute']
     QgsGraduatedSymbolRenderer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

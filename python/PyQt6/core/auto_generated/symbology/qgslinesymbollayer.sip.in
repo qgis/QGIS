@@ -81,9 +81,9 @@ Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual Qt::PenStyle dxfPenStyle() const;
 
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 
-    virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfOffset( QgsSymbolRenderContext &context ) const;
 
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 

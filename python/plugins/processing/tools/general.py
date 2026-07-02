@@ -193,7 +193,6 @@ def execAlgorithmDialog(algOrName, parameters={}):
     if widget is None:
         return {}
 
-    widget.show()
     widget.exec()
 
     results = widget.results()

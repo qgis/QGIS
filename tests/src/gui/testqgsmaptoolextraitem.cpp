@@ -114,10 +114,10 @@ void TestQgsMapToolExtraItem::cleanupTestCase()
 
 void TestQgsMapToolExtraItem::init()
 {
-  mMapToolAddExtraItems.reset( new QgsMapToolAddExtraItem( mCanvas.get(), mLayer.get(), mSymbolLayer, mPropertyButton.get() ) );
+  mMapToolAddExtraItems = make_qobject_unique<QgsMapToolAddExtraItem>( mCanvas.get(), mLayer.get(), mSymbolLayer, mPropertyButton.get() );
   mCanvas->setMapTool( mMapToolAddExtraItems );
 
-  mMapToolModifyExtraItems.reset( new QgsMapToolModifyExtraItems( mCanvas.get(), mLayer.get(), mSymbolLayer, mPropertyButton.get() ) );
+  mMapToolModifyExtraItems = make_qobject_unique<QgsMapToolModifyExtraItems>( mCanvas.get(), mLayer.get(), mSymbolLayer, mPropertyButton.get() );
   mCanvas->setMapTool( mMapToolModifyExtraItems );
 }
 

@@ -21,6 +21,12 @@ Content-Type: application/geo+json
       "rel": "alternate",
       "title": "Retrieve a feature as HTML",
       "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/exclude_attribute/items/0.fgb",
+      "rel": "alternate",
+      "title": "Retrieve a feature as FLATGEOBUF",
+      "type": "application/flatgeobuf"
     }
   ],
   "properties": {

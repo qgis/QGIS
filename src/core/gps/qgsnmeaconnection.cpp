@@ -235,6 +235,7 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     {
       mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
     }
+    mLastGGAQualityIndicator = mLastGPSInformation.qualityIndicator;
 
     // use GSA for satellites in use;
   }
@@ -320,59 +321,59 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     // convert mode to signal (aka quality) indicator
     // (see https://gitlab.com/fhuberts/nmealib/-/blob/master/src/info.c#L27)
     // UM98x Status == D  (Differential)
+    Qgis::GpsQualityIndicator rmcQualityIndicator = Qgis::GpsQualityIndicator::Invalid;
     if ( result.status == 'A' || result.status == 'D' )
     {
       if ( result.mode == 'A' )
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::GPS );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::GPS;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::GPS;
       }
       else if ( result.mode == 'D' )
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::DGPS );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::DGPS;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::DGPS;
       }
       else if ( result.mode == 'P' )
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::PPS );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::PPS;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::PPS;
       }
       else if ( result.mode == 'R' )
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::RTK );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::RTK;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::RTK;
       }
       else if ( result.mode == 'F' )
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::FloatRTK );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::FloatRTK;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::FloatRTK;
       }
       else if ( result.mode == 'E' )
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Estimated );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Estimated;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::Estimated;
       }
       else if ( result.mode == 'M' )
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Manual );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Manual;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::Manual;
       }
       else if ( result.mode == 'S' )
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Simulation );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Simulation;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::Simulation;
       }
       else
       {
-        mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Unknown );
-        mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
+        rmcQualityIndicator = Qgis::GpsQualityIndicator::Unknown;
       }
     }
     else if ( result.status == 'V' )
     {
-      mLastGPSInformation.quality = static_cast<int>( Qgis::GpsQualityIndicator::Invalid );
-      mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Invalid;
+      rmcQualityIndicator = Qgis::GpsQualityIndicator::Invalid;
     }
+
+    // some GNSS devices will fail to report an RTK quality through RMC sentences,
+    // use the better quality value from GGA and RMC sentences
+    if ( mLastGGAQualityIndicator != Qgis::GpsQualityIndicator::RTK && mLastGGAQualityIndicator != Qgis::GpsQualityIndicator::FloatRTK )
+    {
+      mLastGPSInformation.quality = static_cast<int>( rmcQualityIndicator );
+      mLastGPSInformation.qualityIndicator = rmcQualityIndicator;
+    }
+
     // for other cases: quality and qualityIndicator read by GGA
   }
 

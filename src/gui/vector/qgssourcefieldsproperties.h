@@ -87,6 +87,7 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
       AttrTypeNameCol,
       AttrLengthCol,
       AttrPrecCol,
+      AttrFieldDomainCol,
       AttrCommentCol,
       AttrConfigurationFlagsCol,
       AttrColCount,

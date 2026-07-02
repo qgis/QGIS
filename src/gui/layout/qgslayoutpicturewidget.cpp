@@ -49,7 +49,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
 
   mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastSVGMarkerDir"_s );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastComposerPictureDir"_s );
   mSvgSelectorWidget->initParametersModel( layoutObject(), coverageLayer() );
 
   mResizeModeComboBox->addItem( tr( "Zoom" ), QgsLayoutItemPicture::Zoom );
@@ -97,8 +97,6 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
     mPicture->setClippingItem( item );
     mPicture->endCommand();
   } );
-
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastComposerPictureDir"_s );
 
   setPanelTitle( tr( "Picture Properties" ) );
 

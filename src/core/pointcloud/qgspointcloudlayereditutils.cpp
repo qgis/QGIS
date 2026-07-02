@@ -133,7 +133,7 @@ QByteArray QgsPointCloudLayerEditUtils::updateChunkValues(
   QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, QgsPointCloudNodeId n, const QHash<int, double> &pointValues, std::optional<double> newValue
 )
 {
-  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerEditUtils::updateChunkValues"_s );
+  QgsScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerEditUtils::updateChunkValues"_s );
 
   int pointCount;
 

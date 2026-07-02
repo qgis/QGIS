@@ -1,6 +1,5 @@
 #version 330
 
-uniform vec3 eyePosition;
 uniform float shininess;
 
 in vec3 worldPosition;

@@ -76,6 +76,9 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     //! Sets whether multisample anti-aliasing (MSAA) is enabled
     void setMsaaEnabled( bool enabled );
 
+    //! Returns main camera
+    Qt3DRender::QCamera *mainCamera() const { return mMainCamera; }
+
     //! Returns current render target selector
     Qt3DRender::QRenderTargetSelector *renderTargetSelector() { return mRenderTargetSelector; }
 

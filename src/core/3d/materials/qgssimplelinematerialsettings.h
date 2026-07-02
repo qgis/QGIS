@@ -53,6 +53,7 @@ class CORE_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSett
 
     QgsSimpleLineMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     /**
      * Returns the ambient color component.

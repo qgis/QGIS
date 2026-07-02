@@ -59,7 +59,7 @@ class ANALYSIS_EXPORT QgsGeometryFollowBoundariesCheck : public QgsGeometryCheck
       NoChange
     };
     QgsVectorLayer *mCheckLayer;
-    QgsSpatialIndex *mIndex = nullptr;
+    std::unique_ptr<QgsSpatialIndex> mIndex;
 
     QgsGeometryFollowBoundariesCheck( const QgsGeometryFollowBoundariesCheck & ) = delete;
     QgsGeometryFollowBoundariesCheck &operator=( const QgsGeometryFollowBoundariesCheck & ) = delete;

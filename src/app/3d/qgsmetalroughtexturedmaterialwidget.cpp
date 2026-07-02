@@ -38,6 +38,9 @@ QgsMetalRoughTexturedMaterialWidget::QgsMetalRoughTexturedMaterialWidget( QWidge
   mEmissionStrengthSpinBox->setClearValue( 100 );
   mParallaxScaleSpinBox->setClearValue( 100 );
 
+  textureOffsetXSpin->setClearValue( 0.0 );
+  textureOffsetYSpin->setClearValue( 0.0 );
+
   mParallaxScaleSpinBox->setEnabled( false );
   mEmissionStrengthSpinBox->setEnabled( false );
 
@@ -53,6 +56,8 @@ QgsMetalRoughTexturedMaterialWidget::QgsMetalRoughTexturedMaterialWidget( QWidge
   connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
   connect( textureScaleSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
   connect( textureRotationSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( textureOffsetXSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( textureOffsetYSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
 
   connect( this, &QgsMetalRoughTexturedMaterialWidget::changed, this, &QgsMetalRoughTexturedMaterialWidget::updatePreview );
@@ -67,7 +72,7 @@ QgsMaterialSettingsWidget *QgsMetalRoughTexturedMaterialWidget::create()
   return new QgsMetalRoughTexturedMaterialWidget();
 }
 
-void QgsMetalRoughTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
+void QgsMetalRoughTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
   const QgsMetalRoughTexturedMaterialSettings *metalRoughMaterial = dynamic_cast<const QgsMetalRoughTexturedMaterialSettings *>( settings );
   if ( !metalRoughMaterial )
@@ -84,12 +89,22 @@ void QgsMetalRoughTexturedMaterialWidget::setSettings( const QgsAbstractMaterial
   mEmissionStrengthSpinBox->setValue( metalRoughMaterial->emissionFactor() * 100 );
   textureScaleSpinBox->setValue( 100.0 / metalRoughMaterial->textureScale() );
   textureRotationSpinBox->setValue( metalRoughMaterial->textureRotation() );
+  textureOffsetXSpin->setValue( metalRoughMaterial->textureOffset().x() );
+  textureOffsetYSpin->setValue( metalRoughMaterial->textureOffset().y() );
   mOpacityWidget->setOpacity( metalRoughMaterial->opacity() );
 
   mParallaxScaleSpinBox->setEnabled( !mHeightTextureWidget->source().isEmpty() );
   mEmissionStrengthSpinBox->setEnabled( !mEmissionTextureWidget->source().isEmpty() );
 
   mPropertyCollection = settings->dataDefinedProperties();
+
+  mTextureRotationDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::TextureRotation ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mTextureScaleDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::TextureScale ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mTextureOffsetDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::TextureOffset ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+
+  connect( mTextureRotationDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( mTextureScaleDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( mTextureOffsetDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::changed );
 
   updatePreview();
 }
@@ -108,7 +123,13 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughTexturedMaterialWidget
   m->setEmissionFactor( mEmissionStrengthSpinBox->value() / 100.0 );
   m->setTextureScale( 100.0 / textureScaleSpinBox->value() );
   m->setTextureRotation( textureRotationSpinBox->value() );
+  m->setTextureOffset( QPointF( textureOffsetXSpin->value(), textureOffsetYSpin->value() ) );
   m->setOpacity( mOpacityWidget->opacity() );
+
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::TextureRotation, mTextureRotationDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::TextureScale, mTextureScaleDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::TextureOffset, mTextureOffsetDataDefinedButton->toProperty() );
+
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m;

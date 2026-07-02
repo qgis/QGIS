@@ -445,6 +445,28 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(first_size, second_size)
         self.assertEqual(first_unit, second_unit)
 
+    def testAnchorPoint(self):
+        # create a layer
+        layer = createLayerWithOnePoint()
+
+        sld = "symbol_layer/AnchorPointBelowLeft.sld"
+        sld_path = os.path.join(TEST_DATA_DIR, sld)
+        layer.loadSldStyle(sld_path)
+        quadrant = layer.labeling().settings().pointSettings().quadrant()
+        self.assertEqual(quadrant, Qgis.LabelQuadrantPosition.BelowLeft)
+
+        sld = "symbol_layer/AnchorPointOver.sld"
+        sld_path = os.path.join(TEST_DATA_DIR, sld)
+        layer.loadSldStyle(sld_path)
+        quadrant = layer.labeling().settings().pointSettings().quadrant()
+        self.assertEqual(quadrant, Qgis.LabelQuadrantPosition.Over)
+
+        sld = "symbol_layer/AnchorPointAboveRight.sld"
+        sld_path = os.path.join(TEST_DATA_DIR, sld)
+        layer.loadSldStyle(sld_path)
+        quadrant = layer.labeling().settings().pointSettings().quadrant()
+        self.assertEqual(quadrant, Qgis.LabelQuadrantPosition.AboveRight)
+
     def test_Literal_within_CSSParameter_and_Text(self):
         layer = createLayerWithOneLine()
         mFilePath = os.path.join(

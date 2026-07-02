@@ -196,6 +196,7 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
 
   QgsMaterialContext context;
   context.setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
+  context.setIsPreview( true );
   const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings );
   if ( !handler )
     return QImage();

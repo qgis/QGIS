@@ -232,7 +232,8 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       outputFeature.setAttributes( inputFeature.attributes() );
       if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
-
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
 
       if ( singleClipFeature )
         feedback->setProgress( current * step );
@@ -246,6 +247,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   return outputs;
 }

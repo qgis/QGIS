@@ -25,22 +25,31 @@ float linearizeDepth(float depth)
   return (2.0 * nearPlane * farPlane) / (farPlane + nearPlane - ndc * (farPlane - nearPlane));
 }
 
-vec3 rotate_x(vec3 vct, float angle)
-{
-  return vec3(vct.x*cos(angle)-vct.y*sin(angle), vct.x*sin(angle)+vct.y*cos(angle), vct.z);
-}
-vec3 rotate_y(vec3 vct, float angle)
-{
-  return vec3(vct.x*cos(angle)+vct.z*sin(angle), vct.y, -vct.x*sin(angle)+vct.z*cos(angle));
-}
-
 float ssao(vec3 originPos, vec3 noise)
 {
+    float cx = cos(noise.x);
+    float sx = sin(noise.x);
+    float cy = cos(noise.y);
+    float sy = sin(noise.y);
+
+    float sy_sx = sy * sx;
+    float sy_cx = sy * cx;
+    float cy_sx = cy * sx;
+    float cy_cx = cy * cx;
+
+    // rotate around x axis, then y axis
+    // note that mat3 initialization values are specified in column-major order
+    mat3 sampleRotation = mat3(
+        cy,     0.0,    -sy,
+        sy_sx, cx,     cy_sx,
+        sy_cx, -sx,    cy_cx
+    );
+
     float occlusion = 0.0;
     for (int i = 0; i < kernelSize; ++i)
     {
         //	get sample position:
-        vec3 samplePos = rotate_y(rotate_x(ssaoKernel[i], noise.x), noise.y);
+        vec3 samplePos = sampleRotation * ssaoKernel[i];
         samplePos = samplePos * radius + originPos;
 
         //	project sample position:

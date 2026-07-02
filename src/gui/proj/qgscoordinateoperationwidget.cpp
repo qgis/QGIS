@@ -81,10 +81,11 @@ void QgsCoordinateOperationWidget::setMapCanvas( QgsMapCanvas *canvas )
     QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
     // close polygon
     mainCanvasPoly << mainCanvasPoly.at( 0 );
-    if ( QgsProject::instance()->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+    const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
+    if ( projectCrs.isEarthCrs() && projectCrs != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
     {
       // reproject extent
-      QgsCoordinateTransform ct( QgsProject::instance()->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
+      QgsCoordinateTransform ct( projectCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
       ct.setBallparkTransformsAreAppropriate( true );
       g = g.densifyByCount( 5 );
       try

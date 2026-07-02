@@ -33,17 +33,19 @@
 
 
 #include "qgschunkedentity.h"
-
 #include "qgschunkloader.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
 #include "qgs3drendercontext.h"
+#include "qgslayerstylewatcher.h"
+#include "qobjectuniqueptr.h"
 
 #include <QImage>
 
 class QgsMapLayer;
 class QgsGlobeMapUpdateJobFactory;
 class QgsTerrainTextureGenerator;
+class QgsLayerStyleWatcher;
 
 class QgsGlobeChunkLoader : public QgsChunkLoader
 {
@@ -117,16 +119,10 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
 
   private slots:
     void invalidateMapImages();
-    void onLayersChanged();
-
-  private:
-    void connectToLayersRepaintRequest();
 
   private:
     std::unique_ptr<QgsGlobeMapUpdateJobFactory> mUpdateJobFactory;
-
-    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
-    QList<QgsMapLayer *> mLayers;
+    QObjectUniquePtr<QgsLayerStyleWatcher> mLayerWatcher = nullptr;
 };
 
 

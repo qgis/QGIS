@@ -4011,7 +4011,7 @@ void QgsProcessingPointPanel::updateRubberBand()
 
   if ( !mMapPointRubberBand )
   {
-    mMapPointRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Point ) );
+    mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Point );
     mMapPointRubberBand->setZValue( 1000 );
     mMapPointRubberBand->setIcon( QgsRubberBand::ICON_X );
 

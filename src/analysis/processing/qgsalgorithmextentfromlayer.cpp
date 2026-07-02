@@ -92,7 +92,7 @@ void QgsExtentFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extent" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
-QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
 
@@ -151,8 +151,11 @@ QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &pa
   feat.setAttributes( QgsAttributes() << minX << minY << maxX << maxY << cntX << cntY << area << perim << height << width );
   if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+  else
+    feedback->featureAddedToSink( u"OUTPUT"_s );
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

@@ -42,8 +42,8 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
   public:
     enum DialogType
     {
-      Image = 1, // Image-specific dialog
-      Pdf        // PDF-specific dialog
+      Image = 1, //!< Image-specific dialog
+      Pdf        //!< PDF-specific dialog
     };
 
     /**

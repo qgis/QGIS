@@ -139,9 +139,42 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 
-  auto apis = std::make_unique<QsciAPIs>( pyLexer );
+  setLexer( pyLexer );
 
   QgsSettings settings;
+  const int threshold = settings.value( u"pythonConsole/autoCompThreshold"_s, 2 ).toInt();
+  setAutoCompletionThreshold( threshold );
+  if ( !settings.value( "pythonConsole/autoCompleteEnabled", true ).toBool() )
+  {
+    setAutoCompletionSource( AcsNone );
+  }
+  else
+  {
+    const QString autoCompleteSource = settings.value( u"pythonConsole/autoCompleteSource"_s, u"fromAPI"_s ).toString();
+    if ( autoCompleteSource == "fromDoc"_L1 )
+      setAutoCompletionSource( AcsDocument );
+    else if ( autoCompleteSource == "fromDocAPI"_L1 )
+      setAutoCompletionSource( AcsAll );
+    else
+      setAutoCompletionSource( AcsAPIs );
+  }
+
+  setLineNumbersVisible( true );
+  setIndentationsUseTabs( false );
+  setIndentationGuides( true );
+
+  runPostLexerConfigurationTasks();
+
+  mInitializedLexer = false;
+  if ( isVisible() )
+    deferredInitializeLexer();
+}
+
+void QgsCodeEditorPython::deferredInitializeLexer()
+{
+  QgsSettings settings;
+  auto apis = std::make_unique<QsciAPIs>( lexer() );
+
   if ( mAPISFilesList.isEmpty() )
   {
     if ( settings.value( u"pythonConsole/preloadAPI"_s, true ).toBool() )
@@ -195,32 +228,9 @@ void QgsCodeEditorPython::initializeLexer()
     }
     apis->prepare();
   }
-  pyLexer->setAPIs( apis.release() );
+  lexer()->setAPIs( apis.release() );
 
-  setLexer( pyLexer );
-
-  const int threshold = settings.value( u"pythonConsole/autoCompThreshold"_s, 2 ).toInt();
-  setAutoCompletionThreshold( threshold );
-  if ( !settings.value( "pythonConsole/autoCompleteEnabled", true ).toBool() )
-  {
-    setAutoCompletionSource( AcsNone );
-  }
-  else
-  {
-    const QString autoCompleteSource = settings.value( u"pythonConsole/autoCompleteSource"_s, u"fromAPI"_s ).toString();
-    if ( autoCompleteSource == "fromDoc"_L1 )
-      setAutoCompletionSource( AcsDocument );
-    else if ( autoCompleteSource == "fromDocAPI"_L1 )
-      setAutoCompletionSource( AcsAll );
-    else
-      setAutoCompletionSource( AcsAPIs );
-  }
-
-  setLineNumbersVisible( true );
-  setIndentationsUseTabs( false );
-  setIndentationGuides( true );
-
-  runPostLexerConfigurationTasks();
+  mInitializedLexer = true;
 }
 
 void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
@@ -348,6 +358,15 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 
   // Let QgsCodeEditor handle the keyboard event
   return QgsCodeEditor::keyPressEvent( event );
+}
+
+void QgsCodeEditorPython::showEvent( QShowEvent *event )
+{
+  if ( !mInitializedLexer )
+  {
+    deferredInitializeLexer();
+  }
+  QgsCodeEditor::showEvent( event );
 }
 
 QString QgsCodeEditorPython::reformatCodeString( const QString &string )

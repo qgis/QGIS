@@ -165,8 +165,10 @@ class EliminateSelection(QgisAlgorithm):
             else:
                 # write the others to output
                 sink.addFeature(aFeat, QgsFeatureSink.Flag.FastInsert)
+                feedback.featureAddedToSink(self.OUTPUT)
 
         sink.finalize()
+        feedback.featureSinkFinalized(self.OUTPUT)
         del sink
 
         # Delete all features to eliminate in processLayer

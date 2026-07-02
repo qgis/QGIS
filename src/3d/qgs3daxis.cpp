@@ -64,13 +64,13 @@ Qgs3DAxis::Qgs3DAxis(
   , mCrs( map->crs() )
 {
   mMapScene->engine()->frameGraph()->registerRenderView( std::make_unique<Qgs3DAxisRenderView>(      //
-                                                           QgsFrameGraph::AXIS3D_RENDERVIEW,         //
+                                                           QgsFrameGraph::sAxiS3DRenderView,         //
                                                            mCanvas, mCameraController, mMapSettings, //
                                                            this
                                                          ),
-                                                         QgsFrameGraph::AXIS3D_RENDERVIEW );
+                                                         QgsFrameGraph::sAxiS3DRenderView );
 
-  mRenderView = dynamic_cast<Qgs3DAxisRenderView *>( mMapScene->engine()->frameGraph()->renderView( QgsFrameGraph::AXIS3D_RENDERVIEW ) );
+  mRenderView = dynamic_cast<Qgs3DAxisRenderView *>( mMapScene->engine()->frameGraph()->renderView( QgsFrameGraph::sAxiS3DRenderView ) );
   Q_ASSERT( mRenderView );
   constructAxisScene( parent3DScene );
   constructLabelsScene( parent3DScene );

@@ -28,7 +28,32 @@ Contains utility functions for working with symbols and symbol layers.
 %End
   public:
     static QString encodeColor( const QColor &color );
+%Docstring
+Lossy-encodes a ``color`` to a string.
+
+.. warning::
+
+   Use of this method is discouraged, as it loses color precision and does not handle
+   non-RGB color values losslessly. Use :py:func:`QgsColorUtils.colorToString()` instead.
+
+.. seealso:: :py:func:`decodeColor`
+
+.. seealso:: :py:func:`QgsColorUtils.colorToString`
+%End
+
     static QColor decodeColor( const QString &str );
+%Docstring
+Decodes a string to a color.
+
+.. warning::
+
+   Use of this method is discouraged, as it handles only colors lossy-encoded using
+   :py:func:`~QgsSymbolLayerUtils.encodeColor`. Use :py:func:`QgsColorUtils.colorFromString()` instead.
+
+.. seealso:: :py:func:`encodeColor`
+
+.. seealso:: :py:func:`QgsColorUtils.colorFromString`
+%End
 
     static QString encodeSldAlpha( int alpha );
     static int decodeSldAlpha( const QString &str );

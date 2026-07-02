@@ -33,20 +33,20 @@ class GUI_EXPORT QgsQsciLexerBash : public QsciLexer
   public:
     enum Styles
     {
-      Default = 0, // whitespace
+      Default = 0, //!< Whitespace
       Error = 1,
       LineComment = 2,
-      Number = 3, // numeric literal
+      Number = 3, //!< Numeric literal
       Keyword = 4,
-      String = 5,             // string literal
-      SingleQuotedString = 6, // string literal
+      String = 5,             //!< String literal
+      SingleQuotedString = 6, //!< String literal
       Operator = 7,
       Identifier = 8,
-      ScalarVariable = 9,         // identifier
-      Parameter = 10,             // identifier
-      BacktickQuotedCommand = 11, // string literal
-      HeredocDelimiter = 12,      // operator
-      HeredocQuotedString = 13    // string literal
+      ScalarVariable = 9,         //!< Identifier
+      Parameter = 10,             //!< Identifier
+      BacktickQuotedCommand = 11, //!< String literal
+      HeredocDelimiter = 12,      //!< Operator
+      HeredocQuotedString = 13    //!< String literal
     };
 
     QgsQsciLexerBash( QObject *parent = nullptr );

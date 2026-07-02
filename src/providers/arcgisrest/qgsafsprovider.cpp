@@ -31,6 +31,7 @@
 #include "qgsreadwritelocker.h"
 #include "qgsrenderer.h"
 #include "qgsruntimeprofiler.h"
+#include "qgssymbolconverter.h"
 #include "qgsvariantutils.h"
 #include "qgsvectorlayerlabeling.h"
 
@@ -786,7 +787,9 @@ void QgsAfsProvider::reloadProviderData()
 
 QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap ).release();
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap, context ).release();
 }
 
 QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMap & ) const

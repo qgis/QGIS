@@ -65,6 +65,15 @@ bool QgsPhongMaterialSettings::equals( const QgsAbstractMaterialSettings *other 
   return *this == *otherPhong;
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsPhongMaterialSettings::supportedProperties() const
+{
+  return {
+    QgsAbstractMaterialSettings::Property::Ambient,
+    QgsAbstractMaterialSettings::Property::Diffuse,
+    QgsAbstractMaterialSettings::Property::Specular,
+  };
+}
+
 QColor QgsPhongMaterialSettings::averageColor() const
 {
   const double avgDiffuseFactor = 0.5;

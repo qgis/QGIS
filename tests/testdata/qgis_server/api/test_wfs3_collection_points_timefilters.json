@@ -55,6 +55,12 @@ Content-Type: application/json
       "type": "text/html"
     },
     {
+      "href": "http://server.qgis.org/wfs3/collections/points/items.fgb",
+      "rel": "items",
+      "title": "points items as FLATGEOBUF",
+      "type": "application/flatgeobuf"
+    },
+    {
       "href": "http://server.qgis.org/?request=DescribeFeatureType&typename=points&service=WFS&version=2.0",
       "rel": "describedBy",
       "title": "Schema for points",

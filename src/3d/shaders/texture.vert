@@ -14,11 +14,12 @@ vec3 rotateByQuat(vec3 v, vec4 q) {
 #endif
 
 out vec2 texCoord;
+out vec3 worldPosition;
 
 uniform mat4 mvp;
+uniform mat4 modelMatrix;
 
 #ifdef CLIPPING
-    uniform mat4 modelMatrix;
     #pragma include clipplane.shaderinc
 #endif
 
@@ -37,8 +38,9 @@ void main()
 
     gl_Position = mvp * vec4( pos, 1.0 );
 
+    worldPosition = vec3(modelMatrix * vec4(pos, 1.0));
+
 #ifdef CLIPPING
-    vec3 worldPosition = vec3(modelMatrix * vec4(pos, 1.0));
     setClipDistance(worldPosition);
 #endif
 }

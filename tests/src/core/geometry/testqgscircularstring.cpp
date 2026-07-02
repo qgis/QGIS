@@ -1089,7 +1089,7 @@ void TestQgsCircularString::deleteVertex()
   //empty line
   QgsCircularString cs;
 
-  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cs.isEmpty() );
 
   //valid line
@@ -1117,7 +1117,7 @@ void TestQgsCircularString::deleteVertex()
   QCOMPARE( cs.numPoints(), 0 );
   QVERIFY( cs.isEmpty() );
 
-  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cs.isEmpty() );
 
   //removing a vertex from a 3 point circular string should remove the whole line
@@ -1992,14 +1992,17 @@ void TestQgsCircularString::cast()
 
   cs.fromWkt( u"CircularString Z (10 0 1, 10 1 1, 10 2 1)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"CircularString M (10 0 1, 10 1 1, 10 2 1)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"CircularString ZM (10 0 1 2, 10 1 1 2, 10 2 1 2)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 }
 
@@ -2561,6 +2564,25 @@ void TestQgsCircularString::append()
   QVERIFY( cs.isClosed() );
   QCOMPARE( cs.numPoints(), 5 );
   QCOMPARE( cs.vertexCount(), 5 );
+
+  // Avoid appending a LineString (i.e., another SimpleCurve with different type)
+  cs.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
+
+  auto toAppendLineString = std::make_unique<QgsLineString>();
+  cs.append( toAppendLineString.get() );
+  QVERIFY( !cs.isEmpty() );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
+
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( 10, 12 ) );
+  cs.append( toAppendLineString.get() );
+
+  QVERIFY( !cs.isEmpty() );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
 }
 
 void TestQgsCircularString::appendZM()

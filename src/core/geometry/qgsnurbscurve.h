@@ -194,6 +194,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     bool dropZValue() override;
     bool dropMValue() override;
     bool deleteVertex( QgsVertexId position ) override;
+    bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
 #ifndef SIP_RUN
     void filterVertices( const std::function<bool( const QgsPoint & )> &filter ) override;
 #endif

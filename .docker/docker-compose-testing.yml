@@ -20,6 +20,15 @@ services:
       - MINIO_ROOT_PASSWORD=adminio€
     command: server /data
 
+  badssl:
+    build:
+      context: ./badssl
+      dockerfile: Dockerfile
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+
   qgis-deps:
     tty: true
     image: qgis3-build-deps-binary-image
@@ -30,6 +39,7 @@ services:
       - webdav
       - minio
       - httpbin
+      - badssl
     env_file:
       - docker-variables.env
     environment:

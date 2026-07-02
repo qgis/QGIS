@@ -63,6 +63,12 @@ Content-Type: application/geo+json
       "rel": "alternate",
       "title": "Retrieve the features of the collection as HTML",
       "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.fgb?crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F0%2F3857",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as FLATGEOBUF",
+      "type": "application/flatgeobuf"
     }
   ],
   "numberMatched": 3,

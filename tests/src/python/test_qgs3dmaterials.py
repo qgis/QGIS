@@ -19,6 +19,7 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSimpleLineMaterialSettings,
 )
+from qgis.PyQt.QtCore import QPointF
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
@@ -532,6 +533,11 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         self.assertEqual(settings.baseColor(), QColor.fromRgbF(0.5, 0.5, 0.5, 1.0))
         self.assertEqual(settings.metalness(), 0.0)
         self.assertEqual(settings.roughness(), 0.5)
+        self.assertEqual(settings.emissionFactor(), 1.0)
+        self.assertFalse(settings.emissionColor().isValid())
+        self.assertEqual(settings.reflectance(), 0.5)
+        self.assertEqual(settings.anisotropy(), 0.0)
+        self.assertEqual(settings.anisotropyRotation(), 0.0)
 
         # Test setters/getters
         settings.setBaseColor(QColor(255, 0, 0))
@@ -543,17 +549,42 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings.setRoughness(0.7)
         self.assertEqual(settings.roughness(), 0.7)
 
+        settings.setEmissionFactor(2.0)
+        self.assertEqual(settings.emissionFactor(), 2.0)
+
+        settings.setEmissionColor(QColor(0, 255, 0))
+        self.assertEqual(settings.emissionColor(), QColor(0, 255, 0))
+
+        settings.setReflectance(0.7)
+        self.assertEqual(settings.reflectance(), 0.7)
+
+        settings.setAnisotropy(0.3)
+        self.assertEqual(settings.anisotropy(), 0.3)
+
+        settings.setAnisotropyRotation(45.5)
+        self.assertEqual(settings.anisotropyRotation(), 45.5)
+
     def test_clone(self):
         settings = QgsMetalRoughMaterialSettings()
         settings.setBaseColor(QColor(255, 0, 0))
         settings.setMetalness(0.5)
         settings.setRoughness(0.7)
+        settings.setEmissionFactor(2.0)
+        settings.setEmissionColor(QColor(0, 255, 0))
+        settings.setReflectance(0.7)
+        settings.setAnisotropy(0.3)
+        settings.setAnisotropyRotation(45.5)
 
         cloned = settings.clone()
         self.assertIsInstance(cloned, QgsMetalRoughMaterialSettings)
         self.assertEqual(cloned.baseColor(), QColor(255, 0, 0))
         self.assertEqual(cloned.metalness(), 0.5)
         self.assertEqual(cloned.roughness(), 0.7)
+        self.assertEqual(cloned.emissionFactor(), 2.0)
+        self.assertEqual(cloned.emissionColor(), QColor(0, 255, 0))
+        self.assertEqual(cloned.reflectance(), 0.7)
+        self.assertEqual(cloned.anisotropy(), 0.3)
+        self.assertEqual(cloned.anisotropyRotation(), 45.5)
 
     def test_equality(self):
         settings1 = QgsMetalRoughMaterialSettings()
@@ -576,6 +607,31 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings1.setRoughness(0.7)
         self.assertEqual(settings1, settings2)
 
+        settings2.setEmissionFactor(3.0)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionFactor(3.0)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setEmissionColor(QColor(0, 0, 255))
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionColor(QColor(0, 0, 255))
+        self.assertEqual(settings1, settings2)
+
+        settings2.setReflectance(0.7)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setReflectance(0.7)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setAnisotropy(0.3)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setAnisotropy(0.3)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setAnisotropyRotation(45.5)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setAnisotropyRotation(45.5)
+        self.assertEqual(settings1, settings2)
+
     def test_equals_method(self):
         settings1 = QgsMetalRoughMaterialSettings()
         settings2 = QgsMetalRoughMaterialSettings()
@@ -593,6 +649,11 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings.setBaseColor(QColor(255, 0, 0))
         settings.setMetalness(0.5)
         settings.setRoughness(0.7)
+        settings.setEmissionFactor(3.0)
+        settings.setEmissionColor(QColor(255, 0, 0))
+        settings.setReflectance(0.7)
+        settings.setAnisotropy(0.3)
+        settings.setAnisotropyRotation(45.5)
 
         doc = QDomDocument("settings")
         element = doc.createElement("settings")
@@ -620,6 +681,7 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         self.assertEqual(settings.emissionFactor(), 1)
         self.assertEqual(settings.textureScale(), 1)
         self.assertEqual(settings.textureRotation(), 0)
+        self.assertEqual(settings.textureOffset(), QPointF(0, 0))
 
         # Test setters/getters
         settings.setBaseColorTexturePath("/path/to/base_texture.png")
@@ -659,6 +721,8 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         self.assertEqual(settings.textureScale(), 12.1)
         settings.setTextureRotation(45)
         self.assertEqual(settings.textureRotation(), 45)
+        settings.setTextureOffset(QPointF(10, -5))
+        self.assertEqual(settings.textureOffset(), QPointF(10, -5))
 
     def test_clone(self):
         settings = QgsMetalRoughTexturedMaterialSettings()
@@ -673,6 +737,7 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
 
         settings.setTextureScale(12.1)
         settings.setTextureRotation(45)
+        settings.setTextureOffset(QPointF(10, -5))
         settings.setEmissionFactor(2.2)
 
         cloned = settings.clone()
@@ -693,6 +758,7 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         self.assertEqual(cloned.emissionFactor(), 2.2)
         self.assertEqual(cloned.textureScale(), 12.1)
         self.assertEqual(cloned.textureRotation(), 45)
+        self.assertEqual(cloned.textureOffset(), QPointF(10, -5))
 
     def test_equality(self):
         settings1 = QgsMetalRoughTexturedMaterialSettings()
@@ -755,6 +821,11 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings1.setTextureRotation(19)
         self.assertEqual(settings1, settings2)
 
+        settings2.setTextureOffset(QPointF(10, -5))
+        self.assertNotEqual(settings1, settings2)
+        settings1.setTextureOffset(QPointF(10, -5))
+        self.assertEqual(settings1, settings2)
+
     def test_equals_method(self):
         settings1 = QgsMetalRoughTexturedMaterialSettings()
         settings2 = QgsMetalRoughTexturedMaterialSettings()
@@ -780,6 +851,7 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings.setEmissionFactor(2.2)
         settings.setTextureScale(12.1)
         settings.setTextureRotation(45)
+        settings.setTextureOffset(QPointF(10, -5))
 
         doc = QDomDocument("settings")
         element = doc.createElement("settings")
@@ -803,6 +875,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         self.assertEqual(settings.textureScale(), 1.0)
         self.assertEqual(settings.textureRotation(), 0.0)
         self.assertEqual(settings.opacity(), 1.0)
+        self.assertEqual(settings.textureOffset(), QPointF(0, 0))
 
         # Test setters/getters
         settings.setAmbient(QColor(255, 0, 0))
@@ -826,6 +899,9 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setOpacity(0.7)
         self.assertEqual(settings.opacity(), 0.7)
 
+        settings.setTextureOffset(QPointF(10, -5))
+        self.assertEqual(settings.textureOffset(), QPointF(10, -5))
+
     def test_clone(self):
         settings = QgsPhongTexturedMaterialSettings()
         settings.setAmbient(QColor(255, 0, 0))
@@ -835,6 +911,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setTextureScale(2.0)
         settings.setTextureRotation(45.0)
         settings.setOpacity(0.7)
+        settings.setTextureOffset(QPointF(10, -5))
 
         cloned = settings.clone()
         self.assertIsInstance(cloned, QgsPhongTexturedMaterialSettings)
@@ -845,6 +922,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         self.assertEqual(cloned.textureScale(), 2.0)
         self.assertEqual(cloned.textureRotation(), 45.0)
         self.assertEqual(cloned.opacity(), 0.7)
+        self.assertEqual(cloned.textureOffset(), QPointF(10, -5))
 
     def test_equality(self):
         settings1 = QgsPhongTexturedMaterialSettings()
@@ -887,6 +965,11 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings1.setOpacity(0.7)
         self.assertEqual(settings1, settings2)
 
+        settings2.setTextureOffset(QPointF(10, -5))
+        self.assertNotEqual(settings1, settings2)
+        settings1.setTextureOffset(QPointF(10, -5))
+        self.assertEqual(settings1, settings2)
+
     def test_equals_method(self):
         settings1 = QgsPhongTexturedMaterialSettings()
         settings2 = QgsPhongTexturedMaterialSettings()
@@ -908,6 +991,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setTextureScale(2.0)
         settings.setTextureRotation(45.0)
         settings.setOpacity(0.7)
+        settings.setTextureOffset(QPointF(10, -5))
 
         doc = QDomDocument("settings")
         element = doc.createElement("settings")

@@ -48,6 +48,8 @@ Returns a new instance of QgsPhongTexturedMaterialSettings.
 
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
 
     QColor ambient() const;
 %Docstring
@@ -71,18 +73,34 @@ Returns the diffuse texture path.
 
     double textureScale() const;
 %Docstring
-Returns the texture scale The texture scale changes the size of the
-displayed texture in the 3D scene If the texture scale is less than 1
-the texture will be stretched
+Returns the texture scale.
+
+The texture scale changes the size of the material's textures in the 3D
+scene.
+
+If the texture scale is less than 1 the textures will be stretched.
+
+.. seealso:: :py:func:`setTextureScale`
 %End
-
-    virtual bool requiresTextureCoordinates() const;
-
 
     double textureRotation() const;
 %Docstring
 Returns the texture rotation, in degrees.
+
+.. seealso:: :py:func:`setTextureRotation`
 %End
+
+    QPointF textureOffset() const;
+%Docstring
+Returns the texture offset.
+
+.. seealso:: :py:func:`setTextureOffset`
+
+.. versionadded:: 4.2
+%End
+
+    virtual bool requiresTextureCoordinates() const;
+
 
     double opacity() const;
 %Docstring
@@ -122,6 +140,15 @@ the texture will be stretched
     void setTextureRotation( double rotation );
 %Docstring
 Sets the texture rotation in degrees
+%End
+
+    void setTextureOffset( QPointF offset );
+%Docstring
+Sets the texture ``offset``.
+
+.. seealso:: :py:func:`textureOffset`
+
+.. versionadded:: 4.2
 %End
 
     void setOpacity( double opacity );

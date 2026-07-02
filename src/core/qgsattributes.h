@@ -134,7 +134,7 @@ class QgsAttributes : public QVector<QVariant>
 };
 
 //! Hash for QgsAttributes
-CORE_EXPORT uint qHash( const QgsAttributes &attributes );
+CORE_EXPORT size_t qHash( const QgsAttributes &attributes );
 
 #endif
 

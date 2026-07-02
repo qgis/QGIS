@@ -240,6 +240,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   mMapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
   mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
   mMapSettings.setTransformContext( context.transformContext() );
+  mMapSettings.setEllipsoid( context.ellipsoid() );
   mMapSettings.setExtentBuffer( extentBuffer );
 
   // Set layers cloned in prepareAlgorithm

@@ -226,7 +226,6 @@
 
 /*
  * Force documentation of templates
- * Available for SIP 4.19.7+
  */
 #define SIP_DOC_TEMPLATE
 
@@ -234,7 +233,6 @@
  * Specifies the type of the value returned by the function as it will appear in any
  * generated docstrings and PEP 484 type hints. It is usually used with results of type
  * SIP_PYOBJECT to provide a more specific type.
- * Available for SIP 4.18+
  */
 #define SIP_TYPEHINT( type )
 

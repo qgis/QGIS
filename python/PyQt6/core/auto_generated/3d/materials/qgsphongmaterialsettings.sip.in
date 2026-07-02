@@ -46,6 +46,8 @@ Returns a new instance of QgsPhongMaterialSettings.
 
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
 
     QColor ambient() const;
 %Docstring

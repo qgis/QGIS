@@ -137,7 +137,9 @@ QList<QgsRayCastHit> QgsAbstractFeatureBasedChunkedEntity::rayIntersection(
     hit.setProperties( { { u"fid"_s, nearestFid } } );
     result.append( hit );
   }
+#ifdef QGISDEBUG
   QgsDebugMsgLevel( u"Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4"_s.arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );
+#endif
   return result;
 }
 

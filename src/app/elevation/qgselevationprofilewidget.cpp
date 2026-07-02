@@ -203,7 +203,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // These 2 connections should be made after mCanvas is created, since they will
   // override canvas sources, set by a connection made in canvas constructor
-  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, mLayerTreeView, &QgsElevationProfileLayerTreeView::addNodeForRegisteredSource );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsElevationProfileWidget::handleNodeForNewlyRegisteredSource );
   connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, mLayerTreeView, &QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource );
 
   mZoomTool = new QgsPlotToolZoom( mCanvas );
@@ -603,7 +603,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     scheduleUpdate();
   } );
 
-  updateCanvasSources();
   setMainCanvas( canvas );
 
   if ( mProfile->distanceUnit() != Qgis::DistanceUnit::Unknown )
@@ -731,7 +730,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   mCaptureCurveFromFeatureMapTool->setAction( mCaptureCurveFromFeatureAction );
   connect( mCaptureCurveFromFeatureMapTool.get(), &QgsMapToolProfileCurveFromFeature::curveCaptured, this, [this]( const QgsGeometry &curve ) { setProfileCurve( curve, true ); } );
 
-  mMapPointRubberBand.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Point ) );
+  mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Point );
   mMapPointRubberBand->setZValue( 1000 );
   mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
   mMapPointRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 8 ) );
@@ -802,6 +801,24 @@ void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
 
   connect( mLayerTree, &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
   connect( mLayerTree, &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+
+  updateCanvasSources();
+}
+
+void QgsElevationProfileWidget::handleNodeForNewlyRegisteredSource( const QString &sourceId, const QString &sourceName )
+{
+  if ( mProfile->useProjectLayerTree() )
+  {
+    // Skip custom node creation and override
+    // canvas sources to match the layer tree sources
+    updateCanvasSources();
+  }
+  else
+  {
+    // Add a custom node to the layer tree, and let layerOrderChanged
+    // signal trigger an update of canvas sources
+    mLayerTreeView->addNodeForRegisteredSource( sourceId, sourceName );
+  }
 }
 
 void QgsElevationProfileWidget::cancelJobs()
@@ -1372,7 +1389,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
 {
   if ( !mRubberBand )
   {
-    mRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Line ) );
+    mRubberBand = make_qobject_unique<QgsRubberBand>( mMainCanvas, Qgis::GeometryType::Line );
     mRubberBand->setZValue( 1000 );
     mRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
 
@@ -1425,7 +1442,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
   {
     if ( !mToleranceRubberBand )
     {
-      mToleranceRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Polygon ) );
+      mToleranceRubberBand = make_qobject_unique<QgsRubberBand>( mMainCanvas, Qgis::GeometryType::Polygon );
       mToleranceRubberBand->setZValue( 999 );
 
       QgsSymbolLayerList layers;

@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "qgssnappingconfig.h"
 
+#include <algorithm>
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -571,13 +573,14 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
   snapSettingsElem.setAttribute( u"maxScale"_s, mMaximumScale );
 
   QDomElement ilsElement = doc.createElement( u"individual-layer-settings"_s );
-  QHash<QgsVectorLayer *, IndividualLayerSettings>::const_iterator layerIt = mIndividualLayerSettings.constBegin();
-  for ( ; layerIt != mIndividualLayerSettings.constEnd(); ++layerIt )
+  QList<QgsVectorLayer *> sortedLayers = mIndividualLayerSettings.keys();
+  std::sort( sortedLayers.begin(), sortedLayers.end(), []( QgsVectorLayer *a, QgsVectorLayer *b ) { return a->id() < b->id(); } );
+  for ( QgsVectorLayer *layer : std::as_const( sortedLayers ) )
   {
-    const IndividualLayerSettings &setting = layerIt.value();
+    const IndividualLayerSettings &setting = mIndividualLayerSettings.value( layer );
 
     QDomElement layerElement = doc.createElement( u"layer-setting"_s );
-    layerElement.setAttribute( u"id"_s, layerIt.key()->id() );
+    layerElement.setAttribute( u"id"_s, layer->id() );
     layerElement.setAttribute( u"enabled"_s, QString::number( setting.enabled() ) );
     layerElement.setAttribute( u"type"_s, static_cast<int>( setting.typeFlag() ) );
     layerElement.setAttribute( u"tolerance"_s, setting.tolerance() );

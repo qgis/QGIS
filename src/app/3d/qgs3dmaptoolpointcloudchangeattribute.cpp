@@ -72,7 +72,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::restart()
 
 void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeometry &geometry, const QString &attributeName, const double newValue, Qgs3DMapCanvas &canvas, QgsMapLayer *mapLayer )
 {
-  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue"_s );
+  QgsScopedEvent _trace( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue"_s );
   QgsGeos preparedPolygon = QgsGeos( geometry.constGet() );
   preparedPolygon.prepareGeometry();
 
@@ -127,7 +127,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
 
   QVector<QgsPointCloudNodeId> nodes;
   {
-    QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::searchPoints, looking for affected nodes"_s );
+    QgsScopedEvent _trace( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::searchPoints, looking for affected nodes"_s );
 
     const QList<QVector4D> clipPlanes = mCanvas->scene()->clipPlaneEquations();
     QQueue<QgsPointCloudNodeId> queue;
@@ -185,7 +185,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
     }
   }
 
-  QgsEventTracing::ScopedEvent _trace2( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::searchPoints, selecting points"_s );
+  QgsScopedEvent _trace2( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::searchPoints, selecting points"_s );
 
   // Get the map's clipping extent in layer crs and skip if empty. We only need points within this extent.
   const Qgs3DMapSettings *map = canvas.mapSettings();

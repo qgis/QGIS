@@ -837,6 +837,25 @@ void TestQgsLineString::appendWithZM()
   QCOMPARE( ls.pointN( 0 ), QgsPoint( Qgis::WkbType::Point25D, 11, 12, 33 ) );
   QCOMPARE( ls.pointN( 1 ), QgsPoint( Qgis::WkbType::Point25D, 31, 32, 33 ) );
   QCOMPARE( ls.pointN( 2 ), QgsPoint( Qgis::WkbType::Point25D, 41, 42, 43 ) );
+
+  // Avoid appending a CircularString (i.e., another SimpleCurve with different type)
+  ls.clear();
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 2, 2 ) );
+  QCOMPARE( ls.numPoints(), 2 );
+  QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString );
+
+  auto toAppendCircularString = std::make_unique<QgsCircularString>();
+  ls.append( toAppendCircularString.get() );
+  QVERIFY( !ls.isEmpty() );
+  QCOMPARE( ls.numPoints(), 2 );
+  QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString );
+
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 2, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
+  ls.append( toAppendCircularString.get() );
+
+  QVERIFY( !ls.isEmpty() );
+  QCOMPARE( ls.numPoints(), 2 );
+  QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString );
 }
 
 void TestQgsLineString::append()
@@ -3023,14 +3042,17 @@ void TestQgsLineString::cast()
 
   cs.fromWkt( u"LineString Z (6 0 -0.6, 6.5 0 -0.4)"_s );
   QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"LineString M (6 0 -0.6, 6.5 0 -0.4)"_s );
   QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"LineString ZM (6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8)"_s );
   QVERIFY( QgsLineString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 }
 

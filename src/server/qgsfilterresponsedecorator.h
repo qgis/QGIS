@@ -19,7 +19,7 @@
 #ifndef QGSFILTERRESPONSEDECORATOR_H
 #define QGSFILTERRESPONSEDECORATOR_H
 
-
+#include "qgis.h"
 #include "qgsserverexception.h"
 #include "qgsserverfilter.h"
 #include "qgsserverresponse.h"
@@ -56,11 +56,27 @@ class QgsFilterResponseDecorator : public QgsServerResponse
 
     void setHeader( const QString &key, const QString &value ) override { mResponse.setHeader( key, value ); }
 
+    void addHeader( const QString &key, const QString &value ) override { mResponse.addHeader( key, value ); }
+
     void removeHeader( const QString &key ) override { mResponse.removeHeader( key ); }
 
-    QString header( const QString &key ) const override { return mResponse.header( key ); }
+    Q_DECL_DEPRECATED QString header( const QString &key ) const override
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      return mResponse.header( key );
+      Q_NOWARN_DEPRECATED_POP
+    }
 
-    QMap<QString, QString> headers() const override { return mResponse.headers(); }
+    Q_DECL_DEPRECATED QMap<QString, QString> headers() const override
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      return mResponse.headers();
+      Q_NOWARN_DEPRECATED_POP
+    }
+
+    virtual QList<QString> fullHeader( const QString &key ) const override { return mResponse.fullHeader( key ); }
+
+    virtual QMap<QString, QList<QString> > fullHeaders() const override { return mResponse.fullHeaders(); }
 
     bool headersSent() const override { return mResponse.headersSent(); }
 

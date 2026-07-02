@@ -224,6 +224,56 @@ QString QgsProcessingFeedback::textLog() const
   return mTextLog;
 }
 
+void QgsProcessingFeedback::reportSourceLoaded( const QString &parameterName, long long featureCount )
+{
+  emit sourceLoaded( parameterName, featureCount );
+}
+
+void QgsProcessingFeedback::featureAddedToSink( const QString &output )
+{
+  long long countAtLastSignal = 0;
+  long long previousCount = 0;
+  auto it = mSinkFeatureCounts.find( output );
+  if ( it == mSinkFeatureCounts.end() )
+  {
+    it = mSinkFeatureCounts.insert( output, SinkStats() );
+  }
+  else
+  {
+    countAtLastSignal = it.value().countAtLastSignal;
+    previousCount = it.value().featureCount;
+  }
+
+  const long long newCount = previousCount + 1;
+  it.value().featureCount = newCount;
+  if ( newCount - countAtLastSignal >= 100 )
+  {
+    emit sinkFeatureCountChanged( output, newCount );
+    it.value().countAtLastSignal = newCount;
+  }
+}
+
+void QgsProcessingFeedback::featureSinkFinalized( const QString &output )
+{
+  long long previousCount = 0;
+  auto it = mSinkFeatureCounts.find( output );
+  if ( it == mSinkFeatureCounts.end() )
+  {
+    it = mSinkFeatureCounts.insert( output, SinkStats() );
+  }
+  else
+  {
+    previousCount = it.value().featureCount;
+  }
+
+  emit sinkFeatureCountChanged( output, previousCount );
+  it.value().countAtLastSignal = previousCount;
+}
+
+void QgsProcessingFeedback::resetFeatureSinkCounts()
+{
+  mSinkFeatureCounts.clear();
+}
 
 QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
   : mChildSteps( childAlgorithmCount )

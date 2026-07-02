@@ -21,43 +21,27 @@ IF(QSCI_MOD_VERSION_STR)
   SET(QSCI_FOUND TRUE)
 ELSE(QSCI_MOD_VERSION_STR)
 
-  IF(SIP_BUILD_EXECUTABLE)
-    # SIP >= 5.0 path
-
+  SET(QSCI_DIST_INFO CACHE PATH "Path to QScintilla dist-info directory")
+  IF(QSCI_DIST_INFO)
+    SET(_qsci_metadata "${QSCI_DIST_INFO}/METADATA")
+  ELSE()
     FILE(GLOB _qsci_metadata "${Python_SITEARCH}/QScintilla*.dist-info/METADATA")
-    IF(_qsci_metadata)
-      FILE(READ ${_qsci_metadata} _qsci_metadata_contents)
-      STRING(REGEX REPLACE ".*\nVersion: ([^\n]+).*$" "\\1" QSCI_MOD_VERSION_STR ${_qsci_metadata_contents})
-    ELSE(_qsci_metadata)
-      EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "from Py${QT_VERSION_BASE}.Qsci import QSCINTILLA_VERSION_STR; print(QSCINTILLA_VERSION_STR, end='')" OUTPUT_VARIABLE QSCI_MOD_VERSION_STR)
-    ENDIF(_qsci_metadata)
+  ENDIF()
 
-    IF(QSCI_MOD_VERSION_STR)
-      SET(QSCI_SIP_DIR "${PYQT_SIP_DIR}")
-      SET(QSCI_FOUND TRUE)
-    ENDIF(QSCI_MOD_VERSION_STR)
+  IF(_qsci_metadata)
+    FILE(READ ${_qsci_metadata} _qsci_metadata_contents)
+    STRING(REGEX REPLACE ".*\nVersion: ([^\n]+).*$" "\\1" QSCI_MOD_VERSION_STR ${_qsci_metadata_contents})
+  ELSE(_qsci_metadata)
+    EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "from Py${QT_VERSION_BASE}.Qsci import QSCINTILLA_VERSION_STR; print(QSCINTILLA_VERSION_STR, end='')" OUTPUT_VARIABLE QSCI_MOD_VERSION_STR)
+  ENDIF(_qsci_metadata)
 
-  ELSE(SIP_BUILD_EXECUTABLE)
-    # SIP 4.x path
-
-    FIND_FILE(_find_qsci_py FindQsci.py PATHS ${CMAKE_MODULE_PATH} NO_CMAKE_FIND_ROOT_PATH)
-
-    SET(QSCI_VER ${QT_VERSION_MAJOR})
-
-    EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} ${_find_qsci_py} ${QSCI_VER} OUTPUT_VARIABLE qsci_ver)
-
-    SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
-
-    IF(qsci_ver)
-      STRING(REGEX REPLACE "^qsci_version_str:([^\n]+).*$" "\\1" QSCI_MOD_VERSION_STR ${qsci_ver})
-      FIND_PATH(QSCI_SIP_DIR
-        NAMES ${QSCI_SIP_MOD_NAME}
-        PATHS ${PYQT_SIP_DIR} ${SIP_DEFAULT_SIP_DIR}
-      )
-      SET(QSCI_FOUND TRUE)
-    ENDIF(qsci_ver)
-
-  ENDIF(SIP_BUILD_EXECUTABLE)
+  SET(QSCI_SIP_DIR CACHE PATH "Path to QScintilla SIP files")
+  IF(NOT QSCI_SIP_DIR AND QSCI_MOD_VERSION_STR)
+    SET(QSCI_SIP_DIR "${PYQT_SIP_DIR}")
+  ENDIF()
+  IF(QSCI_SIP_DIR)
+    SET(QSCI_FOUND TRUE)
+  ENDIF()
 
   IF(QSCI_FOUND)
     IF(NOT QSCI_FIND_QUIETLY)

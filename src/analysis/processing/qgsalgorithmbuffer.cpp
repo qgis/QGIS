@@ -185,6 +185,8 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
           if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+          else
+            feedback->featureAddedToSink( u"OUTPUT"_s );
         }
         else
         {
@@ -195,6 +197,8 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
               out.setGeometry( QgsGeometry( part->clone() ) );
               if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
                 throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+              else
+                feedback->featureAddedToSink( u"OUTPUT"_s );
             }
           }
         }
@@ -204,6 +208,8 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     {
       if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
 
     feedback->setProgress( current * step );
@@ -222,6 +228,8 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
       f.setGeometry( finalGeometry );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
     else
     {
@@ -232,12 +240,15 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
           f.setGeometry( QgsGeometry( part->clone() ) );
           if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+          else
+            feedback->featureAddedToSink( u"OUTPUT"_s );
         }
       }
     }
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

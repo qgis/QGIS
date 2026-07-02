@@ -31,6 +31,8 @@ A PBR metal rough shading material used for rendering.
 
     virtual QString type() const;
 
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
 
     static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
 %Docstring
@@ -46,6 +48,8 @@ Returns a new instance of QgsMetalRoughMaterialSettings.
     virtual QgsMetalRoughMaterialSettings *clone() const /Factory/;
 
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
+    virtual bool requiresTangents() const;
 
 
     QColor baseColor() const;
@@ -67,6 +71,70 @@ Returns the material's metalness, as a value between 0 and 1.
 Returns the material's roughness, as a value between 0 and 1.
 
 .. seealso:: :py:func:`setRoughness`
+%End
+
+    double reflectance() const;
+%Docstring
+Returns the material's reflectance, as a value between 0 and 1.
+
+This controls the specular intensity for non-metals.
+
+.. seealso:: :py:func:`setReflectance`
+
+.. versionadded:: 4.2
+%End
+
+    double anisotropy() const;
+%Docstring
+Returns the material's anisotropy, as a value between 0 and 1.
+
+Anisotropic materials are those with properties which vary in different
+directions.
+
+.. seealso:: :py:func:`anisotropyRotation`
+
+.. seealso:: :py:func:`setAnisotropy`
+
+.. versionadded:: 4.2
+%End
+
+    double anisotropyRotation() const;
+%Docstring
+Returns the rotation of the material's anisotropy, as a angle in
+degrees.
+
+Anisotropic materials are those with properties which vary in different
+directions.
+
+.. seealso:: :py:func:`setAnisotropyRotation`
+
+.. seealso:: :py:func:`anisotropy`
+
+.. versionadded:: 4.2
+%End
+
+    QColor emissionColor() const;
+%Docstring
+Returns the material's emissive color.
+
+.. seealso:: :py:func:`setEmissionColor`
+
+.. versionadded:: 4.2
+%End
+
+    double emissionFactor() const;
+%Docstring
+Returns the emission factor, which dictates the strength of the emission
+effect.
+
+A value of 1.0 indicates that the emission color values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`setEmissionFactor`
+
+.. seealso:: :py:func:`emissionColor`
+
+.. versionadded:: 4.2
 %End
 
     double opacity() const;
@@ -112,11 +180,120 @@ Sets the material's ``roughness``, as a value between 0 and 1.
 .. seealso:: :py:func:`roughness`
 %End
 
+    void setReflectance( double reflectance );
+%Docstring
+Sets the material's ``reflectance``, as a value between 0 and 1.
+
+This controls the specular intensity for non-metals.
+
+.. seealso:: :py:func:`reflectance`
+
+.. versionadded:: 4.2
+%End
+
+    void setAnisotropy( double anisotropy );
+%Docstring
+Sets the material's ``anisotropy``, as a value between 0 and 1.
+
+Anisotropic materials are those with properties which vary in different
+directions.
+
+.. seealso:: :py:func:`setAnisotropyRotation`
+
+.. seealso:: :py:func:`anisotropy`
+
+.. versionadded:: 4.2
+%End
+
+    void setAnisotropyRotation( double rotation );
+%Docstring
+Sets the ``rotation`` of the material's anisotropy, as a angle in
+degrees.
+
+Anisotropic materials are those with properties which vary in different
+directions.
+
+.. seealso:: :py:func:`anisotropyRotation`
+
+.. seealso:: :py:func:`setAnisotropy`
+
+.. versionadded:: 4.2
+%End
+
     void setOpacity( double opacity );
 %Docstring
 Sets the ``opacity`` of the surface.
 
 .. seealso:: :py:func:`opacity`
+
+.. versionadded:: 4.2
+%End
+
+    void setEmissionColor( const QColor &color );
+%Docstring
+Sets the material's emissive ``color``.
+
+.. seealso:: :py:func:`emissionColor`
+
+.. versionadded:: 4.2
+%End
+
+    void setEmissionFactor( double factor );
+%Docstring
+Sets the emission ``factor``, which dictates the strength of the
+emission effect.
+
+A value of 1.0 indicates that the emission color values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`emissionFactor`
+
+.. seealso:: :py:func:`setEmissionColor`
+
+.. versionadded:: 4.2
+%End
+
+    double clearCoatFactor() const;
+%Docstring
+Returns the material's clear coat factor, as a value between 0 and 1.
+
+.. seealso:: :py:func:`setClearCoatFactor`
+
+.. seealso:: :py:func:`clearCoatRoughness`
+
+.. versionadded:: 4.2
+%End
+
+    void setClearCoatFactor( double factor );
+%Docstring
+Sets the material's clear coat ``factor``, as a value between 0 and 1.
+
+.. seealso:: :py:func:`clearCoatFactor`
+
+.. seealso:: :py:func:`setClearCoatRoughness`
+
+.. versionadded:: 4.2
+%End
+
+    double clearCoatRoughness() const;
+%Docstring
+Returns the material's clear coat roughness, as a value between 0 and 1.
+
+.. seealso:: :py:func:`setClearCoatRoughness`
+
+.. seealso:: :py:func:`clearCoatFactor`
+
+.. versionadded:: 4.2
+%End
+
+    void setClearCoatRoughness( double roughness );
+%Docstring
+Sets the material's clear coat ``roughness``, as a value between 0 and
+1.
+
+.. seealso:: :py:func:`clearCoatRoughness`
+
+.. seealso:: :py:func:`setClearCoatFactor`
 
 .. versionadded:: 4.2
 %End

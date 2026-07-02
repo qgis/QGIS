@@ -57,9 +57,29 @@ Remove an HTTP response header
 Retrieve response header value
 %End
 
-    QMap<QString, QString> responseHeaders() const;
+ QMap<QString, QString> responseHeaders() const /Deprecated="Since 4.2. Use fullResponseHeaders() instead."/;
 %Docstring
-Returns the response headers
+Returns the response headers: note that if multiple values are set for
+the same header, only the last one is returned
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~QgsRequestHandler.fullResponseHeaders` instead.
+%End
+
+    QList<QString> fullResponseHeader( const QString &name ) const;
+%Docstring
+Returns the list of response headers for a given header ``name``
+
+.. versionadded:: 4.2
+%End
+
+    QMap<QString, QList<QString>> fullResponseHeaders() const;
+%Docstring
+Returns the response headers as a map of header name to list of values
+(to support multiple values for the same header)
+
+.. versionadded:: 4.2
 %End
 
     void setRequestHeader( const QString &name, const QString &value );
@@ -79,7 +99,7 @@ Retrieve request header value
 
     QMap<QString, QString> requestHeaders() const;
 %Docstring
-Returns the the Request headers
+Returns the Request headers
 %End
 
     void clear();

@@ -142,6 +142,26 @@ class CORE_EXPORT QgsSensorThingsUtils
     static QString combineFilters( const QStringList &filters );
 
     /**
+     * SensorThings service capabilities
+     */
+    struct ServiceCapabilities
+    {
+        //! SensorThings API version
+        Qgis::SensorThingsVersion version = Qgis::SensorThingsVersion::Version1_1;
+        //! Available SensorThings extensions
+        Qgis::SensorThingsExtensions availableExtensions;
+        //! Available SensorThings entities
+        QSet< Qgis::SensorThingsEntity > availableEntities;
+    };
+
+    /**
+     * Retrieves general service capabilities for a SensorThings server.
+     *
+     * \since QGIS 4.2
+     */
+    static ServiceCapabilities determineServiceCapabilities( const QString &uri, QgsFeedback *feedback = nullptr, const QString &authCfg = QString() );
+
+    /**
      * Returns a list of available geometry types for the server at the specified \a uri
      * and entity \a type.
      *

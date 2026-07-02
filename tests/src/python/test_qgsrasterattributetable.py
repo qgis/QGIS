@@ -20,6 +20,7 @@ import unittest
 import numpy as np
 from osgeo import gdal, osr
 from qgis.core import (
+    NULL,
     Qgis,
     QgsPalettedRasterRenderer,
     QgsPresetSchemeColorRamp,
@@ -1539,6 +1540,13 @@ class TestQgsRasterAttributeTable(QgisTestCase):
     <F>XXXXXX</F>
     <F>2023/06/01 12:30:45+00</F>
   </Row>
+  <Row index="2">
+    <F>3</F>
+    <F>false</F>
+    <F>0</F>
+    <F></F>
+    <F></F>
+  </Row>
 </GDALRasterAttributeTable>
 </PAMRasterBand>
 </PAMDataset>
@@ -1591,6 +1599,12 @@ class TestQgsRasterAttributeTable(QgisTestCase):
                     QDateTime.fromString(
                         "2023/06/01 12:30:45+00", Qt.DateFormat.ISODate
                     ),
+                ],
+                [
+                    3,
+                    False,
+                    0.0,
+                    NULL,
                 ],
             ],
         )

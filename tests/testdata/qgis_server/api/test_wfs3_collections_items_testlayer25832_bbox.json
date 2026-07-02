@@ -29,6 +29,12 @@ Content-Type: application/geo+json
       "rel": "alternate",
       "title": "Retrieve the features of the collection as HTML",
       "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer25832/items.fgb?bbox=7.16305252070271603,44.75906320523620963,7.3418755610416051,44.87555723151492515",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as FLATGEOBUF",
+      "type": "application/flatgeobuf"
     }
   ],
   "numberMatched": 1,

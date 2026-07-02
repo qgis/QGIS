@@ -46,7 +46,6 @@ RUN SUCCESS=OK \
   -DENABLE_TESTS=OFF \
   -DWITH_QSPATIALITE=ON \
   -DWITH_APIDOC=OFF \
-  -DWITH_ASTYLE=OFF \
   .. \
   && ninja install || SUCCESS=FAILED \
   && echo "$SUCCESS" > /QGIS/build_exit_value

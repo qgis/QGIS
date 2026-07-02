@@ -3183,6 +3183,51 @@ class TestQgsExpression : public QObject
       run_evaluation_test( exp4, evalError, result );
     }
 
+    void layer_property_type_i18n_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<QLocale::Language>( "language" );
+      QTest::addColumn<QVariant>( "expected" );
+
+      QTest::newRow( "layer_property type English" ) << u"layer_property('%1','type')"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type French" ) << u"layer_property('%1','type')"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vecteur" );
+      QTest::newRow( "layer_property type explicit translation English" ) << u"layer_property('%1','type', true)"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type explicit translation French" ) << u"layer_property('%1','type', true)"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vecteur" );
+      QTest::newRow( "layer_property type no translation English" ) << u"layer_property('%1','type', false)"_s.arg( mPointsLayer->name() ) << QLocale::English << QVariant( "Vector" );
+      QTest::newRow( "layer_property type no translation French" ) << u"layer_property('%1','type', false)"_s.arg( mPointsLayer->name() ) << QLocale::French << QVariant( "Vector" );
+    }
+
+    void layer_property_type_i18n()
+    {
+      QFETCH( QString, string );
+      QFETCH( QLocale::Language, language );
+      QFETCH( QVariant, expected );
+
+      QgsExpression exp( string );
+
+      QLocale::setDefault( language );
+      QTranslator translator;
+      const bool ok = translator.load( "qgis_" + QLocale().name(), QgsApplication::i18nPath() );
+      QVERIFY( ok );
+      QCoreApplication::installTranslator( &translator );
+
+      if ( exp.hasParserError() )
+      {
+        qDebug() << exp.parserErrorString();
+      }
+      QCOMPARE( exp.hasParserError(), false );
+
+      QVariant result = exp.evaluate();
+      if ( exp.hasEvalError() )
+      {
+        qDebug() << exp.evalErrorString();
+      }
+
+      QCOMPARE( result, expected );
+
+      QLocale::setDefault( QLocale::English );
+    }
+
     void eval_columns()
     {
       QgsFields fields;
@@ -4108,7 +4153,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( functionNodes.size(), 5 );
       QgsExpressionFunction *fd;
       QSet<QString> actualFunctions;
-      for ( const auto &f : functionNodes )
+      for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
         fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
@@ -4122,12 +4167,25 @@ class TestQgsExpression : public QObject
       QList<const QgsExpressionNodeBinaryOperator *> binaryOpsNodes( exp.findNodes<QgsExpressionNodeBinaryOperator>() );
       QCOMPARE( binaryOpsNodes.size(), 2 );
       QSet<QgsExpressionNodeBinaryOperator::BinaryOperator> actualBinaryOps;
-      for ( const auto &f : binaryOpsNodes )
+      for ( const QgsExpressionNodeBinaryOperator *f : std::as_const( binaryOpsNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntBinaryOperator );
         actualBinaryOps << f->op();
       }
       QCOMPARE( actualBinaryOps, expectedBinaryOps );
+
+      exp.setExpression( R"(if(current_value('a') in (1, 2), 'yes', 'no'))"_L1 );
+      functionNodes = exp.findNodes<QgsExpressionNodeFunction>();
+      actualFunctions.clear();
+      for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
+      {
+        QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
+        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        actualFunctions << fd->name();
+      }
+      expectedFunctions.clear();
+      expectedFunctions << u"if"_s << u"current_value"_s;
+      QCOMPARE( actualFunctions, expectedFunctions );
     }
 
     void referenced_columns_all_attributes()

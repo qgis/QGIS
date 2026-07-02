@@ -79,6 +79,7 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     QString htmlMetadata() const override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QList<double> nativeResolutions() const override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
   protected:
     using QgsRasterDataProvider::readBlock;
@@ -87,6 +88,7 @@ class QgsImageServerProvider : public QgsRasterDataProvider
 
   private:
     bool readTiledBlock( const QgsRectangle &viewExtent, int width, int height, void *data, GDALDataType gdalType, int elementSize, QgsRasterBlockFeedback *feedback );
+    bool readBlockInternal( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, std::vector<GByte> *noDataMask, bool *foundNoDataMask, QgsRasterBlockFeedback *feedback = nullptr );
 
     bool mValid = false;
     QVariantMap mServiceInfo;
@@ -122,6 +124,13 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     QString mAuthCfg;
     int mMaximumLercVersionSupported = 0;
     bool mHasRat = false;
+
+    struct ServiceReply
+    {
+        QUrl requestUrl;
+        QByteArray response;
+    };
+    ServiceReply mLastReply;
 
     /**
      * Resets cached image

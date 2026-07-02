@@ -76,8 +76,8 @@ Constructor for the tFunction type
 
     Type type() const;
 
-    void setLeft( QgsRasterCalcNode *left );
-    void setRight( QgsRasterCalcNode *right );
+    void setLeft( QgsRasterCalcNode *left /Transfer/ );
+    void setRight( QgsRasterCalcNode *right /Transfer/ );
 
 
     QString toString( bool cStyle = false ) const;

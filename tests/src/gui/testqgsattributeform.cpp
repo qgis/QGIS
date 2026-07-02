@@ -72,6 +72,7 @@ class TestQgsAttributeForm : public QObject
     void testCaseInsensitiveFieldConstraint();
     void testCompositeForeignKeyHidesNonFirstFields();
     void testCustomComments();
+    void testFormWithMissingField();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1460,6 +1461,35 @@ void TestQgsAttributeForm::testCustomComments()
   ww1->setValues( u"Ned"_s, QVariantList() );
   form.updateLabels();
   QCOMPARE( buddyLabels.value( ww4->widget() )->parentWidget()->toolTip(), u"<b>Fourth field</b> (f4)<br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font><br><em>Comment with Ned</em>"_s ); //it's the alias and the data defined comment
+}
+
+void TestQgsAttributeForm::testFormWithMissingField()
+{
+  // a drag-and-drop form layout references a
+  // field that does not exist on the layer (e.g. field was renamed / removed).
+  const QString def = u"Point?field=col0:integer"_s;
+  auto layer = std::make_unique<QgsVectorLayer>( def, u"test"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+  layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( u"TextEdit"_s, QVariantMap() ) );
+
+  QgsEditFormConfig editFormConfig = layer->editFormConfig();
+  editFormConfig.clearTabs();
+  editFormConfig.invisibleRootContainer()->addChildElement( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
+  // Reference to a field that does not exist on the layer
+  editFormConfig.invisibleRootContainer()->addChildElement( new QgsAttributeEditorField( "missing_field", -1, editFormConfig.invisibleRootContainer() ) );
+  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  layer->setEditFormConfig( editFormConfig );
+
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( u"col0"_s, 1 );
+
+  QgsAttributeForm form( layer.get() );
+  form.setFeature( ft );
+
+  // The valid field still has a corresponding editor widget
+  QVERIFY( form.mFormEditorWidgets.contains( 0 ) );
+  // No widget is registered for the bogus field index -1
+  QVERIFY( !form.mFormEditorWidgets.contains( -1 ) );
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )

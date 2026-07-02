@@ -263,6 +263,11 @@ bool QgsCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags ) cons
   return res;
 }
 
+bool QgsCurve::hasVertex( QgsVertexId id ) const
+{
+  return id.part == 0 && id.ring == 0 && id.vertex >= 0 && id.vertex < numPoints();
+}
+
 QPolygonF QgsCurve::asQPolygonF() const
 {
   std::unique_ptr< QgsLineString > segmentized( curveToLine() );

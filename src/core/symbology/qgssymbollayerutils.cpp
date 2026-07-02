@@ -6021,7 +6021,7 @@ QgsSymbolLayerUtils::ExtraItems QgsSymbolLayerUtils::parseExtraItems( const QStr
   int iChar = 0;
   for ( const QChar &c : strExtraItems )
   {
-    if ( !currentNumber.isEmpty() && ( c.isSpace() || c == "," ) )
+    if ( !currentNumber.isEmpty() && ( c.isSpace() || c == ',' ) )
     {
       error = addNumber( c );
     }

@@ -540,7 +540,7 @@ If you're going to be developing QGIS on a Fedora system, the following extra pa
 are required for the various QGIS source formatting and preparation scripts.
 
 ```bash
-dnf install ag ccache expect ninja-build astyle python3-autopep8 python3-mock python3-nose2 perl-YAML-Tiny
+dnf install ag ccache expect ninja-build python3-autopep8 python3-mock python3-nose2 perl-YAML-Tiny
 ```
 
 
@@ -906,7 +906,7 @@ For example install Homebrew
 and these development/build tools
 
 ```bash
-brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool astyle help2man autoconf automake pandoc draco
+brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool help2man autoconf automake pandoc draco
 ```
 
 if you have these tools installed from MacPorts or Conda, it is the same, but we will need to be able to

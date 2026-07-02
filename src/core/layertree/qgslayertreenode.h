@@ -131,6 +131,12 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     sipRes = sipCpp->children().count();
     % End
 
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
+
     /**
      * Returns the child node at the specified ``index``.
      *

@@ -169,6 +169,13 @@ By default this will return the same value as
 .. versionadded:: 3.36
 %End
 
+    virtual bool isMapLayer() const;
+%Docstring
+Returns ``True`` if the output is a map layer type.
+
+.. versionadded:: 4.2
+%End
+
   protected:
 
 
@@ -206,6 +213,8 @@ Returns the type name for the output class.
 
     virtual QString type() const;
 
+    virtual bool isMapLayer() const;
+
 };
 
 class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
@@ -231,6 +240,8 @@ Constructor for QgsProcessingOutputVectorLayer.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+    virtual bool isMapLayer() const;
+
 
     Qgis::ProcessingSourceType dataType() const;
 %Docstring
@@ -271,6 +282,8 @@ Returns the type name for the output class.
     virtual QColor modelColor() const;
 
     virtual QString type() const;
+    virtual bool isMapLayer() const;
+
 };
 
 class QgsProcessingOutputPointCloudLayer : QgsProcessingOutputDefinition
@@ -295,6 +308,8 @@ Constructor for QgsProcessingOutputPointCloudLayer.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+    virtual bool isMapLayer() const;
+
 };
 
 class QgsProcessingOutputMultipleLayers : QgsProcessingOutputDefinition
@@ -331,6 +346,8 @@ Returns the type name for the output class.
     virtual QColor modelColor() const;
 
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
+    virtual bool isMapLayer() const;
 
 };
 
@@ -577,6 +594,8 @@ Returns the type name for the output class.
     virtual QColor modelColor() const;
 
     virtual QString type() const;
+    virtual bool isMapLayer() const;
+
 };
 
 /************************************************************************

@@ -28,7 +28,7 @@ Base class for processing batch algorithm dialogs.
 #include "qgsprocessingbatchalgorithmdialogbase.h"
 %End
   public:
-    QgsProcessingBatchAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingBatchAlgorithmDialogBase( QMainWindow *parentWindow /TransferThis/ );
 %Docstring
 Constructor for QgsProcessingBatchAlgorithmDialogBase.
 %End

@@ -124,7 +124,7 @@ class GrassUtils:
             try:
                 lines = proc.stdout.readlines()
                 for line in lines:
-                    if "GRASS GIS " in line:
+                    if "GRASS " in line:
                         line = line.split(" ")[-1].strip()
                         if line.startswith("7.") or line.startswith("8."):
                             GrassUtils.version = line
@@ -665,12 +665,12 @@ class GrassUtils:
             return "https://grass.osgeo.org/grass-stable/manuals/"
 
     @staticmethod
-    def getSupportedOutputRasterExtensions():
+    def getSupportedOutputRasterFormatAndExtensions():
         # We use the same extensions as GDAL because:
         # - GRASS is also using GDAL for raster imports.
         # - Chances that GRASS is compiled with another version of
         # GDAL than QGIS are very limited!
-        return GdalUtils.getSupportedOutputRasterExtensions()
+        return GdalUtils.getSupportedOutputRasterFormatAndExtensions()
 
     @staticmethod
     def getRasterFormatFromFilename(filename):

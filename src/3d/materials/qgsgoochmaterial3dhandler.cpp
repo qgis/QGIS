@@ -51,7 +51,7 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        return new QgsHighlightMaterial();
       }
 
       const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
@@ -63,7 +63,12 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
       applySettingsToMaterial( goochSettings, material );
       if ( context.isSelected() )
         material->setDiffuse( context.selectionColor() );
-      material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
+      material->setDataDefinedEnabled(
+        dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Warm )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Cool )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Diffuse )
+        || dataDefinedProperties.isActive( QgsAbstractMaterialSettings::Property::Specular )
+      );
 
       return material;
     }
@@ -74,9 +79,6 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
   }
   return nullptr;
 }
-
-void QgsGoochMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
-{}
 
 QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
@@ -109,11 +111,6 @@ QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAb
   *fptr++ = static_cast<unsigned char>( specular.blue() );
 
   return array;
-}
-
-int QgsGoochMaterial3DHandler::dataDefinedByteStride( const QgsAbstractMaterialSettings * ) const
-{
-  return 12 * sizeof( unsigned char );
 }
 
 void QgsGoochMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
@@ -180,12 +177,15 @@ bool QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
 {
   const QgsGoochMaterialSettings *goochSettings = qgis::down_cast< const QgsGoochMaterialSettings * >( settings );
 
   QgsGoochMaterial *material = new QgsGoochMaterial();
   material->setInstancingEnabled( true, flags );
+  material->setInstancingMeshTransform( transform );
 
   material->setObjectName( u"goochMaterial"_s );
   applySettingsToMaterial( goochSettings, material );

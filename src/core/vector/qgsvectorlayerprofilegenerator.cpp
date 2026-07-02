@@ -1479,7 +1479,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           if ( triangleIsCollinearInXYPlane( triangle ) )
           {
             wasCollinear = true;
-            const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() );
+            const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( triangle->exteriorRing() );
 
             QString lastError;
             if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( mProfileCurve.get() ) )
@@ -1490,24 +1490,33 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
                 const QgsPoint p2 = ls->pointN( curveSegmentIndex + 1 );
 
                 QgsPoint intersectionPoint;
+                bool intersectionFound = false;
                 double minZ = std::numeric_limits< double >::max();
                 double maxZ = std::numeric_limits< double >::lowest();
 
                 for ( auto vertexPair : std::array<std::pair<int, int>, 3> { { { 0, 1 }, { 1, 2 }, { 2, 0 } } } )
                 {
                   bool isIntersection = false;
-                  if ( QgsGeometryUtils::segmentIntersection( ring->pointN( vertexPair.first ), ring->pointN( vertexPair.second ), p1, p2, intersectionPoint, isIntersection ) )
+                  QgsPoint edgeIntersectionPoint;
+                  if ( QgsGeometryUtils::segmentIntersection( ring->pointN( vertexPair.first ), ring->pointN( vertexPair.second ), p1, p2, edgeIntersectionPoint, isIntersection ) )
                   {
+                    if ( !edgeIntersectionPoint.isEmpty() && !intersectionFound )
+                    {
+                      intersectionPoint = edgeIntersectionPoint;
+                      intersectionFound = true;
+                    }
+
+
                     const double fraction = QgsGeometryUtilsBase::pointFractionAlongLine(
-                      ring->xAt( vertexPair.first ), ring->yAt( vertexPair.first ), ring->xAt( vertexPair.second ), ring->yAt( vertexPair.second ), intersectionPoint.x(), intersectionPoint.y()
+                      ring->xAt( vertexPair.first ), ring->yAt( vertexPair.first ), ring->xAt( vertexPair.second ), ring->yAt( vertexPair.second ), edgeIntersectionPoint.x(), edgeIntersectionPoint.y()
                     );
-                    const double intersectionZ = ring->zAt( vertexPair.first ) + ( ring->zAt( vertexPair.second ) - ring->zAt( vertexPair.first ) ) * fraction;
+                    double intersectionZ = ring->zAt( vertexPair.first ) + ( ring->zAt( vertexPair.second ) - ring->zAt( vertexPair.first ) ) * fraction;
                     minZ = std::min( minZ, intersectionZ );
                     maxZ = std::max( maxZ, intersectionZ );
                   }
                 }
 
-                if ( !intersectionPoint.isEmpty() )
+                if ( intersectionFound )
                 {
                   // need z?
                   mResults->mRawPoints.append( intersectionPoint );

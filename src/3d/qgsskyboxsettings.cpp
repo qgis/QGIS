@@ -38,6 +38,8 @@ QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
   : mCubeMapping( other.mCubeMapping )
 #endif
   , mCubeMapFacesPaths( other.mCubeMapFacesPaths )
+  , mEnableEnvironmentalLighting( other.mEnableEnvironmentalLighting )
+  , mEnvironmentalLightStrength( other.mEnvironmentalLightStrength )
 {}
 
 QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
@@ -48,8 +50,10 @@ QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
 #if ENABLE_PANORAMIC_SKYBOX
   this->mPanoramicTexturePath = rhs.mPanoramicTexturePath;
 #endif
-  this->mCubeMapFacesPaths = rhs.mCubeMapFacesPaths;
-  this->mCubeMapping = rhs.mCubeMapping;
+  mCubeMapFacesPaths = rhs.mCubeMapFacesPaths;
+  mCubeMapping = rhs.mCubeMapping;
+  mEnableEnvironmentalLighting = rhs.mEnableEnvironmentalLighting;
+  mEnvironmentalLightStrength = rhs.mEnvironmentalLightStrength;
   return *this;
 }
 
@@ -67,6 +71,9 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
   mCubeMapFacesPaths[u"negY"_s] = pathResolver.readPath( element.attribute( u"negY-texture-path"_s ) );
   mCubeMapFacesPaths[u"negZ"_s] = pathResolver.readPath( element.attribute( u"negZ-texture-path"_s ) );
   mCubeMapping = qgsEnumKeyToValue( element.attribute( u"mapping"_s ), Qgis::SkyboxCubeMapping::NativeZUp );
+
+  mEnableEnvironmentalLighting = element.attribute( u"environmental-lighting"_s, u"1"_s ).toInt();
+  mEnvironmentalLightStrength = element.attribute( u"environment-light-strength"_s, u"1"_s ).toDouble();
 }
 
 void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -82,6 +89,8 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
   element.setAttribute( u"negY-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"negY"_s] ) );
   element.setAttribute( u"negZ-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"negZ"_s] ) );
   element.setAttribute( u"mapping"_s, qgsEnumValueToKey( mCubeMapping ) );
+  element.setAttribute( u"environmental-lighting"_s, mEnableEnvironmentalLighting ? u"1"_s : u"0"_s );
+  element.setAttribute( u"environment-light-strength"_s, mEnvironmentalLightStrength );
 }
 
 Qgis::SkyboxCubeMapping QgsSkyboxSettings::cubeMapping() const

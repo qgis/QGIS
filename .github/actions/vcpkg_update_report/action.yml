@@ -36,8 +36,18 @@ runs:
     - name: Run vcpkg install (BASE)
       shell: bash
       run: |
-        git worktree add .base-ref ${{ github.event.pull_request.base.sha }}
-        vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=.base-ref/${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=%s ", $i}' <<< "${{ inputs.features }}")  --allow-unsupported > /tmp/vcpkg-base-output.txt
+        base_sha='${{ github.event.pull_request.base.sha }}'
+        base_out=/tmp/vcpkg-base-output.txt
+        # Ensure an empty base output always exists so the comparison can run.
+        : > "${base_out}"
+        # Shallow checkouts (and stale/conflicted PR merge refs) may not contain
+        # the base commit. Fetch just that commit explicitly before using it.
+        git fetch --no-tags --depth=1 origin "${base_sha}" 2>/dev/null || true
+        if git worktree add .base-ref "${base_sha}" 2>/dev/null; then
+          vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=.base-ref/${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=%s ", $i}' <<< "${{ inputs.features }}") --allow-unsupported > "${base_out}"
+        else
+          echo "::warning title=Vcpkg update report::Base ref ${base_sha} is unavailable (shallow or conflicted history); reporting the HEAD install list without a base comparison."
+        fi
 
 
     # Compare the outputs and generate a report
@@ -46,6 +56,11 @@ runs:
       id: compare
       run: |
         python3 ${GITHUB_ACTION_PATH}/vcpkg-diff.py > /tmp/vcpkg-report.txt
+        # If the base install list could not be produced, surface that in the
+        # report instead of silently presenting the full HEAD list as a diff.
+        if [ ! -s /tmp/vcpkg-base-output.txt ]; then
+          printf '> ⚠️ Base ref unavailable — showing the full HEAD install list (no diff).\n\n%s' "$(cat /tmp/vcpkg-report.txt)" > /tmp/vcpkg-report.txt
+        fi
         cat /tmp/vcpkg-report.txt
         {
           echo 'report<<EOF'

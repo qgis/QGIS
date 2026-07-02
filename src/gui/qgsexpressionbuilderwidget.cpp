@@ -242,6 +242,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
  : param params_as_list : Set this to True to pass the function parameters as a list. Can be used to mimic \n\
                         behavior before 3.32, when args was not \"auto\". Defaults to False.\n\
 \"\"\"" ) );
+
+  txtExpressionString->setFocus();
 }
 
 
@@ -835,12 +837,6 @@ void QgsExpressionBuilderWidget::setProject( QgsProject *project )
 {
   mProject = project;
   mExpressionTreeView->setProject( project );
-}
-
-void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
-{
-  QWidget::showEvent( e );
-  txtExpressionString->setFocus();
 }
 
 void QgsExpressionBuilderWidget::createErrorMarkers( const QList<QgsExpression::ParserError> &errors )

@@ -418,21 +418,34 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics(
       results.insert( Qgis::ZonalStatistic::Range, QVariant( featureStats.max - featureStats.min ) );
     if ( statistics & Qgis::ZonalStatistic::Minority || statistics & Qgis::ZonalStatistic::Majority )
     {
-      QList<int> vals = featureStats.valueCount.values();
-      std::sort( vals.begin(), vals.end() );
+      int64_t lowestCount = std::numeric_limits<int64_t>::max();
+      int64_t highestCount = 0;
+      double valueWithLowestCount = 0;
+      double valueWithHighestCount = 0;
+      for ( auto [value, count] : std::as_const( featureStats.valueCount ) )
+      {
+        if ( count < lowestCount )
+        {
+          lowestCount = count;
+          valueWithLowestCount = value;
+        }
+        if ( count > highestCount )
+        {
+          highestCount = count;
+          valueWithHighestCount = value;
+        }
+      }
       if ( statistics & Qgis::ZonalStatistic::Minority )
       {
-        double minorityKey = featureStats.valueCount.key( vals.first() );
-        results.insert( Qgis::ZonalStatistic::Minority, QVariant( minorityKey ) );
+        results.insert( Qgis::ZonalStatistic::Minority, QVariant( valueWithLowestCount ) );
       }
       if ( statistics & Qgis::ZonalStatistic::Majority )
       {
-        double majKey = featureStats.valueCount.key( vals.last() );
-        results.insert( Qgis::ZonalStatistic::Majority, QVariant( majKey ) );
+        results.insert( Qgis::ZonalStatistic::Majority, QVariant( valueWithHighestCount ) );
       }
     }
     if ( statistics & Qgis::ZonalStatistic::Variety )
-      results.insert( Qgis::ZonalStatistic::Variety, QVariant( featureStats.valueCount.count() ) );
+      results.insert( Qgis::ZonalStatistic::Variety, QVariant( static_cast<qlonglong>( featureStats.valueCount.size() ) ) );
   }
 
   return results;

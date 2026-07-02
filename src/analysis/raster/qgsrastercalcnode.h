@@ -63,15 +63,15 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opASIN,
       opACOS,
       opATAN,
-      opEQ, // =
-      opNE, // !=
-      opGT, // >
-      opLT, // <
-      opGE, // >=
-      opLE, // <=
+      opEQ, //!< =
+      opNE, //!< !=
+      opGT, //!< >
+      opLT, //!< <
+      opGE, //!< >=
+      opLE, //!< <=
       opAND,
       opOR,
-      opSIGN, // change sign
+      opSIGN, //!< Change sign
       opLOG,
       opLOG10,
       opABS,
@@ -96,16 +96,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     Type type() const { return mType; }
 
     //set left node
-    void setLeft( QgsRasterCalcNode *left )
-    {
-      delete mLeft;
-      mLeft = left;
-    }
-    void setRight( QgsRasterCalcNode *right )
-    {
-      delete mRight;
-      mRight = right;
-    }
+    void setLeft( QgsRasterCalcNode *left SIP_TRANSFER ) { mLeft.reset( left ); }
+    void setRight( QgsRasterCalcNode *right SIP_TRANSFER ) { mRight.reset( right ); }
 
     /**
      * Calculates result of raster calculation (might be real matrix or single number).
@@ -157,8 +149,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterMatrix evaluateFunction( const std::vector<std::unique_ptr<QgsRasterMatrix>> &matrixVector, QgsRasterMatrix &result ) const;
 
     Type mType = tNumber;
-    QgsRasterCalcNode *mLeft = nullptr;
-    QgsRasterCalcNode *mRight = nullptr;
+    std::unique_ptr<QgsRasterCalcNode> mLeft;
+    std::unique_ptr<QgsRasterCalcNode> mRight;
     double mNumber = 0;
     QString mRasterName;
     QgsRasterMatrix *mMatrix = nullptr;

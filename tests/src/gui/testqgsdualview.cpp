@@ -73,7 +73,7 @@ class TestQgsDualView : public QObject
     QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
-    QgsDualView *mDualView = nullptr;
+    std::unique_ptr<QgsDualView> mDualView;
 };
 
 void TestQgsDualView::initTestCase()
@@ -107,14 +107,12 @@ void TestQgsDualView::cleanupTestCase()
 
 void TestQgsDualView::init()
 {
-  mDualView = new QgsDualView();
+  mDualView = std::make_unique<QgsDualView>();
   mDualView->init( mPointsLayer, mCanvas );
 }
 
 void TestQgsDualView::cleanup()
-{
-  delete mDualView;
-}
+{}
 
 void TestQgsDualView::testColumnCount()
 {
@@ -237,6 +235,19 @@ void TestQgsDualView::testSort()
     const QModelIndex index = mDualView->tableView()->model()->index( i, 1 );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), headings.at( i ) );
   }
+
+  // Test crash when a field was added, sorted by and removed
+  const int fieldsCount = mPointsLayer->fields().count();
+  const int columnsCount = mDualView->attributeTableConfig().columns().size();
+  const QgsField newField( u"newField"_s, QMetaType::Type::QString );
+  mPointsLayer->startEditing();
+  mPointsLayer->addAttribute( newField );
+  QCOMPARE( mDualView->attributeTableConfig().columns().size(), columnsCount + 1 );
+  QCOMPARE( mPointsLayer->fields().count(), fieldsCount + 1 );
+  mDualView->setSortExpression( u"newField"_s );
+  mPointsLayer->rollBack();
+  QCOMPARE( mPointsLayer->fields().count(), fieldsCount );
+  QCOMPARE( mDualView->attributeTableConfig().columns().size(), columnsCount );
 }
 
 void TestQgsDualView::testAttributeFormSharedValueScanning()

@@ -42,7 +42,7 @@ class GUI_EXPORT QgsProcessingBatchAlgorithmDialogBase : public QgsProcessingAlg
     /**
      * Constructor for QgsProcessingBatchAlgorithmDialogBase.
      */
-    QgsProcessingBatchAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingBatchAlgorithmDialogBase( QMainWindow *parentWindow SIP_TRANSFERTHIS );
     ~QgsProcessingBatchAlgorithmDialogBase() override;
 
     void resetAdditionalGui() override;

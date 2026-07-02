@@ -11640,17 +11640,20 @@ void TestProcessingGui::testModelGraphicsView()
 
   scene2.createItems( &model1, context2 );
   QList<QGraphicsItem *> items2 = scene2.items();
-  QgsModelDesignerFeatureCountGraphicItem *layerItemFeatureCount = nullptr;
+  QgsModelDesignerArrowBadgeItem *layerItemFeatureCount = nullptr;
   for ( QGraphicsItem *item : items2 )
   {
-    if ( QgsModelDesignerFeatureCountGraphicItem *featureCount = dynamic_cast<QgsModelDesignerFeatureCountGraphicItem *>( item ) )
+    if ( auto arrow = dynamic_cast< QgsModelArrowItem * >( item ) )
     {
-      layerItemFeatureCount = featureCount;
-      QCOMPARE( featureCount->toPlainText(), "[1]" );
-      break;
+      if ( arrow->badgeItem() )
+      {
+        layerItemFeatureCount = arrow->badgeItem();
+        break;
+      }
     }
   }
   QVERIFY( layerItemFeatureCount );
+  QCOMPARE( layerItemFeatureCount->value().toLongLong(), 1LL );
 
   // hiding feature count decoration
   scene2.setFlags( QgsModelGraphicsScene::FlagHideFeatureCount );
@@ -11660,10 +11663,13 @@ void TestProcessingGui::testModelGraphicsView()
   layerItemFeatureCount = nullptr;
   for ( QGraphicsItem *item : items3 )
   {
-    if ( QgsModelDesignerFeatureCountGraphicItem *featureCount = dynamic_cast<QgsModelDesignerFeatureCountGraphicItem *>( item ) )
+    if ( auto arrow = dynamic_cast< QgsModelArrowItem * >( item ) )
     {
-      layerItemFeatureCount = featureCount;
-      break;
+      if ( arrow->badgeItem() )
+      {
+        layerItemFeatureCount = arrow->badgeItem();
+        break;
+      }
     }
   }
   // should not exist

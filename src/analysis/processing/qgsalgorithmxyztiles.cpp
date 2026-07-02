@@ -172,6 +172,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mMetaTileSize = parameterAsInt( parameters, u"METATILESIZE"_s, context );
   mThreadsNumber = context.maximumThreads();
   mTransformContext = context.transformContext();
+  mEllipsoid = context.ellipsoid();
   mFeedback = feedback;
 
   mWgs84Crs = QgsCoordinateReferenceSystem( "EPSG:4326" );
@@ -248,6 +249,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     settings.setRendererUsage( Qgis::RendererUsage::Export );
     settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
     settings.setTransformContext( mTransformContext );
+    settings.setEllipsoid( mEllipsoid );
     settings.setDestinationCrs( mMercatorCrs );
     settings.setLayers( mLayers );
     settings.setOutputDpi( mDpi );

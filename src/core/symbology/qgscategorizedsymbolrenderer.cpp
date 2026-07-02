@@ -1220,6 +1220,18 @@ void QgsCategorizedSymbolRenderer::setLegendSymbolItem( const QString &key, QgsS
     delete symbol;
 }
 
+void QgsCategorizedSymbolRenderer::setLegendSymbolItemLabel( const QString &key, const QString &label )
+{
+  for ( int i = 0; i < mCategories.size(); i++ )
+  {
+    if ( mCategories[i].uuid() == key )
+    {
+      updateCategoryLabel( i, label );
+      break;
+    }
+  }
+}
+
 void QgsCategorizedSymbolRenderer::checkLegendSymbolItem( const QString &key, bool state )
 {
   for ( int i = 0; i < mCategories.size(); i++ )

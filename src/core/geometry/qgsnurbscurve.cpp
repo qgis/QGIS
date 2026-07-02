@@ -660,6 +660,43 @@ bool QgsNurbsCurve::deleteVertex( QgsVertexId position )
   return true;
 }
 
+bool QgsNurbsCurve::deleteVertices( const QSet<QgsVertexId> &positions )
+{
+  if ( positions.isEmpty() )
+  {
+    return false;
+  }
+
+  for ( QgsVertexId pos : positions )
+  {
+    if ( !hasVertex( pos ) )
+    {
+      return false;
+    }
+  }
+
+  if ( mControlPoints.size() - positions.size() <= mDegree )
+  {
+    clear();
+    return true;
+  }
+
+  QList<QgsVertexId> sortedPositions( positions.begin(), positions.end() );
+  std::sort( sortedPositions.begin(), sortedPositions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex > b.vertex; } );
+
+  for ( QgsVertexId position : sortedPositions )
+  {
+    int idx = position.vertex;
+    mControlPoints.remove( idx );
+    if ( idx < mWeights.size() )
+      mWeights.remove( idx );
+  }
+
+  generateUniformKnots();
+  clearCache();
+  return true;
+}
+
 void QgsNurbsCurve::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   QVector<QgsPoint> newPts;

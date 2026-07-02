@@ -1,31 +1,31 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingoutputs.h
 try:
     QgsProcessingOutputMapLayer.typeName = staticmethod(QgsProcessingOutputMapLayer.typeName)
-    QgsProcessingOutputMapLayer.__overridden_methods__ = ['modelColor', 'type']
+    QgsProcessingOutputMapLayer.__overridden_methods__ = ['modelColor', 'type', 'isMapLayer']
     QgsProcessingOutputMapLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVectorLayer.typeName = staticmethod(QgsProcessingOutputVectorLayer.typeName)
-    QgsProcessingOutputVectorLayer.__overridden_methods__ = ['modelColor', 'type']
+    QgsProcessingOutputVectorLayer.__overridden_methods__ = ['modelColor', 'type', 'isMapLayer']
     QgsProcessingOutputVectorLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputRasterLayer.typeName = staticmethod(QgsProcessingOutputRasterLayer.typeName)
-    QgsProcessingOutputRasterLayer.__overridden_methods__ = ['modelColor', 'type']
+    QgsProcessingOutputRasterLayer.__overridden_methods__ = ['modelColor', 'type', 'isMapLayer']
     QgsProcessingOutputRasterLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputPointCloudLayer.typeName = staticmethod(QgsProcessingOutputPointCloudLayer.typeName)
-    QgsProcessingOutputPointCloudLayer.__overridden_methods__ = ['type']
+    QgsProcessingOutputPointCloudLayer.__overridden_methods__ = ['type', 'isMapLayer']
     QgsProcessingOutputPointCloudLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputMultipleLayers.typeName = staticmethod(QgsProcessingOutputMultipleLayers.typeName)
-    QgsProcessingOutputMultipleLayers.__overridden_methods__ = ['type', 'modelColor', 'valueAsString']
+    QgsProcessingOutputMultipleLayers.__overridden_methods__ = ['type', 'modelColor', 'valueAsString', 'isMapLayer']
     QgsProcessingOutputMultipleLayers.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -79,12 +79,12 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVectorTileLayer.typeName = staticmethod(QgsProcessingOutputVectorTileLayer.typeName)
-    QgsProcessingOutputVectorTileLayer.__overridden_methods__ = ['modelColor', 'type']
+    QgsProcessingOutputVectorTileLayer.__overridden_methods__ = ['modelColor', 'type', 'isMapLayer']
     QgsProcessingOutputVectorTileLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
-    QgsProcessingOutputDefinition.__virtual_methods__ = ['modelColor', 'valueAsString', 'valueAsFormattedString']
+    QgsProcessingOutputDefinition.__virtual_methods__ = ['modelColor', 'valueAsString', 'valueAsFormattedString', 'isMapLayer']
     QgsProcessingOutputDefinition.__abstract_methods__ = ['type']
     QgsProcessingOutputDefinition.__group__ = ['processing']
 except (NameError, AttributeError):

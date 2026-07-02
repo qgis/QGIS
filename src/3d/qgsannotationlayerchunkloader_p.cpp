@@ -137,7 +137,7 @@ void QgsAnnotationLayerChunkLoader::start()
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [this, rect, layerToMapTransform, zOffset, altitudeClamping, showCallouts, textFormat] {
-    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"Annotation layer chunk load"_s );
+    const QgsScopedEvent e( u"3D"_s, u"Annotation layer chunk load"_s );
 
     std::vector< Billboard > billboards;
     billboards.reserve( mItemsToRender.size() );

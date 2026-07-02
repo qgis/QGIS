@@ -718,62 +718,65 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       {
         const QVariantList dashSource = jsonLineDashArray.toList();
 
-        if ( dashSource.at( 0 ).userType() == QMetaType::Type::QString )
+        if ( !dashSource.empty() )
         {
-          QgsProperty property = parseValueList( dashSource, PropertyType::DashArray, context, 1, 255, nullptr, nullptr );
-          if ( !lineWidthProperty.asExpression().isEmpty() )
+          if ( dashSource.at( 0 ).userType() == QMetaType::Type::QString )
           {
-            property = QgsProperty::fromExpression(
-              u"array_to_string(array_foreach(%1,@element * (%2)), ';')"_s // skip-keyword-check
-                .arg( property.asExpression(), lineWidthProperty.asExpression() )
-            );
+            QgsProperty property = parseValueList( dashSource, PropertyType::DashArray, context, 1, 255, nullptr, nullptr );
+            if ( !lineWidthProperty.asExpression().isEmpty() )
+            {
+              property = QgsProperty::fromExpression(
+                u"array_to_string(array_foreach(%1,@element * (%2)), ';')"_s // skip-keyword-check
+                  .arg( property.asExpression(), lineWidthProperty.asExpression() )
+              );
+            }
+            else
+            {
+              property = QgsProperty::fromExpression( u"array_to_string(%1, ';')"_s.arg( property.asExpression() ) );
+            }
+            ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, property );
           }
           else
           {
-            property = QgsProperty::fromExpression( u"array_to_string(%1, ';')"_s.arg( property.asExpression() ) );
-          }
-          ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, property );
-        }
-        else
-        {
-          QVector< double > rawDashVectorSizes;
-          rawDashVectorSizes.reserve( dashSource.size() );
-          for ( const QVariant &v : dashSource )
-          {
-            rawDashVectorSizes << v.toDouble();
-          }
-
-          // handle non-compliant dash vector patterns
-          if ( rawDashVectorSizes.size() == 1 )
-          {
-            // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
-            rawDashVectorSizes.clear();
-          }
-          else if ( rawDashVectorSizes.size() % 2 == 1 )
-          {
-            // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
-            // MapBox seems to implicitly add a 0 length gap to the array if odd length.
-            rawDashVectorSizes.append( 0 );
-          }
-
-          if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
-          {
-            QStringList dashArrayStringParts;
-            dashArrayStringParts.reserve( rawDashVectorSizes.size() );
-            for ( double v : std::as_const( rawDashVectorSizes ) )
+            QVector< double > rawDashVectorSizes;
+            rawDashVectorSizes.reserve( dashSource.size() );
+            for ( const QVariant &v : dashSource )
             {
-              dashArrayStringParts << qgsDoubleToString( v );
+              rawDashVectorSizes << v.toDouble();
             }
 
-            QString arrayExpression = u"array_to_string(array_foreach(array(%1),@element * (%2)), ';')"_s // skip-keyword-check
-                                        .arg( dashArrayStringParts.join( ',' ), lineWidthProperty.asExpression() );
-            ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromExpression( arrayExpression ) );
-          }
+            // handle non-compliant dash vector patterns
+            if ( rawDashVectorSizes.size() == 1 )
+            {
+              // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
+              rawDashVectorSizes.clear();
+            }
+            else if ( rawDashVectorSizes.size() % 2 == 1 )
+            {
+              // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
+              // MapBox seems to implicitly add a 0 length gap to the array if odd length.
+              rawDashVectorSizes.append( 0 );
+            }
 
-          // dash vector sizes for QGIS symbols must be multiplied by the target line width
-          for ( double v : std::as_const( rawDashVectorSizes ) )
-          {
-            dashVector << v * lineWidth;
+            if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
+            {
+              QStringList dashArrayStringParts;
+              dashArrayStringParts.reserve( rawDashVectorSizes.size() );
+              for ( double v : std::as_const( rawDashVectorSizes ) )
+              {
+                dashArrayStringParts << qgsDoubleToString( v );
+              }
+
+              QString arrayExpression = u"array_to_string(array_foreach(array(%1),@element * (%2)), ';')"_s // skip-keyword-check
+                                          .arg( dashArrayStringParts.join( ',' ), lineWidthProperty.asExpression() );
+              ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromExpression( arrayExpression ) );
+            }
+
+            // dash vector sizes for QGIS symbols must be multiplied by the target line width
+            for ( double v : std::as_const( rawDashVectorSizes ) )
+            {
+              dashVector << v * lineWidth;
+            }
           }
         }
         break;
@@ -2085,7 +2088,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     // main checkbox in labeling GUI
     QgsLabelThinningSettings thinningSettings = labelSettings.thinningSettings();
     thinningSettings.setAllowDuplicateRemoval( true );
-    thinningSettings.setMinimumDistanceToDuplicateUnit( Qgis::RenderUnit::Pixels );
+    thinningSettings.setMinimumDistanceToDuplicateUnit( context.targetUnit() );
     labelSettings.setThinningSettings( thinningSettings );
 
     QgsProperty spacingProp;
@@ -3931,6 +3934,55 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return u"0"_s;
   }
+  else if ( op == "slice"_L1 )
+  {
+    // ["slice", input, startIndex, endIndex?] returns a substring/sublist of input.
+    // MapBox indices are 0-based and endIndex is exclusive, while QGIS substr() is
+    // 1-based and takes a length
+    const QString inputExpression = parseValue( expression.value( 1 ), context );
+    if ( inputExpression.isEmpty() )
+    {
+      context.pushWarning( QObject::tr( "%1: Could not interpret slice list" ).arg( context.layerId() ) );
+      return QString();
+    }
+
+    // When the indices are constant integers
+    // we can fold the index arithmetic at conversion time
+    const auto constantInt = []( const QVariant &value, int &result ) -> bool {
+      switch ( value.userType() )
+      {
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
+        {
+          bool ok = false;
+          result = value.toInt( &ok );
+          return ok;
+        }
+        default:
+          return false;
+      }
+    };
+
+    int startValue = 0;
+    const bool startIsConstant = constantInt( expression.value( 2 ), startValue );
+    const QString startExpression = parseValue( expression.value( 2 ), context );
+    const QString startOffset = startIsConstant ? QString::number( startValue + 1 ) : u"(%1) + 1"_s.arg( startExpression );
+
+    if ( expression.size() > 3 )
+    {
+      int endValue = 0;
+      const bool endIsConstant = constantInt( expression.value( 3 ), endValue );
+      const QString endExpression = parseValue( expression.value( 3 ), context );
+      const QString length = ( startIsConstant && endIsConstant ) ? QString::number( endValue - startValue ) : u"(%1) - (%2)"_s.arg( endExpression, startExpression );
+      return u"substr(%1, %2, %3)"_s.arg( inputExpression, startOffset, length );
+    }
+    else
+    {
+      return u"substr(%1, %2)"_s.arg( inputExpression, startOffset );
+    }
+  }
   else
   {
     context.pushWarning( QObject::tr( "%1: Skipping unsupported expression \"%2\"" ).arg( context.layerId(), op ) );
@@ -3941,6 +3993,12 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
 QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize )
 {
   QImage spriteImage;
+
+  if ( name.isEmpty() )
+  {
+    return QImage();
+  }
+
   QString category;
   QString actualName = name;
   const int categorySeparator = name.indexOf( ':' );

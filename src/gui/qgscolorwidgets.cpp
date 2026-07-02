@@ -1439,8 +1439,8 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   mSpinBox = new QgsDoubleSpinBox();
   mSpinBox->setShowClearButton( false );
   //set spinbox to a reasonable width
-  const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( u"888%"_s );
-  mSpinBox->setMinimumWidth( largestCharWidth + 35 );
+  const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( u"888.88%"_s );
+  mSpinBox->setFixedWidth( largestCharWidth + 35 );
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( 1.f ) );
   mSpinBox->setValue( convertRealToDisplay( componentValueF() ) );

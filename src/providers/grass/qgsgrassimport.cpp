@@ -258,9 +258,6 @@ bool QgsGrassRasterImport::import()
     }
 
     Qgis::DataType qgis_out_type = Qgis::DataType::UnknownDataType;
-#ifdef QGISDEBUG
-    RASTER_MAP_TYPE data_type = -1;
-#endif
     switch ( provider->dataType( band ) )
     {
       case Qgis::DataType::Byte:
@@ -289,8 +286,6 @@ bool QgsGrassRasterImport::import()
         setError( tr( "Data type %1 not supported" ).arg( static_cast<int>( provider->dataType( band ) ) ) );
         return false;
     }
-
-    QgsDebugMsgLevel( QString( "data_type = %1" ).arg( data_type ), 3 );
 
     QString module = QgsGrass::qgisGrassModulePath() + "/qgis.r.in";
     QStringList arguments;

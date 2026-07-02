@@ -23,6 +23,7 @@
 #ifndef QGSWMSUTILS_H
 #define QGSWMSUTILS_H
 
+#include "qgslayertreegroup.h"
 #include "qgsmodule.h"
 #include "qgsserversettings.h"
 
@@ -69,6 +70,16 @@ namespace QgsWms
    * Write image response
    */
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr, int imageQuality = -1 );
+
+  /**
+   * Collects the \a acceptableLayersAndRequestNames, a hash of all the layers that can be rendered and for each a list of the layer names requesting it.
+   * It needs the \a project for properties and the layer tree root to start with parsing. Also the \a requestedLayerNames.
+   * If no \a requestedLayerNames are passed, you will receive back all the layers except the ones hidden in an opaque group.
+   * When an opaque group is in the \a requestedLayerNames, the children of this opaque group are passed back as well.
+   */
+  void collectAcceptableLayersAndRequestNames( QHash<const QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames, const QgsProject &project, const QStringList &requestedLayerNames = QStringList() );
+
+
 } // namespace QgsWms
 
 #endif

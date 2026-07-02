@@ -120,7 +120,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addSeparator()->setObjectName( "RemoveSeparator"_L1 );
 
       menu->addAction( QgsApplication::getThemeIcon( u"/mActionSetCRS.png"_s ), tr( "Set Group &CRS…" ), QgisApp::instance(), &QgisApp::legendGroupSetCrs );
-      menu->addAction( tr( "Set Group &WMS Data…" ), QgisApp::instance(), &QgisApp::legendGroupSetWmsData );
+      menu->addAction( tr( "Set Group &WMS Properties…" ), QgisApp::instance(), &QgisApp::legendGroupSetWmsData );
 
       menu->addSeparator()->setObjectName( "WmsSeparator"_L1 );
 

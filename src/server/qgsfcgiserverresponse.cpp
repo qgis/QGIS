@@ -239,12 +239,41 @@ void QgsFcgiServerResponse::removeHeader( const QString &key )
   mHeaders.remove( key );
 }
 
+void QgsFcgiServerResponse::addHeader( const QString &key, const QString &value )
+{
+  if ( !mHeadersSent )
+  {
+    if ( !mHeaders.contains( key ) )
+    {
+      mHeaders[key] = QList<QString>();
+    }
+    mHeaders[key].append( value );
+  }
+}
+
+
 void QgsFcgiServerResponse::setHeader( const QString &key, const QString &value )
 {
-  mHeaders.insert( key, value );
+  mHeaders[key] = QList<QString>() << value;
 }
 
 QString QgsFcgiServerResponse::header( const QString &key ) const
+{
+  const QList<QString> values = mHeaders.value( key );
+  return values.isEmpty() ? QString() : values.last();
+}
+
+QMap<QString, QString> QgsFcgiServerResponse::headers() const
+{
+  QMap<QString, QString> singleHeaders;
+  for ( auto it = mHeaders.keyBegin(); it != mHeaders.keyEnd(); ++it )
+  {
+    singleHeaders.insert( *it, header( *it ) );
+  }
+  return singleHeaders;
+}
+
+QList<QString> QgsFcgiServerResponse::fullHeader( const QString &key ) const
 {
   return mHeaders.value( key );
 }
@@ -257,7 +286,8 @@ bool QgsFcgiServerResponse::headersSent() const
 void QgsFcgiServerResponse::setStatusCode( int code )
 {
   // fcgi applications must return HTTP status in header
-  mHeaders.insert( u"Status"_s, u" %1"_s.arg( code ) );
+  removeHeader( u"Status"_s );
+  setHeader( u"Status"_s, u" %1"_s.arg( code ) );
   // Store the code to make it available for plugins
   mStatusCode = code;
 }
@@ -302,7 +332,7 @@ void QgsFcgiServerResponse::finish()
   {
     if ( !mHeaders.contains( "Content-Length" ) )
     {
-      mHeaders.insert( u"Content-Length"_s, QString::number( mBuffer.pos() ) );
+      setHeader( u"Content-Length"_s, QString::number( mBuffer.pos() ) );
     }
   }
   flush();
@@ -314,13 +344,16 @@ void QgsFcgiServerResponse::flush()
   if ( !mHeadersSent )
   {
     // Send all headers
-    QMap<QString, QString>::const_iterator it;
+    QMap<QString, QList<QString>>::const_iterator it;
     for ( it = mHeaders.constBegin(); it != mHeaders.constEnd(); ++it )
     {
-      fputs( it.key().toUtf8(), FCGI_stdout );
-      fputs( ": ", FCGI_stdout );
-      fputs( it.value().toUtf8(), FCGI_stdout );
-      fputs( "\n", FCGI_stdout );
+      for ( const QString &headerValue : std::as_const( it.value() ) )
+      {
+        fputs( it.key().toUtf8(), FCGI_stdout );
+        fputs( ": ", FCGI_stdout );
+        fputs( headerValue.toUtf8(), FCGI_stdout );
+        fputs( "\n", FCGI_stdout );
+      }
     }
     fputs( "\n", FCGI_stdout );
     mHeadersSent = true;
@@ -353,9 +386,6 @@ void QgsFcgiServerResponse::clear()
   mHeaders.clear();
   mBuffer.seek( 0 );
   mBuffer.buffer().clear();
-
-  // Restore default headers
-  setDefaultHeaders();
 }
 
 
@@ -374,5 +404,5 @@ void QgsFcgiServerResponse::truncate()
 
 void QgsFcgiServerResponse::setDefaultHeaders()
 {
-  mHeaders.insert( u"Server"_s, u" QGIS FCGI server - QGIS version %1"_s.arg( Qgis::version() ) );
+  QgsFcgiServerResponse::setHeader( u"Server"_s, u" QGIS FCGI server - QGIS version %1"_s.arg( Qgis::version() ) );
 }

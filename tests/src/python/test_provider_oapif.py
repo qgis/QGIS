@@ -3207,9 +3207,19 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         ) as f:
             f.write(
                 (
-                    "OGC-NumberMatched: 2\r\nLink: <http://"
+                    # Test bugfix for https://github.com/qgis/QGIS/issues/66365
+                    # Note that the 2 links are folded in a pseudo-single one
+                    # as QgsNetworkReply::rawHeaderPairs() does...
+                    # Cf https://doc.qt.io/archives/qt-6.9/qnetworkreply.html#setRawHeader
+                    "OGC-NumberMatched: 2\r\n"
+                    + "Link: <http://"
                     + endpoint
-                    + '/collections/mycollection/items?f=fgb&offset=next_offset>; rel="next"; type="application/flatgeobuf"\r\n\r\n'
+                    + '/collections/mycollection/items?f=other_format&offset=next_offset&with=some,comma>; rel="next"; type="other_format"'
+                    + ", "
+                    + "<http://"
+                    + endpoint
+                    + '/collections/mycollection/items?f=fgb&offset=next_offset>; rel="next"; type="application/flatgeobuf"\r\n'
+                    + "\r\n"
                 ).encode("utf-8")
                 + data
             )

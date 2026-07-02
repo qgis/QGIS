@@ -79,7 +79,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
       Comment SIP_MONKEYPATCH_COMPAT_NAME( CommentRole ) = Qt::UserRole + 1, //!< Item comment
       Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ),                          //!< Custom sort role, see QgsDataItem::sortKey()
       ProviderKey SIP_MONKEYPATCH_COMPAT_NAME( ProviderKeyRole ),            //!< Data item provider key that created the item, see QgsDataItem::providerKey() \since QGIS 3.12
-      LayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( LayerMetadataRole ),        //! Data item layer metadata for layer items
+      LayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( LayerMetadataRole ),        //!< Data item layer metadata for layer items
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

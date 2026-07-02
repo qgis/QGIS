@@ -1060,6 +1060,18 @@ void QgsGraduatedSymbolRenderer::setLegendSymbolItem( const QString &key, QgsSym
     delete symbol;
 }
 
+void QgsGraduatedSymbolRenderer::setLegendSymbolItemLabel( const QString &key, const QString &label )
+{
+  for ( int i = 0; i < mRanges.size(); i++ )
+  {
+    if ( mRanges[i].uuid() == key )
+    {
+      updateRangeLabel( i, label );
+      break;
+    }
+  }
+}
+
 void QgsGraduatedSymbolRenderer::addClass( QgsSymbol *symbol )
 {
   QgsSymbol *newSymbol = symbol->clone();

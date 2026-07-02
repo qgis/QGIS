@@ -38,6 +38,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     QgsMetalRoughMaterialSettings() = default;
 
     QString type() const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     /**
      * Returns TRUE if the specified \a technique is supported by the metal rough material.
@@ -51,6 +52,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
 
     QgsMetalRoughMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    bool requiresTangents() const override;
 
     /**
      * Returns the base material color.
@@ -72,6 +74,59 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      * \see setRoughness()
      */
     double roughness() const { return mRoughness; }
+
+    /**
+     * Returns the material's reflectance, as a value between 0 and 1.
+     *
+     * This controls the specular intensity for non-metals.
+     *
+     * \see setReflectance()
+     * \since QGIS 4.2
+     */
+    double reflectance() const { return mReflectance; }
+
+    /**
+     * Returns the material's anisotropy, as a value between 0 and 1.
+     *
+     * Anisotropic materials are those with properties which vary in different directions.
+     *
+     * \see anisotropyRotation()
+     * \see setAnisotropy()
+     * \since QGIS 4.2
+     */
+    double anisotropy() const { return mAnisotropy; }
+
+    /**
+     * Returns the rotation of the material's anisotropy, as a angle in degrees.
+     *
+     * Anisotropic materials are those with properties which vary in different directions.
+     *
+     * \see setAnisotropyRotation()
+     * \see anisotropy()
+     * \since QGIS 4.2
+     */
+    double anisotropyRotation() const { return mAnisotropyRotation; }
+
+    /**
+     * Returns the material's emissive color.
+     *
+     * \see setEmissionColor()
+     * \since QGIS 4.2
+     */
+    QColor emissionColor() const { return mEmissiveColor; }
+
+    /**
+     * Returns the emission factor, which dictates the strength of the emission effect.
+     *
+     * A value of 1.0 indicates that the emission color values should be used directly.
+     * Larger values result in more light emission.
+     *
+     * \see setEmissionFactor()
+     * \see emissionColor()
+     *
+     * \since QGIS 4.2
+     */
+    double emissionFactor() const { return mEmissionFactor; }
 
     /**
      * Returns the opacity of the surface
@@ -115,12 +170,101 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     void setRoughness( double roughness ) { mRoughness = roughness; }
 
     /**
+     * Sets the material's \a reflectance, as a value between 0 and 1.
+     *
+     * This controls the specular intensity for non-metals.
+     *
+     * \see reflectance()
+     * \since QGIS 4.2
+     */
+    void setReflectance( double reflectance ) { mReflectance = reflectance; }
+
+    /**
+     * Sets the material's \a anisotropy, as a value between 0 and 1.
+     *
+     * Anisotropic materials are those with properties which vary in different directions.
+     *
+     * \see setAnisotropyRotation()
+     * \see anisotropy()
+     * \since QGIS 4.2
+     */
+    void setAnisotropy( double anisotropy ) { mAnisotropy = anisotropy; }
+
+    /**
+     * Sets the \a rotation of the material's anisotropy, as a angle in degrees.
+     *
+     * Anisotropic materials are those with properties which vary in different directions.
+     *
+     * \see anisotropyRotation()
+     * \see setAnisotropy()
+     * \since QGIS 4.2
+     */
+    void setAnisotropyRotation( double rotation ) { mAnisotropyRotation = rotation; }
+
+    /**
      * Sets the \a opacity of the surface.
      *
      * \see opacity()
      * \since QGIS 4.2
      */
     void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    /**
+     * Sets the material's emissive \a color.
+     *
+     * \see emissionColor()
+     * \since QGIS 4.2
+     */
+    void setEmissionColor( const QColor &color ) { mEmissiveColor = color; }
+
+    /**
+     * Sets the emission \a factor, which dictates the strength of the emission effect.
+     *
+     * A value of 1.0 indicates that the emission color values should be used directly.
+     * Larger values result in more light emission.
+     *
+     * \see emissionFactor()
+     * \see setEmissionColor()
+     *
+     * \since QGIS 4.2
+     */
+    void setEmissionFactor( double factor ) { mEmissionFactor = factor; }
+
+    /**
+     * Returns the material's clear coat factor, as a value between 0 and 1.
+     *
+     * \see setClearCoatFactor()
+     * \see clearCoatRoughness()
+     * \since QGIS 4.2
+     */
+    double clearCoatFactor() const { return mClearCoatFactor; }
+
+    /**
+     * Sets the material's clear coat \a factor, as a value between 0 and 1.
+     *
+     * \see clearCoatFactor()
+     * \see setClearCoatRoughness()
+     * \since QGIS 4.2
+     */
+    void setClearCoatFactor( double factor ) { mClearCoatFactor = factor; }
+
+    /**
+     * Returns the material's clear coat roughness, as a value between 0 and 1.
+     *
+     * \see setClearCoatRoughness()
+     * \see clearCoatFactor()
+     * \since QGIS 4.2
+     */
+    double clearCoatRoughness() const { return mClearCoatRoughness; }
+
+    /**
+     * Sets the material's clear coat \a roughness, as a value between 0 and 1.
+     *
+     * \see clearCoatRoughness()
+     * \see setClearCoatFactor()
+     * \since QGIS 4.2
+     */
+    void setClearCoatRoughness( double roughness ) { mClearCoatRoughness = roughness; }
 
     /**
      * Decomposes a base color into the material's color components, and sets the material's color accordingly.
@@ -142,16 +286,30 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     bool operator==( const QgsMetalRoughMaterialSettings &other ) const
     {
       return mBaseColor == other.mBaseColor
+             && mEmissiveColor == other.mEmissiveColor
              && qgsDoubleNear( mMetalness, other.mMetalness )
              && qgsDoubleNear( mRoughness, other.mRoughness )
+             && qgsDoubleNear( mReflectance, other.mReflectance )
+             && qgsDoubleNear( mAnisotropy, other.mAnisotropy )
+             && qgsDoubleNear( mAnisotropyRotation, other.mAnisotropyRotation )
              && qgsDoubleNear( mOpacity, other.mOpacity )
+             && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
+             && qgsDoubleNear( mClearCoatFactor, other.mClearCoatFactor )
+             && qgsDoubleNear( mClearCoatRoughness, other.mClearCoatRoughness )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
     QColor mBaseColor { QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) };
+    QColor mEmissiveColor;
     double mMetalness = 0.0;
     double mRoughness = 0.5;
+    double mReflectance = 0.5;
+    double mAnisotropy = 0.0;
+    double mAnisotropyRotation = 0.0;
+    double mEmissionFactor = 1.0;
+    double mClearCoatFactor = 0.0;
+    double mClearCoatRoughness = 0.0;
     double mOpacity = 1.0;
 };
 

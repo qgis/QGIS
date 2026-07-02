@@ -90,7 +90,9 @@ tests:
       CREATION_OPTIONS: ''
     results:
       OUTPUT:
-        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        hash:
+        - f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        - 7d118913e22e5270200fea3aa84e95c5cc2561007714f8579d089580
         type: rasterhash
 
   - algorithm: gdal:colorrelief

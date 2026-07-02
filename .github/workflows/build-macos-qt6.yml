@@ -40,7 +40,7 @@ jobs:
           persist-credentials: false
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@7bfc9baacbbdcb5e37957ad05c3546b3e222be3c # latest
+        uses: lukka/get-cmake@591817e96fcad43505fb4eae36172462abb3a42e # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -137,12 +137,25 @@ jobs:
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
       - name: 📑 Upload vcpkg build logs
+        id: upload-build-logs
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure()
         with:
           name: build-logs-${{ matrix.triplet }}
           path: |
             ${{ env.VCPKG_ROOT }}/buildtrees/**/*.log
+
+      - name: 🧮 Report vcpkg build failures
+        if: failure() && github.event_name == 'pull_request'
+        uses: ./.github/actions/vcpkg_build_failures_report
+        with:
+          buildtrees-dir: ${{ env.VCPKG_ROOT }}/buildtrees
+          triplet: ${{ matrix.triplet }}
+          pr: ${{ github.event.number }}
+          artifact-url: ${{ steps.upload-build-logs.outputs.artifact-url }}
+          build-status: ${{ job.status }}
+          manifest-install-log: ${{ github.workspace }}/build/vcpkg-manifest-install.log
+          commit-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Create SDK
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
@@ -239,7 +252,7 @@ jobs:
             *.dmg
 
       - name: Upload release assets
-        uses: AButler/upload-release-assets@45be2facf3acc71812c1c17b4cefef5f6e8cac8a  # v3.0.1
+        uses: AButler/upload-release-assets@34491005a5d7ec239a784e460807ce844fde7962  # v4.0.0
         if: ${{ github.event_name == 'release' }}
         with:
           files: '*.dmg'

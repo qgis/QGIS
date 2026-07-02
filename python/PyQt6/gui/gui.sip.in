@@ -1,7 +1,7 @@
 %Module(name=qgis._gui,
         keyword_arguments="All")
 
-${DEFAULTDOCSTRINGSIGNATURE}
+%DefaultDocstringSignature "prepended"
 
 %Feature HAVE_QSCI_SIP
 %Feature HAVE_QTGAMEPAD

@@ -785,9 +785,9 @@ void QgsWmsProvider::fetchOtherResTiles(
   );
 }
 
-uint qHash( QgsWmsProvider::TilePosition tp )
+size_t qHash( QgsWmsProvider::TilePosition tp )
 {
-  return ( uint ) tp.col + ( ( uint ) tp.row << 16 );
+  return ( size_t ) tp.col + ( ( size_t ) tp.row << 16 );
 }
 
 static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color )
@@ -4957,10 +4957,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileIndex ) ).toInt();
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRect ) ).toRectF();
+  QUrl tileUrl = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileUrl ) ).value<QUrl>();
 #ifdef QGISDEBUG
   int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
-#endif
-  QUrl tileUrl = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileUrl ) ).value<QUrl>();
 
   QgsDebugMsgLevel(
     u"tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 %10 url:%11"_s.arg( tileReqNo )
@@ -4975,6 +4974,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       .arg( reply->error() == QNetworkReply::NoError ? QString() : u"error: "_s + reply->errorString(), reply->url().toString() ),
     4
   );
+#endif
 
   if ( reply->error() == QNetworkReply::NoError )
   {

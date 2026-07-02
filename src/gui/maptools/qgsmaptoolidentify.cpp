@@ -512,7 +512,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
     }
 
     const double tileScale
-      = layer->tileMatrixSet().calculateTileScaleForMap( mCanvas->scale(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().extent(), mCanvas->size(), mCanvas->logicalDpiX() );
+      = layer->tileMatrixSet().calculateTileScaleForMap( mCanvas->scale(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().extent(), mCanvas->size(), mCanvas->mapSettings().outputDpi() );
 
     const int tileZoom = layer->tileMatrixSet().scaleToZoomLevel( tileScale );
     const QgsTileMatrix tileMatrix = layer->tileMatrixSet().tileMatrix( tileZoom );

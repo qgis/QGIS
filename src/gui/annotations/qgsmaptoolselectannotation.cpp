@@ -107,7 +107,7 @@ QgsMapToolSelectAnnotation::~QgsMapToolSelectAnnotation()
 
 void QgsMapToolSelectAnnotation::activate()
 {
-  mMouseHandles.reset( new QgsMapToolSelectAnnotationMouseHandles( this, mCanvas ) );
+  mMouseHandles = make_qobject_unique<QgsMapToolSelectAnnotationMouseHandles>( this, mCanvas );
 
   QgsMapToolAdvancedDigitizing::activate();
 }
@@ -176,7 +176,7 @@ void QgsMapToolSelectAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
       if ( !mDragging )
       {
         mDragging = true;
-        mSelectionRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon ) );
+        mSelectionRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Polygon );
         QColor color( Qt::blue );
         color.setAlpha( 63 );
         mSelectionRubberBand->setColor( color );

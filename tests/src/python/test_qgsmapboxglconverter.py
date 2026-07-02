@@ -22,14 +22,12 @@ from qgis.core import (
     QgsPalLayerSettings,
     QgsRasterLayer,
     QgsRasterPipe,
-    QgsSettings,
     QgsSymbol,
     QgsSymbolLayer,
     QgsWkbTypes,
     qgsDoubleNear,
 )
 from qgis.PyQt.QtCore import (
-    QCoreApplication,
     QSize,
     QSizeF,
     Qt,
@@ -846,6 +844,67 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 False,
             ),
             """concat("numero", "indice_de_repetition")""",
+        )
+
+        # slice with start and end index
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], 0, 1],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 1, 1)""",
+        )
+
+        # slice with start index only
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], 2],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 3)""",
+        )
+
+        # slice with non-constant (expression) indices: arithmetic cannot be folded
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], ["get", "start"], ["get", "end"]],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", ("start") + 1, ("end") - ("start"))""",
+        )
+
+        # slice used within a filter expression
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                [
+                    "all",
+                    ["==", ["get", "art"], "T"],
+                    [
+                        "in",
+                        ["slice", ["get", "ue_kz"], 0, 1],
+                        [
+                            "literal",
+                            ["A", "B", "C", "D", "E", "F", "G", "H", "U", "V"],
+                        ],
+                    ],
+                ],
+                conversion_context,
+                False,
+            ),
+            """("art" IS 'T') AND (substr("ue_kz", 1, 1) IN ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'U', 'V'))""",
+        )
+
+        # slice compared with == within a filter expression
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["==", ["slice", ["get", "ue_kz"], 0, 1], "T"],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 1, 1) IS 'T'""",
         )
 
         self.assertEqual(
@@ -3065,6 +3124,8 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
     def testSymbolSpacingNumeric(self):
         """Test symbol-spacing with a simple numeric value"""
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.Percentage)
+        context.setPixelSizeConversionFactor(2.0)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -3086,11 +3147,17 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         dd = ls.dataDefinedProperties()
         prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
         self.assertTrue(prop.isActive())
-        self.assertEqual(prop.asExpression(), "250")
+        self.assertEqual(prop.asExpression(), "500")
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.Percentage,
+        )
 
     def testSymbolSpacingList(self):
         """Test symbol-spacing with interpolate stops"""
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.Pixels)
+        context.setPixelSizeConversionFactor(2.0)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -3114,12 +3181,18 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(prop.isActive())
         self.assertEqual(
             prop.asExpression(),
-            "CASE  WHEN @vector_tile_zoom >= 14 THEN (800)  WHEN @vector_tile_zoom >= 10 THEN (600) ELSE (300) END",
+            "CASE  WHEN @vector_tile_zoom >= 14 THEN (1600)  WHEN @vector_tile_zoom >= 10 THEN (1200) ELSE (600) END",
+        )
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.Pixels,
         )
 
     def testSymbolSpacingMap(self):
         """Test symbol-spacing with a QVariantMap stops definition"""
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.MapUnits)
+        context.setPixelSizeConversionFactor(2.0)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -3147,7 +3220,11 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(prop.isActive())
         self.assertEqual(
             prop.asExpression(),
-            "scale_linear(@vector_tile_zoom,2,6,0.2,0)",
+            "(scale_linear(@vector_tile_zoom,2,6,0.2,0)) * 2",
+        )
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.MapUnits,
         )
 
 

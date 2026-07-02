@@ -303,7 +303,7 @@ class CORE_EXPORT QgsTessellator
         inline bool operator==( const VertexPoint &other ) const { return position == other.position && normal == other.normal && tangent == other.tangent; }
     };
 
-    friend uint qHash( const VertexPoint &key, size_t seed )
+    friend size_t qHash( const VertexPoint &key, size_t seed )
     {
       return qHashMulti( seed, key.position.x(), key.position.y(), key.position.z(), key.normal.x(), key.normal.y(), key.normal.z(), key.tangent.x(), key.tangent.y(), key.tangent.z(), key.tangent.w() );
     }

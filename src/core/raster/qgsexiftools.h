@@ -41,7 +41,7 @@ class CORE_EXPORT QgsExifTools
     static QVariantMap readTags( const QString &imagePath );
 
     /**
-     * Returns the value of of an exif tag \a key stored in the image at \a imagePath.
+     * Returns the value of an exif tag \a key stored in the image at \a imagePath.
      * \since QGIS 3.22
      */
     static QVariant readTag( const QString &imagePath, const QString &key );

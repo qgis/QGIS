@@ -24,6 +24,12 @@
 
 using namespace Qt::StringLiterals;
 
+// WMS/WMTS define the "standardized rendering pixel size" as 0.28 mm. It is used both to derive
+// tile matrix scale denominators from ground resolution (QgsTileMatrix::fromCustomDef) and as the
+// reference pixel size when normalizing scales for MapBox/MapLibre tile zoom selection
+// (QgsTileMatrixSet::calculateTileScaleForMap).
+static constexpr double PIXELS_TO_M = 2.8 / 10000.0; // 0.28 mm
+
 QgsTileMatrix QgsTileMatrix::fromWebMercator( int zoomLevel )
 {
   constexpr double z0xMin = -20037508.3427892;
@@ -42,7 +48,6 @@ QgsTileMatrix QgsTileMatrix::fromCustomDef( int zoomLevel, const QgsCoordinateRe
 
   // Constant for scale denominator calculation
   constexpr double TILE_SIZE = 256.0;
-  constexpr double PIXELS_TO_M = 2.8 / 10000.0; // WMS/WMTS define "standardized rendering pixel size" as 0.28mm
   const double unitToMeters = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
   // Scale denominator calculation
   const double scaleDenom0 = ( z0Dimension / TILE_SIZE ) * ( unitToMeters / PIXELS_TO_M );
@@ -304,7 +309,12 @@ int QgsTileMatrixSet::scaleToZoomLevel( double scale, bool clamp ) const
 
 double QgsTileMatrixSet::scaleForRenderContext( const QgsRenderContext &context ) const
 {
-  return calculateTileScaleForMap( context.rendererScale(), context.coordinateTransform().destinationCrs(), context.mapExtent(), context.outputSize(), context.painter()->device()->logicalDpiX() );
+  // Use the actual render DPI (the same DPI used to compute the renderer scale), so that
+  // the DPI normalisation applied for the MapBox method below cancels out correctly for
+  // both on-screen rendering and map exports/print layouts
+  // scaleFactor() is dots-per-millimeter, so multiplying by 25.4 mm/inch gives the output DPI.
+  const double mapDpi = context.scaleFactor() * 25.4;
+  return calculateTileScaleForMap( context.rendererScale(), context.coordinateTransform().destinationCrs(), context.mapExtent(), context.outputSize(), mapDpi );
 }
 
 double QgsTileMatrixSet::calculateTileScaleForMap( double actualMapScale, const QgsCoordinateReferenceSystem &mapCrs, const QgsRectangle &mapExtent, const QSize mapSize, const double mapDpi ) const
@@ -313,7 +323,15 @@ double QgsTileMatrixSet::calculateTileScaleForMap( double actualMapScale, const 
   // cppcheck-suppress missingReturn
   {
     case Qgis::ScaleToTileZoomLevelMethod::MapBox:
-      return actualMapScale;
+    {
+      // MapBox/MapLibre zoom levels correspond to a fixed on-screen pixel resolution and are
+      // independent of the rendering DPI, whereas actualMapScale embeds the output DPI used to
+      // render the map.
+      // we normalize the incoming scale to that reference DPI.
+      constexpr double REFERENCE_DPI = 0.0254 / PIXELS_TO_M; // ~90.7 dpi
+      const double tileScale = actualMapScale * REFERENCE_DPI / mapDpi;
+      return tileScale;
+    }
 
     case Qgis::ScaleToTileZoomLevelMethod::Esri:
       if ( mapCrs.isGeographic() )

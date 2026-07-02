@@ -54,6 +54,7 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
 
     QgsPhongTexturedMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
@@ -70,18 +71,32 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
     QString diffuseTexturePath() const { return mDiffuseTexturePath; }
 
     /**
-     * Returns the texture scale
-     * The texture scale changes the size of the displayed texture in the 3D scene
-     * If the texture scale is less than 1 the texture will be stretched
+     * Returns the texture scale.
+     *
+     * The texture scale changes the size of the material's textures in the 3D scene.
+     *
+     * If the texture scale is less than 1 the textures will be stretched.
+     *
+     * \see setTextureScale()
      */
     double textureScale() const { return mTextureScale; }
 
-    bool requiresTextureCoordinates() const override;
-
     /**
      * Returns the texture rotation, in degrees.
+     *
+     * \see setTextureRotation()
      */
-    double textureRotation() const;
+    double textureRotation() const { return mTextureRotation; }
+
+    /**
+     * Returns the texture offset.
+     *
+     * \see setTextureOffset()
+     * \since QGIS 4.2
+     */
+    QPointF textureOffset() const { return mTextureOffset; }
+
+    bool requiresTextureCoordinates() const override;
 
     /**
      * Returns the opacity of the surface
@@ -116,6 +131,14 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
 
     //! Sets the texture rotation in degrees
     void setTextureRotation( double rotation ) { mTextureRotation = rotation; }
+
+    /**
+     * Sets the texture \a offset.
+     *
+     * \see textureOffset()
+     * \since QGIS 4.2
+     */
+    void setTextureOffset( QPointF offset ) { mTextureOffset = offset; }
 
     /**
      * Sets opacity of the surface.
@@ -183,6 +206,8 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
              && mDiffuseTexturePath == other.mDiffuseTexturePath
              && mTextureScale == other.mTextureScale
              && mTextureRotation == other.mTextureRotation
+             && qgsDoubleNear( mTextureOffset.x(), other.mTextureOffset.x() )
+             && qgsDoubleNear( mTextureOffset.y(), other.mTextureOffset.y() )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
@@ -197,6 +222,7 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
     QString mDiffuseTexturePath;
     double mTextureScale { 1.0f };
     double mTextureRotation { 0.0f };
+    QPointF mTextureOffset { 0.0, 0.0 };
     mutable std::optional<QColor> mTextureAverageColor;
 };
 

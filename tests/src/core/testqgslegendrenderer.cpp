@@ -161,6 +161,8 @@ class TestQgsLegendRenderer : public QgsTest
     void testFilteredVector();
     void testFilteredRaster();
 
+    void testMaximumLineLength();
+
   private:
     QgsLayerTree *mRoot = nullptr;
     QgsVectorLayer *mVL1 = nullptr; // line
@@ -2239,6 +2241,21 @@ void TestQgsLegendRenderer::testFilteredRaster()
   QgsLegendRenderer legendRenderer( &legendModel, settings );
   legendRenderer.proxyModel()->setFilters( Qgis::LayerFilter::RasterLayer );
 
+  const QImage res = renderLegend( legendRenderer );
+  QVERIFY( _verifyImage( res, testName ) );
+}
+
+void TestQgsLegendRenderer::testMaximumLineLength()
+{
+  const QString testName = u"legend_auto_wrap"_s;
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  settings.setTitle( u"A long legend title"_s );
+  settings.setAutoWrapLinesAfter( 25 );
+  setStandardTestFont( settings, u"Bold"_s );
+  QgsLegendRenderer legendRenderer( &legendModel, settings );
   const QImage res = renderLegend( legendRenderer );
   QVERIFY( _verifyImage( res, testName ) );
 }
