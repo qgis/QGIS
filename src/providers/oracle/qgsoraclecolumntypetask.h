@@ -49,7 +49,7 @@ class QgsOracleColumnTypeTask : public QgsTask
     /**
      * If the task fails, returns the error which occurred.
      */
-    const QString &error() const { return mError; }
+    QString error() const { return mError; }
 
   signals:
     void setLayerType( const QgsOracleLayerProperty &layerProperty );
