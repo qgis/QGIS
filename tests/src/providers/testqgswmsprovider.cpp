@@ -28,6 +28,7 @@
 #include "qgshillshaderenderer.h"
 #include "qgsproviderutils.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsrasteridentifyresult.h"
 
 /**
  * \ingroup UnitTests
@@ -636,7 +637,7 @@ void TestQgsWmsProvider::testWmsUnreachableCapabilitiesWithVisibleSubLayer()
   QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), capabilities.get() );
 
   // Simulating a saved layer with unreachable capabilities. Sublayer is visible
-  provider.mActiveSubLayerVisibility.insert( u"agri_zones"_s, true );
+  provider.mActiveSubLayerVisibility.insert( "agri_zones", true );
 
   // capabilities should not crash
   ( void ) provider.capabilities();
