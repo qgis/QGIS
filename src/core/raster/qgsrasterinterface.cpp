@@ -372,7 +372,10 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram, int bandN
         if ( stats.statsGathered.testFlags( Qgis::RasterBandStatistic::StdDev | Qgis::RasterBandStatistic::Range ) )
         {
           // Use Scott's Rule to determine bin count: binCount = 3.49 * stdDev / n^(1/3)
-          myBinCount = static_cast<qint64>( stats.range / ( 3.49 * stats.stdDev / std::pow( sampleSize > 0 ? sampleSize : static_cast<double>( histogram.width ) * histogram.height, 1.0 / 3.0 ) ) );
+          // In standard C++ (prior to C++26), std::sqrt is not a constexpr function,
+          // so we precompute the constant value  24 * sqrt( M_PI ) = 42.538892421732385
+          constexpr double SCOTTS_COEFFICIENT = 42.538892421732385;
+          myBinCount = static_cast<qint64>( stats.range / ( stats.stdDev * std::cbrt( SCOTTS_COEFFICIENT / ( sampleSize > 0 ? sampleSize : static_cast<double>( histogram.width ) * histogram.height ) ) ) );
         }
         else
         {
