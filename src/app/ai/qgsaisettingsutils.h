@@ -27,6 +27,8 @@
 #include <QVariant>
 #include <QWidget>
 
+using namespace Qt::StringLiterals;
+
 /**
  * Small helpers shared between the AI chat dock and the AI settings dialog.
  * Header-only so both translation units can use them without a new library
@@ -37,14 +39,14 @@ namespace QgsAiSettingsUtils
   inline QString humanBytes( qint64 bytes )
   {
     if ( bytes < 1024 )
-      return QStringLiteral( "%1 B" ).arg( bytes );
+      return u"%1 B"_s.arg( bytes );
     const double kb = bytes / 1024.0;
     if ( kb < 1024 )
-      return QStringLiteral( "%1 KiB" ).arg( kb, 0, 'f', 1 );
+      return u"%1 KiB"_s.arg( kb, 0, 'f', 1 );
     const double mb = kb / 1024.0;
     if ( mb < 1024 )
-      return QStringLiteral( "%1 MiB" ).arg( mb, 0, 'f', 1 );
-    return QStringLiteral( "%1 GiB" ).arg( mb / 1024.0, 0, 'f', 2 );
+      return u"%1 MiB"_s.arg( mb, 0, 'f', 1 );
+    return u"%1 GiB"_s.arg( mb / 1024.0, 0, 'f', 2 );
   }
 
   //! Reads \a key falling back to \a legacyKeys so renamed settings keep their stored value.
@@ -64,7 +66,7 @@ namespace QgsAiSettingsUtils
   inline QLabel *sectionHeader( const QString &title, QWidget *parent = nullptr )
   {
     QLabel *label = new QLabel( title, parent );
-    label->setProperty( "aiRole", QStringLiteral( "sectionHeader" ) );
+    label->setProperty( "aiRole", u"sectionHeader"_s );
     QFont font = label->font();
     font.setBold( true );
     label->setFont( font );
@@ -87,7 +89,7 @@ namespace QgsAiSettingsUtils
     textLayout->setContentsMargins( 0, 0, 0, 0 );
     textLayout->setSpacing( 2 );
     QLabel *titleLabel = new QLabel( title, row );
-    titleLabel->setProperty( "aiRole", QStringLiteral( "rowTitle" ) );
+    titleLabel->setProperty( "aiRole", u"rowTitle"_s );
     QFont titleFont = titleLabel->font();
     titleFont.setBold( true );
     titleLabel->setFont( titleFont );
@@ -95,7 +97,7 @@ namespace QgsAiSettingsUtils
     if ( !description.isEmpty() )
     {
       QLabel *descriptionLabel = new QLabel( description, row );
-      descriptionLabel->setProperty( "aiRole", QStringLiteral( "rowDescription" ) );
+      descriptionLabel->setProperty( "aiRole", u"rowDescription"_s );
       descriptionLabel->setWordWrap( true );
       textLayout->addWidget( descriptionLabel );
     }
@@ -120,7 +122,7 @@ namespace QgsAiSettingsUtils
     rowLayout->setSpacing( 4 );
 
     QLabel *titleLabel = new QLabel( title, row );
-    titleLabel->setProperty( "aiRole", QStringLiteral( "rowTitle" ) );
+    titleLabel->setProperty( "aiRole", u"rowTitle"_s );
     QFont titleFont = titleLabel->font();
     titleFont.setBold( true );
     titleLabel->setFont( titleFont );
@@ -128,7 +130,7 @@ namespace QgsAiSettingsUtils
     if ( !description.isEmpty() )
     {
       QLabel *descriptionLabel = new QLabel( description, row );
-      descriptionLabel->setProperty( "aiRole", QStringLiteral( "rowDescription" ) );
+      descriptionLabel->setProperty( "aiRole", u"rowDescription"_s );
       descriptionLabel->setWordWrap( true );
       rowLayout->addWidget( descriptionLabel );
     }

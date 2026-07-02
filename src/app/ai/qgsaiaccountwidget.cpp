@@ -28,6 +28,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QString>
 #include <QStyle>
 #include <QVBoxLayout>
 
@@ -359,7 +360,7 @@ void QgsAiAccountWidget::updateFormState()
   const bool usableEndpoint = endpointUsable();
   mEndpointWarning->setVisible( !usableEndpoint );
 
-  const bool emailOk = mEmail->text().contains( QLatin1Char( '@' ) );
+  const bool emailOk = mEmail->text().contains( '@'_L1 );
   const QString password = mPassword->text();
   const bool passwordOk = mMode == Mode::Login ? !password.isEmpty() : password.length() >= 8;
   const bool canSubmit = !mBusy && usableEndpoint && emailOk && passwordOk;

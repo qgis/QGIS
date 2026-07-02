@@ -75,6 +75,7 @@
 #include <QScreen>
 #include <QStackedWidget>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTextEdit>
 #include <QUrl>
 #include <QVBoxLayout>
@@ -717,11 +718,9 @@ QWidget *QgsAiSettingsDialog::buildProvidersPage()
 
   contentLayout->addWidget( settingRow( tr( "Model" ), QString(), mOpenRouterModel, page ) );
   contentLayout->addWidget( settingRow( tr( "API key" ), tr( "Stored locally. Leave empty to keep the saved key." ), mOpenRouterKey, page ) );
-  contentLayout->addWidget( settingRow(
-    tr( "Automatic routing" ),
-    tr( "Adds OpenRouter provider routing preferences (tool-capable providers, price/throughput sorting) and falls back to the Auto router if the pinned model is unavailable." ),
-    mOpenRouterAutoRouting, page
-  ) );
+  contentLayout->addWidget(
+    settingRow( tr( "Automatic routing" ), tr( "Adds OpenRouter provider routing preferences (tool-capable providers, price/throughput sorting) and falls back to the Auto router if the pinned model is unavailable." ), mOpenRouterAutoRouting, page )
+  );
   contentLayout->addWidget( settingRow( tr( "Connection" ), QString(), openRouterTestButton, page ) );
   contentLayout->addWidget( openRouterTestResult );
 
@@ -755,9 +754,7 @@ QWidget *QgsAiSettingsDialog::buildProvidersPage()
 
     mCodexStatus->setText( tr( "Open %1 and enter code %2" ).arg( mCodexDeviceCode.verificationUrl, mCodexDeviceCode.userCode ) );
     QDesktopServices::openUrl( QUrl( mCodexDeviceCode.verificationUrl ) );
-    QMessageBox::information(
-      this, tr( "Codex device code" ), tr( "Open %1 and enter this code:\n\n%2\n\nThen click Complete login." ).arg( mCodexDeviceCode.verificationUrl, mCodexDeviceCode.userCode )
-    );
+    QMessageBox::information( this, tr( "Codex device code" ), tr( "Open %1 and enter this code:\n\n%2\n\nThen click Complete login." ).arg( mCodexDeviceCode.verificationUrl, mCodexDeviceCode.userCode ) );
   } );
 
   connect( codexCompleteLoginButton, &QPushButton::clicked, this, [this]() {
@@ -820,8 +817,7 @@ QWidget *QgsAiSettingsDialog::buildProvidersPage()
 
     bool ok = false;
     const QString code
-      = QInputDialog::getText( this, tr( "Claude OAuth" ), tr( "After approving Claude in the browser, paste the authorization code or callback URL:" ), QLineEdit::Normal, QString(), &ok )
-          .trimmed();
+      = QInputDialog::getText( this, tr( "Claude OAuth" ), tr( "After approving Claude in the browser, paste the authorization code or callback URL:" ), QLineEdit::Normal, QString(), &ok ).trimmed();
     if ( !ok || code.isEmpty() )
       return;
 
@@ -867,21 +863,17 @@ QWidget *QgsAiSettingsDialog::buildAgentPage()
 
   mAllowCustomActions = new QCheckBox( page );
   mAllowCustomActions->setChecked( currentBehavior.allowCustomActions );
-  contentLayout->addWidget( settingRow(
-    tr( "Allow custom agent actions" ),
-    tr( "When enabled, the agent can call tools like read_file, propose_edit, run_python. Destructive tools still require confirmation in their dedicated review dialogs." ),
-    mAllowCustomActions, page
-  ) );
+  contentLayout->addWidget(
+    settingRow( tr( "Allow custom agent actions" ), tr( "When enabled, the agent can call tools like read_file, propose_edit, run_python. Destructive tools still require confirmation in their dedicated review dialogs." ), mAllowCustomActions, page )
+  );
 
   QgsSettings gisToggleSettings;
   mGisSuggestionsEnabled = new QCheckBox( page );
   mGisSuggestionsEnabled->setObjectName( u"aiGisGlobalEnableCheckBox"_s );
   mGisSuggestionsEnabled->setChecked( gisToggleSettings.value( QgsAiGisSuggestionEngine::globalEnabledSettingsKey(), true ).toBool() );
-  contentLayout->addWidget( settingRow(
-    tr( "Enable GIS suggestions" ),
-    tr( "Rule-based project health suggestions: shown as a card in the chat and injected into the model context." ),
-    mGisSuggestionsEnabled, page
-  ) );
+  contentLayout->addWidget(
+    settingRow( tr( "Enable GIS suggestions" ), tr( "Rule-based project health suggestions: shown as a card in the chat and injected into the model context." ), mGisSuggestionsEnabled, page )
+  );
 
   mGisSuggestionsProjectEnabled = new QCheckBox( page );
   mGisSuggestionsProjectEnabled->setObjectName( u"aiGisProjectEnableCheckBox"_s );
@@ -916,7 +908,9 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
 
   mLoadWorkspaceRules = new QCheckBox( page );
   mLoadWorkspaceRules->setChecked( currentBehavior.loadWorkspaceRules );
-  contentLayout->addWidget( settingRow( tr( "Load rule files from workspace" ), tr( ".md/.txt files inside the folder are appended to the prompt (trusted workspaces only)." ), mLoadWorkspaceRules, page ) );
+  contentLayout->addWidget(
+    settingRow( tr( "Load rule files from workspace" ), tr( ".md/.txt files inside the folder are appended to the prompt (trusted workspaces only)." ), mLoadWorkspaceRules, page )
+  );
 
   mRulesPathEdit = new QLineEdit( currentBehavior.rulesPath, page );
   mRulesPathEdit->setPlaceholderText( u".strata/rules"_s );
@@ -1008,11 +1002,9 @@ QWidget *QgsAiSettingsDialog::buildIndexingPage()
   const bool hasAutomaticSetting = indexSettings.contains( u"strata/index/automatic"_s );
   mAutomaticIndexing->setChecked( hasAutomaticSetting ? indexSettings.value( u"strata/index/automatic"_s, true ).toBool() : canUseEmbeddings );
   mAutomaticIndexing->setEnabled( canUseEmbeddings );
-  contentLayout->addWidget( settingRow(
-    tr( "Index workspace automatically" ),
-    tr( "Strata refreshes the local retrieval index in the background after opening or changing the project. The task is cancellable." ),
-    mAutomaticIndexing, page
-  ) );
+  contentLayout->addWidget(
+    settingRow( tr( "Index workspace automatically" ), tr( "Strata refreshes the local retrieval index in the background after opening or changing the project. The task is cancellable." ), mAutomaticIndexing, page )
+  );
 
   const bool hasLayerIndexingSetting = indexSettings.contains( u"strata/index/enable_layer_indexing"_s )
                                        || indexSettings.contains( u"geoai/index/enable_layer_indexing"_s )
@@ -1028,11 +1020,9 @@ QWidget *QgsAiSettingsDialog::buildIndexingPage()
   mEnableLayerIndexing->setObjectName( u"aiEnableLayerIndexingCheckBox"_s );
   mEnableLayerIndexing->setChecked( layerIndexingEnabled );
   mEnableLayerIndexing->setEnabled( canUseEmbeddings );
-  contentLayout->addWidget( settingRow(
-    tr( "Enable layer indexing" ),
-    tr( "Layer attributes and bounding boxes are embedded with the selected indexing provider and indexed so the assistant can ground its answers on actual layer data. Reindexes on layer add/remove/edit." ),
-    mEnableLayerIndexing, page
-  ) );
+  contentLayout->addWidget(
+    settingRow( tr( "Enable layer indexing" ), tr( "Layer attributes and bounding boxes are embedded with the selected indexing provider and indexed so the assistant can ground its answers on actual layer data. Reindexes on layer add/remove/edit." ), mEnableLayerIndexing, page )
+  );
 
   mIndexStatusLabel = new QLabel( page );
   mIndexStatusLabel->setObjectName( u"aiIndexStatusLabel"_s );
@@ -1044,11 +1034,9 @@ QWidget *QgsAiSettingsDialog::buildIndexingPage()
   mCloudContextOptIn = new QCheckBox( page );
   mCloudContextOptIn->setObjectName( u"aiCloudContextOptInCheckBox"_s );
   mCloudContextOptIn->setChecked( indexSettings.value( u"strata/index/cloud_context_opt_in"_s, false ).toBool() );
-  contentLayout->addWidget( settingRow(
-    tr( "Sync safe RAG context to Strata Cloud" ),
-    tr( "Only metadata-safe layer summaries and opted-in rules/skills/PDF/image text are sent. Geometry, coordinates, WKT and datasource URIs are blocked before upload." ),
-    mCloudContextOptIn, page
-  ) );
+  contentLayout->addWidget(
+    settingRow( tr( "Sync safe RAG context to Strata Cloud" ), tr( "Only metadata-safe layer summaries and opted-in rules/skills/PDF/image text are sent. Geometry, coordinates, WKT and datasource URIs are blocked before upload." ), mCloudContextOptIn, page )
+  );
 
   mCloudIndexStatusLabel = new QLabel( page );
   mCloudIndexStatusLabel->setObjectName( u"aiCloudIndexStatusLabel"_s );
@@ -1279,11 +1267,7 @@ QWidget *QgsAiSettingsDialog::buildWorkspacePage()
   // Workspace trust: gates rules/skills loading and the risky tools.
   mTrustWorkspace = new QCheckBox( page );
   mTrustWorkspace->setObjectName( u"aiTrustWorkspaceCheckBox"_s );
-  contentLayout->addWidget( settingRow(
-    tr( "Trust this workspace" ),
-    tr( "Enables rules/skills files and the run_python, install_python_package and download_file tools." ),
-    mTrustWorkspace, page
-  ) );
+  contentLayout->addWidget( settingRow( tr( "Trust this workspace" ), tr( "Enables rules/skills files and the run_python, install_python_package and download_file tools." ), mTrustWorkspace, page ) );
   refreshTrustWorkspace();
 
   connect( browseWorkspaceRoot, &QPushButton::clicked, this, [this]() {
@@ -1315,11 +1299,9 @@ QWidget *QgsAiSettingsDialog::buildPrivacyPage()
   mPrivacyMetadataOnly = new QCheckBox( page );
   mPrivacyMetadataOnly->setObjectName( u"aiPrivacyMetadataOnlyCheckBox"_s );
   mPrivacyMetadataOnly->setChecked( productSettings.value( u"strata/privacy/metadata_only_ack"_s, false ).toBool() );
-  contentLayout->addWidget( settingRow(
-    tr( "Acknowledge managed cloud privacy boundary" ),
-    tr( "Managed cloud features only ever receive metadata, never your data payloads." ),
-    mPrivacyMetadataOnly, page
-  ) );
+  contentLayout->addWidget(
+    settingRow( tr( "Acknowledge managed cloud privacy boundary" ), tr( "Managed cloud features only ever receive metadata, never your data payloads." ), mPrivacyMetadataOnly, page )
+  );
 
   mTelemetryOptIn = new QCheckBox( page );
   mTelemetryOptIn->setObjectName( u"aiTelemetryOptInCheckBox"_s );
@@ -1484,9 +1466,9 @@ void QgsAiSettingsDialog::refreshEmbeddingStatusLabel()
   {
     if ( !e5Compiled )
     {
-      mEmbeddingStatusLabel->setText( tr(
-        "Local multilingual E5 is not available in this build because ONNX Runtime and SentencePiece support were not found at compile time. Use MinHash or rebuild Strata with those dependencies."
-      ) );
+      mEmbeddingStatusLabel->setText(
+        tr( "Local multilingual E5 is not available in this build because ONNX Runtime and SentencePiece support were not found at compile time. Use MinHash or rebuild Strata with those dependencies." )
+      );
       mDownloadEmbeddingModelButton->setVisible( false );
       mDownloadEmbeddingModelButton->setEnabled( false );
       return;
