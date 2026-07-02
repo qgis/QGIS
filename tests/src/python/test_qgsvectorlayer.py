@@ -1174,6 +1174,51 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(joinLayer.featureCount(), 3)  # deleteCascade activated
         self.assertEqual(joinLayer2.featureCount(), 4)  # deleteCascade deactivated
 
+    def test_DeleteAllVertices(self):
+        """Deleting all vertices must leave an empty (not NULL) geometry.
+
+        This keeps the vertex tool consistent with the "delete part" tool,
+        which leaves an empty geometry when its last part is removed (see
+        is_empty(@geometry) vs @geometry IS NULL).
+        Fixes: https://github.com/qgis/QGIS/issues/65453
+        """
+
+        layer = QgsVectorLayer("LineString?field=f:int", "addfeat", "memory")
+        f = QgsFeature()
+        f.setAttributes([1])
+        f.setGeometry(
+            QgsGeometry.fromPolylineXY(
+                [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(2, 0)]
+            )
+        )
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+        layer.startEditing()
+        res = layer.deleteVertices(1, [0, 1, 2])
+        self.assertEqual(res, Qgis.VectorEditResult.EmptyGeometry)
+        g = layer.getGeometry(1)
+        self.assertFalse(g.isNull())
+        self.assertTrue(g.isEmpty())
+        layer.rollBack()
+
+    def test_DeleteSomeVertices(self):
+        """Deleting some vertices must leave a non empty geometry."""
+
+        layer = QgsVectorLayer("LineString?field=f:int", "addfeat", "memory")
+        f = QgsFeature()
+        f.setAttributes([1])
+        f.setGeometry(
+            QgsGeometry.fromPolylineXY(
+                [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(2, 0)]
+            )
+        )
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+        layer.startEditing()
+        res = layer.deleteVertices(1, [0])
+        self.assertEqual(res, Qgis.VectorEditResult.Success)
+        self.assertFalse(layer.getGeometry(1).isNull())
+        self.assertFalse(layer.getGeometry(1).isEmpty())
+        layer.rollBack()
+
     # CHANGE ATTRIBUTE
 
     def test_ChangeAttribute(self):
