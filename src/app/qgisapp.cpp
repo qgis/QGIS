@@ -168,7 +168,7 @@ using namespace Qt::StringLiterals;
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
 #include "processing/qgs3dalgorithms.h"
-#include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dmaptoolmeasure.h"
 #include "layout/qgslayout3dmapwidget.h"
 #include "layout/qgslayoutviewrubberband.h"
 #include "qgsvectorlayer3drendererwidget.h"
@@ -12846,6 +12846,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     for ( Qgs3DMapCanvasWidget *canvas3D : std::as_const( mOpen3DMapViews ) )
     {
       canvas3D->measurementLineTool()->updateSettings();
+      canvas3D->measurementAreaTool()->updateSettings();
       canvas3D->mapCanvas3D()->mapSettings()->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
       canvas3D->mapCanvas3D()->mapSettings()->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
 
