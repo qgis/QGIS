@@ -58,6 +58,8 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
     //! Plan tier of the signed-in account, empty until /me answers.
     QString accountTier() const;
     bool isSignedIn() const;
+    //! True while a login/register/refresh request is in flight; the host dialog blocks accept meanwhile.
+    bool isBusy() const { return mBusy; }
 
   signals:
     //! Login/logout or managed catalog changes the chat dock should react to immediately.
@@ -77,6 +79,7 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
     void onBalanceReady( const QgsAiPlanClient::BalanceInfo &balance );
     void onModelPreferencesReady( const QList<QgsAiPlanClient::ModelPreferenceInfo> &preferences, bool fromCache );
     void onModelPreferenceUpdated( const QString &modelId, bool enabled );
+    void onModelPreferenceUpdateFailed( const QString &modelId, bool requestedEnabled, const QString &message );
     void onModelListItemChanged( QListWidgetItem *item );
 
   private:
@@ -125,13 +128,6 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
 
     QListWidget *mModelListWidget = nullptr;
     bool mUpdatingModelList = false;
-
-    /**
-     * Item awaiting a setModelPreference() response, so a failure can revert its checkbox.
-     * Cleared whenever the list is repopulated to avoid dangling access.
-     */
-    QListWidgetItem *mPendingToggleItem = nullptr;
-    bool mPendingToggleEnabled = false;
 
     QgsCollapsibleGroupBox *mAdvancedGroup = nullptr;
     QLineEdit *mEndpointEdit = nullptr;

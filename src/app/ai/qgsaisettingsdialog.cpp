@@ -542,7 +542,10 @@ QgsAiSettingsDialog::QgsAiSettingsDialog( QgsAiAgentSessionManager *sessionManag
   connect( mAccountWidget, &QgsAiAccountWidget::authStateChanged, this, [this]() {
     refreshSidebarAccountHeader();
     refreshOnboardingStatus();
-    mSyncCloudContextButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() && mModelRouter && !mModelRouter->planSessionToken().trimmed().isEmpty() );
+    const bool hasPlanSession = mModelRouter && !mModelRouter->planSessionToken().trimmed().isEmpty();
+    mSyncCloudContextButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() && hasPlanSession );
+    if ( mSyncRulesSkillsCloudButton )
+      mSyncRulesSkillsCloudButton->setEnabled( hasPlanSession );
     emit planAuthStateChanged();
   } );
   // Model enable/disable toggles should rebuild the chat model menu the same way an auth change does.
@@ -577,6 +580,13 @@ QLabel[aiRole="rowDescription"] { color: palette(dark); }
 
 void QgsAiSettingsDialog::accept()
 {
+  // Login is a two-step async flow; closing mid-flight would orphan the
+  // freshly minted desktop token and leave the user apparently signed out.
+  if ( mAccountWidget && mAccountWidget->isBusy() )
+  {
+    QMessageBox::information( this, tr( "Account request in progress" ), tr( "Wait for the running login or account request to finish before closing the settings." ) );
+    return;
+  }
   applySettings();
   QDialog::accept();
 }

@@ -6,4 +6,5 @@
 #   STRATA_PLAN_ENDPOINT=https://custom.example/ai/messages ./scripts/run-strata-dev.sh
 
 STRATA_BACKEND_LOCAL="${STRATA_BACKEND_LOCAL:-http://localhost:3001}"
-STRATA_BACKEND_PROD="${STRATA_BACKEND_PROD:-https://palasor-be-5f3ydhgs4q-ew.a.run.app}"
+# Cloud Run: strata-be, project strata-dev-qgis (372580174147), region europe-west1.
+STRATA_BACKEND_PROD="${STRATA_BACKEND_PROD:-https://strata-be-372580174147.europe-west1.run.app}"

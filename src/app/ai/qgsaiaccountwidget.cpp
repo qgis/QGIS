@@ -131,6 +131,7 @@ QLabel[aiRole="rowDescription"] { color: palette(dark); }
   connect( mPlanClient, &QgsAiPlanClient::balanceReady, this, &QgsAiAccountWidget::onBalanceReady );
   connect( mPlanClient, &QgsAiPlanClient::modelPreferencesReady, this, &QgsAiAccountWidget::onModelPreferencesReady );
   connect( mPlanClient, &QgsAiPlanClient::modelPreferenceUpdated, this, &QgsAiAccountWidget::onModelPreferenceUpdated );
+  connect( mPlanClient, &QgsAiPlanClient::modelPreferenceUpdateFailed, this, &QgsAiAccountWidget::onModelPreferenceUpdateFailed );
   connect( mPlanClient, &QgsAiPlanClient::requestFailed, this, &QgsAiAccountWidget::onRequestFailed );
 
   const bool signedIn = isSignedIn();
@@ -458,7 +459,6 @@ void QgsAiAccountWidget::populateModelList()
     return;
 
   mUpdatingModelList = true;
-  mPendingToggleItem = nullptr;
   mModelListWidget->clear();
 
   const QList<QgsAiPlanClient::ModelInfo> catalog = QgsAiPlanClient::cachedModels();
@@ -562,6 +562,18 @@ void QgsAiAccountWidget::refreshManagedModels()
 
 void QgsAiAccountWidget::onDesktopTokenReady( const QString &token )
 {
+  if ( mModelRouter )
+  {
+    // The token was minted against the live Advanced-field endpoint: persist
+    // that endpoint together with the token, so cancelling the dialog cannot
+    // leave a fresh token paired with a stale persisted endpoint.
+    QgsAiModelRouter::ProviderSettings planSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan );
+    if ( planSettings.endpoint != currentEndpoint() )
+    {
+      planSettings.endpoint = currentEndpoint();
+      mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
+    }
+  }
   QString error;
   if ( !mModelRouter || !mModelRouter->setPlanSessionToken( token, &error ) )
   {
@@ -586,13 +598,6 @@ void QgsAiAccountWidget::onDesktopTokenReady( const QString &token )
 
 void QgsAiAccountWidget::onRequestFailed( const QString &message )
 {
-  if ( mPendingToggleItem )
-  {
-    mUpdatingModelList = true;
-    mPendingToggleItem->setCheckState( mPendingToggleEnabled ? Qt::Unchecked : Qt::Checked );
-    mUpdatingModelList = false;
-    mPendingToggleItem = nullptr;
-  }
   if ( !mInteractiveRequest )
   {
     // Failure of the silent account refresh fired on open (expired token,
@@ -621,9 +626,6 @@ void QgsAiAccountWidget::onModelPreferencesReady( const QList<QgsAiPlanClient::M
 
 void QgsAiAccountWidget::onModelPreferenceUpdated( const QString &modelId, bool enabled )
 {
-  if ( mPendingToggleItem && mPendingToggleItem->data( Qt::UserRole ).toString() == modelId )
-    mPendingToggleItem = nullptr;
-
   bool found = false;
   for ( QgsAiPlanClient::ModelPreferenceInfo &preference : mModelPreferences )
   {
@@ -659,8 +661,27 @@ void QgsAiAccountWidget::onModelListItemChanged( QListWidgetItem *item )
     return;
   }
 
-  mInteractiveRequest = true;
-  mPendingToggleItem = item;
-  mPendingToggleEnabled = enabled;
   mPlanClient->setModelPreference( currentEndpoint(), mModelRouter->planSessionToken(), modelId, enabled );
+}
+
+void QgsAiAccountWidget::onModelPreferenceUpdateFailed( const QString &modelId, bool requestedEnabled, const QString &message )
+{
+  // Revert exactly the toggle that failed, found by model id — a shared
+  // pending pointer would misfire when unrelated requests fail or when two
+  // toggles are in flight at once.
+  if ( mModelListWidget )
+  {
+    for ( int i = 0; i < mModelListWidget->count(); ++i )
+    {
+      QListWidgetItem *item = mModelListWidget->item( i );
+      if ( item && item->data( Qt::UserRole ).toString() == modelId )
+      {
+        mUpdatingModelList = true;
+        item->setCheckState( requestedEnabled ? Qt::Unchecked : Qt::Checked );
+        mUpdatingModelList = false;
+        break;
+      }
+    }
+  }
+  setStatus( friendlyErrorMessage( message ), true );
 }

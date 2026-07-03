@@ -808,14 +808,14 @@ void QgsAiPlanClient::setModelPreference( const QString &chatEndpoint, const QSt
   const QString apiBase = apiBaseForChatEndpoint( chatEndpoint );
   if ( apiBase.isEmpty() || sessionToken.trimmed().isEmpty() || modelId.isEmpty() )
   {
-    emit requestFailed( tr( "Plan endpoint or session token is missing." ) );
+    emit modelPreferenceUpdateFailed( modelId, enabled, tr( "Plan endpoint or session token is missing." ) );
     return;
   }
 
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
   if ( !networkManager )
   {
-    emit requestFailed( tr( "Network manager is not available." ) );
+    emit modelPreferenceUpdateFailed( modelId, enabled, tr( "Network manager is not available." ) );
     return;
   }
 
@@ -828,7 +828,7 @@ void QgsAiPlanClient::setModelPreference( const QString &chatEndpoint, const QSt
   QNetworkReply *reply = networkManager->sendCustomRequest( request, "PUT", QJsonDocument( body ).toJson( QJsonDocument::Compact ) );
   if ( !reply )
   {
-    emit requestFailed( tr( "Unable to start the Plan model preference update." ) );
+    emit modelPreferenceUpdateFailed( modelId, enabled, tr( "Unable to start the Plan model preference update." ) );
     return;
   }
 
@@ -838,7 +838,7 @@ void QgsAiPlanClient::setModelPreference( const QString &chatEndpoint, const QSt
     const QByteArray responseBody = reply->readAll();
     if ( reply->error() != QNetworkReply::NoError || httpStatus < 200 || httpStatus >= 300 )
     {
-      emit requestFailed( responseErrorMessage( reply, responseBody ) );
+      emit modelPreferenceUpdateFailed( modelId, enabled, responseErrorMessage( reply, responseBody ) );
       return;
     }
 

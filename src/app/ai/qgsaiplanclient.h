@@ -119,6 +119,8 @@ class APP_EXPORT QgsAiPlanClient : public QObject
     void agentPolicyReady( const QgsAiManagedAgentPolicy &policy, bool fromCache );
     void modelPreferencesReady( const QList<QgsAiPlanClient::ModelPreferenceInfo> &preferences, bool fromCache );
     void modelPreferenceUpdated( const QString &modelId, bool enabled );
+    //! Failure of a single-preference update; carries the requested state so the UI can revert exactly that toggle.
+    void modelPreferenceUpdateFailed( const QString &modelId, bool requestedEnabled, const QString &message );
     void requestFailed( const QString &message );
 
   private:
