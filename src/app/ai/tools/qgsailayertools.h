@@ -137,6 +137,26 @@ class APP_EXPORT QgsAiStyleLayerTool : public QgsAiTool
 };
 
 /**
+ * style_layer_advanced: applies categorized/graduated vector renderers and
+ * basic labeling changes.
+ */
+class APP_EXPORT QgsAiAdvancedStyleTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiAdvancedStyleTool( QgsProject *project );
+
+    QString name() const override { return u"style_layer_advanced"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
  * create_print_layout: creates a simple print layout with a map frame and
  * optional title, using the current canvas extent where available.
  */

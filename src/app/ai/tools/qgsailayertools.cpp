@@ -21,11 +21,13 @@
 #include "qgsaifilecontextprovider.h"
 #include "qgsaitoolschemautil.h"
 #include "qgsapplication.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgslayoutexporter.h"
@@ -51,12 +53,14 @@
 #include "qgsproject.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgspallabeling.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
+#include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
@@ -405,6 +409,51 @@ namespace
     if ( !size.isValid() || size.width() <= 0 || size.height() <= 0 )
       size = QSize( 1280, 720 );
     return QSize( std::clamp( size.width(), 1, 4096 ), std::clamp( size.height(), 1, 4096 ) );
+  }
+
+  QgsSymbol *defaultSymbolWithColor( Qgis::GeometryType geometryType, int index )
+  {
+    std::unique_ptr<QgsSymbol> symbol( QgsSymbol::defaultSymbol( geometryType ) );
+    if ( !symbol )
+      return nullptr;
+    symbol->setColor( QColor::fromHsv( ( index * 67 ) % 360, 180, 220 ) );
+    return symbol.release();
+  }
+
+  bool applyBasicLabels( QgsVectorLayer *layer, const QJsonValue &labelsValue, const QString &fallbackField, QJsonArray &changes, QString &error )
+  {
+    if ( !labelsValue.isObject() && !labelsValue.isBool() )
+      return true;
+
+    bool enabled = labelsValue.isBool() ? labelsValue.toBool() : labelsValue.toObject().value( u"enabled"_s ).toBool( true );
+    if ( !enabled )
+    {
+      layer->setLabelsEnabled( false );
+      changes.append( u"labels"_s );
+      return true;
+    }
+
+    QString labelField = fallbackField;
+    if ( labelsValue.isObject() )
+      labelField = labelsValue.toObject().value( u"field"_s ).toString( fallbackField ).trimmed();
+    if ( labelField.isEmpty() )
+    {
+      error = u"Label field is required when labels are enabled."_s;
+      return false;
+    }
+    if ( layer->fields().lookupField( labelField ) < 0 )
+    {
+      error = u"Label field does not exist: %1"_s.arg( labelField );
+      return false;
+    }
+
+    QgsPalLayerSettings settings = QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( layer );
+    settings.fieldName = labelField;
+    settings.isExpression = false;
+    layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+    layer->setLabelsEnabled( true );
+    changes.append( u"labels"_s );
+    return true;
   }
 
   QgsAiToolResult rollbackLayerAddition( QgsProject *project, const QString &token )
@@ -1056,6 +1105,212 @@ QgsAiToolResult QgsAiStyleLayerTool::execute( const QJsonObject &args )
   diff.insert( u"before"_s, beforeVisual );
   diff.insert( u"after"_s, layerVisualSummary( layer, treeNode ) );
 
+  output.insert( u"layer_id"_s, layer->id() );
+  output.insert( u"name"_s, layer->name() );
+  output.insert( u"visual"_s, layerVisualSummary( layer, treeNode ) );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"restore_layer_style"_s ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// style_layer_advanced
+// ---------------------------------------------------------------------------
+
+QgsAiAdvancedStyleTool::QgsAiAdvancedStyleTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiAdvancedStyleTool::description() const
+{
+  return QStringLiteral(
+    "Applies advanced native vector styling: categorized and graduated renderers, "
+    "plus basic field labeling. Returns a rollback token that restores the previous "
+    "renderer, labeling and layer visual settings."
+  );
+}
+
+QJsonObject QgsAiAdvancedStyleTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"layer_id"_s, prop( u"string"_s, u"Target vector layer id."_s ) );
+  properties.insert( u"renderer"_s, prop( u"string"_s, u"Renderer type: categorized or graduated."_s ) );
+  properties.insert( u"field"_s, prop( u"string"_s, u"Attribute field used by the renderer."_s ) );
+  properties.insert( u"classes"_s, prop( u"object"_s, u"Optional class count for graduated renderer, or an array of class objects."_s ) );
+  properties.insert( u"labels"_s, prop( u"object"_s, u"Optional labeling config, e.g. {\"enabled\":true,\"field\":\"name\"}."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous style_layer_advanced call. If set, restores the previous style."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiAdvancedStyleTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayerStyle( project, rollbackToken );
+
+  const QString layerId = args.value( u"layer_id"_s ).toString().trimmed();
+  if ( layerId.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'layer_id' is required."_s );
+
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( layerId ) );
+  if ( !layer )
+    return QgsAiToolResult::error( u"No vector layer with id: %1"_s.arg( layerId ) );
+
+  const QString renderer = args.value( u"renderer"_s ).toString().toLower().trimmed();
+  const bool hasLabelRequest = args.contains( u"labels"_s );
+  if ( renderer.isEmpty() && !hasLabelRequest )
+    return QgsAiToolResult::error( u"Argument 'renderer' or 'labels' is required."_s );
+  if ( !renderer.isEmpty() && renderer != "categorized"_L1 && renderer != "graduated"_L1 )
+    return QgsAiToolResult::error( u"Unsupported advanced renderer '%1'. Supported renderers: categorized, graduated."_s.arg( renderer ) );
+
+  const QString field = args.value( u"field"_s ).toString().trimmed();
+  int fieldIndex = -1;
+  if ( !renderer.isEmpty() )
+  {
+    if ( field.isEmpty() )
+      return QgsAiToolResult::error( u"Argument 'field' is required when renderer is set."_s );
+    fieldIndex = layer->fields().lookupField( field );
+    if ( fieldIndex < 0 )
+      return QgsAiToolResult::error( u"Renderer field does not exist: %1"_s.arg( field ) );
+  }
+
+  if ( hasLabelRequest )
+  {
+    const QJsonValue labelsValue = args.value( u"labels"_s );
+    if ( labelsValue.isObject() ? labelsValue.toObject().value( u"enabled"_s ).toBool( true ) : labelsValue.toBool( false ) )
+    {
+      const QString labelField = labelsValue.isObject() ? labelsValue.toObject().value( u"field"_s ).toString( field ).trimmed() : field;
+      if ( labelField.isEmpty() )
+        return QgsAiToolResult::error( u"Label field is required when labels are enabled."_s );
+      if ( layer->fields().lookupField( labelField ) < 0 )
+        return QgsAiToolResult::error( u"Label field does not exist: %1"_s.arg( labelField ) );
+    }
+  }
+
+  QgsLayerTreeLayer *treeNode = project->layerTreeRoot() ? project->layerTreeRoot()->findLayer( layerId ) : nullptr;
+  const QJsonObject beforeVisual = layerVisualSummary( layer, treeNode );
+  QgsMapLayerStyle beforeStyle;
+  beforeStyle.readFromLayer( layer );
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RestoreLayerStyle;
+  rollback.layerId = layerId;
+  rollback.styleXml = beforeStyle.xmlData();
+  rollback.hasVisibility = treeNode != nullptr;
+  rollback.visible = treeNode ? treeNode->itemVisibilityChecked() : true;
+  rollback.description = u"Restore layer style before AI advanced styling."_s;
+
+  QJsonArray changes;
+  if ( renderer == "categorized"_L1 )
+  {
+    QgsCategoryList categories;
+    const QJsonValue classesValue = args.value( u"classes"_s );
+    if ( classesValue.isArray() )
+    {
+      const QJsonArray classArray = classesValue.toArray();
+      for ( int i = 0; i < classArray.size(); ++i )
+      {
+        const QJsonObject classObject = classArray.at( i ).toObject();
+        std::unique_ptr<QgsSymbol> symbol( defaultSymbolWithColor( layer->geometryType(), i ) );
+        if ( !symbol )
+          return QgsAiToolResult::error( u"Could not create a default symbol for categorized renderer."_s );
+        const QVariant value = classObject.value( u"value"_s ).toVariant();
+        const QString label = classObject.value( u"label"_s ).toString( value.toString() );
+        const QColor color( classObject.value( u"color"_s ).toString() );
+        if ( color.isValid() )
+          symbol->setColor( color );
+        categories.append( QgsRendererCategory( value, symbol.release(), label ) );
+      }
+    }
+    else
+    {
+      QList<QVariant> values = layer->uniqueValues( fieldIndex, 256 ).values();
+      std::sort( values.begin(), values.end(), []( const QVariant &a, const QVariant &b ) { return a.toString() < b.toString(); } );
+      for ( int i = 0; i < values.size(); ++i )
+      {
+        std::unique_ptr<QgsSymbol> symbol( defaultSymbolWithColor( layer->geometryType(), i ) );
+        if ( !symbol )
+          return QgsAiToolResult::error( u"Could not create a default symbol for categorized renderer."_s );
+        categories.append( QgsRendererCategory( values.at( i ), symbol.release(), values.at( i ).toString() ) );
+      }
+    }
+
+    layer->setRenderer( new QgsCategorizedSymbolRenderer( field, categories ) );
+    changes.append( u"categorized_renderer"_s );
+  }
+  else if ( renderer == "graduated"_L1 )
+  {
+    QgsRangeList ranges;
+    const QJsonValue classesValue = args.value( u"classes"_s );
+    if ( classesValue.isArray() )
+    {
+      const QJsonArray classArray = classesValue.toArray();
+      for ( int i = 0; i < classArray.size(); ++i )
+      {
+        const QJsonObject classObject = classArray.at( i ).toObject();
+        const double lower = classObject.value( u"lower"_s ).toDouble();
+        const double upper = classObject.value( u"upper"_s ).toDouble();
+        if ( upper < lower )
+          return QgsAiToolResult::error( u"Graduated class upper value cannot be less than lower value."_s );
+        std::unique_ptr<QgsSymbol> symbol( defaultSymbolWithColor( layer->geometryType(), i ) );
+        if ( !symbol )
+          return QgsAiToolResult::error( u"Could not create a default symbol for graduated renderer."_s );
+        const QColor color( classObject.value( u"color"_s ).toString() );
+        if ( color.isValid() )
+          symbol->setColor( color );
+        const QString label = classObject.value( u"label"_s ).toString( u"%1 - %2"_s.arg( lower ).arg( upper ) );
+        ranges.append( QgsRendererRange( lower, upper, symbol.release(), label ) );
+      }
+    }
+    else
+    {
+      bool minOk = false;
+      bool maxOk = false;
+      const double min = layer->minimumValue( fieldIndex ).toDouble( &minOk );
+      const double max = layer->maximumValue( fieldIndex ).toDouble( &maxOk );
+      if ( !minOk || !maxOk )
+        return QgsAiToolResult::error( u"Graduated renderer field must contain numeric values: %1"_s.arg( field ) );
+
+      const int classCount = std::clamp( classesValue.isDouble() ? classesValue.toInt( 5 ) : 5, 1, 32 );
+      const double span = max - min;
+      const double step = classCount == 1 || span == 0.0 ? 0.0 : span / classCount;
+      for ( int i = 0; i < classCount; ++i )
+      {
+        const double lower = step == 0.0 ? min : min + ( step * i );
+        const double upper = step == 0.0 || i == classCount - 1 ? max : min + ( step * ( i + 1 ) );
+        std::unique_ptr<QgsSymbol> symbol( defaultSymbolWithColor( layer->geometryType(), i ) );
+        if ( !symbol )
+          return QgsAiToolResult::error( u"Could not create a default symbol for graduated renderer."_s );
+        ranges.append( QgsRendererRange( lower, upper, symbol.release(), u"%1 - %2"_s.arg( lower ).arg( upper ) ) );
+      }
+    }
+
+    layer->setRenderer( new QgsGraduatedSymbolRenderer( field, ranges ) );
+    changes.append( u"graduated_renderer"_s );
+  }
+
+  if ( hasLabelRequest )
+  {
+    QString labelError;
+    if ( !applyBasicLabels( layer, args.value( u"labels"_s ), field, changes, labelError ) )
+      return QgsAiToolResult::error( labelError );
+  }
+
+  layer->triggerRepaint();
+  layer->emitStyleChanged();
+
+  const QString token = storeRollback( rollback );
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Applied advanced layer styling changes."_s );
+  diff.insert( u"changes"_s, changes );
+  diff.insert( u"before"_s, beforeVisual );
+  diff.insert( u"after"_s, layerVisualSummary( layer, treeNode ) );
+
+  QJsonObject output;
   output.insert( u"layer_id"_s, layer->id() );
   output.insert( u"name"_s, layer->name() );
   output.insert( u"visual"_s, layerVisualSummary( layer, treeNode ) );
