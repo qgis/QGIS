@@ -368,11 +368,14 @@ bool QgsAiAccountWidget::isSignedIn() const
 
 void QgsAiAccountWidget::setMode( Mode mode )
 {
+  // Clear stale status only on an actual mode switch, so the initial status
+  // set by the constructor survives its trailing setMode( Mode::Login ) call.
+  const bool changed = mMode != mode;
   mMode = mode;
   mLoginButton->setVisible( mode == Mode::Login );
   mRegisterButton->setVisible( mode == Mode::Signup );
   mPasswordHint->setVisible( mode == Mode::Signup );
-  if ( !mBusy )
+  if ( changed && !mBusy )
     setStatus( QString() );
   updateFormState();
 }
@@ -507,6 +510,7 @@ QString QgsAiAccountWidget::friendlyErrorMessage( const QString &message )
 
 void QgsAiAccountWidget::startLogin()
 {
+  mInteractiveRequest = true;
   setBusy( true );
   mLoginButton->setText( tr( "Logging in…" ) );
   setStatus( tr( "Logging in to Plan Account..." ) );
@@ -515,6 +519,7 @@ void QgsAiAccountWidget::startLogin()
 
 void QgsAiAccountWidget::startRegister()
 {
+  mInteractiveRequest = true;
   setBusy( true );
   mRegisterButton->setText( tr( "Creating account…" ) );
   setStatus( tr( "Creating Plan Account..." ) );
@@ -542,6 +547,7 @@ void QgsAiAccountWidget::logout()
 
 void QgsAiAccountWidget::refreshManagedModels()
 {
+  mInteractiveRequest = true;
   setBusy( true );
   setStatus( tr( "Refreshing managed model catalog..." ) );
   mPlanClient->refreshModels( currentEndpoint() );
@@ -586,6 +592,15 @@ void QgsAiAccountWidget::onRequestFailed( const QString &message )
     mPendingToggleItem->setCheckState( mPendingToggleEnabled ? Qt::Unchecked : Qt::Checked );
     mUpdatingModelList = false;
     mPendingToggleItem = nullptr;
+  }
+  if ( !mInteractiveRequest )
+  {
+    // Failure of the silent account refresh fired on open (expired token,
+    // backend unreachable): keep a neutral status instead of an unprompted
+    // red "Incorrect email or password." on a pane with no credential fields.
+    setStatus( isSignedIn() ? tr( "Signed in — account details are unavailable right now." ) : tr( "Not signed in." ) );
+    setBusy( false );
+    return;
   }
   setStatus( friendlyErrorMessage( message ), true );
   setBusy( false );
@@ -644,6 +659,7 @@ void QgsAiAccountWidget::onModelListItemChanged( QListWidgetItem *item )
     return;
   }
 
+  mInteractiveRequest = true;
   mPendingToggleItem = item;
   mPendingToggleEnabled = enabled;
   mPlanClient->setModelPreference( currentEndpoint(), mModelRouter->planSessionToken(), modelId, enabled );

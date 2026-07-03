@@ -140,6 +140,8 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
 
     Mode mMode = Mode::Login;
     bool mBusy = false;
+    //! False until the user triggers a request; failures of the silent open-time refresh stay non-alarming.
+    bool mInteractiveRequest = false;
     QString mAccountEmail;
     QString mAccountTier;
     QgsAiPlanClient::BalanceInfo mBalance;

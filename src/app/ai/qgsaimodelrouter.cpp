@@ -1133,6 +1133,12 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
     {
       providerSettings.authConfigId = settings.value( planAuthConfigIdSettingKey(), providerSettings.authConfigId ).toString().trimmed();
       providerSettings.enabled = settings.value( enabledSettingKey( provider ), !providerSettings.authConfigId.isEmpty() ).toBool();
+
+      // Dev launchers (run-strata-dev.sh / run-strata-prod.sh) pin the backend
+      // for this process without touching persisted QSettings.
+      const QString envEndpoint = QString::fromUtf8( qgetenv( "STRATA_PLAN_ENDPOINT" ) ).trimmed();
+      if ( !envEndpoint.isEmpty() )
+        providerSettings.endpoint = envEndpoint;
     }
     else if ( provider == Provider::OpenAi || provider == Provider::OpenRouter )
     {

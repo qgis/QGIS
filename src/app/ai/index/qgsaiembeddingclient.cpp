@@ -78,7 +78,11 @@ QString QgsAiEmbeddingClient::endpoint() const
     const QString configured = settings.value( QString::fromLatin1( STRATA_CLOUD_EMBEDDINGS_ENDPOINT_SETTING ) ).toString().trimmed();
     if ( !configured.isEmpty() )
       return configured;
-    QUrl planEndpoint( settings.value( QString::fromLatin1( PLAN_ENDPOINT_SETTING ), u"https://example.invalid/ai/messages"_s ).toString().trimmed() );
+    const QString envPlanEndpoint = QString::fromUtf8( qgetenv( "STRATA_PLAN_ENDPOINT" ) ).trimmed();
+    const QString configuredPlanEndpoint = envPlanEndpoint.isEmpty()
+                                             ? settings.value( QString::fromLatin1( PLAN_ENDPOINT_SETTING ), u"https://example.invalid/ai/messages"_s ).toString().trimmed()
+                                             : envPlanEndpoint;
+    QUrl planEndpoint( configuredPlanEndpoint );
     planEndpoint.setPath( u"/v1/embeddings"_s );
     planEndpoint.setQuery( QString() );
     return planEndpoint.toString();

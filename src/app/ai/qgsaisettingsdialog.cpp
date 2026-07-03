@@ -507,6 +507,17 @@ QgsAiSettingsDialog::QgsAiSettingsDialog( QgsAiAgentSessionManager *sessionManag
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this );
   connect( buttons, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  // Enter inside the auth (and other) line edits must submit the form action,
+  // not fire the dialog-default OK button and close the whole dialog.
+  const QList<QAbstractButton *> boxButtons = buttons->buttons();
+  for ( QAbstractButton *boxButton : boxButtons )
+  {
+    if ( QPushButton *pushButton = qobject_cast<QPushButton *>( boxButton ) )
+    {
+      pushButton->setAutoDefault( false );
+      pushButton->setDefault( false );
+    }
+  }
   QWidget *buttonRow = new QWidget( this );
   QHBoxLayout *buttonRowLayout = new QHBoxLayout( buttonRow );
   buttonRowLayout->setContentsMargins( 12, 8, 12, 8 );
