@@ -44,4 +44,23 @@ class APP_EXPORT QgsAiEditFeatureGeometryTool : public QgsAiTool
     QgsProject *mProject = nullptr;
 };
 
+/**
+ * update_feature_attributes: updates attributes of an existing vector feature.
+ */
+class APP_EXPORT QgsAiUpdateFeatureAttributesTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiUpdateFeatureAttributesTool( QgsProject *project );
+
+    QString name() const override { return u"update_feature_attributes"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::High; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
 #endif // QGSAIEDITINGTOOLS_H

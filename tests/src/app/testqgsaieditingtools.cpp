@@ -27,6 +27,8 @@ class TestQgsAiEditingTools : public QObject
     void cleanupTestCase();
     void editFeatureGeometryMovesVertexAndRollsBack();
     void editFeatureGeometryRejectsInvalidResult();
+    void updateFeatureAttributesUpdatesAndRollsBack();
+    void updateFeatureAttributesRejectsIncompatibleType();
 };
 
 void TestQgsAiEditingTools::initTestCase()
@@ -122,6 +124,92 @@ void TestQgsAiEditingTools::editFeatureGeometryRejectsInvalidResult()
   QgsFeature unchangedFeature;
   QVERIFY( layer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( unchangedFeature ) );
   QCOMPARE( unchangedFeature.geometry().asWkt(), originalWkt );
+}
+
+void TestQgsAiEditingTools::updateFeatureAttributesUpdatesAndRollsBack()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=name:string&field=height:double"_s, u"Places"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature feature( layer->fields() );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Point(1 2)"_s ) );
+  feature.setAttribute( u"name"_s, u"old"_s );
+  feature.setAttribute( u"height"_s, 1.5 );
+  QVERIFY( layer->dataProvider()->addFeatures( QgsFeatureList() << feature ) );
+  project.addMapLayer( layer );
+
+  QgsFeature storedFeature;
+  QVERIFY( layer->getFeatures().nextFeature( storedFeature ) );
+  const QgsFeatureId featureId = storedFeature.id();
+
+  QgsAiUpdateFeatureAttributesTool tool( &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::High );
+
+  QJsonObject attributes;
+  attributes.insert( u"name"_s, u"new"_s );
+  attributes.insert( u"height"_s, 7.25 );
+
+  QJsonObject args;
+  args.insert( u"layer_id"_s, layer->id() );
+  args.insert( u"feature_id"_s, static_cast<qint64>( featureId ) );
+  args.insert( u"attributes"_s, attributes );
+
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  const QString rollbackToken = result.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !rollbackToken.isEmpty() );
+
+  QgsFeature editedFeature;
+  QVERIFY( layer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( editedFeature ) );
+  QCOMPARE( editedFeature.attribute( u"name"_s ).toString(), u"new"_s );
+  QCOMPARE( editedFeature.attribute( u"height"_s ).toDouble(), 7.25 );
+
+  QJsonObject rollbackArgs;
+  rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
+  const QgsAiToolResult rollback = tool.execute( rollbackArgs );
+  QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+
+  QgsFeature rolledBackFeature;
+  QVERIFY( layer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( rolledBackFeature ) );
+  QCOMPARE( rolledBackFeature.attribute( u"name"_s ).toString(), u"old"_s );
+  QCOMPARE( rolledBackFeature.attribute( u"height"_s ).toDouble(), 1.5 );
+}
+
+void TestQgsAiEditingTools::updateFeatureAttributesRejectsIncompatibleType()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=name:string&field=height:double"_s, u"Places"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature feature( layer->fields() );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Point(1 2)"_s ) );
+  feature.setAttribute( u"name"_s, u"old"_s );
+  feature.setAttribute( u"height"_s, 1.5 );
+  QVERIFY( layer->dataProvider()->addFeatures( QgsFeatureList() << feature ) );
+  project.addMapLayer( layer );
+
+  QgsFeature storedFeature;
+  QVERIFY( layer->getFeatures().nextFeature( storedFeature ) );
+  const QgsFeatureId featureId = storedFeature.id();
+
+  QgsAiUpdateFeatureAttributesTool tool( &project );
+  QJsonObject attributes;
+  attributes.insert( u"height"_s, u"not-a-number"_s );
+
+  QJsonObject args;
+  args.insert( u"layer_id"_s, layer->id() );
+  args.insert( u"feature_id"_s, static_cast<qint64>( featureId ) );
+  args.insert( u"attributes"_s, attributes );
+
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY( !result.success );
+  QVERIFY( result.errorMessage.contains( u"height"_s ) );
+
+  QgsFeature unchangedFeature;
+  QVERIFY( layer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( unchangedFeature ) );
+  QCOMPARE( unchangedFeature.attribute( u"height"_s ).toDouble(), 1.5 );
 }
 
 QGSTEST_MAIN( TestQgsAiEditingTools )

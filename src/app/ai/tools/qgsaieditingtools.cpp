@@ -16,6 +16,8 @@
 #include "qgsaieditingtools.h"
 
 #include "qgsaitoolschemautil.h"
+#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsgeometry.h"
@@ -26,6 +28,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QUuid>
+#include <QVariant>
 
 using namespace Qt::StringLiterals;
 
@@ -33,7 +36,8 @@ namespace
 {
   enum class EditingRollbackType
   {
-    RestoreGeometry
+    RestoreGeometry,
+    RestoreAttributes
   };
 
   struct EditingRollbackEntry
@@ -42,6 +46,7 @@ namespace
       QString layerId;
       QgsFeatureId featureId = FID_NULL;
       QString geometryWkt;
+      QgsAttributeMap oldAttributes;
       QString description;
   };
 
@@ -130,6 +135,71 @@ namespace
     output.insert( u"diff"_s, diff );
     return QgsAiToolResult::ok( output );
   }
+
+  QJsonObject attributesJson( const QgsFields &fields, const QgsAttributeMap &attributes )
+  {
+    QJsonObject output;
+    for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+    {
+      const int index = it.key();
+      const QString name = fields.exists( index ) ? fields.at( index ).name() : QString::number( index );
+      output.insert( name, QJsonValue::fromVariant( it.value() ) );
+    }
+    return output;
+  }
+
+  QgsAiToolResult rollbackAttributes( QgsProject *project, const QString &token )
+  {
+    if ( !editingRollbackStore().contains( token ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+    const EditingRollbackEntry entry = editingRollbackStore().take( token );
+    if ( entry.type != EditingRollbackType::RestoreAttributes )
+      return QgsAiToolResult::error( u"Rollback token does not belong to an attribute update operation."_s );
+    if ( !project )
+      return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( entry.layerId ) );
+    if ( !layer )
+      return QgsAiToolResult::error( u"Cannot rollback attributes: layer no longer exists: %1"_s.arg( entry.layerId ) );
+
+    QgsFeature beforeFeature;
+    if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( entry.featureId ) ).nextFeature( beforeFeature ) )
+      return QgsAiToolResult::error( u"Cannot rollback attributes: feature no longer exists: %1"_s.arg( entry.featureId ) );
+
+    QgsAttributeMap beforeAttributes;
+    for ( auto it = entry.oldAttributes.constBegin(); it != entry.oldAttributes.constEnd(); ++it )
+      beforeAttributes.insert( it.key(), beforeFeature.attribute( it.key() ) );
+
+    const bool startedEditing = !layer->isEditable();
+    if ( startedEditing && !layer->startEditing() )
+      return QgsAiToolResult::error( u"Cannot start editing session for layer: %1"_s.arg( layer->name() ) );
+
+    layer->beginEditCommand( u"AI attribute rollback"_s );
+    if ( !layer->changeAttributeValues( entry.featureId, entry.oldAttributes, beforeAttributes, true ) )
+    {
+      layer->destroyEditCommand();
+      if ( startedEditing )
+        layer->rollBack();
+      return QgsAiToolResult::error( u"Could not restore attributes for feature_id %1."_s.arg( entry.featureId ) );
+    }
+    layer->endEditCommand();
+
+    if ( startedEditing && !layer->commitChanges() )
+      return QgsAiToolResult::error( u"Could not commit attribute rollback: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+
+    QJsonObject diff;
+    diff.insert( u"summary"_s, u"Restored previous feature attributes."_s );
+    diff.insert( u"layer_id"_s, entry.layerId );
+    diff.insert( u"feature_id"_s, static_cast<qint64>( entry.featureId ) );
+    diff.insert( u"before"_s, attributesJson( layer->fields(), beforeAttributes ) );
+    diff.insert( u"after"_s, attributesJson( layer->fields(), entry.oldAttributes ) );
+
+    QJsonObject output;
+    output.insert( u"status"_s, u"rolled_back"_s );
+    output.insert( u"rollback_token"_s, token );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -171,7 +241,11 @@ QgsAiToolResult QgsAiEditFeatureGeometryTool::execute( const QJsonObject &args )
 
   const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
   if ( !rollbackToken.isEmpty() )
+  {
+    if ( editingRollbackStore().contains( rollbackToken ) && editingRollbackStore().value( rollbackToken ).type == EditingRollbackType::RestoreAttributes )
+      return rollbackAttributes( project, rollbackToken );
     return rollbackGeometry( project, rollbackToken );
+  }
 
   const QString layerId = args.value( u"layer_id"_s ).toString().trimmed();
   if ( layerId.isEmpty() )
@@ -313,5 +387,128 @@ QgsAiToolResult QgsAiEditFeatureGeometryTool::execute( const QJsonObject &args )
   output.insert( u"diff"_s, diff );
   output.insert( u"rollback_token"_s, token );
   output.insert( u"rollback"_s, rollbackJson( token, u"restore_feature_geometry"_s ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// update_feature_attributes
+// ---------------------------------------------------------------------------
+
+QgsAiUpdateFeatureAttributesTool::QgsAiUpdateFeatureAttributesTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiUpdateFeatureAttributesTool::description() const
+{
+  return QStringLiteral(
+    "Updates one or more attributes of an existing vector feature. "
+    "Values are converted through QgsField::convertCompatible before editing, "
+    "and the previous values are returned as a rollback token."
+  );
+}
+
+QJsonObject QgsAiUpdateFeatureAttributesTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"layer_id"_s, prop( u"string"_s, u"Target vector layer id."_s ) );
+  properties.insert( u"feature_id"_s, prop( u"integer"_s, u"Target feature id."_s ) );
+  properties.insert( u"attributes"_s, prop( u"object"_s, u"Object mapping field names to new values."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous update_feature_attributes call. If set, restores the previous values."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiUpdateFeatureAttributesTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackAttributes( project, rollbackToken );
+
+  const QString layerId = args.value( u"layer_id"_s ).toString().trimmed();
+  if ( layerId.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'layer_id' is required."_s );
+
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( layerId ) );
+  if ( !layer )
+    return QgsAiToolResult::error( u"No vector layer with id: %1"_s.arg( layerId ) );
+
+  const QgsFeatureId featureId = featureIdFromJson( args );
+  QgsFeature feature;
+  if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( feature ) )
+    return QgsAiToolResult::error( u"No feature with feature_id: %1"_s.arg( featureId ) );
+
+  if ( !args.value( u"attributes"_s ).isObject() )
+    return QgsAiToolResult::error( u"Argument 'attributes' must be an object."_s );
+
+  const QJsonObject requestedAttributes = args.value( u"attributes"_s ).toObject();
+  if ( requestedAttributes.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'attributes' must include at least one field."_s );
+
+  QgsAttributeMap newValues;
+  QgsAttributeMap oldValues;
+  const QgsFields fields = layer->fields();
+  for ( auto it = requestedAttributes.constBegin(); it != requestedAttributes.constEnd(); ++it )
+  {
+    const int index = fields.lookupField( it.key() );
+    if ( index < 0 )
+      return QgsAiToolResult::error( u"No field named '%1' on layer: %2"_s.arg( it.key(), layer->name() ) );
+
+    QVariant value = it.value().toVariant();
+    QString conversionError;
+    if ( !fields.at( index ).convertCompatible( value, &conversionError ) )
+    {
+      return QgsAiToolResult::error(
+        conversionError.isEmpty()
+          ? u"Value for field '%1' is not compatible with field type %2."_s.arg( it.key(), fields.at( index ).typeName() )
+          : u"Value for field '%1' is not compatible: %2"_s.arg( it.key(), conversionError )
+      );
+    }
+
+    newValues.insert( index, value );
+    oldValues.insert( index, feature.attribute( index ) );
+  }
+
+  const bool startedEditing = !layer->isEditable();
+  if ( startedEditing && !layer->startEditing() )
+    return QgsAiToolResult::error( u"Cannot start editing session for layer: %1"_s.arg( layer->name() ) );
+
+  layer->beginEditCommand( u"AI attribute update"_s );
+  if ( !layer->changeAttributeValues( featureId, newValues, oldValues, true ) )
+  {
+    layer->destroyEditCommand();
+    if ( startedEditing )
+      layer->rollBack();
+    return QgsAiToolResult::error( u"Could not update attributes for feature_id %1."_s.arg( featureId ) );
+  }
+  layer->endEditCommand();
+
+  if ( startedEditing && !layer->commitChanges() )
+    return QgsAiToolResult::error( u"Could not commit attribute update: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+
+  EditingRollbackEntry rollback;
+  rollback.type = EditingRollbackType::RestoreAttributes;
+  rollback.layerId = layerId;
+  rollback.featureId = featureId;
+  rollback.oldAttributes = oldValues;
+  rollback.description = u"Restore feature attributes before AI update."_s;
+  const QString token = storeEditingRollback( rollback );
+
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Updated feature attributes."_s );
+  diff.insert( u"layer_id"_s, layerId );
+  diff.insert( u"feature_id"_s, static_cast<qint64>( featureId ) );
+  diff.insert( u"before"_s, attributesJson( fields, oldValues ) );
+  diff.insert( u"after"_s, attributesJson( fields, newValues ) );
+
+  QJsonObject output;
+  output.insert( u"layer_id"_s, layerId );
+  output.insert( u"feature_id"_s, static_cast<qint64>( featureId ) );
+  output.insert( u"updated_attributes"_s, attributesJson( fields, newValues ) );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"restore_feature_attributes"_s ) );
   return QgsAiToolResult::ok( output );
 }
