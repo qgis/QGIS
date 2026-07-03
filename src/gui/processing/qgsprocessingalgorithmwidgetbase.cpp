@@ -179,9 +179,10 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
           m->setText( command );
           QClipboard *cb = QApplication::clipboard();
 
-#ifdef Q_OS_LINUX
-          cb->setMimeData( m, QClipboard::Selection );
-#endif
+          if ( cb->supportsSelection() )
+          {
+            cb->setMimeData( m, QClipboard::Selection );
+          }
           cb->setMimeData( m, QClipboard::Clipboard );
         }
       } );
@@ -209,9 +210,10 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
             m->setText( command );
             QClipboard *cb = QApplication::clipboard();
 
-#ifdef Q_OS_LINUX
-            cb->setMimeData( m, QClipboard::Selection );
-#endif
+            if ( cb->supportsSelection() )
+            {
+              cb->setMimeData( m, QClipboard::Selection );
+            }
             cb->setMimeData( m, QClipboard::Clipboard );
           }
         }
@@ -237,9 +239,10 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
           m->setText( json );
           QClipboard *cb = QApplication::clipboard();
 
-#ifdef Q_OS_LINUX
-          cb->setMimeData( m, QClipboard::Selection );
-#endif
+          if ( cb->supportsSelection() )
+          {
+            cb->setMimeData( m, QClipboard::Selection );
+          }
           cb->setMimeData( m, QClipboard::Clipboard );
         }
       } );
@@ -734,9 +737,10 @@ void QgsProcessingAlgorithmWidgetBase::copyLogToClipboard()
   m->setHtml( txtLog->toHtml() );
   QClipboard *cb = QApplication::clipboard();
 
-#ifdef Q_OS_LINUX
-  cb->setMimeData( m, QClipboard::Selection );
-#endif
+  if ( cb->supportsSelection() )
+  {
+    cb->setMimeData( m, QClipboard::Selection );
+  }
   cb->setMimeData( m, QClipboard::Clipboard );
 }
 
