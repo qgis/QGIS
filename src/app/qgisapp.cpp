@@ -107,6 +107,7 @@ using namespace Qt::StringLiterals;
 #include "ai/qgsaimessagelogbuffer.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "ai/tools/qgsaiattributetabletools.h"
 #include "ai/tools/qgsaidownloadfiletool.h"
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaieditingtools.h"
@@ -1449,6 +1450,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiEditFeatureGeometryTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiUpdateFeatureAttributesTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCalculateFieldTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiQueryFeaturesTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiBatchUpdateAttributesTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiStyleLayerTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCreatePrintLayoutTool>( QgsProject::instance(), mMapCanvas ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiExportMapTool>( mAiFileContextProvider.get(), QgsProject::instance(), mMapCanvas ) );

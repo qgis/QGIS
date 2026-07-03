@@ -340,6 +340,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaisettingsdialog.cpp
     ai/qgsaivisualcontextutils.cpp
     ai/qgsaiworkspacetrust.cpp
+    ai/tools/qgsaiattributetabletools.cpp
     ai/tools/qgsaidownloadfiletool.cpp
     ai/tools/qgsaiechotool.cpp
     ai/tools/qgsaieditingtools.cpp
