@@ -14,7 +14,7 @@
 *                                                                         *
 ***************************************************************************
 """
-
+import json
 
 def _geometryNonZero(self):
     return not self.isEmpty()
@@ -22,6 +22,6 @@ def _geometryNonZero(self):
 
 def _mapping_geometry(geometry):
     geo = geometry.asJson()
-    # We have to use eval because exportToGeoJSON() gives us
+    # We have to use loads because exportToGeoJSON() gives us
     # back a string that looks like a dictionary.
-    return eval(geo)
+    return json.loads(geo)
