@@ -14,6 +14,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
+#include <QJsonArray>
 #include <QJsonObject>
 
 using namespace Qt::StringLiterals;
@@ -26,6 +27,7 @@ class TestQgsAiEditingTools : public QObject
     void initTestCase();
     void cleanupTestCase();
     void editFeatureGeometryMovesVertexAndRollsBack();
+    void editFeatureGeometrySplitsFeatureAndRollsBack();
     void editFeatureGeometryRejectsInvalidResult();
     void updateFeatureAttributesUpdatesAndRollsBack();
     void updateFeatureAttributesRejectsIncompatibleType();
@@ -87,6 +89,58 @@ void TestQgsAiEditingTools::editFeatureGeometryMovesVertexAndRollsBack()
   rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
   const QgsAiToolResult rollback = tool.execute( rollbackArgs );
   QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+
+  QgsFeature rolledBackFeature;
+  QVERIFY( layer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( rolledBackFeature ) );
+  QCOMPARE( rolledBackFeature.geometry().asWkt(), originalWkt );
+}
+
+void TestQgsAiEditingTools::editFeatureGeometrySplitsFeatureAndRollsBack()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Polygon?crs=EPSG:4326&field=name:string"_s, u"Parcels"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature feature( layer->fields() );
+  feature.setAttribute( u"name"_s, u"Parcel A"_s );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Polygon((0 0, 10 0, 10 10, 0 10, 0 0))"_s ) );
+  QVERIFY( layer->dataProvider()->addFeatures( QgsFeatureList() << feature ) );
+  layer->updateExtents();
+  project.addMapLayer( layer );
+
+  QgsFeature storedFeature;
+  QVERIFY( layer->getFeatures().nextFeature( storedFeature ) );
+  const QgsFeatureId featureId = storedFeature.id();
+  const QString originalWkt = storedFeature.geometry().asWkt();
+
+  QJsonObject start;
+  start.insert( u"x"_s, 5.0 );
+  start.insert( u"y"_s, -1.0 );
+  QJsonObject end;
+  end.insert( u"x"_s, 5.0 );
+  end.insert( u"y"_s, 11.0 );
+  QJsonArray splitLine;
+  splitLine << start << end;
+
+  QgsAiEditFeatureGeometryTool tool( &project );
+  QJsonObject args;
+  args.insert( u"layer_id"_s, layer->id() );
+  args.insert( u"feature_id"_s, static_cast<qint64>( featureId ) );
+  args.insert( u"operation"_s, u"split_feature"_s );
+  args.insert( u"split_line"_s, splitLine );
+
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  QCOMPARE( result.output.toObject().value( u"operation"_s ).toString(), u"split_feature"_s );
+  const QString rollbackToken = result.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !rollbackToken.isEmpty() );
+  QCOMPARE( layer->featureCount(), static_cast<long long>( 2 ) );
+
+  QJsonObject rollbackArgs;
+  rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
+  const QgsAiToolResult rollback = tool.execute( rollbackArgs );
+  QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+  QCOMPARE( layer->featureCount(), static_cast<long long>( 1 ) );
 
   QgsFeature rolledBackFeature;
   QVERIFY( layer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( rolledBackFeature ) );

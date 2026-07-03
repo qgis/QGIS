@@ -24,6 +24,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgeometry.h"
+#include "qgspoint.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
@@ -50,6 +51,8 @@ namespace
       QString layerId;
       QgsFeatureId featureId = FID_NULL;
       QString geometryWkt;
+      QgsFeatureIds addedFeatureIds;
+      QStringList addedGeometryWkts;
       QgsAttributeMap oldAttributes;
       QHash<QgsFeatureId, QVariant> oldFieldValues;
       bool createdField = false;
@@ -93,6 +96,58 @@ namespace
     return args.value( u"feature_id"_s ).toVariant().toLongLong();
   }
 
+  bool pointSequenceFromJson( const QJsonValue &value, QgsPointSequence &points, QString &error )
+  {
+    if ( !value.isArray() )
+    {
+      error = u"split_feature requires split_line as an array of at least two points."_s;
+      return false;
+    }
+
+    const QJsonArray array = value.toArray();
+    if ( array.size() < 2 )
+    {
+      error = u"split_line must contain at least two points."_s;
+      return false;
+    }
+
+    for ( const QJsonValue &pointValue : array )
+    {
+      double x = 0;
+      double y = 0;
+      if ( pointValue.isObject() )
+      {
+        const QJsonObject pointObject = pointValue.toObject();
+        if ( !pointObject.value( u"x"_s ).isDouble() || !pointObject.value( u"y"_s ).isDouble() )
+        {
+          error = u"Each split_line point object must include numeric x and y."_s;
+          return false;
+        }
+        x = pointObject.value( u"x"_s ).toDouble();
+        y = pointObject.value( u"y"_s ).toDouble();
+      }
+      else if ( pointValue.isArray() )
+      {
+        const QJsonArray pointArray = pointValue.toArray();
+        if ( pointArray.size() < 2 || !pointArray.at( 0 ).isDouble() || !pointArray.at( 1 ).isDouble() )
+        {
+          error = u"Each split_line point array must be [x, y]."_s;
+          return false;
+        }
+        x = pointArray.at( 0 ).toDouble();
+        y = pointArray.at( 1 ).toDouble();
+      }
+      else
+      {
+        error = u"Each split_line point must be an object {x,y} or array [x,y]."_s;
+        return false;
+      }
+      points << QgsPoint( x, y );
+    }
+
+    return true;
+  }
+
   QgsAiToolResult rollbackGeometry( QgsProject *project, const QString &token )
   {
     if ( !editingRollbackStore().contains( token ) )
@@ -116,6 +171,29 @@ namespace
 
     QgsGeometry original = QgsGeometry::fromWkt( entry.geometryWkt );
     layer->beginEditCommand( u"AI geometry rollback"_s );
+    QgsFeatureIds featureIdsToDelete;
+    for ( const QgsFeatureId id : entry.addedFeatureIds )
+    {
+      if ( !FID_IS_NEW( id ) )
+        featureIdsToDelete.insert( id );
+    }
+    if ( !entry.addedGeometryWkts.isEmpty() )
+    {
+      QgsFeature addedFeature;
+      QgsFeatureIterator it = layer->getFeatures();
+      while ( it.nextFeature( addedFeature ) )
+      {
+        if ( entry.addedGeometryWkts.contains( addedFeature.geometry().asWkt() ) )
+          featureIdsToDelete.insert( addedFeature.id() );
+      }
+    }
+    if ( !featureIdsToDelete.isEmpty() && !layer->deleteFeatures( featureIdsToDelete ) )
+    {
+      layer->destroyEditCommand();
+      if ( startedEditing )
+        layer->rollBack();
+      return QgsAiToolResult::error( u"Could not remove features added by split rollback."_s );
+    }
     if ( !layer->changeGeometry( entry.featureId, original ) )
     {
       layer->destroyEditCommand();
@@ -132,6 +210,7 @@ namespace
     diff.insert( u"summary"_s, u"Restored previous feature geometry."_s );
     diff.insert( u"layer_id"_s, entry.layerId );
     diff.insert( u"feature_id"_s, static_cast<qint64>( entry.featureId ) );
+    diff.insert( u"removed_added_features"_s, featureIdsToDelete.size() );
     if ( hadBeforeFeature )
       diff.insert( u"before"_s, geometrySummary( beforeFeature.geometry() ) );
     diff.insert( u"after"_s, geometrySummary( original ) );
@@ -305,7 +384,7 @@ QString QgsAiEditFeatureGeometryTool::description() const
 {
   return QStringLiteral(
     "Edits the geometry of an existing vector feature using native QGIS APIs. "
-    "Supported operations are move_vertex, insert_vertex and delete_vertex. "
+    "Supported operations are move_vertex, insert_vertex, delete_vertex and split_feature. "
     "The tool validates the resulting geometry and returns a rollback token."
   );
 }
@@ -315,11 +394,12 @@ QJsonObject QgsAiEditFeatureGeometryTool::schema() const
   QJsonObject properties;
   properties.insert( u"layer_id"_s, prop( u"string"_s, u"Target vector layer id."_s ) );
   properties.insert( u"feature_id"_s, prop( u"integer"_s, u"Target feature id."_s ) );
-  properties.insert( u"operation"_s, prop( u"string"_s, u"One of: move_vertex, insert_vertex, delete_vertex."_s ) );
+  properties.insert( u"operation"_s, prop( u"string"_s, u"One of: move_vertex, insert_vertex, delete_vertex, split_feature."_s ) );
   properties.insert( u"vertex_index"_s, prop( u"integer"_s, u"Vertex index for move_vertex/delete_vertex."_s ) );
   properties.insert( u"before_vertex"_s, prop( u"integer"_s, u"Insert before this vertex index for insert_vertex."_s ) );
   properties.insert( u"x"_s, prop( u"number"_s, u"New vertex x coordinate."_s ) );
   properties.insert( u"y"_s, prop( u"number"_s, u"New vertex y coordinate."_s ) );
+  properties.insert( u"split_line"_s, prop( u"array"_s, u"Line for split_feature as [{x,y}, ...] or [[x,y], ...]."_s ) );
   properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous edit_feature_geometry call. If set, restores the previous geometry."_s ) );
   return schemaObject( properties );
 }
@@ -367,6 +447,8 @@ QgsAiToolResult QgsAiEditFeatureGeometryTool::execute( const QJsonObject &args )
 
   bool ok = false;
   QString appliedOperation;
+  QgsFeatureIds addedFeatureIds;
+  QStringList addedGeometryWkts;
   layer->beginEditCommand( u"AI geometry edit"_s );
 
   if ( operation == "move_vertex"_L1 )
@@ -410,10 +492,48 @@ QgsAiToolResult QgsAiEditFeatureGeometryTool::execute( const QJsonObject &args )
   }
   else if ( operation == "split_feature"_L1 )
   {
-    layer->destroyEditCommand();
-    if ( startedEditing )
-      layer->rollBack();
-    return QgsAiToolResult::error( u"split_feature is not supported yet by edit_feature_geometry."_s );
+    QgsPointSequence splitLine;
+    QString error;
+    if ( !pointSequenceFromJson( args.value( u"split_line"_s ), splitLine, error ) )
+    {
+      layer->destroyEditCommand();
+      if ( startedEditing )
+        layer->rollBack();
+      return QgsAiToolResult::error( error );
+    }
+
+    QgsGeometry splitGeometry = originalGeometry;
+    QVector<QgsGeometry> newGeometries;
+    QgsPointSequence topologyTestPoints;
+    const Qgis::GeometryOperationResult splitResult = splitGeometry.splitGeometry( splitLine, newGeometries, false, topologyTestPoints, true );
+    if ( splitResult != Qgis::GeometryOperationResult::Success || newGeometries.isEmpty() )
+    {
+      layer->destroyEditCommand();
+      if ( startedEditing )
+        layer->rollBack();
+      return QgsAiToolResult::error( u"split_feature failed or did not create a new geometry."_s );
+    }
+
+    ok = layer->changeGeometry( featureId, splitGeometry );
+    if ( ok )
+    {
+      QgsFeatureList newFeatures;
+      for ( const QgsGeometry &newGeometry : newGeometries )
+      {
+        QgsFeature newFeature( layer->fields() );
+        newFeature.setAttributes( feature.attributes() );
+        newFeature.setGeometry( newGeometry );
+        newFeatures << newFeature;
+        addedGeometryWkts << newGeometry.asWkt();
+      }
+      ok = layer->addFeatures( newFeatures );
+      for ( const QgsFeature &newFeature : newFeatures )
+      {
+        if ( newFeature.id() != FID_NULL )
+          addedFeatureIds.insert( newFeature.id() );
+      }
+    }
+    appliedOperation = u"split_feature"_s;
   }
   else
   {
@@ -460,6 +580,8 @@ QgsAiToolResult QgsAiEditFeatureGeometryTool::execute( const QJsonObject &args )
   rollback.layerId = layerId;
   rollback.featureId = featureId;
   rollback.geometryWkt = originalGeometry.asWkt();
+  rollback.addedFeatureIds = addedFeatureIds;
+  rollback.addedGeometryWkts = addedGeometryWkts;
   rollback.description = u"Restore feature geometry before AI edit."_s;
   const QString token = storeEditingRollback( rollback );
 
