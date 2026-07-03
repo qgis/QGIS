@@ -817,6 +817,9 @@ QWidget *QgsAiSettingsDialog::buildProvidersPage()
   mClaudeKey = new QLineEdit( page );
   mClaudeKey->setEchoMode( QLineEdit::Password );
   mClaudeKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "anthropic key..." ) );
+  mClaudeSubscriptionToken = new QLineEdit( page );
+  mClaudeSubscriptionToken->setEchoMode( QLineEdit::Password );
+  mClaudeSubscriptionToken->setPlaceholderText( QgsAiSecretStore::hasSecret( u"ai/provider/claude/subscriptionToken"_s ) ? tr( "Saved locally — paste a new token only to replace it" ) : tr( "Paste token from: claude setup-token" ) );
   mClaudeUseOAuth = new QCheckBox( page );
   mClaudeUseOAuth->setChecked( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude ).credentialMode == QgsAiModelRouter::CredentialMode::OAuth );
   mClaudeOAuthStatus = new QLabel( mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude ) ? tr( "Signed in" ) : tr( "Not signed in" ), page );
@@ -831,31 +834,15 @@ QWidget *QgsAiSettingsDialog::buildProvidersPage()
   contentLayout->addWidget( settingRow( tr( "Model" ), QString(), mClaudeModel, page ) );
   contentLayout->addWidget( settingRow( tr( "API key" ), tr( "Stored locally. Leave empty to keep the saved key." ), mClaudeKey, page ) );
   contentLayout->addWidget( settingRow( tr( "Use OAuth login" ), tr( "Use your Claude subscription via OAuth instead of an API key." ), mClaudeUseOAuth, page ) );
+  contentLayout->addWidget( settingRow( tr( "Subscription token" ), tr( "Stored locally. Leave empty to keep the saved token." ), mClaudeSubscriptionToken, page ) );
   contentLayout->addWidget( settingRow( tr( "OAuth status" ), QString(), mClaudeOAuthStatus, page ) );
   contentLayout->addWidget( settingRow( tr( "Account" ), QString(), claudeOAuthButtons, page ) );
 
   connect( claudeLoginButton, &QPushButton::clicked, this, [this]() {
-    const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = QgsAiClaudeOAuthClient::buildAuthorizationRequest();
-
-    if ( !QDesktopServices::openUrl( authRequest.authorizationUrl ) )
-    {
-      QMessageBox::information( this, tr( "Claude OAuth" ), tr( "Open this URL in your browser:\n\n%1" ).arg( authRequest.authorizationUrl.toString() ) );
-    }
-
-    bool ok = false;
-    const QString code
-      = QInputDialog::getText( this, tr( "Claude OAuth" ), tr( "After approving Claude in the browser, paste the authorization code or callback URL:" ), QLineEdit::Normal, QString(), &ok ).trimmed();
-    if ( !ok || code.isEmpty() )
-      return;
-
-    QString error;
-    if ( !QgsAiClaudeOAuthClient::exchangeAuthorizationCode( code, authRequest.codeVerifier, authRequest.redirectUri, authRequest.state, &error ) )
-    {
-      QMessageBox::warning( this, tr( "Claude login failed" ), error );
-      return;
-    }
-    mClaudeUseOAuth->setChecked( true );
-    mClaudeOAuthStatus->setText( tr( "Signed in" ) );
+    // Cross-platform, ToS-compliant path: the user mints an official token with the Claude
+    // Code CLI and pastes it into the field above. (No reverse-engineered OAuth, no per-OS
+    // terminal automation.)
+    QMessageBox::information( this, tr( "Use your Claude subscription" ), tr( "To use your Claude Pro/Max subscription in Strata:\n\n1. Open a terminal and run:\n      claude setup-token\n2. Approve the login in your browser.\n3. Copy the token it prints (starts with sk-ant-oat01-…).\n4. Paste it into the “Subscription token” field, tick “Use OAuth login”, then click OK.\n\nRequires the Claude Code CLI. The token is stored locally and reused across sessions." ) );
   } );
 
   connect( claudeLogoutButton, &QPushButton::clicked, this, [this]() {
@@ -865,6 +852,7 @@ QWidget *QgsAiSettingsDialog::buildProvidersPage()
       QMessageBox::warning( this, tr( "Claude logout failed" ), error );
       return;
     }
+    QgsAiSecretStore::removeSecret( u"ai/provider/claude/subscriptionToken"_s );
     mClaudeOAuthStatus->setText( tr( "Not signed in" ) );
   } );
 
@@ -2269,6 +2257,8 @@ void QgsAiSettingsDialog::applySettings()
   const QString pendingOpenAiKey = mOpenAiKey->text().trimmed();
   const QString pendingOpenRouterKey = mOpenRouterKey->text().trimmed();
   const QString pendingClaudeKey = mClaudeKey->text().trimmed();
+  // Strip all whitespace: tokens copied from a terminal often wrap across lines.
+  const QString pendingClaudeSubscriptionToken = mClaudeSubscriptionToken->text().simplified().remove( u' ' );
   const QString pendingPlanToken = mAccountWidget->manualSessionToken();
 
   QString errorMessages;
@@ -2308,6 +2298,8 @@ void QgsAiSettingsDialog::applySettings()
     errorMessages += error + '\n';
   if ( !pendingClaudeKey.isEmpty() && !mModelRouter->storeApiKey( QgsAiModelRouter::Provider::Claude, pendingClaudeKey, &error ) )
     errorMessages += error + '\n';
+  if ( !pendingClaudeSubscriptionToken.isEmpty() && !QgsAiSecretStore::writeSecret( u"ai/provider/claude/subscriptionToken"_s, pendingClaudeSubscriptionToken ) )
+    errorMessages += tr( "Unable to store Claude subscription token." ) + '\n';
   if ( !pendingPlanToken.isEmpty() && !mModelRouter->setPlanSessionToken( pendingPlanToken, &error ) )
     errorMessages += error + '\n';
 
@@ -2360,7 +2352,7 @@ void QgsAiSettingsDialog::applySettings()
   claudeSettings.endpoint = mClaudeEndpoint->text().trimmed();
   claudeSettings.model = mClaudeModel->text().trimmed();
   const bool claudeOAuthRequested = mClaudeUseOAuth->isChecked();
-  const bool claudeOAuthAvailable = QgsAiClaudeOAuthClient::hasRefreshToken();
+  const bool claudeOAuthAvailable = mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude );
   const bool claudeApiKeyAvailable = !pendingClaudeKey.isEmpty() || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude );
   if ( claudeOAuthRequested && claudeOAuthAvailable )
   {

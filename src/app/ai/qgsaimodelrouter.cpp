@@ -844,8 +844,36 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
       claudeMessages.push_back( messageObject );
     }
 
-    if ( !systemPrompt.isEmpty() )
+    // Claude subscription (OAuth) requires the request to identify as Claude Code:
+    // api.anthropic.com rejects OAuth requests whose first system block is not the
+    // Claude Code identity. Send `system` as an array with that block first.
+    if ( mProviderSettings.value( provider ).credentialMode == CredentialMode::OAuth )
+    {
+      QJsonArray systemBlocks;
+      QJsonObject identityBlock;
+      identityBlock.insert( u"type"_s, u"text"_s );
+      identityBlock.insert( u"text"_s, u"You are Claude Code, Anthropic's official CLI for Claude."_s );
+      systemBlocks.push_back( identityBlock );
+      // Steer the model to Strata's local tools instead of the server-side Claude Code sandbox
+      // (bash/code_execution) that the OAuth identity injects: sandbox files never reach the
+      // user's QGIS and leaning on it burns the sandbox call quota.
+      QJsonObject toolingBlock;
+      toolingBlock.insert( u"type"_s, u"text"_s );
+      toolingBlock.insert( u"text"_s, u"You are running inside Strata, a QGIS-based desktop app on the user's machine — not in your usual sandbox. You do NOT have a server-side code execution or bash sandbox here; any files you create there are invisible to the user. Never use code_execution or bash. To download files into the user's project use the download_file tool; to run code use the run_python tool. Both execute locally and affect the user's QGIS project. Never guess or invent URLs."_s );
+      systemBlocks.push_back( toolingBlock );
+      if ( !systemPrompt.isEmpty() )
+      {
+        QJsonObject promptBlock;
+        promptBlock.insert( u"type"_s, u"text"_s );
+        promptBlock.insert( u"text"_s, systemPrompt );
+        systemBlocks.push_back( promptBlock );
+      }
+      payload.insert( u"system"_s, systemBlocks );
+    }
+    else if ( !systemPrompt.isEmpty() )
+    {
       payload.insert( u"system"_s, systemPrompt );
+    }
     payload.insert( u"messages"_s, claudeMessages );
     if ( provider == Provider::Plan )
     {
@@ -1044,12 +1072,21 @@ bool QgsAiModelRouter::hasStoredApiKey( Provider provider ) const
   return QgsAiSecretStore::hasSecret( apiKeySettingKey( provider ) );
 }
 
+static bool claudeOAuthCredentialPresent()
+{
+  // "Signed in" for Claude OAuth is satisfied by either the legacy refresh token or a
+  // subscription token from `claude setup-token` (vault or CLAUDE_CODE_OAUTH_TOKEN env).
+  return QgsAiClaudeOAuthClient::hasRefreshToken()
+         || QgsAiSecretStore::hasSecret( u"ai/provider/claude/subscriptionToken"_s )
+         || !qEnvironmentVariable( "CLAUDE_CODE_OAUTH_TOKEN" ).trimmed().isEmpty();
+}
+
 bool QgsAiModelRouter::hasStoredOAuthRefreshToken( Provider provider ) const
 {
   if ( provider == Provider::Codex )
     return QgsAiCodexOAuthClient::hasRefreshToken();
   if ( provider == Provider::Claude )
-    return QgsAiClaudeOAuthClient::hasRefreshToken();
+    return claudeOAuthCredentialPresent();
   return false;
 }
 
@@ -1076,7 +1113,7 @@ bool QgsAiModelRouter::hasConfiguredCredential( Provider provider ) const
 
   const ProviderSettings settings = mProviderSettings.value( provider );
   if ( provider == Provider::Claude && settings.credentialMode == CredentialMode::OAuth )
-    return QgsAiClaudeOAuthClient::hasRefreshToken();
+    return claudeOAuthCredentialPresent();
 
   return !storedApiKey( provider ).isEmpty();
 }
@@ -1157,7 +1194,7 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
     {
       providerSettings.authConfigId.clear();
       const bool hasCredential = provider == Provider::Codex                                ? QgsAiCodexOAuthClient::hasRefreshToken()
-                                 : providerSettings.credentialMode == CredentialMode::OAuth ? QgsAiClaudeOAuthClient::hasRefreshToken()
+                                 : providerSettings.credentialMode == CredentialMode::OAuth ? claudeOAuthCredentialPresent()
                                                                                             : !storedApiKey( provider ).isEmpty();
       providerSettings.enabled = settings.value( enabledSettingKey( provider ), hasCredential ).toBool();
     }
@@ -1405,6 +1442,16 @@ bool QgsAiModelRouter::applyAuthentication( Provider provider, QNetworkRequest &
 
   if ( provider == Provider::Claude && settings.credentialMode == CredentialMode::OAuth )
   {
+    // Personal-use bridge: a long-lived token from `claude setup-token` (stored in
+    // the vault, or env CLAUDE_CODE_OAUTH_TOKEN) carries the inference scope; use it
+    // directly instead of the reverse-engineered OAuth flow (which no longer gets it).
+    const QString setupToken = QgsAiSecretStore::readSecret( u"ai/provider/claude/subscriptionToken"_s, { u"CLAUDE_CODE_OAUTH_TOKEN"_s } ).trimmed();
+    if ( !setupToken.isEmpty() )
+    {
+      request.setRawHeader( "Authorization", authHeaderValue( Provider::OpenAi, setupToken ).toUtf8() );
+      return true;
+    }
+
     QgsAiClaudeOAuthClient::TokenSet tokens;
     if ( !QgsAiClaudeOAuthClient::refreshAccessToken( tokens, errorMessage ) )
       return false;
