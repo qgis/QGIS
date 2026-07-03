@@ -49,6 +49,8 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingregistry.h"
 #include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
@@ -72,6 +74,8 @@
 #include <QString>
 #include <QStringList>
 #include <QUuid>
+#include <QUrl>
+#include <QUrlQuery>
 #include <QVariant>
 
 using namespace Qt::StringLiterals;
@@ -156,6 +160,71 @@ namespace
     if ( info.exists() && info.isFile() )
       return info.absoluteFilePath();
     return QString();
+  }
+
+  QString serviceLayerProviderKey( const QString &provider )
+  {
+    const QString normalized = provider.toLower().trimmed();
+    if ( normalized == "wms"_L1 || normalized == "xyz"_L1 )
+      return u"wms"_s;
+    if ( normalized == "wfs"_L1 )
+      return u"WFS"_s;
+    if ( normalized == "postgres"_L1 || normalized == "postgis"_L1 )
+      return u"postgres"_s;
+    return QString();
+  }
+
+  QString serviceLayerType( const QString &provider )
+  {
+    const QString normalized = provider.toLower().trimmed();
+    if ( normalized == "wms"_L1 || normalized == "xyz"_L1 )
+      return u"raster"_s;
+    if ( normalized == "wfs"_L1 || normalized == "postgres"_L1 || normalized == "postgis"_L1 )
+      return u"vector"_s;
+    return QString();
+  }
+
+  QString normalizeServiceUri( const QString &provider, const QString &rawUri )
+  {
+    const QString normalizedProvider = provider.toLower().trimmed();
+    QString uri = rawUri.trimmed();
+    if ( normalizedProvider == "xyz"_L1 && !uri.contains( u"type=xyz"_s, Qt::CaseInsensitive ) )
+    {
+      QUrlQuery query;
+      query.addQueryItem( u"type"_s, u"xyz"_s );
+      query.addQueryItem( u"url"_s, uri );
+      query.addQueryItem( u"zmin"_s, u"0"_s );
+      query.addQueryItem( u"zmax"_s, u"19"_s );
+      uri = query.toString( QUrl::FullyEncoded );
+    }
+    return uri;
+  }
+
+  QString applyServiceLayerOptions( const QString &providerKey, const QString &uri, const QJsonObject &options, QString &error )
+  {
+    if ( options.isEmpty() )
+      return uri;
+
+    QgsProviderRegistry *registry = QgsProviderRegistry::instance();
+    if ( !registry )
+    {
+      error = u"QGIS provider registry is not available."_s;
+      return QString();
+    }
+
+    QgsProviderMetadata *metadata = registry->providerMetadata( providerKey );
+    if ( !metadata && providerKey == "WFS"_L1 )
+      metadata = registry->providerMetadata( u"wfs"_s );
+    if ( !metadata )
+    {
+      error = u"Layer options are not supported for provider key: %1"_s.arg( providerKey );
+      return QString();
+    }
+
+    QVariantMap parts = metadata->decodeUri( uri );
+    for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
+      parts.insert( it.key(), it.value().toVariant() );
+    return metadata->encodeUri( parts );
   }
 
   QJsonObject extentJson( const QgsRectangle &extent )
@@ -557,6 +626,120 @@ QgsAiToolResult QgsAiAddLayerFromFileTool::execute( const QJsonObject &args )
 
   QJsonObject diff;
   diff.insert( u"summary"_s, u"Added a map layer to the project."_s );
+  diff.insert( u"before_layer_count"_s, beforeLayerCount );
+  diff.insert( u"after_layer_count"_s, project->mapLayers().size() );
+  diff.insert( u"layer_id"_s, added->id() );
+
+  output.insert( u"layer_id"_s, added->id() );
+  output.insert( u"name"_s, added->name() );
+  output.insert( u"crs"_s, added->crs().authid() );
+  output.insert( u"source"_s, added->publicSource() );
+  output.insert( u"extent"_s, extentJson( added->extent() ) );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"remove_added_layer"_s ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// add_layer_from_service
+// ---------------------------------------------------------------------------
+
+QgsAiAddLayerFromServiceTool::QgsAiAddLayerFromServiceTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiAddLayerFromServiceTool::description() const
+{
+  return QStringLiteral(
+    "Loads a service-backed layer into the active QGIS project using native providers. "
+    "Supported providers are wms, wfs, xyz and postgres. The tool validates the resulting "
+    "layer, adds it to the project and returns a rollback token that removes the layer."
+  );
+}
+
+QJsonObject QgsAiAddLayerFromServiceTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"provider"_s, prop( u"string"_s, u"One of: wms, wfs, xyz, postgres."_s ) );
+  properties.insert( u"uri"_s, prop( u"string"_s, u"Provider URI. XYZ may be a full QGIS URI or a tile URL template."_s ) );
+  properties.insert( u"name"_s, prop( u"string"_s, u"Optional display name for the new layer."_s ) );
+  properties.insert( u"layer_options"_s, prop( u"object"_s, u"Optional provider-specific URI parts to merge through QgsProviderMetadata."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous add_layer_from_service call. If set, removes that added layer."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiAddLayerFromServiceTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayerAddition( project, rollbackToken );
+
+  const QString provider = args.value( u"provider"_s ).toString().toLower().trimmed();
+  if ( provider.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'provider' is required."_s );
+
+  const QString providerKey = serviceLayerProviderKey( provider );
+  const QString layerType = serviceLayerType( provider );
+  if ( providerKey.isEmpty() || layerType.isEmpty() )
+    return QgsAiToolResult::error( u"Unsupported provider '%1'. Use one of: wms, wfs, xyz, postgres."_s.arg( provider ) );
+
+  const QString rawUri = args.value( u"uri"_s ).toString().trimmed();
+  if ( rawUri.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'uri' is required."_s );
+
+  QString uri = normalizeServiceUri( provider, rawUri );
+  if ( args.value( u"layer_options"_s ).isObject() )
+  {
+    QString optionsError;
+    uri = applyServiceLayerOptions( providerKey, uri, args.value( u"layer_options"_s ).toObject(), optionsError );
+    if ( uri.isEmpty() )
+      return QgsAiToolResult::error( optionsError );
+  }
+
+  const QString name = args.value( u"name"_s ).toString().trimmed().isEmpty() ? provider.toUpper() : args.value( u"name"_s ).toString().trimmed();
+  const int beforeLayerCount = project->mapLayers().size();
+
+  QgsMapLayer *added = nullptr;
+  QJsonObject output;
+  output.insert( u"provider"_s, provider );
+  output.insert( u"provider_key"_s, providerKey );
+  output.insert( u"layer_type"_s, layerType );
+
+  if ( layerType == "raster"_L1 )
+  {
+    auto layer = std::make_unique<QgsRasterLayer>( uri, name, providerKey );
+    if ( !layer->isValid() )
+      return QgsAiToolResult::error( u"Service raster layer is invalid for provider '%1': %2"_s.arg( provider, layer->error().summary() ) );
+    output.insert( u"width"_s, layer->width() );
+    output.insert( u"height"_s, layer->height() );
+    output.insert( u"bands"_s, layer->bandCount() );
+    added = layer.release();
+  }
+  else
+  {
+    auto layer = std::make_unique<QgsVectorLayer>( uri, name, providerKey );
+    if ( !layer->isValid() )
+      return QgsAiToolResult::error( u"Service vector layer is invalid for provider '%1': %2"_s.arg( provider, layer->error().summary() ) );
+    output.insert( u"feature_count"_s, static_cast<qint64>( layer->featureCount() ) );
+    output.insert( u"geometry_type"_s, QgsWkbTypes::geometryDisplayString( layer->geometryType() ) );
+    added = layer.release();
+  }
+
+  project->addMapLayer( added );
+
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RemoveLayer;
+  rollback.layerId = added->id();
+  rollback.description = u"Remove layer added from service."_s;
+  const QString token = storeRollback( rollback );
+
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Added a service layer to the project."_s );
   diff.insert( u"before_layer_count"_s, beforeLayerCount );
   diff.insert( u"after_layer_count"_s, project->mapLayers().size() );
   diff.insert( u"layer_id"_s, added->id() );

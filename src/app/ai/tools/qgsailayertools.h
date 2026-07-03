@@ -55,6 +55,26 @@ class APP_EXPORT QgsAiAddLayerFromFileTool : public QgsAiTool
 };
 
 /**
+ * add_layer_from_service: loads a remote/service-backed layer (WMS, WFS, XYZ,
+ * or PostGIS) into the current QGIS project.
+ */
+class APP_EXPORT QgsAiAddLayerFromServiceTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiAddLayerFromServiceTool( QgsProject *project );
+
+    QString name() const override { return u"add_layer_from_service"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::High; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
  * describe_layer: returns the schema and a small attribute sample for a vector
  * layer already loaded in the project. For raster layers, returns dimensions
  * and band count. Use before writing run_python code that filters or aggregates

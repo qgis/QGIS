@@ -116,6 +116,7 @@ class TestQgsAiToolRegistry : public QObject
     void registryAuditsRiskyToolMetadataOnly();
     void captureMapCanvasRequiresConsent();
     void captureMapCanvasCreatesCappedPng();
+    void addLayerFromServiceLoadsXyzAndRollsBack();
     void styleLayerAppliesNativeChanges();
     void createPrintLayoutAndExportMap();
     void processingToolReportsMissingAlgorithm();
@@ -305,6 +306,38 @@ void TestQgsAiToolRegistry::captureMapCanvasCreatesCappedPng()
 
   settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
+}
+
+void TestQgsAiToolRegistry::addLayerFromServiceLoadsXyzAndRollsBack()
+{
+  QgsProject project;
+  QgsAiAddLayerFromServiceTool tool( &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::High );
+
+  QJsonObject args;
+  args.insert( u"provider"_s, u"xyz"_s );
+  args.insert( u"uri"_s, u"type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0"_s );
+  args.insert( u"name"_s, u"Local XYZ"_s );
+
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  const QJsonObject output = result.output.toObject();
+  const QString layerId = output.value( u"layer_id"_s ).toString();
+  QVERIFY( !layerId.isEmpty() );
+  QCOMPARE( output.value( u"provider"_s ).toString(), u"xyz"_s );
+  QCOMPARE( output.value( u"provider_key"_s ).toString(), u"wms"_s );
+  QVERIFY( output.contains( u"diff"_s ) );
+  QCOMPARE( project.mapLayers().size(), 1 );
+  QVERIFY( project.mapLayer( layerId ) );
+
+  const QString rollbackToken = output.value( u"rollback_token"_s ).toString();
+  QVERIFY( !rollbackToken.isEmpty() );
+  QJsonObject rollbackArgs;
+  rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
+  const QgsAiToolResult rollback = tool.execute( rollbackArgs );
+  QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+  QCOMPARE( project.mapLayers().size(), 0 );
 }
 
 void TestQgsAiToolRegistry::styleLayerAppliesNativeChanges()
