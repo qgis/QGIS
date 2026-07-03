@@ -864,7 +864,7 @@ void QgsMeshLayer::onMeshEdited()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+  invalidateRendererCache();
   emit layerModified();
   triggerRepaint();
   trigger3DUpdate();
@@ -1136,7 +1136,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform, Q
 
   if ( fixErrors )
   {
-    mRendererCache.reset(); // fixing errors could lead to remove faces/vertices
+    invalidateRendererCache(); // fixing errors could lead to remove faces/vertices
     error = mMeshEditor->initializeWithErrorsFix();
   }
   else
@@ -1232,7 +1232,7 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
   mDataProvider->reloadData();
   mDataProvider->populateMesh( mNativeMesh.get() );
   updateTriangularMesh( transform );
-  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+  invalidateRendererCache();
   trigger3DUpdate();
 
   if ( continueEditing )
@@ -1263,7 +1263,7 @@ void QgsMeshLayer::stopFrameEditing( const QgsCoordinateTransform &transform )
 
   mMeshEditor->stopEditing();
   mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
-  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+  invalidateRendererCache();
 }
 
 bool QgsMeshLayer::reindex( const QgsCoordinateTransform &transform, bool renumber )
@@ -1279,7 +1279,7 @@ bool QgsMeshLayer::reindex( const QgsCoordinateTransform &transform, bool renumb
   mTriangularMeshes.clear();
   mTriangularMeshes.emplace_back( new QgsTriangularMesh );
   mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
-  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+  invalidateRendererCache();
   mMeshEditor->resetTriangularMesh( mTriangularMeshes.at( 0 ).get() );
 
   return true;
@@ -2106,13 +2106,19 @@ void QgsMeshLayer::reload()
     //clear the TriangularMeshes
     mTriangularMeshes.clear();
 
-    //clear the rendererCache
-    mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+    invalidateRendererCache();
 
     checkSymbologyConsistency();
 
     emit reloaded();
   }
+}
+
+void QgsMeshLayer::invalidateRendererCache()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
 }
 
 QStringList QgsMeshLayer::subLayers() const
