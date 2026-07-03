@@ -859,7 +859,10 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
       // user's QGIS and leaning on it burns the sandbox call quota.
       QJsonObject toolingBlock;
       toolingBlock.insert( u"type"_s, u"text"_s );
-      toolingBlock.insert( u"text"_s, u"You are running inside Strata, a QGIS-based desktop app on the user's machine — not in your usual sandbox. You do NOT have a server-side code execution or bash sandbox here; any files you create there are invisible to the user. Never use code_execution or bash. To download files into the user's project use the download_file tool; to run code use the run_python tool. Both execute locally and affect the user's QGIS project. Never guess or invent URLs."_s );
+      toolingBlock.insert(
+        u"text"_s,
+        u"You are running inside Strata, a QGIS-based desktop app on the user's machine — not in your usual sandbox. You do NOT have a server-side code execution or bash sandbox here; any files you create there are invisible to the user. Never use code_execution or bash. To download files into the user's project use the download_file tool; to run code use the run_python tool. Both execute locally and affect the user's QGIS project. Never guess or invent URLs."_s
+      );
       systemBlocks.push_back( toolingBlock );
       if ( !systemPrompt.isEmpty() )
       {
@@ -1076,9 +1079,7 @@ static bool claudeOAuthCredentialPresent()
 {
   // "Signed in" for Claude OAuth is satisfied by either the legacy refresh token or a
   // subscription token from `claude setup-token` (vault or CLAUDE_CODE_OAUTH_TOKEN env).
-  return QgsAiClaudeOAuthClient::hasRefreshToken()
-         || QgsAiSecretStore::hasSecret( u"ai/provider/claude/subscriptionToken"_s )
-         || !qEnvironmentVariable( "CLAUDE_CODE_OAUTH_TOKEN" ).trimmed().isEmpty();
+  return QgsAiClaudeOAuthClient::hasRefreshToken() || QgsAiSecretStore::hasSecret( u"ai/provider/claude/subscriptionToken"_s ) || !qEnvironmentVariable( "CLAUDE_CODE_OAUTH_TOKEN" ).trimmed().isEmpty();
 }
 
 bool QgsAiModelRouter::hasStoredOAuthRefreshToken( Provider provider ) const

@@ -819,7 +819,9 @@ QWidget *QgsAiSettingsDialog::buildProvidersPage()
   mClaudeKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "anthropic key..." ) );
   mClaudeSubscriptionToken = new QLineEdit( page );
   mClaudeSubscriptionToken->setEchoMode( QLineEdit::Password );
-  mClaudeSubscriptionToken->setPlaceholderText( QgsAiSecretStore::hasSecret( u"ai/provider/claude/subscriptionToken"_s ) ? tr( "Saved locally — paste a new token only to replace it" ) : tr( "Paste token from: claude setup-token" ) );
+  mClaudeSubscriptionToken->setPlaceholderText(
+    QgsAiSecretStore::hasSecret( u"ai/provider/claude/subscriptionToken"_s ) ? tr( "Saved locally — paste a new token only to replace it" ) : tr( "Paste token from: claude setup-token" )
+  );
   mClaudeUseOAuth = new QCheckBox( page );
   mClaudeUseOAuth->setChecked( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude ).credentialMode == QgsAiModelRouter::CredentialMode::OAuth );
   mClaudeOAuthStatus = new QLabel( mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude ) ? tr( "Signed in" ) : tr( "Not signed in" ), page );
@@ -842,7 +844,15 @@ QWidget *QgsAiSettingsDialog::buildProvidersPage()
     // Cross-platform, ToS-compliant path: the user mints an official token with the Claude
     // Code CLI and pastes it into the field above. (No reverse-engineered OAuth, no per-OS
     // terminal automation.)
-    QMessageBox::information( this, tr( "Use your Claude subscription" ), tr( "To use your Claude Pro/Max subscription in Strata:\n\n1. Open a terminal and run:\n      claude setup-token\n2. Approve the login in your browser.\n3. Copy the token it prints (starts with sk-ant-oat01-…).\n4. Paste it into the “Subscription token” field, tick “Use OAuth login”, then click OK.\n\nRequires the Claude Code CLI. The token is stored locally and reused across sessions." ) );
+    QMessageBox::information(
+      this,
+      tr( "Use your Claude subscription" ),
+      tr(
+        "To use your Claude Pro/Max subscription in Strata:\n\n1. Open a terminal and run:\n      claude setup-token\n2. Approve the login in your browser.\n3. Copy the token it prints (starts with "
+        "sk-ant-oat01-…).\n4. Paste it into the “Subscription token” field, tick “Use OAuth login”, then click OK.\n\nRequires the Claude Code CLI. The token is stored locally and reused across "
+        "sessions."
+      )
+    );
   } );
 
   connect( claudeLogoutButton, &QPushButton::clicked, this, [this]() {
