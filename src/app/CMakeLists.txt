@@ -342,6 +342,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaiworkspacetrust.cpp
     ai/tools/qgsaidownloadfiletool.cpp
     ai/tools/qgsaiechotool.cpp
+    ai/tools/qgsaieditingtools.cpp
     ai/tools/qgsaiedittools.cpp
     ai/tools/qgsaiindextools.cpp
     ai/tools/qgsaiinstallpackagetool.cpp
