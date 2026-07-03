@@ -566,7 +566,7 @@ void QgsAiAccountWidget::onDesktopTokenReady( const QString &token )
   if ( mModelRouter )
   {
     // The token was minted against the live Advanced-field endpoint: persist
-    // that endpoint together with the token, so cancelling the dialog cannot
+    // that endpoint together with the token, so canceling the dialog cannot
     // leave a fresh token paired with a stale persisted endpoint.
     QgsAiModelRouter::ProviderSettings planSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan );
     if ( planSettings.endpoint != currentEndpoint() )
