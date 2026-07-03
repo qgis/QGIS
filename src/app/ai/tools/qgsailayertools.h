@@ -178,6 +178,26 @@ class APP_EXPORT QgsAiCreatePrintLayoutTool : public QgsAiTool
 };
 
 /**
+ * edit_print_layout: adds common composer items and pages to an existing print
+ * layout.
+ */
+class APP_EXPORT QgsAiEditPrintLayoutTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiEditPrintLayoutTool( QgsProject *project );
+
+    QString name() const override { return u"edit_print_layout"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
  * export_map: exports an existing print layout to PDF/PNG, or the current map
  * canvas to PNG, into the trusted workspace.
  */

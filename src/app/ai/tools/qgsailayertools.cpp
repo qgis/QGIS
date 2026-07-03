@@ -32,8 +32,13 @@
 #include "qgslayertreelayer.h"
 #include "qgslayoutexporter.h"
 #include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemscalebar.h"
 #include "qgslayoutmanager.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutsize.h"
 #include "qgsmapcanvas.h"
@@ -91,6 +96,7 @@ namespace
     RemoveLayer,
     RestoreLayerStyle,
     RemoveLayout,
+    RestoreLayoutEdit,
     DeleteFile
   };
 
@@ -102,6 +108,8 @@ namespace
       bool hasVisibility = false;
       bool visible = true;
       QString layoutName;
+      QStringList itemUuids;
+      int pageCountBefore = 0;
       QString filePath;
       QString description;
   };
@@ -403,6 +411,15 @@ namespace
     return dynamic_cast<QgsPrintLayout *>( layout );
   }
 
+  QgsLayoutItemMap *firstLayoutMap( QgsPrintLayout *layout )
+  {
+    if ( !layout )
+      return nullptr;
+    QList<QgsLayoutItemMap *> maps;
+    layout->layoutItems<QgsLayoutItemMap>( maps );
+    return maps.empty() ? nullptr : maps.constFirst();
+  }
+
   QSize exportRenderSize( const QSize &requested, const QSize &fallback )
   {
     QSize size = requested.isValid() ? requested : fallback;
@@ -544,6 +561,53 @@ namespace
 
     QJsonObject output;
     output.insert( u"status"_s, layout ? u"rolled_back"_s : u"already_removed"_s );
+    output.insert( u"rollback_token"_s, token );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
+
+  QgsAiToolResult rollbackLayoutEdit( QgsProject *project, const QString &token )
+  {
+    if ( !rollbackStore().contains( token ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+    RollbackEntry entry = rollbackStore().take( token );
+    if ( entry.type != RollbackType::RestoreLayoutEdit )
+      return QgsAiToolResult::error( u"Rollback token does not belong to a layout edit operation."_s );
+    if ( !project || !project->layoutManager() )
+      return QgsAiToolResult::error( u"No layout manager available."_s );
+
+    QgsPrintLayout *layout = printLayoutByName( project, entry.layoutName );
+    if ( !layout )
+      return QgsAiToolResult::error( u"Cannot rollback layout edit: layout no longer exists: %1"_s.arg( entry.layoutName ) );
+
+    int removedItems = 0;
+    for ( const QString &uuid : entry.itemUuids )
+    {
+      if ( QgsLayoutItem *item = layout->itemByUuid( uuid ) )
+      {
+        layout->removeLayoutItem( item );
+        ++removedItems;
+      }
+    }
+
+    int removedPages = 0;
+    if ( layout->pageCollection() )
+    {
+      while ( layout->pageCollection()->pageCount() > entry.pageCountBefore )
+      {
+        layout->pageCollection()->deletePage( layout->pageCollection()->pageCount() - 1 );
+        ++removedPages;
+      }
+    }
+
+    QJsonObject diff;
+    diff.insert( u"summary"_s, u"Removed layout items and pages added by AI tool."_s );
+    diff.insert( u"layout_name"_s, entry.layoutName );
+    diff.insert( u"removed_items"_s, removedItems );
+    diff.insert( u"removed_pages"_s, removedPages );
+
+    QJsonObject output;
+    output.insert( u"status"_s, u"rolled_back"_s );
     output.insert( u"rollback_token"_s, token );
     output.insert( u"diff"_s, diff );
     return QgsAiToolResult::ok( output );
@@ -1418,6 +1482,141 @@ QgsAiToolResult QgsAiCreatePrintLayoutTool::execute( const QJsonObject &args )
   output.insert( u"diff"_s, diff );
   output.insert( u"rollback_token"_s, token );
   output.insert( u"rollback"_s, rollbackJson( token, u"remove_created_layout"_s ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// edit_print_layout
+// ---------------------------------------------------------------------------
+
+QgsAiEditPrintLayoutTool::QgsAiEditPrintLayoutTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiEditPrintLayoutTool::description() const
+{
+  return QStringLiteral(
+    "Edits an existing QGIS print layout by adding common composer items: legend, "
+    "scale bar, north arrow and an additional page. The tool returns a rollback token "
+    "which removes the newly added items/pages."
+  );
+}
+
+QJsonObject QgsAiEditPrintLayoutTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"layout_name"_s, prop( u"string"_s, u"Existing print layout name."_s ) );
+  properties.insert( u"add_legend"_s, prop( u"boolean"_s, u"Add a legend linked to the first map item."_s ) );
+  properties.insert( u"add_scalebar"_s, prop( u"boolean"_s, u"Add a scale bar linked to the first map item."_s ) );
+  properties.insert( u"add_north_arrow"_s, prop( u"boolean"_s, u"Add a north arrow picture linked to the first map item."_s ) );
+  properties.insert( u"add_page"_s, prop( u"boolean"_s, u"Append a new page to the layout."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous edit_print_layout call. If set, removes added items/pages."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiEditPrintLayoutTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayoutEdit( project, rollbackToken );
+
+  const QString layoutName = args.value( u"layout_name"_s ).toString().trimmed();
+  if ( layoutName.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'layout_name' is required."_s );
+
+  QgsPrintLayout *layout = printLayoutByName( project, layoutName );
+  if ( !layout )
+    return QgsAiToolResult::error( u"No print layout named: %1"_s.arg( layoutName ) );
+  if ( !layout->pageCollection() )
+    return QgsAiToolResult::error( u"Layout has no page collection: %1"_s.arg( layoutName ) );
+
+  const bool addLegend = args.value( u"add_legend"_s ).toBool( false );
+  const bool addScaleBar = args.value( u"add_scalebar"_s ).toBool( false );
+  const bool addNorthArrow = args.value( u"add_north_arrow"_s ).toBool( false );
+  const bool addPage = args.value( u"add_page"_s ).toBool( false );
+  if ( !addLegend && !addScaleBar && !addNorthArrow && !addPage )
+    return QgsAiToolResult::error( u"No layout edit requested."_s );
+
+  QgsLayoutItemMap *map = firstLayoutMap( layout );
+  if ( ( addLegend || addScaleBar || addNorthArrow ) && !map )
+    return QgsAiToolResult::error( u"Layout has no map item to link legend/scale/north arrow: %1"_s.arg( layoutName ) );
+
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RestoreLayoutEdit;
+  rollback.layoutName = layoutName;
+  rollback.pageCountBefore = layout->pageCollection()->pageCount();
+  rollback.description = u"Remove layout items and pages added by AI layout edit."_s;
+
+  QJsonArray changes;
+  if ( addLegend )
+  {
+    QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( layout );
+    legend->setId( u"AI Legend"_s );
+    legend->setLinkedMap( map );
+    legend->attemptMove( QgsLayoutPoint( 145, 18 ) );
+    legend->attemptResize( QgsLayoutSize( 50, 55 ) );
+    layout->addLayoutItem( legend );
+    legend->adjustBoxSize();
+    rollback.itemUuids.append( legend->uuid() );
+    changes.append( u"legend"_s );
+  }
+
+  if ( addScaleBar )
+  {
+    QgsLayoutItemScaleBar *scaleBar = new QgsLayoutItemScaleBar( layout );
+    scaleBar->setId( u"AI Scale Bar"_s );
+    scaleBar->setLinkedMap( map );
+    scaleBar->setStyle( u"Single Box"_s );
+    scaleBar->setUnits( Qgis::DistanceUnit::Meters );
+    scaleBar->setNumberOfSegments( 2 );
+    scaleBar->setNumberOfSegmentsLeft( 0 );
+    scaleBar->attemptMove( QgsLayoutPoint( 15, 270 ) );
+    scaleBar->attemptResize( QgsLayoutSize( 55, 10 ) );
+    layout->addLayoutItem( scaleBar );
+    rollback.itemUuids.append( scaleBar->uuid() );
+    changes.append( u"scalebar"_s );
+  }
+
+  if ( addNorthArrow )
+  {
+    QgsLayoutItemPicture *northArrow = new QgsLayoutItemPicture( layout );
+    northArrow->setId( u"AI North Arrow"_s );
+    northArrow->setPicturePath( u":/images/north_arrows/layout_default_north_arrow.svg"_s, Qgis::PictureFormat::SVG );
+    northArrow->setLinkedMap( map );
+    northArrow->setNorthMode( QgsLayoutItemPicture::GridNorth );
+    northArrow->attemptMove( QgsLayoutPoint( 175, 235 ) );
+    northArrow->attemptResize( QgsLayoutSize( 18, 18 ) );
+    layout->addLayoutItem( northArrow );
+    rollback.itemUuids.append( northArrow->uuid() );
+    changes.append( u"north_arrow"_s );
+  }
+
+  if ( addPage )
+  {
+    layout->pageCollection()->extendByNewPage();
+    changes.append( u"page"_s );
+  }
+
+  const QString token = storeRollback( rollback );
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Edited an existing print layout."_s );
+  diff.insert( u"layout_name"_s, layoutName );
+  diff.insert( u"changes"_s, changes );
+  diff.insert( u"before_page_count"_s, rollback.pageCountBefore );
+  diff.insert( u"after_page_count"_s, layout->pageCollection()->pageCount() );
+  diff.insert( u"added_item_count"_s, rollback.itemUuids.size() );
+
+  QJsonObject output;
+  output.insert( u"layout_name"_s, layoutName );
+  output.insert( u"page_count"_s, layout->pageCollection()->pageCount() );
+  output.insert( u"added_item_count"_s, rollback.itemUuids.size() );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"restore_layout_edit"_s ) );
   return QgsAiToolResult::ok( output );
 }
 

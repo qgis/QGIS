@@ -1458,6 +1458,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiStyleLayerTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiAdvancedStyleTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCreatePrintLayoutTool>( QgsProject::instance(), mMapCanvas ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiEditPrintLayoutTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiExportMapTool>( mAiFileContextProvider.get(), QgsProject::instance(), mMapCanvas ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeEditTool>( mAiReviewPatchEngine.get(), this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeCreateFileTool>( mAiReviewPatchEngine.get(), this ) );

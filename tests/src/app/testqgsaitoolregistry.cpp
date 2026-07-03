@@ -22,9 +22,14 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemscalebar.h"
 #include "qgslayoutmanager.h"
+#include "qgslayoutpagecollection.h"
 #include "qgsmapcanvas.h"
 #include "qgspallabeling.h"
+#include "qgsprintlayout.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
@@ -497,6 +502,49 @@ void TestQgsAiToolRegistry::createPrintLayoutAndExportMap()
   QVERIFY( !layoutRollbackToken.isEmpty() );
   QVERIFY( createResult.output.toObject().contains( u"diff"_s ) );
   QVERIFY( project.layoutManager()->layoutByName( u"AI Layout"_s ) );
+
+  QgsPrintLayout *layout = dynamic_cast<QgsPrintLayout *>( project.layoutManager()->layoutByName( u"AI Layout"_s ) );
+  QVERIFY( layout );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+
+  QgsAiEditPrintLayoutTool editLayoutTool( &project );
+  QVERIFY( editLayoutTool.requiresApproval() );
+  QCOMPARE( editLayoutTool.riskLevel(), QgsAiToolRiskLevel::Medium );
+
+  QJsonObject editLayoutArgs;
+  editLayoutArgs.insert( u"layout_name"_s, u"AI Layout"_s );
+  editLayoutArgs.insert( u"add_legend"_s, true );
+  editLayoutArgs.insert( u"add_scalebar"_s, true );
+  editLayoutArgs.insert( u"add_north_arrow"_s, true );
+  editLayoutArgs.insert( u"add_page"_s, true );
+  const QgsAiToolResult editLayout = editLayoutTool.execute( editLayoutArgs );
+  QVERIFY2( editLayout.success, qPrintable( editLayout.errorMessage ) );
+  const QString editLayoutRollbackToken = editLayout.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !editLayoutRollbackToken.isEmpty() );
+  QCOMPARE( layout->pageCollection()->pageCount(), 2 );
+
+  QList<QgsLayoutItemLegend *> legends;
+  layout->layoutItems<QgsLayoutItemLegend>( legends );
+  QCOMPARE( legends.size(), 1 );
+  QList<QgsLayoutItemScaleBar *> scaleBars;
+  layout->layoutItems<QgsLayoutItemScaleBar>( scaleBars );
+  QCOMPARE( scaleBars.size(), 1 );
+  QList<QgsLayoutItemPicture *> pictures;
+  layout->layoutItems<QgsLayoutItemPicture>( pictures );
+  QCOMPARE( pictures.size(), 1 );
+  QCOMPARE( pictures.constFirst()->picturePath(), u":/images/north_arrows/layout_default_north_arrow.svg"_s );
+
+  QJsonObject editLayoutRollbackArgs;
+  editLayoutRollbackArgs.insert( u"rollback_token"_s, editLayoutRollbackToken );
+  const QgsAiToolResult editLayoutRollback = editLayoutTool.execute( editLayoutRollbackArgs );
+  QVERIFY2( editLayoutRollback.success, qPrintable( editLayoutRollback.errorMessage ) );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+  layout->layoutItems<QgsLayoutItemLegend>( legends );
+  QCOMPARE( legends.size(), 0 );
+  layout->layoutItems<QgsLayoutItemScaleBar>( scaleBars );
+  QCOMPARE( scaleBars.size(), 0 );
+  layout->layoutItems<QgsLayoutItemPicture>( pictures );
+  QCOMPARE( pictures.size(), 0 );
 
   QgsAiExportMapTool exportTool( &contextProvider, &project, &canvas );
   QVERIFY( exportTool.requiresApproval() );
