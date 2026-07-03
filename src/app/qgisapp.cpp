@@ -2452,6 +2452,16 @@ QgisApp::~QgisApp()
   mMapStylingDock = nullptr;
   delete mCoordsEdit;
   mCoordsEdit = nullptr;
+  if ( mLayerTreeView )
+  {
+    if ( QgsLayerTreeModel *model = mLayerTreeView->layerTreeModel() )
+    {
+      if ( QgsLayerTreeGroup *rootGroup = model->rootGroup() )
+        disconnect( rootGroup, nullptr, this, nullptr );
+    }
+    if ( QItemSelectionModel *selectionModel = mLayerTreeView->selectionModel() )
+      disconnect( selectionModel, nullptr, this, nullptr );
+  }
   delete mLayerTreeView;
   mLayerTreeView = nullptr;
   delete mMessageButton;
@@ -5297,14 +5307,29 @@ void QgisApp::setupLayerTreeViewFromSettings()
 
 void QgisApp::updateNewLayerInsertionPoint()
 {
+  if ( !mLayerTreeView || !mLayerTreeView->layerTreeModel() )
+    return;
+
+  QgsProject *project = QgsProject::instance();
+  if ( !project || !project->layerTreeRegistryBridge() )
+    return;
+
   QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
-  QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
+  project->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
 }
 
 QgsLayerTreeRegistryBridge::InsertionPoint QgisApp::layerTreeInsertionPoint() const
 {
+  QgsProject *project = QgsProject::instance();
+  QgsLayerTreeGroup *rootGroup = project ? project->layerTreeRoot() : nullptr;
+  if ( !mLayerTreeView || !mLayerTreeView->layerTreeModel() )
+    return QgsLayerTreeRegistryBridge::InsertionPoint( rootGroup, 0 );
+
   // defaults
   QgsLayerTreeGroup *insertGroup = mLayerTreeView->layerTreeModel()->rootGroup();
+  if ( !insertGroup )
+    return QgsLayerTreeRegistryBridge::InsertionPoint( rootGroup, 0 );
+
   QModelIndex current = mLayerTreeView->currentIndex();
 
   int index = 0;
