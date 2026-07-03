@@ -170,7 +170,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     }
   }
 
-  if ( mRenderElevation && feedback && feedback->isCanceled() )
+  if ( mRenderElevation && ( !feedback || !feedback->isCanceled() ) )
   {
     QgsElevationMap *elevationMap = mContext.elevationMap();
     if ( elevationMap && elevationMap->isValid() )
