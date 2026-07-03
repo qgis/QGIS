@@ -1128,6 +1128,10 @@ void TestQgsAiAgentSessionManager::unsavedProjectFirstSavePromotesCurrentChat()
 
 void TestQgsAiAgentSessionManager::formatRetrievedContextRendersFileAndLayerHeaders()
 {
+  QgsSettings settings;
+  settings.remove( u"strata/privacy/include_layer_wkt_in_model_context"_s );
+  const auto cleanup = qScopeGuard( [&settings]() { settings.remove( u"strata/privacy/include_layer_wkt_in_model_context"_s ); } );
+
   QList<QgsAiWorkspaceIndex::Chunk> chunks;
 
   QgsAiWorkspaceIndex::Chunk fileChunk;
@@ -1156,9 +1160,14 @@ void TestQgsAiAgentSessionManager::formatRetrievedContextRendersFileAndLayerHead
   QVERIFY( out.contains( u"some file body"_s ) );
   QVERIFY( out.contains( u"<untrusted-data source=\"layer:Comuni id=layer-xyz fid=12-50 score=0.830\">"_s ) );
   QVERIFY( out.contains( u"comune attribute body"_s ) );
-  QVERIFY( out.contains( u"WKT:"_s ) );
-  QVERIFY( out.contains( u"POINT(1 2)"_s ) );
+  QVERIFY( !out.contains( u"WKT:"_s ) );
+  QVERIFY( !out.contains( u"POINT(1 2)"_s ) );
   QVERIFY( out.contains( u"</untrusted-data>"_s ) );
+
+  settings.setValue( u"strata/privacy/include_layer_wkt_in_model_context"_s, true );
+  const QString outWithWkt = QgsAiAgentSessionManager::formatRetrievedContext( chunks );
+  QVERIFY( outWithWkt.contains( u"WKT:"_s ) );
+  QVERIFY( outWithWkt.contains( u"POINT(1 2)"_s ) );
 }
 
 void TestQgsAiAgentSessionManager::formatRetrievedContextTruncatesOverBudget()
