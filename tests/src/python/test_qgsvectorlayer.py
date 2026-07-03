@@ -1219,6 +1219,25 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertFalse(layer.getGeometry(1).isEmpty())
         layer.rollBack()
 
+    def test_DeleteSomeVertices(self):
+        """Deleting some vertices must leave a non empty geometry."""
+
+        layer = QgsVectorLayer("LineString?field=f:int", "addfeat", "memory")
+        f = QgsFeature()
+        f.setAttributes([1])
+        f.setGeometry(
+            QgsGeometry.fromPolylineXY(
+                [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(2, 0)]
+            )
+        )
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+        layer.startEditing()
+        res = layer.deleteVertex(1, 0)
+        self.assertEqual(res, Qgis.VectorEditResult.Success)
+        self.assertFalse(layer.getGeometry(1).isNull())
+        self.assertFalse(layer.getGeometry(1).isEmpty())
+        layer.rollBack()
+
     # CHANGE ATTRIBUTE
 
     def test_ChangeAttribute(self):
