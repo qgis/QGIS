@@ -125,6 +125,21 @@ QgsGeosContext::QgsGeosContext()
   mContext = GEOS_init_r();
   GEOSContext_setNoticeHandler_r( mContext, printGEOSNotice );
   GEOSContext_setErrorHandler_r( mContext, throwQgsGeosException );
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  // Set CurveToLine and LineToCurve default params to the context.
+  // This ensures that if a GEOS method does not support curves, it will linearize
+  // any curve geometry input if needed, and will also convert any linear output
+  // to a curved type, if the inputs were converted to curves.
+  GEOSCurveToLineParams *curveToLineParams = GEOSCurveToLineParams_create();
+  GEOSLineToCurveParams *lineToCurveParams = GEOSLineToCurveParams_create();
+
+  GEOSContext_setCurveToLineParams_r( mContext, curveToLineParams );
+  GEOSContext_setLineToCurveParams_r( mContext, lineToCurveParams );
+
+  GEOSCurveToLineParams_destroy( curveToLineParams );
+  GEOSLineToCurveParams_destroy( lineToCurveParams );
+#endif
 }
 
 QgsGeosContext::~QgsGeosContext()
@@ -175,23 +190,6 @@ void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
   GEOSCoordSeq_destroy_r( QgsGeosContext::get(), sequence );
 }
 
-void geos::useCurveConversionIfNeeded( GEOSContextHandle_t context )
-{
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  GEOSCurveToLineParams *curveToLineParams = GEOSCurveToLineParams_create();
-  GEOSLineToCurveParams *lineToCurveParams = GEOSLineToCurveParams_create();
-
-  GEOSContext_setCurveToLineParams_r( context, curveToLineParams );
-  GEOSContext_setLineToCurveParams_r( context, lineToCurveParams );
-
-  GEOSCurveToLineParams_destroy( curveToLineParams );
-  GEOSLineToCurveParams_destroy( lineToCurveParams );
-#else
-  Q_UNUSED( context )
-#endif
-}
-
-
 ///@endcond
 
 
@@ -224,7 +222,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod m
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
-  geos::useCurveConversionIfNeeded( context );
 
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
   if ( method != Qgis::MakeValidMethod::Linework )
@@ -899,9 +896,7 @@ bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg, Qg
     {
       try
       {
-        GEOSContextHandle_t context = QgsGeosContext::get();
-        geos::useCurveConversionIfNeeded( context );
-        return GEOSPreparedIntersectsXY_r( context, mGeosPrepared.get(), point->x(), point->y() ) == 1;
+        return GEOSPreparedIntersectsXY_r( QgsGeosContext::get(), mGeosPrepared.get(), point->x(), point->y() ) == 1;
       }
       catch ( QgsGeosException &e )
       {
@@ -1102,8 +1097,6 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
-  geos::useCurveConversionIfNeeded( context );
-
   if ( !GEOSisValid_r( context, mGeos.get() ) )
     return InvalidBaseGeometry;
 
@@ -2238,7 +2231,6 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
 
   GEOSContextHandle_t context = QgsGeosContext::get();
   QgsScopedGeosContextRegisterFeedback interrupt( feedback );
-  geos::useCurveConversionIfNeeded( context );
 
   bool result = false;
   try
@@ -2625,7 +2617,6 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
 
   GEOSContextHandle_t context = QgsGeosContext::get();
   QgsScopedGeosContextRegisterFeedback interrupt( feedback );
-  geos::useCurveConversionIfNeeded( context );
 
   try
   {
