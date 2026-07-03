@@ -17,13 +17,14 @@
 
 #include "qgsaimodelrouter.h"
 #include "qgsaiplanclient.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsaitoolschemautil.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QEventLoop>
 #include <QJsonDocument>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QString>
 #include <QTimer>
 
 using namespace Qt::StringLiterals;
@@ -39,7 +40,7 @@ namespace
     p.insert( u"maximum"_s, maximum );
     return p;
   }
-}
+} //namespace
 
 QgsAiWebSearchToolBase::QgsAiWebSearchToolBase( QgsAiModelRouter *router )
   : mRouter( router )

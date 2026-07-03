@@ -1048,7 +1048,10 @@ QStringList QgsAiAgentSessionManager::allowedToolsForActiveAgent() const
     return QStringList();
 
   QStringList managedAllowed;
-  const bool applyManagedPolicy = mRouter && mRouter->activeProvider() == QgsAiModelRouter::Provider::Plan && mManagedAgentPolicy.toolCatalogVersion >= 2 && !mManagedAgentPolicy.isEmpty()
+  const bool applyManagedPolicy = mRouter
+                                  && mRouter->activeProvider() == QgsAiModelRouter::Provider::Plan
+                                  && mManagedAgentPolicy.toolCatalogVersion >= 2
+                                  && !mManagedAgentPolicy.isEmpty()
                                   && !managedPolicyReferencesUnknownTools( mManagedAgentPolicy, mToolRegistry );
   if ( applyManagedPolicy )
   {

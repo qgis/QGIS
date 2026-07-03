@@ -19,6 +19,8 @@
 #include "qgis_app.h"
 #include "qgsaitool.h"
 
+#include <QString>
+
 using namespace Qt::StringLiterals;
 
 class QgsAiModelRouter;

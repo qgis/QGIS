@@ -1650,7 +1650,10 @@ void TestQgsAiModelRouter::planNonStreamingAnthropicToolUse()
   server.responses << QgsAiTestLoopbackServer::jsonResponse(
     200,
     "OK",
-    QByteArrayLiteral( "{\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-test\",\"content\":[{\"type\":\"text\",\"text\":\"Checking.\"},{\"type\":\"tool_use\",\"id\":\"toolu_1\",\"name\":\"echo\",\"input\":{\"text\":\"hi\"}}],\"stop_reason\":\"tool_use\",\"usage\":{\"input_tokens\":5,\"output_tokens\":2}}" )
+    QByteArrayLiteral(
+      "{\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-test\",\"content\":[{\"type\":\"text\",\"text\":\"Checking.\"},{\"type\":\"tool_use\",\"id\":\"toolu_1\",\"name\":\"echo\","
+      "\"input\":{\"text\":\"hi\"}}],\"stop_reason\":\"tool_use\",\"usage\":{\"input_tokens\":5,\"output_tokens\":2}}"
+    )
   );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 

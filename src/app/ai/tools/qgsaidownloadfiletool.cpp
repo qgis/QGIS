@@ -23,11 +23,11 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 
+#include <QCryptographicHash>
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
 #include <QFileInfo>
-#include <QCryptographicHash>
 #include <QJsonObject>
 #include <QMessageBox>
 #include <QNetworkReply>
