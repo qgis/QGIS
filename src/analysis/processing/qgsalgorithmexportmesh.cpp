@@ -871,7 +871,7 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   std::unique_ptr<QgsRasterDataProvider> rasterDataProvider( rasterFileWriter.createMultiBandRaster( Qgis::DataType::Float64, width, height, extent, mTransform.destinationCrs(), mDataPerGroup.count() ) );
   if ( !rasterDataProvider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( fileName ) );
-  if ( !rasterDataProvider->setEditable( true ) )
+  if ( !rasterDataProvider->isEditable() && !rasterDataProvider->setEditable( true ) )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( rasterDataProvider->error().summary() ) );
 
   const bool hasReportsDuringClose = rasterDataProvider->hasReportsDuringClose();
