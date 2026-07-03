@@ -15,14 +15,15 @@
 
 #include "qgsairulesskillsstore.h"
 
-#include "qgsaifilecontextprovider.h"
-
 #include <algorithm>
+
+#include "qgsaifilecontextprovider.h"
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 
@@ -30,19 +31,19 @@ namespace
 {
   struct Frontmatter
   {
-    QList<QPair<QString, QString>> fields;
-    QString body;
-    bool present = false;
+      QList<QPair<QString, QString>> fields;
+      QString body;
+      bool present = false;
 
-    QString value( const QString &key, const QString &defaultValue = QString() ) const
-    {
-      for ( const auto &field : fields )
+      QString value( const QString &key, const QString &defaultValue = QString() ) const
       {
-        if ( field.first.compare( key, Qt::CaseInsensitive ) == 0 )
-          return field.second;
+        for ( const auto &field : fields )
+        {
+          if ( field.first.compare( key, Qt::CaseInsensitive ) == 0 )
+            return field.second;
+        }
+        return defaultValue;
       }
-      return defaultValue;
-    }
   };
 
   QString stripQuotes( const QString &value )
@@ -89,8 +90,10 @@ namespace
     return words.join( ' ' );
   }
 
-  //! Parses a leading `---\n...\n---` frontmatter block, if present. Malformed blocks
-  //! (no closing marker) are treated as absent and the whole content becomes the body.
+  /**
+   * Parses a leading `---\n...\n---` frontmatter block, if present. Malformed blocks
+   * (no closing marker) are treated as absent and the whole content becomes the body.
+   */
   Frontmatter parseFrontmatter( const QString &content )
   {
     Frontmatter result;
@@ -186,8 +189,7 @@ namespace
 
 QgsAiRulesSkillsStore::QgsAiRulesSkillsStore( QgsAiFileContextProvider *contextProvider )
   : mContextProvider( contextProvider )
-{
-}
+{}
 
 QString QgsAiRulesSkillsStore::resolveDir( const QString &relativeDir, QString *errorMessage ) const
 {

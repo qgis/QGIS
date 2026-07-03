@@ -15,6 +15,8 @@
 
 #include "qgsaiaccountwidget.h"
 
+#include <utility>
+
 #include "qgsaiagentsessionmanager.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaiplanclient.h"
@@ -25,8 +27,8 @@
 #include <QButtonGroup>
 #include <QFormLayout>
 #include <QFrame>
-#include <QHash>
 #include <QHBoxLayout>
+#include <QHash>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
@@ -37,8 +39,6 @@
 #include <QString>
 #include <QStyle>
 #include <QVBoxLayout>
-
-#include <utility>
 
 #include "moc_qgsaiaccountwidget.cpp"
 
@@ -445,10 +445,7 @@ void QgsAiAccountWidget::updateUsageCard()
   }
 
   const int percent = mBalance.usedPercent();
-  mUsageLabel->setText( tr( "%1 / %2 credits · %3% used" )
-                           .arg( mBalance.available )
-                           .arg( mBalance.monthlyCredits )
-                           .arg( percent ) );
+  mUsageLabel->setText( tr( "%1 / %2 credits · %3% used" ).arg( mBalance.available ).arg( mBalance.monthlyCredits ).arg( percent ) );
   mUsageBar->setValue( percent );
 }
 

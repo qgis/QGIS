@@ -15,6 +15,8 @@
 
 #include "qgsaiplanclient.h"
 
+#include <algorithm>
+
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 
@@ -27,8 +29,6 @@
 #include <QNetworkRequest>
 #include <QString>
 #include <QUrl>
-
-#include <algorithm>
 
 #include "moc_qgsaiplanclient.cpp"
 

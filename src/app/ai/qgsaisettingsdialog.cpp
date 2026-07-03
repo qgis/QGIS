@@ -905,7 +905,8 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
 
   // ---- Rules ----
   contentLayout->addWidget( sectionHeader( tr( "Rules" ), page ) );
-  QLabel *rulesHint = new QLabel( tr( "Rules marked \u201cAlways\u201d are injected in full on every turn. Others are listed by name/description only \u2014 the agent reads the full content when it decides it is relevant." ), page );
+  QLabel *rulesHint
+    = new QLabel( tr( "Rules marked \u201cAlways\u201d are injected in full on every turn. Others are listed by name/description only \u2014 the agent reads the full content when it decides it is relevant." ), page );
   rulesHint->setWordWrap( true );
   rulesHint->setProperty( "aiRole", u"rowDescription"_s );
   contentLayout->addWidget( rulesHint );
@@ -933,9 +934,7 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
 
   mRuleAlwaysApply = new QCheckBox( mRuleEditorWidget );
   mRuleAlwaysApply->setChecked( true );
-  ruleEditorLayout->addWidget(
-    settingRow( tr( "Always apply" ), tr( "When off, only the name/description are sent; the agent loads the full rule on demand." ), mRuleAlwaysApply, mRuleEditorWidget )
-  );
+  ruleEditorLayout->addWidget( settingRow( tr( "Always apply" ), tr( "When off, only the name/description are sent; the agent loads the full rule on demand." ), mRuleAlwaysApply, mRuleEditorWidget ) );
 
   mRuleEnabled = new QCheckBox( mRuleEditorWidget );
   mRuleEnabled->setChecked( true );
@@ -1060,9 +1059,7 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
 
   mLoadWorkspaceRules = new QCheckBox( legacyGroup );
   mLoadWorkspaceRules->setChecked( currentBehavior.loadWorkspaceRules );
-  legacyLayout->addWidget(
-    settingRow( tr( "Load rule files from workspace" ), tr( "Feeds the Rules list above into the prompt (trusted workspaces only)." ), mLoadWorkspaceRules, legacyGroup )
-  );
+  legacyLayout->addWidget( settingRow( tr( "Load rule files from workspace" ), tr( "Feeds the Rules list above into the prompt (trusted workspaces only)." ), mLoadWorkspaceRules, legacyGroup ) );
 
   mRulesPathEdit = new QLineEdit( currentBehavior.rulesPath, legacyGroup );
   mRulesPathEdit->setPlaceholderText( u".strata/rules"_s );
@@ -1070,9 +1067,7 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
 
   mLoadWorkspaceSkills = new QCheckBox( legacyGroup );
   mLoadWorkspaceSkills->setChecked( currentBehavior.loadWorkspaceSkills );
-  legacyLayout->addWidget(
-    settingRow( tr( "Load skill files from workspace" ), tr( "Feeds the Skills list above into the prompt (trusted workspaces only)." ), mLoadWorkspaceSkills, legacyGroup )
-  );
+  legacyLayout->addWidget( settingRow( tr( "Load skill files from workspace" ), tr( "Feeds the Skills list above into the prompt (trusted workspaces only)." ), mLoadWorkspaceSkills, legacyGroup ) );
 
   mSkillsPathEdit = new QLineEdit( currentBehavior.skillsPath, legacyGroup );
   mSkillsPathEdit->setPlaceholderText( u".strata/skills"_s );
@@ -1106,9 +1101,8 @@ void QgsAiSettingsDialog::refreshRulesSkillsTrustState()
   if ( !writable )
   {
     mRulesSkillsTrustBanner->setText(
-      mSessionManager && !mSessionManager->workspaceRoot().isEmpty()
-        ? tr( "Trust this workspace (Workspace section) to create, edit or delete rules and skills." )
-        : tr( "Configure a workspace (Workspace section) to create rules and skills." )
+      mSessionManager && !mSessionManager->workspaceRoot().isEmpty() ? tr( "Trust this workspace (Workspace section) to create, edit or delete rules and skills." )
+                                                                     : tr( "Configure a workspace (Workspace section) to create rules and skills." )
     );
   }
   if ( mRuleNewButton )
@@ -1161,7 +1155,7 @@ void QgsAiSettingsDialog::selectRuleInEditor( const QgsAiRuleInfo &rule )
   mCurrentRulePath = rule.path;
   mRuleNameEdit->setText( rule.name );
   mRuleDescriptionEdit->setText( rule.description );
-  mRuleGlobsEdit->setText( rule.globs.join( u", "_s ) );
+  mRuleGlobsEdit->setText( rule.globs.join( ", "_L1 ) );
   mRuleAlwaysApply->setChecked( rule.alwaysApply );
   mRuleEnabled->setChecked( rule.enabled );
   mRuleBodyEdit->setPlainText( rulesSkillsStore().readRuleBody( rule ) );
@@ -1515,9 +1509,7 @@ void QgsAiSettingsDialog::syncRulesSkillsToCloud()
     if ( *progress < totalExpected )
       return;
     mSyncRulesSkillsCloudButton->setEnabled( true );
-    mRulesSkillsCloudStatusLabel->setText(
-      *failures == 0 ? tr( "Synced %1 item(s) to Strata Cloud." ).arg( totalExpected ) : tr( "Synced with %1 error(s); see the warning dialog." ).arg( *failures )
-    );
+    mRulesSkillsCloudStatusLabel->setText( *failures == 0 ? tr( "Synced %1 item(s) to Strata Cloud." ).arg( totalExpected ) : tr( "Synced with %1 error(s); see the warning dialog." ).arg( *failures ) );
     client->deleteLater();
   };
 
@@ -1545,16 +1537,13 @@ void QgsAiSettingsDialog::syncRulesSkillsToCloud()
       QMessageBox::warning( this, tr( "Strata Cloud sync" ), tr( "Some items failed to sync. Last error: %1" ).arg( message ) );
     maybeFinish();
   } );
-  connect(
-    client, &QgsAiRulesSkillsCloudClient::workspaceReady, this,
-    [client, remoteRules, remoteSkills, workspaceObtained, apiBase = mAccountWidget->planEndpoint(), token]( const QString &workspaceId ) {
-      *workspaceObtained = true;
-      for ( const QgsAiRulesSkillsCloudClient::RemoteRule &rule : remoteRules )
-        client->pushRule( apiBase, token, workspaceId, rule );
-      for ( const QgsAiRulesSkillsCloudClient::RemoteSkill &skill : remoteSkills )
-        client->pushSkill( apiBase, token, workspaceId, skill );
-    }
-  );
+  connect( client, &QgsAiRulesSkillsCloudClient::workspaceReady, this, [client, remoteRules, remoteSkills, workspaceObtained, apiBase = mAccountWidget->planEndpoint(), token]( const QString &workspaceId ) {
+    *workspaceObtained = true;
+    for ( const QgsAiRulesSkillsCloudClient::RemoteRule &rule : remoteRules )
+      client->pushRule( apiBase, token, workspaceId, rule );
+    for ( const QgsAiRulesSkillsCloudClient::RemoteSkill &skill : remoteSkills )
+      client->pushSkill( apiBase, token, workspaceId, skill );
+  } );
 
   client->ensureWorkspace( mAccountWidget->planEndpoint(), token, workspaceRoot, QFileInfo( workspaceRoot ).fileName() );
 }

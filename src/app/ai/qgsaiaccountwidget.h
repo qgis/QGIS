@@ -125,8 +125,11 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
 
     QListWidget *mModelListWidget = nullptr;
     bool mUpdatingModelList = false;
-    //! Item awaiting a setModelPreference() response, so a failure can revert its checkbox.
-    //! Cleared whenever the list is repopulated to avoid dangling access.
+
+    /**
+     * Item awaiting a setModelPreference() response, so a failure can revert its checkbox.
+     * Cleared whenever the list is repopulated to avoid dangling access.
+     */
     QListWidgetItem *mPendingToggleItem = nullptr;
     bool mPendingToggleEnabled = false;
 

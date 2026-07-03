@@ -11,6 +11,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QString>
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
@@ -277,7 +278,7 @@ void TestQgsAiRulesSkillsStore::pathEscapeIsRejectedForWrites()
 
 void TestQgsAiRulesSkillsStore::missingWorkspaceIsRejected()
 {
-  QgsAiFileContextProvider noWorkspaceProvider{ QString() };
+  QgsAiFileContextProvider noWorkspaceProvider { QString() };
   QgsAiRulesSkillsStore store( &noWorkspaceProvider );
 
   QVERIFY( store.listRules( u".strata/rules"_s ).isEmpty() );
