@@ -44,4 +44,23 @@ class APP_EXPORT QgsAiManageProjectTool : public QgsAiTool
     QgsProject *mProject = nullptr;
 };
 
+/**
+ * configure_snapping: reads or updates project snapping settings.
+ */
+class APP_EXPORT QgsAiConfigureSnappingTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiConfigureSnappingTool( QgsProject *project );
+
+    QString name() const override { return u"configure_snapping"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Low; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
 #endif // QGSAIPROJECTTOOLS_H

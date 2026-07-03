@@ -18,11 +18,14 @@
 #include "qgsaitoolschemautil.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsproject.h"
+#include "qgssnappingconfig.h"
+#include "qgsvectorlayer.h"
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QHash>
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QUuid>
@@ -272,6 +275,146 @@ namespace
     output.insert( u"diff"_s, diff );
     return QgsAiToolResult::ok( output );
   }
+
+  QString snappingModeName( Qgis::SnappingMode mode )
+  {
+    switch ( mode )
+    {
+      case Qgis::SnappingMode::ActiveLayer:
+        return u"active_layer"_s;
+      case Qgis::SnappingMode::AllLayers:
+        return u"all_layers"_s;
+      case Qgis::SnappingMode::AdvancedConfiguration:
+        return u"advanced"_s;
+    }
+    return u"active_layer"_s;
+  }
+
+  bool snappingModeFromString( const QString &value, Qgis::SnappingMode &mode )
+  {
+    const QString normalized = value.toLower().trimmed();
+    if ( normalized == "active_layer"_L1 || normalized == "active"_L1 )
+    {
+      mode = Qgis::SnappingMode::ActiveLayer;
+      return true;
+    }
+    if ( normalized == "all_layers"_L1 || normalized == "all"_L1 )
+    {
+      mode = Qgis::SnappingMode::AllLayers;
+      return true;
+    }
+    if ( normalized == "advanced"_L1 || normalized == "per_layer"_L1 )
+    {
+      mode = Qgis::SnappingMode::AdvancedConfiguration;
+      return true;
+    }
+    return false;
+  }
+
+  QString snappingTypeName( Qgis::SnappingTypes type )
+  {
+    if ( type == Qgis::SnappingType::Vertex )
+      return u"vertex"_s;
+    if ( type == Qgis::SnappingType::Segment )
+      return u"segment"_s;
+    if ( type == ( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) )
+      return u"vertex_and_segment"_s;
+    if ( type == Qgis::SnappingType::NoSnap )
+      return u"none"_s;
+    return u"custom"_s;
+  }
+
+  bool snappingTypeFromString( const QString &value, Qgis::SnappingTypes &type )
+  {
+    const QString normalized = value.toLower().trimmed();
+    if ( normalized == "none"_L1 || normalized == "no_snap"_L1 )
+    {
+      type = Qgis::SnappingType::NoSnap;
+      return true;
+    }
+    if ( normalized == "vertex"_L1 || normalized == "vertices"_L1 )
+    {
+      type = Qgis::SnappingType::Vertex;
+      return true;
+    }
+    if ( normalized == "segment"_L1 || normalized == "segments"_L1 )
+    {
+      type = Qgis::SnappingType::Segment;
+      return true;
+    }
+    if ( normalized == "vertex_and_segment"_L1 || normalized == "vertex_segment"_L1 || normalized == "both"_L1 )
+    {
+      type = Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment;
+      return true;
+    }
+    return false;
+  }
+
+  QString mapToolUnitName( Qgis::MapToolUnit unit )
+  {
+    switch ( unit )
+    {
+      case Qgis::MapToolUnit::Layer:
+        return u"layer"_s;
+      case Qgis::MapToolUnit::Pixels:
+        return u"pixels"_s;
+      case Qgis::MapToolUnit::Project:
+        return u"project"_s;
+    }
+    return u"project"_s;
+  }
+
+  bool mapToolUnitFromString( const QString &value, Qgis::MapToolUnit &unit )
+  {
+    const QString normalized = value.toLower().trimmed();
+    if ( normalized == "layer"_L1 || normalized == "layer_units"_L1 )
+    {
+      unit = Qgis::MapToolUnit::Layer;
+      return true;
+    }
+    if ( normalized == "pixels"_L1 || normalized == "pixel"_L1 )
+    {
+      unit = Qgis::MapToolUnit::Pixels;
+      return true;
+    }
+    if ( normalized == "project"_L1 || normalized == "map"_L1 || normalized == "project_units"_L1 )
+    {
+      unit = Qgis::MapToolUnit::Project;
+      return true;
+    }
+    return false;
+  }
+
+  QJsonObject snappingConfigJson( const QgsSnappingConfig &config )
+  {
+    QJsonObject output;
+    output.insert( u"enabled"_s, config.enabled() );
+    output.insert( u"mode"_s, snappingModeName( config.mode() ) );
+    output.insert( u"type"_s, snappingTypeName( config.typeFlag() ) );
+    output.insert( u"tolerance"_s, config.tolerance() );
+    output.insert( u"units"_s, mapToolUnitName( config.units() ) );
+    output.insert( u"intersection_snapping"_s, config.intersectionSnapping() );
+    output.insert( u"self_snapping"_s, config.selfSnapping() );
+
+    QJsonArray layerSettings;
+    const auto settings = config.individualLayerSettings();
+    for ( auto it = settings.constBegin(); it != settings.constEnd(); ++it )
+    {
+      QgsVectorLayer *layer = it.key();
+      const QgsSnappingConfig::IndividualLayerSettings layerConfig = it.value();
+      if ( !layer || !layerConfig.valid() )
+        continue;
+      QJsonObject entry;
+      entry.insert( u"layer_id"_s, layer->id() );
+      entry.insert( u"enabled"_s, layerConfig.enabled() );
+      entry.insert( u"type"_s, snappingTypeName( layerConfig.typeFlag() ) );
+      entry.insert( u"tolerance"_s, layerConfig.tolerance() );
+      entry.insert( u"units"_s, mapToolUnitName( layerConfig.units() ) );
+      layerSettings.push_back( entry );
+    }
+    output.insert( u"layer_settings"_s, layerSettings );
+    return output;
+  }
 }
 
 QgsAiManageProjectTool::QgsAiManageProjectTool( QgsProject *project )
@@ -465,4 +608,111 @@ QgsAiToolResult QgsAiManageProjectTool::execute( const QJsonObject &args )
   }
 
   return QgsAiToolResult::error( u"Unsupported project action: %1"_s.arg( action ) );
+}
+
+QgsAiConfigureSnappingTool::QgsAiConfigureSnappingTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiConfigureSnappingTool::description() const
+{
+  return QStringLiteral(
+    "Reads or updates the active QGIS project's snapping configuration. "
+    "Set supports enabled, mode, type, tolerance, units and optional per-layer ids."
+  );
+}
+
+QJsonObject QgsAiConfigureSnappingTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"action"_s, prop( u"string"_s, u"One of: get, set."_s ) );
+  properties.insert( u"enabled"_s, prop( u"boolean"_s, u"Whether snapping is enabled."_s ) );
+  properties.insert( u"mode"_s, prop( u"string"_s, u"active_layer, all_layers or advanced."_s ) );
+  properties.insert( u"type"_s, prop( u"string"_s, u"vertex, segment, vertex_and_segment or none."_s ) );
+  properties.insert( u"tolerance"_s, prop( u"number"_s, u"Snapping tolerance. Must be >= 0."_s ) );
+  properties.insert( u"units"_s, prop( u"string"_s, u"pixels, project or layer."_s ) );
+  properties.insert( u"layer_ids"_s, prop( u"array"_s, u"Optional vector layer ids for advanced per-layer snapping."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiConfigureSnappingTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString action = args.value( u"action"_s ).toString( u"get"_s ).toLower().trimmed();
+  if ( action == "get"_L1 )
+    return QgsAiToolResult::ok( snappingConfigJson( project->snappingConfig() ) );
+  if ( action != "set"_L1 )
+    return QgsAiToolResult::error( u"Unsupported snapping action: %1"_s.arg( action ) );
+
+  QgsSnappingConfig config = project->snappingConfig();
+  const QJsonObject before = snappingConfigJson( config );
+
+  if ( args.contains( u"enabled"_s ) )
+    config.setEnabled( args.value( u"enabled"_s ).toBool() );
+
+  if ( args.contains( u"mode"_s ) )
+  {
+    Qgis::SnappingMode mode = config.mode();
+    if ( !snappingModeFromString( args.value( u"mode"_s ).toString(), mode ) )
+      return QgsAiToolResult::error( u"Invalid snapping mode. Use active_layer, all_layers or advanced."_s );
+    config.setMode( mode );
+  }
+
+  if ( args.contains( u"type"_s ) )
+  {
+    Qgis::SnappingTypes type = config.typeFlag();
+    if ( !snappingTypeFromString( args.value( u"type"_s ).toString(), type ) )
+      return QgsAiToolResult::error( u"Invalid snapping type. Use vertex, segment, vertex_and_segment or none."_s );
+    config.setTypeFlag( type );
+  }
+
+  if ( args.contains( u"tolerance"_s ) )
+  {
+    const double tolerance = args.value( u"tolerance"_s ).toDouble( config.tolerance() );
+    if ( tolerance < 0.0 )
+      return QgsAiToolResult::error( u"Invalid snapping tolerance. Value must be >= 0."_s );
+    config.setTolerance( tolerance );
+  }
+
+  if ( args.contains( u"units"_s ) )
+  {
+    Qgis::MapToolUnit units = config.units();
+    if ( !mapToolUnitFromString( args.value( u"units"_s ).toString(), units ) )
+      return QgsAiToolResult::error( u"Invalid snapping units. Use pixels, project or layer."_s );
+    config.setUnits( units );
+  }
+
+  if ( args.value( u"layer_ids"_s ).isArray() )
+  {
+    const QJsonArray layerIds = args.value( u"layer_ids"_s ).toArray();
+    config.clearIndividualLayerSettings();
+    config.setMode( Qgis::SnappingMode::AdvancedConfiguration );
+    for ( const QJsonValue &layerValue : layerIds )
+    {
+      const QString layerId = layerValue.toString().trimmed();
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( layerId ) );
+      if ( !layer )
+        return QgsAiToolResult::error( u"Invalid vector layer id for snapping: %1"_s.arg( layerId ) );
+
+      config.setIndividualLayerSettings(
+        layer,
+        QgsSnappingConfig::IndividualLayerSettings( config.enabled(), config.typeFlag(), config.tolerance(), config.units() )
+      );
+    }
+  }
+
+  project->setSnappingConfig( config );
+
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Updated project snapping configuration."_s );
+  diff.insert( u"before"_s, before );
+  diff.insert( u"after"_s, snappingConfigJson( project->snappingConfig() ) );
+
+  QJsonObject output = snappingConfigJson( project->snappingConfig() );
+  output.insert( u"status"_s, u"updated"_s );
+  output.insert( u"diff"_s, diff );
+  return QgsAiToolResult::ok( output );
 }

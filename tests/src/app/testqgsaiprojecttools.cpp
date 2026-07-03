@@ -9,10 +9,13 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsproject.h"
+#include "qgssnappingconfig.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QTemporaryDir>
 
@@ -29,6 +32,8 @@ class TestQgsAiProjectTools : public QObject
     void manageProjectSetsCrsAndRollsBack();
     void manageProjectSetsPropertyAndReportsIt();
     void manageProjectRejectsUnsafeSaveAsAndInvalidCrs();
+    void configureSnappingSetsAndGets();
+    void configureSnappingRejectsInvalidValues();
 };
 
 void TestQgsAiProjectTools::initTestCase()
@@ -180,6 +185,71 @@ void TestQgsAiProjectTools::manageProjectRejectsUnsafeSaveAsAndInvalidCrs()
   const QgsAiToolResult invalidCrs = tool.execute( crsArgs );
   QVERIFY( !invalidCrs.success );
   QVERIFY( invalidCrs.errorMessage.contains( u"Invalid CRS"_s ) );
+}
+
+void TestQgsAiProjectTools::configureSnappingSetsAndGets()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = new QgsVectorLayer( u"LineString?crs=EPSG:4326"_s, u"Roads"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+  project.addMapLayer( layer );
+
+  QgsAiConfigureSnappingTool tool( &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::Low );
+
+  QJsonArray layerIds;
+  layerIds.push_back( layer->id() );
+
+  QJsonObject args;
+  args.insert( u"action"_s, u"set"_s );
+  args.insert( u"enabled"_s, true );
+  args.insert( u"mode"_s, u"all_layers"_s );
+  args.insert( u"type"_s, u"vertex"_s );
+  args.insert( u"tolerance"_s, 10 );
+  args.insert( u"units"_s, u"pixels"_s );
+  args.insert( u"layer_ids"_s, layerIds );
+
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  const QgsSnappingConfig config = project.snappingConfig();
+  QVERIFY( config.enabled() );
+  QCOMPARE( config.mode(), Qgis::SnappingMode::AdvancedConfiguration );
+  QCOMPARE( config.typeFlag(), Qgis::SnappingTypes( Qgis::SnappingType::Vertex ) );
+  QCOMPARE( config.tolerance(), 10.0 );
+  QCOMPARE( config.units(), Qgis::MapToolUnit::Pixels );
+  QVERIFY( config.individualLayerSettings( layer ).valid() );
+  QVERIFY( config.individualLayerSettings( layer ).enabled() );
+
+  QJsonObject getArgs;
+  getArgs.insert( u"action"_s, u"get"_s );
+  const QgsAiToolResult getResult = tool.execute( getArgs );
+  QVERIFY2( getResult.success, qPrintable( getResult.errorMessage ) );
+  QCOMPARE( getResult.output.toObject().value( u"enabled"_s ).toBool(), true );
+  QCOMPARE( getResult.output.toObject().value( u"mode"_s ).toString(), u"advanced"_s );
+  QCOMPARE( getResult.output.toObject().value( u"type"_s ).toString(), u"vertex"_s );
+  QCOMPARE( getResult.output.toObject().value( u"tolerance"_s ).toDouble(), 10.0 );
+  QCOMPARE( project.snappingConfig(), config );
+}
+
+void TestQgsAiProjectTools::configureSnappingRejectsInvalidValues()
+{
+  QgsProject project;
+  QgsAiConfigureSnappingTool tool( &project );
+
+  QJsonObject toleranceArgs;
+  toleranceArgs.insert( u"action"_s, u"set"_s );
+  toleranceArgs.insert( u"tolerance"_s, -1 );
+  const QgsAiToolResult invalidTolerance = tool.execute( toleranceArgs );
+  QVERIFY( !invalidTolerance.success );
+  QVERIFY( invalidTolerance.errorMessage.contains( u"tolerance"_s ) );
+
+  QJsonObject unitsArgs;
+  unitsArgs.insert( u"action"_s, u"set"_s );
+  unitsArgs.insert( u"units"_s, u"bananas"_s );
+  const QgsAiToolResult invalidUnits = tool.execute( unitsArgs );
+  QVERIFY( !invalidUnits.success );
+  QVERIFY( invalidUnits.errorMessage.contains( u"units"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsAiProjectTools )
