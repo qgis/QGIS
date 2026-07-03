@@ -14,7 +14,9 @@
 *                                                                         *
 ***************************************************************************
 """
+
 import json
+
 
 def _geometryNonZero(self):
     return not self.isEmpty()
