@@ -65,10 +65,10 @@ endif()
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "4")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "2")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-set(RELEASE_NAME "Master")
+set(RELEASE_NAME "Belém do Pará")
 project(qgis VERSION ${COMPLETE_VERSION})
 
 set(QGIS_APP_NAME "qgis" CACHE STRING "The main app name and bundle name")
