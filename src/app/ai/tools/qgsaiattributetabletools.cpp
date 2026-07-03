@@ -63,7 +63,7 @@ namespace
     return token;
   }
 
-  QJsonObject rollbackJson( const QString &token, const QString &action )
+  QJsonObject attributeTableRollbackJson( const QString &token, const QString &action )
   {
     QJsonObject rollback;
     rollback.insert( u"token"_s, token );
@@ -404,7 +404,7 @@ QgsAiToolResult QgsAiBatchUpdateAttributesTool::execute( const QJsonObject &args
   output.insert( u"updated_feature_count"_s, matchingFeatures.size() );
   output.insert( u"diff"_s, diff );
   output.insert( u"rollback_token"_s, token );
-  output.insert( u"rollback"_s, rollbackJson( token, u"restore_batch_attribute_values"_s ) );
+  output.insert( u"rollback"_s, attributeTableRollbackJson( token, u"restore_batch_attribute_values"_s ) );
   return QgsAiToolResult::ok( output );
 }
 

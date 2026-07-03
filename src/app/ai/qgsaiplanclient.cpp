@@ -37,7 +37,7 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
-  constexpr int FETCH_TIMEOUT_MS = 20000;
+  constexpr int PLAN_FETCH_TIMEOUT_MS = 20000;
 
   QUrl apiUrl( const QString &apiBase, const QString &path )
   {
@@ -53,7 +53,7 @@ namespace
   {
     request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
     request.setRawHeader( "Accept", "application/json" );
-    request.setTransferTimeout( FETCH_TIMEOUT_MS );
+    request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   }
 
   QString responseErrorMessage( QNetworkReply *reply, const QByteArray &body )
@@ -548,7 +548,7 @@ void QgsAiPlanClient::fetchMe( const QString &chatEndpoint, const QString &sessi
 
   QNetworkRequest request( apiUrl( apiBase, u"/v1/auth/me"_s ) );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -587,7 +587,7 @@ void QgsAiPlanClient::fetchBalance( const QString &chatEndpoint, const QString &
 
   QNetworkRequest request( apiUrl( apiBase, u"/v1/credits/balance"_s ) );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -634,7 +634,7 @@ void QgsAiPlanClient::refreshModels( const QString &chatEndpoint )
 
   QNetworkRequest request( apiUrl( apiBase, u"/v1/models"_s ) );
   request.setRawHeader( "Accept", "application/json" );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -711,7 +711,7 @@ void QgsAiPlanClient::refreshAuthenticatedJson( const QString &chatEndpoint, con
   QNetworkRequest request( apiUrl( apiBase, path ) );
   request.setRawHeader( "Accept", "application/json" );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -785,7 +785,7 @@ void QgsAiPlanClient::fetchModelPreferences( const QString &chatEndpoint, const 
   QNetworkRequest request( apiUrl( apiBase, u"/v1/models/preferences"_s ) );
   request.setRawHeader( "Accept", "application/json" );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {

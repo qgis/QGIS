@@ -74,7 +74,7 @@ namespace
     return token;
   }
 
-  QJsonObject rollbackJson( const QString &token, const QString &action )
+  QJsonObject editingRollbackJson( const QString &token, const QString &action )
   {
     QJsonObject rollback;
     rollback.insert( u"token"_s, token );
@@ -600,7 +600,7 @@ QgsAiToolResult QgsAiEditFeatureGeometryTool::execute( const QJsonObject &args )
   output.insert( u"operation"_s, appliedOperation );
   output.insert( u"diff"_s, diff );
   output.insert( u"rollback_token"_s, token );
-  output.insert( u"rollback"_s, rollbackJson( token, u"restore_feature_geometry"_s ) );
+  output.insert( u"rollback"_s, editingRollbackJson( token, u"restore_feature_geometry"_s ) );
   return QgsAiToolResult::ok( output );
 }
 
@@ -722,7 +722,7 @@ QgsAiToolResult QgsAiUpdateFeatureAttributesTool::execute( const QJsonObject &ar
   output.insert( u"updated_attributes"_s, attributesJson( fields, newValues ) );
   output.insert( u"diff"_s, diff );
   output.insert( u"rollback_token"_s, token );
-  output.insert( u"rollback"_s, rollbackJson( token, u"restore_feature_attributes"_s ) );
+  output.insert( u"rollback"_s, editingRollbackJson( token, u"restore_feature_attributes"_s ) );
   return QgsAiToolResult::ok( output );
 }
 
@@ -910,6 +910,6 @@ QgsAiToolResult QgsAiCalculateFieldTool::execute( const QJsonObject &args )
   output.insert( u"created_field"_s, createField );
   output.insert( u"diff"_s, diff );
   output.insert( u"rollback_token"_s, token );
-  output.insert( u"rollback"_s, rollbackJson( token, createField ? u"remove_calculated_field"_s : u"restore_calculated_field_values"_s ) );
+  output.insert( u"rollback"_s, editingRollbackJson( token, createField ? u"remove_calculated_field"_s : u"restore_calculated_field_values"_s ) );
   return QgsAiToolResult::ok( output );
 }
