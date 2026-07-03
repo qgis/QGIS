@@ -1474,17 +1474,7 @@ bool QgsVectorLayer::moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, in
 
 Qgis::VectorEditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId, int vertex )
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( !isValid() || !mEditBuffer || !mDataProvider )
-    return Qgis::VectorEditResult::InvalidLayer;
-
-  QgsVectorLayerEditUtils utils( this );
-  Qgis::VectorEditResult result = utils.deleteVertex( featureId, vertex );
-
-  if ( result == Qgis::VectorEditResult::Success )
-    updateExtents();
-  return result;
+  return deleteVertices( featureId, { vertex } );
 }
 
 Qgis::VectorEditResult QgsVectorLayer::deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices )
