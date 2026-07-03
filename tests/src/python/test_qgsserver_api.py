@@ -641,6 +641,45 @@ class QgsServerAPITest(QgsServerAPITestBase):
         )
         self.compareApi(request, project, "test_wfs3_collections_project.html")
 
+    def test_wfs3_getfeature_html_escape(self):
+
+        # Create mem layer with a single text field
+        layer = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=txt:string", "test_layer", "memory"
+        )
+        self.assertTrue(layer.isValid())
+        f = QgsFeature(layer.fields())
+        f.setGeometry(QgsGeometry.fromWkt("POINT(1 1)"))
+        f.setAttribute("txt", "<b>test</b>")
+        layer.dataProvider().addFeatures([f])
+
+        p = QgsProject()
+        p.addMapLayer(layer)
+
+        # Expose to WFS
+        p.writeEntry("WFSLayers", "/", [layer.id()])
+
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/test_layer/items/1.html"
+        )
+        response = QgsBufferServerResponse()
+        server = QgsServer()
+
+        server.handleRequest(request, response, p)
+        self.assertEqual(response.statusCode(), 200)
+        self.assertNotIn("<b>test</b>", str(response.body(), "utf-8"))
+        self.assertIn("&lt;b&gt;test&lt;/b&gt;", str(response.body(), "utf-8"))
+
+        # Same test with the whole collection
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/test_layer/items.html"
+        )
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, p)
+        self.assertEqual(response.statusCode(), 200)
+        self.assertNotIn("<b>test</b>", str(response.body(), "utf-8"))
+        self.assertIn("&lt;b&gt;test&lt;/b&gt;", str(response.body(), "utf-8"))
+
     def test_wfs3_collections_content_type(self):
         """Test WFS3 API collections in html format with Accept header"""
 

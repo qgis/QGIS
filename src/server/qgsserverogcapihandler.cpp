@@ -281,6 +281,8 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     // Get the template directory and the file name
     QFileInfo pathInfo { path };
     Environment env { QString( pathInfo.dir().path() + QDir::separator() ).toStdString() };
+    // Do not call env.set_html_autoescape( true ) because that would escape links too
+    // use the escape() function in the templates instead
 
     // For template debugging:
     env.add_callback( "json_dump", 0, [=]( Arguments & ) {
@@ -435,6 +437,37 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
           out = jsonValue.dump();
       }
       return out;
+    } );
+
+    // HTML escape function
+    env.add_callback( "escape", 1, []( Arguments &args ) {
+      std::string str { args.at( 0 )->get<std::string>() };
+      std::string escaped;
+      escaped.reserve( str.size() );
+      for ( const char c : str )
+      {
+        switch ( c )
+        {
+          case '&':
+            escaped.append( "&amp;" );
+            break;
+          case '<':
+            escaped.append( "&lt;" );
+            break;
+          case '>':
+            escaped.append( "&gt;" );
+            break;
+          case '"':
+            escaped.append( "&quot;" );
+            break;
+          case '\'':
+            escaped.append( "&#39;" );
+            break;
+          default:
+            escaped.push_back( c );
+        }
+      }
+      return escaped;
     } );
 
     context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
