@@ -25,6 +25,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QLocale>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QString>
@@ -116,15 +117,23 @@ namespace
         Qt::QueuedConnection
       );
   }
+
+  QString tokenCountLabel( int tokens )
+  {
+    return QLocale().toString( tokens );
+  }
 } //namespace
 
 QString QgsAiPlanClient::ModelInfo::displayLabel() const
 {
   QString text = label.isEmpty() ? id : label;
+  QStringList details;
   if ( contextWindow > 0 )
-    text += u" - %1k ctx"_s.arg( contextWindow / 1000 );
+    details << QObject::tr( "Context window: %1 tokens" ).arg( tokenCountLabel( contextWindow ) );
   if ( inputCredits > 0 || outputCredits > 0 )
-    text += u" - %1/%2 cr"_s.arg( inputCredits ).arg( outputCredits );
+    details << QObject::tr( "Cost: input %1 / output %2 credits per 1,000 tokens" ).arg( inputCredits ).arg( outputCredits );
+  if ( !details.isEmpty() )
+    text += u" - "_s + details.join( u" - "_s );
   return text;
 }
 
@@ -136,9 +145,12 @@ QString QgsAiPlanClient::ModelInfo::tooltip() const
   if ( !provider.isEmpty() )
     parts << QObject::tr( "Provider: %1" ).arg( provider );
   if ( contextWindow > 0 )
-    parts << QObject::tr( "Context window: %1 tokens" ).arg( contextWindow );
+    parts << QObject::tr( "Context window: %1 tokens. This is the maximum amount of text and context the model can consider at once." ).arg( tokenCountLabel( contextWindow ) );
   if ( inputCredits > 0 || outputCredits > 0 )
-    parts << QObject::tr( "Credits: %1 input / %2 output" ).arg( inputCredits ).arg( outputCredits );
+  {
+    parts << QObject::tr( "Credit cost: %1 credits per 1,000 input tokens; %2 credits per 1,000 output tokens." ).arg( inputCredits ).arg( outputCredits );
+    parts << QObject::tr( "Input tokens are prompts and project context sent to the model. Output tokens are the model response." );
+  }
   if ( !capabilities.isEmpty() )
     parts << QObject::tr( "Capabilities: %1" ).arg( capabilities.join( ", "_L1 ) );
   if ( !tierAvailability.isEmpty() )

@@ -10,6 +10,7 @@
 #include "ai/qgsaiclaudeoauthclient.h"
 #include "ai/qgsaicodexoauthclient.h"
 #include "ai/qgsaimodelrouter.h"
+#include "ai/qgsaisecretstore.h"
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaitoolregistry.h"
 #include "qgsaitestloopbackserver.h"
@@ -145,6 +146,26 @@ namespace
     settings.remove( u"ai/network/maxRetries"_s );
   }
 
+  bool configurePlanForLoopback( QgsAiModelRouter &router, quint16 port, QString *errorMessage = nullptr )
+  {
+    if ( !router.setPlanSessionToken( u"strata-plan-loopback-token"_s, errorMessage ) )
+      return false;
+
+    QgsAiModelRouter::ProviderSettings providerSettings = router.providerSettings( QgsAiModelRouter::Provider::Plan );
+    providerSettings.endpoint = u"http://127.0.0.1:%1/ai/messages"_s.arg( port );
+    providerSettings.model = u"managed-plan"_s;
+    providerSettings.enabled = true;
+    router.setProviderSettings( QgsAiModelRouter::Provider::Plan, providerSettings );
+    return true;
+  }
+
+  void removePlanTestSettings()
+  {
+    QgsSettings settings;
+    settings.remove( u"ai/provider/plan"_s );
+    QgsAiSecretStore::removeSecret( u"ai/provider/plan/token"_s );
+  }
+
   QgsAiChatMessage userMessage( const QString &text )
   {
     QgsAiChatMessage message;
@@ -241,6 +262,7 @@ class TestQgsAiModelRouter : public QObject
     void openRouterDefaultEndpointMigrated();
     void openRouterAutoModelMigratedOncePinnedDefault();
     void openRouterCustomEndpointKeepsAutoModelOnMigration();
+    void planStreamAnthropicStyleDeltas();
 
     // SSE transport & error hardening (loopback server)
     void openRouterStreamTextDeltas();
@@ -1480,6 +1502,46 @@ void TestQgsAiModelRouter::openRouterCustomEndpointKeepsAutoModelOnMigration()
   QgsAiModelRouter router;
   QCOMPARE( router.providerSettings( QgsAiModelRouter::Provider::OpenRouter ).model, u"openrouter/auto"_s );
   QVERIFY( settings.value( u"ai/provider/openrouter/defaultModelMigrated_v1"_s ).toBool() );
+}
+
+void TestQgsAiModelRouter::planStreamAnthropicStyleDeltas()
+{
+  removePlanTestSettings();
+  const auto cleanup = qScopeGuard( []() { removePlanTestSettings(); } );
+
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::sseResponse( {
+    QByteArrayLiteral( "data: {\"type\":\"content_block_delta\",\"delta\":{\"type\":\"text_delta\",\"text\":\"cia\"}}\n\n" ),
+    QByteArrayLiteral( "data: {\"type\":\"content_block_delta\",\"delta\":{\"type\":\"text_delta\",\"text\":\"o\"}}\n\n" ),
+    QByteArrayLiteral( "data: {\"type\":\"message_delta\",\"usage\":{\"input_tokens\":2,\"output_tokens\":1}}\n\ndata: [DONE]\n\n" ),
+  } );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  QgsAiModelRouter router;
+  QString error;
+  QVERIFY2( configurePlanForLoopback( router, server.serverPort(), &error ), qPrintable( error ) );
+
+  QSignalSpy progressSpy( &router, &QgsAiModelRouter::requestProgress );
+  QSignalSpy usageSpy( &router, &QgsAiModelRouter::usageReported );
+  QSignalSpy finishedSpy( &router, &QgsAiModelRouter::requestFinished );
+  router.startChatRequest( QgsAiModelRouter::Provider::Plan, { userMessage( u"ciao"_s ) }, true );
+
+  QTRY_COMPARE_WITH_TIMEOUT( finishedSpy.count(), 1, 10000 );
+  const QList<QVariant> args = finishedSpy.takeFirst();
+  QVERIFY2( args.at( 1 ).toBool(), qPrintable( args.at( 4 ).toString() ) );
+  QCOMPARE( args.at( 2 ).toString(), u"Plan Account"_s );
+  QCOMPARE( args.at( 3 ).toString(), u"ciao"_s );
+  QVERIFY( !args.at( 3 ).toString().contains( u"text_delta"_s ) );
+
+  QString streamedText;
+  for ( const QList<QVariant> &progressArgs : progressSpy )
+    streamedText += progressArgs.at( 1 ).toString();
+  QCOMPARE( streamedText, u"ciao"_s );
+
+  QCOMPARE( usageSpy.count(), 1 );
+  const QgsAiUsage usage = usageSpy.takeFirst().at( 3 ).value<QgsAiUsage>();
+  QCOMPARE( usage.promptTokens, static_cast<qint64>( 2 ) );
+  QCOMPARE( usage.completionTokens, static_cast<qint64>( 1 ) );
 }
 
 void TestQgsAiModelRouter::openRouterStreamTextDeltas()

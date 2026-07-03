@@ -1629,7 +1629,7 @@ QString QgsAiModelRouter::extractTextFromResponse( Provider provider, const QJso
 
 QString QgsAiModelRouter::extractTextFromStreamEvent( Provider provider, const QJsonObject &object ) const
 {
-  if ( provider == Provider::Claude )
+  if ( provider == Provider::Claude || provider == Provider::Plan )
   {
     const QString eventType = object.value( u"type"_s ).toString();
     if ( eventType == "content_block_delta"_L1 )
@@ -1773,7 +1773,7 @@ void QgsAiModelRouter::extractToolCallsFromResponse( Provider provider, const QJ
 
 void QgsAiModelRouter::absorbStreamEvent( Provider provider, const QJsonObject &object, RequestContext &context )
 {
-  if ( provider == Provider::Claude )
+  if ( provider == Provider::Claude || provider == Provider::Plan )
   {
     const QString eventType = object.value( u"type"_s ).toString();
 
