@@ -11,12 +11,12 @@
 
   const mockupPhrases = {
     it: [
-      "vibe giss buffer 500m sui comuni…",
+      "buffer 500m sui comuni ed esporta GeoJSON…",
       "scarica OSM per Brescia centro…",
       "conta gli alberi nel verde urbano…",
     ],
     en: [
-      "vibe giss a 500m buffer on municipalities…",
+      "buffer municipalities by 500m and export GeoJSON…",
       "download OSM for downtown Brescia…",
       "count trees in urban green areas…",
     ],
@@ -24,39 +24,66 @@
 
   const translations = {
     it: {
-      "meta.title": "Strata — vibe gissing per le tue mappe",
+      "meta.title": "Strata — Agente AI per QGIS | Cloud pronto all'uso o Enterprise on-premise",
       "meta.description":
-        "Strata — inizia a fare vibe gissing. GIS agent-native: descrivi cosa vuoi sulla mappa, l'agente ispeziona i layer ed esegue PyQGIS. Fork di QGIS.", // #spellok
+        "Strata porta modelli linguistici avanzati dentro QGIS. Piano Pro chiavi in mano, Cloud Team per la collaborazione, Enterprise on-premise con AI locale.",
 
-      "nav.problems": "Problemi",
+      "nav.plans": "Piani",
+      "nav.privacy": "Privacy",
+      "nav.product": "Prodotto",
       "nav.features": "Feature",
       "nav.demo": "Demo",
-      "nav.setup": "Setup",
       "nav.download": "Download",
-      "nav.downloadBtn": "Scarica",
+      "nav.downloadBtn": "Inizia Subito",
 
-      "hero.badge": "Agent-native GIS · Fork di QGIS",
-      "hero.titleLine": "Inizia anche tu a fare",
-      "hero.titleHighlight": "vibe gissing.",
+      "hero.badge": "Agente AI per QGIS · Cloud o On-Premise",
+      "hero.titleLine": "L'Agente AI per il tuo GIS.",
+      "hero.titleHighlight": "Pronto all'uso, sicuro per l'azienda.",
+      "hero.wordmark": "Pro · Cloud Team · Enterprise",
       "hero.subtitle":
-        "Descrivi cosa vuoi sulla mappa. L'agente ispeziona i layer, esegue PyQGIS e propone — tu approvi.",
+        "Porta la potenza dei modelli linguistici avanzati dentro QGIS. Scegli la comodità del nostro Cloud o la sicurezza totale di un'infrastruttura 100% locale e on-premise.",
       "hero.pillPlan": "Plan",
       "hero.pillAgent": "Agent",
       "hero.pillAsk": "Ask",
-      "hero.pillTools": "19 tool GIS",
-      "hero.ctaPrimary": "Scarica e inizia",
-      "hero.ctaSecondary": "Guarda la demo",
+      "hero.pillTools": "19 tool GIS integrati",
+      "hero.ctaPrimary": "Inizia Subito",
+      "hero.ctaSecondary": "Contatta le vendite",
 
-      "vibe.title": "Cos'è il vibe gissing?",
-      "vibe.step1.title": "Parla alla mappa",
-      "vibe.step1.desc":
-        "Descrivi l'intento in linguaggio naturale — buffer, download dati, analisi layer. Niente script da scrivere a mano.",
-      "vibe.step2.title": "L'agente agisce",
-      "vibe.step2.desc":
-        "Plan, Agent o Ask: ispeziona il progetto, esegue PyQGIS e usa 19 tool GIS integrati nel workspace.",
-      "vibe.step3.title": "Tu approvi",
-      "vibe.step3.desc":
-        "Review diff side-by-side prima di salvare. Nessuna modifica al progetto senza il tuo ok.",
+      "plans.label": "Piani e soluzioni",
+      "plans.title": "Scegli come adottare Strata",
+      "plans.subtitle":
+        "Dalla attivazione immediata alla governance enterprise. Un unico agente AI, tre modalità di deployment.",
+      "plans.pro.badge": "Pro",
+      "plans.pro.title": "Pro — Chiavi in mano",
+      "plans.pro.slogan": "Attiva e usa, zero configurazioni.",
+      "plans.pro.desc":
+        "Dimentica la gestione delle API key, i crediti OpenAI e i limiti di fatturazione. Con il piano Pro hai un assistente AI nativo in QGIS, pronto all'uso con un unico abbonamento mensile. Ci occupiamo noi di connetterti ai modelli più veloci e avanzati sul mercato.",
+      "plans.team.badge": "Team",
+      "plans.team.title": "Cloud Team — Collaborazione",
+      "plans.team.slogan": "La conoscenza geografica del tuo team, centralizzata.",
+      "plans.team.desc":
+        "Condividi il contesto. Strata Cloud indicizza in modo sicuro i file di progetto, i layer e gli script del team. L'agente AI apprende dalle mappe della tua organizzazione per offrire risposte precise e coerenti a tutti i membri, semplificando la collaborazione su progetti GIS complessi.",
+      "plans.enterprise.badge": "Ent.",
+      "plans.enterprise.title": "Enterprise — Privacy totale & AI locale",
+      "plans.enterprise.slogan": "I tuoi dati geografici non lasciano mai la tua rete.",
+      "plans.enterprise.desc":
+        "Pensato per organizzazioni con severi requisiti di compliance, riservatezza e data governance. Strata Enterprise funziona interamente on-premise: il software GIS e l'agente AI, basato su modelli LLM open-source ottimizzati come Llama o Mistral, girano localmente sui server aziendali o su workstation dedicate. Nessun dato inviato a terze parti, massima sovranità sul dato e pieno controllo dell'infrastruttura.",
+
+      "privacy.label": "Sicurezza e privacy",
+      "privacy.title": "La tua mappa, i tuoi dati. Nessun compromesso sulla sicurezza.",
+      "privacy.subtitle":
+        "Per enti pubblici, utility e organizzazioni che gestiscono dati territoriali sensibili. Strata Enterprise mantiene mappe, layer e documenti GIS all'interno della tua infrastruttura.",
+      "privacy.1.title": "AI 100% offline",
+      "privacy.1.desc":
+        "Supporto nativo per LLM locali. Esegui analisi complesse sul territorio sfruttando la potenza dell'hardware aziendale, senza connessione internet attiva.",
+      "privacy.2.title": "Isolamento dei dati",
+      "privacy.2.desc":
+        "L'indicizzazione dei layer e dei documenti GIS avviene su database cifrati all'interno della tua infrastruttura.",
+      "privacy.3.title": "Conformità normativa",
+      "privacy.3.desc":
+        "La soluzione ideale per Pubblica Amministrazione, utility, contractor militari e organizzazioni infrastrutturali che gestiscono dati sensibili non esportabili all'estero.",
+      "privacy.closing":
+        "Strata Enterprise: zero egress, audit completo, pieno controllo su modelli, policy e infrastruttura.",
 
       "mockup.mapLabel": "Mappa GIS",
       "mockup.chatTitle": "AI Assistant",
@@ -66,7 +93,7 @@
       "mockup.userMsg": "Fai buffer 500m sui comuni e esporta GeoJSON",
       "mockup.aiMsg":
         "Ho ispezionato il layer comuni, eseguito il buffer e salvato output/buffer_500m.geojson. Vuoi rivedere la proposta?",
-      "mockup.input": "vibe giss buffer 500m sui comuni…",
+      "mockup.input": "buffer 500m sui comuni ed esporta GeoJSON…",
 
       "problems.label": "Problemi comuni",
       "problems.title": "Conosci questi ostacoli in QGIS?",
@@ -154,7 +181,7 @@
         "L'assistente legge i layer del progetto, unisce geometrie sovrapposte, calcola superfici, conta gli alberi e restituisce una risposta verificabile direttamente accanto alla mappa.",
       "demo.maps.alt": "Analisi Strata su mappa di Brescia con risposta AI su verde urbano e alberi",
 
-      "speed.label": "Vibe gissing in pratica",
+      "speed.label": "Produttività GIS",
       "speed.title": "Da ore a minuti",
       "speed.subtitle": "Esempio reale: ispeziona 5 layer, buffer, export GeoJSON.",
       "speed.before": "Prima",
@@ -181,7 +208,7 @@
 
       "features.3.title": "RAG workspace",
       "features.3.desc":
-        "Indicizza .py, .qgs, .geojson, .md con embeddings OpenAI. Chunk e vettori in SQLite locale.",
+        "Indicizza .py, .qgs, .geojson, .md con embeddings. Chunk e vettori in SQLite locale o infrastruttura team.",
 
       "features.4.title": "Layer indexing opt-in",
       "features.4.desc":
@@ -189,16 +216,16 @@
 
       "features.5.title": "Multi-provider",
       "features.5.desc":
-        "OpenAI API key, Claude API/OAuth, Codex/ChatGPT OAuth device flow. Scegli il modello dal dropdown.",
+        "In Pro e Cloud Team i modelli sono già inclusi. In Enterprise o modalità BYOK: OpenAI, Claude, Codex o LLM locali.",
 
-      "features.6.title": "Privacy locale",
+      "features.6.title": "Privacy e controllo dati",
       "features.6.desc":
-        "Chiavi in QgsSettings locali. Token OAuth cifrati nell'auth store QGIS. Nessun server intermedio.",
+        "In Enterprise, dati e modelli restano on-premise. In Pro e Cloud Team, policy di indicizzazione trasparenti e controllo su cosa viene condiviso.",
 
-      "setup.label": "Setup",
+      "setup.label": "Setup avanzato (BYOK)",
       "setup.title": "Credenziali e indicizzazione",
       "setup.subtitle":
-        "Configura l'AI al primo avvio e capisci come funziona il RAG sul tuo workspace.",
+        "Il piano Pro include già modelli e credenziali gestite. Questa sezione è per utenti che preferiscono configurare provider e indicizzazione in autonomia.",
 
       "setup.creds.title": "Credenziali e login",
       "setup.creds.1":
@@ -251,48 +278,79 @@
       "download.linux.note":
         "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "Vibe gissing, nativamente in QGIS.", // #spellok
+      "footer.tagline": "Agente AI nativo in QGIS. Cloud o on-premise.",
+      "opensource.title": "Costruito su QGIS. Aperto, trasparente, senza lock-in.",
+      "opensource.desc":
+        "Strata è costruito sul cuore open-source di QGIS. Questo garantisce piena compatibilità con i tuoi flussi GIS esistenti e ti protegge dal vincolo di formati proprietari. Paghi per l'infrastruttura cloud, la semplicità d'uso e la nostra esperienza nell'ottimizzazione dei modelli AI applicati alla cartografia, mantenendo la trasparenza e la solidità del software libero.",
+      "opensource.closing": "Il GIS resta tuo. Il valore aggiunto è nel servizio.",
       "footer.disclaimer":
-        "Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
+        "Strata is an independent commercial service based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
       "footer.star": "Metti una stella",
       "footer.license": "Licenza GPLv2+",
       "footer.contact": "Contatto",
     },
     en: {
-      "meta.title": "Strata — vibe gissing for your maps",
+      "meta.title": "Strata — AI Agent for QGIS | Managed Cloud or Enterprise On-Premise",
       "meta.description":
-        "Strata — start vibe gissing. Agent-native GIS: describe what you want on the map, the agent inspects layers and runs PyQGIS. A QGIS fork.",
+        "Strata brings advanced language models into QGIS. Pro plan ready to use, Cloud Team for collaboration, Enterprise on-premise with local AI.",
 
-      "nav.problems": "Problems",
+      "nav.plans": "Plans",
+      "nav.privacy": "Privacy",
+      "nav.product": "Product",
       "nav.features": "Features",
       "nav.demo": "Demo",
-      "nav.setup": "Setup",
       "nav.download": "Download",
-      "nav.downloadBtn": "Download",
+      "nav.downloadBtn": "Get Started",
 
-      "hero.badge": "Agent-native GIS · QGIS fork",
-      "hero.titleLine": "",
-      "hero.titleHighlight": "Start vibe gissing your maps.",
+      "hero.badge": "AI Agent for QGIS · Cloud or On-Premise",
+      "hero.titleLine": "The AI agent for your GIS.",
+      "hero.titleHighlight": "Ready to use, secure for enterprise.",
+      "hero.wordmark": "Pro · Cloud Team · Enterprise",
       "hero.subtitle":
-        "Describe what you want on the map. The agent inspects layers, runs PyQGIS, and proposes — you approve.",
+        "Bring advanced language models into QGIS. Choose the convenience of our managed Cloud or the full security of a 100% local, on-premise infrastructure.",
       "hero.pillPlan": "Plan",
       "hero.pillAgent": "Agent",
       "hero.pillAsk": "Ask",
-      "hero.pillTools": "19 GIS tools",
-      "hero.ctaPrimary": "Download and start",
-      "hero.ctaSecondary": "See it in action",
+      "hero.pillTools": "19 integrated GIS tools",
+      "hero.ctaPrimary": "Get Started",
+      "hero.ctaSecondary": "Contact sales",
 
-      "vibe.title": "What is vibe gissing?",
-      "vibe.step1.title": "Talk to your map",
-      "vibe.step1.desc":
-        "Describe your intent in plain language — buffer, fetch data, layer analysis. No scripts to write by hand.",
-      "vibe.step2.title": "The agent acts",
-      "vibe.step2.desc":
-        "Plan, Agent, or Ask: inspects your project, runs PyQGIS, and uses 19 built-in GIS tools in the workspace.",
-      "vibe.step3.title": "You approve",
-      "vibe.step3.desc":
-        "Side-by-side diff review before saving. No project changes without your OK.",
+      "plans.label": "Plans & solutions",
+      "plans.title": "Choose how to adopt Strata",
+      "plans.subtitle":
+        "From instant activation to enterprise governance. One AI agent, three deployment modes.",
+      "plans.pro.badge": "Pro",
+      "plans.pro.title": "Pro — Turnkey",
+      "plans.pro.slogan": "Activate and use, zero configuration.",
+      "plans.pro.desc":
+        "Forget managing API keys, OpenAI credits, and billing limits. With Pro you get a native AI assistant in QGIS, ready to use with a single monthly subscription. We connect you to the fastest, most advanced models on the market.",
+      "plans.team.badge": "Team",
+      "plans.team.title": "Cloud Team — Collaboration",
+      "plans.team.slogan": "Your team's geographic knowledge, centralized.",
+      "plans.team.desc":
+        "Share context. Strata Cloud securely indexes your team's project files, layers, and scripts. The AI agent learns from your organization's maps to deliver precise, consistent answers for every member, simplifying collaboration on complex GIS projects.",
+      "plans.enterprise.badge": "Ent.",
+      "plans.enterprise.title": "Enterprise — Total privacy & local AI",
+      "plans.enterprise.slogan": "Your geographic data never leaves your network.",
+      "plans.enterprise.desc":
+        "Built for organizations with strict compliance, confidentiality, and data governance requirements. Strata Enterprise runs entirely on-premise: the GIS software and AI agent, powered by optimized open-source LLMs like Llama or Mistral, run locally on company servers or dedicated workstations. No data sent to third parties, full data sovereignty and infrastructure control.",
+
+      "privacy.label": "Security & privacy",
+      "privacy.title": "Your map, your data. No compromise on security.",
+      "privacy.subtitle":
+        "For public agencies, utilities, and organizations handling sensitive territorial data. Strata Enterprise keeps maps, layers, and GIS documents inside your infrastructure.",
+      "privacy.1.title": "100% offline AI",
+      "privacy.1.desc":
+        "Native support for local LLMs. Run complex territorial analysis using your company hardware, with no active internet connection required.",
+      "privacy.2.title": "Data isolation",
+      "privacy.2.desc":
+        "Layer and GIS document indexing runs on encrypted databases within your infrastructure.",
+      "privacy.3.title": "Regulatory compliance",
+      "privacy.3.desc":
+        "The ideal solution for public administration, utilities, military contractors, and infrastructure organizations managing sensitive data that cannot be exported abroad.",
+      "privacy.closing":
+        "Strata Enterprise: zero egress, full audit trail, complete control over models, policies, and infrastructure.",
 
       "mockup.mapLabel": "GIS map",
       "mockup.chatTitle": "AI Assistant",
@@ -302,7 +360,7 @@
       "mockup.userMsg": "Buffer municipalities by 500m and export GeoJSON",
       "mockup.aiMsg":
         "I inspected the municipalities layer, ran the buffer, and saved output/buffer_500m.geojson. Review the proposal?",
-      "mockup.input": "vibe giss a 500m buffer on municipalities…",
+      "mockup.input": "buffer municipalities by 500m and export GeoJSON…",
 
       "problems.label": "Common problems",
       "problems.title": "Sound familiar in QGIS?",
@@ -390,7 +448,7 @@
         "The assistant reads project layers, dissolves overlapping geometries, calculates surfaces, counts trees, and returns a verifiable answer right beside the map.",
       "demo.maps.alt": "Strata analysis over a Brescia map with an AI answer about urban green and trees",
 
-      "speed.label": "Vibe gissing in practice",
+      "speed.label": "GIS productivity",
       "speed.title": "From hours to minutes",
       "speed.subtitle": "Real example: inspect 5 layers, buffer, export GeoJSON.",
       "speed.before": "Before",
@@ -417,7 +475,7 @@
 
       "features.3.title": "Workspace RAG",
       "features.3.desc":
-        "Indexes .py, .qgs, .geojson, .md with OpenAI embeddings. Chunks and vectors stored locally in SQLite.",
+        "Indexes .py, .qgs, .geojson, .md with embeddings. Chunks and vectors stored locally in SQLite or team infrastructure.",
 
       "features.4.title": "Opt-in layer indexing",
       "features.4.desc":
@@ -425,16 +483,16 @@
 
       "features.5.title": "Multi-provider",
       "features.5.desc":
-        "OpenAI API key, Claude API/OAuth, Codex/ChatGPT OAuth device flow. Pick your model from the dropdown.",
+        "Pro and Cloud Team include models out of the box. Enterprise or BYOK mode: OpenAI, Claude, Codex, or local LLMs.",
 
-      "features.6.title": "Local privacy",
+      "features.6.title": "Privacy and data control",
       "features.6.desc":
-        "Keys in local QgsSettings. OAuth tokens encrypted in QGIS auth store. No intermediary server.",
+        "In Enterprise, data and models stay on-premise. In Pro and Cloud Team, transparent indexing policies and control over what gets shared.",
 
-      "setup.label": "Setup",
+      "setup.label": "Advanced setup (BYOK)",
       "setup.title": "Credentials and indexing",
       "setup.subtitle":
-        "Configure AI on first launch and understand how RAG works on your workspace.",
+        "The Pro plan already includes managed models and credentials. This section is for users who prefer to configure providers and indexing themselves.",
 
       "setup.creds.title": "Credentials and login",
       "setup.creds.1":
@@ -487,9 +545,13 @@
       "download.linux.note":
         "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
-      "footer.tagline": "Vibe gissing, natively in QGIS.",
+      "footer.tagline": "Native AI agent in QGIS. Cloud or on-premise.",
+      "opensource.title": "Built on QGIS. Open, transparent, no lock-in.",
+      "opensource.desc":
+        "Strata is built on QGIS's open-source core. This ensures full compatibility with your existing GIS workflows and protects you from proprietary format lock-in. You pay for cloud infrastructure, ease of use, and our expertise in optimizing AI models for cartography — while keeping the transparency and reliability of free software.",
+      "opensource.closing": "The GIS stays yours. The added value is in the service.",
       "footer.disclaimer":
-        "Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
+        "Strata is an independent commercial service based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
       "footer.github": "GitHub",
       "footer.star": "Star on GitHub",
       "footer.license": "GPLv2+ License",
