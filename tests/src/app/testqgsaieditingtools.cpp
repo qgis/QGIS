@@ -29,6 +29,8 @@ class TestQgsAiEditingTools : public QObject
     void editFeatureGeometryRejectsInvalidResult();
     void updateFeatureAttributesUpdatesAndRollsBack();
     void updateFeatureAttributesRejectsIncompatibleType();
+    void calculateFieldCreatesFieldForFilteredFeaturesAndRollsBack();
+    void calculateFieldRejectsInvalidExpression();
 };
 
 void TestQgsAiEditingTools::initTestCase()
@@ -210,6 +212,91 @@ void TestQgsAiEditingTools::updateFeatureAttributesRejectsIncompatibleType()
   QgsFeature unchangedFeature;
   QVERIFY( layer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( unchangedFeature ) );
   QCOMPARE( unchangedFeature.attribute( u"height"_s ).toDouble(), 1.5 );
+}
+
+void TestQgsAiEditingTools::calculateFieldCreatesFieldForFilteredFeaturesAndRollsBack()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=value:double"_s, u"Places"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature first( layer->fields() );
+  first.setGeometry( QgsGeometry::fromWkt( u"Point(1 1)"_s ) );
+  first.setAttribute( u"value"_s, 2.0 );
+  QgsFeature second( layer->fields() );
+  second.setGeometry( QgsGeometry::fromWkt( u"Point(2 2)"_s ) );
+  second.setAttribute( u"value"_s, 3.0 );
+  QVERIFY( layer->dataProvider()->addFeatures( QgsFeatureList() << first << second ) );
+  project.addMapLayer( layer );
+
+  QgsAiCalculateFieldTool tool( &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::High );
+
+  QJsonObject args;
+  args.insert( u"layer_id"_s, layer->id() );
+  args.insert( u"field_name"_s, u"double_value"_s );
+  args.insert( u"expression"_s, u"\"value\" * 2"_s );
+  args.insert( u"create_field"_s, true );
+  args.insert( u"field_type"_s, u"double"_s );
+  args.insert( u"filter_expression"_s, u"\"value\" > 2"_s );
+
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  QCOMPARE( result.output.toObject().value( u"updated_feature_count"_s ).toInt(), 1 );
+  const QString rollbackToken = result.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !rollbackToken.isEmpty() );
+
+  const int calculatedIndex = layer->fields().lookupField( u"double_value"_s );
+  QVERIFY( calculatedIndex >= 0 );
+
+  QgsFeatureIterator it = layer->getFeatures();
+  QgsFeature feature;
+  int updatedCount = 0;
+  while ( it.nextFeature( feature ) )
+  {
+    if ( feature.attribute( u"value"_s ).toDouble() > 2.0 )
+    {
+      QCOMPARE( feature.attribute( calculatedIndex ).toDouble(), 6.0 );
+      updatedCount++;
+    }
+    else
+    {
+      QVERIFY( feature.attribute( calculatedIndex ).isNull() );
+    }
+  }
+  QCOMPARE( updatedCount, 1 );
+
+  QJsonObject rollbackArgs;
+  rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
+  const QgsAiToolResult rollback = tool.execute( rollbackArgs );
+  QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+  QCOMPARE( layer->fields().lookupField( u"double_value"_s ), -1 );
+}
+
+void TestQgsAiEditingTools::calculateFieldRejectsInvalidExpression()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=value:double"_s, u"Places"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature feature( layer->fields() );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Point(1 1)"_s ) );
+  feature.setAttribute( u"value"_s, 2.0 );
+  QVERIFY( layer->dataProvider()->addFeatures( QgsFeatureList() << feature ) );
+  project.addMapLayer( layer );
+
+  QgsAiCalculateFieldTool tool( &project );
+  QJsonObject args;
+  args.insert( u"layer_id"_s, layer->id() );
+  args.insert( u"field_name"_s, u"broken"_s );
+  args.insert( u"expression"_s, u"\"value\" *"_s );
+  args.insert( u"create_field"_s, true );
+
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY( !result.success );
+  QVERIFY( result.errorMessage.contains( u"parser error"_s ) );
+  QCOMPARE( layer->fields().lookupField( u"broken"_s ), -1 );
 }
 
 QGSTEST_MAIN( TestQgsAiEditingTools )

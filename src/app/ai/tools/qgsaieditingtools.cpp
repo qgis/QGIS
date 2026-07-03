@@ -20,6 +20,9 @@
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -37,7 +40,8 @@ namespace
   enum class EditingRollbackType
   {
     RestoreGeometry,
-    RestoreAttributes
+    RestoreAttributes,
+    RestoreFieldCalculation
   };
 
   struct EditingRollbackEntry
@@ -47,6 +51,9 @@ namespace
       QgsFeatureId featureId = FID_NULL;
       QString geometryWkt;
       QgsAttributeMap oldAttributes;
+      QHash<QgsFeatureId, QVariant> oldFieldValues;
+      bool createdField = false;
+      QString fieldName;
       QString description;
   };
 
@@ -199,6 +206,90 @@ namespace
     output.insert( u"rollback_token"_s, token );
     output.insert( u"diff"_s, diff );
     return QgsAiToolResult::ok( output );
+  }
+
+  QgsAiToolResult rollbackFieldCalculation( QgsProject *project, const QString &token )
+  {
+    if ( !editingRollbackStore().contains( token ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+    const EditingRollbackEntry entry = editingRollbackStore().take( token );
+    if ( entry.type != EditingRollbackType::RestoreFieldCalculation )
+      return QgsAiToolResult::error( u"Rollback token does not belong to a field calculation operation."_s );
+    if ( !project )
+      return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( entry.layerId ) );
+    if ( !layer )
+      return QgsAiToolResult::error( u"Cannot rollback field calculation: layer no longer exists: %1"_s.arg( entry.layerId ) );
+
+    const bool startedEditing = !layer->isEditable();
+    if ( startedEditing && !layer->startEditing() )
+      return QgsAiToolResult::error( u"Cannot start editing session for layer: %1"_s.arg( layer->name() ) );
+
+    layer->beginEditCommand( u"AI field calculation rollback"_s );
+    if ( entry.createdField )
+    {
+      const int fieldIndex = layer->fields().lookupField( entry.fieldName );
+      if ( fieldIndex >= 0 && !layer->deleteAttribute( fieldIndex ) )
+      {
+        layer->destroyEditCommand();
+        if ( startedEditing )
+          layer->rollBack();
+        return QgsAiToolResult::error( u"Could not delete calculated field: %1"_s.arg( entry.fieldName ) );
+      }
+    }
+    else
+    {
+      const int fieldIndex = layer->fields().lookupField( entry.fieldName );
+      if ( fieldIndex < 0 )
+      {
+        layer->destroyEditCommand();
+        if ( startedEditing )
+          layer->rollBack();
+        return QgsAiToolResult::error( u"Cannot rollback field calculation: field no longer exists: %1"_s.arg( entry.fieldName ) );
+      }
+
+      for ( auto it = entry.oldFieldValues.constBegin(); it != entry.oldFieldValues.constEnd(); ++it )
+      {
+        if ( !layer->changeAttributeValue( it.key(), fieldIndex, it.value(), QVariant(), true ) )
+        {
+          layer->destroyEditCommand();
+          if ( startedEditing )
+            layer->rollBack();
+          return QgsAiToolResult::error( u"Could not restore calculated value for feature_id %1."_s.arg( it.key() ) );
+        }
+      }
+    }
+    layer->endEditCommand();
+
+    if ( startedEditing && !layer->commitChanges() )
+      return QgsAiToolResult::error( u"Could not commit field calculation rollback: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+
+    QJsonObject diff;
+    diff.insert( u"summary"_s, entry.createdField ? u"Removed field created by field calculation."_s : u"Restored previous field values."_s );
+    diff.insert( u"layer_id"_s, entry.layerId );
+    diff.insert( u"field_name"_s, entry.fieldName );
+    diff.insert( u"restored_feature_count"_s, entry.oldFieldValues.size() );
+
+    QJsonObject output;
+    output.insert( u"status"_s, u"rolled_back"_s );
+    output.insert( u"rollback_token"_s, token );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
+
+  QMetaType::Type fieldTypeFromName( const QString &name )
+  {
+    const QString normalized = name.toLower().trimmed();
+    if ( normalized == "int"_L1 || normalized == "integer"_L1 )
+      return QMetaType::Type::Int;
+    if ( normalized == "longlong"_L1 || normalized == "long"_L1 || normalized == "integer64"_L1 )
+      return QMetaType::Type::LongLong;
+    if ( normalized == "string"_L1 || normalized == "text"_L1 )
+      return QMetaType::Type::QString;
+    if ( normalized == "bool"_L1 || normalized == "boolean"_L1 )
+      return QMetaType::Type::Bool;
+    return QMetaType::Type::Double;
   }
 }
 
@@ -510,5 +601,196 @@ QgsAiToolResult QgsAiUpdateFeatureAttributesTool::execute( const QJsonObject &ar
   output.insert( u"diff"_s, diff );
   output.insert( u"rollback_token"_s, token );
   output.insert( u"rollback"_s, rollbackJson( token, u"restore_feature_attributes"_s ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// calculate_field
+// ---------------------------------------------------------------------------
+
+QgsAiCalculateFieldTool::QgsAiCalculateFieldTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiCalculateFieldTool::description() const
+{
+  return QStringLiteral(
+    "Evaluates a QGIS expression into a new or existing field for all features, "
+    "or for a subset selected by filter_expression. Invalid expressions fail before editing."
+  );
+}
+
+QJsonObject QgsAiCalculateFieldTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"layer_id"_s, prop( u"string"_s, u"Target vector layer id."_s ) );
+  properties.insert( u"field_name"_s, prop( u"string"_s, u"Target field name."_s ) );
+  properties.insert( u"expression"_s, prop( u"string"_s, u"QGIS expression to evaluate for each feature."_s ) );
+  properties.insert( u"create_field"_s, prop( u"boolean"_s, u"If true, creates field_name before writing values."_s ) );
+  properties.insert( u"field_type"_s, prop( u"string"_s, u"Type for new fields: double, integer, longlong, string or boolean. Defaults to double."_s ) );
+  properties.insert( u"filter_expression"_s, prop( u"string"_s, u"Optional QGIS expression limiting which features are updated."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous calculate_field call."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiCalculateFieldTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackFieldCalculation( project, rollbackToken );
+
+  const QString layerId = args.value( u"layer_id"_s ).toString().trimmed();
+  if ( layerId.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'layer_id' is required."_s );
+
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( layerId ) );
+  if ( !layer )
+    return QgsAiToolResult::error( u"No vector layer with id: %1"_s.arg( layerId ) );
+
+  const QString fieldName = args.value( u"field_name"_s ).toString().trimmed();
+  if ( fieldName.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'field_name' is required."_s );
+
+  const QString expressionText = args.value( u"expression"_s ).toString().trimmed();
+  if ( expressionText.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'expression' is required."_s );
+
+  const bool createField = args.value( u"create_field"_s ).toBool( false );
+  const int existingFieldIndex = layer->fields().lookupField( fieldName );
+  if ( createField && existingFieldIndex >= 0 )
+    return QgsAiToolResult::error( u"Field already exists: %1"_s.arg( fieldName ) );
+  if ( !createField && existingFieldIndex < 0 )
+    return QgsAiToolResult::error( u"No field named '%1' on layer: %2"_s.arg( fieldName, layer->name() ) );
+
+  QgsField targetField = createField
+                           ? QgsField( fieldName, fieldTypeFromName( args.value( u"field_type"_s ).toString( u"double"_s ) ) )
+                           : layer->fields().at( existingFieldIndex );
+
+  QgsExpression expression( expressionText );
+  if ( expression.hasParserError() )
+    return QgsAiToolResult::error( u"Expression parser error: %1"_s.arg( expression.parserErrorString() ) );
+
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  context.setFields( layer->fields() );
+  expression.prepare( &context );
+
+  QgsFeatureRequest request;
+  const QString filterExpression = args.value( u"filter_expression"_s ).toString().trimmed();
+  if ( !filterExpression.isEmpty() )
+  {
+    QgsExpression filter( filterExpression );
+    if ( filter.hasParserError() )
+      return QgsAiToolResult::error( u"Filter expression parser error: %1"_s.arg( filter.parserErrorString() ) );
+    request.setFilterExpression( filterExpression );
+    request.setExpressionContext( context );
+  }
+
+  struct PendingValue
+  {
+      QgsFeatureId featureId = FID_NULL;
+      QVariant oldValue;
+      QVariant newValue;
+  };
+  QList<PendingValue> pendingValues;
+
+  QgsFeatureIterator it = layer->getFeatures( request );
+  QgsFeature feature;
+  while ( it.nextFeature( feature ) )
+  {
+    context.setFeature( feature );
+    QVariant value = expression.evaluate( &context );
+    if ( expression.hasEvalError() )
+      return QgsAiToolResult::error( u"Expression evaluation error: %1"_s.arg( expression.evalErrorString() ) );
+
+    QString conversionError;
+    if ( !targetField.convertCompatible( value, &conversionError ) )
+    {
+      return QgsAiToolResult::error(
+        conversionError.isEmpty()
+          ? u"Expression result is not compatible with field '%1'."_s.arg( fieldName )
+          : u"Expression result is not compatible with field '%1': %2"_s.arg( fieldName, conversionError )
+      );
+    }
+
+    PendingValue pending;
+    pending.featureId = feature.id();
+    pending.oldValue = existingFieldIndex >= 0 ? feature.attribute( existingFieldIndex ) : QVariant();
+    pending.newValue = value;
+    pendingValues.push_back( pending );
+  }
+
+  const bool startedEditing = !layer->isEditable();
+  if ( startedEditing && !layer->startEditing() )
+    return QgsAiToolResult::error( u"Cannot start editing session for layer: %1"_s.arg( layer->name() ) );
+
+  layer->beginEditCommand( u"AI field calculation"_s );
+
+  int targetFieldIndex = existingFieldIndex;
+  if ( createField )
+  {
+    if ( !layer->addAttribute( targetField ) )
+    {
+      layer->destroyEditCommand();
+      if ( startedEditing )
+        layer->rollBack();
+      return QgsAiToolResult::error( u"Could not create field: %1"_s.arg( fieldName ) );
+    }
+    layer->updateFields();
+    targetFieldIndex = layer->fields().lookupField( fieldName );
+    if ( targetFieldIndex < 0 )
+    {
+      layer->destroyEditCommand();
+      if ( startedEditing )
+        layer->rollBack();
+      return QgsAiToolResult::error( u"Created field was not found: %1"_s.arg( fieldName ) );
+    }
+  }
+
+  QHash<QgsFeatureId, QVariant> oldFieldValues;
+  for ( const PendingValue &pending : std::as_const( pendingValues ) )
+  {
+    if ( !layer->changeAttributeValue( pending.featureId, targetFieldIndex, pending.newValue, pending.oldValue, true ) )
+    {
+      layer->destroyEditCommand();
+      if ( startedEditing )
+        layer->rollBack();
+      return QgsAiToolResult::error( u"Could not write calculated value for feature_id %1."_s.arg( pending.featureId ) );
+    }
+    oldFieldValues.insert( pending.featureId, pending.oldValue );
+  }
+  layer->endEditCommand();
+
+  if ( startedEditing && !layer->commitChanges() )
+    return QgsAiToolResult::error( u"Could not commit field calculation: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+
+  EditingRollbackEntry rollback;
+  rollback.type = EditingRollbackType::RestoreFieldCalculation;
+  rollback.layerId = layerId;
+  rollback.fieldName = fieldName;
+  rollback.createdField = createField;
+  rollback.oldFieldValues = oldFieldValues;
+  rollback.description = createField ? u"Remove field created by AI calculation."_s : u"Restore field values before AI calculation."_s;
+  const QString token = storeEditingRollback( rollback );
+
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Calculated field values from QGIS expression."_s );
+  diff.insert( u"layer_id"_s, layerId );
+  diff.insert( u"field_name"_s, fieldName );
+  diff.insert( u"expression"_s, expressionText );
+  diff.insert( u"updated_feature_count"_s, pendingValues.size() );
+  diff.insert( u"created_field"_s, createField );
+
+  QJsonObject output;
+  output.insert( u"layer_id"_s, layerId );
+  output.insert( u"field_name"_s, fieldName );
+  output.insert( u"updated_feature_count"_s, pendingValues.size() );
+  output.insert( u"created_field"_s, createField );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, createField ? u"remove_calculated_field"_s : u"restore_calculated_field_values"_s ) );
   return QgsAiToolResult::ok( output );
 }

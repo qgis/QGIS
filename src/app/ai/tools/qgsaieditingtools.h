@@ -63,4 +63,23 @@ class APP_EXPORT QgsAiUpdateFeatureAttributesTool : public QgsAiTool
     QgsProject *mProject = nullptr;
 };
 
+/**
+ * calculate_field: evaluates a QGIS expression into a new or existing field.
+ */
+class APP_EXPORT QgsAiCalculateFieldTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiCalculateFieldTool( QgsProject *project );
+
+    QString name() const override { return u"calculate_field"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::High; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
 #endif // QGSAIEDITINGTOOLS_H
