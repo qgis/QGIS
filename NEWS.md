@@ -1,5 +1,71 @@
 Change history for the QGIS Project
 
+# What's new in Version 4.2 'Belém do Pará'?
+
+This release has following new features:
+
+- Breaking Changes: Move QGIS4 settings storage location with automated migration from QGIS3
+- User Interface: Add layer menu to load and save styles
+- Symbology: Add categorized renderer for 3D Symbols
+- Symbology: Add physically based material with texture support
+- Symbology: Add trim distance start and end to Hashes/Markers line symbol layer
+- Symbology: Add data-defined control for metal rough base, emission color
+- Symbology: Data defined control over phong/metal rough texture scale, rotation and offset
+- Symbology: Add optional solid emission color to metal rough material
+- Symbology: Add opacity support to metal rough materials
+- Symbology: Add 3d material settings to style database
+- Symbology: Allow choice of up/forward axis for 3d point model symbols
+- Symbology: Add extra items for templated line symbol layer
+- 3D Features: Generate environmental lighting from skybox
+- 3D Features: Support 3D model instancing
+- 3D Features: Allow control over 3d map color grading effects
+- 3D Features: Optional light bloom effects
+- 3D Features: Add multisample anti aliasing (MSAA)
+- 3D Features: Add gradient background to 3D scene
+- 3D Features: 3D Tiles: add instancing support
+- 3D Features: Add implicit tiling for 3D Tiles
+- 3D Features: Add camera controls dialog to control the 3D camera in map coordinates
+- 3D Features: Add support for 3D composite tiles ("cmpt")
+- 3D Features: Improve 3D map view "Invert vertical axis" setting.
+- 3D Features: 3d export stl
+- Point Clouds: Add overview-length optional parameter to build vpc algorithm
+- Point Clouds: Add reading support for multi-overview VPC files
+- Point Clouds: Add support for a vpc-in-zip (.vpz) virtual point cloud format
+- Point Clouds: Add per layer elevation shading
+- Point Clouds: Support arithmetic operators on color objects in expressions
+- Point Clouds: Modify renderer color by expression
+- Print Layouts: Add new layout chart item functionality to derive plot data and styling from the source vector layer renderer
+- Print Layouts: Add new option to clip a picture item by a shape-based item
+- Print Layouts: Geospatial PDF layer management enhancement
+- Expressions: Add scale_cubic_bezier expression function, handle bezier-cubic interpolation when converting MapBox styles
+- Expressions: Add concat_ws expression function
+- Data Management: Adding "Field Calculator" menu item to the attribute table header
+- Processing: Dynamically show child step feature counts as model progresses
+- Processing: Add an area threshold parameter
+- Processing: Add support for the SFCGAL extend to edges parameter in medial axis algorithm
+- Processing: Add processing in user defined menu or toolbar
+- Processing: Random subset algorithms ported to C++
+- Application and Project Options: Topocentric projection
+- Sensors: Add support for SensorThings 2.0, including Sensing, Sampling and Relations extensions
+- Profile Plots: Display elevation profile curve in 3D
+- Browser: Rework how ESRI REST services are exposed in the browser
+- Data Providers: Greatly speed up the FeatureServer provider for map viewing
+- Data Providers: Enable parallel provider load for AFS, AMS providers, and some related fixes
+- Data Providers: Support STAC assets from other cloud optimized data types and blob stores
+- QGIS Server: Add support for HIGHLIGHT_LABELFRAME options WMS params
+- QGIS Server: FlatGeobuf OAPIF export plus various fixes
+- Programmability: Expose concave hull of polygons functionality
+- Notable Fixes: Bug fixes by Even Rouault (Spatialys)
+- Notable Fixes: Bug fixes by Denis Rouzaud (OPENGIS.ch)
+- Notable Fixes: Bug fixes by Alessandro Pasotti (QCooperative)
+- Notable Fixes: Bug fixes by Julien Cabieces (Oslandia)
+- Notable Fixes: Bug fixes by Germán Carrillo (OPENGIS.ch)
+- Notable Fixes: Bug fixes by David Signer (OPENGIS.ch)
+- Notable Fixes: Bug fixes by Stefanos Natsis (Lutra Consulting)
+- Notable Fixes: Bug fixes by Loïc Bartoletti (Oslandia)
+-
+
+
 # What's new in Version 4.0 'Norrköping'?
 
 This release has following new features:
