@@ -52,6 +52,7 @@ class APP_EXPORT QgsAiRunPythonTool : public QgsAiTool
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
     bool requiresApproval() const override { return true; }
+    QgsAiToolApprovalMode approvalMode() const override { return QgsAiToolApprovalMode::SelfApproved; }
     QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Critical; }
     bool isAvailable() const override;
     QString availabilityReason() const override;

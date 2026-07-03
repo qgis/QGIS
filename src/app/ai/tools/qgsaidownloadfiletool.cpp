@@ -27,6 +27,7 @@
 #include <QEventLoop>
 #include <QFile>
 #include <QFileInfo>
+#include <QCryptographicHash>
 #include <QJsonObject>
 #include <QMessageBox>
 #include <QNetworkReply>
@@ -78,6 +79,12 @@ namespace
 
     return QDir( contextProvider->workspaceRoot() ).relativeFilePath( absolutePath );
   }
+
+  bool isLocalHttpHost( const QString &host )
+  {
+    const QString normalized = host.trimmed().toLower();
+    return normalized == "localhost"_L1 || normalized == "127.0.0.1"_L1 || normalized == "::1"_L1 || normalized.startsWith( "127."_L1 );
+  }
 } //namespace
 
 QgsAiDownloadFileTool::QgsAiDownloadFileTool( QgsAiFileContextProvider *contextProvider, QWidget *dialogParent )
@@ -100,21 +107,22 @@ QString QgsAiDownloadFileTool::availabilityReason() const
 QString QgsAiDownloadFileTool::description() const
 {
   return QStringLiteral(
-    "Downloads a file from an HTTP/HTTPS URL and saves it inside the workspace. The user "
+    "Downloads a file from an HTTPS URL and saves it inside the workspace. The user "
     "must approve via a modal dialog showing the URL and destination before the request "
     "starts; refusal returns 'user_rejected'. Use this to fetch remote data (GeoJSON, "
     "Shapefile, Overpass/Nominatim/GADM responses, etc.) without installing extra Python "
     "packages. dest_path is relative to the workspace; writes outside the workspace are "
     "refused. By default the tool refuses to overwrite an existing file (set overwrite=true "
-    "to override). Default size limit is 100 MiB."
+    "to override). Default size limit is 100 MiB. Returns sha256 and provenance metadata."
   );
 }
 
 QJsonObject QgsAiDownloadFileTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( u"url"_s, prop( u"string"_s, u"The HTTP or HTTPS URL to fetch."_s ) );
+  properties.insert( u"url"_s, prop( u"string"_s, u"The HTTPS URL to fetch. Public HTTP URLs are refused; localhost HTTP is allowed for development."_s ) );
   properties.insert( u"dest_path"_s, prop( u"string"_s, u"Destination path, relative to the workspace root (e.g. 'data/pomponesco.geojson'). Writes outside the workspace are refused."_s ) );
+  properties.insert( u"expected_sha256"_s, prop( u"string"_s, u"Optional expected SHA-256 hex digest. If supplied, the file is deleted and the tool fails on mismatch."_s ) );
   QJsonObject maxBytesProp;
   maxBytesProp.insert( u"type"_s, u"integer"_s );
   maxBytesProp.insert( u"description"_s, u"Optional cap on response size in bytes. Default 104857600 (100 MiB). Hard ceiling 2 GiB."_s );
@@ -143,6 +151,8 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   const QString scheme = url.scheme().toLower();
   if ( scheme != "http"_L1 && scheme != "https"_L1 )
     return QgsAiToolResult::error( u"Only http and https URLs are allowed (got '%1')."_s.arg( scheme ) );
+  if ( scheme == "http"_L1 && !isLocalHttpHost( url.host() ) )
+    return QgsAiToolResult::error( u"Public HTTP downloads are refused. Use an HTTPS URL or localhost for development."_s );
 
   const QString destRequest = args.value( u"dest_path"_s ).toString().trimmed();
   if ( destRequest.isEmpty() )
@@ -158,6 +168,10 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   const bool overwrite = args.value( u"overwrite"_s ).toBool( false );
   if ( !overwrite && QFileInfo::exists( destPath ) )
     return QgsAiToolResult::error( u"Destination file already exists: '%1'. Pass overwrite=true to replace it."_s.arg( destPath ) );
+
+  const QString expectedSha256 = args.value( u"expected_sha256"_s ).toString().trimmed().toLower();
+  if ( !expectedSha256.isEmpty() && expectedSha256.size() != 64 )
+    return QgsAiToolResult::error( u"expected_sha256 must be a 64-character SHA-256 hex digest."_s );
 
   qint64 maxBytes = DEFAULT_MAX_BYTES;
   const QJsonValue maxBytesValue = args.value( u"max_bytes"_s );
@@ -238,6 +252,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
 
   qint64 bytesWritten = 0;
   bool exceededLimit = false;
+  QCryptographicHash sha256( QCryptographicHash::Sha256 );
 
   // Stream the body to disk as it arrives so we never hold the full payload in RAM.
   QObject::connect( reply, &QNetworkReply::readyRead, reply, [&]() {
@@ -253,6 +268,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
     if ( !chunk.isEmpty() )
     {
       outFile.write( chunk );
+      sha256.addData( chunk );
       bytesWritten += chunk.size();
     }
   } );
@@ -282,6 +298,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
     else
     {
       outFile.write( tail );
+      sha256.addData( tail );
       bytesWritten += tail.size();
     }
   }
@@ -289,6 +306,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   outFile.close();
 
   const int httpStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
+  const QUrl finalUrl = reply->url();
   const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
   const QNetworkReply::NetworkError networkError = reply->error();
   const QString networkErrorString = reply->errorString();
@@ -312,12 +330,14 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
 
     QgsMessageLog::logMessage( u"download_file failed (url=%1, reason=%2)"_s.arg( urlForLog( url ), reasonText ), u"AI/Download"_s, Qgis::MessageLevel::Warning, false );
 
-    QJsonObject output;
-    output.insert( u"status"_s, u"error"_s );
-    output.insert( u"http_status"_s, httpStatus );
-    output.insert( u"bytes_written"_s, 0 );
-    output.insert( u"error"_s, reasonText );
-    return QgsAiToolResult::ok( output );
+    return QgsAiToolResult::error( reasonText );
+  }
+
+  const QString sha256Hex = QString::fromLatin1( sha256.result().toHex() );
+  if ( !expectedSha256.isEmpty() && sha256Hex != expectedSha256 )
+  {
+    QFile::remove( destPath );
+    return QgsAiToolResult::error( u"Downloaded file SHA-256 mismatch: expected %1, got %2."_s.arg( expectedSha256, sha256Hex ) );
   }
 
   QgsMessageLog::
@@ -329,5 +349,9 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   output.insert( u"bytes_written"_s, bytesWritten );
   output.insert( u"dest_path"_s, destPath );
   output.insert( u"content_type"_s, contentType );
+  output.insert( u"sha256"_s, sha256Hex );
+  output.insert( u"source_host"_s, finalUrl.host().toLower() );
+  output.insert( u"final_url"_s, finalUrl.toString( QUrl::FullyEncoded ) );
+  output.insert( u"trust_level"_s, u"unverified"_s );
   return QgsAiToolResult::ok( output );
 }

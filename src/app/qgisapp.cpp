@@ -120,6 +120,7 @@ using namespace Qt::StringLiterals;
 #include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsairunpythontool.h"
 #include "ai/tools/qgsaitoolregistry.h"
+#include "ai/tools/qgsaiwebsearchtool.h"
 #endif
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
@@ -1471,6 +1472,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiRunPythonTool>( this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiInstallPythonPackageTool>( this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiDownloadFileTool>( mAiFileContextProvider.get(), this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiWebSearchTool>( mAiModelRouter.get() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiCatalogSearchTool>( mAiModelRouter.get() ) );
   mAiEmbeddingProvider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings( this );
   mAiWorkspaceIndex = std::make_unique<QgsAiWorkspaceIndex>( mAiFileContextProvider.get(), mAiEmbeddingProvider.get(), this );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiIndexStatusTool>( mAiWorkspaceIndex.get() ) );

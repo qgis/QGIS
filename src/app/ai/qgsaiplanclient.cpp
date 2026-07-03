@@ -232,6 +232,7 @@ QgsAiManagedAgentPolicy QgsAiPlanClient::parseAgentPolicyJson( const QByteArray 
 {
   QgsAiManagedAgentPolicy policy;
   const QJsonObject root = QJsonDocument::fromJson( body ).object();
+  policy.toolCatalogVersion = root.value( u"toolCatalogVersion"_s ).toInt();
   policy.tier = root.value( u"tier"_s ).toString();
   policy.modes = stringArray( root.value( u"modes"_s ) );
   policy.allowedTools = stringArray( root.value( u"allowedTools"_s ) );
@@ -396,6 +397,7 @@ void QgsAiPlanClient::writeCachedAgentPolicy( const QgsAiManagedAgentPolicy &pol
     presets << agentPresetJson( preset );
 
   QJsonObject root;
+  root.insert( u"toolCatalogVersion"_s, policy.toolCatalogVersion );
   root.insert( u"tier"_s, policy.tier );
   root.insert( u"modes"_s, QJsonArray::fromStringList( policy.modes ) );
   root.insert( u"allowedTools"_s, QJsonArray::fromStringList( policy.allowedTools ) );

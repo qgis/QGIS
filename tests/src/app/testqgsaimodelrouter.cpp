@@ -242,6 +242,7 @@ class TestQgsAiModelRouter : public QObject
     void toolUseEnabledIncludesToolsForClaude();
     void allowedToolFilterCanAdvertiseNoTools();
     void planPayloadIncludesAgentMode();
+    void planPayloadUsesAnthropicBlocksAndTools();
     void unavailableToolsAreOmittedFromPayload();
     void visualContextImageIsAddedToOpenAiPayload();
     void visualContextImageIsAddedToClaudePayload();
@@ -263,6 +264,8 @@ class TestQgsAiModelRouter : public QObject
     void openRouterAutoModelMigratedOncePinnedDefault();
     void openRouterCustomEndpointKeepsAutoModelOnMigration();
     void planStreamAnthropicStyleDeltas();
+    void planStreamAnthropicToolUse();
+    void planNonStreamingAnthropicToolUse();
 
     // SSE transport & error hardening (loopback server)
     void openRouterStreamTextDeltas();
@@ -871,6 +874,68 @@ void TestQgsAiModelRouter::planPayloadIncludesAgentMode()
 
   const QJsonObject openAiObject = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, true ) ).object();
   QVERIFY( !openAiObject.contains( u"agent_mode"_s ) );
+}
+
+void TestQgsAiModelRouter::planPayloadUsesAnthropicBlocksAndTools()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setToolUseEnabled( true );
+  router.setAgentMode( u"ask_before_edits"_s );
+
+  QgsAiChatMessage system;
+  system.role = QgsAiChatRole::System;
+  system.content = u"system prompt"_s;
+
+  QgsAiChatMessage user;
+  user.role = QgsAiChatRole::User;
+  user.content = u"find roads"_s;
+
+  QVariantMap toolArgs;
+  toolArgs.insert( u"query"_s, u"roads"_s );
+  QVariantMap toolCall;
+  toolCall.insert( u"id"_s, u"toolu_1"_s );
+  toolCall.insert( u"name"_s, u"catalog_search"_s );
+  toolCall.insert( u"args"_s, toolArgs );
+
+  QgsAiChatMessage assistant;
+  assistant.role = QgsAiChatRole::Assistant;
+  assistant.content = u"I will search."_s;
+  assistant.metadata.insert( u"tool_calls"_s, QVariantList { toolCall } );
+
+  QgsAiChatMessage toolResult;
+  toolResult.role = QgsAiChatRole::Tool;
+  toolResult.content = u"{\"items\":[]}"_s;
+  toolResult.metadata.insert( u"tool_call_id"_s, u"toolu_1"_s );
+
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Plan, { system, user, assistant, toolResult }, true ) ).object();
+  QCOMPARE( object.value( u"agent_mode"_s ).toString(), u"ask_before_edits"_s );
+  QCOMPARE( object.value( u"system"_s ).toString(), u"system prompt"_s );
+  QVERIFY( object.contains( u"tools"_s ) );
+  QVERIFY( !object.contains( u"tool_choice"_s ) );
+  QCOMPARE( object.value( u"tools"_s ).toArray().at( 0 ).toObject().value( u"name"_s ).toString(), u"echo"_s );
+
+  const QJsonArray messages = object.value( u"messages"_s ).toArray();
+  QCOMPARE( messages.size(), 3 );
+  QCOMPARE( messages.at( 0 ).toObject().value( u"role"_s ).toString(), u"user"_s );
+  QCOMPARE( messages.at( 0 ).toObject().value( u"content"_s ).toArray().at( 0 ).toObject().value( u"type"_s ).toString(), u"text"_s );
+
+  const QJsonArray assistantContent = messages.at( 1 ).toObject().value( u"content"_s ).toArray();
+  QCOMPARE( assistantContent.at( 0 ).toObject().value( u"type"_s ).toString(), u"text"_s );
+  const QJsonObject toolUse = assistantContent.at( 1 ).toObject();
+  QCOMPARE( toolUse.value( u"type"_s ).toString(), u"tool_use"_s );
+  QCOMPARE( toolUse.value( u"id"_s ).toString(), u"toolu_1"_s );
+  QCOMPARE( toolUse.value( u"name"_s ).toString(), u"catalog_search"_s );
+  QCOMPARE( toolUse.value( u"input"_s ).toObject().value( u"query"_s ).toString(), u"roads"_s );
+
+  QCOMPARE( messages.at( 2 ).toObject().value( u"role"_s ).toString(), u"user"_s );
+  const QJsonObject resultBlock = messages.at( 2 ).toObject().value( u"content"_s ).toArray().at( 0 ).toObject();
+  QCOMPARE( resultBlock.value( u"type"_s ).toString(), u"tool_result"_s );
+  QCOMPARE( resultBlock.value( u"tool_use_id"_s ).toString(), u"toolu_1"_s );
+  QCOMPARE( resultBlock.value( u"content"_s ).toString(), u"{\"items\":[]}"_s );
 }
 
 void TestQgsAiModelRouter::unavailableToolsAreOmittedFromPayload()
@@ -1542,6 +1607,69 @@ void TestQgsAiModelRouter::planStreamAnthropicStyleDeltas()
   const QgsAiUsage usage = usageSpy.takeFirst().at( 3 ).value<QgsAiUsage>();
   QCOMPARE( usage.promptTokens, static_cast<qint64>( 2 ) );
   QCOMPARE( usage.completionTokens, static_cast<qint64>( 1 ) );
+}
+
+void TestQgsAiModelRouter::planStreamAnthropicToolUse()
+{
+  removePlanTestSettings();
+  const auto cleanup = qScopeGuard( []() { removePlanTestSettings(); } );
+
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::sseResponse( {
+    QByteArrayLiteral( "data: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"tool_use\",\"id\":\"toolu_stream\",\"name\":\"echo\",\"input\":{}}}\n\n" ),
+    QByteArrayLiteral( "data: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"text\\\":\\\"hi\\\"}\"}}\n\n" ),
+    QByteArrayLiteral( "data: {\"type\":\"content_block_stop\",\"index\":0}\n\n" ),
+    QByteArrayLiteral( "data: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\"},\"usage\":{\"input_tokens\":3,\"output_tokens\":1}}\n\ndata: [DONE]\n\n" ),
+  } );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  QgsAiModelRouter router;
+  QString error;
+  QVERIFY2( configurePlanForLoopback( router, server.serverPort(), &error ), qPrintable( error ) );
+
+  QSignalSpy toolCallsSpy( &router, &QgsAiModelRouter::toolCallsRequested );
+  router.startChatRequest( QgsAiModelRouter::Provider::Plan, { userMessage( u"echo hi"_s ) }, true );
+
+  QTRY_COMPARE_WITH_TIMEOUT( toolCallsSpy.count(), 1, 10000 );
+  const QList<QVariant> args = toolCallsSpy.takeFirst();
+  QCOMPARE( args.at( 1 ).toString(), u"Plan Account"_s );
+  QCOMPARE( args.at( 2 ).toString(), QString() );
+  const QList<QgsAiToolCall> calls = args.at( 3 ).value<QList<QgsAiToolCall>>();
+  QCOMPARE( calls.size(), 1 );
+  QCOMPARE( calls.at( 0 ).id, u"toolu_stream"_s );
+  QCOMPARE( calls.at( 0 ).name, u"echo"_s );
+  QCOMPARE( calls.at( 0 ).args.value( u"text"_s ).toString(), u"hi"_s );
+}
+
+void TestQgsAiModelRouter::planNonStreamingAnthropicToolUse()
+{
+  removePlanTestSettings();
+  const auto cleanup = qScopeGuard( []() { removePlanTestSettings(); } );
+
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::jsonResponse(
+    200,
+    "OK",
+    QByteArrayLiteral( "{\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-test\",\"content\":[{\"type\":\"text\",\"text\":\"Checking.\"},{\"type\":\"tool_use\",\"id\":\"toolu_1\",\"name\":\"echo\",\"input\":{\"text\":\"hi\"}}],\"stop_reason\":\"tool_use\",\"usage\":{\"input_tokens\":5,\"output_tokens\":2}}" )
+  );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  QgsAiModelRouter router;
+  QString error;
+  QVERIFY2( configurePlanForLoopback( router, server.serverPort(), &error ), qPrintable( error ) );
+
+  QSignalSpy toolCallsSpy( &router, &QgsAiModelRouter::toolCallsRequested );
+  router.startChatRequest( QgsAiModelRouter::Provider::Plan, { userMessage( u"echo hi"_s ) }, false );
+
+  QTRY_COMPARE_WITH_TIMEOUT( toolCallsSpy.count(), 1, 10000 );
+  const QList<QVariant> args = toolCallsSpy.takeFirst();
+  QCOMPARE( args.at( 1 ).toString(), u"Plan Account"_s );
+  QCOMPARE( args.at( 2 ).toString(), u"Checking."_s );
+  const QList<QgsAiToolCall> calls = args.at( 3 ).value<QList<QgsAiToolCall>>();
+  QCOMPARE( calls.size(), 1 );
+  QCOMPARE( calls.at( 0 ).id, u"toolu_1"_s );
+  QCOMPARE( calls.at( 0 ).name, u"echo"_s );
+  QCOMPARE( calls.at( 0 ).args.value( u"text"_s ).toString(), u"hi"_s );
 }
 
 void TestQgsAiModelRouter::openRouterStreamTextDeltas()

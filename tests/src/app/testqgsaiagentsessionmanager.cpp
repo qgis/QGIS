@@ -119,6 +119,9 @@ class TestQgsAiAgentSessionManager : public QObject
     void askAndAgentAdvertiseCaptureMapCanvasTool();
     void askBeforeEditsOnlyAdvertisesReadOnlyAndApprovalTools();
     void managedPolicyRestrictsAgentTools();
+    void managedPolicyV1IsIgnored();
+    void managedPolicyWithUnknownToolIsIgnored();
+    void managedPolicyDoesNotRestrictByokProviders();
     void agentModeOmitsUnavailableTools();
     void collectsInlineRulesAndSkills();
     void collectsWorkspaceRulesFiles();
@@ -491,6 +494,7 @@ void TestQgsAiAgentSessionManager::managedPolicyRestrictsAgentTools()
 
   QgsAiModelRouter router;
   router.setToolRegistry( &registry );
+  router.setActiveProvider( QgsAiModelRouter::Provider::Plan );
 
   QgsAiFileContextProvider contextProvider( tempDir.path() );
   QgsAiReviewPatchEngine reviewEngine;
@@ -502,6 +506,7 @@ void TestQgsAiAgentSessionManager::managedPolicyRestrictsAgentTools()
   manager.setAgentBehaviorSettings( updated );
 
   QgsAiManagedAgentPolicy policy;
+  policy.toolCatalogVersion = 2;
   policy.tier = u"FREE"_s;
   policy.allowedTools = QStringList { u"read_file"_s };
   policy.allowedModels = QStringList { u"managed-plan"_s };
@@ -517,6 +522,153 @@ void TestQgsAiAgentSessionManager::managedPolicyRestrictsAgentTools()
   QVERIFY( router.allowedTools().contains( u"read_file"_s ) );
   QVERIFY( !router.allowedTools().contains( u"run_python"_s ) );
   QCOMPARE( router.agentMode(), u"auto_edit"_s );
+
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::managedPolicyV1IsIgnored()
+{
+  QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"read_file"_s, true ) );
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"run_python"_s, true, true ) );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setActiveProvider( QgsAiModelRouter::Provider::Plan );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  manager.setToolRegistry( &registry );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.allowCustomActions = true;
+  manager.setAgentBehaviorSettings( updated );
+
+  QgsAiManagedAgentPolicy policy;
+  policy.toolCatalogVersion = 1;
+  policy.tier = u"FREE"_s;
+  policy.allowedTools = QStringList { u"read_file"_s };
+  policy.allowedModels = QStringList { u"managed-plan"_s };
+  QgsAiManagedAgentPreset editor;
+  editor.mode = u"editor"_s;
+  editor.allowedTools = QStringList { u"read_file"_s };
+  editor.allowedModels = QStringList { u"managed-plan"_s };
+  policy.presets << editor;
+
+  manager.setManagedAgentPolicy( policy );
+  manager.setActiveAgent( u"editor"_s );
+
+  QVERIFY( router.allowedTools().contains( u"read_file"_s ) );
+  QVERIFY( router.allowedTools().contains( u"run_python"_s ) );
+
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::managedPolicyWithUnknownToolIsIgnored()
+{
+  QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"read_file"_s, true ) );
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"run_python"_s, true, true ) );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setActiveProvider( QgsAiModelRouter::Provider::Plan );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  manager.setToolRegistry( &registry );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.allowCustomActions = true;
+  manager.setAgentBehaviorSettings( updated );
+
+  QgsAiManagedAgentPolicy policy;
+  policy.toolCatalogVersion = 2;
+  policy.tier = u"FREE"_s;
+  policy.allowedTools = QStringList { u"read_file"_s, u"unknown_future_tool"_s };
+  policy.allowedModels = QStringList { u"managed-plan"_s };
+  QgsAiManagedAgentPreset editor;
+  editor.mode = u"editor"_s;
+  editor.allowedTools = QStringList { u"read_file"_s, u"unknown_future_tool"_s };
+  editor.allowedModels = QStringList { u"managed-plan"_s };
+  policy.presets << editor;
+
+  manager.setManagedAgentPolicy( policy );
+  manager.setActiveAgent( u"editor"_s );
+
+  QVERIFY( router.allowedTools().contains( u"read_file"_s ) );
+  QVERIFY( router.allowedTools().contains( u"run_python"_s ) );
+
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::managedPolicyDoesNotRestrictByokProviders()
+{
+  QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"read_file"_s, true ) );
+  registry.registerTool( std::make_unique<AvailabilityTool>( u"run_python"_s, true, true ) );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setActiveProvider( QgsAiModelRouter::Provider::OpenAi );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  manager.setToolRegistry( &registry );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.allowCustomActions = true;
+  manager.setAgentBehaviorSettings( updated );
+
+  QgsAiManagedAgentPolicy policy;
+  policy.toolCatalogVersion = 2;
+  policy.tier = u"FREE"_s;
+  policy.allowedTools = QStringList { u"read_file"_s };
+  policy.allowedModels = QStringList { u"managed-plan"_s };
+  QgsAiManagedAgentPreset editor;
+  editor.mode = u"editor"_s;
+  editor.allowedTools = QStringList { u"read_file"_s };
+  editor.allowedModels = QStringList { u"managed-plan"_s };
+  policy.presets << editor;
+
+  manager.setManagedAgentPolicy( policy );
+  manager.setActiveAgent( u"editor"_s );
+
+  QVERIFY( router.allowedTools().contains( u"read_file"_s ) );
+  QVERIFY( router.allowedTools().contains( u"run_python"_s ) );
 
   settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );

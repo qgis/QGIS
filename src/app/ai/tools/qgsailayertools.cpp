@@ -158,8 +158,7 @@ namespace
     return QString();
   }
 
-  // Resolve a user-supplied path: try workspace first, then accept absolute path
-  // if the file exists on disk. Returns empty QString if unresolvable.
+  // Resolve a user-supplied layer path inside the AI workspace only.
   QString resolvePath( QgsAiFileContextProvider *provider, const QString &path )
   {
     if ( provider )
@@ -168,9 +167,6 @@ namespace
       if ( !resolved.isEmpty() && QFileInfo::exists( resolved ) )
         return resolved;
     }
-    const QFileInfo info( path );
-    if ( info.exists() && info.isFile() )
-      return info.absoluteFilePath();
     return QString();
   }
 

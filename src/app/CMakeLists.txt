@@ -353,6 +353,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/tools/qgsaireadtools.cpp
     ai/tools/qgsairunpythontool.cpp
     ai/tools/qgsaitoolregistry.cpp
+    ai/tools/qgsaiwebsearchtool.cpp
   )
 endif()
 
