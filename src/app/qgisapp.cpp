@@ -1443,6 +1443,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiListFilesTool>( mAiFileContextProvider.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiListProjectLayersTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiGetCanvasExtentTool>( mMapCanvas ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiSetCanvasExtentTool>( mMapCanvas, QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCaptureMapCanvasTool>( mMapCanvas, this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReadMessageLogTool>( mAiMessageLogBuffer.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiAddLayerFromFileTool>( mAiFileContextProvider.get(), QgsProject::instance() ) );

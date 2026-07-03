@@ -23,6 +23,8 @@
 #include "qgsaivisualcontextutils.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsexception.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmapcanvas.h"
@@ -46,9 +48,11 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
 #include <QImage>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QJsonValue>
 #include <QMessageBox>
 #include <QSize>
 #include <QString>
@@ -67,6 +71,148 @@ namespace
     e.insert( u"xmax"_s, extent.xMaximum() );
     e.insert( u"ymax"_s, extent.yMaximum() );
     return e;
+  }
+
+  struct CanvasRollbackEntry
+  {
+      QgsRectangle extent;
+      QgsCoordinateReferenceSystem crs;
+      double scale = 0;
+  };
+
+  QHash<QString, CanvasRollbackEntry> &canvasRollbackStore()
+  {
+    static QHash<QString, CanvasRollbackEntry> store;
+    return store;
+  }
+
+  QString storeCanvasRollback( const CanvasRollbackEntry &entry )
+  {
+    const QString token = QUuid::createUuid().toString( QUuid::WithoutBraces );
+    canvasRollbackStore().insert( token, entry );
+    return token;
+  }
+
+  QJsonObject readToolsRollbackJson( const QString &token, const QString &action )
+  {
+    QJsonObject rollback;
+    rollback.insert( u"token"_s, token );
+    rollback.insert( u"action"_s, action );
+    rollback.insert( u"volatile"_s, true );
+    return rollback;
+  }
+
+  bool readToolsParseExtent( const QJsonValue &value, QgsRectangle &extent, QString &error )
+  {
+    double xmin = 0;
+    double ymin = 0;
+    double xmax = 0;
+    double ymax = 0;
+    if ( value.isObject() )
+    {
+      const QJsonObject object = value.toObject();
+      const QStringList required = { u"xmin"_s, u"ymin"_s, u"xmax"_s, u"ymax"_s };
+      for ( const QString &key : required )
+      {
+        if ( !object.contains( key ) || !object.value( key ).isDouble() )
+        {
+          error = u"Extent must include numeric xmin, ymin, xmax and ymax."_s;
+          return false;
+        }
+      }
+      xmin = object.value( u"xmin"_s ).toDouble();
+      ymin = object.value( u"ymin"_s ).toDouble();
+      xmax = object.value( u"xmax"_s ).toDouble();
+      ymax = object.value( u"ymax"_s ).toDouble();
+    }
+    else if ( value.isArray() )
+    {
+      const QJsonArray array = value.toArray();
+      if ( array.size() != 4 || !array.at( 0 ).isDouble() || !array.at( 1 ).isDouble() || !array.at( 2 ).isDouble() || !array.at( 3 ).isDouble() )
+      {
+        error = u"Extent array must contain four numeric values: [xmin, ymin, xmax, ymax]."_s;
+        return false;
+      }
+      xmin = array.at( 0 ).toDouble();
+      ymin = array.at( 1 ).toDouble();
+      xmax = array.at( 2 ).toDouble();
+      ymax = array.at( 3 ).toDouble();
+    }
+    else
+    {
+      error = u"Argument 'extent' must be an object or array."_s;
+      return false;
+    }
+
+    if ( !( xmax > xmin ) || !( ymax > ymin ) )
+    {
+      error = u"Extent is invalid: xmax/ymax must be greater than xmin/ymin."_s;
+      return false;
+    }
+
+    extent = QgsRectangle( xmin, ymin, xmax, ymax );
+    return true;
+  }
+
+  QgsRectangle readToolsLayerExtentForCrs( QgsMapLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs, QgsProject *project, QString &error )
+  {
+    QgsRectangle extent = layer->extent();
+    if ( extent.isEmpty() )
+      return extent;
+
+    const QgsCoordinateReferenceSystem layerCrs = layer->crs();
+    if ( layerCrs.isValid() && destinationCrs.isValid() && layerCrs != destinationCrs )
+    {
+      try
+      {
+        QgsCoordinateTransform transform( layerCrs, destinationCrs, project ? project : QgsProject::instance() );
+        extent = transform.transformBoundingBox( extent );
+      }
+      catch ( const QgsCsException &ex )
+      {
+        error = u"Failed to transform layer extent to canvas CRS: %1"_s.arg( ex.what() );
+      }
+    }
+    return extent;
+  }
+
+  QgsVectorLayer *readToolsSelectionLayer( QgsMapCanvas *canvas, QgsProject *project, const QJsonValue &value, QString &error )
+  {
+    if ( value.isString() )
+    {
+      QgsMapLayer *layer = project ? project->mapLayer( value.toString() ) : nullptr;
+      QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( !vectorLayer )
+        error = u"zoom_to_selection must reference a vector layer id."_s;
+      return vectorLayer;
+    }
+
+    if ( value.isBool() && value.toBool() )
+    {
+      const QList<QgsMapLayer *> canvasLayers = canvas->layers( true );
+      for ( QgsMapLayer *layer : canvasLayers )
+      {
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vectorLayer && vectorLayer->selectedFeatureCount() > 0 )
+          return vectorLayer;
+      }
+
+      if ( project )
+      {
+        const QList<QgsMapLayer *> projectLayers = project->mapLayers().values();
+        for ( QgsMapLayer *layer : projectLayers )
+        {
+          QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+          if ( vectorLayer && vectorLayer->selectedFeatureCount() > 0 )
+            return vectorLayer;
+        }
+      }
+      error = u"No selected vector layer found for zoom_to_selection."_s;
+      return nullptr;
+    }
+
+    error = u"zoom_to_selection must be a vector layer id string or true."_s;
+    return nullptr;
   }
 
   QString readToolsLayerTreePath( QgsLayerTreeLayer *node )
@@ -487,6 +633,205 @@ QgsAiToolResult QgsAiGetCanvasExtentTool::execute( const QJsonObject &args )
   output.insert( u"height"_s, mCanvas->mapSettings().outputSize().height() );
   output.insert( u"device_pixel_ratio"_s, mCanvas->mapSettings().devicePixelRatio() );
   output.insert( u"rendered_layers"_s, layerRefsJson( mCanvas->mapSettings().layers( true ) ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// set_canvas_extent
+// ---------------------------------------------------------------------------
+
+QgsAiSetCanvasExtentTool::QgsAiSetCanvasExtentTool( QgsMapCanvas *canvas, QgsProject *project )
+  : mCanvas( canvas )
+  , mProject( project )
+{}
+
+QString QgsAiSetCanvasExtentTool::description() const
+{
+  return QStringLiteral(
+    "Changes the main map canvas view. Supports an explicit extent with optional CRS, "
+    "scale-only zoom, zooming to a project layer, and zooming to selected features. "
+    "Returns a rollback token that restores the previous canvas extent and CRS."
+  );
+}
+
+QJsonObject QgsAiSetCanvasExtentTool::schema() const
+{
+  QJsonObject extentProperties;
+  extentProperties.insert( u"xmin"_s, prop( u"number"_s, u"Minimum x coordinate."_s ) );
+  extentProperties.insert( u"ymin"_s, prop( u"number"_s, u"Minimum y coordinate."_s ) );
+  extentProperties.insert( u"xmax"_s, prop( u"number"_s, u"Maximum x coordinate."_s ) );
+  extentProperties.insert( u"ymax"_s, prop( u"number"_s, u"Maximum y coordinate."_s ) );
+
+  QJsonObject extentProp;
+  extentProp.insert( u"type"_s, u"object"_s );
+  extentProp.insert( u"description"_s, u"Extent object {xmin,ymin,xmax,ymax}; array [xmin,ymin,xmax,ymax] is also accepted."_s );
+  extentProp.insert( u"properties"_s, extentProperties );
+
+  QJsonObject properties;
+  properties.insert( u"extent"_s, extentProp );
+  properties.insert( u"crs"_s, prop( u"string"_s, u"Optional destination CRS authid for the explicit extent, e.g. EPSG:4326."_s ) );
+  properties.insert( u"scale"_s, prop( u"number"_s, u"Optional positive map scale denominator to apply after extent/layer/selection zoom."_s ) );
+  properties.insert( u"zoom_to_layer"_s, prop( u"string"_s, u"Optional project layer id whose full extent should be shown."_s ) );
+  properties.insert( u"zoom_to_selection"_s, prop( u"string"_s, u"Optional vector layer id with selected features, or true to use the first selected vector layer."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous set_canvas_extent call. If set, restores the previous canvas view."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiSetCanvasExtentTool::execute( const QJsonObject &args )
+{
+  if ( !mCanvas )
+    return QgsAiToolResult::error( u"No map canvas available."_s );
+
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+  {
+    if ( !canvasRollbackStore().contains( rollbackToken ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+
+    const CanvasRollbackEntry entry = canvasRollbackStore().take( rollbackToken );
+    const QJsonObject before = readToolsExtentJson( mCanvas->extent() );
+    mCanvas->setDestinationCrs( entry.crs );
+    mCanvas->setExtent( entry.extent );
+    mCanvas->refresh();
+
+    QJsonObject diff;
+    diff.insert( u"summary"_s, u"Restored previous canvas view."_s );
+    diff.insert( u"before"_s, before );
+    diff.insert( u"after"_s, readToolsExtentJson( mCanvas->extent() ) );
+    diff.insert( u"after_crs"_s, mCanvas->mapSettings().destinationCrs().authid() );
+    diff.insert( u"after_scale"_s, mCanvas->scale() );
+
+    QJsonObject output;
+    output.insert( u"rollback_token"_s, rollbackToken );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
+
+  const bool hasExtent = args.contains( u"extent"_s );
+  const bool hasScale = args.contains( u"scale"_s );
+  const bool hasZoomToLayer = args.contains( u"zoom_to_layer"_s );
+  const bool hasZoomToSelection = args.contains( u"zoom_to_selection"_s );
+  const bool hasCrs = args.contains( u"crs"_s );
+  if ( !hasExtent && !hasScale && !hasZoomToLayer && !hasZoomToSelection && !hasCrs )
+    return QgsAiToolResult::error( u"Provide extent, scale, zoom_to_layer, zoom_to_selection or crs."_s );
+
+  CanvasRollbackEntry rollback;
+  rollback.extent = mCanvas->extent();
+  rollback.crs = mCanvas->mapSettings().destinationCrs();
+  rollback.scale = mCanvas->scale();
+
+  QgsCoordinateReferenceSystem requestedCrs;
+  if ( hasCrs )
+  {
+    const QString crsText = args.value( u"crs"_s ).toString().trimmed();
+    if ( crsText.isEmpty() )
+      return QgsAiToolResult::error( u"Argument 'crs' must not be empty."_s );
+    requestedCrs = QgsCoordinateReferenceSystem( crsText );
+    if ( !requestedCrs.isValid() )
+      return QgsAiToolResult::error( u"Invalid CRS: %1"_s.arg( crsText ) );
+  }
+
+  QgsRectangle requestedExtent;
+  if ( hasExtent )
+  {
+    QString error;
+    if ( !readToolsParseExtent( args.value( u"extent"_s ), requestedExtent, error ) )
+      return QgsAiToolResult::error( error );
+  }
+
+  double requestedScale = 0;
+  if ( hasScale )
+  {
+    const QJsonValue scaleValue = args.value( u"scale"_s );
+    if ( !scaleValue.isDouble() || scaleValue.toDouble() <= 0 )
+      return QgsAiToolResult::error( u"Argument 'scale' must be a positive number."_s );
+    requestedScale = scaleValue.toDouble();
+  }
+
+  QgsMapLayer *zoomLayer = nullptr;
+  QgsRectangle zoomLayerExtent;
+  const QgsCoordinateReferenceSystem destinationCrs = requestedCrs.isValid() ? requestedCrs : mCanvas->mapSettings().destinationCrs();
+  if ( hasZoomToLayer )
+  {
+    const QString layerId = args.value( u"zoom_to_layer"_s ).toString().trimmed();
+    if ( layerId.isEmpty() )
+      return QgsAiToolResult::error( u"Argument 'zoom_to_layer' must be a layer id."_s );
+    zoomLayer = project ? project->mapLayer( layerId ) : nullptr;
+    if ( !zoomLayer )
+      return QgsAiToolResult::error( u"Layer not found: %1"_s.arg( layerId ) );
+
+    QString error;
+    zoomLayerExtent = readToolsLayerExtentForCrs( zoomLayer, destinationCrs, project, error );
+    if ( !error.isEmpty() )
+      return QgsAiToolResult::error( error );
+    if ( zoomLayerExtent.isEmpty() )
+      return QgsAiToolResult::error( u"Layer has an empty extent: %1"_s.arg( layerId ) );
+  }
+
+  QgsVectorLayer *selectionLayer = nullptr;
+  if ( hasZoomToSelection )
+  {
+    QString error;
+    selectionLayer = readToolsSelectionLayer( mCanvas, project, args.value( u"zoom_to_selection"_s ), error );
+    if ( !selectionLayer )
+      return QgsAiToolResult::error( error );
+    if ( selectionLayer->selectedFeatureCount() == 0 )
+      return QgsAiToolResult::error( u"Layer has no selected features: %1"_s.arg( selectionLayer->id() ) );
+  }
+
+  QStringList changes;
+  if ( hasCrs )
+  {
+    mCanvas->setDestinationCrs( requestedCrs );
+    changes << u"crs"_s;
+  }
+
+  if ( hasExtent )
+  {
+    mCanvas->setExtent( requestedExtent );
+    changes << u"extent"_s;
+  }
+
+  if ( hasZoomToLayer )
+  {
+    Q_UNUSED( zoomLayer )
+    mCanvas->setExtent( zoomLayerExtent );
+    changes << u"zoom_to_layer"_s;
+  }
+
+  if ( hasZoomToSelection )
+  {
+    mCanvas->zoomToSelected( selectionLayer );
+    changes << u"zoom_to_selection"_s;
+  }
+
+  if ( hasScale )
+  {
+    mCanvas->zoomScale( requestedScale );
+    changes << u"scale"_s;
+  }
+
+  mCanvas->refresh();
+
+  const QString token = storeCanvasRollback( rollback );
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Changed canvas view."_s );
+  diff.insert( u"changes"_s, QJsonArray::fromStringList( changes ) );
+  diff.insert( u"before"_s, readToolsExtentJson( rollback.extent ) );
+  diff.insert( u"before_crs"_s, rollback.crs.authid() );
+  diff.insert( u"before_scale"_s, rollback.scale );
+  diff.insert( u"after"_s, readToolsExtentJson( mCanvas->extent() ) );
+  diff.insert( u"after_crs"_s, mCanvas->mapSettings().destinationCrs().authid() );
+  diff.insert( u"after_scale"_s, mCanvas->scale() );
+
+  QJsonObject output;
+  output.insert( u"extent"_s, readToolsExtentJson( mCanvas->extent() ) );
+  output.insert( u"crs"_s, mCanvas->mapSettings().destinationCrs().authid() );
+  output.insert( u"scale"_s, mCanvas->scale() );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, readToolsRollbackJson( token, u"restore_canvas_extent"_s ) );
   return QgsAiToolResult::ok( output );
 }
 

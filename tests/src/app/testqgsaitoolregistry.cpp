@@ -19,6 +19,7 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
@@ -127,6 +128,7 @@ class TestQgsAiToolRegistry : public QObject
     void registryAuditsRiskyToolMetadataOnly();
     void captureMapCanvasRequiresConsent();
     void captureMapCanvasCreatesCappedPng();
+    void setCanvasExtentSetsZoomsAndRollsBack();
     void addLayerFromServiceLoadsXyzAndRollsBack();
     void styleLayerAppliesNativeChanges();
     void advancedStyleLayerAppliesRenderersLabelsAndRollback();
@@ -318,6 +320,76 @@ void TestQgsAiToolRegistry::captureMapCanvasCreatesCappedPng()
 
   settings.remove( u"strata/visual_context/image_send_consent"_s );
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
+}
+
+void TestQgsAiToolRegistry::setCanvasExtentSetsZoomsAndRollsBack()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=name:string"_s, u"Places"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature first( layer->fields() );
+  first.setAttribute( u"name"_s, u"Alpha"_s );
+  first.setGeometry( QgsGeometry::fromWkt( u"Point(20 20)"_s ) );
+  QgsFeature second( layer->fields() );
+  second.setAttribute( u"name"_s, u"Beta"_s );
+  second.setGeometry( QgsGeometry::fromWkt( u"Point(30 25)"_s ) );
+  QgsFeatureList features;
+  features << first << second;
+  QVERIFY( layer->dataProvider()->addFeatures( features ) );
+  layer->updateExtents();
+  project.addMapLayer( layer );
+
+  QgsMapCanvas canvas;
+  canvas.resize( 640, 360 );
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.setLayers( QList<QgsMapLayer *>() << layer );
+  const QgsRectangle originalExtent = canvas.extent();
+
+  QgsAiSetCanvasExtentTool tool( &canvas, &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::Low );
+
+  QJsonObject extent;
+  extent.insert( u"xmin"_s, 1 );
+  extent.insert( u"ymin"_s, 2 );
+  extent.insert( u"xmax"_s, 5 );
+  extent.insert( u"ymax"_s, 6 );
+  QJsonObject args;
+  args.insert( u"extent"_s, extent );
+  args.insert( u"crs"_s, u"EPSG:4326"_s );
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  const QJsonObject output = result.output.toObject();
+  const QString rollbackToken = output.value( u"rollback_token"_s ).toString();
+  QVERIFY( !rollbackToken.isEmpty() );
+  QVERIFY( output.contains( u"diff"_s ) );
+  QCOMPARE( canvas.mapSettings().destinationCrs().authid(), u"EPSG:4326"_s );
+  QGSCOMPARENEAR( canvas.extent().center().x(), 3.0, 0.0001 );
+  QGSCOMPARENEAR( canvas.extent().center().y(), 4.0, 0.0001 );
+  QVERIFY( canvas.extent().contains( QgsRectangle( 1, 2, 5, 6 ) ) );
+
+  QJsonObject rollbackArgs;
+  rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
+  const QgsAiToolResult rollback = tool.execute( rollbackArgs );
+  QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+  QGSCOMPARENEAR( canvas.extent().center().x(), originalExtent.center().x(), 0.0001 );
+  QGSCOMPARENEAR( canvas.extent().center().y(), originalExtent.center().y(), 0.0001 );
+
+  QJsonObject zoomLayerArgs;
+  zoomLayerArgs.insert( u"zoom_to_layer"_s, layer->id() );
+  const QgsAiToolResult zoomLayer = tool.execute( zoomLayerArgs );
+  QVERIFY2( zoomLayer.success, qPrintable( zoomLayer.errorMessage ) );
+  QVERIFY( canvas.extent().contains( layer->extent() ) );
+
+  QVERIFY( !features.isEmpty() );
+  layer->selectByIds( QgsFeatureIds() << features.constFirst().id() );
+  QJsonObject zoomSelectionArgs;
+  zoomSelectionArgs.insert( u"zoom_to_selection"_s, layer->id() );
+  const QgsAiToolResult zoomSelection = tool.execute( zoomSelectionArgs );
+  QVERIFY2( zoomSelection.success, qPrintable( zoomSelection.errorMessage ) );
+  QVERIFY( canvas.extent().contains( QgsRectangle( 20, 20, 20, 20 ) ) );
 }
 
 void TestQgsAiToolRegistry::addLayerFromServiceLoadsXyzAndRollsBack()
