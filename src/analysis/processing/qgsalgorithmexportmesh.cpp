@@ -869,10 +869,10 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   rasterFileWriter.setOutputFormat( outputFormat );
 
   std::unique_ptr<QgsRasterDataProvider> rasterDataProvider( rasterFileWriter.createMultiBandRaster( Qgis::DataType::Float64, width, height, extent, mTransform.destinationCrs(), mDataPerGroup.count() ) );
-  rasterDataProvider->setEditable( true );
-
-  if ( !rasterDataProvider->isEditable() )
-    throw QgsProcessingException( QObject::tr( "Could not create output raster: %1" ).arg( rasterDataProvider->error().summary() ) );
+  if ( !rasterDataProvider )
+    throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( fileName ) );
+  if ( !rasterDataProvider->setEditable( true ) )
+    throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( rasterDataProvider->error().summary() ) );
 
   const bool hasReportsDuringClose = rasterDataProvider->hasReportsDuringClose();
   const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
